@@ -211,9 +211,9 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         xf.m_Translate.z = xf.m_Translate.z + self->m_fZOffset;
         Unk_NiPoint3 p110(*(const Vector3*)&DAT_143a08cd8);
         Unk_NiPoint3 p148(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((*(const efd::Point3*)dir).Cross(*(const efd::Point3*)&p110))));
-        ((Vector3*)&p148)->FUN_140968990();
+        ((Vector3*)&p148)->Unitize();
         Unk_NiPoint3 p130(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((*(const efd::Point3*)&p148).Cross(*(const efd::Point3*)dir))));
-        ((Vector3*)&p130)->FUN_140968990();
+        ((Vector3*)&p130)->Unitize();
         Unk_NiPoint3 p100(*(const Vector3*)dir);
         *(NiMatrix3*)&xf.m_Rotate = NiMatrix3(reinterpret_cast<const NiPoint3&>(p130), reinterpret_cast<const NiPoint3&>(p148), reinterpret_cast<const NiPoint3&>(p100));
         if (DAT_1439f81f4 < 0.001f) {

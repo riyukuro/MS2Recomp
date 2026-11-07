@@ -1,0 +1,10 @@
+eol lf
+79c
+    NiRegisterStream(NiFloatsExtraDataPoint3Controller); NiRegisterStream(NiFOVController); NiRegisterStream(NiFOVInterpolator);
+.
+19c
+#include "NiFOVInterpolator.h"
+.
+16c
+#include "NiFOVController.h"
+.

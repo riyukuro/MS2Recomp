@@ -1,0 +1,331 @@
+eol lf
+4778@37s "" "(const char*)"
+4660c
+    // MS2: no D3D9 -> NULL (returns with the lock still held, as in the exe)
+    if (!ms_pkD3D9)
+        return NULL;
+.
+4037a
+    else
+    {
+        Error("ReleaseIUnknown without a renderer [%d]", eType);
+    }
+
+    // Assume that at least one reference must exist at this point, so
+    // just return 1 to indicate that the memory has not yet been freed.
+    return 1;
+.
+4033,4036d
+4024,4027c
+        if (pkRenderer->GetDeviceThreadID() == GetCurrentThreadId())
+            return pkD3DResource->Release();
+.
+4018,4022c
+    // MS2: without a renderer the resource is reported (with its type) and dropped, not queued
+    if (pkRenderer)
+.
+2322c
+const char* NiDX9Renderer::GetDriverName() const { D3DADAPTER_IDENTIFIER9 kD3DAdapterIdentifier9; m_acStudioDriverName[0] = 0; memset((void*)&kD3DAdapterIdentifier9, 0, sizeof(kD3DAdapterIdentifier9)); if (SUCCEEDED(ms_pkD3D9->GetAdapterIdentifier(m_uiAdapter, 0, &kD3DAdapterIdentifier9))) { NiSprintf(m_acStudioDriverName, 512, "%s", kD3DAdapterIdentifier9.Driver); } return m_acStudioDriverName; }  // gb-render: studio (inferred) 0x1427cf790
+.
+2008a
+        DAT_143afa750 = 14;  // MS2
+.
+1918a
+            DAT_143afa750 = 13;  // MS2
+.
+1830a
+        DAT_143afa750 = 12;  // MS2
+.
+1808a
+        DAT_143afa750 = 11;  // MS2
+.
+1413a
+    // MS2: two flags set after every successful recreate (0x1439fc912 / 0x1439fc7f8, owners unknown)
+    DAT_1439fc912 = true;
+    DAT_1439fc7f8 = true;
+
+.
+1256c
+        // MS2: the failure names the HRESULT
+        Error("NiDX9Renderer::Recreate> Device reset failed - [%s]\n",
+            NiDX9ErrorString(eD3dRet));
+.
+1250a
+    // MS2: fullscreen switches the display mode first (failure returns with the locks held, as in the exe)
+    if (!pkOnscreenBuffData->GetPresentParams().Windowed &&
+        !ChangeDisplayMode(pkOnscreenBuffData->GetPresentParams().BackBufferWidth,
+            pkOnscreenBuffData->GetPresentParams().BackBufferHeight))
+    {
+        return false;
+    }
+
+.
+1244a
+    // MS2: drop the default visible array and flush the deferred releases before the reset
+    if (ms_pkDefaultVisibleArray)
+        ms_pkDefaultVisibleArray->RemoveAll();
+    ReleaseDeferredResources();
+
+.
+813d
+806,811d
+768,801c
+                return false;
+            }
+.
+765,766d
+754,763c
+                case D3DERR_INVALIDCALL:
+                    SetLastErrorString("Creation failed: Could not create "
+                        "hardware device.\nD3DERR_INVALIDCALL");
+                    DAT_143afa750 = 8;
+                    break;
+                case D3DERR_NOTAVAILABLE:
+                    SetLastErrorString("Creation failed: Could not create "
+                        "hardware device.\nD3DERR_NOTAVAILABLE");
+                    DAT_143afa750 = 9;
+                    break;
+                case D3DERR_DEVICELOST:
+                    SetLastErrorString("Creation failed: Could not create "
+                        "hardware device.\nD3DERR_DEVICELOST");
+                    DAT_143afa750 = 7;
+                    break;
+                case D3DERR_OUTOFVIDEOMEMORY:
+                    SetLastErrorString("Creation failed: Could not create "
+                        "hardware device.\nD3DERR_OUTOFVIDEOMEMORY");
+                    DAT_143afa750 = 10;
+                    break;
+.
+744,752c
+            if (FAILED(eD3dRet))
+            {
+                switch (eD3dRet)
+.
+742a
+            }
+.
+739d
+736,737c
+                Warning("NiDX9Renderer::Initialize> Specified number of "
+                    "backbuffers was invalid - trying fewer "
+                    "backbuffers\n");
+
+                if (!kD3DPresentParams.Windowed)
+                {
+                    ChangeDisplayMode(kD3DPresentParams.BackBufferWidth,
+                        kD3DPresentParams.BackBufferHeight);
+                }
+.
+731,734c
+            m_bDeviceLost = false;
+
+            // If the call failed and D3D changed the backbuffer count
+            // for us in the creation call, then we should try again with
+            // the new (valid) backbuffer count
+            if (uiBackBufferCount != kD3DPresentParams.BackBufferCount)
+.
+729c
+
+        //  Create the device
+        eD3dRet = ms_pkD3D9->CreateDevice(m_uiAdapter, m_eDevType,
+            m_kWndFocus, m_uiBehaviorFlags, &kD3DPresentParams,
+            &m_pkD3DDevice9);
+
+        if (FAILED(eD3dRet))
+.
+725,727c
+            ChangeDisplayMode(kD3DPresentParams.BackBufferWidth,
+                kD3DPresentParams.BackBufferHeight);
+.
+723c
+        return false;
+    }
+
+    if (InitializePresentParams(m_kWndDevice, uiWidth, uiHeight,
+        uiUseFlags, uiFBMode, eFBFormat, eDSFormat, uiBackBufferCount,
+        eSwapEffect, uiRefreshRate, ePresentationInterval,
+        kD3DPresentParams))
+    {
+        // Cache the backbuffer count (Validate may change it)
+        uiBackBufferCount = kD3DPresentParams.BackBufferCount;
+
+        // MS2: remember the desktop mode; fullscreen switches the display mode first
+        memset(&m_kMS2DesktopMode, 0, sizeof(m_kMS2DesktopMode));
+        EnumDisplaySettingsA(NULL, ENUM_CURRENT_SETTINGS, &m_kMS2DesktopMode);
+        m_kMS2DisplayMode = m_kMS2DesktopMode;
+        if (!kD3DPresentParams.Windowed)
+.
+720,721c
+        SetLastErrorString("Creation failed: Requested device not valid");
+        DAT_143afa750 = 6;
+        Warning("NiDX9Renderer::Initialize> No device of specified "
+            "type \n");
+.
+718c
+    // MS2: one attempt (the stock loop over lower device types is gone)
+    Message("NiDX9Renderer::Initialize> Attempting to create "
+        "rendering device\n");
+
+    if (!ms_pkSystemDesc->GetAdapter(m_uiAdapter)->GetDevice(m_eDevType))
+.
+706a
+        DAT_143afa750 = 5;  // MS2
+.
+695a
+        DAT_143afa750 = 4;  // MS2
+.
+686@0s "    " ""
+685c
+    // MS2: FPU preserve regardless of USE_FPU_PRESERVE
+.
+671a
+    // MS2: NVIDIA PerfHUD adapter selection
+    for (unsigned int i = 0; i < ms_pkSystemDesc->GetAdapterCount(); i++)
+    {
+        D3DADAPTER_IDENTIFIER9 kIdentifier;
+        if (FAILED(ms_pkD3D9->GetAdapterIdentifier(i, 0, &kIdentifier)))
+        {
+            SetLastErrorString("Creation failed: Invalid Adapter");
+            DAT_143afa750 = 2;
+            Error("NiDX9Renderer::Initialize> Invalid Adapter specified "
+                "(PerfHUD)- FAILING\n");
+
+            return false;
+        }
+
+        if (strstr(kIdentifier.Description, "PerfHUD") != 0)
+        {
+            m_uiAdapter = i;
+            m_eDevType = D3DDEVTYPE_REF;
+            break;
+        }
+    }
+
+.
+644a
+    // MS2: the device type is always HAL with hardware vertex processing (no fallback loop below)
+    eDesc = DEVDESC_HAL_HWVERTEX;
+
+.
+598c
+    // MS2: the factory hook
+    NiDX9Renderer* pkR;
+    if (DAT_144d6ea10)
+        pkR = DAT_144d6ea10();
+    else
+        pkR = NiNew NiDX9Renderer;
+.
+589a
+        DAT_143afa750 = 1;  // MS2
+.
+566a
+
+    // MS2: back to the desktop mode (RestoreDisplayMode written out; the exe's copy loads both sizes first)
+    if (m_bMS2DisplayModeChanged)
+    {
+        DWORD uiWidth = m_kMS2DesktopMode.dmPelsWidth;
+        DWORD uiHeight = m_kMS2DesktopMode.dmPelsHeight;
+        if (m_kMS2DisplayMode.dmPelsWidth != uiWidth || m_kMS2DisplayMode.dmPelsHeight != uiHeight)
+            ChangeDisplayMode(uiWidth, uiHeight);
+        m_bMS2DisplayModeChanged = false;
+    }
+}
+
+//------------------------------------------------------------------------------------------------
+// MS2: switch the display to uiWidth x uiHeight, 32 bpp (fullscreen device creation); false (mode unchanged) if
+// ChangeDisplaySettingsA fails
+// MS2: 0x1427d5c10, the game toggles it from a UIScene debug key
+void NiDX9Renderer::SetMS2DeviceLost(bool bLost)
+{
+    m_bMS2Unknown_851 = bLost;
+    m_bDeviceLost = bLost;
+}
+
+//------------------------------------------------------------------------------------------------
+// MS2: the dtor's pre-pack cleanup as a separate member (0x1427d4ae0)
+void NiDX9Renderer::PurgePrePackData()
+{
+    NiTListIterator kPrepackIter = m_kPrePackMeshes.GetHeadPos();
+    while (kPrepackIter)
+    {
+        PrePackMesh* pkObject = m_kPrePackMeshes.GetNext(kPrepackIter);
+        pkObject->m_spMesh = NULL;
+    }
+    m_kPrePackMeshes.RemoveAll();
+
+    kPrepackIter = m_kPrePackTextures.GetHeadPos();
+    while (kPrepackIter)
+    {
+        PrePackTexture* pkObject = m_kPrePackTextures.GetNext(kPrepackIter);
+        pkObject->m_spTexture = NULL;
+        pkObject->m_spSrcPixelData = NULL;
+    }
+    m_kPrePackTextures.RemoveAll();
+}
+
+//------------------------------------------------------------------------------------------------
+bool NiDX9Renderer::ChangeDisplayMode(unsigned int uiWidth, unsigned int uiHeight)
+{
+    DWORD uiOldWidth = m_kMS2DisplayMode.dmPelsWidth;
+    if (uiOldWidth == uiWidth && m_kMS2DisplayMode.dmPelsHeight == uiHeight)
+        return true;
+
+    DWORD uiOldHeight = m_kMS2DisplayMode.dmPelsHeight;
+    m_kMS2DisplayMode.dmPelsWidth = uiWidth;
+    m_kMS2DisplayMode.dmPelsHeight = uiHeight;
+    m_bMS2DisplayModeChanged = true;
+    m_kMS2DisplayMode.dmBitsPerPel = 32;
+    m_kMS2DisplayMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+    if (ChangeDisplaySettingsA(&m_kMS2DisplayMode, CDS_UPDATEREGISTRY) != DISP_CHANGE_SUCCESSFUL)
+    {
+        m_kMS2DisplayMode.dmPelsWidth = uiOldWidth;
+        m_kMS2DisplayMode.dmPelsHeight = uiOldHeight;
+        return false;
+    }
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------
+// MS2: back to the desktop mode saved by Initialize
+void NiDX9Renderer::RestoreDisplayMode()
+{
+    if (m_bMS2DisplayModeChanged)
+    {
+        if (m_kMS2DisplayMode.dmPelsWidth != m_kMS2DesktopMode.dmPelsWidth ||
+            m_kMS2DisplayMode.dmPelsHeight != m_kMS2DesktopMode.dmPelsHeight)
+        {
+            ChangeDisplayMode(m_kMS2DesktopMode.dmPelsWidth, m_kMS2DesktopMode.dmPelsHeight);
+        }
+        m_bMS2DisplayModeChanged = false;
+    }
+.
+445,460c
+    PurgePrePackData();  // MS2: out of line (0x1427d4ae0)
+.
+297a
+
+    // MS2
+    m_bMS2DisplayModeChanged = false;
+    m_uiMS2Unknown_1074 = 0;
+    m_uiMS2Unknown_1078 = 0;
+.
+164a
+    m_bMS2Unknown_851 = false;  // MS2
+.
+143a
+    m_acStudioDriverName[0] = '\0';  // MS2
+.
+84a
+// MS2: renderer creation failure code (0x143afa750, right after NiRenderer::ms_acErrorString), read back by the
+// game's MS2RenderService (src/ms2/client/ms2/ms2renderservice.cpp)
+extern int DAT_143afa750;
+// MS2: optional renderer factory (0x144d6ea10) Create uses instead of NiNew NiDX9Renderer (the game's MS2Renderer)
+NiDX9Renderer* (*DAT_144d6ea10)() = NULL;
+// MS2: flags Recreate sets after a successful device reset (engine .data, owners not identified)
+extern bool DAT_1439fc912;
+extern bool DAT_1439fc7f8;
+
+.
+29a
+#include "NiDX9Error.h"  // MS2: NiDX9ErrorString in Recreate
+.

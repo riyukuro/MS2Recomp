@@ -1,0 +1,5 @@
+eol lf
+39,53c
+    BaseClass empty;
+    BaseClass::swap(empty);
+.

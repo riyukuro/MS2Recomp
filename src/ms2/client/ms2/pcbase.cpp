@@ -553,11 +553,11 @@ class CCylinderCollision : public CBaseCollision
 public:
     CCylinderCollision();                                           // 0x141083230
     virtual ~CCylinderCollision();                                  // 0x141083320
-    // 0x1410833c0, the slot 3 override (declared with Vector3 by its owner; only called directly here)
-    void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
+    // 0x1410833c0, the slot 3 override
+    virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
     virtual void vfunc_5();
     virtual float vfunc_6();
-    void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kDir);   // CBaseCollision; the NiPoint3 conversion temp of the exe needs this view
+    // FUN_1409fc390 is CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext>, const NiPoint3&) in cbasecollision.h
     char m_pad_78[0xb0 - 0x78];
     float m_fRadius;                                                // +0xb0
     Vector3 m_ptCenter;                                     // +0xb4

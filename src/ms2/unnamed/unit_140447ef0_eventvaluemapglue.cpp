@@ -49,6 +49,7 @@
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@1@XZ 0x140448710 ; la1: deep-matches 140448710/140448630 (V4 node layout), not 140448750
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@1@XZ 0x140448730 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$07@@@1@XZ 0x140448750 ; la1: calls the V8<7> const operator* 140448610 (deepobj; 140448710 calls 1404485d0)
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$06@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBIU?$Unk_Gev447V4@$06@@@1@XZ 0x1404485d0 ; fe1: byte-identical to the V4<6> copy 1404484b0 (multicopy); its own VA had no row
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140447ef0.cpp"

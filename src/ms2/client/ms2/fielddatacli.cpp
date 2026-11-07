@@ -46,7 +46,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CStringA FUN_140188f50(char const*, int);                              // node text
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 void FUN_141b6ed40(CStringA const&, Vector3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
 void FUN_14028c2d0(CStringA, efd::Point3*);

@@ -1,0 +1,3 @@
+21c
+NiImplementRTTI(NiTerrainStandardResourceManager, NiTerrainResourceManager); /* MS2: the exe inlines the Region array allocation in CreateStream */ template<> __forceinline NiDataStream::Region* NiTNewInterface<NiDataStream::Region>::Allocate(unsigned int uiNumElements) {return NiNew NiDataStream::Region[uiNumElements];}
+.

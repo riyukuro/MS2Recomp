@@ -230,7 +230,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
         efd::Point3 kNewPos = reinterpret_cast<const efd::Point3&>(kDelta) + reinterpret_cast<const efd::Point3&>(m_kPosBase);
         float fLimit = m_kPivot.z;
         efd::Point3 kTarget = reinterpret_cast<const efd::Point3&>(kDelta) + reinterpret_cast<const efd::Point3&>(m_kPivotBase);
-        if (m_kPos.FUN_140965c40(reinterpret_cast<Vector3&>(kTarget)).FUN_140967ac0() > fLimit)
+        if ((m_kPos - reinterpret_cast<Vector3&>(kTarget)).Length() > fLimit)
         {
             if (FUN_14059d930(m_kPos.x - kTarget.x) > fLimit)
             {
@@ -247,7 +247,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
                 float fClamp = m_kPos.z - kTarget.z > 0.0f ? -fLimit : fLimit;
                 kTarget.z = m_kPos.z + fClamp;
             }
-            reinterpret_cast<Vector3&>(kNewPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(kTarget)) + reinterpret_cast<const efd::Point3&>(m_kPivot))).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate()) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
+            reinterpret_cast<Vector3&>(kNewPos) = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(kTarget)) + reinterpret_cast<const efd::Point3&>(m_kPivot))) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate()) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
         }
         ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<Vector3&>(kNewPos)));
         if (bUpdate)
@@ -740,9 +740,9 @@ void UIAvatarBase::FUN_1418b9e40()
         NiAVObject* pBody;
         NiAVObject* pFound = pBody = pNode->GetObjectByName("Eff_Body");
         if (pBody)
-            fBody = ((struct Vector3 const*)&((class NiAVObject*)(class NiAVObject*)(pBody))->GetWorldTranslate())->FUN_140965c40(m_kPos).FUN_140967ac0();
+            fBody = (*((Vector3 const*)&((class NiAVObject*)(class NiAVObject*)(pBody))->GetWorldTranslate()) - m_kPos).Length();
         void* pBound = ((void*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetWorldBound());
-        float fHeight = ((struct Vector3 const*)&((class NiBound*)(void*)(pBound))->GetCenter())->z - m_kPos.z;
+        float fHeight = ((Vector3 const*)&((class NiBound*)(void*)(pBound))->GetCenter())->z - m_kPos.z;
         float fExtra = fHeight - fBody;
         if (fBody > 0.0f && fExtra > 25.0f)
             fHeight = fBody + 25.0f;
@@ -859,7 +859,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
     if (reinterpret_cast<const efd::Point3&>(m_kAngleBase) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
-        *pOut = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPos->FUN_140965c40(m_kPivot))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(m_kPivot)))))));
+        *pOut = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((*pPos - m_kPivot))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(m_kPivot)))))));
     else
         *pOut = *pPos;
 }
@@ -2371,8 +2371,8 @@ void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& k
     *reinterpret_cast<Unk_NiMatrix3*>(reinterpret_cast<char*>(pNode) + 0x50) = *pRot;
     *reinterpret_cast<NiPoint3*>(reinterpret_cast<char*>(pNode) + 0x74) = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(
         reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(
-        reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(kPivot)))
-            .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(kPivot))))))));
+        (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(kPivot))) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(kPivot))))
+))));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc950-0x142cbca30 .text$yd

@@ -715,6 +715,11 @@ MS2Ptr<ASDialog> UILevelUpGuideDialog::FUN_140f880c0(const CString& strName)
         return MS2Ptr<ASDialog>(0);
     return m_30.operator->()->FUN_140e159f0<ASDialog>(strName);   // C3: AScript::FUN_140e159f0 (was Unk_LgRoot::FUN_140e44410)
 }
+// uimaidrecipelistdialog's UIMDEditDialog::FUN_140f880c0<Unk_MdShopPanel> (call at 0x1412deadb) is this same body: the
+// exe folds the uiswfentity.inl child-getter instantiations into one copy, so its declared name is bound here.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??$FUN_140f880c0@VUnk_MdShopPanel@@@UIMDEditDialog@@QEAA?AV?$MS2Ptr@VUnk_MdShopPanel@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?FUN_140f880c0@UILevelUpGuideDialog@@QEAA?AV?$MS2Ptr@VASDialog@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
+#endif
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

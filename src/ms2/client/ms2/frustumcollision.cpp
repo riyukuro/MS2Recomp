@@ -52,12 +52,12 @@ CFrustumCollision::~CFrustumCollision()
 }
 
 // @0x141222f50
-void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
+void CFrustumCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
 {
-    Vector3 ptRot = ptDir;
+    Vector3 ptRot = reinterpret_cast<const Vector3&>(ptDir);
     FUN_140a01250(reinterpret_cast<efd::Point3&>(ptRot), reinterpret_cast<efd::Point3*>(&m_ptForward), reinterpret_cast<efd::Point3*>(&m_ptRight));
-    m_ptForward.FUN_140968990();
-    m_ptRight.FUN_140968990();
+    m_ptForward.Unitize();
+    m_ptRight.Unitize();
 
     m_ptOrigin = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(m_ptForward) * (-m_ptSize.y)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, -m_ptSize.z)))));
     m_ptApex = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * (-m_fApexDist)));
@@ -109,13 +109,13 @@ int CFrustumCollision::Contains(const Vector3& pt) const
 // @0x141223d80
 int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 {
-    Vector3 kRel = pt.FUN_140965c40(m_ptOrigin);
+    Vector3 kRel = (pt - m_ptOrigin);
     float fDepth = reinterpret_cast<const efd::Point3&>(m_ptForward).Dot(reinterpret_cast<const efd::Point3&>(kRel));
     if (fDepth <= 0.0f || m_fDepth <= fDepth)
         return 0;
-    Vector3 kDir = pt.FUN_140965c40(m_ptApex);
+    Vector3 kDir = (pt - m_ptApex);
     kDir.z = 0.0f;
-    kDir.FUN_140968990();
+    kDir.Unitize();
     float fDot = reinterpret_cast<const efd::Point3&>(m_ptForward).Dot(reinterpret_cast<const efd::Point3&>(kDir));
     if (fDot > __imp_cosf(m_fHalfAngle))
         return 1;
@@ -140,10 +140,10 @@ int CFrustumCollision::IntersectsBox(const void* pBox) const
 
     NiPoint2 kHit;
     NiPoint3 kDirA, kDirB, kPtA, kPtB;
-    kDirA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeA[1]).FUN_140965c40(AsPoint3(m_aEdgeA[0]))))));
-    float fLenA = reinterpret_cast<Vector3&>(kDirA).FUN_140968990();
-    kDirB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeB[1]).FUN_140965c40(AsPoint3(m_aEdgeB[0]))))));
-    float fLenB = reinterpret_cast<Vector3&>(kDirB).FUN_140968990();
+    kDirA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>((AsPoint3(m_aEdgeA[1]) - AsPoint3(m_aEdgeA[0]))))));
+    float fLenA = reinterpret_cast<Vector3&>(kDirA).Unitize();
+    kDirB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>((AsPoint3(m_aEdgeB[1]) - AsPoint3(m_aEdgeB[0]))))));
+    float fLenB = reinterpret_cast<Vector3&>(kDirB).Unitize();
 
     for (unsigned nSide = 0; nSide < 2; nSide++)
     {

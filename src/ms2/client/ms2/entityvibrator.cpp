@@ -47,7 +47,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 extern int DAT_143ad1b20;                                           // running actor counter
 extern int DAT_1439f7060;                                           // number of collision masks (8)
 extern unsigned DAT_1439f7040[];                                    // the collision masks
-extern char DAT_143afc898;                                          // assertions throw when set
+extern unsigned char DAT_143afc898;                                          // assertions throw when set
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
 
 class Unk_VibZoneMap : public ATL::CRBMap<CString, CString> { };   // C3: unit-local view
@@ -266,7 +266,7 @@ int CEntityVibrator::FUN_1411cba60()
                 m_8c = nNow;
             }
             Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
-            Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
+            Vector3 ptStart = (m_48 - ptDrop);
             float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
             SetPosition(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptStart) + reinterpret_cast<const efd::Point3&>(ptDrop) * fK)));
             if (1.0f <= fK) {
@@ -308,7 +308,7 @@ int CEntityVibrator::FUN_1411cba60()
                 float fB = ((float)(unsigned)FUN_140768010(2, 0) - 0.5f) * 2.0f;
                 m_3c.x = FUN_140768090() * fA;
                 m_3c.y = FUN_140768090() * fB;
-                m_3c.FUN_140968990();
+                m_3c.Unitize();
                 m_60 = (fOffset < 0.0f);
             }
             SetPosition(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_48) + reinterpret_cast<const efd::Point3&>(m_3c) * fOffset)));
@@ -323,97 +323,100 @@ int CEntityVibrator::FUN_1411cba60()
 MS2_REPLACE_METHOD(0x1411CBA60, CEntityVibrator, FUN_1411cba60, 2806, 0xCBF39D64);
 
 // @0x1411cc570
-// MS2-FUNCTIONAL: behaviour-checked against the exe (constants and math match); PhysX descriptor temporaries differ
 void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
 {
     if (!Unk_IsFinite(reinterpret_cast<const efd::Point3&>(m_70))) {
-        EE_LOG_AT(0x12, 1, ("CEntityVibrator::MakePhysxActor"), MS2_THIS_FILE, 0xc3);
+        EE_LOG_AT(0x12, efd::ILogger::kERR1, ("CEntityVibrator::MakePhysxActor"), MS2_THIS_FILE, 0xc3);
         if (DAT_143afc898 != 0) {
             throw 13;
         }
         return;
     }
     NxScene* pScene = ((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
-    if (pScene == 0) {
-        return;
-    }
-    if (!m_a8) {
-        egf::Entity* entA = m_entity.operator egf::Entity*();
-        if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(entA)) {
-            egf::Entity* entB = m_entity.operator egf::Entity*();
-            ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(entB, 5, 0, 1);
+    if (pScene != 0) {
+        if (!m_a8) {
+            if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(m_entity.operator egf::Entity*())) {
+                ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(m_entity.operator egf::Entity*(), 5, 0, 1);
+            }
         }
-    }
-    efd::SmartPointer<CubeMapInformationService> com(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    if ((CubeMapInformationService*)com != 0) {
-        reinterpret_cast<CubeMapInformationService*>(com.operator->())->RemovePhysXActor(reinterpret_cast<const Unk_CMISEntityRef&>(m_entity.operator->()->GetEntityID()));
-    }
-    DAT_143ad1b20 = DAT_143ad1b20 + 1;
-    int nMask = DAT_143ad1b20 % DAT_1439f7060;
-    float fScale = 1.5f;
-    float fParam = params.operator->()->GetBrokenForce();
-    if (fParam != 0.0f) {
-        fScale = fParam;
-    }
-    if (0.0f < m_a4) {
-        fScale = fScale * m_a4;
-    }
-    Unk_VibMat rot;
-    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->MakeIdentity();
-    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->MakeZRotation(FUN_14109ace0() * 1.5707964f * 0.7f);
-    NxVec3 vGravity;
-    pScene->getGravity(vGravity);
-    float fFall = -vGravity.z;
-    float fTime = efd::Sqrt((1.0f * 0.1f * 2.0f) / fFall);
-    Unk_VibMat basis;
-    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis))->MakeIdentity();
-    Vector3 ptDir = m_48.FUN_140965c40(m_70);
-    ptDir.FUN_140968990();
-    efd::Point3 ptSide = reinterpret_cast<const efd::Point3&>(ptDir).UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
-    efd::Point3 ptNeg = -ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
-    reinterpret_cast<efd::Matrix3&>(basis).SetCol(0, ptSide);
-    reinterpret_cast<efd::Matrix3&>(basis).SetCol(1, reinterpret_cast<const efd::Point3&>(ptNeg));
-    reinterpret_cast<efd::Matrix3&>(basis).SetCol(2, reinterpret_cast<const efd::Point3&>(g_143a08cf8));
-    Unk_VibMat comb = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(*(efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis) * *(efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot)));
-    float fSpeed = (1.0f * fScale) / (fTime * 2.0f);
-    efd::Point3 vel = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(comb) * reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))))) * fSpeed;
-    NxVec3 vSize(m_98.x, m_98.y, m_98.z);
-    vSize -= NxVec3(1.0f, 1.0f, 1.0f);
-    NxBoxShapeDesc boxDesc;
-    boxDesc.dimensions.set(vSize.x, vSize.y, vSize.z);
-    boxDesc.dimensions = boxDesc.dimensions * 0.01f * 0.5f;
-    boxDesc.groupsMask.bits0 = DAT_1439f7040[nMask];
-    NxBodyDesc bodyDesc;
-    bodyDesc.angularDamping = 0.0f;
-    bodyDesc.linearDamping = 0.0f;
-    bodyDesc.linearVelocity.set(vel.x, vel.y, 0.0f);
-    bodyDesc.massLocalPose.t.set(0.0f, 0.0f, boxDesc.dimensions.z);
-    if (!bodyDesc.linearVelocity.isFinite()) {
-        EE_LOG_AT(0x12, 1, ("CEntityVibrator::MakePhysxActor bodyDesc.linearVelocity.isFinite()"), MS2_THIS_FILE, 0x118);
-        if (DAT_143afc898 != 0) {
-            throw 13;
+        efd::SmartPointer<CubeMapInformationService> com(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
+        if ((CubeMapInformationService*)com != 0) {
+            reinterpret_cast<CubeMapInformationService*>(com.operator->())->RemovePhysXActor(reinterpret_cast<const Unk_CMISEntityRef&>(m_entity.operator->()->GetEntityID()));
         }
-        return;
-    }
-    NxActorDesc actorDesc;
-    actorDesc.shapes.pushBack(&boxDesc);
-    actorDesc.body = &bodyDesc;
-    actorDesc.density = 1.0f;
-    actorDesc.globalPose.t.set(m_48.x, m_48.y, m_48.z);
-    actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
-    actorDesc.globalPose.t.z = actorDesc.globalPose.t.z + boxDesc.dimensions.z + 0.05f;
-    actorDesc.globalPose.M.rotZ((m_54.z * 3.1415927f) / 180.0f);
-    ((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
-    m_68 = pScene->createActor(actorDesc);
-    if (m_68 != 0) {
-        m_68->setName("CEntityVibrator::MakePhysxActor");
-        unsigned nShapes = m_68->getNbShapes();
-        NxShape* const* ppShapes = m_68->getShapes();
-        for (unsigned i = 0; i < nShapes; i = i + 1) {
-            ppShapes[i]->setGroup(10);
+        DAT_143ad1b20 = DAT_143ad1b20 + 1;
+        int nMask = DAT_143ad1b20 % DAT_1439f7060;
+        float fMass = 1.0f;
+        float fDistance = 1.0f;
+        float fDensity = 1.0f;
+        float fScale = 1.5f;
+        float fHeight = 0.1f;
+        float fParam = params.operator->()->GetBrokenForce();
+        if (fParam != 0.0f) {
+            fScale = fParam;
         }
+        if (0.0f < m_a4) {
+            fScale = fScale * m_a4;
+        }
+        efd::Matrix3 rot;
+        rot.MakeIdentity();
+        rot.MakeZRotation(FUN_14109ace0() * 1.5707964f * 0.7f);
+        NxVec3 vGravity;
+        pScene->getGravity(vGravity);
+        float fFall = -vGravity.z;
+        float fTime = efd::Sqrt((fMass * fHeight * 2.0f) / fFall);
+        float fVz = fTime * fFall;
+        fVz = 0.0f;
+        efd::Matrix3 basis;
+        basis.MakeIdentity();
+        Vector3 ptDir = (m_48 - m_70);
+        ptDir.Unitize();
+        efd::Point3 ptSide = reinterpret_cast<const efd::Point3&>(ptDir).UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
+        efd::Point3 ptNeg = -ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
+        basis.SetCol(0, ptSide);
+        basis.SetCol(1, reinterpret_cast<const efd::Point3&>(ptNeg));
+        basis.SetCol(2, reinterpret_cast<const efd::Point3&>(g_143a08cf8));
+        efd::Matrix3 comb = basis * rot;
+        efd::Point3 vel = (comb * reinterpret_cast<const efd::Point3&>(DAT_143a08ce8)) * ((fDistance * fScale) / (fTime * 2.0f));
+        Vector3 vSize = m_98;
+        vSize -= Vector3(1.0f, 1.0f, 1.0f);
+        NxBoxShapeDesc boxDesc;
+        boxDesc.dimensions.set(vSize.x, vSize.y, vSize.z);
+        boxDesc.dimensions = boxDesc.dimensions * 0.01f * 0.5f;
+        boxDesc.groupsMask.bits0 = DAT_1439f7040[nMask];
+        NxBodyDesc bodyDesc;
+        bodyDesc.angularDamping = 0.0f;
+        bodyDesc.linearDamping = 0.0f;
+        bodyDesc.linearVelocity = NxVec3(vel.x, vel.y, fVz);
+        bodyDesc.massLocalPose.t = NxVec3(0.0f, 0.0f, boxDesc.dimensions.z);
+        if (!bodyDesc.linearVelocity.isFinite()) {
+            EE_LOG_AT(0x12, efd::ILogger::kERR1, ("CEntityVibrator::MakePhysxActor bodyDesc.linearVelocity.isFinite()"), MS2_THIS_FILE, 0x118);
+            if (DAT_143afc898 != 0) {
+                throw 13;
+            }
+            return;
+        }
+        NxActorDesc actorDesc;
+        actorDesc.shapes.pushBack(&boxDesc);
+        actorDesc.body = &bodyDesc;
+        actorDesc.density = fDensity;
+        Vector3 ptPos = m_48;
+        actorDesc.globalPose.t = NxVec3(ptPos.x, ptPos.y, ptPos.z);
+        actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
+        actorDesc.globalPose.t.z = actorDesc.globalPose.t.z + boxDesc.dimensions.z + 0.05f;
+        actorDesc.globalPose.M.rotZ((m_54.z * 3.1415927f) / 180.0f);
+        ((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+        m_68 = pScene->createActor(actorDesc);
+        if (m_68 != 0) {
+            m_68->setName("CEntityVibrator::MakePhysxActor");
+            unsigned nShapes = m_68->getNbShapes();
+            NxShape* const* ppShapes = m_68->getShapes();
+            for (unsigned i = 0; i < nShapes; i = i + 1) {
+                NxShape* pShape = ppShapes[i];
+                pShape->setGroup(10);
+            }
+        }
+        ((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
     }
-    ((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 MS2_REPLACE_METHOD(0x1411CC570, CEntityVibrator, MakePhysxActor, 2745, 0x0AC715A7);
 

@@ -1,0 +1,101 @@
+0a
+// gb-anim reconstruction of the studio NiFOVInterpolator (local overlay, not committed).
+#include "NiAnimationPCH.h"
+
+#include "NiFOVInterpolator.h"
+
+NiImplementRTTI(NiFOVInterpolator, NiFloatInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+NiFOVInterpolator::NiFOVInterpolator(NiFloatData* pkFloatData) :
+    NiFloatInterpolator(pkFloatData)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+NiFOVInterpolator::NiFOVInterpolator()
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget,
+    float& fValue)
+{
+    return NiFloatInterpolator::Update(fTime, pkInterpTarget, fValue);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::IsTransformValueSupported() const
+{
+    // 0x141c2f2a0 (vtable slot 29): mov al, 1; ret
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Cloning
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateClone(NiFOVInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::CopyMembers(NiFOVInterpolator* pkDest,
+    NiCloningProcess& kCloning)
+{
+    NiFloatInterpolator::CopyMembers(pkDest, kCloning);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Streaming
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateObject(NiFOVInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::LoadBinary(NiStream& kStream)
+{
+    NiFloatInterpolator::LoadBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::LinkObject(NiStream& kStream)
+{
+    NiFloatInterpolator::LinkObject(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::RegisterStreamables(NiStream& kStream)
+{
+    if (!NiFloatInterpolator::RegisterStreamables(kStream))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::SaveBinary(NiStream& kStream)
+{
+    NiFloatInterpolator::SaveBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::IsEqual(NiObject* pkObject)
+{
+    if (!NiFloatInterpolator::IsEqual(pkObject))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Viewer strings
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::GetViewerStrings(NiViewerStringsArray* pkStrings)
+{
+    NiFloatInterpolator::GetViewerStrings(pkStrings);
+
+    pkStrings->Add(NiGetViewerString(NiFOVInterpolator::ms_RTTI.GetName()));
+}
+
+.

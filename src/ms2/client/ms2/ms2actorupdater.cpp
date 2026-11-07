@@ -70,7 +70,7 @@ float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
-    m_fDistB = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
+    m_fDistB = (kPos - kEntityPos).Length();
     return m_fDistB;
 }
 
@@ -81,7 +81,7 @@ float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
     if ((egf::Entity*)spEntity != 0)
         reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
-    m_fDistA = kPos.FUN_140965c40(kEntityPos).FUN_140967ac0();
+    m_fDistA = (kPos - kEntityPos).Length();
     return m_fDistA;
 }
 

@@ -48,7 +48,7 @@ struct Unk_MiActionState;
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
        // npc name (member: this=rcx, hidden return=rdx)
-bool FUN_14147ad10(struct Vector3 const&, struct Vector3 const&, struct Vector3 const&, float);   // C3: was FUN_14147ad10
+bool FUN_14147ad10(Vector3 const&, Vector3 const&, Vector3 const&, float);   // C3: was FUN_14147ad10
 bool FUN_14028d470(float a, float b);
 #define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
 
@@ -341,7 +341,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         float fSize = *(float*)(reinterpret_cast<char*>(spRec.operator->()) + 0x2dc);
         Unk_NiPoint3 vCenter(reinterpret_cast<const Vector3&>((const NiPoint3&)ref->vfunc_18()));
         vCenter.z += fSize * 0.5;
-        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), (float)(fSize * 0.5)))
+        if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), (float)(fSize * 0.5)))
             return ref;
     }
     return 0;
@@ -413,7 +413,7 @@ MS2Ptr<CPortal> CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const 
         Unk_NiPoint3 vCenter(hit->FUN_14169d2f0());
         vCenter.z += hit->m_pos44.z * 0.5;
         float fRadius = hit->m_pos44.z * 0.5;
-        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
+        if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;
@@ -490,7 +490,7 @@ MS2Ptr<CInteractObject> CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin
         Unk_NiPoint3 vCenter(hit->GetPos());
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
+        if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;
@@ -536,7 +536,7 @@ void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_
         Unk_NiPoint3 vCenter(reinterpret_cast<const Vector3&>(vPos));
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
+        if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
             return ref.data();
     }
     return 0;
@@ -690,7 +690,7 @@ MS2Ptr<Cube> CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, con
         Unk_NiPoint3 vCenter(reinterpret_cast<const Vector3&>(vPos));
         vCenter.z += fSize * 0.5;
         float fRadius = fSize * 0.5;
-        if (FUN_14147ad10(*(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(struct Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
+        if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
             return hit;
     }
     return 0;

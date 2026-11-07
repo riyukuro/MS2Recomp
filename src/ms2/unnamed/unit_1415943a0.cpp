@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x1415943A0: initializes the request and empty reply buffer.
-CNMGetGameFriendTitleFunc::CNMGetGameFriendTitleFunc():CNMFunc(0x8010,1,0,0),m_nGameCode(0),m_szTitle{}{}
-// MS2-FUNCTIONAL 0x141594410: stores the requested game code and clears the reply buffer.
-CNMGetGameFriendTitleFunc::CNMGetGameFriendTitleFunc(int code):CNMFunc(0x8010,1,0,0),m_nGameCode(code),m_szTitle{}{}
+CNMGetGameFriendTitleFunc::CNMGetGameFriendTitleFunc():CNMFunc(0x8010,1,0,0){m_nGameCode=0;m_szTitle[0]=0;}
+CNMGetGameFriendTitleFunc::CNMGetGameFriendTitleFunc(int code):CNMFunc(0x8010,1,0,0){m_nGameCode=code;m_szTitle[0]=0;}
 // MS2-FUNCTIONAL 0x141594480: frames the friend-title request.
 unsigned int CNMGetGameFriendTitleFunc::EncodeFramed(CNMStream* pStream)
 {

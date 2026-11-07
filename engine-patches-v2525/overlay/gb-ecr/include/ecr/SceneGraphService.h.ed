@@ -1,0 +1,10 @@
+1124@7s "ine" ""
+1124@5s "n" "rtua"
+1124@4s "" "v"
+1123@7s "ine" ""
+1123@5s "n" "rtua"
+1123@4s "" "v"
+1035c
+        efd::UInt32 m_uiStudio0x40; efd::UInt32 m_uiStudio0x44; // inferred: ctor 0x141ff89c0
+.
+376@3s "" " virtual"

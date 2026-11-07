@@ -170,12 +170,12 @@ Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize)
     kTo.z = 0.0f;
     if (bUnitize)
     {
-        Vector3 kDir = kTo.FUN_140965c40(kFrom);
-        kDir.FUN_140968990();
+        Vector3 kDir = (kTo - kFrom);
+        kDir.Unitize();
         return kDir;
     }
     else
-        return kTo.FUN_140965c40(kFrom);
+        return (kTo - kFrom);
 }
 
 // @0x141192820
@@ -462,7 +462,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             }
         }
         NiPoint3 kSelf = vfunc_18();
-        m_posOrigin = reinterpret_cast<Vector3&>(kSelf).FUN_140965c40(Vector3(0.0f, 0.0f, 70.0f));
+        m_posOrigin = (reinterpret_cast<Vector3&>(kSelf) - Vector3(0.0f, 0.0f, 70.0f));
         kSelf.z += fDropHeight;
         if (FUN_14118ffb0())
         {
@@ -499,7 +499,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             Vector3 kForward, kSide;
             pSource->vfunc_67(&kForward, &kSide);
             kForward.z = 0.0f;
-            kTargetPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kBase).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kForward) * 50.0f)))));
+            kTargetPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((reinterpret_cast<Vector3&>(kBase) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kForward) * 50.0f)))));
         }
         else if (pNpcObj && FUN_14118ff60())
         {
@@ -523,7 +523,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                 if (reinterpret_cast<const efd::Point3&>(kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
                 {
                     kDir.y = ((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f + 1.0f;
-                    reinterpret_cast<Vector3&>(kDir).FUN_140968990();
+                    reinterpret_cast<Vector3&>(kDir).Unitize();
                 }
                 kTargetPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kBase))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kDir))) * fDistance))));
             }
@@ -584,7 +584,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     Vector3 kSide;
                     kSide.x = aSideX[i];
                     kSide.y = aSideY[i];
-                    kSide.FUN_140968990();
+                    kSide.Unitize();
                     NxGroupsMask kMaskSide;
                     kMaskSide.bits0 = 0xffffffff;
                     kMaskSide.bits1 = kMaskSide.bits2 = kMaskSide.bits3 = 0;
@@ -800,12 +800,12 @@ int CDropItem::FUN_141190120(Vector3 kPos, int nA, int nB)
         return 0;
     if (((class Unk_DropGuideMgr*)FUN_1409331e0())->IsRestricted(7))
         return 0;
-    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(kPos));
+    NiPoint3 kPlayer(reinterpret_cast<const efd::Point3&>(kPos));
 #ifdef __clang__
     NiPoint3 kSelf = vfunc_18();
-    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf)).FUN_140967ac0();
+    float fDistance = (kPlayer - reinterpret_cast<Vector3&>(kSelf)).Length();
 #else
-    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(vfunc_18())).FUN_140967ac0();
+    float fDistance = (kPlayer - reinterpret_cast<Vector3&>(vfunc_18())).Length();
 #endif
     kPlayer.z += m_f218;
     if (fDistance > (m_f27c > m_f21c ? m_f27c : m_f21c))
@@ -857,12 +857,12 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
         return 0;
 #ifdef __clang__
     NiPoint3 kActor = pActor->vfunc_18();
-    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(kActor));
+    NiPoint3 kPlayer(reinterpret_cast<const efd::Point3&>(kActor));
     NiPoint3 kSelf = vfunc_18();
-    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf)).FUN_140967ac0();
+    float fDistance = (kPlayer - reinterpret_cast<Vector3&>(kSelf)).Length();
 #else
-    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(pActor->vfunc_18()));
-    float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(vfunc_18())).FUN_140967ac0();
+    NiPoint3 kPlayer(reinterpret_cast<const efd::Point3&>(pActor->vfunc_18()));
+    float fDistance = (kPlayer - reinterpret_cast<Vector3&>(vfunc_18())).Length();
 #endif
     kPlayer.z += m_f218;
     if (fDistance > fRange)
@@ -1176,7 +1176,7 @@ void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
     else
     {
         m_fElapsed += (float)fTime * 10.0f;
-        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_fElapsed, m_arc.m_direction);
+        Vector3 kOffset = ((m_arc.m_speed * m_arc.m_angle.x * m_fElapsed) * m_arc.m_direction);
         kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.y * m_fElapsed;
         efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(m_arc.m_origin) + reinterpret_cast<const efd::Point3&>(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(reinterpret_cast<Vector3&>(kPos)));
@@ -1219,7 +1219,7 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
 // @0x141191d10
 void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
 {
-    Vector3 kGoal(pTarget->vfunc_18());
+    NiPoint3 kGoal(static_cast<const efd::Point3&>(pTarget->vfunc_18()));
     kGoal.z += m_f218;
     bool bArrived = m_fElapsed > m_arc.m_flightScale;
     if (bArrived)
@@ -1231,18 +1231,18 @@ void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
         NiPoint3 kNow = pTarget->vfunc_18();
         Vector3 kDir = FUN_141192780(Vector3(m_arc.m_origin), reinterpret_cast<Vector3&>(kNow), true);
 #else
-        Vector3 kDir(reinterpret_cast<const efd::Point3&>(FUN_141192780(m_arc.m_origin, reinterpret_cast<Vector3&>(pTarget->vfunc_18()), true)));
+        NiPoint3 kDir(reinterpret_cast<const efd::Point3&>(FUN_141192780(m_arc.m_origin, reinterpret_cast<Vector3&>(pTarget->vfunc_18()), true)));
 #endif
-        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_fElapsed, m_arc.m_direction);
+        Vector3 kOffset = ((m_arc.m_speed * m_arc.m_angle.x * m_fElapsed) * m_arc.m_direction);
         kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.y * m_fElapsed;
 #ifdef __clang__
         NiPoint3 kPull = pTarget->vfunc_18();
-        kOffset.FUN_140a4e560(reinterpret_cast<Vector3&>(kPull).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround)));
+        (kOffset += (reinterpret_cast<Vector3&>(kPull) - reinterpret_cast<Vector3&>(m_posGround)));
         efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(m_arc.m_origin) + reinterpret_cast<const efd::Point3&>(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(reinterpret_cast<Vector3&>(kPos)));
 #else
-        Vector3 kDrift(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(pTarget->vfunc_18()).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround))));
-        kOffset.FUN_140a4e560(kDrift);
+        NiPoint3 kDrift(reinterpret_cast<const efd::Point3&>((reinterpret_cast<Vector3&>(pTarget->vfunc_18()) - reinterpret_cast<Vector3&>(m_posGround))));
+        (kOffset += kDrift);
         vfunc_19(reinterpret_cast<const efd::Point3&>(m_arc.m_origin) + reinterpret_cast<const efd::Point3&>(kOffset));
 #endif
         if (m_spItem.get())
@@ -1270,14 +1270,14 @@ void CDropItem::UpdatePickUpHoverState(double fTime, GameObject* pTarget)
 // @0x141192200
 void CDropItem::FUN_141192200(double fTime, GameObject* pTarget)
 {
-    Vector3 kDelta = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
-    if (kDelta.FUN_140967ac0() < 100.0f || kDelta.FUN_140967ac0() > 300.0f)
+    Vector3 kDelta = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())) - reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
+    if (kDelta.Length() < 100.0f || kDelta.Length() > 300.0f)
     {
         WorldService::GetInstance()->FUN_141bbb7f0(this, 0);
     }
     else
     {
-        Vector3 kPos(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
+        NiPoint3 kPos(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
         kPos.z = vfunc_18().z;
         kPos.z = kPos.z - (float)fTime * 1000.0f;
         Vector3 kTmp = kPos;

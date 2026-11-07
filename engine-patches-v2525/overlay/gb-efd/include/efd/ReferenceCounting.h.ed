@@ -1,0 +1,4 @@
+eol lf
+79c
+    EE_DECLARE_CONCRETE_REFCOUNT_EX(efd::AtomicRefCount)  // studio: atomic (gb-efd)
+.

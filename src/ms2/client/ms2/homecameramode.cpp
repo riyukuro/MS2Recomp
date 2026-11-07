@@ -239,9 +239,9 @@ void CHomeCameraMode::vfunc_8(double fTime)
                 m_94 = m_94 * 0.9f;
             ptPos = m_c4.m_pos;
             Vector3 ptTarget = reinterpret_cast<Vector3&>(m_88);
-            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
-            ptDir.FUN_140968990();
-            ptPos.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_94)));
+            Vector3 ptDir = (ptTarget - ptPos);
+            ptDir.Unitize();
+            (ptPos += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_94)));
             if (m_50 < m_58 || m_54 + m_9c < m_50)
             {
                 if ((0.0f < m_94 && m_54 + m_9c < m_50) || (0.0f > m_94 && m_50 < m_58))
@@ -288,8 +288,8 @@ void CHomeCameraMode::vfunc_8(double fTime)
                 Vector3 ptCenter = reinterpret_cast<Vector3&>(m_88);
                 ptPos = m_c4.m_pos;
                 ptPos.z = ptCenter.z;
-                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
-                m_50 = ptDist.FUN_140967ac0();
+                Vector3 ptDist = (ptCenter - ptPos);
+                m_50 = ptDist.Length();
                 m_50 = efd::Clamp(m_50, m_58, m_54 + m_9c);
                 ptPos.x = m_50 * m_100.x + ptCenter.x;
                 ptPos.y = m_50 * m_100.y + ptCenter.y;
@@ -405,7 +405,7 @@ void CHomeCameraMode::FUN_140b66570()
     m_c4.m_pos.x = m_50 * m_100.x + m_88.x;
     m_c4.m_pos.y = m_50 * m_100.y + m_88.y;
     m_c4.m_pos.z = m_50 * m_100.z + m_88.z;
-    m_7c = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_c4.m_pos.FUN_140965c40(reinterpret_cast<Vector3&>(m_88))));
+    m_7c = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_c4.m_pos - reinterpret_cast<Vector3&>(m_88))));
 }
 MS2_REPLACE_METHOD(0x140B66570, CHomeCameraMode, FUN_140b66570, 232, 0x61C01930);
 
@@ -437,8 +437,8 @@ void CHomeCameraMode::FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarg
     else if (reinterpret_cast<const efd::Point3&>(m_10c) == efd::Point3::UNIT_Z)
         ptPos.z = ptTarget.z;
     float fPrevDist = m_50;
-    Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
-    m_50 = ptDir.FUN_140967ac0();
+    Vector3 ptDir = (ptTarget - ptPos);
+    m_50 = ptDir.Length();
     if (bClamp)
         m_50 = efd::Clamp(m_50, m_58, m_54 + m_9c);
     if (0.0f > m_94 && m_50 > m_54 && fPrevDist < m_54)
@@ -487,8 +487,8 @@ void CHomeCameraMode::vfunc_37(double fTime)
     float fDist;
     if (m_c0)
     {
-        NiPoint3 ptDiff = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_c4.m_pos.FUN_140965c40(m_dc.m_pos)));
-        fDist = reinterpret_cast<Vector3&>(ptDiff).FUN_140967ac0();
+        NiPoint3 ptDiff = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_c4.m_pos - m_dc.m_pos)));
+        fDist = reinterpret_cast<Vector3&>(ptDiff).Length();
         float fBlend = 0.0f;
         if (m_b0)
         {
@@ -539,7 +539,7 @@ void CHomeCameraMode::vfunc_37(double fTime)
             }
             else
             {
-                m_dc.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_dc.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, m_c4.m_pos.FUN_140965c40(m_dc.m_pos))))));
+                m_dc.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_dc.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fT * (m_c4.m_pos - m_dc.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_dc.m_rot) != reinterpret_cast<const efd::Point3&>(m_c4.m_rot))
                     m_dc.m_rot = CCameraMode::FUN_140afdec0(fT, m_dc.m_rot, m_c4.m_rot);
             }
@@ -591,18 +591,18 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             float fTan = __imp_tanf(fFov * 3.14159265f / 180.0f);
             float fTanAspect = fTan * fAspect;
             Vector3 aptCorner[9];
-            aptCorner[0] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear))
-                               .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fNear, kRight))) * fTanAspect)))))
+            aptCorner[0] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear)) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fNear * kRight))) * fTanAspect)))
+))
                                + reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear));
             aptCorner[1] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear)
-                               + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fNear, kRight))) * fTanAspect)
+                               + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fNear * kRight))) * fTanAspect)
                                + reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear));
-            aptCorner[2] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear))
-                               .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fNear, kRight))) * fTanAspect)))
-                               .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear)));
-            aptCorner[3] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear)
-                               + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fNear, kRight))) * fTanAspect))
-                               .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear)));
+            aptCorner[2] = ((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear)) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fNear * kRight))) * fTanAspect)))
+ - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear)))
+;
+            aptCorner[3] = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(kDir) * fNear)
+                               + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fNear * kRight))) * fTanAspect)) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kUp) * fTan * fNear)))
+;
             aptCorner[4] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(aptCorner[0]) + reinterpret_cast<const efd::Point3&>(aptCorner[3])) * 0.5f));
             aptCorner[5] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(aptCorner[0]) + reinterpret_cast<const efd::Point3&>(aptCorner[1])) * 0.5f));
             aptCorner[6] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(aptCorner[0]) + reinterpret_cast<const efd::Point3&>(aptCorner[2])) * 0.5f));
@@ -610,8 +610,8 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             aptCorner[8] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(aptCorner[2]) + reinterpret_cast<const efd::Point3&>(aptCorner[3])) * 0.5f));
             for (int i = 0; i < 9; ++i)
             {
-                Vector3 ptDir = reinterpret_cast<Vector3&>(m_88).FUN_140965c40(aptCorner[i]);
-                float fLen = ptDir.FUN_140968990();
+                Vector3 ptDir = (reinterpret_cast<Vector3&>(m_88) - aptCorner[i]);
+                float fLen = ptDir.Unitize();
                 efd::Point3 ptBack = -reinterpret_cast<const efd::Point3&>(ptDir);
                 Vector3 ptHit = g_143b01a60;
                 if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)

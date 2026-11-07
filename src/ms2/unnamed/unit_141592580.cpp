@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156acb0(void*,unsigned __int64); extern void FUN_14156ae30(void*,const void*); extern void FUN_1415fbe70(void*,unsigned int,const void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141592580: initializes an empty guild-mark download request.
-CNMDownloadGuildMarkFileFunc::CNMDownloadGuildMarkFileFunc():CNMFunc(0x801d,1,0,0),m_nGameCode(0),m_n34(0),m_nGuildKey(0),m_szPath{}{}
-// MS2-FUNCTIONAL 0x141592600: stores game, guild, and bounded path values.
-CNMDownloadGuildMarkFileFunc::CNMDownloadGuildMarkFileFunc(int game,unsigned __int64 guild,const char*path):CNMFunc(0x801d,1,0,0),m_nGameCode(game),m_n34(0),m_nGuildKey(guild),m_szPath{}{if(path)FUN_1415fbe70(m_szPath,0x100,path);}
+CNMDownloadGuildMarkFileFunc::CNMDownloadGuildMarkFileFunc():CNMFunc(0x801d,1,0,0){m_nGameCode=0;m_nGuildKey=0;m_szPath[0]=0;}
+CNMDownloadGuildMarkFileFunc::CNMDownloadGuildMarkFileFunc(int game,unsigned __int64 guild,const char*path):CNMFunc(0x801d,1,0,0){m_nGameCode=game;m_nGuildKey=guild;if(path)FUN_1415fbe70(m_szPath,0x100,path);else m_szPath[0]=0;}
 // MS2-FUNCTIONAL 0x1415926b0: frames the guild-mark request.
 unsigned int CNMDownloadGuildMarkFileFunc::EncodeFramed(CNMStream* pStream)
 {

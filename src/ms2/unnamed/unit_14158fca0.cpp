@@ -11,8 +11,7 @@
 extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); extern void FUN_14156be10(void*,void*,void*); extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_1415f9990(void*); extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x14158fca0: initializes the NGM-installed result to false.
-CNMIsNGMInstalledFunc::CNMIsNGMInstalledFunc():CNMFunc(0x8017,1,0,0),m_bInstalled(0),m_n34(0){}
+CNMIsNGMInstalledFunc::CNMIsNGMInstalledFunc():CNMFunc(0x8017,1,0,0){m_bInstalled=0;}
 // MS2-FUNCTIONAL 0x14158fd00: frames the installed-state query.
 unsigned int CNMIsNGMInstalledFunc::EncodeFramed(CNMStream* pStream)
 {

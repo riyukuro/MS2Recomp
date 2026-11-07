@@ -191,8 +191,8 @@ namespace Scaleform {
 }
 extern "C" void FUN_142746d70(void*);
 // 0x1427458e0 is the member Sfr22ChannelPlayerView::QueryChannelTime (sfr_as3_22.cpp), which this void* slot can't
-// name; the free Scaleform::QueryChannelTime this slot used to name has no definition (full exe trap stub)
-void FUN_1427458e0();
+// name directly: the pragma binds the slot name to that member
+void FUN_1427458e0(); __pragma(comment(linker, "/alternatename:?FUN_1427458e0@@YAXXZ=?QueryChannelTime@Sfr22ChannelPlayerView@Scaleform@@QEAAMXZ"))
 
 extern unsigned char DAT_14001d720[];
 extern unsigned char DAT_1400284b0[];
@@ -3748,7 +3748,7 @@ alignas(16) unsigned char DAT_143ffd550[0x8];                   // 0x143ffd550
 #pragma comment(linker, "/alternatename:?DAT_142444bc0@@3PAEA=?IsDelegate@ImageBase@Render@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142447310@@3PAEA=?Update@Image@Render@Scaleform@@UEAA_NPEAVImageUpdate@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142447340@@3PAEA=?Update@Image@Render@Scaleform@@UEAA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257aa60@@3PAEA=?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@I@23@PEAVMemoryHeap@3@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14257aa60@@3PAEA=?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@K@23@PEAVMemoryHeap@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14257b4a0@@3PAEA=?GetAsImage@TextureImage@Render@Scaleform@@UEAAPEAVImage@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14257b4e0@@3PAEA=?GetBaseImageId@TextureImage@Render@Scaleform@@UEBAKXZ")
 #pragma comment(linker, "/alternatename:?DAT_14257b550@@3PAEA=?GetBytes@TextureImage@Render@Scaleform@@UEBA_KPEAH@Z")

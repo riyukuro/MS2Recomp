@@ -34,8 +34,8 @@ public:
     CBaseCollision();                                               // 0x1409fbc80
     virtual ~CBaseCollision();                                      // 0x1409fbed0
     virtual void vfunc_1();                                         // 0x1409fbf20: draws the wire mesh
-    virtual void vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
-    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x1409fbfa0
+    virtual void vfunc_2(NiPoint3 ptPos, const NiMatrix3& kRot, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x1409fbfa0
     virtual void vfunc_4();                                         // 0x1409fc040
     virtual void vfunc_5() = 0;                                     // builds the wire meshes
     virtual float vfunc_6() = 0;
@@ -43,7 +43,7 @@ public:
                                                                     // hit test of spTarget's box against this shape
                                                                     // placed at spSelf
 
-    void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const efd::Point3& kRot);   // place by a z rotation, then Detect
+    void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot);   // place by a z rotation, then Detect
     void FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot);     // place by a rotation, then Detect
     void Detect(MS2Ptr<CDetectContext> spCtx);                      // 0x1409fc6c0 collect and sort the hit objects
     void Invalidate();                                              // 0x1409fe440 rebuild the wire meshes on next draw

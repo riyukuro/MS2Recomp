@@ -1,8 +1,8 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The machine-id helpers CMachineIDManager::BuildID calls:
 // the hardware/support id (GetAdaptersInfo, the volume serial, the CxSupportId registry value) and the PC-bang
-// (internet cafe) program check. An /O2 obj of its own between the Gamebryo libraries' Lua and expat objs, so it is
-// built with the gamebryo profile. Names invented.
+// (internet cafe) program check. An /O2 obj of its own between the Gamebryo libraries' Lua and expat objs (gamebryo profile).
 // MS2-UNIT: unit_1423ae840
+// MS2-RANGE: 0x1423ae7f0-0x1423ae83b .text$mn
 // MS2-RANGE: 0x1423ae840-0x1423ae958 .text$mn
 // MS2-RANGE: 0x1423ae960-0x1423b1076 .text$mn
 // MS2-RANGE: 0x1423b1080-0x1423b1479 .text$mn
@@ -34,11 +34,16 @@ extern "C" ULONG WINAPI GetAdaptersInfo(PIP_ADAPTER_INFO AdapterInfo, PULONG Siz
 #include <mbstring.h>
 #pragma comment(lib, "iphlpapi.lib")
 
+// @0x1423ae7f0
+CSystemInfo::CSystemInfo() {}
+// @0x1423ae800
+CSystemInfo::~CSystemInfo() {}
+
 // The hardware id inside the working object.
 // @0x1423b1080
-void* FUN_1423b1080(Unk_MachineIDLocal* pLocal)
+void* FUN_1423b1080(CSystemInfo* pLocal)
 {
-    return pLocal->m_data + 0x18;
+    return pLocal->m_data + 0x10;
 }
 
 // The machine id of the (otherwise unrecovered) CxSupport id object: the largest Ethernet MAC address, the serial of
@@ -47,7 +52,7 @@ void* FUN_1423b1080(Unk_MachineIDLocal* pLocal)
 // the hardware id when the key cannot be opened.
 // MS2-FUNCTIONAL: /O2 body, the exe's register and frame layout are not reproduced yet.
 // @0x1423b10a0
-void FUN_1423b10a0(Unk_MachineIDLocal* pLocal)
+void FUN_1423b10a0(CSystemInfo* pLocal)
 {
     unsigned char id[0x10] = {};
     ULONG adapterLen = 0;
@@ -98,26 +103,26 @@ void FUN_1423b10a0(Unk_MachineIDLocal* pLocal)
         sum = static_cast<unsigned short>(sum + (i + 3) * w);
     }
     memcpy(id + 0xe, &sum, 2);
-    memcpy(pLocal->m_data + 0x18, id, 0x10);
+    memcpy(pLocal->m_data + 0x10, id, 0x10);
 
     HKEY hKey = NULL;
     RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion", 0, KEY_QUERY_VALUE | KEY_SET_VALUE, &hKey);
     if (hKey == NULL)
     {
-        memcpy(pLocal->m_data + 8, pLocal->m_data + 0x18, 0x10);
+        memcpy(pLocal->m_data + 0, pLocal->m_data + 0x10, 0x10);
         return;
     }
     unsigned char value[0x200];
     DWORD type, valueLen = 0x100;
     if (RegQueryValueExA(hKey, "CxSupportId", NULL, &type, value, &valueLen) == ERROR_SUCCESS && valueLen == 0x10)
     {
-        memcpy(pLocal->m_data + 8, value, 0x10);
+        memcpy(pLocal->m_data + 0, value, 0x10);
     }
     else
     {
         CoCreateGuid(reinterpret_cast<GUID*>(id));
         RegSetValueExA(hKey, "CxSupportId", 0, REG_BINARY, id, 0x10);
-        memcpy(pLocal->m_data + 8, id, 0x10);
+        memcpy(pLocal->m_data + 0, id, 0x10);
     }
     RegCloseKey(hKey);
 }
@@ -246,7 +251,7 @@ BOOL CALLBACK FUN_1423ae840(HWND hWnd, LPARAM lParam)
 // The PC-bang code of this computer: the code of the first known cafe program with a matching window, 0 if none.
 // MS2-FUNCTIONAL: /O2 body, the exe inlines the window walk differently; the frame is not reproduced yet.
 // @0x1423ae960
-unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal)
+unsigned int FUN_1423ae960(CSystemInfo* pLocal)
 {
     Unk_PcBangTable table;
     table.m_count = 0;

@@ -812,6 +812,10 @@ const char* Unk_SfString::ToCStr() const
 // The string of a value (Scaleform::GFx::Value::ToString() const, sfr_gfx_01i): a const member, so this is in rcx and the
 // String return slot in rdx.
 struct Unk_SfValueView { Unk_SfString FUN_142576d50() const; };
+// The view's name is the SDK member (always in the full link), so this unit binds it.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:?FUN_142576d50@Unk_SfValueView@@QEBA?AVUnk_SfString@@XZ=?ToString@Value@GFx@Scaleform@@QEBA?AVString@3@XZ")
+#endif
 int FUN_141b71a10(const char* sz);                     // string -> number
 CStringW FUN_141b71990(unsigned nItemId);                   // the number as text
 CStringW FUN_141b71910(__int64 n);

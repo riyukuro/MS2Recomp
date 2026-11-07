@@ -662,7 +662,7 @@ void DecoItem::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWIn
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
             {
-                if (((const Vector3&)((class NiAVObject*)(pInstance))->GetTranslate()).FUN_140965c40((const Vector3&)pt).FUN_140967ac0() < fRadius)
+                if ((((const Vector3&)((class NiAVObject*)(pInstance))->GetTranslate()) - (const Vector3&)pt).Length() < fRadius)
                     aOut.Add(pInstance);
             }
         }

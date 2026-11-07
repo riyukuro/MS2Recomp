@@ -95,7 +95,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
 // The exe passes a NiPoint3 built implicitly from the efd::Point3 member (0x14027dcf0): XmlSetAttr's NiPoint3 view.
-void FUN_140874ad0(class TiXmlElement* pElem, const char* pszName, const NiPoint3& pt);   // XmlSetAttr, NiPoint3 view
+void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0 (NiPoint3 view); callers cast it to a const NiPoint3& signature so the Point3 converts implicitly (lea of the temp, as in the exe)
 float FUN_14028aed0(float f);                           // round
 
 // @0x140266860
@@ -150,8 +150,8 @@ void ItemCustom::FUN_140266b10(void* pElem) const
 {
     if (name.GetLength() > 0)
         XmlSetAttr((class TiXmlElement*)(pElem), "icon", name);
-    FUN_140874ad0((class TiXmlElement*)(pElem), "position", unknown18);
-    FUN_140874ad0((class TiXmlElement*)(pElem), "rotation", unknown24);
+    reinterpret_cast<void (*)(class TiXmlElement*, const char*, const NiPoint3&)>(static_cast<void (*)(class TiXmlElement*, const char*, const efd::Point3&)>(&XmlSetAttr))((class TiXmlElement*)(pElem), "position", unknown18);
+    reinterpret_cast<void (*)(class TiXmlElement*, const char*, const NiPoint3&)>(static_cast<void (*)(class TiXmlElement*, const char*, const efd::Point3&)>(&XmlSetAttr))((class TiXmlElement*)(pElem), "rotation", unknown24);
 }
 
 // @0x140266bc0

@@ -1,0 +1,14 @@
+eol lf
+558c
+        if (!pkShaderFragDesc) continue;
+.
+553c
+        if (!pkShader) continue;
+.
+460,461c
+    NiGetStudioShaderContext().m_pkCurrentObject = pkGeometry; NiShader* pkShader = GenerateShader(spMatDesc);
+    NiGetStudioShaderContext().m_pkCurrentObject = NULL; return pkShader;
+.
+12c
+#include "NiStudioShaderContext.h" // gb-nimain-a (replaces a comment line)
+.

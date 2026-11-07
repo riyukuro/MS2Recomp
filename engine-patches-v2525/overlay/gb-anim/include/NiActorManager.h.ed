@@ -1,0 +1,4 @@
+eol lf
+408a
+    NiTPointerMap<SequenceID, NiSequenceDataPtr> m_kStudioSeqDataMap0x100;  // gb-anim (inferred): ctor 0x141c3d450, same vtables as m_kSeqDataMap
+.

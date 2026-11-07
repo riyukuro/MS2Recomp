@@ -300,7 +300,7 @@ void UICameraEditDialog::vfunc_15()
         {
             NiPoint3 kPos = pTarget->vfunc_18();
             kPos.z = kPos.z + 100.0f;
-            float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
+            float fLength = (reinterpret_cast<const Vector3&>(kPos) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).Length();
             s_fArrive = (std::min)(fLength, s_fMaxArrive);
             m_vMoveStart = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
             m_1dc = 1;
@@ -480,7 +480,7 @@ void UICameraEditDialog::FUN_1418de570()
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
     kPos.z = kPos.z + 100.0f;
-    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
+    float fLength = (reinterpret_cast<const Vector3&>(kPos) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).Length();
     if (fLength > s_fMinArrive) {
         float fStep = (float)__imp_ceil((double)s_fStepSpeed * TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
         FUN_1418de7b0(reinterpret_cast<const Vector3&>(kPos), fStep);
@@ -498,7 +498,7 @@ void UICameraEditDialog::FUN_1418de690()
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
     kPos.z = kPos.z + 100.0f;
-    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
+    float fLength = (reinterpret_cast<const Vector3&>(kPos) - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).Length();
     if (fLength < s_fArrive) {
         float fStep = (float)__imp_ceil((double)s_fStepSpeed * TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
         FUN_1418de7b0(reinterpret_cast<const Vector3&>(kPos), -fStep);
@@ -509,10 +509,10 @@ void UICameraEditDialog::FUN_1418de690()
 // @0x1418de7b0
 void UICameraEditDialog::FUN_1418de7b0(const Vector3& vFrom, float fStep)
 {
-    Vector3 vDirection = vFrom.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
-    vDirection.FUN_140968990();
+    Vector3 vDirection = (vFrom - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
+    vDirection.Unitize();
     efd::Point3 vNext = CameraMgr::GetInstance()->FUN_140a17e10() + reinterpret_cast<const efd::Point3&>(vDirection) * fStep;
-    float fLength = vFrom.FUN_140965c40(reinterpret_cast<const Vector3&>(vNext)).FUN_140967ac0();
+    float fLength = (vFrom - reinterpret_cast<const Vector3&>(vNext)).Length();
     if (fLength > s_fArrive)
         CameraMgrMoveTo(CameraMgr::GetInstance(), m_vMoveStart);
     else

@@ -1,0 +1,6 @@
+63,66c
+    return (int)fValue;
+
+
+
+.

@@ -866,9 +866,9 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         NiTransform kOwnerXf = spOwnerNode->GetWorldTransform();
         NiTransform kParentXf = spParentNode->GetWorldTransform();
         NiTransform kPeerXf = spPeerNode->GetWorldTransform();
-        reinterpret_cast<Vector3*>(&kParentXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
-        reinterpret_cast<Vector3*>(&kPeerXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
-        reinterpret_cast<Vector3*>(&kOwnerXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
+        (*reinterpret_cast<Vector3*>(&kParentXf.m_Translate) -= (*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate))));
+        (*reinterpret_cast<Vector3*>(&kPeerXf.m_Translate) -= (*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate))));
+        (*reinterpret_cast<Vector3*>(&kOwnerXf.m_Translate) -= (*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate))));
         NiMatrix3 matRot;
         FUN_140b86230(kRot, matRot);
         kOwnerXf.m_Rotate = matRot;
@@ -882,7 +882,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
             continue;
         efd::Point3 kHit;
         NiPoint3 kDir(ptPeer - ptOwner);
-        float fLen = ((struct Vector3*)&static_cast<class NiPoint3 const&>(kDir))->FUN_140968990();
+        float fLen = ((Vector3*)&static_cast<class NiPoint3 const&>(kDir))->Unitize();
         if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(ptOwner)), reinterpret_cast<Vector3&>(kHit), Vector3(reinterpret_cast<const Vector3&>(kDir)), fLen, 0) != 0)
             continue;
         NiPoint3 kAngles;
@@ -1442,6 +1442,4 @@ template bool MS2Ptr<StateSyncObjectCoupleEmotion>::operator==(StateSyncObjectCo
 // MS2-PIN: ?FUN_140b845a0@@YAX_JI@Z 0x140b845a0
 // MS2-PIN: ?FUN_140b84dc0@@YA_NAEBVNiPoint3@@Z 0x140b84dc0
 // MS2-PIN: ?FUN_140b86230@@YAXAEBVPoint3@efd@@AEAVNiMatrix3@@Z 0x140b86230
-// MS2-PIN: ?FUN_140b86230@@YAXAEBUVector3@@AEAUUnk_NiMatrix3@@@Z 0x140b86230
 // MS2-PIN: ?FUN_140b86230@@YAXAEBVNiPoint3@@AEAVNiMatrix3@@Z 0x140b86230
-// MS2-PIN: ?FUN_140b86230@@YAXPEBUVector3@@PEAVNiTransform@@@Z 0x140b86230

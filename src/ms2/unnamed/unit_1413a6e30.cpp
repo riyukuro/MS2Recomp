@@ -186,7 +186,7 @@ int CGuideConditionPosition::vfunc_3()
         pos = ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft())->GetPtCell();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)
     {
-        float fDist = pos.FUN_140965c40(m_arrCube.GetAt(i).vPos).FUN_140967ac0();
+        float fDist = (pos - m_arrCube.GetAt(i).vPos).Length();
         if (fDist < m_arrCube.GetAt(i).fRange)
             return FUN_1413a55a0(1);
     }

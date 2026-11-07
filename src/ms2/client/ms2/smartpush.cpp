@@ -1247,7 +1247,7 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
         if (spRecipe->m_nType != nKind)
             continue;
         float fRange = pObj->GetRow()->m_validate.m_fInteractionDistance;
-        float fDist = pMy->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
+        float fDist = (pMy->vfunc_18() - pObj->GetPos()).Length();
         if (fDist > fRange)
             continue;
         return dynamic_cast<CInteractGatheringObject*>(pObj);

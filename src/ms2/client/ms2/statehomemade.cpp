@@ -174,7 +174,7 @@ void StateHomemade::vfunc_4(StateData* pData)
         {
             if (aCubes[i]->FUN_141229000(0) == 0)
                 continue;
-            float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->GetPosition()).FUN_140967ac0();
+            float fDist = (reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18() - aCubes[i]->GetPosition()).Length();
             if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
                 continue;
             if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), aCubes[i]->GetPosition()) == 0)
@@ -330,7 +330,7 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
         if (nMode != 0 && spCube->FUN_141229000(1) == 0)
             continue;
-        float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
+        float fDist = (reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18() - spCube->GetPosition()).Length();
         if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
             continue;
         if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->GetPosition()) == 0)

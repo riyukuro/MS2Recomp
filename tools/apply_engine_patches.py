@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Apply engine-patches/ to a stock Gamebryo tree (see tools/engine-patches.py for the format).
 
-usage: apply_engine_patches.py <patches-dir> <gamebryo-tree>
+usage: apply_engine_patches.py <patches-dir> <gamebryo-tree> [<out-dir>]
+With <out-dir> (engine-patches-v2525/: the stock Source tree in, engine/gamebryo-v2525 out) the stock files are read
+from <gamebryo-tree> and the results written under <out-dir>; without it the tree is patched in place.
 Verifies every stock hash first, applies in memory, verifies every result hash,
 and only then writes.  kind=sdk rows are stock SDK files (nothing to apply); a 5th manifest column names the SDK file
 (relative to the tree) a row starts from when that is not the row's own path.  Refuses (exit 1, nothing written) on any mismatch.
@@ -57,9 +59,10 @@ def apply(script, data):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in (3, 4):
         sys.exit(__doc__)
     pd, tree = Path(sys.argv[1]), Path(sys.argv[2])
+    dest = Path(sys.argv[3]) if len(sys.argv) == 4 else tree
     rows = [l.split("\t") for l in (pd / "manifest.tsv").read_text(encoding="ascii").splitlines()[1:]]
     results, bad = {}, []
     for row in rows:
@@ -68,7 +71,7 @@ def main():
         if kind == "withheld":
             print(f"skip (withheld, supply separately): {path}")
             continue
-        tgt = tree / path
+        tgt = dest / path
         try:
             if kind in ("modified", "sdk"):
                 data = (tree / src).read_bytes()
@@ -76,7 +79,7 @@ def main():
                     bad.append(f"{path}: stock hash mismatch" + (f" (source {src})" if src != path else ""))
                     continue
                 if kind == "sdk":
-                    if src != path:
+                    if src != path or dest != tree:
                         results[path] = (data, rsha)
                     continue
             else:
@@ -97,8 +100,8 @@ def main():
         print("REFUSING, nothing written:\n  " + "\n  ".join(bad))
         sys.exit(1)
     for p, (out, _) in results.items():
-        (tree / p).parent.mkdir(parents=True, exist_ok=True)
-        (tree / p).write_bytes(out)
+        (dest / p).parent.mkdir(parents=True, exist_ok=True)
+        (dest / p).write_bytes(out)
     print(f"applied {len(results)} files, all result hashes verified")
 
 

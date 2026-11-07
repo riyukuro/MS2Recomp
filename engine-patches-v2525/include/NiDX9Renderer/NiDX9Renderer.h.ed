@@ -1,0 +1,28 @@
+eol lf
+1104a
+
+    // MS2: Nexon appended 0x148 bytes (sizeof(NiDX9Renderer) is 0x1080 in the game: operator new(0x1080) in Create
+    // at 0x1427cb5e4): the desktop display mode saved by Initialize, the mode ChangeDisplayMode switches to, and
+    // whether it switched. InitToDefault (0x1427d0320) clears the byte at +0x1070 and the 8 bytes at +0x1074.
+    DEVMODEA m_kMS2DesktopMode;         // +0xf38
+    DEVMODEA m_kMS2DisplayMode;         // +0xfd4
+    bool m_bMS2DisplayModeChanged;      // +0x1070
+    unsigned int m_uiMS2Unknown_1074;
+    unsigned int m_uiMS2Unknown_1078;
+    unsigned int m_uiMS2Unknown_107C;
+.
+956a
+    bool m_bMS2Unknown_851;  // MS2: cleared by InitToDefault (one dword store with m_usHwMaxAnisotropy at 0x1427d03cf)
+.
+914a
+    mutable char m_acStudioDriverName[512];  // studio: +0x518, name inferred
+.
+464a
+    const char* GetDriverName() const;  // studio: 0x1427cf790, name inferred
+
+    // MS2: fullscreen display mode switch (ChangeDisplaySettingsA) and its undo (names inferred)
+    bool ChangeDisplayMode(unsigned int uiWidth, unsigned int uiHeight);  // 0x1427cb2a0
+    void RestoreDisplayMode();                                             // 0x1427d5390
+    void PurgePrePackData();                                               // MS2: 0x1427d4ae0 (name not from the exe)
+    void SetMS2DeviceLost(bool bLost);                                     // MS2: 0x1427d5c10 (sets 0x851 and m_bDeviceLost; name inferred)
+.

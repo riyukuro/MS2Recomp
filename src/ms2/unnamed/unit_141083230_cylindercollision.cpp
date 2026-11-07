@@ -22,7 +22,7 @@ public:
     CCylinderCollision();                                                   // 0x141083230
     virtual ~CCylinderCollision();                                          // 0x141083320
     virtual void vfunc_1();                                                 // 0x1410846a0
-    virtual void vfunc_3(Vector3 pos, Vector3 rot, float scale);   // 0x1410833c0
+    virtual void vfunc_3(NiPoint3 pos, NiPoint3 rot, float scale);   // 0x1410833c0
     virtual void vfunc_5();                                                 // 0x1410834d0
     virtual float vfunc_6();                                                // 0x141083450
 
@@ -60,9 +60,9 @@ CCylinderCollision::~CCylinderCollision()
 }
 
 // @0x1410833c0
-void CCylinderCollision::vfunc_3(Vector3 pos, Vector3 rot, float scale)
+void CCylinderCollision::vfunc_3(NiPoint3 pos, NiPoint3 rot, float scale)
 {
-    m_center = pos;
+    m_center = reinterpret_cast<const Vector3&>(pos);
     CBaseCollision::vfunc_3(pos, rot, scale);
 }
 

@@ -384,8 +384,8 @@ Unk_CameraSetting Unk_CameraSetting::Divided(float f) const
     r.m_0 = m_0 / f;
     r.m_4 = m_4 / f;
     r.m_8 = m_8 / f;
-    r.m_c = m_c.FUN_140ae9180(f);
-    r.m_18 = m_18.FUN_140ae9180(f);
+    r.m_c = (m_c / f);
+    r.m_18 = (m_18 / f);
     r.m_24 = m_24;
     return r;
 }
@@ -396,8 +396,8 @@ Unk_CameraSetting Unk_CameraSetting::DivideAssign(float f)
     m_0 = m_0 / f;
     m_4 = m_4 / f;
     m_8 = m_8 / f;
-    m_c.FUN_140ae9270(f);
-    m_18.FUN_140ae9270(f);
+    (m_c /= f);
+    (m_18 /= f);
     return *this;
 }
 
@@ -420,8 +420,8 @@ Unk_CameraSetting Unk_CameraSetting::AddAssign(const Unk_CameraSetting& o)
     m_0 = m_0 + o.m_0;
     m_4 = m_4 + o.m_4;
     m_8 = m_8 + o.m_8;
-    m_c.FUN_140a4e560(o.m_c);
-    m_18.FUN_140a4e560(o.m_18);
+    (m_c += o.m_c);
+    (m_18 += o.m_18);
     return *this;
 }
 
@@ -432,8 +432,8 @@ Unk_CameraSetting Unk_CameraSetting::Subtracted(const Unk_CameraSetting& o) cons
     r.m_0 = m_0 - o.m_0;
     r.m_4 = m_4 - o.m_4;
     r.m_8 = m_8 - o.m_8;
-    r.m_c = m_c.FUN_140965c40(o.m_c);
-    r.m_18 = m_18.FUN_140965c40(o.m_18);
+    r.m_c = (m_c - o.m_c);
+    r.m_18 = (m_18 - o.m_18);
     r.m_24 = m_24;
     return r;
 }
@@ -444,8 +444,8 @@ Unk_CameraSetting Unk_CameraSetting::SubtractBy(const Unk_CameraSetting& o)
     m_0 = m_0 - o.m_0;
     m_4 = m_4 - o.m_4;
     m_8 = m_8 - o.m_8;
-    m_c.FUN_140ae9200(o.m_c);
-    m_18.FUN_140ae9200(o.m_18);
+    (m_c -= o.m_c);
+    (m_18 -= o.m_18);
     return *this;
 }
 
@@ -628,31 +628,31 @@ void CBossTargetCameraData::vfunc_1(void* pParam)
 
 // ---- efd::Point3 operators (COMDATs of this obj) ----
 
-// @0x140ae9180
-Vector3 Vector3::FUN_140ae9180(float f) const
-{
-    float fInv = 1.0f / f;
-    return Vector3(fInv * x, fInv * y, fInv * z);
-}
+// (0x140ae9180 is efd::Point3::operator/(float): the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
+//
 
-// @0x140ae9200
-Vector3& Vector3::FUN_140ae9200(const Vector3& pt)
-{
-    x = x - pt.x;
-    y = y - pt.y;
-    z = z - pt.z;
-    return *this;
-}
+// (0x140ae9200 is efd::Point3::operator-=: the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
+//
+//
+//
 
-// @0x140ae9270
-Vector3& Vector3::FUN_140ae9270(float f)
-{
-    float fInv = 1.0f / f;
-    x = x * fInv;
-    y = y * fInv;
-    z = z * fInv;
-    return *this;
-}
+// (0x140ae9270 is efd::Point3::operator/=(float): the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- camera effects ----
 
@@ -716,10 +716,10 @@ bool CVibrateCameraEffect::vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp)
                 float fY = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
                 m_ptDir.y = FUN_140768090() * fY;
             }
-            m_ptDir.FUN_140968990();
+            m_ptDir.Unitize();
             m_bNegative = fWave < 0.0f;
         }
-        ptLook.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptDir) * fWave)));
+        (ptLook += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptDir) * fWave)));
         return true;
     }
     else
@@ -1214,7 +1214,7 @@ void CameraMgr::FUN_140aece50()
             bool bHit = false;
             if (setup.m_28 == 1)
             {
-                float fDist = pTarget->vfunc_18().FUN_140965c40(setup.m_setting.m_c).FUN_140967ac0();
+                float fDist = (pTarget->vfunc_18() - setup.m_setting.m_c).Length();
                 if (fDist <= setup.m_30)
                     bHit = true;
             }
@@ -2444,8 +2444,8 @@ MS2_REPLACE_METHOD(0x140AEFB20, CameraMgr, FUN_140aefb20, 1189, 0x2179FBDC);
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x140ae8d40, CMapCameraData, vfunc_1, 164, 0xE859B609);
 MS2_REPLACE_METHOD(0x140ae9070, CBossTargetCameraData, vfunc_1, 266, 0x8439EAC2);
-MS2_REPLACE_METHOD(0x140ae9200, Vector3, FUN_140ae9200, 103, 0x45B786DE);
-MS2_REPLACE_METHOD(0x140ae9270, Vector3, FUN_140ae9270, 117, 0x9974293E);
+MS2_REPLACE_METHOD(0x140ae9200, Vector3, operator-=, 103, 0x45B786DE);
+MS2_REPLACE_METHOD(0x140ae9270, Vector3, operator/=, 117, 0x9974293E);
 MS2_REPLACE_METHOD(0x140ae9400, CCameraEffect, vfunc_1, 68, 0xFF2FBAB8);
 MS2_REPLACE_METHOD(0x140ae9550, CVibrateCameraEffect, vfunc_1, 699, 0x7790AEBC);
 MS2_REPLACE_METHOD(0x140aea4c0, CameraMgr, FUN_140aea4c0, 808, 0xBE964AC8);

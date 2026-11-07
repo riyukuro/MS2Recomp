@@ -1,0 +1,9 @@
+0a
+// gb-ecr local shim (forced include): the layer's NiDX9Renderer/NiD3DUtils.h uses x86 _asm
+// (FastFloatToInt). Pre-empt its guard with portable bodies until gbfound ports the header.
+#pragma once
+#define NID3DUTILS_H
+static inline int FastFloatToInt(float fValue) { return (int)fValue; }
+static inline unsigned long F2DW(float fValue) { return *((unsigned long*)&fValue); }
+
+.

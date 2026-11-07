@@ -407,8 +407,8 @@ public:
 };
 // ---- misc externs ---------------------------------------------------------------------------------------------------------
 extern int DAT_143a284b0; extern int DAT_143ae2b48;
-struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
-class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend CResultObj FUN_1414a58c0(int idx); };
+#include <NiMaterialSwapProcessor.h>   // C3: was struct CResultObj (a view of NiMaterialSwapProcessorPtr)
+class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend NiMaterialSwapProcessorPtr FUN_1414a58c0(int idx); };
 #define DAT_143afa980 (*reinterpret_cast<char**>(&NiShadowManager::ms_pkShadowManager))   // C3: was extern char* DAT_143afa980
 // (0x1414a54f0 is the real Unk_GFxImageHandler::Clone, below)
 void* FUN_140c8f690(const efd::SmartPointer<class NiViewRenderClick>&);   // C3: was FUN_140c8f690
@@ -1935,9 +1935,9 @@ MS2_REPLACE(0x1414A5890, FUN_1414a5890, 8, 0xC6930D6B);
 void FUN_1414a58a0(char* pThis) { reinterpret_cast<efd::SmartPointer<NiMaterial>*>(pThis + 0x10)->operator NiMaterial*(); }
 MS2_REPLACE(0x1414A58A0, FUN_1414a58a0, 31, 0x5650D8A9);
 // @0x1414a58c0
-CResultObj FUN_1414a58c0(int idx)
+NiMaterialSwapProcessorPtr FUN_1414a58c0(int idx)   // NiShadowManager::GetMaterialSwapProcessor: m_aspMaterialSwapProcessor[eType] (+0x170)
 {
-    return CResultObj(DAT_143afa980 + 0x170 + (long long)idx * 8);
+    return *reinterpret_cast<NiMaterialSwapProcessorPtr*>(DAT_143afa980 + 0x170 + (long long)idx * 8);
 }
 // @0x1414a5910
 int FUN_1414a5910(char* pThis) { return *(int*)(pThis + 100); }

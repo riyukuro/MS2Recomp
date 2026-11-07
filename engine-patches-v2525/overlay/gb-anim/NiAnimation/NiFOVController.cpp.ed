@@ -1,0 +1,118 @@
+0a
+// gb-anim reconstruction of the studio NiFOVController (local overlay, not committed).
+// Modeled on NiAlphaController.cpp; differences from it carry their EXE evidence.
+#include "NiAnimationPCH.h"
+
+#include "NiFOVController.h"
+#include <NiCamera.h>
+#include "NiFloatInterpolator.h"
+#include "NiFloatData.h"
+
+NiImplementRTTI(NiFOVController, NiFloatInterpController);
+
+//--------------------------------------------------------------------------------------------------
+NiFOVController::NiFOVController()
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::InterpTargetIsCorrectType(NiObjectNET* pkTarget) const
+{
+    // 0x141c4a790: NiIsKindOf(NiCamera, pkTarget)
+    return (NiIsKindOf(NiCamera, pkTarget));
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::GetTargetFloatValue(float& fValue)
+{
+    // 0x141c4a740: mov dword ptr [rdx], 0
+    fValue = 0.0f;
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::Update(float fTime)
+{
+    if (GetManagerControlled())
+    {
+        return;
+    }
+
+    if (DontDoUpdate(fTime) &&
+        (!m_spInterpolator || !m_spInterpolator->AlwaysUpdate()))
+    {
+        return;
+    }
+
+    if (m_spInterpolator)
+    {
+        // 0x141c4a8cf: the value is computed but not applied.
+        float fValue;
+        m_spInterpolator->Update(m_fScaledTime, m_pkTarget, fValue);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::UpdateValue(float, float, unsigned short)
+{
+    // 0x141c4a8e0: mov al, 1; ret
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Cloning
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateClone(NiFOVController);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::CopyMembers(NiFOVController* pkDest,
+    NiCloningProcess& kCloning)
+{
+    NiFloatInterpController::CopyMembers(pkDest, kCloning);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Streaming
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateObject(NiFOVController);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::LoadBinary(NiStream& kStream)
+{
+    NiFloatInterpController::LoadBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::LinkObject(NiStream& kStream)
+{
+    NiFloatInterpController::LinkObject(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::RegisterStreamables(NiStream& kStream)
+{
+    return NiFloatInterpController::RegisterStreamables(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::SaveBinary(NiStream& kStream)
+{
+    NiFloatInterpController::SaveBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::IsEqual(NiObject* pkObject)
+{
+    return NiFloatInterpController::IsEqual(pkObject);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Viewer strings
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::GetViewerStrings(NiViewerStringsArray* pkStrings)
+{
+    NiFloatInterpController::GetViewerStrings(pkStrings);
+
+    pkStrings->Add(NiGetViewerString(NiFOVController::ms_RTTI.GetName()));
+}
+
+.

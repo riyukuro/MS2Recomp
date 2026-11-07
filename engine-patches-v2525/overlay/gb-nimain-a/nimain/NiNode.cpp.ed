@@ -1,0 +1,7 @@
+eol lf
+73c
+    if (m_kChildren.GetSize() == 0xffff) { if (g_pfnStudioNiNodeChildLimit) g_pfnStudioNiNodeChildLimit(this); bFirstAvail = true; } if (bFirstAvail)
+.
+32c
+NiImplementRTTI(NiNode, NiAVObject); void (*g_pfnStudioNiNodeChildLimit)(NiNode*) = NULL; // gb-nimain-a: inferred hook 0x143afa4d0 (AttachChild 0x141d19e2b)
+.

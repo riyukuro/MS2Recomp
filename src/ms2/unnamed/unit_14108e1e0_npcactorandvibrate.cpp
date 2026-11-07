@@ -2169,7 +2169,7 @@ void CNpc::vfunc_50()
                 continue;
             NiAVObject* pNode = pRoot->GetObjectByName((const char*)spBox->m_strName);
             if (pNode != NULL)
-                spBox->vfunc_2(*reinterpret_cast<const Vector3*>(&pNode->GetWorldTranslate()), pNode->GetWorldRotate(), 1.0f);
+                spBox->vfunc_2(pNode->GetWorldTranslate(), pNode->GetWorldRotate(), 1.0f);
         }
     }
     for (unsigned i = 0; i < m_arrE88.GetCount(); i++) {

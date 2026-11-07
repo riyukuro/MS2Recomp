@@ -218,9 +218,61 @@ def lock_run():
         fcntl.flock(_lock, fcntl.LOCK_EX)
 
 
+V2525 = "engine/gamebryo-v2525"
+
+
+def emit_v2525(sdk, idx, pol, out):
+    """engine/gamebryo-v2525 (the v2525-recipe include/overlay tree) as edits of the stock SDK -> out/.
+    Opt-in (--v2525 or MS2_ENGINE_PATCHES_V2525=1). Every file is matched to its SDK original by basename +
+    similarity (sdk_original); the manifest path is relative to engine/gamebryo-v2525 and column 5 names the SDK
+    file relative to the Source/ tree, so apply_engine_patches.py <out> <stock Source> <gamebryo-v2525 dir> rebuilds
+    the tree. The Source tree must be the stock one (not yet patched in place by engine-patches/): the stock hashes are
+    those of the stock files. Files with no SDK original (our shims, the NiFOV / NiStudioShaderContext files that engine-patches
+    also ships as added) are kind=added."""
+    files = [f for f in git("ls-tree", "-r", "--name-only", "-z", "HEAD", "--", V2525).decode("latin-1").split("\0") if f]
+    man, stats, nlines = [], [], 0
+    import shutil
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    for p in sorted(files):
+        rel = p[len(V2525) + 1:]
+        if rel in pol["exclude-file"]:
+            continue
+        new = git("show", f"HEAD:{p}")
+        org = sdk_original(sdk, idx, rel, new)
+        if org and org[1] == new:
+            man.append((rel, sha(new), sha(new), "sdk", org[0]))
+            continue
+        if org:
+            script = diff_script(rel, org[1], new, pol, stats)
+            man.append((rel, sha(org[1]), sha(new), "modified", org[0]))
+        else:
+            script = emit([("a", 0, new.split(b"\n"))])
+            man.append((rel, "-", sha(new), "added"))
+        d = out / (rel + ".ed")
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_bytes(script)
+        nlines += script.count(b"\n")
+    with open(out / "manifest.tsv", "w") as f:
+        f.write("path\tstock_sha256\tresult_sha256\tkind\tsource\n")
+        for m in man:
+            f.write("\t".join(m) + "\n")
+    kinds = {}
+    for m in man:
+        kinds[m[3]] = kinds.get(m[3], 0) + 1
+    wh = sum(1 for s in stats if s[3] == "withhold")
+    print(f"v2525: files={len(man)} kinds={kinds} ed_lines={nlines} close_lines={len(stats)} withheld_token_lines={wh}")
+    return stats
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "engine-patches"))
+    ap.add_argument("--v2525", action="store_true", default=os.environ.get("MS2_ENGINE_PATCHES_V2525") == "1",
+                    help="also emit engine/gamebryo-v2525 edits to --out-v2525 (opt-in; MS2_ENGINE_PATCHES_V2525=1)")
+    ap.add_argument("--v2525-only", action="store_true", help="emit only the v2525 edits")
+    ap.add_argument("--out-v2525", default=str(ROOT / "engine-patches-v2525"))
     ap.add_argument("--policy", default=str(ROOT / "tools/engine-patches-policy.txt"))
     ap.add_argument("--review", help="write the similarity list (tsv) here")
     ap.add_argument("--worktree", nargs="+", default=[], metavar="PATH",
@@ -234,6 +286,15 @@ def main():
         sys.exit(f"engine-patches: no Gamebryo SDK Source tree at {sdk} (--sdk / MS2_GAMEBRYO_SDK)")
     idx = sdk_index(sdk)
     pol = load_policy(Path(a.policy))
+    if a.v2525 or a.v2525_only:
+        vs = emit_v2525(sdk, idx, pol, Path(a.out_v2525))
+        if a.v2525_only:
+            if a.review:
+                with open(a.review, "w") as f:
+                    f.write("key\tratio\tshared\tverdict\tsdk\tours\n")
+                    for s in vs:
+                        f.write("\t".join([s[0], f"{s[1]:.2f}", str(s[2]), s[3], s[4].strip(), s[5].strip()]) + "\n")
+            return
     names = git("diff", "--name-status", "-z", STOCK, "HEAD", "--", SUB).decode("latin-1").split("\0")
     ents = [(names[i], names[i + 1]) for i in range(0, len(names) - 1, 2)]
     wt = set()

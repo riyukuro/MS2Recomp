@@ -47090,7 +47090,6 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 };
 
 #pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B")
-#pragma comment(linker, "/alternatename:?DAT_143a08d08@@3UVector3@@A=?DAT_143a08d08@@3USd_143a08d08@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a08d08@@3VPoint3@efd@@A=?DAT_143a08d08@@3USd_143a08d08@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a09600@@3DA=?DAT_143a09600@@3USd_143a09600@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a09600@@3UUnk_EfdMatrix3@@A=?DAT_143a09600@@3USd_143a09600@@A")

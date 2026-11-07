@@ -456,7 +456,7 @@ int CPhysXHelper::RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, U
     kInfo.m_origin = ptFrom;
     reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(g_143a08cf8);
     kInfo.m_maxDist = fLen;
-    kInfo.m_dir.FUN_140968990();
+    kInfo.m_dir.Unitize();
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
@@ -478,7 +478,7 @@ int CPhysXHelper::FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float f
     kInfo.m_origin = reinterpret_cast<const Vector3&>(ptFrom);
     reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(g_143a08cf8);
     kInfo.m_maxDist = fLen;
-    kInfo.m_dir.FUN_140968990();
+    kInfo.m_dir.Unitize();
     kInfo.m_groups = 0x389;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;

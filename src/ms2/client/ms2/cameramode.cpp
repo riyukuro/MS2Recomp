@@ -316,8 +316,8 @@ MS2_REPLACE_METHOD(0x140afdaa0, CCameraMode, FUN_140afdaa0, 653, 0xB7F15223);
 Vector3 CCameraMode::FUN_140afdd40(const Vector3& ptEye, const Vector3& ptAt,
                                            const Vector3& ptUp)
 {
-    Vector3 dir = ptEye.FUN_140965c40(ptAt);
-    dir.FUN_140968990();
+    Vector3 dir = (ptEye - ptAt);
+    dir.Unitize();
     efd::Point3 right = reinterpret_cast<const efd::Point3&>(dir).Cross(reinterpret_cast<const efd::Point3&>(ptUp));
     right.Unitize();
     efd::Point3 up = reinterpret_cast<const efd::Point3&>(right).Cross(reinterpret_cast<const efd::Point3&>(dir));
@@ -345,14 +345,14 @@ Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
     reinterpret_cast<const efd::Matrix3&>(mb).GetCol(0, reinterpret_cast<efd::Point3&>(b0));
     reinterpret_cast<const efd::Matrix3&>(mb).GetCol(1, reinterpret_cast<efd::Point3&>(b1));
     Vector3 c0, c1;
-    c0 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(a0) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, b0.FUN_140965c40(a0))))));
-    c0.FUN_140968990();
-    c1 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(a1) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, b1.FUN_140965c40(a1))))));
-    c1.FUN_140968990();
+    c0 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(a0) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (b0 - a0))))));
+    c0.Unitize();
+    c1 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(a1) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (b1 - a1))))));
+    c1.Unitize();
     efd::Point3 c2 = reinterpret_cast<const efd::Point3&>(c0).Cross(reinterpret_cast<const efd::Point3&>(c1));
     c2.Unitize();
     reinterpret_cast<efd::Point3&>(c1) = reinterpret_cast<const efd::Point3&>(c2).Cross(reinterpret_cast<const efd::Point3&>(c0));
-    c1.FUN_140968990();
+    c1.Unitize();
     Vector3 angles;
     NiMatrix3 m((const efd::Point3&)c0, (const efd::Point3&)c1, (const efd::Point3&)c2);
     ((efd::Matrix3&)m).ToEulerAnglesXYZ(angles.x, angles.y, angles.z);

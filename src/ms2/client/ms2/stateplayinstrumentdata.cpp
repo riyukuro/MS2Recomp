@@ -426,7 +426,7 @@ void StatePlayInstrument::vfunc_3(double fTime)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);
     }
-    else if (reinterpret_cast<Unk_SpiPos*>(m_pOwner)->vfunc_18().FUN_140965c40(m_vPos).FUN_140967ac0() > 50.0f)
+    else if ((reinterpret_cast<Unk_SpiPos*>(m_pOwner)->vfunc_18() - m_vPos).Length() > 50.0f)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }

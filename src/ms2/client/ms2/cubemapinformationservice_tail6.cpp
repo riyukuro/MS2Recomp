@@ -248,6 +248,11 @@ void* FUN_14111ea00(void* pThis, void* pRaw)
     FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
+// cubemapinformationservice_3's declared Unk_CMISHouseRef ctors are these two (the house record's MS2Ptr, AddRef 0x14112fb80).
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??0Unk_CMISHouseRef@@QEAA@PEAPEAX@Z=?FUN_14111e9c0@@YAPEAXPEAX0@Z")
+#pragma comment(linker, "/alternatename:??0Unk_CMISHouseRef@@QEAA@PEAX@Z=?FUN_14111ea00@@YAPEAXPEAX0@Z")
+#endif
 
 // MS2-PIN: ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x14111ea50 ; C3: was FUN_14111ea50, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x140fac7c0)
 //

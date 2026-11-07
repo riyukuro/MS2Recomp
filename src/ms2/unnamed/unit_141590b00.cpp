@@ -16,10 +16,8 @@ extern void FUN_1415e8880(void*); extern void FUN_1415e87b0(void*,const void*); 
 extern void* FUN_1415f9fa0(void*); extern unsigned int FUN_1415fa060(void*); extern void* FUN_1415fa000(void*); extern unsigned int FUN_1415fa090(void*);
 extern void* FUN_1415f9ed0(void*,void*); extern void FUN_1415eb720(void*); extern void FUN_1415ef0e0(void*); extern void FUN_1415eb7b0(void*);
 extern void FUN_1415eb5c0(void*); extern void FUN_1415e5a20(void*); extern void FUN_1415e5c00(void*); extern void FUN_1415fb800(void*,unsigned int); extern void FUN_1415fba10(void*,unsigned int); extern void FUN_1415fb850(void*,void*); extern void FUN_1415fb8a0(void*,unsigned short); extern void FUN_1415fba30(void*,void*); extern void FUN_14160b570(void*,void*);
-// MS2-FUNCTIONAL 0x141590b00: initializes an empty server-info vector.
-CNMSetServerInfoFunc::CNMSetServerInfoFunc():CNMFunc(0x801c,1,0,0),m_requests(){FUN_1415e8880(&m_requests);}
-// MS2-FUNCTIONAL 0x141590b60: copies the supplied server-info vector.
-CNMSetServerInfoFunc::CNMSetServerInfoFunc(const std::vector<RequestInfo>&requests):CNMFunc(0x801c,1,0,0),m_requests(){FUN_1415e87b0(&m_requests,&requests);}
+CNMSetServerInfoFunc::CNMSetServerInfoFunc():CNMFunc(0x801c,1,0,0){}
+CNMSetServerInfoFunc::CNMSetServerInfoFunc(const std::vector<RequestInfo>&requests):CNMFunc(0x801c,1,0,0),m_requests(requests){}
 // MS2-FUNCTIONAL 0x141590bd0: frames the server-info request.
 unsigned int CNMSetServerInfoFunc::EncodeFramed(CNMStream* pStream)
 {

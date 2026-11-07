@@ -20,7 +20,7 @@ class CFrustumCollision : public CBaseCollision
 public:
     CFrustumCollision();                                    // 0x141222df0
     virtual ~CFrustumCollision();                           // 0x141222f20
-    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x141222f50 builds the corners
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x141222f50 builds the corners
     virtual void vfunc_4();                                 // 0x141223bc0 derives the cone angles
     virtual void vfunc_5();                                 // 0x141224920 builds the wire mesh
     virtual float vfunc_6();                                // 0x141224800

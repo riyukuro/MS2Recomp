@@ -95,13 +95,15 @@ class TiXmlElement;
 
 
 
-class TiXmlDeclaration   // C3: member view
+class TiXmlDeclaration : public TiXmlNode   // C3: member view
 {
 public:
     TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
     virtual ~TiXmlDeclaration();
+private:
+    Unk_TiXmlString version, encoding, standalone;
 };
-class TiXmlComment   // C3: member view (the const char* ctor 0x140a27ec0 is emitted by blindmanager.cpp)
+class TiXmlComment : public TiXmlNode   // C3: member view (the const char* ctor 0x140a27ec0 is emitted by blindmanager.cpp)
 {
 public:
     TiXmlComment(const char* pszValue);
@@ -241,7 +243,6 @@ struct Unk_NpcData { char m_pad[0x18]; int m_nId; };
 struct Unk_NpcRow { char m_pad[0x50]; CString m_strModel; };
 // (Unk_EntryArray / Unk_SpawnGroup views gone: callers use CRegionSpawnResult::m_aProb through the real
 //  MS2Ptr<CRegionSpawnResult>::operator-> (0x1406d5cb0, the accessor FindSpawnResult calls for pResult->).)
-struct Unk_XmlNodeBuf { char m_raw[0x90]; };
 
 typedef ATL::CAtlArray<void*, ATL::CElementTraits<void*> > Unk_PtrArray;
 
@@ -297,10 +298,6 @@ typedef ATL::CAtlArray<MS2Ptr<CRegionSpawnProb> > Unk_ProbArray;   // CRegionSpa
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
 MS2Ptr<CNpcData> FUN_1406cd330(int nId);   // the npc data row
 
-// TinyXML nodes written by the export (stack objects of 0x90 bytes).
-// The declaration and the root element live to the end of the export (the exe destroys both on every exit).
-struct Unk_XmlDeclLocal : Unk_XmlNodeBuf { ~Unk_XmlDeclLocal() { reinterpret_cast<TiXmlDeclaration*>(this)->TiXmlDeclaration::~TiXmlDeclaration(); } };
-struct Unk_XmlElemLocal : Unk_XmlNodeBuf { ~Unk_XmlElemLocal() { reinterpret_cast<TiXmlElement*>(this)->TiXmlElement::~TiXmlElement(); } };
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
@@ -677,7 +674,6 @@ CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, c
 }
 
 // Scans fieldData.xml, every xblock and the time / game event tables, and writes Table/<language>/FieldMetaData.xml.
-// MS2-FUNCTIONAL: unrecovered table / handle types are opaque externs; frame layout and temporaries differ from the exe
 // @0x1418226b0
 bool FUN_1418226b0(bool bLog)
 {
@@ -698,38 +694,32 @@ bool FUN_1418226b0(bool bLog)
     CFieldData::LoadFieldData();
     CFieldData::FUN_140374090(blocks);
     Unk_PortalMap mapPortals;
-    Unk_FieldMapB mapInteract;
     ATL::CAtlMap<unsigned int, CString> mapFluid(17, 0.75f, 0.25f, 2.25f, 10);
+    Unk_FieldMapB mapInteract;
     CString strErrors;
     int nBlock = 0;
-    bool bResult = true;
 
-    TiXmlDocument docField;
-    if (GetFileSystem()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0) {
-        bResult = false;
-    } else {
+    {
+        TiXmlDocument docField;
+        if (GetFileSystem()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0)
+            return false;
         TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docField))->FirstChild("ms2"));
-        if (pRoot == NULL) {
-            bResult = false;
-        } else {
-            for (TiXmlElement* pField = ((TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fieldData")); pField != NULL; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pField))->NextSibling("fieldData"))) {
-                unsigned int nFieldId;
-                XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
-                if (bLog) {
-                    nBlock++;
-                    CString strMsg;
-                    strMsg.Format("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
-                    CDebugConsole::FUN_141168200()->FUN_1411683e0(strMsg);
-                }
-                if (nFieldId >= 90000000)
-                    continue;
-                TiXmlElement* pBlock = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pField)));
-                if (pBlock == NULL)
-                    continue;
-                TiXmlElement* pXblock = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("xblock"));
-                if (pXblock == NULL)
-                    continue;
-
+        if (pRoot == NULL)
+            return false;
+        for (TiXmlElement* pField = ((TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fieldData")); pField != NULL; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pField))->NextSibling("fieldData"))) {
+            unsigned int nFieldId;
+            XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
+            if (bLog) {
+                nBlock++;
+                CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
+            }
+            if (nFieldId >= 90000000)
+                continue;
+            TiXmlElement* pBlock = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pField)));
+            if (pBlock == NULL)
+                continue;
+            TiXmlElement* pXblock = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("xblock"));
+            if (pXblock != NULL) {
                 CString strXblock;
                 strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", ((class TiXmlElement*)(class TiXmlElement*)(pXblock))->Attribute("name"));
                 TiXmlDocument docXblock;
@@ -742,12 +732,12 @@ bool FUN_1418226b0(bool bLog)
                     strErrors.AppendFormat("** invalid xblock format. (not find <game>) \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
-                TiXmlElement* pEntitySet = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
-                if (pEntitySet == NULL) {
+                TiXmlElement* pEntity = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
+                if (pEntity == NULL) {
                     strErrors.AppendFormat("** invalid xblock format. (not find <entitySet>) \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
-                for (TiXmlElement* pEntity = ((TiXmlElement*)((class Unk_XmlNode*)(pEntitySet))->FirstChild("entity")); pEntity != NULL; pEntity = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEntity))->NextSibling("entity"))) {
+                for (pEntity = ((TiXmlElement*)((class Unk_XmlNode*)(pEntity))->FirstChild("entity")); pEntity != NULL; pEntity = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEntity))->NextSibling("entity"))) {
                     CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pEntity))->Attribute("modelName"), 0);
                     if (mgr.FUN_140a2a920(strModel, CString("SpawnPointNPC")) != 0) {
                         Unk_RefArrayA npcs;
@@ -770,24 +760,35 @@ bool FUN_1418226b0(bool bLog)
                         mgr.FUN_140a2b270(pEntity, strModel, "TargetFieldSN", &nTargetField);
                         mgr.FUN_140a2b550(pEntity, strModel, "TargetPortalID", (int*)&portal.m_nTargetPortal);
                         mgr.FUN_140a2b270(pEntity, strModel, "PortalType", &portal.m_nType);
-                        portal.m_nTargetField = (nTargetField == -1) ? nFieldId : nTargetField;
-                        if (portal.m_nType == 0) {
+                        if (nTargetField == -1)
+                            portal.m_nTargetField = nFieldId;
+                        else
+                            portal.m_nTargetField = nTargetField;
+                        switch (portal.m_nType) {
+                        case 0:
                             FUN_141826f80(nFieldId, portal, mapPortals);
-                        } else if (portal.m_nType == 8) {
-                            Unk_RefArrayB regions;
-                            TSingleton<DungeonRoomTable>::GetInstance()->GetRooms(portal.m_nId, *reinterpret_cast<ATL::CAtlArray<DungeonRoomPtr>*>(&regions));
-                            for (size_t i = 0; i < regions.m_nSize; i++) {
-                                DungeonRoomPtr ref(*reinterpret_cast<DungeonRoomPtr*>(FUN_14182fc50(&regions, i)));
+                            break;
+                        case 8:
+                        {
+                            ATL::CAtlArray<DungeonRoomPtr> regions;
+                            TSingleton<DungeonRoomTable>::GetInstance()->GetRooms(portal.m_nId, regions);
+                            for (size_t i = 0; i < regions.GetCount(); i++) {
+                                DungeonRoomPtr ref(regions[i]);
                                 for (size_t j = 0; j < ref->m_fieldIDs.GetCount(); j++) {
-                                    PortalInfo copy = portal;
+                                    PortalInfo copy;
+                                    copy.m_nId = portal.m_nId;
+                                    copy.m_nTargetPortal = portal.m_nTargetPortal;
+                                    copy.m_nType = portal.m_nType;
                                     copy.m_nTargetField = ref->m_fieldIDs[j];
                                     FUN_141826f80(nFieldId, copy, mapPortals);
                                 }
                             }
+                            break;
+                        }
                         }
                     } else if (mgr.FUN_140a2a920(strModel, CString("MS2RegionSpawn")) != 0 ||
                                mgr.FUN_140a2a920(strModel, CString("MS2RegionBoxSpawn")) != 0) {
-                        int nSpawnPoint = 0;
+                        int nSpawnPoint;
                         mgr.FUN_140a2b270(pEntity, strModel, "SpawnPointID", &nSpawnPoint);
                         TPtr<CFieldSpawnTag> region = FUN_1403728d0(nFieldId, nSpawnPoint);
                         if (region->population > 0) {
@@ -796,18 +797,18 @@ bool FUN_1418226b0(bool bLog)
                             if (FUN_14182fd90((Unk_Ref*)&group) != 0) {
                                 for (unsigned int i = 0; i < ((const Unk_ProbArray*)&group->m_aProb)->GetCount(); i++) {
                                     MS2Ptr<CRegionSpawnProb> entry(((const Unk_ProbArray*)&group->m_aProb)->operator[](i));
-                                    if (!(entry->m_pSpawn == 0)) {
-                                        int nNpcId = entry->m_pSpawn->m_nNpcId;
-                                        MS2Ptr<NpcDataCli> npcRow = ((NpcDataTableCli*)(void*)FUN_1406d6e90())->Find(nNpcId);
-                                        if (FUN_1409f90f0((Unk_AvBox *)&npcRow, 0) == 0) {
-                                            _NpcInfo npc;
-                                            npc.m_nFieldId = nFieldId;
-                                            FUN_1418270c0(nNpcId, npc, g_mapNpc);
-                                            CPetDataTable::PetPtr model = TSingleton<CPetDataTable>::GetInstance()->Find(CString(((Unk_NpcRow*)npcRow.operator->())->m_strModel));
-                                            if (model.get() != 0)
-                                                FUN_141826e40(model->GetId(), nFieldId, g_mapPet);
-                                        }
-                                    }
+                                    if (entry->m_pSpawn == 0)
+                                        continue;
+                                    int nNpcId = entry->m_pSpawn->m_nNpcId;
+                                    MS2Ptr<NpcDataCli> npcRow = ((NpcDataTableCli*)(void*)FUN_1406d6e90())->Find(nNpcId);
+                                    if (FUN_1409f90f0((Unk_AvBox *)&npcRow, 0) != 0)
+                                        continue;
+                                    _NpcInfo npc;
+                                    npc.m_nFieldId = nFieldId;
+                                    FUN_1418270c0(nNpcId, npc, g_mapNpc);
+                                    CPetDataTable::PetPtr model = TSingleton<CPetDataTable>::GetInstance()->Find(CString(((Unk_NpcRow*)npcRow.operator->())->m_strModel));
+                                    if (model.get() != 0)
+                                        FUN_141826e40(model->GetId(), nFieldId, g_mapPet);
                                 }
                             }
                         }
@@ -837,87 +838,89 @@ bool FUN_1418226b0(bool bLog)
             }
         }
     }
-    if (!bResult)
-        return false;
 
     if (bLog) {
         CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse blockfile Complete");
         CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse TimeEvent NpcSpawn");
     }
-    CString strTimeEvent = FUN_14071a5b0(CString("Table/Server"), CString("timeEventData.xml"));
-    TiXmlDocument docTime;
-    if (GetFileSystem()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
-        return false;
-    TiXmlElement* pTimeRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docTime))->FirstChild("ms2"));
-    if (pTimeRoot == NULL)
-        return false;
-    for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pTimeRoot))->FirstChild("event")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("event"))) {
-        if (!FUN_14028f710((Unk_XmlElement *)pEvent))
-            continue;
-        int nEventId = 0;
-        int nType = 0;
-        XmlGetAttr((class TiXmlElement*)(pEvent), "id", nEventId);
-        XmlGetAttr((class TiXmlElement*)(pEvent), "type", nType);
-        if (nType == 0) {
-            CString strFields;
-            CString strNpcs;
-            XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
-            XmlGetAttr((class TiXmlElement*)(pEvent), "npcIDs", strNpcs);
-            ATL::CAtlArray<unsigned int> npcIds;
-            ATL::CAtlArray<unsigned int> fieldIds;
-            XmlSplit(strNpcs, npcIds, ",");
-            XmlSplit(strFields, fieldIds, ",");
-            for (size_t i = 0; i < npcIds.GetCount(); i++) {
-                for (size_t j = 0; j < fieldIds.GetCount(); j++) {
-                    _NpcInfo npc;
-                    npc.m_nFieldId = fieldIds[j];
-                    FUN_1418270c0(npcIds[i], npc, g_mapNpc);
+    {
+        CString strTimeEvent = FUN_14071a5b0("Table/Server", "timeEventData.xml");
+        TiXmlDocument docTime;
+        if (GetFileSystem()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
+            return false;
+        TiXmlElement* pTimeRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docTime))->FirstChild("ms2"));
+        if (pTimeRoot == NULL)
+            return false;
+        for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pTimeRoot))->FirstChild("event")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("event"))) {
+            if (!FUN_14028f710((Unk_XmlElement *)pEvent))
+                continue;
+            int nEventId = 0;
+            int nType = 0;
+            XmlGetAttr((class TiXmlElement*)(pEvent), "id", nEventId);
+            XmlGetAttr((class TiXmlElement*)(pEvent), "type", nType);
+            if (nType == 0) {
+                CString strNpcs;
+                CString strFields;
+                XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
+                XmlGetAttr((class TiXmlElement*)(pEvent), "npcIDs", strNpcs);
+                ATL::CAtlArray<unsigned int> npcIds;
+                ATL::CAtlArray<unsigned int> fieldIds;
+                XmlSplit(strNpcs, npcIds, ",");
+                XmlSplit(strFields, fieldIds, ",");
+                for (size_t i = 0; i < npcIds.GetCount(); i++) {
+                    for (size_t j = 0; j < fieldIds.GetCount(); j++) {
+                        _NpcInfo npc;
+                        npc.m_nFieldId = fieldIds[j];
+                        FUN_1418270c0(npcIds[i], npc, g_mapNpc);
+                    }
                 }
+            } else if (nType == 4) {
+                int nInteract = 0;
+                CString strFields;
+                XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
+                XmlGetAttr((class TiXmlElement*)(pEvent), "interactID", nInteract);
+                ATL::CAtlArray<unsigned int> fieldIds;
+                XmlSplit(strFields, fieldIds, ",");
+                for (size_t i = 0; i < fieldIds.GetCount(); i++)
+                    FUN_141826d00(nInteract, fieldIds[i], mapInteract);
             }
-        } else if (nType == 4) {
-            int nInteract = 0;
-            CString strFields;
-            XmlGetAttr((class TiXmlElement*)(pEvent), "targetFields", strFields);
-            XmlGetAttr((class TiXmlElement*)(pEvent), "interactID", nInteract);
-            ATL::CAtlArray<unsigned int> fieldIds;
-            XmlSplit(strFields, fieldIds, ",");
-            for (size_t i = 0; i < fieldIds.GetCount(); i++)
-                FUN_141826d00(nInteract, fieldIds[i], mapInteract);
         }
     }
 
     if (bLog)
         CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse GameEvent NpcSpwan");
-    CString strGameEvent = FUN_14071a5b0(CString("Table/Server"), CString("GameEvent.xml"));
-    TiXmlDocument docGame;
-    if (GetFileSystem()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
-        return false;
-    TiXmlElement* pGameRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docGame))->FirstChild("ms2"));
-    if (pGameRoot == NULL) {
-        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strGameEvent);
-        return false;
-    }
-    for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pGameRoot))->FirstChild("gameEvent")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("gameEvent"))) {
-        if (!FUN_14028f710((Unk_XmlElement *)pEvent))
-            continue;
-        CStringW strEventType = FUN_1401bf530(pEvent, "eventType", CStringW(L""));
-        if (!operator==(strEventType, L"SpawnNpc"))
-            continue;
-        CStringW strNpcFile;
-        XmlGetAttr((class TiXmlElement*)(pEvent), "value1", strNpcFile);
-        TiXmlDocument docNpc;
-        if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFromString(&docNpc, strNpcFile) == 0)
-            continue;
-        TiXmlElement* pNpcRoot = FUN_140345b40(&docNpc);
-        if (pNpcRoot == NULL)
-            continue;
-        unsigned int nNpcId = 0;
-        _NpcInfo npc;
-        XmlGetAttr((class TiXmlElement*)(pNpcRoot), "npcID", nNpcId);
-        XmlGetAttr((class TiXmlElement*)(pNpcRoot), "fieldID", npc.m_nFieldId);
-        XmlGetAttr((class TiXmlElement*)(pEvent), "eventStart", npc.m_strStart);
-        XmlGetAttr((class TiXmlElement*)(pEvent), "eventEnd", npc.m_strEnd);
-        FUN_1418270c0(nNpcId, npc, g_mapNpc);
+    {
+        CString strGameEvent = FUN_14071a5b0("Table/Server", "GameEvent.xml");
+        TiXmlDocument docGame;
+        if (GetFileSystem()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
+            return false;
+        TiXmlElement* pGameRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docGame))->FirstChild("ms2"));
+        if (pGameRoot == NULL) {
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strGameEvent);
+            return false;
+        }
+        for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pGameRoot))->FirstChild("gameEvent")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("gameEvent"))) {
+            if (!FUN_14028f710((Unk_XmlElement *)pEvent))
+                continue;
+            CStringW strEventType = FUN_1401bf530(pEvent, "eventType", CStringW(L""));
+            if (operator==(strEventType, L"SpawnNpc")) {
+                CStringW strNpcFile;
+                XmlGetAttr((class TiXmlElement*)(pEvent), "value1", strNpcFile);
+                TiXmlDocument docNpc;
+                if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFromString(&docNpc, strNpcFile) == 0)
+                    continue;
+                TiXmlElement* pNpcRoot = FUN_140345b40(&docNpc);
+                if (pNpcRoot == NULL)
+                    continue;
+                unsigned int nNpcId = 0;
+                _NpcInfo npc;
+                XmlGetAttr((class TiXmlElement*)(pNpcRoot), "npcID", nNpcId);
+                XmlGetAttr((class TiXmlElement*)(pNpcRoot), "fieldID", npc.m_nFieldId);
+                XmlGetAttr((class TiXmlElement*)(pEvent), "eventStart", npc.m_strStart);
+                XmlGetAttr((class TiXmlElement*)(pEvent), "eventEnd", npc.m_strEnd);
+                FUN_1418270c0(nNpcId, npc, g_mapNpc);
+            }
+        }
     }
 
     if (!strErrors.IsEmpty()) {
@@ -928,155 +931,124 @@ bool FUN_1418226b0(bool bLog)
     if (bLog)
         CDebugConsole::FUN_141168200()->FUN_1411683e0("Write FieldMetaTable");
     TiXmlDocument docOut;
-    Unk_XmlDeclLocal decl;
-    reinterpret_cast<TiXmlDeclaration*>(&decl)->TiXmlDeclaration::TiXmlDeclaration("1.0", "utf-8", "");
-    ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&decl));
-    {
-        Unk_XmlNodeBuf comment;
-        reinterpret_cast<TiXmlComment*>(&comment)->TiXmlComment::TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
-        ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&comment));
-        reinterpret_cast<TiXmlComment*>(&comment)->TiXmlComment::~TiXmlComment();
-    }
-    Unk_XmlElemLocal elemRoot;
-    reinterpret_cast<TiXmlElement*>(&elemRoot)->TiXmlElement::TiXmlElement("ms2");
+    TiXmlDeclaration decl("1.0", "utf-8", "");
+    ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(decl);
+    ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(static_cast<const TiXmlNode&>(TiXmlComment(static_cast<const CString&>(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0)))));
+    TiXmlElement elemRoot("ms2");
 
-    for (Unk_NpcMap::iterator it = g_mapNpc.begin(); it != g_mapNpc.end(); ++it) {
-        MS2Ptr<CNpcData> npcRow = FUN_1406cd330(it->first);
-        if (!(npcRow == 0)) {
-            Unk_XmlNodeBuf elemNpc;
-            reinterpret_cast<TiXmlElement*>(&elemNpc)->TiXmlElement::TiXmlElement("npc");
-            XmlSetAttr((class TiXmlElement*)(&elemNpc), "id", it->first);
-            Unk_NpcList* pList = it->second.get();
-            for (POSITION pos = pList->GetHeadPosition(); pos != NULL;) {
-                _NpcInfo& rInfo = pList->GetAt(pos);
-                Unk_XmlNodeBuf elemField;
-                reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::TiXmlElement("field");
-                XmlSetAttr((class TiXmlElement*)(&elemField), "id", rInfo.m_nFieldId);
-                if (rInfo.m_strStart != L"")
-                    XmlSetAttr((class TiXmlElement*)(&elemField), "startTime", rInfo.m_strStart);
-                if (rInfo.m_strEnd != L"")
-                    XmlSetAttr((class TiXmlElement*)(&elemField), "endTime", rInfo.m_strEnd);
-                ((class TiXmlNode*)(void*)(&elemNpc))->InsertEndChild(*(class TiXmlNode const*)(&elemField));
-                reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::~TiXmlElement();
-                pList->GetNext(pos);
-            }
-            ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemNpc));
-            reinterpret_cast<TiXmlElement*>(&elemNpc)->TiXmlElement::~TiXmlElement();
+    for (Unk_NpcMap::iterator it = g_mapNpc.begin(), itEnd = g_mapNpc.end(); it != itEnd; ++it) {
+        const unsigned int& nNpcId = it->first;
+        Unk_NpcListPtr& pList = it->second;
+        MS2Ptr<CNpcData> npcRow = FUN_1406cd330(nNpcId);
+        if (npcRow == 0)
+            continue;
+        TiXmlElement elemNpc("npc");
+        XmlSetAttr(&elemNpc, "id", nNpcId);
+        for (POSITION pos = pList->GetHeadPosition(); pos != NULL; pList->GetNext(pos)) {
+            _NpcInfo& rInfo = pList->GetAt(pos);
+            TiXmlElement elemField("field");
+            unsigned int nField = rInfo.m_nFieldId;
+            XmlSetAttr(&elemField, "id", nField);
+            if (rInfo.m_strStart != L"")
+                XmlSetAttr(&elemField, "startTime", rInfo.m_strStart);
+            if (rInfo.m_strEnd != L"")
+                XmlSetAttr(&elemField, "endTime", rInfo.m_strEnd);
+            elemNpc.InsertEndChild(elemField);
         }
+        elemRoot.InsertEndChild(elemNpc);
     }
 
-    for (POSITION pos = g_mapTaxi.GetStartPosition(); pos != NULL;) {
+    for (POSITION pos = g_mapTaxi.GetStartPosition(); pos != NULL; g_mapTaxi.GetNext(pos)) {
         unsigned int nField = g_mapTaxi.GetKeyAt(pos);
         bool bHome = g_mapTaxi.GetValueAt(pos);
-        Unk_XmlNodeBuf elemTaxi;
-        reinterpret_cast<TiXmlElement*>(&elemTaxi)->TiXmlElement::TiXmlElement("taxiStation");
-        XmlSetAttr((class TiXmlElement*)(&elemTaxi), "field", nField);
-        XmlSetAttr((class TiXmlElement*)(&elemTaxi), "IsHomePrivilege", bHome);
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemTaxi));
-        reinterpret_cast<TiXmlElement*>(&elemTaxi)->TiXmlElement::~TiXmlElement();
-        g_mapTaxi.GetNext(pos);
+        TiXmlElement elemTaxi("taxiStation");
+        XmlSetAttr(&elemTaxi, "field", nField);
+        XmlSetAttr(&elemTaxi, "IsHomePrivilege", bHome);
+        elemRoot.InsertEndChild(elemTaxi);
     }
 
-    for (Unk_PortalMap::iterator it = mapPortals.begin(); it != mapPortals.end(); ++it) {
-        Unk_PortalList* pList = it->second.get();
-        Unk_XmlNodeBuf elemPortals;
-        reinterpret_cast<TiXmlElement*>(&elemPortals)->TiXmlElement::TiXmlElement("fieldPortal");
-        XmlSetAttr((class TiXmlElement*)(&elemPortals), "field", it->first);
-        MS2Ptr<CFieldDataCli> field = CFieldDataCli::Find(it->first);
-        if (reinterpret_cast<long long>(field.get()) == 0) {
-            XmlSetAttr((class TiXmlElement*)(&elemPortals), "indoor", 0);
-        } else {
-            unsigned int bIndoor = field->FUN_140375130() ? 1 : 0;
-            XmlSetAttr((class TiXmlElement*)(&elemPortals), "indoor", bIndoor);
-        }
+    for (Unk_PortalMap::iterator it = mapPortals.begin(), itEnd = mapPortals.end(); it != itEnd; ++it) {
+        const unsigned int& nField = it->first;
+        Unk_PortalListPtr& pList = it->second;
+        TiXmlElement elemPortals("fieldPortal");
+        XmlSetAttr(&elemPortals, "field", nField);
+        MS2Ptr<CFieldDataCli> field = CFieldDataCli::Find(nField);
+        if (field.get() != 0)
+            XmlSetAttr(&elemPortals, "indoor", field->FUN_140375130() ? 1 : 0);
+        else
+            XmlSetAttr(&elemPortals, "indoor", 0);
         for (POSITION pos = pList->GetHeadPosition(); pos != NULL;) {
             PortalInfo& rPortal = pList->GetNext(pos);
-            Unk_XmlNodeBuf elemPortal;
-            reinterpret_cast<TiXmlElement*>(&elemPortal)->TiXmlElement::TiXmlElement("portal");
-            XmlSetAttr((class TiXmlElement*)(&elemPortal), "id", rPortal.m_nId);
-            XmlSetAttr((class TiXmlElement*)(&elemPortal), "targetField", rPortal.m_nTargetField);
-            XmlSetAttr((class TiXmlElement*)(&elemPortal), "targetPortal", rPortal.m_nTargetPortal);
-            XmlSetAttr((class TiXmlElement*)(&elemPortal), "portalType", rPortal.m_nType);
+            TiXmlElement elemPortal("portal");
+            XmlSetAttr(&elemPortal, "id", rPortal.m_nId);
+            XmlSetAttr(&elemPortal, "targetField", rPortal.m_nTargetField);
+            XmlSetAttr(&elemPortal, "targetPortal", rPortal.m_nTargetPortal);
+            XmlSetAttr(&elemPortal, "portalType", rPortal.m_nType);
             MS2Ptr<CFieldDataCli> target = CFieldDataCli::Find(rPortal.m_nTargetField);
-            if (reinterpret_cast<long long>(target.get()) == 0) {
-                XmlSetAttr((class TiXmlElement*)(&elemPortal), "portalIndoor", 0);
-            } else {
-                unsigned int bIndoor = target->FUN_140375130() ? 1 : 0;
-                XmlSetAttr((class TiXmlElement*)(&elemPortal), "portalIndoor", bIndoor);
-            }
-            ((class TiXmlNode*)(void*)(&elemPortals))->InsertEndChild(*(class TiXmlNode const*)(&elemPortal));
-            reinterpret_cast<TiXmlElement*>(&elemPortal)->TiXmlElement::~TiXmlElement();
+            if (target.get() != 0)
+                XmlSetAttr(&elemPortal, "portalIndoor", target->FUN_140375130() ? 1 : 0);
+            else
+                XmlSetAttr(&elemPortal, "portalIndoor", 0);
+            elemPortals.InsertEndChild(elemPortal);
         }
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemPortals));
-        reinterpret_cast<TiXmlElement*>(&elemPortals)->TiXmlElement::~TiXmlElement();
+        elemRoot.InsertEndChild(elemPortals);
     }
 
-    for (POSITION pos = mapFluid.GetStartPosition(); pos != NULL;) {
+    for (POSITION pos = mapFluid.GetStartPosition(); pos != NULL; mapFluid.GetNext(pos)) {
         unsigned int nField = mapFluid.GetKeyAt(pos);
         CString strAttr(mapFluid.GetValueAt(pos));
-        Unk_XmlNodeBuf elemFluid;
-        reinterpret_cast<TiXmlElement*>(&elemFluid)->TiXmlElement::TiXmlElement("fluid");
-        XmlSetAttr((class TiXmlElement*)(&elemFluid), "field", nField);
-        XmlSetAttr((class TiXmlElement*)(&elemFluid), "attr", strAttr);
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemFluid));
-        reinterpret_cast<TiXmlElement*>(&elemFluid)->TiXmlElement::~TiXmlElement();
-        mapFluid.GetNext(pos);
+        TiXmlElement elemFluid("fluid");
+        XmlSetAttr(&elemFluid, "field", nField);
+        XmlSetAttr(&elemFluid, "attr", strAttr);
+        elemRoot.InsertEndChild(elemFluid);
     }
 
-    for (Unk_FieldMapB::iterator it = mapInteract.begin(); it != mapInteract.end(); ++it) {
-        Unk_XmlNodeBuf elemInteract;
-        reinterpret_cast<TiXmlElement*>(&elemInteract)->TiXmlElement::TiXmlElement("interactObject");
-        XmlSetAttr((class TiXmlElement*)(&elemInteract), "id", it->first);
-        for (POSITION pos = it->second.get()->GetHeadPosition(); pos != NULL;) {
-            Unk_XmlNodeBuf elemField;
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::TiXmlElement("field");
-            unsigned int nField = it->second.get()->GetNext(pos);
-            XmlSetAttr((class TiXmlElement*)(&elemField), "id", nField);
-            ((class TiXmlNode*)(void*)(&elemInteract))->InsertEndChild(*(class TiXmlNode const*)(&elemField));
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::~TiXmlElement();
+    for (Unk_FieldMapB::iterator it = mapInteract.begin(), itEnd = mapInteract.end(); it != itEnd; ++it) {
+        const int& nId = it->first;
+        Unk_FieldIdListPtr& pList = it->second;
+        TiXmlElement elemInteractObject("interactObject");
+        XmlSetAttr(&elemInteractObject, "id", nId);
+        for (POSITION pos = pList.get()->GetHeadPosition(); pos != NULL; pList.get()->GetNext(pos)) {
+            TiXmlElement elemField("field");
+            unsigned int nField = pList.get()->GetAt(pos);
+            XmlSetAttr(&elemField, "id", nField);
+            elemInteractObject.InsertEndChild(elemField);
         }
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemInteract));
-        reinterpret_cast<TiXmlElement*>(&elemInteract)->TiXmlElement::~TiXmlElement();
+        elemRoot.InsertEndChild(elemInteractObject);
     }
 
-    for (Unk_FieldMapA::iterator it = g_mapPet.begin(); it != g_mapPet.end(); ++it) {
-        Unk_XmlNodeBuf elemPet;
-        reinterpret_cast<TiXmlElement*>(&elemPet)->TiXmlElement::TiXmlElement("pet");
-        XmlSetAttr((class TiXmlElement*)(&elemPet), "id", it->first);
-        for (POSITION pos = it->second.get()->GetHeadPosition(); pos != NULL;) {
-            Unk_XmlNodeBuf elemField;
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::TiXmlElement("field");
-            unsigned int nField = it->second.get()->GetNext(pos);
-            XmlSetAttr((class TiXmlElement*)(&elemField), "id", nField);
-            ((class TiXmlNode*)(void*)(&elemPet))->InsertEndChild(*(class TiXmlNode const*)(&elemField));
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::~TiXmlElement();
+    for (Unk_FieldMapA::iterator it = g_mapPet.begin(), itEnd = g_mapPet.end(); it != itEnd; ++it) {
+        const unsigned int& nId = it->first;
+        Unk_FieldIdListPtr& pList = it->second;
+        TiXmlElement elemPet("pet");
+        XmlSetAttr(&elemPet, "id", nId);
+        for (POSITION pos = pList.get()->GetHeadPosition(); pos != NULL; pList.get()->GetNext(pos)) {
+            TiXmlElement elemField("field");
+            unsigned int nField = pList.get()->GetAt(pos);
+            XmlSetAttr(&elemField, "id", nField);
+            elemPet.InsertEndChild(elemField);
         }
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemPet));
-        reinterpret_cast<TiXmlElement*>(&elemPet)->TiXmlElement::~TiXmlElement();
+        elemRoot.InsertEndChild(elemPet);
     }
 
-    for (Unk_FieldMapA::iterator it = g_mapLiftable.begin(); it != g_mapLiftable.end(); ++it) {
-        Unk_XmlNodeBuf elemLiftable;
-        reinterpret_cast<TiXmlElement*>(&elemLiftable)->TiXmlElement::TiXmlElement("liftable");
-        XmlSetAttr((class TiXmlElement*)(&elemLiftable), "id", it->first);
-        for (POSITION pos = it->second.get()->GetHeadPosition(); pos != NULL;) {
-            Unk_XmlNodeBuf elemField;
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::TiXmlElement("field");
-            unsigned int nField = it->second.get()->GetNext(pos);
-            XmlSetAttr((class TiXmlElement*)(&elemField), "id", nField);
-            ((class TiXmlNode*)(void*)(&elemLiftable))->InsertEndChild(*(class TiXmlNode const*)(&elemField));
-            reinterpret_cast<TiXmlElement*>(&elemField)->TiXmlElement::~TiXmlElement();
+    for (Unk_FieldMapA::iterator it = g_mapLiftable.begin(), itEnd = g_mapLiftable.end(); it != itEnd; ++it) {
+        const unsigned int& nId = it->first;
+        Unk_FieldIdListPtr& pList = it->second;
+        TiXmlElement elemLiftable("liftable");
+        XmlSetAttr(&elemLiftable, "id", nId);
+        for (POSITION pos = pList.get()->GetHeadPosition(); pos != NULL; pList.get()->GetNext(pos)) {
+            TiXmlElement elemField("field");
+            unsigned int nField = pList.get()->GetAt(pos);
+            XmlSetAttr(&elemField, "id", nField);
+            elemLiftable.InsertEndChild(elemField);
         }
-        ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemLiftable));
-        reinterpret_cast<TiXmlElement*>(&elemLiftable)->TiXmlElement::~TiXmlElement();
+        elemRoot.InsertEndChild(elemLiftable);
     }
 
     if (bLog)
         CDebugConsole::FUN_141168200()->FUN_1411683e0("Write FieldMetaTable Complete.");
-    ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&elemRoot));
-    CString strLang = static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetLocaleName();
-    const fmt::internal::ArgArray<1>::Type arrOut = {fmt::internal::MakeValue< fmt::BasicFormatter<char> >(strLang)};
-    CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", fmt::ArgList(fmt::internal::make_type(strLang), arrOut));
+    ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(elemRoot);
+    CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", static_cast<const CString&>(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetLocaleName()));
     if (!docOut.SaveFile(strOut))
         return false;
     if (bLog && ((class Unk_ExportLog*)CDebugConsole::FUN_141168200()) != NULL)

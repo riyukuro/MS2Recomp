@@ -1,0 +1,17 @@
+170a
+    if (!pvMem)
+        throw std::bad_alloc();
+    return pvMem;
+.
+165@6s "turn" "m ="
+165@4s "r" "pvM"
+78a
+    if (!pvMem)
+        throw std::bad_alloc();
+    return pvMem;
+.
+73@6s "turn" "m ="
+73@4s "r" "void* pvM"
+16a
+#include <new>
+.

@@ -1,0 +1,10 @@
+0a
+// gb-terrain local prelude (never committed). The studio built Gamebryo with
+// EE_USE_NATIVE_STL (docs/GAMEBRYO.md), where efd::stlport does not exist; SDK
+// NiTerrain sources still spell efd::stlport::make_pair/min. Alias it to std.
+#pragma once
+#include <utility>
+#include <algorithm>
+namespace efd { namespace stlport = ::std; }
+
+.

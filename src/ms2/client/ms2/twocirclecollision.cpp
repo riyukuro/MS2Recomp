@@ -32,11 +32,11 @@ CTwoCircleCollision::~CTwoCircleCollision()
 }
 
 // @0x141868c60
-void CTwoCircleCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
+void CTwoCircleCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
 {
     if (reinterpret_cast<const efd::Point3&>(m_ptCenter) != reinterpret_cast<const efd::Point3&>(ptPos))
     {
-        m_ptCenter = ptPos;
+        m_ptCenter = reinterpret_cast<const Vector3&>(ptPos);
         CBaseCollision::vfunc_3(ptPos, ptDir, fScale);
     }
 }

@@ -46,7 +46,8 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
         {
             // MS2: an unused asset still loading drops its file from the cache, or flags it in m_ms2Set so
             // SceneGraphCache evicts it when the load completes
-            m_spSceneGraphCache->MS2_ReleaseLoadingFile(spAssetData->m_identifier);
+            SceneGraphCache::MS2CacheMap::const_iterator it = m_spSceneGraphCache->MS2_GetCache().find(spAssetData->m_identifier);
+            if (it != m_spSceneGraphCache->MS2_GetCache().end()) m_spSceneGraphCache->MS2_EraseCache(it); else m_spSceneGraphCache->MS2_AddLoadingFile(spAssetData->m_identifier);
 .
 3219,3220c
             if (spAssetData->m_state == AssetData::ADS_Ready)

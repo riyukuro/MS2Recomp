@@ -129,18 +129,18 @@ void CEditCameraMode::vfunc_8(double fTime)
     if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
-        ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
+        ptRot = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)) / 180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptRight));
-        ptRight.FUN_140968990();
+        ptRight.Unitize();
         Vector3 ptUp;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(1, reinterpret_cast<efd::Point3&>(ptUp));
-        ptUp.FUN_140968990();
+        ptUp.Unitize();
         Vector3 ptForward;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
-        ptForward.FUN_140968990();
+        ptForward.Unitize();
         efd::Point3 ptPos = FUN_1409f2540();
         reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + ((reinterpret_cast<const efd::Point3&>(ptRight) * m_78.x + reinterpret_cast<const efd::Point3&>(ptUp) * m_78.z) + reinterpret_cast<const efd::Point3&>(ptForward) * m_78.y) * 1000.0f * ((float)fTime)));
         vfunc_3(reinterpret_cast<Vector3&>(ptPos));

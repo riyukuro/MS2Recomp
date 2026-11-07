@@ -649,3 +649,81 @@ big2_prologTok	1423bf1f0	func
 ?Assignable@?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAAAEAV12@XZ	1423313a0	func
 ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@I@std@@PEAX@2@@Z	1421100f0	func
 ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@I@std@@PEAX@2@@Z	14210fc70	func
+??0CefBinaryValueCToCpp@@QEAA@XZ	142787270	func
+??0CefTaskRunnerCToCpp@@QEAA@XZ	14278bcd0	func
+??0CefDOMNodeCToCpp@@QEAA@XZ	1427a9550	func
+??0CefMenuModelCToCpp@@QEAA@XZ	1427ad990	func
+??0CefAuthCallbackCToCpp@@QEAA@XZ	1427b08f0	func
+??0CefPrintSettingsCToCpp@@QEAA@XZ	1427b3a60	func
+??0CefFrameCToCpp@@QEAA@XZ	1427882a0	func
+??0CefV8StackTraceCToCpp@@QEAA@XZ	1427aa5f0	func
+??0CefRequestCallbackCToCpp@@QEAA@XZ	1427b0ab0	func
+??0CefRunContextMenuCallbackCToCpp@@QEAA@XZ	1427b0fc0	func
+??0CefV8StackFrameCToCpp@@QEAA@XZ	1427b4560	func
+??0CefProcessMessageCToCpp@@QEAA@XZ	1427792b0	func
+??0CefV8ContextCToCpp@@QEAA@XZ	14277c640	func
+??0CefV8ValueCToCpp@@QEAA@XZ	14277e450	func
+??0CefBrowserHostCToCpp@@QEAA@XZ	142780620	func
+??0CefListValueCToCpp@@QEAA@XZ	142782d90	func
+??0CefCommandLineCToCpp@@QEAA@XZ	1427876e0	func
+??0CefValueCToCpp@@QEAA@XZ	142789080	func
+??0CefBrowserCToCpp@@QEAA@XZ	14278afe0	func
+??0CefURLRequestCToCpp@@QEAA@XZ	14278c2d0	func
+??0CefDragDataCToCpp@@QEAA@XZ	142790300	func
+??0CefNavigationEntryCToCpp@@QEAA@XZ	142791f20	func
+??0CefRequestContextCToCpp@@QEAA@XZ	142792980	func
+??0CefDictionaryValueCToCpp@@QEAA@XZ	142794520	func
+??0CefRequestCToCpp@@QEAA@XZ	1427984f0	func
+??0CefV8ExceptionCToCpp@@QEAA@XZ	1427994b0	func
+??0CefImageCToCpp@@QEAA@XZ	1427a4bd0	func
+??0CefStreamWriterCToCpp@@QEAA@XZ	1427a5300	func
+??0CefSSLStatusCToCpp@@QEAA@XZ	1427a6cd0	func
+??0CefCookieManagerCToCpp@@QEAA@XZ	1427a79b0	func
+??0CefResponseCToCpp@@QEAA@XZ	1427aacf0	func
+??0CefPostDataCToCpp@@QEAA@XZ	1427ab7b0	func
+??0CefDOMDocumentCToCpp@@QEAA@XZ	1427ac280	func
+??0CefContextMenuParamsCToCpp@@QEAA@XZ	1427acb50	func
+??0CefCallbackCToCpp@@QEAA@XZ	1427aee70	func
+??0CefFileDialogCallbackCToCpp@@QEAA@XZ	1427af020	func
+??0CefBeforeDownloadCallbackCToCpp@@QEAA@XZ	1427af220	func
+??0CefDownloadItemCallbackCToCpp@@QEAA@XZ	1427af3b0	func
+??0CefDownloadItemCToCpp@@QEAA@XZ	1427af590	func
+??0CefJSDialogCallbackCToCpp@@QEAA@XZ	1427b0040	func
+??0CefX509CertificateCToCpp@@QEAA@XZ	1427b13f0	func
+??0CefPrintDialogCallbackCToCpp@@QEAA@XZ	1427b32a0	func
+??0CefPostDataElementCToCpp@@QEAA@XZ	1427b4b00	func
+??0CefX509CertPrincipalCToCpp@@QEAA@XZ	1427b56d0	func
+??0CefStreamReaderCToCpp@@QEAA@XZ	1427b5f70	func
+?UnwrapDerived@?$CefCToCppRefCounted@VCefCommandLineCToCpp@@VCefCommandLine@@U_cef_command_line_t@@@@CAPEAU_cef_command_line_t@@W4CefWrapperType@@PEAVCefCommandLine@@@Z	142788150	func
+??__FkCAT_INVALID@efd@@YAXXZ	142cc51b0	alias	__texturerapiditerationservice.cpp
+??__FkCAT_INVALID@efd@@YAXXZ	142cc51e0	alias	__shaderservice.cpp
+?GetCreateMissingStreams@NiMeshMaterialBinding@@SA_NXZ	14287eaf0	func
+?Serialize@Point2@efd@@QEAAXAEAVArchive@2@@Z	14209ce00	func
+??__ENiSystemSDMObject@@YAXXZ	140127a00	alias	__niinitoptions.cpp
+??__ENSFParserLibSDMObject@@YAXXZ	1401280d0	alias	__nsfparserlibsdm.cpp
+??__ENiDX9RendererSetupSDMObject@@YAXXZ	140121f50	alias	__nidx9renderersetup.cpp
+??__EgkFormatTable@@YAXXZ	140124160	func
+??__EInvalidEntity@egfLua@@YAXXZ	14012bdc0	alias	__entitylua.cpp
+??__EInvalidEntity@egfLua@@YAXXZ	140131250	alias	__egfluasdm.cpp
+??__E?ms_kTypeID@?$NiTerrainEventHandlerDelegate@VNiTerrainAssetReference@@IVNiTerrainSurfaceLibrary@@@@1VNiTerrainEventDelegateTypeID@@A@@YAXXZ	140127f70	func
+??__ENiAnimationSDMObject@@YAXXZ	14012a380	alias	__serviceallocator.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140134040	alias	__cameradata.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140155d70	alias	__rendercontext.cpp
+??__EkInvalidSequence@egmAnimationBindings@@YAXXZ	1401577e0	alias	egmanimationbindings_luawrap_release
+??__EkSequenceNone@egmAnimationBindings@@YAXXZ	140157810	alias	egmanimationbindings_luawrap_release
+??__EInvalidEntity@egfLua@@YAXXZ	140132540	alias	egmanimationbindings_luawrap_release
+??__EkCAT_INVALID@efd@@YAXXZ	14012b930	alias	__inputserviceevent.cpp
+??__EkCAT_INVALID@efd@@YAXXZ	14012b9a0	alias	__inputhandler.cpp
+?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@@Z	141f75140	func
+??$BinaryStreamSave@_K@efd@@YA_NAEAVBinaryStream@0@PEB_KI@Z	142827d20	func
+LocalPcreMalloc	1428ea350	func	pcre_globals.c static: pcre_malloc/pcre_stack_malloc 0x143a51158/68
+LocalPcreFree	1428ea360	func	pcre_globals.c static: pcre_free/pcre_stack_free 0x143a51160/70
+??__EInvalidEntity@egfLua@@YAXXZ	1401310f0	alias	attachednifasset_luawrap_release
+??__EInvalidEntity@egfLua@@YAXXZ	1401313b0	alias	bapicoreruntime_luawrap_release
+# fe10: vector<BaseAndExponent<EC2NPoint,Integer>>::_Tidy (0x60-byte elements, calls ~BaseAndExponent<EC2NPoint,Integer>
+# 0x1423283e0); without this row a caller target paired vector<vector<Integer>>::_Tidy (0x18 elements) here, functional
+?_Tidy@?$vector@U?$BaseAndExponent@UEC2NPoint@CryptoPP@@VInteger@2@@CryptoPP@@V?$allocator@U?$BaseAndExponent@UEC2NPoint@CryptoPP@@VInteger@2@@CryptoPP@@@std@@@std@@AEAAXXZ	142329990	func
+??__ENiAnimationSDMObject@@YAXXZ	140155ad0	alias	__niactormanager.cpp
+?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IVutf8string@efd@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIVutf8string@efd@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIVutf8string@efd@@@std@@PEAX@2@@Z	14210c0f0	alias	ddeparser
+??0?$GetValueHelperClass@V?$DL_PrivateKey@UECPPoint@CryptoPP@@@CryptoPP@@V12@@CryptoPP@@QEAA@PEBV?$DL_PrivateKey@UECPPoint@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	142324e30	func
+??0?$GetValueHelperClass@V?$DL_PrivateKey@VInteger@CryptoPP@@@CryptoPP@@V12@@CryptoPP@@QEAA@PEBV?$DL_PrivateKey@VInteger@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	1423250d0	func

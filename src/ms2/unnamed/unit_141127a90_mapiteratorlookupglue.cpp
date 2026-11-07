@@ -170,55 +170,55 @@ char* FUN_14115a820(char*);
 char* FUN_14115a840(char*);
 char* FUN_14115a860(char*);
 char* FUN_14115a880(char*);
-Unk_IterA<0>* FUN_14111d6e0(void*, Unk_IterA<0>*, void*);
-Unk_IterB<1>* FUN_14111d720(void*, Unk_IterB<1>*, void*);
-Unk_IterA<2>* FUN_14111d760(void*, Unk_IterA<2>*, void*);
-void* FUN_140181b70(Unk_Key*);
-Unk_IterA<2>* FUN_14111d7a0(void*, Unk_IterA<2>*, void*);
-Unk_IterA<3>* FUN_14111d7e0(void*, Unk_IterA<3>*, void*);
-Unk_IterA<4>* FUN_14111d820(void*, Unk_IterA<4>*, void*);
-Unk_IterA<4>* FUN_14111d860(void*, Unk_IterA<4>*, void*);
-Unk_IterA<5>* FUN_14111d8a0(void*, Unk_IterA<5>*, void*);
-Unk_IterA<6>* FUN_14111d8e0(void*, Unk_IterA<6>*, void*);
-Unk_IterA<7>* FUN_14111d920(void*, Unk_IterA<7>*, void*);
-Unk_IterA<8>* FUN_14111d960(void*, Unk_IterA<8>*, void*);
-Unk_IterA<9>* FUN_14111d9a0(void*, Unk_IterA<9>*, void*);
-Unk_IterA<10>* FUN_14111d9e0(void*, Unk_IterA<10>*, void*);
-Unk_IterA<10>* FUN_14111da20(void*, Unk_IterA<10>*, void*);
-Unk_IterA<11>* FUN_14111da60(void*, Unk_IterA<11>*, void*);
-Unk_IterA<12>* FUN_14111daa0(void*, Unk_IterA<12>*, void*);
-Unk_IterA<13>* FUN_14111dae0(void*, Unk_IterA<13>*, void*);
-Unk_IterA<13>* FUN_14111db20(void*, Unk_IterA<13>*, void*);
-Unk_IterA<14>* FUN_14111db60(void*, Unk_IterA<14>*, void*);
+// Unk_IterA<0>* FUN_14111d6e0(void*, Unk_IterA<0>*, void*);
+// Unk_IterB<1>* FUN_14111d720(void*, Unk_IterB<1>*, void*);
+// Unk_IterA<2>* FUN_14111d760(void*, Unk_IterA<2>*, void*);
+// void* FUN_140181b70(Unk_Key*);
+// Unk_IterA<2>* FUN_14111d7a0(void*, Unk_IterA<2>*, void*);
+// Unk_IterA<3>* FUN_14111d7e0(void*, Unk_IterA<3>*, void*);
+// Unk_IterA<4>* FUN_14111d820(void*, Unk_IterA<4>*, void*);
+// Unk_IterA<4>* FUN_14111d860(void*, Unk_IterA<4>*, void*);
+// Unk_IterA<5>* FUN_14111d8a0(void*, Unk_IterA<5>*, void*);
+// Unk_IterA<6>* FUN_14111d8e0(void*, Unk_IterA<6>*, void*);
+// Unk_IterA<7>* FUN_14111d920(void*, Unk_IterA<7>*, void*);
+// Unk_IterA<8>* FUN_14111d960(void*, Unk_IterA<8>*, void*);
+// Unk_IterA<9>* FUN_14111d9a0(void*, Unk_IterA<9>*, void*);
+// Unk_IterA<10>* FUN_14111d9e0(void*, Unk_IterA<10>*, void*);
+// Unk_IterA<10>* FUN_14111da20(void*, Unk_IterA<10>*, void*);
+// Unk_IterA<11>* FUN_14111da60(void*, Unk_IterA<11>*, void*);
+// Unk_IterA<12>* FUN_14111daa0(void*, Unk_IterA<12>*, void*);
+// Unk_IterA<13>* FUN_14111dae0(void*, Unk_IterA<13>*, void*);
+// Unk_IterA<13>* FUN_14111db20(void*, Unk_IterA<13>*, void*);
+// Unk_IterA<14>* FUN_14111db60(void*, Unk_IterA<14>*, void*);
 // 0x140d7b4e0 = std::map<int, bool>::iterator::operator-> (the ICF copy FUN_141127f50 calls)
-Unk_Cursor* FUN_14111dba0(void*, Unk_Cursor*, void*);
+// Unk_Cursor* FUN_14111dba0(void*, Unk_Cursor*, void*);
 #include <map>
 #include "ms2/placeholder/ms2svrptr.h"   // C3: the real maps of FUN_141127f90 / FUN_141128010 (below)
-void* FUN_140181b80(Unk_Key*);
+// void* FUN_140181b80(Unk_Key*);
 // 0x1404482f0 = std::map<unsigned long, unsigned long>::iterator::operator-> (the ICF copy FUN_141127fd0 calls)
-Unk_Cursor* FUN_14111dc20(void*, Unk_Cursor*, void*);
+// Unk_Cursor* FUN_14111dc20(void*, Unk_Cursor*, void*);
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 
-Unk_IterA<15>* FUN_14111dca0(void*, Unk_IterA<15>*, void*);
-Unk_IterA<16>* FUN_14111dce0(void*, Unk_IterA<16>*, void*);
+// Unk_IterA<15>* FUN_14111dca0(void*, Unk_IterA<15>*, void*);
+// Unk_IterA<16>* FUN_14111dce0(void*, Unk_IterA<16>*, void*);
 // 0x1404eb810 = std::move<std::pair<int, int>&> (FUN_141128090 key)
-Unk_IterA<17>* FUN_14111dd20(void*, Unk_IterA<17>*, void*);
-Unk_IterA<18>* FUN_14111dd60(void*, Unk_IterA<18>*, void*);
-Unk_IterA<19>* FUN_14111dda0(void*, Unk_IterA<19>*, void*);
-Unk_IterA<20>* FUN_14111dde0(void*, Unk_IterA<20>*, void*);
-Unk_IterB<21>* FUN_14111de20(void*, Unk_IterB<21>*, void*);
-Unk_IterB<21>* FUN_14111de60(void*, Unk_IterB<21>*, void*);
-Unk_IterB<22>* FUN_14111dea0(void*, Unk_IterB<22>*, void*);
-void* FUN_14111d530(Unk_Key*);
-Unk_IterB<22>* FUN_14111dee0(void*, Unk_IterB<22>*, void*);
-Unk_IterB<23>* FUN_14111df20(void*, Unk_IterB<23>*, void*);
-Unk_IterB<23>* FUN_14111df60(void*, Unk_IterB<23>*, void*);
+// Unk_IterA<17>* FUN_14111dd20(void*, Unk_IterA<17>*, void*);
+// Unk_IterA<18>* FUN_14111dd60(void*, Unk_IterA<18>*, void*);
+// Unk_IterA<19>* FUN_14111dda0(void*, Unk_IterA<19>*, void*);
+// Unk_IterA<20>* FUN_14111dde0(void*, Unk_IterA<20>*, void*);
+// Unk_IterB<21>* FUN_14111de20(void*, Unk_IterB<21>*, void*);
+// Unk_IterB<21>* FUN_14111de60(void*, Unk_IterB<21>*, void*);
+// Unk_IterB<22>* FUN_14111dea0(void*, Unk_IterB<22>*, void*);
+// void* FUN_14111d530(Unk_Key*);
+// Unk_IterB<22>* FUN_14111dee0(void*, Unk_IterB<22>*, void*);
+// Unk_IterB<23>* FUN_14111df20(void*, Unk_IterB<23>*, void*);
+// Unk_IterB<23>* FUN_14111df60(void*, Unk_IterB<23>*, void*);
 class Cube;
 template <class T> class MS2Ptr;
 std::pair<const int, MS2Ptr<Cube> >* FUN_140885360(void* pIter);   // ugcbuildvalidator.cpp
-Unk_Cursor* FUN_14111dfa0(void*, Unk_Cursor*, void*);
+// Unk_Cursor* FUN_14111dfa0(void*, Unk_Cursor*, void*);
 #include <efd/StdContainers.h>   // C3: FUN_141148ff0 / FUN_141149030 were the vectors' _Myfirst()
-struct Unk_CMISElem52; enum Unk_CMISKindC : int;   // cubemapinformationservice_tail.h
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"   // the real map types of the try_emplace calls (&try_emplace(..).first: the casts emit no code)
 
 // @0x1411284e0
 char* FUN_1411284e0(Unk_IterB<21>* pIter)
@@ -373,141 +373,141 @@ char* FUN_1411287e0(Unk_IterB<23>* pIter)
 // @0x141127a90
 char* FUN_141127a90(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<0>> it;
-    return (FUN_141128500(FUN_14111d6e0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d6e0), read through the unit's iterator view
+    return (FUN_141128500(reinterpret_cast<Unk_IterA<0>*>(const_cast<Unk_CMISMapMark::iterator*>(&static_cast<const std::pair<Unk_CMISMapMark::iterator, bool>&>(((Unk_CMISMapMark*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127ad0
 char* FUN_141127ad0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterB<1>> it;
-    return (FUN_141128520(FUN_14111d720(pMap, &it.first, key)) + 4);
+    // real try_emplace (0x14111d720), read through the unit's iterator view
+    return (FUN_141128520(reinterpret_cast<Unk_IterB<1>*>(const_cast<Unk_CMISMapNear::iterator*>(&static_cast<const std::pair<Unk_CMISMapNear::iterator, bool>&>(((Unk_CMISMapNear*)pMap)->try_emplace(*(const int*)key)).first))) + 4);
 }
 
 // @0x141127b10
 char* FUN_141127b10(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterA<2>> it;
-    return (FUN_141128540(FUN_14111d760(pMap, &it.first, FUN_140181b70(pKey))) + 8);
+    // real try_emplace (0x14111d760), read through the unit's iterator view
+    return (FUN_141128540(reinterpret_cast<Unk_IterA<2>*>(const_cast<Unk_CMISMapCell::iterator*>(&static_cast<const std::pair<Unk_CMISMapCell::iterator, bool>&>(((Unk_CMISMapCell*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
 }
 
 // @0x141127b50
 char* FUN_141127b50(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<2>> it;
-    return (FUN_141128540(FUN_14111d7a0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d7a0), read through the unit's iterator view
+    return (FUN_141128540(reinterpret_cast<Unk_IterA<2>*>(const_cast<Unk_CMISMapCell::iterator*>(&static_cast<const std::pair<Unk_CMISMapCell::iterator, bool>&>(((Unk_CMISMapCell*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127b90
 char* FUN_141127b90(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<3>> it;
-    return (FUN_141128560(FUN_14111d7e0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d7e0), read through the unit's iterator view
+    return (FUN_141128560(reinterpret_cast<Unk_IterA<3>*>(const_cast<efd::map<long, egf::EntityPtr>::iterator*>(&static_cast<const std::pair<efd::map<long, egf::EntityPtr>::iterator, bool>&>(((efd::map<long, egf::EntityPtr>*)pMap)->try_emplace(*(const long*)key)).first))) + 8);
 }
 
 // @0x141127bd0
 char* FUN_141127bd0(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterA<4>> it;
-    return (FUN_141128580(FUN_14111d820(pMap, &it.first, FUN_140181b70(pKey))) + 8);
+    // real try_emplace (0x14111d820), read through the unit's iterator view
+    return (FUN_141128580(reinterpret_cast<Unk_IterA<4>*>(const_cast<Unk_CMISMapDoll::iterator*>(&static_cast<const std::pair<Unk_CMISMapDoll::iterator, bool>&>(((Unk_CMISMapDoll*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
 }
 
 // @0x141127c10
 char* FUN_141127c10(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<4>> it;
-    return (FUN_141128580(FUN_14111d860(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d860), read through the unit's iterator view
+    return (FUN_141128580(reinterpret_cast<Unk_IterA<4>*>(const_cast<Unk_CMISMapDoll::iterator*>(&static_cast<const std::pair<Unk_CMISMapDoll::iterator, bool>&>(((Unk_CMISMapDoll*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127c50
 char* FUN_141127c50(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<5>> it;
-    return (FUN_1411285a0(FUN_14111d8a0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d8a0), read through the unit's iterator view
+    return (FUN_1411285a0(reinterpret_cast<Unk_IterA<5>*>(const_cast<Unk_CMISStdMapCube::iterator*>(&static_cast<const std::pair<Unk_CMISStdMapCube::iterator, bool>&>(((Unk_CMISStdMapCube*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127c90
 char* FUN_141127c90(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<6>> it;
-    return (FUN_1411285c0(FUN_14111d8e0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d8e0), read through the unit's iterator view
+    return (FUN_1411285c0(reinterpret_cast<Unk_IterA<6>*>(const_cast<Unk_CMISMapSetEffect::iterator*>(&static_cast<const std::pair<Unk_CMISMapSetEffect::iterator, bool>&>(((Unk_CMISMapSetEffect*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127cd0
 char* FUN_141127cd0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<7>> it;
-    return (FUN_1411285e0(FUN_14111d920(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d920), read through the unit's iterator view
+    return (FUN_1411285e0(reinterpret_cast<Unk_IterA<7>*>(const_cast<Unk_CMISMapCube::iterator*>(&static_cast<const std::pair<Unk_CMISMapCube::iterator, bool>&>(((Unk_CMISMapCube*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127d10
 char* FUN_141127d10(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<8>> it;
-    return (FUN_141128600(FUN_14111d960(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d960), read through the unit's iterator view
+    return (FUN_141128600(reinterpret_cast<Unk_IterA<8>*>(const_cast<Unk_CMISMapHead::iterator*>(&static_cast<const std::pair<Unk_CMISMapHead::iterator, bool>&>(((Unk_CMISMapHead*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127d50
 char* FUN_141127d50(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<9>> it;
-    return (FUN_141128620(FUN_14111d9a0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111d9a0), read through the unit's iterator view
+    return (FUN_141128620(reinterpret_cast<Unk_IterA<9>*>(const_cast<Unk_CMISMapBuckets::iterator*>(&static_cast<const std::pair<Unk_CMISMapBuckets::iterator, bool>&>(((Unk_CMISMapBuckets*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127d90
 char* FUN_141127d90(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterA<10>> it;
-    return (FUN_141128640(FUN_14111d9e0(pMap, &it.first, FUN_140181b70(pKey))) + 8);
+    // real try_emplace (0x14111d9e0), read through the unit's iterator view
+    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISMapCubeGroups::iterator*>(&static_cast<const std::pair<Unk_CMISMapCubeGroups::iterator, bool>&>(((Unk_CMISMapCubeGroups*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
 }
 
 // @0x141127dd0
 char* FUN_141127dd0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<10>> it;
-    return (FUN_141128640(FUN_14111da20(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111da20), read through the unit's iterator view
+    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISMapCubeGroups::iterator*>(&static_cast<const std::pair<Unk_CMISMapCubeGroups::iterator, bool>&>(((Unk_CMISMapCubeGroups*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127e10
 char* FUN_141127e10(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<11>> it;
-    return (FUN_141128660(FUN_14111da60(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111da60), read through the unit's iterator view
+    return (FUN_141128660(reinterpret_cast<Unk_IterA<11>*>(const_cast<Unk_CMISMapColumns::iterator*>(&static_cast<const std::pair<Unk_CMISMapColumns::iterator, bool>&>(((Unk_CMISMapColumns*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127e50
 char* FUN_141127e50(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<12>> it;
-    return (FUN_141128680(FUN_14111daa0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111daa0), read through the unit's iterator view
+    return (FUN_141128680(reinterpret_cast<Unk_IterA<12>*>(const_cast<Unk_CMISMapEntVec::iterator*>(&static_cast<const std::pair<Unk_CMISMapEntVec::iterator, bool>&>(((Unk_CMISMapEntVec*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127e90
 char* FUN_141127e90(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterA<13>> it;
-    return (FUN_1411286a0(FUN_14111dae0(pMap, &it.first, FUN_140181b70(pKey))) + 8);
+    // real try_emplace (0x14111dae0), read through the unit's iterator view
+    return (FUN_1411286a0(reinterpret_cast<Unk_IterA<13>*>(const_cast<Unk_CMISMapEntityId::iterator*>(&static_cast<const std::pair<Unk_CMISMapEntityId::iterator, bool>&>(((Unk_CMISMapEntityId*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
 }
 
 // @0x141127ed0
 char* FUN_141127ed0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<13>> it;
-    return (FUN_1411286a0(FUN_14111db20(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111db20), read through the unit's iterator view
+    return (FUN_1411286a0(reinterpret_cast<Unk_IterA<13>*>(const_cast<Unk_CMISMapEntityId::iterator*>(&static_cast<const std::pair<Unk_CMISMapEntityId::iterator, bool>&>(((Unk_CMISMapEntityId*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127f10
 char* FUN_141127f10(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<14>> it;
-    return (FUN_1411286c0(FUN_14111db60(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111db60), read through the unit's iterator view
+    return (FUN_1411286c0(reinterpret_cast<Unk_IterA<14>*>(const_cast<Unk_CMISMapCubeTimer::iterator*>(&static_cast<const std::pair<Unk_CMISMapCubeTimer::iterator, bool>&>(((Unk_CMISMapCubeTimer*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127f50
 char* FUN_141127f50(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_Cursor> it;
-    return (char*)&reinterpret_cast<std::map<int, bool>::iterator*>(FUN_14111dba0(pMap, &it.first, FUN_140181b70(pKey)))->operator->()->second;
+    // real try_emplace (0x14111dba0), read through the unit's iterator view
+    return (char*)&reinterpret_cast<std::map<int, bool>::iterator*>(const_cast<Unk_CMISMapKind::iterator*>(&static_cast<const std::pair<Unk_CMISMapKind::iterator, bool>&>(((Unk_CMISMapKind*)pMap)->try_emplace(std::move(*(int*)pKey))).first))->operator->()->second;
 }
 
 // @0x141127f90
@@ -520,8 +520,8 @@ char* FUN_141127f90(void* pMap, Unk_Key* pKey)
 // @0x141127fd0
 char* FUN_141127fd0(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_Cursor> it;
-    return (char*)&reinterpret_cast<std::map<unsigned long, unsigned long>::iterator*>(FUN_14111dc20(pMap, &it.first, FUN_140181b80(pKey)))->operator->()->second;
+    // real try_emplace (0x14111dc20), read through the unit's iterator view
+    return (char*)&reinterpret_cast<std::map<unsigned long, unsigned long>::iterator*>(const_cast<Unk_CMISMapUIntInt::iterator*>(&static_cast<const std::pair<Unk_CMISMapUIntInt::iterator, bool>&>(((Unk_CMISMapUIntInt*)pMap)->try_emplace(std::move(*(unsigned int*)pKey))).first))->operator->()->second;
 }
 
 // @0x141128010
@@ -534,92 +534,92 @@ char* FUN_141128010(void* pMap, Unk_Key* pKey)
 // @0x141128050
 char* FUN_141128050(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<15>> it;
-    return (FUN_1411286e0(FUN_14111dca0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111dca0), read through the unit's iterator view
+    return (FUN_1411286e0(reinterpret_cast<Unk_IterA<15>*>(const_cast<std::map<unsigned long, std::set<int> >::iterator*>(&static_cast<const std::pair<std::map<unsigned long, std::set<int> >::iterator, bool>&>(((std::map<unsigned long, std::set<int> >*)pMap)->try_emplace(*(const unsigned long*)key)).first))) + 8);
 }
 
 // @0x141128090
 char* FUN_141128090(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterA<16>> it;
-    return (FUN_141128700(FUN_14111dce0(pMap, &it.first, &reinterpret_cast<std::pair<int, int>&>(std::move(*reinterpret_cast<std::pair<int, int>*>(pKey))))) + 8);
+    // real try_emplace (0x14111dce0), read through the unit's iterator view
+    return (FUN_141128700(reinterpret_cast<Unk_IterA<16>*>(const_cast<efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >::iterator*>(&static_cast<const std::pair<efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >::iterator, bool>&>(((efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >*)pMap)->try_emplace(std::move(*reinterpret_cast<std::pair<int, int>*>(pKey)))).first))) + 8);
 }
 
 // @0x1411280d0
 char* FUN_1411280d0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<17>> it;
-    return (FUN_141128720(FUN_14111dd20(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111dd20), read through the unit's iterator view
+    return (FUN_141128720(reinterpret_cast<Unk_IterA<17>*>(const_cast<efd::map<CString, int>::iterator*>(&static_cast<const std::pair<efd::map<CString, int>::iterator, bool>&>(((efd::map<CString, int>*)pMap)->try_emplace(*(const CString*)key)).first))) + 8);
 }
 
 // @0x141128110
 char* FUN_141128110(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<18>> it;
-    return (FUN_141128740(FUN_14111dd60(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111dd60), read through the unit's iterator view
+    return (FUN_141128740(reinterpret_cast<Unk_IterA<18>*>(const_cast<efd::map<egf::EntityID, __int64>::iterator*>(&static_cast<const std::pair<efd::map<egf::EntityID, __int64>::iterator, bool>&>(((efd::map<egf::EntityID, __int64>*)pMap)->try_emplace(*(const egf::EntityID*)key)).first))) + 8);
 }
 
 // @0x141128150
 char* FUN_141128150(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<19>> it;
-    return (FUN_141128760(FUN_14111dda0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111dda0), read through the unit's iterator view
+    return (FUN_141128760(reinterpret_cast<Unk_IterA<19>*>(const_cast<efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >::iterator*>(&static_cast<const std::pair<efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >::iterator, bool>&>(((efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >*)pMap)->try_emplace(*(const egf::EntityID*)key)).first))) + 8);
 }
 
 // @0x141128190
 char* FUN_141128190(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterA<20>> it;
-    return (FUN_141128780(FUN_14111dde0(pMap, &it.first, key)) + 8);
+    // real try_emplace (0x14111dde0), read through the unit's iterator view
+    return (FUN_141128780(reinterpret_cast<Unk_IterA<20>*>(const_cast<efd::map<egf::EntityID, MS2Ptr<Cube> >::iterator*>(&static_cast<const std::pair<efd::map<egf::EntityID, MS2Ptr<Cube> >::iterator, bool>&>(((efd::map<egf::EntityID, MS2Ptr<Cube> >*)pMap)->try_emplace(*(const egf::EntityID*)key)).first))) + 8);
 }
 
 // @0x1411281d0
 char* FUN_1411281d0(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterB<21>> it;
-    return (FUN_1411287a0(FUN_14111de20(pMap, &it.first, key)) + 4);
+    // real try_emplace (0x14111de20), read through the unit's iterator view
+    return (FUN_1411287a0(reinterpret_cast<Unk_IterB<21>*>(const_cast<efd::map<Unk_CMISKindA, int>::iterator*>(&static_cast<const std::pair<efd::map<Unk_CMISKindA, int>::iterator, bool>&>(((efd::map<Unk_CMISKindA, int>*)pMap)->try_emplace(*(const Unk_CMISKindA*)key)).first))) + 4);
 }
 
 // @0x141128210
 char* FUN_141128210(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterB<21>> it;
-    return (FUN_1411287a0(FUN_14111de60(pMap, &it.first, key)) + 4);
+    // real try_emplace (0x14111de60), read through the unit's iterator view
+    return (FUN_1411287a0(reinterpret_cast<Unk_IterB<21>*>(const_cast<std::map<Unk_CMISKindA, int>::iterator*>(&static_cast<const std::pair<std::map<Unk_CMISKindA, int>::iterator, bool>&>(((std::map<Unk_CMISKindA, int>*)pMap)->try_emplace(*(const Unk_CMISKindA*)key)).first))) + 4);
 }
 
 // @0x141128250
 char* FUN_141128250(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterB<22>> it;
-    return (FUN_1411287c0(FUN_14111dea0(pMap, &it.first, FUN_14111d530(pKey))) + 4);
+    // real try_emplace (0x14111dea0), read through the unit's iterator view
+    return (FUN_1411287c0(reinterpret_cast<Unk_IterB<22>*>(const_cast<efd::map<Unk_CMISKindB, int>::iterator*>(&static_cast<const std::pair<efd::map<Unk_CMISKindB, int>::iterator, bool>&>(((efd::map<Unk_CMISKindB, int>*)pMap)->try_emplace(std::move(*(Unk_CMISKindB*)pKey))).first))) + 4);
 }
 
 // @0x141128290
 char* FUN_141128290(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterB<22>> it;
-    return (FUN_1411287c0(FUN_14111dee0(pMap, &it.first, key)) + 4);
+    // real try_emplace (0x14111dee0), read through the unit's iterator view
+    return (FUN_1411287c0(reinterpret_cast<Unk_IterB<22>*>(const_cast<efd::map<Unk_CMISKindB, int>::iterator*>(&static_cast<const std::pair<efd::map<Unk_CMISKindB, int>::iterator, bool>&>(((efd::map<Unk_CMISKindB, int>*)pMap)->try_emplace(*(const Unk_CMISKindB*)key)).first))) + 4);
 }
 
 // @0x1411282d0
 char* FUN_1411282d0(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_IterB<23>> it;
-    return (FUN_1411287e0(FUN_14111df20(pMap, &it.first, FUN_14111d530(pKey))) + 4);
+    // real try_emplace (0x14111df20), read through the unit's iterator view
+    return (FUN_1411287e0(reinterpret_cast<Unk_IterB<23>*>(const_cast<efd::map<Unk_CMISKindB, unsigned char>::iterator*>(&static_cast<const std::pair<efd::map<Unk_CMISKindB, unsigned char>::iterator, bool>&>(((efd::map<Unk_CMISKindB, unsigned char>*)pMap)->try_emplace(std::move(*(Unk_CMISKindB*)pKey))).first))) + 4);
 }
 
 // @0x141128310
 char* FUN_141128310(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_IterB<23>> it;
-    return (FUN_1411287e0(FUN_14111df60(pMap, &it.first, key)) + 4);
+    // real try_emplace (0x14111df60), read through the unit's iterator view
+    return (FUN_1411287e0(reinterpret_cast<Unk_IterB<23>*>(const_cast<efd::map<Unk_CMISKindB, unsigned char>::iterator*>(&static_cast<const std::pair<efd::map<Unk_CMISKindB, unsigned char>::iterator, bool>&>(((efd::map<Unk_CMISKindB, unsigned char>*)pMap)->try_emplace(*(const Unk_CMISKindB*)key)).first))) + 4);
 }
 
 // @0x141128350
 char* FUN_141128350(void* pMap, void* key)
 {
-    Unk_InsPair<Unk_Cursor> it;
-    return (reinterpret_cast<char*>(FUN_140885360(FUN_14111dfa0(pMap, &it.first, key))) + 8);
+    // real try_emplace (0x14111dfa0), read through the unit's iterator view
+    return (reinterpret_cast<char*>(FUN_140885360((void*)const_cast<efd::map<long, MS2Ptr<Cube> >::iterator*>(&static_cast<const std::pair<efd::map<long, MS2Ptr<Cube> >::iterator, bool>&>(((efd::map<long, MS2Ptr<Cube> >*)pMap)->try_emplace(*(const long*)key)).first))) + 8);
 }
 
 // @0x141128390

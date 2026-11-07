@@ -1,0 +1,7 @@
+eol lf
+83,84d
+81c
+    int iValue = (int)fValue;
+
+
+.

@@ -1,0 +1,12 @@
+eol lf
+824@47s "" "P"
+730@44s "" "(void*)"
+681@44s "" "(void*)"
+659@35s "" "(void*)"
+593@38s "" "(void*)"
+453@43s "" "(void*)"
+49c
+    SetWindowLongPtr(m_pDlgHandle, GWLP_USERDATA, (LONG_PTR)this);  // MS2: full pointer (exe mov r8, not movsxd)
+.
+33@8s "" "(DLGPROC)"
+25@54s "" "P"

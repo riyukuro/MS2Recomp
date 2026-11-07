@@ -1,0 +1,18 @@
+eol lf
+63a
+        const NiPixelData* pkSrc = NULL);
+    virtual NiPixelData* GenerateMipmapPyramidFromFiles(  // studio: slot 16
+        const wchar_t* apcFilenames[], unsigned int uiNumLevels,
+.
+37a
+    virtual NiPixelData* ReadImageFile(const wchar_t* pcFilename,  // studio
+        NiPixelData* pkOptDest);
+.
+33a
+    virtual bool ReadImageFileInfo(const wchar_t* pcFilename,  // studio
+        NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
+        unsigned int& uiHeight, unsigned int& uiNumFaces);
+.
+31a
+    virtual bool CanReadImageFile(const wchar_t* pcFilename) const;  // studio
+.

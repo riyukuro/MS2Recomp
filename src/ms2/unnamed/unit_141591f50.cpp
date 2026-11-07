@@ -12,7 +12,7 @@ extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156acb0(void*,u
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 // MS2-FUNCTIONAL 0x141591f50: initializes URL type one and clears all query/result fields.
-CNMGetUrlExFunc::CNMGetUrlExFunc():CNMFunc(0x8009,1,0,0),m_nUrlType(1),m_nGameCode(0),m_n38(0),m_n3c(0),m_n40(0),m_sz48{},m_n248(0),m_sz24c{},m_n34c(0),m_n350(0),m_n354(0),m_n358(0x10000),m_szUrl{}{}
+CNMGetUrlExFunc::CNMGetUrlExFunc():CNMFunc(0x8009,1,0,0){m_nUrlType=1;m_nGameCode=0;m_n38=0;m_n40=0;m_sz48[0]=0;m_n248=0;m_sz24c[0]=0;m_n34c=0;m_n350=0;m_n354=0;m_n358=0x10000;m_szUrl[0]=0;}
 // MS2-FUNCTIONAL 0x141592050: frames an extended URL request.
 unsigned int CNMGetUrlExFunc::EncodeFramed(CNMStream* pStream)
 {

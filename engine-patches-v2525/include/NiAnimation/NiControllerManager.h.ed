@@ -1,0 +1,4 @@
+eol lf
+303a
+    NiTMap<const void*, float> m_kStudioMap0x100;  // studio: +0x100, key type unresolved, name inferred
+.

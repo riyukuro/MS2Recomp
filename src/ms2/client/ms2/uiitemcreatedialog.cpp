@@ -486,7 +486,7 @@ void UIItemCreateDialog::FUN_1419b53d0(CCCompareItemPacket& packet)
     if (pItem == 0)
         return;
     packet.b = 1;
-    COutPacket out(0x8f, 0);
+    COutPacket out(static_cast<int>(SendOp::ItemCompare), 0);
     packet.vfunc_0(out);
     FUN_140710590(out);
 }
@@ -1111,7 +1111,8 @@ void Unk_ItemOptionSimulator::FUN_1419b8730()
     ((TiXmlNode*)(void*)&m_doc)->Clear();
     if ((void*)DocRootElement(&m_doc) == 0)
         ((TiXmlNode*)(void*)(&m_doc))->LinkEndChild((TiXmlNode*)(new TiXmlElement("ms2")));
-    void* pRoot = (void*)DocRootElement(&m_doc);
+    // the exe's dead root lookup is an if-decl with an empty body: a plain declaration puts pRoot above the EH state slot
+    if (void* pRoot = (void*)DocRootElement(&m_doc)) {}
 }
 MS2_REPLACE_METHOD(0x1419b8730, Unk_ItemOptionSimulator, FUN_1419b8730, 218, 0x43485A38);
 

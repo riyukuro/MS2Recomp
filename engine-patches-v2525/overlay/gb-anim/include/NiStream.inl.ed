@@ -1,0 +1,4 @@
+eol lf
+97c
+    if (i < m_kTopObjects.GetSize()) return m_kTopObjects.GetAt(i); return NULL;
+.

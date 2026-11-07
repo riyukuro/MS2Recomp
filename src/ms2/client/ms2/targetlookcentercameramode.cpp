@@ -120,9 +120,9 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
                 m_84 = m_84 * 0.9f;
             ptPos = m_d8.m_pos;
             Vector3 ptTarget = m_78;
-            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
-            ptDir.FUN_140968990();
-            ptPos.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_84)));
+            Vector3 ptDir = (ptTarget - ptPos);
+            ptDir.Unitize();
+            (ptPos += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_84)));
             float fTargetMove = FUN_140966ea0(ptPrevTarget, m_78);
             float fPosMove = FUN_140966ea0(ptPrevPos, ptPos);
             if (fTargetMove > fPosMove)
@@ -173,8 +173,8 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
                 Vector3 ptCenter = m_78;
                 ptPos = m_d8.m_pos;
                 ptPos.z = ptCenter.z;
-                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
-                m_50 = ptDist.FUN_140967ac0();
+                Vector3 ptDist = (ptCenter - ptPos);
+                m_50 = ptDist.Length();
                 m_50 = efd::Clamp(m_50, m_58, m_54 + m_b4);
                 m_6c -= fPitch;
                 if (0.15f >= m_6c)
@@ -240,9 +240,9 @@ MS2_REPLACE_METHOD(0x140a4d380, CTargetLookCenterCameraMode, vfunc_24, 615, 0xB9
 // @0x140a4d5f0
 void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
 {
-    Vector3 ptDir = m_78.FUN_140965c40(m_114);
+    Vector3 ptDir = (m_78 - m_114);
     ptDir.z = 0.0f;
-    ptDir.FUN_140968990();
+    ptDir.Unitize();
     m_13c = m_68;
     if (m_110)
     {
@@ -284,7 +284,7 @@ void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
     m_d8.m_pos = Vector3(fX, fY, fZ);
-    m_8c = m_d8.m_pos.FUN_140965c40(m_78);
+    m_8c = (m_d8.m_pos - m_78);
     Vector3 pose = CCameraMode::FUN_140afdd40(m_78, m_d8.m_pos, g_143a08cf8);
     m_d8.m_rot = pose;
 }
@@ -295,7 +295,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_d8.m_pos - m_c0.m_pos))));
         float fDist = ptDelta.Length();
         float fBlend = 0.0f;
         if (m_fc)
@@ -347,7 +347,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_d8.m_pos - m_c0.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
@@ -524,14 +524,14 @@ Unk_Point2 Unk_Point2::FUN_140a4e500(const Unk_Point2& pt) const
     return r;
 }
 
-// @0x140a4e560
-Vector3& Vector3::FUN_140a4e560(const Vector3& pt)
-{
-    x = x + pt.x;
-    y = y + pt.y;
-    z = z + pt.z;
-    return *this;
-}
+// (0x140a4e560 is efd::Point3::operator+=: the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
+//
+//
+//
 
 // @0x140a4e630
 float Unk_Point2::FUN_140a4e630() const
@@ -546,7 +546,7 @@ inline float FUN_140a4e660(float fY, float fX)
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x140a4e560, Vector3, FUN_140a4e560, 103, 0xF0625B3A);
+MS2_REPLACE_METHOD(0x140a4e560, Vector3, operator+=, 103, 0xF0625B3A);
 MS2_REPLACE_METHOD(0x140a4e630, Unk_Point2, FUN_140a4e630, 48, 0xD7D57138);
 MS2_REPLACE(0x140a4e660, FUN_140a4e660, 39, 0x14F80A4A);
 

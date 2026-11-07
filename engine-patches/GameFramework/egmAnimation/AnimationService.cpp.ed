@@ -1,3 +1,6 @@
+1818c
+        MS2TreePeek<decltype(pAssetData->m_sequenceIDs)::_Mybase>::Index(pAssetData->m_sequenceIDs, seqName) = uiSequenceID;
+.
 1745,1746c
         }   // else we should be still loading and we will remove once loaded
 .
@@ -9,8 +12,14 @@
 .
 1600@40s "" " == NULL"
 1600@8s "!" ""
+1508c
+        if (MS2TreePeek<MS2AnimationServiceAccess::Tree>::Find(m_assetsByPhysicalID, physicalID, spData))
+.
 1389c
 #line 1412  // MS2: 4 more MS2 lines above
+.
+1300c
+            MS2TreePeek<decltype(pAssetData->m_sequenceIDs)::_Mybase>::Find(pAssetData->m_sequenceIDs, activeSequence.c_str());
 .
 928c
         else if (pEntityData->m_spAssetData)  // MS2: no preload record without asset data
@@ -43,5 +52,5 @@ KFMCache* (*g_pfnMS2CreateKFMCache)() = NULL;  // MS2: KFMCache factory hook (0x
 EE_MS2_INSERT_NOHINT(egmAnimation::MS2AnimationServiceAccess::Tree, egmAnimation::MS2AnimationServiceAccess::Tree::value_type&, egmAnimation::MS2AnimationServiceAccess::Tree::_Nodeptr) EE_MS2_EQRANGE(egmAnimation::MS2AnimationServiceAccess::Tree)
 .
 22c
-namespace egmAnimation { struct MS2AnimationServiceAccess { typedef AnimationService::AssetMap::_Mybase Tree; }; } /* MS2: see utf8string.inl */
+namespace egmAnimation { struct MS2AnimationServiceAccess { typedef AnimationService::AssetMap::_Mybase Tree; }; } /* MS2: see utf8string.inl */ namespace egmAnimation { template<class Tree> struct MS2TreePeek : Tree { /* MS2: map<utf8string, ..>::find with the key compare inline, as the exe inlines it at FindAssetData's nested lookup and in SetActorManager (the out-of-line _Lbound calls less) */ template<class T> static __forceinline auto Find(T& t, const efd::utf8string& k) -> decltype(t.end()) { const MS2TreePeek& p = static_cast<const MS2TreePeek&>(static_cast<const Tree&>(t)); typename Tree::_Nodeptr w = p._Get_data()._Myhead; typename Tree::_Nodeptr n = w->_Parent; while (!n->_Isnil) { if (efd::MS2InlineUtf8Less(p._Key(n), k)) n = n->_Right; else { w = n; n = n->_Left; } } decltype(t.end()) iter = (decltype(t.end())(w, &p._Get_data()) == t.end() || efd::MS2InlineUtf8Less(k, p._Key(w))) ? t.end() : decltype(t.end())(w, &p._Get_data()); return iter; } template<class T, class D> static __forceinline bool Find(const T& t, const efd::utf8string& k, D& o) { typename T::const_iterator iter = Find(t, k); if (t.end() != iter) { o = iter->second; return true; } return false; } template<class T> static __forceinline typename T::mapped_type& Index(T& t, const efd::utf8string& k) { /* MS2: map::operator[] (14.16 _Try_emplace) with both key compares inline, as the exe's CacheSequenceNames */ MS2TreePeek& p = static_cast<MS2TreePeek&>(static_cast<Tree&>(t)); typename Tree::_Nodeptr w = p._Get_data()._Myhead; typename Tree::_Nodeptr n = w->_Parent; while (!n->_Isnil) { if (efd::MS2InlineUtf8Less(p._Key(n), k)) n = n->_Right; else { w = n; n = n->_Left; } } return Emplace(p, w, k).first->second; } static __forceinline std::pair<typename Tree::iterator, bool> Emplace(MS2TreePeek& p, typename Tree::_Nodeptr w, const efd::utf8string& k) { typename Tree::iterator where(w, &p._Get_data()); if (where == p.end() || efd::MS2InlineUtf8Less(k, p._Key(where._Ptr))) return (std::pair<typename Tree::iterator, bool>(p.emplace_hint(where, std::piecewise_construct, std::forward_as_tuple(k), std::forward_as_tuple()), true)); else return (std::pair<typename Tree::iterator, bool>(where, false)); } }; }
 .

@@ -625,7 +625,7 @@ int CGuideConditionInteractObject::vfunc_3()
     CInteractObject* pObj = WorldService::GetInstance()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).operator CInteractObject*();
     if (pObj == 0)
         return 0;
-    float fDist = pPC->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
+    float fDist = (pPC->vfunc_18() - pObj->GetPos()).Length();
     if (fDist > m_fDistance)
         return FUN_1413a55a0(0);
     if (pObj->FUN_1413b5600() != m_nState)

@@ -8,7 +8,7 @@
 // MS2-PIN: ??_GCRibbonEffect@@UEAAPEAXI@Z 0x141703860
 // MS2-PIN: ??_GCRibbonEffectParam@@UEAAPEAXI@Z 0x1417038c0
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??A?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAAAEAUVector3@@_K@Z 0x141703820 ; unique
+// MS2-PIN: ??A?$CAtlArray@VPoint3@efd@@V?$CElementTraits@VPoint3@efd@@@ATL@@@ATL@@QEAAAEAVPoint3@efd@@_K@Z 0x141703820 ; unique
 // MS2-PINS-END tplpin
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -386,15 +386,15 @@ void CRibbonEffect::UpdateMesh()
         {
             Vector3 kDir;
             if (i == 0)
-                kDir = kCurve[i + 1].FUN_140965c40(kCurve[i]);
+                kDir = (kCurve[i + 1] - kCurve[i]);
             else if (i == kCurve.size() - 1)
-                kDir = kCurve[i].FUN_140965c40(kCurve[i - 1]);
+                kDir = (kCurve[i] - kCurve[i - 1]);
             else
-                kDir = kCurve[i + 1].FUN_140965c40(kCurve[i - 1]);
-            kDir.FUN_140968990();
+                kDir = (kCurve[i + 1] - kCurve[i - 1]);
+            kDir.Unitize();
             efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(kCamera));
-            kMinus.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide))));
-            kPlus.push_back(reinterpret_cast<Vector3&&>(static_cast<efd::Point3&&>(reinterpret_cast<const efd::Point3&>(kCurve[i]) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide)))))));
+            kMinus.push_back((kCurve[i] - (m_fHalfWidth * reinterpret_cast<Vector3&>(kSide))));
+            kPlus.push_back(reinterpret_cast<Vector3&&>(static_cast<efd::Point3&&>(reinterpret_cast<const efd::Point3&>(kCurve[i]) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_fHalfWidth * reinterpret_cast<Vector3&>(kSide)))))));
         }
 
         unsigned short nCount = (unsigned short)kMinus.size();

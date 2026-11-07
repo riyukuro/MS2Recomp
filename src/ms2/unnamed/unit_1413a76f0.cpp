@@ -96,7 +96,7 @@ int CGuideConditionMovement::vfunc_3()
         return 0;
     if (reinterpret_cast<const efd::Point3&>(m_vLastPos) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         m_vLastPos = pPC->vfunc_18();
-    m_fMoved += m_vLastPos.FUN_140965c40(pPC->vfunc_18()).FUN_140967ac0();
+    m_fMoved += (m_vLastPos - pPC->vfunc_18()).Length();
     m_vLastPos = pPC->vfunc_18();
     bool bDone;
     if ((float)m_n20 <= m_fMoved)

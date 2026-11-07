@@ -1,0 +1,12 @@
+eol lf
+158c
+    if (uiIndex >= m_uiMaxSize)  // studio bound check
+        return;
+.
+127c
+        }
+.
+115,116c
+        if (m_pBase)  // studio null check
+        {
+.

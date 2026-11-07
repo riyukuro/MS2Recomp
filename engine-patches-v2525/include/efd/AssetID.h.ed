@@ -1,0 +1,8 @@
+87c
+    inline AssetID& operator=(const AssetID& other); __forceinline AssetID& MS2AssignInline(const AssetID& other); // MS2: operator= body for call sites the exe inlines in EE_MS2_ASSETID_COPY_CALL TUs
+#if defined(EE_MS2_ASSETID_COPY_CALL)
+    // MS2 (v2525): assignment from a temporary (the SWIG getters' `result = arg1->GetNifAsset()`, 0x142055f50) is
+    // inlined in the exe while the copy operator= is called out of line (0x1411d6ee0, from Clone's implicit operator=)
+    __forceinline AssetID& operator=(AssetID&& other) { return MS2AssignInline(other); }
+#endif
+.

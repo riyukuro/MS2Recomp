@@ -15,9 +15,9 @@ extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void* FUN_1415e5b60(void*); extern void FUN_1415e5b20(void*,const void*); extern void* FUN_1415f39e0(void*);
 extern unsigned int FUN_1415fa080(void*); extern void* FUN_1415f9fe0(void*);
 // MS2-FUNCTIONAL 0x14158ff90: initializes restriction mode and its fixed string.
-CNMRestrictedWordsFunc::CNMRestrictedWordsFunc():CNMFunc(0x8018,1,0,0),m_30(1),m_34(0),m_38(),m_40(0),m_44(0){FUN_1415e5b60(&m_38);}
+CNMRestrictedWordsFunc::CNMRestrictedWordsFunc():CNMFunc(0x8018,1,0,0),m_30(1),m_34(0),m_40(0){}
 // MS2-FUNCTIONAL 0x141590020: stores restriction mode, category, and supplied words.
-CNMRestrictedWordsFunc::CNMRestrictedWordsFunc(int mode,int category,const char* words):CNMFunc(0x8018,1,0,0),m_30(mode),m_34(category),m_38(),m_40(0),m_44(0){FUN_1415e5b60(&m_38);FUN_1415e5b20(&m_38,words);}
+CNMRestrictedWordsFunc::CNMRestrictedWordsFunc(int mode,int category,const char* words):CNMFunc(0x8018,1,0,0),m_30(mode),m_34(category),m_38(words),m_40(0){}
 // MS2-FUNCTIONAL 0x1415900c0: frames the restricted-words request.
 unsigned int CNMRestrictedWordsFunc::EncodeFramed(CNMStream* pStream)
 {

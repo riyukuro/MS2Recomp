@@ -135,7 +135,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
 {
     if (m_138)
     {
-        m_78 = *((struct Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
+        m_78 = *((Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
     }
     efd::Point3 ptEye = reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_14183c370()));
@@ -211,7 +211,7 @@ void CFPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         if (!m_138)
             m_138 = pRoot;
         if (m_138)
-            m_78 = *((struct Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
+            m_78 = *((Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
         m_6c = 1.5707964f;
         if (m_140)
@@ -223,7 +223,7 @@ void CFPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
     float fZ = m_50 * FUN_1409f2310(m_6c) + m_78.z;
     m_d8.m_pos = Vector3(fX, fY, fZ);
-    m_8c = m_d8.m_pos.FUN_140965c40(m_78);
+    m_8c = (m_d8.m_pos - m_78);
     m_d8.m_rot = FUN_1410a0a00(m_d8.m_pos);
     m_c0 = m_d8;
     vfunc_3(m_d8.m_pos);

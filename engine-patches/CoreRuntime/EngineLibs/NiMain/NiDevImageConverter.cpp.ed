@@ -227,8 +227,9 @@ NiPixelData* NiDevImageConverter::ReadImageFile(const wchar_t* pwcFilename,
 41c
     if (ms_bMS2NIFImageReader) m_kReaders.AddHead(NiNew NiNIFImageReader); // MS2: see MS2DisableNIFImageReader
 .
-32c
+32,33c
 NiImplementRTTI(NiDevImageConverter, NiImageConverter); bool NiDevImageConverter::ms_bMS2NIFImageReader = true; void NiDevImageConverter::MS2DisableNIFImageReader() { ms_bMS2NIFImageReader = false; } // MS2
+/* MS2: the exe inlines efd::string::assign and its _Reallocate_for in CanReadImageFile(const wchar_t*) */ namespace std { template<> __forceinline basic_string<char, char_traits<char>, efd::CustomAllocator<char> >& basic_string<char, char_traits<char>, efd::CustomAllocator<char> >::assign(const char* const _Ptr, const size_type _Count) {auto& _My_data = this->_Get_data(); if (_Count <= _My_data._Myres) {char* const _Old_ptr = _My_data._Myptr(); _My_data._Mysize = _Count; char_traits<char>::move(_Old_ptr, _Ptr, _Count); char_traits<char>::assign(_Old_ptr[_Count], char()); return (*this);} if (_Count > max_size()) {_Xlen();} const size_type _Old_capacity = _My_data._Myres; const size_type _New_capacity = _Calculate_growth(_Count); auto& _Al = this->_Getal(); const pointer _New_ptr = _Al.allocate(_New_capacity + 1); _My_data._Orphan_all(); _My_data._Mysize = _Count; _My_data._Myres = _New_capacity; char_traits<char>::copy(_Unfancy(_New_ptr), _Ptr, _Count); char_traits<char>::assign(_Unfancy(_New_ptr)[_Count], char()); if (this->_BUF_SIZE <= _Old_capacity) {_Al.deallocate(_My_data._Bx._Ptr, _Old_capacity + 1); _My_data._Bx._Ptr = _New_ptr;} else {_Alty_traits::construct(_Al, _STD addressof(_My_data._Bx._Ptr), _New_ptr);} return (*this);} template<> __forceinline basic_string<char, char_traits<char>, efd::CustomAllocator<char> >& basic_string<char, char_traits<char>, efd::CustomAllocator<char> >::assign(const char* const _Ptr) {return (assign(_Ptr, _Convert_size<size_type>(char_traits<char>::length(_Ptr))));} }
 .
 30a
 #include <efd/PathUtils.h>

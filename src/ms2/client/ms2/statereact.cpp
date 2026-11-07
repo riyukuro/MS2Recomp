@@ -231,7 +231,7 @@ void StateReact::vfunc_8(double fTime)
             {
                 float fReach = kRef.operator->()->GetData().get() != 0 ? kRef.operator->()->GetData()->m_fReactDistance : 0.0f;
                 PCBase* pTarget = reinterpret_cast<PCBase*>(kRef.operator->());
-                if (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18()))).FUN_140967ac0() > fReach)
+                if ((reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())) - reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18()))).Length() > fReach)
                 {
                     pRider->vfunc_59(1, 0, 0, 0);
                     return;

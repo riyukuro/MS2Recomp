@@ -203,9 +203,9 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3&
         kMatrix.GetCol(0, kAxisY);
         kMatrix.GetCol(1, kAxisZ);
         kMatrix.GetCol(2, kAxisX);
-        ((struct Vector3*)&(kAxisY))->FUN_140968990();
-        ((struct Vector3*)&(kAxisZ))->FUN_140968990();
-        ((struct Vector3*)&(kAxisX))->FUN_140968990();
+        ((Vector3*)&(kAxisY))->Unitize();
+        ((Vector3*)&(kAxisZ))->Unitize();
+        ((Vector3*)&(kAxisX))->Unitize();
     }
     else
     {
@@ -216,9 +216,9 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3&
         kMatrix.GetCol(2, kAxisX);
         reinterpret_cast<efd::Point3&>(kAxisZ) = -reinterpret_cast<const efd::Point3&>(kAxisZ);
         reinterpret_cast<efd::Point3&>(kAxisX) = -reinterpret_cast<const efd::Point3&>(kAxisX);
-        ((struct Vector3*)&(kAxisY))->FUN_140968990();
-        ((struct Vector3*)&(kAxisZ))->FUN_140968990();
-        ((struct Vector3*)&(kAxisX))->FUN_140968990();
+        ((Vector3*)&(kAxisY))->Unitize();
+        ((Vector3*)&(kAxisZ))->Unitize();
+        ((Vector3*)&(kAxisX))->Unitize();
     }
 }
 

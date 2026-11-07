@@ -10,7 +10,7 @@ public:
     CHoleCylinderCollision();                                       // 0x140d03650
     virtual ~CHoleCylinderCollision();                              // 0x140d03780
     virtual void vfunc_1();                                         // 0x140d05650
-    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x140d03840
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x140d03840
     virtual void vfunc_5();                                         // 0x140d03a60
     virtual float vfunc_6();                                          // 0x140d038d0
 

@@ -36,7 +36,7 @@ float CCameraTargetBounding::GetDistance(const Vector3& pt)
     if (Contains(pt))
         return 0.0f;
     Vector3 ptClosest = GetClosest(pt);
-    float fDist = ptClosest.FUN_140965c40(pt).FUN_140967ac0();
+    float fDist = (ptClosest - pt).Length();
     return fDist;
 }
 MS2_REPLACE_METHOD(0x140AFEF30, CCameraTargetBounding, GetDistance, 160, 0x5191A643);
@@ -136,7 +136,7 @@ MS2_REPLACE_METHOD(0x140AFF630, CCameraTargetBoundingSphere, InitFromEntity, 140
 // @0x140aff6d0
 int CCameraTargetBoundingSphere::Contains(Vector3 pt)
 {
-    if (pt.FUN_140965c40(m_center).FUN_140967ac0() < m_radius)
+    if ((pt - m_center).Length() < m_radius)
         return 1;
     else
         return 0;
@@ -148,8 +148,8 @@ Vector3 CCameraTargetBoundingSphere::GetClosest(const Vector3& pt)
 {
     if (Contains(pt))
         return pt;
-    Vector3 ptDir = pt.FUN_140965c40(m_center);
-    ptDir.FUN_140968990();
+    Vector3 ptDir = (pt - m_center);
+    ptDir.Unitize();
     efd::Point3 ptNear = reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(ptDir) * m_radius;
     return Vector3(ptNear.x, ptNear.y, ptNear.z);
 }

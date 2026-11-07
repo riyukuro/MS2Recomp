@@ -89,10 +89,10 @@ i64 FUN_1402749c0(i64 p, Unk_StlTag) { FUN_14027d550((void*)p); FUN_14027cf10((U
 i64 FUN_1402749f0(i64 p, char) { FUN_14027d560((void*)p); FUN_14027d0b0((Unk_Z16*)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a20
 i64 FUN_140274a20(i64 p, Unk_StlTag) { FUN_14027d570((void*)p); FUN_14027d410((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
-// @0x140274a50
-i64 FUN_140274a50(i64 p, Unk_StlTag) { FUN_14027d580((void*)p); FUN_14027d450((i64)&((Unk_WcSelf*)p)->m_0); return p; }
-// @0x140274a80
-i64 FUN_140274a80(i64 p, Unk_StlTag) { FUN_14027d590((void*)p); FUN_14027d490((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UItemEntity@@@std@@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140274a50 ; unique
+template std::_Vector_alloc<std::_Vec_base_types<ItemEntity, std::allocator<ItemEntity>>>::_Vector_alloc();   // emits the _Compressed_pair ctor COMDAT pinned above (was FUN_140274a50 -> FUN_14027d450 _Vector_val)
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$_Vector_val@U?$_Simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140274a80 ; unique
+template std::_Vector_alloc<std::_Vec_base_types<CString, std::allocator<CString>>>::_Vector_alloc();   // emits the _Compressed_pair ctor COMDAT pinned above (was FUN_140274a80 -> FUN_14027d490 _Vector_val)
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140274ab0 ; unique
 template std::_Vector_alloc<std::_Vec_base_types<PIng, std::allocator<PIng>>>::_Vector_alloc();   // emits the _Compressed_pair ctor COMDAT pinned above (an explicit instantiation of it ICEs cl 19.16)
 // @0x140274ae0
@@ -106,7 +106,7 @@ struct Unk_PairI64B { Unk_WcIt first; char second; };
 i64* FUN_140274b10(i64* out, i64 a, i64 b)
 {
     ((Unk_PairI64B*)out)->first = *(Unk_WcIt*)FUN_14027c1b0(a);
-    ((Unk_PairI64B*)out)->second = *FUN_140162f70(b);
+    ((Unk_PairI64B*)out)->second = std::forward<bool>(*(bool*)b);
     return out;
 }
 // @0x140274b60
@@ -146,7 +146,7 @@ i64 FUN_140274cb0(i64 out, Unk_StlTag, i64 a)
 i64* FUN_140274d10(i64* out, i64 a, i64 b)
 {
     ((Unk_PairI64B*)out)->first = *(Unk_WcIt*)FUN_14027c220(a);
-    ((Unk_PairI64B*)out)->second = *FUN_140162f70(b);
+    ((Unk_PairI64B*)out)->second = std::forward<bool>(*(bool*)b);
     return out;
 }
 // @0x140274d60

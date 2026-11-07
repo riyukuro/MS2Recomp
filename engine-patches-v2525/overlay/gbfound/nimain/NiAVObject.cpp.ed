@@ -1,0 +1,6 @@
+545c
+    pkDest->m_kLocal = m_kLocal; pkDest->m_uiStudioField0xE0 = m_uiStudioField0xE0;
+.
+50c
+    m_spCollisionObject = 0; m_uiStudioField0xE0 = 0;
+.

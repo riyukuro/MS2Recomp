@@ -1,0 +1,8 @@
+0a
+// gb-nimain-b: force-included stand-in for the studio bool stream helpers (scratch/boolhdr.py)
+#pragma once
+#include <efd/BinaryLoadSave.h>
+#include "NiSystem/NiBinaryStream.h"
+#include "NiMain/NiStream.h"
+
+.

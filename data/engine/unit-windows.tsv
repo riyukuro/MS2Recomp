@@ -15,8 +15,8 @@ gb:jpeg/	include	1426f42a0	142703d10
 gb:png/	include	142703d10	142723760
 # Crypto++ 5.6.2 (engine/units-lib-cryptopp.json, lb1): between the import thunks and the second Lua copy
 gb:CryptoPP/	include	142303bd0	1423915b0
-# its cryptlib.cpp AAD_CHANNEL static (/O2 di in the library .text$di run, atexit thunk in .text$yd; gap4)
-gb:CryptoPP/	include	14013b180	14013b1b0
+# its cryptlib.cpp AAD_CHANNEL and DEFAULT_CHANNEL statics (/O2 di in the library .text$di run, atexit thunk in .text$yd; gap4)
+gb:CryptoPP/	include	14013b180	14013b1bc
 gb:CryptoPP/	include	142cc8bb0	142cc8c20
 # PCRE 8.21 (engine/units-lib-pcre.json, lb2): Scaleform pcre.lib between the import thunks and the Gamebryo tail
 gb:pcre/	include	1428d8f40	1428eb050

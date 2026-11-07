@@ -141,7 +141,7 @@ typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_Nod
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 // (0x1402bd040 is efd::Point3::Point3())
 void FUN_1411dde50(void* owner, void* self);
-void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
+void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler, float fScale);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
@@ -743,7 +743,7 @@ void CKfmModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
     vfunc_22(fScale);
     std::set<NiAVObjectPtr> kSet;
     FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet);
-    FUN_141422b30((class CEquipModel*)this, kSet, *(const struct Vector3*)&efd::Point3::ZERO, *(const struct Vector3*)&efd::Point3::ZERO, 1.0f);
+    FUN_141422b30((class CEquipModel*)this, kSet, *(const Vector3*)&efd::Point3::ZERO, *(const Vector3*)&efd::Point3::ZERO, 1.0f);
 }
 
 // @0x14143fc70

@@ -32,3 +32,6 @@
     }
 #else
 .
+18c
+/* MS2: the exe calls NewItem directly, out of line (LTCG devirtualization) */ typedef NiTPointerListBase<NiTPointerAllocator<size_t>, unsigned int> MS2UIntListBase; template<> inline __declspec(noinline) NiTListItem<unsigned int>* MS2UIntListBase::NewItem() {return (NiTListItem<unsigned int>*)m_kAllocator.Allocate();} template<> inline void MS2UIntListBase::AddHead(const unsigned int& element) {NiTListItem<unsigned int>* pkNode = MS2UIntListBase::NewItem(); pkNode->m_element = element; AddNodeHead(pkNode);}
+.

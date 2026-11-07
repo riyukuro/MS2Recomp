@@ -197,7 +197,7 @@ void StateNurturing::vfunc_4(StateData* pData)
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
             MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
-            float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
+            float fDist = (reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18() - spCube->GetPosition()).Length();
             bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get();
             if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->GetPosition()) == 0)
                 bUsable = false;
@@ -363,7 +363,7 @@ MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
-        float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
+        float fDist = (reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18() - spCube->GetPosition()).Length();
         bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get();
         if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->GetPosition()) == 0)
             bUsable = false;

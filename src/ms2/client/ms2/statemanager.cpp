@@ -385,13 +385,12 @@ void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
 }
 
 // @0x1417db550
-// MS2-FUNCTIONAL: GameObject::vfunc_22 takes Point3 by value in the exe (shared header gameobject.h; see shared-header-leftovers)
+// each branch declares its own actor pointer (the exe gives each one its own frame slot)
 void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
 {
     if (pReq == 0)
         return;
-    PCBase* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
-    if (pActor != 0)
+    if (PCBase* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner))
     {
         pActor->vfunc_22(pReq->m_vel3c);
         reinterpret_cast<PCBase*>(pActor)->FUN_141678160(pReq->m_pos48);
@@ -422,22 +421,22 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         if (bApply)
             FUN_1417dc4c0(pReq);
     }
-    else if ((pActor = FUN_1417dcb20(m_pOwner)) != 0)
+    else if (PCBase* pActor2 = FUN_1417dcb20(m_pOwner))
     {
-        pActor->vfunc_22(pReq->m_vel3c);
-        pActor->vfunc_19(pReq->m_pos20);
-        pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
-        FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pActor), pReq->m_fA4);
-        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
+        pActor2->vfunc_22(pReq->m_vel3c);
+        pActor2->vfunc_19(pReq->m_pos20);
+        pActor2->vfunc_21(pReq->m_dir2c);
+        reinterpret_cast<PCBase*>(pActor2)->SetTargetYaw(pReq->m_f58);
+        FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pActor2), pReq->m_fA4);
+        pActor2->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
-    else if ((pActor = reinterpret_cast<PCBase*>(FUN_141468360(reinterpret_cast<Unk_MagicEntity*>(m_pOwner)))) != 0)
+    else if (PCBase* pActor3 = reinterpret_cast<PCBase*>(FUN_141468360(reinterpret_cast<Unk_MagicEntity*>(m_pOwner))))
     {
-        FUN_1417dbd00(pActor, pReq);
-        pActor->vfunc_22(pReq->m_vel3c);
-        pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
-        if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x10 && pReq->m_nState != 0x10)
+        FUN_1417dbd00(pActor3, pReq);
+        pActor3->vfunc_22(pReq->m_vel3c);
+        pActor3->vfunc_21(pReq->m_dir2c);
+        reinterpret_cast<PCBase*>(pActor3)->SetTargetYaw(pReq->m_f58);
+        if (reinterpret_cast<PCBase*>(pActor3)->GetCurStateId() != 0x10 && pReq->m_nState != 0x10)
         {
             int nForce = 0;
             if (GetCur() == pReq->m_nState)
@@ -448,25 +447,25 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
             MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
             if (spData.get() != 0)
                 spData->vfunc_2(reinterpret_cast<Unk_StateDataArg*>(pReq));   // MS2: StateData slot 2 reads the same record
-            pActor->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
+            pActor3->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
         }
     }
-    else if ((pActor = reinterpret_cast<PCBase*>(FUN_140ddc910(m_pOwner))) != 0)
+    else if (PCBase* pActor4 = reinterpret_cast<PCBase*>(FUN_140ddc910(m_pOwner)))
     {
-        pActor->vfunc_22(pReq->m_vel3c);
-        pActor->vfunc_19(pReq->m_pos20);
-        pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
-        FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pActor), pReq->m_fA4);
-        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
+        pActor4->vfunc_22(pReq->m_vel3c);
+        pActor4->vfunc_19(pReq->m_pos20);
+        pActor4->vfunc_21(pReq->m_dir2c);
+        reinterpret_cast<PCBase*>(pActor4)->SetTargetYaw(pReq->m_f58);
+        FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pActor4), pReq->m_fA4);
+        pActor4->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
-    else if ((pActor = reinterpret_cast<PCBase*>(FUN_140ac06f0(m_pOwner))) != 0)
+    else if (PCBase* pActor5 = reinterpret_cast<PCBase*>(FUN_140ac06f0(m_pOwner)))
     {
-        FUN_1417dbd00(pActor, pReq);
-        pActor->vfunc_22(pReq->m_vel3c);
-        pActor->vfunc_21(pReq->m_dir2c);
-        reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
-        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
+        FUN_1417dbd00(pActor5, pReq);
+        pActor5->vfunc_22(pReq->m_vel3c);
+        pActor5->vfunc_21(pReq->m_dir2c);
+        reinterpret_cast<PCBase*>(pActor5)->SetTargetYaw(pReq->m_f58);
+        pActor5->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
 }
 

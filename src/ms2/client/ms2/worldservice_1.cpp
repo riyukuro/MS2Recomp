@@ -1965,7 +1965,7 @@ public:
     // non-virtual members of the derived classes (bound by VA; names are the exe's)
     // FUN_140b11020: CPet's own member (the CPet view above)
     // members of the monster / npc subclass (cast target of class id 0x6200011)
-    Vector3 FUN_14123cc20();                                // facing vector
+    // C3: was Vector3 FUN_14123cc20() = GameObject::GetForwardDirection (efd::Point3), called through GameObject
 };
 typedef efd::SmartPointer<Unk_WsC_GameObj> Unk_WsC_GameObjPtr;      // copy ctor 0x140c20410, dtor 0x140aac150 ...
 typedef ATL::CAtlList<Unk_WsC_GameObjPtr> Unk_Ws1GoList;    // the instantiation m_178's folded list members belong to
@@ -3874,15 +3874,15 @@ Vector3 WorldService::FUN_141bc0ff0(GameObject* obj, void* idList, int skipId)
         if (otherActor != 0)
             otherRadius = ((class PCBase*)(void*)(otherActor))->FUN_141671600();
         // the position getter (slot 18) through its by-value view
-        Vector3 diff = reinterpret_cast<Unk_WsD_NpcPos*>(obj)->GetPosition().FUN_140965c40(reinterpret_cast<Unk_WsD_NpcPos*>(cur.operator->())->GetPosition());
-        float dist = diff.FUN_140967ac0();
+        Vector3 diff = (reinterpret_cast<Unk_WsD_NpcPos*>(obj)->GetPosition() - reinterpret_cast<Unk_WsD_NpcPos*>(cur.operator->())->GetPosition());
+        float dist = diff.Length();
         if (dist < otherRadius + selfRadius)
         {
-            dir.FUN_140a4e560(diff);
+            (dir += diff);
             break;
         }
     }
-    dir.FUN_140968990();
+    dir.Unitize();
     return dir;
 }
 MS2_REPLACE_METHOD(0x141BC0FF0, WorldService, FUN_141bc0ff0, 691, 0xB33A5EA5);
@@ -4304,7 +4304,7 @@ MS2Ptr<Unk_WsB_Marker> WorldService::FUN_141bc4ca0(const Vector3& pos, float max
         MS2Ptr<Unk_WsB_Marker> marker = *FUN_141c00980_B(&m_4b0, p);
         if (type != -1 && type != reinterpret_cast<CBreakableObject*>(marker.operator->())->GetState())
             continue;
-        float dist = pos.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<CBreakableObject*>(marker.operator->())->GetPtPos()))).FUN_140967ac0();
+        float dist = (pos - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<CBreakableObject*>(marker.operator->())->GetPtPos()))).Length();
         if (dist > maxDist)
             continue;
         if (dist > best)
@@ -4565,7 +4565,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc6090(Vector3 pos, int skipDisable
         if (prop->vfunc_7() == 0 && skipDisabled != 0)
             continue;
         float range = reinterpret_cast<CInteractObject*>(prop.operator->())->GetRow()->m_validate.m_fInteractionDistance;
-        float dist = pos.FUN_140965c40(reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).FUN_140967ac0();
+        float dist = (pos - reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).Length();
         if (dist > range)
             continue;
         if (dist > best)
@@ -4591,7 +4591,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc62b0(const Vector3& pos, int cate
         if (prop->vfunc_7() == 0 && skipDisabled != 0)
             continue;
         float range = reinterpret_cast<CInteractObject*>(prop.operator->())->GetRow()->m_validate.m_fInteractionDistance;
-        float dist = pos.FUN_140965c40(reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).FUN_140967ac0();
+        float dist = (pos - reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).Length();
         if (dist > range)
             continue;
         if (dist > best)
@@ -4614,7 +4614,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc6510(Vector3 pos, int kind)
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, p));
         if (reinterpret_cast<CInteractObject*>(prop.operator->())->GetRowId() != kind)
             continue;
-        float dist = pos.FUN_140965c40(reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).FUN_140967ac0();
+        float dist = (pos - reinterpret_cast<CInteractObject*>(prop.operator->())->GetPos()).Length();
         if (dist > best)
             continue;
         best = dist;
@@ -4713,7 +4713,7 @@ efd::SmartPointer<Unk_WsB_Spawn> WorldService::FUN_141bc6c60(Vector3 pos, int sk
         if (!restart)
             continue;
         float radius = restart->m_fReactDistance;
-        float dist = pos.FUN_140965c40(spawn->GetPosition()).FUN_140967ac0();
+        float dist = (pos - spawn->GetPosition()).Length();
         if (dist > radius)
             continue;
         if (dist > best)
@@ -5573,9 +5573,9 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
         {
             if (best > zone->m_inner)
             {
-                alignas(16) Vector3 zoneArg = zonePos; Vector3 dir = playerPos.FUN_140965c40(zoneArg);   // the exe copies the operand into a 16-aligned slot (written against a by-value operator-)
+                alignas(16) Vector3 zoneArg = zonePos; Vector3 dir = (playerPos - zoneArg);   // the exe copies the operand into a 16-aligned slot (written against a by-value operator-)
                 dir.z = 0.0f;
-                dir.FUN_140968990();
+                dir.Unitize();
                 float amount = (zone->m_push * dt < best - zone->m_inner) ? zone->m_push * dt : best - zone->m_inner;
                 *velocity = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(dir) * amount));
                 changed = true;
@@ -5583,9 +5583,9 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
         }
         else if (0.0f < zone->m_push)
         {
-            alignas(16) Vector3 zoneArg = zonePos; Vector3 dir = playerPos.FUN_140965c40(zoneArg);   // the exe copies the operand into a 16-aligned slot (written against a by-value operator-)
+            alignas(16) Vector3 zoneArg = zonePos; Vector3 dir = (playerPos - zoneArg);   // the exe copies the operand into a 16-aligned slot (written against a by-value operator-)
             dir.z = 0.0f;
-            dir.FUN_140968990();
+            dir.Unitize();
             float amount = (zone->m_push * dt < zone->m_outer - best) ? zone->m_push * dt : zone->m_outer - best;
             *velocity = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(dir) * amount));
             changed = true;
@@ -5599,7 +5599,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
                 lift = (top.z + zone->m_baseZ - playerPos.z < 0.0f) ? 0.0f : top.z + zone->m_baseZ - playerPos.z;
                 *lifted = 1;
             }
-            velocity->FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8) * ((zone->m_lift * dt < lift) ? zone->m_lift * dt : lift))));
+            (*velocity += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8) * ((zone->m_lift * dt < lift) ? zone->m_lift * dt : lift))));
             changed = true;
         }
     }
@@ -6347,7 +6347,7 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1a50(Unk_WsC_GameObj* self)
             continue;
         if (!FUN_14072fa70((Unk_SlotValueTable*)&((Unk_WsC_Config*)((CPetManager*)(void*)FUN_140535320())->GetInfo())->m_grid, ((CItem*)(Unk_WsC_MobData*)(data))->FUN_1405276c0(), ((CItem*)(Unk_WsC_MobData*)(data))->GetRarity()))
             continue;
-        float d = FUN_14160c230(self->GetPosition().FUN_140965c40(mob->GetPosition()));
+        float d = FUN_14160c230((self->GetPosition() - mob->GetPosition()));
         if (d < bestDist)
         {
             bestDist = d;
@@ -6372,7 +6372,7 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1d10(int a, int b)
             continue;
         if (!((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_141190320((GameObject*)(Unk_WsC_GameObj*)(static_cast<Unk_WsC_GameObj*>(FUN_141bd0cc0())), a, b))
             continue;
-        float d = FUN_14160c230(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->GetPosition().FUN_140965c40(mob->GetPosition()));
+        float d = FUN_14160c230((static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->GetPosition() - mob->GetPosition()));
         if (d < bestDist)
         {
             bestDist = d;
@@ -6442,13 +6442,13 @@ Unk_WsC_GameObj* WorldService::FUN_141bd2170(int type, float range, int useFront
     efd::SmartPointer<Ridee> rider(reinterpret_cast<PCBase*>(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8)))->FUN_1416764a0());
     if (rider != 0)
     {
-        plane.SetNormal(MS2_WS_PT(reinterpret_cast<Unk_WsC_GameObj*>(rider.operator->())->FUN_14123cc20()));
-        plane.SetConstant((MS2_WS_PT(reinterpret_cast<Unk_WsC_GameObj*>(rider.operator->())->FUN_14123cc20()) * MS2_WS_PT(reinterpret_cast<Unk_WsC_GameObj*>(rider.operator->())->GetPosition())));
+        plane.SetNormal(static_cast<const efd::Point3&>(reinterpret_cast<GameObject*>(rider.operator->())->GetForwardDirection()));
+        plane.SetConstant((static_cast<const efd::Point3&>(reinterpret_cast<GameObject*>(rider.operator->())->GetForwardDirection()) * MS2_WS_PT(reinterpret_cast<Unk_WsC_GameObj*>(rider.operator->())->GetPosition())));
     }
     else
     {
-        plane.SetNormal(MS2_WS_PT(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->FUN_14123cc20()));
-        plane.SetConstant((MS2_WS_PT(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->FUN_14123cc20()) * MS2_WS_PT(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->GetPosition())));
+        plane.SetNormal(static_cast<const efd::Point3&>(reinterpret_cast<GameObject*>(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8)))->GetForwardDirection()));
+        plane.SetConstant((static_cast<const efd::Point3&>(reinterpret_cast<GameObject*>(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8)))->GetForwardDirection()) * MS2_WS_PT(static_cast<Unk_WsC_GameObj*>(MS2_WS_MYPC(m_2d8))->GetPosition())));
     }
     Unk_WsC_GameObj* best = 0;
     float bestDist = FLT_MAX;
@@ -7072,11 +7072,11 @@ int WorldService::FUN_141bd36f0(Vector3 pt, Vector3* pOut)
 {
     *pOut = DAT_143b01a60;
     if (pt.x < m_boundsMin.x || !(pt.x <= m_boundsMax.x))
-        pOut->FUN_140a4e560(DAT_143a08cd8);
+        (*pOut += DAT_143a08cd8);
     if (pt.y < m_boundsMin.y || !(pt.y <= m_boundsMax.y))
-        pOut->FUN_140a4e560(DAT_143a08ce8);
+        (*pOut += DAT_143a08ce8);
     if (!(pt.z <= m_boundsMax.z))
-        pOut->FUN_140a4e560(DAT_143a08cf8);
+        (*pOut += DAT_143a08cf8);
     return reinterpret_cast<const efd::Point3&>(*pOut) == efd::Point3::ZERO;
 }
 MS2_REPLACE_METHOD(0x141BD36F0, WorldService, FUN_141bd36f0, 230, 0x9BCB5A80);
@@ -7260,9 +7260,9 @@ float WorldService::FUN_141bd4120()
     if (ref && ((class PC*)(void*)(ref))->IsInCubeMode() && m_298.get())
     {
         Unk_WsD_Player* p = reinterpret_cast<Unk_WsD_Player*>(m_298.operator->());
-        return p->m_1ec + *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)FUN_1401d3200())->m_1b88)->Get();
+        return p->m_1ec + *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)GetClientConstants())->m_1b88)->Get();
     }
-    return *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)FUN_1401d3200())->m_1b88)->Get();
+    return *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)GetClientConstants())->m_1b88)->Get();
 }
 MS2_REPLACE_METHOD(0x141BD4120, WorldService, FUN_141bd4120, 163, 0x455D0113);
 
@@ -7687,7 +7687,7 @@ void WorldService::FUN_141bd6240(void* entity)
     reinterpret_cast<egf::Entity*>(entity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(offset));
     reinterpret_cast<egf::Entity*>(entity)->GetPropertyValue<float>(0x8ef55d4, maxDist);
     maxDist = efd::Min<float>(m_0b4, maxDist);
-    float dist = m_0a8.FUN_140965c40(offset).FUN_140967ac0();
+    float dist = (m_0a8 - offset).Length();
     bool inRange = maxDist > dist;
     if (visible != inRange)
     {
@@ -7840,7 +7840,7 @@ void WorldService::FUN_141bd6c40(void* npcPtr, Vector3* center, FieldPropertySig
     int kHidden = 0;
     int kVisible = 1;
     int kFading = 2;
-    Vector3 d = ((Unk_WsD_Positioned*)npcPtr)->GetPosition().FUN_140965c40(*center);
+    Vector3 d = (((Unk_WsD_Positioned*)npcPtr)->GetPosition() - (*center));
     float fade = 1.0f;
     float up = FUN_1403812c0(range);
     float down = FUN_1403812e0(range);
@@ -8068,8 +8068,8 @@ void WorldService::FUN_141bd7390()
     if (m_1f8.empty())
         return;
     unsigned now = GetTickCountMs2();
-    int* delayBase = ((int*)FUN_140b0f480((struct Unk_CeConstUInt*)(&((Unk_WsD_Constants*)(void*)FUN_1401d3200())->m_e310)));
-    float* fadeAlpha = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)FUN_1401d3200())->m_e2b8)->Get();
+    int* delayBase = ((int*)FUN_140b0f480((struct Unk_CeConstUInt*)(&((Unk_WsD_Constants*)(void*)GetClientConstants())->m_e310)));
+    float* fadeAlpha = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsD_Constants*)(void*)GetClientConstants())->m_e2b8)->Get();
     int key = FUN_1408a03c0(FUN_1408a14c0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(((Unk_WsD_FadeObj*)MS2_WS_MYPC(m_2d8))->GetPosition()))));
     int zone = 0;
     if (m_1f8.find(key) != m_1f8.end())
@@ -9240,7 +9240,7 @@ void WorldService::FUN_141bc3560()
                     level = defaultLevel;
                 int effectId = 0;
                 reinterpret_cast<egf::Entity*>(reinterpret_cast<void*>(reinterpret_cast<const egf::EntityPtr*>(&entity)->operator->()))->GetPropertyValue<int>(0x8843d885, reinterpret_cast<int&>(effectId));
-                float volume = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsF_CacheData*)(void*)FUN_1401d3200())->hitVolume)->Read();
+                float volume = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsF_CacheData*)(void*)GetClientConstants())->hitVolume)->Read();
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(level, effectId, 1, reinterpret_cast<const NiPoint3&>(entPos), volume);
 
                 if ((((void*)((&range))->get()) ? true : false) && ((Unk_WsF_RangeObj*)(void*)reinterpret_cast<MS2Ptr<CBoxCollision>*>(&range)->operator->())->notify)
@@ -9751,8 +9751,8 @@ efd::AsyncResult WorldService::OnTick()
 
     // ---- ambience: pick the strongest zone / prop around the focus ----
     float playerHeight = FUN_141bd4120();
-    static float s_zoneDefault = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)FUN_1401d3200())->m_zoneDefault)->Read();
-    static float s_propDefault = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)FUN_1401d3200())->m_propDefault)->Read();
+    static float s_zoneDefault = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)GetClientConstants())->m_zoneDefault)->Read();
+    static float s_propDefault = reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)GetClientConstants())->m_propDefault)->Read();
     float bestValue = playerHeight;
     float bestParam = s_propDefault;
     if (m_2d8.data() != 0)
@@ -9804,9 +9804,9 @@ efd::AsyncResult WorldService::OnTick()
             if (other != 0)
             {
                 float dist = FUN_140966ea0(G_Player(&m_2d8)->GetPosition(), other->GetPosition());
-                if (dist < *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)FUN_1401d3200())->m_nearDistance)->Get())
+                if (dist < *reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)GetClientConstants())->m_nearDistance)->Get())
                 {
-                    FUN_14150cce0(*reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)FUN_1401d3200())->m_nearValue)->Get());
+                    FUN_14150cce0(*reinterpret_cast<Common::Constants::Value<float>*>(&((Unk_WsG_Constants*)(void*)GetClientConstants())->m_nearValue)->Get());
                     break;
                 }
             }

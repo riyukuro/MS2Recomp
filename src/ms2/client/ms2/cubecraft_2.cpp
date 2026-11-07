@@ -1607,9 +1607,9 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         if (m_tSlide.FUN_140868ba0() != 0 || m_tSlide.FUN_140868c00() != 0)
         {
             float fEase = Unk_EaseOut().Evaluate(m_tSlide.FUN_140868940());
-            Vector3 kDelta = m_ptCell.FUN_140965c40(m_ptLast);
-            float fLen = kDelta.FUN_140967ac0();
-            kDelta.FUN_140968990();
+            Vector3 kDelta = (m_ptCell - m_ptLast);
+            float fLen = kDelta.Length();
+            kDelta.Unitize();
             kDown = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptLast) + reinterpret_cast<const efd::Point3&>(kDelta) * fEase * fLen));
             reinterpret_cast<Unk_C2GuideSlots*>(m_spGuide.operator->())->vfunc_2((const NiPoint3&)kDown);
             if (m_spGuide3.get() != 0)

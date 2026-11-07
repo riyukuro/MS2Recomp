@@ -1,0 +1,8 @@
+0a
+// gb-terrain local (never committed): SDK sdk/Win32/Include shim used by the flex-generated
+// NSFLexer.cpp:44 (tree copy: _unresolved/unistd.h, Mingw32 "maps roughly to io.h").
+#pragma once
+#include <io.h>
+#include <process.h>
+
+.

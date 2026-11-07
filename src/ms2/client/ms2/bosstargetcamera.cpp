@@ -205,7 +205,7 @@ void CBossTargetCamera::vfunc_39(double fTime)
 {
     if (m_f0 != 0)
     {
-        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_d8.m_pos - m_c0.m_pos))));
         float fDist = ptDelta.Length();
         float fBlend = 0.0f;
         if (m_fc != 0)
@@ -282,7 +282,7 @@ void CBossTargetCamera::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fT * (m_d8.m_pos - m_c0.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(fT, m_c0.m_rot, m_d8.m_rot);
             }
@@ -365,7 +365,7 @@ efd::Point3 CBossTargetCamera::FUN_140a38570()
         {
             float fDist = 0.0f;
             ptOther = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBoss->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ)))));
-            fDist = ptOther.FUN_140965c40(ptRet).FUN_140967ac0() + m_data.m_distanceOffset;
+            fDist = (ptOther - ptRet).Length() + m_data.m_distanceOffset;
             if (fDist > m_data.m_detachDistance)
             {
                 fDist = m_data.m_zoomOut;
@@ -382,8 +382,8 @@ efd::Point3 CBossTargetCamera::FUN_140a38570()
     {
         return reinterpret_cast<const efd::Point3&>(ptRet);
     }
-    Vector3 ptDir = ptOther.FUN_140965c40(ptRet);
-    float fLen = ptDir.FUN_140968990();
+    Vector3 ptDir = (ptOther - ptRet);
+    float fLen = ptDir.Unitize();
     efd::Point3 ptHalf = reinterpret_cast<const efd::Point3&>(ptDir) * fLen;
     ptHalf.z = ptHalf.z * 0.5f;
     return reinterpret_cast<const efd::Point3&>(ptRet) + ptHalf;

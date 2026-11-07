@@ -493,7 +493,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
     if (m_n98 == 0)
         return;
     NiPoint3 kDir = TSingleton<CameraMgr>::GetInstance()->FUN_140af0340();
-    reinterpret_cast<Vector3&>(kDir).FUN_140968990();
+    reinterpret_cast<Vector3&>(kDir).Unitize();
     float fDot = reinterpret_cast<const efd::Point3&>(kDir).Dot(*(const efd::Point3*)&DAT_143a08cd8);
     if (m_nCameraFlag != 0)
     {

@@ -893,7 +893,6 @@ void UIPCInfoDialog::vfunc_85()
 }
 MS2_REPLACE_METHOD(0x14132FEC0, UIPCInfoDialog, vfunc_85, 101, 0xC85E7596);
 
-// MS2-FUNCTIONAL: the stat lists from the decompile; the label index temporaries differ
 // @0x14132ff30
 void UIPCInfoDialog::vfunc_86()
 {
@@ -902,8 +901,8 @@ void UIPCInfoDialog::vfunc_86()
     if (MS2Ptr<ASLabel> spItemLevel = GetChild<ASLabel>("m_itemLevelInfo"))
     {
         unsigned int nBase = m_spInfo->m_3cc - m_spInfo->m_3d0;
-        CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, (unsigned int)m_spInfo->m_3d0);
-        CStringW strValue = StringFormat(L"{0}", (unsigned int)m_spInfo->m_3cc);
+        CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, reinterpret_cast<const unsigned int&>(m_spInfo->m_3d0));
+        CStringW strValue = StringFormat(L"{0}", reinterpret_cast<const unsigned int&>(m_spInfo->m_3cc));
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
         spItemLevel->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
@@ -949,59 +948,65 @@ void UIPCInfoDialog::vfunc_86()
     if (MS2Ptr<ASUIComponent> spLabels = GetChild<ASUIComponent>("m_statLabelManager"))
     {
         ASArray aStats(2);
-        aStats.PushValue(FUN_141335e00(4, 0, 0));
-        aStats.PushValue(FUN_141335e00(7, 0, 1));
-        aStats.PushValue(FUN_141335e00(10, 0, 2));
-        aStats.PushValue(FUN_141335e00(0, 0, 3));
-        aStats.PushValue(FUN_141335e00(1, 0, 4));
-        aStats.PushValue(FUN_141335e00(2, 0, 5));
-        aStats.PushValue(FUN_141335e00(3, 0, 6));
-        aStats.PushValue(FUN_141335e00(0xe, 0, 7));
-        aStats.PushValue(FUN_1413369a0(0, 8));
-        aStats.PushValue(FUN_141335e00(0x1b, 1, 0));
-        aStats.PushValue(FUN_141335e00(0x1d, 1, 1));
-        aStats.PushValue(FUN_141335e00(0x17, 1, 2));
-        aStats.PushValue(FUN_141335e00(0x18, 1, 3));
-        aStats.PushValue(FUN_141335e00(0x1f, 1, 4));
-        aStats.PushValue(FUN_1413363d0(0x1a, 1, 5));
-        aStats.PushValue(FUN_1413363d0(0x1b, 1, 6));
-        aStats.PushValue(FUN_141335e00(0xf, 1, 7));
-        aStats.PushValue(FUN_141335e00(0x11, 1, 8));
-        aStats.PushValue(FUN_141335e00(0x12, 1, 9));
-        aStats.PushValue(FUN_1413363d0(0x18, 1, 10));
-        aStats.PushValue(FUN_1413363d0(0x19, 1, 0xb));
-        aStats.PushValue(FUN_1413363d0(0x13, 1, 0xc));
-        aStats.PushValue(FUN_1413363d0(0x12, 1, 0xd));
-        aStats.PushValue(FUN_1413363d0(0x17, 1, 0xe));
-        aStats.PushValue(FUN_1413363d0(0x16, 1, 0xf));
-        aStats.PushValue(FUN_1413363d0(0x14, 1, 0x10));
-        aStats.PushValue(FUN_1413363d0(0x15, 1, 0x11));
-        aStats.PushValue(FUN_1413363d0(0xc, 1, 0x12));
-        aStats.PushValue(FUN_1413363d0(7, 1, 0x13));
-        aStats.PushValue(FUN_1413363d0(0x10, 1, 0x14));
-        aStats.PushValue(FUN_1413363d0(0xce, 1, 0x15));
-        aStats.PushValue(FUN_141335e00(0xd, 1, 0x16));
-        aStats.PushValue(FUN_1413363d0(0x23, 1, 0x17));
-        aStats.PushValue(FUN_1413363d0(0x36, 1, 0x18));
-        aStats.PushValue(FUN_141335e00(0x14, 2, 0));
-        aStats.PushValue(FUN_141335e00(0x19, 2, 1));
-        aStats.PushValue(FUN_141335e00(0x1a, 2, 2));
-        aStats.PushValue(FUN_141335e00(0x10, 2, 3));
-        aStats.PushValue(FUN_141335e00(0x13, 2, 4));
-        aStats.PushValue(FUN_1413363d0(0x25, 2, 5));
-        aStats.PushValue(FUN_1413363d0(0x26, 2, 6));
-        aStats.PushValue(FUN_1413363d0(0x1d, 2, 7));
-        aStats.PushValue(FUN_1413363d0(0x1c, 2, 8));
-        aStats.PushValue(FUN_1413363d0(0x21, 2, 9));
-        aStats.PushValue(FUN_1413363d0(0x20, 2, 10));
-        aStats.PushValue(FUN_1413363d0(0x1e, 2, 0xb));
-        aStats.PushValue(FUN_1413363d0(0x1f, 2, 0xc));
-        aStats.PushValue(FUN_141335e00(0x15, 2, 0xd));
-        aStats.PushValue(FUN_1413363d0(0xcc, 2, 0xe));
-        aStats.PushValue(FUN_1413363d0(0x22, 2, 0xf));
-        aStats.PushValue(FUN_1413363d0(0x24, 2, 0x10));
-        aStats.PushValue(FUN_141335e00(5, 2, 0x11));
-        aStats.PushValue(FUN_1413363d0(0x37, 2, 0x12));
+        int nIndex = 0;
+        int nGroup = 0;
+        aStats.PushValue(FUN_141335e00(4, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(7, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(10, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(1, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(2, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(3, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0xe, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413369a0(nGroup, nIndex++));
+        nIndex = 0;
+        nGroup++;
+        aStats.PushValue(FUN_141335e00(0x1b, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x1d, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x17, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x18, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x1f, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1a, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1b, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0xf, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x11, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x12, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x18, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x19, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x13, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x12, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x17, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x16, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x14, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x15, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0xc, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(7, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x10, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0xce, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0xd, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x23, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x36, nGroup, nIndex++));
+        nIndex = 0;
+        nGroup++;
+        aStats.PushValue(FUN_141335e00(0x14, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x19, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x1a, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x10, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x13, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x25, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x26, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1d, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1c, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x21, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x20, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1e, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x1f, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(0x15, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0xcc, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x22, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x24, nGroup, nIndex++));
+        aStats.PushValue(FUN_141335e00(5, nGroup, nIndex++));
+        aStats.PushValue(FUN_1413363d0(0x37, nGroup, nIndex++));
         spLabels->Invoke(s_strSetData, aStats.FUN_1422bb870());
     }
     vfunc_87();

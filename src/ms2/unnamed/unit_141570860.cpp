@@ -284,12 +284,14 @@ long long FUN_141571730(long long dst,long long src){auto*d=reinterpret_cast<CNM
 // @0x141572020
 bool FUN_141572020(const std::vector<CNMCharacter>* chars,char* out,unsigned int cap){if(!out||!cap)return false;out[0]=0;size_t used=0;for(const auto&c:*chars){if(used&&used+1<cap)out[used++]=';';const size_t left=cap-used-1;const size_t n=strnlen(c.m_10,left);memcpy(out+used,c.m_10,n);used+=n;out[used]=0;if(used+1>=cap)break;}return used!=0;}
 
-// MS2-FUNCTIONAL 0x141572110: splits the separator-delimited note string into character records.
+// MS2-FUNCTIONAL 0x141572110: splits the separator-delimited note string into character records (the exe splits through a vector<string> helper; the ";" separator is the same function-local static string, atexit dtor 0x142cb3950).
 // @0x141572110
-unsigned int FUN_141572110(const char* text,std::vector<CNMCharacter>* chars,unsigned int id){chars->clear();if(!text)return 0;const char*cur=text;while(*cur){const char*end=strchr(cur,';');const size_t n=end?static_cast<size_t>(end-cur):strlen(cur);chars->emplace_back();auto&c=chars->back();memcpy(c.m_58,cur,(n<sizeof(c.m_58)-1?n:sizeof(c.m_58)-1));c.m_50.nLow=id;cur=end?end+1:cur+n;}return static_cast<unsigned int>(chars->size());}
+unsigned int FUN_141572110(const char* text,std::vector<CNMCharacter>* chars,unsigned int id){static std::string s_delimiter(";");chars->clear();if(!text)return 0;const char*cur=text;while(*cur){const char*end=strchr(cur,s_delimiter[0]);const size_t n=end?static_cast<size_t>(end-cur):strlen(cur);chars->emplace_back();auto&c=chars->back();memcpy(c.m_58,cur,(n<sizeof(c.m_58)-1?n:sizeof(c.m_58)-1));c.m_50.nLow=id;cur=end?end+1:cur+n;}return static_cast<unsigned int>(chars->size());}
 
 // MS2-PIN: ??0CNMNoteInfo@@QEAA@XZ 0x141570860 ; recovered default note constructor
 // MS2-PIN: ??0CNMNoteInfo@@QEAA@AEBVCNMNoteInfo2@@@Z 0x1415709a0 ; note-box conversion constructor
 // MS2-PIN: ??0CNMNoteInfoEx@@QEAA@XZ 0x141571190 ; recovered extended-note constructor
 // MS2-PIN: ??0CNMNoteInfo2@@QEAA@XZ 0x141571470 ; recovered note-box constructor
 // MS2-PIN: ??0CNMNoteInfo2@@QEAA@AEBVCNMNoteInfo@@@Z 0x141571580 ; note conversion constructor
+// MS2-RANGE: 0x142cb3950-0x142cb3965 .text$yd
+// MS2-PIN: ??__Fs_delimiter@?1??FUN_141572110@@YAIPEBDPEAV?$vector@VCNMCharacter@@V?$allocator@VCNMCharacter@@@std@@@std@@I@Z@YAXXZ 0x142cb3950

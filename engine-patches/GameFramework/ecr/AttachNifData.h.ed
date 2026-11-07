@@ -1,0 +1,3 @@
+66c
+    AttachNifData(const efd::utf8string& attachPoint, const efd::AssetID& nifAsset); /* MS2: implicit operator= with the AssetID copy inlined */ __forceinline AttachNifData& MS2AssignInline(const AttachNifData& o) { efd::IBase::operator=(o); m_RefCount = o.m_RefCount; m_attachPoint = o.m_attachPoint; m_nifAsset.MS2AssignInline(o.m_nifAsset); m_translation = o.m_translation; m_rotation = o.m_rotation; m_scale = o.m_scale; return *this; }
+.

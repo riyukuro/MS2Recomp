@@ -586,7 +586,7 @@ int UIGuideEventArrowDialog::vfunc_2(void* out)
     case 11: if (GetMessengerTargetPosition(out) == 0) return 0; break;
     case 12: if (GetCubeTypePosition(out) == 0) return 0; break;
     }
-    ((Vector3*)out)->FUN_140a4e560(m_pos);
+    (*((Vector3*)out) += m_pos);
     return 1;
 }
 
@@ -695,7 +695,7 @@ int UIGuideEventArrowDialog::FUN_14195e3f0(void* out)
     else { baseX = 400.0f; baseY = 0.0f; }
     slot %= 4;
     baseX += (float)(slot * 0x44 + 0x20);
-    ((Vector3*)out)->FUN_140a4e560(Vector3(baseX + 57.0f, baseY + 103.0f, 0.0f));
+    (*((Vector3*)out) += Vector3(baseX + 57.0f, baseY + 103.0f, 0.0f));
     return 1;
 }
 
@@ -742,7 +742,7 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
             int row = (slot - start) / nCols;
             float fx = (float)(col * 0x3f);
             float fy = (float)(row * 0x3e);
-            ((Vector3*)out)->FUN_140a4e560(Vector3(fx + 17.0f, fy + 99.0f, 0.0f));
+            (*((Vector3*)out) += Vector3(fx + 17.0f, fy + 99.0f, 0.0f));
             return 1;
         } else {
             return 0;
@@ -769,11 +769,11 @@ int UIGuideEventArrowDialog::FUN_14195ead0(void* out)
     if (index == -1)
         return 0;
     *(Vector3*)out = Vector3(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->GetZ());
-    ((Vector3*)out)->FUN_140a4e560(Vector3(tabs->FUN_1422c10a0(), tabs->FUN_1422c1110(), tabs->GetZ()));
+    (*((Vector3*)out) += Vector3(tabs->FUN_1422c10a0(), tabs->FUN_1422c1110(), tabs->GetZ()));
     MS2Ptr<ASButton> tab = tabs->GetButtonAt(index);
     if (tab == 0)
         return 0;
-    ((Vector3*)out)->FUN_140a4e560(Vector3(tab->FUN_1422c10a0(), tab->FUN_1422c1110(), tab->GetZ()));
+    (*((Vector3*)out) += Vector3(tab->FUN_1422c10a0(), tab->FUN_1422c1110(), tab->GetZ()));
     return 1;
 }
 
@@ -886,7 +886,7 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
                 return 0;
             if (!cur->GetVisible())
                 return 0;
-            ((Vector3*)out)->FUN_140a4e560(Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
+            (*((Vector3*)out) += Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
             last = cur;
         }
     }
@@ -933,7 +933,7 @@ int UIGuideEventArrowDialog::FUN_14195fc40(UISwfEntity* ui, void* out)
                     return 0;
                 if (!cur->GetVisible())
                     return 0;
-                ((Vector3*)out)->FUN_140a4e560(Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
+                (*((Vector3*)out) += Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
                 last = cur;
             }
         }

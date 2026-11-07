@@ -1,0 +1,169 @@
+eol lf
+7023a
+    CreateFragment73(pkLib);
+.
+6853@39s "2" "3"
+6468@39s "1" "2"
+6341@39s "0" "1"
+6069@38s "69" "70"
+5854@39s "8" "9"
+5486@39s "7" "8"
+5296@39s "6" "7"
+5236@39s "5" "6"
+5165@39s "4" "5"
+5056@39s "3" "4"
+4986@39s "2" "3"
+4815@39s "1" "2"
+4618@39s "0" "1"
+4567@38s "59" "60"
+4516@39s "8" "9"
+4465@39s "7" "8"
+4414@39s "6" "7"
+4338@39s "5" "6"
+4260@39s "4" "5"
+4212@39s "3" "4"
+4164@39s "2" "3"
+4116@39s "1" "2"
+4047@39s "0" "1"
+3978@38s "49" "50"
+3909@39s "8" "9"
+3840@39s "7" "8"
+3792@39s "6" "7"
+3744@39s "5" "6"
+3696@39s "4" "5"
+3648@39s "3" "4"
+3590@39s "2" "3"
+3532@39s "1" "2"
+3474@39s "0" "1"
+3416@38s "39" "40"
+3358@39s "8" "9"
+3300@39s "7" "8"
+3242@39s "6" "7"
+3184@39s "5" "6"
+3126@39s "4" "5"
+3068@39s "3" "4"
+3010@39s "2" "3"
+3000@55s ")" ""
+3000@34s "saturate(" ""
+2946@39s "1" "2"
+2883@39s "0" "1"
+2799@38s "29" "30"
+2736@39s "8" "9"
+2575@39s "7" "8"
+2487@39s "6" "7"
+2410@39s "5" "6"
+2024@39s "4" "5"
+1932@39s "3" "4"
+1867@39s "2" "3"
+1793a
+    pkFrag->SetName("CalculateHeightFog");
+    pkFrag->SetDescription("\n"
+        "     HeightFog\n"
+        "    ");
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float4");
+        pkRes->SetSemantic("Position");
+        pkRes->SetLabel("World");
+        pkRes->SetVariable("WorldPosition");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("UpperZ");
+        pkRes->SetVariable("UpperZ");
+        pkRes->SetDefaultValue("(0.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("LowerZ");
+        pkRes->SetVariable("LowerZ");
+        pkRes->SetDefaultValue("(-500.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("Weight");
+        pkRes->SetVariable("Weight");
+        pkRes->SetDefaultValue("(1.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an output resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("Color");
+        pkRes->SetLabel("HeightFogOut");
+        pkRes->SetVariable("HeightFogOut");
+
+        pkFrag->AddOutputResource(pkRes);
+    }
+
+    // Insert a code block
+    {
+        NiCodeBlock* pkBlock = NiNew NiCodeBlock();
+
+        pkBlock->SetLanguage("hlsl/Cg");
+        pkBlock->SetPlatform("D3D11/D3D10/DX9/Xenon/PS3");
+        pkBlock->SetTarget("vs_1_1/ps_2_0/vs_4_0/ps_4_0/vs_5_0/ps_5_0");
+
+        pkBlock->SetText("        \n"
+             "        float z = WorldPosition.z;\n"
+             "        if (z > UpperZ)\n"
+             "            HeightFogOut = 1;\n"
+             "        else if (z > LowerZ)\n"
+             "            HeightFogOut = Weight * (z - LowerZ) / (UpperZ - LowerZ) + 1 - Weight;\n"
+             "        else\n"
+             "            HeightFogOut = 1.0f - Weight;\n"
+             "    ");
+
+
+        pkFrag->AddCodeBlock(pkBlock);
+    }
+
+    pkLib->AddNode(pkFrag);
+}
+//--------------------------------------------------------------------------------------------------
+EE_NOINLINE static void CreateFragment22(NiMaterialNodeLibrary* pkLib)
+{
+    NiMaterialFragmentNode* pkFrag = NiNew NiMaterialFragmentNode();
+
+    pkFrag->SetType("Vertex/Pixel");
+.
+1777@56s "" "+ FogBias "
+1732a
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("FogBias");
+        pkRes->SetVariable("FogBias");
+        pkRes->SetDefaultValue("(0.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+.
+1258@29s "2" "4"

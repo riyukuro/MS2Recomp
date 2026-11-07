@@ -1,0 +1,17 @@
+eol lf
+1397c
+            if (g_bStudioSequenceClampNoRewind) fScaledTime = NiMax(m_fLastScaledTime, fScaledTime);
+.
+1335c
+extern bool g_bStudioSequenceClampNoRewind;  // gb-anim (inferred): byte 0x1439fac98
+.
+740c
+        float fStudioScale = 1.0f; pkOwner->m_kStudioMap0x100.GetAt(pkSeqData, fStudioScale); fStudioScale *= pkSeqData->GetFrequency(); spSequence->m_fFrequency = fStudioScale;
+.
+621c
+                kText, fEventTime); if (!m_pkOwner) return;
+.
+568@48s "" " if (!m_pkOwner) return;"
+554c
+                bNeedFirstTextKey); if (!m_pkOwner) return;
+.

@@ -257,13 +257,13 @@ void StateUseFurniture::vfunc_3(double fTime)
                 FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kDir));
                 Vector3 kCol0;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(0, reinterpret_cast<efd::Point3&>(kCol0));
-                kCol0.FUN_140968990();
+                kCol0.Unitize();
                 Vector3 kCol1;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(1, reinterpret_cast<efd::Point3&>(kCol1));
-                kCol1.FUN_140968990();
+                kCol1.Unitize();
                 Vector3 kCol2;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
-                kCol2.FUN_140968990();
+                kCol2.Unitize();
                 reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos)
                     + reinterpret_cast<const efd::Point3&>(kCol1) * (-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y)))));
                 reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos)

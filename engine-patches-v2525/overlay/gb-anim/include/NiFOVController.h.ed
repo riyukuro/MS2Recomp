@@ -1,0 +1,33 @@
+0a
+// gb-anim reconstruction (local overlay, not committed). Studio class absent from Gamebryo 3.2;
+// shape copied from NiAlphaController (identical own vtable slots; EXE vtable 0x1430022d8,
+// RTTI 0x143af89e0). All names inferred.
+#ifndef NIFOVCONTROLLER_H
+#define NIFOVCONTROLLER_H
+
+#include "NiFloatInterpController.h"
+
+class NIANIMATION_ENTRY NiFOVController : public NiFloatInterpController
+{
+    NiDeclareRTTI;
+    NiDeclareClone(NiFOVController);
+    NiDeclareStream;
+    NiDeclareViewerStrings;
+
+public:
+    NiFOVController();
+
+    virtual void Update(float fTime);
+    virtual bool UpdateValue(float fTime, float fFloat,
+        unsigned short usIndex = 0);
+
+protected:
+    virtual bool InterpTargetIsCorrectType(NiObjectNET* pkTarget) const;
+    virtual void GetTargetFloatValue(float& fValue);
+};
+
+typedef efd::SmartPointer<NiFOVController> NiFOVControllerPtr;
+
+#endif
+
+.

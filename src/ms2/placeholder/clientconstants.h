@@ -30,7 +30,7 @@ public:
 };
 
 // @0x1401d3200 TSingleton<Client::Constants>::GetInstance as seen from Common::Constants code.
-namespace Common { class Constants; } class Unk_SingletonObj1* FUN_1401d3200();         // returns the Common::Constants view below (Unk_SingletonObj1 = the C3 canonical name)
+namespace Common { class Constants; } class Unk_SingletonObj1;   // C3: FUN_1401d3200 decl dropped (= TSingleton<Client::Constants>::GetInstance, see GetClientConstants()); the Common::Constants view below (Unk_SingletonObj1 = the C3 canonical name)
 #define GetClientConstants() (reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))   // 0x1401d3200 read as the Unk_SingletonObj1 view (C3: was FUN_1401d3200())
 // CString -> value parsers (other units).
 unsigned short FUN_140718110(const CString& s);

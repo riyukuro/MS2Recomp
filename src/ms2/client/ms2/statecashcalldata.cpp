@@ -98,7 +98,7 @@ struct Unk_CcXform
 };
 MS2_CHECK_SIZE(Unk_CcXform, 0x34);
 // Point3 helpers (out-of-line in the exe).
-Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
+// C3: was Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m) = efd::operator*(const Point3&, const Matrix3&) (efd/Matrix3.h), called directly
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
@@ -406,9 +406,9 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
     efd::Matrix3 kMat;
     kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-    Vector3 kDir = FUN_1420834e0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))), kMat);
+    efd::Point3 kDir = efd::operator*(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8)), kMat);
     xf.MakeIdentity();
-    xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
+    xf.m_Translate = FUN_1417b8370()->vfunc_18() + kDir * 150.0f;
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;
     fAngle -= 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);

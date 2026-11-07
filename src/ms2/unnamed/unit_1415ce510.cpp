@@ -12,21 +12,28 @@
 extern void* FUN_1415e4ec0(void* p);
 extern void* FUN_140296da0(void* p);
 
+// The pair the two helpers build, as constructors: an empty tag type passed by value, the forwarded argument
+// (empty, so only the forwarding call remains) and the 0x18-byte value member built through its address.
+struct Tag_1415ce510 {};
+struct Unk_1415ce510
+{
+    char m_val[0x18];
+    Unk_1415ce510(Tag_1415ce510, void* v);
+};
+struct Unk_1415ce550
+{
+    Unk_1415ce510 m_pair;
+    Unk_1415ce550(void* v);
+};
+
 // @0x1415ce510
-// MS2-FUNCTIONAL: cl loads the second-call argument into rax before moving it to rcx (exe), our build
-// loads it straight into rcx; same behaviour, 3 bytes shorter.
-void* FUN_1415ce510(void* p, bool b, void* v)
+Unk_1415ce510::Unk_1415ce510(Tag_1415ce510, void* v)
 {
     FUN_1415e4ec0(v);
-    FUN_140296da0(p);
-    return p;
+    FUN_140296da0(&m_val);
 }
 
 // @0x1415ce550
-// MS2-FUNCTIONAL: same rax/rcx argument-load ordering difference as FUN_1415ce510.
-void* FUN_1415ce550(void* p, void* v)
+Unk_1415ce550::Unk_1415ce550(void* v) : m_pair(Tag_1415ce510(), FUN_1415e4ec0(v))
 {
-    bool b;
-    FUN_1415ce510(p, b, FUN_1415e4ec0(v));
-    return p;
 }

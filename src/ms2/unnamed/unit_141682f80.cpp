@@ -21,13 +21,13 @@ class Unk_Restrictions;
 class Unk_SoundSink;
 struct Unk_PmFixedItem;
 
-// NiPoint3-shaped: the declared (never called) default constructor keeps /GS from treating the locals as buffers, and the
-// by-value FUN_140d8c2f0 result is built in place.
-struct Vector3
-{
-    float x, y, z;
-    Vector3();
-};
+// The shared Vector3 placeholder (was a local copy of it). Its declared (never called) default constructor keeps /GS from
+// treating the locals as buffers, and the by-value FUN_140d8c2f0 result is built in place.
+#include "ms2/placeholder/nipoint3.h"
+//
+//
+//
+//
 
 // The controlled actor (PCBase); only the virtuals this unit calls matter.
 class Unk_PCActor

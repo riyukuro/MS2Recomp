@@ -13,6 +13,8 @@
 // The exe calls utf8string(const char*) (0x1409989e0) and std::less<utf8string> (0x140999060) out of line here.
 #define EE_MS2_UTF8_CHAR_CTOR_CALL
 #define EE_MS2_LESS_UTF8_CALL
+// The exe inlines the utf8string copy ctor (defaultQOS = FindValue) down to _Construct_lv_contents.
+#define EE_MS2_UTF8_COPY_FORCE
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/QOSCompare.h>
 #include <efd/efdQualityOfService.h>
@@ -145,7 +147,8 @@ efd::QualityOfService FUN_1420e64b0(efd::EnumManager* pEnumManager, const efd::u
 
 // QOSCompare::ReadConfig: maps virtual to physical QOS, once. Unreliable and connectionless default to their
 // unreliable physical QOS; the [QualityOfService] config section can set the physical Default and add mappings.
-// MS2-FUNCTIONAL: codegen only: the exe inlines GetVirtualQOS (0x200 frame) and uses an r11 frame.
+// MS2-FUNCTIONAL: frame layout only: the exe gives the "Invalid physical" log string its own slot (rbp+0x60) in a
+// 0x200 frame, where cl 19.16 shares it with the other two log strings in a 0x170 frame (1842 vs 1845 bytes).
 // @0x1420e65e0
 void FUN_1420e65e0(efd::IConfigManager* pConfigManager, efd::EnumManager* pEnumManager)
 {

@@ -1,0 +1,38 @@
+eol lf
+42a
+    static bool ms_bSearchWorkingDirectory;   // fw-nisys: 0x143afd094, follows ms_acDefPath
+    static CreateFunction ms_pfnCreateFunc;   // fw-nisys: 0x1439fe910 = DefaultCreate
+};
+
+//--------------------------------------------------------------------------------------------------
+// fw-nisys (inferred): studio subclass that, once the stock search order is exhausted, looks for
+// a "Textures" directory above the reference path and then walks its subdirectories.
+// vtable 0x14305cd88; size 0x330 (operator delete in 0x141f42ed0).
+class NISYSTEM_ENTRY NiTextureSearchPath : public NiSearchPath
+{
+public:
+    NiTextureSearchPath();
+    virtual ~NiTextureSearchPath();
+
+    virtual void Reset();
+    virtual bool GetNextSearchPath(char* pcPath, unsigned int uiStringLen);
+
+    static NiSearchPath* Create();
+    static bool FindTexturesDirectory(char* pcTexturesPath, unsigned int uiStringLen,
+        const char* pcStartPath);
+
+protected:
+    bool m_bTexturesSearched;
+    void* m_hFind;
+    char m_acTexturesPath[NI_MAX_PATH];
+.
+35a
+    // fw-nisys (inferred names): studio factory. NiStream creates its search path through
+    // Create() (0x141f42fe0, tail jump through ms_pfnCreateFunc); NiSystemSDM::Init installs
+    // NiTextureSearchPath::Create (0x141f44950).
+    typedef NiSearchPath* (*CreateFunction)();
+    static NiSearchPath* Create();
+    static void SetCreateFunc(CreateFunction pfnCreate);
+    static NiSearchPath* DefaultCreate();
+
+.

@@ -16,7 +16,8 @@ None of this is in the repository.
 |---|---|
 | The KMS2_DEV x64 `MapleStory2.exe` | `Game Versions/KMS2_DEV/x64/MapleStory2.exe`, or set `MS2_EXE`. Run `tools/check-exe.sh` (Windows: `python tools\check_exe.py`): it must print `OK` (SHA-256 check) |
 | MSVC 14.16 (VS2017 15.9, cl 19.16.27054), MFC/ATL MBCS, Windows 10 SDK 10.0.19041 | `third_party/msvc/`, installed with [msvc-wine](https://github.com/mstorsjo/msvc-wine) (`vsdownload.py --manifest` for 15.9, then `install.sh`). `tools/msvc/*` wrap it under Wine. On Windows the real VS2017 v141 install is used instead, see [Windows](#windows-native-no-wsl-no-wine). `tools/check-toolchain.sh` (Windows: `python tools\check_toolchain.py`) compares your install with ours before you start |
-| Stock Gamebryo 3.2.0.661 (LightSpeed) source, patched with `engine-patches/` (see below) | `engine/gamebryo/` |
+| Stock Gamebryo 3.2.0.661 (LightSpeed) source, unpatched | `third_party/gamebryo/` (the build reads `APPDIR/Source` from it as is) |
+| A copy of its `APPDIR/Source` patched with `engine-patches/`, and `gamebryo-v2525/` made from the pristine Source with `engine-patches-v2525/` (see below) | `engine/gamebryo/`, `engine/gamebryo-v2525/` |
 | DirectX SDK June 2010, PhysX 2.8.4 | `third_party/dxsdk/`, `third_party/physx284/` |
 | Exe-derived maps: `rtti_classes.tsv`, `rtti_vftables.tsv` | any directory, named by `MS2_CLASSES_DIR`: `tools/regen-map.sh rtti <dir>` regenerates them from the exe (byte-identical; Windows: `python tools\rtti_scan.py "<exe>" <dir>`) |
 | `functions.tsv`, `units.tsv` (curated Ghidra map) | shipped in this repository as `data/map/` (or set `MS2_MAP_DIR`). `tools/regen-map.sh ghidra` gives an approximation only |
@@ -38,7 +39,19 @@ stay valid even with `core.autocrlf=true`.
 Copy or move the patched tree to `engine/gamebryo/` (or set `MS2_ENGINE_DIR`). The script refuses and writes nothing if
 a stock file hash, an added file or a result hash does not match. 199 files are patched and 41 added (CMake files and
 the Nexon-specific `NiFOV*` / `NiStudioShaderContext` classes).
-`tools/engine-patches.py` regenerates the patches (maintainer only; needs the private stock-import history).
+`tools/engine-patches.py` regenerates the patches (maintainer only; needs the private stock-import history);
+`--v2525` also regenerates `engine-patches-v2525/`.
+
+`engine-patches-v2525/` makes `engine/gamebryo-v2525/`, the include and source tree of the v2525-recipe engine objects,
+from the pristine `APPDIR/Source`. Apply it first, from the stock tree, writing to a separate directory:
+
+```
+tools/apply-engine-patches.sh engine-patches-v2525 third_party/gamebryo/APPDIR/Source engine/gamebryo-v2525
+```
+
+CMake configure runs this for you when `engine/gamebryo-v2525/` is missing (`cmake/v2525.cmake`). Then apply
+`engine-patches/` to a separate copy of `APPDIR/Source` as above. The stock tree in `third_party/gamebryo/` must stay unpatched: the build
+compiles its files as they are, and the v2525 step refuses a patched tree.
 
 Everything is looked up relative to the checkout. To keep a file elsewhere, set the matching variable instead:
 `MS2_EXE`, `MS2_MAP_DIR`, `MS2_CLASSES_DIR`, `MS2_THIRD_PARTY`, `MS2_ENGINE_DIR`, `MS2_WINEPREFIX`

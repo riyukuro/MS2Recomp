@@ -8,7 +8,7 @@
 // MS2-PIN: ??0?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAA@AEBV0@@Z 0x1407ce960 ; unique
 // MS2-PIN: ??0?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAA@H@Z 0x1407cea10 ; unique
 // MS2-PIN: ??4?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAAEAV0@AEBV0@@Z 0x1407ceb90 ; unique
-// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@Z 0x1407cecd0 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@UUnk_MmSaleCtx@@@@V?$CElementTraits@V?$MS2Ptr@UUnk_MmSaleCtx@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@UUnk_MmSaleCtx@@@@@Z 0x1407cecd0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1407cf0b0 ; unique
 // MS2-PIN: ?Lookup@?$CAtlMap@HV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@3@@ATL@@QEBA_NHAEAV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@Z 0x1407cf5a0 ; unique
 // MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@Z 0x1407cfeb0 ; unique
@@ -147,7 +147,8 @@ template <> template <> MS2Ptr<Unk_MmSaleCtx>::MS2Ptr(const MS2Ptr<PreminmMarket
 }
 
 // @0x1407ce380
-// MS2-FUNCTIONAL: in the exe the array holds MS2Ptr<Unk_MmSaleCtx>, so Add gets a converting temporary (0x1407ce9a0, dtor 0x1406a8810); a cast to our MS2Ptr<PreminmMarketSaleEventContext> array adds a dead rax chain
+// In the exe the array holds MS2Ptr<Unk_MmSaleCtx>, so Add (0x1407cecd0) gets an implicit converting temporary (0x1407ce9a0,
+// dtor 0x1406a8810). An explicit MS2Ptr<Unk_MmSaleCtx>(spContext) argument adds a dead rax chain.
 void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr, const int& nCurrency)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
@@ -157,7 +158,7 @@ void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEve
         if (spContext == 0)
             continue;
         if (nCurrency == 0 || nCurrency == spContext->m_30)
-            arr.Add(spContext);
+            reinterpret_cast<ATL::CAtlArray<MS2Ptr<Unk_MmSaleCtx> >&>(arr).Add(spContext);
     }
 }
 

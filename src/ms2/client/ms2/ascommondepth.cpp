@@ -11,6 +11,7 @@
 // MS2-PIN: ??0?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAA@XZ 0x1409b1e80 ; sfk: ASArgList is this vector
 // MS2-PIN: ?resize@?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAAX_K@Z 0x1409b2800 ; sfk: ASArgList is this vector
 // MS2-PIN: ??A?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAAAEAVValue@GFx@Scaleform@@_K@Z 0x1409b1f70 ; sfk: ASArgList is this vector
+// MS2-PIN: ??1?$vector@VValue@GFx@Scaleform@@V?$allocator@VValue@GFx@Scaleform@@@std@@@std@@QEAA@XZ 0x1409b1f20 ; sfk: ASArgList is this vector
 // MS2-PINS-END tplpin
 // MS2-FUNCTIONAL: ASArgList is a std::vector<Value> (with the container proxy) whose instantiation helpers are pinned by hand.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ascommondepth.cpp"
@@ -96,14 +97,10 @@ ASArgList::ASArgList()
     new (this) Unk_ArgVec();
 }
 
-// ASArgList is really std::vector<GFx::Value>: the exe dtor is ~vector(), _Tidy 0x1409b2530 under the noexcept frame.
-void FUN_1409b2530(void* pVec);     // vector<Value>::_Tidy, private
-template std::vector<Scaleform::GFx::Value>::~vector();     // emits _Tidy; not a row of its own
-// @0x1409b1f20
-ASArgList::~ASArgList()
-{
-    FUN_1409b2530(this);
-}
+// ASArgList is really std::vector<GFx::Value>: the exe dtor 0x1409b1f20 is ~vector() (pinned above), which calls
+// _Tidy 0x1409b2530 under the noexcept frame. ASArgList::~ASArgList is declared only: its progress/symbols-manual row
+// binds it to 0x1409b1f20, so the call sites resolve to ~vector, as in the exe.
+template std::vector<Scaleform::GFx::Value>::~vector();
 
 void ASArgList::FUN_1409b2800(int nCount)
 {

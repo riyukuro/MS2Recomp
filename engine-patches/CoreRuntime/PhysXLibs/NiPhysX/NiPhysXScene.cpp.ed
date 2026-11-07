@@ -1,2 +1,8 @@
+977@70s "" "Inline"
+977@56s "" ")"
+977@50s "" "((MS2MeshView*)"
 200@23s "" ", fScale"
 141@68s "" ", float fScale"
+24c
+/* MS2: the exe inlines these in CreateMesh */ template<> __forceinline NiDataStream::Region* NiTNewInterface<NiDataStream::Region>::Allocate(unsigned int uiNumElements) {return NiNew NiDataStream::Region[uiNumElements];} template<> __forceinline void NiTSet<NiDataStreamRef*, NiTMallocInterface<NiDataStreamRef*> >::Realloc(unsigned int uiNewSize) {typedef NiTMallocInterface<NiDataStreamRef*> TAlloc; if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) {NiDataStreamRef** pNewBase; unsigned int i; if (uiNewSize > 0) {pNewBase = TAlloc::Allocate(uiNewSize); for (i = 0; i < m_uiUsed; i++) {pNewBase[i] = m_pBase[i];}} else {pNewBase = NULL;} TAlloc::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize;}} struct MS2StreamRefSetView : public NiTSet<NiDataStreamRef*, NiTMallocInterface<NiDataStreamRef*> > {__forceinline unsigned int AddInline(NiDataStreamRef* const& element) {if (m_uiUsed == m_uiAlloced) {Realloc(m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1);} m_pBase[m_uiUsed++] = element; return m_uiUsed - 1;}}; struct MS2MeshView : public NiMesh {__forceinline NiDataStreamRef* AddStreamRefInline() {NiDataStreamRef* pkRef = NiNew NiDataStreamRef(); ((MS2StreamRefSetView&)m_kDataStreams).AddInline(pkRef); pkRef->SetSubmeshCount(m_uiSubmeshCount); return pkRef;}};
+.

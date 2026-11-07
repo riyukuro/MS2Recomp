@@ -14,7 +14,7 @@
 class CInPacket;
 class NotifyObject;
 class PCBase;
-class CItem;
+class CItem; namespace efd { class Point3; } typedef efd::Point3 Vector3;
 template <class T> class MS2Ptr;
 // A quest an item starts or advances (ctor 0x1416dbb20; the 0x1416ce860 list, ranked by 0x1416ce6a0).
 struct Unk_QuestItemLink
@@ -141,7 +141,7 @@ public:
     int CountCompletedLevelGuideQuests();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int CountAvailableLearningQuests();
-    struct Vector3 GetTargetObjectPosition();
+    Vector3 GetTargetObjectPosition();
     void SendQuestMode15(int);
     int FUN_1416d0f60(int);
     unsigned FUN_1416d1100(int, int, int*);

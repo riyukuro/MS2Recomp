@@ -144,8 +144,8 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
         return 0;
     Unk_SkipActorPos pos;
     pActor->GetPosition(&pos);
-    Vector3 delta = reinterpret_cast<const Vector3&>(pCheck->m_pos).FUN_140965c40(reinterpret_cast<const Vector3&>(pos));
-    float fDist = delta.FUN_140968990();
+    Vector3 delta = (reinterpret_cast<const Vector3&>(pCheck->m_pos) - reinterpret_cast<const Vector3&>(pos));
+    float fDist = delta.Unitize();
     float fView = pCheck->m_fViewDistance;
     if (FUN_14028d470(fView, -1.0f))
         fView = static_cast<const std::vector<float>&>(m_rows[pCheck->m_nRow].m_dist)[pCheck->m_nCaster];

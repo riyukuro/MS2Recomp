@@ -1,0 +1,28 @@
+737a
+
+        // MS2: a file flagged in m_studioSet0x50 while it was loading leaves the cache again
+        efd::set<efd::utf8string>::iterator ms2Iter = m_studioSet0x50.find(spData->m_filePath);
+        if (ms2Iter != m_studioSet0x50.end())
+        {
+            m_cache.erase(spData->m_filePath);
+            m_studioSet0x50.erase(ms2Iter);
+        }
+.
+632a
+                // MS2: a file requested again is no longer flagged in m_studioSet0x50
+                efd::set<efd::utf8string>::iterator ms2Iter = m_studioSet0x50.find(spFileData->m_filePath);
+                if (ms2Iter != m_studioSet0x50.end())
+                {
+                    m_studioSet0x50.erase(ms2Iter);
+                }
+.
+425a
+// MS2: 2 more lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+.
+290a
+        // MS2: a file requested again is no longer flagged in m_studioSet0x50
+        efd::set<efd::utf8string>::iterator ms2Iter = m_studioSet0x50.find(fileName);
+        if (ms2Iter != m_studioSet0x50.end())
+            m_studioSet0x50.erase(ms2Iter);
+.

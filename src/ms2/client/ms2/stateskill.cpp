@@ -1209,8 +1209,8 @@ int StateSkill::FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx)
         nKind = kRange.m_n48;
     if (spCtx->m_nA0 != 0)
         nKind |= spCtx->m_nA0;
-    Vector3 kDelta = spCtx->m_ptTo.FUN_140965c40(spCtx->m_ptFrom);
-    float fLength = kDelta.FUN_140968990();
+    Vector3 kDelta = (spCtx->m_ptTo - spCtx->m_ptFrom);
+    float fLength = kDelta.Unitize();
     efd::Point3 kSize = pAttack->m_arrow.m_collision;
     MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
     spBox->m_ptBox = Vector3(kSize.x, fLength + kSize.y, kSize.z);
@@ -2551,7 +2551,7 @@ void StateSkill::FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int n
     if (spShape == NULL)
         return;
     spShape->m_n58 = GetTickCountMs2();
-    spShape->vfunc_3(SS_SP(kPos), SS_SP(kTop), 1.0f);
+    spShape->vfunc_3(kPos, kTop, 1.0f);
     CSkillCollisionManager::GetInstance()->Add(spShape);
 }
 MS2_REPLACE(0x1417f2cb0, StateSkill::FUN_1417f2cb0, 1220, 0x71FD2B5D);
@@ -2714,7 +2714,7 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
     spDetect->m_nSortMode = 3;
     spDetect->m_bRideToRider = 0;
     NiPoint3 kRot(SS_PT(static_cast<const NiPoint3&>(spFrom->vfunc_20())));
-    kShape.FUN_1409fc390(spDetect, SS_PT(kRot));
+    kShape.FUN_1409fc390(spDetect, kRot);
     if (nType == 2)
     {
         Unk_SsTargetArray aLeft;

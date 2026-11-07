@@ -1,43 +1,43 @@
 // nipoint3.h - PLACEHOLDER for the game's 12-byte float point and 3x3 matrix (Gamebryo NiPoint3 : efd::Point3 and
 // NiMatrix3 : efd::Matrix3; NiMain headers are not on the game include path). NOT an original header.
 //
-// Vector3 (was Unk_StreamPoint; not NiPoint3 because the SDK class is visible in many units) plays both roles: the NiPoint3 default
-// ctor and the efd::Point3 (x, y, z) ctor are recorded under its name in the symbol harvest. The efd::Point3 operators
-// are inline COMDATs owned by other objs; they are declared as FUN_<va> members so that call sites byte-match and the
-// hook DLL binds them to the exe.
+// Vector3 (was Unk_StreamPoint) is a typedef of efd::Point3 (see below); NiPoint3 : efd::Point3 is not used
+// because the SDK class is visible in many units, and its inline ctors are COMDATs of their own.
+//
+//
 #pragma once
 
 #include "ms2/ms2layout.h"
 
-namespace efd { class Point3; }
+#include <efd/Point3.h>
 
-struct Vector3
-{
-    Vector3();                                              // 0x1402bd040 (NiPoint3())
-    explicit Vector3(const efd::Point3& pt);                // 0x14027dcf0 (NiPoint3(const efd::Point3&))
-    Vector3(float, float, float);                           // 0x14027dda0 (efd::Point3(x, y, z))
-    Vector3& operator=(const Vector3&);             // 0x140194470
-    // efd::MemObject::operator new(size_t, void*) (0x140993c70, out of line). The placement new of efd::CustomAllocator
-    // construct finds it, so the result is null-checked as in the exe. A plain `new Vector3` must be written ::new.
-    static void* operator new(size_t cb, void* pWhere) throw();
-    Vector3 FUN_140965c40(const Vector3& pt) const; // efd::Point3::operator-
-    // FUN_14097fd50 (efd::Point3::operator+): callers use efd::Point3 directly
-    Vector3 FUN_140a00e10(const Vector3& pt) const; // efd::Point3::Cross
-    float FUN_140968990();                                          // efd::Point3::Unitize (returns the old length)
-    // FUN_14097fc90 (efd::Point3::operator*(float)): callers use efd::Point3 directly
-    Vector3& FUN_140a4e560(const Vector3& pt);      // efd::Point3::operator+=
-    float FUN_140967ac0() const;                                    // efd::Point3::Length
-    Vector3 FUN_1409f7960() const;                          // efd::Point3::operator- (unary)
-    Vector3 FUN_140ae9180(float f) const;                   // efd::Point3::operator/(float)
-    Vector3& FUN_140ae9200(const Vector3& pt);      // efd::Point3::operator-= (camera.cpp)
-    Vector3& FUN_140ae9270(float f);                        // efd::Point3::operator/=(float) (camera.cpp)
-    Vector3 FUN_14109adc0(const Vector3& pt) const; // unit cross product (getexp)
-    float x, y, z;
-};
+// Vector3 is the engine point itself. Every former Vector3 binding is an efd::Point3 / efd::MemObject function:
+// Point3() 0x1402bd040, Point3(x, y, z) 0x14027dda0, operator= 0x140194470, MemObject::operator new(size_t, void*)
+// 0x140993c70, and the operators / Length / Unitize / Cross / UnitCross of efd/Point3.h (inline COMDATs). The one
+// exception is NiPoint3(const efd::Point3&) (0x14027dcf0): write NiPoint3(pt) where the exe converts.
+typedef efd::Point3 Vector3;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 MS2_CHECK_SIZE(Vector3, 12);
 
-// efd::Point3 operator*(float, const Point3&) (friend, 0x1409ab5c0).
-Vector3 FUN_1409ab5c0(float fScalar, const Vector3& pt);
+// efd::Point3 operator*(float, const Point3&) (friend, 0x1409ab5c0): efd/Point3.h declares it.
+//
 // Horizontal distance of two points (z cleared on the copies; 0x140966ea0).
 float FUN_140966ea0(Vector3 a, Vector3 b);
 

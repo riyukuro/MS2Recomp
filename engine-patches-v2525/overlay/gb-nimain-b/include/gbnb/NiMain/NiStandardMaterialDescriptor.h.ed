@@ -1,0 +1,5 @@
+eol lf
+226a
+    NiDeclareDefaultIndexedBitfieldEntry(GBNB_RESERVED7, 1, PSSMWHICHLIGHT, 4)
+    NiDeclareDefaultIndexedBitfieldEntry(HEIGHTFOG, 1, GBNB_RESERVED7, 4)
+.

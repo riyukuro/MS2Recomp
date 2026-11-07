@@ -125,25 +125,28 @@ void FUN_1423697c0(CppIntParam* self, CppIntParam* dst)
 #include <string>
 #include <exception>
 
-extern char DAT_142d30650[];   // vftable of the exe's CryptoPP::Exception base
-extern char DAT_14312d848[];   // vftable of the first Exception subclass
-extern char DAT_143130c18[];   // vftable of the second Exception subclass
+extern char DAT_14312d848[];   // vftable of Integer::OpenPGPDecodeErr
+extern char DAT_143130c18[];   // vftable of PolynomialMod2::DivideByZero
 
-// CryptoPP::Exception: vptr + two zeroed words + m_errorType + m_what, as the exe's copy lays it out
-struct CppStdException
+namespace CryptoPP   // C3: cryptlib.h's Exception, verbatim (the full header clashes with this unit's other CryptoPP
+{                    // views); its vftable COMDAT is the exe's ??_7Exception@CryptoPP@@6B@ (0x142d30650)
+class Exception : public std::exception
 {
-    void* vptr;
-    void* m_whatPtr;
-    void* m_doFree;
-    CppStdException() : m_whatPtr(0), m_doFree(0) {}
-    ~CppStdException() { __std_exception_destroy(reinterpret_cast<__std_exception_data*>(&m_whatPtr)); }
+public:
+	enum ErrorType { NOT_IMPLEMENTED, INVALID_ARGUMENT, CANNOT_FLUSH, DATA_INTEGRITY_CHECK_FAILED, INVALID_DATA_FORMAT, IO_ERROR, OTHER_ERROR };
+	explicit Exception(ErrorType errorType, const std::string &s) : m_errorType(errorType), m_what(s) {}
+	virtual ~Exception() throw() {}
+	const char *what() const throw() {return (m_what.c_str());}
+	const std::string &GetWhat() const {return m_what;}
+	void SetWhat(const std::string &s) {m_what = s;}
+	ErrorType GetErrorType() const {return m_errorType;}
+	void SetErrorType(ErrorType errorType) {m_errorType = errorType;}
+
+private:
+	ErrorType m_errorType;
+	std::string m_what;
 };
-struct CppCryptoException : CppStdException
-{
-    int m_errorType;
-    std::string m_what;
-    CppCryptoException(int type, const std::string& s) : m_errorType((vptr = DAT_142d30650, type)), m_what(s) {}
-};
+}
 // a std::string temporary whose constructor is the out-of-line one
 struct CppTempString
 {
@@ -160,26 +163,25 @@ struct CppTempStringBuf
     CppTempStringBuf(const char* p) { CppNewString(&s(), p); }
     ~CppTempStringBuf() { s().~basic_string(); }
 };
-// Crypto++ exception subclasses; the derived vftable is stored last
-struct CppCryptoExceptionA : CppCryptoException
-{
-    CppCryptoExceptionA() : CppCryptoException(4, CppTempStringBuf(DAT_14312d8d8).s()) { vptr = DAT_14312d848; }
-};
-struct CppCryptoExceptionB : CppCryptoException
-{
-    CppCryptoExceptionB() : CppCryptoException(6, CppTempStringBuf(DAT_143130c28).s()) { vptr = DAT_143130c18; }
-};
+// Integer::OpenPGPDecodeErr and PolynomialMod2::DivideByZero (integer.h / gf2n.h, not built here): the Exception base
+// is constructed in place, then the derived vftable is stored
+struct CppCryptoExceptionA;
+struct CppCryptoExceptionB;
 
 // @0x14235bce0
 CppCryptoExceptionA* FUN_14235bce0(CppCryptoExceptionA* self)
 {
-    return new (self) CppCryptoExceptionA();
+    CryptoPP::Exception* e = new (self) CryptoPP::Exception(CryptoPP::Exception::INVALID_DATA_FORMAT, CppTempStringBuf(DAT_14312d8d8).s());
+    *reinterpret_cast<void**>(e) = DAT_14312d848;
+    return reinterpret_cast<CppCryptoExceptionA*>(e);
 }
 
 // @0x14237b650
 CppCryptoExceptionB* FUN_14237b650(CppCryptoExceptionB* self)
 {
-    return new (self) CppCryptoExceptionB();
+    CryptoPP::Exception* e = new (self) CryptoPP::Exception(CryptoPP::Exception::OTHER_ERROR, CppTempStringBuf(DAT_143130c28).s());
+    *reinterpret_cast<void**>(e) = DAT_143130c18;
+    return reinterpret_cast<CppCryptoExceptionB*>(e);
 }
 
 // CryptoPP::AssignFromHelperClass<T, BASE>: if the source holds "ThisObject:<T>" copy it, else let BASE assign
@@ -202,11 +204,10 @@ extern const std::type_info DAT_143aa1de0;
 extern const std::type_info DAT_143aa1d00;
 
 // NameValuePairs::GetThisObject: GetValue("ThisObject:" + typeid(T).name(), object)
+static __forceinline std::string CppCat(std::string&& a, const std::type_info& t) { return std::move(a) + t.name(); }
 static __forceinline bool CppGetThisObject(const CppNameValuePairs* source, const std::type_info& t, void* pObject)
 {
-    CppTempString base;
-    std::string& b = *CppNewString(&base.s, DAT_14312b860);
-    return source->GetVoidValue((std::move(b) + t.name()).c_str(), t, pObject);
+    return source->GetVoidValue(CppCat(std::move(CppTempString(DAT_14312b860).s), t).c_str(), t, pObject);
 }
 
 // MS2-FUNCTIONAL: same calls and logic; the string temporaries sit in swapped stack slots and are destroyed in a different order (the exe puts the operator+ result below the base string)
@@ -255,18 +256,57 @@ CppAssignHelper* FUN_142372f20(CppAssignHelper* self, char* pObject, const CppNa
 struct CppInteger
 {
     void* vptr;
-    char alloc[8];
+    struct Alloc {} alloc;
     size_t m_size;
     unsigned long long* m_ptr;
     int sign;
+    bool IsNegative() const { return sign == 1; }
+    unsigned WordCount() const
+    {
+        size_t n = m_size;
+        while (n && m_ptr[n - 1] == 0)
+            n--;
+        return (unsigned)n;
+    }
+    bool operator!() const { return IsNegative() ? false : (m_ptr[0] == 0 && WordCount() == 0); }
+    void Negate() { if (!!(*this)) sign = 1 - sign; }
+    unsigned BitCount() const;
+    void swap(CppInteger& b)
+    {
+        std::swap(m_size, b.m_size);
+        std::swap(m_ptr, b.m_ptr);
+        std::swap(sign, b.sign);
+    }
     ~CppInteger()
     {
-        for (size_t i = 0; i < m_size; ++i)
-            m_ptr[i] = 0;
+        __stosq(m_ptr, 0, m_size);
         CryptoPP::UnalignedDeallocate(m_ptr);
     }
 };
 
+template <class T> static __forceinline unsigned CppBitPrecision(const T& value)
+{
+    if (!value)
+        return 0;
+    unsigned l = 0, h = 8 * sizeof(value);
+    while (h - l > 1)
+    {
+        unsigned t = (l + h) / 2;
+        if (value >> t)
+            l = t;
+        else
+            h = t;
+    }
+    return h;
+}
+inline unsigned CppInteger::BitCount() const
+{
+    unsigned wordCount = WordCount();
+    if (wordCount)
+        return (wordCount - 1) * 64 + CppBitPrecision(m_ptr[wordCount - 1]);
+    else
+        return 0;
+}
 struct CppGroupParams
 {
     virtual void GenerateRandom(void* rng, const CppNameValuePairs* params) {}
@@ -275,7 +315,7 @@ struct CppAbstractGroupParams
 {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
-    virtual CppInteger* GetMaxExponent(CppInteger* out) const;   // vtable +0x48
+    virtual CppInteger GetMaxExponent() const;   // vtable +0x48
 };
 struct CppKeyObj
 {
@@ -300,14 +340,12 @@ static __forceinline void CppDLGenerateRandom(CppDLPrivateKey& key, void* rng, c
 {
     if (!CppGetThisObject(params, gpType, &key.groupObject))
         key.group.GenerateRandom(rng, params);
-    CppInteger maxExp;
-    key.GetAbstractGroupParameters()->GetMaxExponent(&maxExp);
     CppInteger x;
-    new (&x) CryptoPP::Integer(*static_cast<CryptoPP::RandomNumberGenerator*>(rng), CryptoPP::Integer::One(), reinterpret_cast<const CryptoPP::Integer&>(maxExp), CryptoPP::Integer::ANY, CryptoPP::Integer::Zero(), CryptoPP::Integer::One());
+    new (&x) CryptoPP::Integer(*static_cast<CryptoPP::RandomNumberGenerator*>(rng), CryptoPP::Integer::One(), reinterpret_cast<const CryptoPP::Integer&>(static_cast<const CppInteger&>(key.GetAbstractGroupParameters()->GetMaxExponent())), CryptoPP::Integer::ANY, CryptoPP::Integer::Zero(), CryptoPP::Integer::One());
     key.SetPrivateExponent(&x);
 }
 
-// MS2-FUNCTIONAL: same calls and logic; the temporaries are laid out differently (/GS cookie, string/Integer slot sharing)
+// MS2-FUNCTIONAL: same calls and logic; the exe has no frame pointer, addresses the key through the incoming group-part pointer ([rcx-0x10]) and stores zeros as immediates; ours sets up an rbp frame and keeps a zero register
 // @0x1423770a0
 void FUN_1423770a0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
 {
@@ -315,7 +353,7 @@ void FUN_1423770a0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* par
     CppDLGenerateRandom(*static_cast<CppDLPrivateKey*>(sub), rng, params, DAT_143aa1768);
 }
 
-// MS2-FUNCTIONAL: same calls and logic; the temporaries are laid out differently (/GS cookie, string/Integer slot sharing)
+// MS2-FUNCTIONAL: same calls and logic; the exe has no frame pointer, addresses the key through the incoming group-part pointer ([rcx-0x10]) and stores zeros as immediates; ours sets up an rbp frame and keeps a zero register
 // @0x1423772f0
 void FUN_1423772f0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
 {
@@ -395,46 +433,92 @@ struct PolynomialMod2
                 return false;
         return true;
     }
+    // operator! with an unsigned index, inlined as in the exe (the out-of-line ??7 lives in cryptopp__gf2n)
+    __forceinline bool NotInline() const
+    {
+        for (unsigned i = 0; i < m_size; i++)
+            if (m_ptr[i])
+                return false;
+        return true;
+    }
+    int GetCoefficient(size_t i) const { return (i / 64 < m_size) ? int(m_ptr[i / 64] >> (i % 64)) & 1 : 0; }
+    int operator[](unsigned int i) const { return GetCoefficient(i); }
+    static __forceinline unsigned BitPrecision(unsigned long long value)
+    {
+        if (!value)
+            return 0;
+        unsigned l = 0, h = 64;
+        while (h - l > 1)
+        {
+            unsigned t = (l + h) / 2;
+            if (value >> t)
+                l = t;
+            else
+                h = t;
+        }
+        return h;
+    }
+    __forceinline unsigned BitCountInline() const
+    {
+        size_t n = m_size;
+        while (n && m_ptr[n - 1] == 0)
+            n--;
+        unsigned wordCount = (unsigned)n;
+        if (wordCount)
+            return (wordCount - 1) * 64 + BitPrecision(m_ptr[wordCount - 1]);
+        else
+            return 0;
+    }
+};
+struct CppSecByteBlock
+{
+    struct Alloc {} alloc;
+    size_t m_size;
+    char* m_ptr;
+    explicit CppSecByteBlock(size_t n) : m_size(n) { m_ptr = allocate(n); }
+    static __forceinline char* allocate(size_t n)
+    {
+        if (n == 0)
+            return 0;
+        return static_cast<char*>(UnalignedAllocate(n * sizeof(char)));
+    }
+    ~CppSecByteBlock() { __stosb(reinterpret_cast<unsigned char*>(m_ptr), 0, m_size); UnalignedDeallocate(m_ptr); }
 };
 }
 
-// MS2-FUNCTIONAL: same text output (base from ios flags, digit grouping, suffix); register allocation and the inlined STL flag reads differ
+// MS2-FUNCTIONAL: same text output and code as the Crypto++ source; the exe keeps suffix, vec and the stream in frame locals (frame 0x60) where ours spills them to the parameter home slots (frame 0x40)
 // operator<<(std::ostream&, const PolynomialMod2&): bit string in binary/octal/hex groups with a b/o/h suffix
 // @0x14237bef0
 std::ostream& FUN_14237bef0(std::ostream& out, const CryptoPP::PolynomialMod2& a)
 {
-    unsigned bits, block;
+    long f = (static_cast<std::ios_base&>(out).*static_cast<std::ios_base::fmtflags (std::ios_base::*)() const>(&std::ios_base::flags))() & std::ios::basefield;
+    int bits, block;
     char suffix;
-    switch (out.flags() & std::ios::basefield)
+    switch (f)
     {
     case std::ios::oct: bits = 3; block = 4; suffix = 'o'; break;
     case std::ios::hex: bits = 4; block = 2; suffix = 'h'; break;
-    default:            bits = 1; block = 8; suffix = 'b'; break;
+    default:            bits = 1; block = 8; suffix = 'b';
     }
-    if (a.IsZero())
+    if (a.NotInline())
         return out << '0' << suffix;
-    size_t n = a.BitCount() / bits + 1;
-    char* s = static_cast<char*>(CryptoPP::UnalignedAllocate(n));
-    const char* vec = (out.flags() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
-    unsigned i = 0;
-    for (; i * bits < a.BitCount(); i++)
+    CryptoPP::CppSecByteBlock s(a.BitCountInline() / bits + 1);
+    unsigned i;
+    const char* vec = ((static_cast<std::ios_base&>(out).*static_cast<std::ios_base::fmtflags (std::ios_base::*)() const>(&std::ios_base::flags))() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
+    for (i = 0; i * bits < a.BitCount(); i++)
     {
-        unsigned digit = 0;
-        for (unsigned j = 0; j < bits; j++)
-            digit |= static_cast<unsigned>(a.GetBit(i * bits + j)) << j;
-        s[i] = vec[digit];
+        int digit = 0;
+        for (int j = 0; j < bits; j++)
+            digit |= a[i * bits + j] << j;
+        s.m_ptr[i] = vec[digit];
     }
     while (i--)
     {
-        out << s[i];
+        out << s.m_ptr[i];
         if (i && (i % block) == 0)
             out << ',';
     }
-    std::ostream& r = out << suffix;
-    for (size_t k = 0; k < n; ++k)
-        s[k] = 0;
-    CryptoPP::UnalignedDeallocate(s);
-    return r;
+    return out << suffix;
 }
 
 
@@ -459,59 +543,51 @@ static unsigned CppIntegerBitCount(const CppInteger& v)
 
 static void CppIntegerSwap(CppInteger& x, CppInteger& y)
 {
-    char tmp[sizeof(x.alloc)];
-    for (size_t i = 0; i < sizeof(tmp); ++i) { tmp[i] = x.alloc[i]; x.alloc[i] = y.alloc[i]; y.alloc[i] = tmp[i]; }
     size_t sz = x.m_size; x.m_size = y.m_size; y.m_size = sz;
     unsigned long long* p = x.m_ptr; x.m_ptr = y.m_ptr; y.m_ptr = p;
     int sg = x.sign; x.sign = y.sign; y.sign = sg;
 }
 
-// MS2-FUNCTIONAL: same text output (base from ios flags, repeated word division, digit buffer); our member layout/inlining of the Integer helpers differs
+// MS2-FUNCTIONAL: same text output, written as the Crypto++ source; the exe keeps temp1's size and pointer in registers across the stream calls and puts the stream and base in frame locals; ours reloads them (smaller frame)
 // operator<<(std::ostream&, const Integer&): decimal ('.' suffix), octal ('o') or hex ('h') digits
 // @0x14235c730
 std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
 {
-    unsigned base;
+    long f = (static_cast<std::ios_base&>(out).*static_cast<std::ios_base::fmtflags (std::ios_base::*)() const>(&std::ios_base::flags))() & std::ios::basefield;
+    int base, block;
     char suffix;
-    switch (out.flags() & std::ios::basefield)
+    switch (f)
     {
-    case std::ios::oct: base = 8; suffix = 'o'; break;
-    case std::ios::hex: base = 16; suffix = 'h'; break;
-    default:            base = 10; suffix = '.'; break;
+    case std::ios::oct: base = 8; block = 8; suffix = 'o'; break;
+    case std::ios::hex: base = 16; block = 4; suffix = 'h'; break;
+    default:            base = 10; block = 3; suffix = '.';
     }
     CppInteger temp1;
     new (&temp1) CryptoPP::Integer(reinterpret_cast<const CryptoPP::Integer&>(a));
     CppInteger temp2;
     new (&temp2) CryptoPP::Integer;
-    if (a.sign == 1)
+    if (a.IsNegative())
     {
         out << '-';
-        if (temp1.sign == 1 || CppIntegerWords(temp1) != 0)    // temp1.Negate(): flips unless !temp1
-            temp1.sign = 1 - temp1.sign;
+        temp1.Negate();
     }
-    if (a.sign != 1 && CppIntegerWords(a) == 0)
+    if (!a)
         out << '0';
-    unsigned bitsPerDigit = 0;
-    for (unsigned b = base; b; b >>= 1)
-        ++bitsPerDigit;
-    size_t n = CppIntegerBitCount(a) / (bitsPerDigit - 1) + 1;
-    char* s = static_cast<char*>(CryptoPP::UnalignedAllocate(n));
-    const char* vec = (out.flags() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
+    const char* vec = ((static_cast<std::ios_base&>(out).*static_cast<std::ios_base::fmtflags (std::ios_base::*)() const>(&std::ios_base::flags))() & std::ios::uppercase) ? "0123456789ABCDEF" : "0123456789abcdef";
     unsigned i = 0;
-    while (temp1.sign == 1 || CppIntegerWords(temp1) != 0)
+    CryptoPP::CppSecByteBlock s(a.BitCount() / (CppBitPrecision(base) - 1) + 1);
+    while (!!temp1)
     {
         unsigned long long digit;
         CryptoPP::Integer::Divide(digit, reinterpret_cast<CryptoPP::Integer&>(temp2), reinterpret_cast<const CryptoPP::Integer&>(temp1), base);
-        s[i++] = vec[digit];
-        CppIntegerSwap(temp1, temp2);
+        s.m_ptr[i++] = vec[digit];
+        temp1.swap(temp2);
     }
     while (i--)
-        out << s[i];
-    std::ostream& r = out << suffix;
-    for (size_t k = 0; k < n; ++k)
-        s[k] = 0;
-    CryptoPP::UnalignedDeallocate(s);
-    return r;
+    {
+        out << s.m_ptr[i];
+    }
+    return out << suffix;
 }
 
 

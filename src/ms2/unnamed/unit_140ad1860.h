@@ -46,7 +46,7 @@ public:
     int FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint);  // cursor kind under the mouse (and its hint string)
     void FUN_140ad2d80();                                   // hover update
     void FUN_140ad3040();                                   // movement progress check
-    Vector3 FUN_140ad3260(Vector3 pt);      // direction towards pt in the map's plane
+    efd::Point3 FUN_140ad3260(Vector3 pt);      // direction towards pt in the map's plane
     Vector3 FUN_140ad3400(Vector3 pt);      // direction towards pt for side-view maps
     int FUN_140ad3550(int nX, int nY, Vector3* pOut);   // pick an interact strategy
     Vector3 FUN_140ad3740(int nX, int nY);          // pick a point with the scene pick

@@ -84,14 +84,14 @@ void FUN_14000e650(::Scaleform::GFx::AS2::AvmCharacter *, ::Scaleform::GFx::Inte
 void FUN_14000e6f0(void *, ::Scaleform::GFx::InteractiveObject::FocusEventType, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
 ::Scaleform::Render::Rect<float> * FUN_140010200(void *, ::Scaleform::Render::Rect<float> *, ::Scaleform::Render::Matrix2x4<float> const *);
 }
-namespace AS3 {
-void Sfr33ThrowNotConstructor(unsigned char const *);
-void Sfr33ForEachChildGC_38_48(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
-void Sfr33ForEachChildGC_c0a(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
-void Sfr33ForEachChildGC_c0b(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
 }
 }
-}
+extern unsigned char DAT_1424f0700[]; __pragma(comment(linker, "/alternatename:?DAT_1424f0700@@3PAEA=?Construct@Instance@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")) // AS3 Instance::Construct
+extern unsigned char DAT_142503800[]; __pragma(comment(linker, "/alternatename:?DAT_142503800@@3PAEA=?ForEachChild_GC@Class@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@234@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z@Z")) // AS3 Class::ForEachChild_GC
+extern unsigned char DAT_142503f50[]; __pragma(comment(linker, "/alternatename:?DAT_142503f50@@3PAEA=?ForEachChild_GC@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")) // AS3 ClassTraits::Traits::ForEachChild_GC
+extern unsigned char DAT_142503fa0[]; __pragma(comment(linker, "/alternatename:?DAT_142503fa0@@3PAEA=?ForEachChild_GC@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")) // AS3 InstanceTraits::Traits::ForEachChild_GC
+//
+//
 extern Sd_1431b4be0 DAT_1431b4be0;
 extern Sd_1431b4c60 DAT_1431b4c60;
 extern Sd_1431b4ce0 DAT_1431b4ce0;
@@ -220,7 +220,7 @@ float FUN_140002e00(void *);
 void FUN_140002e10(void *);
 void FUN_140002e20(void *);
 void * FUN_140002e40(void *, unsigned int);
-::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *);
+::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *); __pragma(comment(linker, "/alternatename:?FUN_140007ff0@@YAPEAVFunctionRef@AS2@GFx@Scaleform@@PEAVObjectInterface@234@PEAV1234@PEAVASStringContext@234@@Z=?Get__constructor__@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@PEAVASStringContext@234@@Z")) // AS2 ObjectInterface::Get__constructor__
 extern unsigned char DAT_14000a110[];
 extern unsigned char DAT_14252e480[];
 void * FUN_14000a880(void *, unsigned int);
@@ -2430,7 +2430,7 @@ alignas(16) Sd_1431b7160 DAT_1431b7160 = {
 };
 // 0x1431b71b0
 alignas(16) Sd_1431b71b0 DAT_1431b71b0 = {
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ForEachChildGC_c0b,
+    (const void*)DAT_142503fa0,
     DAT_1423df5a0,
     (const void*)&FUN_140012ef0,
     DAT_1423df460,
@@ -2450,7 +2450,7 @@ alignas(16) Sd_1431b71b0 DAT_1431b71b0 = {
 };
 // 0x1431b7260
 alignas(16) Sd_1431b7260 DAT_1431b7260 = {
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ForEachChildGC_38_48,
+    (const void*)DAT_142503800,
     DAT_1423df5b0,
     (const void*)&FUN_140012f40,
     DAT_1423df430,
@@ -2491,7 +2491,7 @@ alignas(16) Sd_1431b7360 DAT_1431b7360 = {
     DAT_1424f4a40,
     DAT_1424ee7f0,
     (const void*)&FUN_140015c40,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ThrowNotConstructor,
+    (const void*)DAT_1424f0700,
     DAT_1423df590,
     DAT_1424e8060,
     DAT_1423df580,
@@ -2511,7 +2511,7 @@ alignas(8) Sd_1431b7858 DAT_1431b7858 = {
 };
 // 0x1431b7900
 alignas(16) Sd_1431b7900 DAT_1431b7900 = {
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ForEachChildGC_c0a,
+    (const void*)DAT_142503f50,
     DAT_1423df5a0,
     (const void*)&FUN_140019af0,
     DAT_1423df4a0,
@@ -2581,7 +2581,7 @@ alignas(16) Sd_1431b7ba0 DAT_1431b7ba0 = {
     DAT_1424f4a40,
     DAT_1424ee7f0,
     (const void*)&FUN_14001a760,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ThrowNotConstructor,
+    (const void*)DAT_1424f0700,
     (const void*)&FUN_14001a800,
     DAT_1424e8060,
     DAT_1423df580,
@@ -2594,7 +2594,7 @@ alignas(16) Sd_1431b7ba0 DAT_1431b7ba0 = {
 };
 // 0x1431b7c70
 alignas(16) Sd_1431b7c70 DAT_1431b7c70 = {
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ForEachChildGC_c0b,
+    (const void*)DAT_142503fa0,
     DAT_1423df5a0,
     (const void*)&FUN_14001a0b0,
     DAT_1423df460,
@@ -2614,7 +2614,7 @@ alignas(16) Sd_1431b7c70 DAT_1431b7c70 = {
 };
 // 0x1431b7d50
 alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ForEachChildGC_c0a,
+    (const void*)DAT_142503f50,
     DAT_1423df5a0,
     (const void*)&FUN_14001ae30,
     DAT_1423df4a0,
@@ -2864,7 +2864,7 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_142515190@@3PAEA=?IsUsedAsMask@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142516630@@3PAEA=?MakePrototype@Class@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@4@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1425185d0@@3PAEA=?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142518990@@3PAEA=?OnCharEvent@InteractiveObject@GFx@Scaleform@@UEAA_NII@Z")
+#pragma comment(linker, "/alternatename:?DAT_142518990@@3PAEA=?OnCharEvent@InteractiveObject@GFx@Scaleform@@UEAA_NKI@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251a100@@3PAEA=?OnGettingKeyboardFocus@InteractiveObject@GFx@Scaleform@@UEAAXIW4FocusMovedType@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251a3a0@@3PAEA=?OnKeyEvent@InteractiveObject@GFx@Scaleform@@UEAA_NAEBVEventId@23@PEAH@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251a820@@3PAEA=?OnLosingKeyboardFocus@InteractiveObject@GFx@Scaleform@@UEAA_NPEAV123@IW4FocusMovedType@23@@Z")

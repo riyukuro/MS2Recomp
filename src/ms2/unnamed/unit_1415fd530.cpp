@@ -739,13 +739,18 @@ void* FUN_141601a70(void* p) { return FUN_141601450(FUN_141601750(&static_cast<U
 // @0x141601aa0
 void* FUN_141601aa0(void* p) { return FUN_141601460(FUN_141601760(&static_cast<Unk_Offset0*>(p)->m)); }
 
-// MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
-void* FUN_141601cd0(void* p) { return p; }
-// MS2-PIN: ?FUN_141601cd0@@YAPEAXPEAX@Z 0x141601cd0 ; MS2-FUNCTIONAL: returns the storage address, with a different leaf/non-leaf frame
+// the vector's _Mypair (offset 0), as _Vector_alloc holds it
+template <class T> struct Unk_VectorPairView
+{
+    std::_Compressed_pair<std::allocator<T>, std::_Vector_val<std::_Simple_types<T>>> m;
+};
+// _Vector_alloc<CNMSessionMemberInfo>::_Getal: the allocator from the pair (_Get_first, 0x141601570)
+// @0x141601cd0
+void* FUN_141601cd0(void* p) { return &static_cast<Unk_VectorPairView<CNMSessionMemberInfo>*>(p)->m._Get_first(); }
 
-// MS2-FUNCTIONAL: returns the vector allocator/storage address recovered by the wrapper.
-void* FUN_141601ed0(void* p) { return p; }
-// MS2-PIN: ?FUN_141601ed0@@YAPEAXPEAX@Z 0x141601ed0 ; MS2-FUNCTIONAL: returns the storage address, with a different leaf/non-leaf frame
+// _Vector_alloc<CNMFilePath>::_Get_data: the storage from the pair (_Get_second, 0x141601670)
+// @0x141601ed0
+void* FUN_141601ed0(void* p) { return &static_cast<Unk_VectorPairView<CNMFilePath>*>(p)->m._Get_second(); }
 
 // MS2-PIN: ?FUN_141600db0@@YAXPEAX0@Z 0x141600db0
 // MS2-PIN: ?FUN_141600de0@@YAXPEAX0@Z 0x141600de0

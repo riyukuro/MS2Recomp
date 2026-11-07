@@ -408,10 +408,10 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40->m_40.find(m_30) == pResult->m_40->m_40.end())
         return 0;
-    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
-    if (spObj.IsNull())
+    MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(m_38);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
+    if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).IsNull())
         return 0;
-    if (!spObj->GetState() == false)
+    if (!reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj)->GetState() == false)
         return 0;
     return 1;
 }
@@ -421,10 +421,10 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_40.find(m_30) == pContext->m_40.end())
         return 0;
-    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
-    if (spObj.IsNull())
+    MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(m_38);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
+    if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).IsNull())
         return 0;
-    if (!spObj->GetState() == false)
+    if (!reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj)->GetState() == false)
         return 0;
     return 1;
 }
@@ -432,10 +432,10 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79b20
 Vector3 LiftableNavigationEntity::vfunc_7()
 {
-    MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
-    if (spObj.IsNull())
+    MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(m_38);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
+    if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).IsNull())
         return DAT_143b01a60;
-    Vector3 pt = spObj->FUN_141447c80();
+    Vector3 pt = reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj)->FUN_141447c80();
     pt.z += 200.0f;
     return pt;
 }

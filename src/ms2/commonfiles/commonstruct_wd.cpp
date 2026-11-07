@@ -426,7 +426,7 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
         reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(lb._Ptr)) != 0) {
         ins = true;
         Unk_TNode* hint = (Unk_TNode*)lb._Ptr;
-        void* vt = FUN_140162f80(&pad);
+        void* vt = (void*)&static_cast<const std::tuple<>&>(std::forward_as_tuple());   // the sret temp is pad's slot
         FUN_140274d10((__int64*)out, FUN_14027be90((__int64)tree, (__int64)&res, (__int64)hint, (__int64)&std::piecewise_construct,
                                          FUN_14027c240((__int64)&tup, FUN_14027c1f0(key)), (__int64)vt), (__int64)&ins);
         return out;

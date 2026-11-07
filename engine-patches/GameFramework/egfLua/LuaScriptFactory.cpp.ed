@@ -1,0 +1,6 @@
+13c
+// MS2: the exe calls ~vector<utf8string> out of line in CalculateDependencies; declared before the PCH chain instantiates it
+#include <efd/utf8string.h>
+template<> std::vector<efd::utf8string, efd::CustomAllocator<efd::utf8string> >::~vector() noexcept;
+#line 14
+.

@@ -37,12 +37,13 @@ extern void* FUN_1415e4e90(void*);
 extern void* FUN_1415e4eb0(void*);
 extern void FUN_141064390(void*);
 
-// MS2-FUNCTIONAL: the recovered helper sequence initializes the object storage; Ghidra loses the second argument type.
+// the helper sequence initializes the object storage; the second call takes the member at offset 0
+struct Unk_TreeStorageView { char m; };
 // @0x1415cdf00
 void* FUN_1415cdf00(void* p, unsigned char)
 {
     FUN_1415e79b0(p);
-    FUN_1415e5db0(p);
+    FUN_1415e5db0(&static_cast<Unk_TreeStorageView*>(p)->m);
     return p;
 }
 

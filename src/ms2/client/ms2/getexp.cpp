@@ -193,8 +193,8 @@ Vector3 CExpEffectInfo::GetAxis2() const
 // @0x1412728f0
 void CExpEffectInfo::UpdateOrientation()
 {
-    Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
-    vDir.FUN_140968990();
+    Vector3 vDir = (m_ptTarget - m_ptSource);
+    vDir.Unitize();
     Unk_NiMatrix3 kMat;
     efd::Point3 vNeg = -reinterpret_cast<const efd::Point3&>(vDir);
     Vector3 vUp = DAT_143b01a60;
@@ -265,7 +265,7 @@ void CExpEffectInfo::UpdateMove(float fElapsed)
     if (pPlayer == 0)
         return;
     GetTargetPos(pPlayer, &m_ptTarget);
-    float fDist = m_ptSource.FUN_140965c40(m_ptTarget).FUN_140967ac0();
+    float fDist = (m_ptSource - m_ptTarget).Length();
     m_fProgress = fDist / m_fTotal;
     UpdateOrientation();
     bool bDone = m_fElapsed >= m_fProgress;
@@ -305,8 +305,8 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     m_fElapsed = 0;
     m_ptSource = pObj->GetPosition();
     GetTargetPos(pPlayer, &m_ptTarget);
-    Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
-    float fLen = vDir.FUN_140968990();
+    Vector3 vDir = (m_ptTarget - m_ptSource);
+    float fLen = vDir.Unitize();
     float fScaled = fLen * DAT_1439f7340;
     m_fTotal = std::max<float>(DAT_1439f733c, fScaled);
     m_fProgress = fLen / m_fTotal;
@@ -322,7 +322,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     efd::Point3 aSpread[2] = { reinterpret_cast<const efd::Point3&>(s_ptSpreadMin) * fLen, reinterpret_cast<const efd::Point3&>(s_ptSpreadMax) * fLen };
     aSpread[0].y = aSpread[0].y / m_fTotal;
     aSpread[1].y = aSpread[1].y / m_fTotal;
-    Vector3 ptRange = reinterpret_cast<Vector3&>(aSpread[1]).FUN_140965c40(reinterpret_cast<Vector3&>(aSpread[0]));
+    Vector3 ptRange = (reinterpret_cast<Vector3&>(aSpread[1]) - reinterpret_cast<Vector3&>(aSpread[0]));
     Vector3 ptOffset(aSpread[0].x + ptRange.x * fRandX, aSpread[0].y + ptRange.y * fRandY, aSpread[0].z + ptRange.z * fRandZ);
     reinterpret_cast<efd::Point3&>(m_ptPos) =
                                 reinterpret_cast<const efd::Point3&>(m_ptSource) + reinterpret_cast<const efd::Point3&>(vDir) * ptOffset.y * fLen
@@ -372,7 +372,7 @@ void CExpEffectInfo::Finish()
     Vector3 ptCur = *(const Vector3*)&((NiAVObject*)m_spNode.operator->())->GetTranslate();
     NiPoint3 ptHit;
     if (!FUN_14147aa60(reinterpret_cast<const efd::Point3&>(ptCur),
-                       reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(ptCur.FUN_140965c40(m_ptTarget))),
+                       reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((ptCur - m_ptTarget))),
                        reinterpret_cast<const efd::Point3&>(m_ptTarget), fRadius, &ptHit))
         ptHit = reinterpret_cast<const efd::Point3&>(ptCur);
     ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->AddColorBoost(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);

@@ -107,7 +107,7 @@ CLocalTargetCameraMode::CLocalTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<C
         m_190 = pPrev->FUN_140ad4b30();
         m_194 = pSetting->m_18;
         m_1a0 = pSetting->m_c;
-        m_18c = pSetting->m_c.FUN_140965c40(pPrev->vfunc_35()).FUN_140967ac0();
+        m_18c = (pSetting->m_c - pPrev->vfunc_35()).Length();
         m_78 = pPrev->vfunc_35();
         m_setting = *pSetting;
         m_1c4 = *pSetting;
@@ -171,7 +171,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         }
         else if (m_184 == 0)
         {
-            float fDist = pTarget->vfunc_18().FUN_140965c40(m_108.m_setting.m_c).FUN_140967ac0();
+            float fDist = (pTarget->vfunc_18() - m_108.m_setting.m_c).Length();
             if (m_108.m_30 < fDist)
                 FUN_140d4f830();
         }
@@ -236,8 +236,8 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 t = FUN_141b6fe40(t, m_108.m_60);
                 m_50 = m_108.m_38 * t + (1.0f - t) * m_18c;
                 ptCenter = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(m_108.m_40) * t));
-                m_d8.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_1a0) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_108.m_setting.m_c.FUN_140965c40(m_1a0))))));
-                Vector3 ptDelta = ptCenter.FUN_140965c40(m_d8.m_pos);
+                m_d8.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_1a0) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_108.m_setting.m_c - m_1a0))))));
+                Vector3 ptDelta = (ptCenter - m_d8.m_pos);
                 if (ptDelta.x == ptDelta.y)
                     m_d8.m_pos.x += 5.0f;
                 m_d8.m_rot = CCameraMode::FUN_140afdd40(ptCenter, m_d8.m_pos, g_143a08cf8);
@@ -287,7 +287,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 vfunc_39(fTime);
                 if (m_108.m_58)
                 {
-                    efd::Point3 ptRot = reinterpret_cast<const efd::Point3&>(m_1ac) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac))));
+                    efd::Point3 ptRot = reinterpret_cast<const efd::Point3&>(m_1ac) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_108.m_4c - m_1ac))));
                     pTarget->vfunc_21(reinterpret_cast<Vector3&>(ptRot));
                     if (pRpg)
                         ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->SetTargetYaw(ptRot.z);
@@ -332,7 +332,7 @@ MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B
 // @0x140d4f570
 void CLocalTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    m_18c = m_setting.m_c.FUN_140965c40(CCameraMode::vfunc_35()).FUN_140967ac0();
+    m_18c = (m_setting.m_c - CCameraMode::vfunc_35()).Length();
     Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(p)));
     if (pRpg)
     {
@@ -344,7 +344,7 @@ MS2_REPLACE_METHOD(0x140d4f570, CLocalTargetCameraMode, vfunc_24, 182, 0xF93BE46
 // @0x140d4f630
 void CLocalTargetCameraMode::vfunc_37()
 {
-    m_8c = m_d8.m_pos.FUN_140965c40(m_78);
+    m_8c = (m_d8.m_pos - m_78);
 }
 MS2_REPLACE_METHOD(0x140d4f630, CLocalTargetCameraMode, vfunc_37, 68, 0x09F34078);
 

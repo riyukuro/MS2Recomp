@@ -1,0 +1,4 @@
+eol lf
+109c
+        return uiWidth != 0 && uiHeight != 0;
+.

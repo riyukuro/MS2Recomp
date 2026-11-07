@@ -59,6 +59,11 @@ endif()
 
 set(MANIFEST "${MS2_ROOT}/cmake/sdk-manifest.txt")
 include("${CMAKE_CURRENT_LIST_DIR}/check-sdk.cmake")
+# engine/gamebryo-v2525 from the pristine Source + engine-patches-v2525/ (made here when missing)
+set(V2525_DIR "${MS2_GAMEBRYO_ROOT}/gamebryo-v2525")
+set(V2525_SDK "${_tp}/gamebryo/APPDIR/Source")
+set(V2525_PY "${MS2_PYTHON}")
+include("${MS2_ROOT}/cmake/v2525.cmake")
 
 set(OUT "${CMAKE_BINARY_DIR}/out")
 set(MS2_CACHE_TAG fullexe CACHE STRING "progress cache tag: objs and gb overlay live in build/progress-<tag> (a private tag keeps a build off other agents' caches)")

@@ -796,7 +796,7 @@ Vector3 MS2InputService::GetLeftStickMoveDir()
         kDir.x = fX * -1.0f;
         kDir.y = fY * -1.0f;
     }
-    kDir.FUN_140968990();
+    kDir.Unitize();
     return kDir;
 }
 MS2_REPLACE_METHOD(0x140D8C2F0, MS2InputService, GetLeftStickMoveDir, 334, 0x7C552B1D);

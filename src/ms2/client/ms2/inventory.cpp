@@ -1414,30 +1414,6 @@ int Unk_Inventory::FUN_140a63900(CItem* item, int mode) {
     return FUN_140a63950(item, ((int)item->FUN_140527a20()), mode);
 }
 MS2_REPLACE_METHOD(0x140a63900, Unk_Inventory, FUN_140a63900, 69, 0xD5A0FEBB);
-// Check of an equipped slot against the item being worn (mask/type from the item data); false blocks the change.
-static bool Unk_InventorySlotAllows(const MS2Ptr<CEquipItem>& slot, int mask, int type) {
-    if (slot.get() == nullptr) return true;
-    if (slot->GetItem().get() == nullptr) return true;
-    MS2Ptr<CItem> worn = slot->GetItem();
-    return worn.get()->FUN_140528980() && worn.get()->FUN_140525e50(mask, type) != 0;
-}
-static void Unk_InventoryCodiSlotError() {
-    FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
-}
-// Both slots are worn by different items although the item data requires one combined item.
-static bool Unk_InventoryPairMismatch(Unk_InventoryPlayer* player, int slotA, int slotB, int mode) {
-    MS2Ptr<CEquipItem> a = player->GetEquipBySlotKind(slotA, mode);
-    MS2Ptr<CEquipItem> b = player->GetEquipBySlotKind(slotB, mode);
-    if (a.get() != nullptr && b.get() != nullptr && a.get() != b.get()) {
-        FUN_141275260(0x43, 1, 1);
-        FUN_141276180(DAT_143ab78e8, CString(""));
-        return true;
-    }
-    return false;
-}
-// MS2-FUNCTIONAL: exe (7258 B, 288 calls) holds MS2Ptr<CEquipItem>/MS2Ptr<CItem>/MS2Ptr<Unk_BankItem> temporaries per branch
-//   (49x ~MS2Ptr<CEquipItem> 0x1405a85f0, 18x ~MS2Ptr<CItem>, 21x ~MS2Ptr<Unk_BankItem>); this body goes through the
-//   CEquipItem accessors but folds the per-slot branches into one
 // @0x140a63950
 int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     if (item == nullptr) return 0;
@@ -1456,55 +1432,124 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
         if (!data.get()->HasSkinType()) { FUN_140d73bc0(0xd3, 0, nullptr, L""); return 0; }
     }
     int mask = player->FUN_141658e60();
-    bool gotoCheck = true;   // false: the combined-slot path ran and jumped past the generic check
-    if (mode != 2 && !data.get()->HasSkinType()) {
+    if (mode == 2 || data.get()->HasSkinType()) {
+        if (data.get()->FUN_14053d2f0()) {
+            bool codiMode = mode == 2;
+            int result = reinterpret_cast<PC*>(player)->vfunc_132(item, slot, codiMode);
+            if (item->FUN_140525e50(mask, result) == 0) { FUN_140d73bc0(0xd2, 0, nullptr, L""); return 0; }
+        }
+    } else {
         int type = data.get()->GetEquipSubtype();
-        gotoCheck = false;
-        if (!data.get()->FUN_14053d460()) {
+        if (data.get()->FUN_14053d460()) {
+            // Two-slot item: the worn head (5) and top (4) items must both accept it, codi slots too.
+            MS2Ptr<CEquipItem> head = player->FUN_141655cf0(5);
+            bool headWorn = (head.get() ? true : false) && (head->GetItem().get() ? true : false);
+            if (headWorn) {
+                MS2Ptr<CItem> worn = head->GetItem();
+                if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
+            }
+            MS2Ptr<CEquipItem> top = player->FUN_141655cf0(4);
+            bool topWorn = (top.get() ? true : false) && (top->GetItem().get() ? true : false);
+            if (topWorn) {
+                MS2Ptr<CItem> worn = top->GetItem();
+                if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
+            }
+            if (codi) {
+                MS2Ptr<CEquipItem> codiHead = player->GetEquipBySlotKind(5, 2);
+                bool codiHeadWorn = (codiHead.get() ? true : false) && (codiHead->GetItem().get() ? true : false);
+                if (codiHeadWorn) {
+                    MS2Ptr<CItem> worn = codiHead->GetItem();
+                    if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
+                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                        return 0;
+                    }
+                }
+                MS2Ptr<CEquipItem> codiTop = player->GetEquipBySlotKind(4, 2);
+                bool codiTopWorn = (codiTop.get() ? true : false) && (codiTop->GetItem().get() ? true : false);
+                if (codiTopWorn) {
+                    MS2Ptr<CItem> worn = codiTop->GetItem();
+                    if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
+                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                        return 0;
+                    }
+                }
+            }
+        } else {
             if (data.get()->FUN_14053d2f0()) {
+                // A worn two-slot head item blocks this one; then the item worn in the target slot must accept it.
                 MS2Ptr<CEquipItem> head = player->FUN_141655cf0(5);
-                if (head.get() != nullptr && head->FUN_1411dc7f0() != nullptr && head->FUN_1411dc7f0()->FUN_14053d460()) {
+                if ((head.get() ? true : false) && head->FUN_1411dc7f0() != nullptr && head->FUN_1411dc7f0()->FUN_14053d460()) {
                     FUN_140d73bc0(0xd4, 0, nullptr, L"");
                     return 0;
                 }
                 if (codi) {
                     MS2Ptr<CEquipItem> codiHead = player->GetEquipBySlotKind(5, 2);
-                    if (codiHead.get() != nullptr && codiHead->FUN_1411dc7f0() != nullptr && codiHead->FUN_1411dc7f0()->FUN_14053d460()) {
-                        Unk_InventoryCodiSlotError();
+                    if ((codiHead.get() ? true : false) && codiHead->FUN_1411dc7f0() != nullptr && codiHead->FUN_1411dc7f0()->FUN_14053d460()) {
+                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
                         return 0;
                     }
                 }
-                if (!Unk_InventorySlotAllows(player->FUN_141655cf0(slot), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
-                if (codi && !Unk_InventorySlotAllows(player->GetEquipBySlotKind(slot, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
-            }
-            MS2Ptr<CEquipItem> cur = player->FUN_141655c90(slot);
-            if (cur.get() != nullptr && cur->FUN_1411dc7f0()->FUN_14053d460()) {
-                if (slot == 5) {
-                    if (player->FUN_141655cf0(4).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
-                    if (codi && player->GetEquipBySlotKind(4, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
-                } else if (slot == 4) {
-                    if (player->FUN_141655cf0(5).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
-                    if (codi && player->GetEquipBySlotKind(5, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                MS2Ptr<CEquipItem> cur = player->FUN_141655cf0(slot);
+                bool curWorn = (cur.get() ? true : false) && (cur->GetItem().get() ? true : false);
+                if (curWorn) {
+                    MS2Ptr<CItem> worn = cur->GetItem();
+                    if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
+                }
+                if (codi) {
+                    MS2Ptr<CEquipItem> codiCur = player->GetEquipBySlotKind(slot, 2);
+                    bool codiCurWorn = (codiCur.get() ? true : false) && (codiCur->GetItem().get() ? true : false);
+                    if (codiCurWorn) {
+                        MS2Ptr<CItem> worn = codiCur->GetItem();
+                        if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
+                            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                            return 0;
+                        }
+                    }
                 }
             }
-        } else {
-            if (!Unk_InventorySlotAllows(player->FUN_141655cf0(5), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
-            if (!Unk_InventorySlotAllows(player->FUN_141655cf0(4), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
-            if (codi) {
-                if (!Unk_InventorySlotAllows(player->GetEquipBySlotKind(5, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
-                if (!Unk_InventorySlotAllows(player->GetEquipBySlotKind(4, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
+            // The slot is held by a two-slot item: the other half of the pair must be empty.
+            MS2Ptr<CEquipItem> cur = player->FUN_141655c90(slot);
+            if ((cur.get() ? true : false) && cur->FUN_1411dc7f0()->FUN_14053d460()) {
+                if (slot == 5) {
+                    MS2Ptr<CEquipItem> other = player->FUN_141655cf0(4);
+                    if (other.get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    if (codi) {
+                        MS2Ptr<CEquipItem> codiOther = player->GetEquipBySlotKind(4, 2);
+                        if (codiOther.get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    }
+                } else if (slot == 4) {
+                    MS2Ptr<CEquipItem> other = player->FUN_141655cf0(5);
+                    if (other.get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    if (codi) {
+                        MS2Ptr<CEquipItem> codiOther = player->GetEquipBySlotKind(5, 2);
+                        if (codiOther.get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    }
+                }
             }
         }
-    }
-    if (gotoCheck && data.get()->FUN_14053d2f0()) {
-        int result = reinterpret_cast<PC*>(player)->vfunc_132(item, slot, mode == 2);
-        if (item->FUN_140525e50(mask, result) == 0) { FUN_140d73bc0(0xd2, 0, nullptr, L""); return 0; }
     }
     if (FUN_140a61430(FUN_140a617f0(ItemPtr(item))) == 0) {
         int pairMode = data.get()->HasSkinType() ? 1 : 0;
         if (codi && item->FUN_14052a170() == 2) pairMode = 2;
-        if (data.get()->FUN_14053d460() && Unk_InventoryPairMismatch(player, 4, 5, pairMode)) return 0;
-        if (data.get()->FUN_14053d2b0() && Unk_InventoryPairMismatch(player, 8, 9, pairMode)) return 0;
+        // Both slots worn by different items although the item needs one combined item.
+        if (data.get()->FUN_14053d460()) {
+            MS2Ptr<CEquipItem> a = player->GetEquipBySlotKind(4, pairMode);
+            MS2Ptr<CEquipItem> b = player->GetEquipBySlotKind(5, pairMode);
+            if ((a.get() ? true : false) && (b.get() ? true : false) && a.get() != b.get()) {
+                FUN_141275260(0x43, 1, 1);
+                FUN_141276180(DAT_143ab78e8, "");
+                return 0;
+            }
+        }
+        if (data.get()->FUN_14053d2b0()) {
+            MS2Ptr<CEquipItem> a = player->GetEquipBySlotKind(8, pairMode);
+            MS2Ptr<CEquipItem> b = player->GetEquipBySlotKind(9, pairMode);
+            if ((a.get() ? true : false) && (b.get() ? true : false) && a.get() != b.get()) {
+                FUN_141275260(0x43, 1, 1);
+                FUN_141276180(DAT_143ab78e8, "");
+                return 0;
+            }
+        }
     }
     if (item->HasCubeTextureMesh() != 0) {
         BlockPtr block = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(4);

@@ -1,0 +1,11 @@
+eol lf
+1123,1124c
+    virtual void AddToUpdate(SceneGraphData* pData);  // studio: slot 33
+    virtual void RemoveFromUpdate(SceneGraphData* pData);  // studio: slot 34
+.
+1034a
+        efd::UInt32 m_uiStudio0x40;  // studio: +0x40, name inferred
+        efd::UInt32 m_uiStudio0x44;  // studio: +0x44, name inferred
+.
+376@72s "" "  // studio: slot 22"
+376@3s "" " virtual"

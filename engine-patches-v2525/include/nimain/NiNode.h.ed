@@ -1,0 +1,5 @@
+eol lf
+53a
+    virtual NiAVObject* GetObjectByNameMasked(const NiFixedString& kName,
+        unsigned short usExcludeFlags);  // studio: slot 21, name inferred
+.

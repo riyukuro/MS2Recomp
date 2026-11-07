@@ -112,7 +112,7 @@ MS2_CHECK_SIZE(Unk_TcXform, 0x34);
 class Unk_TcEntity;
 
 // Point3 helpers (out-of-line in the exe).
-Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
+// C3: was Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m) = efd::operator*(const Point3&, const Matrix3&) (efd/Matrix3.h), called directly
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 
 void FUN_140710590(COutPacket& packet);
@@ -353,9 +353,9 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
         kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-        Vector3 kDir = FUN_1420834e0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))), kMat);
+        efd::Point3 kDir = efd::operator*(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8)), kMat);
         xf.MakeIdentity();
-        xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
+        xf.m_Translate = FUN_1417b8370()->vfunc_18() + kDir * 150.0f;
     }
     else
     {
@@ -363,9 +363,9 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
         reinterpret_cast<egf::Entity*>(pStop)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kRot));
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-        Vector3 kDir = FUN_1420834e0(DAT_143a08ce8, kMat);
+        efd::Point3 kDir = efd::operator*(reinterpret_cast<const efd::Point3&>(DAT_143a08ce8), kMat);
         xf.MakeIdentity();
-        xf.m_Translate = reinterpret_cast<efd::Point3&>(kPos) + reinterpret_cast<efd::Point3&>(kDir) * 150.0f * 2.0f;
+        xf.m_Translate = reinterpret_cast<efd::Point3&>(kPos) + kDir * 150.0f * 2.0f;
     }
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;
     if (!m_bSurprise)

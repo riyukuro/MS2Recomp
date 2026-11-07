@@ -643,6 +643,11 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
 {
     return FUN_140d02c80(m_value, strName);
 }
+// uicashshopdialog's Unk_CashChildFinder::FUN_140d01e20<ASUIComponent> (call at 0x14103a812) is this same body: the exe
+// folds the getChildByName<T> instantiations into one copy, so its declared name is bound here.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??$FUN_140d01e20@VASUIComponent@@@Unk_CashChildFinder@@QEAA?AV?$MS2Ptr@VASUIComponent@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?FUN_140d01e20@Unk_Finder@@QEAA?AV?$MS2Ptr@VASTextField@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
+#endif
 
 // The six deep searches: getChildByName on the root, else the same search in each child.
 #define MS2_FINDER_DEEP(VA, NAME, T, CREATE)                                                                       \

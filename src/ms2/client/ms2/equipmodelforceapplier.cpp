@@ -177,7 +177,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);
 
     Vector3 ptRot = pObj->GetRotation();
-    ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.1415927f)).FUN_140ae9180(180.0f);
+    ptRot = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.1415927f)) / 180.0f);
     NxVec3 vForce(-fGust * FUN_1409f25a0(ptRot.z), fGust * FUN_1409f2310(ptRot.z), 0);
     if (!vForce.isFinite()) {
         EE_LOG_AT(0x12, efd::ILogger::kERR1, ("EquipModelWindApplier::OnTick"), MS2_THIS_FILE, 0x54);

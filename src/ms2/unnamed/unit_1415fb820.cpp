@@ -7,10 +7,12 @@
 
 extern void FUN_1415ef190(void*, void*);
 
+// the nested cryptor at offset 0, which the wrapper hands on
+struct Unk_NestedCryptorView { char m; };
 // @0x1415fb820
 void FUN_1415fb820(void* p, void* q)
 {
-    FUN_1415ef190(p, q);
+    FUN_1415ef190(&static_cast<Unk_NestedCryptorView*>(p)->m, q);
 }
 
 // @0x1415fb850

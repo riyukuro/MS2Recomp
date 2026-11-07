@@ -93,6 +93,8 @@
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@@std@@@1@@Z 0x140444fd0 ; prop
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x140445010 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@QEAA@XZ 0x140445520 ; prop
+// MS2-PIN: ??0CNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@ATL@@@ATL@@QEAA@AEBV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@Z 0x140445a70 ; calls MS2Ptr<DropContext>(const&) 0x140443da0; reached from Unk_GameEventValueFieldObjectDrop::GetContexts 0x140427e60
+// MS2-PIN: ??0CNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@ATL@@@ATL@@QEAA@AEBV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@Z 0x140445a40 ; calls MS2Ptr<DropListContext>(const&) 0x140443d10; reached from Unk_GameEventValueFieldObjectDropList::GetContexts 0x140428070
 // MS2-PINS-END tplpin
 // cf9: call-graph pins accepted by tplpin --simulate.
 // MS2-PIN: ??$_Adl_verify_range1@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x14042ccb0

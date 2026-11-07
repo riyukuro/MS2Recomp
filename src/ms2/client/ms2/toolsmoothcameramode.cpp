@@ -238,15 +238,15 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     {
         m_130 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_130) * fScale));
         Vector3 ptAngle = m_c0.m_rot;
-        ptAngle = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptAngle) * 3.14159274f)).FUN_140ae9180(180.0f);
+        ptAngle = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptAngle) * 3.14159274f)) / 180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptAngle.x, ptAngle.y, ptAngle.z);
         Vector3 ptRight;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptRight));
-        ptRight.FUN_140968990();
+        ptRight.Unitize();
         Vector3 ptForward;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
-        ptForward.FUN_140968990();
+        ptForward.Unitize();
         Vector3 ptPos = m_d8.m_pos;
         ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + (reinterpret_cast<const efd::Point3&>(ptRight) * m_130.x + reinterpret_cast<const efd::Point3&>(ptForward) * m_130.y) * 1000.0f * ((float)fTime)));
         m_d8.m_pos = ptPos;
@@ -281,7 +281,7 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
 {
     if (m_f0 != 0)
     {
-        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_d8.m_pos - m_c0.m_pos))));
         float fDist = ptDelta.Length();
         if (fDist <= 1.0f)
         {
@@ -303,11 +303,11 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
             if (t > 1.0f)
                 m_c0.m_pos = m_d8.m_pos;
             else
-                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_d8.m_pos - m_c0.m_pos))))));
         }
         Unk_NiMatrix3 kCur;
-        Unk_NiPoint3 ptCur(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_rot) * 3.14159274f)).FUN_140ae9180(180.0f));
-        Unk_NiPoint3 ptWant(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_d8.m_rot) * 3.14159274f)).FUN_140ae9180(180.0f));
+        Unk_NiPoint3 ptCur((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_rot) * 3.14159274f)) / 180.0f));
+        Unk_NiPoint3 ptWant((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_d8.m_rot) * 3.14159274f)) / 180.0f));
         reinterpret_cast<efd::Matrix3*>(&kCur)->FromEulerAnglesXYZ(ptCur.x, ptCur.y, ptCur.z);
         Unk_NiMatrix3 kWant;
         reinterpret_cast<efd::Matrix3*>(&kWant)->FromEulerAnglesXYZ(ptWant.x, ptWant.y, ptWant.z);
@@ -322,7 +322,7 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
         if (fBlend >= 1.0f)
             m_c0.m_rot = m_d8.m_rot;
         else
-            m_c0.m_rot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_rot) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fBlend, m_d8.m_rot.FUN_140965c40(m_c0.m_rot))))));
+            m_c0.m_rot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_rot) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fBlend * (m_d8.m_rot - m_c0.m_rot))))));
     }
     else
     {
@@ -367,7 +367,7 @@ void CToolSmoothCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     CConsoleCameraMode::vfunc_24(p, n);
     if (p)
     {
-        m_50 = m_c0.m_pos.FUN_140965c40(p->vfunc_18()).FUN_140967ac0();
+        m_50 = (m_c0.m_pos - p->vfunc_18()).Length();
         m_78 = p->vfunc_18();
         m_78.z = m_78.z + vfunc_27();
         Vector3 ptRot = FUN_1410a0a00(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_1409f2540())));

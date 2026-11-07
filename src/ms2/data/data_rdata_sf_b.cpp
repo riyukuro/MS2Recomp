@@ -22,8 +22,8 @@
 #ifndef MS2_HOOK_DLL
 
 extern "C" void* Sfr16ScalarDeletingDtor_1424e1ce0(void*, unsigned int);
-extern "C" void* Sfr16ScalarDeletingDtor_1424e1e60(void*, unsigned int);
-extern "C" void* Sfr16ScalarDeletingDtor_1424e1fe0(void*, unsigned int);
+// extern "C" void* Sfr16ScalarDeletingDtor_1424e1e60(void*, unsigned int);   (was used only by the dropped 0x14317c9b0 image)
+// extern "C" void* Sfr16ScalarDeletingDtor_1424e1fe0(void*, unsigned int);   (was used only by the dropped 0x14317c9b0 image)
 
 // Functions the tables below point at (static members and free functions defined in other units), declared
 // here so the slots name them directly; the owning classes are reduced to those members.
@@ -317,108 +317,108 @@ void Sfr33MovieRootDoActions(::Scaleform::GFx::AS3::MovieRoot *);
 void Sfr33UserDefinedFunctionExecute(void *, ::Scaleform::GFx::AS3::Value const &, unsigned int, ::Scaleform::GFx::AS3::Value const *, bool);
 void Sfr33PtrArrayForEachChildGC(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
 void Sfr33QueueOwnerObject(unsigned char *);
-::Scaleform::String & Sfr33AvmBitmapGetASClassName(void const *, ::Scaleform::String *);
-::Scaleform::GFx::DrawingContext * Sfr33GetDrawingContext(::Scaleform::GFx::DisplayObject *);
-char * Sfr27ForwardVirtual1b8(void *, char *);
-bool Sfr27TextFieldHasStyleSheet(unsigned __int64);
+//
+//
+//
+//
 bool FUN_142518480(::Scaleform::GFx::AS3::MovieRoot const *, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType, ::Scaleform::GFx::ProcessFocusKeyInfo *);
-void Sfr31ShapeObjectSetRatio(unsigned __int64, float);
-void * DeleteAs3_1424e2610(void *, unsigned int);
-void * DeleteAs3_1424e26d0(void *, unsigned int);
-void * DeleteAs3_1424e2a10(void *, unsigned int);
+//
+//
+//
+//
 class Object;
-void * DeleteAs3_1424e2ac0(void *, unsigned int);
+//
 void * DeleteAs3_1424e2c90(void *, unsigned int);
 void * DeleteAs3_1424e2e70(void *, unsigned int);
 void * DeleteAs3_1424e33f0(void *, unsigned int);
 void * DeleteAs3_1424e3450(void *, unsigned int);
-void * DeleteAs3_1424e3890(void *, unsigned int);
+//
 void * DeleteAs3_1424e3a00(void *, unsigned int);
 void * DeleteAs3_1424e3b90(void *, unsigned int);
 bool Sfr33CheckAvm(::Scaleform::GFx::AS3::MovieRoot *);
-char const * FUN_142508960(void const *);
+//
 unsigned __int64 FUN_14250ba00(unsigned __int64);
-float FUN_14250d630(unsigned __int64);
-unsigned __int64 FUN_14250d960(unsigned __int64);
+//
+//
 unsigned __int64 FUN_14250eef0(unsigned __int64);
-unsigned __int64 AvmTextField_GetStyleSheet(unsigned __int64);
-::Scaleform::GFx::DisplayObjectBase::TopMostResult FUN_14250f660(::Scaleform::GFx::DisplayObject *, ::Scaleform::Render::Point<float> const &, ::Scaleform::GFx::DisplayObjectBase::TopMostDescr *);
-bool FUN_142510da0(unsigned __int64);
-bool FUN_142510da4(unsigned __int64);
-bool FUN_142510db0(unsigned __int64);
-bool FUN_142510df0(unsigned __int64);
-bool FUN_142510df4(unsigned __int64);
-bool FUN_142510e00(unsigned __int64);
-bool FUN_142514280(unsigned __int64);
-bool FUN_142514284(unsigned __int64);
-bool Sfr27TextFieldTabCheck(unsigned __int64, unsigned long);
-bool FUN_142514304(unsigned __int64, unsigned long);
-bool FUN_142514d10(unsigned __int64);
-bool AvmButton_IsTabable(unsigned __int64);
-bool FUN_142514efc(unsigned __int64);
-bool AvmTextField_IsTabable(unsigned __int64);
-bool FUN_1425150b0(unsigned __int64);
-void FUN_142518360(unsigned __int64);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_142518470(unsigned __int64);
 void FUN_1425184f0(unsigned __int64);
 void FUN_142518510(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
 void FUN_142518520(unsigned __int64);
-bool FUN_142518740(unsigned __int64);
-bool FUN_142518750(unsigned __int64, wchar_t, unsigned int);
-bool FUN_142518a10(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_142518a18(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_142518a24(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_142518fc0(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_142518fc8(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_142518fd4(unsigned __int64, ::Scaleform::GFx::EventId const &);
-void FUN_142518fe0(unsigned __int64);
-void FUN_142518ffc(unsigned __int64);
-void FUN_142519008(unsigned __int64);
-void FUN_1425190d0(unsigned __int64);
-void FUN_1425190d4(unsigned __int64);
-void FUN_1425190e0(unsigned __int64);
-void AvmTextField_OnEventLoad(unsigned __int64);
-void FUN_1425191bc(unsigned __int64);
-void FUN_1425191c8(unsigned __int64);
-void FUN_1425191e0(unsigned __int64);
-void FUN_1425191e8(unsigned __int64);
-void FUN_1425191f4(unsigned __int64);
-void FUN_142519890(unsigned __int64);
-void FUN_142519898(unsigned __int64);
-void FUN_1425198a4(unsigned __int64);
-void FUN_1425198b0(unsigned __int64);
-void FUN_1425198b8(unsigned __int64);
-void FUN_1425198c4(unsigned __int64);
-void FUN_14251a0d0(unsigned __int64);
-void FUN_14251a0d4(unsigned __int64);
-void FUN_14251a0f0(unsigned __int64);
-void FUN_14251a0f4(unsigned __int64);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_14251a1e0(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::EventId const &, int);
-bool FUN_14251a330(unsigned __int64);
-bool FUN_14251a334(unsigned __int64);
-bool AvmTextField_OnKeyEvent(unsigned __int64, ::Scaleform::GFx::EventId const &, int *);
-bool FUN_14251a388(unsigned __int64, ::Scaleform::GFx::EventId const &, int *);
+//
+//
+//
+//
 void FUN_14251a3b0(unsigned __int64, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::EventId const &, int);
-void FUN_14251a500(unsigned __int64, ::Scaleform::GFx::TextField::LinkEvent, unsigned int, unsigned int);
-bool FUN_14251a7f0(unsigned __int64);
-bool FUN_14251a7f4(unsigned __int64);
-bool FUN_14251a810(unsigned __int64);
-bool FUN_14251a814(unsigned __int64);
-bool AvmButton_OnMouseEvent(unsigned __int64, ::Scaleform::GFx::EventId const &);
-bool FUN_14251a8a0(unsigned __int64, ::Scaleform::GFx::EventId const &);
+//
+//
+//
+//
+//
+//
+//
 void FUN_14251ac40(unsigned __int64, bool);
 void FUN_14251ac60(unsigned __int64);
 void FUN_14251ac80(unsigned __int64);
 bool FUN_14251ac90(unsigned __int64);
 bool FUN_14251acb0(unsigned __int64);
 void FUN_14251acc0(unsigned __int64);
-void FUN_14251ae60(unsigned __int64);
-bool FUN_14251af20(unsigned __int64);
-bool FUN_14251af24(unsigned __int64);
-bool FUN_14251af30(unsigned __int64);
-bool FUN_14251b0f0(unsigned __int64);
-bool FUN_14251b0f4(unsigned __int64);
-bool FUN_14251b100(unsigned __int64);
+//
+//
+//
+//
+//
+//
+//
 void FUN_14251bc40(unsigned __int64, ::Scaleform::GFx::AS3::FlashUI::OutputMessageType, char const *);
 void FUN_14251bda0(unsigned __int64, ::Scaleform::GFx::AS3::FlashUI::OutputMessageType, char const *);
 void FUN_14251d060(unsigned __int64);
@@ -432,39 +432,39 @@ bool Sfr31SetArray(unsigned __int64, int, unsigned __int64, unsigned long, void 
 bool Sfr31SetArraySize(unsigned __int64, unsigned __int64, int, unsigned long);
 void FUN_14252e530(char *, bool);
 void Sfr31ButtonSwitchState(unsigned __int64, int);
-void * FUN_14252f220(char *);
-void * FUN_14252f230(char *);
-void * FUN_14252f23c(char *);
-unsigned __int64 FUN_14252f290(void *);
-unsigned __int64 FUN_14252f294(char *);
-unsigned __int64 FUN_14252f2a0(char *);
-unsigned __int64 FUN_14252f2b0(void *);
-unsigned __int64 FUN_14252f2b4(char *);
-unsigned __int64 FUN_14252f2c0(char *);
-unsigned __int64 FUN_14252f300(void *);
-unsigned __int64 FUN_14252f304(char *);
-unsigned __int64 FUN_14252f310(char *);
-void * FUN_14252f320(char *);
-void * FUN_14252f330(char *);
-void * FUN_14252f33c(char *);
-void * FUN_14252f3b0(char *);
-void * FUN_14252f3c0(char *);
-void * FUN_14252f3cc(char *);
-unsigned __int64 FUN_14252f3e0(void *);
-unsigned __int64 FUN_14252f3e4(char *);
-unsigned __int64 FUN_14252f3f0(char *);
-unsigned __int64 FUN_14252f440(void *);
-unsigned __int64 FUN_14252f444(char *);
-unsigned __int64 FUN_14252f450(char *);
-unsigned __int64 FUN_14252f460(void *);
-unsigned __int64 FUN_14252f464(char *);
-unsigned __int64 FUN_14252f470(char *);
-void * FUN_14252f4c0(char *);
-void * FUN_14252f4d0(char *);
-void * FUN_14252f4dc(char *);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_142530fb0(void *);
-bool FUN_1425310d0(void *);
-void FUN_142531250(void *);
+//
+//
 }
 namespace AS2 {
 class LoadVarsProto
@@ -820,11 +820,11 @@ void GFx_StageFuncStub(::Scaleform::GFx::AS2::FnCall const &);
 void * DeleteAs2_1429276e0(void *, unsigned int);
 void * DeleteAs2_142928b00(void *, unsigned int);
 void * DeleteAs2_142928c70(void *, unsigned int);
-void * DeleteAs2_142928d00(void *, unsigned int);
+//
 void * DeleteAs2_142928dc0(void *, unsigned int);
 void * DeleteAs2_14292afe0(void *, unsigned int);
-void * DeleteAs2_14292b1e0(void *, unsigned int);
-void * DeleteAs2_14292b300(void *, unsigned int);
+//
+//
 void * DeleteAs2_14292b390(void *, unsigned int);
 void * DeleteAs2_14292ba00(void *, unsigned int);
 void FUN_142942db0(::Scaleform::GFx::AS2::LocalFrame *);
@@ -833,7 +833,7 @@ template <int Stat> class RefCountBaseGC
 {
 public: enum OperationGC : int;
 };
-bool FUN_142937a20(::Scaleform::GFx::Value::ObjectInterface *, ::Scaleform::GFx::Value *, void *, bool);
+//
 void FUN_142941190(::Scaleform::GFx::AS2::LocalFrame const *, ::Scaleform::GFx::AS2::RefCountCollector<323> *, ::Scaleform::GFx::AS2::RefCountBaseGC<323>::OperationGC);
 }
 namespace NumberUtil {
@@ -850,7 +850,7 @@ void * FUN_14261e1f0(void *, unsigned __int64);
 void * FUN_142620160(void *, unsigned int);
 void * FUN_1426201d0(void *, unsigned int);
 void * FUN_1426202f0(char *, unsigned int);
-void * FUN_142620370(char *, unsigned int);
+//
 void * FUN_1426203f0(char *, unsigned int);
 void * FUN_142591e10(void *, unsigned int);
 void * FUN_142591e70(void *, unsigned int);
@@ -933,50 +933,50 @@ void * FUN_14256ba70(::Scaleform::Render::TreeRoot::NodeData *, unsigned int);
 ::Scaleform::GFx::DisplayObjContainer * FUN_14250daa0(::Scaleform::GFx::AS3::MovieRoot const *, ::Scaleform::GFx::DisplayObject *);
 ::Scaleform::Render::Text::Allocator * FUN_14250f290(::Scaleform::GFx::AS3::MovieRoot *);
 bool FUN_142513210(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, char const *, ...);
-void * FUN_1424e1a98(unsigned __int64, unsigned int);
-void * FUN_1424e1aa4(unsigned __int64, unsigned int);
-void * FUN_1424e1ab0(unsigned __int64, unsigned int);
-void * FUN_1424e1abc(unsigned __int64, unsigned int);
-void * FUN_1424e1b40(unsigned __int64, unsigned int);
-void * FUN_1424e1b4c(unsigned __int64, unsigned int);
-void * FUN_1424e1b58(unsigned __int64, unsigned int);
-void * FUN_1424e1b64(unsigned __int64, unsigned int);
+//
+//
+//
+//
+//
+//
+//
+//
 void * FUN_1424e1b7c(unsigned __int64, unsigned int);
 void * FUN_1424e1b88(unsigned __int64, unsigned int);
-void * FUN_1424e1b94(unsigned __int64, unsigned int);
-void * FUN_1424e1ba0(unsigned __int64, unsigned int);
-bool FUN_1424e5460(unsigned __int64);
-bool FUN_1424e5464(unsigned __int64);
-bool FUN_1424e54f0(unsigned __int64);
-bool FUN_1424e54f4(unsigned __int64);
-void FUN_1424efde0(unsigned __int64);
-void FUN_1424efde4(unsigned __int64);
-void FUN_1424efe20(unsigned __int64);
-void FUN_1424efe24(unsigned __int64);
-void FUN_1424f1f50(unsigned __int64);
-void FUN_1424f1f54(unsigned __int64);
-void FUN_1424f1f80(unsigned __int64);
-void FUN_1424f1f84(unsigned __int64);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 unsigned __int64 FUN_142502cf0(unsigned __int64);
 void FUN_1425046d0(unsigned __int64);
-void FUN_1425047c0(unsigned __int64);
+//
 char const * FUN_142505e00(unsigned __int64);
-char const * FUN_142506df0(unsigned __int64, ::Scaleform::String *);
-char const * FUN_142506df8(unsigned __int64, ::Scaleform::String *);
-char const * FUN_142506e04(unsigned __int64, ::Scaleform::String *);
-char const * FUN_142506ed0(unsigned __int64, ::Scaleform::String *);
-char const * FUN_142506ed8(unsigned __int64, ::Scaleform::String *);
-char const * FUN_142506ee4(unsigned __int64, ::Scaleform::String *);
-unsigned __int64 FUN_142507b30(unsigned __int64);
-unsigned __int64 FUN_142507b70(unsigned __int64);
-unsigned int FUN_142508500(unsigned __int64);
-unsigned int FUN_142508514(unsigned __int64);
-unsigned int FUN_142508550(unsigned __int64);
-unsigned int FUN_142508554(unsigned __int64);
-char const * FUN_1425088f0(unsigned __int64);
-char const * FUN_142508900(unsigned __int64);
-char const * FUN_142508980(unsigned __int64);
-char const * FUN_142508990(unsigned __int64);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 bool FUN_142513240(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, ::Scaleform::GFx::Value const *, unsigned int);
 bool FUN_1425136f0(::Scaleform::GFx::AS3::MovieRoot *, char const *, ::Scaleform::GFx::Value *, char const *, char *);
 void FUN_14251aca0(void *, void *, int);
@@ -1113,21 +1113,21 @@ extern unsigned char DAT_1423df580[];
 extern unsigned char DAT_1423df590[];
 extern unsigned char DAT_1423df5a0[];
 extern unsigned char DAT_1423df5b0[];
-extern unsigned char DAT_1424057c0[];
-extern unsigned char DAT_142407230[];
-extern unsigned char DAT_142414f60[];
+// DAT_1424057c0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142407230: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142414f60: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424e2730[];
 extern unsigned char DAT_1424e29e0[];
 extern unsigned char DAT_1424e4290[];
 extern unsigned char DAT_1424e8060[];
 extern unsigned char DAT_1424eb250[];
-extern unsigned char DAT_1424ede80[];
+// DAT_1424ede80: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424f2400[];
-extern unsigned char DAT_1424f33d0[];
+// DAT_1424f33d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424f39c0[];
-extern unsigned char DAT_1424f3d20[];
-extern unsigned char DAT_1424f3f40[];
-extern unsigned char DAT_1424f4780[];
+// DAT_1424f3d20: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1424f3f40: was a slot of the dropped ShapeObject vftable image (ShapeObject::CreateRenderNode, now a real member)
+// DAT_1424f4780: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424f4a40[];
 extern unsigned char DAT_1424f7180[];
 extern unsigned char DAT_1424f74c0[];
@@ -1142,27 +1142,27 @@ public: static void EmptyFunc(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scalef
 }
 }
 
-extern unsigned char DAT_142500250[];
+// DAT_142500250: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142500e50[];
 extern unsigned char DAT_142501a60[];
-extern unsigned char DAT_1425038d0[];
+// DAT_1425038d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142504840[];
 extern unsigned char DAT_142505f20[];
 extern unsigned char DAT_142506e10[];
 extern unsigned char DAT_142506ef0[];
-extern unsigned char DAT_1425071d0[];
-extern unsigned char DAT_142507540[];
+// DAT_1425071d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142507540: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142507590[];
 extern unsigned char DAT_1425084c0[];
-extern unsigned char DAT_142508560[];
-extern unsigned char DAT_1425094e0[];
-extern unsigned char DAT_142509850[];
+// DAT_142508560: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1425094e0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142509850: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142509990[];
 extern unsigned char DAT_142509a80[];
-extern unsigned char DAT_142509ad0[];
+// DAT_142509ad0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142509da0[];
-extern unsigned char DAT_14250b3c0[];
-extern unsigned char DAT_14250b4a0[];
+// DAT_14250b3c0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_14250b4a0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_14250be40[];
 extern unsigned char DAT_14250c010[];
 extern unsigned char DAT_14250c060[];
@@ -1172,63 +1172,63 @@ extern unsigned char DAT_14250d620[];
 extern unsigned char DAT_14250d830[];
 extern unsigned char DAT_14250d970[];
 extern unsigned char DAT_14250ee10[];
-extern unsigned char DAT_14250f110[];
-extern unsigned char DAT_14250f770[];
+// DAT_14250f110: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_14250f770: was a slot of the dropped ShapeObject vftable image (ShapeObject::GetTopMostMouseEntity, now a real member)
 extern unsigned char DAT_14250f820[];
 extern unsigned char DAT_14250f850[];
 extern unsigned char DAT_14250f890[];
-extern unsigned char DAT_14250f980[];
+// DAT_14250f980: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142510180[];
 extern unsigned char DAT_142510770[];
 extern unsigned char DAT_142510a30[];
-extern unsigned char DAT_142510a70[];
-extern unsigned char DAT_142510b70[];
-extern unsigned char DAT_142510c30[];
+// DAT_142510a70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142510b70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142510c30: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142510d40[];
 extern unsigned char DAT_142510dc0[];
-extern unsigned char DAT_142510e70[];
+// DAT_142510e70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142511530[];
 extern unsigned char DAT_142512620[];
-extern unsigned char DAT_142512870[];
-extern unsigned char DAT_142513920[];
+// DAT_142512870: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142513920: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142513f90[];
-extern unsigned char DAT_142514240[];
+// DAT_142514240: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142515190[];
-extern unsigned char DAT_142518530[];
-extern unsigned char DAT_142518570[];
+// DAT_142518530: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142518570: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1425185d0[];
 extern unsigned char DAT_142519020[];
 extern unsigned char DAT_142519200[];
 extern unsigned char DAT_14251ace0[];
-extern unsigned char DAT_14251cac0[];
-extern unsigned char DAT_14251cbe0[];
+// DAT_14251cac0: was a slot of the dropped ShapeObject vftable image (ShapeObject::PointTestLocal, now a real member)
+// DAT_14251cbe0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_14251e4b0[];
 extern unsigned char DAT_14251f250[];
 extern unsigned char DAT_14251f3a0[];
-extern unsigned char DAT_14251f780[];
-extern unsigned char DAT_1425227e0[];
+// DAT_14251f780: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1425227e0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142525c90[];
-extern unsigned char DAT_1425265d0[];
-extern unsigned char DAT_1425266c0[];
-extern unsigned char DAT_142526730[];
-extern unsigned char DAT_1425270e0[];
-extern unsigned char DAT_142527300[];
-extern unsigned char DAT_1425278d0[];
-extern unsigned char DAT_142527d60[];
+// DAT_1425265d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1425266c0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142526730: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1425270e0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142527300: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_1425278d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142527d60: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142528740[];
 extern unsigned char DAT_142528a50[];
 extern unsigned char DAT_142528d90[];
 extern unsigned char DAT_142529f40[];
-extern unsigned char DAT_14252a230[];
-extern unsigned char DAT_14252a360[];
-extern unsigned char DAT_14252a4f0[];
+// DAT_14252a230: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_14252a360: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_14252a4f0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_14252b580[];
 extern unsigned char DAT_14252f250[];
 extern unsigned char DAT_14252f400[];
 extern unsigned char DAT_14252f480[];
-extern unsigned char DAT_14252fd40[];
-extern unsigned char DAT_142531550[];
-extern unsigned char DAT_142531630[];
+// DAT_14252fd40: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142531550: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// DAT_142531630: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_14256e2e0[];
 extern unsigned char DAT_14256e350[];
 extern unsigned char DAT_1425ab870[];
@@ -1338,104 +1338,104 @@ void FUN_140012590();
 void FUN_1400126a0();
 void FUN_140012e10();
 void FUN_140015c00();
-void FUN_1423dc0c0();
-void FUN_1423dd1b0();
-void FUN_1423dd3f0();
-void FUN_1424e2150();
-void FUN_1424e3020();
-void FUN_1424e3290();
+//
+//
+//
+// FUN_1424e2150: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+// FUN_1424e3020: slot of a dropped vftable image (real ??_7 in sfr_as3_16)
+// FUN_1424e3290: slot of a dropped vftable image (real ??_7 in sfr_as3_16)
 void FUN_1424e3ac0();
-void FUN_1424e3de0();
-void FUN_1424e5470();
-void FUN_1424e5474();
-void FUN_1424eb2f0();
-void FUN_1424eeae0();
-void FUN_1424efb40();
-void FUN_1424efdf0();
-void FUN_1424efdf4();
-void FUN_1424f1f60();
-void FUN_1424f1f64();
-void FUN_1424f2010();
-void FUN_1424f2700();
-void FUN_1424f2e90();
-void FUN_1424f3780();
-void FUN_1424f3e60();
-void FUN_1424f41f0();
-void FUN_1424f42d0();
-void FUN_1424f6f50();
-void FUN_1424f7190();
-void FUN_1424fe5f0();
-void FUN_1424feaa0();
-void FUN_1424fee00();
-void FUN_142500770();
-void FUN_142501920();
-void FUN_142504800();
-void FUN_142504b40();
-void FUN_142504b50();
-void FUN_1425057e0();
-void FUN_142506ea0();
-void FUN_142506ea8();
-void FUN_142506eb4();
-void FUN_142507730();
-void FUN_142507910();
-void FUN_142508520();
-void FUN_142508524();
-void FUN_14250b490();
-void FUN_14250c360();
-void FUN_14250d700();
-void FUN_142510240();
-void FUN_142510dd0();
-void FUN_142510dd4();
-void FUN_142510de0();
-void FUN_142514290();
-void FUN_142514294();
-void FUN_142514330();
-void FUN_142514f10();
-void FUN_142514f5c();
+// FUN_1424e3de0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+//
+//
+void FUN_1424eb2f0(); __pragma(comment(linker, "/alternatename:?FUN_1424eb2f0@@YAXXZ=?AdvanceFrame@MovieRoot@AS3@GFx@Scaleform@@UEAAX_N@Z")) // MovieRoot::AdvanceFrame
+void FUN_1424eeae0(); __pragma(comment(linker, "/alternatename:?FUN_1424eeae0@@YAXXZ=?ChangeMouseCursorType@Sfr33MovieRootCursor@AS3@GFx@Scaleform@@UEAAXII@Z")) // Sfr33MovieRootCursor::ChangeMouseCursorType
+void FUN_1424efb40(); __pragma(comment(linker, "/alternatename:?FUN_1424efb40@@YAXXZ=?ClearDisplayList@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")) // MovieRoot::ClearDisplayList
+//
+//
+//
+//
+//
+void FUN_1424f2700(); __pragma(comment(linker, "/alternatename:?FUN_1424f2700@@YAXXZ=?CreateArray@Sfr33MovieRootArray@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@@Z")) // Sfr33MovieRootArray::CreateArray
+//
+void FUN_1424f3780(); __pragma(comment(linker, "/alternatename:?FUN_1424f3780@@YAXXZ=?CreateFunction@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEAVFunctionHandler@34@PEAX@Z")) // Sfr33MovieRoot::CreateFunction
+//
+void FUN_1424f41f0(); __pragma(comment(linker, "/alternatename:?FUN_1424f41f0@@YAXXZ=?CreateString@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBD@Z")) // Sfr33MovieRootStrings::CreateString
+void FUN_1424f42d0(); __pragma(comment(linker, "/alternatename:?FUN_1424f42d0@@YAXXZ=?CreateStringW@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEB_W@Z")) // Sfr33MovieRootStrings::CreateStringW
+//
+//
+//
+//
+//
+//
+//
+//
+void FUN_142504b40(); __pragma(comment(linker, "/alternatename:?FUN_142504b40@@YAXXZ=?GenerateGestureEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@IAEBV?$Point@M@Render@3@11MI@Z")) // ASMovieRootBase::GenerateGestureEvents
+void FUN_142504b50(); __pragma(comment(linker, "/alternatename:?FUN_142504b50@@YAXXZ=?GenerateMouseEvents@MovieRoot@AS3@GFx@Scaleform@@UEAAXI@Z")) // MovieRoot::GenerateMouseEvents
+void FUN_1425057e0(); __pragma(comment(linker, "/alternatename:?FUN_1425057e0@@YAXXZ=?GenerateTouchEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXI@Z")) // ASMovieRootBase::GenerateTouchEvents
+//
+//
+//
+//
+//
+//
+//
+// FUN_14250b490: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
+//
+//
+void FUN_142510240(); __pragma(comment(linker, "/alternatename:?FUN_142510240@@YAXXZ=?GetVariableArray@MovieRoot@AS3@GFx@Scaleform@@UEAA_NHPEBDIPEAXI@Z")) // MovieRoot::GetVariableArray
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_1425181b0();
-void FUN_142518730();
-void FUN_142518a00();
-void FUN_142518a30();
-void FUN_142518c50();
-void FUN_142518c58();
-void FUN_142518c64();
-void FUN_142519d10();
-void FUN_142519d18();
-void FUN_142519d30();
-void FUN_142519d38();
-void FUN_142519ec0();
-void FUN_142519ec8();
-void FUN_14251a0e0();
-void FUN_14251a0e4();
-void FUN_14251a340();
-void FUN_14251a344();
-void FUN_14251a800();
-void FUN_14251a804();
-void FUN_14251af40();
-void FUN_14251b0a0();
-void FUN_14251b0a8();
-void FUN_14251b0b4();
-void FUN_14251c9f0();
-void FUN_14251e560();
-void FUN_14251f430();
-void FUN_14252c4f0();
-void FUN_14252f260();
-void FUN_14252f264();
-void FUN_14252f270();
-void FUN_14252f2d0();
-void FUN_14252f2d4();
-void FUN_14252f2e0();
-void FUN_14252f350();
-void FUN_14252f360();
-void FUN_14252f370();
-void FUN_14252f37c();
-void FUN_14252f410();
-void FUN_14252f414();
-void FUN_14252f420();
-void FUN_14252f490();
-void FUN_14252f494();
-void FUN_14252f4a0();
-void FUN_142620100();
+void FUN_142518730(); __pragma(comment(linker, "/alternatename:?FUN_142518730@@YAXXZ=?OnAppLifecycleEvent@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVAppLifecycleEvent@23@@Z")) // ASMovieRootBase::OnAppLifecycleEvent
+void FUN_142518a00(); __pragma(comment(linker, "/alternatename:?FUN_142518a00@@YAXXZ=?OnDeviceOrientationChanged@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVOrientationEvent@23@@Z")) // ASMovieRootBase::OnDeviceOrientationChanged
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+void FUN_14251e560(); __pragma(comment(linker, "/alternatename:?FUN_14251e560@@YAXXZ=?ProcessLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@@Z")) // MovieRoot::ProcessLoadQueueEntry
+//
+void FUN_14252c4f0(); __pragma(comment(linker, "/alternatename:?FUN_14252c4f0@@YAXXZ=?Shutdown@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")) // MovieRoot::Shutdown
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_1428f7bb0();
 void FUN_1428f7be0();
 void FUN_142901d20();
@@ -1444,49 +1444,49 @@ void FUN_142902880();
 void FUN_142902ae0();
 void FUN_142902f40();
 void FUN_142928a40();
-void FUN_14292b270();
+//
 void FUN_14292bdc0();
 void FUN_14292be50();
 void FUN_14292dc40();
-void FUN_1429318d0();
-void FUN_1429384f0();
-void FUN_1429497d0();
-void FUN_142949820();
-void FUN_14294a5b0();
-void FUN_14294b250();
-void FUN_14294bbb0();
-void FUN_142956270();
-void FUN_142956be0();
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_1429565c0();
 void FUN_14295d440();
 namespace Scaleform { namespace GFx { namespace AS2 {
 void* DeleteAs2_14292a0e0(void* p, unsigned flags);
 } } }
-void FUN_142958290();
-void FUN_14295d5e0();
-void FUN_142962710();
-void FUN_142964380();
-void FUN_142965da0();
+//
+//
+//
+//
+//
 void FUN_142966210();
-void FUN_1429665a0();
-void FUN_142966650();
-void FUN_142967010();
-void FUN_142971ac0();
-void FUN_14297fb80();
-void FUN_1429803d0();
-void FUN_142980790();
-void FUN_142981130();
-void FUN_1429813e0();
-void FUN_142981f00();
-void FUN_1429829c0();
-void FUN_14298be80();
-void FUN_14298bfa0();
-void FUN_14298ca20();
-void FUN_142991d30();
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 void FUN_142993ff0();
 void FUN_142994210();
-void FUN_142994280();
-void FUN_1429943f0();
+//
+//
 
 #pragma pack(push, 1)
 struct Sd_143175fb0 {
@@ -1791,318 +1791,318 @@ struct Sd_14317b938 {
     const void* p10;
     unsigned char b18[0x1f0];
 };
-struct Sd_14317c210 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    const void* p240;
-    const void* p248;
-    const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    const void* p270;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Sd_14317c9b0: dropped, nothing references the 0x14317c9b0 table
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+struct Sd_14317d870 {
+    unsigned char b0[0x18];
+//
 };
-struct Sd_14317c488 {
-    const void* p0;
-    const void* p8;
-};
-struct Sd_14317c498 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    unsigned char bb0[0x18];
-};
-struct Sd_14317c560 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    const void* p240;
-    const void* p248;
-    const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    const void* p270;
-};
-struct Sd_14317c7d8 {
-    const void* p0;
-    const void* p8;
-};
-struct Sd_14317c7e8 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-};
-struct Sd_14317c9b0 {
-    const void* p0;
-    const void* p8;
-};
-struct Sd_14317d600 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-};
-struct Sd_14317d6f8 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-};
-struct Sd_14317d7b0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    unsigned char bc0[0x18];
-    const void* pd8;
-};
-struct Sd_14317d8c0 {
-    const void* p0;
-};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 struct Sd_14317d8d8 {
     const void* p0;
     const void* p8;
@@ -2171,246 +2171,246 @@ struct Sd_14317daa0 {
     const void* p18;
     unsigned char b20[0x48];
 };
-struct Sd_14317dbe0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+struct Sd_14317de40 {
+    unsigned char b0[0x20];
 };
-struct Sd_14317dcb0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+struct Sd_14317ed08 {
+    unsigned char b0[0x230];
 };
-struct Sd_14317dd68 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    unsigned char bd8[0x20];
-};
-struct Sd_14317ea80 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-};
-struct Sd_14317eb50 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-};
-struct Sd_14317ec08 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    unsigned char b100[0x230];
-};
-struct Sd_14317ef38 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-};
-struct Sd_14317eff8 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    unsigned char b140[0x120];
-};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Sd_14317ef38: image dropped, UserDefinedFunction is emitted by sfr_as3_16z (MS2-PIN)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Sd_14317eff8: image dropped, AS3ValueObjectInterface is emitted by sfr_as3_16z (MS2-PIN)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 struct Sd_14317f848 {
     const void* p0;
     const void* p8;
@@ -3117,10 +3117,10 @@ struct Sd_14318f030 {
 struct Sd_14318f040 {
     const void* p0;
 };
-struct Sd_14318f048 {
-    const void* p0;
-    const void* p8;
-};
+//
+//
+//
+//
 struct Sd_14318f060 {
     const void* p0;
 };
@@ -3346,78 +3346,78 @@ struct Sd_143215ab0 {
     const void* p0;
     const void* p8;
 };
-struct Sd_143217750 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-};
+//
+//
+//
+//
+//
 struct Sd_143217768 {
     const void* p0;
     const void* p8;
     const void* p10;
 };
-struct Sd_143217780 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-};
+//
+//
+//
+//
+//
 struct Sd_143217798 {
     const void* p0;
     const void* p8;
     const void* p10;
 };
-struct Sd_1432177b0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-};
+//
+//
+//
+//
+//
 struct Sd_143218188 {
     const void* p0;
     const void* p8;
     const void* p10;
 };
-struct Sd_143222128 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 struct Sd_143222278 {
     unsigned char b0[0x150];
 };
@@ -4222,335 +4222,335 @@ alignas(8) Sd_14317b938 DAT_14317b938 = {
         0x20, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x20, 0x00, 0x00, 0x00, 0x00,
     },
 };
-// 0x14317c210
-alignas(16) Sd_14317c210 DAT_14317c210 = {
-    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3890,
-    DAT_1424f3f40,
-    DAT_1425f2210,
-    DAT_1425f5010,
-    DAT_1425f2140,
-    DAT_1425f4d70,
-    DAT_1425f2600,
-    DAT_1425f56c0,
-    DAT_1425f29a0,
-    DAT_1425f5e70,
-    DAT_1425f7af0,
-    DAT_1425f75c0,
-    DAT_142510d40,
-    DAT_1425f1ca0,
-    DAT_1425f4010,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14250d630,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ShapeObjectSetRatio,
-    DAT_1425f64c0,
-    DAT_1425f2cd0,
-    DAT_1425f69f0,
-    DAT_1425f2e20,
-    DAT_1425f6f20,
-    DAT_1425f2f70,
-    DAT_1425f6760,
-    DAT_1425f2db0,
-    DAT_1425f6c90,
-    DAT_1425f2f00,
-    DAT_1425f6fe0,
-    DAT_1425f2fe0,
-    DAT_1425f57a0,
-    DAT_1425f2760,
-    DAT_1425f6690,
-    DAT_1425f2d40,
-    DAT_1425f6bc0,
-    DAT_1425f2e90,
-    DAT_1425f40a0,
-    DAT_1425f1d50,
-    DAT_1425f41f0,
-    DAT_1425f1db0,
-    DAT_1425f5530,
-    DAT_1425f25c0,
-    DAT_1425f6130,
-    DAT_1425f2a40,
-    DAT_1425f4460,
-    DAT_1425f1f60,
-    DAT_1425f22e0,
-    DAT_1425f23e0,
-    DAT_142506ef0,
-    DAT_1425084c0,
-    DAT_1425f3de0,
-    DAT_1425f41b0,
-    DAT_1425f1d70,
-    DAT_14252b580,
-    DAT_142510a30,
-    DAT_142504840,
-    (const void*)&FUN_142507910,
-    (const void*)&FUN_14250d700,
-    DAT_14251cac0,
-    DAT_14250f770,
-    (const void*)&FUN_142507b70,
-    DAT_14250d970,
-    DAT_142509da0,
-    DAT_14250f850,
-    DAT_14250d830,
-    DAT_142525c90,
-    DAT_1424eb250,
-    DAT_1425f3980,
-    DAT_1425f39b0,
-    DAT_1425f3b60,
-    DAT_1425f39e0,
-    DAT_1425f2040,
-    DAT_1425f3390,
-    DAT_142515190,
-    DAT_142529f40,
-    DAT_14250ee10,
-    DAT_14250f890,
-    DAT_1425f1ae0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33GetDrawingContext,
-    DAT_1424f74c0,
-};
-// 0x14317c488
-alignas(8) Sd_14317c488 DAT_14317c488 = {
-    (const void*)&FUN_1424e1b94,
-    DAT_1425f33e0,
-};
-// 0x14317c498
-alignas(8) Sd_14317c498 DAT_14317c498 = {
-    (const void*)&FUN_1424e1ba0,
-    (const void*)&FUN_14252f350,
-    DAT_14252f400,
-    DAT_14252f250,
-    DAT_14252f480,
-    (const void*)&FUN_14252f2d0,
-    DAT_142506e10,
-    DAT_142510dc0,
-    (const void*)&FUN_142518a30,
-    DAT_142519020,
-    DAT_142519200,
-    (const void*)&FUN_14251af40,
-    DAT_1423dd4f0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    DAT_1424f2400,
-    (const void*)&FUN_142508990,
-    DAT_142505f20,
-    DAT_14251f3a0,
-    DAT_1425185d0,
-    DAT_14250c2e0,
-    DAT_1424f7180,
-    {
-        0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x2e, 0x53, 0x68,
-        0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-};
-// 0x14317c560
-alignas(16) Sd_14317c560 DAT_14317c560 = {
-    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2610,
-    (const void*)&FUN_1424f3e60,
-    DAT_1425f2210,
-    DAT_1425f5010,
-    DAT_1425f2140,
-    DAT_1425f4d70,
-    DAT_1425f2600,
-    DAT_1425f56c0,
-    DAT_1425f29a0,
-    DAT_1425f5e70,
-    DAT_1425f7af0,
-    DAT_1425f75c0,
-    DAT_142510d40,
-    DAT_1425f1ca0,
-    DAT_1425f4010,
-    DAT_14250d620,
-    DAT_142528d90,
-    DAT_1425f64c0,
-    DAT_1425f2cd0,
-    DAT_1425f69f0,
-    DAT_1425f2e20,
-    DAT_1425f6f20,
-    DAT_1425f2f70,
-    DAT_1425f6760,
-    DAT_1425f2db0,
-    DAT_1425f6c90,
-    DAT_1425f2f00,
-    DAT_1425f6fe0,
-    DAT_1425f2fe0,
-    DAT_1425f57a0,
-    DAT_1425f2760,
-    DAT_1425f6690,
-    DAT_1425f2d40,
-    DAT_1425f6bc0,
-    DAT_1425f2e90,
-    DAT_1425f40a0,
-    DAT_1425f1d50,
-    DAT_1425f41f0,
-    DAT_1425f1db0,
-    DAT_1425f5530,
-    DAT_1425f25c0,
-    DAT_1425f6130,
-    DAT_1425f2a40,
-    DAT_1425f4460,
-    DAT_1425f1f60,
-    DAT_1425f22e0,
-    DAT_1425f23e0,
-    DAT_142506ef0,
-    DAT_1425084c0,
-    DAT_1425f3de0,
-    DAT_1425f41b0,
-    DAT_1425f1d70,
-    DAT_14252b580,
-    DAT_142510a30,
-    (const void*)&FUN_1425047c0,
-    (const void*)&FUN_142507730,
-    (const void*)&::Scaleform::GFx::AS3::Sfr27ForwardVirtual1b8,
-    (const void*)&FUN_14251c9f0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14250f660,
-    (const void*)&FUN_142507b30,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14250d960,
-    DAT_142509da0,
-    DAT_14250f850,
-    DAT_14250d830,
-    DAT_142525c90,
-    DAT_1424eb250,
-    DAT_1425f3980,
-    DAT_1425f39b0,
-    DAT_1425f3b60,
-    DAT_1425f39e0,
-    DAT_1425f2040,
-    DAT_1425f3390,
-    DAT_142515190,
-    DAT_142529f40,
-    DAT_14250ee10,
-    DAT_14250f890,
-    DAT_1425f1ae0,
-    DAT_142509990,
-    DAT_1424f74c0,
-};
-// 0x14317c7d8
-alignas(8) Sd_14317c7d8 DAT_14317c7d8 = {
-    (const void*)&FUN_1424e1a98,
-    DAT_1425f33e0,
-};
-// 0x14317c7e8
-alignas(8) Sd_14317c7e8 DAT_14317c7e8 = {
-    (const void*)&FUN_1424e1aa4,
-    (const void*)&FUN_14252f350,
-    DAT_14252f400,
-    DAT_14252f250,
-    DAT_14252f480,
-    (const void*)&FUN_14252f2d0,
-    DAT_142506e10,
-    DAT_142510dc0,
-    (const void*)&FUN_142518a30,
-    DAT_142519020,
-    DAT_142519200,
-    (const void*)&FUN_14251af40,
-    DAT_1423dd4f0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    (const void*)&FUN_1424f2010,
-    (const void*)&FUN_1425088f0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33AvmBitmapGetASClassName,
-    DAT_14251f3a0,
-    DAT_1425185d0,
-    DAT_14250c2e0,
-    DAT_1424f7180,
-};
+// 0x14317c210: ??_7ShapeObject@AS3@GFx@Scaleform@@6B?$RefCountBaseWeakSupport@VDisplayObjectBase@GFx@Scaleform@@$0BEC@@3@@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317c488: ??_7ShapeObject@AS3@GFx@Scaleform@@6B?$LogBase@VDisplayObjectBase@GFx@Scaleform@@@23@@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+// 0x14317c498: ??_7ShapeObject@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317c560: ??_7AvmBitmap@AS3@GFx@Scaleform@@6B?$RefCountBaseWeakSupport@VDisplayObjectBase@GFx@Scaleform@@$0BEC@@3@@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317c7d8: ??_7AvmBitmap@AS3@GFx@Scaleform@@6B?$LogBase@VDisplayObjectBase@GFx@Scaleform@@@23@@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+// 0x14317c7e8: ??_7AvmBitmap@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_15/16 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // 0x14317c9b0
-alignas(16) Sd_14317c9b0 DAT_14317c9b0 = {
-    (const void*)&Sfr16ScalarDeletingDtor_1424e1fe0,
-    (const void*)&Sfr16ScalarDeletingDtor_1424e1e60,
-};
-// 0x14317d600
-alignas(16) Sd_14317d600 DAT_14317d600 = {
-    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2a10,
-    (const void*)&FUN_14252f360,
-    (const void*)&FUN_14252f410,
-    (const void*)&FUN_14252f260,
-    (const void*)&FUN_14252f490,
-    (const void*)&FUN_1423dd3f0,
-    (const void*)&FUN_142506ea0,
-    (const void*)&FUN_142510dd0,
-    (const void*)&FUN_142518c50,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425190d0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142519890,
-    (const void*)&FUN_14251b0a0,
-    DAT_1423dd4f0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    DAT_1424f2400,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142508960,
-    DAT_142505f20,
-    (const void*)&FUN_14251f430,
-    DAT_1425185d0,
-    (const void*)&FUN_14250c360,
-    (const void*)&FUN_1424f7190,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142514d10,
-    DAT_14250f820,
-    DAT_142507590,
-    (const void*)&FUN_142501920,
-    (const void*)&FUN_142514330,
-    (const void*)&FUN_142504800,
-    (const void*)&FUN_1424fee00,
-    (const void*)&FUN_1424fe5f0,
-    (const void*)&FUN_1424feaa0,
-};
-// 0x14317d6f8
-alignas(8) Sd_14317d6f8 DAT_14317d6f8 = {
-    (const void*)&FUN_1424e1b40,
-    (const void*)&FUN_14252f370,
-    (const void*)&FUN_14252f414,
-    (const void*)&FUN_14252f264,
-    (const void*)&FUN_14252f494,
-    (const void*)&FUN_14252f2d4,
-    (const void*)&FUN_142506ea8,
-    (const void*)&FUN_142510dd4,
-    (const void*)&FUN_142518c58,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425190d4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142519898,
-    (const void*)&FUN_14251b0a8,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e5470,
-    (const void*)&FUN_142508520,
-    (const void*)&FUN_1424efdf0,
-    (const void*)&FUN_1424f1f60,
-    (const void*)&FUN_142519d30,
-    (const void*)&FUN_14251a0e0,
-    (const void*)&FUN_14251a340,
-    (const void*)&FUN_14251a800,
-    (const void*)&FUN_142514290,
-    (const void*)&FUN_142514f10,
-};
-// 0x14317d7b0
-alignas(16) Sd_14317d7b0 DAT_14317d7b0 = {
-    (const void*)&FUN_1424e1b4c,
-    (const void*)&FUN_14252f37c,
-    (const void*)&FUN_14252f420,
-    (const void*)&FUN_14252f270,
-    (const void*)&FUN_14252f4a0,
-    (const void*)&FUN_14252f2e0,
-    (const void*)&FUN_142506eb4,
-    (const void*)&FUN_142510de0,
-    (const void*)&FUN_142518c64,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425190e0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425198a4,
-    (const void*)&FUN_14251b0b4,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e5474,
-    (const void*)&FUN_142508524,
-    (const void*)&FUN_1424efdf4,
-    (const void*)&FUN_1424f1f64,
-    (const void*)&FUN_142519d38,
-    (const void*)&FUN_14251a0e4,
-    (const void*)&FUN_14251a344,
-    (const void*)&FUN_14251a804,
-    (const void*)&FUN_142514294,
-    (const void*)&FUN_142514f5c,
-    (const void*)&FUN_142500770,
+// 0x14317c9b0 (2 deleting-dtor slots 0x1424e1fe0/0x1424e1e60): image dropped, no references
+//
+//
+//
+// 0x14317d600: ??_7AvmStage@AS3@GFx@Scaleform@@6BAvmDisplayObj@123@@, emitted by sfr_as3_17d (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317d6f8: ??_7AvmStage@AS3@GFx@Scaleform@@6BAvmInteractiveObjBase@23@@, emitted by sfr_as3_17d (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317d7b0: ??_7AvmStage@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_17d (MS2-PIN there)
+// 0x14317d870
+alignas(16) Sd_14317d870 DAT_14317d870 = {
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x2e, 0x53, 0x74,
         0x61, 0x67, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1424e3020,
 };
-// 0x14317d8c0
-alignas(16) Sd_14317d8c0 DAT_14317d8c0 = {
-    (const void*)&FUN_1424e3290,
-};
+// 0x14317d888: ??_7LoadQueueEntry@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_16 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317d8c0: ??_7MovieDefRootNode@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_16 (MS2-PIN there)
+//
+//
+//
 // 0x14317d8d8
 alignas(8) Sd_14317d8d8 DAT_14317d8d8 = {
     (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e33f0,
@@ -4628,184 +4628,153 @@ alignas(16) Sd_14317daa0 DAT_14317daa0 = {
         0x61, 0x74, 0x65, 0x64, 0x2e, 0x00, 0x00, 0x00,
     },
 };
-// 0x14317dbe0
-alignas(16) Sd_14317dbe0 DAT_14317dbe0 = {
-    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e26d0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f320,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3e0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f220,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f460,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2b0,
-    (const void*)&FUN_142506df0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510da0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518a10,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518fe0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425191e0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251af20,
-    DAT_1423dd4f0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    DAT_1424f2400,
-    (const void*)&FUN_142508900,
-    DAT_142505f20,
-    DAT_14251f3a0,
-    DAT_1425185d0,
-    DAT_14250c2e0,
-    (const void*)&FUN_1424f6f50,
-    DAT_1423dcd60,
-    DAT_14250f820,
-    DAT_142507590,
-    DAT_142501a60,
-};
-// 0x14317dcb0
-alignas(16) Sd_14317dcb0 DAT_14317dcb0 = {
-    (const void*)&FUN_1424e1ab0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f330,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3e4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f230,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f464,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2b4,
-    (const void*)&FUN_142506df8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510da4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518a18,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518ffc,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425191e8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251af24,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e5460,
-    (const void*)&FUN_142508500,
-    (const void*)&FUN_1424efde0,
-    (const void*)&FUN_1424f1f50,
-    (const void*)&FUN_142519d10,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0d0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a330,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a7f0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142514280,
-    (const void*)&::Scaleform::GFx::AS3::AvmButton_IsTabable,
-};
-// 0x14317dd68
-alignas(8) Sd_14317dd68 DAT_14317dd68 = {
-    (const void*)&FUN_1424e1abc,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f33c,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3f0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f23c,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f470,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2c0,
-    (const void*)&FUN_142506e04,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510db0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518a24,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142519008,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425191f4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251af30,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e5464,
-    (const void*)&FUN_142508514,
-    (const void*)&FUN_1424efde4,
-    (const void*)&FUN_1424f1f54,
-    (const void*)&FUN_142519d18,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0d4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a334,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a7f4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142514284,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142514efc,
-    (const void*)&FUN_1424f2e90,
-    (const void*)&::Scaleform::GFx::AS3::AvmButton_OnMouseEvent,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518740,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ButtonSwitchState,
+// 0x14317dbe0: ??_7AvmButton@AS3@GFx@Scaleform@@6BAvmDisplayObj@123@@, emitted by sfr_as3_15 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317dcb0: ??_7AvmButton@AS3@GFx@Scaleform@@6BAvmInteractiveObjBase@23@@, emitted by sfr_as3_15 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317dd68: ??_7AvmButton@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_15 (MS2-PIN there)
+// 0x14317de40
+alignas(16) Sd_14317de40 DAT_14317de40 = {
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x2e, 0x53, 0x69,
         0x6d, 0x70, 0x6c, 0x65, 0x42, 0x75, 0x74, 0x74, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
-// 0x14317ea80
-alignas(16) Sd_14317ea80 DAT_14317ea80 = {
-    (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e2ac0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3b0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f440,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f290,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4c0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f300,
-    (const void*)&FUN_142506ed0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510df0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518fc0,
-    (const void*)&::Scaleform::GFx::AS3::AvmTextField_OnEventLoad,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425198b0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251b0f0,
-    DAT_1423dd4f0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    DAT_1424f2400,
-    (const void*)&FUN_142508980,
-    DAT_142505f20,
-    DAT_14251f3a0,
-    DAT_1425185d0,
-    DAT_14250c2e0,
-    DAT_1424f7180,
-    DAT_1423dcd60,
-    DAT_14250f820,
-    DAT_142507590,
-    DAT_142501a60,
-};
-// 0x14317eb50
-alignas(16) Sd_14317eb50 DAT_14317eb50 = {
-    (const void*)&FUN_1424e1b58,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3c0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f444,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f294,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4d0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f304,
-    (const void*)&FUN_142506ed8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510df4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518fc8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425191bc,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425198b8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251b0f4,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e54f0,
-    (const void*)&FUN_142508550,
-    (const void*)&FUN_1424efe20,
-    (const void*)&FUN_1424f1f80,
-    (const void*)&FUN_142519ec0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0f0,
-    (const void*)&::Scaleform::GFx::AS3::AvmTextField_OnKeyEvent,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a810,
-    (const void*)&::Scaleform::GFx::AS3::Sfr27TextFieldTabCheck,
-    (const void*)&::Scaleform::GFx::AS3::AvmTextField_IsTabable,
-};
-// 0x14317ec08
-alignas(8) Sd_14317ec08 DAT_14317ec08 = {
-    (const void*)&FUN_1424e1b64,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f3cc,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f450,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f2a0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f4dc,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14252f310,
-    (const void*)&FUN_142506ee4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142510e00,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518fd4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425191c8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425198c4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251b100,
-    DAT_1423dd4f0,
-    (const void*)&FUN_1424e54f4,
-    (const void*)&FUN_142508554,
-    (const void*)&FUN_1424efe24,
-    (const void*)&FUN_1424f1f84,
-    (const void*)&FUN_142519ec8,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a0f4,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a388,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a814,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142514304,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425150b0,
-    (const void*)&::Scaleform::GFx::AS3::AvmTextField_GetStyleSheet,
-    (const void*)&::Scaleform::GFx::AS3::Sfr27TextFieldHasStyleSheet,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518360,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a500,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251a8a0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142518750,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251ae60,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1425310d0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_142531250,
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317ea80: ??_7AvmTextField@AS3@GFx@Scaleform@@6BAvmDisplayObj@123@@, emitted by sfr_as3_15 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317eb50: ??_7AvmTextField@AS3@GFx@Scaleform@@6BAvmInteractiveObjBase@23@@, emitted by sfr_as3_15 (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 0x14317ec08: ??_7AvmTextField@AS3@GFx@Scaleform@@6B@, emitted by sfr_as3_15 (MS2-PIN there)
+// 0x14317ed08
+alignas(8) Sd_14317ed08 DAT_14317ed08 = {
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x54, 0x65, 0x78, 0x74, 0x46,
         0x69, 0x65, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x3a, 0x00, 0x00,
@@ -4844,96 +4813,127 @@ alignas(8) Sd_14317ec08 DAT_14317ec08 = {
         0x63, 0x6f, 0x6d, 0x70, 0x69, 0x6c, 0x65, 0x20, 0x74, 0x69, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00,
     },
 };
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // 0x14317ef38
-alignas(8) Sd_14317ef38 DAT_14317ef38 = {
-    DAT_1425038d0,
-    DAT_1423df5b0,
-    DAT_142414f60,
-    DAT_1423df430,
-    (const void*)&FUN_1424e3de0,
-    DAT_1423df420,
-    DAT_142528a50,
-    DAT_14250cc60,
-    DAT_142509a80,
-    DAT_1424f4a40,
-    DAT_1424057c0,
-    DAT_1424e4290,
-    DAT_142407230,
-    DAT_1423df590,
-    DAT_1424e8060,
-    DAT_1423df580,
-    DAT_14250c010,
-    DAT_14250be40,
-    DAT_14250c060,
-    DAT_142500e50,
-    DAT_142512620,
-    DAT_142500250,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33UserDefinedFunctionExecute,
-    (const void*)&FUN_14250b490,
-};
+// DAT_14317ef38 -> ??_7UserDefinedFunction@AS3@GFx@Scaleform@@6B@ (pragmas below)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // 0x14317eff8
-alignas(8) Sd_14317eff8 DAT_14317eff8 = {
-    (const void*)&FUN_1424e2150,
-    DAT_142518530,
-    DAT_142518570,
-    DAT_142510e70,
-    DAT_14250b4a0,
-    DAT_142527d60,
-    DAT_142512870,
-    DAT_142513920,
-    DAT_1424f4780,
-    DAT_142531630,
-    DAT_142507540,
-    DAT_1425265d0,
-    DAT_142509ad0,
-    DAT_142527300,
-    DAT_142531550,
-    DAT_14251f780,
-    DAT_14251cbe0,
-    DAT_1425227e0,
-    DAT_142514240,
-    DAT_1425094e0,
-    DAT_142526730,
-    DAT_142510a70,
-    DAT_142509850,
-    DAT_1425270e0,
-    DAT_14250b3c0,
-    DAT_1425278d0,
-    DAT_142508560,
-    DAT_1425266c0,
-    DAT_14250f110,
-    DAT_14252a360,
-    DAT_14252a230,
-    DAT_1424f33d0,
-    DAT_1424ede80,
-    DAT_142510b70,
-    DAT_142510c30,
-    DAT_14252fd40,
-    DAT_14252a4f0,
-    DAT_14250f980,
-    DAT_1424f3d20,
-    DAT_1425071d0,
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79,
-        0x20, 0x27, 0x7b, 0x30, 0x7d, 0x27, 0x20, 0x61, 0x6c, 0x72, 0x65, 0x61, 0x64, 0x79, 0x20, 0x65,
-        0x78, 0x69, 0x73, 0x74, 0x73, 0x20, 0x61, 0x73, 0x20, 0x61, 0x20, 0x44, 0x69, 0x73, 0x70, 0x6c,
-        0x61, 0x79, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2e, 0x20, 0x53, 0x65, 0x74, 0x4d, 0x65, 0x6d,
-        0x62, 0x65, 0x72, 0x20, 0x61, 0x62, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x2e, 0x00, 0x00, 0x00, 0x00,
-        0x61, 0x74, 0x74, 0x61, 0x63, 0x68, 0x4d, 0x6f, 0x76, 0x69, 0x65, 0x28, 0x29, 0x20, 0x66, 0x61,
-        0x69, 0x6c, 0x65, 0x64, 0x20, 0x2d, 0x20, 0x65, 0x78, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x6e, 0x61,
-        0x6d, 0x65, 0x20, 0x22, 0x25, 0x73, 0x22, 0x20, 0x69, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x66,
-        0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x00, 0x00, 0x00, 0x44, 0x41, 0x50, 0x49, 0x20, 0x41, 0x74, 0x74,
-        0x61, 0x63, 0x68, 0x4d, 0x6f, 0x76, 0x69, 0x65, 0x28, 0x29, 0x20, 0x64, 0x65, 0x70, 0x74, 0x68,
-        0x20, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x65, 0x64, 0x20, 0x28, 0x25, 0x64, 0x29, 0x20,
-        0x66, 0x6f, 0x72, 0x20, 0x73, 0x79, 0x6d, 0x62, 0x6f, 0x6c, 0x20, 0x22, 0x25, 0x73, 0x22, 0x20,
-        0x69, 0x73, 0x20, 0x74, 0x6f, 0x6f, 0x20, 0x6c, 0x61, 0x72, 0x67, 0x65, 0x2e, 0x20, 0x55, 0x73,
-        0x69, 0x6e, 0x67, 0x20, 0x6e, 0x65, 0x78, 0x74, 0x20, 0x68, 0x69, 0x67, 0x68, 0x65, 0x73, 0x74,
-        0x20, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x20, 0x28, 0x25, 0x64, 0x29, 0x20, 0x69, 0x6e, 0x73, 0x74,
-        0x65, 0x61, 0x64, 0x2e, 0x00, 0x00, 0x00, 0x00, 0x45, 0x78, 0x63, 0x65, 0x70, 0x74, 0x69, 0x6f,
-        0x6e, 0x20, 0x69, 0x6e, 0x20, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63,
-        0x74, 0x28, 0x22, 0x25, 0x73, 0x22, 0x29, 0x3a, 0x0a, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-};
+// DAT_14317eff8 -> ??_7AS3ValueObjectInterface@GFx@Scaleform@@6B@ (pragmas below)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // 0x14317f848
 Sd_14317f848 DAT_14317f848 = {
     (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3a00,
@@ -7240,11 +7240,11 @@ alignas(16) Sd_14318f030 DAT_14318f030 = {
 alignas(16) Sd_14318f040 DAT_14318f040 = {
     (const void*)&::Scaleform::GFx::FUN_142620240,
 };
-// 0x14318f048
-alignas(8) Sd_14318f048 DAT_14318f048 = {
-    (const void*)&::Scaleform::GFx::FUN_142620370,
-    (const void*)&FUN_142620100,
-};
+// 0x14318f048: ??_7MarkerInfo@MovieProfile@AMP@GFx@Scaleform@@6B@, emitted by sfr_as3_22 (MS2-PIN there)
+//
+//
+//
+//
 // 0x14318f060
 alignas(16) Sd_14318f060 DAT_14318f060 = {
     (const void*)&::Scaleform::GFx::FUN_1426201d0,
@@ -8549,85 +8549,85 @@ alignas(8) Sd_143215ab0 DAT_143215ab0 = {
     (const void*)&::Scaleform::GFx::AS2::DeleteAs2_1429276e0,
     (const void*)&FUN_142966210,
 };
-// 0x143217750
-alignas(16) Sd_143217750 DAT_143217750 = {
-    (const void*)&FUN_14292b270,
-    (const void*)&FUN_142966650,
-    (const void*)&FUN_142965da0,
-};
+// 0x143217750: ??_7GFxAS2LoadQueueEntryMT_LoadMovie@AS2@GFx@Scaleform@@6B@, emitted by sfr_as2_03ac (MS2-PIN there)
+//
+//
+//
+//
+//
 // 0x143217768
 alignas(8) Sd_143217768 DAT_143217768 = {
     (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b390,
     DAT_14293fdf0,
     DAT_1425ab870,
 };
-// 0x143217780
-alignas(16) Sd_143217780 DAT_143217780 = {
-    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b300,
-    (const void*)&FUN_142967010,
-    DAT_14263a800,
-};
+// 0x143217780: ??_7GFxAS2LoadQueueEntryMT_LoadXML@AS2@GFx@Scaleform@@6B@, emitted by sfr_as2_04i (MS2-PIN there)
+//
+//
+//
+//
+//
 // 0x143217798
 alignas(8) Sd_143217798 DAT_143217798 = {
     (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292afe0,
     DAT_14293fcd0,
     DAT_1425ab870,
 };
-// 0x1432177b0
-alignas(16) Sd_1432177b0 DAT_1432177b0 = {
-    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_14292b1e0,
-    (const void*)&FUN_1429665a0,
-    DAT_14263a800,
-};
+// 0x1432177b0: ??_7GFxAS2LoadQueueEntryMT_LoadCSS@AS2@GFx@Scaleform@@6B@, emitted by sfr_as2_04i (MS2-PIN there)
+//
+//
+//
+//
+//
 // 0x143218188: vftable of AS2 AvmTextField::CSSHolder (deleting dtor, HasStyleSheet, GetStyleSheet)
 alignas(8) Sd_143218188 DAT_143218188 = {
     (const void*)&Scaleform::GFx::AS2::DeleteAs2_14292a0e0,
     (const void*)&FUN_14295d440,
     (const void*)&FUN_1429565c0,
 };
-// 0x143222128
-alignas(8) Sd_143222128 DAT_143222128 = {
-    (const void*)&::Scaleform::GFx::AS2::DeleteAs2_142928d00,
-    DAT_14296a990,
-    DAT_14296a9f0,
-    (const void*)&FUN_14295d5e0,
-    (const void*)&FUN_14294bbb0,
-    (const void*)&FUN_1429829c0,
-    (const void*)&FUN_142962710,
-    (const void*)&FUN_142964380,
-    (const void*)&FUN_1429384f0,
-    (const void*)&FUN_1429943f0,
-    (const void*)&FUN_142949820,
-    (const void*)&FUN_14297fb80,
-    DAT_14294a9b0,
-    (const void*)&FUN_1429813e0,
-    (const void*)&FUN_142994280,
-    (const void*)&FUN_142971ac0,
-    DAT_14296f0d0,
-    DAT_14297d080,
-    DAT_1429654a0,
-    (const void*)&FUN_14294a5b0,
-    (const void*)&FUN_142980790,
-    (const void*)&FUN_142958290,
-    DAT_14294a8f0,
-    (const void*)&FUN_142981130,
-    (const void*)&FUN_14294b250,
-    (const void*)&FUN_142981f00,
-    DAT_14294a500,
-    (const void*)&FUN_1429803d0,
-    (const void*)&FUN_142956270,
-    (const void*)&FUN_14298bfa0,
-    (const void*)&FUN_14298be80,
-    DAT_142935ea0,
-    (const void*)&FUN_1429318d0,
-    DAT_14295d320,
-    DAT_14295d3a0,
-    (const void*)&FUN_142991d30,
-    (const void*)&FUN_14298ca20,
-    (const void*)&FUN_142956be0,
-    (const void*)&::Scaleform::GFx::AS2::FUN_142937a20,
-    (const void*)&FUN_1429497d0,
-};
+// 0x143222128: ??_7AS2ValueObjectInterface@GFx@Scaleform@@6B@, emitted by sfr_as2_04l / sfr_as2_03ag (MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // 0x143222278
 alignas(8) Sd_143222278 DAT_143222278 = {
     {
@@ -8730,22 +8730,22 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?CInfo@Void@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@345@B=?DAT_14317af80@@3USd_14317af80@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317b058@AS3@GFx@Scaleform@@3QEBXEB=?DAT_14317b058@@3USd_14317b058@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317b938@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317b938@@3USd_14317b938@@A")
-#pragma comment(linker, "/alternatename:?ShapeObject_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c210@@3USd_14317c210@@A")
-#pragma comment(linker, "/alternatename:?ShapeObject_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c488@@3USd_14317c488@@A")
-#pragma comment(linker, "/alternatename:?ShapeObject_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c498@@3USd_14317c498@@A")
-#pragma comment(linker, "/alternatename:?AvmBitmap_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c560@@3USd_14317c560@@A")
-#pragma comment(linker, "/alternatename:?AvmBitmap_vftable_18@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c7d8@@3USd_14317c7d8@@A")
-#pragma comment(linker, "/alternatename:?AvmBitmap_vftable_90@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317c7e8@@3USd_14317c7e8@@A")
-#pragma comment(linker, "/alternatename:DAT_14317d8c0=?DAT_14317d8c0@@3USd_14317d8c0@@A")
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+// #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
+#pragma comment(linker, "/alternatename:DAT_14317d8c0=??_7MovieDefRootNode@AS3@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_14317d8d8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317d8d8@@3USd_14317d8d8@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317da88@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317da88@@3USd_14317da88@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317daa0@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317daa0@@3USd_14317daa0@@A")
-#pragma comment(linker, "/alternatename:?AvmStage_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d600@@3USd_14317d600@@A")
-#pragma comment(linker, "/alternatename:?AvmStage_vftable_30@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d6f8@@3USd_14317d6f8@@A")
-#pragma comment(linker, "/alternatename:?AvmStage_vftable_40@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14317d7b0@@3USd_14317d7b0@@A")
-#pragma comment(linker, "/alternatename:DAT_14317ef38=?DAT_14317ef38@@3USd_14317ef38@@A")
-#pragma comment(linker, "/alternatename:?DAT_14317eff8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317eff8@@3USd_14317eff8@@A")
-#pragma comment(linker, "/alternatename:DAT_14317eff8=?DAT_14317eff8@@3USd_14317eff8@@A")
+//
+//
+//
+#pragma comment(linker, "/alternatename:DAT_14317ef38=??_7UserDefinedFunction@AS3@GFx@Scaleform@@6B@")
+#pragma comment(linker, "/alternatename:?DAT_14317eff8@AS3@GFx@Scaleform@@3PAPEBXA=??_7AS3ValueObjectInterface@GFx@Scaleform@@6B@")
+#pragma comment(linker, "/alternatename:DAT_14317eff8=??_7AS3ValueObjectInterface@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_14317f848@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317f848@@3USd_14317f848@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317f860@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317f860@@3USd_14317f860@@A")
 #pragma comment(linker, "/alternatename:?Empty@StringView@Abc@AS3@GFx@Scaleform@@2EB=?DAT_14317fe92@@3EA")
@@ -8773,7 +8773,7 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14318f020@GFx@Scaleform@@3PADA=?DAT_14318f020@@3USd_14318f020@@A")
 #pragma comment(linker, "/alternatename:?DAT_14318f030@GFx@Scaleform@@3PADA=?DAT_14318f030@@3USd_14318f030@@A")
 #pragma comment(linker, "/alternatename:?DAT_14318f040@GFx@Scaleform@@3PADA=?DAT_14318f040@@3USd_14318f040@@A")
-#pragma comment(linker, "/alternatename:?DAT_14318f048@GFx@Scaleform@@3PADA=?DAT_14318f048@@3USd_14318f048@@A")
+#pragma comment(linker, "/alternatename:?DAT_14318f048@GFx@Scaleform@@3PADA=??_7MarkerInfo@MovieProfile@AMP@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_14318f060@GFx@Scaleform@@3PADA=?DAT_14318f060@@3USd_14318f060@@A")
 #pragma comment(linker, "/alternatename:?DAT_14318f068@GFx@Scaleform@@3PADA=?DAT_14318f068@@3USd_14318f068@@A")
 #pragma comment(linker, "/alternatename:?Factors@Render@Scaleform@@3QBEB=?DAT_14318fb30@@3PAEA")
@@ -8817,13 +8817,13 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?StaticFunctionTable@ObjectCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_1432142f0@@3USd_1432142f0@@A")
 #pragma comment(linker, "/alternatename:?FunctionTable@TextFieldProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B=?DAT_143214410@@3USd_143214410@@A")
 #pragma comment(linker, "/alternatename:?DAT_143215a98@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143215a98@@3USd_143215a98@@A")
-#pragma comment(linker, "/alternatename:?DAT_143217750@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217750@@3USd_143217750@@A")
+#pragma comment(linker, "/alternatename:?DAT_143217750@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadMovie@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_143217768@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217768@@3USd_143217768@@A")
-#pragma comment(linker, "/alternatename:?DAT_143217780@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217780@@3USd_143217780@@A")
+#pragma comment(linker, "/alternatename:?DAT_143217780@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadXML@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_143217798@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143217798@@3USd_143217798@@A")
-#pragma comment(linker, "/alternatename:?DAT_1432177b0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_1432177b0@@3USd_1432177b0@@A")
+#pragma comment(linker, "/alternatename:?DAT_1432177b0@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadCSS@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?AvmTextFieldCSSHolder_vftable@AS2@GFx@Scaleform@@3QBQEAXB=?DAT_143218188@@3USd_143218188@@A")
-#pragma comment(linker, "/alternatename:?DAT_143222128@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143222128@@3USd_143222128@@A")
+//
 #pragma comment(linker, "/alternatename:?DAT_14000e1a0@@3PAEA=?ExecuteForEachChild_GC@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc0b0@@3PAEA=?Bind@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dccc0@@3PAEA=?GetLevel@AvmSprite@AS3@GFx@Scaleform@@UEBAHXZ")
@@ -8835,45 +8835,45 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_1423df590@@3PAEA=?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423df5a0@@3PAEA=?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df5b0@@3PAEA=?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424057c0@@3PAEA=?Call@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IQEBV6345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142407230@@3PAEA=?Construct@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@IPEBV6345@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142414f60@@3PAEA=?GetAS3ObjectType@Object@fl@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ")
+//#pragma comment(linker, "/alternatename:?DAT_1424057c0@@3PAEA=?Call@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IQEBV6345@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142407230@@3PAEA=?Construct@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@IPEBV6345@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142414f60@@3PAEA=?GetAS3ObjectType@Object@fl@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ")
 #pragma comment(linker, "/alternatename:?DAT_1424e2730@@3PAEA=??_GAvmButtonBase@GFx@Scaleform@@UEAAPEAXI@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e29e0@@3PAEA=??_GAvmSpriteBase@GFx@Scaleform@@UEAAPEAXI@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e4290@@3PAEA=?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e8060@@3PAEA=?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424eb250@@3PAEA=?AdvanceFrame@DisplayObjectBase@GFx@Scaleform@@UEAAX_NM@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ede80@@3PAEA=?AttachMovie@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBD2JPEBVMemberValueSet@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1424ede80@@3PAEA=?AttachMovie@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBD2JPEBVMemberValueSet@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f2400@@3PAEA=?CreateASInstance@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAI_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f33d0@@3PAEA=?CreateEmptyMovieClip@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1424f33d0@@3PAEA=?CreateEmptyMovieClip@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f39c0@@3PAEA=?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f3d20@@3PAEA=?CreateObjectValue@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAVValue@23@PEAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f3f40@@3PAEA=?CreateRenderNode@Sfr33ShapeObject@AS3@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@4@AEAVContext@ContextImpl@Render@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f4780@@3PAEA=?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1424f3d20@@3PAEA=?CreateObjectValue@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAVValue@23@PEAX_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1424f3f40@@3PAEA=?CreateRenderNode@Sfr33ShapeObject@AS3@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@4@AEAVContext@ContextImpl@Render@4@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1424f4780@@3PAEA=?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f7180@@3PAEA=?DetachChild@AvmDisplayObj@AS3@GFx@Scaleform@@UEAA_NPEAVDisplayObjectBase@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f74c0@@3PAEA=?DoDisplayCallback@DisplayObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142500250@@3PAEA=?ExecuteUnsafe@UserDefinedFunction@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IPEBV5234@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142500250@@3PAEA=?ExecuteUnsafe@UserDefinedFunction@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IPEBV5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142500e50@@3PAEA=?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142501a60@@3PAEA=?FindInsertToPlayList@AvmInteractiveObj@AS3@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@PEAV534@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425038d0@@3PAEA=?FUN_1425038d0@@YAXPEAX0P6AX000@Z@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425038d0@@3PAEA=?FUN_1425038d0@@YAXPEAX0P6AX000@Z@Z")
 #pragma comment(linker, "/alternatename:?DAT_142504840@@3PAEA=?ForceShutdown@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_142505f20@@3PAEA=?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142506e10@@3PAEA=?GetAbsolutePath@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAPEBDPEAVString@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142506ef0@@3PAEA=?GetAcceptAnimMoves@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425071d0@@3PAEA=?GetAdvanceStats@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVViewStats@AMP@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142507540@@3PAEA=?GetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEBAIPEAX@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425071d0@@3PAEA=?GetAdvanceStats@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVViewStats@AMP@23@XZ")
+//#pragma comment(linker, "/alternatename:?DAT_142507540@@3PAEA=?GetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEBAIPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_142507590@@3PAEA=?GetAvmTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAV1234@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425084c0@@3PAEA=?GetContinueAnimationFlag@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142508560@@3PAEA=?GetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVCxform@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425094e0@@3PAEA=?GetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVDisplayInfo@Value@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509850@@3PAEA=?GetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAV?$Matrix2x4@M@Render@3@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142508560@@3PAEA=?GetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVCxform@Render@3@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425094e0@@3PAEA=?GetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVDisplayInfo@Value@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142509850@@3PAEA=?GetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAV?$Matrix2x4@M@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509990@@3PAEA=?GetDrawingContext@DisplayObject@GFx@Scaleform@@UEAAPEAVDrawingContext@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509ad0@@3PAEA=?GetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXIPEAVValue@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142509ad0@@3PAEA=?GetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXIPEAVValue@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509da0@@3PAEA=?GetFontManager@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVFontManager@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250b3c0@@3PAEA=?GetMatrix3D@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix3x4@M@Render@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250b4a0@@3PAEA=?GetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBDPEAVValue@23@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14250b3c0@@3PAEA=?GetMatrix3D@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix3x4@M@Render@4@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14250b4a0@@3PAEA=?GetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBDPEAVValue@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250be40@@3PAEA=?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250c010@@3PAEA=?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250c060@@3PAEA=?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
@@ -8883,63 +8883,63 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14250d830@@3PAEA=?GetRenderContainer@DisplayObjectBase@GFx@Scaleform@@UEAAPEAVTreeContainer@Render@3@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250d970@@3PAEA=?GetResourceMovieDef@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVMovieDefImpl@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250ee10@@3PAEA=?GetStateChangeFlags@DisplayObjectBase@GFx@Scaleform@@UEBAEXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250f110@@3PAEA=?GetText@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVValue@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250f770@@3PAEA=?GetTopMostMouseEntity@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@34@AEBV?$Point@M@Render@4@PEAUTopMostDescr@634@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14250f110@@3PAEA=?GetText@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVValue@23@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14250f770@@3PAEA=?GetTopMostMouseEntity@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@34@AEBV?$Point@M@Render@4@PEAUTopMostDescr@634@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f820@@3PAEA=?GetTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f850@@3PAEA=?GetTopParent@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVInteractiveObject@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250f890@@3PAEA=?GetType@DisplayObjectBase@GFx@Scaleform@@UEBA?AW4CharacterDefType@CharacterDef@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250f980@@3PAEA=?GetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVASUserData@23@PEAX_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14250f980@@3PAEA=?GetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVASUserData@23@PEAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142510180@@3PAEA=?GetVariable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEAVValue@34@PEBD@Z")
 #pragma comment(linker, "/alternatename:?DAT_142510770@@3PAEA=?GetVariableArraySize@MovieRoot@AS3@GFx@Scaleform@@UEAAIPEBD@Z")
 #pragma comment(linker, "/alternatename:?DAT_142510a30@@3PAEA=?GetVisible@DisplayObjectBase@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142510a70@@3PAEA=?GetWorldMatrix@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix2x4@M@Render@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510b70@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXI_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510c30@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEBD_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142510a70@@3PAEA=?GetWorldMatrix@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix2x4@M@Render@4@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142510b70@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXI_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142510c30@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142510d40@@3PAEA=?Has3D@DisplayObjectBase@GFx@Scaleform@@UEAA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142510dc0@@3PAEA=?HasEventHandler@AvmDisplayObj@AS3@GFx@Scaleform@@UEBA_NAEBVEventId@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510e70@@3PAEA=?HasMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBD_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142510e70@@3PAEA=?HasMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142511530@@3PAEA=?Init@MovieRoot@AS3@GFx@Scaleform@@UEAA_NPEAVMovieDefImpl@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142512620@@3PAEA=?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
-#pragma comment(linker, "/alternatename:?DAT_142512870@@3PAEA=?Invoke@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDPEBV423@_K_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142513920@@3PAEA=?InvokeClosure@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAX_KPEAVValue@23@PEBV423@1@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142512870@@3PAEA=?Invoke@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDPEBV423@_K_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142513920@@3PAEA=?InvokeClosure@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAX_KPEAVValue@23@PEBV423@1@Z")
 #pragma comment(linker, "/alternatename:?DAT_142513f90@@3PAEA=?IsAvailable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEBD@Z")
-#pragma comment(linker, "/alternatename:?DAT_142514240@@3PAEA=?IsDisplayObjectActive@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAX@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142514240@@3PAEA=?IsDisplayObjectActive@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_142515190@@3PAEA=?IsUsedAsMask@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142518530@@3PAEA=?ObjectAddRef@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
-#pragma comment(linker, "/alternatename:?DAT_142518570@@3PAEA=?ObjectRelease@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142518530@@3PAEA=?ObjectAddRef@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142518570@@3PAEA=?ObjectRelease@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425185d0@@3PAEA=?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142519020@@3PAEA=?OnEventLoad@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_142519200@@3PAEA=?OnEventUnload@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14251ace0@@3PAEA=?OnRemoved@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251cac0@@3PAEA=?PointTestLocal@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEBA_NAEBV?$Point@M@Render@4@E@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251cbe0@@3PAEA=?PopBack@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14251cac0@@3PAEA=?PointTestLocal@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEBA_NAEBV?$Point@M@Render@4@E@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14251cbe0@@3PAEA=?PopBack@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251e4b0@@3PAEA=?ProcessLoadBinaryMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@4@_K_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251f250@@3PAEA=?ProcessLoadVarsMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBVString@4@_K_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251f3a0@@3PAEA=?PropagateEvent@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXAEBVEvent@fl_events@Instances@234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f780@@3PAEA=?PushBack@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXAEBVValue@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425227e0@@3PAEA=?RemoveElements@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXIH@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14251f780@@3PAEA=?PushBack@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXAEBVValue@34@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425227e0@@3PAEA=?RemoveElements@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXIH@Z")
 #pragma comment(linker, "/alternatename:?DAT_142525c90@@3PAEA=?Restart@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425265d0@@3PAEA=?SetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425266c0@@3PAEA=?SetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVCxform@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142526730@@3PAEA=?SetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVDisplayInfo@Value@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425270e0@@3PAEA=?SetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix2x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142527300@@3PAEA=?SetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXIAEBVValue@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425278d0@@3PAEA=?SetMatrix3D@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix3x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142527d60@@3PAEA=?SetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBDAEBVValue@23@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425265d0@@3PAEA=?SetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXI@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425266c0@@3PAEA=?SetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVCxform@Render@3@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142526730@@3PAEA=?SetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVDisplayInfo@Value@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425270e0@@3PAEA=?SetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix2x4@M@Render@3@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142527300@@3PAEA=?SetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXIAEBVValue@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_1425278d0@@3PAEA=?SetMatrix3D@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix3x4@M@Render@3@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142527d60@@3PAEA=?SetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBDAEBVValue@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528740@@3PAEA=?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528d90@@3PAEA=?SetRatio@DisplayObjectBase@GFx@Scaleform@@UEAAXM@Z")
 #pragma comment(linker, "/alternatename:?DAT_142529f40@@3PAEA=?SetStateChangeFlags@DisplayObjectBase@GFx@Scaleform@@UEAAXE@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252a230@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252a360@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEB_W_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?SetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAXPEAVASUserData@23@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14252a230@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14252a360@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEB_W_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?SetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAXPEAVASUserData@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252b580@@3PAEA=?SetVisible@DisplayObjectBase@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252f250@@3PAEA=?ToAvmButttonBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmButtonBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f400@@3PAEA=?ToAvmSpriteBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmSpriteBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f480@@3PAEA=?ToAvmTextFieldBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmTextFieldBase@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14252fd40@@3PAEA=?ToString@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAVString@3@AEBVValue@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142531550@@3PAEA=?VisitElements@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVArrVisitor@ObjectInterface@Value@23@IH@Z")
-#pragma comment(linker, "/alternatename:?DAT_142531630@@3PAEA=?VisitMembers@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVObjVisitor@ObjectInterface@Value@23@_N@Z")
+//#pragma comment(linker, "/alternatename:?DAT_14252fd40@@3PAEA=?ToString@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAVString@3@AEBVValue@23@@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142531550@@3PAEA=?VisitElements@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVArrVisitor@ObjectInterface@Value@23@IH@Z")
+//#pragma comment(linker, "/alternatename:?DAT_142531630@@3PAEA=?VisitMembers@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVObjVisitor@ObjectInterface@Value@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e2e0@@3PAEA=?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e350@@3PAEA=?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425ab870@@3PAEA=?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")

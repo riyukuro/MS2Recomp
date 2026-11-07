@@ -1,0 +1,10 @@
+eol lf
+348c
+    int iIndex = m_kUnaffectedReceiverList.Find(pkUnaffectedNode);
+    if (iIndex == -1) return false; m_kUnaffectedReceiverList.RemoveAt(iIndex); return true;
+.
+339@33s "Head" ""
+335@59s "" " != -1"
+335@38s "Pos" ""
+325@19s "List" "*>"
+325@15s "" "TPrimitiveSet<Ni"

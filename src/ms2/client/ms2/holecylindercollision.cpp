@@ -16,7 +16,8 @@
 
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 
-static const int kRingPoints = 360;
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT imports
+extern "C" float (__cdecl* __imp_cosf)(float);
 
 // @0x140d03650
 CHoleCylinderCollision::CHoleCylinderCollision()
@@ -33,9 +34,9 @@ CHoleCylinderCollision::~CHoleCylinderCollision()
 }
 
 // @0x140d03840
-void CHoleCylinderCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
+void CHoleCylinderCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
 {
-    m_ptCenter = ptPos;
+    m_ptCenter = reinterpret_cast<const Vector3&>(ptPos);
     CBaseCollision::vfunc_3(ptPos, ptDir, fScale);
 }
 
@@ -108,7 +109,6 @@ void CHoleCylinderCollision::vfunc_1()
 }
 
 // @0x140d03a60
-// MS2-FUNCTIONAL: the exe builds the ring points with 30 separately unrolled temporaries; this loops over a table.
 void CHoleCylinderCollision::vfunc_5()
 {
     m_bBuilt = 1;
@@ -117,36 +117,56 @@ void CHoleCylinderCollision::vfunc_5()
         NiVertexColorProperty* pProp = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
         pProp->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
         pProp->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-        NiMeshPtr* apTarget[5] = { &m_spInnerTop, &m_spInnerBottom, &m_spOuterTop, &m_spOuterBottom, &m_spLines };
-        for (int i = 0; i < 5; i++)
-        {
-            *apTarget[i] = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
-            ((class NiAVObject*)(class NiAVObject*)(*apTarget[i]))->AttachProperty(pProp);
-        }
+        m_spInnerTop = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
+        m_spInnerTop->AttachProperty(pProp);
+        m_spInnerBottom = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
+        m_spInnerBottom->AttachProperty(pProp);
+        m_spOuterTop = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
+        m_spOuterTop->AttachProperty(pProp);
+        m_spOuterBottom = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
+        m_spOuterBottom->AttachProperty(pProp);
+        m_spLines = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
+        m_spLines->AttachProperty(pProp);
     }
 
-    Vector3 aPts[kRingPoints];
-    struct Ring { NiMeshPtr* pMesh; float fRadius; float fZ; };
+    const int nPoints = 360;
+    Vector3 aPts[nPoints];
+    for (int i = 0; i < 360; i++)
+    {
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, 0.0f)))));
+    }
+    m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    BuildWire(m_spMesh, aPts, 360);
     float fTop = GetTop() - m_ptCenter.z;
     float fBottom = GetBottom() - m_ptCenter.z;
-    Ring aRings[5] = {
-        { &m_spMesh,        m_fOuterRadius, 0.0f },
-        { &m_spInnerTop,    m_fInnerRadius, fTop },
-        { &m_spInnerBottom, m_fInnerRadius, fBottom },
-        { &m_spOuterTop,    m_fOuterRadius, fTop },
-        { &m_spOuterBottom, m_fOuterRadius, fBottom },
-    };
-    for (int r = 0; r < 5; r++)
+
+    for (int i = 0; i < 360; i++)
     {
-        for (int i = 0; i < kRingPoints; i++)
-        {
-            float fSin = sinf((float)i * 3.1415927f / 180.0f) * aRings[r].fRadius;
-            float fCos = cosf((float)i * 3.1415927f / 180.0f);
-            aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(fCos * aRings[r].fRadius, fSin, aRings[r].fZ)))));
-        }
-        (*aRings[r].pMesh)->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
-        BuildWire(*aRings[r].pMesh, aPts, kRingPoints);
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fTop)))));
     }
+    m_spInnerTop->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    BuildWire(m_spInnerTop, aPts, 360);
+
+    for (int i = 0; i < 360; i++)
+    {
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fBottom)))));
+    }
+    m_spInnerBottom->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    BuildWire(m_spInnerBottom, aPts, 360);
+
+    for (int i = 0; i < 360; i++)
+    {
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fTop)))));
+    }
+    m_spOuterTop->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    BuildWire(m_spOuterTop, aPts, 360);
+
+    for (int i = 0; i < 360; i++)
+    {
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fBottom)))));
+    }
+    m_spOuterBottom->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    BuildWire(m_spOuterBottom, aPts, 360);
 
     // Radial edges: on the bottom ring, then the top ring, a short segment across the wall at each of the four
     // axis points; then the vertical lines joining the bottom and top rings at the same points.

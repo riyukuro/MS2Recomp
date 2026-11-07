@@ -136,7 +136,7 @@ bool CMotionController::vfunc_5(double fTime)
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(m_pTarget);
         if (pPc != 0 && FUN_141489940(pPc) == 10)
         {
-            Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)).FUN_140ae9180(180.0f);
+            Vector3 kEuler = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)) / 180.0f);
             Vector3 kAxis = DAT_143a08cd8;
             Unk_EfdMatrix3 mxEuler;
             reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
@@ -160,7 +160,7 @@ bool CMotionController::vfunc_5(double fTime)
         }
     }
     m_kDir = kDir;
-    m_kDir.FUN_140968990();
+    m_kDir.Unitize();
     return false;
 }
 
@@ -191,7 +191,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     PCBase* pPc = efd::DynamicCast<PC, PCBase>(pTarget);
     if (pPc != 0 && FUN_141489940(pPc) == 10)
     {
-        Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)).FUN_140ae9180(180.0f);
+        Vector3 kEuler = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)) / 180.0f);
         efd::Point3 kAxis = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
         Unk_EfdMatrix3 mxEuler;
         reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
@@ -239,7 +239,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 // @0x141488b40
 Vector3 CArcMotionController::vfunc_3()
 {
-    return m_kHeading.FUN_140ae9180(100.0f);
+    return (m_kHeading / 100.0f);
 }
 
 // @0x141488b80
@@ -262,9 +262,9 @@ bool CArcMotionController::vfunc_5(double fTime)
         fT = 1.0f;
     efd::Point3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
     FUN_1414894f0(((void*)GetLogString()), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
-    m_kDir = reinterpret_cast<Vector3&>(kPos).FUN_140965c40(m_kMove);
+    m_kDir = (reinterpret_cast<Vector3&>(kPos) - m_kMove);
     m_kHeading = m_kDir;
-    m_kDir.FUN_140968990();
+    m_kDir.Unitize();
     m_kMove = reinterpret_cast<Vector3&>(kPos);
     return true;
 }

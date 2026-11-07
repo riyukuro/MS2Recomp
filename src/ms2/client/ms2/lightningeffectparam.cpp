@@ -7,7 +7,7 @@
 // MS2-PIN: ??1?$SmartPointer@VNiSortAdjustNode@@@efd@@QEAA@XZ 0x14144db90
 // MS2-PIN: ??B?$SmartPointer@VNiSortAdjustNode@@@efd@@QEBAPEAVNiSortAdjustNode@@XZ 0x14144dcf0
 // MS2-PIN: ??C?$SmartPointer@VNiSortAdjustNode@@@efd@@QEBAPEAVNiSortAdjustNode@@XZ 0x14144dd00
-// MS2-PIN: ??A?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAAAEAUVector3@@_K@Z 0x14144dcb0
+// MS2-PIN: ??A?$CAtlArray@VPoint3@efd@@V?$CElementTraits@VPoint3@efd@@@ATL@@@ATL@@QEAAAEAVPoint3@efd@@_K@Z 0x14144dcb0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$MS2Ptr@VLightningEffectParam@@@@QEAA@PEAVLightningEffectParam@@@Z 0x14144db40 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VLightningEffectParam@@@@QEAAAEAV1@PEAVLightningEffectParam@@@Z 0x14144dc40 ; unique
@@ -316,7 +316,7 @@ void LightningEffect::Rebuild()
         return;
     Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);
     Vector3 kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
-    float fDist = kLast.FUN_140965c40(kFirst).FUN_140967ac0();
+    float fDist = (kLast - kFirst).Length();
     int nClass = 2;
     if (!(fDist > 256.0f))
         nClass = 0;
@@ -414,38 +414,38 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
     Vector3 kLast;
     Vector3 kCur = kStart;
     Vector3 kStep;
-    Vector3 kDelta = kEnd.FUN_140965c40(kStart);
+    Vector3 kDelta = (kEnd - kStart);
     Vector3 kDir = kDelta;
-    kDir.FUN_140968990();
+    kDir.Unitize();
     m_arrPath.Add(kStart);
     float fAlong = 0.0f;
     float fRemain;
     do
     {
         kLast = kCur;
-        kStep = kEnd.FUN_140965c40(kLast);
+        kStep = (kEnd - kLast);
         float fDx = FUN_14109ace0() * m_fSpread * kStep.y;
         kStep.y = kStep.y + FUN_14109ace0() * m_fSpread * kStep.x;
         kStep.x = kStep.x + fDx;
-        kStep.FUN_140968990();
+        kStep.Unitize();
         kStep.x = kStep.x * m_fJointLen;
         kStep.y = kStep.y * m_fJointLen;
         kCur.x = kCur.x + kStep.x;
         kCur.y = kCur.y + kStep.y;
-        Vector3 kRel = kCur.FUN_140965c40(kStart);
+        Vector3 kRel = (kCur - kStart);
         fAlong = reinterpret_cast<const efd::Point3&>(kDir).Dot(reinterpret_cast<const efd::Point3&>(kRel));
         kCur.z = kStart.z + kDir.z * fAlong;
         m_arrPath.Add(kCur);
         if (m_arrPath.GetCount() >= 100)
             break;
-        fRemain = kEnd.FUN_140965c40(kCur).FUN_140967ac0();
+        fRemain = (kEnd - kCur).Length();
     } while (!(fRemain <= m_fJointLen * 2.0f || fAlong <= 0.0f));
     m_arrPath.Add(kEnd);
     m_arrLeft.RemoveAll();
     m_arrRight.RemoveAll();
     Vector3 kFlat = kDelta;
     kFlat.z = 0.0f;
-    kFlat.FUN_140968990();
+    kFlat.Unitize();
     Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));
     efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kFlat).Cross(reinterpret_cast<const efd::Point3&>(kCamera));
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)

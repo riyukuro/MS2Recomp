@@ -143,8 +143,8 @@ void CPVPCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = reinterpret_cast<const Vector3&>(ptDelta).FUN_140967ac0();
+        Unk_NiPoint3 ptDelta((m_d8.m_pos - m_c0.m_pos));
+        float fDist = reinterpret_cast<const Vector3&>(ptDelta).Length();
         float fBlend = 0.0f;
         if (m_fc)
         {
@@ -195,7 +195,7 @@ void CPVPCameraMode::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_d8.m_pos - m_c0.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
@@ -273,7 +273,7 @@ efd::Point3 CPVPCameraMode::FUN_1416c5d30()
         if (m_110 != NULL)
         {
             ptOther = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_110->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_128)))));
-            fDist = ptOther.FUN_140965c40(ptCenter).FUN_140967ac0() + m_11c;
+            fDist = (ptOther - ptCenter).Length() + m_11c;
             if (fDist > m_120)
             {
                 m_110 = NULL;
@@ -291,8 +291,8 @@ efd::Point3 CPVPCameraMode::FUN_1416c5d30()
     {
         return reinterpret_cast<const efd::Point3&>(ptCenter);
     }
-    Vector3 kDir = ptOther.FUN_140965c40(ptCenter);
-    float fLen = kDir.FUN_140968990();
+    Vector3 kDir = (ptOther - ptCenter);
+    float fLen = kDir.Unitize();
     return reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(kDir) * (fLen * 0.5f);
 }
 MS2_REPLACE_METHOD(0x1416c5d30, CPVPCameraMode, FUN_1416c5d30, 849, 0x6A577FD4);

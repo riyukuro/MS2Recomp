@@ -1,0 +1,29 @@
+0a
+// gb-anim reconstruction (local overlay, not committed). Studio class absent from Gamebryo 3.2
+// (EXE vtable 0x142fff0e8, RTTI 0x143af8900). All names inferred.
+#ifndef NIFOVINTERPOLATOR_H
+#define NIFOVINTERPOLATOR_H
+
+#include "NiFloatInterpolator.h"
+
+class NIANIMATION_ENTRY NiFOVInterpolator : public NiFloatInterpolator
+{
+    NiDeclareRTTI;
+    NiDeclareClone(NiFOVInterpolator);
+    NiDeclareStream;
+    NiDeclareViewerStrings;
+
+public:
+    NiFOVInterpolator();
+    NiFOVInterpolator(NiFloatData* pkFloatData);
+
+    virtual bool Update(float fTime, NiObjectNET* pkInterpTarget,
+        float& fValue);
+    virtual bool IsTransformValueSupported() const;
+};
+
+typedef efd::SmartPointer<NiFOVInterpolator> NiFOVInterpolatorPtr;
+
+#endif
+
+.

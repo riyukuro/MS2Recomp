@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141594000: initializes the request and empty reply buffer.
-CNMGetGameShortNameFunc::CNMGetGameShortNameFunc():CNMFunc(0x800f,1,0,0),m_nGameCode(0),m_szName{}{}
-// MS2-FUNCTIONAL 0x141594070: stores the requested game code and clears the reply buffer.
-CNMGetGameShortNameFunc::CNMGetGameShortNameFunc(int code):CNMFunc(0x800f,1,0,0),m_nGameCode(code),m_szName{}{}
+CNMGetGameShortNameFunc::CNMGetGameShortNameFunc():CNMFunc(0x800f,1,0,0){m_nGameCode=0;m_szName[0]=0;}
+CNMGetGameShortNameFunc::CNMGetGameShortNameFunc(int code):CNMFunc(0x800f,1,0,0){m_nGameCode=code;m_szName[0]=0;}
 // MS2-FUNCTIONAL 0x1415940E0: frames the short-name request.
 unsigned int CNMGetGameShortNameFunc::EncodeFramed(CNMStream* pStream)
 {

@@ -1,0 +1,65 @@
+eol lf
+1057@64s "kTestIter" "ui"
+1057@59s "Nex" "A"
+1056@46s "kBaseIter" "ui"
+1056@41s "Nex" "A"
+1052,1054c
+    for (unsigned int ui = 0; ui < m_kUnaffectedReceiverList.GetSize(); ui++)
+.
+998@61s "kIter" "ui"
+998@56s "Nex" "A"
+995,996c
+    for (unsigned int ui = 0; ui < m_kUnaffectedReceiverList.GetSize(); ui++)
+.
+955@41s "Tail" ""
+820c
+                i);
+.
+819@72s "Prev" "At"
+816,817c
+        for (int i = (int)m_kUnaffectedReceiverList.GetSize() - 1; i >= 0; i--)
+.
+764c
+    pkDest->m_fDepthBias = m_fDepthBias; pkDest->m_fStudioField0xA4 = m_fStudioField0xA4;
+.
+700c
+            float fDepthBias = pkGenerator->GetDepthBias() * pkGenerator->m_fStudioField0xA4;
+.
+520c
+    if (ms_pfnStudioForceMaterialNeedsUpdate) { ms_pfnStudioForceMaterialNeedsUpdate(this); return; } NiAVObjectRawList kReceiverList;
+.
+385a
+        pkNode = pkNode->GetParent();
+.
+383,384c
+        if (m_kUnaffectedReceiverList.Find((NiNode*)pkNode) != -1)
+.
+380,381c
+    const NiNode* pkNode = pkGeometry->GetParent();
+    while (pkNode)
+.
+368a
+        pkNode = pkNode->GetParent();
+.
+366,367c
+        if (m_kUnaffectedReceiverList.Find((NiNode*)pkNode) != -1)
+.
+363,364c
+    const NiNode* pkNode = pkPossibleNode;
+    while (pkNode)
+.
+87c
+    m_fDepthBias(0.0f), m_fStudioField0xA4(1.0f),
+.
+77c
+    m_pkShadowTechnique(NULL), m_kUnaffectedReceiverList(20000),
+.
+43c
+    m_fDepthBias(0.0f), m_fStudioField0xA4(1.0f),
+.
+33c
+    m_pkShadowTechnique(NULL), m_kUnaffectedReceiverList(20000),
+.
+28c
+void (*NiShadowGenerator::ms_pfnStudioForceMaterialNeedsUpdate)(NiShadowGenerator*) = NULL; NiImplementRTTI(NiShadowGenerator, NiObject);
+.

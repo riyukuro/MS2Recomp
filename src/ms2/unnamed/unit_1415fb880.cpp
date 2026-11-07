@@ -8,7 +8,7 @@
 
 extern void FUN_1415fb880(void*, unsigned short);
 extern void FUN_1415fb8d0(void*, unsigned int);
-extern void FUN_1415ef280(void*, unsigned long long);
+extern void* FUN_1415ef280(void*, unsigned long long);
 extern int FUN_141569b40(char*, unsigned long long, unsigned long long);
 extern int FUN_141569c80(char*, unsigned long long, unsigned long long*, const char*, unsigned long long);
 
@@ -21,8 +21,15 @@ void FUN_1415fb8a0(void* p, unsigned short v) { FUN_1415fb880(static_cast<char*>
 // @0x1415fb8d0
 void FUN_1415fb8d0(void* p, unsigned int v) { *reinterpret_cast<unsigned int*>(static_cast<char*>(p) + 0x20) = v; }
 
+// the event's virtual slot 11 (+0x58, vfunc_11(unsigned)), called as a virtual member
+struct Unk_EventVSlot11
+{
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5();
+    virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10();
+    virtual void v11(unsigned int v);
+};
 // @0x1415fb8f0
-void FUN_1415fb8f0(void** p, unsigned int v) { reinterpret_cast<void(__fastcall**)(void*, unsigned int)>(*p)[11](p, v); }
+void FUN_1415fb8f0(void** p, unsigned int v) { reinterpret_cast<Unk_EventVSlot11*>(p)->v11(v); }
 
 // @0x1415fb920
 void CNMCRChatRoomMessageReceivedEvent::vfunc_11(unsigned int v) { *reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(this) + 0x6a4) = v; }

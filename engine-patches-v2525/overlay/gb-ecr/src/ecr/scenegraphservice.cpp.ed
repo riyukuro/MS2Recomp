@@ -1,0 +1,50 @@
+3632c
+    m_pEntity(NULL), m_uiStudio0x40(0), m_uiStudio0x44(kInvalidUpdateIndex),
+.
+2736a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+2189a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+1740a
+            pSceneGraphData->m_uiStudio0x44 = SceneGraphData::kInvalidUpdateIndex;  // MS2: the update-bucket index
+.
+849a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+667a
+// MS2: 24 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+.
+646a
+// MS2: 1 line of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+.

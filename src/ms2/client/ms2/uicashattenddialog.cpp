@@ -659,6 +659,11 @@ template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc7400(const CString& strName)
 {
     return FUN_140bc74a0<T>(m_value,strName);
 }
+// The movie clip copy (0x140bc7450) is also the declared Unk_Finder / Unk_RewardClip::FUN_140bc7450 of other units.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:?FUN_140bc7450@Unk_Finder@@QEAA?AV?$MS2Ptr@VASMovieClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=??$FUN_140bc7400@VUnk_CadCheck@@@Unk_CadNode@@QEAA?AV?$MS2Ptr@VUnk_CadCheck@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
+#pragma comment(linker, "/alternatename:?FUN_140bc7450@Unk_RewardClip@@QEAA?AV?$MS2Ptr@VASMovieClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=??$FUN_140bc7400@VUnk_CadCheck@@@Unk_CadNode@@QEAA?AV?$MS2Ptr@VUnk_CadCheck@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
+#endif
 // @0x140bc74a0 (item slot; 0x140bc7770 movie clip): getChildByName, else a depth-first search of the children
 template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName)
 {

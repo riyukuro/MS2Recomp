@@ -252,6 +252,7 @@ enum class RecvOp : unsigned short {
     TaskEvent = 0x00F9,  // by-model
     StateFishingData = 0x00FA,  // by-model
     DungeonReviveCount = 0x00FB,  // by-model
+    UgcItemTitle = 0x00FD,
     ChangeBackground = 0x00FE,  // by-model
     RoomStageDungeon = 0x00FF,  // by-model
     DungeonMission = 0x0100,  // by-model
@@ -281,7 +282,8 @@ enum class RecvOp : unsigned short {
     Lapenshard = 0x011B,
     Prestige = 0x011C,
     Ugd = 0x011D,  // by-model
-    WorldChampion = 0x011F,  // by-model
+    WorldChampion = 0x011E,
+    FieldWar = 0x011F,
     SyncValue = 0x0120,  // by-model
     MinimapPing = 0x0121,  // by-model
     MsgBox = 0x0122,  // by-model
@@ -443,6 +445,7 @@ enum class SendOp : unsigned short {
     ItemRepack = 0x008C,
     Mapleopoly = 0x008D,
     PremiumClub = 0x008E,
+    ItemCompare = 0x008F,
     HomeAction = 0x0090,  // by-model
     Mastery = 0x0092,
     ConstructShop = 0x0093,  // by-model
@@ -485,4 +488,8 @@ enum class SendOp : unsigned short {
     Wedding = 0x00BA,
     WeddingBillboard = 0x00BB,
     LimitBreak = 0x00BC,
+    CheckDeleteAccount = 0x00BE,
+    DeleteAccount = 0x00BF,
+    PersonalInfoAgreement = 0x00C0,
+    HomeBlock = 0x00C1,
 };

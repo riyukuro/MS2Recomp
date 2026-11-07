@@ -1,0 +1,3 @@
+71c
+            if (pkAVObj->GetDisplayObject() /* MS2: exe tests the display flag, no RTTI walk */)
+.

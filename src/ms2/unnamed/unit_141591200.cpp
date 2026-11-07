@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ae30(void*,const void*); extern void FUN_1415fbe70(void*,unsigned int,const void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141591200: initializes an empty log message.
-CNMWriteToWiselogFunc::CNMWriteToWiselogFunc():CNMFunc(0x801f,1,0,0),m_text{}{}
-// MS2-FUNCTIONAL 0x141591260: copies a bounded log message.
-CNMWriteToWiselogFunc::CNMWriteToWiselogFunc(const char*text):CNMFunc(0x801f,1,0,0),m_text{}{if(text)FUN_1415fbe70(m_text,0x400,text);}
+CNMWriteToWiselogFunc::CNMWriteToWiselogFunc():CNMFunc(0x801f,1,0,0){m_text[0]=0;}
+CNMWriteToWiselogFunc::CNMWriteToWiselogFunc(const char*text):CNMFunc(0x801f,1,0,0){if(text)FUN_1415fbe70(m_text,0x400,text);else m_text[0]=0;}
 // MS2-FUNCTIONAL 0x1415912f0: frames the wiselog request.
 unsigned int CNMWriteToWiselogFunc::EncodeFramed(CNMStream* pStream)
 {

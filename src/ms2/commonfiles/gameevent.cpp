@@ -37,6 +37,7 @@
 // MS2-PIN: ??0?$MS2Ptr@UCard@GalleryContext@@@@QEAA@AEBV0@@Z 0x1403e1a20 ; prop
 // MS2-PIN: ??0?$MS2Ptr@UReward@LongTermAttendGiftContext@@@@QEAA@AEBV0@@Z 0x1403e1e50 ; prop
 // MS2-PIN: ??0SAHotTimeEventContext@@QEAA@XZ 0x1403e4540 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@PEAU01@@Z 0x1403d9cc0 ; called by map<int,int> _Destroy_if_node 0x1403f57f0, _Erase 0x1403f5950, _Freeheadnode/_Freenode0 and erase 0x1403fab30
 // MS2-PINS-END tplpin
 // MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@@Z 0x1403e0c70 ; merge 54's pair: 10 of the unit's one-instruction functions are byte-identical here, the row is at uiinventorydialog's copy 0x1419a8250
 // MS2-PIN: ??__Es_sortNames7@@YAXXZ 0x1400b8360

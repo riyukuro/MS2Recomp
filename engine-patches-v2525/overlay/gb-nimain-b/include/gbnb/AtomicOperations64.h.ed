@@ -1,0 +1,20 @@
+0a
+// gb-nimain-b local stand-in for a layer request (docs/tu/gb-nimain-b.md): the studio x64 build
+// has inline 64-bit atomics (EXE 0x142087bfe: mov rax,-1; lock xadd [rdx-0x10],rax; dec rax).
+#pragma once
+#include <efd/AtomicOperations.h>
+#ifndef EE_STUDIO_ATOMIC64  // gb-layer: the layer defines these (docs/tu/gb-layer.md); this stand-in steps aside
+namespace efd
+{
+inline efd::SInt64 AtomicIncrement(efd::SInt64& value) { return InterlockedIncrement64((LONG64*)&value); }
+inline efd::SInt64 AtomicDecrement(efd::SInt64& value) { return InterlockedDecrement64((LONG64*)&value); }
+inline efd::UInt64 AtomicIncrement(efd::UInt64& value) { return InterlockedIncrement64((LONG64*)&value); }
+inline efd::UInt64 AtomicDecrement(efd::UInt64& value) { return InterlockedDecrement64((LONG64*)&value); }
+inline efd::SInt64 AtomicIncrement(volatile efd::SInt64& value) { return InterlockedIncrement64((volatile LONG64*)&value); }
+inline efd::SInt64 AtomicDecrement(volatile efd::SInt64& value) { return InterlockedDecrement64((volatile LONG64*)&value); }
+inline efd::UInt64 AtomicIncrement(volatile efd::UInt64& value) { return InterlockedIncrement64((volatile LONG64*)&value); }
+inline efd::UInt64 AtomicDecrement(volatile efd::UInt64& value) { return InterlockedDecrement64((volatile LONG64*)&value); }
+}
+#endif
+
+.

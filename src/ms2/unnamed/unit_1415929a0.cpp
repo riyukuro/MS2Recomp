@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ae30(void*,const void*); extern void FUN_1415fbe70(void*,unsigned int,const void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x1415929a0: initializes empty URL and output-path buffers.
-CNMDownloadFileFunc::CNMDownloadFileFunc():CNMFunc(0x800a,1,0,0),m_szUrl{},m_szPath{}{}
-// MS2-FUNCTIONAL 0x141592a10: stores bounded URL and output path values.
-CNMDownloadFileFunc::CNMDownloadFileFunc(const char*url,const char*path):CNMFunc(0x800a,1,0,0),m_szUrl{},m_szPath{}{if(url)FUN_1415fbe70(m_szUrl,0x100,url);if(path)FUN_1415fbe70(m_szPath,0x100,path);}
+CNMDownloadFileFunc::CNMDownloadFileFunc():CNMFunc(0x800a,1,0,0){m_szUrl[0]=0;m_szPath[0]=0;}
+CNMDownloadFileFunc::CNMDownloadFileFunc(const char*url,const char*path):CNMFunc(0x800a,1,0,0){if(url)FUN_1415fbe70(m_szUrl,0x100,url);else m_szUrl[0]=0;if(path)FUN_1415fbe70(m_szPath,0x100,path);else m_szPath[0]=0;}
 // MS2-FUNCTIONAL 0x141592ae0: frames the download request.
 unsigned int CNMDownloadFileFunc::EncodeFramed(CNMStream* pStream)
 {

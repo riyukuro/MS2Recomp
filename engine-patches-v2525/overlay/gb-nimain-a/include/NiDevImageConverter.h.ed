@@ -1,0 +1,20 @@
+eol lf
+61a
+    // gb-nimain-a: studio wide overload, EXE slot 16 (0x141d3ac10)
+    virtual NiPixelData* GenerateMipmapPyramidFromFiles(
+        const wchar_t* apcFilenames[], unsigned int uiNumLevels,
+        const NiPixelData* pkSrc = NULL);
+.
+37a
+    virtual NiPixelData* ReadImageFile(const wchar_t* pcFilename,
+        NiPixelData* pkOptDest);
+.
+33a
+    virtual bool ReadImageFileInfo(const wchar_t* pcFilename,
+        NiPixelFormat &kFmt, bool &bMipmap, unsigned int &uiWidth,
+        unsigned int &uiHeight, unsigned int& uiFaces);
+.
+31a
+    // gb-nimain-a: studio wide-path overrides; EXE vtable 0x14301... slots 4/6/8 (0x141d34fd0, 0x141d3b840, 0x141d3bd70)
+    virtual bool CanReadImageFile(const wchar_t* pcFilename) const;
+.

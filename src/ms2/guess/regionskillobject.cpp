@@ -181,7 +181,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                 NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
                 NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
                 spShape = FUN_141469a90()->Create(reinterpret_cast<Unk_SkillSrc*>(m_spSkill.get()), 0, 0, pActor, 0.0f);
-                spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
+                spShape->vfunc_3(niPt, rot, 1.0f);
                 __int64 nHandle = FUN_141469a90()->Add(spShape);
                 m_collisions.AddTail(nHandle);
             }
@@ -196,7 +196,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                     NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
                     NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
                     spShape = FUN_141469a90()->Create(reinterpret_cast<Unk_SkillSrc*>(m_spSkill.get()), 0, 0, 0, 0.0f);
-                    spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
+                    spShape->vfunc_3(niPt, rot, 1.0f);
                     __int64 nHandle = FUN_141469a90()->Add(spShape);
                     m_collisions.AddTail(nHandle);
                 }

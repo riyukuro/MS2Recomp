@@ -461,3 +461,12 @@ void Unk_PCRandomTargetView::FUN_140aab3c0(float fAlpha)
 {
     ((CRandomTargetEffect*)this)->SetScale(fAlpha);
 }
+
+// TPtr<PC> copy ctor: the exe calls TPtr<PCBase>'s 0x140c20410 COMDAT (same body, ICF), defined in uihideandseekresultdialog.cpp.
+// MS2-FUNCTIONAL: the slot-1 AddRef through the tptr.h stand-in pointee type
+template <> TPtr<PC>::TPtr(const TPtr& o)
+{
+    m_p = o.m_p;
+    if (m_p)
+        ((Unk_TPtrPointee*)m_p)->AddRef();
+}

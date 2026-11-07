@@ -1,0 +1,7 @@
+185@46s "" ", NULL, Ms2EmptyUtf8()"
+26c
+struct Ms2EmptyUtf8 { __forceinline operator efd::utf8string() const { efd::utf8string s; auto& d = reinterpret_cast<efd::string&>(s)._Get_data(); d._Mysize = 0; d._Myptr()[0] = 0; return s; } }; /* MS2: the exe inlines utf8string("") down to assign(ptr, 0) at the last EntityFactoryResponse */
+.
+13c
+#define EE_MS2_UTF8_CHAR_CTOR_CALL /* MS2: exe calls utf8string(const char*) 0x1409989e0 here */
+.

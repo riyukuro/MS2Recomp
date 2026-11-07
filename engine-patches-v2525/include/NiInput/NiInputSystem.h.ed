@@ -1,0 +1,4 @@
+eol lf
+241a
+    bool m_bStudioFlag0x2d;  // studio: +0x2d, name inferred
+.

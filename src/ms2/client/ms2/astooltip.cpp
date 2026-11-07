@@ -1094,7 +1094,6 @@ MS2_REPLACE_METHOD(0x1409C8DF0, ASTooltip, FUN_1409c8df0, 883, 0x730BDFE3);
 // The option block of the item tooltip ("itemStatus"): the option rows per kind, the socket and additional-effect rows,
 // the enchant and unlimited-enchant rows and the enchant / pet exp gauges. Merge items show their merge ranges instead.
 // @0x1409c9170
-// MS2-FUNCTIONAL: /Od frame is 0x70 larger. CStringW results passed to StringFormat get a 2-slot rax chain where the exe passes the temp by lea; same calls and control flow
 void ASTooltip::FUN_1409c9170(CItem* pItem)
 {
     if (pItem == 0)
@@ -1176,7 +1175,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     if (spBase->HasValue())
                     {
                         __int64 nValue = spBase->GetValue();
-                        float fRate = (float)floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
+                        float fRate = (float)__imp_floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(*GetClientConstants()->PetMaxLevel.Get() - 1));
                         nValue += fRate * (float)(pItem->FUN_140528c20() - 1);
@@ -1304,20 +1303,21 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     MS2Ptr<BaseOption> spBase(mapEnchant.GetValueAt(pos));
                     if (!spBase)
                         continue;
-                    strRows.Append(StringFormat(strRowFormat, FUN_140631af0(nStat, spBase, pStatus)));
+                    CStringW strStat = FUN_140631af0(nStat, spBase, pStatus);
+                    strRows.Append(StringFormat(strRowFormat, strStat));
                 }
                 if (!strRows.IsEmpty())
                 {
                     if (!strText.IsEmpty())
                         strText.Append(strSeparator);
-                    strText.Append(StringFormat(s_wsText0xbf6, strRows));
+                    CStringW strBlock = StringFormat(s_wsText0xbf6, strRows);
+                    strText.Append(strBlock);
                 }
             }
         }
         if (CItemEnchantLimitTable::GetInstance()->FUN_14058df90(pItem))
         {
-            int nExp = pItem->GetEnchantCharge();
-            int nPercent = nExp * 100 / 10000;
+            int nPercent = pItem->GetEnchantCharge() * 100 / 10000;
             int nNeed = 0;
             int nCur = 0;
             int nStep = pItem->FUN_140528f90();
@@ -1329,7 +1329,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             CStringW strExp = StringFormat(L"{0} / {1}", nCur, nNeed);
             CStringW strLabel = StringFormat(s_wsEnchantExp);
             if (spEnchant->NeedsChargeVersionUpdate())
-                strLabel = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_enchant_exp_refund"));
+                strLabel = GetStringCommonByKey(L"s_tooltip_itemoption_enchant_exp_refund");
             CStringW strSep(s_wsText0xbf5);
             if (!strText.IsEmpty())
                 strText.Append(strSep);
@@ -1340,15 +1340,15 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
         }
     }
     MS2Ptr<UnlimitedEnchantInfo> spUnlimited(reinterpret_cast<UnlimitedEnchantInfo*>(pStatus->FUN_140630d90()));
-    if (spUnlimited != 0)
+    if (spUnlimited.get() ? true : false)
     {
         if (spUnlimited->GetLevel() > 0)
         {
             CStringW strRows;
-            UnlimitedEnchantInfo::OptionMap& mapOptions = spUnlimited->FUN_1408bc2d0();
-            if (mapOptions.size() != 0)
+            const UnlimitedEnchantInfo::OptionMap& mapOptions = spUnlimited->FUN_1408bc2d0();
+            if (mapOptions.size() > 0)
             {
-                for (UnlimitedEnchantInfo::OptionMap::const_iterator it = mapOptions.begin(); it != mapOptions.end(); ++it)
+                for (UnlimitedEnchantInfo::OptionMap::const_iterator it = mapOptions.begin(), itEnd = mapOptions.end(); it != itEnd; ++it)
                 {
                     int nKey = it->first;
                     MS2Ptr<BaseOption> spBase(it->second);
@@ -1360,14 +1360,15 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     strRows.Append(StringFormat(strRowFormat, strRow));
                 }
             }
-            UnlimitedEnchantInfo::SecondaryMap& mapSpecials = spUnlimited->FUN_1408bc3b0();
-            if (mapSpecials.size() != 0)
+            const UnlimitedEnchantInfo::SecondaryMap& mapSpecials = spUnlimited->FUN_1408bc3b0();
+            if (mapSpecials.size() > 0)
             {
-                for (UnlimitedEnchantInfo::SecondaryMap::const_iterator it = mapSpecials.begin(); it != mapSpecials.end(); ++it)
+                for (UnlimitedEnchantInfo::SecondaryMap::const_iterator it = mapSpecials.begin(), itEnd = mapSpecials.end(); it != itEnd; ++it)
                 {
                     int nSpecial = it->first;
                     MS2Ptr<BaseOption> spBase(it->second);
-                    strRows.Append(StringFormat(strRowFormat, FUN_140631830(nSpecial, spBase->GetValue(), pItem->FUN_140527840())));
+                    CStringW strRow = FUN_140631830(nSpecial, spBase->GetValue(), pItem->FUN_140527840());
+                    strRows.Append(StringFormat(strRowFormat, strRow));
                 }
             }
             if (!strRows.IsEmpty())
@@ -1375,20 +1376,18 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 if (!strText.IsEmpty())
                     strText.Append(strSeparator);
                 int nLevel = spUnlimited->GetLevel();
-                strText.Append(StringFormat(s_wsUnlimited, nLevel, strRows));
+                CStringW strBlock = StringFormat(s_wsUnlimited, nLevel, strRows);
+                strText.Append(strBlock);
             }
         }
     }
     if (pItem->IsPetItem())
     {
         MS2Ptr<CPetData> spPetData = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
-        if (spPetData.get() != 0 && spPetData->m_nType == 1)
+        if ((spPetData.get() ? true : false) && spPetData->m_nType == 1)
         {
             __int64 nExp = pItem->FUN_140528b90();
-            unsigned short nRank = pItem->FUN_1405282d0();
-            int nGrade = pItem->GetRarity();
-            unsigned short nLevel = pItem->FUN_140528c20();
-            __int64 nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetExp(nLevel, nGrade, nRank);
+            __int64 nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetExp(pItem->FUN_140528c20(), pItem->GetRarity(), pItem->FUN_1405282d0());
             int nPercent = 0;
             if (nNeed > 0)
                 nPercent = (int)(nExp * 100 / nNeed);
@@ -1400,15 +1399,14 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 strText.Append(strSep);
             strText.Append(strLabel);
             strText.Append(L"gauge:\n\n");
-            unsigned nCurLevel = pItem->FUN_140528c20();
-            if (nCurLevel < *GetClientConstants()->PetMaxLevel.Get())
+            if (pItem->FUN_140528c20() < *GetClientConstants()->PetMaxLevel.Get())
             {
                 FUN_1407cbb20("itemEnchantExpString", strExp);
                 FUN_1407cb9c0("itemEnchantExpPercent", nPercent);
             }
             else
             {
-                FUN_1407cbb20("itemEnchantExpString", GetStringCommonByKey(CStringW(L"s_mag_skillbook_max_level")));
+                FUN_1407cbb20("itemEnchantExpString", GetStringCommonByKey(L"s_mag_skillbook_max_level"));
                 FUN_1407cb9c0("itemEnchantExpPercent", 100);
             }
         }

@@ -109,7 +109,7 @@ void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
 float FUN_141422340(CEquipModel* pPart, int nIndex);         // customize value nIndex of the part
 void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex
 void FUN_141422840(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale);
-void FUN_141422950(class NiMatrix3 const&, struct Vector3*);   // C3: was FUN_141422950
+void FUN_141422950(class NiMatrix3 const&, Vector3*);   // C3: was FUN_141422950
 void* FUN_141200ab0(class CEquipModel*);
 void FUN_141202480(class CEquipModel*, class NiPoint3*, float*, void*, void*, void*);
 
@@ -518,53 +518,8 @@ Vector3 CPonyTailController::FUN_141695bc0(const Vector3& kOrigin, const Vector3
 {
     Vector3 kPlane = kOrigin;
     kPlane.z = kPoint.z;
-    kPlane = kPoint.FUN_140965c40(kPlane);
-    return kPoint.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAxis) * 2.0f * (((efd::Point3*)&(kPlane))->Dot(*(class efd::Point3 const*)&(kAxis))))));
-}
-
-// Applies the pose of a drag to one part: the look-at (kind 1) or the surface frame (other kinds) of the part's
-// model at kPos with the direction kDir.
-static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, CEquipModel* pPart, const Vector3& kPos,
-                          const Vector3& kDir, int nPickIndex)
-{
-    CEquipModel* pModel = reinterpret_cast<CEquipModel*>(pPart);
-    int nKind = ((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(pPart)))->m_nKind;
-    Unk_NiMatrix3 mRot;
-    if (nKind == 1)
-    {
-        efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(kDir) * 10.0f;
-        Vector3 kEuler = FUN_140a0b080(kPos, reinterpret_cast<Vector3&>(kTip), DAT_143a08cf8);
-        kEuler.z = kEuler.z + 90.0f;
-        Vector3 kRad = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEuler) * 3.1415927f)).FUN_140ae9180(180.0f);
-        ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(kRad.x, kRad.y, kRad.z);
-    }
-    else
-    {
-        Vector3 kN = kDir;
-        kN.FUN_140968990();
-        efd::Point3 kUp = -reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
-        kUp.Unitize();
-        efd::Point3 kFwd = reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(kUp));
-        kFwd.Unitize();
-        Unk_NiPoint3 cN(kN), cU(reinterpret_cast<Vector3&>(kUp)), cF(reinterpret_cast<Vector3&>(kFwd));
-        NiMatrix3 mBasis(reinterpret_cast<const NiPoint3&>(cN), reinterpret_cast<const NiPoint3&>(cU), reinterpret_cast<const NiPoint3&>(cF));
-        if (nKind == 2)
-        {
-            Unk_EfdMatrix3 mTurn;
-            ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
-            if (pThis->m_spPicker.operator CItemPickingHelper*() && pThis->m_spPicker->GetPickedIndex() == nPickIndex)
-                mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
-            mRot = Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(mBasis))));
-        }
-        else
-        {
-            mRot = reinterpret_cast<Unk_NiMatrix3&>(mBasis);
-        }
-    }
-    kPart.m_kPose.m_fScale = pModel->vfunc_21();
-    memcpy(&kPart.m_kPose.m_Rotate, &mRot, sizeof(mRot));
-    reinterpret_cast<NiPoint3&>(kPart.m_kPose.m_Translate) = N3(kPos);
-    pModel->vfunc_30((void*)&kPos, &mRot, kPart.m_kPose.m_fScale);
+    kPlane = (kPoint - kPlane);
+    return (kPoint - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAxis) * 2.0f * (((efd::Point3*)&(kPlane))->Dot(*(class efd::Point3 const*)&(kAxis))))));
 }
 
 // @0x141692db0
@@ -615,8 +570,9 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
         static_cast<Unk_PonyListener*>(m_pListener)->vfunc_1(this);
 }
 
+// Drag of the hair parts: each part's pose kind (int at +0x28 of its part info: 1 look-at, 2 surface frame turned
+// by the picked side, else surface frame) is written out in place for both parts.
 // @0x141693210
-// MS2-FUNCTIONAL: the two part branches share ApplyPartPose
 void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
     Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -625,36 +581,119 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     if (pPlayer->FUN_14166dc50() != "Equip_Change_Idle_A")
         return;
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
-    egf::EntityID kId = pPlayer->FUN_14123c460();
-    if (pSvc->GetActorManager(kId) == 0)
+    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
+    if (pActor == 0)
         return;
     MS2Ptr<CEquipModel> spFirst = m_kFirst.m_spModel;
-    if (spFirst.get() == 0)
-        return;
-    float fThreshold = (float)*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0x50) / 255.0f;
-    if (!(fThreshold < fValue))
-        return;
-    const Vector3& kHitPt = reinterpret_cast<const Vector3&>(kHit);
-    const Vector3& kNormalPt = reinterpret_cast<const Vector3&>(kNormal);
-    ApplyPartPose(this, m_kFirst, spFirst.operator->(), kHitPt, kNormalPt, 0);
-    reinterpret_cast<NiPoint3&>(m_kFirst.m_kAnchor) = kNormal;
-    CPonyTailPhysXHelper::UpdateModelPhysXValues(spFirst.get(), (char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0xb8);
+    if (spFirst.get())
+    {
+        float fThreshold = (float)*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0x50) / 255.0f;
+        if (fValue > fThreshold)
+        {
+            if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0x28) == 1)
+            {
+                Vector3 kEuler = FUN_140a0b080(reinterpret_cast<const Vector3&>(kHit), reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kHit) + reinterpret_cast<const efd::Point3&>(kNormal) * 10.0f)), DAT_143a08cf8);
+                kEuler.z = kEuler.z + 90.0f;
+                Unk_NiMatrix3 mRot;
+                Vector3 kRad = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEuler) * 3.1415927f)) / 180.0f);
+                ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(kRad.x, kRad.y, kRad.z);
+                m_kFirst.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21();
+                memcpy(&m_kFirst.m_kPose.m_Rotate, &mRot, sizeof(mRot));
+                reinterpret_cast<NiPoint3&>(m_kFirst.m_kPose.m_Translate) = kHit;
+                reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_30((void*)&kHit, &mRot, reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21());
+            }
+            else if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0x28) == 2)
+            {
+                efd::Point3 kN = reinterpret_cast<const efd::Point3&>(kNormal);
+                kN.Unitize();
+                efd::Point3 kUp = -kN.Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                kUp.Unitize();
+                NiPoint3 kFwd = kN.Cross(kUp);
+                reinterpret_cast<efd::Point3&>(kFwd).Unitize();
+                Unk_NiMatrix3 mTurn;
+                ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
+                if ((m_spPicker.operator CItemPickingHelper*() ? true : false) && m_spPicker->GetPickedIndex() == 0)
+                    mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
+                m_kFirst.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21();
+                Unk_NiMatrix3 mRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3(kN, kUp, kFwd))))));
+                memcpy(&m_kFirst.m_kPose.m_Rotate, &mRot, sizeof(mRot));
+                reinterpret_cast<NiPoint3&>(m_kFirst.m_kPose.m_Translate) = kHit;
+                reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_30((void*)&kHit, &m_kFirst.m_kPose.m_Rotate, reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21());
+            }
+            else
+            {
+                efd::Point3 kN = reinterpret_cast<const efd::Point3&>(kNormal);
+                kN.Unitize();
+                efd::Point3 kUp = -kN.Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                kUp.Unitize();
+                NiPoint3 kFwd = kN.Cross(kUp);
+                reinterpret_cast<efd::Point3&>(kFwd).Unitize();
+                m_kFirst.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21();
+                m_kFirst.m_kPose.m_Rotate = NiMatrix3(kN, kUp, kFwd);
+                reinterpret_cast<NiPoint3&>(m_kFirst.m_kPose.m_Translate) = kHit;
+                reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_30((void*)&kHit, (void*)&static_cast<const NiMatrix3&>(NiMatrix3(kN, kUp, kFwd)), reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21());
+            }
+            reinterpret_cast<NiPoint3&>(m_kFirst.m_kAnchor) = kNormal;
+            CPonyTailPhysXHelper::UpdateModelPhysXValues(spFirst.get(), (char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spFirst.operator->()))) + 0xb8);
 
-    MS2Ptr<CEquipModel> spSecond = m_kSecond.m_spModel;
-    if (spSecond.get() == 0)
-        return;
-    Vector3 kForward, kRight;
-    FUN_140a01250(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_20())), (efd::Point3*)&kForward, (efd::Point3*)&kRight);
-    Vector3 kAnchor = SP(m_kFirst.m_kAnchor);
-    Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
-    Vector3 kMirror = FUN_141695bc0(kPlayerPos, kHitPt, kRight);
-    efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kHitPt) + reinterpret_cast<const efd::Point3&>(kAnchor) * 10.0f;
-    kPlayerPos = SPV(pPlayer->vfunc_18());
-    Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, reinterpret_cast<Vector3&>(kTip), kRight);
-    SP(m_kSecond.m_kAnchor) = kMirrorTip.FUN_140965c40(kMirror);
-    SP(m_kSecond.m_kAnchor).FUN_140968990();
-    ApplyPartPose(this, m_kSecond, spSecond.operator->(), kMirror, SP(m_kSecond.m_kAnchor), 1);
-    CPonyTailPhysXHelper::UpdateModelPhysXValues(spSecond.get(), (char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spSecond.operator->()))) + 0xb8);
+            MS2Ptr<CEquipModel> spSecond = m_kSecond.m_spModel;
+            if (spSecond.get())
+            {
+                Vector3 kForward, kRight;
+                FUN_140a01250(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_20())), (efd::Point3*)&kForward, (efd::Point3*)&kRight);
+                Vector3 kAnchor = reinterpret_cast<const Vector3&>(m_kFirst.m_kAnchor);
+                Vector3 kOldAnchor = reinterpret_cast<const Vector3&>(m_kSecond.m_kAnchor);
+                NiPoint3 kPlayerPos = pPlayer->vfunc_18();
+                Vector3 kMirror = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<const Vector3&>(kHit), kRight);
+                efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kHit) + kAnchor * 10.0f;
+                reinterpret_cast<efd::Point3&>(kPlayerPos) = reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18()));
+                m_kSecond.m_kAnchor = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, kRight) - kMirror;
+                reinterpret_cast<efd::Point3&>(m_kSecond.m_kAnchor).Unitize();
+                if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spSecond.operator->()))) + 0x28) == 1)
+                {
+                    Vector3 kEuler = FUN_140a0b080(kMirror, reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(kMirror + reinterpret_cast<const efd::Point3&>(m_kSecond.m_kAnchor) * 10.0f)), DAT_143a08cf8);
+                    kEuler.z = kEuler.z + 90.0f;
+                    Unk_NiMatrix3 mRot;
+                    Vector3 kRad = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEuler) * 3.1415927f)) / 180.0f);
+                    ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(kRad.x, kRad.y, kRad.z);
+                    m_kSecond.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21();
+                    memcpy(&m_kSecond.m_kPose.m_Rotate, &mRot, sizeof(mRot));
+                    reinterpret_cast<NiPoint3&>(m_kSecond.m_kPose.m_Translate) = kMirror;
+                    reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_30((void*)&kMirror, &mRot, reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21());
+                }
+                else if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spSecond.operator->()))) + 0x28) == 2)
+                {
+                    efd::Point3 kN = reinterpret_cast<const efd::Point3&>(m_kSecond.m_kAnchor);
+                    efd::Point3 kUp = -kN.Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                    kUp.Unitize();
+                    NiPoint3 kFwd = kN.Cross(kUp);
+                    reinterpret_cast<efd::Point3&>(kFwd).Unitize();
+                    Unk_NiMatrix3 mTurn;
+                    ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
+                    if ((m_spPicker.operator CItemPickingHelper*() ? true : false) && m_spPicker->GetPickedIndex() == 1)
+                        mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
+                    m_kSecond.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21();
+                    Unk_NiMatrix3 mRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3(kN, kUp, kFwd))))));
+                    memcpy(&m_kSecond.m_kPose.m_Rotate, &mRot, sizeof(mRot));
+                    reinterpret_cast<NiPoint3&>(m_kSecond.m_kPose.m_Translate) = kMirror;
+                    reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_30((void*)&kMirror, &m_kSecond.m_kPose.m_Rotate, reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21());
+                }
+                else
+                {
+                    efd::Point3 kN = reinterpret_cast<const efd::Point3&>(m_kSecond.m_kAnchor);
+                    efd::Point3 kUp = -kN.Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                    kUp.Unitize();
+                    NiPoint3 kFwd = kN.Cross(kUp);
+                    reinterpret_cast<efd::Point3&>(kFwd).Unitize();
+                    m_kSecond.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21();
+                    m_kSecond.m_kPose.m_Rotate = NiMatrix3(kN, kUp, kFwd);
+                    reinterpret_cast<NiPoint3&>(m_kSecond.m_kPose.m_Translate) = kMirror;
+                    reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_30((void*)&kMirror, &m_kSecond.m_kPose.m_Rotate, reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21());
+                }
+                CPonyTailPhysXHelper::UpdateModelPhysXValues(spSecond.get(), (char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spSecond.operator->()))) + 0xb8);
+            }
+        }
+    }
 }
 
 // @0x141694380
@@ -723,8 +762,8 @@ void CPonyTailController::FUN_141694650()
         efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))))
                                    + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor))) * 10.0f;
         static_cast<efd::Point3&>(kPlayerPos) = pPlayer->vfunc_18();   // efd::Point3::operator= (0x140194470)
-        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<Vector3&>(kTip), reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror)))));
-        reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_140968990();
+        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>((FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<Vector3&>(kTip), reinterpret_cast<const Vector3&>(kRight)) - kMirror)))));
+        reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).Unitize();
         Vector3 kEuler = FUN_140a0b080(kMirror, reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kMirror) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor))) * 10.0f)), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_26(reinterpret_cast<const NiPoint3&>(kEuler));

@@ -1,0 +1,5 @@
+eol lf
+32a
+    virtual NiAVObject* GetAVObjectMasked(const char* pcName,
+        unsigned int usExcludeFlags);  // studio: slot 19, name inferred
+.

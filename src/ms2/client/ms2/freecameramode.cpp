@@ -64,7 +64,7 @@ public:
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 // The exe writes NiPoint3 attributes: each efd::Point3 converts through the out-of-line NiPoint3(const efd::Point3&).
-void FUN_140874ad0(class TiXmlElement* pElem, const char* pszName, const NiPoint3& pt);   // XmlSetAttr, NiPoint3 view
+void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0 (NiPoint3 view); callers cast it to a const NiPoint3& signature so the Point3 converts implicitly (lea of the temp, as in the exe)
 
 float FUN_140a38cd0(float f);                       // fabs
 
@@ -136,16 +136,16 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     TiXmlElement* pMs2 = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
                     if (pMs2 != 0)
                     {
-                        Vector3 ptDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_1409f2540())).FUN_140965c40(pActor->vfunc_18());
-                        float fDist = ptDir.FUN_140968990();
+                        Vector3 ptDir = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_1409f2540())) - pActor->vfunc_18());
+                        float fDist = ptDir.Unitize();
                         TiXmlElement* pCamera = new TiXmlElement("camera");
                         ((void*)((class TiXmlNode*)(void*)(pMs2))->LinkEndChild((class TiXmlNode*)(pCamera)));
                         XmlSetAttr((class TiXmlElement*)(pCamera), "fov", reinterpret_cast<Unk_FreeCamOption*>(spOption.operator->())->m_1f4);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "distance", fDist);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomIn", 50);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomOut", 150);
-                        FUN_140874ad0((class TiXmlElement*)(pCamera), "direction", reinterpret_cast<const efd::Point3&>(ptDir));
-                        FUN_140874ad0((class TiXmlElement*)(pCamera), "rotation", reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_140af8260())));
+                        reinterpret_cast<void (*)(class TiXmlElement*, const char*, const NiPoint3&)>(static_cast<void (*)(class TiXmlElement*, const char*, const efd::Point3&)>(&XmlSetAttr))((class TiXmlElement*)(pCamera), "direction", reinterpret_cast<const efd::Point3&>(ptDir));
+                        reinterpret_cast<void (*)(class TiXmlElement*, const char*, const NiPoint3&)>(static_cast<void (*)(class TiXmlElement*, const char*, const efd::Point3&)>(&XmlSetAttr))((class TiXmlElement*)(pCamera), "rotation", reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_140af8260())));
                         doc.SaveFile();
                     }
                 }
@@ -155,15 +155,15 @@ void CFreeCameraMode::vfunc_8(double fTime)
     if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
-        ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
+        ptRot = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)) / 180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
         reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(0, *reinterpret_cast<efd::Point3*>(&ptRight));
-        ptRight.FUN_140968990();
+        ptRight.Unitize();
         Vector3 ptForward;
         reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, *reinterpret_cast<efd::Point3*>(&ptForward));
-        ptForward.FUN_140968990();
+        ptForward.Unitize();
         efd::Point3 ptPos = FUN_1409f2540();
         reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + (reinterpret_cast<const efd::Point3&>(ptRight) * m_78.x + reinterpret_cast<const efd::Point3&>(ptForward) * m_78.y)
                                     * 1000.0f * ((float)fTime)));

@@ -279,7 +279,7 @@ void StateInteraction::vfunc_4(StateData* pData)
                 {
                     if (aObjects[i]->vfunc_4() == 0)
                         continue;
-                    float fDist = reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18().FUN_140965c40(aObjects[i]->GetPos()).FUN_140967ac0();
+                    float fDist = (reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18() - aObjects[i]->GetPos()).Length();
                     if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
                         continue;
                     m_aObjects.push_back(aObjects[i]);
@@ -380,7 +380,7 @@ void StateInteraction::vfunc_8(double fTime)
             else
             {
                 float fRange = spObject->GetRow()->m_validate.m_fInteractionDistance;
-                if (spObject->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0() > fRange)
+                if ((spObject->GetPos() - reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).Length() > fRange)
                 {
                     pPC->vfunc_59(1, 0, 0, 0);
                     return;

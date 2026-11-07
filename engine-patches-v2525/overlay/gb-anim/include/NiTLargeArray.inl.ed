@@ -1,0 +1,10 @@
+eol lf
+158c
+    if (uiIndex >= m_uiMaxSize) return;
+.
+127c
+        }
+.
+115c
+        if (m_pBase) {
+.

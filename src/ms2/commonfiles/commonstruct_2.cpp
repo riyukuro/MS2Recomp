@@ -308,13 +308,13 @@ i64 FUN_14027be90(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64
 }
 
 // std::find_if over a vector<Unk_IngRef> with a by-value predicate argument
-void FUN_1402769a0(i64, i64); void FUN_140278760(i64); void FUN_14027a740(i64, i64*);
+/* FUN_1402769a0 = std::_Adl_verify_range, FUN_140278760 = std::_Get_unwrapped */ void FUN_14027a740(i64, i64*);
 // @0x14027bf30
 VIng::iterator FUN_14027bf30(VIng::iterator first, VIng::iterator last, int key)
 {
-    FUN_1402769a0((i64)&first, (i64)&last);
-    i64 f = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)((i64*)&first);
-    i64 l = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)((i64*)&last);
+    std::_Adl_verify_range(first, last);
+    i64 f = (i64)std::_Get_unwrapped(first);
+    i64 l = (i64)std::_Get_unwrapped(last);
     for (; f != l; f += 0x10) {
 
 
@@ -608,10 +608,10 @@ i64 FUN_140274a20(i64, Unk_StlTag); i64 FUN_140274a50(i64, Unk_StlTag); i64 FUN_
 i64 FUN_140274ab0(i64, Unk_StlTag); i64 FUN_140274ae0(i64, Unk_StlTag);
 // @0x14027d220
 Unk_PairHolder* FUN_14027d220(Unk_PairHolder* t) { FUN_140274a20((i64)&t->pair, Unk_StlTag()); return t; }
-// @0x14027d250
-Unk_PairHolder* FUN_14027d250(Unk_PairHolder* t) { FUN_140274a50((i64)&t->pair, Unk_StlTag()); return t; }
-// @0x14027d280
-Unk_PairHolder* FUN_14027d280(Unk_PairHolder* t) { FUN_140274a80((i64)&t->pair, Unk_StlTag()); return t; }
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@@std@@QEAA@XZ 0x14027d250 ; unique
+template std::_Vector_alloc<std::_Vec_base_types<ItemEntity, std::allocator<ItemEntity>>>::_Vector_alloc();   // C3: was FUN_14027d250 -> FUN_140274a50
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEAA@XZ 0x14027d280 ; unique
+template std::_Vector_alloc<std::_Vec_base_types<CString, std::allocator<CString>>>::_Vector_alloc();   // C3: was FUN_14027d280 -> FUN_140274a80
 // @0x14027d2b0
 template std::_Vector_alloc<std::_Vec_base_types<PIng, std::allocator<PIng>>>::_Vector_alloc();
 // @0x14027d2e0
@@ -628,9 +628,9 @@ struct Unk_Z24 { i64 a, b, c; };
 // @0x14027d410
 Unk_Z24* FUN_14027d410(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
 // @0x14027d450
-Unk_Z24* FUN_14027d450(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
+template std::_Vector_val<std::_Simple_types<ItemEntity>>::_Vector_val();   // C3: was FUN_14027d450
 // @0x14027d490
-Unk_Z24* FUN_14027d490(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
+template std::_Vector_val<std::_Simple_types<CString>>::_Vector_val();   // C3: was FUN_14027d490
 // @0x14027d4d0
 template std::_Vector_val<std::_Simple_types<PIng>>::_Vector_val();
 // @0x14027d510
@@ -642,9 +642,9 @@ void* FUN_14027d560(void* t) { return t; }
 // @0x14027d570
 void* FUN_14027d570(void* t) { return t; }
 // @0x14027d580
-void* FUN_14027d580(void* t) { return t; }
+template std::allocator<ItemEntity>::allocator() noexcept;   // C3: was FUN_14027d580
 // @0x14027d590
-void* FUN_14027d590(void* t) { return t; }
+template std::allocator<CString>::allocator() noexcept;   // C3: was FUN_14027d590
 // @0x14027d5a0
 template std::allocator<PIng>::allocator() noexcept;
 // @0x14027d5b0
@@ -661,10 +661,10 @@ template std::reverse_iterator<VItem::iterator>::reverse_iterator(VItem::iterato
 Unk_Q8* FUN_14027d650(Unk_Q8* t, Unk_Q8* p) { reinterpret_cast<std::tuple<>*>(t)->std::tuple<>::tuple(*reinterpret_cast<std::tuple<>*>(p)); *t = *p; return t; }
 // @0x14027d690
 Unk_PairHolder* FUN_14027d690(Unk_PairHolder* t) noexcept { FUN_14027d220(t); return t; }
-// @0x14027d6c0
-Unk_PairHolder* FUN_14027d6c0(Unk_PairHolder* t) noexcept { FUN_14027d250(t); return t; }
-// @0x14027d6f0
-Unk_PairHolder* FUN_14027d6f0(Unk_PairHolder* t) noexcept { FUN_14027d280(t); return t; }
+// MS2-PIN: ??0?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAA@XZ 0x14027d6c0 ; unique
+template VItem::vector() noexcept;   // C3: was FUN_14027d6c0
+// MS2-PIN: ??0?$vector@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ 0x14027d6f0 ; unique
+template VStr::vector() noexcept;   // C3: was FUN_14027d6f0 (also ??0Unk_StrVec)
 // @0x14027d720
 template VIng::vector() noexcept;
 // @0x14027d750
@@ -799,7 +799,7 @@ template PLog::~MS2Ptr();   // C3: was FUN_14027e120 calling FUN_140289010
 // @0x14027e3f0
 void FUN_14027e3f0(void* t) noexcept { reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670(); }
 // @0x14027e4b0
-void FUN_14027e4b0(void* t) noexcept { FUN_1402899b0(t); }
+template VLog::~vector();   // C3: was FUN_14027e4b0 calling FUN_1402899b0 (_Tidy, ICF with vector<MS2Ptr<CPtred>>)
 // @0x14027deb0
 void FUN_14027deb0(void* t) { try { reinterpret_cast<ATL::CAtlMap<unsigned, unsigned>*>(t)->RemoveAll(); } catch (...) {} }
 // @0x14027dee0
@@ -807,7 +807,7 @@ void FUN_14027dee0(void* t) { try { reinterpret_cast<ATL::CAtlMap<int, Unk_Limit
 // @0x14027e420
 template VItem::~vector();
 // @0x14027e450
-Unk_StrVec::~Unk_StrVec() { FUN_140289810(this); }
+template VStr::~vector();   // C3: was ~Unk_StrVec calling FUN_140289810 (_Tidy)
 // @0x14027e480
 template VIng::~vector();
 
@@ -819,11 +819,11 @@ void FUN_14027e1e0(Unk_HistList* t) { FUN_14027e1b0(t); }
 // @0x14027e3a0
 Unk_HistList::~Unk_HistList() { reinterpret_cast<LHist*>(this)->_Tidy(); FUN_14027e1e0(this); }
 // @0x14027e230
-void FUN_14027e230(Unk_RewardMap* t) noexcept { FUN_140287dc0(t, *(i64*)&reinterpret_cast<MapII*>(t)->_Get_data()); }
+// (the real ~_Tree_comp_alloc, instantiated by ~_Tree below; was the hand FUN_14027e230 calling FUN_140287dc0)
 // @0x14027e200
-void FUN_14027e200(Unk_RewardMap* t) noexcept { FUN_1402895f0(t); FUN_14027e230(t); }
+typedef std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int> >, false> > TreeII; template TreeII::~_Tree();   // C3: was FUN_14027e200 calling FUN_1402895f0 (_Tidy) + FUN_14027e230
 // @0x14027e3d0
-Unk_RewardMap::~Unk_RewardMap() { FUN_14027e200(this); }
+Unk_RewardMap::~Unk_RewardMap() { reinterpret_cast<TreeII*>(this)->TreeII::~_Tree(); }
 
 // std::_Uninitialized_backout dtors: destroy [first,last)
 // @0x14027e260
@@ -952,15 +952,15 @@ i64 FUN_14027eb30(i64 t, i64 o)
     return t;
 }
 // @0x14027ebb0
-i64 FUN_14027ebb0(i64 t, i64 o)
-{
-    if (t != FUN_14027b510(o)) {
-        if (Unk_False::value) FUN_1402899b0((void*)t);
-        FUN_140287580(t, (i64)&reinterpret_cast<const VPtred*>(o)->_Getal());
-        reinterpret_cast<VLog*>(t)->assign(*(PLog**)&reinterpret_cast<const VPtred*>(o)->_Myfirst(), *(PLog**)&reinterpret_cast<const VLog*>(o)->_Mylast());
-    }
-    return t;
-}
+template VLog& VLog::operator=(const VLog&);   // C3: was the hand FUN_14027ebb0 (dead _Tidy via FUN_1402899b0,
+// addressof via FUN_14027b510, _Copy_alloc via FUN_140287580)
+//
+//
+//
+//
+//
+//
+//
 
 // pointer-holder comparisons
 // @0x14027ec30

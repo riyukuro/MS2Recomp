@@ -45,9 +45,9 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
         m_bMoving = false;
     }
     float fT = (m_fDuration == 0.0f) ? 1.0f : m_fElapsed / m_fDuration;
-    *pPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(1.0f - fT, m_vStart))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, m_vEnd)))));
+    *pPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((1.0f - fT) * m_vStart))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fT * m_vEnd)))));
     pPos->z = pPos->z + m_fHeight * 4.0f * fT * (1.0f - fT);
-    Vector3 vDir = m_vEnd.FUN_140965c40(m_vStart);
+    Vector3 vDir = (m_vEnd - m_vStart);
     if (FUN_14160c230(vDir) > 0.0f)
         *pAngle = 90.0f + FUN_140a4e660(vDir.y, vDir.x) * 180.0f / 3.1415927f;
 }

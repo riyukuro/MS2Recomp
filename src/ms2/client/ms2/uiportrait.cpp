@@ -28,7 +28,7 @@ public:
 
 class Unk_PortraitClock;
 void FUN_14107b010();                                           // refreshes the sun direction constants
-void FUN_14107b050(struct Vector3 const&);   // C3: was FUN_14107b050
+void FUN_14107b050(efd::Point3 const&);   // C3: was FUN_14107b050
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene graph
 void FUN_141568d80(NiAVObject* pNode);
 class Unk_PortraitEffectMgr;
@@ -70,7 +70,7 @@ void UIPortrait::vfunc_2()
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, efd::Point3::UNIT_Z);
             m_spCamera->Update(GetCurrentTime(), true);
-            FUN_14107b050(*(struct Vector3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
+            FUN_14107b050(*(efd::Point3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         }
     }
 }

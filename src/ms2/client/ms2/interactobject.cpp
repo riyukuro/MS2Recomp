@@ -853,7 +853,7 @@ void CInteractMeshObject::MakeNxBoxController()
     if (pScene == 0)
         return;
     NxVec3 ptPos;
-    NiPhysXTypes::NiPoint3ToNxVec3(*(class NiPoint3 const*)&static_cast<struct Vector3 const&>(m_vPos), ptPos);
+    NiPhysXTypes::NiPoint3ToNxVec3(*(class NiPoint3 const*)&static_cast<Vector3 const&>(m_vPos), ptPos);
     NxBoxShapeDesc box;
     box.dimensions.set(m_spRow->m_mesh.m_shapeDimension.x, m_spRow->m_mesh.m_shapeDimension.y, m_spRow->m_mesh.m_shapeDimension.z);
     box.dimensions = box.dimensions * 0.01f * 0.5f;
@@ -1073,7 +1073,7 @@ void CInteractUIObject::vfunc_11()
         return;
     }
     float fRange = GetRow()->m_validate.m_fInteractionDistance;
-    if (((Vector3*)&(const NiPoint3&)reinterpret_cast<PCBase*>(pPlayer)->FUN_1416767d0())->FUN_140965c40(GetPos()).FUN_140967ac0() > fRange)
+    if ((*((Vector3*)&(const NiPoint3&)reinterpret_cast<PCBase*>(pPlayer)->FUN_1416767d0()) - GetPos()).Length() > fRange)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)m_nDialogId);
 }
 
@@ -1739,7 +1739,7 @@ float FUN_141403f20(NiPoint3 a, NiPoint3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
-    return reinterpret_cast<Vector3&>(a).FUN_140965c40(reinterpret_cast<Vector3&>(b)).FUN_140967ac0();
+    return (reinterpret_cast<Vector3&>(a) - reinterpret_cast<Vector3&>(b)).Length();
 }
 
 // @0x1414035d0

@@ -16,7 +16,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/sceneptr.h"
 
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 class NotifyObject;
 
 class UISceneEntity;

@@ -14,7 +14,7 @@ class PCBase;
 class Unk_SkillSrc;
 class Unk_ColInfo;
 class AdditionalLevelData;
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 
 class CSkillCollisionManager : public TSingleton<CSkillCollisionManager>
 {

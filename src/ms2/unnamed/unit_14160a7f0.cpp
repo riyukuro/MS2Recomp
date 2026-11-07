@@ -28,6 +28,10 @@
 // MS2-PIN: ?max_size@?$vector@U?$Unk_VecElem@$0BC@$0PI@@@V?$allocator@U?$Unk_VecElem@$0BC@$0PI@@@@std@@@std@@QEBA_KXZ 0x14160afd0 ; prop
 // MS2-PIN: ?max_size@?$vector@U?$Unk_VecElem@$0BD@$0EJA@@@V?$allocator@U?$Unk_VecElem@$0BD@$0EJA@@@@std@@@std@@QEBA_KXZ 0x14160b020 ; prop
 // MS2-PIN: ?max_size@?$vector@U?$Unk_VecElem@$0BE@$0CA@@@V?$allocator@U?$Unk_VecElem@$0BE@$0CA@@@@std@@@std@@QEBA_KXZ 0x14160b070 ; prop
+// MS2-PIN: ?capacity@?$vector@U?$Unk_VecElem@$01$0FI@@@V?$allocator@U?$Unk_VecElem@$01$0FI@@@@std@@@std@@QEBA_KXZ 0x14160b6b0 ; fe1: byte-identical to the <14,88> copy
+// MS2-PIN: ?capacity@?$vector@U?$Unk_VecElem@$02$0DA@@@V?$allocator@U?$Unk_VecElem@$02$0DA@@@@std@@@std@@QEBA_KXZ 0x14160b700 ; fe1: byte-identical to the <21,48> copy
+// MS2-PIN: ?capacity@?$vector@U?$Unk_VecElem@$0O@$0FI@@@V?$allocator@U?$Unk_VecElem@$0O@$0FI@@@@std@@@std@@QEBA_KXZ 0x14160bac0 ; fe1: byte-identical to the <2,88> copy
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBEPEAVCNMCodec@@@std@@@std@@SAPEAU?$pair@$$CBEPEAVCNMCodec@@@2@AEAU32@@Z 0x14160b100 ; fe1: its only exe caller is the operator-> at 1415f3a10; no row at this VA
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #define _ALLOW_KEYWORD_MACROS 1
@@ -221,6 +225,11 @@ size_t Unk_ListMax(std::list<Unk_VecElem<24, 32> >& l)
 {
     return l.max_size();
 }
+
+// 0x14160b100 is pointer_traits<pair<const BYTE, CNMCodec*>*>::pointer_to: the map iterator operator-> at 0x1415f3a10
+// calls it on the operator* result, and it calls addressof<pair<const BYTE, CNMCodec*>> (0x1415e1740).
+class CNMCodec;
+template struct std::pointer_traits<std::pair<const unsigned char, CNMCodec*>*>;
 
 // The non-const memchr overload and the CRT's static-inline _vsnprintf_l-forwarding wrapper (this unit's copy is
 // FUN_14160bd30, which unit_1415fbae0 calls); a selectany table keeps the copies emitted.

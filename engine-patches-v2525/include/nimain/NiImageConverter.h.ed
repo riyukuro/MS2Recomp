@@ -1,0 +1,13 @@
+eol lf
+39a
+    virtual NiPixelData* ReadImageFile(const wchar_t* pcFilename,  // studio
+        NiPixelData* pkOptDest);
+.
+35a
+    virtual bool ReadImageFileInfo(const wchar_t* pcFilename,  // studio
+        NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
+        unsigned int& uiHeight, unsigned int& uiNumFaces);
+.
+33a
+    virtual bool CanReadImageFile(const wchar_t* pcFilename) const;  // studio
+.

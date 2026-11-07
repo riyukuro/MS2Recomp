@@ -14,6 +14,9 @@ __forceinline void AssetID::SetURN(const efd::utf8string &val)   // MS2: the exe
 75a
     EE_MS2_ASSETID_STRIP_SCHEME();
 .
+68c
+} __forceinline AssetID& AssetID::MS2AssignInline(const efd::AssetID& other) { m_urn = other.m_urn; m_multiplicity = other.m_multiplicity; m_cachingPolicy = other.m_cachingPolicy; EE_MS2_ASSETID_STRIP_SCHEME(); return *this; }
+.
 66a
     EE_MS2_ASSETID_STRIP_SCHEME();
 .

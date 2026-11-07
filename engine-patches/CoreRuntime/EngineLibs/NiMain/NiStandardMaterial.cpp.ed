@@ -95,8 +95,14 @@ bool NiStandardMaterial::HandleCalculateHeightFog(Context& kContext,
 4007c
                 GetAttachableNodeFromLibrary("TransformNBT"); if (!pkNormFrag) return false;  // MS2: v2525
 .
+3992c
+        return false;
+.
+3990c
+                "WorldNrm"); return true; }
+.
 3983c
-                GetAttachableNodeFromLibrary("TransformNormal"); if (!pkNormFrag) return false;  // MS2: v2525
+                GetAttachableNodeFromLibrary("TransformNormal"); if (pkNormFrag) {  // MS2: v2525
 .
 3641a
 

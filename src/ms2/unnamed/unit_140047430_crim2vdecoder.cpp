@@ -125,7 +125,6 @@ int FUN_140047430(const unsigned char* pBuf, int nLen)
     const unsigned char* pFound;
     const unsigned char* pData;
     int nRemain;
-    int nResult;
 
     pFound = (const unsigned char*)FUN_1400530c0((__int64)pBuf, nLen, 0x40);
     if (pFound == 0)
@@ -141,10 +140,9 @@ int FUN_140047430(const unsigned char* pBuf, int nLen)
         return 0;
     pData = pData + 4;
     nRemain = nLen - (int)(pData - pFound);
-    nResult = 0;
-    if (0 < nRemain)
-        nResult = (*pData & 0xf0) == 0x10;
-    return nResult;
+    if (nRemain <= 0)
+        return 0;
+    return (*pData & 0xf0) == 0x10;
 }
 
 // @0x1400474d0

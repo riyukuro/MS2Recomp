@@ -628,7 +628,7 @@ void CConstructionGuideObject::FUN_1410a2440()
         Unk_RayCastInfo kInfo;
         NiPoint3 kPos = vfunc_18();
         kPos.z = kPos.z - 200.0f;
-        if (((class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->RayCastFixedDirection(*(struct Vector3 const*)(&kPos), *(struct Vector3*)(&kHit), (struct Unk_RayCastInfo*)(&kInfo), 0.0f, 0, 0) != 0)
+        if (((class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->RayCastFixedDirection(*(Vector3 const*)(&kPos), *(Vector3*)(&kHit), (struct Unk_RayCastInfo*)(&kInfo), 0.0f, 0, 0) != 0)
         {
             FUN_1410a7800(m_spModel.operator->(), 0.0f, 0.0f, -(kInfo.m_hitDist + 100.0f));
             m_spModel->UpdateProperties();

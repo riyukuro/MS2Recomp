@@ -1559,8 +1559,8 @@ L	${GEN}/gb-tree/gamebryo/include/efd/AssetConfigService.h	${TP}/gamebryo/APPDIR
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetConfigService.inl	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetConfigService.inl
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetFactoryManager.h	${ENGINE}/gamebryo-v2525/include/efd/AssetFactoryManager.h
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetFactoryManager.inl	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetFactoryManager.inl
-L	${GEN}/gb-tree/gamebryo/include/efd/AssetID.h	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetID.h
-L	${GEN}/gb-tree/gamebryo/include/efd/AssetID.inl	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetID.inl
+L	${GEN}/gb-tree/gamebryo/include/efd/AssetID.h	${ENGINE}/gamebryo-v2525/include/efd/AssetID.h
+L	${GEN}/gb-tree/gamebryo/include/efd/AssetID.inl	${ENGINE}/gamebryo-v2525/include/efd/AssetID.inl
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetLoadRequest.h	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetLoadRequest.h
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetLoadRequest.inl	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetLoadRequest.inl
 L	${GEN}/gb-tree/gamebryo/include/efd/AssetLoadResponse.h	${TP}/gamebryo/APPDIR/Source/Foundation/efd/AssetLoadResponse.h

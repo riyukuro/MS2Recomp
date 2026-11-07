@@ -12,7 +12,7 @@
 class PCBase;
 
 #include <NiPoint3.h>   // C3: the effect position is a real NiPoint3 (NiPoint3(const efd::Point3&) 0x14027dcf0)
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 //
 //
 //

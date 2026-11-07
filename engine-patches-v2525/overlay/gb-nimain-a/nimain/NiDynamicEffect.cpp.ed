@@ -1,0 +1,51 @@
+eol lf
+446@7s "" " NiTListIterator"
+440c
+            NiNode* pkKey; NiNode* pkNode; m_kAffectedNodeList.GetNext(kMapPos, pkKey, pkNode);
+.
+438c
+        while (kMapPos)
+.
+437@54s "Head" "First"
+437@25s "" "Map"
+437@11s "List" "Map"
+377,396d
+373@61s "Size" "Count"
+372@51s "Size" "Count"
+261@7s "" " NiTListIterator"
+243c
+            NiNode* pkAffectedNode; NiNode* pkKey; m_kAffectedNodeList.GetNext(kMapIter, pkKey, pkAffectedNode);
+.
+241c
+        while (kMapIter)
+.
+240@58s "l" "rst"
+240@55s "Ta" "F"
+240@25s "" "Map"
+240@11s "List" "Map"
+110c
+    return true;
+    }
+    return false;
+.
+108d
+105,106c
+    NiTMapIterator kPos = m_kAffectedNodeList.GetFirstPos();
+    while (kPos)
+    {
+        NiNode* pkKey; NiNode *pkNode;
+        m_kAffectedNodeList.GetNext(kPos, pkKey, pkNode);
+.
+102,103c
+    if (m_kAffectedNodeList.GetCount() != 0)
+.
+94c
+
+.
+91@35s "s" "veAt"
+91@29s "FindP" "Rem"
+79,82c
+    NiNode* pkExisting;
+    if (m_kAffectedNodeList.GetAt(pkAffectedNode, pkExisting)) return false;
+    m_kAffectedNodeList.SetAt(pkAffectedNode, pkAffectedNode);
+.

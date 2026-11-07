@@ -124,6 +124,7 @@ inline Unk_BannerPtr& Unk_BannerPtr::operator=(int nNull)
 }
 inline CFieldBannerData* Unk_BannerPtr::get() const { return m_p; }
 inline CFieldBannerData* Unk_BannerPtr::operator->() const { return m_p; }
+inline bool Unk_BannerPtr::operator==(const CFieldBannerData* p) const { return m_p == p; }   // the exe calls the folded 0x140899ca0 COMDAT
 inline void Unk_BannerPtr::AddRef() const { if (m_p) AddRefImpl(0); }
 inline void Unk_BannerPtr::AddRefImpl(void*) const { Reference(m_p); }
 inline void Unk_BannerPtr::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }

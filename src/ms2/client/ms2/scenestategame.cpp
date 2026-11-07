@@ -547,7 +547,7 @@ class Unk_SSG6aeee0 { public:  };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 
 // 0x1a / 0x1b: character / channel move results
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW FUN_140cc20a0(int nError);
 CStringW GetStringCommon(int nId);
@@ -638,7 +638,7 @@ template <> MS2Ptr<CSplashDamageRecord>::MS2Ptr(CSplashDamageRecord* p);   // ou
 // Builds the hit transform from a position and a direction (?\magicdata.cpp).
 void FUN_141467f60(Vector3 kPos, Vector3 kDir, NiTransform* pOut);
 // Moves the hit position / direction onto the target (?\magicdata.cpp).
-int FUN_14145e1a0(int, int, struct Unk_MagicAimInfo*, struct Unk_MagicSkillRow const*, struct Vector3*, struct Vector3*);   // C3: was FUN_14145e1a0
+int FUN_14145e1a0(int, int, struct Unk_MagicAimInfo*, struct Unk_MagicSkillRow const*, Vector3*, Vector3*);   // C3: was FUN_14145e1a0
 class Unk_SSGMagicService : public CMagicService
 {
 public:
@@ -1893,7 +1893,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::DungeonReviveCount):
         OnDungeonReviveCount(packet);
         break;
-    case 0xfd:
+    case static_cast<int>(RecvOp::UgcItemTitle):
         OnUgcItemTitle(packet);
         break;
     case static_cast<int>(RecvOp::ChangeBackground):
@@ -1939,7 +1939,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::AppendClientLog):
         OnAppendClientLog(packet);
         break;
-    case static_cast<int>(RecvOp::WorldChampion):
+    case static_cast<int>(RecvOp::FieldWar):
         FUN_14173dfd0(packet);
         break;
     case static_cast<int>(RecvOp::ChatStamp):
@@ -7807,7 +7807,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
                     if (spAnchor == NULL)
                         continue;
                     Vector3 kPt = FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&spAnchor->m_kBox.center));
-                    float fDist = kOrigin.FUN_140965c40(kPt).FUN_140967ac0();
+                    float fDist = (kOrigin - kPt).Length();
                     if (fDist < fMin)
                     {
                         fMin = fDist;
@@ -11958,15 +11958,15 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
             CString strD = packet.ReadUnicodeStringA();
             bool bFlag = packet.ReadBool();
             names.insert(strName);
-            MS2Ptr<Unk_SSGNamedObj> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5a20(strName);
-            if (spObj.get() != 0)
+            MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(strName);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
+            if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).get() != 0)
             {
-                ((CLiftableObject*)(spObj).operator->())->FUN_1414477f0(strA, strB);
-                ((CLiftableObject*)(spObj).operator->())->FUN_141447850(strC, strD);
-                ((CLiftableObject*)(spObj).operator->())->SetKind(nState);
-                ((CLiftableObject*)(spObj).operator->())->SetLiftEnabled(bEnable);
-                ((CLiftableObject*)(spObj).operator->())->FUN_141447aa0(bFlag);
-                ((CLiftableObject*)(spObj).operator->())->SetState(nKind);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->FUN_1414477f0(strA, strB);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->FUN_141447850(strC, strD);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetKind(nState);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetLiftEnabled(bEnable);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->FUN_141447aa0(bFlag);
+                ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetState(nKind);
             }
         }
         Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x32767dd);
@@ -11998,12 +11998,12 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
         bool bEnable = packet.ReadUInt8() == 0 ? false : true;
         int nState = packet.ReadInt32();
         int nKind = packet.ReadUInt8();
-        MS2Ptr<Unk_SSGNamedObj> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5a20(strName);
-        if (spObj.get() != 0)
+        MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(strName);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
+        if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).get() != 0)
         {
-            ((CLiftableObject*)(spObj).operator->())->SetKind(nState);
-            ((CLiftableObject*)(spObj).operator->())->SetLiftEnabled(bEnable);
-            ((CLiftableObject*)(spObj).operator->())->SetState(nKind);
+            ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetKind(nState);
+            ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetLiftEnabled(bEnable);
+            ((CLiftableObject*)reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).operator->())->SetState(nKind);
         }
     }
         break;

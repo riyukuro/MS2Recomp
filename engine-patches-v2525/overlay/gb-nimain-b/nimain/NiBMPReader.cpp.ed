@@ -1,0 +1,4 @@
+eol lf
+123c
+    } if (iWidth == 0 || iHeight == 0) { m_kReadCriticalSection.Unlock(); return false; }
+.

@@ -21,10 +21,14 @@ class CStreamCryptor_v0
 public:
     virtual int vfunc_1(void*, int, void*); virtual int vfunc_2(void*, int, void*); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
+    CStreamCryptor_v0();
+    virtual ~CStreamCryptor_v0();
 };
 class CStreamCryptor_v1
 {
 public:
+    CStreamCryptor_v1();
+    virtual ~CStreamCryptor_v1();
     virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6();
 };
@@ -190,9 +194,11 @@ int FUN_1415c91e0(const void* session)
 unsigned long long FUN_1415c5750(void*) { return 0; }
 // @0x1415c5760
 unsigned long long FUN_1415c5760(void*) { return 0; }
-// MS2-FUNCTIONAL: copies the recovered 16-byte identifier field to the caller buffer.
+// the 16-byte identifier field at +0x15a, copied to the caller buffer as one struct
+struct Unk_Id16 { unsigned char b[16]; };
+struct Unk_Id16OwnerView { unsigned char pad[0x15a]; Unk_Id16 id; };
 // @0x1415c5970
-void* FUN_1415c5970(const void* p, void* out) { const auto* src = static_cast<const unsigned char*>(p) + 0x15a; auto* dst = static_cast<unsigned char*>(out); for (int i = 0; i != 16; ++i) dst[i] = src[i]; return out; }
+void* FUN_1415c5970(const void* p, void* out) { *static_cast<Unk_Id16*>(out) = static_cast<const Unk_Id16OwnerView*>(p)->id; return out; }
 
 // @0x1415cb420
 void FUN_1415cb420(void*) {}
@@ -1582,6 +1588,34 @@ void FUN_1415c9040(void* object)
     FUN_14156a080(text);
 }
 
+// @0x1415ca320
+unsigned int FUN_1415ca320(void*, const unsigned char* data, unsigned int size)
+{
+    unsigned char sum = 0;
+    unsigned char bits = 0;
+    for (unsigned int i = 0; i < size; i++) {
+        sum = sum + data[i];
+        bits ^= data[i];
+    }
+    sum = ~sum;
+    return (sum << 1) | bits;
+}
+
+// The two cryptor singletons: function-local statics, so their atexit dtors are 0x142cb3970 / 0x142cb3990.
+// @0x1415ca3b0
+CStreamCryptor_v0* FUN_1415ca3b0()
+{
+    static CStreamCryptor_v0 s_cryptor;
+    return &s_cryptor;
+}
+
+// @0x1415ca470
+CStreamCryptor_v1* FUN_1415ca470()
+{
+    static CStreamCryptor_v1 s_cryptor;
+    return &s_cryptor;
+}
+
 // MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHH0@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
 // MS2-PIN: ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60
@@ -1604,3 +1638,6 @@ void FUN_1415c9040(void* object)
 // MS2-PIN: ?FUN_1415c7500@@YAHPEAXHH0@Z 0x1415c7500
 // MS2-PIN: ?FUN_1415caa40@@YAXPEAX0@Z 0x1415caa40
 // MS2-PIN: ?FUN_1415c9040@@YAXPEAX@Z 0x1415c9040
+// MS2-PIN: ??__Fs_cryptor@?1??FUN_1415ca3b0@@YAPEAVCStreamCryptor_v0@@XZ@YAXXZ 0x142cb3970
+// MS2-PIN: ??__Fs_cryptor@?1??FUN_1415ca470@@YAPEAVCStreamCryptor_v1@@XZ@YAXXZ 0x142cb3990
+// MS2-RANGE: 0x142cb3970-0x142cb39a5 .text$yd

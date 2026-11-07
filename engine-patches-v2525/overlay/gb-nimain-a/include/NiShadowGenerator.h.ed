@@ -1,0 +1,18 @@
+eol lf
+336a
+    float m_fStudioField0xA4;  // gb-nimain-a: inferred; ctor 0x141d59ca0 sets 1.0f, CopyMembers 0x141d5a4c1 copies, not streamed
+.
+310c
+    NiTPrimitiveSet<NiNode*> m_kUnaffectedReceiverList;  // gb-nimain-a: studio set (ctor 0x141d59ca0 +0x40)
+.
+307a
+public:
+    // gb-nimain-a: inferred studio hook (0x143afb020), checked first by ForceMaterialNeedsUpdate 0x141d5a792
+    static void (*ms_pfnStudioForceMaterialNeedsUpdate)(NiShadowGenerator*);
+protected:
+.
+139@23s "List" "*>"
+139@19s "" "TPrimitiveSet<Ni"
+20a
+#include "NiTSet.h"
+.

@@ -265,8 +265,8 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
     Unk_EfdMatrix3 kRotZ;
     reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
     Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
-    m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
-    m_fRadius = m_kDragDir.FUN_140968990();
+    m_kDragDir = (kPoint - FUN_140947900(m_spMesh.operator->()));
+    m_fRadius = m_kDragDir.Unitize();
     m_kDragDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRotZ) * reinterpret_cast<const efd::Point3&>(m_kDragDir)));
     m_kCurEuler = GetPartEuler();
     if (m_pListener != 0)
@@ -292,8 +292,8 @@ void CCapRotationController::vfunc_31()
             {
                 NiPoint3 kHit;
                 FUN_14147aa60(kOrigin, kDir, reinterpret_cast<const NiPoint3&>(FUN_140947900(m_spMesh.operator->())), m_fRadius, &kHit);
-                Vector3 kDelta = reinterpret_cast<const Vector3&>(kHit).FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
-                kDelta.FUN_140968990();
+                Vector3 kDelta = (reinterpret_cast<const Vector3&>(kHit) - FUN_140947900(m_spMesh.operator->()));
+                kDelta.Unitize();
                 Unk_EfdMatrix3 kRotZ;
                 reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
                 kDelta = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRotZ) * reinterpret_cast<const efd::Point3&>(kDelta)));
@@ -346,11 +346,11 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         else
         {
             Vector3 kN = reinterpret_cast<const Vector3&>(kNormal);
-            kN.FUN_140968990();
+            kN.Unitize();
             efd::Point3 kSide = -reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
             kSide.Unitize();
             Unk_NiPoint3 kUp(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(kSide)))));
-            reinterpret_cast<Vector3&>(kUp).FUN_140968990();
+            reinterpret_cast<Vector3&>(kUp).Unitize();
             Unk_NiMatrix3 kFix;
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;

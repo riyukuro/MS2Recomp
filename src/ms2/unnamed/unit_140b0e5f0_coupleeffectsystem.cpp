@@ -261,11 +261,11 @@ NiPoint3 CoupleEffectSystem::FUN_140b0f160()
 #ifdef __clang__
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptOwner))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptPartner))))).FUN_140ae9180(2.0f))));
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptOwner))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptPartner))))) / 2.0f))));
 #else
-    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))))
-                             + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18()))))))
-                             .FUN_140ae9180(2.0f))));
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))))
+                             + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())))))) / 2.0f)
+)));
 #endif
 }
 

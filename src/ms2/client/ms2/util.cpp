@@ -1191,15 +1191,15 @@ float FUN_141b725e0(float fValue);
 efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
 {
     if (reinterpret_cast<const efd::Point3&>(kStart) == reinterpret_cast<const efd::Point3&>(kControl) || reinterpret_cast<const efd::Point3&>(kEnd) == reinterpret_cast<const efd::Point3&>(kControl)) {
-        Vector3 kDelta = kEnd.FUN_140965c40(kStart);
+        Vector3 kDelta = (kEnd - kStart);
         return reinterpret_cast<const efd::Point3&>(kStart) + reinterpret_cast<const efd::Point3&>(kDelta) * fT;
     } else {
         float fInverse = 1.0f - fT;
         float fT2 = FUN_141b72560(fT, 2.0f);
         float fS2 = FUN_141b72560(fInverse, 2.0f);
         efd::Point3 kResult = reinterpret_cast<const efd::Point3&>(kStart) * fS2;
-        reinterpret_cast<Vector3&>(kResult).FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(2.0f, kControl))) * fT * fInverse)));
-        reinterpret_cast<Vector3&>(kResult).FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEnd) * fT2)));
+        (reinterpret_cast<Vector3&>(kResult) += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((2.0f * kControl))) * fT * fInverse)));
+        (reinterpret_cast<Vector3&>(kResult) += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEnd) * fT2)));
         return kResult;
     }
 }
@@ -1209,10 +1209,10 @@ float FUN_141b71550(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
 {
     Vector3 kA;
     Vector3 kB;
-    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
-    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
-    kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
-    kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
+    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((kStart - (2.0f * kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
+    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((kStart - (2.0f * kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
+    kB = ((2.0f * kControl) - (2.0f * kStart));
+    kB = ((2.0f * kControl) - (2.0f * kStart));
     float fAA = (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kA));
     float fA = 4.0f * (fAA + (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kA)));
     float fAB = (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kB));

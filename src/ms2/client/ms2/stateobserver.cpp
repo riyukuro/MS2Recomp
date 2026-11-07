@@ -198,7 +198,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
         bool bExcluded = excluded.find(nId) != excluded.end();
         if (bExcluded)
             continue;
-        float fDist = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())).FUN_140965c40(spProxy->FUN_1416c2270()).FUN_140967ac0();
+        float fDist = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())) - spProxy->FUN_1416c2270()).Length();
         if (fDist < fBest)
         {
             fBest = fDist;
@@ -468,8 +468,8 @@ void StateObserver::FUN_140ac48e0()
         vTarget = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     } while (0);
     const NiPoint3& kOwner = m_pOwner->vfunc_18();
-    Vector3 vDir = vTarget.FUN_140965c40(reinterpret_cast<const Vector3&>(kOwner));
-    float fLen = vDir.FUN_140968990();
+    Vector3 vDir = (vTarget - reinterpret_cast<const Vector3&>(kOwner));
+    float fLen = vDir.Unitize();
     if (fLen > 1000.0f)
     {
         m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(vTarget));

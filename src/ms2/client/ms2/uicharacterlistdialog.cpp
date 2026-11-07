@@ -1728,7 +1728,7 @@ void UICharacterListDialog::FUN_1418f20d0()
 void UICharacterListDialog::CheckDeleteAccount()
 {
     m_224 = 0;
-    COutPacket packet(0xbe, 0);
+    COutPacket packet(static_cast<int>(SendOp::CheckDeleteAccount), 0);
     packet.Encode8(DAT_143ab2820);
     FUN_140710590(packet);
 }
@@ -1747,7 +1747,7 @@ void UICharacterListDialog::FUN_1418f2480(CStringW str1, CStringW str2)
 void UICharacterListDialog::SendDeleteAccountRequest(const CStringW& str1, const CStringW& str2, const CStringW& str3)
 {
     m_221 = 1;
-    COutPacket packet(0xbf, 0);
+    COutPacket packet(static_cast<int>(SendOp::DeleteAccount), 0);
     packet.Encode8(DAT_143ab2820);
     packet.WriteUnicodeString(str1);
     packet.WriteUnicodeString(str2);

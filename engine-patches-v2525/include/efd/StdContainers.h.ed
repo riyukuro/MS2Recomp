@@ -1,0 +1,9 @@
+eol lf
+341a
+        _container& _Get_s() { return this->c; }
+        const _container& _Get_s() const { return this->c; }
+.
+57,58c
+        typedef typename BaseClass::iterator iterator;
+        typedef typename BaseClass::const_iterator const_iterator;
+.

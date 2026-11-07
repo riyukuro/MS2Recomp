@@ -390,7 +390,7 @@ struct Unk_GsMatrix3
     float m_afEntry[3][3];
 };
 MS2_CHECK_SIZE(Unk_GsMatrix3, 0x24);
-Vector3 FUN_1420834e0(Vector3* pPt, Unk_GsMatrix3* pMat);    // efd::operator*(Point3, Matrix3)
+namespace efd { class Point3; class Matrix3; Point3 operator*(const Point3&, const Matrix3&); } typedef Vector3 (*Unk_PtMat3Mul)(Vector3*, Unk_GsMatrix3*);   // C3: was Vector3 FUN_1420834e0(Vector3* pPt, Unk_GsMatrix3* pMat) = efd::operator*(Point3, Matrix3), called through this view
 typedef UIMsg Unk_GsUIMsg;
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 
@@ -615,15 +615,15 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
     Vector3 kA;
     Vector3 kB;
     if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140af0210() != 0) {
-        Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290())) * 3.1415927f)).FUN_140ae9180(180.0f);
+        Vector3 kEuler = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290())) * 3.1415927f)) / 180.0f);
         Unk_GsMatrix3 mX;
         ((efd::Matrix3*)(Unk_GsMatrix3*)&(mX))->FromEulerAnglesXYZ(-90.0f, 0.0f, 0.0f);
         Unk_GsMatrix3 mY;
         ((efd::Matrix3*)(Unk_GsMatrix3*)&(mY))->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
         ((efd::Matrix3*)(Unk_GsMatrix3*)&(mY))->GetCol(0, *(efd::Point3*)(Vector3*)&(kA));
-        kA = FUN_1420834e0(&kA, &mX);
+        kA = reinterpret_cast<Unk_PtMat3Mul>(static_cast<efd::Point3 (*)(const efd::Point3&, const efd::Matrix3&)>(&efd::operator*))(&kA, &mX);
         kA.z = 0.0f;
-        kA.FUN_140968990();
+        kA.Unitize();
         reinterpret_cast<efd::Point3&>(kB) = -reinterpret_cast<const efd::Point3&>(kA).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
     } else {
         FUN_141ac9310(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290(), &kA, &kB);
@@ -667,10 +667,10 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
         Unk_GsPlayer* pNpc = reinterpret_cast<Unk_GsPlayer*>(WorldService::GetInstance()->FUN_141bd1320(m_b4));
         if (pNpc != 0) {
             Vector3 kHit;
-            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10())));
-            kDir.FUN_140968990();
+            Vector3 kDir = (pPlayer->vfunc_18() - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10())));
+            kDir.Unitize();
             kDir.z = 0.0f;
-            Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kDir) * 100.0f)));
+            Vector3 kFrom = (pNpc->vfunc_18() - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kDir) * 100.0f)));
             if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kFrom, kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
@@ -699,12 +699,12 @@ MS2_REPLACE_METHOD(0x141ac9270, UISceneGameBeautyShop, FUN_141ac9270, 93, 0xEF3C
 // @0x141ac9310
 void FUN_141ac9310(Vector3 kRot, Vector3* pDir, Vector3* pOut)
 {
-    kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kRot) * 3.1415927f)).FUN_140ae9180(180.0f);
+    kRot = (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kRot) * 3.1415927f)) / 180.0f);
     Unk_GsMatrix3 m;
     ((efd::Matrix3*)(Unk_GsMatrix3*)&(m))->FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
     ((efd::Matrix3*)(Unk_GsMatrix3*)&(m))->GetCol(0, *(efd::Point3*)(Vector3*)&(*pDir));
     pDir->z = 0.0f;
-    pDir->FUN_140968990();
+    pDir->Unitize();
     reinterpret_cast<efd::Point3&>(*pOut) = -reinterpret_cast<const efd::Point3&>(*pDir).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
 }
 

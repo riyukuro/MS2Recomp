@@ -18,8 +18,8 @@ struct Unk_CwObj;
 void FUN_1412751b0(const CStringW&, int);
 void* FUN_14027d550(void*); void* FUN_14027d560(void*); void* FUN_14027d570(void*); void* FUN_14027d580(void*);
 void* FUN_14027d590(void*); void* FUN_14027d5a0(void*); void* FUN_14027d5b0(void*);
-Unk_Z16* FUN_14027cf10(Unk_Z16*); Unk_Z16* FUN_14027d0b0(Unk_Z16*); Unk_Z24* FUN_14027d410(Unk_Z24*); i64 FUN_14027d450(i64);
-i64 FUN_14027d490(i64); Unk_Z24* FUN_14027d4d0(Unk_Z24*); Unk_Z24* FUN_14027d510(Unk_Z24*);
+Unk_Z16* FUN_14027cf10(Unk_Z16*); Unk_Z16* FUN_14027d0b0(Unk_Z16*); Unk_Z24* FUN_14027d410(Unk_Z24*); Unk_Z24* FUN_14027d450(Unk_Z24*);
+Unk_Z24* FUN_14027d490(Unk_Z24*); Unk_Z24* FUN_14027d4d0(Unk_Z24*); Unk_Z24* FUN_14027d510(Unk_Z24*);
 i64 FUN_14027c1b0(i64); i64 FUN_14027c220(i64); i64 FUN_14027c1c0(i64);
 // (0x14015e600 is std::tuple<>::tuple<_Exact_args_t, 0>, called directly in FUN_140274cb0)
 i64 FUN_14027c1f0(i64); u64 FUN_14027c360(i64); u64 FUN_14027c380(i64); u64 FUN_14027c3a0(i64); u64 FUN_14027c3c0(i64);
@@ -46,7 +46,7 @@ void FUN_14027bb90(i64, Unk_VDtor*); void FUN_14027bbc0(i64, i64); void FUN_1402
 i64 FUN_14027c170(i64); i64 FUN_14027c180(i64); i64 FUN_14027c190(i64); i64 FUN_14027c1a0(i64);
 i64 FUN_14027c200(i64); i64 FUN_14027c210(i64); i64 FUN_14027c1d0(i64);
 void FUN_14027b840(i64, i64, i64); void FUN_14027b890(i64, i64, i64); void FUN_14027b930(i64, i64, i64);
-void FUN_14027b9d0(i64, i64, i64); i64 FUN_14027bb10(i64, i64, i64); void FUN_14027b8e0(i64, i64, i64);
+void FUN_14027b9d0(i64, i64, i64); void FUN_14027bb10(i64, i64, i64); void FUN_14027b8e0(i64, i64, i64);
 void FUN_14027b980(i64, i64, i64); void FUN_14027ba70(i64, i64, i64); void FUN_14027ba20(i64, i64, i64);
 i64 FUN_140288d20(i64, i64, i64); i64 FUN_140288d00(i64, i64, i64); i64 FUN_140288d10(i64, i64, i64);
 u64 FUN_140287070(i64, i64); u64 FUN_140286f50(i64, i64); u64 FUN_140286fe0(i64, i64);

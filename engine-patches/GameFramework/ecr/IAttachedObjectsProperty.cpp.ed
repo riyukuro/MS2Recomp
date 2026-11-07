@@ -1,0 +1,3 @@
+116c
+        m_attachNifData[*iter].MS2AssignInline(data); // MS2: the exe inlines this copy, AssetID part included
+.

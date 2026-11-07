@@ -207,11 +207,11 @@ struct Unk_EmAnimAccess : egmAnimation::AnimationService
     using AnimationService::ContainsEntity;
 };
 
-class Vector3 // C3: member view for the former free stand-ins
-{
-public:
-float FUN_140968990();
-};
+// C3: the former Vector3 member view (FUN_140968990) is efd::Point3::Unitize (called directly)
+//
+//
+//
+//
 
 void* FUN_141068d50p(void* a, const char* psz);
 // game
@@ -1053,7 +1053,7 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float
     kXf = kWorld * ((class NiAVObject*)(void*)(pRoot))->GetLocalTransform();
     *reinterpret_cast<efd::Point3*>(pPos) = *reinterpret_cast<const efd::Point3*>(&kXf.m_Translate);
     *(efd::Point3*)pLocal = *pPos - kWorld.m_Translate;
-    ((class Vector3*)(void*)(pLocal))->FUN_140968990();
+    ((efd::Point3*)(void*)(pLocal))->Unitize();
     kXf.m_Rotate.ToEulerAnglesXYZ(pEuler->x, pEuler->y, pEuler->z);
     pEuler->x = (pEuler->x * 180.0f) / 3.1415927f;
     pEuler->y = (pEuler->y * 180.0f) / 3.1415927f;

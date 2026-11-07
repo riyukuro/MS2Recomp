@@ -8,7 +8,7 @@
 class CInPacket;
 class CEquipItem;
 struct Unk_PCEquipSet;
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 class UserUGCMapInfo;
 class CHomePrivilege;                             // commonfiles\homeprivilege.cpp
 template <class T> class Unk_BmPtr;               // blackmarketitemoption.h

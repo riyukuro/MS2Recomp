@@ -1,0 +1,3 @@
+532c
+        { Record* pkTmp = pkRecord; Add(pkTmp); }
+.

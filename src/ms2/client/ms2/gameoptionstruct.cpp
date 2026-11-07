@@ -3430,7 +3430,7 @@ MS2_REPLACE_METHOD(0x141261DA0, CPersonalInfoAgreement, FUN_141261da0, 32, 0x2CD
 // @0x141261dd0
 void CPersonalInfoAgreement::SendAgreement(int nGroup)
 {
-    COutPacket packet(0xc0, 0);
+    COutPacket packet(static_cast<int>(SendOp::PersonalInfoAgreement), 0);
     packet.Encode4(nGroup);
     packet.Encode4(m_nFlags);
     FUN_140710590(packet);

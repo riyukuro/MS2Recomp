@@ -34,6 +34,11 @@ template <class T> Unk_DropHandle<T> MakeDropChild(int id, const Scaleform::GFx:
     Unk_DropHandle<T> h(new T(v, id));
     return h;
 }
+// uisystemmailnotifydialog's Unk_ASCreate<ASMDragTarget> (call at 0x1412a6a07) is MakeDropChild<ASMDragTarget>
+// (0x140c3bb40), which this unit emits, so its declared name is bound here.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??$Unk_ASCreate@VASMDragTarget@@@@YA?AV?$MS2Ptr@VASMDragTarget@@@@HAEBVValue@GFx@Scaleform@@@Z=??$MakeDropChild@VASMDragTarget@@@@YA?AV?$Unk_DropHandle@VASMDragTarget@@@@HAEBVValue@GFx@Scaleform@@@Z")
+#endif
 class Unk_DropScript : public CPtred {
 public:
     template <class T> Unk_DropHandle<T> GetChild(const CString& name) {

@@ -1,0 +1,4 @@
+eol lf
+274c
+        NiUInt32 m_uiSize;  // studio: 32-bit (SDK size_t)
+.

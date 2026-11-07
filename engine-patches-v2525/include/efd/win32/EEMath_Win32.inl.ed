@@ -1,0 +1,5 @@
+eol lf
+120,127c
+    sin = Sin(radians);
+    cos = Cos(radians);
+.

@@ -162,7 +162,7 @@ public:
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b7f400(class MyPC*);
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);
-bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
+bool FUN_140b884e0(Vector3&);   // C3: was FUN_140b884e0
 
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
@@ -251,7 +251,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             return 1;
         }
         Unk_Pos pos = pPlayer->vfunc_18();
-        if (!FUN_140b884e0(*(struct Vector3*)&static_cast<struct Unk_Pos&>(pos))) {
+        if (!FUN_140b884e0(*(Vector3*)&static_cast<struct Unk_Pos&>(pos))) {
             FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_position", 1);
             return 1;
         }

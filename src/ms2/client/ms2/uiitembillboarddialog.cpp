@@ -364,7 +364,7 @@ void UIItemBillBoardDialog::FUN_140c32360(__int64 nItemUid)
 MS2_REPLACE_METHOD(0x140C32360, UIItemBillBoardDialog, FUN_140c32360, 131, 0x2C15A77E);
 
 // @0x140c323f0
-// MS2-FUNCTIONAL: op-identical; the frame is 0x10 larger and most stack slots shift (local layout not found)
+// MS2-FUNCTIONAL: op-identical apart from the stack slots; 15 bytes longer (the frame is 0x10 larger and most slots shift, local layout not found)
 bool UIItemBillBoardDialog::FUN_140c323f0()
 {
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -415,7 +415,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         if (spObj == (CInteractObject*)0)
             continue;
         {
-            float fDist = spObj.get()->GetPos().FUN_140965c40(ptCenter).FUN_140967ac0();
+            float fDist = (spObj.get()->GetPos() - ptCenter).Length();
             if (fDist < 230.0f) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;
@@ -445,7 +445,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         Vector3 pt;
         int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
         FUN_1408a15b0(FUN_1408a0400(nActorCell), reinterpret_cast<efd::Point3&>(pt));
-        float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
+        float fDist = (pt - ptCenter).Length();
         if (fDist < 230.0f) {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;
@@ -495,7 +495,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         arrIds.push_back(DAT_142e035dc);
         arrIds.push_back(DAT_142e0372c);
         for (size_t i = 0; i < arrIds.size(); ++i) {
-            egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bcfd30(arrIds[i], Vector3(ptCenter), 230.0f, 0, 0);
+            egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0);
             if (pEntity != 0) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;

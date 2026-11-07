@@ -91,7 +91,7 @@ void StateSkillMagicControl::vfunc_3(double fTime)
     if (!pTarget)
         return;
     efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
-    reinterpret_cast<Vector3&>(kWorld).FUN_140968990();
+    reinterpret_cast<Vector3&>(kWorld).Unitize();
     efd::Point3 kSpeed = kWorld * (pTarget->FUN_1410a6790());
     efd::Point3 kStep = reinterpret_cast<const efd::Point3&>(kSpeed) * ((float)fTime);
     Vector3 kOld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_18();

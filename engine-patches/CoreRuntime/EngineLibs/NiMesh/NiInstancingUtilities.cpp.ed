@@ -1,3 +1,9 @@
+966c
+    { size_t uiMs2Size = pkTransDataStream->GetSize(); memcpy_s(pvData, uiMs2Size, pvTempTransformData, uiMs2Size); }
+.
+961c
+    Ms2IUAddRegionCall(pkTransDataStream, kRegion);
+.
 670,671c
         NiMemcpy((NiUInt8*)pvTempOldIndexData, uiSize, pvData, uiSize);  // MS2: sized form
 
@@ -12,5 +18,8 @@
         static_cast<Ms2IUStream*>(pkNewDataStream)->Regions().AddInline(kPlaceHolderRegion);
 .
 22c
-/* MS2: the exe inlines AddRegion with NiTSet::Add, Realloc and NiTNewInterface::Allocate into the placeholder-region loop of CreateDuplicateIndexDataStream */ struct Ms2IURegionSet : public NiTObjectSet<NiDataStream::Region> { __forceinline void AddInline(const NiDataStream::Region& kRegion) { if (m_uiUsed == m_uiAlloced) { unsigned int uiNewSize = m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1; if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) { NiDataStream::Region* pNewBase; unsigned int i; if (uiNewSize > 0) { pNewBase = NiNew NiDataStream::Region[uiNewSize]; for (i = 0; i < m_uiUsed; i++) pNewBase[i] = m_pBase[i]; } else { pNewBase = NULL; } NiTNewInterface<NiDataStream::Region>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize; } } m_pBase[m_uiUsed++] = kRegion; } }; struct Ms2IUStream : public NiDataStream { Ms2IURegionSet& Regions() { return static_cast<Ms2IURegionSet&>(m_kRegions); } };
+/* MS2: the exe inlines AddRegion with NiTSet::Add, Realloc and NiTNewInterface::Allocate into the placeholder-region loop of CreateDuplicateIndexDataStream */ struct Ms2IURegionSet : public NiTObjectSet<NiDataStream::Region> { __forceinline void AddInline(const NiDataStream::Region& kRegion) { if (m_uiUsed == m_uiAlloced) { unsigned int uiNewSize = m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1; if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) { NiDataStream::Region* pNewBase; unsigned int i; if (uiNewSize > 0) { pNewBase = NiNew NiDataStream::Region[uiNewSize]; for (i = 0; i < m_uiUsed; i++) pNewBase[i] = m_pBase[i]; } else { pNewBase = NULL; } NiTNewInterface<NiDataStream::Region>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize; } } m_pBase[m_uiUsed++] = kRegion; } }; struct Ms2IUStream : public NiDataStream { Ms2IURegionSet& Regions() { return static_cast<Ms2IURegionSet&>(m_kRegions); } }; __pragma(inline_depth(0)) static __forceinline NiUInt32 Ms2IUAddRegionCall(NiDataStream* p, const NiDataStream::Region& r) { return p->AddRegion(r); } __pragma(inline_depth(254))
+.
+13c
+#define _CRT_MEMCPY_S_INLINE static __forceinline /* MS2: the exe inlines memcpy_s in CreateInstanceTransformStream */
 .

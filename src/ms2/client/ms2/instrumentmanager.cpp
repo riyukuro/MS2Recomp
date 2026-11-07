@@ -1290,7 +1290,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
             }
             if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bcb150() == true)
                 break;
-            float fDistance = pMe->vfunc_18().FUN_140965c40(m_slots[i].m_position).FUN_140967ac0();
+            float fDistance = (pMe->vfunc_18() - m_slots[i].m_position).Length();
             if (fDistance < *Client::Constants::GetInstance()->MusicListenInRadius.Get())
                 continue;
             if (fDistance > *Client::Constants::GetInstance()->MusicListenOutRadius.Get())
@@ -1336,7 +1336,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
             }
             if (!reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bcb150())
             {
-                float fDistance = pMe->vfunc_18().FUN_140965c40(pVoice->m_position).FUN_140967ac0();
+                float fDistance = (pMe->vfunc_18() - pVoice->m_position).Length();
                 float fLimit = (*Client::Constants::GetInstance()->MusicListenInRadius.Get() + *Client::Constants::GetInstance()->MusicListenOutRadius.Get()) / 2.0f;
                 if (fDistance > fLimit)
                     bActive = false;

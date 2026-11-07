@@ -5,7 +5,7 @@
 #include "ms2/unnamed/unit_14176f2a0.h"
 #include <egf/Entity.h>
 
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 
 class MS2ActorUpdater : public CPtred
 {

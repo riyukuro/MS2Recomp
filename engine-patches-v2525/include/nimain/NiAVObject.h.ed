@@ -1,0 +1,19 @@
+eol lf
+274a
+    unsigned int m_uiStudioField0xE0;  // studio: +0xe0, name inferred
+.
+244c
+        IS_NODE                         = 0x0100,
+
+        // studio: object is a NiPSParticleSystem (name inferred)
+        IS_PARTICLE_SYSTEM              = 0x0400
+.
+138a
+    // studio (names inferred): flag 0x400 marks NiPSParticleSystem objects
+    inline void SetParticleSystemFlag(bool bSet) { SetBit(bSet, IS_PARTICLE_SYSTEM); }
+    inline bool GetParticleSystemFlag() const { return GetBit(IS_PARTICLE_SYSTEM); }
+.
+111a
+    virtual NiAVObject* GetObjectByNameMasked(const NiFixedString& kName,
+        unsigned short usExcludeFlags);  // studio: slot 21, name inferred
+.

@@ -39,6 +39,8 @@ extern long long* FUN_1415f3f50(long long*);
 extern void* FUN_1415f3f10(void*);
 extern void* FUN_1415f3a30(void*); extern void* FUN_1415f3a50(void*);
 extern long long FUN_1415f3aa0(long long*);
+extern long long FUN_1415f3ac0(void*);
+extern unsigned long long FUN_14160b100(long long);   // the list max-size helper (0x14160b100)
 extern void* FUN_141602970(void*);
 extern void* FUN_141602940(void*);
 extern long long* FUN_1415f46c0(long long*);
@@ -251,7 +253,7 @@ unsigned char FUN_1415f3a00() { return 1; }
 // @0x1415f3aa0
 long long FUN_1415f3aa0(long long* p) { return *p + 0x20; }
 // @0x1415f3ac0
-void FUN_1415f3ac0(void* p) { (void)FUN_1415f3aa0(static_cast<long long*>(p)); }
+long long FUN_1415f3ac0(void* p) { return FUN_1415f3aa0(static_cast<long long*>(p)); }
 // @0x1415f3a60
 void FUN_1415f3a60(void* p) { FUN_1415d2670(FUN_1415f3a30(p)); }
 // @0x1415f3a80
@@ -357,16 +359,13 @@ static T& copy_record_bytes(T& dst, const T& src)
     return dst;
 }
 
-// MS2-FUNCTIONAL: clears null values and performs the recovered bounded copy into the 0x800-byte storage.
-// The original fixed-string setter clears null values or copies into its allocated 0x800-byte storage.
+// The fixed-string setter: forwards the value to the string's assignment (FUN_1415f9b80) and returns the string.
 // @0x1415ef280
-void FUN_1415ef280(void* p, unsigned long long value)
+void* FUN_1415ef280(void* p, unsigned long long value)
 {
-    auto** slot = static_cast<char**>(p);
-    if (!value) { *slot = nullptr; return; }
-    if (*slot) { std::strncpy(*slot, reinterpret_cast<const char*>(value), 0x7ff); (*slot)[0x7ff] = 0; }
+    FUN_1415f9b80(p, (void*)value);
+    return p;
 }
-// MS2-PIN: ?FUN_1415ef280@@YAXPEAX_K@Z 0x1415ef280
 
 // MS2-FUNCTIONAL: reproduces the recovered assignment over this record's fields.
 // @0x1415efbf0
@@ -3139,11 +3138,10 @@ bool FUN_1415f2a60(const long long* a, const long long* b)
 {
     return *a == *b;
 }
-// MS2-FUNCTIONAL: follows the recovered calls; the downstream helper preserves the pointer unchanged.
 // @0x1415f3a10
 void FUN_1415f3a10(void* p)
 {
-    (void)FUN_1415f3aa0(static_cast<long long*>(p));
+    FUN_14160b100(FUN_1415f3ac0(p));
 }
 // MS2-FUNCTIONAL: CNMNoteInfo move assignment; copies the fields 0x10..0xeb8 and moves the m_eb8 avatar sub-object.
 // @0x1415f1930

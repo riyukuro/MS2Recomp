@@ -48,19 +48,19 @@ template CNMSingleton<CNMCOClientObject>::~CNMSingleton();
 // @0x1415eb640
 template CNMSingleton<CNMManager>::~CNMSingleton();
 
-extern "C" void FUN_1415f9bd0(void*);
-extern "C" void FUN_1415f9c30(void*);
+extern void FUN_1415f9bd0(void**);   // CNMStr<0x40>::Free (unit_1415f9410)
+extern void FUN_1415f9c30(void*);    // CNMStr<0x800>::Free (unit_1415f9410)
 
-// MS2-FUNCTIONAL: forwards to CNMStr<0x40>::Free, whose implementation at 0x1415f9bd0 matches exactly.
+// CNMStr<0x40>'s destructor body: frees the string (CNMStr<0x40>::Free, 0x1415f9bd0); noexcept, as a destructor
 // @0x1415eb660
-void FUN_1415eb660(void* p)
+void FUN_1415eb660(void* p) noexcept
 {
-    FUN_1415f9bd0(p);
+    FUN_1415f9bd0(static_cast<void**>(p));
 }
 
-// MS2-FUNCTIONAL: forwards to CNMStr<0x800>::Free, whose implementation at 0x1415f9c30 matches exactly.
+// CNMStr<0x800>'s destructor body: frees the string (CNMStr<0x800>::Free, 0x1415f9c30); noexcept, as a destructor
 // @0x1415eb690
-void FUN_1415eb690(void* p)
+void FUN_1415eb690(void* p) noexcept
 {
     FUN_1415f9c30(p);
 }

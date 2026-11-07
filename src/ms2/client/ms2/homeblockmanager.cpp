@@ -83,7 +83,7 @@ MS2_REPLACE_METHOD(0x140a46c60, HomeBlockManager, FUN_140a46c60, 483, 0x37E066E1
 // Not hooked: the actor-handle copy constructor has not been mapped.
 // @0x140a46e50
 void HomeBlockManager::FUN_140a46e50(Unk_SocketPtr<PCBase> actor,CStringW text) {
-    COutPacket out(0xc1,0);
+    COutPacket out(static_cast<int>(SendOp::HomeBlock),0);
     out.WriteUInt8(2);
     out.WriteInt64(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     out.WriteUnicodeString(text);
@@ -91,7 +91,7 @@ void HomeBlockManager::FUN_140a46e50(Unk_SocketPtr<PCBase> actor,CStringW text) 
 }
 // @0x140a46f00
 void HomeBlockManager::FUN_140a46f00(__int64 id,CStringW text) {
-    COutPacket out(0xc1,0);
+    COutPacket out(static_cast<int>(SendOp::HomeBlock),0);
     out.WriteUInt8(2);
     out.WriteInt64(id);
     out.WriteUnicodeString(text);
@@ -107,7 +107,7 @@ void HomeBlockManager::FUN_140a46f90(CInPacket& in) {
 MS2_REPLACE_METHOD(0x140a46f90, HomeBlockManager, FUN_140a46f90, 188, 0x29D623F7);
 // @0x140a47060
 void HomeBlockManager::FUN_140a47060(__int64 id) {
-    COutPacket out(0xc1,0);
+    COutPacket out(static_cast<int>(SendOp::HomeBlock),0);
     out.WriteUInt8(3);
     out.WriteInt64(id);
     FUN_140710590(out);
@@ -220,7 +220,7 @@ void HomeBlockManager::FUN_140a47b30(unsigned __int64 id) {
 MS2_REPLACE_METHOD(0x140a47b30, HomeBlockManager, FUN_140a47b30, 317, 0x12A71FB8);
 // @0x140a47c80
 void HomeBlockManager::FUN_140a47c80(__int64 id,CStringW text) {
-    COutPacket out(0xc1,0);
+    COutPacket out(static_cast<int>(SendOp::HomeBlock),0);
     out.WriteUInt8(5);
     out.WriteInt64(id);
     out.WriteUnicodeString(text);

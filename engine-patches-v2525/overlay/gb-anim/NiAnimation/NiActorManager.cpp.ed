@@ -1,0 +1,9 @@
+eol lf
+1003c
+    // studio: no UnregisterCallback here (0x141c43700)
+.
+955@20s "FirstEmpty" ""
+708@74s "" " if (!m_spCurSequence) return;"
+504@15s "" " if (m_spCurSequence)"
+60@27s "3" "1024"
+59@25s "3" "1024"

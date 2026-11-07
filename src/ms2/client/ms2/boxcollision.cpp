@@ -43,7 +43,7 @@ CBoxCollision::~CBoxCollision()
 }
 
 // @0x140ada620
-void CBoxCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
+void CBoxCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
 {
     NxMat34 kPose(true);
     kPose.t.x = ptPos.x;
@@ -73,7 +73,7 @@ void CBoxCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 MS2_REPLACE_METHOD(0x140ADA620, CBoxCollision, vfunc_3, 746, 0x68FFF7F0);
 
 // @0x140ada910
-void CBoxCollision::vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale)
+void CBoxCollision::vfunc_2(NiPoint3 ptPos, const NiMatrix3& kRot, float fScale)
 {
     NxMat34 kPose(true);
     kPose.t.x = ptPos.x;

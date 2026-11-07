@@ -70,8 +70,8 @@ bool Unk_GcVec3IsNull(struct Unk_GcOptVec3 const*);   // C3: was FUN_1413b5870
 struct Unk_GcOptVec3   // C3: member view for the former free stand-ins
 {
 public:
-    struct Vector3& GetValue();
-    const struct Vector3& GetValue() const;
+    Vector3& GetValue();
+    const Vector3& GetValue() const;
 };
 void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
 template <class T> T ClampProxyValue(const T& x, T lo, T hi);   // C3: userproxy.cpp
@@ -249,7 +249,7 @@ void UIActionTooltip::FUN_1418b1ef0()
         else
         {
             efd::Point2 kScreen;
-            FUN_140d00fb0(*((struct Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
+            FUN_140d00fb0(*((Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
             int nWidth = spEntity->ASDisplayObject::FUN_1422c1500();
             float fX = ClampProxyValue<float>(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
             int nHeight = spEntity->ASDisplayObject::FUN_1422c1530();

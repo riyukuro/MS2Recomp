@@ -1,0 +1,8 @@
+eol lf
+1082c
+{ m_kStudioMap0x100.RemoveAll();
+.
+413@23s "FirstEmpty" ""
+136c
+{ m_kSeqDataArray.SetSize(1024); m_kSeqDataArray.SetGrowBy(100);
+.

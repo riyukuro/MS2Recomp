@@ -81,13 +81,13 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         FUN_140a0b1f0(static_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kEuler));
         efd::Point3 kX;
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(0, *(class efd::Point3*)(&kX));
-        ((struct Vector3*)&(kX))->FUN_140968990();
+        ((Vector3*)&(kX))->Unitize();
         efd::Point3 kY;
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(1, *(class efd::Point3*)(&kY));
-        ((struct Vector3*)&(kY))->FUN_140968990();
+        ((Vector3*)&(kY))->Unitize();
         efd::Point3 kZ;
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(2, *(class efd::Point3*)(&kZ));
-        ((struct Vector3*)&(kZ))->FUN_140968990();
+        ((Vector3*)&(kZ))->Unitize();
         kPos = kPos + kY * -spModel->m_vTranslation.y;
         kPos = kPos + kX * (0, spModel->m_vTranslation.x);
         kPos = kPos + kZ * (0, spModel->m_vTranslation.z);

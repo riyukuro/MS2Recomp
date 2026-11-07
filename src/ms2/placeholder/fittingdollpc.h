@@ -11,7 +11,7 @@ class NiAVObject;
 class NiColor;
 class CEquipmentSlotLayerInfo;   // MS2Ptr<T> (cequipmentslotlayerinfo.h)
 class Unk_PCWaterGunInfo;   // MS2Ptr<T> (?\watergunbattleinfo.cpp)
-struct Vector3;
+namespace efd { class Point3; } typedef efd::Point3 Vector3;
 typedef NiColor Unk_CharEquip;   // the equip colour (tcreatecharinfo.h, 0xc)
 
 // Heap-only views. PC derives PCBase (ctor 14164dfd0), and FittingDollPC

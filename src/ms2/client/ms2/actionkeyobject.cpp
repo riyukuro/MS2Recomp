@@ -1332,8 +1332,8 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
             continue;
         Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->FUN_141447c80();
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(ptLift));
-        Vector3 diff = ptLift.FUN_140965c40(reinterpret_cast<const Vector3&>(pos));
-        float fDist = diff.FUN_140968990();
+        Vector3 diff = (ptLift - reinterpret_cast<const Vector3&>(pos));
+        float fDist = diff.Unitize();
         if (fDist > ((CLiftableObject*)(spLift.operator->()))->GetRange())
             continue;
         return spLift.get();
@@ -2479,7 +2479,7 @@ int GatheringAction::vfunc_1()
         MS2Ptr<CInteractGatheringObject> spObject(dynamic_cast<CInteractGatheringObject*>(aObjects[i].get()));
         if (spObject.IsNull())
             continue;
-        float fDist = pPlayer->vfunc_18().FUN_140965c40(spObject->GetPos()).FUN_140967ac0();
+        float fDist = (pPlayer->vfunc_18() - spObject->GetPos()).Length();
         int bInRange = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get() && vfunc_13(spObject);
         if (spObject->FUN_140967150() != bInRange)
             spObject->SetVisible(bInRange != 0);
@@ -2614,7 +2614,7 @@ int HomemadeCubeAction::vfunc_1()
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
-        float fDist = pPlayer->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
+        float fDist = (pPlayer->vfunc_18() - spCube->GetPosition()).Length();
         bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get()
             && FUN_14095e440(spCube);
         if (FUN_1408a1360(pPlayer->vfunc_18(), spCube->GetPosition()) == 0)
@@ -2698,7 +2698,7 @@ int NurturingCubeAction::vfunc_1()
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
-        float fDist = pPlayer->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
+        float fDist = (pPlayer->vfunc_18() - spCube->GetPosition()).Length();
         bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get()
             && spCube->FUN_14122bda0();
         if (FUN_1408a1360(pPlayer->vfunc_18(), spCube->GetPosition()) == 0)
@@ -3212,53 +3212,53 @@ MS2_REPLACE_METHOD(0x1409609F0, TreeWateringAction, vfunc_5, 11, 0x25A49707);
 
 // ---- inline members of other headers (COMDATs of this obj) ------------------------------------------------------------
 
-// @0x140965c40
-Vector3 Vector3::FUN_140965c40(const Vector3& pt) const
-{
-    return Vector3(x - pt.x, y - pt.y, z - pt.z);
-}
+// (0x140965c40 is efd::Point3::operator-(const Point3&): the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
 
-// @0x140967ac0
-float Vector3::FUN_140967ac0() const
-{
-    return efd::Sqrt(x * x + y * y + z * z);
-}
+// (0x140967ac0 is efd::Point3::Length: the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
 
-// @0x140968990
-float Vector3::FUN_140968990()
-{
-    float fLength = FUN_140967ac0();
-    if (fLength > 1e-06f)
-    {
-        float fRecip = 1.0f / fLength;
-        x *= fRecip;
-        y *= fRecip;
-        z *= fRecip;
-    }
-    else
-    {
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
-        fLength = 0.0f;
-    }
-    return fLength;
-}
+// (0x140968990 is efd::Point3::Unitize: the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x140966ea0 the distance in the xy plane
 float FUN_140966ea0(Vector3 a, Vector3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
-    a = b.FUN_140965c40(a);
-    return a.FUN_140967ac0();
+    a = (b - a);
+    return a.Length();
 }
 
 // @0x140966f00
 float FUN_140966f00(Vector3 a, Vector3 b)
 {
-    a = b.FUN_140965c40(a);
-    return a.FUN_140967ac0();
+    a = (b - a);
+    return a.Length();
 }
 
 // @0x140966f40 the first required item's id (0 without one)

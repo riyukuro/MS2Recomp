@@ -109,6 +109,11 @@ int FUN_1408a0370(int x,int y,int z) { int result=(x&0xff)+((y&0xff)<<8)+((z&0xf
 MS2_REPLACE(0x1408a0370, FUN_1408a0370, 67, 0xE97E08EA);
 // @0x1408a03c0
 int FUN_1408a03c0(Unk_Int3 p) { return FUN_1408a0370(p.x,p.y,p.z); }
+// cubemapinformationservice_3 declares it as FUN_1408a03c0(const Unk_Int3&) for its one caller that passes the
+// point by address; the x64 by-value struct arg is the same pointer, so that name is this function.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:?FUN_1408a03c0@@YAHAEBUUnk_Int3@@@Z=?FUN_1408a03c0@@YAHUUnk_Int3@@@Z")
+#endif
 MS2_REPLACE(0x1408a03c0, FUN_1408a03c0, 43, 0xFDC1CB50);
 // @0x1408a0400
 Unk_Int3 FUN_1408a0400(int packed) {
@@ -335,7 +340,7 @@ int FUN_1408a18d0(__int64 charID) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
-            reinterpret_cast<CubeMapInformationService*>(service.operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),&hits);
+            reinterpret_cast<CubeMapInformationService*>(service.operator->())->FUN_1410bb610(3,player,(float)(unsigned)(GetClientConstants()->ConstructUgcDistance.Read()*color),&hits);
             if(hits.size()>0) {
                 efd::SmartPointer<egf::Entity> first=hits[0];
                 first->GetPropertyValue(0x85ef19e7,style);

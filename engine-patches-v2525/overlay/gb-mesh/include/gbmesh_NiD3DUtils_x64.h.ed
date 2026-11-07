@@ -1,0 +1,11 @@
+0a
+// gb-mesh local overlay (never committed): x64 stand-in for NiDX9Renderer/NiD3DUtils.h,
+// whose FastFloatToInt uses x86 inline asm (NiD3DUtils.h:29-31). Force-included so the
+// guard NID3DUTILS_H is already defined. Only for TUs that do not call FastFloatToInt.
+#ifndef NID3DUTILS_H
+#define NID3DUTILS_H
+static inline int FastFloatToInt(float fValue) { return (int)fValue; }
+static inline DWORD F2DW(float fValue) { return *((DWORD*)&fValue); }
+#endif
+
+.

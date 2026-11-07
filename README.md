@@ -23,33 +23,41 @@ Gamebryo engine source or any other SDK. You need your own copies of those.
 ![Progress: each block is a group of functions in the original exe, coloured by recompilation status](assets/progress.png)
 
 Each block stands for a group of functions in the original executable, grouped by subsystem. **Matched** functions
-compile to the same bytes as the original. **Equivalent** ones behave the same but differ in code generation.
-**Awaiting match** and **In flight** are written or in progress but not yet merged. The image is regenerated on each
-publish.
+compile to the same bytes as the original. **Equivalent** ones behave the same but differ in code generation;
+**Compiler-limited** ones are equivalent functions whose remaining difference is compiler output that no source form
+we tried reproduces (register allocation ties, link-time inlining, instruction scheduling, a different library version),
+listed in `data/progress/permanent.tsv`.
+**Stubbed / vendor** functions are not recovered but not missing either: the Nexon Messenger SDK code left out by design,
+Microsoft library code linked unchanged, and the other "not missing" rows under the table below; the headline counts
+them as done. **Awaiting match** and **In flight** are written or in progress but not yet merged. The image is
+regenerated on each publish.
 
 Merged totals by area (functions in the original executable; regenerated on each publish together with the image):
 
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 176,877 | 176,696 (99.9%) | 170 (0.1%) | 100.0% |
-| Runtime & middleware | 22,011 | 21,008 (95.4%) | 873 (4.0%) | 99.4% |
-| Gamebryo engine | 16,756 | 16,696 (99.6%) | 48 (0.3%) | 99.9% |
-| Game framework · egf | 12,806 | 12,762 (99.7%) | 25 (0.2%) | 99.9% |
-| Libraries | 6,704 | 6,339 (94.6%) | 28 (0.4%) | 95.0% |
-| Foundation | 12,855 | 12,819 (99.7%) | 16 (0.1%) | 99.8% |
-| Imports | 782 | 778 (99.5%) | 1 (0.1%) | 99.6% |
-| **Total** | **248,791** | 247,098 (99.3%) | 1,161 (0.5%) | 99.8% |
+| Game · ms2 | 176,763 | 176,596 (99.9%) | 162 (0.1%) | 100.0% |
+| Runtime & middleware | 24,707 | 23,546 (95.3%) | 890 (3.6%) | 98.9% |
+| Gamebryo engine | 16,733 | 16,682 (99.7%) | 34 (0.2%) | 99.9% |
+| Game framework · egf | 12,901 | 12,883 (99.9%) | 17 (0.1%) | 100.0% |
+| Libraries | 6,703 | 6,342 (94.6%) | 25 (0.4%) | 95.0% |
+| Foundation | 13,037 | 13,021 (99.9%) | 13 (0.1%) | 100.0% |
+| Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
+| **Total** | **251,626** | 249,850 (99.3%) | 1,142 (0.5%) | 99.7% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
-| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 70 | | | |
+| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 71 | | | |
+| Microsoft library code the rebuild holds once, as one identical copy shared by several | 5 | | | |
+| Microsoft library code linked from another version of the same library | 1 | | | |
+| Microsoft library code the original never calls, left out of the rebuild's link | 55 | | | |
 | Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
-| Rebuilt identically, but no unit's address range covers it | 3 | | | |
-| *Not done, still to write* | 125 | | | |
+| Rebuilt identically, but no unit's address range covers it | 152 | | | |
+| *Not done, still to write* | 16 | | | |
 
-Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 532 functions that are neither matched nor equivalent. Counting the 407 that are not missing, 99.9% is done.
+Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 634 functions that are neither matched nor equivalent. Counting the 618 that are not missing, 99.9% is done.
 
-Link aliases: 535 left, down from 19,884 on 2026-10-31. An alias is a `/alternatename` line in `data/fullexe/plain/alias.rsp`. The linker uses it to send a call that the recovered code makes under a placeholder name or signature to the real function. An alias goes away once every caller uses the real declaration; the goal is 0.
+Link aliases: 34 left, down from 19,884 on 2026-10-31. An alias is a `/alternatename` line in `data/fullexe/plain/alias.rsp`. The linker uses it to send a call that the recovered code makes under a placeholder name or signature to the real function. An alias goes away once every caller uses the real declaration; the goal is 0.
 <!-- progress:end -->
 
 ## Layout
@@ -66,6 +74,7 @@ Link aliases: 535 left, down from 19,884 on 2026-10-31. An alias is a `/alternat
 | `tools/ms2symobj.py` | turns the symbol tables into the object that binds unrecovered names to their addresses in the exe |
 | `progress/symbols*.tsv` | symbol name → address tables for the original exe, used by the DLL link |
 | `engine-patches/` | our Gamebryo changes as SDK-free edit scripts against stock LightSpeed 3.2.0.661 (`tools/apply-engine-patches.sh`) |
+| `engine-patches-v2525/` | the same for the second engine tree some full-executable objects build against, applied to a separate unpatched copy |
 | `data/map/` | function and unit tables for the original exe (names, address ranges, unit grouping) used by the gate tools |
 | `tools/progress.py`, `tools/unit-check.sh`, ... | the byte-match and functional gates; see `CONTRIBUTING.md` |
 
@@ -83,6 +92,8 @@ Link aliases: 535 left, down from 19,884 on 2026-10-31. An alias is a `/alternat
   [`README.md`](https://github.com/riyukuro/GFx418-Recomp#compilers-by-section). clang-cl builds these units without them
 - clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
+  and with `engine-patches-v2525/` into `engine/gamebryo-v2525/` (the full-executable configure does the second one;
+  see [`BUILDING.md`](BUILDING.md))
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
 - The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`): the full-executable build reads it, and
   the DLL runs against it

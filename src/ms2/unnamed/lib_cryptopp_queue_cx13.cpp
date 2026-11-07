@@ -10,21 +10,21 @@
 #include <cstdint>
 #include <cstring>
 
-namespace CryptoPP { void* UnalignedAllocate(std::size_t size); }
+#include "cryptopp562/secblock.h"
 
-// MS2-FUNCTIONAL: reproduces the source object's six-word state and deep-copies its optional byte buffer with memcpy_s, as the exe
-// does; the exe has a 0x30 frame with an EH state slot but no handler (an inlined SecBlock copy ctor).
-// @0x142351e00
-std::uint64_t* FUN_142351e00(std::uint64_t* destination, const std::uint64_t* source)
+// queue.cpp's ByteQueueNode (defined in the .cpp, not a header): the members as the real class has them
+struct CppByteQueueNode
 {
-    destination[0] = source[0];
-    const std::size_t size = static_cast<std::size_t>(source[2]);
-    destination[2] = size;
-    auto* bytes = size ? static_cast<std::uint8_t*>(CryptoPP::UnalignedAllocate(size)) : nullptr;
-    destination[3] = reinterpret_cast<std::uintptr_t>(bytes);
-    memcpy_s(bytes, static_cast<std::size_t>(destination[2]), reinterpret_cast<const void*>(source[3]),
-             static_cast<std::size_t>(destination[2]));
-    destination[4] = source[4];
-    destination[5] = source[5];
+    CppByteQueueNode* next;
+    CryptoPP::SecByteBlock buf;
+    std::size_t m_head, m_tail;
+};
+
+// ByteQueueNode's implicit copy constructor (ByteQueue::CopyFrom's `new ByteQueueNode(*current)`), out of line in the
+// exe; the SecBlock copy ctor (allocate + memcpy_s) is inlined into it
+// @0x142351e00
+CppByteQueueNode* FUN_142351e00(CppByteQueueNode* destination, const CppByteQueueNode* source)
+{
+    destination->CppByteQueueNode::CppByteQueueNode(*source);
     return destination;
 }

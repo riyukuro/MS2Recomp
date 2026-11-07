@@ -200,8 +200,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
                 m_84 = m_84 * 0.9f;
             ptPos = m_d8.m_pos;
             Vector3 ptTarget = m_78;
-            Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
-            ptDir.FUN_140968990();
+            Vector3 ptDir = (ptTarget - ptPos);
+            ptDir.Unitize();
             ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptDir) * m_84));
             if (m_50 < m_58 || m_50 > m_54)
             {
@@ -210,8 +210,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
             {
                 m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
                 ptPos.z = ptTarget.z;
-                Vector3 ptDist = ptTarget.FUN_140965c40(ptPos);
-                m_50 = ptDist.FUN_140967ac0();
+                Vector3 ptDist = (ptTarget - ptPos);
+                m_50 = ptDist.Length();
                 m_50 = efd::Clamp(m_50, m_58, m_54);
                 if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) <= 5.0f)
                 {
@@ -262,8 +262,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
                 Vector3 ptCenter = m_78;
                 ptPos = m_d8.m_pos;
                 ptPos.z = ptCenter.z;
-                Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
-                m_50 = ptDist.FUN_140967ac0();
+                Vector3 ptDist = (ptCenter - ptPos);
+                m_50 = ptDist.Length();
                 m_50 = efd::Clamp(m_50, m_58, m_54);
                 ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
                 ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
@@ -358,7 +358,7 @@ void CRPGCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((m_d8.m_pos - m_c0.m_pos))));
         float fDist = ptDelta.Length();
         if (fDist <= 1.0f)
         {
@@ -385,7 +385,7 @@ void CRPGCameraMode::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * (m_d8.m_pos - m_c0.m_pos))))));
                 m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
         }
@@ -411,8 +411,8 @@ MS2_REPLACE_METHOD(0x14170ada0, CRPGCameraMode, vfunc_39, 1395, 0xB0210DC3);
 Vector3 CRPGCameraMode::FUN_14170b320(Vector3 ptPos)
 {
     Vector3 ptTarget = m_78;
-    Vector3 kDir = ptTarget.FUN_140965c40(ptPos);
-    kDir.FUN_140968990();
+    Vector3 kDir = (ptTarget - ptPos);
+    kDir.Unitize();
     efd::Point3 kRight = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
     kRight.Unitize();
     efd::Point3 kUp = reinterpret_cast<const efd::Point3&>(kRight).Cross(reinterpret_cast<const efd::Point3&>(kDir));
@@ -421,6 +421,6 @@ Vector3 CRPGCameraMode::FUN_14170b320(Vector3 ptPos)
     float fY;
     float fX;
     reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(fX, fY, fZ);
-    return reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-fX, -fY, -fZ))) * 180.0f)).FUN_140ae9180(3.14159265f);
+    return (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-fX, -fY, -fZ))) * 180.0f)) / 3.14159265f);
 }
 MS2_REPLACE_METHOD(0x14170b320, CRPGCameraMode, FUN_14170b320, 416, 0xAAC9EF95);

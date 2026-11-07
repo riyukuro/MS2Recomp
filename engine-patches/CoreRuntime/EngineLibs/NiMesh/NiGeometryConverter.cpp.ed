@@ -1,3 +1,6 @@
+1065c
+                ((MS2ElementSetView&)kElements).AddElementInline(eFormat);
+.
 264c
     else if (pkObject->IsNode())   // MS2: IS_NODE flag test (exe 0x141e36470), not NiIsKindOf
 .
@@ -14,4 +17,7 @@
 #if !defined(_M_IX86)
 #include <xmmintrin.h>   // _mm_cvt_ss2si (x64 FastFloatToInt)
 #endif
+.
+35c
+/* MS2: the exe inlines AddElement, Add and Realloc in ConvertAGDs, Allocate stays a call */ template<> inline __declspec(noinline) NiDataStreamElement* NiTNewInterface<NiDataStreamElement>::Allocate(unsigned int uiNumElements) {return NiNew NiDataStreamElement[uiNumElements];} template<> __forceinline void NiTSet<NiDataStreamElement, NiTNewInterface<NiDataStreamElement> >::Realloc(unsigned int uiNewSize) {if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) {NiDataStreamElement* pNewBase; unsigned int i; if (uiNewSize > 0) {pNewBase = NiTNewInterface<NiDataStreamElement>::Allocate(uiNewSize); for (i = 0; i < m_uiUsed; i++) {pNewBase[i] = m_pBase[i];}} else {pNewBase = NULL;} NiTNewInterface<NiDataStreamElement>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize;}} struct MS2ElementSetView : public NiDataStreamElementSet {__forceinline void AddElementInline(NiDataStreamElement::Format eFormat) {NiDataStreamElement kElement; kElement.SetFormat(eFormat); kElement.SetOffset(m_uiStride); m_uiStride = (NiUInt32)(m_uiStride + NiDataStreamElement::SizeOfFormat(eFormat)); Add(kElement);}};
 .

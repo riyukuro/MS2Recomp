@@ -14,10 +14,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141594B20: initializes the request and empty reply buffer.
-CNMGetPathFunc::CNMGetPathFunc():CNMFunc(0x8005,1,0,0),m_30(0),m_34{}{}
-// MS2-FUNCTIONAL 0x141594B80: stores the requested game code and clears the reply buffer.
-CNMGetPathFunc::CNMGetPathFunc(int code):CNMFunc(0x8005,1,0,0),m_30(code),m_34{}{}
+CNMGetPathFunc::CNMGetPathFunc():CNMFunc(0x8005,1,0,0){m_30=0;}
+CNMGetPathFunc::CNMGetPathFunc(int code):CNMFunc(0x8005,1,0,0){m_30=code;}
 // MS2-FUNCTIONAL 0x141594BE0: frames the path request.
 unsigned int CNMGetPathFunc::EncodeFramed(CNMStream* pStream)
 {

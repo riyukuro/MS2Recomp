@@ -51,7 +51,7 @@ float FUN_141422340(class CEquipModel*, int);   // C3: was FUN_141422340
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* self);
-void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);   // itemugcmesh.cpp
+void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler, float fScale);   // itemugcmesh.cpp
 void FUN_1402bd040(float* p);
 void FUN_141203db0(class CEquipModel*);   // C3: was FUN_141203db0
 void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f30
@@ -374,7 +374,7 @@ void CNifModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
     NiPoint3 b = *(NiPoint3*)pRotDeg;
     vfunc_26(b);
     vfunc_22(fScale);
-    FUN_141422b30((class CEquipModel*)this, *FUN_141201c90(this), *(const struct Vector3*)pPos, *(const struct Vector3*)pRotDeg, fScale);
+    FUN_141422b30((class CEquipModel*)this, *FUN_141201c90(this), *(const Vector3*)pPos, *(const Vector3*)pRotDeg, fScale);
 }
 
 // @0x141566aa0

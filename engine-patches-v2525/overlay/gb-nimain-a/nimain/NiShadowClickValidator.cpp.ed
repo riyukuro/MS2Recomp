@@ -1,0 +1,9 @@
+eol lf
+88c
+            NiNode* pkKey; NiNode* pkReceiver; kReceivers.GetNext(kIter, pkKey, pkReceiver);
+.
+85@46s "Head" "First"
+85@11s "List" "Map"
+84@22s "st" "Node*>"
+84@20s "L" "*, N"
+84@16s "" "TPointerMap<Ni"

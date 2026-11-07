@@ -11,10 +11,8 @@
 extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); extern void FUN_14156be10(void*,void*,void*); extern void FUN_14156bf10(void*);
 extern void FUN_14156ab90(void*,unsigned short); extern void FUN_1415f9990(void*); extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x1415907c0: initializes the sync code to zero.
-CNMLogReportSyncFunc::CNMLogReportSyncFunc():CNMFunc(0x801a,1,0,0),m_30(0),m_32{}{}
-// MS2-FUNCTIONAL 0x141590810: stores the supplied sync code.
-CNMLogReportSyncFunc::CNMLogReportSyncFunc(short code):CNMFunc(0x801a,1,0,0),m_30(code),m_32{}{}
+CNMLogReportSyncFunc::CNMLogReportSyncFunc():CNMFunc(0x801a,1,0,0){m_30=0;}
+CNMLogReportSyncFunc::CNMLogReportSyncFunc(short code):CNMFunc(0x801a,1,0,0){m_30=code;}
 // MS2-FUNCTIONAL 0x141590870: frames the log-sync request.
 unsigned int CNMLogReportSyncFunc::EncodeFramed(CNMStream* pStream)
 {

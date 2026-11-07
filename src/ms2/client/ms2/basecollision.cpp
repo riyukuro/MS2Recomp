@@ -90,7 +90,7 @@ struct Unk_BcRotSetter
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2(NiPoint3 kPos, const NiMatrix3& kRot, float fScale);   // MS2: slot 2
-    virtual void vfunc_3(NiPoint3 kPos, efd::Point3 kRot, float fScale);        // MS2: slot 3
+    virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kRot, float fScale);           // MS2: slot 3
 };
 
 // GameObject slots 18 and 20 return efd::Point3 (the shared header declares NiPoint3).
@@ -145,16 +145,16 @@ void CBaseCollision::vfunc_1()
 }
 
 // @0x1409fbfa0
-void CBaseCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
+void CBaseCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
 {
-    m_ptPos = ptPos;
+    m_ptPos = reinterpret_cast<const Vector3&>(ptPos);
     Invalidate();
 }
 
 // @0x1409fbff0
-void CBaseCollision::vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale)
+void CBaseCollision::vfunc_2(NiPoint3 ptPos, const NiMatrix3& kRot, float fScale)
 {
-    m_ptPos = ptPos;
+    m_ptPos = reinterpret_cast<const Vector3&>(ptPos);
     Invalidate();
 }
 
@@ -170,7 +170,7 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
         return 0;
     NiPoint3 kPos(reinterpret_cast<Unk_BcGoPlace*>(spSelf.operator->())->vfunc_18());
     NiPoint3 kRot(reinterpret_cast<Unk_BcGoPlace*>(spSelf.operator->())->vfunc_20());
-    vfunc_3(*(Vector3*)&kPos, *(Vector3*)&kRot, 1.0f);
+    vfunc_3(kPos, kRot, 1.0f);
     efd::Point3 kRight;
     efd::Point3 kDir;
     FUN_140a01250(kRot, &kDir, &kRight);
@@ -186,7 +186,7 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
 }
 
 // @0x1409fc390
-void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const efd::Point3& kRot)
+void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot)
 {
     reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_3(spCtx->m_kPos, kRot, 1.0f);
     NiPoint3 kDir;

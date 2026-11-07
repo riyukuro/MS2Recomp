@@ -19,8 +19,8 @@ class CBoxCollision : public CBaseCollision
 public:
     CBoxCollision();                                                // 0x140ada4c0
     virtual ~CBoxCollision();                                       // 0x140ada5a0
-    virtual void vfunc_2(Vector3 ptPos, const NiMatrix3& kRot, float fScale);   // 0x140ada910 place by a matrix
-    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x140ada620 place by angles
+    virtual void vfunc_2(NiPoint3 ptPos, const NiMatrix3& kRot, float fScale);   // 0x140ada910 place by a matrix
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x140ada620 place by angles
     virtual void vfunc_4();                                         // 0x140adab30 the local bounds from the size
     virtual void vfunc_5();                                         // 0x140adae20 the 16-point wire mesh
     virtual float vfunc_6();                                        // 0x140adae00 the height (m_ptBox.z)

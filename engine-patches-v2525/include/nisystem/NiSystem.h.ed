@@ -1,0 +1,16 @@
+eol lf
+117a
+#endif
+#if defined(_WIN64)  // x64 port (inferred)
+inline void NiMemcpyFloatArray(float* pDst, const float* pSrc, int SizeInFloats)
+{
+    memcpy(pDst, pSrc, sizeof(float) * SizeInFloats);
+}
+inline void NiMemcpyFloatArraySSE(float* pDst, const float* pSrc, int SizeInFloats)
+{
+    memcpy(pDst, pSrc, sizeof(float) * SizeInFloats);
+}
+.
+116c
+#if defined(WIN32) && !defined(_WIN64)
+.

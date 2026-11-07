@@ -2,31 +2,39 @@
 // leave as stubs (ICF-folded bodies and this-adjusting scalar deleting destructors of std::ostringstream-style classes
 // with a virtual base), written out over raw object bytes.
 // MS2-UNIT: lib_cef_tail
-// MS2-RANGE: 0x142787270-0x142787313 .text$mn
-// MS2-RANGE: 0x14278bcd0-0x14278bd73 .text$mn
 // MS2-RANGE: 0x14279ff00-0x14279ff2b .text$mn
-// MS2-RANGE: 0x14278c4a0-0x14278c5a9 .text$mn
-// MS2-RANGE: 0x14278c5b0-0x14278c6b9 .text$mn
-// MS2-RANGE: 0x14278c6c0-0x14278c7c9 .text$mn
-// MS2-RANGE: 0x1427a54a0-0x1427a54c5 .text$mn
 // MS2-RANGE: 0x1427a54d0-0x1427a552f .text$mn
-// MS2-RANGE: 0x1427a9550-0x1427a95f3 .text$mn
-// MS2-RANGE: 0x1427aabf0-0x1427aac15 .text$mn
 // MS2-RANGE: 0x1427aac20-0x1427aac7f .text$mn
-// MS2-RANGE: 0x1427ad990-0x1427ada33 .text$mn
 // MS2-RANGE: 0x1427b0250-0x1427b027b .text$mn
 // MS2-RANGE: 0x1427b0280-0x1427b02ab .text$mn
-// MS2-RANGE: 0x1427b08f0-0x1427b0993 .text$mn
-// MS2-RANGE: 0x1427b0d10-0x1427b0d35 .text$mn
 // MS2-RANGE: 0x1427b0d40-0x1427b0d9f .text$mn
-// MS2-RANGE: 0x1427b1070-0x1427b1095 .text$mn
 // MS2-RANGE: 0x1427b10a0-0x1427b10ff .text$mn
-// MS2-RANGE: 0x1427b36f0-0x1427b3715 .text$mn
 // MS2-RANGE: 0x1427b3720-0x1427b377f .text$mn
-// MS2-RANGE: 0x1427b3a60-0x1427b3b03 .text$mn
-// MS2-RANGE: 0x1427b4610-0x1427b4635 .text$mn
 // MS2-RANGE: 0x1427b4640-0x1427b469f .text$mn
-// MS2-RANGE: 0x1427b5780-0x1427b57a5 .text$mn
+// MS2-RANGE: 0x1427976a0-0x1427976ab .text$mn
+// MS2-RANGE: 0x142797948-0x142797953 .text$mn
+// MS2-RANGE: 0x14279785c-0x142797867 .text$mn
+// MS2-RANGE: 0x1427979ec-0x1427979f7 .text$mn
+// MS2-RANGE: 0x1427aa710-0x1427aa71b .text$mn
+// MS2-RANGE: 0x1427aa820-0x1427aa82b .text$mn
+// MS2-RANGE: 0x1427aa928-0x1427aa933 .text$mn
+// MS2-RANGE: 0x1427aa9a4-0x1427aa9af .text$mn
+// MS2-RANGE: 0x1427a5530-0x1427a553b .text$mn
+// MS2-RANGE: 0x1427a5794-0x1427a579f .text$mn
+// MS2-RANGE: 0x1427a5720-0x1427a572b .text$mn
+// MS2-RANGE: 0x1427a5420-0x1427a542b .text$mn
+// MS2-RANGE: 0x1427a2694-0x1427a269f .text$mn
+// MS2-RANGE: 0x1427a2af0-0x1427a2afb .text$mn
+// MS2-RANGE: 0x1427a286c-0x1427a2877 .text$mn
+// MS2-RANGE: 0x1427a2378-0x1427a2383 .text$mn
+// MS2-RANGE: 0x1427a2654-0x1427a265f .text$mn
+// MS2-RANGE: 0x1427a2a50-0x1427a2a5b .text$mn
+// MS2-RANGE: 0x1427a282c-0x1427a2837 .text$mn
+// MS2-RANGE: 0x1427a236c-0x1427a2377 .text$mn
+// MS2-RANGE: 0x1427a88e4-0x1427a88ef .text$mn
+// MS2-RANGE: 0x1427a8b60-0x1427a8b6b .text$mn
+// MS2-RANGE: 0x1427a8a1c-0x1427a8a27 .text$mn
+// MS2-RANGE: 0x1427a86fc-0x1427a8707 .text$mn
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -35,68 +43,13 @@
 void operator delete(void* p, size_t size);   // sized operator delete (the CRT's)
 #include "ms2/cef/cef.h"   // CefBaseRefCounted, the (virtual) base whose vftable these objects get back
 struct Unk_CefBaseReset : CefBaseRefCounted { static __forceinline void Reset(void* p) { static_cast<Unk_CefBaseReset*>(p)->CefBaseRefCounted::~CefBaseRefCounted(); } };
-// @0x1427a54a0
-void* FUN_1427a54a0(char* self, unsigned flags)
+#include "ms2/cef/cef_ctocpp.h"   // the real CefCToCppRefCounted<..>: its vftables are emitted here
+// ~CefCToCppRefCounted<..> (protected) run on a wrapper as the exe's inlined base-dtor step
+template <class C, class B, class S> struct Unk_CefCToCppReset : CefCToCppRefCounted<C, B, S>
 {
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427aabf0
-void* FUN_1427aabf0(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427b0d10
-void* FUN_1427b0d10(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427b1070
-void* FUN_1427b1070(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427b36f0
-void* FUN_1427b36f0(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427b4610
-void* FUN_1427b4610(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
-
-// @0x1427b5780
-void* FUN_1427b5780(char* self, unsigned flags)
-{
-    char* base = self - 0x10;
-    if (flags & 1)
-        operator delete(base, 0x18);
-    return base;
-}
+    typedef CefCToCppRefCounted<C, B, S> Base;
+    static __forceinline void Reset(void* p) { static_cast<Unk_CefCToCppReset*>(p)->Base::~Base(); }
+};
 
 // @0x1427b0250
 void* FUN_1427b0250(char* self, unsigned flags)
@@ -116,358 +69,99 @@ void* FUN_1427b0280(char* self, unsigned flags)
     return self;
 }
 
-extern char DAT_1431de6c8[];
-extern char DAT_1431de6f0[];
 // @0x1427a54d0
 void* FUN_1427a54d0(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431de6c8;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431de6f0;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefProcessMessageCToCpp, CefProcessMessage, cef_process_message_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-extern char DAT_1431dc618[];
-extern char DAT_1431dc628[];
 // @0x1427aac20
+// a CToCpp wrapper's deleting dtor (self = its CefBaseRefCounted subobject): ~CefCToCppRefCounted<..> stores the
+// wrapper base's two vftables and the vtordisp. The exe folds the identical 2-slot (all-_purecall) primary vftables of
+// the 2-method wrappers into one; CefCallbackCToCpp's names it.
 void* FUN_1427aac20(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431dc618;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431dc628;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefCallbackCToCpp, CefCallback, cef_callback_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-extern char DAT_1431de3d8[];
-extern char DAT_1431de3e0[];
 // @0x1427b0d40
 void* FUN_1427b0d40(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431de3d8;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431de3e0;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefBeforeDownloadCallbackCToCpp, CefBeforeDownloadCallback, cef_before_download_callback_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-extern char DAT_1431de400[];
-extern char DAT_1431de410[];
 // @0x1427b10a0
 void* FUN_1427b10a0(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431de400;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431de410;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefRunContextMenuCallbackCToCpp, CefRunContextMenuCallback, cef_run_context_menu_callback_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-extern char DAT_1431df020[];
-extern char DAT_1431df028[];
 // @0x1427b3720
 void* FUN_1427b3720(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431df020;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431df028;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefJSDialogCallbackCToCpp, CefJSDialogCallback, cef_jsdialog_callback_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-extern char DAT_1431df560[];
-extern char DAT_1431df5a0[];
 // @0x1427b4640
+// CefV8StackFrameCToCpp's deleting dtor: the 8-slot primary vftable (0x1431df560) is CefV8StackFrame's (8 methods);
+// its derived vftable 0x1431e14f8 shares the vbase thunks 0x1427aa820.. with 0x1431df5a0.
 void* FUN_1427b4640(char* self, unsigned flags)
 {
-    char* base = self - 0x20;
-    *(void**)base = DAT_1431df560;
-    *(void**)(self - 0x18 + *(int*)(*(char**)(self - 0x18) + 4)) = DAT_1431df5a0;
-    char* vbtable = *(char**)(self - 0x18);
-    int off = *(int*)(vbtable + 4);
-    *(int*)(self - 0x1c + off) = off - 0x18;
+    Unk_CefCToCppReset<CefV8StackFrameCToCpp, CefV8StackFrame, cef_v8stack_frame_t>::Reset(self - 0x20);
     Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
+    char* base = self - 0x20;
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
 }
 
-// ostringstream-style object with a virtual base: vptr, vbtable pointer (entry 1 = offset of the virtual base), a state word
-// and the virtual base's ios_base vptr at +0x20
-struct CefStrmObj
+// CefCppToCRefCounted<..>::struct_release (cpptoc_ref_counted.h), ICF-folded over every instantiation: the dead
+// DCHECK / DCHECK_EQ LogMessage temporaries give the exe frame its unwind state slot (-2)
+struct CefCppToCWrapperStructView
 {
-    void* volatile vptr;            // +0x00
-    void* volatile vbptr;           // +0x08 (vbtable; [1] = virtual base offset)
-    volatile int state;             // +0x10
-    char pad_14[0xc];
-    void* iosVptr;                  // +0x20
+    int type_;
+    CefBaseRefCounted* wrapper_;
 };
-struct CefVBase
-{
-    int pad_0;
-    int adj;                        // +4
-    void* vptr;                     // +8
-};
-static inline int CefVBaseOff(CefStrmObj* self) { return ((const int*)self->vbptr)[1]; }
-static inline CefVBase* CefVBaseAt(CefStrmObj* self, int off) { return (CefVBase*)((char*)self + off); }
-static inline CefVBase* CefVBaseOf(CefStrmObj* self) { return CefVBaseAt(self, CefVBaseOff(self)); }
-
-extern char DAT_1431d9618[];
-extern char DAT_1431d9568[];
-extern char DAT_1431d95a0[];
-extern char DAT_1431d6fc8[];
-extern char DAT_1431d7000[];
-extern char DAT_1431d95c0[];
-extern char DAT_1431d95f8[];
-// @0x142787270
-void* FUN_142787270(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431d9618;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431d9568;
-    CefVBaseOf(self)->vptr = DAT_1431d95a0;
-    self->vptr = DAT_1431d6fc8;
-    CefVBaseOf(self)->vptr = DAT_1431d7000;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431d95c0;
-    CefVBaseOf(self)->vptr = DAT_1431d95f8;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-extern char DAT_1431da2a8[];
-extern char DAT_1431da218[];
-extern char DAT_1431da240[];
-extern char DAT_1431d75e8[];
-extern char DAT_1431d7610[];
-extern char DAT_1431da260[];
-extern char DAT_1431da288[];
-// @0x14278bcd0
-void* FUN_14278bcd0(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431da2a8;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431da218;
-    CefVBaseOf(self)->vptr = DAT_1431da240;
-    self->vptr = DAT_1431d75e8;
-    CefVBaseOf(self)->vptr = DAT_1431d7610;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431da260;
-    CefVBaseOf(self)->vptr = DAT_1431da288;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-extern char DAT_1431df490[];
-extern char DAT_1431df2b0[];
-extern char DAT_1431df380[];
-extern char DAT_1431dc138[];
-extern char DAT_1431dc208[];
-extern char DAT_1431df3a0[];
-extern char DAT_1431df470[];
-// @0x1427a9550
-void* FUN_1427a9550(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431df490;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431df2b0;
-    CefVBaseOf(self)->vptr = DAT_1431df380;
-    self->vptr = DAT_1431dc138;
-    CefVBaseOf(self)->vptr = DAT_1431dc208;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431df3a0;
-    CefVBaseOf(self)->vptr = DAT_1431df470;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-extern char DAT_1431e03e8[];
-extern char DAT_1431e0028[];
-extern char DAT_1431e01e8[];
-extern char DAT_1431dcf48[];
-extern char DAT_1431dd108[];
-extern char DAT_1431e0208[];
-extern char DAT_1431e03c8[];
-// @0x1427ad990
-void* FUN_1427ad990(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431e03e8;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431e0028;
-    CefVBaseOf(self)->vptr = DAT_1431e01e8;
-    self->vptr = DAT_1431dcf48;
-    CefVBaseOf(self)->vptr = DAT_1431dd108;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431e0208;
-    CefVBaseOf(self)->vptr = DAT_1431e03c8;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-extern char DAT_1431e09b0[];
-extern char DAT_1431e0950[];
-extern char DAT_1431e0960[];
-extern char DAT_1431de378[];
-extern char DAT_1431de388[];
-extern char DAT_1431e0980[];
-extern char DAT_1431e0990[];
-// @0x1427b08f0
-void* FUN_1427b08f0(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431e09b0;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431e0950;
-    CefVBaseOf(self)->vptr = DAT_1431e0960;
-    self->vptr = DAT_1431de378;
-    CefVBaseOf(self)->vptr = DAT_1431de388;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431e0980;
-    CefVBaseOf(self)->vptr = DAT_1431e0990;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-extern char DAT_1431e1418[];
-extern char DAT_1431e1268[];
-extern char DAT_1431e1320[];
-extern char DAT_1431df048[];
-extern char DAT_1431df100[];
-extern char DAT_1431e1340[];
-extern char DAT_1431e13f8[];
-// @0x1427b3a60
-void* FUN_1427b3a60(CefStrmObj* self, int mostDerived)
-{
-    if (mostDerived)
-    {
-        self->vbptr = DAT_1431e1418;
-        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
-    }
-    self->vptr = DAT_1431e1268;
-    CefVBaseOf(self)->vptr = DAT_1431e1320;
-    self->vptr = DAT_1431df048;
-    CefVBaseOf(self)->vptr = DAT_1431df100;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    self->state = 0;
-    self->vptr = DAT_1431e1340;
-    CefVBaseOf(self)->vptr = DAT_1431e13f8;
-    {
-        int off = CefVBaseOff(self);
-        CefVBaseAt(self, off)->adj = off - 0x18;
-    }
-    return self;
-}
-
-// MS2-FUNCTIONAL: same call sequence; the exe frame carries an unwind state slot (-2) from an inlined smart-pointer wrapper we do not model
 // @0x14279ff00
-bool FUN_14279ff00(void** self)
+int CEF_CALLBACK FUN_14279ff00(cef_base_ref_counted_t* base)
 {
-    if (!self)
-        return false;
-    void** obj = (void**)self[-1];
-    return ((bool (*)(void*))(*(void***)obj)[1])(obj);
+    DCHECK(base);
+    if (!base)
+        return 0;
+
+    CefCppToCWrapperStructView* wrapperStruct =
+        reinterpret_cast<CefCppToCWrapperStructView*>(reinterpret_cast<char*>(base) - sizeof(CefCppToCWrapperStructView));
+    // Verify that the wrapper offset was calculated correctly.
+    DCHECK_EQ(0, wrapperStruct->type_);   // kWrapperType differs per instantiation; dead with DCHECK_IS_ON() == 0
+
+    return wrapperStruct->wrapper_->Release();
 }
 
-// CefString (CefStringBase<CefStringTraitsUTF16>, include/internal/cef_string_wrappers.h) returned by the CEF
-// C-to-C++ string getters: the SDK wrapper body (CEF_MEMBER_MISSING test, AttachToUserFree, copy on return).
-#include "ms2/cef/cef.h"
-#include <new>
-
-// The CToCpp wrapper object of these getters (its C struct pointer is at -8); the real class is not recovered.
-struct Unk_CefCToCppStrings
-{
-    CefString FUN_14278c4a0();
-    CefString FUN_14278c5b0();
-    CefString FUN_14278c6c0();
-};
-// The SDK CToCpp string getter body (minSize = the end offset of the C member, offset = its offset in the C struct).
-#define CEF_CTOCPP_STRING_GETTER(minSize, offset) \
-    size_t* cs = *reinterpret_cast<size_t**>(reinterpret_cast<char*>(this) - 8); \
-    typedef cef_string_userfree_t (*Getter)(void*); \
-    if (cs[0] < minSize || !reinterpret_cast<Getter>(cs[offset / 8]))   /* CEF_MEMBER_MISSING */ \
-        return CefString(); \
-    cef_string_userfree_t retval = reinterpret_cast<Getter>(cs[offset / 8])(cs); \
-    CefString retvalStr; \
-    retvalStr.AttachToUserFree(retval); \
-    return retvalStr;
 //
 //
 //
@@ -513,14 +207,39 @@ struct Unk_CefCToCppStrings
 //
 //
 
-// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
-// @0x14278c4a0
-CefString Unk_CefCToCppStrings::FUN_14278c4a0() { CEF_CTOCPP_STRING_GETTER(0x28, 0x20) }
-
-// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
-// @0x14278c5b0
-CefString Unk_CefCToCppStrings::FUN_14278c5b0() { CEF_CTOCPP_STRING_GETTER(0x38, 0x30) }
-
-// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
-// @0x14278c6c0
-CefString Unk_CefCToCppStrings::FUN_14278c6c0() { CEF_CTOCPP_STRING_GETTER(0x30, 0x28) }
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@6BCefCallback@@@ 0x1431dc618
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@6BCefBaseRefCounted@@@ 0x1431dc628
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@6BCefV8StackFrame@@@ 0x1431df560
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@6BCefBaseRefCounted@@@ 0x1431df5a0
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@$4PPPPPPPM@A@EBAXXZ 0x14279785c
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427979ec
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x142797948
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefCallbackCToCpp@@VCefCallback@@U_cef_callback_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427976a0
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@$4PPPPPPPM@A@EBAXXZ 0x1427aa820
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427aa9a4
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427aa928
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefV8StackFrameCToCpp@@VCefV8StackFrame@@U_cef_v8stack_frame_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427aa710
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@6BCefProcessMessage@@@ 0x1431de6c8
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@6BCefBaseRefCounted@@@ 0x1431de6f0
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@6BCefBeforeDownloadCallback@@@ 0x1431de3d8
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@6BCefBaseRefCounted@@@ 0x1431de3e0
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@6BCefRunContextMenuCallback@@@ 0x1431de400
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@6BCefBaseRefCounted@@@ 0x1431de410
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefJSDialogCallback@@@ 0x1431df020
+// MS2-PIN: ??_7?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@6BCefBaseRefCounted@@@ 0x1431df028
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@$4PPPPPPPM@A@EBAXXZ 0x1427a5530
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a5794
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a5720
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefProcessMessageCToCpp@@VCefProcessMessage@@U_cef_process_message_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427a5420
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@$4PPPPPPPM@A@EBAXXZ 0x1427a2694
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a2af0
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a286c
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefBeforeDownloadCallbackCToCpp@@VCefBeforeDownloadCallback@@U_cef_before_download_callback_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427a2378
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@$4PPPPPPPM@A@EBAXXZ 0x1427a2654
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a2a50
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a282c
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefRunContextMenuCallbackCToCpp@@VCefRunContextMenuCallback@@U_cef_run_context_menu_callback_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427a236c
+// MS2-PIN: ?AddRef@?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@$4PPPPPPPM@A@EBAXXZ 0x1427a88e4
+// MS2-PIN: ?Release@?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a8b60
+// MS2-PIN: ?HasOneRef@?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@$4PPPPPPPM@A@EBA_NXZ 0x1427a8a1c
+// MS2-PIN: ??_E?$CefCToCppRefCounted@VCefJSDialogCallbackCToCpp@@VCefJSDialogCallback@@U_cef_jsdialog_callback_t@@@@$2PPPPPPPM@A@EAAPEAXI@Z 0x1427a86fc

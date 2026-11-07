@@ -223,11 +223,46 @@ struct JpegComponentLite { char pad[0x58]; const float* dct_table; };
 // DESCALE(x, 3) & RANGE_MASK of the float result
 static __forceinline unsigned JpegDescale(float v)
 {
-    long long i = static_cast<long long>(v);
+    long long i = static_cast<int>(v);
     return static_cast<unsigned>((i + 4) >> 3) & 0x3ff;
 }
 
-// MS2-FUNCTIONAL: same AA&N arithmetic as jidctflt.c; SSE register allocation and loop unrolling differ
+static __forceinline void JpegIdctRow(const float* wsptr, unsigned char* outptr, const unsigned char* range_limit)
+{
+    float tmp10 = wsptr[0] + wsptr[4];
+    float tmp11 = wsptr[0] - wsptr[4];
+    float tmp13 = wsptr[2] + wsptr[6];
+    float tmp12 = (wsptr[2] - wsptr[6]) * 1.414213562f - tmp13;
+    float tmp0 = tmp10 + tmp13;
+    float tmp3 = tmp10 - tmp13;
+    float tmp1 = tmp11 + tmp12;
+    float tmp2 = tmp11 - tmp12;
+    float z13 = wsptr[5] + wsptr[3];
+    float z10 = wsptr[5] - wsptr[3];
+    float z11 = wsptr[1] + wsptr[7];
+    float z12 = wsptr[1] - wsptr[7];
+    float tmp7 = z11 + z13;
+    tmp11 = (z11 - z13) * 1.414213562f;
+    float z5 = (z10 + z12) * 1.847759065f;
+    tmp10 = 1.082392200f * z12 - z5;
+    tmp12 = -2.613125930f * z10 + z5;
+    float tmp6 = tmp12 - tmp7;
+    float tmp5 = tmp11 - tmp6;
+    float tmp4 = tmp10 - tmp5;
+    outptr[0] = range_limit[JpegDescale(tmp0 + tmp7)];
+    outptr[7] = range_limit[JpegDescale(tmp0 - tmp7)];
+    outptr[1] = range_limit[JpegDescale(tmp1 + tmp6)];
+    outptr[6] = range_limit[JpegDescale(tmp1 - tmp6)];
+    outptr[2] = range_limit[JpegDescale(tmp2 + tmp5)];
+    outptr[5] = range_limit[JpegDescale(tmp2 - tmp5)];
+    outptr[4] = range_limit[JpegDescale(tmp3 + tmp4)];
+    outptr[3] = range_limit[JpegDescale(tmp3 - tmp4)];
+}
+
+// Pass 1 is the jidctflt.c column loop (DC-only shortcut with continue), which cl unrolls by two as in the exe.
+// Pass 2 is written unrolled by four rows, as the exe has it.
+// MS2-FUNCTIONAL: same AA&N arithmetic and output as jidctflt.c; in pass 2 the exe loads the eight workspace values into
+// registers and biases the workspace pointer differently, where ours folds some loads into memory operands
 // @0x142702350
 void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short* coef_block, unsigned char** output_buf, unsigned int output_col)
 {
@@ -241,10 +276,17 @@ void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short*
         if (inptr[8] == 0 && inptr[16] == 0 && inptr[24] == 0 && inptr[32] == 0 && inptr[40] == 0 && inptr[48] == 0 && inptr[56] == 0)
         {
             float dcval = (float)inptr[0] * quantptr[0];
-            for (int r = 0; r < 8; ++r)
-                wsptr[8 * r] = dcval;
+            wsptr[0] = dcval;
+            wsptr[8] = dcval;
+            wsptr[16] = dcval;
+            wsptr[24] = dcval;
+            wsptr[32] = dcval;
+            wsptr[40] = dcval;
+            wsptr[48] = dcval;
+            wsptr[56] = dcval;
+            ++inptr; ++quantptr; ++wsptr;
+            continue;
         }
-        else
         {
             float tmp0 = (float)inptr[0] * quantptr[0];
             float tmp1 = (float)inptr[16] * quantptr[16];
@@ -286,37 +328,12 @@ void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short*
         ++inptr; ++quantptr; ++wsptr;
     }
     wsptr = workspace;
-    for (int ctr = 0; ctr < 8; ++ctr)
+    for (int ctr = 0; ctr < 8; ctr += 4)
     {
-        unsigned char* outptr = output_buf[ctr] + output_col;
-        float tmp10 = wsptr[0] + wsptr[4];
-        float tmp11 = wsptr[0] - wsptr[4];
-        float tmp13 = wsptr[2] + wsptr[6];
-        float tmp12 = (wsptr[2] - wsptr[6]) * 1.414213562f - tmp13;
-        float tmp0 = tmp10 + tmp13;
-        float tmp3 = tmp10 - tmp13;
-        float tmp1 = tmp11 + tmp12;
-        float tmp2 = tmp11 - tmp12;
-        float z13 = wsptr[5] + wsptr[3];
-        float z10 = wsptr[5] - wsptr[3];
-        float z11 = wsptr[1] + wsptr[7];
-        float z12 = wsptr[1] - wsptr[7];
-        float tmp7 = z11 + z13;
-        tmp11 = (z11 - z13) * 1.414213562f;
-        float z5 = (z10 + z12) * 1.847759065f;
-        tmp10 = 1.082392200f * z12 - z5;
-        tmp12 = -2.613125930f * z10 + z5;
-        float tmp6 = tmp12 - tmp7;
-        float tmp5 = tmp11 - tmp6;
-        float tmp4 = tmp10 - tmp5;
-        outptr[0] = range_limit[JpegDescale(tmp0 + tmp7)];
-        outptr[7] = range_limit[JpegDescale(tmp0 - tmp7)];
-        outptr[1] = range_limit[JpegDescale(tmp1 + tmp6)];
-        outptr[6] = range_limit[JpegDescale(tmp1 - tmp6)];
-        outptr[2] = range_limit[JpegDescale(tmp2 + tmp5)];
-        outptr[5] = range_limit[JpegDescale(tmp2 - tmp5)];
-        outptr[4] = range_limit[JpegDescale(tmp3 + tmp4)];
-        outptr[3] = range_limit[JpegDescale(tmp3 - tmp4)];
-        wsptr += 8;
+        JpegIdctRow(wsptr, output_buf[ctr] + output_col, range_limit);
+        JpegIdctRow(wsptr + 8, output_buf[ctr + 1] + output_col, range_limit);
+        JpegIdctRow(wsptr + 16, output_buf[ctr + 2] + output_col, range_limit);
+        JpegIdctRow(wsptr + 24, output_buf[ctr + 3] + output_col, range_limit);
+        wsptr += 32;
     }
 }

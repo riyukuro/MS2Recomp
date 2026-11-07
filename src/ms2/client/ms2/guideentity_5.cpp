@@ -65,6 +65,7 @@
 // MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VCGuideEntity@@@@PEAV3@00@Z 0x1413a0190 ; calls 0x141395240
 // MS2-PIN: ?Reference@?$MS2Ptr@VCGuideEntity@@@@CAXPEAVCGuideEntity@@@Z 0x14139b660 ; calls AddRefPtred
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@AEAAXPEAU?$pair@W4Occurrence@CGuideManager@@H@2@00@Z 0x1413a0250 ; prop
+// MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@PEAU32@@Z 0x14139f310 ; called by the CString-map _Extract 0x14139d050
 // MS2-PINS-END tplpin
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCGuideEntity@@@@AEAAXPEAX@Z 0x14139f820 ; merge-bind
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VGuideTriggerEventGroup@@@@AEAAXPEAX@Z 0x14139f870 ; merge-bind

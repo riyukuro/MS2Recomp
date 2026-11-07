@@ -36,16 +36,30 @@ a missing or different file stops the configure with the variable name.
 
 | Variable | Contents |
 | --- | --- |
-| `MS2_GAMEBRYO_ROOT` | the directory that holds `gamebryo/`: Gamebryo LightSpeed 3.2.0.661 after `tools/apply-engine-patches.sh engine-patches <dir>/gamebryo`, and `fmt-ms2/`: `format.cc` and `format.h` of upstream cppformat (fmt) commit 5ca3d00e2 (BSD 2-clause) after `tools/apply-engine-patches.sh fmt-patches <dir>/fmt-ms2` (default `engine/`) |
+| `MS2_GAMEBRYO_ROOT` | the directory that holds `gamebryo/`: Gamebryo LightSpeed 3.2.0.661 after `tools/apply-engine-patches.sh engine-patches <dir>/gamebryo`, and `fmt-ms2/`: `format.cc` and `format.h` of upstream cppformat (fmt) commit 5ca3d00e2 (BSD 2-clause) after `tools/apply-engine-patches.sh fmt-patches <dir>/fmt-ms2`, and `gamebryo-v2525/`, made from the pristine Source by `engine-patches-v2525/` (configure does this; see "Engine trees" below) (default `engine/`) |
 | `MS2_DXSDK_ROOT` | DirectX SDK June 2010; must be `dxsdk/DXSDK` under the `MS2_MSVC_ROOT` directory (see below) |
 | `MS2_PHYSX_ROOT` | PhysX 2.8.4 SDK; must be `physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win` under `MS2_MSVC_ROOT` |
 | `MS2_CEF_ROOT` | CEF 3.3396 binary distribution (`cef_binary_3.3396.1786.gd3e36d0_windows64_minimal`); must be under `src/` of `MS2_MSVC_ROOT` |
 | `MS2_PATHENGINE_ROOT` | PathEngine evaluation sources; must be `src/pathengine-sigmaco` under `MS2_MSVC_ROOT` (game sources include them as `<pathengine-sigmaco/...>`, see below) |
-| `MS2_MSVC_ROOT` | a directory in the `third_party/` layout that the tools read (`MS2_THIRD_PARTY`): `msvc/` (MSVC 14.16 + Windows SDK, msvc-wine), `dxsdk/`, `physx284/`, and under `src/` the statically linked library sources `cryptopp562`, `jpeg-6b`, `libpng-1.6.17`, `lua-5.1.4`, `expat-2.0.1`, `zlib-1.2.3`, `pcre-8.21`, `pathengine-sigmaco` and the CEF distribution, plus `fmod44464/` and `razer/` (headers); default `third_party/` |
+| `MS2_MSVC_ROOT` | a directory in the `third_party/` layout that the tools read (`MS2_THIRD_PARTY`): `msvc/` (MSVC 14.16 + Windows SDK, msvc-wine), `gamebryo/APPDIR/Source` (the stock Gamebryo 3.2.0.661 Source, unpatched), `dxsdk/`, `physx284/`, and under `src/` the statically linked library sources `cryptopp562`, `jpeg-6b`, `libpng-1.6.17`, `lua-5.1.4`, `expat-2.0.1`, `zlib-1.2.3`, `pcre-8.21`, `pathengine-sigmaco` and the CEF distribution, plus `fmod44464/` and `razer/` (headers); default `third_party/` |
 
 The library sources are the upstream releases, unmodified, and none of them is redistributed here. `pcre-8.21` is upstream PCRE 8.21 (BSD) prepared the way its `NON-UNIX-USE` describes for a build without `configure`: `cp pcre.h.generic pcre.h` and `cp pcre_chartables.c.dist pcre_chartables.c`; the build settings are `-D` defines in `data/engine/units-lib-pcre.json`, so no `config.h` is needed.
 
 Example: `cmake --preset fullexe -DMS2_GAMEBRYO_ROOT=<dir> -DMS2_MSVC_ROOT=<dir>`.
+
+### Engine trees
+
+The build uses two trees made from one stock Gamebryo 3.2.0.661 tree, and the order matters:
+
+1. `gamebryo-v2525/` is made from the pristine `APPDIR/Source` with `engine-patches-v2525/`:
+   `tools/apply-engine-patches.sh engine-patches-v2525 <third_party>/gamebryo/APPDIR/Source <engine dir>/gamebryo-v2525`
+   (Windows: `python tools\apply_engine_patches.py ...` with the same arguments). It writes only to the third argument.
+   Configure runs this step itself (`cmake/v2525.cmake`) when `gamebryo-v2525/` is missing and Python is found, and stops
+   if `engine-patches-v2525/` changed since (delete `gamebryo-v2525/` and configure again).
+2. `engine-patches/` is applied to a separate copy of `APPDIR/Source`, `<engine dir>/gamebryo/`.
+
+The SDK copy under `<third_party>/gamebryo/` must stay unpatched: the build also compiles about 4,000 of its files as
+they are, and step 1 checks every stock hash and refuses on a patched tree. Never apply `engine-patches/` to it in place.
 
 Game sources name these SDKs by include path only (`<cryptopp562/...>`, `<pathengine-sigmaco/...>`, `<zlib-1.2.3/...>`,
 `<fmod44464/...>`, `<razer/...>`; the include roots are `MS2_THIRD_PARTY_INCLUDE_DIRS` in `cmake/ms2-engine-flags.cmake`),
@@ -241,8 +255,10 @@ Steps for a Windows-only user with no exe (run on a Windows 10 VM, see above):
    `<checkout>`. Build the tip as cloned: its sources are the ones the committed glue was made from.
    `data/fullexe/plain/commit` only records the maintainer's build id. For a byte-identical exe, clone to the
    reference checkout path (see "What matches"; a `subst Z:` drive works).
-2. Put the SDK tree at `<checkout>\third_party` (or a junction to it) and the patched engine tree at
-   `<checkout>\engine`. `tools/apply_engine_patches.py` (Python) patches a stock engine tree.
+2. Put the SDK tree at `<checkout>\third_party` (or a junction to it), with the stock Gamebryo Source unpatched at
+   `third_party\gamebryo\APPDIR\Source`, and the engine tree at `<checkout>\engine`. Order (see "Engine trees"): first
+   `gamebryo-v2525` from the pristine Source with `engine-patches-v2525` (configure does it when Python is on PATH), then
+   `engine-patches` into a separate copy of `APPDIR\Source` at `engine\gamebryo`, with `python tools\apply_engine_patches.py`.
 3. `src\ms2\cef\include` is a git symlink. Without symlink support git checks it out as a small text file, and the CEF
    units then fail to find their headers. Replace it with a junction: in `src\ms2\cef`, `del include` then
    `mklink /J include ..\..\..\third_party\src\cef_binary_3.3396.1786.gd3e36d0_windows64_minimal\include`.

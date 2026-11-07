@@ -1,0 +1,14 @@
+eol lf
+158c
+    // gb-nimain-a: studio bound check (NiStream::SaveStream 0x141d4b681)
+    if (uiIndex >= m_uiMaxSize)
+        return;
+.
+129a
+        }
+.
+115c
+        // gb-nimain-a: studio null check (SetSize<NiFixedString> 0x141d4c287)
+        if (m_pBase)
+        {
+.

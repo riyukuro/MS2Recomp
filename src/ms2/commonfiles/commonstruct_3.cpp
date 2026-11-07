@@ -277,7 +277,7 @@ class CUgcItemLook; template void MS2Ptr<CUgcItemLook>::AddRef() const;   // slo
 void FUN_14027a4a0(__int64 a, __int64 b);                       // _Pocca
 void FUN_14027a4e0(__int64 a, __int64 b);                       // _Pocca
 struct Unk_RemakeLockOpt; typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_Cs3RemakeAlloc; template std::_Vector_val<std::_Simple_types<Unk_RemakeLockOpt> >& Unk_Cs3RemakeAlloc::_Get_data() noexcept;   // 0x1402882f0 = its _Getal
-__int64 FUN_1402883f0(__int64 vec);                             // _Getal
+namespace Probability { class LogContext; } typedef std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<Probability::LogContext>, std::allocator<MS2Ptr<Probability::LogContext> > > > Unk_Cs3LogAlloc;   // was FUN_1402883f0 (_Getal)
 // @0x140287550
 void FUN_140287550(__int64 a, __int64 b)
 {
@@ -286,7 +286,7 @@ void FUN_140287550(__int64 a, __int64 b)
 // @0x140287580
 void FUN_140287580(__int64 a, __int64 b)
 {
-    FUN_14027a4e0(FUN_1402883f0(a), b);
+    FUN_14027a4e0(reinterpret_cast<__int64>(&reinterpret_cast<Unk_Cs3LogAlloc*>(a)->_Getal()), b);
 }
 // _Tree<map<int,int>>::_Freeheadnode
 // @0x140287dc0

@@ -9,10 +9,12 @@ extern void FUN_1415eb720(void*);
 extern void FUN_1415eb7b0(void*);
 extern void FUN_1415ef0e0(void*);
 
+// the member at offset 0 that the wrapper hands on
+struct Unk_CryptorMemberView { char m; };
 // @0x1415ef0e0
 void FUN_1415ef0e0(void* p)
 {
-    FUN_1415eb720(p);
+    FUN_1415eb720(&static_cast<Unk_CryptorMemberView*>(p)->m);
 }
 
 // @0x1415ef100

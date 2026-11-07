@@ -50,6 +50,10 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d8dca)        # Gamebryo tail: renderer / shader libs + egmWhitebox (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb2"                                  # gb2: .deps now case-repaired (Wine lowercases dirs); bump to recompile everything
+# MS2_GB_DEPS_SHADOW (default on since merge 65; 0 = off): also treat an obj as stale when a header that would shadow one of its includes now
+# exists (a new overlay file in an earlier /I dir) or a tree symlink it read through now points elsewhere. .deps realpaths
+# alone miss both. The shadow/links records are always written; only the check is switched.
+DEPS_SHADOW = os.environ.get("MS2_GB_DEPS_SHADOW", "1") != "0"
 MATCH_KEY = "alias-1"                          # bump to re-match every obj (pairing logic changed)
 # chained tails (bytematch default since 2026-10-29, MS2_BM_CHAIN=0 turns it off) decide only exact vs functional, in
 # chain_verdict: every pairing step compares the first .pdata chunk, as before 5cb8ad519. Pairing on the chained body
@@ -72,7 +76,135 @@ if NO_CALLEE:
 # tables. Merge-46 objs, tables of merge 46 -> 15 rows later (10-31): 32 of 1829 objs re-match, results identical to a
 # full stock run. Pair with bytematch MS2_BM_LAZY_DEBUG=1: engine work 690 s -> 124 s on a loaded box.
 ROWKEY = os.environ.get("MS2_ENGINE_ROWKEY") == "1"
+CHAIN_SELF = os.environ.get("MS2_GB_CHAIN_SELF", "1") != "0"  # chain_verdict: own name -> pair VA (0 = off)
+CHAIN_PERCALLER = os.environ.get("MS2_GB_CHAIN_PERCALLER", "1") != "0"  # chain_verdict: callee name -> the exe target if any table row binds that name there (default on since merge 65; 0 = off)
 ROWKEY_TABLES = ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv")
+# MS2_GB_CALLEE_ALTS=1 (default off; fe1's gbalt.py, 2026-11-06 m65): a relocation to a name that some func row of the
+# symbol tables binds to the exe target counts as that name, though the name map holds another VA for it (one name,
+# several rows: the first table wins in names). Full-engine A/B at merge 65 (3bd151ba9): +1 matched (0x141f904e0
+# _Tree_val<utf8string,uint>::_Extract, now FlatModelManager's exact copy), 0 lost, one identical-twin name swap
+# (0x1423759b0 CryptoPP GetValueHelperClass DSA vs DefaultSafePrime, matched both ways), same wall time.
+CALLEE_ALTS = os.environ.get("MS2_GB_CALLEE_ALTS") == "1"
+if CALLEE_ALTS:
+    MATCH_KEY += "+alts"
+# MS2_GB_SPEC_OWN=1 (default off; lf1 2026-11-06): a `template<> inline __declspec(noinline)` explicit specialization
+# in the unit's own source counts as the obj's own function (copy anchor, home code), as a strong one did. `inline`
+# makes it COMDAT-any (7083e41d1: a strong one is LNK2005 against another TU's implicit copy), which alone made it a
+# possible sibling copy and cost 9 copy VAs on NiDX9SystemDesc / NiMesh / NiGeometryConverter.
+SPEC_OWN = os.environ.get("MS2_GB_SPEC_OWN") == "1"
+if SPEC_OWN:
+    MATCH_KEY += "+specown"
+    RELOK_KEY = "specown:" + RELOK_KEY
+_SPEC_OWNED = {}                # <cache>/gb/specown.json -> {obj path: [mangled names of its own inline specializations]}
+_SPEC_RE = re.compile(r"template\s*<\s*>\s*inline\s+__declspec\s*\(\s*noinline\s*\)\s+([^;{}]*?)::\s*(~?[A-Za-z_]\w*)\s*\(")
+
+
+def _spec_templates(src):
+    """[(template name, template args, member name)] of the source's `template<> inline __declspec(noinline)` member definitions (a
+    typedef'd qualifier resolves through the source's typedef)"""
+    try:
+        text = open(src, encoding="latin1").read()
+    except OSError:
+        return []
+    if "noinline" not in text:
+        return []
+    out = []
+    for m in _SPEC_RE.finditer(text):
+        q, f = m.group(1).rstrip(), m.group(2)
+        if q.endswith(">"):
+            depth, i = 0, len(q) - 1
+            while i >= 0:
+                depth += {">": 1, "<": -1}.get(q[i], 0)
+                if depth == 0:
+                    break
+                i -= 1
+            t = re.search(r"([A-Za-z_]\w*)\s*$", q[:i])
+            args = q[i + 1:-1]
+        else:
+            ident = re.search(r"([A-Za-z_]\w*)$", q)
+            td = ident and re.search(r"typedef\s+(?:typename\s+|class\s+|struct\s+)?([A-Za-z_][\w:]*)\s*<([^;]*)>\s*"
+                                     + re.escape(ident.group(1)) + r"\s*;", text)
+            t = td and re.search(r"([A-Za-z_]\w*)$", td.group(1))
+            args = td and td.group(2)
+        if t and not f.startswith("~"):
+            out.append((t.group(1), _norm_targs(args), f))
+    return out
+
+
+def _norm_targs(a):
+    a = re.sub(r"\b(?:class|struct|enum|union)\s+", "", a)
+    a = re.sub(r"\bsize_t\b", "unsigned __int64", a)
+    return re.sub(r"\s+", "", a)
+
+
+def _undname_targs(names, t, f):
+    """mangled name -> the normalized template args of its t<..>::f (llvm-undname); {} if undname is missing"""
+    try:
+        r = subprocess.run(["llvm-undname"], input="\n".join(names), capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return {}
+    out = {}
+    # llvm-undname echoes each input line, then its demangling
+    lines = r.stdout.splitlines()
+    for i, line in enumerate(lines[:-1]):
+        if line in names:
+            d = lines[i + 1]
+            k = d.find(t + "<")
+            e = d.rfind(">::" + f + "(")
+            if k >= 0 and e > k:
+                out[line] = _norm_targs(d[k + len(t) + 1:e])
+    return out
+
+
+def spec_owned(src, path):
+    """the obj's COMDAT-any functions that are its source's inline explicit specializations (template name, member
+    name and template args agree; an instantiation the args do not single out is left out)"""
+    specs = _spec_templates(src)
+    if not specs:
+        return frozenset()
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return frozenset()
+    names = [obj.syms[si][0] for si in obj.func_symbols()]
+    got = set()
+    for t, args, f in specs:
+        hit = [n for n in names if n.startswith("?%s@?$%s@" % (f, t)) and _comdat_any(obj, n)]
+        if hit and args:
+            dem = _undname_targs(hit, t, f)
+            hit = [n for n in hit if dem.get(n) == args]
+        if len(hit) == 1:
+            got.add(hit[0])
+    return frozenset(got)
+
+
+_BM_NOTE = bm.note_symbol
+_ALTS = None
+
+
+def _note_symbol_alts(name, va, rep):
+    global _ALTS
+    if _ALTS is None:
+        _ALTS = {}
+        for f in ROWKEY_TABLES:
+            p = os.path.join(ROOT, "progress", f)
+            if not os.path.exists(p):
+                continue
+            for ln in open(p):
+                c = ln.rstrip("\n").split("\t")
+                if ln[0] != "#" and len(c) > 1 and (len(c) < 3 or c[2] == "func"):
+                    try:
+                        _ALTS.setdefault(c[0], set()).add(int(c[1], 16))
+                    except ValueError:
+                        pass
+    want = bm.SYMBOLS.get(name)
+    if want is not None and want != va and va in _ALTS.get(name, ()):
+        bm.SYMBOLS[name] = va
+        try:
+            return _BM_NOTE(name, va, rep)
+        finally:
+            bm.SYMBOLS[name] = want
+    return _BM_NOTE(name, va, rep)
 
 
 def _safe(name):
@@ -103,6 +235,18 @@ def needs_compile(cache, u):
     for f in [u["source"]] + meta.get("deps", []):
         if not os.path.exists(f) or os.path.getmtime(f) > t:
             return True
+    if DEPS_SHADOW:
+        if "shadow" not in meta:        # written before the shadow record: cannot tell, recompile once
+            return True
+        for f in meta["shadow"]:        # a header that would now win an earlier include dir (a new overlay file)
+            if _dir_exists(os.path.dirname(f)) and os.path.exists(f):     # recorded with the on-disk dir case
+                return True
+        for f, target in meta.get("links", {}).items():     # a tree symlink retargeted (overlay file at the same path)
+            try:
+                if os.readlink(f) != target:
+                    return True
+            except OSError:
+                return True
     return False
 
 
@@ -135,6 +279,30 @@ def _real(p):
     return os.path.realpath(p) if p else None
 
 
+_DIRS = {}
+
+
+def _dir_exists(d):
+    if d not in _DIRS:
+        _DIRS[d] = os.path.isdir(d)
+    return _DIRS[d]
+
+
+def _shadow_candidates(raw, inc_dirs):
+    """(tree path, [paths that would shadow it]) for one /showIncludes line: the same relative path under each /I dir
+    searched before the one it was found in. Absent now; if one appears, the obj is stale."""
+    p = ms2paths.host_path(raw.strip())
+    if not os.path.exists(p):
+        p = (_case_fix(p) if os.path.isabs(p) else None) or p
+    p = os.path.normpath(p)
+    lp = p.lower()
+    for k, d in enumerate(inc_dirs):
+        if lp.startswith(d.lower() + "/"):
+            rel = p[len(d) + 1:]
+            return p, [c for c in (os.path.join(e, rel) for e in inc_dirs[:k]) if not os.path.exists(c)]
+    return p, []
+
+
 def compile_unit(args):
     cache, u = args
     o = obj_path(cache, u)
@@ -145,16 +313,24 @@ def compile_unit(args):
     t0 = time.time()
     r = subprocess.run(cmd, cwd=u["cwd"], capture_output=True, text=True, env=env, encoding="latin1")
     deps, errs = set(), []
+    shadow, links = set(), {}
+    inc_dirs = [os.path.normpath(ms2paths.host_path(a[2:])) for a in u["args"] if a[:2] in ("/I", "-I") and len(a) > 2]
     for line in (r.stdout + r.stderr).splitlines():
         if line.startswith("Note: including file:"):
-            f = _real(line.split(":", 2)[2])
+            raw = line.split(":", 2)[2]
+            f = _real(raw)
             if f and f.startswith(ROOT):       # the repo's engine sources (MSVC / SDK headers do not change)
                 deps.add(f)
+                tp, cands = _shadow_candidates(raw, inc_dirs)
+                shadow.update(cands)
+                if os.path.islink(tp) and any(tp.startswith(os.path.realpath(t) + "/") for t in (gbtree.TREE, getattr(gbtree, "BASE_TREE", gbtree.TREE))):
+                    links[tp] = os.readlink(tp)        # the assembled tree's symlink and where it points
         elif " error " in line or "fatal error" in line:
             errs.append(line.strip())
     ok = r.returncode == 0 and os.path.exists(o)
     if ok:
-        json.dump({"key": _key(u), "deps": sorted(deps)}, open(o[:-4] + ".deps", "w"))
+        json.dump({"key": _key(u), "deps": sorted(deps), "shadow": sorted(shadow), "links": links},
+                  open(o[:-4] + ".deps", "w"))
     elif os.path.exists(o):
         os.remove(o)
     return ok, errs[:3], time.time() - t0
@@ -226,6 +402,8 @@ def _named_vas(names, aliases):
 
 def _init():
     bm.CHAIN = False            # pairing compares the first chunk (see CHAIN); a forked worker inherits the parent's
+    if CALLEE_ALTS:
+        bm.note_symbol = _note_symbol_alts
     exe = bm.Exe(bm.EXE)
     names, dnames, aliases = _load_tables()
     bm.SYMBOLS.clear()
@@ -360,6 +538,22 @@ def _comdat_any(obj, n):
     return obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] == 2
 
 
+def _own(obj, n):
+    """n is the obj's own function: not COMDAT-any, or (MS2_GB_SPEC_OWN) its source's inline explicit specialization"""
+    if not _comdat_any(obj, n):
+        return True
+    if not SPEC_OWN:
+        return False
+    # Pool workers (forkserver: a fresh import) read the map run() wrote next to the objs (<cache>/gb/obj/<recipe>/)
+    f = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(obj.path))), "specown.json")
+    if f not in _SPEC_OWNED:
+        try:
+            _SPEC_OWNED[f] = {k: set(v) for k, v in json.load(open(f)).items()}
+        except (OSError, ValueError):
+            _SPEC_OWNED[f] = {}
+    return n in _SPEC_OWNED[f].get(obj.path, ())
+
+
 def _hints(obj, n, shints):
     """the exe targets of the last match of n; the static callees of a COMDAT-any caller go to shints instead: the
     linker may have kept another TU's copy of the caller, which calls that TU's statics (LuaTraits<T>::ToLuaObject ->
@@ -375,7 +569,7 @@ def _hints(obj, n, shints):
 def _static_hints(obj, out, shints, callees):
     """shints whose exe VA lies within STATIC_NEAR of the obj's own (non-COMDAT-any) exact functions (if it has none:
     any of its exact functions) -> callees"""
-    own = sorted(va for n, va, ok, _ in out if ok and not _comdat_any(obj, n)) or sorted(va for _, va, ok, _ in out if ok)
+    own = sorted(va for n, va, ok, _ in out if ok and _own(obj, n)) or sorted(va for _, va, ok, _ in out if ok)
     if not own:
         return
     for k, v in shints.items():
@@ -490,14 +684,14 @@ def match_obj(path):
     # <RandomNumberType>::AssignValue in esign and integer, BitBucket::AlgorithmName); the tables name one, so the other
     # TUs' copies stay stubs. A COMDAT-any function exact at a VA far from this obj's own code also credits an exact
     # copy of it next to that code (the named pair stays: another TU may own that copy)
-    home = sorted(va for n, va, ok, _ in out if ok and not _comdat_any(obj, n))
+    home = sorted(va for n, va, ok, _ in out if ok and _own(obj, n))
     if home and not NO_CALLEE:
         def near(v):
             i = bisect.bisect_left(home, v)
             return min(abs(v - home[j]) for j in (i - 1, i) if 0 <= j < len(home)) <= STATIC_NEAR
         used = {va for _, va, _, _ in out}
         for n, va, ok, _ in list(out):
-            if ok and _comdat_any(obj, n) and not near(va):
+            if ok and not _own(obj, n) and not near(va):
                 for h in _search(obj, obj.by_name[n]):
                     if h not in used and near(h) and _allowed(h) and not _in_game(h) and _match(obj, n, h):
                         out.append((n, h, True, "local"))
@@ -517,7 +711,7 @@ def match_obj(path):
     # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
     out += [weak[n] for n in pending if n in weak]
     cands = [[n, list(copies[n])] for n in pending if n in copies]
-    own = sorted({va for n, va, ok, _ in out if ok and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2})
+    own = sorted({va for n, va, ok, _ in out if ok and _own(obj, n)})
     return out, cands, own
 
 
@@ -859,7 +1053,7 @@ def _relok_job(job):
     # instantiation's byte-identical copy. A target the anchors disagree on is dropped.
     seen = collections.defaultdict(set)
     for n, va in exact:
-        if n in obj.by_name and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2:
+        if n in obj.by_name and _own(obj, n):
             for key, t in resolve(n, va):
                 seen[key].add(t)
     known = {key: next(iter(ts)) for key, ts in seen.items() if len(ts) == 1}
@@ -1891,10 +2085,14 @@ def assign_dislots(res, paths, log=print):
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
     saved, bm.CHAIN = bm.CHAIN, False      # pairing: first chunk only (see CHAIN)
+    saved_note = bm.note_symbol
+    if CALLEE_ALTS:
+        bm.note_symbol = _note_symbol_alts    # engine stage only: progress.py's game units keep the stock check
     try:
         return _run(cache, j, filters, log)
     finally:
         bm.CHAIN = saved
+        bm.note_symbol = saved_note
 
 
 def _run(cache, j, filters, log):
@@ -1915,6 +2113,20 @@ def _run(cache, j, filters, log):
                     failed.add(u["name"])
                     log(f"  FAIL {u['recipe']} {u['name']} ({dt:.1f}s)" + "".join("\n      " + e[:300] for e in errs))
     t1 = time.time()
+    if SPEC_OWN:        # before the matching Pools; _own reads it back in the workers
+        spec = {}
+        for u in gbtree.load_units(tree):
+            o = obj_path(cache, u)
+            if u["source"] and os.path.exists(o):
+                got = spec_owned(u["source"], o)
+                if got:
+                    spec[o] = sorted(got)
+        f = os.path.join(cache, "gb", "specown.json")
+        with open(f + ".tmp", "w") as fh:
+            json.dump(spec, fh, indent=0, sort_keys=True)
+        os.replace(f + ".tmp", f)
+        _SPEC_OWNED.pop(f, None)
+        log(f"engine: {sum(map(len, spec.values()))} inline explicit specialization(s) counted as own (MS2_GB_SPEC_OWN)")
     rpath = os.path.join(cache, "gb", "results.json")
     res = json.load(open(rpath)) if os.path.exists(rpath) else {}
     gpath = os.path.join(cache, "gb", "copygroups.json")      # copy group id -> exe VAs (see assign_copies)
@@ -2012,10 +2224,52 @@ def _chain_job(job):
         if len(obj.function(si)[0]) == ln1 and not (rva in exe.rf and exe.rf[rva][0] in exe._chained):
             bm.CHAIN = False
             continue
-        if not _match(obj, n, va):
+        # a chained tail may refer back to its own function: that reference is the pair's own copy, not the copy the
+        # name table binds (fe10, 2026-11-06: gfpcrypt's GetValueHelperClass ctor 0x1423739b0 failed on dll's 0x1423258b0)
+        own = bm.SYMBOLS.get(n) if CHAIN_SELF else None
+        if own is not None:
+            bm.SYMBOLS[n] = va
+        del bm.SYMBOL_MISMATCH[:]
+        ok = _match(obj, n, va)
+        # one mangled name, several different exe functions (the game's /Od _Tree_val<pair<utf8string const, uint>>
+        # ::_Rrotate at 0x1409a2ba0 and the engine's /O2 copy at 0x1421100f0, bound by symbols-engine-manual): the name
+        # map holds one VA, but each caller's tail calls its own copy. A callee whose exe target is a VA some table row
+        # gives that same name is rebound for this pair only (fe10, 2026-11-06: NiTerrainSurfacePackageFileVersion1's
+        # _Extract 0x141f904e0 calls the game copies, DDEParser's 0x14210e8f0 the engine ones)
+        mis = list(bm.SYMBOL_MISMATCH)
+        if not ok and CHAIN_PERCALLER and mis and all(t in _all_vas().get(m, ()) for m, _, t in mis):
+            keep = {m: bm.SYMBOLS.get(m) for m, _, _ in mis}
+            bm.SYMBOLS.update({m: t for m, _, t in mis})
+            ok = _match(obj, n, va)
+            bm.SYMBOLS.update(keep)
+        if not ok:
             bad.append([n, va])
+        if own is not None:
+            bm.SYMBOLS[n] = own
         bm.CHAIN = False
     return path, bad
+
+
+_ALL_VAS = None
+
+
+def _all_vas():
+    """name -> every func-row VA of that name over ROWKEY_TABLES (the name map keeps only the first)"""
+    global _ALL_VAS
+    if _ALL_VAS is None:
+        _ALL_VAS = {}
+        for f in ROWKEY_TABLES:
+            p = os.path.join(ROOT, "progress", f)
+            if not os.path.exists(p):
+                continue
+            for ln in open(p):
+                c = ln.rstrip("\n").split("\t")
+                if ln[0] != "#" and len(c) > 1 and (len(c) < 3 or c[2] in ("func", "alias")):
+                    try:
+                        _ALL_VAS.setdefault(c[0], set()).add(int(c[1], 16))
+                    except ValueError:
+                        pass
+    return _ALL_VAS
 
 
 def chain_verdict(res, paths, j, log=print):
@@ -2024,7 +2278,7 @@ def chain_verdict(res, paths, j, log=print):
     jobs = {}
     for k, c in res.items():
         pairs = _ok_pairs(c)
-        stamp = hashlib.sha1(json.dumps([CHAIN_KEY, c["key"], pairs]).encode()).hexdigest()[:16]
+        stamp = hashlib.sha1(json.dumps([CHAIN_KEY + ("-self" if CHAIN_SELF else "") + ("-pc" if CHAIN_PERCALLER else ""), c["key"], pairs]).encode()).hexdigest()[:16]
         if c.get("chainbad", [None])[0] != stamp and k in paths and os.path.exists(paths[k]):
             jobs[paths[k]] = (k, stamp, pairs)
         elif c.get("chainbad", [None])[0] != stamp:
@@ -2211,6 +2465,13 @@ def main():
             for va, nm, un, st, sz in rows:
                 fo.write(f"{va:x}\t{nm}\t{un}\t{st}\t{sz}\n")
     print("\n".join(summary(rows)))
+    # MS2_GB_PRECHECK=1 (default off; lf1 2026-11-06): relink the published latest build with the engine objs of the
+    # selected units that differ from its commit (tools/fullexe/gbprecheck.py); a new LNK2005 or trap stub exits 1
+    if os.environ.get("MS2_GB_PRECHECK") == "1":
+        sys.path.insert(0, os.path.join(ROOT, "tools", "fullexe"))
+        import gbprecheck
+        if gbprecheck.run(a.cache, a.filters):
+            sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -108,7 +108,7 @@ void UIPortalEmoticon::FUN_140f9bbd0()
 void UIPortalEmoticon::FUN_140f9bc40(Vector3 ptWorld)
 {
     m_ptWorld = ptWorld;
-    m_ptWorld.FUN_140a4e560(Vector3(0.0f, 0.0f, 150.0f));
+    (m_ptWorld += Vector3(0.0f, 0.0f, 150.0f));
 }
 
 // @0x140f9bca0

@@ -78,7 +78,7 @@ void CArcController::FUN_1409ab3b0(float fDelta)
         m_elapsed += fDelta;
         if (m_elapsed > m_arc.m_flightScale)
             m_elapsed = m_arc.m_flightScale;
-        Vector3 delta = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_elapsed, m_arc.m_direction);
+        Vector3 delta = ((m_arc.m_speed * m_arc.m_angle.x * m_elapsed) * m_arc.m_direction);
         delta.z = 0.5f * m_arc.m_gravity * m_elapsed * m_elapsed + m_arc.m_speed * m_arc.m_angle.y * m_elapsed;
         if (reinterpret_cast<const efd::Point3&>(m_offset) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
             m_offset = delta;
@@ -90,11 +90,11 @@ void CArcController::FUN_1409ab3b0(float fDelta)
 }
 MS2_REPLACE_METHOD(0x1409ab3b0, CArcController, FUN_1409ab3b0, 430, 0x4EB1F775);
 
-// @0x1409ab5c0 (efd::Point3 operator*(float, const Point3&), declared in nipoint3.h)
-Vector3 FUN_1409ab5c0(float fScalar, const Vector3& pt)
-{
-    return Vector3(fScalar * pt.x, fScalar * pt.y, fScalar * pt.z);
-}
+// (0x1409ab5c0 is efd::operator*(float, const Point3&): the inline body of efd/Point3.h, a COMDAT of this obj.)
+//
+//
+//
+//
 
 // @0x1409ab690
 const NiRTTI* CArcController::GetRTTI() const { return &ms_RTTI; }

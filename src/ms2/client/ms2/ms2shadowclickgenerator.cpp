@@ -614,7 +614,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     // along the scene camera's direction flattened onto the ground plane (z dropped, not renormalized).
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     NiPoint3 kCameraPos(MS2_SC_POINT(efd::Point3,
-        pTarget->vfunc_18().FUN_140965c40(MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
+        (pTarget->vfunc_18() - MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
     ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();
     if (pHolder)
     {

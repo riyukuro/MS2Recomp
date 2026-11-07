@@ -231,7 +231,7 @@ MS2_CHECK_OFFSET(Unk_McPickHit, m_pt, 0x10);
 // Math helpers.
 bool FUN_14028d470(float a, float b);                           // approx equal
 float FUN_140966f00(Vector3 a, Vector3 b);      // distance
-Vector3 FUN_1420834e0(const Vector3& v, const Unk_EfdMatrix3& m);   // efd::operator*(Point3, Matrix3)
+// C3: FUN_1420834e0 is efd::operator*(const Point3&, const Matrix3&) (called directly)
 
 // The effect manager and the request it takes (constructed / destroyed out of line).
 struct Unk_McRot { float m_af[9]; };
@@ -384,7 +384,7 @@ void CMouseController::FUN_140ad1f30(int nOldAction, int nNewAction)
     else if (nOldAction == 0x1d || nOldAction == 8)
     {
         m_tmMove.Init();
-        m_vMove = FUN_140ad3260(m_vDown);
+        reinterpret_cast<efd::Point3&>(m_vMove) = FUN_140ad3260(m_vDown);
     }
     else if (nNewAction == 0x1d || nNewAction == 8)
     {
@@ -520,7 +520,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
         m_vMove = FUN_140ad3400(pt);
         break;
     default:
-        m_vMove = FUN_140ad3260(pt);
+        reinterpret_cast<efd::Point3&>(m_vMove) = FUN_140ad3260(pt);
         break;
     }
     Unk_McState* pState = reinterpret_cast<Unk_McState*>(reinterpret_cast<PC*>(pPc)->FUN_14166ccb0());
@@ -569,7 +569,7 @@ void CMouseController::FUN_140ad26d0(int nX, int nY)
     v.z = 0;
     v.x *= -1.0f;
     v.y *= -1.0f;
-    v.FUN_140968990();
+    v.Unitize();
     m_vMove = v;
     m_vDown = DAT_143b01a60;
     m_vDir = DAT_143b01a60;
@@ -732,7 +732,7 @@ void CMouseController::FUN_140ad3040()
         {
             Vector3 vPos = FUN_140ad3c70();
             Vector3 vTarget = (reinterpret_cast<Unk_McBuffSrc*>(reinterpret_cast<PC*>(pPc)->FUN_1416749a0())->FUN_140970a40() != 0) ? m_vDir : m_vDown;
-            float fDist = vPos.FUN_140965c40(vTarget).FUN_140967ac0();
+            float fDist = (vPos - vTarget).Length();
             if (fDist > m_fLastDist && m_fLastDist != 0.0f)
             {
                 if (fDist < 75.0f)
@@ -760,20 +760,20 @@ void CMouseController::FUN_140ad3040()
 MS2_REPLACE_METHOD(0x140AD3040, CMouseController, FUN_140ad3040, 524, 0xF761C44F);
 
 // @0x140ad3260
-Vector3 CMouseController::FUN_140ad3260(Vector3 pt)
+efd::Point3 CMouseController::FUN_140ad3260(Vector3 pt)
 {
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
-        return DAT_143b01a60;
+        return efd::Point3::ZERO;   // DAT_143b01a60
     MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
     if (spMap.IsNull())
-        return DAT_143b01a60;
-    Vector3 v = pt.FUN_140965c40(FUN_140ad3c70());
+        return efd::Point3::ZERO;   // DAT_143b01a60
+    Vector3 v = (pt - FUN_140ad3c70());
     v.x = v.x * -1.0f;
-    v.FUN_140968990();
+    v.Unitize();
     Unk_NiMatrix3 rot;
     reinterpret_cast<efd::Matrix3&>(rot).MakeZRotation(((reinterpret_cast<Unk_McMapData*>(spMap.operator->())->m_fRotation * 3.1415927f) / 180.0f) * -1.0f);
-    return FUN_1420834e0(v, rot);
+    return reinterpret_cast<const efd::Point3&>(v) * reinterpret_cast<const efd::Matrix3&>(rot);
 }
 MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87);
 
@@ -789,14 +789,14 @@ Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
         v = DAT_143b01a60;
         v.x = pt.y - vPos.y;
         v.y = pt.z - vPos.z;
-        v.FUN_140968990();
+        v.Unitize();
     }
     else
     {
         v.x = pt.x - vPos.x;
         v.y = pt.z - vPos.z;
         v.x *= -1.0f;
-        v.FUN_140968990();
+        v.Unitize();
     }
     return v;
 }
@@ -876,8 +876,8 @@ Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return DAT_143b01a60;
-    Vector3 vOrigin;
-    Vector3 vDir;
+    NiPoint3 vOrigin;   // NiPoint3 locals: the exe calls NiPoint3() 0x1405522f0, not efd::Point3()
+    NiPoint3 vDir;
     if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
     {
         efd::Point3 vA;   // efd::Point3 locals: the default ctor 0x1402bd040, not Vector3's 0x1405522f0
@@ -888,8 +888,8 @@ Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
         float fDen = vNormal.Dot(reinterpret_cast<const efd::Point3&>(vDir));
         if (fDen != 0.0f)
         {
-            float t = vNormal.Dot(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vPos.FUN_140965c40(vOrigin)))) / fDen;
-            efd::Point3 vHit = reinterpret_cast<const efd::Point3&>(vOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, vDir)));
+            float t = vNormal.Dot(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((vPos - reinterpret_cast<const Vector3&>(vOrigin))))) / fDen;
+            efd::Point3 vHit = reinterpret_cast<const efd::Point3&>(vOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((t * reinterpret_cast<const Vector3&>(vDir))));
             return reinterpret_cast<Vector3&>(vHit);
         }
     }

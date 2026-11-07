@@ -264,7 +264,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         {
             Vector3 ptScreen;
             efd::Point3 ptWorld = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pGather->GetPos())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 200.0f)));
-            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
+            float fDist = (reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18() - pGather->GetPos()).Length();
             if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist)
             {
                 spContext->m_spEntity->vfunc_3(0);
@@ -332,7 +332,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         {
             Vector3 ptScreen;
             efd::Point3 ptWorld = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spHome->GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 200.0f)));
-            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->GetPosition()).FUN_140967ac0();
+            float fDist = (reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18() - spHome->GetPosition()).Length();
             int nRiding = static_cast<Unk_McPc*>(pPC)->GetCubeMode() != 0;
             if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist || nRiding != 0)
             {

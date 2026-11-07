@@ -1,0 +1,9 @@
+0a
+#pragma once
+#include <unordered_set>
+namespace std {
+template<class K, class H = hash<K>, class E = equal_to<K>, class A = allocator<K>>
+using hash_set = unordered_set<K, H, E, typename allocator_traits<A>::template rebind_alloc<K>>;
+}
+
+.

@@ -636,7 +636,7 @@ int FUN_140b7a650(PCBase* pPc)
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
         if (spObj.IsNull())
             continue;
-        float fDist = ((CInteractObject*)(Unk_RxActorView*)(reinterpret_cast<Unk_RxActorView*>(spObj.get())))->GetPos().FUN_140965c40(ptCenter).FUN_140967ac0();
+        float fDist = (((CInteractObject*)(Unk_RxActorView*)(reinterpret_cast<Unk_RxActorView*>(spObj.get())))->GetPos() - ptCenter).Length();
 
         if (fDist < fNear)
             return 1;
@@ -667,7 +667,7 @@ int FUN_140b7a650(PCBase* pPc)
         // the exe copies the vfunc_18 result straight into the by-value arg
         int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
         FUN_1408a15b0(FUN_1408a0400(nActorCell), reinterpret_cast<efd::Point3&>(pt));
-        float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
+        float fDist = (pt - ptCenter).Length();
         if (fDist < fNear)
             return 1;
 

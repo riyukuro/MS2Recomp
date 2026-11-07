@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141594740: initializes the request and empty reply buffer.
-CNMGetGameServerNameFunc::CNMGetGameServerNameFunc():CNMFunc(0x8011,1,0,0),m_nGameCode(0),m_nServerCode(0),m_szName{}{}
-// MS2-FUNCTIONAL 0x1415947B0: stores the requested game and server codes and clears the reply buffer.
-CNMGetGameServerNameFunc::CNMGetGameServerNameFunc(int code,int server):CNMFunc(0x8011,1,0,0),m_nGameCode(code),m_nServerCode(server),m_szName{}{}
+CNMGetGameServerNameFunc::CNMGetGameServerNameFunc():CNMFunc(0x8011,1,0,0){m_nGameCode=0;m_nServerCode=0;m_szName[0]=0;}
+CNMGetGameServerNameFunc::CNMGetGameServerNameFunc(int code,int server):CNMFunc(0x8011,1,0,0){m_nGameCode=code;m_nServerCode=server;m_szName[0]=0;}
 // MS2-FUNCTIONAL 0x141594830: frames the server-name request.
 unsigned int CNMGetGameServerNameFunc::EncodeFramed(CNMStream* pStream)
 {

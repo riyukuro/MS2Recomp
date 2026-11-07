@@ -86,7 +86,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = kStart;
-    kInfo.m_dir = FUN_14147af10(kEnd.FUN_140965c40(kStart));
+    kInfo.m_dir = FUN_14147af10((kEnd - kStart));
     kInfo.m_groups = 0x389;
     float fDist = FUN_141403f20(reinterpret_cast<NiPoint3&>(kStart), reinterpret_cast<NiPoint3&>(kEnd));
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
@@ -100,7 +100,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
                 *reinterpret_cast<NiPoint3*>(pOut) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(kPoint))));
                 return true;
             }
-            kInfo.m_origin = kInfo.m_hitPoint.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kInfo.m_dir) * 30.0f)));
+            kInfo.m_origin = (kInfo.m_hitPoint - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kInfo.m_dir) * 30.0f)));
         }
         else
         {
@@ -155,8 +155,8 @@ bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3
 {
     bool bHit = false;
     Vector3 kUnit = reinterpret_cast<const Vector3&>(kDir);
-    kUnit.FUN_140968990();
-    Unk_NiPoint3 kToCenter(reinterpret_cast<const Vector3&>(kCenter).FUN_140965c40(reinterpret_cast<const Vector3&>(kOrigin)));
+    kUnit.Unitize();
+    Unk_NiPoint3 kToCenter((reinterpret_cast<const Vector3&>(kCenter) - reinterpret_cast<const Vector3&>(kOrigin)));
     float fProj = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kUnit));
     float fProjSqr = fProj * fProj;
     float fSqr = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kToCenter));
@@ -167,9 +167,9 @@ bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3
     if (fPerp > fRR)
     {
         bHit = false;
-        Unk_NiPoint3 kNear(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fProj, kUnit))))));
-        Unk_NiPoint3 kNormal(reinterpret_cast<const Vector3&>(kCenter).FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
-        reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
+        Unk_NiPoint3 kNear(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fProj * kUnit))))));
+        Unk_NiPoint3 kNormal((reinterpret_cast<const Vector3&>(kCenter) - reinterpret_cast<const Vector3&>(kNear)));
+        reinterpret_cast<Vector3&>(kNormal).Unitize();
         *pHit = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kNear)
             + reinterpret_cast<const efd::Point3&>(kNormal) * (efd::Sqrt(fPerp) - fRadius)))))));
     }
@@ -181,7 +181,7 @@ bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3
             fT = fProj - fHalf;
         else
             fT = fProj + fHalf;
-        *pHit = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, kUnit)))))))));
+        *pHit = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fT * kUnit)))))))));
         bHit = true;
     }
     return bHit;
@@ -192,8 +192,8 @@ bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3
 bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter, float fRadius)
 {
     Vector3 kUnit = kDir;
-    kUnit.FUN_140968990();
-    Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
+    kUnit.Unitize();
+    Unk_NiPoint3 kToCenter((kCenter - kOrigin));
     float fProj = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kUnit));
     float fProjSqr = fProj * fProj;
     float fSqr = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kToCenter));
@@ -226,7 +226,7 @@ float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB)
 Vector3 FUN_14147af10(Unk_NiPoint3 kVec)
 {
     kVec.z = 0.0f;
-    reinterpret_cast<Vector3&>(kVec).FUN_140968990();
+    reinterpret_cast<Vector3&>(kVec).Unitize();
     return reinterpret_cast<Vector3&>(kVec);
 }
 

@@ -12,7 +12,7 @@ public:
     CTwoCircleCollision();                                          // 0x141868af0
     virtual ~CTwoCircleCollision();                                 // 0x141868bd0
     virtual void vfunc_1();                                         // 0x141868d10 renders the two wire rings
-    virtual void vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale);   // 0x141868c60
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x141868c60
     virtual void vfunc_5();                                         // 0x141868db0 builds the two wire circles
     virtual float vfunc_6();                                        // 0x1418694c0
     void SetInnerRadius(float fMin);                                 // 0x1416c4b60 the inner radius

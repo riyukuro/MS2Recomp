@@ -1,0 +1,4 @@
+eol lf
+408a
+    NiTPointerMap<SequenceID, NiSequenceDataPtr> m_kStudioSeqDataMap0x100;  // studio: +0x100, name inferred
+.

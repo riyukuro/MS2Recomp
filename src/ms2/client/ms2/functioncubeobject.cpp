@@ -236,11 +236,11 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 class CTarget2DCameraMode   // C3: member view for the former free stand-ins
 {
 public:
-    static bool FUN_141839640(struct Vector3&, struct Vector3&);
+    static bool FUN_141839640(Vector3&, Vector3&);
 };
 
 // Entity property access and ids (free functions: x64 has one calling convention).
-void FUN_1402bd040(Vector3* p);
+// C3: FUN_1402bd040 is efd::Point3::Point3() (unused here)
 Vector3* FUN_14027dda0(Vector3* t, float x, float y, float z);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);
@@ -1857,7 +1857,7 @@ void CNurturingCubeObject::vfunc_3()
     {
         if (((class MyPC*)(class Unk_FcActor*)(pActor))->IsDailyRecordStale() != 0)
             ((class MyPC*)(class Unk_FcActor*)(pActor))->ResetDailyRecords();
-        float fDist = const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))).FUN_140965c40(GetPosition()).FUN_140967ac0();
+        float fDist = (const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))) - GetPosition()).Length();
         unsigned nNear = fDist < *((Common::Constants::Value<float>*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)GetClientConstants())->m_near))->Get();
         if ((unsigned)m_bNear != nNear)
         {
@@ -2709,7 +2709,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Vector3 pt, floa
             egf::EntityPtr kEnt = spCube->GetEnt();
             Vector3 vPos;
             kEnt->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
-            float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+            float fDist = (pt - vPos).Length();
             if (fDist > fRange)
                 continue;
             if (fDist > fBest)
@@ -2740,7 +2740,7 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Vector3 pt, floa
             egf::EntityPtr kEnt = spCube->GetEnt();
             Vector3 vPos;
             kEnt->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
-            float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+            float fDist = (pt - vPos).Length();
             if (fDist > fRange)
                 continue;
             if (fDist > fBest)
@@ -2765,7 +2765,7 @@ void CFunctionCubeService::FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunc
         egf::EntityPtr kEnt = spCube->GetEnt();
         Vector3 vPos;
         kEnt->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
-        float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+        float fDist = (pt - vPos).Length();
         if (fDist > 600.0f)
             continue;
         aOut.Add(spCube);

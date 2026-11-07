@@ -210,9 +210,9 @@ unsigned int FUN_1415fa150(const unsigned long long* p) { return static_cast<uns
 // @0x1415fa160
 unsigned int FUN_1415fa160(const unsigned int* p) { return *p; }
 // @0x1415fb760
-unsigned long long FUN_1415fb760(unsigned int high, unsigned int low) { return (static_cast<unsigned long long>(high) << 32) | low; }
+unsigned long long FUN_1415fb760(unsigned int high, unsigned int low) { return (static_cast<long long>(static_cast<int>(high)) << 32) | static_cast<long long>(static_cast<int>(low)); }
 // @0x1415fb780
-unsigned long long FUN_1415fb780(unsigned int high, unsigned int low) { return (static_cast<unsigned long long>(high) << 32) | low; }
+unsigned long long FUN_1415fb780(unsigned int high, unsigned int low) { return (static_cast<long long>(static_cast<int>(high)) << 32) | static_cast<long long>(static_cast<int>(low)); }
 // @0x1415fb7a0
 void FUN_1415fb7a0(void* p) { *reinterpret_cast<unsigned int*>(static_cast<unsigned char*>(p) + 0x14) = 1; }
 // @0x1415fb7c0
@@ -1123,11 +1123,17 @@ unsigned long long FUN_1415f9ed0(void* first, void* result, void* value, void* e
 // @0x1415fa740
 void* FUN_1415fa740(void* p) { return static_cast<char*>(p) + 0x58; }
 
+// the object's virtual slot 10 (+0x50), called as a virtual member
+struct Unk_VSlot10
+{
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
+    virtual void v10();
+};
 // @0x1415fb2b0
 void FUN_1415fb2b0(void* p)
 {
-    auto** vtable = *reinterpret_cast<void***>(p);
-    reinterpret_cast<void (*)(void*)>(vtable[10])(p);
+    static_cast<Unk_VSlot10*>(p)->v10();
 }
 
 // @0x1415fb650
@@ -1140,7 +1146,8 @@ unsigned long long FUN_1415fb650(void* first, void* result, void* value, void* e
 // @0x1415fb6a0
 unsigned long long* FUN_1415fb6a0(const void* first, unsigned long long* result)
 {
-    *result = *reinterpret_cast<const unsigned long long*>(static_cast<const char*>(first) + 0x50);
+    struct Word { unsigned long long v; };
+    *reinterpret_cast<Word*>(result) = *reinterpret_cast<const Word*>(static_cast<const char*>(first) + 0x50);
     return result;
 }
 

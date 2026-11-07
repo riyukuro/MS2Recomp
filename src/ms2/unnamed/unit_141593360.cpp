@@ -11,10 +11,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ab00(void*,unsigned char); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*); extern void FUN_1415e8200(void*); extern void FUN_141608e60(void*); extern void FUN_14160b330(void*,void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141593360: initializes the support-game list with request mode one.
-CNMGetSupportGameListFunc::CNMGetSupportGameListFunc():CNMFunc(0x800c,1,0,0),m_n30(1),m_n34(0),m_aGameCode(){FUN_1415e8200(&m_aGameCode);}
-// MS2-FUNCTIONAL 0x1415933d0: stores the support-list request mode.
-CNMGetSupportGameListFunc::CNMGetSupportGameListFunc(int mode):CNMFunc(0x800c,1,0,0),m_n30(mode),m_n34(0),m_aGameCode(){FUN_1415e8200(&m_aGameCode);}
+CNMGetSupportGameListFunc::CNMGetSupportGameListFunc():CNMFunc(0x800c,1,0,0){m_n30=1;}
+CNMGetSupportGameListFunc::CNMGetSupportGameListFunc(int mode):CNMFunc(0x800c,1,0,0){m_n30=mode;}
 // MS2-FUNCTIONAL 0x141593440: frames the support-game request.
 unsigned int CNMGetSupportGameListFunc::EncodeFramed(CNMStream* pStream)
 {

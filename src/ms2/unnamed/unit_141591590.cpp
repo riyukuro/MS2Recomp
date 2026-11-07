@@ -12,10 +12,8 @@ extern void FUN_14156bcb0(void*,void*,void*); extern void FUN_14156bd50(void*); 
 extern void FUN_14156ac20(void*,unsigned int); extern void FUN_14156ae30(void*,const void*); extern void FUN_1415fbe70(void*,unsigned int,const void*); extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*); extern int FUN_1415fb750(void*); extern int FUN_1415fb6d0(void*);
 extern int FUN_1415fb6d0(CNMSerializableDecoder*);
-// MS2-FUNCTIONAL 0x141591590: initializes an empty execute-common request.
-CNMExecuteCommonFunc::CNMExecuteCommonFunc():CNMFunc(0x8003,1,0,0),m_30(0),m_34{}{}
-// MS2-FUNCTIONAL 0x141591600: stores the request code and bounded argument.
-CNMExecuteCommonFunc::CNMExecuteCommonFunc(int code,const char*argument):CNMFunc(0x8003,1,0,0),m_30(code),m_34{}{if(argument)FUN_1415fbe70(m_34,0x400,argument);}
+CNMExecuteCommonFunc::CNMExecuteCommonFunc():CNMFunc(0x8003,1,0,0){m_30=0;m_34[0]=0;}
+CNMExecuteCommonFunc::CNMExecuteCommonFunc(int code,const char*argument):CNMFunc(0x8003,1,0,0){m_30=code;if(argument)FUN_1415fbe70(m_34,0x400,argument);else m_34[0]=0;}
 // MS2-FUNCTIONAL 0x1415916a0: frames the execute-common request.
 unsigned int CNMExecuteCommonFunc::EncodeFramed(CNMStream* pStream)
 {

@@ -40,7 +40,7 @@ CMachineIDManager::~CMachineIDManager()
 // @0x140d4fd50
 void CMachineIDManager::BuildID()
 {
-    Unk_MachineIDLocal local;
+    CSystemInfo local;
     FUN_1423b10a0(&local);
     m_id = *static_cast<Unk_MachineID*>(FUN_1423b1080(&local));
     m_n18 = FUN_1423ae960(&local);

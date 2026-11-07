@@ -90,7 +90,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStri
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // show it
 // CNXMan::FUN_14160dac0 / FUN_14160e5f0 as this TU's callers see them: int results (nxman.h declares bool), and dac0
 // gets the argument the slot passes on (the callee ignores it).
-int FUN_14160dac0(CNXMan* pNx, void* pParam);
+// C3: was int FUN_14160dac0(CNXMan*, void*): now CNXMan::FUN_14160dac0 called through that cast (int result, extra args)
 
 // The 16-byte machine id (zero-initialised by 0x14067c020, copied by 0x14067c080; unit_14067c020). Invented name.
 class Unk_MachineId   // unit_14067c020's name
@@ -308,7 +308,7 @@ MS2_REPLACE_METHOD(0x140C78780, CClientPlatformNexonKorea, vfunc_17, 437, 0x39A2
 // @0x140c78940
 void CClientPlatformNexonKorea::vfunc_18(void* a1)
 {
-    int nResult = FUN_14160dac0(CNXMan::GetInstance(), a1);
+    int nResult = reinterpret_cast<int (*)(CNXMan*, void*)>(&CNXMan::FUN_14160dac0)(CNXMan::GetInstance(), a1);
     if (nResult == 0) {
         {
             CStringW strCaption(L"Error");

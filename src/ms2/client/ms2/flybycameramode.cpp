@@ -159,9 +159,9 @@ MS2_REPLACE_METHOD(0x14121F850, CFlyByCameraMode, vfunc_7, 172, 0x7400C59E);
 Vector3 CFlyByCameraMode::FUN_14121f910(const Vector3& a, const Vector3& b, const Vector3& c)
 {
     efd::Point3 ptMid = (reinterpret_cast<const efd::Point3&>(a) + reinterpret_cast<const efd::Point3&>(b)) * 0.5f;
-    Vector3 ptDiff = c.FUN_140965c40(a);
+    Vector3 ptDiff = (c - a);
     efd::Point3 ptUp = reinterpret_cast<const efd::Point3&>(g_143a08cf8) + reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
-    reinterpret_cast<Vector3&>(ptMid).FUN_140a4e560(FUN_1409ab5c0(ptDiff.FUN_140967ac0() * 0.5f, reinterpret_cast<const Vector3&>(ptUp)));
+    (reinterpret_cast<Vector3&>(ptMid) += ((ptDiff.Length() * 0.5f) * reinterpret_cast<const Vector3&>(ptUp)));
     return reinterpret_cast<Vector3&>(ptMid);
 }
 MS2_REPLACE_METHOD(0x14121F910, CFlyByCameraMode, FUN_14121f910, 210, 0x5B2C953F);

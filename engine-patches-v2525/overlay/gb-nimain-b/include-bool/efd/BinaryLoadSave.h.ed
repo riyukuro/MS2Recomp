@@ -1,0 +1,36 @@
+eol lf
+125,127c
+    return (os.BinaryWrite(&value, uiBytesToWrite, &uiBytesToWrite, 1) == uiBytesToWrite);
+.
+122@2s "id" "ol"
+122@0s "v" "b"
+114,117c
+    return (os.BinaryWrite(
+            pvValue, uiBytesToWrite, puiComponentSizes, uiNumComponents) == uiBytesToWrite);
+.
+96@9s "id" "ol"
+96@7s "v" "b"
+90,92c
+    return (os.BinaryWrite(pValue, uiBytesToWrite, &uiSize, 1) == uiBytesToWrite);
+.
+84@2s "id" "ol"
+84@0s "v" "b"
+79a
+    return bResult;
+.
+75,77c
+    bool bResult = (is.BinaryRead(&iDummy, uiBytesToRead, &uiBytesToRead, 1) == uiBytesToRead);
+.
+71@2s "id" "ol"
+71@0s "v" "b"
+63,66c
+    return (is.BinaryRead(
+            pvValue, uiBytesToRead, puiComponentSizes, uiNumComponents) == uiBytesToRead);
+.
+42@9s "id" "ol"
+42@7s "v" "b"
+36,38c
+    return (is.BinaryRead(pValue, uiBytesToRead, &uiSize, 1) == uiBytesToRead);
+.
+30@2s "id" "ol"
+30@0s "v" "b"

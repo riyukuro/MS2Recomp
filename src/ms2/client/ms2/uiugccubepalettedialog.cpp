@@ -1343,12 +1343,12 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
         if ((FUN_140930c50() == 0 || spType.operator->()->m_nDelegator != 0) && spType.operator->()->m_nCategory == nTypeId)
         {
             *pPos = Vector3(spRoot->FUN_1422c10a0(), spRoot->FUN_1422c1110(), spRoot->GetZ());
-            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->GetZ()));
+            (*pPos += Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->GetZ()));
             Scaleform::GFx::Value vRow = ((Unk_CubeCtl*)spList.operator->())->Invoke("getRendererAt", i);
             if (((Scaleform::GFx::Value*)(void*)(&vRow))->IsDisplayObject() == 0)
                 return 0;
             MS2Ptr<ASDisplayObject> spRow(new ASDisplayObject(vRow, m_28));
-            pPos->FUN_140a4e560(Vector3(spRow->FUN_1422c10a0(), spRow->FUN_1422c1110(), spRow->GetZ()));
+            (*pPos += Vector3(spRow->FUN_1422c10a0(), spRow->FUN_1422c1110(), spRow->GetZ()));
             return 1;
         }
     }

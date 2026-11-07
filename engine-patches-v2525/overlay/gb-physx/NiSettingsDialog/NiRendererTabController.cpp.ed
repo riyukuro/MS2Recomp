@@ -1,0 +1,35 @@
+eol lf
+336a
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: out-of-line SetAtGrow for m_kViewArray.Add (see the declaration above)
+template <> inline
+unsigned int NiTArray<NiBaseRendererOptionsView*,
+    NiTMallocInterface<NiBaseRendererOptionsView*> >::SetAtGrow(
+    unsigned int uiIndex, NiBaseRendererOptionsView* const& element)
+{
+    EE_ASSERT(uiIndex <= USHRT_MAX);
+    unsigned short usIndex = (unsigned short)(uiIndex & 0xFFFF);
+
+    if (usIndex >= m_usMaxSize)
+    {
+        SetSize(usIndex + m_usGrowBy);
+    }
+
+    SetAt(usIndex, element);
+    return usIndex;
+.
+314@47s "" "P"
+298@39s "" "(void*)"
+136c
+    SetWindowLongPtr(m_pDlgHandle, GWLP_USERDATA, (LONG_PTR)this);  // MS2: the exe passes the full pointer (no LONG cast)
+.
+119@8s "" "(DLGPROC)"
+111@54s "" "P"
+24c
+bool NiRendererTabController::CreateOptionsViews(  // MS2: InitDialog inlines it; the exe also keeps this out-of-line copy
+.
+20c
+template <> __declspec(noinline) unsigned int NiTArray<NiBaseRendererOptionsView*, NiTMallocInterface<NiBaseRendererOptionsView*> >::SetAtGrow(unsigned int, NiBaseRendererOptionsView* const&);  // MS2: the exe calls SetAtGrow out of line (replaces a blank line: keeps __LINE__)
+.

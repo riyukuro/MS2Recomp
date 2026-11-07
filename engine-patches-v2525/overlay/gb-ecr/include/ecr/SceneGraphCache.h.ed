@@ -1,0 +1,3 @@
+422c
+    efd::set<efd::utf8string> m_studioSet0x50; // inferred: ctor 0x142011b30, node size 0x40
+.

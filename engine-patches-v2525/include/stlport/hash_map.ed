@@ -1,0 +1,9 @@
+0a
+#pragma once
+#include <unordered_map>
+namespace std {
+template<class K, class V, class H = hash<K>, class E = equal_to<K>, class A = allocator<pair<const K, V>>>
+using hash_map = unordered_map<K, V, H, E, typename allocator_traits<A>::template rebind_alloc<pair<const K, V>>>;
+}
+
+.
