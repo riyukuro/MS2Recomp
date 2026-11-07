@@ -727,3 +727,6 @@ LocalPcreFree	1428ea360	func	pcre_globals.c static: pcre_free/pcre_stack_free 0x
 ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IVutf8string@efd@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIVutf8string@efd@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIVutf8string@efd@@@std@@PEAX@2@@Z	14210c0f0	alias	ddeparser
 ??0?$GetValueHelperClass@V?$DL_PrivateKey@UECPPoint@CryptoPP@@@CryptoPP@@V12@@CryptoPP@@QEAA@PEBV?$DL_PrivateKey@UECPPoint@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	142324e30	func
 ??0?$GetValueHelperClass@V?$DL_PrivateKey@VInteger@CryptoPP@@@CryptoPP@@V12@@CryptoPP@@QEAA@PEBV?$DL_PrivateKey@VInteger@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	1423250d0	func
+??__E?ms_kNxMat34Identity@PhysXTypes@efdPhysX@@2VNxMat34@@B@@YAXXZ	14012e070	alias	__physxtypes.cpp
+??__EkSequenceDataFreq@egmAnimationBindings@@YAXXZ	1401577f0	alias	egmanimationbindings_luawrap_release
+??__ENiAnimationSDMObject@@YAXXZ	1401351b0	alias	__visualtrackerservice.cpp

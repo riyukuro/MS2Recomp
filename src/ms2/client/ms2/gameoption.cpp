@@ -1666,26 +1666,8 @@ static void FUN_141244320(TiXmlDocument* pDoc);
 // @0x141241810
 CGameOption::CGameOption()
 {
-    FUN_14125b400(&m_camera);
-    FUN_14125b770(&m_interface);
-    FUN_14125bc30(&m_interfaceChar);
-    FUN_14125bda0(&m_status);
-    FUN_14125c880(&m_statusChar);
-    FUN_14125ca80(&m_battle);
-    FUN_14125d130(&m_communityA);
-    FUN_14125d890(&m_graphic);
-    FUN_14125ec20(&m_graphic2);
-    FUN_14125f710(&m_sound);
-    FUN_141260380(&m_soundChar);
-    FUN_14125d330(&m_account);
-    FUN_141260ea0((struct Unk_GsAutoLoot*)(&m_autoLoot));
-    FUN_141261750((struct Unk_GsEtc*)(&m_etc));
-    FUN_14125f090(&m_language);
-    FUN_14125f290(&m_gamepad);
-    FUN_141261670(&m_chroma);
-    reinterpret_cast<CPersonalInfoAgreement*>(&m_agree)->CPersonalInfoAgreement::CPersonalInfoAgreement();
     m_nBenchmark = -1;
-    m_n464 = 0;
+    m_b464 = false;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
     FUN_141242f60();
     LoadGameOption();

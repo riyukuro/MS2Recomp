@@ -490,7 +490,7 @@ int* FUN_14027c960(int* t, bool v) { *t = v; return t; }
 
 // ---- Unk_Ref16 (refcounted pointer wrapper: {vptr-ish, p}) ctors; the addref helpers are the exe's per-type AddRef ----
 // (the copies of the real types are explicit instantiations: MS2Ptr<T>/TPtrValue<T> copy ctors, AddRef in the body)
-void FUN_140286550(Unk_Ref16*); class CUgcItemLook; void FUN_1402865e0(Unk_Ref16*);
+void FUN_140286550(Unk_Ref16*); class CUgcItemLook;
 void FUN_140286670(Unk_Ref16*);
 // @0x14027c980
 Unk_Ref16* FUN_14027c980(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; o->m_p = 0; return t; }
@@ -526,7 +526,7 @@ Unk_HistRef::Unk_HistRef(Unk_HistRef&& o) { m_p = o.m_p; o.m_p = 0; }   // was t
 // @0x14027cc10
 Unk_HistRef::Unk_HistRef(decltype(nullptr)) { m_p = 0; }   // was the free FUN_14027cc10(Unk_Ref16*, void*), aliased from this name
 // @0x14027cc30
-Unk_HistRef::Unk_HistRef(const Unk_HistRef& o) { m_p = o.m_p; FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(this)); }   // was the free FUN_14027cc30(Unk_Ref16*, Unk_Ref16*)
+Unk_HistRef::Unk_HistRef(const Unk_HistRef& o) { m_p = o.m_p; reinterpret_cast<const MS2Ptr<CPtred>*>(this)->AddRef(); }   // was the free FUN_14027cc30(Unk_Ref16*, Unk_Ref16*)
 // @0x14027cc70
 template MS2Ptr<CUserLimitHistory>::MS2Ptr(const MS2Ptr<CUserLimitHistory>&);
 // @0x14027ccb0
@@ -770,16 +770,16 @@ Unk_ItemAbleTwin::Unk_ItemAbleTwin() {}
 
 // ---- smart-pointer / container dtors: noexcept single-call bodies (the -2 unwind slot + nop is the noexcept frame) ----
 i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
-i64 FUN_140288f10(void*); i64 FUN_140288f50(void*); i64 FUN_140288f90(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
+i64 FUN_140288f50(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
 i64 FUN_140289050(void*); struct Unk_CsI64Vec { void FUN_140289670(); }; i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
 i64 FUN_1402899b0(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
 void FUN_140287dc0(void*, i64);
 // MS2-PIN: ??1?$MS2Ptr@VCIngredientInfo@@@@QEAA@XZ 0x14027df70
 template MS2Ptr<CIngredientInfo>::~MS2Ptr();
 // @0x14027e060
-Unk_HistRef::~Unk_HistRef() { FUN_140288f10(this); }
+Unk_HistRef::~Unk_HistRef() { reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(this)->Release(); }
 // @0x14027e0c0
-Unk_ProdRef::~Unk_ProdRef() { FUN_140288f90(this); }
+Unk_ProdRef::~Unk_ProdRef() { reinterpret_cast<MS2Ptr<ChangeableProductInfo>*>(this)->Release(); }
 // @0x14027e150
 template MS2SvrPtr<CPtred>::~MS2SvrPtr();
 // @0x14027dfa0
@@ -848,7 +848,7 @@ template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(const MS2Ptr<CItemO
 // @0x14027ea80
 template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(int);   // C3: was FUN_14027ea80 calling FUN_140288ed0
 // @0x14027eab0
-Unk_HistRef& Unk_HistRef::FUN_14027eab0(Unk_HistRef& o) { FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(&o)); FUN_140288f10(reinterpret_cast<Unk_Ref16*>(this)); m_p = o.m_p; return *this; }   // was the free FUN_14027eab0(Unk_Ref16*, Unk_Ref16*)
+Unk_HistRef& Unk_HistRef::FUN_14027eab0(Unk_HistRef& o) { reinterpret_cast<const MS2Ptr<CPtred>*>(&o)->AddRef(); reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(this)->Release(); m_p = o.m_p; return *this; }   // was the free FUN_14027eab0(Unk_Ref16*, Unk_Ref16*)
 // @0x14027eaf0
 template PLog& PLog::operator=(const PLog&);
 // operator=(T*): swap with a temporary

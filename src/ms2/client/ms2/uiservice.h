@@ -78,13 +78,16 @@ enum eUIClassID
 // Opaque exe containers owned by this unit (CAtlMap-shaped, 0x48 bytes; their bodies are unit glue).
 struct Unk_UisMap
 {
+    Unk_UisMap(UINT nBins, float fOptimalLoad, float fLoThreshold, float fHiThreshold, UINT nBlockSize);   // 0x140163400 CAtlMap<unsigned,int> ctor
     ~Unk_UisMap();                              // 0x1401642a0 (defined in uiservice.cpp)
     char m_pad[0x48];
 };
 MS2_CHECK_SIZE(Unk_UisMap, 0x48);
 
+class NiDefaultClickRenderStep;
 struct Unk_UisPtr8
 {
+    Unk_UisPtr8(NiDefaultClickRenderStep* p);   // 0x1416ae2a0 efd::SmartPointer<NiDefaultClickRenderStep> ctor
     ~Unk_UisPtr8();                             // 0x1416aecf0 (defined in uiservice.cpp)
     char m_pad[8];
 };
@@ -94,6 +97,7 @@ MS2_CHECK_SIZE(Unk_UisList, 0x30);
 // Scaleform log sink member (class of an unrecovered unit).
 struct Unk_UisLogger
 {
+    Unk_UisLogger();                            // GFxLogger ctor 0x140a5bb10
     ~Unk_UisLogger();                           // GFxLogger dtor 0x140a5bb50 (defined in uiservice.cpp)
     char m_pad[0x10];
 };

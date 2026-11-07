@@ -26,6 +26,8 @@ class MS2Ptr
     template <class U> friend class MS2Ptr;
     friend struct Unk_TePtrAccess;      // taileffectobject.cpp: ResetNew on the tail info list element
     friend struct Unk_MS2PtrAccess;     // unit_141bb1490 (#28 Release + new pooled object), ugcbuildvalidator (AddRef 140885810)
+    friend class Unk_HistRef;           // commonstruct_wa.h stand-ins: AddRef 0x1402865e0 / Release 0x140288f10 (commonstruct_2.cpp)
+    friend class Unk_ProdRef;           // Release 0x140288f90 (commonstruct_2.cpp)
 
 public:
     MS2Ptr();

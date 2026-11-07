@@ -16,16 +16,10 @@
 struct Sd_1431b4be0;
 struct Sd_1431b4c60;
 struct Sd_1431b4ce0;
-struct Sd_1431b5b40;
-struct Sd_1431b5c00;
-struct Sd_1431b5cb0;
 struct Sd_1431b7900;
 struct Sd_1431b7ba0;
 struct Sd_1431b7c70;
 struct Sd_1431b7d50;
-struct Sd_1431b7de0;
-struct Sd_1431b7ea0;
-struct Sd_1431b7f60;
 namespace Scaleform {
 namespace GFx {
 namespace AS2 {
@@ -69,19 +63,7 @@ template <class P0> class Matrix2x4;
 namespace Scaleform {
 namespace GFx {
 namespace AS2 {
-unsigned __int64 FUN_14000e520(unsigned __int64);
-unsigned __int64 FUN_14000e530(void *);
-unsigned __int64 FUN_14000e540(void *);
-unsigned __int64 FUN_14000e550(void *);
-unsigned __int64 FUN_14000e560(void *);
-bool FUN_14000e580(void *);
-void FUN_14000e5d0(void *);
 bool AvmVideoCharacter_OnUnloading(::Scaleform::GFx::AS2::AvmCharacter *);
-bool FUN_14000e600(void *);
-unsigned __int64 FUN_14000e610(void *);
-bool FUN_14000e620(void *);
-void FUN_14000e650(::Scaleform::GFx::AS2::AvmCharacter *, ::Scaleform::GFx::InteractiveObject::FocusEventType, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
-void FUN_14000e6f0(void *, ::Scaleform::GFx::InteractiveObject::FocusEventType, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
 ::Scaleform::Render::Rect<float> * FUN_140010200(void *, ::Scaleform::Render::Rect<float> *, ::Scaleform::Render::Matrix2x4<float> const *);
 }
 }
@@ -95,45 +77,15 @@ extern unsigned char DAT_142503fa0[]; __pragma(comment(linker, "/alternatename:?
 extern Sd_1431b4be0 DAT_1431b4be0;
 extern Sd_1431b4c60 DAT_1431b4c60;
 extern Sd_1431b4ce0 DAT_1431b4ce0;
-extern Sd_1431b5b40 DAT_1431b5b40;
-extern Sd_1431b5c00 DAT_1431b5c00;
-extern Sd_1431b5cb0 DAT_1431b5cb0;
 extern Sd_1431b7900 DAT_1431b7900;
 extern Sd_1431b7ba0 DAT_1431b7ba0;
 extern Sd_1431b7c70 DAT_1431b7c70;
 extern Sd_1431b7d50 DAT_1431b7d50;
-extern Sd_1431b7de0 DAT_1431b7de0;
-extern Sd_1431b7ea0 DAT_1431b7ea0;
-extern Sd_1431b7f60 DAT_1431b7f60;
-::Scaleform::GFx::AS2::Object * FUN_14000ebc0(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_14000ebd0(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_14000ec40(::Scaleform::GFx::AS2::Object *, unsigned int);
-::Scaleform::GFx::AS2::CFunctionObject * FUN_14000ed10(void *, unsigned int);
-::Scaleform::GFx::AS2::CFunctionObject * FUN_14000ed20(::Scaleform::GFx::AS2::CFunctionObject *, unsigned int);
 void * FUN_140010130(void *);
 int FUN_140010140(void *);
 ::Scaleform::GFx::InteractiveObject * FUN_140010180(void *, unsigned __int64);
 ::Scaleform::GFx::InteractiveObject * FUN_140010530(::Scaleform::GFx::InteractiveObject *, unsigned int);
 void * FUN_140011610(void *, void **, void *);
-int FUN_140011b80(void *);
-void * FUN_140011b90(void *, void *, void *, void *);
-bool FUN_140011ba0(void *, void *, void *, void *);
-bool FUN_140011bb0(void *, void *, void *);
-bool FUN_140011bd0(void *);
-::Scaleform::GFx::AS2::Object * FUN_140011c00(::Scaleform::GFx::AS2::Object *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140011c70(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140011c80(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140011d00(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140011d10(::Scaleform::GFx::AS2::Object *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140011d50(void *, ::Scaleform::GFx::AS2::Environment *);
-void FUN_140011d90(void *);
-void FUN_140011de0(::Scaleform::GFx::AS2::Object *, ::Scaleform::GFx::AS2::ASStringContext *, ::Scaleform::GFx::ASString *, ::Scaleform::GFx::AS2::Value *);
-void FUN_140012400(::Scaleform::GFx::AS2::Object *, ::Scaleform::GFx::AS2::RefCountCollector<323> *, int);
-::Scaleform::GFx::AS2::Object * FUN_140012580(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_140012590(void *, unsigned int);
-::Scaleform::GFx::AS2::Object * FUN_1400125e0(::Scaleform::GFx::AS2::Object *, unsigned int);
-::Scaleform::GFx::AS2::CFunctionObject * FUN_1400126a0(void *, unsigned int);
-::Scaleform::GFx::AS2::CFunctionObject * FUN_1400126b0(::Scaleform::GFx::AS2::CFunctionObject *, unsigned int);
 void FUN_140012e10(void *, void *, void *);
 char const * FUN_140012ef0(void *);
 char const * FUN_140012f40(void *);
@@ -223,10 +175,7 @@ void * FUN_140002e40(void *, unsigned int);
 ::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *); __pragma(comment(linker, "/alternatename:?FUN_140007ff0@@YAPEAVFunctionRef@AS2@GFx@Scaleform@@PEAVObjectInterface@234@PEAV1234@PEAVASStringContext@234@@Z=?Get__constructor__@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@PEAVASStringContext@234@@Z")) // AS2 ObjectInterface::Get__constructor__
 extern unsigned char DAT_14000a110[];
 extern unsigned char DAT_14252e480[];
-void * FUN_14000a880(void *, unsigned int);
-unsigned int FUN_14000d320(void *);
 extern unsigned char DAT_14000d760[];
-void FUN_14000e410(void **, void *, void *, void *, void *);
 namespace Scaleform { namespace GFx { namespace AS2 { void FUN_14000e470(void **, void *, void *, void *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { int FUN_14000e500(void *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { void * FUN_14000e510(void *); } } }
@@ -264,7 +213,6 @@ namespace Scaleform { namespace GFx { namespace AS2 { bool FUN_14000e820(void *)
 namespace Scaleform { namespace GFx { namespace AS2 { void FUN_14000e830(void *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { ::Scaleform::GFx::AS2::VideoObject * FUN_14000e880(::Scaleform::GFx::AS2::AvmCharacter *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { ::Scaleform::GFx::AS2::VideoObject * FUN_14000e890(::Scaleform::GFx::AS2::AvmCharacter *); } } }
-void * FUN_14000e8a0(void *, unsigned __int64);
 namespace Scaleform { namespace GFx { namespace AS2 { bool FUN_14000e8f0(void *, ::Scaleform::GFx::AS2::Environment *, ::Scaleform::GFx::ASString const &, ::Scaleform::GFx::AS2::Value const &, ::Scaleform::GFx::AS2::PropFlags const &); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { bool FUN_14000e9f0(void *, ::Scaleform::GFx::AS2::Environment *, ::Scaleform::GFx::ASString const &, ::Scaleform::GFx::AS2::Value *); } } }
 char const * FUN_140019af0(void const *);
@@ -281,66 +229,6 @@ void FUN_14001a860(void *, ::Scaleform::GFx::AS3::Value *, ::Scaleform::GFx::AS3
 char const * FUN_14001ae30(void const *);
 void * FUN_14001aea0(void *, unsigned int);
 void ** FUN_14001af10(void **, void *);
-void * FUN_14001afd0(void *);
-void * FUN_14001afe0(void *);
-char const * FUN_14001aff0(void const *);
-unsigned __int64 FUN_14001b000(void *);
-unsigned __int64 FUN_14001b010(void *);
-unsigned __int64 FUN_14001b020(void *);
-unsigned __int64 FUN_14001b030(void *);
-bool thunk_FUN_142518c70(void *, void *);
-void thunk_FUN_142519080(void *);
-void thunk_FUN_142519860(void *);
-unsigned char FUN_14001b070(void *);
-bool thunk_FUN_142510dc0(void const *, void const *);
-unsigned char FUN_14001b090(void *);
-char const * thunk_FUN_142506e10(void *, void *);
-unsigned __int64 FUN_14001b0b0(void *);
-void thunk_FUN_1424efe00(void *, void const *);
-void thunk_FUN_1424f1f70(void *, void const *);
-void FUN_14001b0e0(void *, unsigned int, void *, unsigned int, unsigned int);
-void FUN_14001b100(void *);
-bool FUN_14001b110(void *);
-bool FUN_14001b120(void *);
-bool FUN_14001b130(void *);
-bool FUN_14001b140(void const *);
-bool FUN_14001b160(void *);
-void * FUN_14001b170(void *);
-bool FUN_14001b180(void *);
-void FUN_14001b190(void *, void const *);
-void FUN_14001b1a0(void *);
-unsigned __int64 FUN_14001b1b0(void *);
-unsigned __int64 FUN_14001b1c0(void *);
-unsigned char FUN_14001b1d0(void *);
-void * FUN_14001b1e0(void *);
-bool FUN_14001b1f0(void *, void const *);
-unsigned __int64 FUN_14001b200(void *);
-unsigned char FUN_14001b210(void *);
-bool FUN_14001b220(void *, void *);
-void FUN_14001b230(void *);
-void FUN_14001b240(void *, void const *);
-void * FUN_14001b250(void *);
-void FUN_14001b260(void *);
-char const * FUN_14001b270(void *, void *);
-unsigned __int64 FUN_14001b280(void *);
-void FUN_14001b290(void *, unsigned int, void *, unsigned int, unsigned int);
-void * FUN_14001b2a0(void *);
-void FUN_14001b2b0(void *);
-unsigned __int64 FUN_14001b2c0(void *);
-unsigned __int64 FUN_14001b2d0(void *);
-unsigned char FUN_14001b2e0(void *);
-void * FUN_14001b2f0(void *);
-bool FUN_14001b300(void *, void const *);
-unsigned __int64 FUN_14001b310(void *);
-bool FUN_14001b320(void *, void *);
-unsigned __int64 FUN_14001b330(void *);
-void * FUN_14001b340(void *);
-void FUN_14001b350(void *);
-char const * FUN_14001b360(void *, void *);
-bool FUN_14001b370(void *);
-bool FUN_14001b380(void *);
-unsigned __int64 FUN_14001b390(void *);
-void * FUN_14001b3a0(void *);
 void FUN_140016b50(void *, void *, void *, void *, int, ::Scaleform::GFx::AS3::Value *);
 void FUN_140016be0(void *, void *, void *, void *, int, ::Scaleform::GFx::AS3::Value *);
 void FUN_140016fd0(void *, void *, void *, void *, unsigned int, unsigned char const *);
@@ -678,179 +566,6 @@ struct Sd_1431b4d80 {
     const void* p48;
     unsigned char b50[0x10];
 };
-struct Sd_1431b5b40 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x8];
-};
-struct Sd_1431b5c00 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b5cb0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-};
-struct Sd_1431b5e20 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431b5e70 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b5f20 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    unsigned char b88[0x8];
-};
-struct Sd_1431b5fb0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
 struct Sd_1431b6060 {
     const void* p0;
     const void* p8;
@@ -973,155 +688,7 @@ struct Sd_1431b63f8 {
     const void* p8;
     unsigned char b10[0x8];
 };
-struct Sd_1431b6440 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b64f0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431b6540 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b65f0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-};
-struct Sd_1431b6640 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431b6690 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b6740 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    unsigned char b88[0x8];
-};
-struct Sd_1431b67d0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
+struct Sd_1431b6878 {
     unsigned char ba8[0x1b8];
     const void* p260;
     const void* p268;
@@ -1484,89 +1051,9 @@ struct Sd_1431b7d50 {
     const void* p68;
     const void* p70;
 };
-struct Sd_1431b7de0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x8];
-};
-struct Sd_1431b7ea0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x8];
-};
-struct Sd_1431b7f60 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-};
 #pragma pack(pop)
 
-extern Sd_1431b67d0 DAT_1431b67d0;
+extern Sd_1431b6878 DAT_1431b6878;
 extern Sd_1431b7900 DAT_1431b7900;
 
 // 0x1431b4be0
@@ -1645,187 +1132,6 @@ alignas(16) Sd_1431b4d80 DAT_1431b4d80 = {
     {0},
 };
 void* PTR_s_attachVideo_1431b5800 = (void*)"attachVideo";       // 0x1431b5800
-// 0x1431b5b40
-alignas(16) Sd_1431b5b40 DAT_1431b5b40 = {
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e710,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7b0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e800,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7a0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e810,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e730,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e750,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e720,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e740,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e6e0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e700,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7f0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e790,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e820,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e770,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e6d0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7e0,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e6f0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e830,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7d0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e780,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e7c0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e760,
-    {0},
-};
-// 0x1431b5c00
-alignas(16) Sd_1431b5c00 DAT_1431b5c00 = {
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e6c0,
-    DAT_14000e370,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e500,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e8f0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e9f0,
-    DAT_1429448c0,
-    DAT_1429386e0,
-    DAT_142988930,
-    DAT_142994660,
-    DAT_14295d840,
-    (const void*)&FUN_14000e410,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e470,
-    DAT_142991170,
-    DAT_14298dcb0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_140007da0,
-    DAT_140007db0,
-    DAT_142962310,
-    DAT_142994bb0,
-    DAT_1429926f0,
-    {0},
-};
-// 0x1431b5cb0
-alignas(16) Sd_1431b5cb0 DAT_1431b5cb0 = {
-    (const void*)&FUN_14000e8a0,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e520,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e530,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e540,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e550,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e560,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e570,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e600,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e580,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e590,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e5d0,
-    (const void*)&::Scaleform::GFx::AS2::AvmVideoCharacter_OnUnloading,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e510,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e620,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e610,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e630,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e640,
-    (const void*)&::Scaleform::GFx::AS2::FUN_14000e650,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e670,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e680,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e690,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e6a0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e6b0,
-    DAT_14000e380,
-    DAT_14294afb0,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e890,
-    (const void*)&Scaleform::GFx::AS2::FUN_14000e880,
-    DAT_14000e3e0,
-    DAT_14000e3f0,
-    DAT_14000e400,
-    DAT_142949400,
-    DAT_1429493c0,
-    DAT_142956b10,
-    DAT_142949860,
-    (const void*)&FUN_14000d320,
-    DAT_14298ab80,
-    DAT_142955080,
-    DAT_14000e4d0,
-    DAT_142940160,
-    DAT_1429413c0,
-    DAT_14293ff70,
-};
-void* PTR_LAB_1431b5e18 = (void*)(const void*)&FUN_14000ebd0;   // 0x1431b5e18
-// 0x1431b5e20
-alignas(16) Sd_1431b5e20 DAT_1431b5e20 = {
-    DAT_14000e1a0,
-    DAT_14000dbc0,
-    (const void*)&FUN_14000ec40,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    DAT_14000d710,
-    DAT_14000db10,
-    DAT_14000daa0,
-    DAT_140007e00,
-    {0},
-};
-// 0x1431b5e70
-alignas(16) Sd_1431b5e70 DAT_1431b5e70 = {
-    (const void*)&FUN_14000ebc0,
-    DAT_140007dc0,
-    DAT_14000d6e0,
-    DAT_1429867f0,
-    DAT_14000d6f0,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    DAT_14000d760,
-    DAT_142991170,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_14000d730,
-    DAT_14000d700,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
-// 0x1431b5f20
-alignas(16) Sd_1431b5f20 DAT_1431b5f20 = {
-    DAT_1429411f0,
-    DAT_142942e70,
-    (const void*)&FUN_14000ed20,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    DAT_140007dd0,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
-    DAT_14294ab50,
-    DAT_142962bb0,
-    DAT_14000ce90,
-    DAT_142965510,
-    DAT_14000cea0,
-    DAT_14000ce80,
-    (const void*)&FUN_14000e0c0,
-    DAT_14000ceb0,
-    {0},
-};
-// 0x1431b5fb0
-alignas(16) Sd_1431b5fb0 DAT_1431b5fb0 = {
-    (const void*)&FUN_14000ed10,
-    DAT_140007dc0,
-    DAT_14000ce70,
-    DAT_1429867f0,
-    DAT_14294f7d0,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    DAT_142953280,
-    DAT_142991140,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_140007da0,
-    DAT_140007db0,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
 // 0x1431b6060
 alignas(16) Sd_1431b6060 DAT_1431b6060 = {
     (const void*)&FUN_140010530,
@@ -1953,165 +1259,8 @@ alignas(8) Sd_1431b63f8 DAT_1431b63f8 = {
     },
 };
 void* PTR_s_connect_1431b6410 = (void*)"connect";               // 0x1431b6410
-void* PTR_LAB_1431b6430 = (void*)(const void*)&FUN_140011c80;   // 0x1431b6430
-// 0x1431b6440
-alignas(16) Sd_1431b6440 DAT_1431b6440 = {
-    (const void*)&FUN_140011c70,
-    DAT_140007dc0,
-    (const void*)&FUN_140011b80,
-    DAT_1429867f0,
-    (const void*)&FUN_140011b90,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    (const void*)&FUN_140011de0,
-    DAT_142991170,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    (const void*)&FUN_140011bd0,
-    (const void*)&FUN_140011ba0,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
-// 0x1431b64f0
-alignas(16) Sd_1431b64f0 DAT_1431b64f0 = {
-    (const void*)&FUN_140012400,
-    (const void*)&FUN_140011d90,
-    (const void*)&FUN_140011c00,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    (const void*)&FUN_140011bb0,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
-    {0},
-};
-// 0x1431b6540
-alignas(16) Sd_1431b6540 DAT_1431b6540 = {
-    (const void*)&FUN_140011d00,
-    DAT_140007dc0,
-    (const void*)&FUN_140011b80,
-    DAT_1429867f0,
-    DAT_14294f7d0,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    DAT_142953280,
-    DAT_142991170,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_140007da0,
-    DAT_140007db0,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
-// 0x1431b65f0
-alignas(16) Sd_1431b65f0 DAT_1431b65f0 = {
-    DAT_1429411f0,
-    DAT_142942e70,
-    (const void*)&FUN_140011d10,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    DAT_140007dd0,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
-};
-void* PTR_LAB_1431b6638 = (void*)(const void*)&FUN_140012590;   // 0x1431b6638
-// 0x1431b6640
-alignas(16) Sd_1431b6640 DAT_1431b6640 = {
-    (const void*)&FUN_140012400,
-    (const void*)&FUN_140011d90,
-    (const void*)&FUN_1400125e0,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    (const void*)&FUN_140011bb0,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
-    {0},
-};
-// 0x1431b6690
-alignas(16) Sd_1431b6690 DAT_1431b6690 = {
-    (const void*)&FUN_140012580,
-    DAT_140007dc0,
-    (const void*)&FUN_140011b80,
-    DAT_1429867f0,
-    (const void*)&FUN_140011b90,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    (const void*)&FUN_140011de0,
-    DAT_142991170,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    (const void*)&FUN_140011bd0,
-    (const void*)&FUN_140011ba0,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
-// 0x1431b6740
-alignas(16) Sd_1431b6740 DAT_1431b6740 = {
-    DAT_1429411f0,
-    DAT_142942e70,
-    (const void*)&FUN_1400126b0,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    DAT_140007dd0,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
-    DAT_14294ab50,
-    DAT_142962bb0,
-    DAT_14000ce90,
-    DAT_142965510,
-    DAT_14000cea0,
-    DAT_14000ce80,
-    (const void*)&FUN_140011d50,
-    DAT_14000ceb0,
-    {0},
-};
-// 0x1431b67d0
-alignas(16) Sd_1431b67d0 DAT_1431b67d0 = {
-    (const void*)&FUN_1400126a0,
-    DAT_140007dc0,
-    DAT_14000ce70,
-    DAT_1429867f0,
-    DAT_14294f7d0,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    DAT_142953280,
-    DAT_142991140,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_140007da0,
-    DAT_140007db0,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
+// 0x1431b6878
+alignas(8) Sd_1431b6878 DAT_1431b6878 = {
     {
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x6e, 0x65, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x4e, 0x65, 0x74, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -2423,9 +1572,9 @@ alignas(16) Sd_1431b7160 DAT_1431b7160 = {
     {
         0x01, 0x00, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const unsigned char*)&DAT_1431b67d0 + 0x968,
+    (const unsigned char*)&DAT_1431b6878 + 0x8c0,
     {0},
-    (const unsigned char*)&DAT_1431b67d0 + 0x260,
+    (const unsigned char*)&DAT_1431b6878 + 0x1b8,
     {0},
 };
 // 0x1431b71b0
@@ -2630,89 +1779,6 @@ alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
     DAT_1425117f0,
     DAT_1424effa0,
 };
-// 0x1431b7de0
-alignas(16) Sd_1431b7de0 DAT_1431b7de0 = {
-    (const void*)&FUN_14001b1e0,
-    (const void*)&FUN_14001b2a0,
-    (const void*)&FUN_14001b2c0,
-    (const void*)&FUN_14001b280,
-    (const void*)&FUN_14001b2d0,
-    (const void*)&FUN_14001b200,
-    (const void*)&FUN_14001b270,
-    (const void*)&FUN_14001b1f0,
-    (const void*)&FUN_14001b220,
-    (const void*)&FUN_14001b350,
-    (const void*)&FUN_14001b1a0,
-    (const void*)&FUN_14001b2e0,
-    (const void*)&FUN_14001b250,
-    (const void*)&FUN_14001b210,
-    (const void*)&FUN_14001b330,
-    (const void*)&FUN_14001b240,
-    (const void*)&FUN_14001b190,
-    (const void*)&FUN_14001b290,
-    (const void*)&FUN_14001b230,
-    (const void*)&FUN_14001b180,
-    (const void*)&FUN_14001b380,
-    (const void*)&FUN_14001b160,
-    (const void*)&FUN_14001b370,
-    {0},
-};
-// 0x1431b7ea0
-alignas(16) Sd_1431b7ea0 DAT_1431b7ea0 = {
-    (const void*)&FUN_14001b2f0,
-    (const void*)&FUN_14001b170,
-    (const void*)&FUN_14001b1b0,
-    (const void*)&FUN_14001b390,
-    (const void*)&FUN_14001b1c0,
-    (const void*)&FUN_14001b310,
-    (const void*)&FUN_14001b360,
-    (const void*)&FUN_14001b300,
-    (const void*)&FUN_14001b320,
-    (const void*)&FUN_14001b260,
-    (const void*)&FUN_14001b2b0,
-    (const void*)&FUN_14001b1d0,
-    (const void*)&FUN_14001b340,
-    (const void*)&FUN_14001b090,
-    (const void*)&FUN_14001b0b0,
-    (const void*)&thunk_FUN_1424efe00,
-    (const void*)&thunk_FUN_1424f1f70,
-    (const void*)&FUN_14001b0e0,
-    (const void*)&FUN_14001b100,
-    (const void*)&FUN_14001b110,
-    (const void*)&FUN_14001b120,
-    (const void*)&FUN_14001b130,
-    (const void*)&FUN_14001b140,
-    {0},
-};
-// 0x1431b7f60
-alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
-    (const void*)&FUN_14001b3a0,
-    (const void*)&FUN_14001afe0,
-    (const void*)&FUN_14001b000,
-    (const void*)&FUN_14001b010,
-    (const void*)&FUN_14001b020,
-    (const void*)&FUN_14001b030,
-    (const void*)&thunk_FUN_142506e10,
-    (const void*)&thunk_FUN_142510dc0,
-    (const void*)&thunk_FUN_142518c70,
-    (const void*)&thunk_FUN_142519080,
-    (const void*)&thunk_FUN_142519860,
-    (const void*)&FUN_14001b070,
-    (const void*)&FUN_14001afd0,
-    DAT_1423dc0b0,
-    DAT_14251ace0,
-    DAT_1424f2400,
-    (const void*)&FUN_14001aff0,
-    DAT_142505f20,
-    DAT_14251f3a0,
-    DAT_1425185d0,
-    DAT_14250c2e0,
-    DAT_1424f7180,
-    DAT_1423dcd60,
-    DAT_14250f820,
-    DAT_142507590,
-    DAT_142501a60,
-};
 
 #pragma comment(linker, "/alternatename:?DAT_1431b4be0@@3PEAXEA=?DAT_1431b4be0@@3USd_1431b4be0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b4c60@@3PEAXEA=?DAT_1431b4c60@@3USd_1431b4c60@@A")
@@ -2721,23 +1787,8 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6BObjectInterface@123@@")
 #pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@")
-#pragma comment(linker, "/alternatename:?DAT_1431b5b40@@3PEAXEA=?DAT_1431b5b40@@3USd_1431b5b40@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b5c00@@3PEAXEA=?DAT_1431b5c00@@3USd_1431b5c00@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b5cb0@@3PEAXEA=?DAT_1431b5cb0@@3USd_1431b5cb0@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b5e20@@3PEAXEA=?DAT_1431b5e20@@3USd_1431b5e20@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b5e70@@3PEAXEA=?DAT_1431b5e70@@3USd_1431b5e70@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b5f20@@3PEAXEA=?DAT_1431b5f20@@3USd_1431b5f20@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b5fb0@@3PEAXEA=?DAT_1431b5fb0@@3USd_1431b5fb0@@A")
 #pragma comment(linker, "/alternatename:?PTR_FUN_1431b6060@@3PEAXEA=?DAT_1431b6060@@3USd_1431b6060@@A")
 #pragma comment(linker, "/alternatename:?PTR_LAB_1431b63f8@@3PEAXEA=?DAT_1431b63f8@@3USd_1431b63f8@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b6440@@3PEAXEA=?DAT_1431b6440@@3USd_1431b6440@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b64f0@@3PEAXEA=?DAT_1431b64f0@@3USd_1431b64f0@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b6540@@3PEAXEA=?DAT_1431b6540@@3USd_1431b6540@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b65f0@@3PEAXEA=?DAT_1431b65f0@@3USd_1431b65f0@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b6640@@3PEAXEA=?DAT_1431b6640@@3USd_1431b6640@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b6690@@3PEAXEA=?DAT_1431b6690@@3USd_1431b6690@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b6740@@3PEAXEA=?DAT_1431b6740@@3USd_1431b6740@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b67d0@@3PEAXEA=?DAT_1431b67d0@@3USd_1431b67d0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b7160@@3PEAXEA=?DAT_1431b7160@@3USd_1431b7160@@A")
 #pragma comment(linker, "/alternatename:?PTR_FUN_1431b71b0@@3PEAXEA=?DAT_1431b71b0@@3USd_1431b71b0@@A")
 #pragma comment(linker, "/alternatename:?PTR_FUN_1431b7260@@3PEAXEA=?DAT_1431b7260@@3USd_1431b7260@@A")
@@ -2748,9 +1799,6 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b7ba0@@3PEAXEA=?DAT_1431b7ba0@@3USd_1431b7ba0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b7c70@@3PEAXEA=?DAT_1431b7c70@@3USd_1431b7c70@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b7d50@@3PEAXEA=?DAT_1431b7d50@@3USd_1431b7d50@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7de0@@3PEAXEA=?DAT_1431b7de0@@3USd_1431b7de0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7ea0@@3PEAXEA=?DAT_1431b7ea0@@3USd_1431b7ea0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7f60@@3PEAXEA=?DAT_1431b7f60@@3USd_1431b7f60@@A")
 #pragma comment(linker, "/alternatename:?DAT_140002b00@@3PAEA=?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")
 #pragma comment(linker, "/alternatename:?DAT_140007ba0@@3PAEA=?Set__proto__@Object@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAV1234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_140007d90@@3PAEA=?IsSuper@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NXZ")

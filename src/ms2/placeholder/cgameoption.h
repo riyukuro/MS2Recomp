@@ -44,6 +44,10 @@ struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; __int64 m_n10Time; __int
 // +0x24 / +0x28: the smart push auto fishing / auto instrument package, +0x2c: the auto fishing price state.
 struct Unk_GoChroma { union { int m_n; bool m_bDisable; }; };     // 4 bytes (ctor 0x141261670); "chroma" "disable" (byte read by ChromaManagerDummy::Initialize)
 
+// A CGameOption member block the exe builds with its out-of-line ctor, in member order (the ctor VAs are the
+// "returns p" helpers in gameoptionstruct.cpp; symbols-manual rows bind each ??0Unk_GoMember<T> to its VA).
+template <class T> struct Unk_GoMember : T { Unk_GoMember(); };
+
 class CGameOption : public TSingleton<CGameOption>
 {
 public:
@@ -89,29 +93,29 @@ public:
     Unk_LgState* FUN_140cfd280();                           // &m_language (0x140cfd280, gameoptionlanguage.cpp)
     Unk_GoAutoLoot* FUN_141533e20() { return &m_autoLoot; }  // 0x141533e20 (inline COMDAT; client\ms2\mypc.cpp)
 public:
-    Unk_CameraState m_camera;                               // +0x08 ctor 0x14125b400
-    Unk_InterfaceState m_interface;                         // +0x18 ctor 0x14125b770
-    Unk_InterfaceFlag m_interfaceChar;                      // +0x30 ctor 0x14125bc30
+    Unk_GoMember<Unk_CameraState> m_camera;                               // +0x08 ctor 0x14125b400
+    Unk_GoMember<Unk_InterfaceState> m_interface;                         // +0x18 ctor 0x14125b770
+    Unk_GoMember<Unk_InterfaceFlag> m_interfaceChar;                      // +0x30 ctor 0x14125bc30
     char m_pad31[3];
-    Unk_StatusState m_status;                               // +0x34 ctor 0x14125bda0
-    Unk_StatusFlag m_statusChar;                            // +0x50 ctor 0x14125c880
+    Unk_GoMember<Unk_StatusState> m_status;                               // +0x34 ctor 0x14125bda0
+    Unk_GoMember<Unk_StatusFlag> m_statusChar;                            // +0x50 ctor 0x14125c880
     char m_pad51[3];
-    Unk_BattleState m_battle;                               // +0x54 ctor 0x14125ca80
-    Unk_CommunityStateA m_communityA;                       // +0x68 ctor 0x14125d130
+    Unk_GoMember<Unk_BattleState> m_battle;                               // +0x54 ctor 0x14125ca80
+    Unk_GoMember<Unk_CommunityStateA> m_communityA;                       // +0x68 ctor 0x14125d130
     char m_pad6b;
-    Unk_GraphicState m_graphic;                             // +0x6c ctor 0x14125d890
-    Unk_GraphicState2 m_graphic2;                           // +0x9c ctor 0x14125ec20
-    Unk_SoundState m_sound;                                 // +0xb0 ctor 0x14125f710
-    Unk_SoundFlag m_soundChar;                              // +0xe4 ctor 0x141260380
+    Unk_GoMember<Unk_GraphicState> m_graphic;                             // +0x6c ctor 0x14125d890
+    Unk_GoMember<Unk_GraphicState2> m_graphic2;                           // +0x9c ctor 0x14125ec20
+    Unk_GoMember<Unk_SoundState> m_sound;                                 // +0xb0 ctor 0x14125f710
+    Unk_GoMember<Unk_SoundFlag> m_soundChar;                              // +0xe4 ctor 0x141260380
     char m_pade5[3];
     Unk_GoConnect m_connect;                                // +0xe8 ctor 0x1412604b0
-    Unk_CommunityStateB m_account;                          // +0x140 ctor 0x14125d330
-    Unk_GoAutoLoot m_autoLoot;                              // +0x14c ctor 0x141260ea0
-    Unk_GoEtc m_etc;                                        // +0x160 ctor 0x141261750
-    Unk_LgState m_language;                                 // +0x198 ctor 0x14125f090
-    Unk_GpState m_gamepad;                                  // +0x1a0 ctor 0x14125f290
-    Unk_GoChroma m_chroma;                                  // +0x1b0 ctor 0x141261670
-    Unk_PiAgreeState m_agree;                               // +0x1b4 ctor 0x141261cf0
+    Unk_GoMember<Unk_CommunityStateB> m_account;                          // +0x140 ctor 0x14125d330
+    Unk_GoMember<Unk_GoAutoLoot> m_autoLoot;                              // +0x14c ctor 0x141260ea0
+    Unk_GoMember<Unk_GoEtc> m_etc;                                        // +0x160 ctor 0x141261750
+    Unk_GoMember<Unk_LgState> m_language;                                 // +0x198 ctor 0x14125f090
+    Unk_GoMember<Unk_GpState> m_gamepad;                                  // +0x1a0 ctor 0x14125f290
+    Unk_GoMember<Unk_GoChroma> m_chroma;                                  // +0x1b0 ctor 0x141261670
+    Unk_GoMember<Unk_PiAgreeState> m_agree;                               // +0x1b4 ctor 0x141261cf0
     TiXmlDocument m_docGame;                                // +0x1c0
     TiXmlDocument m_docGameDefault;                         // +0x230
     TiXmlDocument m_docAccount;                             // +0x2a0
@@ -119,6 +123,7 @@ public:
     TiXmlDocument m_docCharacter;                           // +0x380
     TiXmlDocument m_docCharacterDefault;                    // +0x3f0
     int m_nBenchmark;                                       // +0x460 (-1 until computed)
-    int m_n464;                                             // +0x464
+    bool m_b464;                                            // +0x464 (byte store in the ctor)
+    char m_pad465[3];
 };
 MS2_CHECK_SIZE(CGameOption, 0x468);

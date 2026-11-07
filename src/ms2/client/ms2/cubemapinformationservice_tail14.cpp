@@ -32,7 +32,17 @@
 
 typedef unsigned __int64 u64;
 
-void FUN_14015b310(void* p, u64 nSize);                        // sized global delete
+// 0x14015b310 is the CRT's sized __empty_global_delete. cl binds the real name (was FUN_14015b310).
+// clang-cl (the hook DLL build) emits its own __global_delete weak alias to __empty_global_delete for
+// implicit sized deleting dtors, and a user declaration of it crashes clang's optimizer (alias to a decl),
+// so the DLL build keeps the VA placeholder.
+#ifdef __clang__
+void FUN_14015b310(void* p, unsigned __int64 n);
+#define CMIS_SIZED_GLOBAL_DELETE FUN_14015b310
+#else
+void __empty_global_delete(void* p, unsigned __int64 n) noexcept;
+#define CMIS_SIZED_GLOBAL_DELETE __empty_global_delete
+#endif
 void* FUN_140159860(u64 nSize, void* pWhere);                  // placement operator new (not noexcept: the CallConstructors try blocks)
 
 // ---- scalar deleting destructors ---------------------------------------------------------------------------------
@@ -86,7 +96,7 @@ void* FUN_14112cec0(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x20);
         else
-            FUN_14015b310(p, 0x20);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x20);
     }
     return p;
 }
@@ -343,7 +353,7 @@ void* FUN_14112d5e0(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x4a8);
         else
-            FUN_14015b310(p, 0x4a8);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x4a8);
     }
     return p;
 }
@@ -356,7 +366,7 @@ void* FUN_14112d640(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x20);
         else
-            FUN_14015b310(p, 0x20);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x20);
     }
     return p;
 }
@@ -378,7 +388,7 @@ void* FUN_14112d6e0(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x18);
         else
-            FUN_14015b310(p, 0x18);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x18);
     }
     return p;
 }
@@ -418,7 +428,7 @@ void* FUN_14112d800(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x28);
         else
-            FUN_14015b310(p, 0x28);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x28);
     }
     return p;
 }
@@ -431,7 +441,7 @@ void* FUN_14112d860(void* p, unsigned f)
         if ((f & 4) == 0)
             efd::MemObject::operator delete(p, 0x28);
         else
-            FUN_14015b310(p, 0x28);
+            CMIS_SIZED_GLOBAL_DELETE(p, 0x28);
     }
     return p;
 }

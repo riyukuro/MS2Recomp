@@ -1621,7 +1621,17 @@ int COptimizer::FUN_1409f7ea0()
 struct Unk_AvBox { void* m_pad_00; void* m_p; };
 struct Unk_AvPtrArray { void** m_pData; unsigned __int64 m_nSize; unsigned __int64 m_nAlloc; int m_nGrowBy; };
 // s63 L4: 0x1401b6ac0 is MS2Ptr<CItemData>::Release (private; reached through operator=(int) below).
+// 0x14015b310 is the CRT's sized __empty_global_delete. cl binds the real name (was FUN_14015b310).
+// clang-cl (the hook DLL build) emits its own __global_delete weak alias to __empty_global_delete for
+// implicit sized deleting dtors, and a user declaration of it crashes clang's optimizer (alias to a decl),
+// so the DLL build keeps the VA placeholder.
+#ifdef __clang__
 void FUN_14015b310(void* p, unsigned __int64 n);
+#define APC_SIZED_GLOBAL_DELETE FUN_14015b310
+#else
+void __empty_global_delete(void* p, unsigned __int64 n) noexcept;
+#define APC_SIZED_GLOBAL_DELETE __empty_global_delete
+#endif
 void* FUN_140159860(unsigned __int64 n, void* p);
 void FUN_140159b70(unsigned nHr);
 void FUN_1409f7480(NiRefObject** pp) noexcept;
@@ -1692,7 +1702,7 @@ void* FUN_1409f79e0(void* p, unsigned nFlags)
         }
         else
         {
-            FUN_14015b310(p, 8);
+            APC_SIZED_GLOBAL_DELETE(p, 8);
         }
     }
     return p;

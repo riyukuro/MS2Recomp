@@ -104,20 +104,22 @@ unsigned FUN_140047170(const unsigned char* src, unsigned* out);
 unsigned FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out);
 
 // @0x140046e04
-// MS2-FUNCTIONAL: exe keeps head[] in the table home slot, reloads data from its stack slot and m_columns after the inner loop; register allocation differs
+// MS2-FUNCTIONAL: exe keeps head[] in the table (rcx) home slot where ours uses the p5 slot, so the callee-save home slots shift by 8,
+// and it keeps the header byte count in r11 past the m_p40 store. The volatile reads of m_base and m_columns reproduce the exe's reloads
+// after calls (VC9 forwards them otherwise, since the callees are in this TU), and cur keeps data in its stack slot as in the exe
 Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, Unk_CriUtfColumn* columns, void* p5,
                                const unsigned char* data, unsigned size, const Unk_CriUtfInit* init, unsigned flags)
 {
     unsigned head[2];
     DAT_143ba9d50 = "\nCRI UTF Retriever/PCx64 Ver.1.00.02 Build:Jan 13 2012 19:02:05\n";
     memset(table, 0, sizeof(Unk_CriUtfTable));
-    table->m_p0b0 = p5;
     table->m_ctx = ctx;
+    table->m_p0b0 = p5;
     table->m_init = *init;
     table->self = &table->m_init;
     table->m_flags = flags;
     unsigned n = FUN_140047170(data, head);
-    data = data + n;
+    const unsigned char* cur = data + n;
     if (head[0] != 0x40555446)
     {
         criErr_Notify(0, "E06100301:Invalid IFF header (mismatched four_cc).");
@@ -129,17 +131,16 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
         return 0;
     }
     table->m_size = head[1];
-    table->m_base = (unsigned char*)data;
+    table->m_base = (unsigned char*)cur;
     Unk_CriUtfHeader hdr;
-    n = FUN_1400471c8(data, &hdr);
-    unsigned char* base = table->m_base;
+    cur = cur + FUN_1400471c8(cur, &hdr);
+    unsigned char* base = *(unsigned char* volatile*)&table->m_base;
     table->m_p40 = base + hdr.d8;
-    data = data + n;
     table->m_p38 = base + hdr.d4;
     table->m_p48 = base + hdr.w2;
     table->m_columns = columns;
     table->m_columnCount = hdr.w10;
-    table->m_p50 = base + hdr.dc + hdr.d4;
+    table->m_p50 = table->m_p38 + hdr.dc;
     table->m_w5a = hdr.w12;
     table->m_d5c = hdr.d14;
     if (columns == 0)
@@ -149,8 +150,8 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
     }
     for (unsigned i = 0; i < table->m_columnCount; ++i)
     {
-        n = criUtfRtv_GetField((const CriUtfRtvView*)table, data, (CriUtfRtvColumn*)&table->m_columns[i]);
-        data = data + n;
+        n = criUtfRtv_GetField((const CriUtfRtvView*)table, cur, (CriUtfRtvColumn*)&table->m_columns[i]);
+        cur = cur + n;
         unsigned sum = 0;
         Unk_CriUtfColumn* c = table->m_columns;
         for (unsigned j = 0; j < i; ++j, ++c)
@@ -158,7 +159,7 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
             if (c->flag != 0)
                 sum += FUN_140047158(c->type);
         }
-        table->m_columns[i].rowOffset = (unsigned short)sum;
+        (*(Unk_CriUtfColumn* volatile*)&table->m_columns)[i].rowOffset = (unsigned short)sum;
     }
     for (int k = 0; k < 4; ++k)
     {

@@ -87,6 +87,7 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uirenderview.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cguidemanager.h"
@@ -923,16 +924,18 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x141937290
-// MS2-FUNCTIONAL: stack slots only (the exe puts ref below pField; frame 0x10 smaller)
 void UIGameMenuDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
     Unk_GmField* pField = (Unk_GmField*)WorldService::GetInstance()->FUN_141bd3620();
     if (pField != NULL) {
-        MS2Ptr<Unk_GmSlot> ref(((class Unk_GmSlot*)FUN_141a90540(p2->vfunc_5().x, p2->vfunc_5().y, (class GameObject*)(pField), 0.9f)));
-        if (ref.get() == 0)
+        // Both TPtr derefs come before either vfunc_5 call in the exe (0x1419372da / 0x1419372ec).
+        Unk_UISwfEntity_25* pSizeY = p2.operator->();
+        Unk_UISwfEntity_25* pSizeX = p2.operator->();
+        efd::SmartPointer<UIRenderView> spView(FUN_141a90540(pSizeX->vfunc_5().x, pSizeY->vfunc_5().y, (class GameObject*)(pField), 0.9f));
+        if (!spView)
             return;
-        FUN_141ab7200((UIRenderView*)ref.operator->(), TPtr<Unk_UISwfEntity_25>(p2), p3);
-        pField->vfunc_147(ref.get());
+        FUN_141ab7200(spView.operator->(), TPtr<Unk_UISwfEntity_25>(p2), p3);
+        pField->vfunc_147((Unk_GmSlot*)(UIRenderView*)spView);
     }
 }
 

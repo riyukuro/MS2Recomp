@@ -156,7 +156,8 @@ int FUN_1423c5740(const ExpatNormalEncoding* enc, const char* ptr, const char* e
 }
 
 // @0x142703ce0  printable-name character test (space, punctuation set, a-z)
-__declspec(noinline) int FUN_142703ce0(unsigned long long c)
+// static: the caller then keeps the tag in r8 across the calls (the callee's register use is known), as in the exe
+static __declspec(noinline) int FUN_142703ce0(unsigned long long c)
 {
     unsigned long long k = c - 0x20;
     if (!(k <= 0x3a && ((1ULL << k) & 0x7fffffe03ff0001ULL)) && c - 0x61 > 0x19)
@@ -164,7 +165,6 @@ __declspec(noinline) int FUN_142703ce0(unsigned long long c)
     return 1;
 }
 
-// MS2-FUNCTIONAL: same four calls; the exe keeps the tag in volatile r8 across calls (whole-program register allocation, the callee preserves it), we use rbx
 // @0x142703c80  all four bytes of a 32-bit tag pass the name-character test
 int FUN_142703c80(unsigned long long tag)
 {
@@ -231,8 +231,9 @@ static __forceinline void JpegIdctRow(const float* wsptr, unsigned char* outptr,
 {
     float tmp10 = wsptr[0] + wsptr[4];
     float tmp11 = wsptr[0] - wsptr[4];
-    float tmp13 = wsptr[2] + wsptr[6];
-    float tmp12 = (wsptr[2] - wsptr[6]) * 1.414213562f - tmp13;
+    float w2 = wsptr[2], w6 = wsptr[6];
+    float tmp13 = w2 + w6;
+    float tmp12 = (w2 - w6) * 1.414213562f - tmp13;
     float tmp0 = tmp10 + tmp13;
     float tmp3 = tmp10 - tmp13;
     float tmp1 = tmp11 + tmp12;
@@ -248,7 +249,7 @@ static __forceinline void JpegIdctRow(const float* wsptr, unsigned char* outptr,
     tmp12 = -2.613125930f * z10 + z5;
     float tmp6 = tmp12 - tmp7;
     float tmp5 = tmp11 - tmp6;
-    float tmp4 = tmp10 - tmp5;
+    float tmp4 = tmp10 + tmp5;
     outptr[0] = range_limit[JpegDescale(tmp0 + tmp7)];
     outptr[7] = range_limit[JpegDescale(tmp0 - tmp7)];
     outptr[1] = range_limit[JpegDescale(tmp1 + tmp6)];
@@ -315,7 +316,7 @@ void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short*
             tmp12 = -2.613125930f * z10 + z5;
             tmp6 = tmp12 - tmp7;
             tmp5 = tmp11 - tmp6;
-            tmp4 = tmp10 - tmp5;
+            tmp4 = tmp10 + tmp5;
             wsptr[0] = tmp0 + tmp7;
             wsptr[56] = tmp0 - tmp7;
             wsptr[8] = tmp1 + tmp6;

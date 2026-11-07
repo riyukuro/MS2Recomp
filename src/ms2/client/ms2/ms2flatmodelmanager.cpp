@@ -19,7 +19,6 @@ typedef unsigned long long u64;
 void* FUN_14214a770(void* sched, int behaviorType);
 #include <efd/UniversalID.h>   // B22: was class Unk_BuddyHandleBase (ctor 0x1401cd130 = efd::UniversalID(efd::UInt64))
 void FUN_140159b70(long hr);
-void FUN_14015b310(void* p, u64 sz);
 
 // ---- in-unit helper prototypes ----
 void* FUN_140d86bb0(void* sm);   void* FUN_140d86bf0(void* sm);   void* FUN_140d86b10(void* p);

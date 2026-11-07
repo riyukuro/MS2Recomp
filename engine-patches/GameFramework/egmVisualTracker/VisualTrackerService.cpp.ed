@@ -56,6 +56,18 @@ efd::UInt32 VisualTrackerService::GetGraphIndexByName(const char* name) // MS2: 
 750a
 #line 752 // MS2 __LINE__ (linefix)
 .
+473@54s "" ")}.s"
+473@40s "" "MS2VtKey{MS2VtMakeKey("
+469@51s "" ")}.s"
+469@40s "" "MS2VtKey{MS2VtMakeKey("
+465@53s "" ")}.s"
+465@40s "" "MS2VtKey{efd::utf8string("
+419c
+            utf8string value; (void)value.c_str(); (void)value.c_str(); (void)value.c_str(); // MS2: dead inlines use up the inliner budget so value's dtor stays out of line, as in the exe
+.
+403c
+typedef efd::utf8string::internal_string MS2VtIS; __pragma(inline_depth(0)) static __forceinline efd::utf8string MS2VtMakeKey(const char* p) { return efd::utf8string(p); } static __forceinline void MS2VtDropKey(efd::utf8string& s) { reinterpret_cast<MS2VtIS&>(s).MS2VtIS::~MS2VtIS(); } __pragma(inline_depth(254)) struct MS2VtKey { union { efd::utf8string s; }; ~MS2VtKey() { MS2VtDropKey(s); } }; /* MS2: exe calls these key temps' ctor/dtor out of line (inliner budget) */
+.
 133@57s "," " -> ="
 133@54s "" "EQUALS, // MS2: "
 68c

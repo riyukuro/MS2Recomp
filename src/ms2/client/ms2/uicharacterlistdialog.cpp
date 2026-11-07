@@ -339,61 +339,63 @@ UICharacterListDialog::CCharacterInfo::~CCharacterInfo()
 }
 
 // @0x1418e9520
-// MS2-FUNCTIONAL: the exe reads through the CInputStream base at packet+8 (the shared CInPacket header puts it at +0)
 void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
 {
-    m_state.FUN_1408eeb60(&packet);
-    CInputStream& s = packet;
-    m_text368 = s.ReadUnicodeStringA();
+    Unk_UserProxy& state = m_state;
+    state.FUN_1408eeb60(&packet);
+    m_text368 = packet.ReadUnicodeStringA();
     if (((class Unk_ClUgc*)TSingleton<CUgcManager>::GetInstance())->GetMode() == 1)
         m_text368 = "";
-    FUN_1418e9fa0(s.ReadInt64());
-    int nCount = s.ReadUInt8();
+    __int64 nDeleteTime = packet.ReadInt64();
+    FUN_1418e9fa0(nDeleteTime);
+    int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; ++i)
     {
-        int nId = s.ReadInt32();
-        __int64 nUid = s.ReadInt64();
-        int nRank = s.ReadUInt8();
-        int nAmount = s.ReadInt32();
+        int nId = packet.ReadInt32();
+        __int64 nUid = packet.ReadInt64();
+        int nRank = packet.ReadUInt8();
+        int nAmount = packet.ReadInt32();
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nId, nAmount, 0))
             break;
         spItem->FUN_140526c10(nRank);
-        spItem->FUN_140524eb0(s);
+        spItem->FUN_140524eb0(packet);
         spItem->SetItemUid(nUid);
-        m_state.m_220.Add(spItem);
+        state.m_220.Add(spItem);
     }
-    nCount = s.ReadUInt8();
+    nCount = packet.ReadUInt8();
     Unk_ClItemReader reader;
     for (int i = 0; i < nCount; ++i)
     {
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_PayloadItemWire*>(&reader)->FUN_1401fce40(s);
-        if (!(spItem == 0))
-            m_state.m_240.Add(spItem);
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_PayloadItemWire*>(&reader)->FUN_1401fce40(packet);
+        if (spItem == 0)
+            continue;
+        state.m_240.Add(spItem);
     }
-    if (s.ReadBool())
+    bool bHas = packet.ReadBool();
+    if (bHas)
     {
-        __int64 nFirst = s.ReadInt64();
-        __int64 nSecond = s.ReadInt64();
-        m_state.m_280 = nFirst;
-        m_state.m_288 = nSecond;
-        nCount = s.ReadUInt8();
-        if (nCount != 0)
+        __int64 nFirst = packet.ReadInt64();
+        __int64 nSecond = packet.ReadInt64();
+        state.m_280 = nFirst;
+        state.m_288 = nSecond;
+        nCount = packet.ReadUInt8();
+        if (nCount > 0)
         {
             for (int i = 0; i < nCount; ++i)
             {
-                int nId = s.ReadInt32();
-                __int64 nUid = s.ReadInt64();
-                int nRank = s.ReadUInt8();
-                int nAmount = s.ReadInt32();
+                int nId = packet.ReadInt32();
+                __int64 nUid = packet.ReadInt64();
+                int nRank = packet.ReadUInt8();
+                int nAmount = packet.ReadInt32();
                 MS2Ptr<CItem> spItem(new CItem);
                 if (!spItem->FUN_140523c40(nId, nAmount, 0))
                     return;
                 spItem->FUN_140526c10(nRank);
-                spItem->FUN_140524eb0(s);
+                spItem->FUN_140524eb0(packet);
                 spItem->SetItemUid(nUid);
                 spItem->FUN_14052a130(2);
-                m_state.m_260.Add(spItem);
+                state.m_260.Add(spItem);
             }
         }
     }

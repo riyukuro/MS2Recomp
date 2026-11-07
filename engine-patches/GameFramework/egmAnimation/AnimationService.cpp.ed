@@ -36,6 +36,12 @@ bool (*g_pfnMS2SceneGraphCacheFilter)(const SceneGraphCacheResponse*) = NULL;  /
 685c
 #line 698  // MS2: 3 more MS2 lines above
 .
+563c
+        MS2AsAV::SetRot(pNifRoot, desiredTransform.GetRotate());
+.
+497c
+static __forceinline void MS2AsToRotation(const NiQuaternion& q, NiMatrix3& rot) { float tx = 2.0f*q.GetX(), ty = 2.0f*q.GetY(), tz = 2.0f*q.GetZ(), twx = tx*q.GetW(), twy = ty*q.GetW(), twz = tz*q.GetW(), txx = tx*q.GetX(), txy = ty*q.GetX(), txz = tz*q.GetX(), tyy = ty*q.GetY(), tyz = tz*q.GetY(), tzz = tz*q.GetZ(); rot.SetCol(0, 1.0f-(tyy+tzz), txy+twz, txz-twy); rot.SetCol(1, txy-twz, 1.0f-(txx+tzz), tyz+twx); rot.SetCol(2, txz+twy, tyz-twx, 1.0f-(txx+tyy)); } struct MS2AsAV : public NiAVObject { static __forceinline void SetRot(NiAVObject* p, const NiQuaternion& q) { MS2AsToRotation(q, static_cast<MS2AsAV*>(p)->m_kLocal.m_Rotate); } }; /* MS2: exe inlines SetRotate(quat) here (inliner budget) */
+.
 488c
     EE_UNUSED_ARG(tags); if (!pEntity) return;   // MS2: game 0x14227e550 ignores a null entity
 .

@@ -448,8 +448,6 @@ void StateWalkNPC::vfunc_4(StateData* pData)
 }
 
 // @0x141800cb0
-// MS2-FUNCTIONAL: the exe passes the name string inline (two-slot pointer copy, no EH
-// state nop) yet destroys it at scope end; no source form found for that
 void StateWalkNPC::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
@@ -460,9 +458,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         pMount->vfunc_95();
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        const efd::utf8string& strName = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460());
-        efd::utf8string strAnim(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strName))->c_str());
-        m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
+        m_pOwner->PlayAnimation(static_cast<const efd::utf8string&>(reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460())).c_str(), m_pOwner->FUN_1416713c0(), bChanged, false);
     }
 }
 

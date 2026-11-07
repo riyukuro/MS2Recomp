@@ -68,7 +68,7 @@ void CActionCameraMode::vfunc_8(double fTime)
         ptRot.z = -(ptRot.z * 180.0f / 3.1415927f);
         vfunc_4(ptRot);
         if (pEffect->m_spFOV)
-            m_pOwner->FUN_140947940(static_cast<Unk_FOVInterpolator*>(pEffect->m_spFOV.operator->())->FUN_141c2f230() * 180.0f / 3.1415927f);
+            m_pOwner->FUN_140947940(pEffect->m_spFOV.operator->()->GetFOV() * 180.0f / 3.1415927f);
     }
     BOOL bEnd = pEffect->m_fMaxTime <= fNow;
     if (bEnd)

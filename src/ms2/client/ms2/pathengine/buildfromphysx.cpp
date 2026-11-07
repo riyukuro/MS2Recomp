@@ -6,6 +6,7 @@
 // fileoutputstream.h (one line longer). See pathengineglue.h.
 // MS2-UNIT: ?\nxcapsuleshapedesc.cpp
 // MS2-RANGE: 0x141642030-0x141649870 .text$mn
+// MS2-RANGE: 0x142cb3d10-0x142cb3d30 .text$yd
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pathengine\\buildfromphysx.cpp"

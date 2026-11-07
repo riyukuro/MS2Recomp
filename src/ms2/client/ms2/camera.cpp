@@ -2365,7 +2365,7 @@ void CameraMgr::FUN_140af1f70()
                     pCamera->SetLocalTransform(kCamera);
                 }
                 if (m_effect.m_spFOV)
-                    m_spMode->vfunc_11((static_cast<Unk_FOVInterpolator*>(m_effect.m_spFOV.operator->())->FUN_141c2f230() * 180.0f) / 3.1415927f);
+                    m_spMode->vfunc_11((m_effect.m_spFOV.operator->()->GetFOV() * 180.0f) / 3.1415927f);
             }
             if (dTime >= m_effect.m_fMaxTime)
             {

@@ -60,6 +60,13 @@ void NiFOVInterpolator::CopyMembers(NiFOVInterpolator* pkDest,
 NiImplementCreateObject(NiFOVInterpolator);
 
 //--------------------------------------------------------------------------------------------------
+// game 0x141c2f230
+float NiFOVInterpolator::GetFOV() const
+{
+    return m_fFloatValue;
+}
+
+//--------------------------------------------------------------------------------------------------
 void NiFOVInterpolator::LoadBinary(NiStream& kStream)
 {
     NiFloatInterpolator::LoadBinary(kStream);

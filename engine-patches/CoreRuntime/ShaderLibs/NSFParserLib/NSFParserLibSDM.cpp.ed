@@ -1,0 +1,7 @@
+18a
+#pragma inline_depth()
+.
+14a
+// MS2: the exe initializer of the header-static NSFParserLibSDMObject (0x1401280d0) calls the constructor out of line.
+#pragma inline_depth(0)
+.

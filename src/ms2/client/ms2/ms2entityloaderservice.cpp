@@ -16,7 +16,6 @@ public:
     void FUN_141bd7d10();
     static class WorldService* GetInstance();
 };
-void FUN_14015b310(void* p, u64 sz);
 void* FUN_140a16d80(void* it);
 
 // C3: the block's entity id set and the caller's id list (std::set / std::list members bound by symbols).

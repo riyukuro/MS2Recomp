@@ -370,6 +370,9 @@ class GFxLogger { public: GFxLogger(); virtual ~GFxLogger(); };
 void FUN_140a5bb80(Scaleform::Log* pLog);   // C3: the definition's signature
 void FUN_140a5bba0(void* p);
 // The opaque members destroy through the exe glue, so the implicit member order matches the exe's dtor.
+inline Unk_UisMap::Unk_UisMap(UINT nBins, float fOptimalLoad, float fLoThreshold, float fHiThreshold, UINT nBlockSize) { new (this) ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>(nBins, fOptimalLoad, fLoThreshold, fHiThreshold, nBlockSize); }
+inline Unk_UisPtr8::Unk_UisPtr8(NiDefaultClickRenderStep* p) { new (this) efd::SmartPointer<NiDefaultClickRenderStep>(p); }
+inline Unk_UisLogger::Unk_UisLogger() { new (this) GFxLogger; }
 inline Unk_UisMap::~Unk_UisMap() { reinterpret_cast<ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*>(this)->~CAtlMap(); }
 inline Unk_UisPtr8::~Unk_UisPtr8() { reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(this)->~SmartPointer(); }
 inline Unk_UisLogger::~Unk_UisLogger() { reinterpret_cast<GFxLogger*>(this)->GFxLogger::~GFxLogger(); }
@@ -418,17 +421,10 @@ inline TSingleton<CUIService>::TSingleton() { s_instance = static_cast<CUIServic
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
 #ifndef MS2_HOOK_DLL
 // @0x141ad8bc0
-// MS2-FUNCTIONAL: container glue called through the exe; branch/temporary layout differs
 CUIService::CUIService()
-    : m_mapA(17, 0.75f, 0.25f, 2.25f, 10), m_mapDlg(17, 0.75f, 0.25f, 2.25f, 10), m_mapC(17, 0.75f, 0.25f, 2.25f, 10), m_nMode(0x3ed), m_n11c(0), m_b120(0), m_n124(0), m_n128(0), m_n12c(0), m_n130(0), m_nCursor(0)
+    : m_pWorldSvc30(0), m_x38(0), m_mapA(17, 0.75f, 0.25f, 2.25f, 10), m_mapDlg(17, 0.75f, 0.25f, 2.25f, 10), m_mapC(17, 0.75f, 0.25f, 2.25f, 10), m_nMode(0x3ed), m_n11c(0), m_b120(0), m_n124(0), m_n128(0), m_n12c(0), m_n130(0), m_nCursor(0),
+      m_mapOpen(0x11, 0.75f, 0.25f, 2.25f, 10), m_mapOpen2(0x11, 0.75f, 0.25f, 2.25f, 10), m_listOpen(10), m_listClose(10), m_log(), m_spDebugClick(0)
 {
-    m_pWorldSvc30 = 0;
-    new (&m_x38) efd::SmartPointer<NiDefaultClickRenderStep>((NiDefaultClickRenderStep*)0);
-    new (&m_mapOpen) ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>(0x11, 0.75f, 0.25f, 2.25f, 10);
-    new (&m_mapOpen2) ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>(0x11, 0.75f, 0.25f, 2.25f, 10);
-    new (&m_listOpen) ATL::CAtlList<Unk_UIType>(10);
-    new (&m_listClose) ATL::CAtlList<Unk_UIType>(10);
-    new (&m_log) GFxLogger;
     FUN_140a5bb80(reinterpret_cast<Scaleform::Log*>(&m_log));
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200018, 0);
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x620001d, 0);
@@ -448,7 +444,7 @@ CUIService::CUIService()
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200086, 0);
     m_spDebugClick = 0;
     FUN_141aee9a0();
-    m_strTable = FUN_14071a5b0(CStringA("Table"), CStringA("alignWidget.xml"));
+    m_strTable = FUN_14071a5b0("Table", "alignWidget.xml");
     m_cache.FUN_1401d1160(CString(m_strTable));
 }
 #endif

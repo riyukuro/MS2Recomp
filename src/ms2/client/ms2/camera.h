@@ -41,13 +41,6 @@ class Camera;
 class CameraMgr;
 class CCameraMoveEffectParam;
 
-// The current field of view of a NiFOVInterpolator (the camera effect nifs animate "Camera01" with a NiFOVController).
-class Unk_FOVInterpolator : public NiFOVInterpolator
-{
-public:
-    float FUN_141c2f230() const;                                        // (another obj)
-};
-
 // The engine camera object of the camera modes: a reference counted efd::IBase (0x18 bytes, vftable 0x142dd5a70).
 class Camera : public efd::IBase
 {

@@ -1208,7 +1208,6 @@ gb/obj/stock/stock__engine__gamebryo__CoreRuntime__UtilityLibs__NiVisualTracker_
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__ShaderLibs__NSBShaderLib__NSBLoader.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__ShaderLibs__NSFParserLib__NSFParserLibSDM.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__ShaderLibs__NSFParserLib__NSFGrammar.cpp.obj
-gb/obj/stock/stock__engine__gamebryo__Foundation__efdPhysX__PhysXTypes.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__SceneGraphService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__CameraService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__CoreRuntimeMessages.cpp.obj
@@ -1280,6 +1279,7 @@ gb/obj/stock/stock__engine__gamebryo__Foundation__efd__AssetConfigService.cpp.ob
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__QOSCompare.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ConfigSection.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ConfigSource.cpp.obj
+gb/obj/stock/stock__engine__gamebryo__Foundation__efdPhysX__PhysXTypes.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__ShaderLibs__NiBinaryShaderLib__NiBinaryShaderLibSDM.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__ScriptContext.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__Entity.cpp.obj
@@ -1347,10 +1347,10 @@ gb/obj/stock/stock__engine__gamebryo__CoreRuntime__EngineLibs__NiMain__NiBound.c
 gb/obj/v2525/gamebryo__gameframework__egmanimation__generated__variant0__egmanimationbindings_luawrap_release.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egmVisualizers__PropertyVisualizationService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__IAttachedObjectsProperty.cpp.obj
-gb/obj/stock/stock__engine__gamebryo__GameFramework__egmVisualTracker__VisualTrackerService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__CameraData.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egmAnimation__egmAnimationBindings.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egmAnimation__egmAnimationPCH.cpp.obj
+gb/obj/stock/stock__engine__gamebryo__GameFramework__egmVisualTracker__VisualTrackerService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__EngineLibs__NiMain__NiCodeBlock.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egmPhysXWhitebox__PhysXWhiteboxService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecr__IRenderServiceDelegate.cpp.obj
@@ -2683,7 +2683,6 @@ gb/obj/stock/stock__engine__gamebryo__Foundation__efd__Win32__Win32File.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__GrowableBuffer.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__FoundationSDM.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__Win32__DynamicModule_win32.cpp.obj
-gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__PrimitiveProperties.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__StdHashMap.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__AssetUtil.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efd__Win32__AssertDialog_Win32.cpp.obj
@@ -2703,6 +2702,7 @@ gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__SchedulerQueue.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__ExtraData.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__EventID.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__egfSDM.cpp.obj
+gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__PrimitiveProperties.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__UtilityProperties.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__SAXModelParser.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__BlockIdentification.cpp.obj
@@ -2979,6 +2979,7 @@ obj/scaleform/as3/sfr_as3_01p.obj
 obj/scaleform/as3/sfr_as3_02.obj
 obj/scaleform/as3/sfr_as3_03.obj
 obj/scaleform/as3/sfr_as3_04.obj
+obj/scaleform/as3/sfr_as3_15.obj
 obj/scaleform/as3/sfr_as3_05.obj
 obj/scaleform/as3/sfr_as3_06.obj
 obj/scaleform/as3/sfr_as3_07.obj
@@ -2989,7 +2990,6 @@ obj/scaleform/as3/sfr_as3_11.obj
 obj/scaleform/as3/sfr_as3_12.obj
 obj/scaleform/as3/sfr_as3_13.obj
 obj/scaleform/as3/sfr_as3_14.obj
-obj/scaleform/as3/sfr_as3_15.obj
 obj/scaleform/render/sfr_render_04l.obj
 obj/scaleform/as3/sfr_as3_16z.obj
 obj/scaleform/as3/sfr_as3_16.obj

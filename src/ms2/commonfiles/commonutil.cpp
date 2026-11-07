@@ -1994,7 +1994,10 @@ struct Unk_BstrBlock
 };
 
 // FUN_140297790 = std::_Tree<...pair<int,Unk_XmlElement*>...>::~_Tree (Unk_XmlSlotSet's base dtor)
-extern void** FUN_140298fc0(void* pHolder);
+// _bstr_t::Data_t::GetWString (returns its first member by reference); Data_t is private to _bstr_t, so a
+// unit-local copy.
+// @0x140298fc0
+void** FUN_140298fc0(void* pHolder) { return (void**)pHolder; }
 extern void FUN_14029b680(void** pp);
 void* FUN_140297d20(Unk_BstrHolderRef* p);
 

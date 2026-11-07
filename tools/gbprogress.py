@@ -20,6 +20,8 @@ VA windows (data/engine/unit-windows.tsv, 2026-10-20 lb2): a unit-name prefix pa
 (Gamebryo's LNUM Lua gb:Lua/ and the stock Lua 5.1.4 gb:Lua2/, mostly byte-identical); part of the match cache key.
 Cache: <cache>/gb/obj/<recipe>/... (incremental: obj mtime vs source + /showIncludes deps), <cache>/gb/results.json
 (per-obj match results keyed by obj mtime/size).
+Recommended after an engine source/header change: MS2_GB_PRECHECK=1 relinks the published latest build with the changed
+units' objs (tools/fullexe/gbprecheck.py) and exits 1 on a new LNK2005 or trap stub, which the per-unit match cannot see.
 """
 import argparse
 import bisect
@@ -87,11 +89,12 @@ ROWKEY_TABLES = ("symbols-engine-manual.tsv", "symbols-manual.tsv", "symbols.tsv
 CALLEE_ALTS = os.environ.get("MS2_GB_CALLEE_ALTS") == "1"
 if CALLEE_ALTS:
     MATCH_KEY += "+alts"
-# MS2_GB_SPEC_OWN=1 (default off; lf1 2026-11-06): a `template<> inline __declspec(noinline)` explicit specialization
+# MS2_GB_SPEC_OWN (default on since 2026-11-07, =0 turns it off; lf1): a `template<> inline __declspec(noinline)` explicit specialization
 # in the unit's own source counts as the obj's own function (copy anchor, home code), as a strong one did. `inline`
 # makes it COMDAT-any (7083e41d1: a strong one is LNK2005 against another TU's implicit copy), which alone made it a
-# possible sibling copy and cost 9 copy VAs on NiDX9SystemDesc / NiMesh / NiGeometryConverter.
-SPEC_OWN = os.environ.get("MS2_GB_SPEC_OWN") == "1"
+# possible sibling copy and cost 9 copy VAs on NiDX9SystemDesc / NiMesh / NiGeometryConverter. Full-engine A/B on a
+# frozen tree (bcba4ca23, same objs): 35541 matched / 58 functional both ways, 0 rows differ.
+SPEC_OWN = os.environ.get("MS2_GB_SPEC_OWN", "1") != "0"
 if SPEC_OWN:
     MATCH_KEY += "+specown"
     RELOK_KEY = "specown:" + RELOK_KEY

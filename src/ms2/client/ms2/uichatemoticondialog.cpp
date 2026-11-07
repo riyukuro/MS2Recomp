@@ -538,9 +538,10 @@ void* FUN_140bd69b0(void* p);
 Unk_EdIter* FUN_140bd4e50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd4b50(Unk_EdNode** p);
-void FUN_140bd4d50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p);
-void* FUN_140bd69d0(void* p);
+// identity (the _List_val address of the list's head member)
+// @0x140bd69d0
+void* FUN_140bd69d0(void* p) { return p; }
 Unk_EdListVal* FUN_140bd6890(Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd6e40(Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd6dc0(Unk_EdListVal* pList);
@@ -986,7 +987,10 @@ Unk_EdNode** FUN_140bd4b50(Unk_EdNode** p)
 // @0x140bd4dd0
 Unk_EdIter* FUN_140bd4dd0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList)
 {
-    FUN_140bd4d50(pIt, pNode, pList);
+    typedef std::_List_const_iterator<std::_List_val<std::_List_simple_types<unsigned int> > > Unk_UIntCIt;
+    reinterpret_cast<Unk_UIntCIt*>(pIt)->Unk_UIntCIt::_List_const_iterator(
+        reinterpret_cast<std::_List_node<unsigned int, void*>*>(pNode),
+        reinterpret_cast<const std::_List_val<std::_List_simple_types<unsigned int> >*>(pList));
     return pIt;
 }
 

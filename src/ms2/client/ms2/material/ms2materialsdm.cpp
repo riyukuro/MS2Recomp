@@ -26,5 +26,12 @@ void MS2MaterialSDM::Shutdown()
     MS2MaterialLibrary::_SDMShutdown();
 }
 
-// MS2: no MS2MaterialSDM object is defined in this TU. The exe's initializer at 0x140106fb0 calls this constructor and is
-// the MS2MaterialSDMObject in unit_140105110; 0x14014d250 is another out-of-line initializer.
+// The TU's own MS2MaterialSDMObject (the header-static pattern of Gamebryo's <lib>SDM.cpp): its initializer leads this
+// TU's .text$di run, after softparticlesmaterial.cpp's, and calls the constructor out of line. unit_140105110 holds a
+// second copy at 0x140106fb0. The exe already ran it, so only the byte-match build defines it.
+// MS2-RANGE: 0x14014d250-0x14014d260 .text$di
+#ifndef MS2_HOOK_DLL
+#pragma inline_depth(0)  // the exe jumps to the constructor; cl 19.16 would inline it
+// @0x14014d250
+static MS2MaterialSDM MS2MaterialSDMObject;
+#endif

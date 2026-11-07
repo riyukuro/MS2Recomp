@@ -80,7 +80,6 @@ void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 class NiPixelData* ConvertToRGBA32(class NiPixelData*, unsigned int, unsigned int);   // C3: was FUN_14184d8c0
 struct Unk_TexColor;
 int SamplePixelData(NiPixelData* pkPixels, NiPoint2 kUV, Unk_TexColor* pkOut, bool bBilinear);   // textureutil.cpp
-void FUN_14015b310(void* p, unsigned __int64 sz);
 
 void* FUN_141166c80(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB);
 void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB);

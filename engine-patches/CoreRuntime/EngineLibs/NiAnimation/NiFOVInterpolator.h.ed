@@ -26,6 +26,9 @@ public:
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget,
         float& fValue);
     virtual bool IsTransformValueSupported() const;
+
+    // MS2: the current field of view (the interpolated float value); game 0x141c2f230
+    float GetFOV() const;
 };
 
 typedef efd::SmartPointer<NiFOVInterpolator> NiFOVInterpolatorPtr;

@@ -2939,7 +2939,9 @@ void CGameRule::FUN_14047fc60()
 MS2_REPLACE_METHOD(0x14047FC60, CGameRule, FUN_14047fc60, 247, 0x577FF757);
 // MS2-PIN: ??$?0UOntimeEventContext@@@?$MS2Ptr@$$CBUOntimeEventContext@@@@QEAA@AEBV?$MS2Ptr@UOntimeEventContext@@@@@Z 0x140497ca0
 
-int& FUN_140496530(int& r);  // a TU-local copy of the identity forward<int&>
+// A TU-local copy of the identity forward<int&> (the exe keeps it apart from forward<int&> 0x140162e40).
+// @0x140496530
+int& FUN_140496530(int& r) { return r; }
 
 // This unit's pair<int,int>(int&, int&) copy: the first int through forward<int&> 0x140162e40, the second through the
 // identity copy 0x140496530 (the toolchain's instance is the shared 0x1404d9610).

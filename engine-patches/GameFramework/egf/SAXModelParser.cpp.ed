@@ -1,0 +1,6 @@
+1235c
+        MS2Tokens holder; efd::vector< efd::utf8string >& tokens = holder.v;
+.
+24c
+using namespace efd; /* MS2: the exe calls vector<utf8string>::~vector out of line in ParseMixin (LTCG kept the shared copy) */ __pragma(inline_depth(0)) static __forceinline void MS2DestroyTokens(efd::vector<efd::utf8string>& v) { typedef efd::vector<efd::utf8string> V; v.V::~V(); } __pragma(inline_depth(254)) struct MS2Tokens { union { efd::vector<efd::utf8string> v; }; __forceinline MS2Tokens() : v() {} __forceinline ~MS2Tokens() { MS2DestroyTokens(v); } };
+.

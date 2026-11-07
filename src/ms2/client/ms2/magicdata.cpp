@@ -1868,7 +1868,6 @@ float FUN_141198810();                                              // random in
 template <> PC* efd::DynamicCast<PC, Unk_WsC_GameObj>(efd::SmartPointer<Unk_WsC_GameObj>& spSource);   // the hit entity (null when gone)
 
 // @0x141465b30
-// MS2-FUNCTIONAL: one operand form: for FUN_14146c990's owner-id arg the exe loads &m_spSkill through rax then mov rcx,rax, ours loads rcx directly (3 bytes short)
 void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
 {
     int nMode = pRow->m_n10c;
@@ -1990,8 +1989,9 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
             const CString& strEffect = pRow->m_str188;
             int nKey = pRow->m_n180;
             int nType;
+            Unk_MagicEntity* pCaster = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(m_spSkill->m_nCasterId));
             std::pair<bool, bool> kPlay = ((CMagicService*)FUN_1410a7630())->FUN_14146c990(&nKey, reinterpret_cast<Unk_NiPoint3*>(&kXform.m_Translate), m_spSkill->m_nOwnerId,
-                reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(m_spSkill->m_nCasterId)), &nType);
+                pCaster, &nType);
             if (kPlay.first) {
                 NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
                 ((Unk_MagicEffectReq&)(kReq)).m_strName = strEffect;
@@ -2349,11 +2349,11 @@ float CMagic::GetSpawnTime()
 MS2_REPLACE_METHOD(0x141464640, CMagic, GetSpawnTime, 37, 0x661D43EC);
 
 // @0x141464670
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
+// The volatile locals make /Od load both operands of nExtra + nFlight into registers in source order (mov ecx; mov edx; add ecx,edx).
 int CMagic::GetTotalDuration()
 {
-    int nExtra = 0;
-    int nFlight;
+    volatile int nExtra = 0;
+    volatile int nFlight;
     CMagicModel* pModel;
     if (m_spCaster.get() != NULL) {
         pModel = ((CMagicService*)FUN_1410a7630())->FindModel(m_spCaster->m_nTagId, m_spCaster->m_nTagSub).get();
@@ -2361,7 +2361,7 @@ int CMagic::GetTotalDuration()
             nExtra = pModel->GetTotalDuration();
     }
     nFlight = (int)FUN_14028d260(m_fTotalTime);
-    return (int)FUN_14028d260(GetSpawnTime()) + (nFlight + nExtra) + m_data.m_nMoveEndHoldDuration;
+    return (int)FUN_14028d260(GetSpawnTime()) + (nExtra + nFlight) + m_data.m_nMoveEndHoldDuration;
 }
 MS2_REPLACE_METHOD(0x141464670, CMagic, GetTotalDuration, 274, 0x2F8B3639);
 
