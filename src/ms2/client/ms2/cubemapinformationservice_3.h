@@ -418,7 +418,7 @@ public:
     efd::map<Unk_CMISKindB, int> f378;   // C3: was Unk_CMISTree<281>
     ATL::CAtlArray<Unk_CMISElem388*> a388;
     ATL::CAtlArray<Unk_CMISElem3a8*> a3a8;
-    Unk_CMISTree<282> f3c8;
+    efd::map<Unk_CMISKindA, int> f3c8;   // C3: was Unk_CMISTree<282>
     int f3d8 = 0x12;
     bool f3dc = false;
     Timer t3e0;

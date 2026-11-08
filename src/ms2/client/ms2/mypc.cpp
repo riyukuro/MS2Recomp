@@ -773,11 +773,11 @@ CNetworkService* FUN_140714f90();
 // The cube palette (the selected cube to place).
 class UGCCubePalette* GetUGCCubePalette();
 bool FUN_1408a07b0(int nMapId, int nA, __int64 nB);          // build-forbidden map
-extern int DAT_143ae0fb0;                                   // the debug switches (reset by 0x1415308d0)
+extern unsigned DAT_143ae0fb0;                              // the debug switches (reset by 0x1415308d0)
 extern int DAT_143ae0fb4;
-extern int DAT_143ae0fb8;
+extern unsigned DAT_143ae0fb8;
 extern int DAT_143ae0fbc;
-extern int DAT_143ae0fc0;
+extern int g_nDebugUI;
 class Unk_PCCubeCraft { public: int FUN_1410aa1f0(); void FUN_1410ac9b0(); };   // the cube craft controller (in the build mode)
 extern int DAT_1439f4a7c;
 extern __int64 DAT_143ab2820;
@@ -4531,7 +4531,7 @@ void MyPC::FUN_1415308d0()
     DAT_143ae0fb4 = 0;
     DAT_143ae0fb8 = 0;
     DAT_143ae0fbc = 0;
-    DAT_143ae0fc0 = 0;
+    g_nDebugUI = 0;
 }
 MS2_REPLACE(0x1415308D0, MyPC::FUN_1415308d0, 51, 0x1D1AFDAD);
 

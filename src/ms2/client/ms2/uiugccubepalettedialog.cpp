@@ -422,8 +422,8 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 extern int DAT_1439f4a7c;
 extern __int64 DAT_143ab2820;                   // the own account id
 extern Unk_Int3 DAT_143ab2398;
-extern char DAT_142e6b390;
-extern char DAT_142e6b1bc;
+extern unsigned char DAT_142e6b390[];
+extern unsigned char DAT_142e6b1bc[];
 
 // ---- tables ----
 
@@ -587,9 +587,9 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-extern char DAT_142e6b398;
-extern char DAT_142e6b3a0;
-extern char DAT_142e6b224;
+extern unsigned char DAT_142e6b398[];
+extern const char DAT_142e6b3a0[];   // "sort"
+extern unsigned char DAT_142e6b224[];
 __int64 GetServerTime();
 void FUN_140710590(COutPacket& p);
 struct Unk_CubeUiData { __int64 m_0; __int64 m_8; };
@@ -760,7 +760,7 @@ int UIUGCCubePaletteDialog::vfunc_53(void* pCfg)
         for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
         {
             int nId = list.GetAt(pos);
-            XmlSetChildAttr((class TiXmlElement*)(pCfg), (char const*)(&DAT_142e6b390), (char const*)(&DAT_142e6b1bc), nId, false);
+            XmlSetChildAttr((class TiXmlElement*)(pCfg), (char const*)(DAT_142e6b390), (char const*)(DAT_142e6b1bc), nId, false);
         }
     }
     return 1;
@@ -772,10 +772,10 @@ int UIUGCCubePaletteDialog::vfunc_54(void* pCfg)
     if (m_80 != 0)
     {
         FUN_140df1e00();
-        for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pCfg))->FirstChild((char const*)(&DAT_142e6b398))); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling((char const*)(&DAT_142e6b3a0))))
+        for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pCfg))->FirstChild((char const*)(DAT_142e6b398))); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling(DAT_142e6b3a0)))
         {
             int nId;
-            XmlGetAttr((class TiXmlElement*)(pNode), (char const*)(&DAT_142e6b224), *(unsigned int*)(&nId));
+            XmlGetAttr((class TiXmlElement*)(pNode), (char const*)(DAT_142e6b224), *(unsigned int*)(&nId));
             FUN_140df1f40(0x65, nId);
         }
     }

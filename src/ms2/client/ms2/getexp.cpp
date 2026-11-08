@@ -58,7 +58,8 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);   // @0x1400
 
 // ---- exe data ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;        // the identity matrix
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; axis a (the up axis)
 #define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; axis b
 extern float DAT_1439f733c;                 // minimum travel distance
@@ -153,7 +154,7 @@ class Unk_Clock;
 // @0x141272630
 CExpEffectInfo::CExpEffectInfo()
     : m_pOwner(0), m_n20(0), m_hEffect(0), m_spNode((NiNode*)0), m_ptPos(DAT_143b01a60), m_fElapsed(0),
-      m_rot(DAT_143a09600), m_fProgress(0), m_fTotal(0), m_ptTarget(DAT_143b01a60), m_ptSource(DAT_143b01a60),
+      m_rot(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600)), m_fProgress(0), m_fTotal(0), m_ptTarget(DAT_143b01a60), m_ptSource(DAT_143b01a60),
       m_nState(0)
 {
     InitConstants();

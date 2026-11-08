@@ -440,7 +440,7 @@ extern ATL::CAtlArray<unsigned int> DAT_143ab3098;
 void FUN_14092f420();
 int FUN_14092f640();
 void FUN_1412751b0(const CStringW& strMsg, int nType);
-extern int DAT_143ab2864;
+extern int g_upperTargetId;
 extern __int64 DAT_143ab2828;
 extern int DAT_1439f4a7c;
 extern int DAT_1439f4a80;
@@ -2068,7 +2068,7 @@ MS2_REPLACE_METHOD(0x14170dc90, CSceneStateGame, OnRequestLogin, 191, 0x74DA6D2C
 void CSceneStateGame::OnServerEnter(CInPacket& packet)
 {
     FUN_14092f420();
-    DAT_143ab2864 = packet.ReadInt32();
+    g_upperTargetId = packet.ReadInt32();
     DAT_143ab2828 = packet.ReadInt64();
     int nChannel = (unsigned short)packet.ReadInt16();
     if (nChannel == 0 && DAT_1439f4a7c != 0)
@@ -2635,7 +2635,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_140523c40(nItemId, nRarity, 0))
             {
-                spItem->SetObjectId(DAT_143ab2864);
+                spItem->SetObjectId(g_upperTargetId);
                 spItem->SetItemUid(nItemUid);
                 spItem->FUN_140526b70(nAmount);
                 spItem->FUN_140524eb0(packet);
@@ -2654,7 +2654,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->SetItemUid(nItemUid);
             spItem->FUN_140526b70(nAmount);
             spItem->FUN_140524eb0(packet);
@@ -2751,7 +2751,7 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->SetItemUid(nItemUid);
             spItem->FUN_140526b70(nAmount);
             spItem->FUN_140524eb0(packet);
@@ -2820,7 +2820,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->SetItemUid(nItemUid);
             spItem->FUN_140526b70(nAmount);
             spItem->FUN_140524eb0(packet);
@@ -2871,7 +2871,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_140523c40(nItemId, nRarity, 0))
             {
-                spItem->SetObjectId(DAT_143ab2864);
+                spItem->SetObjectId(g_upperTargetId);
                 spItem->SetItemUid(nItemUid);
                 spItem->FUN_140526b70(nAmount);
                 spItem->FUN_140524eb0(packet);
@@ -3050,7 +3050,7 @@ void CSceneStateGame::FUN_141715860(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->SetItemUid(nItemUid);
             spItem->FUN_140526b70(nAmount);
             spItem->FUN_140524eb0(packet);
@@ -6040,7 +6040,8 @@ struct Unk_SSGXform
     float m_fScale;                                         // +0x30
 };
 MS2_CHECK_SIZE(Unk_SSGXform, 0x34);
-extern Unk_EfdMatrix3 DAT_143a09600;                        // identity rotation
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;                        // identity rotation
 
 // ---- 0x63: interact objects of the field (create / update / remove, use results) --------------------------------
 #include "ms2/placeholder/cinteractobjectdata.h"

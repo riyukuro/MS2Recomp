@@ -104,7 +104,7 @@ public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);
 };
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
-extern float DAT_1439f81fc; extern float DAT_1439f8200; extern float DAT_1439f81f4; extern float DAT_1439f81f8; extern float DAT_1439f8204;
+extern float g_1439f81fc; extern float g_1439f8200; extern float g_1439f81f4; extern float g_1439f81f8; extern float DAT_1439f8204;
 extern int DAT_1439f8208;   extern int DAT_143ae2960;
 #define DAT_143a08cd8 (*(char*)&efd::Point3::UNIT_X)   // C3: was extern char DAT_143a08cd8
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset);
@@ -158,14 +158,14 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo)
     : CMesh(false, false, 1, 4, 2, 0x12), m_node(0)
 {
-    FUN_1416106e0(this, owner, lodHi, lodLo, DAT_1439f81fc, DAT_1439f8200);
+    FUN_1416106e0(this, owner, lodHi, lodLo, g_1439f81fc, g_1439f8200);
 }
 
 // @0x14160fbd0
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo, float radius)
     : CMesh(false, false, 1, 4, 2, 0x12), m_node(0)
 {
-    FUN_1416106e0(this, owner, lodHi, lodLo, radius, DAT_1439f8200);
+    FUN_1416106e0(this, owner, lodHi, lodLo, radius, g_1439f8200);
 }
 
 // @0x14160fc90
@@ -216,10 +216,10 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         ((Vector3*)&p130)->Unitize();
         Unk_NiPoint3 p100(*(const Vector3*)dir);
         *(NiMatrix3*)&xf.m_Rotate = NiMatrix3(reinterpret_cast<const NiPoint3&>(p130), reinterpret_cast<const NiPoint3&>(p148), reinterpret_cast<const NiPoint3&>(p100));
-        if (DAT_1439f81f4 < 0.001f) {
-            fade = DAT_1439f81f8;
+        if (g_1439f81f4 < 0.001f) {
+            fade = g_1439f81f8;
         } else {
-            fade = one - efd::Clamp(dt / DAT_1439f81f4, 0.0f, 1.0f) * (one - DAT_1439f81f8);
+            fade = one - efd::Clamp(dt / g_1439f81f4, 0.0f, 1.0f) * (one - g_1439f81f8);
         }
         float scale = fade;
         xf.m_fScale = scale;

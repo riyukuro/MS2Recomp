@@ -54,7 +54,7 @@ public:
 };
 int FUN_141277f50();                                                // next UI layer
 int FUN_1419e0b70(WorldService* pWorld);
-extern int DAT_143af62d4, DAT_143af62d8, DAT_143ab2874;
+extern unsigned DAT_143af62d4, DAT_143af62d8; extern int DAT_143ab2874;
 
 // @0x1419df870
 UILoadingProgress::UILoadingProgress()

@@ -1,4 +1,4 @@
-# tools/permanent.py: 746 compiler-limited functions (functional, codegen not reproducible from source)
+# tools/permanent.py: 757 compiler-limited functions (functional, codegen not reproducible from source)
 #va	unit	reason
 140002100	sfr_video_04	builtin registration: keyValue/member slot sharing + GetStringManager scheduling (cl 15-era codegen note); inner-block and FUN_1400020d0 forms tried
 140002240	sfr_video_04	as 140002100
@@ -8,6 +8,7 @@
 14000a090	sfr_video_01	regalloc only: exe keeps right->pLower in rax and compares [left+0x10]; 12 source forms (incl. SDK CompareBuiltIn_CaseCheck) leave 3 bytes of register choice
 14000b3b0	sfr_video_01	regalloc only: VC9 home-slot order of rbx/rbp saves vs AllocInfo/newHash locals; SDK setRawCapacity form gives identical code otherwise
 14000b6e0	528	regalloc only: VC9 register permutation in the hash insert (rbx/rsi/rbp/r12 roles, mask kept in r11 vs r12), same length 528 + : SDK HashSetBase::add body, h&=mask in place, SPInt index, mask decl order, mask re-read: 36 best (baseline)
+14000b9e0	528	regalloc only: VC9 register permutation in the hash insert, same as permanent twin 0x14000b6e0 (mask kept in r12 vs r11, rbp/rsi roles, callee-save order); same length 528 : pair[1] read once fixed length 544->528 and the inline copy; h&=mask in place no change (36 diff lines, all register names/save order); helper shared with 0x14000b6e0 where +exhausted SDK body/SPInt/mask order variants
 14000c9f0	sfr_video_01	no SDK src; 4 variants; exe keeps LogScriptError non-tail call and re-reads url node from stack
 14000ed60	sfr_video_02	regalloc only: home-slot sharing of the arg spills differs, no source form found
 1400105b0	sfr_video_02	exe frame 0x40 larger, Matrix2F identity stored inline at rsp+0x20 vs our memset; 238-line diff, no SDK source; decl reorder worse
@@ -31,15 +32,16 @@
 14002a010	sfr_cri_01	VC9 schedules the vtable lea after the sound-pointer store; volatile on either store, moving the vtable store before or after the refcount if, and a named local all leave 7+ bytes
 14002a080	sfr_cri_01	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
 14002b450	sfr_cri_02	inlined Array::PushBack: the exe reads the array size twice (inc, then cmp against memory), ours reuses the first load; reference, pointer and Append forms gave no change, and the shared array header is used everywhere
+14002b530	sfr_cri_02	VC9 /O2 regalloc only: Init differs in the first inlined CriMvSound ctor (exe hoists the vtable leas into rdx/r8 and builds the object in rax; ours rax/rdx and r12) and the decoder null test (exe cmp rbx,rbp then lea 0x48(r8); ours test rbx then lea 0x48(rbx)). Tried: ternary form for the first ctor (now same as the second), if (!pDecoder) vs if (!pdecoder); no change
 14002c0e0	sfr_cri_02	this/arg order at Thread::Start; tried declared virtual view, member pDecodeThread call, enum default arg, vc11 toolset (worse)
 14002de50	sfr_cri_02	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
 14002e050	sfr_cri_02	same Thread::Start arg order as 14002c0e0
-14003aca8	sfr_cri_03a	VC9 /O2 codegen: 249 byte(s) differ, length 271/258 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?criUtfRtv_SumWithAlignment32@@YAJPEBUCriUtfRtvView@@KJKJ@Z]
-14003adac	sfr_cri_03a	VC9 /O2 codegen: 253 byte(s) differ, length 275/262 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_14003adac@@YA_KPEBUCriUtfRtvView@@KJKJ@Z]
+14003aca8	sfr_cri_03a	VC9 /O2 CSE: the exe loads table->RecordSize twice (once for the row address, once into the loop stride) and keeps table in rcx; VC9 merges the two loads into one and moves table to rsi (pushes rsi). Tried a hoisted stride local, (CriUint64) stride, inline address forms ((CriUint32)(RecordSize*row), &RecordData[..], 64-bit casts), and a per-row recomputed address. Only a volatile read keeps the loads apart, and then the load order still differs
+14003adac	sfr_cri_03a	same as 0x14003aca8 (its 64-bit twin): VC9 merges the two RecordSize loads that the exe keeps separate; the same ~10 forms were tried
 14003b674	sfr_cri_03a	VC9 16-bit or of the big-endian offset (or cx,ax) and load order; byte order, local split, int/ushort widths, helper-less inline and result-local variants tried (11)
 14003efc0	sfr_cri_03	VC9 /O2 codegen: 3560 byte(s) differ, length 4425/5631 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?crivmpv_DecodeOnePictureInPool@@YAJPEAX@Z]
 140045474	sfr_cri_03b	VC9 /O2 codegen: 790 byte(s) differ, length 979/1089 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?criusfdmx_exec_decode@@YAXPEAX@Z]
-14004592c	sfr_cri_03b	VC9 /O2 codegen: 18 byte(s) differ, length 50/53 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_14004592c@@YAPEAXPEAX@Z]
+14004592c	sfr_cri_03b	VC9 /O2 regalloc: exe loads the next-chunk link into rcx and reloads the memset arg from rbx, ours keeps the chunk in rcx and loads next into rdx (one reg swap, 3 lines). Tried 12 forms: struct pool / raw +0x48 offsets / head pointer local, memcpy loads like sibling FUN_140045964, early-return, test-on-member, reused chunk var for next, typed Chunk struct with Next, store-before/after result assignment; all leave the same swap
 140045d34	sfr_cri_03b	VC9 regalloc: rbx/rsi/rdi rotated for the handle, count and chunk
 140045e04	sfr_cri_03b	criSjUni_UngetChunk: VC9 copies the movsxd lane into rbp (mov rbp,rdi) so the node lands in rdi, ours keeps one lane register; head-less condition, slot pointer, int64 lane, outer node, inlined pop, push/merge helpers and inverted if give 25-29 (base 25)
 140046094	sfr_cri_03b	VC9 regalloc: eax/edx swapped for the free-space min chain
@@ -55,7 +57,7 @@
 14004ce20	unit_14004c1d0	VC9 /O2 register allocation / xmm assignment differs; ~10 source variants (casts, decl order, hoisted locals, loop forms) no change
 14004cfd0	unit_14004c1d0	VC9 /O2 register allocation / xmm assignment differs; ~10 source variants (casts, decl order, hoisted locals, loop forms) no change
 14004d1c0	unit_14004c1d0	VC9 /O2 register allocation / xmm assignment differs; ~10 source variants (casts, decl order, hoisted locals, loop forms) no change
-14004da40	sfr_cri_05	VC9 /O2 codegen: 112 byte(s) differ, length 485/483 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?cftfx_makeConvYccRgbTable@@YAXXZ]
+14004da40	sfr_cri_05	VC9 /O2 regalloc: the remaining diff is the register naming of the strength-reduced table pointers (the exe has tv in rdx and ty+2 in r11; ours has r11 and r10); every load, store and the __ImageBase+RVA table addressing are the same (the sign of the base displacements in the normalised diff is relocation display only). Tried 6 orders of the three table loads, longlong i, tables read inline, pointer-increment loop, short* i*4+k indexing
 14004dc90	sfr_cri_05	the exe sign-extends the inverted flag byte before the mask (movsx after not), ours drops the dead extension; six cast, local and shift forms gave no change
 14004e940	sfr_cri_05b	VC9 hoists i_v2=0 into r10 before cmp a2,1 and shares it in the else stores, ours sinks the xor into both branches; best form (clamp as ?: assign) 28 -> 18 diff lines, split/decl-order/type/hoist variants (12) no better
 14004f220	sfr_cri_05b	VC9 /O2 codegen: 188 byte(s) differ, length 291/293 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_14004f220@@YAX_JHHPEA_J@Z]
@@ -65,12 +67,11 @@
 140050820	sfr_cri_05b	VC9 /O2 codegen: 379 byte(s) differ, length 772/774 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?MPVMULTI_DecPicture@@YA_K_J_K1PEA_K@Z]
 140051380	sfr_cri_05b	VC9 /O2 codegen: 34 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140051380@@YA_K_JPEA_J@Z]
 1400515c0	sfr_cri_05b	VC9 /O2 codegen: 1333 byte(s) differ, length 1619/1616 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_1400515c0@@YA_K_JPEA_J@Z]
-140051c10	sfr_cri_05b	VC9 /O2 codegen: 28 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140051c10@@YAI_J0H@Z]
+140051c10	sfr_cri_05b	VC9 /O2 regalloc: best form (for loop, a3 -= 4, str = (char*)a2 + 4 + i) is exact except the exe hoists a2+4 into r13 (lea 4(rdx)); every form that hoists the base (base local, a2 += 4, longlong base, &base[i], declaration permutations x24, do-while/while/for, tail variants) swaps the i/str registers (rbx/rdi). ~45 forms tried
 140051d20	sfr_cri_05b	VC9 movsxd register choice; five source variants gave no change
 1400520c0	sfr_cri_05b	VC9 /O2 codegen: 1312 byte(s) differ, length 1634/1621 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_1400520c0@@YA_K_JPEA_J@Z]
 1400527c0	sfr_cri_05b	VC9 regalloc: rsi vs r15 for the stream pointer
 140052950	sfr_cri_05b	VC9 regalloc: rsi/rdi vs rbx/rsi saved
-140054b60	sfr_cri_06	VC9 /O2 codegen: 322 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?calcQuantMatrix@@YAX_J@Z]
 140054cf0	sfr_cri_06	VC9 /O2 codegen: 144 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?parseShc@@YA_JPEAI_K@Z]
 140055410	sfr_cri_06	VC9 regalloc: r10/r11 swapped for the byte accumulator
 140055550	sfr_cri_06	VC9 /O2 codegen: 10070 byte(s) differ, length 10828/10892 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?parseEsc@@YA_J_J_K@Z]
@@ -80,6 +81,7 @@
 1400590c0	163	scheduling/regalloc only: same 163 B and insns; the stride loads are scheduled differently and use other registers (VC9 cl 15) sfr_cri_06 at 0b9c84cc6; int-stride and __int64-stride SSE2 forms tried
 140059170	sfr_cri_06	SSE2 intrinsic residual add already hand-scheduled; remaining is xmm/gpr regalloc
 1400592c0	119	regalloc only: the exe copies dst to r8 and keeps stride in rdx, ours the reverse p/q pointer, if/else tail and constant-loop variants all give our assignment
+1400593b0	sfr_cri_06	SSE2 horizontal half-pel: same insns; exe emits sub rdx,r8 (src+1-dst) before movsxd stride and sub rdx,rcx, and loads [rcx+rdx]; ours the reverse and [rdx+rcx]. Grid of 64 forms (d+(src-dst), (src-dst)+d, hoisted d0/d1, load and pavgb operand order), index/pointer-IV/array forms, loop counter types and 100+ local/param renames all stay at 6 diff lines
 1400593f0	sfr_cri_06	VC9 /O2 codegen: 99 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_1400593f0@@YAXPEBEPEAEHHH@Z]
 140059810	sfr_cri_06	VC9 /O2 codegen: 448 byte(s) differ, length 685/681 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140059810@@YAXPEBEPEAEHHH@Z]
 140059c40	sfr_cri_06	SSE2 average/compare block: best form (dst-relative loop + and(xor,or) helper) 35 -> 29 diff lines; left are VC9 test/jle before sub+movsxd, a 16-byte loop-align nop and load order c,d,a,b (ours d,a,c,b), which no source order changes
@@ -121,7 +123,7 @@
 140069844	sfr_cri_07	VC9 /O2 codegen: 663 byte(s) differ, length 696/638 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?criAdxDecCore_Decode@@YAH_JHPEAEIPEAHIPEA_JI@Z]
 140069ac4	sfr_cri_07	VC9 /O2 codegen: 1671 byte(s) differ, length 1758/894 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140069ac4@@YAH_JHPEAEIPEAHIPEA_JI@Z]
 14006a598	sfr_cri_07	VC9 register choice in the big-endian AINF tag read (which byte lands in eax vs edx before the or); seven operand-order, cast, temp and type variants gave no change
-14006a7f8	sfr_cri_07	VC9 /O2 codegen: 165 byte(s) differ, length 309/304 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?criAdxDec_DecodeHeader@@YAI_KI_J@Z]
+14006a7f8	sfr_cri_07	VC9 /Os stack packing: ours packs ofs and the AINF size into one home slot (so rbp/rsi go to the freed home slots), the exe gives each its own slot and pushes rbp/rsi; every instruction else is identical. Tried declaration order, ofs initialised at declaration, size as int/ulonglong/block-scoped, size = 0 / (void)size to stretch its lifetime, ofs > arg2, (uint) return, if/else return; the matched sibling DecodeHeaderEx keeps ofs live in memory to the return, here the exe keeps it in esi like ours
 14006aaa0	sfr_cri_07c	VC9 /O2 codegen: 1253 byte(s) differ, length 1553/1573 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?DCT_Isse2Trans@@YAXPEAUV16@@0H@Z]
 14006b0d0	sfr_cri_07	VC9 /O2 codegen: 27961 byte(s) differ, length 31936/35752 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_14006b0d0@@YA_J_J@Z]
 140073c80	sfr_cri_07	VC9 /O2 codegen: 24457 byte(s) differ, length 27952/32224 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140073c80@@YA_J_J@Z]
@@ -217,6 +219,7 @@
 141d31950	gb:NiMain/NiPixelData	NiPixelData(w,h,fmt,levels,faces) ctor (ours 834 B, exe 840): the exe loads the stack param uiMipmapLevels into edi before the NiObject ctor call and keeps it in a register through all three mip loops (ours re-reads m_uiMipmapLevels), with the params in other registers (kFormat r15, w ebp, h esi). Its inlined GetCompressed is an unmerged signed cmp 4/jl, cmp 6/jg, where cl 19.16 merges it into sub 4/cmp 2/ja. Same-SDK source (v2525 maps to engine/gamebryo). Tried: compressed block first (block order then matches, 850 B), explicit GetFormat() >= DXT1 && <= DXT5 (still merged). No source form found.
 141d6f0f0	gb:NiMain/NiImageConverter	register allocation floor: the exe keeps the destination image in rdi and the zero constant in ebx, ours swaps them, and schedules the source pixel/size reads before the destination size read in the mip copy loop; hoisting the source reads into locals made it worse (295 vs 44 differing bytes)
 141db6770	gb:NiMain/NiShadowTechnique	regalloc floor: same instruction sequence as the exe (vector ctors, member inits, 7 FixedString assigns, 6 param dtors), but the exe keeps this in r12 and the zero/helper in r13 where ours uses r13/rbp; each r12-based access takes a SIB byte (609 vs 571 bytes). The source is the stock member-init ctor body; no source-level lever for callee-saved register choice.
+141e0d400	gb:NiMesh/NiDataStream	regalloc/scheduling e5e4178e4: only diff is the xmm1/xmm2 accumulator swap and lea [rsi+r8] vs [r8+rsi] in the inlined auto-vectorized BinaryStreamLoad component-size sum (9 bytes)
 141edfa10	gb:NiParticle/NiPSFacingQuadGeneratorKernel	regalloc: same length; only diff is Up.x/Right.x in swapped xmm regs in the no-colour rotated loop, unchanged by operand-order/local-order/named-temp variants ()
 141eef6d0	NiPhysXActorDesc::CreateActor	2 mulss (vertex scale) scheduled in another order; 8 source variants (temps, *=, multiply(), scalar-first, components) give the same or worse
 141f11c00	gb:NiPhysX/NiPhysXClothDesc	PhysX header NxClothDesc::checkValid: exe inlines NxMat34::isFinite (12 _fpclass); TU-wide NX_INLINE=__forceinline matches it but loses 5 (ctors/CreateCloth/IsValid/ToClothDesc); math-headers-only forceinline overshoots (1087); third_party header not editable
@@ -234,6 +237,7 @@
 1420e65e0	1845	frame layout only: the exe gives the 3rd LogHelper its own 0x90 slot (rbp+0x60, frame 0x200), cl 19.16 shares it (frame 0x170); the rest is alignment-nop shifts the source matches efd/QOSCompare.cpp; the macro form and a named LogHelper local both give the shared slot
 14214ab80	gb:egf/Scheduler	EH-state: code bytes identical; exe maxState 6 vs ours 8 (two action-less states for utf8string key temps), union holder/raw init/noexcept wrapper all fail, LTCG pruning ()
 1421c1750	gb:egf/WorldFactory _Tree<utf8string,utf8string>::erase(key)	home-slot swap (rbx/erase result) as 142282130; 4 body variants + named result unchanged
+142280490	gb:egmAnimation/AnimationService	scheduling/regalloc bytematch at c2010d15a: all 82 diff lines are in the else branch inlined kXRot*kYRot*kZRot (obj 0x78f-0x946): kZRot element load order and xmm assignment; the rest is branch displacements. Named product / regrouped products (kX*(kY*kZ), split temps) are worse (399/401 lines) ()
 142282130	gb:egmAnimation/AnimationService	functional alias re-keyed to erase(key); 3-byte home-slot swap (rbx/result iterator), cl slot choice; 1414 worse
 14230ff90	lib_cryptopp_filters_cx13	Crypto++ 5.6.2 AuthenticatedEncryptionFilter ctor (authenc.cpp). The exe (355 bytes, EH frame) inlines HashFilter::HashFilter, Filter and OutputProxy from filters.cpp: Algorithm call, member inits, the two string copies, the DigestSize call and the member_ptr reset of Detach. Cross-TU (LTCG) inlining of out-of-line SDK ctors with their EH states, which this TU cannot reproduce (see 14230fce0). Ours (150 bytes) calls the real ctors; same construction
 142311070	gb:CryptoPP/filters	exe ctor has no dynamic_cast/throw (allowAuthenticatedSymmetricCipher folded; LTCG IPA or patched source) and inlines MakeParameters; unit otherwise 160/161; third_party read-only
@@ -249,7 +253,6 @@
 1423729e0	lib_cryptopp_code	temp slot order of the "ThisObject:"+typeid(T).name() strings: the exe builds the base string with the out-of-line basic_string(const char*) ctor before calling name(), puts the operator+ result below the base and gives the base no EH state until after its ctor; tried a named base, base and result as temporaries, append, a forceinline concat helper, union/struct wrappers with and without a real dtor, and the inline literal ctor; the closest shape (helper + union temp) matches the order and code but keeps the two slots swapped
 142372d60	lib_cryptopp_code	temp slot order of the "ThisObject:"+typeid(T).name() strings: the exe builds the base string with the out-of-line basic_string(const char*) ctor before calling name(), puts the operator+ result below the base and gives the base no EH state until after its ctor; tried a named base, base and result as temporaries, append, a forceinline concat helper, union/struct wrappers with and without a real dtor, and the inline literal ctor; the closest shape (helper + union temp) matches the order and code but keeps the two slots swapped
 142372f20	434	temp slot order of the "ThisObject:"+typeid(T).name() strings (same as permanent 1423729e0/142372d60) 2026-11-07: base built inside the concat helper, ctor result used via ref, explicit sequencing: 73-74 lines, base still below result and the ctor return folded to &tmp
-1423772f0	lib_cryptopp_code	Twin of 0x1423770a0 (GenerateRandom for the second group type); same body and same residual frame-pointer / zero-register differences; same variants tried
 1423798d0	lib_cryptopp_code	HMAC(SHA-1) name string: the exe builds "HMAC(" with the out-of-line basic_string(const char*) ctor, keeps working on the ctor return register and starts the string EH state only at the first throwing call; ours keeps a frame pointer and addresses the local directly; tried a named base, struct/union temporaries with a real dtor, and the ctor return used as an rvalue; same family as the AssignHelper "ThisObject:" strings
 14237bef0	631	spill placement only: the exe spills out to a frame local (frame 0x60), cl 19.16 to the param home slot (frame 0x40); the library STL is newer than 14.16, so the toolset is newer the code is the Crypto++ 5.6.2 operator<< body; no newer toolset in the tree
 1423ae960	unnamed/unit_1423ae840_cxsupportid	10006-byte /O2 PC-bang walk, inlining differs; not attempted after 1423b10a0 time-box
@@ -307,6 +310,7 @@
 1423ff4d0	400	regalloc this/result rdi/rsi swapped and rax/rcx in the inlined SparseArray heap load; tried SDK Pickable<Array> r + r.GetPtr() loop, static_cast GetTraits() itr
 1424046c0	468	term-order inlined FixedSizeHash<UPInt> in ValueH.Set adds the byte4/byte7 terms in the other order (r10/r13 swapped), 5 lines; tried SDK size placement, __forceinline SDBM_Hash
 142407340	315	slots ASString temp and Pickable sret swap stack slots (exe temp 0x60 kept in rbx); named uri local 54, vm.GetStringManager 45 vs 42
+1424077a0	sfr_as3_03	regalloc/scheduling only: same length, rsi/rdi and r13/r14/r15 permuted, three StringDataPtr arg stores scheduled in another order before Parse; same instruction count masked 166, hunk sizes equal except one moved lea
 1424152b0	sfr_as3_04	the exe je targets a shared block past the function end
 142416000	sfr_as3_04	frame and home-slot layout only; same ops, other stack slots
 142417000	?	scheduling/regalloc: ind loaded into rax vs rcx at entry, self->+0x28/+0x20 loads ordered differently; same length no structural diff ()
@@ -356,6 +360,7 @@
 1424acee0	sfr_as3_13	TextField::InitInstance: register choice of the inlined GetAvmObjImpl; the standalone function is exact
 1424b3bf0	630	regalloc pdoc in rcx + ptext in r10 (exe) vs pdoc r8 + ptext rcx; dropping the ptext local is identical
 1424ca6b0	sfr_as3_15	regalloc: the exe uses one callee-saved register less and re-reads the string node
+1424cb2c0	sfr_as3_15	regalloc only: ours keeps zero in callee-saved r13 (xor r13d / mov rbx,r13 / mov rdx,r13), exe has no zero register (xor ebx / xor edx) and spends the freed reg on an rbp frame pointer (lea rbp,[r11-0x4f], disp8 slots); r13/r14/r15/r12 permuted; same instruction sequence otherwise bm masked 169, every hunk op-identical except zero-reg moves and rbp-relative slot encodings
 1424cc450	?	regalloc: register permutation (rsi/r14, rbp/rsi, r9/r10...), +1 byte from REX no structural diff ()
 1424d6590	sfr_as3_15	regalloc: rbx vs rdi for the bit-array size
 1424d6750	?	regalloc: SPtr temp in rax vs rcx (+mov rcx,rax before Release), rdx vs rcx for [rbp+0x1d0]; loop pad no structural diff ()
@@ -385,6 +390,7 @@
 1424e9910		regalloc only: exe reads the binding word into ecx (ours r8d) same op stream at 00426e32f; 11 lines
 1424e9a50	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
 1424ef210	sfr_as3_17	register naming only (exe kind in r8d, value in r9: 5 REX bytes); SDK CheckObject order, kind local and member ThrowTypeError forms do not move it
+1424f27b0	1749	frame slot packing: exe cinfo below irect, ours swapped; code otherwise byte-identical 10 variants (v27.py a-k) none better
 1424f2e90	sfr_as3_17d	cl 19.16 loads the Cxform through rec& with movups in every form (_mm_load_ps, named __m128, __m128* deref, struct assign); exe movaps
 1424f3e60	sfr_as3_17d	instruction scheduling inside the TreeShape NodeData constructor inlined from the shared render tree header (vptr store before the argument copy)
 1424f4a90	sfr_as3_17	XMLSupportImpl::DescribeType, 8.3 KB body, 3087 diff lines (hash orders, string temporaries); over budget
@@ -431,6 +437,7 @@
 14252c8b0	sfr_as3_19	second inlined ResizeNoConstruct: ours hoists the Capacity load above the size branch, the exe loads it per branch; first instance identical
 14252cd80	Sfr31TracerOptRegIncDec	regalloc: State in r14, exe r15 (4 lines); 11 variants tried
 142531bf0	834	operand-order only: two byte stores [rax+rbx-1] vs [rbx+rax-1] placement-new/ptr-arith/per-call shift variants unchanged
+1425322c0	sfr_as3_19	regalloc/scheduling only: same length and instruction count, rdi/rsi/rbx rotated through the switch, one arg mov scheduled before mov rcx,rax bm masked 225 (27 of them jump-table bytes); every hunk size-balanced
 142532bd0	sfr_as3_19	same as 142537710: needs ReadArgs ctor+dtor visible (probe leaves 1 mov), conflicts with 14253c030/14253cd00 wanting opaque ctor; source order of the bodies does not matter
 142533300	scaleform/as3/sfr_as3_19	cl tail-merges the 0x411 and null/undefined ThrowTypeError tails; exe keeps both (kind re-read, below in r14). Helper/return/inline-ptr-test variants all merge
 142533470	sfr_as3_19	inlined ~Value weak-ref path: exe keeps Value Flags in ebx across the heap Free call (and ebx,0xfffffde0), LTCG alias info; same as ReadArgsObject cached-Flags rows
@@ -498,6 +505,7 @@
 1425e68e0	sfr_render_02b	regalloc: xmm register numbering only (xmm8/9/11/13 swapped); body is SDK verbatim incl. inline FocalRadialGradient; fabsf/fabs forms unchanged
 1425e9d00	sfr_render_02i	~DrawableImage: regalloc after SDK body
 1425eb390	sfr_render_02i	DrawableImage::Compare: the exe gives the GetSize temp its own stack slot; conversion-operator and local variants gave no change
+1425ebf70	sfr_render_02i	frame slot order only: exe vp at rsp+0x20, DICommand temp near cookie, ours swapped (1425ebf70); temp Viewport / scoped block / named DICommand all worse
 1425ee720	sfr_render_02i	PixelDissolve: regalloc after SDK body
 1425eed00	sfr_render_02i	the exe gives each inlined GetSize temporary its own stack slot (frame 0x10 larger); same as Compare
 1425effe0	sfr_render_02i	internalMapAndFlush: regalloc after SDK body
@@ -585,6 +593,8 @@
 1426a4dc0	sfr_render_05c	regalloc: ebx/edi swapped for the edge flags
 1426d6600	sfr_render_07n	lea of the TextMeshProvider this is scheduled before the HMatrix by-value copy in the exe; pointer local, named result and member-pointer call tried (length or block layout changes)
 1426d96b0	sfr_render_07p	regalloc: the exe keeps the count in r14 across the loop, ours reloads it from the stack
+1426daee0	sfr_render_07g	regalloc of inlined AllocateMesh only: home slots 0xd0/0xe8 swapped, r11/rdx count regs, one load scheduled earlier; instruction stream otherwise identical (1426daee0); no source form changed it
+1426e6100	626	regalloc SDK 4.2 clipGlyphRect verbatim = same 82 diff lines; ops identical, xmm assignment and x1 copy placement differ
 14272fcf0	sfr_d3d9_01e	SDK body 955->435 (dd314f919); left: regalloc fillFlags/edi, fill-record pointer IV, block order
 1427307e0	-	regalloc/scheduling DrawProcessedPrimitive: SetPrimitiveFill arg setup uses rax/r8 swapped and shl r9 scheduled earlier; same instructions, only the register and order differ
 142736240	sfr_d3d9_01e	scheduling only: exe sinks entry Rect/Viewport init stores past phd->pRenderSurface load and hoists Viewport copy loads above ViewRect stores; SDK op=, Rect op=, vp temp, decl order 20-111 lines
@@ -631,6 +641,7 @@
 1428f2790	sfr_as2_01	PointProto::Offset LTCG alias: exe keeps dy type byte in sil across ToNumber(&dy)/SetProperties; SDK pt1.Offset form (no Offset on our Point) and forceinline Off helper give no gain
 1428f2e40	sfr_as2_01	LTCG mod-ref: exe elides Value type re-checks across ToNumber, keeps Sub operands live; SDK-body helpers and noalias ToNumber alias both worse (1075)
 1428f4e60	sfr_as2_01	regalloc: r9 string-context temp vs xor r9d; SDK body, 5 shapes
+1428f65c0	703	regalloc (rsi/rdi fn swap; exe saves r14 at ao!=0 and keeps start-2 in r14, ours reuses r12); the +10 bytes are the loop-align pad this shifts Body = SDK AS2_ArrayObject.cpp ArraySplice verbatim (incl. braces). Exe 2nd-loop head at fn+0x211 would need 15 pad bytes and is left unaligned; ours lands at +0x215 (r14 save inside the count>0 branch, add r12d,-2 vs lea r14d,[r12-2]) and gets an 11-byte pad. Exe 1st loop shows a 13-byte pad (+0x753..+0x760), so cl pads <=13 but skips 15. Tried with no change (67 lines, 713 vs 703): start-2+i, i+start-2, start+(i-2), hoisted s2=start-2, for-scoped k, braced bodies, decl spacing, __declspec(noalias) on SetElement/InsertEmpty/RemoveElements (out of TU in 06/07); Env->Top form is worse (82).
 1428f6880	sfr_as2_01	ArrayValueOf inlines ArrayToString; same rbp/r14 regalloc as 1428f6b30
 1428f6b30	sfr_as2_01	ArrayToString regalloc: exe keeps the builtin chain (Env->..->+0x138) in rbp, ours r14 (save slots 0x70/0x78 swapped); SDK body; env/str/result locals and inverted if give no gain; builtin chain lives in parked as2_movieroot.h
 1428f9630	sfr_as2_01b	floor LTCG schedule: Value temp V store/alloc-info/type store order + dtor type test hoisted above array store; tried implicit/direct/named Value, SDK PushBack, noalias Value copy ctor

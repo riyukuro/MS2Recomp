@@ -10,6 +10,7 @@
 // settings object (+0x1a0). Its methods live in another unit (0x14125f290...), declared here as FUN_ free functions.
 struct Unk_GpState
 {
+    Unk_GpState();                         // 0x14125f290 (resets to the defaults)
     bool m_bUse;                    // +0x00 use the gamepad
     bool m_bShowSkillName;          // +0x01
     bool m_bVibration;              // +0x02

@@ -16,7 +16,7 @@
 #include "ms2/commonfiles/ugcmappackageinfo.h"   // C3: Unk_Int3, the cell type of FUN_1408a15b0
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
+extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
 int FUN_140707710(int nKind);
@@ -83,7 +83,7 @@ int UICubeUGCHead::FUN_1419066c0()
         if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))) != 0)
             return 1;
     }
-    if (DAT_143ae0fc0 != 0)
+    if (g_nDebugUI != 0)
         return 1;
     return 0;
 }

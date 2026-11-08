@@ -149,7 +149,7 @@ MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW strText, int nType, Delegate<bool(int
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 bool FUN_141900c80(int nResult, const CMsgBoxData& box);
 
-extern int DAT_143ae0fc0;                                           // debug switch
+extern int g_nDebugUI;                                           // debug switch
 
 // ---- UIHouseMarkEntity ----
 
@@ -355,7 +355,7 @@ void UIHouseMarkEntity::FUN_14198b7b0()
 {
     if (m_clip == NULL)
         return;
-    bool bShow = DAT_143ae0fc0 ? true : false;
+    bool bShow = g_nDebugUI ? true : false;
     if (bShow)
     {
         if (m_debugText == NULL)

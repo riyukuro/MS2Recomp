@@ -73,7 +73,7 @@ int FUN_14074b070(CQuestData* pData);                                   // the r
 void* FUN_140764020();   // C3: was FUN_140764020
                   // the local player (NULL outside the field)
                   // the npc id of the open talk
-extern int DAT_143ae0fc0;                                               // debug switch: show ids
+extern int g_nDebugUI;                                               // debug switch: show ids
 
 // ---- the unit's statics ---------------------------------------------------------------------------------------------
 
@@ -246,7 +246,7 @@ CStringW FUN_1416e4df0(int nQuestId)
         strName = spUI->m_strName;
     }
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strName);
-    if (DAT_143ae0fc0 != 0)
+    if (g_nDebugUI != 0)
         strName.AppendFormat(L" [%d]", spUI->m_nQuestId);
     return strName;
 }

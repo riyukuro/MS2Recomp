@@ -58,10 +58,10 @@ struct Unk_GoAutoCfg
     int m_nOther;                                               // +0xd0
     int m_nGrade;                                               // +0xd4
 };
-struct Unk_GoAutoLoot;   // the auto-loot block of the game options (cgameoption.h)
+struct Unk_GoAutoLoot { Unk_GoAutoLoot(); int m_n[5]; };   // the auto-loot block of the game options (cgameoption.h): its ctor 0x141260ea0
 struct Unk_GsAutoLoot;   // C3: the auto-loot options as gameoptionstruct.cpp declares them
 void FUN_141261310(Unk_GsAutoLoot* pDst, const Unk_GsAutoLoot* pSrc);   // copy the auto-loot options (gameoptionstruct.cpp)
-Unk_GsAutoLoot* FUN_141260ea0(Unk_GsAutoLoot* p);                       // reset, returns p
+//
 void FUN_141260ed0(Unk_GsAutoLoot* p);                                  // reset to the defaults
 int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, class TiXmlDocument* pDoc);   // C3: was FUN_141260f40
 void FUN_141261530(Unk_GsAutoLoot* p, bool b);                          // set equip
@@ -92,7 +92,7 @@ void FUN_140710590(COutPacket& packet);                         // send
 UIItemGetOptionDialog::UIItemGetOptionDialog()
 {
     m_nMode = 1;
-    FUN_141260ea0((Unk_GsAutoLoot*)&m_opt);
+    reinterpret_cast<Unk_GoAutoLoot*>(&m_opt)->Unk_GoAutoLoot::Unk_GoAutoLoot();
     FUN_141924170(1);
 }
 

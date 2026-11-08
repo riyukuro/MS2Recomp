@@ -1424,7 +1424,7 @@ __int64 FUN_140d2caf0(const CStringW& strLink);                     // an item l
 CStringW FUN_14183e930(const CStringW& strText, unsigned nColor);        // colours a text
 void FUN_141484270(TalkLog* pLog);                                  // marks a line read
 int FUN_141484290(TalkLog* pLog);                                   // a line is unread
-extern int DAT_143ab2864;
+extern int g_upperTargetId;
 
 // ---- UIGroupMessengerBrowser ----
 
@@ -1772,7 +1772,7 @@ void UIGroupMessengerBrowser::FUN_141951d80(int nGroupId, const CStringW& strNam
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->FUN_140524eb0(*pPacket);
             m_items.SetAt(nUid, spItem);
         }

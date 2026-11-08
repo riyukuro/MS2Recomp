@@ -190,8 +190,8 @@ template <class T> T* Unk_GsFindUI(eUIClassID nId)
 CGameOptionInterface::CGameOptionInterface(int nId, int nType)
     : CBaseOption(nId, nType)
 {
-    FUN_14125b770(&m_state);
-    FUN_14125bc30(&m_flag);
+    // m_state: its ctor (0x14125b770) runs as a member ctor
+    // m_flag: its ctor (0x14125bc30) runs as a member ctor
 }
 
 // @0x141255960
@@ -434,8 +434,8 @@ MS2_REPLACE_METHOD(0x141256CA0, CGameOptionInterface, vfunc_14, 50, 0x3A2AC844);
 CGameOptionSoundDefault::CGameOptionSoundDefault(int nId, int nType)
     : CBaseOption(nId, nType)
 {
-    FUN_14125f710(&m_state);
-    FUN_141260380(&m_flag);
+    // m_state: its ctor (0x14125f710) runs as a member ctor
+    // m_flag: its ctor (0x141260380) runs as a member ctor
 }
 
 // @0x141256da0
@@ -705,8 +705,8 @@ MS2_REPLACE_METHOD(0x1412587A0, Unk_GsDialog, FUN_1412587a0, 443, 0xFB1BF18C);
 CGameOptionStatus::CGameOptionStatus(int nId, int nType)
     : CBaseOption(nId, nType)
 {
-    FUN_14125bda0(&m_state);
-    FUN_14125c880(&m_flag);
+    // m_state: its ctor (0x14125bda0) runs as a member ctor
+    // m_flag: its ctor (0x14125c880) runs as a member ctor
 }
 
 // @0x141258a20
@@ -1108,12 +1108,12 @@ struct Unk_GsCommunityB
 };
 
 // @0x14125b400
-Unk_CameraState* FUN_14125b400(Unk_CameraState* p)
+Unk_CameraState::Unk_CameraState()
 {
-    FUN_14125b430(p);
-    return p;
+    FUN_14125b430(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125B400, FUN_14125b400, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125B400, Unk_CameraState, 29, 0xFD4A1B24);
 
 // @0x14125b430
 void FUN_14125b430(Unk_CameraState* p)
@@ -1190,12 +1190,12 @@ void FUN_14125b720(Unk_CameraState* p, int n)
 MS2_REPLACE(0x14125B720, FUN_14125b720, 61, 0x96BC0594);
 
 // @0x14125b770
-Unk_InterfaceState* FUN_14125b770(Unk_InterfaceState* p)
+Unk_InterfaceState::Unk_InterfaceState()
 {
-    FUN_14125b7a0(p);
-    return p;
+    FUN_14125b7a0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125B770, FUN_14125b770, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125B770, Unk_InterfaceState, 29, 0xFD4A1B24);
 
 // @0x14125b7a0
 void FUN_14125b7a0(Unk_InterfaceState* p)
@@ -1280,12 +1280,12 @@ bool FUN_14125bbe0(const Unk_InterfaceState* p)
 MS2_REPLACE(0x14125BBE0, FUN_14125bbe0, 60, 0xDDB74B71);
 
 // @0x14125bc30
-Unk_InterfaceFlag* FUN_14125bc30(Unk_InterfaceFlag* p)
+Unk_InterfaceFlag::Unk_InterfaceFlag()
 {
-    FUN_14125bc60(p);
-    return p;
+    FUN_14125bc60(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125BC30, FUN_14125bc30, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125BC30, Unk_InterfaceFlag, 29, 0xFD4A1B24);
 
 // @0x14125bc60
 void FUN_14125bc60(Unk_InterfaceFlag* p)
@@ -1329,12 +1329,12 @@ void FUN_14125bd20(Unk_InterfaceFlag* p, bool b)
 MS2_REPLACE(0x14125BD20, FUN_14125bd20, 122, 0x29455619);
 
 // @0x14125bda0
-Unk_StatusState* FUN_14125bda0(Unk_StatusState* p)
+Unk_StatusState::Unk_StatusState()
 {
-    FUN_14125bdd0(p);
-    return p;
+    FUN_14125bdd0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125BDA0, FUN_14125bda0, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125BDA0, Unk_StatusState, 29, 0xFD4A1B24);
 
 // @0x14125bdd0
 void FUN_14125bdd0(Unk_StatusState* p)
@@ -1501,12 +1501,12 @@ int FUN_14125c820(const Unk_StatusState* p, int nType)
 MS2_REPLACE(0x14125C820, FUN_14125c820, 84, 0x5B5B7B67);
 
 // @0x14125c880
-Unk_StatusFlag* FUN_14125c880(Unk_StatusFlag* p)
+Unk_StatusFlag::Unk_StatusFlag()
 {
-    FUN_14125c8b0(p);
-    return p;
+    FUN_14125c8b0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125C880, FUN_14125c880, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125C880, Unk_StatusFlag, 29, 0xFD4A1B24);
 
 // @0x14125c8b0
 void FUN_14125c8b0(Unk_StatusFlag* p)
@@ -1561,12 +1561,12 @@ int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc)
 MS2_REPLACE(0x14125C970, FUN_14125c970, 258, 0xDD7483DE);
 
 // @0x14125ca80
-Unk_BattleState* FUN_14125ca80(Unk_BattleState* p)
+Unk_BattleState::Unk_BattleState()
 {
-    FUN_14125cab0(p);
-    return p;
+    FUN_14125cab0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125CA80, FUN_14125ca80, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125CA80, Unk_BattleState, 29, 0xFD4A1B24);
 
 // @0x14125cab0
 void FUN_14125cab0(Unk_BattleState* p)
@@ -1668,12 +1668,12 @@ void FUN_14125d100(Unk_BattleState* pDst, const Unk_BattleState* pSrc)
 MS2_REPLACE(0x14125D100, FUN_14125d100, 32, 0xF011C8B0);
 
 // @0x14125d130
-Unk_CommunityStateA* FUN_14125d130(Unk_CommunityStateA* p)
+Unk_CommunityStateA::Unk_CommunityStateA()
 {
-    FUN_14125d160(p);
-    return p;
+    FUN_14125d160(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125D130, FUN_14125d130, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125D130, Unk_CommunityStateA, 29, 0xFD4A1B24);
 
 // @0x14125d160
 void FUN_14125d160(Unk_CommunityStateA* p)
@@ -1724,12 +1724,12 @@ bool FUN_14125d2d0(const Unk_CommunityStateA* p, const Unk_CommunityStateA* q)
 MS2_REPLACE(0x14125D2D0, FUN_14125d2d0, 89, 0x69F743A1);
 
 // @0x14125d330
-Unk_CommunityStateB* FUN_14125d330(Unk_CommunityStateB* p)
+Unk_CommunityStateB::Unk_CommunityStateB()
 {
-    FUN_14125d360(p);
-    return p;
+    FUN_14125d360(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125D330, FUN_14125d330, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125D330, Unk_CommunityStateB, 29, 0xFD4A1B24);
 
 // @0x14125d360
 void FUN_14125d360(Unk_CommunityStateB* p)
@@ -1897,12 +1897,12 @@ void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
 void FUN_14125e300(Unk_GraphicState* p, int b);
 
 // @0x14125d890
-Unk_GraphicState* FUN_14125d890(Unk_GraphicState* p)
+Unk_GraphicState::Unk_GraphicState()
 {
-    FUN_14125d8c0(p);
-    return p;
+    FUN_14125d8c0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125D890, FUN_14125d890, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125D890, Unk_GraphicState, 29, 0xFD4A1B24);
 
 // @0x14125d8c0
 void FUN_14125d8c0(Unk_GraphicState* p)
@@ -2294,12 +2294,12 @@ void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight)
 MS2_REPLACE(0x14125EB00, FUN_14125eb00, 277, 0x0A010D0E);
 
 // @0x14125ec20
-Unk_GraphicState2* FUN_14125ec20(Unk_GraphicState2* p)
+Unk_GraphicState2::Unk_GraphicState2()
 {
-    FUN_14125ec50(p);
-    return p;
+    FUN_14125ec50(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125EC20, FUN_14125ec20, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125EC20, Unk_GraphicState2, 29, 0xFD4A1B24);
 
 // @0x14125ec50
 void FUN_14125ec50(Unk_GraphicState2* p)
@@ -2385,7 +2385,7 @@ MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
 // The gamepad input switch (MS2InputService).
 MS2InputService* FUN_140a58540();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
-extern int DAT_143af7d40;                                       // input enabled
+extern int g_bAppActive;                                       // input enabled
 extern int DAT_143ab0248;                                       // the service region (0 Korea, 1 Japan, 2 global, 3 China)
 class Unk_ItemEquipData : public CItemData {};                  // CItem::FUN_140527840's record
 CSoundService* FUN_140c9cb10();
@@ -2454,12 +2454,12 @@ void FUN_141260ce0(Unk_GsConnect* p);
 void FUN_141260550(Unk_GsConnect* p);
 
 // @0x14125f090
-Unk_LgState* FUN_14125f090(Unk_LgState* p)
+Unk_LgState::Unk_LgState()
 {
-    FUN_14125f0c0(p);
-    return p;
+    FUN_14125f0c0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125F090, FUN_14125f090, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125F090, Unk_LgState, 29, 0xFD4A1B24);
 
 // The language / voice of the service region.
 // @0x14125f0c0
@@ -2515,12 +2515,12 @@ void FUN_14125f260(Unk_LgState* pDst, const Unk_LgState* pSrc)
 MS2_REPLACE(0x14125F260, FUN_14125f260, 27, 0x7FDED043);
 
 // @0x14125f290
-Unk_GpState* FUN_14125f290(Unk_GpState* p)
+Unk_GpState::Unk_GpState()
 {
-    FUN_14125f2c0(p);
-    return p;
+    FUN_14125f2c0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125F290, FUN_14125f290, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125F290, Unk_GpState, 29, 0xFD4A1B24);
 
 // @0x14125f2c0
 void FUN_14125f2c0(Unk_GpState* p)
@@ -2601,12 +2601,12 @@ void FUN_14125f670(Unk_GpState* p, bool bUse, bool bNotify)
 MS2_REPLACE(0x14125F670, FUN_14125f670, 152, 0xA1D71C34);
 
 // @0x14125f710
-Unk_SoundState* FUN_14125f710(Unk_SoundState* p)
+Unk_SoundState::Unk_SoundState()
 {
-    FUN_14125f740(p);
-    return p;
+    FUN_14125f740(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x14125F710, FUN_14125f710, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x14125F710, Unk_SoundState, 29, 0xFD4A1B24);
 
 // @0x14125f740
 void FUN_14125f740(Unk_SoundState* p)
@@ -2741,7 +2741,7 @@ void FUN_14125fe20(Unk_SoundState* p)
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(6, FUN_141260110(p, 6));
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(10, FUN_141260110(p, 10));
     TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(p->m_b00);
-    if (DAT_143af7d40 == 0 && !p->m_b01)
+    if (g_bAppActive == 0 && !p->m_b01)
     {
         TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(1);
         if (FUN_140c8dac0() != 0)
@@ -2806,12 +2806,12 @@ int FUN_141260310(Unk_SoundState* p)
 MS2_REPLACE(0x141260310, FUN_141260310, 99, 0xB89F9496);
 
 // @0x141260380
-Unk_SoundFlag* FUN_141260380(Unk_SoundFlag* p)
+Unk_SoundFlag::Unk_SoundFlag()
 {
-    FUN_1412603b0(p);
-    return p;
+    FUN_1412603b0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x141260380, FUN_141260380, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x141260380, Unk_SoundFlag, 29, 0xFD4A1B24);
 
 // @0x1412603b0
 void FUN_1412603b0(Unk_SoundFlag* p)
@@ -3019,12 +3019,12 @@ void FUN_141260e70(Unk_GsConnect* p)
 MS2_REPLACE(0x141260E70, FUN_141260e70, 27, 0x0AC960EC);
 
 // @0x141260ea0
-Unk_GsAutoLoot* FUN_141260ea0(Unk_GsAutoLoot* p)
+Unk_GoAutoLoot::Unk_GoAutoLoot()
 {
-    FUN_141260ed0(p);
-    return p;
+    FUN_141260ed0(reinterpret_cast<Unk_GsAutoLoot*>(this));
+    // (an out-of-line ctor: CGameOption and UIItemGetOptionDialog own one by value)
 }
-MS2_REPLACE(0x141260EA0, FUN_141260ea0, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x141260EA0, Unk_GoAutoLoot, 29, 0xFD4A1B24);
 
 // @0x141260ed0
 void FUN_141260ed0(Unk_GsAutoLoot* p)
@@ -3208,12 +3208,12 @@ void FUN_141261650(Unk_GsAutoLoot* p, bool b)
 MS2_REPLACE(0x141261650, FUN_141261650, 23, 0x59F22195);
 
 // @0x141261670
-Unk_GoChroma* FUN_141261670(Unk_GoChroma* p)
+Unk_GoChroma::Unk_GoChroma()
 {
-    FUN_1412616a0(p);
-    return p;
+    FUN_1412616a0(this);
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x141261670, FUN_141261670, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x141261670, Unk_GoChroma, 29, 0xFD4A1B24);
 
 // @0x1412616a0
 void FUN_1412616a0(Unk_GoChroma* p)
@@ -3239,12 +3239,12 @@ void FUN_141261700(Unk_GoChroma* p, TiXmlDocument* pDoc)
 MS2_REPLACE(0x141261700, FUN_141261700, 64, 0x860376F9);
 
 // @0x141261750
-Unk_GsEtc* FUN_141261750(Unk_GsEtc* p)
+Unk_GoEtc::Unk_GoEtc()
 {
-    FUN_141261780(p);
-    return p;
+    FUN_141261780(reinterpret_cast<Unk_GsEtc*>(this));
+    // (an out-of-line ctor: CGameOption and the option page own one by value)
 }
-MS2_REPLACE(0x141261750, FUN_141261750, 29, 0xFD4A1B24);
+MS2_REPLACE_CTOR(0x141261750, Unk_GoEtc, 29, 0xFD4A1B24);
 
 // @0x141261780
 void FUN_141261780(Unk_GsEtc* p)

@@ -165,7 +165,7 @@ void FUN_141415600(const CString& strImage);                        // release a
 // The npc actor of the talk.
 class Unk_TcNpc : public CNpc {};
 
-extern int DAT_143af62d4, DAT_143af62d8;
+extern unsigned DAT_143af62d4, DAT_143af62d8;
 
 // ---- UITalkCinematic ----
 

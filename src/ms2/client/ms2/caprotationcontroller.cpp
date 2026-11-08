@@ -56,7 +56,8 @@
 
 // ---- exe data ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;        // the identity matrix
 #define DAT_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)       // C3: was extern Vector3 DAT_143a08cf8; the up axis (NiPoint3::UNIT_Z)
 
 // ---- unit-local views of exe objects ----
@@ -175,7 +176,7 @@ CCapRotationController::CCapRotationController()
     , m_kMaxEuler(DAT_143b01a60)
     , m_kCurEuler(DAT_143b01a60)
     , m_kInitEuler(DAT_143b01a60)
-    , m_kInitRot(DAT_143a09600)
+    , m_kInitRot(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600))
 {
     m_bUseButton2 = 1;
 }

@@ -1201,10 +1201,10 @@ extern CStringW g_143ac2fe0;                                    // the platform 
 extern CStringW g_143ac2fe8;                                    // the command line / launch arguments text
 extern int DAT_143ac2fd4;                                       // the client requires a minimum OS (checked with FUN_1406c34b0)
 extern int DAT_143ac2fd0;                                       // the platform auth was cancelled
-extern int DAT_1439f7de4;                                       // the configured log level
+extern int g_nLogLevel;                                         // the configured log level
 extern int g_nIgnorePack;                                       // the pack file mode (> 0: packed)
 extern int DAT_143ae2b30;                                       // the multi-scene updater is enabled
-extern int DAT_143af7d58;                                       // the loading dialog is up
+extern int g_143af7d58;                                       // the loading dialog is up
 extern void (*DAT_143b023c0)();                                 // the out-of-memory handlers of two allocators
 extern int (*DAT_143b023c8)(size_t);
 extern void (*DAT_143b15f88)();
@@ -1611,8 +1611,8 @@ BOOL CGameApp::InitInstance()
     AfxEnableControlContainer();
     Unk_SingletonCreator<CLogString>::CreateInstance();
     GetLogString()->Init(CStringW(L"client"));
-    if (DAT_1439f7de4 > 0)
-        GetLogString()->SetFileLevel(DAT_1439f7de4);
+    if (g_nLogLevel > 0)
+        GetLogString()->SetFileLevel(g_nLogLevel);
     else
         GetLogString()->SetFileLevel(11);
     GetLogString()->SetDebugLevel(11);
@@ -1762,7 +1762,7 @@ BOOL CGameApp::InitInstance()
     if (pLoadingDialog->Open("LoadingDialog", 0) == true)
     {
         g_spLoadingDialog.AssignRaw(pLoadingDialog);
-        DAT_143af7d58 = 1;
+        g_143af7d58 = 1;
     }
     Unk_SingletonCreator<EngineLog>::CreateInstance();
     LoadStats();

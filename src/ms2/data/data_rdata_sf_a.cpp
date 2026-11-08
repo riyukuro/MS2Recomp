@@ -1674,11 +1674,11 @@ extern unsigned char DAT_142519880[];
 extern unsigned char DAT_14251ace0[];
 extern unsigned char DAT_14251b0e0[];
 extern unsigned char DAT_14251f430[];
-extern unsigned char DAT_14280ef52[];
-extern unsigned char DAT_143177ac0[];
-extern unsigned char DAT_143a2a850[];
-extern unsigned char DAT_143a2aab0[];
-extern unsigned char DAT_143a2d158[];
+extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
+namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo; namespace fl_media { alignas(16) extern const ClassInfo SoundTransformCI; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace Instances { namespace fl { extern const char* DateMonthNames[]; } } } } }
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2aab0[];
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d220[];
 // void FUN_1423c8ce0();
 void FUN_1423c9000();
 void FUN_1423c9010();
@@ -1776,6 +1776,7 @@ void FUN_1423dcac0(); __pragma(comment(linker, "/alternatename:?FUN_1423dcac0@@Y
 // void FUN_1425b48a0();
 // void FUN_1425b48d0();
 
+namespace Scaleform { namespace GFx { namespace AS2 { extern const void* DAT_14316afc0[]; } } }
 #pragma pack(push, 1)
 struct Sd_143138530 {
     const void* p[17];
@@ -2161,15 +2162,8 @@ struct Sd_14313c078 {
 //
 //
 //
-struct Sd_14313c670 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x20];
-    const void* p48;
-    unsigned char b50[0x268];
+struct Sd_14313c6c0 {
+    unsigned char b0[0x268];
 };
 struct Sd_14313d260 {
     struct {
@@ -2192,248 +2186,25 @@ struct Sd_14313d5b0 {
         unsigned long long q8;
     } e[5];
 };
-struct Sd_14313d6a0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    unsigned char b30[0x8];
-    const void* p38;
-    unsigned char b40[0x8];
-};
-struct Sd_14313d6e8 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-    const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x10];
-};
-struct Sd_14313d7b0 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x38];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    unsigned char b88[0x8];
-    const void* p90;
-    unsigned char b98[0x8];
-};
-struct Sd_14313e2f0 {
-    unsigned char b0[0x60];
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    unsigned char b78[0x10];
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    unsigned char ba0[0x10];
-};
-struct Sd_14313e4b8 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-};
-struct Sd_14313e4e0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    unsigned char b80[0x8];
-    const void* p88;
-    unsigned char b90[0x10];
-    const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x8];
-};
-struct Sd_14313e690 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-};
-struct Sd_14313e840 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    unsigned char b88[0x8];
-    const void* p90;
-    unsigned char b98[0x8];
-};
-struct Sd_14313e8e0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0xa10];
-};
-struct Sd_143144150 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x10];
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    unsigned char be0[0x10];
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    unsigned char b108[0x10];
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    unsigned char b130[0x10];
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    unsigned char b158[0x10];
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    unsigned char b180[0x10];
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    unsigned char b1a8[0x10];
-    const void* p1b8;
-    unsigned char b1c0[0x8];
-    const void* p1c8;
-    unsigned char b1d0[0x10];
-    const void* p1e0;
-    unsigned char b1e8[0x8];
-    const void* p1f0;
-    unsigned char b1f8[0xc8];
-};
-struct Sd_143144410 {
+struct Sd_14313d6c8 {
     const void* p0;
     unsigned char b8[0x8];
     const void* p10;
-    unsigned char b18[0x28];
+    unsigned char b18[0x8];
 };
-struct Sd_143144450 {
+struct Sd_14313d800 {
     const void* p0;
     unsigned char b8[0x8];
     const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    unsigned char b30[0x8];
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-    const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x10];
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    unsigned char be0[0x10];
-    const void* pf0;
-    unsigned char bf8[0x8];
-    const void* p100;
-    unsigned char b108[0x10];
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    unsigned char b130[0x10];
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    unsigned char b158[0x10];
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    unsigned char b180[0x10];
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    unsigned char b1a8[0xe8];
+    unsigned char b18[0x8];
+    const void* p20;
+    unsigned char b28[0x8];
+    const void* p30;
+    unsigned char b38[0x8];
+    const void* p40;
+    unsigned char b48[0x8];
 };
-struct Sd_1431446e0 {
+struct Sd_14313e350 {
     const void* p0;
     const void* p8;
     const void* p10;
@@ -2442,78 +2213,125 @@ struct Sd_1431446e0 {
     const void* p30;
     const void* p38;
     unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x4c8];
-    const void* p530;
-    unsigned char b538[0x8];
+};
+struct Sd_14313e580 {
+    const void* p0;
+    unsigned char b8[0x8];
+    const void* p10;
+    unsigned char b18[0x8];
+};
+struct Sd_14313e6e0 {
+    const void* p0;
+    unsigned char b8[0x8];
+    const void* p10;
+    unsigned char b18[0x8];
+};
+struct Sd_14313e890 {
+    const void* p0;
+    unsigned char b8[0x8];
+    const void* p10;
+    unsigned char b18[0x8];
+    const void* p20;
+    unsigned char b28[0x8];
+    const void* p30;
+    unsigned char b38[0x8];
+    const void* p40;
+    unsigned char b48[0x8];
+};
+struct Sd_14313e958 {
+    unsigned char b0[0xa00];
+};
+struct Sd_143144358 {
+    unsigned char b0[0xb8];
+};
+struct Sd_143144438 {
+    unsigned char b0[0x18];
+};
+struct Sd_143144608 {
+    unsigned char b0[0xd8];
+};
+struct Sd_143144758 {
+    unsigned char b0[0x4b8];
+    const void* p4b8;
+    unsigned char b4c0[0x8];
+    const void* p4c8;
+    unsigned char b4d0[0x8];
+    const void* p4d8;
+    unsigned char b4e0[0x8];
+    const void* p4e8;
+    unsigned char b4f0[0x8];
+    const void* p4f8;
+    unsigned char b500[0x8];
+    const void* p508;
+    unsigned char b510[0x8];
+    const void* p518;
+    unsigned char b520[0x8];
+    const void* p528;
+    unsigned char b530[0x8];
+    const void* p538;
     const void* p540;
-    unsigned char b548[0x8];
-    const void* p550;
-    unsigned char b558[0x8];
+    const void* p548;
+    unsigned char b550[0x10];
     const void* p560;
-    unsigned char b568[0x8];
+    const void* p568;
     const void* p570;
-    unsigned char b578[0x8];
-    const void* p580;
-    unsigned char b588[0x8];
-    const void* p590;
-    unsigned char b598[0x8];
-    const void* p5a0;
-    unsigned char b5a8[0x8];
-    const void* p5b0;
+    unsigned char b578[0x10];
+    const void* p588;
+    unsigned char b590[0x8];
+    const void* p598;
+    unsigned char b5a0[0x8];
+    const void* p5a8;
+    unsigned char b5b0[0x8];
     const void* p5b8;
-    const void* p5c0;
-    unsigned char b5c8[0x10];
+    unsigned char b5c0[0x8];
+    const void* p5c8;
+    unsigned char b5d0[0x8];
     const void* p5d8;
-    const void* p5e0;
+    unsigned char b5e0[0x8];
     const void* p5e8;
-    unsigned char b5f0[0x10];
-    const void* p600;
-    unsigned char b608[0x8];
-    const void* p610;
-    unsigned char b618[0x8];
-    const void* p620;
-    unsigned char b628[0x8];
-    const void* p630;
-    unsigned char b638[0x8];
-    const void* p640;
-    unsigned char b648[0x8];
-    const void* p650;
-    unsigned char b658[0x8];
-    const void* p660;
-    unsigned char b668[0x8];
-    const void* p670;
-    unsigned char b678[0x8];
-    const void* p680;
-    unsigned char b688[0x8];
-    const void* p690;
-    unsigned char b698[0x8];
-    const void* p6a0;
-    unsigned char b6a8[0x8];
-    const void* p6b0;
-    unsigned char b6b8[0x8];
-    const void* p6c0;
-    unsigned char b6c8[0x8];
-    const void* p6d0;
-    unsigned char b6d8[0x8];
-    const void* p6e0;
-    unsigned char b6e8[0x8];
-    const void* p6f0;
-    unsigned char b6f8[0x8];
-    const void* p700;
-    unsigned char b708[0x8];
+    unsigned char b5f0[0x8];
+    const void* p5f8;
+    unsigned char b600[0x8];
+    const void* p608;
+    unsigned char b610[0x8];
+    const void* p618;
+    unsigned char b620[0x8];
+    const void* p628;
+    unsigned char b630[0x8];
+    const void* p638;
+    unsigned char b640[0x8];
+    const void* p648;
+    unsigned char b650[0x8];
+    const void* p658;
+    unsigned char b660[0x8];
+    const void* p668;
+    unsigned char b670[0x8];
+    const void* p678;
+    unsigned char b680[0x8];
+    const void* p688;
+    unsigned char b690[0x8];
+    const void* p698;
+    unsigned char b6a0[0x8];
+    const void* p6a8;
+    unsigned char b6b0[0x8];
+    const void* p6b8;
+    unsigned char b6c0[0x8];
+    const void* p6c8;
+    unsigned char b6d0[0x8];
+    const void* p6d8;
+    unsigned char b6e0[0x8];
+    const void* p6e8;
+    unsigned char b6f0[0x8];
+    const void* p6f8;
+    unsigned char b700[0x10];
     const void* p710;
     unsigned char b718[0x8];
     const void* p720;
-    unsigned char b728[0x8];
-    const void* p730;
-    unsigned char b738[0x8];
-    const void* p740;
-    unsigned char b748[0x8];
-    const void* p750;
-    unsigned char b758[0x8];
+    unsigned char b728[0x10];
+    const void* p738;
+    unsigned char b740[0x8];
+    const void* p748;
+    unsigned char b750[0x10];
     const void* p760;
     unsigned char b768[0x8];
     const void* p770;
@@ -2563,7 +2381,7 @@ struct Sd_1431446e0 {
     const void* p928;
     unsigned char b930[0x10];
     const void* p940;
-    unsigned char b948[0x8];
+    const void* p948;
     const void* p950;
     unsigned char b958[0x10];
     const void* p968;
@@ -2571,33 +2389,35 @@ struct Sd_1431446e0 {
     const void* p978;
     unsigned char b980[0x10];
     const void* p990;
-    unsigned char b998[0x8];
+    const void* p998;
     const void* p9a0;
     unsigned char b9a8[0x10];
     const void* p9b8;
-    const void* p9c0;
+    unsigned char b9c0[0x8];
     const void* p9c8;
     unsigned char b9d0[0x10];
     const void* p9e0;
-    unsigned char b9e8[0x8];
+    const void* p9e8;
     const void* p9f0;
     unsigned char b9f8[0x10];
     const void* pa08;
-    const void* pa10;
+    unsigned char ba10[0x8];
     const void* pa18;
     unsigned char ba20[0x10];
     const void* pa30;
     unsigned char ba38[0x8];
     const void* pa40;
-    unsigned char ba48[0x10];
-    const void* pa58;
+    unsigned char ba48[0x8];
+    const void* pa50;
+    unsigned char ba58[0x8];
     const void* pa60;
     const void* pa68;
-    unsigned char ba70[0x10];
-    const void* pa80;
-    unsigned char ba88[0x8];
-    const void* pa90;
-    unsigned char ba98[0x10];
+    const void* pa70;
+    unsigned char ba78[0x10];
+    const void* pa88;
+    unsigned char ba90[0x8];
+    const void* pa98;
+    unsigned char baa0[0x8];
     const void* paa8;
     unsigned char bab0[0x8];
     const void* pab8;
@@ -2605,85 +2425,83 @@ struct Sd_1431446e0 {
     const void* pac8;
     unsigned char bad0[0x8];
     const void* pad8;
-    const void* pae0;
+    unsigned char bae0[0x8];
     const void* pae8;
-    unsigned char baf0[0x10];
+    unsigned char baf0[0x8];
+    const void* paf8;
     const void* pb00;
-    unsigned char bb08[0x8];
-    const void* pb10;
-    unsigned char bb18[0x8];
+    const void* pb08;
+    unsigned char bb10[0x10];
     const void* pb20;
     unsigned char bb28[0x8];
     const void* pb30;
-    unsigned char bb38[0x8];
-    const void* pb40;
-    unsigned char bb48[0x8];
+    unsigned char bb38[0x10];
+    const void* pb48;
     const void* pb50;
-    unsigned char bb58[0x8];
-    const void* pb60;
-    unsigned char bb68[0x8];
+    const void* pb58;
+    unsigned char bb60[0x10];
     const void* pb70;
-    const void* pb78;
+    unsigned char bb78[0x8];
     const void* pb80;
     unsigned char bb88[0x10];
     const void* pb98;
-    unsigned char bba0[0x8];
+    const void* pba0;
     const void* pba8;
     unsigned char bbb0[0x10];
     const void* pbc0;
-    const void* pbc8;
+    unsigned char bbc8[0x8];
     const void* pbd0;
     unsigned char bbd8[0x10];
     const void* pbe8;
-    unsigned char bbf0[0x8];
+    const void* pbf0;
     const void* pbf8;
     unsigned char bc00[0x10];
     const void* pc10;
-    const void* pc18;
+    unsigned char bc18[0x8];
     const void* pc20;
     unsigned char bc28[0x10];
     const void* pc38;
-    unsigned char bc40[0x8];
+    const void* pc40;
     const void* pc48;
     unsigned char bc50[0x10];
     const void* pc60;
-    const void* pc68;
+    unsigned char bc68[0x8];
     const void* pc70;
     unsigned char bc78[0x10];
     const void* pc88;
-    unsigned char bc90[0x8];
+    const void* pc90;
     const void* pc98;
     unsigned char bca0[0x10];
     const void* pcb0;
-    const void* pcb8;
+    unsigned char bcb8[0x8];
     const void* pcc0;
     unsigned char bcc8[0x10];
     const void* pcd8;
-    unsigned char bce0[0x8];
+    const void* pce0;
     const void* pce8;
     unsigned char bcf0[0x10];
     const void* pd00;
-    const void* pd08;
+    unsigned char bd08[0x8];
     const void* pd10;
     unsigned char bd18[0x10];
     const void* pd28;
-    unsigned char bd30[0x8];
+    const void* pd30;
     const void* pd38;
     unsigned char bd40[0x10];
     const void* pd50;
-    const void* pd58;
+    unsigned char bd58[0x8];
     const void* pd60;
     unsigned char bd68[0x10];
     const void* pd78;
-    unsigned char bd80[0x8];
+    const void* pd80;
     const void* pd88;
     unsigned char bd90[0x10];
     const void* pda0;
-    const void* pda8;
+    unsigned char bda8[0x8];
     const void* pdb0;
     unsigned char bdb8[0x10];
     const void* pdc8;
-    unsigned char bdd0[0x8];
+    const void* pdd0;
     const void* pdd8;
     unsigned char bde0[0x10];
     const void* pdf0;
@@ -2703,7 +2521,7 @@ struct Sd_1431446e0 {
     const void* pe78;
     unsigned char be80[0x10];
     const void* pe90;
-    unsigned char be98[0x8];
+    const void* pe98;
     const void* pea0;
     unsigned char bea8[0x10];
     const void* peb8;
@@ -2739,23 +2557,23 @@ struct Sd_1431446e0 {
     const void* pfe0;
     unsigned char bfe8[0x10];
     const void* pff8;
-    const void* p1000;
+    unsigned char b1000[0x8];
     const void* p1008;
     unsigned char b1010[0x10];
     const void* p1020;
-    const void* p1028;
+    unsigned char b1028[0x8];
     const void* p1030;
     unsigned char b1038[0x10];
     const void* p1048;
-    const void* p1050;
+    unsigned char b1050[0x8];
     const void* p1058;
     unsigned char b1060[0x10];
     const void* p1070;
-    unsigned char b1078[0x8];
+    const void* p1078;
     const void* p1080;
     unsigned char b1088[0x10];
     const void* p1098;
-    unsigned char b10a0[0x8];
+    const void* p10a0;
     const void* p10a8;
     unsigned char b10b0[0x10];
     const void* p10c0;
@@ -2767,43 +2585,43 @@ struct Sd_1431446e0 {
     const void* p10f8;
     unsigned char b1100[0x10];
     const void* p1110;
-    const void* p1118;
+    unsigned char b1118[0x8];
     const void* p1120;
     unsigned char b1128[0x10];
     const void* p1138;
-    unsigned char b1140[0x8];
+    const void* p1140;
     const void* p1148;
     unsigned char b1150[0x10];
     const void* p1160;
-    const void* p1168;
+    unsigned char b1168[0x8];
     const void* p1170;
     unsigned char b1178[0x10];
     const void* p1188;
-    unsigned char b1190[0x8];
+    const void* p1190;
     const void* p1198;
     unsigned char b11a0[0x10];
     const void* p11b0;
-    const void* p11b8;
+    unsigned char b11b8[0x8];
     const void* p11c0;
     unsigned char b11c8[0x10];
     const void* p11d8;
-    unsigned char b11e0[0x8];
+    const void* p11e0;
     const void* p11e8;
     unsigned char b11f0[0x10];
     const void* p1200;
-    const void* p1208;
+    unsigned char b1208[0x8];
     const void* p1210;
     unsigned char b1218[0x10];
     const void* p1228;
-    unsigned char b1230[0x8];
+    const void* p1230;
     const void* p1238;
     unsigned char b1240[0x10];
     const void* p1250;
-    const void* p1258;
+    unsigned char b1258[0x8];
     const void* p1260;
     unsigned char b1268[0x10];
     const void* p1278;
-    unsigned char b1280[0x8];
+    const void* p1280;
     const void* p1288;
     unsigned char b1290[0x10];
     const void* p12a0;
@@ -2823,11 +2641,11 @@ struct Sd_1431446e0 {
     const void* p1328;
     unsigned char b1330[0x10];
     const void* p1340;
-    unsigned char b1348[0x8];
+    const void* p1348;
     const void* p1350;
     unsigned char b1358[0x10];
     const void* p1368;
-    const void* p1370;
+    unsigned char b1370[0x8];
     const void* p1378;
     unsigned char b1380[0x10];
     const void* p1390;
@@ -2835,11 +2653,11 @@ struct Sd_1431446e0 {
     const void* p13a0;
     unsigned char b13a8[0x10];
     const void* p13b8;
-    const void* p13c0;
+    unsigned char b13c0[0x8];
     const void* p13c8;
     unsigned char b13d0[0x10];
     const void* p13e0;
-    unsigned char b13e8[0x8];
+    const void* p13e8;
     const void* p13f0;
     unsigned char b13f8[0x10];
     const void* p1408;
@@ -2847,11 +2665,11 @@ struct Sd_1431446e0 {
     const void* p1418;
     unsigned char b1420[0x10];
     const void* p1430;
-    unsigned char b1438[0x8];
+    const void* p1438;
     const void* p1440;
     unsigned char b1448[0x10];
     const void* p1458;
-    const void* p1460;
+    unsigned char b1460[0x8];
     const void* p1468;
     unsigned char b1470[0x10];
     const void* p1480;
@@ -2859,67 +2677,67 @@ struct Sd_1431446e0 {
     const void* p1490;
     unsigned char b1498[0x10];
     const void* p14a8;
-    const void* p14b0;
+    unsigned char b14b0[0x8];
     const void* p14b8;
     unsigned char b14c0[0x10];
     const void* p14d0;
-    unsigned char b14d8[0x8];
+    const void* p14d8;
     const void* p14e0;
     unsigned char b14e8[0x10];
     const void* p14f8;
-    const void* p1500;
+    unsigned char b1500[0x8];
     const void* p1508;
     unsigned char b1510[0x10];
     const void* p1520;
-    unsigned char b1528[0x8];
+    const void* p1528;
     const void* p1530;
     unsigned char b1538[0x10];
     const void* p1548;
-    const void* p1550;
+    unsigned char b1550[0x8];
     const void* p1558;
     unsigned char b1560[0x10];
     const void* p1570;
-    unsigned char b1578[0x8];
+    const void* p1578;
     const void* p1580;
     unsigned char b1588[0x10];
     const void* p1598;
-    const void* p15a0;
+    unsigned char b15a0[0x8];
     const void* p15a8;
     unsigned char b15b0[0x10];
     const void* p15c0;
-    unsigned char b15c8[0x8];
+    const void* p15c8;
     const void* p15d0;
     unsigned char b15d8[0x10];
     const void* p15e8;
-    const void* p15f0;
+    unsigned char b15f0[0x8];
     const void* p15f8;
     unsigned char b1600[0x10];
     const void* p1610;
-    unsigned char b1618[0x8];
+    const void* p1618;
     const void* p1620;
     unsigned char b1628[0x10];
     const void* p1638;
-    const void* p1640;
+    unsigned char b1640[0x8];
     const void* p1648;
     unsigned char b1650[0x10];
     const void* p1660;
-    unsigned char b1668[0x8];
+    const void* p1668;
     const void* p1670;
     unsigned char b1678[0x10];
     const void* p1688;
-    const void* p1690;
+    unsigned char b1690[0x8];
     const void* p1698;
     unsigned char b16a0[0x10];
     const void* p16b0;
-    unsigned char b16b8[0x8];
+    const void* p16b8;
     const void* p16c0;
     unsigned char b16c8[0x10];
     const void* p16d8;
-    const void* p16e0;
+    unsigned char b16e0[0x8];
     const void* p16e8;
     unsigned char b16f0[0x10];
     const void* p1700;
-    unsigned char b1708[0x8];
+    const void* p1708;
     const void* p1710;
     unsigned char b1718[0x10];
     const void* p1728;
@@ -2935,43 +2753,43 @@ struct Sd_1431446e0 {
     const void* p1788;
     unsigned char b1790[0x10];
     const void* p17a0;
-    const void* p17a8;
+    unsigned char b17a8[0x8];
     const void* p17b0;
     unsigned char b17b8[0x10];
     const void* p17c8;
-    unsigned char b17d0[0x8];
+    const void* p17d0;
     const void* p17d8;
     unsigned char b17e0[0x10];
     const void* p17f0;
-    const void* p17f8;
+    unsigned char b17f8[0x8];
     const void* p1800;
     unsigned char b1808[0x10];
     const void* p1818;
-    unsigned char b1820[0x8];
+    const void* p1820;
     const void* p1828;
     unsigned char b1830[0x10];
     const void* p1840;
-    const void* p1848;
+    unsigned char b1848[0x8];
     const void* p1850;
     unsigned char b1858[0x10];
     const void* p1868;
-    unsigned char b1870[0x8];
+    const void* p1870;
     const void* p1878;
     unsigned char b1880[0x10];
     const void* p1890;
-    const void* p1898;
+    unsigned char b1898[0x8];
     const void* p18a0;
     unsigned char b18a8[0x10];
     const void* p18b8;
-    unsigned char b18c0[0x8];
+    const void* p18c0;
     const void* p18c8;
     unsigned char b18d0[0x10];
     const void* p18e0;
-    const void* p18e8;
+    unsigned char b18e8[0x8];
     const void* p18f0;
     unsigned char b18f8[0x10];
     const void* p1908;
-    unsigned char b1910[0x8];
+    const void* p1910;
     const void* p1918;
     unsigned char b1920[0x10];
     const void* p1930;
@@ -2979,7 +2797,7 @@ struct Sd_1431446e0 {
     const void* p1940;
     unsigned char b1948[0x10];
     const void* p1958;
-    unsigned char b1960[0x8];
+    const void* p1960;
     const void* p1968;
     unsigned char b1970[0x10];
     const void* p1980;
@@ -3003,41 +2821,41 @@ struct Sd_1431446e0 {
     const void* p1a30;
     unsigned char b1a38[0x10];
     const void* p1a48;
-    const void* p1a50;
+    unsigned char b1a50[0x8];
     const void* p1a58;
-    unsigned char b1a60[0x10];
-    const void* p1a70;
+    unsigned char b1a60[0x8];
+    const void* p1a68;
+    unsigned char b1a70[0x8];
     const void* p1a78;
-    const void* p1a80;
-    unsigned char b1a88[0x10];
+    unsigned char b1a80[0x8];
+    const void* p1a88;
+    unsigned char b1a90[0x8];
     const void* p1a98;
-    const void* p1aa0;
+    unsigned char b1aa0[0x8];
     const void* p1aa8;
-    unsigned char b1ab0[0x10];
-    const void* p1ac0;
-    unsigned char b1ac8[0x8];
-    const void* p1ad0;
-    unsigned char b1ad8[0x8];
+    unsigned char b1ab0[0x8];
+    const void* p1ab8;
+    unsigned char b1ac0[0x8];
+    const void* p1ac8;
+    unsigned char b1ad0[0x8];
+    const void* p1ad8;
     const void* p1ae0;
-    unsigned char b1ae8[0x8];
-    const void* p1af0;
-    unsigned char b1af8[0x8];
+    const void* p1ae8;
+    unsigned char b1af0[0x10];
     const void* p1b00;
-    unsigned char b1b08[0x8];
+    const void* p1b08;
     const void* p1b10;
-    unsigned char b1b18[0x8];
-    const void* p1b20;
-    unsigned char b1b28[0x8];
-    const void* p1b30;
-    unsigned char b1b38[0x8];
-    const void* p1b40;
-    unsigned char b1b48[0x8];
+    unsigned char b1b18[0x10];
+    const void* p1b28;
+    unsigned char b1b30[0x8];
+    const void* p1b38;
+    unsigned char b1b40[0x10];
     const void* p1b50;
-    const void* p1b58;
+    unsigned char b1b58[0x8];
     const void* p1b60;
     unsigned char b1b68[0x10];
     const void* p1b78;
-    const void* p1b80;
+    unsigned char b1b80[0x8];
     const void* p1b88;
     unsigned char b1b90[0x10];
     const void* p1ba0;
@@ -3047,35 +2865,23 @@ struct Sd_1431446e0 {
     const void* p1bc8;
     unsigned char b1bd0[0x8];
     const void* p1bd8;
-    unsigned char b1be0[0x10];
-    const void* p1bf0;
-    unsigned char b1bf8[0x8];
-    const void* p1c00;
-    unsigned char b1c08[0x10];
-    const void* p1c18;
-    unsigned char b1c20[0x8];
-    const void* p1c28;
-    unsigned char b1c30[0x10];
-    const void* p1c40;
-    unsigned char b1c48[0x8];
-    const void* p1c50;
-    unsigned char b1c58[0x18];
+    unsigned char b1be0[0x18];
 };
-struct Sd_143146df0 {
-    unsigned char b0[0x8];
+struct Sd_143146e40 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
+    unsigned char b30[0x8];
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
     const void* p58;
     const void* p60;
     unsigned char b68[0x10];
     const void* p78;
-    unsigned char b80[0x8];
+    const void* p80;
     const void* p88;
     unsigned char b90[0x10];
     const void* pa0;
@@ -3083,7 +2889,7 @@ struct Sd_143146df0 {
     const void* pb0;
     unsigned char bb8[0x10];
     const void* pc8;
-    const void* pd0;
+    unsigned char bd0[0x8];
     const void* pd8;
     unsigned char be0[0x10];
     const void* pf0;
@@ -3107,11 +2913,11 @@ struct Sd_143146df0 {
     const void* p1a0;
     unsigned char b1a8[0x10];
     const void* p1b8;
-    unsigned char b1c0[0x8];
+    const void* p1c0;
     const void* p1c8;
     unsigned char b1d0[0x10];
     const void* p1e0;
-    const void* p1e8;
+    unsigned char b1e8[0x8];
     const void* p1f0;
     unsigned char b1f8[0x10];
     const void* p208;
@@ -3119,11 +2925,11 @@ struct Sd_143146df0 {
     const void* p218;
     unsigned char b220[0x10];
     const void* p230;
-    unsigned char b238[0x8];
+    const void* p238;
     const void* p240;
     unsigned char b248[0x10];
     const void* p258;
-    const void* p260;
+    unsigned char b260[0x8];
     const void* p268;
     unsigned char b270[0x10];
     const void* p280;
@@ -3139,7 +2945,7 @@ struct Sd_143146df0 {
     const void* p2e0;
     unsigned char b2e8[0x10];
     const void* p2f8;
-    unsigned char b300[0x8];
+    const void* p300;
     const void* p308;
     unsigned char b310[0x10];
     const void* p320;
@@ -3147,7 +2953,7 @@ struct Sd_143146df0 {
     const void* p330;
     unsigned char b338[0x10];
     const void* p348;
-    const void* p350;
+    unsigned char b350[0x8];
     const void* p358;
     unsigned char b360[0x10];
     const void* p370;
@@ -3203,11 +3009,11 @@ struct Sd_143146df0 {
     const void* p560;
     unsigned char b568[0x10];
     const void* p578;
-    unsigned char b580[0x8];
+    const void* p580;
     const void* p588;
     unsigned char b590[0x10];
     const void* p5a0;
-    const void* p5a8;
+    unsigned char b5a8[0x8];
     const void* p5b0;
     unsigned char b5b8[0x10];
     const void* p5c8;
@@ -3215,27 +3021,27 @@ struct Sd_143146df0 {
     const void* p5d8;
     unsigned char b5e0[0x10];
     const void* p5f0;
-    unsigned char b5f8[0x8];
+    const void* p5f8;
     const void* p600;
     unsigned char b608[0x10];
     const void* p618;
-    const void* p620;
+    unsigned char b620[0x8];
     const void* p628;
     unsigned char b630[0x10];
     const void* p640;
-    const void* p648;
+    unsigned char b648[0x8];
     const void* p650;
     unsigned char b658[0x10];
     const void* p668;
-    unsigned char b670[0x8];
+    const void* p670;
     const void* p678;
     unsigned char b680[0x10];
     const void* p690;
-    unsigned char b698[0x8];
+    const void* p698;
     const void* p6a0;
     unsigned char b6a8[0x10];
     const void* p6b8;
-    const void* p6c0;
+    unsigned char b6c0[0x8];
     const void* p6c8;
     unsigned char b6d0[0x10];
     const void* p6e0;
@@ -3243,15 +3049,15 @@ struct Sd_143146df0 {
     const void* p6f0;
     unsigned char b6f8[0x10];
     const void* p708;
-    unsigned char b710[0x8];
+    const void* p710;
     const void* p718;
     unsigned char b720[0x10];
     const void* p730;
-    const void* p738;
+    unsigned char b738[0x8];
     const void* p740;
     unsigned char b748[0x10];
     const void* p758;
-    const void* p760;
+    unsigned char b760[0x8];
     const void* p768;
     unsigned char b770[0x10];
     const void* p780;
@@ -3263,24 +3069,26 @@ struct Sd_143146df0 {
     const void* p7b8;
     unsigned char b7c0[0x10];
     const void* p7d0;
-    unsigned char b7d8[0x8];
+    const void* p7d8;
     const void* p7e0;
     unsigned char b7e8[0x10];
     const void* p7f8;
     unsigned char b800[0x8];
     const void* p808;
-    unsigned char b810[0x10];
+    const void* p810;
+    unsigned char b818[0x8];
     const void* p820;
     const void* p828;
     const void* p830;
-    unsigned char b838[0x10];
+    const void* p838;
+    unsigned char b840[0x8];
     const void* p848;
-    unsigned char b850[0x8];
+    const void* p850;
     const void* p858;
     const void* p860;
     unsigned char b868[0x8];
     const void* p870;
-    const void* p878;
+    unsigned char b878[0x8];
     const void* p880;
     const void* p888;
     unsigned char b890[0x8];
@@ -3290,15 +3098,13 @@ struct Sd_143146df0 {
     const void* p8b0;
     unsigned char b8b8[0x8];
     const void* p8c0;
-    unsigned char b8c8[0x8];
+    const void* p8c8;
     const void* p8d0;
-    const void* p8d8;
-    unsigned char b8e0[0x8];
+    unsigned char b8d8[0x10];
     const void* p8e8;
     const void* p8f0;
     const void* p8f8;
-    const void* p900;
-    unsigned char b908[0x8];
+    unsigned char b900[0x10];
     const void* p910;
     const void* p918;
     const void* p920;
@@ -3320,7 +3126,7 @@ struct Sd_143146df0 {
     const void* p9c0;
     unsigned char b9c8[0x10];
     const void* p9d8;
-    const void* p9e0;
+    unsigned char b9e0[0x8];
     const void* p9e8;
     unsigned char b9f0[0x10];
     const void* pa00;
@@ -3328,7 +3134,7 @@ struct Sd_143146df0 {
     const void* pa10;
     unsigned char ba18[0x10];
     const void* pa28;
-    unsigned char ba30[0x8];
+    const void* pa30;
     const void* pa38;
     unsigned char ba40[0x10];
     const void* pa50;
@@ -3360,7 +3166,7 @@ struct Sd_143146df0 {
     const void* pb50;
     unsigned char bb58[0x10];
     const void* pb68;
-    const void* pb70;
+    unsigned char bb70[0x8];
     const void* pb78;
     unsigned char bb80[0x10];
     const void* pb90;
@@ -3368,7 +3174,7 @@ struct Sd_143146df0 {
     const void* pba0;
     unsigned char bba8[0x10];
     const void* pbb8;
-    unsigned char bbc0[0x8];
+    const void* pbc0;
     const void* pbc8;
     unsigned char bbd0[0x10];
     const void* pbe0;
@@ -3384,15 +3190,15 @@ struct Sd_143146df0 {
     const void* pc40;
     unsigned char bc48[0x10];
     const void* pc58;
-    const void* pc60;
+    unsigned char bc60[0x8];
     const void* pc68;
-    unsigned char bc70[0x10];
-    const void* pc80;
-    const void* pc88;
+    unsigned char bc70[0x8];
+    const void* pc78;
+    unsigned char bc80[0x10];
     const void* pc90;
-    unsigned char bc98[0x10];
-    const void* pca8;
-    unsigned char bcb0[0x8];
+    const void* pc98;
+    const void* pca0;
+    unsigned char bca8[0x10];
     const void* pcb8;
     unsigned char bcc0[0x8];
     const void* pcc8;
@@ -3406,7 +3212,7 @@ struct Sd_143146df0 {
     const void* pd18;
     unsigned char bd20[0x10];
     const void* pd30;
-    const void* pd38;
+    unsigned char bd38[0x8];
     const void* pd40;
     unsigned char bd48[0x10];
     const void* pd58;
@@ -3414,7 +3220,7 @@ struct Sd_143146df0 {
     const void* pd68;
     unsigned char bd70[0x10];
     const void* pd80;
-    unsigned char bd88[0x8];
+    const void* pd88;
     const void* pd90;
     unsigned char bd98[0x10];
     const void* pda8;
@@ -3438,13 +3244,15 @@ struct Sd_143146df0 {
     const void* pe58;
     unsigned char be60[0x10];
     const void* pe70;
-    const void* pe78;
+    unsigned char be78[0x8];
     const void* pe80;
-    unsigned char be88[0x10];
-    const void* pe98;
-    unsigned char bea0[0x8];
-    const void* pea8;
-    unsigned char beb0[0x10];
+    unsigned char be88[0x8];
+    const void* pe90;
+    unsigned char be98[0x8];
+    const void* pea0;
+    unsigned char bea8[0x8];
+    const void* peb0;
+    unsigned char beb8[0x8];
     const void* pec0;
     unsigned char bec8[0x8];
     const void* ped0;
@@ -3468,15 +3276,13 @@ struct Sd_143146df0 {
     const void* pf60;
     unsigned char bf68[0x8];
     const void* pf70;
-    unsigned char bf78[0x8];
+    const void* pf78;
     const void* pf80;
-    unsigned char bf88[0x8];
-    const void* pf90;
-    unsigned char bf98[0x8];
+    unsigned char bf88[0x10];
+    const void* pf98;
     const void* pfa0;
-    unsigned char bfa8[0x8];
-    const void* pfb0;
-    unsigned char bfb8[0x8];
+    const void* pfa8;
+    unsigned char bfb0[0x10];
     const void* pfc0;
     const void* pfc8;
     const void* pfd0;
@@ -3486,7 +3292,7 @@ struct Sd_143146df0 {
     const void* pff8;
     unsigned char b1000[0x10];
     const void* p1010;
-    const void* p1018;
+    unsigned char b1018[0x8];
     const void* p1020;
     unsigned char b1028[0x10];
     const void* p1038;
@@ -3498,7 +3304,7 @@ struct Sd_143146df0 {
     const void* p1070;
     unsigned char b1078[0x10];
     const void* p1088;
-    const void* p1090;
+    unsigned char b1090[0x8];
     const void* p1098;
     unsigned char b10a0[0x10];
     const void* p10b0;
@@ -3526,11 +3332,11 @@ struct Sd_143146df0 {
     const void* p1188;
     unsigned char b1190[0x10];
     const void* p11a0;
-    unsigned char b11a8[0x8];
+    const void* p11a8;
     const void* p11b0;
     unsigned char b11b8[0x10];
     const void* p11c8;
-    unsigned char b11d0[0x8];
+    const void* p11d0;
     const void* p11d8;
     unsigned char b11e0[0x10];
     const void* p11f0;
@@ -3546,7 +3352,7 @@ struct Sd_143146df0 {
     const void* p1250;
     unsigned char b1258[0x10];
     const void* p1268;
-    const void* p1270;
+    unsigned char b1270[0x8];
     const void* p1278;
     unsigned char b1280[0x10];
     const void* p1290;
@@ -3554,15 +3360,15 @@ struct Sd_143146df0 {
     const void* p12a0;
     unsigned char b12a8[0x10];
     const void* p12b8;
-    unsigned char b12c0[0x8];
+    const void* p12c0;
     const void* p12c8;
     unsigned char b12d0[0x10];
     const void* p12e0;
-    const void* p12e8;
+    unsigned char b12e8[0x8];
     const void* p12f0;
     unsigned char b12f8[0x10];
     const void* p1308;
-    const void* p1310;
+    unsigned char b1310[0x8];
     const void* p1318;
     unsigned char b1320[0x10];
     const void* p1330;
@@ -3578,7 +3384,7 @@ struct Sd_143146df0 {
     const void* p1390;
     unsigned char b1398[0x10];
     const void* p13a8;
-    unsigned char b13b0[0x8];
+    const void* p13b0;
     const void* p13b8;
     unsigned char b13c0[0x10];
     const void* p13d0;
@@ -3586,7 +3392,7 @@ struct Sd_143146df0 {
     const void* p13e0;
     unsigned char b13e8[0x10];
     const void* p13f8;
-    const void* p1400;
+    unsigned char b1400[0x8];
     const void* p1408;
     unsigned char b1410[0x10];
     const void* p1420;
@@ -3602,21 +3408,21 @@ struct Sd_143146df0 {
     const void* p1480;
     unsigned char b1488[0x10];
     const void* p1498;
-    unsigned char b14a0[0x8];
+    const void* p14a0;
     const void* p14a8;
     unsigned char b14b0[0x10];
     const void* p14c0;
     unsigned char b14c8[0x8];
     const void* p14d0;
-    unsigned char b14d8[0x10];
-    const void* p14e8;
+    unsigned char b14d8[0x18];
     const void* p14f0;
     const void* p14f8;
-    unsigned char b1500[0x10];
-    const void* p1510;
-    unsigned char b1518[0x8];
-    const void* p1520;
-    unsigned char b1528[0x18];
+    const void* p1500;
+    unsigned char b1508[0x10];
+    const void* p1518;
+    unsigned char b1520[0x8];
+    const void* p1528;
+    unsigned char b1530[0x10];
     const void* p1540;
     const void* p1548;
     const void* p1550;
@@ -3646,7 +3452,7 @@ struct Sd_143146df0 {
     const void* p1640;
     unsigned char b1648[0x10];
     const void* p1658;
-    unsigned char b1660[0x8];
+    const void* p1660;
     const void* p1668;
     unsigned char b1670[0x10];
     const void* p1680;
@@ -3654,7 +3460,7 @@ struct Sd_143146df0 {
     const void* p1690;
     unsigned char b1698[0x10];
     const void* p16a8;
-    const void* p16b0;
+    unsigned char b16b0[0x8];
     const void* p16b8;
     unsigned char b16c0[0x10];
     const void* p16d0;
@@ -3674,7 +3480,7 @@ struct Sd_143146df0 {
     const void* p1758;
     unsigned char b1760[0x10];
     const void* p1770;
-    const void* p1778;
+    unsigned char b1778[0x8];
     const void* p1780;
     unsigned char b1788[0x10];
     const void* p1798;
@@ -3682,11 +3488,11 @@ struct Sd_143146df0 {
     const void* p17a8;
     unsigned char b17b0[0x10];
     const void* p17c0;
-    unsigned char b17c8[0x8];
+    const void* p17c8;
     const void* p17d0;
     unsigned char b17d8[0x10];
     const void* p17e8;
-    unsigned char b17f0[0x8];
+    const void* p17f0;
     const void* p17f8;
     unsigned char b1800[0x10];
     const void* p1810;
@@ -3706,7 +3512,7 @@ struct Sd_143146df0 {
     const void* p1898;
     unsigned char b18a0[0x10];
     const void* p18b0;
-    const void* p18b8;
+    unsigned char b18b8[0x8];
     const void* p18c0;
     unsigned char b18c8[0x10];
     const void* p18d8;
@@ -3714,7 +3520,7 @@ struct Sd_143146df0 {
     const void* p18e8;
     unsigned char b18f0[0x10];
     const void* p1900;
-    unsigned char b1908[0x8];
+    const void* p1908;
     const void* p1910;
     unsigned char b1918[0x10];
     const void* p1928;
@@ -3726,11 +3532,11 @@ struct Sd_143146df0 {
     const void* p1960;
     unsigned char b1968[0x10];
     const void* p1978;
-    const void* p1980;
+    unsigned char b1980[0x8];
     const void* p1988;
     unsigned char b1990[0x10];
     const void* p19a0;
-    const void* p19a8;
+    unsigned char b19a8[0x8];
     const void* p19b0;
     unsigned char b19b8[0x10];
     const void* p19c8;
@@ -3764,44 +3570,35 @@ struct Sd_143146df0 {
     const void* p1ae0;
     unsigned char b1ae8[0x8];
     const void* p1af0;
-    unsigned char b1af8[0x10];
-    const void* p1b08;
-    unsigned char b1b10[0x8];
+    unsigned char b1af8[0x18];
+    const void* p1b10;
     const void* p1b18;
-    unsigned char b1b20[0x10];
-    const void* p1b30;
-    unsigned char b1b38[0x8];
+    const void* p1b20;
+    unsigned char b1b28[0x10];
+    const void* p1b38;
     const void* p1b40;
-    unsigned char b1b48[0x18];
+    const void* p1b48;
+    unsigned char b1b50[0x10];
     const void* p1b60;
     const void* p1b68;
     const void* p1b70;
-    unsigned char b1b78[0x10];
-    const void* p1b88;
-    const void* p1b90;
-    const void* p1b98;
-    unsigned char b1ba0[0x10];
-    const void* p1bb0;
-    const void* p1bb8;
-    const void* p1bc0;
-    unsigned char b1bc8[0xd18];
+    unsigned char b1b78[0xd18];
 };
-struct Sd_143151280 {
-    unsigned char b0[0x8];
-    const void* p8;
+struct Sd_1431512d0 {
+    const void* p0;
+    unsigned char b8[0x8];
     const void* p10;
-    const void* p18;
+    unsigned char b18[0x8];
     const void* p20;
-    unsigned char b28[0x10];
+    unsigned char b28[0x8];
+    const void* p30;
     const void* p38;
     const void* p40;
-    unsigned char b48[0x8];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
+    unsigned char b48[0x10];
+    const void* p58;
+    unsigned char b60[0x8];
+    const void* p68;
+    unsigned char b70[0x10];
     const void* p80;
     const void* p88;
     const void* p90;
@@ -3815,45 +3612,45 @@ struct Sd_143151280 {
     const void* pe0;
     unsigned char be8[0x10];
     const void* pf8;
-    unsigned char b100[0x8];
+    const void* p100;
     const void* p108;
     unsigned char b110[0x10];
     const void* p120;
-    const void* p128;
+    unsigned char b128[0x8];
     const void* p130;
-    unsigned char b138[0x10];
+    unsigned char b138[0x8];
+    const void* p140;
     const void* p148;
     const void* p150;
-    const void* p158;
-    unsigned char b160[0x10];
-    const void* p170;
-    unsigned char b178[0x8];
-    const void* p180;
-    unsigned char b188[0x8];
+    unsigned char b158[0x10];
+    const void* p168;
+    unsigned char b170[0x8];
+    const void* p178;
+    unsigned char b180[0x10];
     const void* p190;
     const void* p198;
     const void* p1a0;
     unsigned char b1a8[0x10];
     const void* p1b8;
-    unsigned char b1c0[0x8];
+    const void* p1c0;
     const void* p1c8;
     unsigned char b1d0[0x10];
     const void* p1e0;
-    const void* p1e8;
+    unsigned char b1e8[0x8];
     const void* p1f0;
-    unsigned char b1f8[0x10];
-    const void* p208;
-    const void* p210;
+    const void* p1f8;
+    const void* p200;
+    unsigned char b208[0x10];
     const void* p218;
-    unsigned char b220[0x10];
-    const void* p230;
-    unsigned char b238[0x8];
+    const void* p220;
+    const void* p228;
+    unsigned char b230[0x10];
     const void* p240;
     const void* p248;
     const void* p250;
     unsigned char b258[0x10];
     const void* p268;
-    const void* p270;
+    unsigned char b270[0x8];
     const void* p278;
     unsigned char b280[0x10];
     const void* p290;
@@ -3861,7 +3658,7 @@ struct Sd_143151280 {
     const void* p2a0;
     unsigned char b2a8[0x10];
     const void* p2b8;
-    unsigned char b2c0[0x8];
+    const void* p2c0;
     const void* p2c8;
     unsigned char b2d0[0x10];
     const void* p2e0;
@@ -3893,11 +3690,11 @@ struct Sd_143151280 {
     const void* p3e0;
     unsigned char b3e8[0x10];
     const void* p3f8;
-    const void* p400;
+    unsigned char b400[0x8];
     const void* p408;
     unsigned char b410[0x10];
     const void* p420;
-    const void* p428;
+    unsigned char b428[0x8];
     const void* p430;
     unsigned char b438[0x10];
     const void* p448;
@@ -3905,17 +3702,19 @@ struct Sd_143151280 {
     const void* p458;
     unsigned char b460[0x10];
     const void* p470;
-    unsigned char b478[0x8];
+    const void* p478;
     const void* p480;
-    unsigned char b488[0x10];
-    const void* p498;
-    unsigned char b4a0[0x8];
-    const void* p4a8;
-    unsigned char b4b0[0x10];
+    unsigned char b488[0x18];
+    const void* p4a0;
+    unsigned char b4a8[0x8];
+    const void* p4b0;
+    unsigned char b4b8[0x8];
     const void* p4c0;
-    const void* p4c8;
+    unsigned char b4c8[0x8];
     const void* p4d0;
-    unsigned char b4d8[0x18];
+    unsigned char b4d8[0x8];
+    const void* p4e0;
+    unsigned char b4e8[0x8];
     const void* p4f0;
     unsigned char b4f8[0x8];
     const void* p500;
@@ -3985,15 +3784,13 @@ struct Sd_143151280 {
     const void* p700;
     unsigned char b708[0x8];
     const void* p710;
-    unsigned char b718[0x8];
+    const void* p718;
     const void* p720;
-    unsigned char b728[0x8];
-    const void* p730;
-    unsigned char b738[0x8];
-    const void* p740;
-    unsigned char b748[0x8];
-    const void* p750;
-    unsigned char b758[0x8];
+    unsigned char b728[0x10];
+    const void* p738;
+    unsigned char b740[0x8];
+    const void* p748;
+    unsigned char b750[0x10];
     const void* p760;
     const void* p768;
     const void* p770;
@@ -4007,28 +3804,30 @@ struct Sd_143151280 {
     const void* p7c0;
     unsigned char b7c8[0x10];
     const void* p7d8;
-    unsigned char b7e0[0x8];
+    const void* p7e0;
     const void* p7e8;
     unsigned char b7f0[0x10];
     const void* p800;
     const void* p808;
     const void* p810;
-    unsigned char b818[0x10];
-    const void* p828;
+    unsigned char b818[0x18];
     const void* p830;
-    const void* p838;
-    unsigned char b840[0x10];
-    const void* p850;
+    unsigned char b838[0x8];
+    const void* p840;
+    const void* p848;
+    unsigned char b850[0x8];
     const void* p858;
     const void* p860;
-    unsigned char b868[0x18];
+    const void* p868;
+    const void* p870;
+    unsigned char b878[0x8];
     const void* p880;
-    unsigned char b888[0x8];
+    const void* p888;
     const void* p890;
     const void* p898;
     unsigned char b8a0[0x8];
     const void* p8a8;
-    const void* p8b0;
+    unsigned char b8b0[0x8];
     const void* p8b8;
     const void* p8c0;
     unsigned char b8c8[0x8];
@@ -4036,35 +3835,33 @@ struct Sd_143151280 {
     const void* p8d8;
     const void* p8e0;
     const void* p8e8;
-    unsigned char b8f0[0x8];
-    const void* p8f8;
-    unsigned char b900[0x8];
-    const void* p908;
+    unsigned char b8f0[0x10];
+    const void* p900;
+    unsigned char b908[0x8];
     const void* p910;
     unsigned char b918[0x8];
     const void* p920;
-    const void* p928;
+    unsigned char b928[0x8];
     const void* p930;
-    const void* p938;
-    unsigned char b940[0x10];
+    unsigned char b938[0x8];
+    const void* p940;
+    const void* p948;
     const void* p950;
-    unsigned char b958[0x8];
-    const void* p960;
-    unsigned char b968[0x8];
+    unsigned char b958[0x10];
+    const void* p968;
     const void* p970;
-    unsigned char b978[0x8];
-    const void* p980;
-    unsigned char b988[0x8];
+    const void* p978;
+    unsigned char b980[0x10];
     const void* p990;
-    const void* p998;
+    unsigned char b998[0x8];
     const void* p9a0;
-    unsigned char b9a8[0x10];
-    const void* p9b8;
-    const void* p9c0;
+    const void* p9a8;
+    const void* p9b0;
+    unsigned char b9b8[0x10];
     const void* p9c8;
-    unsigned char b9d0[0x10];
-    const void* p9e0;
-    unsigned char b9e8[0x8];
+    unsigned char b9d0[0x8];
+    const void* p9d8;
+    unsigned char b9e0[0x10];
     const void* p9f0;
     const void* p9f8;
     const void* pa00;
@@ -4078,11 +3875,11 @@ struct Sd_143151280 {
     const void* pa50;
     unsigned char ba58[0x10];
     const void* pa68;
-    unsigned char ba70[0x8];
+    const void* pa70;
     const void* pa78;
     unsigned char ba80[0x10];
     const void* pa90;
-    const void* pa98;
+    unsigned char ba98[0x8];
     const void* paa0;
     unsigned char baa8[0x10];
     const void* pab8;
@@ -4146,7 +3943,7 @@ struct Sd_143151280 {
     const void* pcf8;
     unsigned char bd00[0x10];
     const void* pd10;
-    unsigned char bd18[0x8];
+    const void* pd18;
     const void* pd20;
     unsigned char bd28[0x10];
     const void* pd38;
@@ -4158,7 +3955,7 @@ struct Sd_143151280 {
     const void* pd70;
     unsigned char bd78[0x10];
     const void* pd88;
-    const void* pd90;
+    unsigned char bd90[0x8];
     const void* pd98;
     unsigned char bda0[0x10];
     const void* pdb0;
@@ -4166,21 +3963,23 @@ struct Sd_143151280 {
     const void* pdc0;
     unsigned char bdc8[0x10];
     const void* pdd8;
-    unsigned char bde0[0x8];
+    const void* pde0;
     const void* pde8;
     unsigned char bdf0[0x10];
     const void* pe00;
     const void* pe08;
     const void* pe10;
-    unsigned char be18[0x10];
-    const void* pe28;
+    unsigned char be18[0x18];
     const void* pe30;
-    const void* pe38;
-    unsigned char be40[0x10];
+    unsigned char be38[0x8];
+    const void* pe40;
+    unsigned char be48[0x8];
     const void* pe50;
-    const void* pe58;
+    unsigned char be58[0x8];
     const void* pe60;
-    unsigned char be68[0x18];
+    unsigned char be68[0x8];
+    const void* pe70;
+    unsigned char be78[0x8];
     const void* pe80;
     unsigned char be88[0x8];
     const void* pe90;
@@ -4210,15 +4009,13 @@ struct Sd_143151280 {
     const void* pf50;
     unsigned char bf58[0x8];
     const void* pf60;
-    unsigned char bf68[0x8];
+    const void* pf68;
     const void* pf70;
-    unsigned char bf78[0x8];
-    const void* pf80;
-    unsigned char bf88[0x8];
-    const void* pf90;
-    unsigned char bf98[0x8];
-    const void* pfa0;
-    unsigned char bfa8[0x8];
+    unsigned char bf78[0x10];
+    const void* pf88;
+    unsigned char bf90[0x8];
+    const void* pf98;
+    unsigned char bfa0[0x10];
     const void* pfb0;
     const void* pfb8;
     const void* pfc0;
@@ -4320,7 +4117,7 @@ struct Sd_143151280 {
     const void* p1380;
     unsigned char b1388[0x10];
     const void* p1398;
-    unsigned char b13a0[0x8];
+    const void* p13a0;
     const void* p13a8;
     unsigned char b13b0[0x10];
     const void* p13c0;
@@ -4328,7 +4125,7 @@ struct Sd_143151280 {
     const void* p13d0;
     unsigned char b13d8[0x10];
     const void* p13e8;
-    const void* p13f0;
+    unsigned char b13f0[0x8];
     const void* p13f8;
     unsigned char b1400[0x10];
     const void* p1410;
@@ -4336,21 +4133,21 @@ struct Sd_143151280 {
     const void* p1420;
     unsigned char b1428[0x10];
     const void* p1438;
-    unsigned char b1440[0x8];
+    const void* p1440;
     const void* p1448;
     unsigned char b1450[0x10];
     const void* p1460;
-    const void* p1468;
+    unsigned char b1468[0x8];
     const void* p1470;
-    unsigned char b1478[0x10];
-    const void* p1488;
+    unsigned char b1478[0x18];
     const void* p1490;
     const void* p1498;
-    unsigned char b14a0[0x10];
-    const void* p14b0;
-    unsigned char b14b8[0x8];
+    const void* p14a0;
+    unsigned char b14a8[0x10];
+    const void* p14b8;
     const void* p14c0;
-    unsigned char b14c8[0x18];
+    const void* p14c8;
+    unsigned char b14d0[0x10];
     const void* p14e0;
     const void* p14e8;
     const void* p14f0;
@@ -4360,13 +4157,15 @@ struct Sd_143151280 {
     const void* p1518;
     unsigned char b1520[0x10];
     const void* p1530;
-    const void* p1538;
+    unsigned char b1538[0x8];
     const void* p1540;
-    unsigned char b1548[0x10];
-    const void* p1558;
+    unsigned char b1548[0x8];
+    const void* p1550;
+    unsigned char b1558[0x8];
     const void* p1560;
-    const void* p1568;
-    unsigned char b1570[0x10];
+    unsigned char b1568[0x8];
+    const void* p1570;
+    unsigned char b1578[0x8];
     const void* p1580;
     unsigned char b1588[0x8];
     const void* p1590;
@@ -4376,29 +4175,19 @@ struct Sd_143151280 {
     const void* p15b0;
     unsigned char b15b8[0x8];
     const void* p15c0;
-    unsigned char b15c8[0x8];
-    const void* p15d0;
-    unsigned char b15d8[0x8];
-    const void* p15e0;
-    unsigned char b15e8[0x8];
-    const void* p15f0;
-    unsigned char b15f8[0x8];
-    const void* p1600;
-    unsigned char b1608[0x8];
-    const void* p1610;
-    unsigned char b1618[0xb20];
+    unsigned char b15c8[0xb20];
 };
-struct Sd_143158870 {
-    unsigned char b0[0x8];
+struct Sd_1431588c0 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
     const void* p30;
-    unsigned char b38[0x18];
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
-    const void* p58;
+    unsigned char b58[0x8];
     const void* p60;
     unsigned char b68[0x10];
     const void* p78;
@@ -4410,27 +4199,19 @@ struct Sd_143158870 {
     const void* pb0;
     unsigned char bb8[0x10];
     const void* pc8;
-    const void* pd0;
+    unsigned char bd0[0x8];
     const void* pd8;
-    unsigned char be0[0x10];
-    const void* pf0;
-    unsigned char bf8[0x8];
-    const void* p100;
-    unsigned char b108[0x10];
-    const void* p118;
-    unsigned char b120[0x8];
-    const void* p128;
-    unsigned char b130[0x80];
+    unsigned char be0[0x80];
 };
-struct Sd_143159990 {
-    unsigned char b0[0x8];
+struct Sd_1431599e0 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
+    unsigned char b30[0x8];
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
     const void* p58;
     const void* p60;
@@ -4490,15 +4271,15 @@ struct Sd_143159990 {
     const void* p280;
     const void* p288;
     const void* p290;
-    unsigned char b298[0x10];
-    const void* p2a8;
-    unsigned char b2b0[0x8];
+    unsigned char b298[0x18];
+    const void* p2b0;
     const void* p2b8;
-    unsigned char b2c0[0x10];
-    const void* p2d0;
+    const void* p2c0;
+    unsigned char b2c8[0x10];
     const void* p2d8;
-    const void* p2e0;
-    unsigned char b2e8[0x18];
+    unsigned char b2e0[0x8];
+    const void* p2e8;
+    unsigned char b2f0[0x10];
     const void* p300;
     const void* p308;
     const void* p310;
@@ -4582,15 +4363,15 @@ struct Sd_143159990 {
     const void* p620;
     const void* p628;
     const void* p630;
-    unsigned char b638[0x10];
-    const void* p648;
-    unsigned char b650[0x8];
+    unsigned char b638[0x18];
+    const void* p650;
     const void* p658;
-    unsigned char b660[0x10];
-    const void* p670;
+    const void* p660;
+    unsigned char b668[0x10];
     const void* p678;
-    const void* p680;
-    unsigned char b688[0x18];
+    unsigned char b680[0x8];
+    const void* p688;
+    unsigned char b690[0x10];
     const void* p6a0;
     const void* p6a8;
     const void* p6b0;
@@ -4674,15 +4455,15 @@ struct Sd_143159990 {
     const void* p9c0;
     const void* p9c8;
     const void* p9d0;
-    unsigned char b9d8[0x10];
-    const void* p9e8;
-    unsigned char b9f0[0x8];
+    unsigned char b9d8[0x18];
+    const void* p9f0;
     const void* p9f8;
-    unsigned char ba00[0x10];
-    const void* pa10;
+    const void* pa00;
+    unsigned char ba08[0x10];
     const void* pa18;
-    const void* pa20;
-    unsigned char ba28[0x18];
+    unsigned char ba20[0x8];
+    const void* pa28;
+    unsigned char ba30[0x10];
     const void* pa40;
     const void* pa48;
     const void* pa50;
@@ -4750,15 +4531,15 @@ struct Sd_143159990 {
     const void* pcc0;
     const void* pcc8;
     const void* pcd0;
-    unsigned char bcd8[0x10];
-    const void* pce8;
-    unsigned char bcf0[0x8];
+    unsigned char bcd8[0x18];
+    const void* pcf0;
     const void* pcf8;
-    unsigned char bd00[0x10];
-    const void* pd10;
+    const void* pd00;
+    unsigned char bd08[0x10];
     const void* pd18;
-    const void* pd20;
-    unsigned char bd28[0x18];
+    unsigned char bd20[0x8];
+    const void* pd28;
+    unsigned char bd30[0x10];
     const void* pd40;
     const void* pd48;
     const void* pd50;
@@ -4850,31 +4631,23 @@ struct Sd_143159990 {
     const void* p10b0;
     const void* p10b8;
     const void* p10c0;
-    unsigned char b10c8[0x10];
-    const void* p10d8;
-    unsigned char b10e0[0x8];
-    const void* p10e8;
-    unsigned char b10f0[0x10];
-    const void* p1100;
-    const void* p1108;
-    const void* p1110;
-    unsigned char b1118[0x1c8];
+    unsigned char b10c8[0x1c8];
 };
-struct Sd_14315d220 {
-    unsigned char b0[0x8];
+struct Sd_14315d270 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
+    unsigned char b30[0x8];
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
     const void* p58;
     const void* p60;
     unsigned char b68[0x10];
     const void* p78;
-    unsigned char b80[0x8];
+    const void* p80;
     const void* p88;
     unsigned char b90[0x10];
     const void* pa0;
@@ -4882,7 +4655,7 @@ struct Sd_14315d220 {
     const void* pb0;
     unsigned char bb8[0x10];
     const void* pc8;
-    const void* pd0;
+    unsigned char bd0[0x8];
     const void* pd8;
     unsigned char be0[0x10];
     const void* pf0;
@@ -4906,17 +4679,19 @@ struct Sd_14315d220 {
     const void* p1a0;
     unsigned char b1a8[0x10];
     const void* p1b8;
-    unsigned char b1c0[0x8];
+    const void* p1c0;
     const void* p1c8;
     unsigned char b1d0[0x10];
     const void* p1e0;
-    const void* p1e8;
+    unsigned char b1e8[0x8];
     const void* p1f0;
-    unsigned char b1f8[0x10];
-    const void* p208;
+    unsigned char b1f8[0x8];
+    const void* p200;
+    unsigned char b208[0x8];
     const void* p210;
-    const void* p218;
-    unsigned char b220[0x10];
+    unsigned char b218[0x8];
+    const void* p220;
+    unsigned char b228[0x8];
     const void* p230;
     unsigned char b238[0x8];
     const void* p240;
@@ -4924,45 +4699,43 @@ struct Sd_14315d220 {
     const void* p250;
     unsigned char b258[0x8];
     const void* p260;
-    unsigned char b268[0x8];
+    const void* p268;
     const void* p270;
-    unsigned char b278[0x8];
-    const void* p280;
-    unsigned char b288[0x8];
-    const void* p290;
-    unsigned char b298[0x8];
-    const void* p2a0;
-    unsigned char b2a8[0x8];
+    unsigned char b278[0x10];
+    const void* p288;
+    unsigned char b290[0x8];
+    const void* p298;
+    unsigned char b2a0[0x10];
     const void* p2b0;
-    const void* p2b8;
+    unsigned char b2b8[0x8];
     const void* p2c0;
     unsigned char b2c8[0x10];
     const void* p2d8;
-    unsigned char b2e0[0x8];
+    const void* p2e0;
     const void* p2e8;
     unsigned char b2f0[0x10];
     const void* p300;
     unsigned char b308[0x8];
     const void* p310;
-    unsigned char b318[0x10];
-    const void* p328;
+    unsigned char b318[0x8];
+    const void* p320;
+    unsigned char b328[0x8];
     const void* p330;
-    const void* p338;
-    unsigned char b340[0x10];
+    unsigned char b338[0x8];
+    const void* p340;
+    unsigned char b348[0x8];
     const void* p350;
     unsigned char b358[0x8];
     const void* p360;
-    unsigned char b368[0x8];
+    const void* p368;
     const void* p370;
-    unsigned char b378[0x8];
-    const void* p380;
-    unsigned char b388[0x8];
-    const void* p390;
-    unsigned char b398[0x8];
-    const void* p3a0;
-    unsigned char b3a8[0x8];
+    unsigned char b378[0x10];
+    const void* p388;
+    unsigned char b390[0x8];
+    const void* p398;
+    unsigned char b3a0[0x10];
     const void* p3b0;
-    const void* p3b8;
+    unsigned char b3b8[0x8];
     const void* p3c0;
     unsigned char b3c8[0x10];
     const void* p3d8;
@@ -4970,7 +4743,7 @@ struct Sd_14315d220 {
     const void* p3e8;
     unsigned char b3f0[0x10];
     const void* p400;
-    unsigned char b408[0x8];
+    const void* p408;
     const void* p410;
     unsigned char b418[0x10];
     const void* p428;
@@ -4978,7 +4751,7 @@ struct Sd_14315d220 {
     const void* p438;
     unsigned char b440[0x10];
     const void* p450;
-    const void* p458;
+    unsigned char b458[0x8];
     const void* p460;
     unsigned char b468[0x10];
     const void* p478;
@@ -4990,29 +4763,29 @@ struct Sd_14315d220 {
     const void* p4b0;
     unsigned char b4b8[0x10];
     const void* p4c8;
-    unsigned char b4d0[0x8];
+    const void* p4d0;
     const void* p4d8;
     unsigned char b4e0[0x10];
     const void* p4f0;
-    unsigned char b4f8[0x8];
+    const void* p4f8;
     const void* p500;
     unsigned char b508[0x10];
     const void* p518;
-    const void* p520;
+    unsigned char b520[0x8];
     const void* p528;
     unsigned char b530[0x10];
     const void* p540;
-    const void* p548;
+    unsigned char b548[0x8];
     const void* p550;
-    unsigned char b558[0x10];
+    unsigned char b558[0x8];
+    const void* p560;
     const void* p568;
-    unsigned char b570[0x8];
-    const void* p578;
-    unsigned char b580[0x10];
+    const void* p570;
+    unsigned char b578[0x10];
+    const void* p588;
     const void* p590;
-    unsigned char b598[0x8];
-    const void* p5a0;
-    unsigned char b5a8[0x8];
+    const void* p598;
+    unsigned char b5a0[0x10];
     const void* p5b0;
     const void* p5b8;
     const void* p5c0;
@@ -5022,19 +4795,19 @@ struct Sd_14315d220 {
     const void* p5e8;
     unsigned char b5f0[0x10];
     const void* p600;
-    const void* p608;
+    unsigned char b608[0x8];
     const void* p610;
     unsigned char b618[0x10];
     const void* p628;
-    const void* p630;
+    unsigned char b630[0x8];
     const void* p638;
     unsigned char b640[0x10];
     const void* p650;
-    unsigned char b658[0x8];
+    const void* p658;
     const void* p660;
     unsigned char b668[0x10];
     const void* p678;
-    unsigned char b680[0x8];
+    const void* p680;
     const void* p688;
     unsigned char b690[0x10];
     const void* p6a0;
@@ -5048,25 +4821,17 @@ struct Sd_14315d220 {
     const void* p6f0;
     const void* p6f8;
     const void* p700;
-    unsigned char b708[0x10];
-    const void* p718;
-    const void* p720;
-    const void* p728;
-    unsigned char b730[0x10];
-    const void* p740;
-    const void* p748;
-    const void* p750;
-    unsigned char b758[0x4a0];
+    unsigned char b708[0x4a0];
 };
-struct Sd_143160510 {
-    unsigned char b0[0x8];
+struct Sd_143160560 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
     const void* p58;
     const void* p60;
@@ -5092,11 +4857,11 @@ struct Sd_143160510 {
     const void* p128;
     unsigned char b130[0x10];
     const void* p140;
-    const void* p148;
+    unsigned char b148[0x8];
     const void* p150;
     unsigned char b158[0x10];
     const void* p168;
-    const void* p170;
+    unsigned char b170[0x8];
     const void* p178;
     unsigned char b180[0x10];
     const void* p190;
@@ -5108,26 +4873,26 @@ struct Sd_143160510 {
     const void* p1c8;
     unsigned char b1d0[0x10];
     const void* p1e0;
-    unsigned char b1e8[0x8];
+    const void* p1e8;
     const void* p1f0;
     unsigned char b1f8[0x10];
     const void* p208;
-    unsigned char b210[0x8];
+    const void* p210;
     const void* p218;
     unsigned char b220[0x10];
     const void* p230;
-    const void* p238;
+    unsigned char b238[0x8];
     const void* p240;
-    unsigned char b248[0x10];
+    const void* p248;
+    unsigned char b250[0x8];
     const void* p258;
-    const void* p260;
+    unsigned char b260[0x8];
     const void* p268;
     unsigned char b270[0x10];
     const void* p280;
-    unsigned char b288[0x8];
+    const void* p288;
     const void* p290;
-    const void* p298;
-    unsigned char b2a0[0x8];
+    unsigned char b298[0x10];
     const void* p2a8;
     unsigned char b2b0[0x8];
     const void* p2b8;
@@ -5141,7 +4906,7 @@ struct Sd_143160510 {
     const void* p308;
     unsigned char b310[0x10];
     const void* p320;
-    const void* p328;
+    unsigned char b328[0x8];
     const void* p330;
     unsigned char b338[0x10];
     const void* p348;
@@ -5157,7 +4922,7 @@ struct Sd_143160510 {
     const void* p3a8;
     unsigned char b3b0[0x10];
     const void* p3c0;
-    unsigned char b3c8[0x8];
+    const void* p3c8;
     const void* p3d0;
     unsigned char b3d8[0x10];
     const void* p3e8;
@@ -5169,11 +4934,11 @@ struct Sd_143160510 {
     const void* p420;
     unsigned char b428[0x10];
     const void* p438;
-    unsigned char b440[0x8];
+    const void* p440;
     const void* p448;
     unsigned char b450[0x10];
     const void* p460;
-    const void* p468;
+    unsigned char b468[0x8];
     const void* p470;
     unsigned char b478[0x10];
     const void* p488;
@@ -5197,15 +4962,15 @@ struct Sd_143160510 {
     const void* p538;
     unsigned char b540[0x10];
     const void* p550;
-    unsigned char b558[0x8];
+    const void* p558;
     const void* p560;
     unsigned char b568[0x10];
     const void* p578;
-    const void* p580;
+    unsigned char b580[0x8];
     const void* p588;
     unsigned char b590[0x10];
     const void* p5a0;
-    const void* p5a8;
+    unsigned char b5a8[0x8];
     const void* p5b0;
     unsigned char b5b8[0x10];
     const void* p5c8;
@@ -5215,21 +4980,21 @@ struct Sd_143160510 {
     const void* p5f0;
     unsigned char b5f8[0x8];
     const void* p600;
-    unsigned char b608[0x10];
-    const void* p618;
-    unsigned char b620[0x8];
+    unsigned char b608[0x18];
+    const void* p620;
     const void* p628;
-    unsigned char b630[0x10];
-    const void* p640;
-    unsigned char b648[0x8];
+    const void* p630;
+    unsigned char b638[0x10];
+    const void* p648;
     const void* p650;
-    unsigned char b658[0x18];
+    const void* p658;
+    unsigned char b660[0x10];
     const void* p670;
     const void* p678;
     const void* p680;
     unsigned char b688[0x10];
     const void* p698;
-    const void* p6a0;
+    unsigned char b6a0[0x8];
     const void* p6a8;
     unsigned char b6b0[0x10];
     const void* p6c0;
@@ -5241,7 +5006,7 @@ struct Sd_143160510 {
     const void* p6f8;
     unsigned char b700[0x10];
     const void* p710;
-    const void* p718;
+    unsigned char b718[0x8];
     const void* p720;
     unsigned char b728[0x10];
     const void* p738;
@@ -5253,15 +5018,15 @@ struct Sd_143160510 {
     const void* p770;
     unsigned char b778[0x10];
     const void* p788;
-    unsigned char b790[0x8];
+    const void* p790;
     const void* p798;
     unsigned char b7a0[0x10];
     const void* p7b0;
-    unsigned char b7b8[0x8];
+    const void* p7b8;
     const void* p7c0;
     unsigned char b7c8[0x10];
     const void* p7d8;
-    const void* p7e0;
+    unsigned char b7e0[0x8];
     const void* p7e8;
     unsigned char b7f0[0x10];
     const void* p800;
@@ -5269,7 +5034,7 @@ struct Sd_143160510 {
     const void* p810;
     unsigned char b818[0x10];
     const void* p828;
-    unsigned char b830[0x8];
+    const void* p830;
     const void* p838;
     unsigned char b840[0x10];
     const void* p850;
@@ -5281,7 +5046,7 @@ struct Sd_143160510 {
     const void* p888;
     unsigned char b890[0x10];
     const void* p8a0;
-    const void* p8a8;
+    unsigned char b8a8[0x8];
     const void* p8b0;
     unsigned char b8b8[0x10];
     const void* p8c8;
@@ -5289,7 +5054,7 @@ struct Sd_143160510 {
     const void* p8d8;
     unsigned char b8e0[0x10];
     const void* p8f0;
-    unsigned char b8f8[0x8];
+    const void* p8f8;
     const void* p900;
     unsigned char b908[0x10];
     const void* p918;
@@ -5309,11 +5074,11 @@ struct Sd_143160510 {
     const void* p9a0;
     unsigned char b9a8[0x10];
     const void* p9b8;
-    const void* p9c0;
+    unsigned char b9c0[0x8];
     const void* p9c8;
     unsigned char b9d0[0x10];
     const void* p9e0;
-    const void* p9e8;
+    unsigned char b9e8[0x8];
     const void* p9f0;
     unsigned char b9f8[0x10];
     const void* pa08;
@@ -5357,60 +5122,62 @@ struct Sd_143160510 {
     const void* pb80;
     unsigned char bb88[0x10];
     const void* pb98;
-    unsigned char bba0[0x8];
+    const void* pba0;
     const void* pba8;
-    unsigned char bbb0[0x10];
+    const void* pbb0;
+    unsigned char bbb8[0x8];
     const void* pbc0;
-    unsigned char bbc8[0x8];
+    const void* pbc8;
     const void* pbd0;
-    unsigned char bbd8[0x10];
+    const void* pbd8;
+    unsigned char bbe0[0x8];
     const void* pbe8;
     const void* pbf0;
     const void* pbf8;
     const void* pc00;
     unsigned char bc08[0x8];
     const void* pc10;
-    const void* pc18;
+    unsigned char bc18[0x8];
     const void* pc20;
     const void* pc28;
     unsigned char bc30[0x8];
     const void* pc38;
-    const void* pc40;
+    unsigned char bc40[0x8];
     const void* pc48;
     const void* pc50;
     unsigned char bc58[0x8];
     const void* pc60;
-    unsigned char bc68[0x8];
+    const void* pc68;
     const void* pc70;
     const void* pc78;
     unsigned char bc80[0x8];
     const void* pc88;
-    unsigned char bc90[0x8];
+    const void* pc90;
     const void* pc98;
     const void* pca0;
     unsigned char bca8[0x8];
     const void* pcb0;
-    const void* pcb8;
+    unsigned char bcb8[0x8];
     const void* pcc0;
     const void* pcc8;
     unsigned char bcd0[0x8];
     const void* pcd8;
-    const void* pce0;
+    unsigned char bce0[0x8];
     const void* pce8;
     const void* pcf0;
     unsigned char bcf8[0x8];
     const void* pd00;
-    unsigned char bd08[0x8];
+    const void* pd08;
     const void* pd10;
     const void* pd18;
     unsigned char bd20[0x8];
     const void* pd28;
-    unsigned char bd30[0x8];
+    const void* pd30;
     const void* pd38;
     const void* pd40;
     unsigned char bd48[0x8];
     const void* pd50;
-    const void* pd58;
+    unsigned char bd58[0x8];
     const void* pd60;
     const void* pd68;
     unsigned char bd70[0x8];
@@ -5420,7 +5187,7 @@ struct Sd_143160510 {
     const void* pd90;
     unsigned char bd98[0x8];
     const void* pda0;
-    unsigned char bda8[0x8];
+    const void* pda8;
     const void* pdb0;
     const void* pdb8;
     unsigned char bdc0[0x8];
@@ -5435,7 +5202,7 @@ struct Sd_143160510 {
     const void* pe08;
     unsigned char be10[0x8];
     const void* pe18;
-    const void* pe20;
+    unsigned char be20[0x8];
     const void* pe28;
     const void* pe30;
     unsigned char be38[0x8];
@@ -5445,7 +5212,7 @@ struct Sd_143160510 {
     const void* pe58;
     unsigned char be60[0x8];
     const void* pe68;
-    unsigned char be70[0x8];
+    const void* pe70;
     const void* pe78;
     const void* pe80;
     unsigned char be88[0x8];
@@ -5470,12 +5237,12 @@ struct Sd_143160510 {
     const void* pf20;
     unsigned char bf28[0x8];
     const void* pf30;
-    const void* pf38;
+    unsigned char bf38[0x8];
     const void* pf40;
     const void* pf48;
     unsigned char bf50[0x8];
     const void* pf58;
-    const void* pf60;
+    unsigned char bf60[0x8];
     const void* pf68;
     const void* pf70;
     unsigned char bf78[0x8];
@@ -5532,21 +5299,19 @@ struct Sd_143160510 {
     const void* p1110;
     unsigned char b1118[0x8];
     const void* p1120;
-    const void* p1128;
-    unsigned char b1130[0x8];
-    const void* p1138;
-    unsigned char b1140[0x8];
-    const void* p1148;
+    unsigned char b1128[0x8];
+    const void* p1130;
+    unsigned char b1138[0x8];
+    const void* p1140;
+    unsigned char b1148[0x8];
     const void* p1150;
     unsigned char b1158[0x8];
     const void* p1160;
-    unsigned char b1168[0x8];
-    const void* p1170;
-    unsigned char b1178[0x8];
-    const void* p1180;
-    unsigned char b1188[0x8];
-    const void* p1190;
-    unsigned char b1198[0x8];
+    unsigned char b1168[0x10];
+    const void* p1178;
+    unsigned char b1180[0x8];
+    const void* p1188;
+    unsigned char b1190[0x10];
     const void* p11a0;
     unsigned char b11a8[0x8];
     const void* p11b0;
@@ -5554,28 +5319,28 @@ struct Sd_143160510 {
     const void* p11c8;
     unsigned char b11d0[0x8];
     const void* p11d8;
-    unsigned char b11e0[0x10];
+    const void* p11e0;
+    unsigned char b11e8[0x8];
     const void* p11f0;
     unsigned char b11f8[0x8];
     const void* p1200;
-    unsigned char b1208[0x10];
-    const void* p1218;
-    unsigned char b1220[0x8];
-    const void* p1228;
+    unsigned char b1208[0x8];
+    const void* p1210;
+    unsigned char b1218[0x8];
+    const void* p1220;
+    unsigned char b1228[0x8];
     const void* p1230;
-    unsigned char b1238[0x8];
-    const void* p1240;
-    unsigned char b1248[0x8];
+    unsigned char b1238[0x10];
+    const void* p1248;
     const void* p1250;
-    unsigned char b1258[0x8];
-    const void* p1260;
-    unsigned char b1268[0x8];
+    const void* p1258;
+    unsigned char b1260[0x10];
     const void* p1270;
-    unsigned char b1278[0x8];
+    const void* p1278;
     const void* p1280;
     unsigned char b1288[0x10];
     const void* p1298;
-    const void* p12a0;
+    unsigned char b12a0[0x8];
     const void* p12a8;
     unsigned char b12b0[0x10];
     const void* p12c0;
@@ -5587,11 +5352,11 @@ struct Sd_143160510 {
     const void* p12f8;
     unsigned char b1300[0x10];
     const void* p1310;
-    const void* p1318;
+    unsigned char b1318[0x8];
     const void* p1320;
     unsigned char b1328[0x10];
     const void* p1338;
-    unsigned char b1340[0x8];
+    const void* p1340;
     const void* p1348;
     unsigned char b1350[0x10];
     const void* p1360;
@@ -5607,7 +5372,7 @@ struct Sd_143160510 {
     const void* p13c0;
     unsigned char b13c8[0x10];
     const void* p13d8;
-    const void* p13e0;
+    unsigned char b13e0[0x8];
     const void* p13e8;
     unsigned char b13f0[0x10];
     const void* p1400;
@@ -5615,7 +5380,7 @@ struct Sd_143160510 {
     const void* p1410;
     unsigned char b1418[0x10];
     const void* p1428;
-    unsigned char b1430[0x8];
+    const void* p1430;
     const void* p1438;
     unsigned char b1440[0x10];
     const void* p1450;
@@ -5623,89 +5388,73 @@ struct Sd_143160510 {
     const void* p1460;
     unsigned char b1468[0x10];
     const void* p1478;
-    const void* p1480;
+    unsigned char b1480[0x8];
     const void* p1488;
     unsigned char b1490[0x10];
     const void* p14a0;
     unsigned char b14a8[0x8];
     const void* p14b0;
-    unsigned char b14b8[0x10];
-    const void* p14c8;
-    unsigned char b14d0[0x8];
+    unsigned char b14b8[0x18];
+    const void* p14d0;
     const void* p14d8;
-    unsigned char b14e0[0x10];
-    const void* p14f0;
-    unsigned char b14f8[0x8];
+    const void* p14e0;
+    unsigned char b14e8[0x10];
+    const void* p14f8;
     const void* p1500;
-    unsigned char b1508[0x18];
-    const void* p1520;
-    const void* p1528;
-    const void* p1530;
-    unsigned char b1538[0x10];
-    const void* p1548;
-    const void* p1550;
-    const void* p1558;
-    unsigned char b1560[0x690];
+    const void* p1508;
+    unsigned char b1510[0x690];
 };
-struct Sd_143165490 {
-    unsigned char b0[0x8];
+struct Sd_1431654e0 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x10];
+    unsigned char b18[0x10];
+    const void* p28;
+    const void* p30;
     const void* p38;
     unsigned char b40[0x10];
     const void* p50;
     const void* p58;
     const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    unsigned char b90[0x10];
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x3d8];
+    unsigned char b68[0x3d8];
 };
-struct Sd_143167f80 {
-    unsigned char b0[0x8];
+struct Sd_143167fd0 {
+    const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    unsigned char b18[0x10];
+    const void* p28;
+    unsigned char b30[0x8];
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
-    const void* p58;
+    unsigned char b58[0x8];
     const void* p60;
-    unsigned char b68[0x10];
-    const void* p78;
-    unsigned char b80[0x8];
-    const void* p88;
-    unsigned char b90[0x10];
+    unsigned char b68[0x8];
+    const void* p70;
+    unsigned char b78[0x8];
+    const void* p80;
+    unsigned char b88[0x8];
+    const void* p90;
+    unsigned char b98[0x8];
     const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x8];
-    const void* pc0;
-    unsigned char bc8[0x8];
-    const void* pd0;
-    unsigned char bd8[0x8];
+    unsigned char ba8[0x10];
+    const void* pb8;
+    unsigned char bc0[0x8];
+    const void* pc8;
+    unsigned char bd0[0x10];
     const void* pe0;
     unsigned char be8[0x8];
     const void* pf0;
-    unsigned char bf8[0x10];
+    unsigned char bf8[0x8];
+    const void* p100;
     const void* p108;
-    unsigned char b110[0x8];
-    const void* p118;
-    unsigned char b120[0x10];
+    const void* p110;
+    unsigned char b118[0x10];
+    const void* p128;
     const void* p130;
-    unsigned char b138[0x8];
-    const void* p140;
-    unsigned char b148[0x8];
+    const void* p138;
+    unsigned char b140[0x10];
     const void* p150;
     const void* p158;
     const void* p160;
@@ -5727,21 +5476,21 @@ struct Sd_143167f80 {
     const void* p200;
     unsigned char b208[0x10];
     const void* p218;
-    const void* p220;
+    unsigned char b220[0x8];
     const void* p228;
     unsigned char b230[0x10];
     const void* p240;
-    const void* p248;
+    unsigned char b248[0x8];
     const void* p250;
-    unsigned char b258[0x10];
-    const void* p268;
-    unsigned char b270[0x8];
+    unsigned char b258[0x18];
+    const void* p270;
     const void* p278;
-    unsigned char b280[0x10];
-    const void* p290;
-    unsigned char b298[0x8];
-    const void* p2a0;
-    unsigned char b2a8[0x18];
+    const void* p280;
+    unsigned char b288[0x10];
+    const void* p298;
+    unsigned char b2a0[0x8];
+    const void* p2a8;
+    unsigned char b2b0[0x10];
     const void* p2c0;
     const void* p2c8;
     const void* p2d0;
@@ -5795,7 +5544,7 @@ struct Sd_143167f80 {
     const void* p4b0;
     unsigned char b4b8[0x10];
     const void* p4c8;
-    unsigned char b4d0[0x8];
+    const void* p4d0;
     const void* p4d8;
     unsigned char b4e0[0x10];
     const void* p4f0;
@@ -5803,7 +5552,7 @@ struct Sd_143167f80 {
     const void* p500;
     unsigned char b508[0x10];
     const void* p518;
-    const void* p520;
+    unsigned char b520[0x8];
     const void* p528;
     unsigned char b530[0x10];
     const void* p540;
@@ -5851,11 +5600,11 @@ struct Sd_143167f80 {
     const void* p6e0;
     unsigned char b6e8[0x10];
     const void* p6f8;
-    unsigned char b700[0x8];
+    const void* p700;
     const void* p708;
     unsigned char b710[0x10];
     const void* p720;
-    const void* p728;
+    unsigned char b728[0x8];
     const void* p730;
     unsigned char b738[0x10];
     const void* p748;
@@ -5863,7 +5612,7 @@ struct Sd_143167f80 {
     const void* p758;
     unsigned char b760[0x10];
     const void* p770;
-    unsigned char b778[0x8];
+    const void* p778;
     const void* p780;
     unsigned char b788[0x10];
     const void* p798;
@@ -5871,7 +5620,7 @@ struct Sd_143167f80 {
     const void* p7a8;
     unsigned char b7b0[0x10];
     const void* p7c0;
-    const void* p7c8;
+    unsigned char b7c8[0x8];
     const void* p7d0;
     unsigned char b7d8[0x10];
     const void* p7e8;
@@ -5887,11 +5636,11 @@ struct Sd_143167f80 {
     const void* p848;
     unsigned char b850[0x10];
     const void* p860;
-    unsigned char b868[0x8];
+    const void* p868;
     const void* p870;
     unsigned char b878[0x10];
     const void* p888;
-    const void* p890;
+    unsigned char b890[0x8];
     const void* p898;
     unsigned char b8a0[0x10];
     const void* p8b0;
@@ -5923,7 +5672,7 @@ struct Sd_143167f80 {
     const void* p9b0;
     unsigned char b9b8[0x10];
     const void* p9c8;
-    unsigned char b9d0[0x8];
+    const void* p9d0;
     const void* p9d8;
     unsigned char b9e0[0x10];
     const void* p9f0;
@@ -5931,7 +5680,7 @@ struct Sd_143167f80 {
     const void* pa00;
     unsigned char ba08[0x10];
     const void* pa18;
-    const void* pa20;
+    unsigned char ba20[0x8];
     const void* pa28;
     unsigned char ba30[0x10];
     const void* pa40;
@@ -5963,7 +5712,7 @@ struct Sd_143167f80 {
     const void* pb40;
     unsigned char bb48[0x10];
     const void* pb58;
-    unsigned char bb60[0x8];
+    const void* pb60;
     const void* pb68;
     unsigned char bb70[0x10];
     const void* pb80;
@@ -5971,7 +5720,7 @@ struct Sd_143167f80 {
     const void* pb90;
     unsigned char bb98[0x10];
     const void* pba8;
-    const void* pbb0;
+    unsigned char bbb0[0x8];
     const void* pbb8;
     unsigned char bbc0[0x10];
     const void* pbd0;
@@ -5999,15 +5748,15 @@ struct Sd_143167f80 {
     const void* pca8;
     unsigned char bcb0[0x10];
     const void* pcc0;
-    const void* pcc8;
+    unsigned char bcc8[0x8];
     const void* pcd0;
     unsigned char bcd8[0x10];
     const void* pce8;
-    unsigned char bcf0[0x8];
+    const void* pcf0;
     const void* pcf8;
     unsigned char bd00[0x10];
     const void* pd10;
-    unsigned char bd18[0x8];
+    const void* pd18;
     const void* pd20;
     unsigned char bd28[0x10];
     const void* pd38;
@@ -6051,11 +5800,11 @@ struct Sd_143167f80 {
     const void* peb0;
     unsigned char beb8[0x10];
     const void* pec8;
-    const void* ped0;
+    unsigned char bed0[0x8];
     const void* ped8;
     unsigned char bee0[0x10];
     const void* pef0;
-    const void* pef8;
+    unsigned char bef8[0x8];
     const void* pf00;
     unsigned char bf08[0x10];
     const void* pf18;
@@ -6065,15 +5814,17 @@ struct Sd_143167f80 {
     const void* pf40;
     unsigned char bf48[0x8];
     const void* pf50;
-    unsigned char bf58[0x10];
-    const void* pf68;
-    unsigned char bf70[0x8];
-    const void* pf78;
-    unsigned char bf80[0x10];
+    unsigned char bf58[0x18];
+    const void* pf70;
+    unsigned char bf78[0x8];
+    const void* pf80;
+    unsigned char bf88[0x8];
     const void* pf90;
     unsigned char bf98[0x8];
     const void* pfa0;
-    unsigned char bfa8[0x18];
+    unsigned char bfa8[0x8];
+    const void* pfb0;
+    unsigned char bfb8[0x8];
     const void* pfc0;
     unsigned char bfc8[0x8];
     const void* pfd0;
@@ -6085,15 +5836,13 @@ struct Sd_143167f80 {
     const void* p1000;
     unsigned char b1008[0x8];
     const void* p1010;
-    unsigned char b1018[0x8];
+    const void* p1018;
     const void* p1020;
-    unsigned char b1028[0x8];
-    const void* p1030;
-    unsigned char b1038[0x8];
-    const void* p1040;
-    unsigned char b1048[0x8];
-    const void* p1050;
-    unsigned char b1058[0x8];
+    unsigned char b1028[0x10];
+    const void* p1038;
+    unsigned char b1040[0x8];
+    const void* p1048;
+    unsigned char b1050[0x10];
     const void* p1060;
     const void* p1068;
     const void* p1070;
@@ -6103,66 +5852,55 @@ struct Sd_143167f80 {
     const void* p1098;
     unsigned char b10a0[0x10];
     const void* p10b0;
-    const void* p10b8;
+    unsigned char b10b8[0x8];
     const void* p10c0;
     unsigned char b10c8[0x10];
     const void* p10d8;
-    unsigned char b10e0[0x8];
+    const void* p10e0;
     const void* p10e8;
     unsigned char b10f0[0x10];
     const void* p1100;
     unsigned char b1108[0x8];
     const void* p1110;
-    unsigned char b1118[0x10];
-    const void* p1128;
+    unsigned char b1118[0x8];
+    const void* p1120;
+    unsigned char b1128[0x8];
     const void* p1130;
-    const void* p1138;
-    unsigned char b1140[0x10];
+    unsigned char b1138[0x8];
+    const void* p1140;
+    unsigned char b1148[0x8];
     const void* p1150;
     unsigned char b1158[0x8];
     const void* p1160;
-    unsigned char b1168[0x8];
-    const void* p1170;
-    unsigned char b1178[0x8];
-    const void* p1180;
-    unsigned char b1188[0x8];
-    const void* p1190;
-    unsigned char b1198[0x8];
+    unsigned char b1168[0x10];
+    const void* p1178;
+    unsigned char b1180[0x8];
+    const void* p1188;
+    unsigned char b1190[0x10];
     const void* p11a0;
     unsigned char b11a8[0x8];
     const void* p11b0;
     unsigned char b11b8[0x10];
     const void* p11c8;
-    unsigned char b11d0[0x8];
+    const void* p11d0;
     const void* p11d8;
-    unsigned char b11e0[0x10];
-    const void* p11f0;
-    unsigned char b11f8[0x8];
-    const void* p1200;
-    unsigned char b1208[0x10];
-    const void* p1218;
-    const void* p1220;
-    const void* p1228;
-    unsigned char b1230[0x7c0];
+    unsigned char b11e0[0x7c0];
 };
 struct Sd_14316afc0 {
     const void* p0;
     const void* p8;
     const void* p10;
 };
-struct Sd_14316b3f0 {
+struct Sd_14316b408 {
+    unsigned char b0[0x238];
+};
+struct Sd_14316d360 {
     const void* p0;
     const void* p8;
     const void* p10;
-    unsigned char b18[0x238];
-};
-struct Sd_14316d310 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x10];
+    unsigned char b18[0x10];
+    const void* p28;
+    unsigned char b30[0x8];
     const void* p38;
     unsigned char b40[0x10];
     const void* p50;
@@ -6174,17 +5912,19 @@ struct Sd_14316d310 {
     const void* p88;
     unsigned char b90[0x10];
     const void* pa0;
-    const void* pa8;
+    unsigned char ba8[0x8];
     const void* pb0;
-    unsigned char bb8[0x10];
-    const void* pc8;
-    unsigned char bd0[0x8];
-    const void* pd8;
-    unsigned char be0[0x10];
+    unsigned char bb8[0x18];
+    const void* pd0;
+    unsigned char bd8[0x8];
+    const void* pe0;
+    unsigned char be8[0x8];
     const void* pf0;
     unsigned char bf8[0x8];
     const void* p100;
-    unsigned char b108[0x18];
+    unsigned char b108[0x8];
+    const void* p110;
+    unsigned char b118[0x8];
     const void* p120;
     unsigned char b128[0x8];
     const void* p130;
@@ -6664,27 +6404,27 @@ struct Sd_14316d310 {
     const void* p1000;
     unsigned char b1008[0x8];
     const void* p1010;
-    unsigned char b1018[0x8];
+    const void* p1018;
     const void* p1020;
-    unsigned char b1028[0x8];
-    const void* p1030;
-    unsigned char b1038[0x8];
+    unsigned char b1028[0x10];
+    const void* p1038;
     const void* p1040;
-    unsigned char b1048[0x8];
-    const void* p1050;
-    unsigned char b1058[0x8];
+    const void* p1048;
+    unsigned char b1050[0x10];
     const void* p1060;
     const void* p1068;
     const void* p1070;
-    unsigned char b1078[0x10];
-    const void* p1088;
+    unsigned char b1078[0x18];
     const void* p1090;
-    const void* p1098;
-    unsigned char b10a0[0x10];
+    unsigned char b1098[0x8];
+    const void* p10a0;
+    unsigned char b10a8[0x8];
     const void* p10b0;
-    const void* p10b8;
+    unsigned char b10b8[0x8];
     const void* p10c0;
-    unsigned char b10c8[0x18];
+    unsigned char b10c8[0x8];
+    const void* p10d0;
+    unsigned char b10d8[0x8];
     const void* p10e0;
     unsigned char b10e8[0x8];
     const void* p10f0;
@@ -6696,33 +6436,25 @@ struct Sd_14316d310 {
     const void* p1120;
     unsigned char b1128[0x8];
     const void* p1130;
-    unsigned char b1138[0x8];
-    const void* p1140;
-    unsigned char b1148[0x8];
-    const void* p1150;
-    unsigned char b1158[0x8];
-    const void* p1160;
-    unsigned char b1168[0x8];
-    const void* p1170;
-    unsigned char b1178[0x8];
-    const void* p1180;
-    unsigned char b1188[0x258];
+    unsigned char b1138[0x258];
 };
-struct Sd_14316ff40 {
-    unsigned char b0[0x8];
-    const void* p8;
+struct Sd_14316ff90 {
+    const void* p0;
+    unsigned char b8[0x8];
     const void* p10;
     unsigned char b18[0x8];
     const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    unsigned char b40[0x8];
+    const void* p48;
     const void* p50;
-    unsigned char b58[0x8];
+    const void* p58;
     const void* p60;
     unsigned char b68[0x8];
     const void* p70;
-    const void* p78;
+    unsigned char b78[0x8];
     const void* p80;
     const void* p88;
     unsigned char b90[0x8];
@@ -6742,12 +6474,12 @@ struct Sd_14316ff40 {
     const void* p100;
     unsigned char b108[0x8];
     const void* p110;
-    unsigned char b118[0x8];
+    const void* p118;
     const void* p120;
     const void* p128;
     unsigned char b130[0x8];
     const void* p138;
-    const void* p140;
+    unsigned char b140[0x8];
     const void* p148;
     const void* p150;
     unsigned char b158[0x8];
@@ -6757,7 +6489,7 @@ struct Sd_14316ff40 {
     const void* p178;
     unsigned char b180[0x8];
     const void* p188;
-    unsigned char b190[0x8];
+    const void* p190;
     const void* p198;
     const void* p1a0;
     unsigned char b1a8[0x8];
@@ -6772,7 +6504,7 @@ struct Sd_14316ff40 {
     const void* p1f0;
     unsigned char b1f8[0x8];
     const void* p200;
-    const void* p208;
+    unsigned char b208[0x8];
     const void* p210;
     const void* p218;
     unsigned char b220[0x8];
@@ -6782,7 +6514,7 @@ struct Sd_14316ff40 {
     const void* p240;
     unsigned char b248[0x8];
     const void* p250;
-    unsigned char b258[0x8];
+    const void* p258;
     const void* p260;
     const void* p268;
     unsigned char b270[0x8];
@@ -6805,17 +6537,17 @@ struct Sd_14316ff40 {
     const void* p2f8;
     const void* p300;
     const void* p308;
-    unsigned char b310[0x8];
-    const void* p318;
+    unsigned char b310[0x10];
     const void* p320;
     const void* p328;
     const void* p330;
-    unsigned char b338[0x8];
-    const void* p340;
+    const void* p338;
+    unsigned char b340[0x8];
     const void* p348;
-    const void* p350;
+    unsigned char b350[0x8];
     const void* p358;
-    unsigned char b360[0x10];
+    const void* p360;
+    unsigned char b368[0x8];
     const void* p370;
     const void* p378;
     const void* p380;
@@ -6827,7 +6559,7 @@ struct Sd_14316ff40 {
     const void* p3b0;
     unsigned char b3b8[0x8];
     const void* p3c0;
-    const void* p3c8;
+    unsigned char b3c8[0x8];
     const void* p3d0;
     const void* p3d8;
     unsigned char b3e0[0x8];
@@ -6897,17 +6629,15 @@ struct Sd_14316ff40 {
     const void* p5e0;
     unsigned char b5e8[0x8];
     const void* p5f0;
-    unsigned char b5f8[0x8];
+    const void* p5f8;
     const void* p600;
-    const void* p608;
-    unsigned char b610[0x8];
+    unsigned char b608[0x10];
     const void* p618;
-    unsigned char b620[0x8];
+    const void* p620;
     const void* p628;
-    const void* p630;
-    unsigned char b638[0x8];
+    unsigned char b630[0x10];
     const void* p640;
-    const void* p648;
+    unsigned char b648[0x8];
     const void* p650;
     unsigned char b658[0x10];
     const void* p668;
@@ -6935,19 +6665,19 @@ struct Sd_14316ff40 {
     const void* p740;
     unsigned char b748[0x10];
     const void* p758;
-    const void* p760;
+    unsigned char b760[0x8];
     const void* p768;
     unsigned char b770[0x10];
     const void* p780;
-    unsigned char b788[0x8];
+    const void* p788;
     const void* p790;
     unsigned char b798[0x10];
     const void* p7a8;
-    unsigned char b7b0[0x8];
+    const void* p7b0;
     const void* p7b8;
     unsigned char b7c0[0x10];
     const void* p7d0;
-    const void* p7d8;
+    unsigned char b7d8[0x8];
     const void* p7e0;
     unsigned char b7e8[0x10];
     const void* p7f8;
@@ -6955,7 +6685,7 @@ struct Sd_14316ff40 {
     const void* p808;
     unsigned char b810[0x10];
     const void* p820;
-    unsigned char b828[0x8];
+    const void* p828;
     const void* p830;
     unsigned char b838[0x10];
     const void* p848;
@@ -6967,7 +6697,7 @@ struct Sd_14316ff40 {
     const void* p880;
     unsigned char b888[0x10];
     const void* p898;
-    const void* p8a0;
+    unsigned char b8a0[0x8];
     const void* p8a8;
     unsigned char b8b0[0x10];
     const void* p8c0;
@@ -6975,7 +6705,7 @@ struct Sd_14316ff40 {
     const void* p8d0;
     unsigned char b8d8[0x10];
     const void* p8e8;
-    unsigned char b8f0[0x8];
+    const void* p8f0;
     const void* p8f8;
     unsigned char b900[0x10];
     const void* p910;
@@ -6999,11 +6729,11 @@ struct Sd_14316ff40 {
     const void* p9c0;
     unsigned char b9c8[0x10];
     const void* p9d8;
-    const void* p9e0;
+    unsigned char b9e0[0x8];
     const void* p9e8;
     unsigned char b9f0[0x10];
     const void* pa00;
-    const void* pa08;
+    unsigned char ba08[0x8];
     const void* pa10;
     unsigned char ba18[0x10];
     const void* pa28;
@@ -7051,60 +6781,62 @@ struct Sd_14316ff40 {
     const void* pbc8;
     unsigned char bbd0[0x10];
     const void* pbe0;
-    unsigned char bbe8[0x8];
+    const void* pbe8;
     const void* pbf0;
-    unsigned char bbf8[0x10];
+    const void* pbf8;
+    unsigned char bc00[0x8];
     const void* pc08;
-    unsigned char bc10[0x8];
+    const void* pc10;
     const void* pc18;
-    unsigned char bc20[0x10];
+    const void* pc20;
+    unsigned char bc28[0x8];
     const void* pc30;
     const void* pc38;
     const void* pc40;
     const void* pc48;
     unsigned char bc50[0x8];
     const void* pc58;
-    const void* pc60;
+    unsigned char bc60[0x8];
     const void* pc68;
     const void* pc70;
     unsigned char bc78[0x8];
     const void* pc80;
-    const void* pc88;
+    unsigned char bc88[0x8];
     const void* pc90;
     const void* pc98;
     unsigned char bca0[0x8];
     const void* pca8;
-    unsigned char bcb0[0x8];
+    const void* pcb0;
     const void* pcb8;
     const void* pcc0;
     unsigned char bcc8[0x8];
     const void* pcd0;
-    unsigned char bcd8[0x8];
+    const void* pcd8;
     const void* pce0;
     const void* pce8;
     unsigned char bcf0[0x8];
     const void* pcf8;
-    const void* pd00;
+    unsigned char bd00[0x8];
     const void* pd08;
     const void* pd10;
     unsigned char bd18[0x8];
     const void* pd20;
-    const void* pd28;
+    unsigned char bd28[0x8];
     const void* pd30;
     const void* pd38;
     unsigned char bd40[0x8];
     const void* pd48;
-    unsigned char bd50[0x8];
+    const void* pd50;
     const void* pd58;
     const void* pd60;
     unsigned char bd68[0x8];
     const void* pd70;
-    unsigned char bd78[0x8];
+    const void* pd78;
     const void* pd80;
     const void* pd88;
     unsigned char bd90[0x8];
     const void* pd98;
-    const void* pda0;
+    unsigned char bda0[0x8];
     const void* pda8;
     const void* pdb0;
     unsigned char bdb8[0x8];
@@ -7114,7 +6846,7 @@ struct Sd_14316ff40 {
     const void* pdd8;
     unsigned char bde0[0x8];
     const void* pde8;
-    unsigned char bdf0[0x8];
+    const void* pdf0;
     const void* pdf8;
     const void* pe00;
     unsigned char be08[0x8];
@@ -7129,7 +6861,7 @@ struct Sd_14316ff40 {
     const void* pe50;
     unsigned char be58[0x8];
     const void* pe60;
-    const void* pe68;
+    unsigned char be68[0x8];
     const void* pe70;
     const void* pe78;
     unsigned char be80[0x8];
@@ -7139,7 +6871,7 @@ struct Sd_14316ff40 {
     const void* pea0;
     unsigned char bea8[0x8];
     const void* peb0;
-    unsigned char beb8[0x8];
+    const void* peb8;
     const void* pec0;
     const void* pec8;
     unsigned char bed0[0x8];
@@ -7164,12 +6896,12 @@ struct Sd_14316ff40 {
     const void* pf68;
     unsigned char bf70[0x8];
     const void* pf78;
-    const void* pf80;
+    unsigned char bf80[0x8];
     const void* pf88;
     const void* pf90;
     unsigned char bf98[0x8];
     const void* pfa0;
-    const void* pfa8;
+    unsigned char bfa8[0x8];
     const void* pfb0;
     const void* pfb8;
     unsigned char bfc0[0x8];
@@ -7222,19 +6954,17 @@ struct Sd_14316ff40 {
     unsigned char b1138[0x8];
     const void* p1140;
     const void* p1148;
-    unsigned char b1150[0x8];
-    const void* p1158;
-    unsigned char b1160[0x8];
-    const void* p1168;
+    unsigned char b1150[0x10];
+    const void* p1160;
+    unsigned char b1168[0x8];
     const void* p1170;
-    unsigned char b1178[0x8];
-    const void* p1180;
-    unsigned char b1188[0x8];
+    unsigned char b1178[0x10];
+    const void* p1188;
     const void* p1190;
     const void* p1198;
     unsigned char b11a0[0x10];
     const void* p11b0;
-    unsigned char b11b8[0x8];
+    const void* p11b8;
     const void* p11c0;
     unsigned char b11c8[0x10];
     const void* p11d8;
@@ -7242,7 +6972,7 @@ struct Sd_14316ff40 {
     const void* p11e8;
     unsigned char b11f0[0x10];
     const void* p1200;
-    const void* p1208;
+    unsigned char b1208[0x8];
     const void* p1210;
     unsigned char b1218[0x10];
     const void* p1228;
@@ -7262,48 +6992,33 @@ struct Sd_14316ff40 {
     const void* p12b0;
     unsigned char b12b8[0x10];
     const void* p12c8;
-    const void* p12d0;
+    unsigned char b12d0[0x8];
     const void* p12d8;
     unsigned char b12e0[0x10];
     const void* p12f0;
     unsigned char b12f8[0x8];
     const void* p1300;
-    unsigned char b1308[0x10];
-    const void* p1318;
-    unsigned char b1320[0x8];
-    const void* p1328;
-    unsigned char b1330[0x10];
-    const void* p1340;
-    unsigned char b1348[0x8];
-    const void* p1350;
-    unsigned char b1358[0x160];
+    unsigned char b1308[0x160];
 };
-struct Sd_143172640 {
-    unsigned char b0[0x8];
-    const void* p8;
+struct Sd_143172690 {
+    const void* p0;
+    unsigned char b8[0x8];
     const void* p10;
-    const void* p18;
+    unsigned char b18[0x8];
     const void* p20;
     unsigned char b28[0x8];
     const void* p30;
-    unsigned char b38[0x18];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    unsigned char b88[0x8];
+    unsigned char b38[0x8];
 };
-struct Sd_1431726d0 {
-    unsigned char b0[0x8];
-    const void* p8;
+struct Sd_143172720 {
+    const void* p0;
+    unsigned char b8[0x8];
     const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x20];
-    const void* p48;
+    unsigned char b18[0x10];
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    unsigned char b40[0x10];
     const void* p50;
     unsigned char b58[0x8];
     const void* p60;
@@ -7313,7 +7028,7 @@ struct Sd_1431726d0 {
     const void* p88;
     unsigned char b90[0x10];
     const void* pa0;
-    unsigned char ba8[0x8];
+    const void* pa8;
     const void* pb0;
     unsigned char bb8[0x10];
     const void* pc8;
@@ -7321,7 +7036,7 @@ struct Sd_1431726d0 {
     const void* pd8;
     unsigned char be0[0x10];
     const void* pf0;
-    const void* pf8;
+    unsigned char bf8[0x8];
     const void* p100;
     unsigned char b108[0x10];
     const void* p118;
@@ -7329,11 +7044,11 @@ struct Sd_1431726d0 {
     const void* p128;
     unsigned char b130[0x10];
     const void* p140;
-    unsigned char b148[0x8];
+    const void* p148;
     const void* p150;
     unsigned char b158[0x10];
     const void* p168;
-    const void* p170;
+    unsigned char b170[0x8];
     const void* p178;
     unsigned char b180[0x10];
     const void* p190;
@@ -7341,7 +7056,7 @@ struct Sd_1431726d0 {
     const void* p1a0;
     unsigned char b1a8[0x10];
     const void* p1b8;
-    unsigned char b1c0[0x8];
+    const void* p1c0;
     const void* p1c8;
     unsigned char b1d0[0x10];
     const void* p1e0;
@@ -7349,13 +7064,15 @@ struct Sd_1431726d0 {
     const void* p1f0;
     unsigned char b1f8[0x10];
     const void* p208;
-    const void* p210;
+    unsigned char b210[0x8];
     const void* p218;
-    unsigned char b220[0x10];
-    const void* p230;
+    unsigned char b220[0x8];
+    const void* p228;
+    unsigned char b230[0x8];
     const void* p238;
-    const void* p240;
-    unsigned char b248[0x10];
+    unsigned char b240[0x8];
+    const void* p248;
+    unsigned char b250[0x8];
     const void* p258;
     unsigned char b260[0x8];
     const void* p268;
@@ -7363,25 +7080,23 @@ struct Sd_1431726d0 {
     const void* p278;
     unsigned char b280[0x8];
     const void* p288;
-    unsigned char b290[0x8];
-    const void* p298;
-    unsigned char b2a0[0x8];
-    const void* p2a8;
-    unsigned char b2b0[0x8];
-    const void* p2b8;
-    unsigned char b2c0[0x8];
-    const void* p2c8;
-    unsigned char b2d0[0x8];
-    const void* p2d8;
-    unsigned char b2e0[0x10];
+    unsigned char b290[0x10];
+    const void* p2a0;
+    unsigned char b2a8[0x8];
+    const void* p2b0;
+    unsigned char b2b8[0x8];
+    const void* p2c0;
+    unsigned char b2c8[0x8];
+    const void* p2d0;
+    unsigned char b2d8[0x8];
+    const void* p2e0;
+    unsigned char b2e8[0x8];
     const void* p2f0;
-    unsigned char b2f8[0x8];
-    const void* p300;
-    unsigned char b308[0x8];
+    unsigned char b2f8[0x10];
+    const void* p308;
     const void* p310;
-    unsigned char b318[0x8];
-    const void* p320;
-    unsigned char b328[0x8];
+    const void* p318;
+    unsigned char b320[0x10];
     const void* p330;
     unsigned char b338[0x8];
     const void* p340;
@@ -7391,7 +7106,7 @@ struct Sd_1431726d0 {
     const void* p368;
     unsigned char b370[0x10];
     const void* p380;
-    unsigned char b388[0x8];
+    const void* p388;
     const void* p390;
     unsigned char b398[0x10];
     const void* p3a8;
@@ -7403,15 +7118,15 @@ struct Sd_1431726d0 {
     const void* p3e0;
     unsigned char b3e8[0x10];
     const void* p3f8;
-    const void* p400;
+    unsigned char b400[0x8];
     const void* p408;
     unsigned char b410[0x10];
     const void* p420;
-    const void* p428;
+    unsigned char b428[0x8];
     const void* p430;
     unsigned char b438[0x10];
     const void* p448;
-    unsigned char b450[0x8];
+    const void* p450;
     const void* p458;
     unsigned char b460[0x10];
     const void* p470;
@@ -7425,11 +7140,13 @@ struct Sd_1431726d0 {
     const void* p4c0;
     unsigned char b4c8[0x8];
     const void* p4d0;
-    unsigned char b4d8[0x10];
-    const void* p4e8;
+    unsigned char b4d8[0x8];
+    const void* p4e0;
+    unsigned char b4e8[0x8];
     const void* p4f0;
-    const void* p4f8;
-    unsigned char b500[0x10];
+    unsigned char b4f8[0x8];
+    const void* p500;
+    unsigned char b508[0x8];
     const void* p510;
     unsigned char b518[0x8];
     const void* p520;
@@ -7497,15 +7214,13 @@ struct Sd_1431726d0 {
     const void* p710;
     unsigned char b718[0x8];
     const void* p720;
-    unsigned char b728[0x8];
-    const void* p730;
-    unsigned char b738[0x8];
-    const void* p740;
-    unsigned char b748[0x8];
-    const void* p750;
-    unsigned char b758[0x8];
+    unsigned char b728[0x10];
+    const void* p738;
+    unsigned char b740[0x8];
+    const void* p748;
+    unsigned char b750[0x10];
     const void* p760;
-    unsigned char b768[0x8];
+    const void* p768;
     const void* p770;
     unsigned char b778[0x10];
     const void* p788;
@@ -7521,7 +7236,7 @@ struct Sd_1431726d0 {
     const void* p7e8;
     unsigned char b7f0[0x10];
     const void* p800;
-    const void* p808;
+    unsigned char b808[0x8];
     const void* p810;
     unsigned char b818[0x10];
     const void* p828;
@@ -7529,7 +7244,7 @@ struct Sd_1431726d0 {
     const void* p838;
     unsigned char b840[0x10];
     const void* p850;
-    unsigned char b858[0x8];
+    const void* p858;
     const void* p860;
     unsigned char b868[0x10];
     const void* p878;
@@ -7565,21 +7280,21 @@ struct Sd_1431726d0 {
     const void* p9a0;
     unsigned char b9a8[0x10];
     const void* p9b8;
-    unsigned char b9c0[0x8];
+    const void* p9c0;
     const void* p9c8;
     unsigned char b9d0[0x10];
     const void* p9e0;
-    const void* p9e8;
+    unsigned char b9e8[0x8];
     const void* p9f0;
-    unsigned char b9f8[0x10];
-    const void* pa08;
+    unsigned char b9f8[0x8];
+    const void* pa00;
+    unsigned char ba08[0x8];
     const void* pa10;
-    const void* pa18;
-    unsigned char ba20[0x10];
+    unsigned char ba18[0x10];
+    const void* pa28;
     const void* pa30;
-    unsigned char ba38[0x8];
-    const void* pa40;
-    unsigned char ba48[0x8];
+    const void* pa38;
+    unsigned char ba40[0x10];
     const void* pa50;
     unsigned char ba58[0x8];
     const void* pa60;
@@ -7589,7 +7304,7 @@ struct Sd_1431726d0 {
     const void* pa88;
     unsigned char ba90[0x10];
     const void* paa0;
-    unsigned char baa8[0x8];
+    const void* paa8;
     const void* pab0;
     unsigned char bab8[0x10];
     const void* pac8;
@@ -7597,7 +7312,7 @@ struct Sd_1431726d0 {
     const void* pad8;
     unsigned char bae0[0x10];
     const void* paf0;
-    const void* paf8;
+    unsigned char baf8[0x8];
     const void* pb00;
     unsigned char bb08[0x10];
     const void* pb18;
@@ -7605,11 +7320,11 @@ struct Sd_1431726d0 {
     const void* pb28;
     unsigned char bb30[0x10];
     const void* pb40;
-    unsigned char bb48[0x8];
+    const void* pb48;
     const void* pb50;
     unsigned char bb58[0x10];
     const void* pb68;
-    const void* pb70;
+    unsigned char bb70[0x8];
     const void* pb78;
     unsigned char bb80[0x10];
     const void* pb90;
@@ -7617,7 +7332,7 @@ struct Sd_1431726d0 {
     const void* pba0;
     unsigned char bba8[0x10];
     const void* pbb8;
-    unsigned char bbc0[0x8];
+    const void* pbc0;
     const void* pbc8;
     unsigned char bbd0[0x10];
     const void* pbe0;
@@ -7633,25 +7348,17 @@ struct Sd_1431726d0 {
     const void* pc40;
     unsigned char bc48[0x10];
     const void* pc58;
-    const void* pc60;
+    unsigned char bc60[0x8];
     const void* pc68;
     unsigned char bc70[0x10];
     const void* pc80;
-    const void* pc88;
+    unsigned char bc88[0x8];
     const void* pc90;
-    unsigned char bc98[0x10];
-    const void* pca8;
-    unsigned char bcb0[0x8];
-    const void* pcb8;
-    unsigned char bcc0[0x10];
-    const void* pcd0;
-    unsigned char bcd8[0x8];
-    const void* pce0;
-    unsigned char bce8[0x8];
-    const void* pcf0;
-    unsigned char bcf8[0x8];
-    const void* pd00;
-    unsigned char bd08[0x950];
+    unsigned char bc98[0x8];
+    const void* pca0;
+    unsigned char bca8[0x8];
+    const void* pcb0;
+    unsigned char bcb8[0x950];
 };
 #pragma pack(pop)
 
@@ -8499,31 +8206,49 @@ extern Sd_143172020 DAT_143172020;
 extern Sd_1431720a0 DAT_1431720a0;
 extern Sd_143172140 DAT_143172140;
 extern Sd_143172208 DAT_143172208;
-extern unsigned char DAT_1424917d0[];
-extern Sd_14313c670 DAT_14313c670;
-extern Sd_14313d6a0 DAT_14313d6a0;
-extern Sd_14313d6e8 DAT_14313d6e8;
-extern Sd_14313d7b0 DAT_14313d7b0;
-extern Sd_14313e2f0 DAT_14313e2f0;
-extern Sd_14313e4e0 DAT_14313e4e0;
-extern Sd_14313e690 DAT_14313e690;
-extern Sd_14313e840 DAT_14313e840;
-extern Sd_1431446e0 DAT_1431446e0;
-extern Sd_143146df0 DAT_143146df0;
-extern Sd_143151280 DAT_143151280;
-extern Sd_143158870 DAT_143158870;
-extern Sd_143159990 DAT_143159990;
-extern Sd_14315d220 DAT_14315d220;
-extern Sd_143160510 DAT_143160510;
-extern Sd_143165490 DAT_143165490;
-extern Sd_143167f80 DAT_143167f80;
-extern Sd_14316d310 DAT_14316d310;
-extern Sd_14316ff40 DAT_14316ff40;
-extern Sd_143172640 DAT_143172640;
-extern Sd_1431726d0 DAT_1431726d0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_accessibility { alignas(16) extern const ClassInfo AccessibilityPropertiesCI; } } } }
+extern Sd_14313c6c0 DAT_14313c6c0;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d6a0[];
+extern Sd_14313d6c8 DAT_14313d6c8;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d6e8[];
+extern Sd_14313d800 DAT_14313d800;
+extern Sd_14313e350 DAT_14313e350;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e4e0[];
+extern Sd_14313e580 DAT_14313e580;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e690[];
+extern Sd_14313e6e0 DAT_14313e6e0;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e840[];
+extern Sd_14313e890 DAT_14313e890;
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e8e0[];
+namespace Scaleform { namespace GFx { namespace AS3 { namespace Instances { namespace fl {  extern const ThunkInfo GlobalObjectCPP_ti[]; extern const ThunkInfo GlobalObjectCPP_ti_system[]; extern const ThunkInfo GlobalObjectCPP_ti_utils[]; extern const ThunkInfo GlobalObjectCPP_ti_avmplus[]; } } } } }
+extern Sd_143144758 DAT_143144758;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ShaderCI; } } } }
+extern Sd_143146e40 DAT_143146e40;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo IMEEventCI; } } } }
+extern Sd_1431512d0 DAT_1431512d0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_external { alignas(16) extern const ClassInfo ExternalInterfaceCI; } } } }
+extern Sd_1431588c0 DAT_1431588c0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GradientGlowFilterCI; } } } }
+extern Sd_1431599e0 DAT_1431599e0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo TransformCI; } } } }
+extern Sd_14315d270 DAT_14315d270;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLVariablesCI; } } } }
+extern Sd_143160560 DAT_143160560;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo IMEConversionModeCI; } } } }
+extern Sd_1431654e0 DAT_1431654e0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextSnapshotCI; } } } }
+extern Sd_143167fd0 DAT_143167fd0;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo MultitouchInputModeCI; } } } }
+extern Sd_14316d360 DAT_14316d360;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IExternalizableCI; } } } }
+extern Sd_14316ff90 DAT_14316ff90;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo IMEExCI; } } } }
+extern Sd_143172690 DAT_143172690;
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo IMECandidateListStyleCI; } } } }
+extern Sd_143172720 DAT_143172720;
 
 // 0x143138530: 17-slot table of the 0x1a0 IME object sfr_as2_01c FUN_1423cabb0 builds (slots in sfr_ime_01)
-alignas(16) Sd_143138530 DAT_143138530 = {
+extern "C" alignas(16) Sd_143138530 DAT_143138530 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423c8e70,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d8140,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d7dc0,
@@ -8544,7 +8269,7 @@ alignas(16) Sd_143138530 DAT_143138530 = {
 };
 
 // 0x143138360
-alignas(16) Sd_143138360 DAT_143138360 = {
+extern "C" alignas(16) Sd_143138360 DAT_143138360 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423c8e10,
     (const void*)&::Scaleform::GFx::IME::FUN_1423cb650,
     (const void*)&::Scaleform::GFx::IME::FUN_1423cb400,
@@ -8604,31 +8329,31 @@ alignas(16) Sd_143138360 DAT_143138360 = {
 //     (const void*)&::Scaleform::GFx::IME::FUN_1423c96d0,
 // };
 // 0x14313a1d8
-alignas(8) Sd_14313a1d8 DAT_14313a1d8 = {
-    DAT_14280ef52,
-    DAT_14280ef52,
+extern "C" alignas(8) Sd_14313a1d8 DAT_14313a1d8 = {
+    (const void*)&_purecall,
+    (const void*)&_purecall,
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce2c0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce0a0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce040,
 };
 // 0x14313a200
-alignas(16) Sd_14313a200 DAT_14313a200 = {
+extern "C" alignas(16) Sd_14313a200 DAT_14313a200 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce250,
-    DAT_14280ef52,
+    (const void*)&_purecall,
 };
 // 0x14313a210
-alignas(16) Sd_14313a210 DAT_14313a210 = {
-    DAT_14280ef52,
+extern "C" alignas(16) Sd_14313a210 DAT_14313a210 = {
+    (const void*)&_purecall,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d9ee0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce1f0,
 };
 // 0x14313a228
-alignas(8) Sd_14313a228 DAT_14313a228 = {
+extern "C" alignas(8) Sd_14313a228 DAT_14313a228 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce160,
     (const void*)&::Scaleform::GFx::IME::FUN_1423da150,
 };
 // 0x14313a238
-alignas(8) Sd_14313a238 DAT_14313a238 = {
+extern "C" alignas(8) Sd_14313a238 DAT_14313a238 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423da240,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d9ee0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce100,
@@ -8688,7 +8413,7 @@ alignas(8) Sd_14313a238 DAT_14313a238 = {
     },
 };
 // 0x14313a450
-alignas(16) Sd_14313a450 DAT_14313a450 = {
+extern "C" alignas(16) Sd_14313a450 DAT_14313a450 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423ce2f0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d1830,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d1880,
@@ -8738,7 +8463,7 @@ alignas(16) Sd_14313a450 DAT_14313a450 = {
     },
 };
 // 0x14313a5f8
-alignas(8) Sd_14313a5f8 DAT_14313a5f8 = {
+extern "C" alignas(8) Sd_14313a5f8 DAT_14313a5f8 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423d1b90,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d1830,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d1880,
@@ -8986,12 +8711,12 @@ alignas(8) Sd_14313a5f8 DAT_14313a5f8 = {
     },
 };
 // 0x14313b400
-alignas(16) unsigned char DAT_14313b400[0x10] = {
+extern "C" alignas(16) unsigned char DAT_14313b400[0x10] = {
     0x4e, 0xe7, 0xc6, 0x71, 0x28, 0x0f, 0xd8, 0x11, 0xa8, 0x2a, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
 };
 // 0x14313b410
 // one 16-byte GUID (the exe passes &DAT_14313b410 as a GUID)
-alignas(16) unsigned char DAT_14313b410[0x10] = {
+extern "C" alignas(16) unsigned char DAT_14313b410[0x10] = {
     0xd8, 0x5d, 0xf0, 0xcc, 0x87, 0x4a, 0xd7, 0x11, 0xa6, 0xe2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
 };
 // 0x14313b420
@@ -9014,7 +8739,7 @@ alignas(16) unsigned char DAT_14313b420[0x100] = {
     0x16, 0x28, 0x7a, 0x2d, 0x5e, 0x0c, 0xfc, 0x45, 0x9c, 0xe7, 0x57, 0x0e, 0x5e, 0xcd, 0xe9, 0xc9,
 };
 // 0x14313b520
-alignas(16) Sd_14313b520 DAT_14313b520 = {
+extern "C" alignas(16) Sd_14313b520 DAT_14313b520 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423d56b0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d64b0,
     (const void*)&::Scaleform::GFx::IME::FUN_1423d61c0,
@@ -9034,7 +8759,7 @@ alignas(16) Sd_14313b520 DAT_14313b520 = {
 };
 // 0x14313b5a0 / 0x14313b5c0 are Ime01TsfSink's vftables, emitted by sfr_ime_01 (its DAT_ stores are bound to them there).
 // 0x14313b6b0
-alignas(16) unsigned char DAT_14313b6b0[0x1f8] = {
+extern "C" alignas(16) unsigned char DAT_14313b6b0[0x1f8] = {
     0x4c, 0xe7, 0xc6, 0x71, 0x28, 0x0f, 0xd8, 0x11, 0xa8, 0x2a, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
     0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x4f, 0x6e, 0x53,
     0x68, 0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x57, 0x69,
@@ -9069,11 +8794,11 @@ alignas(16) unsigned char DAT_14313b6b0[0x1f8] = {
     0x6c, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x00,
 };
 // 0x14313b8a8
-alignas(8) unsigned char DAT_14313b8a8[0x10] = {
+extern "C" alignas(8) unsigned char DAT_14313b8a8[0x10] = {
     0x35, 0xa1, 0x1e, 0xea, 0xdf, 0x19, 0xd7, 0x11, 0xa6, 0xd2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
 };
 // 0x14313b8b8
-alignas(8) unsigned char DAT_14313b8b8[0x8] = {
+extern "C" alignas(8) unsigned char DAT_14313b8b8[0x8] = {
     0x36, 0xa1, 0x1e, 0xea, 0xdf, 0x19, 0xd7, 0x11,
 };
 // 0x14313b8c0
@@ -9081,11 +8806,11 @@ alignas(16) unsigned char DAT_14313b8c0[0x8] = {
     0xa6, 0xd2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
 };
 // 0x14313b8c8
-alignas(8) unsigned char DAT_14313b8c8[0x10] = {
+extern "C" alignas(8) unsigned char DAT_14313b8c8[0x10] = {
     0x85, 0xd1, 0xfa, 0x85, 0xce, 0x58, 0x7a, 0x49, 0x94, 0x60, 0x35, 0x53, 0x66, 0xb6, 0x4b, 0x9a,
 };
 // 0x14313b8d8
-alignas(8) unsigned char DAT_14313b8d8[0x48] = {
+extern "C" alignas(8) unsigned char DAT_14313b8d8[0x48] = {
     0xe3, 0xad, 0x90, 0x3e, 0x94, 0x75, 0xb0, 0x4c, 0xbb, 0x58, 0x69, 0x62, 0x8f, 0x5f, 0x45, 0x8c,
     0x4c, 0xe7, 0xc6, 0x71, 0x28, 0x0f, 0xd8, 0x11, 0xa8, 0x2a, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
     0x22, 0x05, 0x93, 0x19, 0x02, 0x00, 0x00, 0x00, 0xb8, 0x35, 0x91, 0x03, 0x01, 0x00, 0x00, 0x00,
@@ -9094,29 +8819,29 @@ alignas(8) unsigned char DAT_14313b8d8[0x48] = {
 };
 // 0x14313b920 / 0x14313b968 are Ime01TsfUiSink's vftables, emitted by sfr_ime_01 (its DAT_ stores are bound to them there).
 // 0x14313b9c8
-alignas(8) Sd_14313b9c8 DAT_14313b9c8 = {
+extern "C" alignas(8) Sd_14313b9c8 DAT_14313b9c8 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423dbc80,
-    DAT_14280ef52,
-    DAT_14280ef52,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
     (const void*)&::Scaleform::GFx::IME::FUN_1423dba40,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
+    (const void*)&_purecall,
     (const void*)&::Scaleform::GFx::IME::FUN_1423db910,
 };
 // 0x14313ba60
-alignas(16) Sd_14313ba60 DAT_14313ba60 = {
+extern "C" alignas(16) Sd_14313ba60 DAT_14313ba60 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423dbcb0,
 };
 // 0x14313bc60
@@ -9331,20 +9056,9 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_accessibility
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_accessibility { alignas(16) extern const ClassInfo AccessibilityCI = { 0x9, "Accessibility", "flash.accessibility", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_accessibility::Accessibility::MakeClassTraits, 2, 0, 0, 0, (const ThunkInfo*)&DAT_14313c280, 0, 0, 0 }; } } } }
 // 0x14313c620
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_accessibility { alignas(16) extern const ClassInfo AccessibilityImplementationCI = { 0x1, "AccessibilityImplementation", "flash.accessibility", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_accessibility::AccessibilityImplementation::MakeClassTraits, 0, 0, 12, 2, 0, 0, (const ThunkInfo*)&DAT_14313c2f0, (const MemberInfo*)&DAT_14313c2d0 }; } } } }
-// 0x14313c670
-alignas(16) Sd_14313c670 DAT_14313c670 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "AccessibilityProperties",
-    "flash.accessibility",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_accessibility::AccessibilityProperties::MakeClassTraits,
-    {
-        0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_14313c4d0,
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_accessibility { alignas(16) extern const ClassInfo AccessibilityPropertiesCI = { 0x1, "AccessibilityProperties", "flash.accessibility", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_accessibility::AccessibilityProperties::MakeClassTraits, 0, 0, 0, 6, 0, 0, 0, (const MemberInfo*)&DAT_14313c4d0 }; } } } }
+// 0x14313c6c0
+alignas(16) Sd_14313c6c0 DAT_14313c6c0 = {
     {
         0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x54, 0x65, 0x78, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x69, 0x62, 0x69, 0x6c,
@@ -9444,11 +9158,11 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d650[2] = {
     { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::XMLList::AS3hasOwnProperty, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::BooleanCI, "hasOwnProperty", 0, 0, 0, 1023 },
 };
 // 0x14313d6a0
-alignas(16) Sd_14313d6a0 DAT_14313d6a0 = {
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::QName::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_14313d6a0[1] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::QName::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+};
+// 0x14313d6c8
+alignas(8) Sd_14313d6c8 DAT_14313d6c8 = {
     "message",
     {
         0x38, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -9459,42 +9173,20 @@ alignas(16) Sd_14313d6a0 DAT_14313d6a0 = {
     },
 };
 // 0x14313d6e8
-alignas(8) Sd_14313d6e8 DAT_14313d6e8 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 2, ::Scaleform::GFx::ASString>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 0, long>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::int_CI,
-    "errorID",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 1, ::Scaleform::GFx::ASString>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "getStackTrace",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Classes::fl::Error, 0, ::Scaleform::GFx::ASString, long>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "getErrorMessage",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Classes::fl::Error, 1, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    {0},
-    "throwError",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+alignas(8) const Scaleform::GFx::AS3::ThunkInfo DAT_14313d6e8[5] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 2, ::Scaleform::GFx::ASString>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 0, long>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::int_CI, "errorID", 0, 1, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::Error, 1, ::Scaleform::GFx::ASString>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "getStackTrace", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Classes::fl::Error, 0, ::Scaleform::GFx::ASString, long>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "getErrorMessage", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Classes::fl::Error, 1, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, 0, "throwError", 0, 0, 0, 1023 },
 };
 // 0x14313d7b0
-alignas(16) Sd_14313d7b0 DAT_14313d7b0 = {
-    {
-        0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "global",
-    "",
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace InstanceTraits { namespace fl {
+class GlobalObject { public: static const ClassInfo CInfo; };
+} } } } }
+alignas(16) const Scaleform::GFx::AS3::ClassInfo Scaleform::GFx::AS3::InstanceTraits::fl::GlobalObject::CInfo = { 0x3, "global", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+// 0x14313d800
+alignas(16) Sd_14313d800 DAT_14313d800 = {
     "NaN",
     {
         0x50, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -9528,21 +9220,21 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d850[6] = {
 // 0x14313d940
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ClassClassCI = { 0x3, "Class", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313d990
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ObjectCI = { 0x3, "Object", "", 0, &::Scaleform::GFx::AS3::ClassTraits::fl::Object::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)&DAT_143a2a850[0x60], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ObjectCI = { 0x3, "Object", "", 0, &::Scaleform::GFx::AS3::ClassTraits::fl::Object::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const char*)::Scaleform::GFx::AS3::Instances::fl::DateMonthNames + 0x60), 0 }; } } } }
 // 0x14313d9e0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo StringCI = { 0x9, "String", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::String::MakeClassTraits, 2, 0, 20, 0, (const ThunkInfo*)&DAT_143a2aab0[0x7c0], 0, (const ThunkInfo*)&DAT_143a2aab0[0x4a0], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo StringCI = { 0x9, "String", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::String::MakeClassTraits, 2, 0, 20, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x7c0), 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x4a0), 0 }; } } } }
 // 0x14313da30
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo BooleanCI = { 0x9, "Boolean", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Boolean::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)&DAT_143a2aab0[0x450], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo BooleanCI = { 0x9, "Boolean", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Boolean::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x450), 0 }; } } } }
 // 0x14313da80
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo int_CI = { 0x9, "int", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::int_::MakeClassTraits, 0, 2, 5, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14313e4e0 + 0xa0), (const ThunkInfo*)&DAT_143a2aab0[0x2b0], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo int_CI = { 0x9, "int", "", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::int_::MakeClassTraits, 0, 2, 5, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14313e580 + 0x0), (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x2b0), 0 }; } } } }
 // 0x14313dad0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo uintCI = { 0x9, "uint", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::uint::MakeClassTraits, 0, 2, 5, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14313e690 + 0x50), (const ThunkInfo*)&DAT_143a2aab0[0x380], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo uintCI = { 0x9, "uint", "", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::uint::MakeClassTraits, 0, 2, 5, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14313e6e0 + 0x0), (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x380), 0 }; } } } }
 // 0x14313db20
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo NumberCI = { 0x9, "Number", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Number::MakeClassTraits, 0, 5, 6, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14313d7b0 + 0x50), (const ThunkInfo*)&DAT_143a2aab0[0x1c0], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo NumberCI = { 0x9, "Number", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Number::MakeClassTraits, 0, 5, 6, 0, 0, (const MemberInfo*)&DAT_14313d800, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x1c0), 0 }; } } } }
 // 0x14313db70
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo NamespaceCI = { 0x9, "Namespace", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Namespace::MakeClassTraits, 0, 0, 4, 0, 0, 0, (const ThunkInfo*)&DAT_143a2aab0[0x80], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo NamespaceCI = { 0x9, "Namespace", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Namespace::MakeClassTraits, 0, 0, 4, 0, 0, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x80), 0 }; } } } }
 // 0x14313dbc0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ArrayCI = { 0x3, "Array", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Array::MakeClassTraits, 0, 5, 20, 0, 0, (const MemberInfo*)&DAT_14313d5b0, (const ThunkInfo*)&DAT_143a2aab0[0x810], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ArrayCI = { 0x3, "Array", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Array::MakeClassTraits, 0, 5, 20, 0, 0, (const MemberInfo*)&DAT_14313d5b0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x810), 0 }; } } } }
 // 0x14313dc10
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo FunctionCI = { 0x7, "Function", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313dc60
@@ -9552,7 +9244,7 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ClassInfo DAT_14313dcb0 = { 0x3,
 // 0x14313dd00
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo CatchCI = { 0x9, "Catch", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Catch::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313dd50
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ErrorCI = { 0x3, "Error", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Error::MakeClassTraits, 2, 0, 2, 2, (const ThunkInfo*)((const unsigned char*)&DAT_14313d6e8 + 0x78), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14313d6e8 + 0x28), (const MemberInfo*)((const unsigned char*)&DAT_14313d6a0 + 0x28) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ErrorCI = { 0x3, "Error", "", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Error::MakeClassTraits, 2, 0, 2, 2, (const ThunkInfo*)((const unsigned char*)&DAT_14313d6e8 + 0x78), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14313d6e8 + 0x28), (const MemberInfo*)((const unsigned char*)&DAT_14313d6c8 + 0x0) }; } } } }
 // 0x14313dda0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo DefinitionErrorCI = { 0x3, "DefinitionError", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ErrorCI, &::Scaleform::GFx::AS3::ClassTraits::fl::DefinitionError::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313ddf0
@@ -9576,27 +9268,27 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16)
 // 0x14313e0c0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ArgumentErrorCI = { 0x3, "ArgumentError", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ErrorCI, &::Scaleform::GFx::AS3::ClassTraits::fl::ArgumentError::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313e110
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo DateCI = { 0xb, "Date", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Date::MakeClassTraits, 2, 0, 74, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14313e2f0 + 0x60), 0, (const ThunkInfo*)&DAT_143a2aab0[0xcc0], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo DateCI = { 0xb, "Date", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Date::MakeClassTraits, 2, 0, 74, 0, (const ThunkInfo*)&DAT_14313e350, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0xcc0), 0 }; } } } }
 // 0x14313e160
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo MathCI = { 0x9, "Math", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::Math::MakeClassTraits, 18, 8, 0, 0, (const ThunkInfo*)&DAT_14313d2e0, (const MemberInfo*)&DAT_14313d260, 0, 0 }; } } } }
 // 0x14313e1b0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo RegExpCI = { 0x3, "RegExp", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::RegExp::MakeClassTraits, 0, 0, 10, 0, 0, 0, (const ThunkInfo*)&DAT_143a2aab0[0xb30], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo RegExpCI = { 0x3, "RegExp", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::RegExp::MakeClassTraits, 0, 0, 10, 0, 0, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0xb30), 0 }; } } } }
 // 0x14313e200
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo XMLCI = { 0xb, "XML", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::XML::MakeClassTraits, 6, 5, 41, 0, (const ThunkInfo*)&DAT_143a2aab0[0x1ec0], (const MemberInfo*)((const unsigned char*)&DAT_14313e840 + 0x50), (const ThunkInfo*)&DAT_143a2aab0[0x1850], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo XMLCI = { 0xb, "XML", "", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::XML::MakeClassTraits, 6, 5, 41, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x1ec0), (const MemberInfo*)((const unsigned char*)&DAT_14313e890 + 0x0), (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x1850), 0 }; } } } }
 // 0x14313e250
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo XMLListCI = { 0xb, "XMLList", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::XMLList::MakeClassTraits, 0, 0, 41, 0, 0, 0, (const ThunkInfo*)&DAT_143a2aab0[0x1fb0], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo XMLListCI = { 0xb, "XMLList", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::XMLList::MakeClassTraits, 0, 0, 41, 0, 0, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x1fb0), 0 }; } } } }
 // 0x14313e2a0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo QNameCI = { 0x9, "QName", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::QName::MakeClassTraits, 0, 0, 4, 0, 0, 0, (const ThunkInfo*)&DAT_143a2aab0[0x120], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo QNameCI = { 0x9, "QName", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::QName::MakeClassTraits, 0, 0, 4, 0, 0, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x120), 0 }; } } } }
 // 0x14313e2f0
-alignas(16) Sd_14313e2f0 DAT_14313e2f0 = {
-    {
-        0x1f, 0x00, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 0x5a, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00,
-        0x97, 0x00, 0x00, 0x00, 0xb5, 0x00, 0x00, 0x00, 0xd4, 0x00, 0x00, 0x00, 0xf3, 0x00, 0x00, 0x00,
-        0x11, 0x01, 0x00, 0x00, 0x30, 0x01, 0x00, 0x00, 0x4e, 0x01, 0x00, 0x00, 0x6d, 0x01, 0x00, 0x00,
-        0x1f, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x5b, 0x00, 0x00, 0x00, 0x79, 0x00, 0x00, 0x00,
-        0x98, 0x00, 0x00, 0x00, 0xb6, 0x00, 0x00, 0x00, 0xd5, 0x00, 0x00, 0x00, 0xf4, 0x00, 0x00, 0x00,
-        0x12, 0x01, 0x00, 0x00, 0x31, 0x01, 0x00, 0x00, 0x4f, 0x01, 0x00, 0x00, 0x6e, 0x01, 0x00, 0x00,
-    },
+namespace Scaleform { namespace GFx { namespace AS3 { namespace Instances { namespace fl {
+class Date { public: static const long Months[2][12]; };
+} } } } }
+alignas(16) const long Scaleform::GFx::AS3::Instances::fl::Date::Months[2][12] = {
+    { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
+    { 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 },
+};
+// 0x14313e350
+alignas(16) Sd_14313e350 DAT_14313e350 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Classes::fl::Date, 0, double, ::Scaleform::GFx::AS3::Value const &>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::NumberCI,
     "parse",
@@ -9621,36 +9313,21 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e3a0[7] = {
     { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::FUN_1423e4920, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, "valueOf", 0, 0, 0, 0 },
 };
 // 0x14313e4b8
-alignas(8) Sd_14313e4b8 DAT_14313e4b8 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::ThunkFunction, 0, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::uintCI,
-    "length",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+namespace Scaleform { namespace GFx { namespace AS3 { namespace InstanceTraits {
+class ThunkFunction { public: static const ThunkInfo f[]; };
+} } } }
+alignas(8) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::InstanceTraits::ThunkFunction::f[1] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::ThunkFunction, 0, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::uintCI, "length", 0, 1, 0, 0 },
 };
 // 0x14313e4e0
-alignas(16) Sd_14313e4e0 DAT_14313e4e0 = {
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toLocaleString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
-    {0},
-    "apply",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::call,
-    {0},
-    "call",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_14313e4e0[4] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toLocaleString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply, 0, "apply", 0, 0, 0, 2 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::call, 0, "call", 0, 0, 0, 1023 },
+};
+// 0x14313e580
+alignas(8) Sd_14313e580 DAT_14313e580 = {
     "MIN_VALUE",
     {
         0x50, 0x00, 0x26, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -9670,15 +9347,12 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e5a0[6] = {
     { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::int_::toPrecisionProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toPrecision", 0, 0, 0, 1 },
 };
 // 0x14313e690
-alignas(16) Sd_14313e690 DAT_14313e690 = {
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Namespace::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "valueOf",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Namespace::valueOfProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_14313e690[2] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Namespace::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "valueOf", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Namespace::valueOfProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+};
+// 0x14313e6e0
+alignas(8) Sd_14313e6e0 DAT_14313e6e0 = {
     "MIN_VALUE",
     {
         0x50, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -9703,15 +9377,12 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313e7f0[2] = {
     { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Boolean::valueOfProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::BooleanCI, "valueOf", 0, 0, 0, 0 },
 };
 // 0x14313e840
-alignas(16) Sd_14313e840 DAT_14313e840 = {
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::valueOfProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "valueOf",
-    {0},
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_14313e840[2] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::valueOfProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "valueOf", 0, 0, 0, 0 },
+};
+// 0x14313e890
+alignas(8) Sd_14313e890 DAT_14313e890 = {
     "ignoreComments",
     {
         0x50, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -9734,464 +9405,79 @@ alignas(16) Sd_14313e840 DAT_14313e840 = {
     },
 };
 // 0x14313e8e0
-alignas(16) Sd_14313e8e0 DAT_14313e8e0 = {
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::PropertyIsEnumerableProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "propertyIsEnumerable",
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_14313e8e0[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::PropertyIsEnumerableProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "propertyIsEnumerable", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::HasOwnPropertyProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "hasOwnProperty", 0, 0, 0, 1 },
+};
+// 0x14313e958
+alignas(8) Sd_14313e958 DAT_14313e958 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::XML::HasOwnPropertyProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "hasOwnProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x61, 0x70, 0x70, 0x6c, 0x79, 0x00, 0x00, 0x00, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x00, 0x00,
-        0x75, 0x72, 0x69, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x74,
-        0x79, 0x70, 0x65, 0x4f, 0x66, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x4f, 0x77, 0x6e, 0x50, 0x72,
-        0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79,
-        0x49, 0x73, 0x45, 0x6e, 0x75, 0x6d, 0x65, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00, 0x00,
-        0x73, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x49, 0x73, 0x45, 0x6e, 0x75,
-        0x6d, 0x65, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x74, 0x6f, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65,
-        0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x4f, 0x66, 0x00,
-        0x4c, 0x4e, 0x31, 0x30, 0x00, 0x00, 0x00, 0x00, 0x45, 0x00, 0x00, 0x00, 0x4c, 0x4e, 0x32, 0x00,
-        0x4c, 0x4f, 0x47, 0x31, 0x30, 0x45, 0x00, 0x00, 0x4c, 0x4f, 0x47, 0x32, 0x45, 0x00, 0x00, 0x00,
-        0x50, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53, 0x51, 0x52, 0x54, 0x31, 0x5f, 0x32, 0x00,
-        0x53, 0x51, 0x52, 0x54, 0x32, 0x00, 0x00, 0x00, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x00, 0x00, 0x00,
-        0x4d, 0x61, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x00, 0x00,
-        0x69, 0x6e, 0x64, 0x65, 0x78, 0x4f, 0x66, 0x00, 0x6c, 0x61, 0x73, 0x74, 0x49, 0x6e, 0x64, 0x65,
-        0x78, 0x4f, 0x66, 0x00, 0x63, 0x68, 0x61, 0x72, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x68, 0x61, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x65, 0x00, 0x00, 0x00,
-        0x72, 0x65, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x00, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x00, 0x00,
-        0x73, 0x6c, 0x69, 0x63, 0x65, 0x00, 0x00, 0x00, 0x73, 0x70, 0x6c, 0x69, 0x74, 0x00, 0x00, 0x00,
-        0x73, 0x75, 0x62, 0x73, 0x74, 0x72, 0x00, 0x00, 0x73, 0x75, 0x62, 0x73, 0x74, 0x72, 0x69, 0x6e,
-        0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65,
-        0x4c, 0x6f, 0x77, 0x65, 0x72, 0x43, 0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x55, 0x70, 0x70, 0x65, 0x72, 0x43, 0x61, 0x73,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x77, 0x65, 0x72, 0x43,
-        0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x55, 0x70, 0x70, 0x65, 0x72, 0x43,
-        0x61, 0x73, 0x65, 0x00, 0x52, 0x65, 0x67, 0x45, 0x78, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x58, 0x4d, 0x4c, 0x4c, 0x69, 0x73, 0x74, 0x00, 0x43, 0x61, 0x74, 0x63, 0x68, 0x00, 0x00, 0x00,
-        0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x00, 0x00, 0x51, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00,
-        0x66, 0x72, 0x6f, 0x6d, 0x43, 0x68, 0x61, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x00, 0x00, 0x00, 0x00,
-        0x43, 0x6c, 0x61, 0x73, 0x73, 0x00, 0x00, 0x00, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x49, 0x44, 0x00,
-        0x67, 0x65, 0x74, 0x53, 0x74, 0x61, 0x63, 0x6b, 0x54, 0x72, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00,
-        0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x00, 0x67, 0x65, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72,
-        0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x00, 0x74, 0x68, 0x72, 0x6f, 0x77, 0x45, 0x72, 0x72,
-        0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44, 0x65, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x69,
-        0x6f, 0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x45, 0x76, 0x61, 0x6c, 0x45, 0x72, 0x72, 0x6f,
-        0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x45, 0x72, 0x72,
-        0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63,
-        0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x53, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79,
-        0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x53, 0x79, 0x6e, 0x74, 0x61, 0x78, 0x45, 0x72,
-        0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x54, 0x79, 0x70, 0x65, 0x45, 0x72, 0x72, 0x6f,
-        0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x52, 0x49, 0x45, 0x72, 0x72, 0x6f, 0x72,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x45, 0x72,
-        0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61,
-        0x6c, 0x69, 0x7a, 0x65, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x41, 0x72, 0x67, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00,
-        0x6a, 0x6f, 0x69, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x70, 0x6f, 0x70, 0x00, 0x70, 0x75, 0x73, 0x68,
-        0x00, 0x00, 0x00, 0x00, 0x73, 0x68, 0x69, 0x66, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x75, 0x6e, 0x73, 0x68, 0x69, 0x66, 0x74, 0x00, 0x73, 0x70, 0x6c, 0x69, 0x63, 0x65, 0x00, 0x00,
-        0x73, 0x6f, 0x72, 0x74, 0x4f, 0x6e, 0x00, 0x00, 0x65, 0x76, 0x65, 0x72, 0x79, 0x00, 0x00, 0x00,
-        0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x00, 0x00, 0x66, 0x6f, 0x72, 0x45, 0x61, 0x63, 0x68, 0x00,
-        0x6d, 0x61, 0x70, 0x00, 0x73, 0x6f, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x43, 0x41, 0x53, 0x45, 0x49, 0x4e, 0x53, 0x45, 0x4e, 0x53, 0x49, 0x54, 0x49, 0x56, 0x45, 0x00,
-        0x44, 0x45, 0x53, 0x43, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x55, 0x4e, 0x49, 0x51, 0x55, 0x45, 0x53, 0x4f, 0x52, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x52, 0x45, 0x54, 0x55, 0x52, 0x4e, 0x49, 0x4e, 0x44, 0x45, 0x58, 0x45, 0x44, 0x41, 0x52, 0x52,
-        0x41, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x55, 0x4d, 0x45, 0x52, 0x49, 0x43, 0x00,
-        0x74, 0x6f, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x00, 0x00, 0x00,
-        0x74, 0x6f, 0x46, 0x69, 0x78, 0x65, 0x64, 0x00, 0x74, 0x6f, 0x50, 0x72, 0x65, 0x63, 0x69, 0x73,
-        0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x43, 0x61,
-        0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x6c, 0x69, 0x6e,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x61, 0x73, 0x74, 0x49, 0x6e, 0x64, 0x65,
-        0x78, 0x00, 0x00, 0x00, 0x64, 0x6f, 0x74, 0x61, 0x6c, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x65, 0x78, 0x74, 0x65, 0x6e, 0x64, 0x65, 0x64, 0x00, 0x00, 0x00, 0x00, 0x65, 0x78, 0x65, 0x63,
-        0x00, 0x00, 0x00, 0x00, 0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x61, 0x4e, 0x00,
-        0x4e, 0x45, 0x47, 0x41, 0x54, 0x49, 0x56, 0x45, 0x5f, 0x49, 0x4e, 0x46, 0x49, 0x4e, 0x49, 0x54,
-        0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x4f, 0x53, 0x49, 0x54, 0x49, 0x56, 0x45,
-        0x5f, 0x49, 0x4e, 0x46, 0x49, 0x4e, 0x49, 0x54, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x4d, 0x49, 0x4e, 0x5f, 0x56, 0x41, 0x4c, 0x55, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x4d, 0x41, 0x58, 0x5f, 0x56, 0x41, 0x4c, 0x55, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x00,
-        0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00,
-        0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-        0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-        0x20, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x74, 0x79, 0x70,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x73,
-        0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x61, 0x70, 0x70, 0x65, 0x6e, 0x64, 0x43, 0x68,
-        0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74,
-        0x65, 0x73, 0x00, 0x00, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x68, 0x69, 0x6c, 0x64, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x00, 0x63, 0x6f, 0x70, 0x79,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x73, 0x63, 0x65, 0x6e, 0x64, 0x61,
-        0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x43, 0x6f, 0x6d, 0x70, 0x6c,
-        0x65, 0x78, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x68, 0x61, 0x73, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x53, 0x63, 0x6f, 0x70, 0x65, 0x4e,
-        0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x69, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x66, 0x74, 0x65, 0x72,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x43, 0x68,
-        0x69, 0x6c, 0x64, 0x42, 0x65, 0x66, 0x6f, 0x72, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x44, 0x65, 0x63, 0x6c, 0x61, 0x72, 0x61,
-        0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x6e, 0x6f, 0x64, 0x65, 0x4b, 0x69, 0x6e, 0x64,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a,
-        0x65, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x70, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x69, 0x6e, 0x67, 0x49, 0x6e, 0x73, 0x74, 0x72, 0x75,
-        0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x70, 0x72, 0x65, 0x70, 0x65, 0x6e, 0x64, 0x43,
-        0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4e, 0x61,
-        0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x73, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x6c,
-        0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x00,
-        0x73, 0x65, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00,
-        0x74, 0x6f, 0x58, 0x4d, 0x4c, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00,
-        0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x69, 0x6e, 0x67,
-        0x49, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x00,
-        0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x57, 0x68, 0x69, 0x74, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x72, 0x65, 0x74, 0x74, 0x79, 0x50, 0x72,
-        0x69, 0x6e, 0x74, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x70, 0x72, 0x65, 0x74, 0x74, 0x79, 0x49, 0x6e,
-        0x64, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69,
-        0x6e, 0x67, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x53,
-        0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x58, 0x4d, 0x4c, 0x00, 0x53, 0x75, 0x6e, 0x00,
-        0x4d, 0x6f, 0x6e, 0x00, 0x54, 0x75, 0x65, 0x00, 0x57, 0x65, 0x64, 0x00, 0x54, 0x68, 0x75, 0x00,
-        0x46, 0x72, 0x69, 0x00, 0x53, 0x61, 0x74, 0x00, 0x4a, 0x61, 0x6e, 0x00, 0x46, 0x65, 0x62, 0x00,
-        0x4d, 0x61, 0x72, 0x00, 0x41, 0x70, 0x72, 0x00, 0x4d, 0x61, 0x79, 0x00, 0x4a, 0x75, 0x6e, 0x00,
-        0x4a, 0x75, 0x6c, 0x00, 0x41, 0x75, 0x67, 0x00, 0x53, 0x65, 0x70, 0x00, 0x4f, 0x63, 0x74, 0x00,
-        0x4e, 0x6f, 0x76, 0x00, 0x44, 0x65, 0x63, 0x00, 0x49, 0x6e, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x79,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x49, 0x6e, 0x66, 0x69, 0x6e, 0x69, 0x74,
-        0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x64, 0x65, 0x66, 0x69, 0x6e, 0x65,
-        0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x49, 0x44, 0x45, 0x5f, 0x4e, 0x53, 0x55,
-        0x52, 0x49, 0x5f, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x42, 0x41, 0x53, 0x45, 0x53, 0x00, 0x00, 0x00,
-        0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x49, 0x4e, 0x54, 0x45, 0x52, 0x46, 0x41, 0x43,
-        0x45, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f,
-        0x56, 0x41, 0x52, 0x49, 0x41, 0x42, 0x4c, 0x45, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x41, 0x43, 0x43, 0x45, 0x53, 0x53, 0x4f, 0x52,
-        0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f,
-        0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x53, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f,
-        0x4d, 0x45, 0x54, 0x41, 0x44, 0x41, 0x54, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x43, 0x4f, 0x4e, 0x53, 0x54, 0x52, 0x55, 0x43,
-        0x54, 0x4f, 0x52, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f,
-        0x54, 0x52, 0x41, 0x49, 0x54, 0x53, 0x00, 0x00, 0x55, 0x53, 0x45, 0x5f, 0x49, 0x54, 0x52, 0x41,
-        0x49, 0x54, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x49, 0x44, 0x45, 0x5f, 0x4f, 0x42, 0x4a,
-        0x45, 0x43, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x4c, 0x41, 0x53, 0x48, 0x31, 0x30, 0x5f,
-        0x46, 0x4c, 0x41, 0x47, 0x53, 0x00, 0x00, 0x00, 0x55, 0x54, 0x43, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x74, 0x6f, 0x44, 0x61, 0x74, 0x65, 0x53, 0x74,
-        0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x54, 0x69, 0x6d, 0x65, 0x53, 0x74,
-        0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65,
-        0x44, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x53, 0x74, 0x72, 0x69,
-        0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x55, 0x54, 0x43, 0x53, 0x74, 0x72,
-        0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x46, 0x75,
-        0x6c, 0x6c, 0x59, 0x65, 0x61, 0x72, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x6f,
-        0x6e, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x44, 0x61,
-        0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x44, 0x61,
-        0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x48, 0x6f,
-        0x75, 0x72, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x69,
-        0x6e, 0x75, 0x74, 0x65, 0x73, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x53, 0x65,
-        0x63, 0x6f, 0x6e, 0x64, 0x73, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x69,
-        0x6c, 0x6c, 0x69, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x46, 0x75, 0x6c, 0x6c, 0x59, 0x65, 0x61, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x4d, 0x6f, 0x6e, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x44, 0x61, 0x74, 0x65, 0x00, 0x67, 0x65, 0x74, 0x44, 0x61, 0x79, 0x00, 0x00,
+        0x61, 0x70, 0x70, 0x6c, 0x79, 0x00, 0x00, 0x00, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x00, 0x00, 0x75, 0x72, 0x69, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x74, 0x79, 0x70, 0x65, 0x4f, 0x66, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x4f, 0x77, 0x6e, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x49, 0x73, 0x45, 0x6e, 0x75, 0x6d, 0x65, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x49, 0x73, 0x45, 0x6e, 0x75, 0x6d, 0x65, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x74, 0x6f, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x4f, 0x66, 0x00, 0x4c, 0x4e, 0x31, 0x30, 0x00, 0x00, 0x00, 0x00, 0x45, 0x00, 0x00, 0x00, 0x4c, 0x4e, 0x32, 0x00, 0x4c, 0x4f, 0x47, 0x31, 0x30, 0x45, 0x00, 0x00, 0x4c, 0x4f, 0x47, 0x32, 0x45, 0x00, 0x00, 0x00, 0x50, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53, 0x51, 0x52, 0x54, 0x31, 0x5f, 0x32, 0x00, 0x53, 0x51, 0x52, 0x54, 0x32, 0x00, 0x00, 0x00, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x00, 0x00, 0x00, 0x4d, 0x61, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x00, 0x00, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x4f, 0x66, 0x00, 0x6c, 0x61, 0x73, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x4f, 0x66, 0x00, 0x63, 0x68, 0x61, 0x72, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x68, 0x61, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x65, 0x00, 0x00, 0x00, 0x72, 0x65, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x00, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x00, 0x00, 0x73, 0x6c, 0x69, 0x63, 0x65, 0x00, 0x00, 0x00, 0x73, 0x70, 0x6c, 0x69, 0x74, 0x00, 0x00, 0x00, 0x73, 0x75, 0x62, 0x73, 0x74, 0x72, 0x00, 0x00, 0x73, 0x75, 0x62, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x4c, 0x6f, 0x77, 0x65, 0x72, 0x43, 0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x55, 0x70, 0x70, 0x65, 0x72, 0x43, 0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x77, 0x65, 0x72, 0x43, 0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x55, 0x70, 0x70, 0x65, 0x72, 0x43, 0x61, 0x73, 0x65, 0x00, 0x52, 0x65, 0x67, 0x45, 0x78, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x58, 0x4d, 0x4c, 0x4c, 0x69, 0x73, 0x74, 0x00, 0x43, 0x61, 0x74, 0x63, 0x68, 0x00, 0x00, 0x00, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x00, 0x00, 0x51, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x66, 0x72, 0x6f, 0x6d, 0x43, 0x68, 0x61, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x00, 0x00, 0x00, 0x00, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x00, 0x00, 0x00, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x49, 0x44, 0x00, 0x67, 0x65, 0x74, 0x53, 0x74, 0x61, 0x63, 0x6b, 0x54, 0x72, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x00, 0x67, 0x65, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x00, 0x74, 0x68, 0x72, 0x6f, 0x77, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44, 0x65, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x45, 0x76, 0x61, 0x6c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x53, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x53, 0x79, 0x6e, 0x74, 0x61, 0x78, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x54, 0x79, 0x70, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x52, 0x49, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x72, 0x67, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x6a, 0x6f, 0x69, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x70, 0x6f, 0x70, 0x00, 0x70, 0x75, 0x73, 0x68, 0x00, 0x00, 0x00, 0x00, 0x73, 0x68, 0x69, 0x66, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x73, 0x68, 0x69, 0x66, 0x74, 0x00, 0x73, 0x70, 0x6c, 0x69, 0x63, 0x65, 0x00, 0x00, 0x73, 0x6f, 0x72, 0x74, 0x4f, 0x6e, 0x00, 0x00, 0x65, 0x76, 0x65, 0x72, 0x79, 0x00, 0x00, 0x00, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x00, 0x00, 0x66, 0x6f, 0x72, 0x45, 0x61, 0x63, 0x68, 0x00, 0x6d, 0x61, 0x70, 0x00, 0x73, 0x6f, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x43, 0x41, 0x53, 0x45, 0x49, 0x4e, 0x53, 0x45, 0x4e, 0x53, 0x49, 0x54, 0x49, 0x56, 0x45, 0x00, 0x44, 0x45, 0x53, 0x43, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x4e, 0x49, 0x51, 0x55, 0x45, 0x53, 0x4f, 0x52, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x45, 0x54, 0x55, 0x52, 0x4e, 0x49, 0x4e, 0x44, 0x45, 0x58, 0x45, 0x44, 0x41, 0x52, 0x52, 0x41, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x55, 0x4d, 0x45, 0x52, 0x49, 0x43, 0x00, 0x74, 0x6f, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x46, 0x69, 0x78, 0x65, 0x64, 0x00, 0x74, 0x6f, 0x50, 0x72, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x43, 0x61, 0x73, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x6c, 0x69, 0x6e, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x61, 0x73, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x64, 0x6f, 0x74, 0x61, 0x6c, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x64, 0x65, 0x64, 0x00, 0x00, 0x00, 0x00, 0x65, 0x78, 0x65, 0x63, 0x00, 0x00, 0x00, 0x00, 0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x61, 0x4e, 0x00, 0x4e, 0x45, 0x47, 0x41, 0x54, 0x49, 0x56, 0x45, 0x5f, 0x49, 0x4e, 0x46, 0x49, 0x4e, 0x49, 0x54, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x4f, 0x53, 0x49, 0x54, 0x49, 0x56, 0x45, 0x5f, 0x49, 0x4e, 0x46, 0x49, 0x4e, 0x49, 0x54, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x49, 0x4e, 0x5f, 0x56, 0x41, 0x4c, 0x55, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x41, 0x58, 0x5f, 0x56, 0x41, 0x4c, 0x55, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x74, 0x79, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x61, 0x70, 0x70, 0x65, 0x6e, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x00, 0x00, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x00, 0x63, 0x6f, 0x70, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x73, 0x63, 0x65, 0x6e, 0x64, 0x61, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x78, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x53, 0x63, 0x6f, 0x70, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x66, 0x74, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x42, 0x65, 0x66, 0x6f, 0x72, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x44, 0x65, 0x63, 0x6c, 0x61, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x6e, 0x6f, 0x64, 0x65, 0x4b, 0x69, 0x6e, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x69, 0x6e, 0x67, 0x49, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x70, 0x72, 0x65, 0x70, 0x65, 0x6e, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x73, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x73, 0x65, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x58, 0x4d, 0x4c, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x69, 0x6e, 0x67, 0x49, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x00, 0x00, 0x00, 0x00, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x57, 0x68, 0x69, 0x74, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x72, 0x65, 0x74, 0x74, 0x79, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x70, 0x72, 0x65, 0x74, 0x74, 0x79, 0x49, 0x6e, 0x64, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x58, 0x4d, 0x4c, 0x00, 0x53, 0x75, 0x6e, 0x00, 0x4d, 0x6f, 0x6e, 0x00, 0x54, 0x75, 0x65, 0x00, 0x57, 0x65, 0x64, 0x00, 0x54, 0x68, 0x75, 0x00, 0x46, 0x72, 0x69, 0x00, 0x53, 0x61, 0x74, 0x00, 0x4a, 0x61, 0x6e, 0x00, 0x46, 0x65, 0x62, 0x00, 0x4d, 0x61, 0x72, 0x00, 0x41, 0x70, 0x72, 0x00, 0x4d, 0x61, 0x79, 0x00, 0x4a, 0x75, 0x6e, 0x00, 0x4a, 0x75, 0x6c, 0x00, 0x41, 0x75, 0x67, 0x00, 0x53, 0x65, 0x70, 0x00, 0x4f, 0x63, 0x74, 0x00, 0x4e, 0x6f, 0x76, 0x00, 0x44, 0x65, 0x63, 0x00, 0x49, 0x6e, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x49, 0x6e, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x64, 0x65, 0x66, 0x69, 0x6e, 0x65, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x49, 0x44, 0x45, 0x5f, 0x4e, 0x53, 0x55, 0x52, 0x49, 0x5f, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x42, 0x41, 0x53, 0x45, 0x53, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x49, 0x4e, 0x54, 0x45, 0x52, 0x46, 0x41, 0x43, 0x45, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x56, 0x41, 0x52, 0x49, 0x41, 0x42, 0x4c, 0x45, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x41, 0x43, 0x43, 0x45, 0x53, 0x53, 0x4f, 0x52, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x53, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x4d, 0x45, 0x54, 0x41, 0x44, 0x41, 0x54, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x43, 0x4f, 0x4e, 0x53, 0x54, 0x52, 0x55, 0x43, 0x54, 0x4f, 0x52, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x43, 0x4c, 0x55, 0x44, 0x45, 0x5f, 0x54, 0x52, 0x41, 0x49, 0x54, 0x53, 0x00, 0x00, 0x55, 0x53, 0x45, 0x5f, 0x49, 0x54, 0x52, 0x41, 0x49, 0x54, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x49, 0x44, 0x45, 0x5f, 0x4f, 0x42, 0x4a, 0x45, 0x43, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x4c, 0x41, 0x53, 0x48, 0x31, 0x30, 0x5f, 0x46, 0x4c, 0x41, 0x47, 0x53, 0x00, 0x00, 0x00, 0x55, 0x54, 0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x74, 0x6f, 0x44, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x54, 0x69, 0x6d, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x6f, 0x55, 0x54, 0x43, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x46, 0x75, 0x6c, 0x6c, 0x59, 0x65, 0x61, 0x72, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x6f, 0x6e, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x44, 0x61, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x44, 0x61, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x48, 0x6f, 0x75, 0x72, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x69, 0x6e, 0x75, 0x74, 0x65, 0x73, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x55, 0x54, 0x43, 0x4d, 0x69, 0x6c, 0x6c, 0x69, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x46, 0x75, 0x6c, 0x6c, 0x59, 0x65, 0x61, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x4d, 0x6f, 0x6e, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x44, 0x61, 0x74, 0x65, 0x00, 0x67, 0x65, 0x74, 0x44, 0x61, 0x79, 0x00, 0x00,
     },
 };
 // 0x143144150
-alignas(16) Sd_143144150 DAT_143144150 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 0, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "decodeURI",
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP_ti[13] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 0, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "decodeURI", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 1, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "decodeURIComponent", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 2, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "encodeURI", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 3, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "encodeURIComponent", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 4, bool, double>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::BooleanCI, "isNaN", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 5, bool, double>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::BooleanCI, "isFinite", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 6, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::NumberCI, "parseInt", 0, 0, 0, 2 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 7, double, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::NumberCI, "parseFloat", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 8, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "escape", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 9, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "unescape", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 10, bool, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::BooleanCI, "isXMLName", 0, 0, 0, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 11, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, 0, "trace", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 12, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, 0, "print", 0, 0, 0, 1023 },
+};
+// 0x143144358
+alignas(8) Sd_143144358 DAT_143144358 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 1, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "decodeURIComponent",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 2, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "encodeURI",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 3, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "encodeURIComponent",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 4, bool, double>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI,
-    "isNaN",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 5, bool, double>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI,
-    "isFinite",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 6, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::NumberCI,
-    "parseInt",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 7, double, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::NumberCI,
-    "parseFloat",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 8, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "escape",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 9, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "unescape",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 10, bool, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI,
-    "isXMLName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 11, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    {0},
-    "trace",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 12, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    {0},
-    "print",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x64, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x64, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65,
-        0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52,
-        0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52,
-        0x49, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x69, 0x73, 0x4e, 0x61,
-        0x4e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x46, 0x69, 0x6e, 0x69, 0x74, 0x65,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x73, 0x65, 0x49, 0x6e, 0x74,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x73, 0x65, 0x46, 0x6c, 0x6f,
-        0x61, 0x74, 0x00, 0x00, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x75, 0x6e, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x69, 0x73, 0x58, 0x4d, 0x4c, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x74, 0x72, 0x61, 0x63,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x64, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x55, 0x52, 0x49, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x69, 0x73, 0x4e, 0x61, 0x4e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x46, 0x69, 0x6e, 0x69, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x73, 0x65, 0x49, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x72, 0x73, 0x65, 0x46, 0x6c, 0x6f, 0x61, 0x74, 0x00, 0x00, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x58, 0x4d, 0x4c, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x74, 0x72, 0x61, 0x63, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
 // 0x143144410
-alignas(16) Sd_143144410 DAT_143144410 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 30, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    {0},
-    "fscommand",
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP_ti_system[1] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 30, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, 0, "fscommand", 0, 0, 0, 1023 },
+};
+// 0x143144438
+alignas(8) Sd_143144438 DAT_143144438 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x73, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x66, 0x73, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
 // 0x143144450
-alignas(16) Sd_143144450 DAT_143144450 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 13, ::Scaleform::GFx::AS3::Value const, unsigned long>::Func,
-    {0},
-    "clearInterval",
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP_ti_utils[11] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 13, ::Scaleform::GFx::AS3::Value const, unsigned long>::Func, 0, "clearInterval", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 14, ::Scaleform::GFx::AS3::Value const, unsigned long>::Func, 0, "clearTimeout", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 15, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::XML>, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::XMLCI, "describeType", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 16, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "escapeMultiByte", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 17, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::ASString const &>::Func, 0, "getDefinitionByName", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 18, ::Scaleform::GFx::ASString, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "getQualifiedClassName", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 19, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::AS3::Value const &>::Func, 0, "getQualifiedSuperclassName", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 20, long>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::int_CI, "getTimer", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 21, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::uintCI, "setInterval", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 22, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::uintCI, "setTimeout", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 23, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "unescapeMultiByte", 0, 0, 1, 1 },
+};
+// 0x143144608
+alignas(8) Sd_143144608 DAT_143144608 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 14, ::Scaleform::GFx::AS3::Value const, unsigned long>::Func,
-    {0},
-    "clearTimeout",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 15, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::XML>, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::XMLCI,
-    "describeType",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 16, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "escapeMultiByte",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 17, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::ASString const &>::Func,
-    {0},
-    "getDefinitionByName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 18, ::Scaleform::GFx::ASString, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "getQualifiedClassName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 19, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::AS3::Value const &>::Func,
-    {0},
-    "getQualifiedSuperclassName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 20, long>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::int_CI,
-    "getTimer",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 21, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::uintCI,
-    "setInterval",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 22, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::uintCI,
-    "setTimeout",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 23, ::Scaleform::GFx::ASString, ::Scaleform::GFx::ASString const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "unescapeMultiByte",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x63, 0x6c, 0x65, 0x61, 0x72, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00,
-        0x63, 0x6c, 0x65, 0x61, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00,
-        0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x54, 0x79, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00,
-        0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74, 0x65, 0x00,
-        0x67, 0x65, 0x74, 0x44, 0x65, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x4e,
-        0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x51, 0x75, 0x61, 0x6c, 0x69,
-        0x66, 0x69, 0x65, 0x64, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x51, 0x75, 0x61, 0x6c, 0x69, 0x66, 0x69, 0x65, 0x64, 0x53, 0x75, 0x70, 0x65,
-        0x72, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x73, 0x65, 0x74, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x75, 0x6e, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x63, 0x6c, 0x65, 0x61, 0x72, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x63, 0x6c, 0x65, 0x61, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x54, 0x79, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74, 0x65, 0x00, 0x67, 0x65, 0x74, 0x44, 0x65, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x51, 0x75, 0x61, 0x6c, 0x69, 0x66, 0x69, 0x65, 0x64, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x51, 0x75, 0x61, 0x6c, 0x69, 0x66, 0x69, 0x65, 0x64, 0x53, 0x75, 0x70, 0x65, 0x72, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x65, 0x73, 0x63, 0x61, 0x70, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
 // 0x1431446e0
-alignas(16) Sd_1431446e0 DAT_1431446e0 = {
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 15, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::XML>, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::XMLCI,
-    "describeType",
+alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP_ti_avmplus[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 15, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::XML>, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::XMLCI, "describeType", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 18, ::Scaleform::GFx::ASString, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "getQualifiedClassName", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 19, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::AS3::Value const &>::Func, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "getQualifiedSuperclassName", 0, 0, 1, 1 },
+};
+// 0x143144758
+alignas(8) Sd_143144758 DAT_143144758 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 18, ::Scaleform::GFx::ASString, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "getQualifiedClassName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP, 19, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::AS3::Value const &>::Func,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "getQualifiedSuperclassName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x75, 0x74, 0x69, 0x6c, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x61, 0x76, 0x6d, 0x70, 0x6c, 0x75, 0x73, 0x00, 0x30, 0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x50, 0x50, 0x3a,
-        0x3a, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x00,
-        0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x50, 0x50, 0x3a,
-        0x3a, 0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x20, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74,
-        0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63,
-        0x65, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x6f, 0x72, 0x00, 0x00, 0x00,
-        0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x20, 0x69, 0x64, 0x3a, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f,
-        0x6e, 0x28, 0x29, 0x20, 0x7b, 0x7d, 0x00, 0x00, 0x5b, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20,
-        0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe8, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd0, 0x76, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x99, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0xb0, 0x9d, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xb4, 0x9d, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0xc4, 0x9e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc8, 0x9e, 0x40,
-        0x00, 0x00, 0x00, 0x00, 0x40, 0x77, 0x4b, 0x41, 0x00, 0x00, 0x00, 0x00, 0x70, 0x99, 0x94, 0x41,
-        0x00, 0x00, 0x00, 0xfc, 0xff, 0xff, 0x9f, 0x41, 0x00, 0x00, 0xc0, 0xff, 0xff, 0xff, 0xdf, 0x41,
-        0x00, 0x00, 0x00, 0xb0, 0xc4, 0x5e, 0x1d, 0x42, 0x00, 0x00, 0x00, 0x20, 0x5e, 0x73, 0x1d, 0x42,
-        0x00, 0x00, 0xdc, 0xc2, 0x08, 0xb2, 0x3e, 0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd0, 0xbf,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe8, 0xbf,
-        0x61, 0x6c, 0x69, 0x67, 0x6e, 0x00, 0x00, 0x00, 0x61, 0x75, 0x74, 0x6f, 0x4f, 0x72, 0x69, 0x65,
-        0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4f, 0x72,
-        0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x61, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x6f, 0x63, 0x75, 0x73, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65,
-        0x65, 0x6e, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65, 0x65, 0x6e, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65,
-        0x52, 0x65, 0x63, 0x74, 0x00, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65,
-        0x65, 0x6e, 0x57, 0x69, 0x64, 0x74, 0x68, 0x00, 0x6f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74,
-        0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x71, 0x75, 0x61, 0x6c, 0x69, 0x74, 0x79, 0x00,
-        0x73, 0x63, 0x61, 0x6c, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x73, 0x68, 0x6f, 0x77, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65,
-        0x78, 0x74, 0x4d, 0x65, 0x6e, 0x75, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x46, 0x6f, 0x63,
-        0x75, 0x73, 0x52, 0x65, 0x63, 0x74, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x48, 0x65, 0x69,
-        0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x57, 0x69, 0x64,
-        0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74,
-        0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x61, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x46, 0x6f, 0x63, 0x75, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x64, 0x69, 0x73, 0x70, 0x61, 0x74, 0x63, 0x68, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00,
-        0x68, 0x61, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x65, 0x72,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61,
-        0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x46, 0x6f, 0x63, 0x75, 0x73, 0x49,
-        0x6e, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x65,
-        0x6e, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4f, 0x72, 0x69, 0x65, 0x6e,
-        0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x77, 0x69, 0x6c, 0x6c, 0x54, 0x72, 0x69, 0x67,
-        0x67, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x65, 0x76,
-        0x65, 0x6e, 0x74, 0x73, 0x3a, 0x49, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x69, 0x73, 0x70, 0x61,
-        0x74, 0x63, 0x68, 0x65, 0x72, 0x00, 0x00, 0x00, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x73,
-        0x4f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x67,
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x6f, 0x75, 0x73, 0x65, 0x43, 0x68, 0x69,
-        0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x6e, 0x75, 0x6d, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x61, 0x62, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x65, 0x78, 0x74, 0x53, 0x6e, 0x61, 0x70,
-        0x73, 0x68, 0x6f, 0x74, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x72, 0x65, 0x49, 0x6e, 0x61, 0x63, 0x63,
-        0x65, 0x73, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x55, 0x6e,
-        0x64, 0x65, 0x72, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00,
-        0x67, 0x65, 0x74, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x55, 0x6e, 0x64, 0x65, 0x72, 0x50,
-        0x6f, 0x69, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68,
-        0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68,
-        0x69, 0x6c, 0x64, 0x41, 0x74, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64,
-        0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x73, 0x77, 0x61, 0x70, 0x43, 0x68, 0x69, 0x6c,
-        0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x73, 0x77, 0x61, 0x70, 0x43, 0x68, 0x69, 0x6c,
-        0x64, 0x72, 0x65, 0x6e, 0x41, 0x74, 0x00, 0x00, 0x53, 0x74, 0x61, 0x67, 0x65, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00, 0x00, 0x00, 0x00, 0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x75, 0x74, 0x69, 0x6c, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x76, 0x6d, 0x70, 0x6c, 0x75, 0x73, 0x00, 0x30, 0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x50, 0x50, 0x3a, 0x3a, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x50, 0x50, 0x3a, 0x3a, 0x73, 0x65, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x6f, 0x72, 0x00, 0x00, 0x00, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x20, 0x69, 0x64, 0x3a, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x29, 0x20, 0x7b, 0x7d, 0x00, 0x00, 0x5b, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe8, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd0, 0x76, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x99, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xb0, 0x9d, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xb4, 0x9d, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc4, 0x9e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc8, 0x9e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x40, 0x77, 0x4b, 0x41, 0x00, 0x00, 0x00, 0x00, 0x70, 0x99, 0x94, 0x41, 0x00, 0x00, 0x00, 0xfc, 0xff, 0xff, 0x9f, 0x41, 0x00, 0x00, 0xc0, 0xff, 0xff, 0xff, 0xdf, 0x41, 0x00, 0x00, 0x00, 0xb0, 0xc4, 0x5e, 0x1d, 0x42, 0x00, 0x00, 0x00, 0x20, 0x5e, 0x73, 0x1d, 0x42, 0x00, 0x00, 0xdc, 0xc2, 0x08, 0xb2, 0x3e, 0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd0, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe8, 0xbf, 0x61, 0x6c, 0x69, 0x67, 0x6e, 0x00, 0x00, 0x00, 0x61, 0x75, 0x74, 0x6f, 0x4f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x61, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x66, 0x6f, 0x63, 0x75, 0x73, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65, 0x65, 0x6e, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65, 0x65, 0x6e, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x52, 0x65, 0x63, 0x74, 0x00, 0x00, 0x00, 0x00, 0x66, 0x75, 0x6c, 0x6c, 0x53, 0x63, 0x72, 0x65, 0x65, 0x6e, 0x57, 0x69, 0x64, 0x74, 0x68, 0x00, 0x6f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x71, 0x75, 0x61, 0x6c, 0x69, 0x74, 0x79, 0x00, 0x73, 0x63, 0x61, 0x6c, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x68, 0x6f, 0x77, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x4d, 0x65, 0x6e, 0x75, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x46, 0x6f, 0x63, 0x75, 0x73, 0x52, 0x65, 0x63, 0x74, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x74, 0x61, 0x67, 0x65, 0x57, 0x69, 0x64, 0x74, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x46, 0x6f, 0x63, 0x75, 0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x69, 0x73, 0x70, 0x61, 0x74, 0x63, 0x68, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x68, 0x61, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x73, 0x46, 0x6f, 0x63, 0x75, 0x73, 0x49, 0x6e, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x4f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x00, 0x00, 0x77, 0x69, 0x6c, 0x6c, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0x6c, 0x61, 0x73, 0x68, 0x2e, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x3a, 0x49, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x44, 0x69, 0x73, 0x70, 0x61, 0x74, 0x63, 0x68, 0x65, 0x72, 0x00, 0x00, 0x00, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x4f, 0x72, 0x69, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x6f, 0x75, 0x73, 0x65, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x6e, 0x75, 0x6d, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x61, 0x62, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x65, 0x78, 0x74, 0x53, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x64, 0x64, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x72, 0x65, 0x49, 0x6e, 0x61, 0x63, 0x63, 0x65, 0x73, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x55, 0x6e, 0x64, 0x65, 0x72, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x00, 0x00, 0x67, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x67, 0x65, 0x74, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x55, 0x6e, 0x64, 0x65, 0x72, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x41, 0x74, 0x00, 0x00, 0x00, 0x73, 0x65, 0x74, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x00, 0x00, 0x00, 0x73, 0x77, 0x61, 0x70, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x73, 0x77, 0x61, 0x70, 0x43, 0x68, 0x69, 0x6c, 0x64, 0x72, 0x65, 0x6e, 0x41, 0x74, 0x00, 0x00, 0x53, 0x74, 0x61, 0x67, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     "BOTTOM",
     {
@@ -10542,7 +9828,7 @@ alignas(16) Sd_1431446e0 DAT_1431446e0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::SimpleButton, 8, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform>>::Func,
-    DAT_143177ac0,
+    &::Scaleform::GFx::AS3::fl_media::SoundTransformCI,
     "soundTransform",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -10620,7 +9906,7 @@ alignas(16) Sd_1431446e0 DAT_1431446e0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::DisplayObjectContainer, 5, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_text::TextSnapshot>>::Func,
-    (const void*)&DAT_143167f80,
+    (const void*)&::Scaleform::GFx::AS3::fl_text::TextSnapshotCI,
     "textSnapshot",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -10710,7 +9996,7 @@ alignas(16) Sd_1431446e0 DAT_1431446e0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::DisplayObject, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_accessibility::AccessibilityProperties>>::Func,
-    (const void*)&DAT_14313c670,
+    (const void*)&::Scaleform::GFx::AS3::fl_accessibility::AccessibilityPropertiesCI,
     "accessibilityProperties",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -10962,7 +10248,7 @@ alignas(16) Sd_1431446e0 DAT_1431446e0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::DisplayObject, 42, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_geom::Transform>>::Func,
-    (const void*)&DAT_14315d220,
+    (const void*)&::Scaleform::GFx::AS3::fl_geom::TransformCI,
     "transform",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -11158,88 +10444,76 @@ alignas(16) Sd_1431446e0 DAT_1431446e0 = {
     },
 };
 // 0x143146350
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ActionScriptVersionCI = { 0x9, "ActionScriptVersion", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::ActionScriptVersion::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146df0 + 0xec0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ActionScriptVersionCI = { 0x9, "ActionScriptVersion", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::ActionScriptVersion::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146e40 + 0xe70), 0, 0 }; } } } }
 // 0x1431463a0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo AVM1MovieCI = { 0x1, "AVM1Movie", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::AVM1Movie::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x1431463f0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapCI = { 0x1, "Bitmap", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Bitmap::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x1540), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapCI = { 0x1, "Bitmap", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Bitmap::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x14f0), 0 }; } } } }
 // 0x143146440
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapDataCI = { 0x1, "BitmapData", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BitmapData::MakeClassTraits, 0, 0, 35, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0xfc0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapDataCI = { 0x1, "BitmapData", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BitmapData::MakeClassTraits, 0, 0, 35, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0xf70), 0 }; } } } }
 // 0x143146490
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapDataChannelCI = { 0x9, "BitmapDataChannel", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BitmapDataChannel::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0xb00), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BitmapDataChannelCI = { 0x9, "BitmapDataChannel", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BitmapDataChannel::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0xa88), 0, 0 }; } } } }
 // 0x1431464e0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BlendModeCI = { 0x9, "BlendMode", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BlendMode::MakeClassTraits, 0, 14, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146df0 + 0xee0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo BlendModeCI = { 0x9, "BlendMode", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::BlendMode::MakeClassTraits, 0, 14, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146e40 + 0xe90), 0, 0 }; } } } }
 // 0x143146530
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo CapsStyleCI = { 0x9, "CapsStyle", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::CapsStyle::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0xb40), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo CapsStyleCI = { 0x9, "CapsStyle", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::CapsStyle::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0xac8), 0, 0 }; } } } }
 // 0x143146580
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo DisplayObjectCI = { 0x1, "DisplayObject", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::DisplayObject::MakeClassTraits, 0, 0, 62, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x1110), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo DisplayObjectCI = { 0x1, "DisplayObject", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::DisplayObject::MakeClassTraits, 0, 0, 62, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x1098), 0 }; } } } }
 // 0x1431465d0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo DisplayObjectContainerCI = { 0x1, "DisplayObjectContainer", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::DisplayObjectContainer::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0xdf0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo DisplayObjectContainerCI = { 0x1, "DisplayObjectContainer", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::DisplayObjectContainer::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0xd78), 0 }; } } } }
 // 0x143146620
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo FrameLabelCI = { 0x9, "FrameLabel", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::FrameLabel::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x5b0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo FrameLabelCI = { 0x9, "FrameLabel", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::FrameLabel::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x538), 0 }; } } } }
 // 0x143146670
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo GradientTypeCI = { 0x9, "GradientType", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::GradientType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x670), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo GradientTypeCI = { 0x9, "GradientType", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::GradientType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x5f8), 0, 0 }; } } } }
 // 0x1431466c0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo GraphicsCI = { 0x9, "Graphics", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Graphics::MakeClassTraits, 0, 0, 15, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x760), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo GraphicsCI = { 0x9, "Graphics", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Graphics::MakeClassTraits, 0, 0, 15, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x6e8), 0 }; } } } }
 // 0x143146710
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo IBitmapDrawableCI = { 0x1, "IBitmapDrawable", "flash.display", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_display::IBitmapDrawable::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x143146760
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo InteractiveObjectCI = { 0x1, "InteractiveObject", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::InteractiveObject::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0xce0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo InteractiveObjectCI = { 0x1, "InteractiveObject", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::InteractiveObject::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0xc90), 0 }; } } } }
 // 0x1431467b0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo InterpolationMethodCI = { 0x9, "InterpolationMethod", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::InterpolationMethod::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x1ac0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo InterpolationMethodCI = { 0x9, "InterpolationMethod", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::InterpolationMethod::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x1a48), 0, 0 }; } } } }
 // 0x143146800
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo JointStyleCI = { 0x9, "JointStyle", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::JointStyle::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x1ae0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo JointStyleCI = { 0x9, "JointStyle", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::JointStyle::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x1a68), 0, 0 }; } } } }
 // 0x143146850
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LineScaleModeCI = { 0x9, "LineScaleMode", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::LineScaleMode::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x1b10), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LineScaleModeCI = { 0x9, "LineScaleMode", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::LineScaleMode::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x1a98), 0, 0 }; } } } }
 // 0x1431468a0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LoaderCI = { 0x1, "Loader", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Loader::MakeClassTraits, 0, 0, 7, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x1b50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LoaderCI = { 0x1, "Loader", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Loader::MakeClassTraits, 0, 0, 7, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x1ad8), 0 }; } } } }
 // 0x1431468f0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LoaderInfoCI = { 0x1, "LoaderInfo", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::LoaderInfo::MakeClassTraits, 1, 0, 23, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x10e8), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x910), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo LoaderInfoCI = { 0x1, "LoaderInfo", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::LoaderInfo::MakeClassTraits, 1, 0, 23, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x1070), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x8c0), 0 }; } } } }
 // 0x143146940
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo MorphShapeCI = { 0x9, "MorphShape", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::MorphShape::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x143146990
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo MovieClipCI = { 0x3, "MovieClip", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::SpriteCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::MovieClip::MakeClassTraits, 0, 0, 21, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x1810), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo MovieClipCI = { 0x3, "MovieClip", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::SpriteCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::MovieClip::MakeClassTraits, 0, 0, 21, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x17c0), 0 }; } } } }
 // 0x1431469e0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo PixelSnappingCI = { 0x9, "PixelSnapping", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::PixelSnapping::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0xaa8), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo PixelSnappingCI = { 0x9, "PixelSnapping", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::PixelSnapping::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0xa30), 0, 0 }; } } } }
 // 0x143146a30
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SceneCI = { 0x9, "Scene", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Scene::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x1b60), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SceneCI = { 0x9, "Scene", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Scene::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x1b10), 0 }; } } } }
 // 0x143146a80
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ShapeCI = { 0x1, "Shape", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Shape::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0x9b8), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ShapeCI = { 0x1, "Shape", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Shape::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x940), 0 }; } } } }
 // 0x143146ad0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SimpleButtonCI = { 0x1, "SimpleButton", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SimpleButton::MakeClassTraits, 0, 0, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0xb70), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SimpleButtonCI = { 0x1, "SimpleButton", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SimpleButton::MakeClassTraits, 0, 0, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0xaf8), 0 }; } } } }
 // 0x143146b20
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SpreadMethodCI = { 0x9, "SpreadMethod", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SpreadMethod::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146df0 + 0xca8), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SpreadMethodCI = { 0x9, "SpreadMethod", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SpreadMethod::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143146e40 + 0xc58), 0, 0 }; } } } }
 // 0x143146b70
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SpriteCI = { 0x1, "Sprite", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Sprite::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x1630), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SpriteCI = { 0x1, "Sprite", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Sprite::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x15e0), 0 }; } } } }
 // 0x143146bc0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageCI = { 0x1, "Stage", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Stage::MakeClassTraits, 1, 0, 56, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431446e0 + 0xad8), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146df0 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageCI = { 0x1, "Stage", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Stage::MakeClassTraits, 1, 0, 56, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0xa60), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143146e40 + 0x0), 0 }; } } } }
 // 0x143146c10
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageAlignCI = { 0x9, "StageAlign", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageAlign::MakeClassTraits, 0, 8, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x530), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageAlignCI = { 0x9, "StageAlign", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageAlign::MakeClassTraits, 0, 8, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x4b8), 0, 0 }; } } } }
 // 0x143146c60
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageDisplayStateCI = { 0x9, "StageDisplayState", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageDisplayState::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x600), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageDisplayStateCI = { 0x9, "StageDisplayState", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageDisplayState::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x588), 0, 0 }; } } } }
 // 0x143146cb0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageQualityCI = { 0x9, "StageQuality", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageQuality::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x630), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageQualityCI = { 0x9, "StageQuality", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageQuality::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x5b8), 0, 0 }; } } } }
 // 0x143146d00
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageScaleModeCI = { 0x9, "StageScaleMode", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageScaleMode::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x690), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo StageScaleModeCI = { 0x9, "StageScaleMode", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::StageScaleMode::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x618), 0, 0 }; } } } }
 // 0x143146d50
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SWFVersionCI = { 0x9, "SWFVersion", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SWFVersion::MakeClassTraits, 0, 9, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431446e0 + 0x6d0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo SWFVersionCI = { 0x9, "SWFVersion", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::SWFVersion::MakeClassTraits, 0, 9, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143144758 + 0x658), 0, 0 }; } } } }
 // 0x143146da0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ShaderDataCI = { 0xb, "ShaderData", "flash.display", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::ShaderData::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
-// 0x143146df0
-alignas(16) Sd_143146df0 DAT_143146df0 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Shader",
-    "flash.display",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_display::Shader::MakeClassTraits,
-    {
-        0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_1431446e0 + 0x9e0,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_display { alignas(16) extern const ClassInfo ShaderCI = { 0x1, "Shader", "flash.display", (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_display::Shader::MakeClassTraits, 0, 0, 5, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143144758 + 0x968), 0 }; } } } }
+// 0x143146e40
+alignas(16) Sd_143146e40 DAT_143146e40 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::Stage, 0, ::Scaleform::GFx::ASString>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
     "align",
@@ -11445,7 +10719,7 @@ alignas(16) Sd_143146df0 DAT_143146df0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::Stage, 34, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_text::TextSnapshot>>::Func,
-    (const void*)&DAT_143167f80,
+    (const void*)&::Scaleform::GFx::AS3::fl_text::TextSnapshotCI,
     "textSnapshot",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -12141,7 +11415,7 @@ alignas(16) Sd_143146df0 DAT_143146df0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_display::Sprite, 6, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_media::SoundTransform>>::Func,
-    DAT_143177ac0,
+    &::Scaleform::GFx::AS3::fl_media::SoundTransformCI,
     "soundTransform",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -12861,35 +12135,35 @@ alignas(16) Sd_143150790 DAT_143150790 = {
     },
 };
 // 0x143150920
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo ActivityEventCI = { 0x1, "ActivityEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::ActivityEvent::MakeClassTraits, 0, 1, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x750), (const ThunkInfo*)&DAT_1431500c0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo ActivityEventCI = { 0x1, "ActivityEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::ActivityEvent::MakeClassTraits, 0, 1, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x700), (const ThunkInfo*)&DAT_1431500c0, 0 }; } } } }
 // 0x143150970
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo AsyncErrorEventCI = { 0x1, "AsyncErrorEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::ErrorEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::AsyncErrorEvent::MakeClassTraits, 0, 1, 2, 1, 0, (const MemberInfo*)&DAT_143150510, (const ThunkInfo*)&DAT_143150460, (const MemberInfo*)&DAT_143150450 }; } } } }
 // 0x1431509c0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo ContextMenuEventCI = { 0x1, "ContextMenuEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::ContextMenuEvent::MakeClassTraits, 0, 2, 6, 0, 0, (const MemberInfo*)&DAT_143150630, (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x80), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo ContextMenuEventCI = { 0x1, "ContextMenuEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::ContextMenuEvent::MakeClassTraits, 0, 2, 6, 0, 0, (const MemberInfo*)&DAT_143150630, (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x30), 0 }; } } } }
 // 0x143150a10
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo DataEventCI = { 0x1, "DataEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::DataEvent::MakeClassTraits, 0, 2, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x170), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x190), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo DataEventCI = { 0x1, "DataEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::DataEvent::MakeClassTraits, 0, 2, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x120), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x140), 0 }; } } } }
 // 0x143150a60
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo ErrorEventCI = { 0x1, "ErrorEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::ErrorEvent::MakeClassTraits, 0, 1, 3, 0, 0, (const MemberInfo*)&DAT_143150430, (const ThunkInfo*)&DAT_143150310, 0 }; } } } }
 // 0x143150ab0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo EventCI = { 0x1, "Event", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::Event::MakeClassTraits, 0, 38, 13, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x4f0), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x2e0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo EventCI = { 0x1, "Event", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::Event::MakeClassTraits, 0, 38, 13, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x4a0), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x290), 0 }; } } } }
 // 0x143150b00
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo EventDispatcherCI = { 0x1, "EventDispatcher", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::EventDispatcher::MakeClassTraits, 0, 0, 10, 0, 0, 0, (const ThunkInfo*)&DAT_143150790, 0 }; } } } }
 // 0x143150b50
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo EventPhaseCI = { 0x9, "EventPhase", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::EventPhase::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x50), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo EventPhaseCI = { 0x9, "EventPhase", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::EventPhase::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x0), 0, 0 }; } } } }
 // 0x143150ba0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo FocusEventCI = { 0x1, "FocusEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::FocusEvent::MakeClassTraits, 0, 4, 10, 0, 0, (const MemberInfo*)&DAT_143150160, (const ThunkInfo*)&DAT_14314ff30, 0 }; } } } }
 // 0x143150bf0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo FullScreenEventCI = { 0x1, "FullScreenEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::ActivityEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::FullScreenEvent::MakeClassTraits, 0, 1, 3, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x230), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x240), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo FullScreenEventCI = { 0x1, "FullScreenEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::ActivityEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::FullScreenEvent::MakeClassTraits, 0, 1, 3, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x1e0), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x1f0), 0 }; } } } }
 // 0x143150c40
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo HTTPStatusEventCI = { 0x1, "HTTPStatusEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::HTTPStatusEvent::MakeClassTraits, 0, 2, 7, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x2b8), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x760), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo HTTPStatusEventCI = { 0x1, "HTTPStatusEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::HTTPStatusEvent::MakeClassTraits, 0, 2, 7, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x268), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x710), 0 }; } } } }
 // 0x143150c90
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo IEventDispatcherCI = { 0x1, "IEventDispatcher", "flash.events", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_events::IEventDispatcher::MakeClassTraits, 0, 0, 5, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x880), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo IEventDispatcherCI = { 0x1, "IEventDispatcher", "flash.events", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_events::IEventDispatcher::MakeClassTraits, 0, 0, 5, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x830), 0 }; } } } }
 // 0x143150ce0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo IOErrorEventCI = { 0x1, "IOErrorEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::ErrorEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::IOErrorEvent::MakeClassTraits, 0, 1, 4, 0, 0, (const MemberInfo*)&DAT_143150300, (const ThunkInfo*)&DAT_143150240, 0 }; } } } }
 // 0x143150d30
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo KeyboardEventCI = { 0x1, "KeyboardEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::KeyboardEvent::MakeClassTraits, 0, 2, 19, 0, 0, (const MemberInfo*)&DAT_14314fdf8, (const ThunkInfo*)&DAT_14314fb00, 0 }; } } } }
 // 0x143150d80
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo MouseEventCI = { 0x1, "MouseEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::MouseEvent::MakeClassTraits, 0, 17, 26, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0xe80), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x9f0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo MouseEventCI = { 0x1, "MouseEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::MouseEvent::MakeClassTraits, 0, 17, 26, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0xe30), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x9a0), 0 }; } } } }
 // 0x143150dd0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo NetStatusEventCI = { 0x1, "NetStatusEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::NetStatusEvent::MakeClassTraits, 0, 1, 4, 0, 0, (const MemberInfo*)&DAT_143150440, (const ThunkInfo*)&DAT_143150390, 0 }; } } } }
 // 0x143150e20
@@ -12911,30 +12185,19 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alig
 // 0x1431510a0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo PressAndTapGestureEventCI = { 0x1, "PressAndTapGestureEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::GestureEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::PressAndTapGestureEvent::MakeClassTraits, 0, 1, 8, 0, 0, (const MemberInfo*)&DAT_14314faf0, (const ThunkInfo*)&DAT_14314f9b0, 0 }; } } } }
 // 0x1431510f0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo TouchEventCI = { 0x1, "TouchEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::TouchEvent::MakeClassTraits, 0, 8, 33, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x1580), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0xfb0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo TouchEventCI = { 0x1, "TouchEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::TouchEvent::MakeClassTraits, 0, 8, 33, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x1530), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0xf60), 0 }; } } } }
 // 0x143151140
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo GesturePhaseCI = { 0x9, "GesturePhase", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::GesturePhase::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x950), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo GesturePhaseCI = { 0x9, "GesturePhase", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::GesturePhase::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x900), 0, 0 }; } } } }
 // 0x143151190
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo AppLifecycleEventCI = { 0x9, "AppLifecycleEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::AppLifecycleEvent::MakeClassTraits, 0, 2, 3, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0xf90), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0xe00), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo AppLifecycleEventCI = { 0x9, "AppLifecycleEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::AppLifecycleEvent::MakeClassTraits, 0, 2, 3, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0xf40), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0xdb0), 0 }; } } } }
 // 0x1431511e0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo StageOrientationEventCI = { 0x9, "StageOrientationEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::StageOrientationEvent::MakeClassTraits, 0, 2, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143151280 + 0x1600), (const ThunkInfo*)((const unsigned char*)&DAT_143151280 + 0x14e0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo StageOrientationEventCI = { 0x9, "StageOrientationEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::StageOrientationEvent::MakeClassTraits, 0, 2, 4, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x15b0), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x1490), 0 }; } } } }
 // 0x143151230
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo StageOrientationCI = { 0x9, "StageOrientation", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::StageOrientation::MakeClassTraits, 0, 5, 0, 0, 0, (const MemberInfo*)&DAT_14314f740, 0, 0 }; } } } }
 // 0x143151280
-alignas(16) Sd_143151280 DAT_143151280 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "IMEEvent",
-    "flash.events",
-    (const void*)&::Scaleform::GFx::AS3::fl_events::TextEventCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_events::IMEEvent::MakeClassTraits,
-    {
-        0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143151280 + 0x9e0,
-    (const unsigned char*)&DAT_143151280 + 0x990,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_events { alignas(16) extern const ClassInfo IMEEventCI = { 0x1, "IMEEvent", "flash.events", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_events::IMEEvent::MakeClassTraits, 0, 1, 2, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431512d0 + 0x990), (const ThunkInfo*)((const unsigned char*)&DAT_1431512d0 + 0x940), 0 }; } } } }
+// 0x1431512d0
+alignas(16) Sd_1431512d0 DAT_1431512d0 = {
     "AT_TARGET",
     {
         0x50, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -14027,19 +13290,9 @@ alignas(16) Sd_143151280 DAT_143151280 = {
     },
 };
 // 0x143158870
-alignas(16) Sd_143158870 DAT_143158870 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "ExternalInterface",
-    "flash.external",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_external::ExternalInterface::MakeClassTraits,
-    {
-        0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143158870 + 0x50,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_external { alignas(16) extern const ClassInfo ExternalInterfaceCI = { 0x9, "ExternalInterface", "flash.external", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_external::ExternalInterface::MakeClassTraits, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431588c0 + 0x0), 0, 0, 0 }; } } } }
+// 0x1431588c0
+alignas(16) Sd_1431588c0 DAT_1431588c0 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Classes::fl_external::ExternalInterface, 0, bool>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI,
     "available",
@@ -14188,7 +13441,7 @@ alignas(16) Sd_143159550 DAT_143159550 = {
     },
 };
 // 0x1431595d0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo BevelFilterCI = { 0x9, "BevelFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::BevelFilter::MakeClassTraits, 0, 0, 25, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143159990 + 0xd40), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo BevelFilterCI = { 0x9, "BevelFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::BevelFilter::MakeClassTraits, 0, 0, 25, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431599e0 + 0xcf0), 0 }; } } } }
 // 0x143159620
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo BitmapFilterCI = { 0x1, "BitmapFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::BitmapFilter::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)&DAT_143158fc8, 0 }; } } } }
 // 0x143159670
@@ -14200,7 +13453,7 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { ali
 // 0x143159760
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo ColorMatrixFilterCI = { 0x9, "ColorMatrixFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::ColorMatrixFilter::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)&DAT_143159550, 0 }; } } } }
 // 0x1431597b0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo ConvolutionFilterCI = { 0x1, "ConvolutionFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::ConvolutionFilter::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143159990 + 0xa40), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo ConvolutionFilterCI = { 0x1, "ConvolutionFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::ConvolutionFilter::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431599e0 + 0x9f0), 0 }; } } } }
 // 0x143159800
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo DisplacementMapFilterCI = { 0x9, "DisplacementMapFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::DisplacementMapFilter::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)&DAT_143158cd0, 0 }; } } } }
 // 0x143159850
@@ -14208,24 +13461,13 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { ali
 // 0x1431598a0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo DropShadowFilterCI = { 0x9, "DropShadowFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::DropShadowFilter::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)&DAT_143159090, 0 }; } } } }
 // 0x1431598f0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GlowFilterCI = { 0x9, "GlowFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::GlowFilter::MakeClassTraits, 0, 0, 17, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143159990 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GlowFilterCI = { 0x9, "GlowFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::GlowFilter::MakeClassTraits, 0, 0, 17, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431599e0 + 0x0), 0 }; } } } }
 // 0x143159940
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GradientBevelFilterCI = { 0x9, "GradientBevelFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::GradientBevelFilter::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143159990 + 0x300), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GradientBevelFilterCI = { 0x9, "GradientBevelFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::GradientBevelFilter::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431599e0 + 0x2b0), 0 }; } } } }
 // 0x143159990
-alignas(16) Sd_143159990 DAT_143159990 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "GradientGlowFilter",
-    "flash.filters",
-    (const void*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_filters::GradientGlowFilter::MakeClassTraits,
-    {
-        0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143159990 + 0x6a0,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_filters { alignas(16) extern const ClassInfo GradientGlowFilterCI = { 0x9, "GradientGlowFilter", "flash.filters", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI, &::Scaleform::GFx::AS3::ClassTraits::fl_filters::GradientGlowFilter::MakeClassTraits, 0, 0, 23, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431599e0 + 0x650), 0 }; } } } }
+// 0x1431599e0
+alignas(16) Sd_1431599e0 DAT_1431599e0 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_filters::GlowFilter, 0, double>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::NumberCI,
     "alpha",
@@ -15019,34 +14261,23 @@ alignas(16) Sd_14315cb60 DAT_14315cb60 = {
     },
 };
 // 0x14315cff0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo ColorTransformCI = { 0x1, "ColorTransform", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::ColorTransform::MakeClassTraits, 0, 0, 4, 8, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d220 + 0x2b0), (const MemberInfo*)((const unsigned char*)&DAT_14315d220 + 0x230) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo ColorTransformCI = { 0x1, "ColorTransform", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::ColorTransform::MakeClassTraits, 0, 0, 4, 8, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d270 + 0x260), (const MemberInfo*)((const unsigned char*)&DAT_14315d270 + 0x1e0) }; } } } }
 // 0x14315d040
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo Vector3DCI = { 0x1, "Vector3D", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Vector3D::MakeClassTraits, 2, 3, 24, 0, (const ThunkInfo*)&DAT_14315cad0, (const MemberInfo*)&DAT_14315caa0, (const ThunkInfo*)&DAT_14315c6e0, 0 }; } } } }
 // 0x14315d090
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo Matrix3DCI = { 0x1, "Matrix3D", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Matrix3D::MakeClassTraits, 0, 0, 25, 0, 0, 0, (const ThunkInfo*)&DAT_14315c2f0, 0 }; } } } }
 // 0x14315d0e0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo MatrixCI = { 0x1, "Matrix", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Matrix::MakeClassTraits, 0, 0, 12, 6, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d220 + 0x3b0), (const MemberInfo*)((const unsigned char*)&DAT_14315d220 + 0x350) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo MatrixCI = { 0x1, "Matrix", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Matrix::MakeClassTraits, 0, 0, 12, 6, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d270 + 0x360), (const MemberInfo*)((const unsigned char*)&DAT_14315d270 + 0x300) }; } } } }
 // 0x14315d130
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo PerspectiveProjectionCI = { 0x1, "PerspectiveProjection", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::PerspectiveProjection::MakeClassTraits, 0, 0, 7, 0, 0, 0, (const ThunkInfo*)&DAT_14315c1d0, 0 }; } } } }
 // 0x14315d180
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo PointCI = { 0x1, "Point", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Point::MakeClassTraits, 3, 0, 8, 2, (const ThunkInfo*)((const unsigned char*)&DAT_14315d220 + 0x6f0), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d220 + 0x5b0), (const MemberInfo*)((const unsigned char*)&DAT_14315d220 + 0x590) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo PointCI = { 0x1, "Point", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Point::MakeClassTraits, 3, 0, 8, 2, (const ThunkInfo*)((const unsigned char*)&DAT_14315d270 + 0x6a0), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d270 + 0x560), (const MemberInfo*)((const unsigned char*)&DAT_14315d270 + 0x540) }; } } } }
 // 0x14315d1d0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo RectangleCI = { 0x1, "Rectangle", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Rectangle::MakeClassTraits, 0, 0, 29, 4, 0, 0, (const ThunkInfo*)&DAT_14315cb60, (const MemberInfo*)&DAT_14315cb20 }; } } } }
 // 0x14315d220
-alignas(16) Sd_14315d220 DAT_14315d220 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Transform",
-    "flash.geom",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_geom::Transform::MakeClassTraits,
-    {
-        0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_14315d220 + 0x50,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_geom { alignas(16) extern const ClassInfo TransformCI = { 0x1, "Transform", "flash.geom", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_geom::Transform::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14315d270 + 0x0), 0 }; } } } }
+// 0x14315d270
+alignas(16) Sd_14315d270 DAT_14315d270 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_geom::Transform, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_geom::ColorTransform>>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl_geom::ColorTransformCI,
     "colorTransform",
@@ -15519,7 +14750,7 @@ alignas(16) Sd_14315fb60 DAT_14315fb60 = {
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 3, ::Scaleform::GFx::AS3::Value const, bool>::Func, 0, "cacheResponse", 0, 0x4a},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 4, ::Scaleform::GFx::ASString>::Func, (const void*)&::Scaleform::GFx::AS3::fl::StringCI, "contentType", 0, 0x1},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 5, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::ASString const &>::Func, 0, "contentType", 0, 0x4a},
-        {DAT_1424917d0, (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI, "data", 0, 0x1},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 6, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::Object>>::Func, (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI, "data", 0, 0x1},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 7, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::AS3::Value const &>::Func, 0, "data", 0, 0x4a},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 8, ::Scaleform::GFx::ASString>::Func, (const void*)&::Scaleform::GFx::AS3::fl::StringCI, "digest", 0, 0x1},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_net::URLRequest, 9, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::ASString const &>::Func, 0, "digest", 0, 0x4a},
@@ -15546,29 +14777,29 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas
 // 0x14315ffc0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo FileFilterCI = { 0x9, "FileFilter", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::FileFilter::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)&DAT_14315f2a0, 0 }; } } } }
 // 0x143160010
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo FileReferenceCI = { 0x1, "FileReference", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::FileReference::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo FileReferenceCI = { 0x1, "FileReference", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::FileReference::MakeClassTraits, 0, 0, 12, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x0), 0 }; } } } }
 // 0x143160060
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo FileReferenceListCI = { 0x1, "FileReferenceList", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::FileReferenceList::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x230), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo FileReferenceListCI = { 0x1, "FileReferenceList", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::FileReferenceList::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x1e0), 0 }; } } } }
 // 0x1431600b0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo IDynamicPropertyOutputCI = { 0x1, "IDynamicPropertyOutput", "flash.net", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_net::IDynamicPropertyOutput::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)&DAT_14315fa98, 0 }; } } } }
 // 0x143160100
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo IDynamicPropertyWriterCI = { 0x1, "IDynamicPropertyWriter", "flash.net", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_net::IDynamicPropertyWriter::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x280), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo IDynamicPropertyWriterCI = { 0x1, "IDynamicPropertyWriter", "flash.net", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_net::IDynamicPropertyWriter::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x230), 0 }; } } } }
 // 0x143160150
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo LocalConnectionCI = { 0x1, "LocalConnection", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::LocalConnection::MakeClassTraits, 0, 0, 8, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x2d0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo LocalConnectionCI = { 0x1, "LocalConnection", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::LocalConnection::MakeClassTraits, 0, 0, 8, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x280), 0 }; } } } }
 // 0x1431601a0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo NetConnectionCI = { 0x1, "NetConnection", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::NetConnection::MakeClassTraits, 0, 0, 15, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x410), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo NetConnectionCI = { 0x1, "NetConnection", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::NetConnection::MakeClassTraits, 0, 0, 15, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x3c0), 0 }; } } } }
 // 0x1431601f0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo ObjectEncodingCI = { 0x9, "ObjectEncoding", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::ObjectEncoding::MakeClassTraits, 0, 3, 1, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143160510 + 0x1240), (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x2a8), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo ObjectEncodingCI = { 0x9, "ObjectEncoding", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::ObjectEncoding::MakeClassTraits, 0, 3, 1, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143160560 + 0x11f0), (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x258), 0 }; } } } }
 // 0x143160240
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo ResponderCI = { 0x1, "Responder", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::Responder::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x143160290
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo SharedObjectCI = { 0x1, "SharedObject", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::SharedObject::MakeClassTraits, 2, 0, 15, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x1520), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x12c0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo SharedObjectCI = { 0x1, "SharedObject", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::SharedObject::MakeClassTraits, 2, 0, 15, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x14d0), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x1270), 0 }; } } } }
 // 0x1431602e0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo SharedObjectFlushStatusCI = { 0x9, "SharedObjectFlushStatus", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::SharedObjectFlushStatus::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)&DAT_14315f3b0, 0, 0 }; } } } }
 // 0x143160330
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo SocketCI = { 0x1, "Socket", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::Socket::MakeClassTraits, 0, 0, 70, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x670), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo SocketCI = { 0x1, "Socket", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::Socket::MakeClassTraits, 0, 0, 70, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x620), 0 }; } } } }
 // 0x143160380
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLLoaderCI = { 0x1, "URLLoader", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::URLLoader::MakeClassTraits, 0, 0, 4, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160510 + 0x11a0), (const MemberInfo*)((const unsigned char*)&DAT_143160510 + 0x1160) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLLoaderCI = { 0x1, "URLLoader", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::URLLoader::MakeClassTraits, 0, 0, 4, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x1150), (const MemberInfo*)((const unsigned char*)&DAT_143160560 + 0x1110) }; } } } }
 // 0x1431603d0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLLoaderDataFormatCI = { 0x9, "URLLoaderDataFormat", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::URLLoaderDataFormat::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)&DAT_14315f270, 0, 0 }; } } } }
 // 0x143160420
@@ -15578,20 +14809,9 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas
 // 0x1431604c0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLStreamCI = { 0x1, "URLStream", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::URLStream::MakeClassTraits, 0, 0, 41, 0, 0, 0, (const ThunkInfo*)&DAT_14315f430, 0 }; } } } }
 // 0x143160510
-alignas(16) Sd_143160510 DAT_143160510 = {
-    {
-        0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "URLVariables",
-    "flash.net",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_net::URLVariables::MakeClassTraits,
-    {
-        0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143160510 + 0x1270,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_net { alignas(16) extern const ClassInfo URLVariablesCI = { 0x3, "URLVariables", "flash.net", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_net::URLVariables::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143160560 + 0x1220), 0 }; } } } }
+// 0x143160560
+alignas(16) Sd_143160560 DAT_143160560 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
     (const void*)&::Scaleform::GFx::AS3::fl::DateCI,
     "creationDate",
@@ -16621,7 +15841,7 @@ alignas(16) Sd_1431650f0 DAT_1431650f0 = {
     },
 };
 // 0x143165210
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo ApplicationDomainCI = { 0x9, "ApplicationDomain", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::ApplicationDomain::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143165490 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo ApplicationDomainCI = { 0x9, "ApplicationDomain", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::ApplicationDomain::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431654e0 + 0x0), 0 }; } } } }
 // 0x143165260
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo CapabilitiesCI = { 0x9, "Capabilities", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::Capabilities::MakeClassTraits, 27, 0, 0, 0, (const ThunkInfo*)&DAT_143164940, 0, 0, 0 }; } } } }
 // 0x1431652b0
@@ -16636,27 +15856,16 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alig
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo SystemCI = { 0x9, "System", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::System::MakeClassTraits, 7, 1, 0, 0, (const ThunkInfo*)&DAT_1431650f0, (const MemberInfo*)&DAT_1431650e0, 0, 0 }; } } } }
 // 0x143165440
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo IMECI = { 0x9, "IME", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::IME::MakeClassTraits, 6, 0, 0, 0, (const ThunkInfo*)&DAT_143164da0, 0, 0, 0 }; } } } }
-// 0x143165490
-alignas(16) Sd_143165490 DAT_143165490 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "IMEConversionMode",
-    "flash.system",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_system::IMEConversionMode::MakeClassTraits,
-    {
-        0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143164e90,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_system { alignas(16) extern const ClassInfo IMEConversionModeCI = { 0x9, "IMEConversionMode", "flash.system", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_system::IMEConversionMode::MakeClassTraits, 0, 8, 0, 0, 0, (const MemberInfo*)&DAT_143164e90, 0, 0 }; } } } }
+// 0x1431654e0
+alignas(16) Sd_1431654e0 DAT_1431654e0 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_system::ApplicationDomain, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_system::ApplicationDomain>>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl_system::ApplicationDomainCI,
     "parentDomain",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_system::ApplicationDomain, 1, ::Scaleform::GFx::AS3::Value, ::Scaleform::GFx::ASString const &>::Func,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Instances::fl_system::ApplicationDomain, 1, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl::Object>, ::Scaleform::GFx::ASString const &>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
     "getDefinition",
     {
@@ -16818,27 +16027,27 @@ alignas(16) Sd_143167a10 DAT_143167a10 = {
     },
 };
 // 0x143167a30
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo AntiAliasTypeCI = { 0x9, "AntiAliasType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::AntiAliasType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0x130), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo AntiAliasTypeCI = { 0x9, "AntiAliasType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::AntiAliasType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0xe0), 0, 0 }; } } } }
 // 0x143167a80
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo CSMSettingsCI = { 0x9, "CSMSettings", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::CSMSettings::MakeClassTraits, 0, 0, 0, 3, 0, 0, 0, (const MemberInfo*)&DAT_1431679a0 }; } } } }
 // 0x143167ad0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontCI = { 0x1, "Font", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::Font::MakeClassTraits, 2, 0, 4, 0, (const ThunkInfo*)&DAT_143167360, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0x11a0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontCI = { 0x1, "Font", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::Font::MakeClassTraits, 2, 0, 4, 0, (const ThunkInfo*)&DAT_143167360, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x1150), 0 }; } } } }
 // 0x143167b20
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontStyleCI = { 0x9, "FontStyle", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::FontStyle::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0x1020), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontStyleCI = { 0x9, "FontStyle", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::FontStyle::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0xfd0), 0, 0 }; } } } }
 // 0x143167b70
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontTypeCI = { 0x9, "FontType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::FontType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0x1150), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo FontTypeCI = { 0x9, "FontType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::FontType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0x1100), 0, 0 }; } } } }
 // 0x143167bc0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo GridFitTypeCI = { 0x9, "GridFitType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::GridFitType::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0x1170), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo GridFitTypeCI = { 0x9, "GridFitType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::GridFitType::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0x1120), 0, 0 }; } } } }
 // 0x143167c10
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo StaticTextCI = { 0x9, "StaticText", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::StaticText::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo StaticTextCI = { 0x9, "StaticText", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::StaticText::MakeClassTraits, 0, 0, 1, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x0), 0 }; } } } }
 // 0x143167c60
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo StyleSheetCI = { 0x3, "StyleSheet", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::StyleSheet::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0x1060), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo StyleSheetCI = { 0x3, "StyleSheet", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::StyleSheet::MakeClassTraits, 0, 0, 6, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x1010), 0 }; } } } }
 // 0x143167cb0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextColorTypeCI = { 0x9, "TextColorType", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextColorType::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)&DAT_143167950, 0, 0 }; } } } }
 // 0x143167d00
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextDisplayModeCI = { 0x9, "TextDisplayMode", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextDisplayMode::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)&DAT_143167970, 0, 0 }; } } } }
 // 0x143167d50
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFieldCI = { 0x1, "TextField", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextField::MakeClassTraits, 0, 0, 83, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0x2c0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFieldCI = { 0x1, "TextField", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextField::MakeClassTraits, 0, 0, 83, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x270), 0 }; } } } }
 // 0x143167da0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFieldAutoSizeCI = { 0x9, "TextFieldAutoSize", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextFieldAutoSize::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)&DAT_1431679d0, 0, 0 }; } } } }
 // 0x143167df0
@@ -16846,26 +16055,15 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { aligna
 // 0x143167e40
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFormatCI = { 0x1, "TextFormat", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextFormat::MakeClassTraits, 0, 0, 36, 0, 0, 0, (const ThunkInfo*)&DAT_1431673b0, 0 }; } } } }
 // 0x143167e90
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFormatAlignCI = { 0x9, "TextFormatAlign", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextFormatAlign::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0xa0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextFormatAlignCI = { 0x9, "TextFormatAlign", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextFormatAlign::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0x50), 0, 0 }; } } } }
 // 0x143167ee0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextLineMetricsCI = { 0x1, "TextLineMetrics", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextLineMetrics::MakeClassTraits, 0, 0, 0, 6, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167f80 + 0xfc0) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextLineMetricsCI = { 0x1, "TextLineMetrics", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextLineMetrics::MakeClassTraits, 0, 0, 0, 6, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143167fd0 + 0xf70) }; } } } }
 // 0x143167f30
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextRendererCI = { 0x9, "TextRenderer", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextRenderer::MakeClassTraits, 1, 0, 2, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0x78), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167f80 + 0xe0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextRendererCI = { 0x9, "TextRenderer", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextRenderer::MakeClassTraits, 1, 0, 2, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x28), 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x90), 0 }; } } } }
 // 0x143167f80
-alignas(16) Sd_143167f80 DAT_143167f80 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "TextSnapshot",
-    "flash.text",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_text::TextSnapshot::MakeClassTraits,
-    {
-        0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_143167f80 + 0x150,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_text { alignas(16) extern const ClassInfo TextSnapshotCI = { 0x1, "TextSnapshot", "flash.text", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_text::TextSnapshot::MakeClassTraits, 0, 0, 9, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143167fd0 + 0x100), 0 }; } } } }
+// 0x143167fd0
+alignas(16) Sd_143167fd0 DAT_143167fd0 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_text::StaticText, 0, ::Scaleform::GFx::ASString>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
     "text",
@@ -17711,16 +16909,21 @@ alignas(16) Sd_143167f80 DAT_143167f80 = {
     },
 };
 // 0x14316afc0
-alignas(8) Sd_14316afc0 DAT_14316afc0 = {
-    (const void*)&FUN_1424aa810,
-    DAT_14280ef52,
-    DAT_14280ef52,
+alignas(8) const void* Scaleform::GFx::AS2::DAT_14316afc0[3] = {
+    (const void*)((const void*)&FUN_1424aa810),
+    (const void*)((const void*)&_purecall),
+    (const void*)((const void*)&_purecall),
 };
 // 0x14316b3f0
-alignas(16) Sd_14316b3f0 DAT_14316b3f0 = {
-    (const void*)&FUN_1424aa770,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1424acec0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_1424aceb0,
+// 0x14316b3f0: vftable of AS3 AvmTextField::CSSHolder (deleting dtor, HasStyleSheet, GetStyleSheet)
+namespace Scaleform { namespace GFx { namespace AS3 { extern void* const AvmTextFieldCSSHolder_vftable[]; } } }
+alignas(16) void* const Scaleform::GFx::AS3::AvmTextFieldCSSHolder_vftable[3] = {
+    (void*)&FUN_1424aa770,
+    (void*)&::Scaleform::GFx::AS3::FUN_1424acec0,
+    (void*)&::Scaleform::GFx::AS3::FUN_1424aceb0,
+};
+// 0x14316b408
+alignas(8) Sd_14316b408 DAT_14316b408 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x54, 0x68, 0x65, 0x20, 0x6d, 0x65, 0x74, 0x68,
         0x6f, 0x64, 0x20, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x3a, 0x3a, 0x54, 0x65, 0x78,
@@ -17822,15 +17025,15 @@ alignas(16) Sd_14316cf20 DAT_14316cf20 = {
     },
 };
 // 0x14316d040
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuBuiltInItemsCI = { 0x9, "ContextMenuBuiltInItems", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenuBuiltInItems::MakeClassTraits, 0, 0, 0, 8, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14316d310 + 0x10e0) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuBuiltInItemsCI = { 0x9, "ContextMenuBuiltInItems", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenuBuiltInItems::MakeClassTraits, 0, 0, 0, 8, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14316d360 + 0x1090) }; } } } }
 // 0x14316d090
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuClipboardItemsCI = { 0x9, "ContextMenuClipboardItems", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenuClipboardItems::MakeClassTraits, 0, 0, 0, 5, 0, 0, 0, (const MemberInfo*)&DAT_14316ced0 }; } } } }
 // 0x14316d0e0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuItemCI = { 0x9, "ContextMenuItem", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenuItem::MakeClassTraits, 0, 0, 7, 0, 0, 0, (const ThunkInfo*)&DAT_14316cf20, 0 }; } } } }
 // 0x14316d130
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuCI = { 0x9, "ContextMenu", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenu::MakeClassTraits, 0, 0, 5, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316d310 + 0x50), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo ContextMenuCI = { 0x9, "ContextMenu", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::ContextMenu::MakeClassTraits, 0, 0, 5, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316d360 + 0x0), 0 }; } } } }
 // 0x14316d180
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo KeyboardCI = { 0x9, "Keyboard", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::Keyboard::MakeClassTraits, 3, 244, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316d310 + 0x1060), (const MemberInfo*)((const unsigned char*)&DAT_14316d310 + 0x120), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo KeyboardCI = { 0x9, "Keyboard", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::Keyboard::MakeClassTraits, 3, 244, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316d360 + 0x1010), (const MemberInfo*)((const unsigned char*)&DAT_14316d360 + 0xd0), 0, 0 }; } } } }
 // 0x14316d1d0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo KeyLocationCI = { 0x9, "KeyLocation", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::KeyLocation::MakeClassTraits, 0, 4, 0, 0, 0, (const MemberInfo*)&DAT_14316ccb0, 0, 0 }; } } } }
 // 0x14316d220
@@ -17840,19 +17043,9 @@ namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(
 // 0x14316d2c0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo MultitouchCI = { 0x9, "Multitouch", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::Multitouch::MakeClassTraits, 6, 0, 0, 0, (const ThunkInfo*)&DAT_14316cde0, 0, 0, 0 }; } } } }
 // 0x14316d310
-alignas(16) Sd_14316d310 DAT_14316d310 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "MultitouchInputMode",
-    "flash.ui",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_ui::MultitouchInputMode::MakeClassTraits,
-    {
-        0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_14316d310 + 0x1160,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_ui { alignas(16) extern const ClassInfo MultitouchInputModeCI = { 0x9, "MultitouchInputMode", "flash.ui", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_ui::MultitouchInputMode::MakeClassTraits, 0, 3, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14316d360 + 0x1110), 0, 0 }; } } } }
+// 0x14316d360
+alignas(16) Sd_14316d360 DAT_14316d360 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl_ui::ContextMenu, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_ui::ContextMenuBuiltInItems>>::Func,
     (const void*)&::Scaleform::GFx::AS3::fl_ui::ContextMenuBuiltInItemsCI,
     "builtInItems",
@@ -18956,34 +18149,23 @@ alignas(16) Sd_14316d310 DAT_14316d310 = {
     },
 };
 // 0x14316fd10
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo ByteArrayCI = { 0x1, "ByteArray", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::ByteArray::MakeClassTraits, 2, 0, 73, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff40 + 0x11b0), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff40 + 0x640), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo ByteArrayCI = { 0x1, "ByteArray", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::ByteArray::MakeClassTraits, 2, 0, 73, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x1160), 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x5f0), 0 }; } } } }
 // 0x14316fd60
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo DictionaryCI = { 0x3, "Dictionary", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Dictionary::MakeClassTraits, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14316fdb0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo EndianCI = { 0x9, "Endian", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Endian::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14316ff40 + 0x50), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo EndianCI = { 0x9, "Endian", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Endian::MakeClassTraits, 0, 2, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_14316ff90 + 0x0), 0, 0 }; } } } }
 // 0x14316fe00
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IDataInputCI = { 0x1, "IDataInput", "flash.utils", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::IDataInput::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff40 + 0x70), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IDataInputCI = { 0x1, "IDataInput", "flash.utils", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::IDataInput::MakeClassTraits, 0, 0, 19, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x20), 0 }; } } } }
 // 0x14316fe50
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IDataOutputCI = { 0x1, "IDataOutput", "flash.utils", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::IDataOutput::MakeClassTraits, 0, 0, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff40 + 0x370), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IDataOutputCI = { 0x1, "IDataOutput", "flash.utils", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::IDataOutput::MakeClassTraits, 0, 0, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x320), 0 }; } } } }
 // 0x14316fea0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo ProxyCI = { 0x1, "Proxy", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Proxy::MakeClassTraits, 0, 0, 10, 0, 0, 0, (const ThunkInfo*)&DAT_143a2d158[0xc8], 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo ProxyCI = { 0x1, "Proxy", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Proxy::MakeClassTraits, 0, 0, 10, 0, 0, 0, DAT_143a2d220, 0 }; } } } }
 // 0x14316fef0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo TimerCI = { 0x1, "Timer", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Timer::MakeClassTraits, 0, 0, 9, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff40 + 0x1200), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo TimerCI = { 0x1, "Timer", "flash.utils", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::Timer::MakeClassTraits, 0, 0, 9, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x11b0), 0 }; } } } }
 // 0x14316ff40
-alignas(16) Sd_14316ff40 DAT_14316ff40 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "IExternalizable",
-    "flash.utils",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_utils::IExternalizable::MakeClassTraits,
-    {
-        0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_14316ff40 + 0x5f0,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_utils { alignas(16) extern const ClassInfo IExternalizableCI = { 0x1, "IExternalizable", "flash.utils", 0, &::Scaleform::GFx::AS3::ClassTraits::fl_utils::IExternalizable::MakeClassTraits, 0, 0, 2, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_14316ff90 + 0x5a0), 0 }; } } } }
+// 0x14316ff90
+alignas(16) Sd_14316ff90 DAT_14316ff90 = {
     "BIG_ENDIAN",
     {
         0x50, 0x00, 0x2a, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -19777,7 +18959,7 @@ alignas(16) Sd_1431720a0 DAT_1431720a0 = {
 // 0x143172140
 alignas(16) Sd_143172140 DAT_143172140 = {
     {
-        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Classes::fl_gfx::IMEEx, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_gfx::IMECandidateListStyle>>::Func, (const void*)&DAT_1431726d0, "getIMECandidateListStyle", 0, 0x0},
+        {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Classes::fl_gfx::IMEEx, 0, ::Scaleform::GFx::AS3::SPtr<::Scaleform::GFx::AS3::Instances::fl_gfx::IMECandidateListStyle>>::Func, (const void*)&::Scaleform::GFx::AS3::fl_gfx::IMECandidateListStyleCI, "getIMECandidateListStyle", 0, 0x0},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Classes::fl_gfx::IMEEx, 1, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::AS3::Instances::fl_gfx::IMECandidateListStyle *>::Func, 0, "setIMECandidateListStyle", 0, 0x48},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc3<::Scaleform::GFx::AS3::Classes::fl_gfx::IMEEx, 2, ::Scaleform::GFx::AS3::Value const, ::Scaleform::GFx::AS3::Instances::fl_display::Sprite *, ::Scaleform::GFx::ASString const &, ::Scaleform::GFx::ASString const &>::Func, 0, "SendLangBarMessage", 0, 0xd8},
         {(const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Classes::fl_gfx::IMEEx, 3, ::Scaleform::GFx::ASString>::Func, (const void*)&::Scaleform::GFx::AS3::fl::StringCI, "GetOSVersion", 0, 0x0},
@@ -19791,45 +18973,34 @@ alignas(16) Sd_143172208 DAT_143172208 = {
     },
 };
 // 0x143172230
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo SystemExCI = { 0x9, "SystemEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::SystemEx::MakeClassTraits, 8, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0x330), (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x2f0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo SystemExCI = { 0x9, "SystemEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::SystemEx::MakeClassTraits, 8, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0x2e0), (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x2a0), 0, 0 }; } } } }
 // 0x143172280
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo FocusManagerCI = { 0x9, "FocusManager", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::FocusManager::MakeClassTraits, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0xa50), 0, 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo FocusManagerCI = { 0x9, "FocusManager", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::FocusManager::MakeClassTraits, 16, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0xa00), 0, 0, 0 }; } } } }
 // 0x1431722d0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo ExtensionsCI = { 0x9, "Extensions", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::Extensions::MakeClassTraits, 13, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0x50), (const MemberInfo*)((const unsigned char*)&DAT_143172640 + 0x50), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo ExtensionsCI = { 0x9, "Extensions", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::Extensions::MakeClassTraits, 13, 4, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0x0), (const MemberInfo*)((const unsigned char*)&DAT_143172690 + 0x0), 0, 0 }; } } } }
 // 0x143172320
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo MouseCursorEventCI = { 0x9, "MouseCursorEvent", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::MouseCursorEvent::MakeClassTraits, 0, 1, 0, 2, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x2d8), 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x2b8) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo MouseCursorEventCI = { 0x9, "MouseCursorEvent", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::MouseCursorEvent::MakeClassTraits, 0, 1, 0, 2, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x288), 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x268) }; } } } }
 // 0x143172370
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo InteractiveObjectExCI = { 0x9, "InteractiveObjectEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::InteractiveObjectEx::MakeClassTraits, 4, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0x470), 0, 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo InteractiveObjectExCI = { 0x9, "InteractiveObjectEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::InteractiveObjectEx::MakeClassTraits, 4, 0, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0x420), 0, 0, 0 }; } } } }
 // 0x1431723c0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo TextFieldExCI = { 0x9, "TextFieldEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::TextFieldEx::MakeClassTraits, 8, 7, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0x760), (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x6f0), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo TextFieldExCI = { 0x9, "TextFieldEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::TextFieldEx::MakeClassTraits, 8, 7, 0, 0, (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0x710), (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x6a0), 0, 0 }; } } } }
 // 0x143172410
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo MouseEventExCI = { 0x9, "MouseEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::MouseEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::MouseEventEx::MakeClassTraits, 0, 3, 0, 3, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x288), 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x258) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo MouseEventExCI = { 0x9, "MouseEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::MouseEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::MouseEventEx::MakeClassTraits, 0, 3, 0, 3, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x238), 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x208) }; } } } }
 // 0x143172460
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo KeyboardEventExCI = { 0x9, "KeyboardEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::KeyboardEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::KeyboardEventEx::MakeClassTraits, 0, 0, 0, 1, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x510) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo KeyboardEventExCI = { 0x9, "KeyboardEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::KeyboardEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::KeyboardEventEx::MakeClassTraits, 0, 0, 0, 1, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x4c0) }; } } } }
 // 0x1431724b0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo GamePadCI = { 0x9, "GamePad", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::GamePad::MakeClassTraits, 1, 29, 0, 0, (const ThunkInfo*)&DAT_143172208, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0x520), 0, 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo GamePadCI = { 0x9, "GamePad", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::GamePad::MakeClassTraits, 1, 29, 0, 0, (const ThunkInfo*)&DAT_143172208, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x4d0), 0, 0 }; } } } }
 // 0x143172500
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo GamePadAnalogEventCI = { 0x9, "GamePadAnalogEvent", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::GamePadAnalogEvent::MakeClassTraits, 0, 1, 10, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0xa30), (const ThunkInfo*)((const unsigned char*)&DAT_1431726d0 + 0x8a0), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo GamePadAnalogEventCI = { 0x9, "GamePadAnalogEvent", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::GamePadAnalogEvent::MakeClassTraits, 0, 1, 10, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x9e0), (const ThunkInfo*)((const unsigned char*)&DAT_143172720 + 0x850), 0 }; } } } }
 // 0x143172550
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo FocusEventExCI = { 0x9, "FocusEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::FocusEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::FocusEventEx::MakeClassTraits, 0, 0, 0, 1, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0xa40) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo FocusEventExCI = { 0x9, "FocusEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::FocusEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::FocusEventEx::MakeClassTraits, 0, 0, 0, 1, 0, 0, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0x9f0) }; } } } }
 // 0x1431725a0
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo TextEventExCI = { 0x9, "TextEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::TextEventEx::MakeClassTraits, 0, 2, 0, 2, 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0xcf0), 0, (const MemberInfo*)((const unsigned char*)&DAT_1431726d0 + 0xcd0) }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo TextEventExCI = { 0x9, "TextEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::TextEventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::TextEventEx::MakeClassTraits, 0, 2, 0, 2, 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0xca0), 0, (const MemberInfo*)((const unsigned char*)&DAT_143172720 + 0xc80) }; } } } }
 // 0x1431725f0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo IMEEventExCI = { 0x9, "IMEEventEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::IMEEventEx::MakeClassTraits, 0, 8, 0, 1, 0, (const MemberInfo*)&DAT_143172020, 0, (const MemberInfo*)&DAT_143172010 }; } } } }
-// 0x143172640
-alignas(16) Sd_143172640 DAT_143172640 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "IMEEx",
-    "scaleform.gfx",
-    (const void*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_gfx::IMEEx::MakeClassTraits,
-    {
-        0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_143172140,
-    {0},
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo IMEExCI = { 0x9, "IMEEx", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::IMEEx::MakeClassTraits, 5, 0, 0, 0, (const ThunkInfo*)&DAT_143172140, 0, 0, 0 }; } } } }
+// 0x143172690
+alignas(16) Sd_143172690 DAT_143172690 = {
     "EDGEAA_INHERIT",
     {
         0x50, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -19847,20 +19018,9 @@ alignas(16) Sd_143172640 DAT_143172640 = {
         0x5c, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
-// 0x1431726d0
-alignas(16) Sd_1431726d0 DAT_1431726d0 = {
-    {
-        0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "IMECandidateListStyle",
-    "scaleform.gfx",
-    (const void*)&::Scaleform::GFx::AS3::fl::ObjectCI,
-    (const void*)&::Scaleform::GFx::AS3::ClassTraits::fl_gfx::IMECandidateListStyle::MakeClassTraits,
-    {
-        0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    &DAT_1431720a0,
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl_gfx { alignas(16) extern const ClassInfo IMECandidateListStyleCI = { 0x9, "IMECandidateListStyle", "scaleform.gfx", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl_gfx::IMECandidateListStyle::MakeClassTraits, 0, 0, 0, 10, 0, 0, 0, (const MemberInfo*)&DAT_1431720a0 }; } } } }
+// 0x143172720
+alignas(16) Sd_143172720 DAT_143172720 = {
     (const void*)&::Scaleform::GFx::AS3::ThunkFunc1<::Scaleform::GFx::AS3::Classes::fl_gfx::Extensions, 0, ::Scaleform::GFx::AS3::Value const, bool>::Func,
     {0},
     "enabled",
@@ -20579,111 +19739,23 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
     },
 };
 
-#pragma comment(linker, "/alternatename:?DAT_1424917d0@@3PAEA=?Func@?$ThunkFunc0@VURLRequest@fl_net@Instances@AS3@GFx@Scaleform@@$05V?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:DAT_143138360=?DAT_143138360@@3USd_143138360@@A")
-#pragma comment(linker, "/alternatename:DAT_143138530=?DAT_143138530@@3USd_143138530@@A")
 // #pragma comment(linker, "/alternatename:DAT_1431383e0=?DAT_1431383e0@@3USd_1431383e0@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a200=?DAT_14313a200@@3USd_14313a200@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a210=?DAT_14313a210@@3USd_14313a210@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a228=?DAT_14313a228@@3USd_14313a228@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a238=?DAT_14313a238@@3USd_14313a238@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a450=?DAT_14313a450@@3USd_14313a450@@A")
-#pragma comment(linker, "/alternatename:DAT_14313a5f8=?DAT_14313a5f8@@3USd_14313a5f8@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b400=?DAT_14313b400@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b410=?DAT_14313b410@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b420=?DAT_14313b420@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b520=?DAT_14313b520@@3USd_14313b520@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b6b0=?DAT_14313b6b0@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b8a8=?DAT_14313b8a8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b8b8=?DAT_14313b8b8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b8c0=?DAT_14313b8c0@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b8c8=?DAT_14313b8c8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b8d8=?DAT_14313b8d8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313ba60=?DAT_14313ba60@@3USd_14313ba60@@A")
-#pragma comment(linker, "/alternatename:DAT_14313bc60=?DAT_14313bc60@@3USd_14313bc60@@A")
 //
 //
 //
 //
-#pragma comment(linker, "/alternatename:?AccessibilityPropertiesCI@fl_accessibility@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_14313c670@@3USd_14313c670@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313d6a0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313d6a0@@3USd_14313d6a0@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313d6e8@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313d6e8@@3USd_14313d6e8@@A")
-#pragma comment(linker, "/alternatename:?CInfo@GlobalObject@fl@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@456@B=?DAT_14313d7b0@@3USd_14313d7b0@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313d9e0@@3USd_14313d9e0@@A=?StringCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B")
-#pragma comment(linker, "/alternatename:?DAT_14313dd00@@3UClassInfo@AS3@GFx@Scaleform@@B=?CatchCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B")
-#pragma comment(linker, "/alternatename:?Months@Date@fl@Instances@AS3@GFx@Scaleform@@2QAY0M@$$CBJA=?DAT_14313e2f0@@3USd_14313e2f0@@A")
-#pragma comment(linker, "/alternatename:?f@ThunkFunction@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B=?DAT_14313e4b8@@3USd_14313e4b8@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313e4e0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313e4e0@@3USd_14313e4e0@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313e690@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313e690@@3USd_14313e690@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313e840@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313e840@@3USd_14313e840@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313e8e0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313e8e0@@3USd_14313e8e0@@A")
-#pragma comment(linker, "/alternatename:?GlobalObjectCPP_ti@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B=?DAT_143144150@@3USd_143144150@@A")
-#pragma comment(linker, "/alternatename:?GlobalObjectCPP_ti_system@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B=?DAT_143144410@@3USd_143144410@@A")
-#pragma comment(linker, "/alternatename:?GlobalObjectCPP_ti_utils@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B=?DAT_143144450@@3USd_143144450@@A")
-#pragma comment(linker, "/alternatename:?GlobalObjectCPP_ti_avmplus@fl@Instances@AS3@GFx@Scaleform@@3QBUThunkInfo@345@B=?DAT_1431446e0@@3USd_1431446e0@@A")
-#pragma comment(linker, "/alternatename:?ShaderCI@fl_display@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143146df0@@3USd_143146df0@@A")
-#pragma comment(linker, "/alternatename:?IMEEventCI@fl_events@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143151280@@3USd_143151280@@A")
-#pragma comment(linker, "/alternatename:?ExternalInterfaceCI@fl_external@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143158870@@3USd_143158870@@A")
-#pragma comment(linker, "/alternatename:?GradientGlowFilterCI@fl_filters@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143159990@@3USd_143159990@@A")
-#pragma comment(linker, "/alternatename:?TransformCI@fl_geom@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_14315d220@@3USd_14315d220@@A")
-#pragma comment(linker, "/alternatename:?URLVariablesCI@fl_net@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143160510@@3USd_143160510@@A")
-#pragma comment(linker, "/alternatename:?IMEConversionModeCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143165490@@3USd_143165490@@A")
-#pragma comment(linker, "/alternatename:?TextSnapshotCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143167f80@@3USd_143167f80@@A")
-#pragma comment(linker, "/alternatename:?AvmTextFieldCSSHolder_vftable@AS3@GFx@Scaleform@@3QBQEAXB=?DAT_14316b3f0@@3USd_14316b3f0@@A")
-#pragma comment(linker, "/alternatename:?MultitouchInputModeCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_14316d310@@3USd_14316d310@@A")
-#pragma comment(linker, "/alternatename:?IExternalizableCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_14316ff40@@3USd_14316ff40@@A")
-#pragma comment(linker, "/alternatename:?IMEExCI@fl_gfx@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_143172640@@3USd_143172640@@A")
-#pragma comment(linker, "/alternatename:?IMECandidateListStyleCI@fl_gfx@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_1431726d0@@3USd_1431726d0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1423dbf30@@3PAEA=?AllocPlaceObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject2Tag@23@PEAVLoadProcess@23@_KE@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dbf90@@3PAEA=?AllocPlaceObject3Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject3Tag@23@PEAVLoadProcess@23@_K@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dbff0@@3PAEA=?AllocRemoveObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObject2Tag@23@PEAVLoadProcess@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc050@@3PAEA=?AllocRemoveObjectTag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObjectTag@23@PEAVLoadProcess@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dc0b0@@3PAEA=?Bind@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc110@@3PAEA=?CreateASIMEManager@AS3Support@GFx@Scaleform@@UEAA?AV?$Ptr@VASIMEManager@GFx@Scaleform@@@3@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1423dc560@@3PAEA=?CreateMemoryContext@AS3Support@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc710@@3PAEA=?CreateMovie@AS3Support@GFx@Scaleform@@UEAAPEAVMovieImpl@23@PEAVMemoryContext@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dccc0@@3PAEA=?GetLevel@AvmSprite@AS3@GFx@Scaleform@@UEBAHXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423dcd60@@3PAEA=?IsStage@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423dd4f0@@3PAEA=?ToAvmVideoCharacterBase@AvmDisplayObjBase@GFx@Scaleform@@UEAAPEAVAvmVideoCharacterBase@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142478480@@3PAEA=??_G?$RefCountBase@VFilter@Render@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424e54b0@@3PAEA=?ActsAsButton@AvmSprite@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424e7140@@3PAEA=?AddDisplayObject@AvmSprite@AS3@GFx@Scaleform@@UEAAPEAVDisplayObjectBase@34@AEBVCharPosInfo@34@AEBVASString@34@PEBV?$ArrayLH@PEAVSwfEvent@GFx@Scaleform@@$0BAE@UArrayDefaultPolicy@3@@4@PEBXIKPEAUCharacterCreateInfo@34@PEAVInteractiveObject@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424eb130@@3PAEA=?AdvanceFrame@AvmSprite@AS3@GFx@Scaleform@@UEAAX_NM@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424efe10@@3PAEA=?CloneInternalData@AvmSprite@AS3@GFx@Scaleform@@UEAAXPEBVInteractiveObject@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f2400@@3PAEA=?CreateASInstance@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAI_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f7190@@3PAEA=?DetachChild@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAA_NPEAVDisplayObjectBase@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424fe600@@3PAEA=?ExecuteFrame0Events@AvmSprite@AS3@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424feab0@@3PAEA=?ExecuteFrameTags@AvmSprite@AS3@GFx@Scaleform@@UEAAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_142501920@@3PAEA=?FindInsertToPlayList@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@PEAV534@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142504810@@3PAEA=?ForceShutdown@AvmSprite@AS3@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142505f20@@3PAEA=?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142507590@@3PAEA=?GetAvmTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAV1234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142508540@@3PAEA=?GetCursorType@AvmSprite@AS3@GFx@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250c7c0@@3PAEA=?GetObjectsUnderPoint@AvmSprite@AS3@GFx@Scaleform@@UEBA_NPEAV?$ArrayDH@V?$Ptr@VDisplayObjectBase@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@4@AEBV?$Point@M@Render@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250f820@@3PAEA=?GetTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425142a0@@3PAEA=?IsFocusEnabled@AvmSprite@AS3@GFx@Scaleform@@UEBA_NW4FocusMovedType@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142514340@@3PAEA=?IsLevelMovie@AvmSprite@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142514fc0@@3PAEA=?IsTabable@AvmSprite@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142518160@@3PAEA=?MustBeInPlaylist@AvmSprite@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425185d0@@3PAEA=?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425190b0@@3PAEA=?OnEventLoad@AvmSprite@AS3@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142519880@@3PAEA=?OnEventUnload@AvmSprite@AS3@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14251ace0@@3PAEA=?OnRemoved@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251b0e0@@3PAEA=?OnUnloading@AvmSprite@AS3@GFx@Scaleform@@UEAA_N_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f430@@3PAEA=?PropagateEvent@AvmDisplayObjContainer@AS3@GFx@Scaleform@@UEAAXAEBVEvent@fl_events@Instances@234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
-#pragma comment(linker, "/alternatename:?DAT_143177ac0@@3PAEA=?SoundTransformCI@fl_media@AS3@GFx@Scaleform@@3UClassInfo@234@B")
-#pragma comment(linker, "/alternatename:?DAT_143a2a850@@3PAEA=?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA")
-#pragma comment(linker, "/alternatename:?DAT_143a2aab0@@3PAEA=?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B")
-#pragma comment(linker, "/alternatename:?DAT_143a2d158@@3PAEA=?DAT_143a2d158@@3QBQEBDB")
 
 // 0x14305cd3c: the root block of VerQueryValue (sfr_ime_01), a C name (group 14305cd3c; the generator sizes
 // unmangled names to the next known global, 0x506c4 bytes here, so it is written by hand)
 extern "C" const char DAT_14305cd3c[] = "\\";
 
 // rt1: vftables the IME and AS2 TUs declare by address
-#pragma comment(linker, "/alternatename:DAT_14313a1d8=?DAT_14313a1d8@@3USd_14313a1d8@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b9c8=?DAT_14313b9c8@@3USd_14313b9c8@@A")
-#pragma comment(linker, "/alternatename:?DAT_14316afc0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_14316afc0@@3USd_14316afc0@@A")
 
 #endif // MS2_HOOK_DLL

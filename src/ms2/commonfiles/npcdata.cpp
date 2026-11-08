@@ -1443,7 +1443,6 @@ static int FUN_1406cfb20(TiXmlElement* pElem, const char* pszName, int& nOut)
 }
 
 // @0x1406cae60
-// MS2-FUNCTIONAL: 8 KB loader; the xml reads are in the exe's order, the frame/temporary layout is not matched
 bool CNpcData::LoadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "stringID", m_strStringId);
@@ -1705,7 +1704,8 @@ bool CNpcData::LoadXml(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "fireVelocity", reinterpret_cast<float&>(m_drop.m_fFireVelocity));
     }
-    TiXmlElement* pLookAt = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
+    // the lookattarget child is read and tested but unused (its spill shares the temporaries' slot range)
+    if (TiXmlElement* pLookAt = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"))) {}
     TiXmlElement* pCorpse = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
     if (pCorpse)
     {

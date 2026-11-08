@@ -187,7 +187,7 @@ class Unk_MeratBlindManager* FUN_1409c1730();   // C3: ugcmanager_4.cpp's return
 extern __int64 DAT_143ab2820;
 extern int DAT_143ab2834;
 extern __int64 DAT_143ab2838;
-extern char DAT_143ab284b;
+extern unsigned char DAT_143ab284b;
 
 // The sort order of the server list (0x141ad5e00): by server id.
 struct Unk_SlServerOrder

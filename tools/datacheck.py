@@ -74,6 +74,28 @@ def _table():
     return tab
 
 
+def _manual_pairs():
+    """(name, va) rows of progress/symbols-manual.tsv. A name the exe holds byte-identical copies of (a ??_G that
+    every SF TU emits) has one VA in the table, but a manual row can name the copy an alias stands for."""
+    out = set()
+    p = os.path.join(bm.ROOT, "progress", "symbols-manual.tsv")
+    if os.path.exists(p):
+        for line in open(p):
+            if line.startswith("#") or not line.strip():
+                continue
+            q = line.rstrip("\n").split("\t")
+            try:
+                out.add((q[0], int(q[1], 16)))
+            except (IndexError, ValueError):
+                pass
+    return out
+
+
+# DATACHECK_MANUAL_TWINS (default on; =0 turns it off): an alias whose target is a twin copy is
+# accepted when symbols-manual has an explicit row binding the target to the alias's own address.
+MANUAL_TWINS = os.environ.get("DATACHECK_MANUAL_TWINS", "1") == "1"
+
+
 def check(u, obj, exe):
     """{name: {"va", "size", "ok", "report"}} for the unit's data globals and alternatename aliases."""
     out = {}
@@ -120,8 +142,11 @@ def check(u, obj, exe):
         if not ok:
             bad.append("initializer differs: " + " ".join(l.strip() for l in buf.getvalue().splitlines()[1:])[:300])
         out[name] = {"va": va, "size": size, "ok": not bad, "report": "; ".join(bad)}
+    twins = _manual_pairs() if MANUAL_TWINS else set()
     for alias, target in _alternatenames(obj):
         va, tva = tab.get(alias), tab.get(target)
+        if va is not None and tva != va and (target, va) in twins:
+            tva = va                                     # explicit manual twin row: the target's copy at va
         bad = []
         if target not in out and (tva is None or tva != va):
             # an alias may also name a known exe global another TU defines (a pointer slot's target)

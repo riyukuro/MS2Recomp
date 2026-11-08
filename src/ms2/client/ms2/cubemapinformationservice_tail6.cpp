@@ -222,9 +222,9 @@ void* FUN_14111e800(void* pThis, void* pRaw)
 //
 //
 //
-//
-//
-//
+// The house record's MS2Ptr (cubemapinformationservice_3's view; AddRef 0x14112fb80): its two ctors are below.
+struct Unk_CMISHouseRef { Unk_CMISHouseRef(void* p); Unk_CMISHouseRef(void** pSlot); ~Unk_CMISHouseRef();
+                          void* m_0; void* m_p; };
 
 // @0x14111e9a0
 void* FUN_14111e9a0(void* pThis, int nUnused)
@@ -234,25 +234,25 @@ void* FUN_14111e9a0(void* pThis, int nUnused)
 }
 
 // @0x14111e9c0
-void* FUN_14111e9c0(void* pThis, void* pOther)
+Unk_CMISHouseRef::Unk_CMISHouseRef(void** pSlot)
 {
-    *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(pThis));
-    return pThis;
+    m_p = *(void**)((char*)pSlot + 8);
+    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(this));
+    // (copy of a map slot's MS2Ptr)
 }
 
 // @0x14111ea00
-void* FUN_14111ea00(void* pThis, void* pRaw)
+Unk_CMISHouseRef::Unk_CMISHouseRef(void* p)
 {
-    *(void**)((char*)pThis + 8) = pRaw;
-    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(pThis));
-    return pThis;
+    m_p = p;
+    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(this));
+    // (from the raw record)
 }
-// cubemapinformationservice_3's declared Unk_CMISHouseRef ctors are these two (the house record's MS2Ptr, AddRef 0x14112fb80).
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??0Unk_CMISHouseRef@@QEAA@PEAPEAX@Z=?FUN_14111e9c0@@YAPEAXPEAX0@Z")
-#pragma comment(linker, "/alternatename:??0Unk_CMISHouseRef@@QEAA@PEAX@Z=?FUN_14111ea00@@YAPEAXPEAX0@Z")
-#endif
+// (cubemapinformationservice_3 calls the two ctors above by name)
+//
+//
+//
+//
 
 // MS2-PIN: ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x14111ea50 ; C3: was FUN_14111ea50, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x140fac7c0)
 //

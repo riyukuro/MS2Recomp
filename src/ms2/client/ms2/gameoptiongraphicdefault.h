@@ -6,6 +6,7 @@
 
 struct Unk_GraphicState
 {
+    Unk_GraphicState();                         // 0x14125d890 (resets to the defaults)
     int m_nQuality;                                                 // +0x00 (default 3)
     int m_nResIdx;                                                  // +0x04 (default 0) the resolution row
     int m_nScreenMode;                                              // +0x08 (default 1) 1 window, 2 full window
@@ -32,6 +33,7 @@ MS2_CHECK_SIZE(Unk_GraphicState, 0x30);
 
 struct Unk_GraphicState2
 {
+    Unk_GraphicState2();                         // 0x14125ec20 (resets to the defaults)
     int m_nOptimalHide;                                             // +0x00 (default 0)
     bool m_bHideAlways;                                             // +0x04 (default 1)
     bool m_bHideBossBattle;                                         // +0x05 (default 0)

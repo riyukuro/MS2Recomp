@@ -39,7 +39,7 @@
 // MS2-PIN: ??0?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x1411226c0 ; prop
 // MS2-PIN: ??0?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122710 ; prop
 // MS2-PIN: ??0?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122760 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBK@@@QEAA@XZ 0x1411227b0 ; prop
+// MS2-PIN: ??0?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@@efd@@QEAA@XZ 0x1411227b0 ; prop
 // MS2-PIN: ??0?$map@W4Unk_CMISKindB@@HU?$less@W4Unk_CMISKindB@@@std@@@efd@@QEAA@XZ 0x141122830 ; prop
 // MS2-PIN: ??0?$map@W4Unk_CMISKindB@@_NU?$less@W4Unk_CMISKindB@@@std@@@efd@@QEAA@XZ 0x141122880 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBP@@@QEAA@XZ 0x1411228d0 ; prop
@@ -152,7 +152,7 @@ template Unk_McC<24>::map();     // 0x141122730: keeps the stand-in map ctor tha
 template <> struct Unk_CMISTree<259> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122760: node 0x38 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<25>::map();     // 0x141122780: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<282> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411227b0: the dtor is efd::map<Unk_CMISKindA,int>'s (same node size as <int,int>)
-template Unk_McC<26>::map();     // 0x1411227d0: the exe still instantiates the old std::map ctor here (the <282> ctor above now builds the efd::map)
+// 0x1411227d0: the std::map<Unk_CMISKindA,int,..,CustomAllocator> ctor the f3c8 efd::map ctor calls (pinned at the end)
 template <> struct Unk_CMISTree<281> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122830: node 0x28 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<27>::map();     // 0x141122850: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<280> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122880: node 0x28 from the efd heap, as the exe's efd dtor frees it
@@ -338,7 +338,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) efd::map<egf::EntityID, __int64>;
     new (p) efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >;
     new (p) efd::map<egf::EntityID, MS2Ptr<Cube> >;
-    new (p) Unk_CMISTree<282>;
+    new (p) efd::map<Unk_CMISKindA, int>;
     new (p) efd::map<Unk_CMISKindB, int>;
     new (p) efd::map<Unk_CMISKindB, bool>;
     new (p) Unk_CMISAnchorS29;
@@ -381,3 +381,4 @@ void Unk_CMISTreeAnchor(void* p)
 #endif
 // MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x141122c80 ; gp1: by the caller 0x141234350
 // MS2-PIN: ??0?$tuple@AEBJ@std@@QEAA@$$QEAV01@@Z 0x141122cc0 ; gp1: by the caller 0x1410e11e0
+// MS2-PIN: ??0?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@efd@@@std@@QEAA@XZ 0x1411227d0 ; exe efd::map<Unk_CMISKindA,int>::map() 0x1411227b0 (f3c8) calls it

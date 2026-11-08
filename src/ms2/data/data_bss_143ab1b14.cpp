@@ -27,7 +27,7 @@ bool DAT_143ab1b14;                                     // 0x143ab1b14
 long Cube::ms_nCount;                                     // 0x143ab2440
 template<> GFxSceneService* SingletonClass<GFxSceneService>::ms_pSingleton{};                                  // 0x143ab25e8
 __int64 DAT_143ab2820;                                  // 0x143ab2820
-unsigned __int64 DAT_143ab2828;                                  // 0x143ab2828
+__int64 DAT_143ab2828;                                           // 0x143ab2828
 unsigned int DAT_143ab2830;                                      // 0x143ab2830
 int DAT_143ab2834;                                      // 0x143ab2834
 __int64 DAT_143ab2838;                                  // 0x143ab2838
@@ -71,7 +71,7 @@ int DAT_143ab2900;                                      // 0x143ab2900
 int DAT_143ab2904;                                      // 0x143ab2904
 __int64 g_nShutdownTime;                                // 0x143ab2908
 int g_socketClosing;                                    // 0x143ab2910
-unsigned int DAT_143ab2914;                                      // 0x143ab2914
+int DAT_143ab2914;                                               // 0x143ab2914
 int DAT_143ab2918;                                      // 0x143ab2918
 unsigned short DAT_143ab291c;                           // 0x143ab291c
 bool DAT_143ab291e;                                     // 0x143ab291e
@@ -102,15 +102,5 @@ template<> EntityWorldManager* TSingleton<EntityWorldManager>::s_instance{};    
 template<> CFunctionCubeService* TSingleton<CFunctionCubeService>::s_instance{};                                    // 0x143ab3918
 template<> PostProcessingService* TSingleton<PostProcessingService>::s_instance{};                        // 0x143ab3da0
 
-#pragma comment(linker, "/alternatename:?DAT_143ab25e8@@3_JA=?ms_pSingleton@?$SingletonClass@VGFxSceneService@@@@2PEAVGFxSceneService@@EA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2828@@3_JA=?DAT_143ab2828@@3_KA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2830@@3HA=?DAT_143ab2830@@3IA")
-#pragma comment(linker, "/alternatename:?DAT_143ab284b@@3DA=?DAT_143ab284b@@3EA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2864@@3HA=?g_upperTargetId@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2910@@3HA=?g_socketClosing@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2914@@3HA=?DAT_143ab2914@@3IA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2946@@3DA=?DAT_143ab2946@@3_NA")
-#pragma comment(linker, "/alternatename:?DAT_143ab2970@@3HA=?DAT_143ab2970@@3IA")
-#pragma comment(linker, "/alternatename:?DAT_143ab3da0@@3PEAVUnk_AeFeatureMgr@@EA=?s_instance@?$TSingleton@VPostProcessingService@@@@2PEAVPostProcessingService@@EA")
 
 #endif // MS2_HOOK_DLL

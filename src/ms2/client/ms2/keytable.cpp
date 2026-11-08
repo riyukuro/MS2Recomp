@@ -131,7 +131,7 @@ CString FUN_14028d1f0(const char* psz);
 CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
-extern int DAT_143af7d40;                                   // input enabled
+extern int g_bAppActive;                                   // input enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);                  // the element is enabled
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);           // int attribute
@@ -1645,7 +1645,7 @@ MS2_REPLACE_METHOD(0x14142E2E0, CKeyTable, SetQuickSlotEntryOnPage, 76, 0x0E6306
 // @0x14142e340
 int CKeyTable::FindActiveKey(int bPressed)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return 0;
     for (POSITION pos = m_keys.GetTailPosition(); pos != 0; m_keys.GetPrev(pos))
     {
@@ -1669,7 +1669,7 @@ MS2_REPLACE_METHOD(0x14142E340, CKeyTable, FindActiveKey, 290, 0x98582408);
 // @0x14142e470
 int CKeyTable::FindActiveComboPrefixKey(int bPressed)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return 0;
     for (int nKey = 0x96; nKey <= 0x99; nKey++)
     {

@@ -365,7 +365,7 @@ public:
     int GetSceneId();
     int GetSubSceneId();
 };
-extern char DAT_143a7b760,DAT_143a7b788;
+struct Sd_143a7b760; struct Sd_143a7b788; extern Sd_143a7b760 DAT_143a7b760; extern Sd_143a7b788 DAT_143a7b788;  // RTTI type descriptors (data_data_game images)
 extern "C" void* __RTDynamicCast(void*,long,void*,void*,int) noexcept(false);   // 0x14280ef5e (CRT; cl predeclares it, clang does not)
 
 #include "ms2/placeholder/conlinepatchfilebuffer.h"
@@ -393,7 +393,7 @@ class Unk_CommonFourInts   // C3: member view for the former free stand-ins
 public:
     void Read(class CInputStream&);
 };
-extern unsigned short DAT_143ab2964;extern int DAT_143ab2970,DAT_143ab2974;
+extern unsigned short DAT_143ab2964;extern unsigned DAT_143ab2970;extern int DAT_143ab2974;
 void FUN_140aad050(void*,const ReconnectionOptions&);
 
 class CGameOption;
@@ -419,7 +419,7 @@ struct Unk_NetworkLoadingPtr {
 };
 MS2_CHECK_SIZE(Unk_NetworkLoadingPtr,8);
 inline Unk_NetworkLoadingPtr FUN_1415401b0(const efd::SmartPointer<CSceneStateBase>&);
-extern char DAT_143a59c28,DAT_143a8da88;
+struct Sd_143a59c28; struct Sd_143a8da88; extern Sd_143a59c28 DAT_143a59c28; extern Sd_143a8da88 DAT_143a8da88;  // RTTI type descriptors (data_data_game images)
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNetworkService);
 static CStringW s_alreadyReconnect=L"alreadyReconnect";

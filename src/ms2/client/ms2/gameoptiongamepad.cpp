@@ -65,7 +65,7 @@ MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
 CGameOptionGamePad::CGameOptionGamePad(int nId, int nType)
     : CBaseOption(nId, nType)
 {
-    FUN_14125f290(&m_state);
+    // m_state: its ctor (0x14125f290) runs as a member ctor
 }
 
 // @0x140a57210

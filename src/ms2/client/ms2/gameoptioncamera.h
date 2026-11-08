@@ -6,6 +6,7 @@
 
 struct Unk_CameraState
 {
+    Unk_CameraState();                         // 0x14125b400 (resets to the defaults)
     bool m_b00;                                                     // +0x00 (default 1)
     bool m_b01;                                                     // +0x01 (default 1)
     int m_n04;                                                      // +0x04 (default 100)

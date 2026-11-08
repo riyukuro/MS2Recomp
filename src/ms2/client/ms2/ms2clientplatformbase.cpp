@@ -75,7 +75,7 @@ class UICashShopDialog* FUN_140b04f80(int);   // C3: was FUN_140b04f80
 void* FUN_140aadf80();
 void FUN_1416a0e70();
 void* FUN_140c77560(void* pGame);
-struct Unk_GraphicState2* FUN_14125ec20(struct Unk_GraphicState2*);   // C3: was FUN_14125ec20
+#include "ms2/client/ms2/gameoptiongraphicdefault.h"   // Unk_GraphicState2 (its ctor is 0x14125ec20)
 void FUN_14125ef90(struct Unk_GraphicState2*);   // C3: was FUN_14125ef90
 void FUN_14125ef60(struct Unk_GraphicState2*, struct Unk_GraphicState2 const*);   // C3: was FUN_14125ef60
 class CGameOption   // C3: member view for the former free stand-ins
@@ -432,15 +432,15 @@ void CClientPlatformBase::vfunc_62() {}
 // @0x140c765b0
 void CClientPlatformBase::vfunc_63(bool, int, int) {}
 
-// MS2-FUNCTIONAL: the exe frame (0x48) has no /GS cookie for the 40-byte option profile local; the opaque placeholder struct gets one (a pointer member drops it but leaves a 0x58 frame); same callees
+// kProfile is the graphic state block (Unk_GraphicState2, 0x14 bytes); its user ctor keeps /GS off the local
 // @0x140c765d0
 void CClientPlatformBase::vfunc_64(int nMode)
 {
     if (nMode >= 0 && nMode < 3) {
         {
-            Unk_OptionProfile kProfile;
-            FUN_14125ec20((struct Unk_GraphicState2*)(&kProfile));
-            kProfile.m_nMode = nMode;
+            Unk_GraphicState2 kProfile;
+            // kProfile: its ctor (0x14125ec20) resets it to the defaults
+            kProfile.m_nOptimalHide = nMode;
             FUN_14125ef60((struct Unk_GraphicState2*)(FUN_140c77560(((void*)TSingleton<CGameOption>::GetInstance()))), (struct Unk_GraphicState2 const*)(&kProfile));
             FUN_14125ef90((struct Unk_GraphicState2*)(&kProfile));
         }

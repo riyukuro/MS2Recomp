@@ -13,13 +13,6 @@
 
 // Functions and objects the tables below point at (static members, free functions and globals defined in other
 // units), declared here so the slots name them directly; the owning classes are reduced to those members.
-struct Sd_1431b4be0;
-struct Sd_1431b4c60;
-struct Sd_1431b4ce0;
-struct Sd_1431b7900;
-struct Sd_1431b7ba0;
-struct Sd_1431b7c70;
-struct Sd_1431b7d50;
 namespace Scaleform {
 namespace GFx {
 namespace AS2 {
@@ -31,6 +24,8 @@ class ASStringContext;
 class Value;
 template <unsigned __int64 P0> class RefCountCollector;
 class FnCall;
+typedef void (*FunctionCFunc)(const FnCall&);
+struct NameFunction { const char* Name; FunctionCFunc Function; };   // as sfr_video_01 declares it
 class NetStreamProto
 {
 public:
@@ -73,13 +68,6 @@ extern unsigned char DAT_142503f50[]; __pragma(comment(linker, "/alternatename:?
 extern unsigned char DAT_142503fa0[]; __pragma(comment(linker, "/alternatename:?DAT_142503fa0@@3PAEA=?ForEachChild_GC@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")) // AS3 InstanceTraits::Traits::ForEachChild_GC
 //
 //
-extern Sd_1431b4be0 DAT_1431b4be0;
-extern Sd_1431b4c60 DAT_1431b4c60;
-extern Sd_1431b4ce0 DAT_1431b4ce0;
-extern Sd_1431b7900 DAT_1431b7900;
-extern Sd_1431b7ba0 DAT_1431b7ba0;
-extern Sd_1431b7c70 DAT_1431b7c70;
-extern Sd_1431b7d50 DAT_1431b7d50;
 void FUN_140012e10(void *, void *, void *);
 char const * FUN_140012ef0(void *);
 char const * FUN_140012f40(void *);
@@ -438,7 +426,7 @@ extern unsigned char DAT_1425f8870[];
 extern unsigned char DAT_1425f8880[];
 extern unsigned char DAT_1425f88e0[];
 extern unsigned char DAT_1425f8940[];
-extern unsigned char DAT_14280ef52[];
+extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
 extern unsigned char DAT_1429386e0[];
 extern unsigned char DAT_1429388e0[];
 extern unsigned char DAT_14293ff70[];
@@ -482,7 +470,24 @@ extern unsigned char DAT_142994c50[];
 namespace Scaleform {
 namespace GFx {
 namespace AS3 {
-struct ClassInfo;
+struct ClassInfo
+{
+    unsigned long long Flags;
+    const char* Name;
+    const char* PkgName;
+    const ClassInfo* Parent;
+    const void* Factory;
+    unsigned char ClassMethodNum;
+    unsigned char ClassMemberNum;
+    unsigned char InstanceMethodNum;
+    unsigned char InstanceMemberNum;
+    const void* ClassMethod;
+    const void* ClassMember;
+    const void* InstanceMethod;
+    const void* InstanceMember;
+};
+namespace fl_net { alignas(16) extern const ClassInfo NetStreamCI; }
+namespace fl_media { alignas(16) extern const ClassInfo VideoCI; }
 namespace fl { alignas(16) extern const ClassInfo ObjectCI; alignas(16) extern const ClassInfo BooleanCI; alignas(16) extern const ClassInfo uintCI; alignas(16) extern const ClassInfo NumberCI; }
 namespace fl_display { alignas(16) extern const ClassInfo DisplayObjectCI; }
 namespace fl_events { alignas(16) extern const ClassInfo EventDispatcherCI; }
@@ -493,73 +498,6 @@ namespace fl_media { alignas(16) extern const ClassInfo SoundTransformCI; }
 void FUN_14000e0c0();
 
 #pragma pack(push, 1)
-struct Sd_1431b4be0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-};
-struct Sd_1431b4c60 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    unsigned char b78[0x8];
-};
-struct Sd_1431b4ce0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    unsigned char b78[0x28];
-};
-struct Sd_1431b4d80 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    unsigned char b50[0x10];
-};
 struct Sd_1431b6878 {
     unsigned char ba8[0x1b8];
     const void* p260;
@@ -747,261 +685,84 @@ struct Sd_1431b6878 {
     const void* p978;
     unsigned char b980[0x10];
 };
-struct Sd_1431b7160 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431b71b0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-};
-struct Sd_1431b7260 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-};
-struct Sd_1431b7360 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-};
-struct Sd_1431b7858 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-};
-struct Sd_1431b7900 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-};
-struct Sd_1431b7b50 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    unsigned char b28[0x18];
-    const void* p40;
-    unsigned char b48[0x8];
-};
-struct Sd_1431b7ba0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-};
-struct Sd_1431b7c70 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-};
-struct Sd_1431b7d50 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-};
 #pragma pack(pop)
 
 extern Sd_1431b6878 DAT_1431b6878;
-extern Sd_1431b7900 DAT_1431b7900;
 
 // 0x1431b4be0
-alignas(16) Sd_1431b4be0 DAT_1431b4be0 = {
-    (const void*)&FUN_140002c10,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
+extern void* DAT_1431b4be0[];
+alignas(16) void* DAT_1431b4be0[16] = {
+    (void*)&FUN_140002c10,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
     DAT_140002b00,
     DAT_142300840,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    (const void*)&FUN_140002b30,
-    (const void*)&FUN_140002bb0,
-    (const void*)&FUN_140002cc0,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&FUN_140002b30,
+    (void*)&FUN_140002bb0,
+    (void*)&FUN_140002cc0,
 };
 // 0x1431b4c60
-alignas(16) Sd_1431b4c60 DAT_1431b4c60 = {
-    (const void*)&FUN_140002d20,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    DAT_14280ef52,
-    {0},
+extern void* DAT_1431b4c60[];
+alignas(16) void* DAT_1431b4c60[16] = {
+    (void*)&FUN_140002d20,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    (void*)&_purecall,
+    0,
 };
 // 0x1431b4ce0
-alignas(16) Sd_1431b4ce0 DAT_1431b4ce0 = {
-    (const void*)&FUN_140002e40,
-    (const void*)&FUN_140002d90,
-    (const void*)&FUN_140002da0,
-    (const void*)&FUN_140002930,
-    (const void*)&FUN_140002db0,
-    (const void*)&FUN_140002950,
-    (const void*)&FUN_140002dc0,
-    (const void*)&FUN_140002dd0,
-    (const void*)&FUN_140002de0,
-    (const void*)&FUN_140002df0,
-    (const void*)&FUN_140002960,
-    (const void*)&FUN_140002e00,
-    (const void*)&FUN_140002e10,
-    (const void*)&FUN_140002e20,
-    (const void*)&FUN_140002980,
-    {
-        0x73, 0x65, 0x74, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x00, 0x00,
-        0x70, 0x6c, 0x61, 0x79, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x75, 0x73, 0x65, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+extern void* DAT_1431b4ce0[];
+alignas(16) void* DAT_1431b4ce0[15] = {
+    (void*)&FUN_140002e40,
+    (void*)&FUN_140002d90,
+    (void*)&FUN_140002da0,
+    (void*)&FUN_140002930,
+    (void*)&FUN_140002db0,
+    (void*)&FUN_140002950,
+    (void*)&FUN_140002dc0,
+    (void*)&FUN_140002dd0,
+    (void*)&FUN_140002de0,
+    (void*)&FUN_140002df0,
+    (void*)&FUN_140002960,
+    (void*)&FUN_140002e00,
+    (void*)&FUN_140002e10,
+    (void*)&FUN_140002e20,
+    (void*)&FUN_140002980,
+};
+// 0x1431b4d58: the string bytes after the vftable
+alignas(8) unsigned char DAT_1431b4d58[0x28] = {
+    0x73, 0x65, 0x74, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x00, 0x00,
+    0x70, 0x6c, 0x61, 0x79, 0x00, 0x00, 0x00, 0x00, 0x70, 0x61, 0x75, 0x73, 0x65, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x1431b4d80
-alignas(16) Sd_1431b4d80 DAT_1431b4d80 = {
-    "close",
-    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Close,
-    "pause",
-    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Pause,
-    "play",
-    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Play,
-    "setBufferTime",
-    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::SetBufferTime,
-    "seek",
-    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Seek,
-    {0},
+extern Scaleform::GFx::AS2::NameFunction DAT_1431b4d80[];
+alignas(16) Scaleform::GFx::AS2::NameFunction DAT_1431b4d80[6] = {
+    { "close", &::Scaleform::GFx::AS2::NetStreamProto::Close },
+    { "pause", &::Scaleform::GFx::AS2::NetStreamProto::Pause },
+    { "play", &::Scaleform::GFx::AS2::NetStreamProto::Play },
+    { "setBufferTime", &::Scaleform::GFx::AS2::NetStreamProto::SetBufferTime },
+    { "seek", &::Scaleform::GFx::AS2::NetStreamProto::Seek },
+    { 0, 0 },
 };
 void* PTR_s_attachVideo_1431b5800 = (void*)"attachVideo";       // 0x1431b5800
 // 0x1431b6060 is Video02Character's vftable, emitted by sfr_video_02
@@ -1309,29 +1070,26 @@ alignas(8) Sd_1431b6878 DAT_1431b6878 = {
     {0},
 };
 // 0x1431b7160
-alignas(16) Sd_1431b7160 DAT_1431b7160 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+alignas(16) const Scaleform::GFx::AS3::ClassInfo Scaleform::GFx::AS3::fl_net::NetStreamCI = {
+    0x1,
     "NetStream",
     "flash.net",
     &::Scaleform::GFx::AS3::fl_events::EventDispatcherCI,
     (const void*)&FUN_140019bd0,
-    {
-        0x01, 0x00, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+    0x01, 0x00, 0x2d, 0x00,
     (const unsigned char*)&DAT_1431b6878 + 0x8c0,
-    {0},
+    0,
     (const unsigned char*)&DAT_1431b6878 + 0x1b8,
-    {0},
+    0,
 };
 // 0x1431b71b0
-alignas(16) Sd_1431b71b0 DAT_1431b71b0 = {
-    (const void*)DAT_142503fa0,
+extern void* DAT_1431b71b0[];
+alignas(16) void* DAT_1431b71b0[17] = {
+    (void*)DAT_142503fa0,
     DAT_1423df5a0,
-    (const void*)&FUN_140012ef0,
+    (void*)&FUN_140012ef0,
     DAT_1423df460,
-    (const void*)&FUN_140014a80,
+    (void*)&FUN_140014a80,
     DAT_1423df420,
     DAT_142514320,
     DAT_14250bbd0,
@@ -1341,17 +1099,18 @@ alignas(16) Sd_1431b71b0 DAT_1431b71b0 = {
     DAT_14252c4e0,
     DAT_14250a5b0,
     DAT_1425117e0,
-    (const void*)&FUN_1400155d0,
+    (void*)&FUN_1400155d0,
     DAT_1424e42a0,
     DAT_14252e480,
 };
 // 0x1431b7260
-alignas(16) Sd_1431b7260 DAT_1431b7260 = {
-    (const void*)DAT_142503800,
+extern void* DAT_1431b7260[];
+alignas(16) void* DAT_1431b7260[26] = {
+    (void*)DAT_142503800,
     DAT_1423df5b0,
-    (const void*)&FUN_140012f40,
+    (void*)&FUN_140012f40,
     DAT_1423df430,
-    (const void*)&FUN_140014b10,
+    (void*)&FUN_140014b10,
     DAT_1423df420,
     DAT_142528a50,
     DAT_14250cc60,
@@ -1375,20 +1134,21 @@ alignas(16) Sd_1431b7260 DAT_1431b7260 = {
     DAT_142516630,
 };
 // 0x1431b7360
-alignas(16) Sd_1431b7360 DAT_1431b7360 = {
-    (const void*)&FUN_140012e10,
+extern void* DAT_1431b7360[];
+alignas(16) void* DAT_1431b7360[21] = {
+    (void*)&FUN_140012e10,
     DAT_1423df5b0,
-    (const void*)&FUN_1400141a0,
+    (void*)&FUN_1400141a0,
     DAT_1423df430,
-    (const void*)&FUN_140015590,
+    (void*)&FUN_140015590,
     DAT_1423df420,
     DAT_142528a50,
     DAT_14250cc60,
     DAT_142509a80,
     DAT_1424f4a40,
     DAT_1424ee7f0,
-    (const void*)&FUN_140015c40,
-    (const void*)DAT_1424f0700,
+    (void*)&FUN_140015c40,
+    (void*)DAT_1424f0700,
     DAT_1423df590,
     DAT_1424e8060,
     DAT_1423df580,
@@ -1399,20 +1159,22 @@ alignas(16) Sd_1431b7360 DAT_1431b7360 = {
     DAT_142512620,
 };
 // 0x1431b7858
-alignas(8) Sd_1431b7858 DAT_1431b7858 = {
-    (const void*)&FUN_140015c00,
-    (const void*)&FUN_140019890,
-    (const void*)&FUN_1400182f0,
-    (const void*)&FUN_140018930,
-    (const void*)&FUN_140014900,
+extern void* DAT_1431b7858[];
+alignas(8) void* DAT_1431b7858[5] = {
+    (void*)&FUN_140015c00,
+    (void*)&FUN_140019890,
+    (void*)&FUN_1400182f0,
+    (void*)&FUN_140018930,
+    (void*)&FUN_140014900,
 };
 // 0x1431b7900
-alignas(16) Sd_1431b7900 DAT_1431b7900 = {
-    (const void*)DAT_142503f50,
+extern void* DAT_1431b7900[];
+alignas(16) void* DAT_1431b7900[15] = {
+    (void*)DAT_142503f50,
     DAT_1423df5a0,
-    (const void*)&FUN_140019af0,
+    (void*)&FUN_140019af0,
     DAT_1423df4a0,
-    (const void*)&FUN_140019b60,
+    (void*)&FUN_140019b60,
     DAT_1423df420,
     DAT_142514320,
     DAT_14250bc40,
@@ -1425,7 +1187,7 @@ alignas(16) Sd_1431b7900 DAT_1431b7900 = {
     DAT_1424effa0,
 };
 // Video instance thunks begin at 0x1431b79e0, beyond the preceding vtable.
-extern unsigned char DAT_14313da80[];
+namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo; namespace fl { alignas(16) extern const ClassInfo int_CI; } } } }
 void FUN_14001a9b0(void*, void*, void*, unsigned int*);
 void FUN_14001aa20(void*, void*, void*, unsigned __int64, unsigned int, void*);
 void FUN_14001aa90(void*, void*, void*, unsigned int*);
@@ -1438,48 +1200,46 @@ void FUN_14001a180(void*, void*, void*, void*);
 struct Sd_1431b79e0 { const void* f; const void* t; const char* n; const void* ns; unsigned long long k; };
 alignas(16) extern const Sd_1431b79e0 DAT_1431b79e0[9];
 alignas(16) const Sd_1431b79e0 DAT_1431b79e0[9] = {
-    {(const void*)&FUN_14001a9b0, DAT_14313da80, "deblocking", nullptr, 0x1ull},
+    {(const void*)&FUN_14001a9b0, &::Scaleform::GFx::AS3::fl::int_CI, "deblocking", nullptr, 0x1ull},
     {(const void*)&FUN_14001aa20, nullptr, "deblocking", nullptr, 0x4aull},
     {(const void*)&FUN_14001aa90, &::Scaleform::GFx::AS3::fl::BooleanCI, "smoothing", nullptr, 0x1ull},
     {(const void*)&FUN_14001ab00, nullptr, "smoothing", nullptr, 0x4aull},
-    {(const void*)&FUN_14001ab60, DAT_14313da80, "videoHeight", nullptr, 0x1ull},
-    {(const void*)&FUN_14001abd0, DAT_14313da80, "videoWidth", nullptr, 0x1ull},
+    {(const void*)&FUN_14001ab60, &::Scaleform::GFx::AS3::fl::int_CI, "videoHeight", nullptr, 0x1ull},
+    {(const void*)&FUN_14001abd0, &::Scaleform::GFx::AS3::fl::int_CI, "videoWidth", nullptr, 0x1ull},
     {(const void*)&FUN_14001ac80, nullptr, "attachCamera", nullptr, 0x48ull},
     {(const void*)&FUN_14001acd0, nullptr, "attachNetStream", nullptr, 0x48ull},
     {(const void*)&FUN_14001a180, nullptr, "clear", nullptr, 0x0ull},
 };
 // 0x1431b7b50
-alignas(16) Sd_1431b7b50 DAT_1431b7b50 = {
-    {
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+alignas(16) const Scaleform::GFx::AS3::ClassInfo Scaleform::GFx::AS3::fl_media::VideoCI = {
+    0x1,
     "Video",
     "flash.media",
     &::Scaleform::GFx::AS3::fl_display::DisplayObjectCI,
     (const void*)&FUN_14001af10,
-    {
-        0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const unsigned char*)&DAT_1431b79e0[0],
-    {0},
+    0x00, 0x00, 0x09, 0x00,
+    0,
+    0,
+    &DAT_1431b79e0[0],
+    0,
 };
 // 0x1431b7ba0
-alignas(16) Sd_1431b7ba0 DAT_1431b7ba0 = {
+extern void* DAT_1431b7ba0[];
+alignas(16) void* DAT_1431b7ba0[22] = {
     DAT_142442e10,
     DAT_1423df5b0,
-    (const void*)&FUN_14001a040,
+    (void*)&FUN_14001a040,
     DAT_142443380,
-    (const void*)&FUN_14001a2f0,
+    (void*)&FUN_14001a2f0,
     DAT_1423df420,
     DAT_142528a50,
     DAT_14250cc60,
     DAT_142509a80,
     DAT_1424f4a40,
     DAT_1424ee7f0,
-    (const void*)&FUN_14001a760,
-    (const void*)DAT_1424f0700,
-    (const void*)&FUN_14001a800,
+    (void*)&FUN_14001a760,
+    (void*)DAT_1424f0700,
+    (void*)&FUN_14001a800,
     DAT_1424e8060,
     DAT_1423df580,
     DAT_14250c010,
@@ -1487,15 +1247,16 @@ alignas(16) Sd_1431b7ba0 DAT_1431b7ba0 = {
     DAT_14250c060,
     DAT_142500e50,
     DAT_142512620,
-    (const void*)&FUN_14001a470,
+    (void*)&FUN_14001a470,
 };
 // 0x1431b7c70
-alignas(16) Sd_1431b7c70 DAT_1431b7c70 = {
-    (const void*)DAT_142503fa0,
+extern void* DAT_1431b7c70[];
+alignas(16) void* DAT_1431b7c70[17] = {
+    (void*)DAT_142503fa0,
     DAT_1423df5a0,
-    (const void*)&FUN_14001a0b0,
+    (void*)&FUN_14001a0b0,
     DAT_1423df460,
-    (const void*)&FUN_14001a5c0,
+    (void*)&FUN_14001a5c0,
     DAT_1423df420,
     DAT_142514320,
     DAT_14250bbd0,
@@ -1505,17 +1266,18 @@ alignas(16) Sd_1431b7c70 DAT_1431b7c70 = {
     DAT_14252c4e0,
     DAT_14250a5b0,
     DAT_1425117e0,
-    (const void*)&FUN_14001a860,
+    (void*)&FUN_14001a860,
     DAT_1424e42a0,
     DAT_14252e480,
 };
 // 0x1431b7d50
-alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
-    (const void*)DAT_142503f50,
+extern void* DAT_1431b7d50[];
+alignas(16) void* DAT_1431b7d50[15] = {
+    (void*)DAT_142503f50,
     DAT_1423df5a0,
-    (const void*)&FUN_14001ae30,
+    (void*)&FUN_14001ae30,
     DAT_1423df4a0,
-    (const void*)&FUN_14001aea0,
+    (void*)&FUN_14001aea0,
     DAT_1423df420,
     DAT_142514320,
     DAT_14250bc40,
@@ -1528,64 +1290,11 @@ alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
     DAT_1424effa0,
 };
 
-#pragma comment(linker, "/alternatename:?DAT_1431b4be0@@3PEAXEA=?DAT_1431b4be0@@3USd_1431b4be0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b4c60@@3PEAXEA=?DAT_1431b4c60@@3USd_1431b4c60@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b4ce0@@3PEAXEA=?DAT_1431b4ce0@@3USd_1431b4ce0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b4d80@@3UNameFunction@AS2@GFx@Scaleform@@A=?DAT_1431b4d80@@3USd_1431b4d80@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6BObjectInterface@123@@")
 #pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@")
-#pragma comment(linker, "/alternatename:?DAT_1431b7160@@3PEAXEA=?DAT_1431b7160@@3USd_1431b7160@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b71b0@@3PEAXEA=?DAT_1431b71b0@@3USd_1431b71b0@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b7260@@3PEAXEA=?DAT_1431b7260@@3USd_1431b7260@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b7360@@3PEAXEA=?DAT_1431b7360@@3USd_1431b7360@@A")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b7858@@3PEAXEA=?DAT_1431b7858@@3USd_1431b7858@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7900@@3PEAXEA=?DAT_1431b7900@@3USd_1431b7900@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7b50@@3PEAXEA=?DAT_1431b7b50@@3USd_1431b7b50@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7ba0@@3PEAXEA=?DAT_1431b7ba0@@3USd_1431b7ba0@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7c70@@3PEAXEA=?DAT_1431b7c70@@3USd_1431b7c70@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b7d50@@3PEAXEA=?DAT_1431b7d50@@3USd_1431b7d50@@A")
 #pragma comment(linker, "/alternatename:?DAT_140002b00@@3PAEA=?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_140007ba0@@3PAEA=?Set__proto__@Object@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAV1234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140007d90@@3PAEA=?IsSuper@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_140007da0@@3PAEA=?IsBuiltinPrototype@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_140007db0@@3PAEA=?AddInterface@ObjectInterface@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@HPEAVFunctionObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140007dc0@@3PAEA=?GetTextValue@Object@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140007dd0@@3PAEA=?DoesImplement@Object@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBV1234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140007de0@@3PAEA=?GetASCharacter@Object@AS2@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_140007df0@@3PAEA=?GetASCharacter@Object@AS2@GFx@Scaleform@@UEBAPEBVInteractiveObject@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_140007e00@@3PAEA=?CheckAndResetCtorRef@Object@AS2@GFx@Scaleform@@UEAAXPEAVFunctionObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140007e10@@3PAEA=?GetObjectType@NetStream@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_140008250@@3PAEA=?SetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140009ef0@@3PAEA=?GetMember@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140009f00@@3PAEA=?AddInterface@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@HPEAVFunctionObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140009f10@@3PAEA=?DoesImplement@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBVObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_140009f30@@3PAEA=?IsBuiltinPrototype@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000a3a0@@3PAEA=?Finalize_GC@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000a770@@3PAEA=?ExecuteForEachChild_GC@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000ce70@@3PAEA=?GetObjectType@FunctionObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14000ce80@@3PAEA=?IsAsFunction@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000ce90@@3PAEA=?IsNull@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000cea0@@3PAEA=?IsCFunction@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000ceb0@@3PAEA=?GetNumArgs@CFunctionObject@AS2@GFx@Scaleform@@UEBAHXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000d6e0@@3PAEA=?GetObjectType@VideoObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14000d6f0@@3PAEA=?GetMember@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000d700@@3PAEA=?AddInterface@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@HPEAVFunctionObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000d710@@3PAEA=?DoesImplement@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBVObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000d730@@3PAEA=?IsBuiltinPrototype@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000daa0@@3PAEA=?GetASCharacter@VideoObject@AS2@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14000db10@@3PAEA=?GetASCharacter@VideoObject@AS2@GFx@Scaleform@@UEBAPEBVInteractiveObject@34@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14000dbc0@@3PAEA=?Finalize_GC@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000e1a0@@3PAEA=?ExecuteForEachChild_GC@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e370@@3PAEA=?GetTextValue@ObjectInterface@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e380@@3PAEA=?Bind@AvmCharacter@AS2@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e3e0@@3PAEA=?GetRelativeTarget@AvmCharacter@AS2@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@AEBVASString@34@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e3f0@@3PAEA=?ReplaceChildCharacterOnLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@0@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e400@@3PAEA=?ReplaceChildCharacter@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@0@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e4d0@@3PAEA=?ExecuteBuffer@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVActionBuffer@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142300840@@3PAEA=?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dc0b0@@3PAEA=?Bind@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dcd60@@3PAEA=?IsStage@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df420@@3PAEA=?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df430@@3PAEA=?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df460@@3PAEA=?GetAS3ObjectName@Traits@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
@@ -1600,204 +1309,34 @@ alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
 #pragma comment(linker, "/alternatename:?DAT_1424e4290@@3PAEA=??1CheckResult@AS3@GFx@Scaleform@@QEAA@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1424e42a0@@3PAEA=?AS3Constructor@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXAEBV1345@AEBVValue@345@IPEBV6345@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424e8060@@3PAEA=?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424eb250@@3PAEA=?AdvanceFrame@DisplayObjectBase@GFx@Scaleform@@UEAAX_NM@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424eb770@@3PAEA=?ApplyTypeArgs@Class@AS3@GFx@Scaleform@@UEAAAEAV1234@IPEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424ee6f0@@3PAEA=?Call@Class@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424ee7f0@@3PAEA=?Call@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424eeca0@@3PAEA=?CheckAdvanceStatus@InteractiveObject@GFx@Scaleform@@UEAAH_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424effa0@@3PAEA=?Coerce@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA_NAEBVValue@345@AEAV6345@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f0610@@3PAEA=?Construct@Class@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f2400@@3PAEA=?CreateASInstance@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAI_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f7180@@3PAEA=?DetachChild@AvmDisplayObj@AS3@GFx@Scaleform@@UEAA_NPEAVDisplayObjectBase@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f74d0@@3PAEA=?DoDisplayCallback@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424fe610@@3PAEA=?ExecuteFrame0Events@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_142500e50@@3PAEA=?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142501a60@@3PAEA=?FindInsertToPlayList@AvmInteractiveObj@AS3@GFx@Scaleform@@UEAAPEAVInteractiveObject@34@PEAV534@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142504840@@3PAEA=?ForceShutdown@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142505f20@@3PAEA=?GetASClassName@AvmDisplayObj@AS3@GFx@Scaleform@@UEBAAEAVString@4@PEAV54@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142506ef0@@3PAEA=?GetAcceptAnimMoves@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142507590@@3PAEA=?GetAvmTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAV1234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425084c0@@3PAEA=?GetContinueAnimationFlag@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425084d0@@3PAEA=?GetCurrentFrame@InteractiveObject@GFx@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_142509990@@3PAEA=?GetDrawingContext@DisplayObject@GFx@Scaleform@@UEAAPEAVDrawingContext@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509ca0@@3PAEA=?GetFilePtr@Traits@AS3@GFx@Scaleform@@UEBAPEAVVMAbcFile@234@XZ")
 #pragma comment(linker, "/alternatename:?DAT_142509d30@@3PAEA=?GetFixedMemSize@Traits@AS3@GFx@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_142509d40@@3PAEA=?GetFocusRect@InteractiveObject@GFx@Scaleform@@UEBA?AV?$Rect@M@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142509da0@@3PAEA=?GetFontManager@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVFontManager@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142509dc0@@3PAEA=?GetFrameLabel@InteractiveObject@GFx@Scaleform@@UEAAPEBVString@3@IPEAI@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250a5b0@@3PAEA=?GetGlobalObjectScript@Traits@AS3@GFx@Scaleform@@UEBAPEAVGlobalObjectScript@fl@Instances@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250b360@@3PAEA=?GetLabeledFrame@InteractiveObject@GFx@Scaleform@@UEAA_NPEBDPEAI_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250b3a0@@3PAEA=?GetLoadingFrame@InteractiveObject@GFx@Scaleform@@UEBAIXZ")
 #pragma comment(linker, "/alternatename:?DAT_14250bbd0@@3PAEA=?GetName@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250bc40@@3PAEA=?GetName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250be40@@3PAEA=?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250c010@@3PAEA=?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250c060@@3PAEA=?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250c2e0@@3PAEA=?GetObjectsUnderPoint@AvmDisplayObj@AS3@GFx@Scaleform@@UEBA_NPEAV?$ArrayDH@V?$Ptr@VDisplayObjectBase@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@4@AEBV?$Point@M@Render@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250cc20@@3PAEA=?GetPlayState@InteractiveObject@GFx@Scaleform@@UEBA?AW4PlayState@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250cc60@@3PAEA=?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250d550@@3PAEA=?GetQualifiedName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250d570@@3PAEA=?GetQualifiedName@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250d620@@3PAEA=?GetRatio@DisplayObjectBase@GFx@Scaleform@@UEBAMXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250d6f0@@3PAEA=?GetRectBounds@DisplayObjectBase@GFx@Scaleform@@UEBA?AV?$Rect@M@Render@3@AEBV?$Matrix2x4@M@53@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250ee20@@3PAEA=?GetStateChangeFlags@InteractiveObject@GFx@Scaleform@@UEBAEXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250f760@@3PAEA=?GetTopMostMouseEntity@DisplayObjectBase@GFx@Scaleform@@UEAA?AW4TopMostResult@123@AEBV?$Point@M@Render@3@PEAUTopMostDescr@123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250f820@@3PAEA=?GetTopParent@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250f850@@3PAEA=?GetTopParent@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVInteractiveObject@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510a30@@3PAEA=?GetVisible@DisplayObjectBase@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142510d10@@3PAEA=?GotoFrame@InteractiveObject@GFx@Scaleform@@UEAAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510d40@@3PAEA=?Has3D@DisplayObjectBase@GFx@Scaleform@@UEAA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142510e60@@3PAEA=?HasLooped@InteractiveObject@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_1425117e0@@3PAEA=?InitOnDemand@Traits@AS3@GFx@Scaleform@@MEBAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_1425117f0@@3PAEA=?InitOnDemand@Traits@ClassTraits@AS3@GFx@Scaleform@@MEBAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_142511810@@3PAEA=?InitPrototype@Class@AS3@GFx@Scaleform@@UEBAXAEAVObject@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142512620@@3PAEA=?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
 #pragma comment(linker, "/alternatename:?DAT_142514320@@3PAEA=?IsGlobal@Traits@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142515190@@3PAEA=?IsUsedAsMask@DisplayObject@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_142516630@@3PAEA=?MakePrototype@Class@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425185d0@@3PAEA=?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142518990@@3PAEA=?OnCharEvent@InteractiveObject@GFx@Scaleform@@UEAA_NKI@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251a100@@3PAEA=?OnGettingKeyboardFocus@InteractiveObject@GFx@Scaleform@@UEAAXIW4FocusMovedType@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251a3a0@@3PAEA=?OnKeyEvent@InteractiveObject@GFx@Scaleform@@UEAA_NAEBVEventId@23@PEAH@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251a820@@3PAEA=?OnLosingKeyboardFocus@InteractiveObject@GFx@Scaleform@@UEAA_NPEAV123@IW4FocusMovedType@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251ac20@@3PAEA=?OnMouseEvent@InteractiveObject@GFx@Scaleform@@UEAA_NAEBVEventId@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251ac30@@3PAEA=?OnMouseWheelEvent@InteractiveObject@GFx@Scaleform@@UEAA_NH@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251ace0@@3PAEA=?OnRemoved@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251cab0@@3PAEA=?PointTestLocal@DisplayObjectBase@GFx@Scaleform@@UEBA_NAEBV?$Point@M@Render@3@E@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251ced0@@3PAEA=?PostInit@Class@AS3@GFx@Scaleform@@UEBAXAEBVValue@234@IPEBV5234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14251cfc0@@3PAEA=?PreInit@Class@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f3a0@@3PAEA=?PropagateEvent@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXAEBVEvent@fl_events@Instances@234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f540@@3PAEA=?PropagateFocusGroupMask@InteractiveObject@GFx@Scaleform@@UEAAXI@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f550@@3PAEA=?PropagateKeyEvent@InteractiveObject@GFx@Scaleform@@UEAAXAEBVEventId@23@PEAH@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f560@@3PAEA=?PropagateMouseEvent@InteractiveObject@GFx@Scaleform@@UEAAXAEBVEventId@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f5c0@@3PAEA=?PropagateNoAdvanceGlobalFlag@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14251f5d0@@3PAEA=?PropagateNoAdvanceLocalFlag@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425227d0@@3PAEA=?RemoveDisplayObject@InteractiveObject@GFx@Scaleform@@UEAAXPEAVDisplayObjectBase@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142525c90@@3PAEA=?Restart@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425265f0@@3PAEA=?SetBlendMode@InteractiveObject@GFx@Scaleform@@UEAAXW4BlendMode@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142526720@@3PAEA=?SetDisplayCallback@InteractiveObject@GFx@Scaleform@@UEAAXP6AXPEAX@Z0@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425287f0@@3PAEA=?SetPause@InteractiveObject@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528800@@3PAEA=?SetPlayState@InteractiveObject@GFx@Scaleform@@UEAAXW4PlayState@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528d90@@3PAEA=?SetRatio@DisplayObjectBase@GFx@Scaleform@@UEAAXM@Z")
-#pragma comment(linker, "/alternatename:?DAT_142529f50@@3PAEA=?SetStateChangeFlags@InteractiveObject@GFx@Scaleform@@UEAAXE@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252b580@@3PAEA=?SetVisible@DisplayObjectBase@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252c4e0@@3PAEA=?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252c9c0@@3PAEA=?StopActiveSounds@InteractiveObject@GFx@Scaleform@@UEAAXPEAVASSoundIntf@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252c9d0@@3PAEA=?StopActiveSounds@InteractiveObject@GFx@Scaleform@@UEAAXPEAVSoundResource@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252c9e0@@3PAEA=?StopActiveSounds@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1ae0@@3PAEA=?CreateNewInstanceName@DisplayObject@GFx@Scaleform@@MEBA?AVASString@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1ca0@@3PAEA=?GetBlendMode@DisplayObjectBase@GFx@Scaleform@@UEBA?AW4BlendMode@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1d50@@3PAEA=?GetFOV@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1d70@@3PAEA=?GetFilters@DisplayObjectBase@GFx@Scaleform@@UEBAPEBVFilterSet@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1db0@@3PAEA=?GetFocalLength@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f1f60@@3PAEA=?GetHeight@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2040@@3PAEA=?GetLog@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVLog@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2140@@3PAEA=?GetMatrix3D@DisplayObject@GFx@Scaleform@@UEBAAEBV?$Matrix3x4@M@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2210@@3PAEA=?GetMatrix@DisplayObject@GFx@Scaleform@@UEBAAEBV?$Matrix2x4@M@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f22e0@@3PAEA=?GetMouseX@DisplayObject@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f23e0@@3PAEA=?GetMouseY@DisplayObject@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f25c0@@3PAEA=?GetProjectionCenter@DisplayObjectBase@GFx@Scaleform@@UEBA?AV?$Point@M@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2600@@3PAEA=?GetProjectionMatrix3D@DisplayObjectBase@GFx@Scaleform@@UEBA_NPEAV?$Matrix4x4@M@Render@3@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f2760@@3PAEA=?GetRotation@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f29a0@@3PAEA=?GetViewMatrix3D@DisplayObjectBase@GFx@Scaleform@@UEBA_NPEAV?$Matrix3x4@M@Render@3@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f2a40@@3PAEA=?GetWidth@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2cd0@@3PAEA=?GetX@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2d40@@3PAEA=?GetXRotation@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2db0@@3PAEA=?GetXScale@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2e20@@3PAEA=?GetY@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2e90@@3PAEA=?GetYRotation@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2f00@@3PAEA=?GetYScale@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2f70@@3PAEA=?GetZ@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f2fe0@@3PAEA=?GetZScale@DisplayObjectBase@GFx@Scaleform@@UEBANXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f3390@@3PAEA=?IsVerboseAction@DisplayObjectBase@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f33e0@@3PAEA=?IsVerboseActionErrors@DisplayObjectBase@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f3980@@3PAEA=?OnEvent@DisplayObject@GFx@Scaleform@@UEAA_NAEBVEventId@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f3de0@@3PAEA=?SetAcceptAnimMoves@DisplayObject@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f40a0@@3PAEA=?SetFOV@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f41b0@@3PAEA=?SetFilters@DisplayObjectBase@GFx@Scaleform@@UEAAXPEBVFilterSet@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f41f0@@3PAEA=?SetFocalLength@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f4460@@3PAEA=?SetHeight@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f4d70@@3PAEA=?SetMatrix3D@DisplayObject@GFx@Scaleform@@UEAAXAEBV?$Matrix3x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f5010@@3PAEA=?SetMatrix@DisplayObject@GFx@Scaleform@@UEAAXAEBV?$Matrix2x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f5530@@3PAEA=?SetProjectionCenter@DisplayObjectBase@GFx@Scaleform@@UEAAXV?$Point@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f56c0@@3PAEA=?SetProjectionMatrix3D@DisplayObjectBase@GFx@Scaleform@@UEAAXAEBV?$Matrix4x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f57a0@@3PAEA=?SetRotation@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f5e70@@3PAEA=?SetViewMatrix3D@DisplayObjectBase@GFx@Scaleform@@UEAAXAEBV?$Matrix3x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6130@@3PAEA=?SetWidth@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f64c0@@3PAEA=?SetX@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6690@@3PAEA=?SetXRotation@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6760@@3PAEA=?SetXScale@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f69f0@@3PAEA=?SetY@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6bc0@@3PAEA=?SetYRotation@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6c90@@3PAEA=?SetYScale@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6f20@@3PAEA=?SetZ@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f6fe0@@3PAEA=?SetZScale@DisplayObjectBase@GFx@Scaleform@@UEAAXN@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f75c0@@3PAEA=?UpdateTransform3D@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f7af0@@3PAEA=?UpdateViewAndPerspective@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f7fc0@@3PAEA=?CloneInternalData@InteractiveObject@GFx@Scaleform@@UEAAXPEBV123@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f8480@@3PAEA=?GetCursorType@InteractiveObject@GFx@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f8540@@3PAEA=?GetRenderContainer@InteractiveObject@GFx@Scaleform@@UEAAPEAVTreeContainer@Render@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f8550@@3PAEA=?GetResourceMovieDef@InteractiveObject@GFx@Scaleform@@UEBAPEAVMovieDefImpl@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f85e0@@3PAEA=?IsFocusAllowed@InteractiveObject@GFx@Scaleform@@UEAA_NPEAVMovieImpl@23@I@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f8630@@3PAEA=?IsFocusAllowed@InteractiveObject@GFx@Scaleform@@UEBA_NPEAVMovieImpl@23@I@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f8690@@3PAEA=?IsFocusEnabled@InteractiveObject@GFx@Scaleform@@UEBA_NW4FocusMovedType@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f86d0@@3PAEA=?IsFocusRectEnabled@InteractiveObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f8760@@3PAEA=?IsTabable@InteractiveObject@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f8870@@3PAEA=?OnEventLoad@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f8880@@3PAEA=?OnEventUnload@InteractiveObject@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425f88e0@@3PAEA=?OnFocus@InteractiveObject@GFx@Scaleform@@UEAAXW4FocusEventType@123@PEAV123@IW4FocusMovedType@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425f8940@@3PAEA=?OnUnloading@InteractiveObject@GFx@Scaleform@@UEAA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14280ef52@@3PAEA=_purecall")
-#pragma comment(linker, "/alternatename:?DAT_1429386e0@@3PAEA=?DeleteMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429388e0@@3PAEA=?DeleteMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14293ff70@@3PAEA=?FUN_14293ff70@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142940160@@3PAEA=?FUN_142940160@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1429411f0@@3PAEA=?ExecuteForEachChild_GC@Object@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429413c0@@3PAEA=?FUN_1429413c0@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142942e70@@3PAEA=?Finalize_GC@Object@AS2@GFx@Scaleform@@MEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1429448c0@@3PAEA=?FindMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVMember@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142944950@@3PAEA=?FindMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVMember@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429493c0@@3PAEA=?GetASEnvironment@AvmCharacter@AS2@GFx@Scaleform@@UEAAPEAVEnvironment@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142949400@@3PAEA=?GetASEnvironment@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEBVEnvironment@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142949860@@3PAEA=?GetAvmTopParent@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEAV1234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14294ab50@@3PAEA=?GetEnvironment@CFunctionObject@AS2@GFx@Scaleform@@UEAAPEAVEnvironment@234@AEBVFnCall@234@PEAV?$Ptr@VInteractiveObject@GFx@Scaleform@@@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14294afb0@@3PAEA=?GetGC@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEAVGlobalContext@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14294f7d0@@3PAEA=?GetMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000a110@@3PAEA=?GetMemberRaw@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000d760@@3PAEA=?GetMemberRaw@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142953280@@3PAEA=?GetMemberRaw@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142955080@@3PAEA=?GetStandardMember@AvmCharacter@AS2@GFx@Scaleform@@UEBA_NW4StandardMember@1234@PEAVValue@234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142956b10@@3PAEA=?GetTopParent@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142956ca0@@3PAEA=?GetValue@Object@AS2@GFx@Scaleform@@UEBA?AVValue@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14295d840@@3PAEA=?FUN_14295d840@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14295d970@@3PAEA=?HasMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142962310@@3PAEA=?InstanceOf@AvmCharacter@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBVObject@234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429623a0@@3PAEA=?InstanceOf@Object@AS2@GFx@Scaleform@@UEBA_NPEAVEnvironment@234@PEBV1234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142962bb0@@3PAEA=?Invoke@CFunctionObject@AS2@GFx@Scaleform@@UEAAXAEBVFnCall@234@PEAVLocalFrame@234@PEBD@Z")
-#pragma comment(linker, "/alternatename:?DAT_142965510@@3PAEA=?IsEqual@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NAEBVFunctionObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429867f0@@3PAEA=?SetMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142988930@@3PAEA=?SetMemberFlags@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@E@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429889c0@@3PAEA=?SetMemberFlags@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@E@Z")
-#pragma comment(linker, "/alternatename:?DAT_142988bb0@@3PAEA=?SetMemberRaw@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14298ab80@@3PAEA=?FUN_14298ab80@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14298cc70@@3PAEA=?SetValue@Object@AS2@GFx@Scaleform@@UEAAXPEAVEnvironment@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14298dcb0@@3PAEA=?Set__proto__@AvmCharacter@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAVObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142991140@@3PAEA=?ToFunction@FunctionObject@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142991170@@3PAEA=?ToFunction@Object@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1429926f0@@3PAEA=?Unwatch@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142992780@@3PAEA=?Unwatch@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142994660@@3PAEA=?VisitMembers@AvmCharacter@AS2@GFx@Scaleform@@UEBAXPEAVASStringContext@234@PEAUMemberVisitor@ObjectInterface@234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1429947f0@@3PAEA=?VisitMembers@Object@AS2@GFx@Scaleform@@UEBAXPEAVASStringContext@234@PEAUMemberVisitor@ObjectInterface@234@IPEBV7234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142994bb0@@3PAEA=?Watch@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@AEBVFunctionRef@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142994c50@@3PAEA=?Watch@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@AEBVFunctionRef@234@AEBVValue@234@@Z")
 
-#pragma comment(linker, "/alternatename:?FUN_14000e0c0@@YAXXZ=?CreateNewObject@VideoCtorFunction@AS2@GFx@Scaleform@@UEBAPEAVObject@234@PEAVEnvironment@234@@Z")
-#pragma comment(linker, "/alternatename:?FUN_14293ff70@@YAXXZ=?ExecuteCFunction@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NP6AXAEBVFnCall@234@@ZAEBV?$Array@VValue@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
-#pragma comment(linker, "/alternatename:?FUN_142940160@@YAXXZ=?ExecuteEvent@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NAEBVEventId@34@@Z")
-#pragma comment(linker, "/alternatename:?FUN_1429413c0@@YAXXZ=?ExecuteFunction@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NAEBVFunctionRef@234@AEBV?$Array@VValue@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
-#pragma comment(linker, "/alternatename:?FUN_14295d840@@YAXXZ=?HasMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@_N@Z")
-#pragma comment(linker, "/alternatename:?FUN_14298ab80@@YAXXZ=?SetStandardMember@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NW4StandardMember@1234@AEBVValue@234@_N@Z")
 #endif // MS2_HOOK_DLL

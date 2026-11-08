@@ -72,7 +72,7 @@ struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a5
 
 
 class Unk_EventSink : public CBigDataLogSystem { };
-extern int DAT_143af7d40;                               // input enabled
+extern int g_bAppActive;                               // input enabled
 extern float DAT_143ac30a8;                             // last stick x
 extern float DAT_143ac30ac;                             // last stick y
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -233,7 +233,7 @@ MS2_REPLACE_METHOD(0x140D8ABA0, MS2InputService, OnShutdown, 155, 0xD0796499);
 // @0x140d8ac50
 bool MS2InputService::IsKeyDownGated(int nKey, int bAllowGroup)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     int nPacked = IsComboKeyDown(nKey);
     if (nPacked == 1)
@@ -262,7 +262,7 @@ MS2_REPLACE_METHOD(0x140D8AC50, MS2InputService, IsKeyDownGated, 255, 0x23AF6714
 // @0x140d8ad60
 bool MS2InputService::WasKeyPressedGated(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     int nPacked = WasComboKeyPressed(nKey);
     if (nPacked == 1)
@@ -318,7 +318,7 @@ MS2_REPLACE_METHOD(0x140D8AD60, MS2InputService, WasKeyPressedGated, 518, 0xBFBD
 // @0x140d8af70
 bool MS2InputService::WasKeyReleasedGated(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     int nPacked = WasComboKeyReleased(nKey);
     if (nPacked == 1)
@@ -338,7 +338,7 @@ MS2_REPLACE_METHOD(0x140D8AF70, MS2InputService, WasKeyReleasedGated, 151, 0x78E
 // @0x140d8b010
 bool MS2InputService::IsMouseButtonDown(int nButton)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!m_spMouse)
         return false;
@@ -349,7 +349,7 @@ MS2_REPLACE_METHOD(0x140D8B010, MS2InputService, IsMouseButtonDown, 90, 0x3316EA
 // @0x140d8b070
 bool MS2InputService::WasMouseButtonPressed(int nButton)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!m_spMouse)
         return false;
@@ -360,7 +360,7 @@ MS2_REPLACE_METHOD(0x140D8B070, MS2InputService, WasMouseButtonPressed, 90, 0x45
 // @0x140d8b0d0
 bool MS2InputService::WasMouseButtonReleased(int nButton)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!m_spMouse)
         return false;
@@ -371,7 +371,7 @@ MS2_REPLACE_METHOD(0x140D8B0D0, MS2InputService, WasMouseButtonReleased, 90, 0x9
 // @0x140d8b130
 bool MS2InputService::GetMouseDelta(int* pnX, int* pnY, int* pnZ)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!m_spMouse)
         return false;
@@ -388,7 +388,7 @@ MS2_REPLACE_METHOD(0x140D8B130, MS2InputService, GetMouseDelta, 189, 0x76EAE117)
 // @0x140d8b200
 bool MS2InputService::InjectKeyPress(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (InjectComboKeyPress(nKey))
         return true;
@@ -786,7 +786,7 @@ Vector3 MS2InputService::GetLeftStickMoveDir()
 {
     if (!m_spGamePad)
         return DAT_143b01a60;
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return DAT_143b01a60;
     float fX = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_H);
     float fY = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_V);

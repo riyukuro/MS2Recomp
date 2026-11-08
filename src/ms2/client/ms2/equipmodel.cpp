@@ -84,9 +84,9 @@
 #include "ms2/client/ms2/weaponattachtransformnode.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/multisceneupdater.h"   // MultiSceneUpdater::s_fTime, the engine's frame step
 
 // ---- exe data ----
-extern float DAT_143ac3d08;     // the engine's frame step
 #define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
 // 0x143ad2348 is s_strWillUpdatePos (constructed in .text$di 0x1400e8b40); the data_bss_game blob of that name never is
 extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tried when resolving an attach point name
@@ -681,7 +681,7 @@ void FUN_141200b30(CEquipModel* self)
         if (pRoot != 0) {
             pRoot->UpdateProperties();
             pRoot->UpdateEffects();
-            pRoot->Update(DAT_143ac3d08 + 0.001f, true);
+            pRoot->Update(MultiSceneUpdater::s_fTime + 0.001f, true);
         }
     }
 }

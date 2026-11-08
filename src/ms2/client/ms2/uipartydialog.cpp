@@ -1734,7 +1734,7 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 extern __int64 DAT_143ab2820;                                           // the own account id
-extern int DAT_143af62d8;                                               // the screen height
+extern unsigned DAT_143af62d8;                                          // the screen height
 float FUN_140bf4fd0(float f);
 bool FUN_140900550();                                                   // wedding enabled
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box

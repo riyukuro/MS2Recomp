@@ -58,7 +58,7 @@ void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f
 void* FUN_1409f31d0(void* tbl, unsigned id, void* self);
 void FUN_1409f2d20(void* tbl, void (*cb)(void*, void*));   void FUN_1409f2e10(void* a, const char* name, unsigned id, void* b, void* tbl);
 void FUN_141208010(void* a, void* b);
-extern char DAT_143ae2440, DAT_143ae2b38;
+extern char DAT_143ae2440; extern int DAT_143ae2b38;
 // The raw 8-byte buffers and m_unk_f0 are the exe's NiAVObjectPtr, m_spNode its NiNodePtr (efd::SmartPointer); calls
 // through these views reach the real operators.
 #define MS2_AVPTR(p) (*reinterpret_cast<NiAVObjectPtr*>(p))
@@ -121,7 +121,7 @@ CNifModel::CNifModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20)
     m_i118 = 0;
     m_i11c = 0;
     m_p120 = 0;
-    if (*(int*)&DAT_143ae2b38 != 0) {
+    if (DAT_143ae2b38 != 0) {
         CItem* pItem = spOwner->GetItem().get();
         if (pItem != 0)
             m_i11c = spOwner->GetItem()->FUN_140527a20() == 2;
@@ -156,7 +156,7 @@ int CNifModel::vfunc_6()
     FUN_141200ca0((class CEquipModel*)(this));
     vfunc_10();
     vfunc_11();
-    if (*(int*)&DAT_143ae2b38 != 0 && m_i11c != 0) {
+    if (DAT_143ae2b38 != 0 && m_i11c != 0) {
         std::set<NiAVObjectPtr>& nodes = NODESET(this);
         for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;

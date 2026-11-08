@@ -10,6 +10,7 @@
 // Its methods live in another unit (0x14125f090...), declared in the .cpp as FUN_ free functions.
 struct Unk_LgState
 {
+    Unk_LgState();                         // 0x14125f090 (resets to the defaults)
     int m_nLanguage;                // +0x00 language enum
     int m_nVoice;                   // +0x04 voice (language) enum
 };

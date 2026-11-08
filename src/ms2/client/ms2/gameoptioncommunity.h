@@ -6,6 +6,7 @@
 
 struct Unk_CommunityStateA
 {
+    Unk_CommunityStateA();                         // 0x14125d130 (resets to the defaults)
     union
     {
     bool m_b[3];                                                    // +0x00 (default 1,1,0)
@@ -21,6 +22,7 @@ MS2_CHECK_SIZE(Unk_CommunityStateA, 0x3);
 
 struct Unk_CommunityStateB
 {
+    Unk_CommunityStateB();                         // 0x14125d330 (resets to the defaults)
     union
     {
     bool m_b[0xc];                                                  // +0x00 (default 1,1,1 then 0; bytes 0..10 set by the ctor)

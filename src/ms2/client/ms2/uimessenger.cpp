@@ -2627,7 +2627,7 @@ template <class T> T* Unk_SptGetUI(int nUiId);   // C3: was FUN_140e88970
 CLogString* GetLogString();
 
 extern MessengerData::ScreenSetting DAT_143adda48;                 // messengerdata.cpp: the shared screen look
-extern int DAT_143ab2864;                                          // the own object id
+extern int g_upperTargetId;                                          // the own object id
 extern unsigned long s_color25;                                    // the system notice colour
 
 CStringW FUN_1401aa6a0(int n);                                      // to string
@@ -2973,7 +2973,7 @@ void UIMessengerBrowser::vfunc_85(CInPacket& packet)
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
             spItem->SetItemUid(nUid);
-            spItem->SetObjectId(DAT_143ab2864);
+            spItem->SetObjectId(g_upperTargetId);
             spItem->FUN_140524eb0(packet);
             m_linkedItems.SetAt(nUid, spItem);
         }

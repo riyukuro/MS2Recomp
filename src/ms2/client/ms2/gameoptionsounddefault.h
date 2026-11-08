@@ -6,6 +6,7 @@
 
 struct Unk_SoundState
 {
+    Unk_SoundState();                         // 0x14125f710 (resets to the defaults)
     bool m_b00, m_b01;                                              // +0x00/+0x01 (default 0)
     union
     {
@@ -32,6 +33,7 @@ MS2_CHECK_SIZE(Unk_SoundState, 0x34);
 
 struct Unk_SoundFlag
 {
+    Unk_SoundFlag();                         // 0x141260380 (resets to the defaults)
     bool m_b;                                                       // +0x00 (default 0)
 };
 

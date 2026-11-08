@@ -94,7 +94,7 @@ Unk_LgState* CGameOption::FUN_140cfd280()
 CGameOptionLanguage::CGameOptionLanguage(int nId, int nType)
     : CBaseOption(nId, nType)
 {
-    FUN_14125f090(&m_state);
+    // m_state: its ctor (0x14125f090) runs as a member ctor
 }
 
 // @0x140cfb4b0

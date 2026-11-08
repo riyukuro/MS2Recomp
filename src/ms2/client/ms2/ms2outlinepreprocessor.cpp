@@ -66,7 +66,7 @@ public:
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 // 0x14098da10 = CAtlList<NiAVObject*>::FreeNode (alphaanimation.cpp), called by RemoveHead below
-extern char DAT_143ae2b34, DAT_143a09680;
+extern int DAT_143ae2b34; extern char DAT_143a09680;
 extern NiFixedString DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8, DAT_143ae53c8, DAT_143ae5210;
 
 typedef CAtlMap<NiAVObject*, NiAVObject*> OutlineMap;
@@ -118,7 +118,7 @@ void MS2OutlinePreProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
         if (FUN_141568c90((class NiRenderObject*)(obj)))
             continue;
         int flag = 1;
-        if (*(int*)&DAT_143ae2b34 != 0)
+        if (DAT_143ae2b34 != 0)
             flag = FUN_141568dc0((class NiAVObject*)(obj));
         NiAVObject* key = obj;
         bool found = objSet.Lookup(key) ? true : false;
@@ -165,7 +165,7 @@ void FUN_1414d37a0(void* obj, int idx)
         return;
     static Unk_Vec3Cli axes[3] = { Unk_Vec3Cli(1.0f, 0.0f, 0.0f), Unk_Vec3Cli(0.0f, 1.0f, 0.0f), Unk_Vec3Cli(0.0f, 0.0f, 1.0f) };
     FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColor const*)(&axes[idx]));
-    if (*(int*)&DAT_143ae2b34 != 0)
+    if (DAT_143ae2b34 != 0)
         FUN_141568df0((class NiAVObject*)(obj));
 }
 
@@ -173,12 +173,12 @@ void FUN_1414d37a0(void* obj, int idx)
 void FUN_1414d38b0(void* obj, void* color)
 {
     int v = 0;
-    if (*(int*)&DAT_143ae2b34 != 0)
+    if (DAT_143ae2b34 != 0)
         v = FUN_141568dc0((class NiAVObject*)(obj));
     if (v == 0) {
         if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) == 0) {
             CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColorA const*)(color));
-            if (*(int*)&DAT_143ae2b34 != 0)
+            if (DAT_143ae2b34 != 0)
                 FUN_141568df0((class NiAVObject*)(obj));
         }
     }
@@ -192,7 +192,7 @@ void FUN_1414d3930(void* obj)
 {
     if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) != 0)
         ((class NiObjectNET*)(void*)(obj))->RemoveExtraData(DAT_143ae50e0);
-    if (*(int*)&DAT_143ae2b34 != 0) {
+    if (DAT_143ae2b34 != 0) {
         unsigned u = FUN_140d96630((class NiAVObject*)(obj)) & 0xfffffffb;
         FUN_1414d4c70(obj, u);
     }

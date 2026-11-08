@@ -145,7 +145,7 @@ MS2_CHECK_OFFSET(Unk_PCMove, m_dir, 0x40);
 MS2_CHECK_OFFSET(Unk_PCMove, m_moving, 0x4c);
 MS2_CHECK_OFFSET(Unk_PCMove, m_ready, 0x50);
 
-extern int DAT_143af7d40;                   // input enabled
+extern int g_bAppActive;                   // input enabled
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // Out-of-unit callees.
@@ -223,7 +223,7 @@ public:
 // @0x141682f80
 bool Unk_PCMove::FUN_141682f80(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!FUN_141684170(nKey))
         return false;
@@ -233,7 +233,7 @@ bool Unk_PCMove::FUN_141682f80(int nKey)
 // @0x141682fe0
 bool Unk_PCMove::FUN_141682fe0(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     int nX;
     int nY;
@@ -257,7 +257,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
 // @0x1416830b0
 bool Unk_PCMove::FUN_1416830b0(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!FUN_141684170(nKey))
         return false;
@@ -278,7 +278,7 @@ MS2_REPLACE_METHOD(0x141683100, Unk_PCMove, FUN_141683100, 70, 0x1110430A);
 // @0x141683150
 bool Unk_PCMove::FUN_141683150(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!FUN_141683ef0())
         return true;
@@ -294,7 +294,7 @@ bool Unk_PCMove::FUN_141683150(int nKey)
 // @0x141683200
 bool Unk_PCMove::FUN_141683200(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (!FUN_141683ef0())
         return true;

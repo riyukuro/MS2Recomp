@@ -2,8 +2,8 @@
 // 0x142f22e78: ??_G 0x1414e5d30, DeleteThis, GetRTTI 0x1414e6700, PreRenderProcessList 0x1414dc0d0,
 // PostRenderProcessList 0x141d28230, ReleaseCaches). Base of MS2OverdrawProcessor, MS2MaterialSwapProcessor,
 // MS2OuterGlowMaterialSwapProcessor, MS2AfterImageRenderListProcessor and MS2RenderViewRenderListProcessor.
-// Owning unit: ?\ms2renderlistprocessor.cpp (0x1414dbf30-0x1414ea3d0). The NiImplementRTTI of the class lives in an
-// optimised TU (its NiRTTI initialiser is 0x140122680), so only the declaration is here. Member and helper names are
+// Owning unit: ?\ms2renderlistprocessor.cpp (0x1414dbf30-0x1414ea3d0). The class has no RTTI of its own: the derived
+// processors' base RTTI is NiShaderSortProcessor::ms_RTTI (0x143afa798, initialiser 0x140122680). Member and helper names are
 // invented (the exe only has the class names).
 #pragma once
 #include "ms2/ms2layout.h"
@@ -29,7 +29,7 @@ typedef efd::map<float, efd::vector<NiRenderObject*>*> MS2RenderGroupMap;
 
 class MS2RenderListProcessor : public NiShaderSortProcessor
 {
-    NiDeclareRTTI;
+    // no NiDeclareRTTI: the exe has no RTTI of its own for it; vftable slot 2 (0x1414e6700) is NiShaderSortProcessor::GetRTTI
 
 public:
     MS2RenderListProcessor();                               // 0x1414dbf30
@@ -77,7 +77,7 @@ MS2_CHECK_SIZE(MS2RenderListProcessor, 0xe8);
 // Render-list processor of the UI render views (implicit ctor 0x141ab8300 / dtor 0x141ab83a0 in ?\uirenderview.cpp).
 class MS2RenderViewRenderListProcessor : public MS2RenderListProcessor
 {
-    // no RTTI of its own: vftable slot 2 is MS2RenderListProcessor::GetRTTI (0x1414e6700)
+    // no RTTI of its own: vftable slot 2 is NiShaderSortProcessor::GetRTTI (0x1414e6700)
 public:
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414ddce0
 };

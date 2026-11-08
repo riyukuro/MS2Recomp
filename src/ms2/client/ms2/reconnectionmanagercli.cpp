@@ -25,7 +25,7 @@
 // Header static string table (7 names) that this TU instantiates; no use here.
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
-extern int DAT_143af7d44, DAT_143ab2910;
+extern int DAT_143af7d44, g_socketClosing;
 extern __int64 DAT_143ab2820, DAT_143ab2828;
 CReconnectionManagerCli* TSingleton<CReconnectionManagerCli>::s_instance = 0;
 inline TSingleton<CReconnectionManagerCli>::TSingleton() { s_instance = static_cast<CReconnectionManagerCli*>(this); }
@@ -60,7 +60,7 @@ bool CReconnectionManagerCli::ShouldReconnect(int error) {
     if (FUN_140714f90() == 0) return false;
     if (FUN_140714f90()->GetSocket().GetDisconnect() != 0) return false;
     if (DAT_143af7d44 == 1) return false;
-    if (DAT_143ab2910 == 1) return false;
+    if (g_socketClosing == 1) return false;
     if (GetOption(0) == 0) return false;
     if (IsReconnecting() && IsReconnectTimedOut()) return false;
     if (m_context.m_18 != 1) return false;

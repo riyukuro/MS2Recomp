@@ -445,7 +445,7 @@ class EffectSkipMgr   // C3: member view for the former free stand-ins
 public:
     void SetSuspended(bool);
 };
-extern int DAT_143ae0fc0;
+extern int g_nDebugUI;
 extern int DAT_1439f7064;
 // MS2: the network-callbacks singleton (slot 64 = the 'hide' command) is Unk_NetworkCallbacks from networkservice.h.
 extern int DAT_143ae2b50,DAT_143ae2b54,DAT_143ae2b58;
@@ -1390,7 +1390,7 @@ int CUserCommandCli::EnableEffectLimit(ItemFunctionArgs& args) {
 int CUserCommandCli::ShowCodeName(ItemFunctionArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<52) return 0;
     int enabled=args.FUN_1408d20b0(0,1);
-    DAT_143ae0fc0=enabled;
+    g_nDebugUI=enabled;
     CStringW message;
     const wchar_t* state;
     if(enabled!=0) state=L"On"; else state=L"Off";

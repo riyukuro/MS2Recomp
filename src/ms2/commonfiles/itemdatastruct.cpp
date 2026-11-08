@@ -69,7 +69,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // Unrecovered helpers.
 int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
 void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // C3: was FUN_1402c8940
-int FUN_14021bdc0(CString& strName);    // slot name -> slot type
+int Parse_14021bdc0(const CStringA& strName);    // slot name -> slot type (commonenum)
 CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_1402227e0(int, int);  // C3: the definition's signature
@@ -546,7 +546,7 @@ int ModelGroup::FUN_1405451a0() const
 // @0x1405451c0
 int FUN_1405451c0(CString& strName)
 {
-    return FUN_14021bdc0(strName);
+    return Parse_14021bdc0(strName);
 }
 
 // @0x1405451e0

@@ -6,6 +6,7 @@
 
 struct Unk_BattleState
 {
+    Unk_BattleState();                         // 0x14125ca80 (resets to the defaults)
     union
     {
     bool m_b[6];                                                    // +0x00..+0x05 (default 1)

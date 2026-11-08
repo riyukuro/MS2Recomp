@@ -6680,7 +6680,7 @@ public:
     void FUN_141210420(int);
     void FUN_1412104a0(int);
 };
-extern int DAT_143ab2910;
+extern int g_socketClosing;
 extern CStringW DAT_143af88e0;
 extern CStringW DAT_143ab2d78;
 Unk_WsC_MsgBoxPtr FUN_140d73d20(int a, CStringW text, void* b, CStringW caption);   // build a message box
@@ -6929,7 +6929,7 @@ void WorldService::FUN_141bcda90()
     ((class CFilePreload*)(void*)(((void*)TSingleton<CFilePreload>::GetInstance())))->FUN_1412104a0(m_284);
     efd::SmartPointer<Unk_WsC_SceneSvc> guard((Unk_WsC_SceneSvc*)egf::g_bapiContext.GetSystemServiceAs<ecr::SceneGraphService>());
     reinterpret_cast<MS2SceneGraphService*>(guard.operator->())->SetPauseUpdate(0);
-    if (DAT_143ab2910 == 1)
+    if (g_socketClosing == 1)
     {
         Unk_WsC_MsgBoxPtr box = FUN_140d73d20(0, DAT_143ab2d78, 0, DAT_143af88e0);
         if (box.get() != 0)
@@ -10142,7 +10142,7 @@ MS2_REPLACE_METHOD(0x141BBC580, WorldService, FUN_141bbc580, 3841, 0x78BD0E2F);
 // ==== functions from part I ====
 
 
-extern char DAT_142ffa104;                                      // "Box"
+extern unsigned char DAT_142ffa104[];                                      // "Box"
 
 // ---- callees ----
 // void FUN_140aeb540(void* camera, egf::EntityID id, Unk_WsI_CameraTarget* pTarget);   (CameraMgr::SaveSetting)
@@ -10357,7 +10357,7 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         Unk_WsI_BoundRef bound;
         efd::utf8string shape;
         pEntity->GetPropertyValue<efd::utf8string>(0xe5771492, reinterpret_cast<efd::utf8string&>(shape));
-        if (FUN_140de8e30(shape, &DAT_142ffa104))
+        if (FUN_140de8e30(shape, (const char*)DAT_142ffa104))
             bound.AssignRaw(reinterpret_cast<Unk_GoField*>(new CCameraTargetBoundingBox));
         else if (FUN_140de8e30(shape, "Sphere"))
             bound.AssignRaw(reinterpret_cast<Unk_GoField*>(new CCameraTargetBoundingSphere));

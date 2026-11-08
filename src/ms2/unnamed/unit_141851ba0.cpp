@@ -24,8 +24,8 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-void FUN_1418528d0(void* pVisitor, float fWeight);                               // ctor of the weight visitor (next TU)
-#pragma comment(linker, "/alternatename:?FUN_1418528d0@@YAXPEAXM@Z=??0Unk_CtrlValue@@QEAA@M@Z")   // sfr36: full-exe link: unit_141851fd0 defines it as the ctor
+struct Unk_CtrlValue { float m_fValue; Unk_CtrlValue(float fValue); };   // the weight visitor; ctor 0x1418528d0 (unit_141851fd0)
+//
 void FUN_141852690(void*, struct Unk_CtrlValue*);   // C3: was FUN_141852690
 
 // 0x141851ba0
@@ -110,8 +110,8 @@ struct Unk_MorphWeightVisitor
 // @0x141851f90
 void FUN_141851f90(void* pObject, float fWeight)
 {
-    Unk_MorphWeightVisitor visitor;
-    FUN_1418528d0(&visitor, fWeight);
-    FUN_141852690(pObject, (struct Unk_CtrlValue*)(&visitor));
+    Unk_CtrlValue visitor(fWeight);
+    //
+    FUN_141852690(pObject, &visitor);
 }
 MS2_REPLACE(0x141851F90, FUN_141851f90, 51, 0x641A0F3B);

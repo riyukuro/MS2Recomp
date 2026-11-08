@@ -6,6 +6,7 @@
 
 struct Unk_StatusState
 {
+    Unk_StatusState();                         // 0x14125bda0 (resets to the defaults)
     union
     {
     bool m_b[0x16];                                                 // +0x00..+0x15 (mostly default 1; +5,+9,+0xa,+0xc,+0xe,+0x12..+0x15 default 0; +6 = FUN_14036e4c0(FUN_140166410()))
@@ -42,6 +43,7 @@ MS2_CHECK_SIZE(Unk_StatusState, 0x1c);
 
 struct Unk_StatusFlag
 {
+    Unk_StatusFlag();                         // 0x14125c880 (resets to the defaults)
     bool m_b;                                                       // +0x00 (default 0)
 };
 

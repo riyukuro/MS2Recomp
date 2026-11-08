@@ -162,7 +162,7 @@ class CubeMapInformationService : public efd::ISystemService { public: static co
 //
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 egf::g_bapiContext
-extern unsigned __int64 DAT_143ab2828;                          // the local character id
+extern __int64 DAT_143ab2828;                                   // the local character id
 extern Unk_Inventory g_143ab2a90;                                      // the player inventory
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 template <class T> CStringW FormatStringId(int nStringId, const T& arg);            // formatted string by id

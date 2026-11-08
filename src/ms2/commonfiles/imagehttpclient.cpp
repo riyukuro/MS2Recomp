@@ -45,8 +45,8 @@ static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh
 
 // ---- unit-local views of callees emitted in other units ----
 
-extern int DAT_143ab2830;                                           // WorldId
-extern unsigned __int64 DAT_143ab2828;                              // CharacterSn
+extern unsigned DAT_143ab2830;                                      // WorldId
+extern __int64 DAT_143ab2828;                                       // CharacterSn
 std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight);   // 0x141851040 (textureutil.cpp)
 std::string CaptureClientAreaJpg();                                 // 0x141850df0
 void FUN_141b6de20();                                               // thread start-up (util.cpp)
@@ -110,7 +110,7 @@ bool CImageHttpClient::RequestKey()
     {
         if (IsRequestPending())
             return false;
-        std::wstring strUrl((const wchar_t*)StringFormat(L"{0}?WorldId={1}&CharacterSn={2}&ImageType={3}", GetUrl(), DAT_143ab2830, DAT_143ab2828, GetImageType()));
+        std::wstring strUrl((const wchar_t*)StringFormat(L"{0}?WorldId={1}&CharacterSn={2}&ImageType={3}", GetUrl(), reinterpret_cast<const int&>(DAT_143ab2830), reinterpret_cast<const unsigned __int64&>(DAT_143ab2828), GetImageType()));
         const TPtrValue<CWinHttpClient> request = CreateRequest(strUrl);
         request->FUN_140920cf0(L"GET", false);
         SetRequest(request);
@@ -226,8 +226,8 @@ bool CImageHttpClient::BuildImage(CByteBuffer& data)
     {
         ImageJsonDocument document(0, 0x400);
         document.SetObject();
-        document.AddMember("WorldId", DAT_143ab2830, document.GetAllocator());
-        document.AddMember("CharacterSn", DAT_143ab2828, document.GetAllocator());
+        document.AddMember("WorldId", (int)DAT_143ab2830, document.GetAllocator());
+        document.AddMember("CharacterSn", (unsigned __int64)DAT_143ab2828, document.GetAllocator());
         document.AddMember("Base64Image", strImage.c_str(), document.GetAllocator());
         document.AddMember("ImageType", strType.c_str(), document.GetAllocator());
         ImageJsonWriter writer(buffer, 0, 0x20);

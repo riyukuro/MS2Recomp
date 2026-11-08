@@ -312,7 +312,7 @@ NiAVObject* Unk_NodeWalker::FUN_1410446c0(bool bChildren)
 {
     if (m_list.IsEmpty())
         return NULL;
-    NiAVObject* pObject = m_list.RemoveHead();
+    NiAVObject* pObject = m_list.RemoveTail();
     if (((void*)NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pObject))) && ((Unk_EffectNodeView*)pObject)->FUN_1410444a0() == 1)
         return FUN_1410446c0(bChildren);
     if (bChildren)

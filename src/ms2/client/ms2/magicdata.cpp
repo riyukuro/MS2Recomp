@@ -120,8 +120,8 @@ MS2_SOCKETPTR_DIRECT(CMagicData)
 MS2_SOCKETPTR_DIRECT(CMagicModel)
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern char DAT_143ae95e0;                   // debug: show skill collision shapes
-extern char DAT_143ae95e1;
+extern bool DAT_143ae95e0;                   // debug: show skill collision shapes
+extern bool DAT_143ae95e1;
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 
 class Unk_140166420 : public CFileSystem { };
@@ -196,7 +196,8 @@ static CString s_stun2("stun");
 static Unk_1402a9d70 s_conditions2(17, 0.75f, 0.25f, 2.25f, 10);
 
 
-extern Unk_EfdMatrix3 DAT_143a09600;        // identity rotation
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;        // identity rotation
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 
 // @0x141469a90
@@ -377,7 +378,7 @@ int LoadMagicPath()
 
 // @0x14145d120
 CMagic::CMagic()
-    : m_matRotation(DAT_143a09600)
+    : m_matRotation(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600))
     , m_ptB8(DAT_143b01a60)
     , m_nD0(0)
     , m_spScene(0)
@@ -2741,7 +2742,7 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, NiTransform*
         reinterpret_cast<NiTransform&>(kXform) = reinterpret_cast<const NiTransform&>(*pXform);
     } else {
         kXform.m_fScale = 1.0f;
-        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600);
         *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
     }
     int bPlay = 1;
@@ -2846,7 +2847,7 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
         NiTransform kXform;
         *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
         kXform.m_fScale = 1.0f;
-        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600);
         CNpc* pNpc = dynamic_cast<CNpc*>(reinterpret_cast<GameObject*>(pCaster));
         bool bHitPoint = pNpc != NULL && reinterpret_cast<CNpcData*>(pNpc->GetNpcData().operator->())->HasPropertyTag(0x1d);
         if (bHitPoint)
@@ -2881,7 +2882,7 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
         NiTransform kXform;
         *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
         kXform.m_fScale = 1.0f;
-        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600);
         CNpc* pNpc = dynamic_cast<CNpc*>(reinterpret_cast<GameObject*>(pCaster));
         bool bHitPoint = pNpc != NULL && reinterpret_cast<CNpcData*>(pNpc->GetNpcData().operator->())->HasPropertyTag(0x1d);
         if (bHitPoint)

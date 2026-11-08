@@ -192,7 +192,7 @@ int FUN_141b71c00(unsigned short nValue);                           // the taxi 
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
 int FUN_14192e8f0();
-extern int DAT_143af7d40;                                           // input enabled
+extern int g_bAppActive;                                           // input enabled
 class UIEnterEventFieldDialog;
 class UIDTEventDialog;
 template <class T> T* FindCliDialog(int id);   // gameeventcli.cpp
@@ -1353,7 +1353,7 @@ int UIMinimapDialog::vfunc_13()
         return 0;
     if (m_1fb)
         return 0;
-    if (m_1fa && DAT_143af7d40 == 0) {
+    if (m_1fa && g_bAppActive == 0) {
         OnTabKeyUp();
     } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49407, 0, 0)) {
         if (!reinterpret_cast<GFxManager*>(FUN_14025e7a0())->IsTextFieldFocused(m_28))

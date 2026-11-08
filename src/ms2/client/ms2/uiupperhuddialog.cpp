@@ -2109,7 +2109,7 @@ float Unk_ShaderVec4::FUN_14135e1a0() const
 
 // ==== UIWeaponDummyDialog ====
 
-extern char DAT_143aad1e0;
+extern bool DAT_143aad1e0;
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
 // @0x14135e1c0

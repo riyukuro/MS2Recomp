@@ -161,7 +161,7 @@ extern int DAT_143ab2858;
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
 extern __int64 DAT_143ab2820;
-extern char DAT_143ab2946;
+extern bool DAT_143ab2946;
 
 // @0x1419e0cb0
 UILoginDialog::UILoginDialog()

@@ -453,7 +453,7 @@ public:
     CStringW m_str178;
 };
 class UIObserveDialog;
-extern "C" int DAT_143ae2b38;                                       // the model-cache reset switch (nifmodel.h)
+extern int DAT_143ae2b38;                                           // the model-cache reset switch (nifmodel.h)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 // The KFM model of an equipped item (CEquipItem::FUN_1411dcbb0).
 class CKfmModel;

@@ -744,3 +744,11 @@ LocalPcreFree	1428ea360	func	pcre_globals.c static: pcre_free/pcre_stack_free 0x
 ??__EkCAT_INVALID@efd@@YAXXZ	140134d50	alias	__kfmfactoryrequest.
 ??__EkCAT_INVALID@efd@@YAXXZ	140134ff0	alias	__visualtrackerservice.
 ??__EkCAT_INVALID@efd@@YAXXZ	140131c80	alias	__kfmfactory.
+??__EkCAT_INVALID@efd@@YAXXZ	14012adc0	alias	__scenegraphcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	14012b9e0	alias	__inputhandler.
+??__EkCAT_INVALID@efd@@YAXXZ	14012c780	alias	__propservice.
+??__EkCAT_INVALID@efd@@YAXXZ	140130710	alias	__luaresumecoroutinetask.
+??__EkCAT_INVALID@efd@@YAXXZ	140131bb0	alias	__kfmfactoryrequest.
+??__EkCAT_INVALID@efd@@YAXXZ	140131ca0	alias	__kfmfactoryresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	140133310	alias	__kfmcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	140133850	alias	__kfmfactoryresponse.

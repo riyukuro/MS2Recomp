@@ -119,7 +119,7 @@ class Unk_CliEvtKeys {
 public:
     int Get(int nKey, unsigned* pOut);                          // 0x140ce8590 (COMDAT wrapper below)
 };
-extern unsigned __int64 DAT_143ab2828;
+extern __int64 DAT_143ab2828;
 extern GameEventUserValue DAT_143ab2fc0;
 // @0x140ce8590
 int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return reinterpret_cast<Unk_AttendTable*>(this)->FUN_1409617d0(nKey, 0, *(const int*)pOut); }

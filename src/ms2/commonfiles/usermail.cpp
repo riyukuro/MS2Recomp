@@ -16,7 +16,6 @@
 class CLua { public: long long CalcSendMailFee(long long, long long, long long, long long, long long, long long, long long); };   // C3: member view (0x140676020)
 
 extern __int64 DAT_143ab2828;
-extern __int64 DAT_143ab25e8;
 
 // @0x1400be260
 static CString s_143ab25e0("mail_delete");
@@ -453,5 +452,5 @@ MS2_REPLACE_METHOD(0x1408E49D0, CUserMail, FUN_1408e49d0, 109, 0xBE44D731);
 
 // @0x1408e57f0
 __int64 CUserMail::FUN_1408e57f0() {
-    return DAT_143ab25e8;
+    return (__int64)SingletonClass<GFxSceneService>::ms_pSingleton;   // 0x143ab25e8
 }

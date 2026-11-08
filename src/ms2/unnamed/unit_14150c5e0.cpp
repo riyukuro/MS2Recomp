@@ -222,5 +222,5 @@ void FUN_14150cce0(float fScale)
 // MS2-RANGE: 0x1400f9700-0x1400f9730 .text$di
 #include "ms2/client/ms2/ms2renderlistprocessor.h"
 #ifndef MS2_HOOK_DLL
-const NiRTTI MS2ShimmerSortProcessor::ms_RTTI("MS2ShimmerSortProcessor", &MS2RenderListProcessor::ms_RTTI);   // @0x1400f9700
+const NiRTTI MS2ShimmerSortProcessor::ms_RTTI("MS2ShimmerSortProcessor", &NiShaderSortProcessor::ms_RTTI);   // @0x1400f9700
 #endif

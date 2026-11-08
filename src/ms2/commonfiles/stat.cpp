@@ -70,7 +70,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);     // C3: was FUN_1
 int XmlGetAttr(class TiXmlElement*, char const*, CString&);     // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);    // C3: was FUN_140873420
 CString FUN_14016a5c0(const char* pszName, int);                        // its readable form
-extern const char CStat_RTTI_Type_Descriptor[];                         // 0x143a65c80
+struct Sd_143a65c80; extern Sd_143a65c80 DAT_143a65c80;                 // 0x143a65c80, ??_R0 type descriptor of CStat (data_data_game image)
 extern CStringA DAT_143aacc88;                                          // the empty name
 extern CStringW DAT_143aacc90;                                          // the text shown for an unknown id
 
@@ -354,7 +354,7 @@ void CheckValid()
     if (!s_valid)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(((const type_info*)(const void*)CStat_RTTI_Type_Descriptor)->name(), 0));
+        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(((const type_info*)(const void*)&DAT_143a65c80)->name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

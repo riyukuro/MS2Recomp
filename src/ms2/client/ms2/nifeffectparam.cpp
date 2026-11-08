@@ -2198,10 +2198,10 @@ static NiTexture::FormatPrefs FUN_14155d6d0()
 }
 
 // ---- weights, cloning, creation --------------------------------------------------------------------------------
-extern char DAT_142f2d1c8;                                          // xml element names of the weight file
-extern char DAT_142f2d1d0;
-extern char DAT_142f2d1d8;
-extern char DAT_142f2d1e8;
+extern unsigned char DAT_142f2d1c8[];                                          // xml element names of the weight file
+extern unsigned char DAT_142f2d1d0[];
+extern unsigned char DAT_142f2d1d8[];
+extern const char DAT_142f2d1e8[];   // "node"
 extern NiFixedString DAT_143ae5178;                                          // the weight key
 TiXmlElement* DocRootElement(TiXmlDocument* pDoc);                 // root element
 void FUN_141047ac0(class NiObjectNET*, class NiFixedString const&, float);   // C3: was FUN_141047ac0
@@ -2255,13 +2255,13 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
     TiXmlElement* pElement = DocRootElement(pDoc);
     if (pElement == 0)
         return;
-    TiXmlElement* pList = (TiXmlElement*)((Unk_XmlNode*)pElement)->FirstChild(&DAT_142f2d1c8);
+    TiXmlElement* pList = (TiXmlElement*)((Unk_XmlNode*)pElement)->FirstChild((const char*)DAT_142f2d1c8);
     if (pList == 0)
         return;
-    TiXmlElement* pItem = (TiXmlElement*)((Unk_XmlNode*)pList)->FirstChild(&DAT_142f2d1d0);
+    TiXmlElement* pItem = (TiXmlElement*)((Unk_XmlNode*)pList)->FirstChild((const char*)DAT_142f2d1d0);
     while (pItem != 0)
     {
-        const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pItem))->Attribute(&DAT_142f2d1d8);
+        const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pItem))->Attribute((const char*)DAT_142f2d1d8);
         if (pszName != 0)
         {
             unsigned nWeight = 0;
@@ -2271,7 +2271,7 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
                 SetWeights(pRoot->GetObjectByName(kName), (int)nWeight);
             }
         }
-        pItem = (TiXmlElement*)((Unk_XmlNode*)pItem)->NextSibling(&DAT_142f2d1e8);
+        pItem = (TiXmlElement*)((Unk_XmlNode*)pItem)->NextSibling(DAT_142f2d1e8);
     }
 }
 MS2_REPLACE_METHOD(0x141555F50, CNifLoadingService, ApplyWeights, 967, 0x6D7EAF52);

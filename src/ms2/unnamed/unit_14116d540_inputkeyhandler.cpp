@@ -62,7 +62,7 @@ public:
 };
 
 extern int DAT_143ab2914;                                   // the GM level
-extern int DAT_143af7d40;                                   // input enabled
+extern int g_bAppActive;                                   // input enabled
 
 int FUN_14116e010(int nLevel);                               // 1 when 1 <= nLevel <= 100
 
@@ -249,7 +249,7 @@ bool CInputKeyHandler::FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOn
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() != 0)
     {
@@ -268,7 +268,7 @@ bool CInputKeyHandler::FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (FUN_1409331f0()->IsActionKeyDown(nSetting) != 0)
         return true;
@@ -283,7 +283,7 @@ bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (FUN_1409331f0()->IsActionKeyPressed(nSetting) != 0)
         return true;
@@ -298,7 +298,7 @@ bool CInputKeyHandler::FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (DAT_143ab2914 < nLevel)
         return false;
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     if (FUN_1409331f0()->IsActionKeyReleased(nSetting) != 0)
         return true;
@@ -309,7 +309,7 @@ MS2_REPLACE_METHOD(0x14116DDB0, CInputKeyHandler, FUN_14116ddb0, 114, 0xFBF30D0E
 // @0x14116de30
 bool CInputKeyHandler::FUN_14116de30(int nKey)
 {
-    if (DAT_143af7d40 == 0)
+    if (g_bAppActive == 0)
         return false;
     FUN_140a58540()->InjectKeyPress(nKey);
     return true;

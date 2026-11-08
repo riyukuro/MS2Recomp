@@ -35,7 +35,7 @@ class CInputKeyHandler { public: bool IsDebugMode(void); };
 
 extern int DAT_1439f4840;
 extern _locale_t DAT_143aad168;
-extern int DAT_143ab0560;
+extern int g_nLocaleMode;
 extern std::string g_strLocaleDir2;
 extern std::string g_strLocaleDir;
 
@@ -598,7 +598,7 @@ void FUN_1406509e0(int n)
 {
     DAT_143ab0248 = n;
     DAT_143ab0258 = FUN_140652330(n);
-    DAT_143ab0560 = n;
+    g_nLocaleMode = n;
     switch (n)
     {
     case 1: g_strLocaleDir = "jp/"; break;

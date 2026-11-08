@@ -14,7 +14,7 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
+extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -148,7 +148,7 @@ void UIDebugTooltip::vfunc_52()
     if (m_30.IsNull())
         return;
     int nDebug = 0;
-    nDebug = DAT_143ae0fc0;
+    nDebug = g_nDebugUI;
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -196,7 +196,7 @@ void UIDebugTooltip::FUN_14191b140()
 {
     Vector3 screen;
     int nDebug = 0;
-    nDebug = DAT_143ae0fc0;
+    nDebug = g_nDebugUI;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_6c), reinterpret_cast<NiPoint3&>(screen)))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

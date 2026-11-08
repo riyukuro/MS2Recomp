@@ -238,9 +238,19 @@ unsigned __int64 FUN_140041d20(void);
 namespace Scaleform {
 namespace GFx {
 namespace AS3 {
+struct ThunkInfo;
+typedef void (*TThunkFunc)(const ThunkInfo &, VM &, const Value &, Value &, unsigned int, const Value *);
+// local view of AS3_VM.h ThunkInfo (0x28 bytes); ResultType is a const TypeInfo* there
 struct ThunkInfo
 {
 public: static void EmptyFunc(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+    TThunkFunc Method;
+    const void* ResultType;
+    const char* Name;
+    const char* NamespaceName;
+    unsigned int CodeType_ : 3;
+    unsigned int MinArgNum_ : 3;
+    unsigned int MaxArgNum_ : 10;
 };
 namespace InstanceTraits {
 namespace fl {
@@ -314,10 +324,10 @@ extern "C" void FUN_140028100();
 extern "C" void FUN_14002815c();
 extern "C" void FUN_1400281b8();
 long FUN_14003c190(long, long, long);
-void * criVmpv_Create(void *, unsigned long const *);
+extern "C" void * criVmpv_Create(void *, unsigned long const *);
 void criVmpv_SetProcessorMask(void *, unsigned long);
 void criVmpv_SetInitDlgPara(void *, long, long const *, long const *);
-void criVmpv_Destroy(void *);
+extern "C" void criVmpv_Destroy(void *);
 long criVmpv_GetStatus(void const *);
 void FUN_14003cca0(void *);
 void FUN_14003d4b0(void *, void *, void *);
@@ -438,6 +448,11 @@ void FUN_1425c5850();
 void FUN_1425c6940();
 void FUN_14274c310();
 
+namespace Scaleform { namespace Render { namespace D3D9 { extern const char* ShaderUniformNames[]; } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace Instances { namespace fl { extern const char* DateWeekDayNames[]; extern const char* DateMonthNames[]; } } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { extern const char* DAT_143a2d3d0[]; } } }
+namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo; extern const ClassInfo* ClassRegistrationTable[]; } } }
+namespace Scaleform { namespace Render { namespace D3D9 { struct VertexShaderDesc { static const VertexShaderDesc* Descs[]; }; struct FragShaderDesc { static const FragShaderDesc* Descs[]; }; } } }
 #pragma pack(push, 1)
 struct Sd_143a07838 {
     const void* p0;
@@ -726,8 +741,8 @@ struct Sd_143a07838 {
     const void* p1490;
     const void* p1498;
 };
-struct Sd_143a08d08 {
-    unsigned char b0[0x18];
+struct Sd_143a08d14 {
+    unsigned char b0[0xc];
     const void* p18;
     const void* p20;
     const void* p28;
@@ -760,8 +775,8 @@ struct Sd_143a08d08 {
     const void* p500;
     unsigned char b508[0x3f0];
 };
-struct Sd_143a09600 {
-    unsigned char b0[0x38];
+struct Sd_143a09624 {
+    unsigned char b0[0x14];
     const void* p38;
     unsigned char b40[0x8];
     const void* p48;
@@ -1470,40 +1485,13 @@ struct Sd_143a2a6b4 {
     const void* p44;
     unsigned char b4c[0x10];
 };
-struct Sd_143a2a710 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x8];
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    unsigned char b88[0x8];
-    const void* p90;
-    unsigned char b98[0x8];
-    const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x8];
-    const void* pc0;
-    unsigned char bc8[0x8];
-    const void* pd0;
-    unsigned char bd8[0x8];
-    const void* pe0;
-    unsigned char be8[0x8];
-    const void* pf0;
-    unsigned char bf8[0x8];
-};
+namespace Scaleform { namespace GFx { namespace AS3 {
+// local view of as3_value.h MemberInfo (0x10 bytes)
+#pragma pack(push, 8)
+struct MemberInfo { const char* Name; unsigned int Offset : 16; int BT : 5; unsigned int Const : 1; };
+#pragma pack(pop)
+namespace Instances { namespace fl { extern const MemberInfo GlobalObjectCPP_mi[16]; } }
+} } }
 struct Sd_143a2a810 {
     const void* p0;
     const void* p8;
@@ -1514,67 +1502,13 @@ struct Sd_143a2a810 {
     const void* p30;
     unsigned char b38[0x8];
 };
-struct Sd_143a2a850 {
+struct Sd_143a2a8b0 {
     const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
+    unsigned char b18[0x10];
     const void* p28;
     const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    unsigned char b78[0x10];
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    unsigned char ba0[0x10];
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    unsigned char bc8[0x18];
-};
-struct Sd_143a2a930 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    unsigned char b30[0x8];
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x18];
-};
-struct Sd_143a2a9b0 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    unsigned char b30[0x8];
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x18];
-};
-struct Sd_143a2aa30 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    unsigned char b30[0x8];
     const void* p38;
     unsigned char b40[0x10];
     const void* p50;
@@ -2556,91 +2490,8 @@ struct Sd_143a2aab0 {
     const void* p2600;
     unsigned char b2608[0x18];
 };
-struct Sd_143a2d0d0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-};
-struct Sd_143a2d128 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-};
-struct Sd_143a2d158 {
-    unsigned char b0[0x8];
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    unsigned char ba0[0x8];
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x10];
-    const void* pc8;
-    unsigned char bd0[0x8];
-    const void* pd8;
-    unsigned char be0[0x10];
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    unsigned char b108[0x10];
-    const void* p118;
-    unsigned char b120[0x8];
-    const void* p128;
-    unsigned char b130[0x10];
-    const void* p140;
-    unsigned char b148[0x8];
-    const void* p150;
-    unsigned char b158[0x10];
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    unsigned char b180[0x10];
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    unsigned char b1a8[0x10];
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    unsigned char b1d0[0x10];
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    unsigned char b1f8[0x10];
-    const void* p208;
-    unsigned char b210[0x8];
-    const void* p218;
-    unsigned char b220[0x10];
-    const void* p230;
-    unsigned char b238[0x8];
-    const void* p240;
-    unsigned char b248[0x10];
-};
+extern const char* const DAT_143a2d158[25];
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d220[10];
 struct Sd_143a2d3d0 {
     const void* p0;
     const void* p8;
@@ -2704,20 +2555,6 @@ struct Sd_143a2d3d0 {
     const void* p1d8;
     const void* p1e0;
     unsigned char b1e8[0x8];
-};
-struct Sd_143a2d5c0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    unsigned char b18[0x10];
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    unsigned char b68[0x18];
 };
 struct Sd_143a2d890 {
     const void* p0;
@@ -3338,104 +3175,30 @@ struct Sd_143a2dd50 {
     unsigned char b1230[0x8];
     const void* p1238;
 };
-struct Sd_143a2efe0 {
+struct Sd_143a2f310 {
     const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x8];
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    unsigned char b80[0x8];
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    unsigned char bb8[0x8];
-    const void* pc0;
-    unsigned char bc8[0x8];
-    const void* pd0;
-    unsigned char bd8[0x8];
-    const void* pe0;
-    unsigned char be8[0x18];
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    unsigned char b130[0x8];
-    const void* p138;
-    unsigned char b140[0x18];
-    const void* p158;
-    unsigned char b160[0x8];
-    const void* p168;
-    const void* p170;
-    unsigned char b178[0x8];
-    const void* p180;
-    unsigned char b188[0x38];
-    const void* p1c0;
-    const void* p1c8;
-    unsigned char b1d0[0x8];
-    const void* p1d8;
-    const void* p1e0;
-    unsigned char b1e8[0x8];
-    const void* p1f0;
-    const void* p1f8;
-    unsigned char b200[0x10];
-    const void* p210;
-    unsigned char b218[0x10];
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    unsigned char b240[0x10];
-    const void* p250;
-    const void* p258;
-    unsigned char b260[0x8];
-    const void* p268;
-    const void* p270;
-    unsigned char b278[0x20];
-    const void* p298;
-    const void* p2a0;
-    unsigned char b2a8[0x8];
-    const void* p2b0;
-    const void* p2b8;
-    unsigned char b2c0[0x10];
-    const void* p2d0;
-    unsigned char b2d8[0x8];
+    const void* p8;
+    unsigned char b10[0x30];
 };
-struct Sd_143a2f2c0 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    unsigned char b60[0x30];
-};
-struct Sd_143a2f3a0 {
-    unsigned char b0[0x70];
+struct Sd_143a2f3c0 {
+    unsigned char b0[0x50];
 };
 struct Sd_143a2f420 {
     const void* p0;
 };
+namespace Scaleform { namespace Render {
+// local layout of the SDK VertexFormat {Size, pElements, pSysFormat}; only the image bytes matter here
+struct VertexFormat { unsigned char b0[0x8]; const void* p8; unsigned char b10[0x8]; };
+struct Image9GridVertex { static VertexFormat Format; };
+struct VertexXY16i { static VertexFormat Format; };
+struct VertexXY16iAlpha { static VertexFormat Format; };
+struct VertexXY16iCF32 { static VertexFormat Format; };
+struct VertexXY16f { static VertexFormat Format; };
+struct VertexXY16fAlpha { static VertexFormat Format; };
+struct VertexXY16iC32 { static VertexFormat Format; };
+struct VertexXY16iInstance { static VertexFormat Format; };
+struct VertexXY16iUV { static VertexFormat Format; };
+} }
 struct Sd_143a2f968 {
     unsigned char b0[0x8];
     const void* p8;
@@ -3481,10 +3244,9 @@ struct Sd_143a2fc18 {
     const void* p8;
     unsigned char b10[0x8];
 };
-struct Sd_143a2fcb0 {
+struct Sd_143a2fcb8 {
     const void* p0;
-    const void* p8;
-    unsigned char b10[0x28];
+    unsigned char b8[0x28];
 };
 struct Sd_143a2fe50 {
     unsigned char b0[0x8];
@@ -3494,62 +3256,15 @@ struct Sd_143a30328 {
     unsigned char b0[0x8];
     const void* p8;
 };
-struct Sd_143a303c0 {
+namespace Scaleform { namespace Render { namespace D3D9 {
+// local view of d3d9_texture.h TextureFormat::Mapping (0x20 bytes; ImageFormat / D3DFORMAT are int enums, the scanline funcs pointers)
+#pragma pack(push, 8)
+struct TextureFormat { struct Mapping { int Format; int D3DFormat; unsigned char BytesPerPixel; bool Mappable; const void* CopyFunc; const void* UncopyFunc; }; };
+#pragma pack(pop)
+extern TextureFormat::Mapping D3D9TextureFormatMapping[19];
+} } }
+struct Sd_143a30620 {
     unsigned char b0[0x10];
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x10];
-    const void* p30;
-    const void* p38;
-    unsigned char b40[0x10];
-    const void* p50;
-    const void* p58;
-    unsigned char b60[0x10];
-    const void* p70;
-    const void* p78;
-    unsigned char b80[0x10];
-    const void* p90;
-    const void* p98;
-    unsigned char ba0[0x10];
-    const void* pb0;
-    const void* pb8;
-    unsigned char bc0[0x10];
-    const void* pd0;
-    const void* pd8;
-    unsigned char be0[0x10];
-    const void* pf0;
-    const void* pf8;
-    unsigned char b100[0x10];
-    const void* p110;
-    const void* p118;
-    unsigned char b120[0x10];
-    const void* p130;
-    const void* p138;
-    unsigned char b140[0x10];
-    const void* p150;
-    const void* p158;
-    unsigned char b160[0x10];
-    const void* p170;
-    const void* p178;
-    unsigned char b180[0x10];
-    const void* p190;
-    const void* p198;
-    unsigned char b1a0[0x10];
-    const void* p1b0;
-    const void* p1b8;
-    unsigned char b1c0[0x10];
-    const void* p1d0;
-    const void* p1d8;
-    unsigned char b1e0[0x10];
-    const void* p1f0;
-    const void* p1f8;
-    unsigned char b200[0x10];
-    const void* p210;
-    const void* p218;
-    unsigned char b220[0x10];
-    const void* p230;
-    const void* p238;
-    unsigned char b240[0x30];
 };
 struct Sd_143a30650 {
     unsigned char b0[0x250];
@@ -3678,1353 +3393,1140 @@ struct Sd_143a30930 {
     const void* p310;
     const void* p318;
 };
-struct Sd_143a30c50 {
+struct Sd_143a31300 {
     unsigned char b0[0x8];
     const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
+    unsigned char b10[0xf0];
     const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
+    unsigned char b108[0x40];
     const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
+    unsigned char b150[0xf0];
     const void* p240;
-    const void* p248;
+    unsigned char b248[0x8];
     const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    const void* p270;
-    const void* p278;
-    const void* p280;
+    unsigned char b258[0x30];
     const void* p288;
-    const void* p290;
-    const void* p298;
-    const void* p2a0;
-    const void* p2a8;
-    const void* p2b0;
-    const void* p2b8;
-    const void* p2c0;
-    const void* p2c8;
-    const void* p2d0;
-    const void* p2d8;
-    const void* p2e0;
-    const void* p2e8;
-    const void* p2f0;
-    const void* p2f8;
-    const void* p300;
-    const void* p308;
-    const void* p310;
-    const void* p318;
-    const void* p320;
-    const void* p328;
-    const void* p330;
-    const void* p338;
-    const void* p340;
-    const void* p348;
-    const void* p350;
-    const void* p358;
-    const void* p360;
-    const void* p368;
-    const void* p370;
-    const void* p378;
+    unsigned char b290[0xf0];
     const void* p380;
-    const void* p388;
-    const void* p390;
-    const void* p398;
-    const void* p3a0;
-    const void* p3a8;
-    const void* p3b0;
-    const void* p3b8;
-    const void* p3c0;
+    unsigned char b388[0x40];
     const void* p3c8;
-    const void* p3d0;
-    const void* p3d8;
-    const void* p3e0;
-    const void* p3e8;
-    const void* p3f0;
-    const void* p3f8;
-    const void* p400;
-    const void* p408;
-    const void* p410;
-    const void* p418;
-    const void* p420;
-    const void* p428;
-    const void* p430;
-    const void* p438;
-    const void* p440;
-    const void* p448;
-    const void* p450;
-    const void* p458;
-    const void* p460;
-    const void* p468;
-    const void* p470;
-    const void* p478;
-    const void* p480;
-    const void* p488;
-    const void* p490;
-    const void* p498;
-    const void* p4a0;
-    const void* p4a8;
-    const void* p4b0;
-    const void* p4b8;
+    unsigned char b3d0[0xf0];
     const void* p4c0;
-    const void* p4c8;
+    unsigned char b4c8[0x8];
     const void* p4d0;
-    const void* p4d8;
-    const void* p4e0;
-    const void* p4e8;
-    const void* p4f0;
-    const void* p4f8;
-    const void* p500;
+    unsigned char b4d8[0x30];
     const void* p508;
-    const void* p510;
-    const void* p518;
-    const void* p520;
-    const void* p528;
-    const void* p530;
-    const void* p538;
-    const void* p540;
-    const void* p548;
-    const void* p550;
-    const void* p558;
-    const void* p560;
-    const void* p568;
-    const void* p570;
-    const void* p578;
-    const void* p580;
-    const void* p588;
-    const void* p590;
-    const void* p598;
-    const void* p5a0;
-    const void* p5a8;
-    const void* p5b0;
-    const void* p5b8;
-    const void* p5c0;
-    const void* p5c8;
-    const void* p5d0;
-    const void* p5d8;
-    const void* p5e0;
-    const void* p5e8;
-    const void* p5f0;
-    const void* p5f8;
+    unsigned char b510[0xf0];
     const void* p600;
-    const void* p608;
+    unsigned char b608[0x8];
     const void* p610;
-    const void* p618;
-    const void* p620;
-    const void* p628;
-    const void* p630;
-    const void* p638;
-    const void* p640;
+    unsigned char b618[0x30];
     const void* p648;
-    const void* p650;
-    const void* p658;
-    const void* p660;
-    const void* p668;
-    const void* p670;
-    const void* p678;
-    const void* p680;
-    const void* p688;
-    const void* p690;
-    const void* p698;
-    const void* p6a0;
-    unsigned char b6a8[0x10];
-    const void* p6b8;
-    unsigned char b6c0[0xf0];
-    const void* p7b0;
-    unsigned char b7b8[0x40];
-    const void* p7f8;
-    unsigned char b800[0xf0];
-    const void* p8f0;
-    unsigned char b8f8[0x8];
-    const void* p900;
-    unsigned char b908[0x30];
-    const void* p938;
-    unsigned char b940[0xf0];
-    const void* pa30;
-    unsigned char ba38[0x40];
-    const void* pa78;
-    unsigned char ba80[0xf0];
-    const void* pb70;
-    unsigned char bb78[0x8];
-    const void* pb80;
-    unsigned char bb88[0x30];
-    const void* pbb8;
-    unsigned char bbc0[0xf0];
-    const void* pcb0;
-    unsigned char bcb8[0x8];
-    const void* pcc0;
-    unsigned char bcc8[0x30];
-    const void* pcf8;
-    unsigned char bd00[0xf0];
-    const void* pdf0;
-    unsigned char bdf8[0x8];
-    const void* pe00;
-    unsigned char be08[0x8];
-    const void* pe10;
-    unsigned char be18[0x20];
-    const void* pe38;
-    unsigned char be40[0xf0];
-    const void* pf30;
-    unsigned char bf38[0x8];
-    const void* pf40;
-    unsigned char bf48[0x30];
-    const void* pf78;
-    unsigned char bf80[0xf0];
-    const void* p1070;
-    unsigned char b1078[0x8];
-    const void* p1080;
-    unsigned char b1088[0x8];
-    const void* p1090;
-    unsigned char b1098[0x20];
-    const void* p10b8;
-    unsigned char b10c0[0xf0];
-    const void* p11b0;
-    unsigned char b11b8[0x8];
-    const void* p11c0;
-    unsigned char b11c8[0x30];
-    const void* p11f8;
-    unsigned char b1200[0xf0];
-    const void* p12f0;
-    unsigned char b12f8[0x8];
-    const void* p1300;
-    unsigned char b1308[0x30];
-    const void* p1338;
-    unsigned char b1340[0xf0];
-    const void* p1430;
-    unsigned char b1438[0x8];
-    const void* p1440;
-    unsigned char b1448[0x8];
-    const void* p1450;
-    unsigned char b1458[0x20];
-    const void* p1478;
-    unsigned char b1480[0xf0];
-    const void* p1570;
-    unsigned char b1578[0x8];
-    const void* p1580;
-    unsigned char b1588[0x8];
-    const void* p1590;
-    unsigned char b1598[0x20];
-    const void* p15b8;
-    unsigned char b15c0[0xf0];
-    const void* p16b0;
-    unsigned char b16b8[0x40];
-    const void* p16f8;
-    unsigned char b1700[0xf0];
-    const void* p17f0;
-    unsigned char b17f8[0x8];
-    const void* p1800;
-    unsigned char b1808[0x30];
-    const void* p1838;
-    unsigned char b1840[0xf0];
-    const void* p1930;
-    unsigned char b1938[0x40];
-    const void* p1978;
-    unsigned char b1980[0xf0];
-    const void* p1a70;
-    unsigned char b1a78[0x8];
-    const void* p1a80;
-    unsigned char b1a88[0x30];
-    const void* p1ab8;
-    unsigned char b1ac0[0xf0];
-    const void* p1bb0;
-    unsigned char b1bb8[0x8];
-    const void* p1bc0;
-    unsigned char b1bc8[0x30];
-    const void* p1bf8;
-    unsigned char b1c00[0xf0];
-    const void* p1cf0;
-    unsigned char b1cf8[0x8];
-    const void* p1d00;
-    unsigned char b1d08[0x8];
-    const void* p1d10;
-    unsigned char b1d18[0x20];
-    const void* p1d38;
-    unsigned char b1d40[0xf0];
-    const void* p1e30;
-    unsigned char b1e38[0x8];
-    const void* p1e40;
-    unsigned char b1e48[0x30];
-    const void* p1e78;
-    unsigned char b1e80[0xf0];
-    const void* p1f70;
-    unsigned char b1f78[0x8];
-    const void* p1f80;
-    unsigned char b1f88[0x8];
-    const void* p1f90;
-    unsigned char b1f98[0x20];
-    const void* p1fb8;
-    unsigned char b1fc0[0xf0];
-    const void* p20b0;
-    unsigned char b20b8[0x8];
-    const void* p20c0;
-    unsigned char b20c8[0x30];
-    const void* p20f8;
-    unsigned char b2100[0xf0];
-    const void* p21f0;
-    unsigned char b21f8[0x8];
-    const void* p2200;
-    unsigned char b2208[0x30];
-    const void* p2238;
-    unsigned char b2240[0xf0];
-    const void* p2330;
-    unsigned char b2338[0x8];
-    const void* p2340;
-    unsigned char b2348[0x8];
-    const void* p2350;
-    unsigned char b2358[0x20];
-    const void* p2378;
-    unsigned char b2380[0xf0];
-    const void* p2470;
-    unsigned char b2478[0x8];
-    const void* p2480;
-    unsigned char b2488[0x8];
-    const void* p2490;
-    unsigned char b2498[0x20];
-    const void* p24b8;
-    unsigned char b24c0[0xf0];
-    const void* p25b0;
-    unsigned char b25b8[0x8];
-    const void* p25c0;
-    unsigned char b25c8[0x30];
-    const void* p25f8;
-    unsigned char b2600[0xf0];
-    const void* p26f0;
-    unsigned char b26f8[0x8];
-    const void* p2700;
-    unsigned char b2708[0x30];
-    const void* p2738;
-    unsigned char b2740[0xf0];
-    const void* p2830;
-    unsigned char b2838[0x8];
-    const void* p2840;
-    unsigned char b2848[0x30];
-    const void* p2878;
-    unsigned char b2880[0xf0];
-    const void* p2970;
-    unsigned char b2978[0x8];
-    const void* p2980;
-    unsigned char b2988[0x30];
-    const void* p29b8;
-    unsigned char b29c0[0xf0];
-    const void* p2ab0;
-    unsigned char b2ab8[0x8];
-    const void* p2ac0;
-    unsigned char b2ac8[0x8];
-    const void* p2ad0;
-    unsigned char b2ad8[0x20];
-    const void* p2af8;
-    unsigned char b2b00[0xf0];
-    const void* p2bf0;
-    unsigned char b2bf8[0x8];
-    const void* p2c00;
-    unsigned char b2c08[0x8];
-    const void* p2c10;
-    unsigned char b2c18[0x20];
-    const void* p2c38;
-    unsigned char b2c40[0xf0];
-    const void* p2d30;
-    unsigned char b2d38[0x8];
-    const void* p2d40;
-    unsigned char b2d48[0x8];
-    const void* p2d50;
-    unsigned char b2d58[0x20];
-    const void* p2d78;
-    unsigned char b2d80[0xf0];
-    const void* p2e70;
-    unsigned char b2e78[0x8];
-    const void* p2e80;
-    unsigned char b2e88[0x8];
-    const void* p2e90;
-    unsigned char b2e98[0x20];
-    const void* p2eb8;
-    unsigned char b2ec0[0xf0];
-    const void* p2fb0;
-    unsigned char b2fb8[0x8];
-    const void* p2fc0;
-    unsigned char b2fc8[0x30];
-    const void* p2ff8;
-    unsigned char b3000[0xf0];
-    const void* p30f0;
-    unsigned char b30f8[0x8];
-    const void* p3100;
-    unsigned char b3108[0x30];
-    const void* p3138;
-    unsigned char b3140[0xf0];
-    const void* p3230;
-    unsigned char b3238[0x8];
-    const void* p3240;
-    unsigned char b3248[0x8];
-    const void* p3250;
-    unsigned char b3258[0x20];
-    const void* p3278;
-    unsigned char b3280[0xf0];
-    const void* p3370;
-    unsigned char b3378[0x8];
-    const void* p3380;
-    unsigned char b3388[0x8];
-    const void* p3390;
-    unsigned char b3398[0x20];
-    const void* p33b8;
-    unsigned char b33c0[0xf0];
-    const void* p34b0;
-    unsigned char b34b8[0x8];
-    const void* p34c0;
-    unsigned char b34c8[0x30];
-    const void* p34f8;
-    unsigned char b3500[0xf0];
-    const void* p35f0;
-    unsigned char b35f8[0x8];
-    const void* p3600;
-    unsigned char b3608[0x30];
-    const void* p3638;
-    unsigned char b3640[0xf0];
-    const void* p3730;
-    unsigned char b3738[0x8];
-    const void* p3740;
-    unsigned char b3748[0x30];
-    const void* p3778;
-    unsigned char b3780[0xf0];
-    const void* p3870;
-    unsigned char b3878[0x8];
-    const void* p3880;
-    unsigned char b3888[0x30];
-    const void* p38b8;
-    unsigned char b38c0[0xf0];
-    const void* p39b0;
-    unsigned char b39b8[0x8];
-    const void* p39c0;
-    unsigned char b39c8[0x8];
-    const void* p39d0;
-    unsigned char b39d8[0x20];
-    const void* p39f8;
-    unsigned char b3a00[0xf0];
-    const void* p3af0;
-    unsigned char b3af8[0x8];
-    const void* p3b00;
-    unsigned char b3b08[0x8];
-    const void* p3b10;
-    unsigned char b3b18[0x20];
-    const void* p3b38;
-    unsigned char b3b40[0xf0];
-    const void* p3c30;
-    unsigned char b3c38[0x8];
-    const void* p3c40;
-    unsigned char b3c48[0x8];
-    const void* p3c50;
-    unsigned char b3c58[0x20];
-    const void* p3c78;
-    unsigned char b3c80[0xf0];
-    const void* p3d70;
-    unsigned char b3d78[0x8];
-    const void* p3d80;
-    unsigned char b3d88[0x8];
-    const void* p3d90;
-    unsigned char b3d98[0x20];
-    const void* p3db8;
-    unsigned char b3dc0[0xf0];
-    const void* p3eb0;
-    unsigned char b3eb8[0x8];
-    const void* p3ec0;
-    unsigned char b3ec8[0x30];
-    const void* p3ef8;
-    unsigned char b3f00[0xf0];
-    const void* p3ff0;
-    unsigned char b3ff8[0x8];
-    const void* p4000;
-    unsigned char b4008[0x30];
-    const void* p4038;
-    unsigned char b4040[0xf0];
-    const void* p4130;
-    unsigned char b4138[0x8];
-    const void* p4140;
-    unsigned char b4148[0x8];
-    const void* p4150;
-    unsigned char b4158[0x20];
-    const void* p4178;
-    unsigned char b4180[0xf0];
-    const void* p4270;
-    unsigned char b4278[0x8];
-    const void* p4280;
-    unsigned char b4288[0x8];
-    const void* p4290;
-    unsigned char b4298[0x20];
-    const void* p42b8;
-    unsigned char b42c0[0xf0];
-    const void* p43b0;
-    unsigned char b43b8[0x8];
-    const void* p43c0;
-    unsigned char b43c8[0x30];
-    const void* p43f8;
-    unsigned char b4400[0xf0];
-    const void* p44f0;
-    unsigned char b44f8[0x8];
-    const void* p4500;
-    unsigned char b4508[0x8];
-    const void* p4510;
-    unsigned char b4518[0x20];
-    const void* p4538;
-    unsigned char b4540[0xf0];
-    const void* p4630;
-    unsigned char b4638[0x8];
-    const void* p4640;
-    unsigned char b4648[0x30];
-    const void* p4678;
-    unsigned char b4680[0xf0];
-    const void* p4770;
-    unsigned char b4778[0x8];
-    const void* p4780;
-    unsigned char b4788[0x8];
-    const void* p4790;
-    unsigned char b4798[0x20];
-    const void* p47b8;
-    unsigned char b47c0[0xf0];
-    const void* p48b0;
-    unsigned char b48b8[0x8];
-    const void* p48c0;
-    unsigned char b48c8[0x8];
-    const void* p48d0;
-    unsigned char b48d8[0x20];
-    const void* p48f8;
-    unsigned char b4900[0xf0];
-    const void* p49f0;
-    unsigned char b49f8[0x8];
-    const void* p4a00;
-    unsigned char b4a08[0x8];
-    const void* p4a10;
-    unsigned char b4a18[0x8];
-    const void* p4a20;
-    unsigned char b4a28[0x10];
-    const void* p4a38;
-    unsigned char b4a40[0xf0];
-    const void* p4b30;
-    unsigned char b4b38[0x8];
-    const void* p4b40;
-    unsigned char b4b48[0x8];
-    const void* p4b50;
-    unsigned char b4b58[0x20];
-    const void* p4b78;
-    unsigned char b4b80[0xf0];
-    const void* p4c70;
-    unsigned char b4c78[0x8];
-    const void* p4c80;
-    unsigned char b4c88[0x8];
-    const void* p4c90;
-    unsigned char b4c98[0x8];
-    const void* p4ca0;
-    unsigned char b4ca8[0x10];
-    const void* p4cb8;
-    unsigned char b4cc0[0xf0];
-    const void* p4db0;
-    unsigned char b4db8[0x8];
-    const void* p4dc0;
-    unsigned char b4dc8[0x8];
-    const void* p4dd0;
-    unsigned char b4dd8[0x20];
-    const void* p4df8;
-    unsigned char b4e00[0xf0];
-    const void* p4ef0;
-    unsigned char b4ef8[0x8];
-    const void* p4f00;
-    unsigned char b4f08[0x8];
-    const void* p4f10;
-    unsigned char b4f18[0x20];
-    const void* p4f38;
-    unsigned char b4f40[0xf0];
-    const void* p5030;
-    unsigned char b5038[0x8];
-    const void* p5040;
-    unsigned char b5048[0x8];
-    const void* p5050;
-    unsigned char b5058[0x8];
-    const void* p5060;
-    unsigned char b5068[0x10];
-    const void* p5078;
-    unsigned char b5080[0xf0];
-    const void* p5170;
-    unsigned char b5178[0x8];
-    const void* p5180;
-    unsigned char b5188[0x8];
-    const void* p5190;
-    unsigned char b5198[0x8];
-    const void* p51a0;
-    unsigned char b51a8[0x10];
-    const void* p51b8;
-    unsigned char b51c0[0xf0];
-    const void* p52b0;
-    unsigned char b52b8[0x8];
-    const void* p52c0;
-    unsigned char b52c8[0x30];
-    const void* p52f8;
-    unsigned char b5300[0xf0];
-    const void* p53f0;
-    unsigned char b53f8[0x8];
-    const void* p5400;
-    unsigned char b5408[0x8];
-    const void* p5410;
-    unsigned char b5418[0x20];
-    const void* p5438;
-    unsigned char b5440[0xf0];
-    const void* p5530;
-    unsigned char b5538[0x8];
-    const void* p5540;
-    unsigned char b5548[0x30];
-    const void* p5578;
-    unsigned char b5580[0xf0];
-    const void* p5670;
-    unsigned char b5678[0x8];
-    const void* p5680;
-    unsigned char b5688[0x8];
-    const void* p5690;
-    unsigned char b5698[0x20];
-    const void* p56b8;
-    unsigned char b56c0[0xf0];
-    const void* p57b0;
-    unsigned char b57b8[0x8];
-    const void* p57c0;
-    unsigned char b57c8[0x8];
-    const void* p57d0;
-    unsigned char b57d8[0x20];
-    const void* p57f8;
-    unsigned char b5800[0xf0];
-    const void* p58f0;
-    unsigned char b58f8[0x8];
-    const void* p5900;
-    unsigned char b5908[0x8];
-    const void* p5910;
-    unsigned char b5918[0x8];
-    const void* p5920;
-    unsigned char b5928[0x10];
-    const void* p5938;
-    unsigned char b5940[0xf0];
-    const void* p5a30;
-    unsigned char b5a38[0x8];
-    const void* p5a40;
-    unsigned char b5a48[0x8];
-    const void* p5a50;
-    unsigned char b5a58[0x20];
-    const void* p5a78;
-    unsigned char b5a80[0xf0];
-    const void* p5b70;
-    unsigned char b5b78[0x8];
-    const void* p5b80;
-    unsigned char b5b88[0x8];
-    const void* p5b90;
-    unsigned char b5b98[0x8];
-    const void* p5ba0;
-    unsigned char b5ba8[0x10];
-    const void* p5bb8;
-    unsigned char b5bc0[0xf0];
-    const void* p5cb0;
-    unsigned char b5cb8[0x8];
-    const void* p5cc0;
-    unsigned char b5cc8[0x8];
-    const void* p5cd0;
-    unsigned char b5cd8[0x20];
-    const void* p5cf8;
-    unsigned char b5d00[0xf0];
-    const void* p5df0;
-    unsigned char b5df8[0x8];
-    const void* p5e00;
-    unsigned char b5e08[0x8];
-    const void* p5e10;
-    unsigned char b5e18[0x20];
-    const void* p5e38;
-    unsigned char b5e40[0xf0];
-    const void* p5f30;
-    unsigned char b5f38[0x8];
-    const void* p5f40;
-    unsigned char b5f48[0x8];
-    const void* p5f50;
-    unsigned char b5f58[0x8];
-    const void* p5f60;
-    unsigned char b5f68[0x10];
-    const void* p5f78;
-    unsigned char b5f80[0xf0];
-    const void* p6070;
-    unsigned char b6078[0x8];
-    const void* p6080;
-    unsigned char b6088[0x8];
-    const void* p6090;
-    unsigned char b6098[0x8];
-    const void* p60a0;
-    unsigned char b60a8[0x10];
-    const void* p60b8;
-    unsigned char b60c0[0xf0];
-    const void* p61b0;
-    unsigned char b61b8[0x40];
-    const void* p61f8;
-    unsigned char b6200[0xf0];
-    const void* p62f0;
-    unsigned char b62f8[0x8];
-    const void* p6300;
-    unsigned char b6308[0x8];
-    const void* p6310;
-    unsigned char b6318[0x20];
-    const void* p6338;
-    unsigned char b6340[0xf0];
-    const void* p6430;
-    unsigned char b6438[0x8];
-    const void* p6440;
-    unsigned char b6448[0x30];
-    const void* p6478;
-    unsigned char b6480[0xf0];
-    const void* p6570;
-    unsigned char b6578[0x8];
-    const void* p6580;
-    unsigned char b6588[0x30];
-    const void* p65b8;
-    unsigned char b65c0[0xf0];
-    const void* p66b0;
-    unsigned char b66b8[0x40];
-    const void* p66f8;
-    unsigned char b6700[0xf0];
-    const void* p67f0;
-    unsigned char b67f8[0x8];
-    const void* p6800;
-    unsigned char b6808[0x8];
-    const void* p6810;
-    unsigned char b6818[0x20];
-    const void* p6838;
-    unsigned char b6840[0xf0];
-    const void* p6930;
-    unsigned char b6938[0x8];
-    const void* p6940;
-    unsigned char b6948[0x30];
-    const void* p6978;
-    unsigned char b6980[0xf0];
-    const void* p6a70;
-    unsigned char b6a78[0x8];
-    const void* p6a80;
-    unsigned char b6a88[0x30];
-    const void* p6ab8;
-    unsigned char b6ac0[0xf0];
-    const void* p6bb0;
-    unsigned char b6bb8[0x8];
-    const void* p6bc0;
-    unsigned char b6bc8[0x30];
-    const void* p6bf8;
-    unsigned char b6c00[0xf0];
-    const void* p6cf0;
-    unsigned char b6cf8[0x8];
-    const void* p6d00;
-    unsigned char b6d08[0x8];
-    const void* p6d10;
-    unsigned char b6d18[0x8];
-    const void* p6d20;
-    unsigned char b6d28[0x10];
-    const void* p6d38;
-    unsigned char b6d40[0xf0];
-    const void* p6e30;
-    unsigned char b6e38[0x8];
-    const void* p6e40;
-    unsigned char b6e48[0x8];
-    const void* p6e50;
-    unsigned char b6e58[0x20];
-    const void* p6e78;
-    unsigned char b6e80[0xf0];
-    const void* p6f70;
-    unsigned char b6f78[0x8];
-    const void* p6f80;
-    unsigned char b6f88[0x8];
-    const void* p6f90;
-    unsigned char b6f98[0x20];
-    const void* p6fb8;
-    unsigned char b6fc0[0xf0];
-    const void* p70b0;
-    unsigned char b70b8[0x8];
-    const void* p70c0;
-    unsigned char b70c8[0x30];
-    const void* p70f8;
-    unsigned char b7100[0xf0];
-    const void* p71f0;
-    unsigned char b71f8[0x8];
-    const void* p7200;
-    unsigned char b7208[0x8];
-    const void* p7210;
-    unsigned char b7218[0x8];
-    const void* p7220;
-    unsigned char b7228[0x10];
-    const void* p7238;
-    unsigned char b7240[0xf0];
-    const void* p7330;
-    unsigned char b7338[0x8];
-    const void* p7340;
-    unsigned char b7348[0x8];
-    const void* p7350;
-    unsigned char b7358[0x20];
-    const void* p7378;
-    unsigned char b7380[0xf0];
-    const void* p7470;
-    unsigned char b7478[0x8];
-    const void* p7480;
-    unsigned char b7488[0x8];
-    const void* p7490;
-    unsigned char b7498[0x20];
-    const void* p74b8;
-    unsigned char b74c0[0xf0];
-    const void* p75b0;
-    unsigned char b75b8[0x8];
-    const void* p75c0;
-    unsigned char b75c8[0x30];
-    const void* p75f8;
-    unsigned char b7600[0xf0];
-    const void* p76f0;
-    unsigned char b76f8[0x8];
-    const void* p7700;
-    unsigned char b7708[0x8];
-    const void* p7710;
-    unsigned char b7718[0x8];
-    const void* p7720;
-    unsigned char b7728[0x10];
-    const void* p7738;
-    unsigned char b7740[0xf0];
-    const void* p7830;
-    unsigned char b7838[0x8];
-    const void* p7840;
-    unsigned char b7848[0x8];
-    const void* p7850;
-    unsigned char b7858[0x20];
-    const void* p7878;
-    unsigned char b7880[0xf0];
-    const void* p7970;
-    unsigned char b7978[0x8];
-    const void* p7980;
-    unsigned char b7988[0x8];
-    const void* p7990;
-    unsigned char b7998[0x20];
-    const void* p79b8;
-    unsigned char b79c0[0xf0];
-    const void* p7ab0;
-    unsigned char b7ab8[0x8];
-    const void* p7ac0;
-    unsigned char b7ac8[0x30];
-    const void* p7af8;
-    unsigned char b7b00[0xf0];
-    const void* p7bf0;
-    unsigned char b7bf8[0x8];
-    const void* p7c00;
-    unsigned char b7c08[0x8];
-    const void* p7c10;
-    unsigned char b7c18[0x8];
-    const void* p7c20;
-    unsigned char b7c28[0x10];
-    const void* p7c38;
-    unsigned char b7c40[0xf0];
-    const void* p7d30;
-    unsigned char b7d38[0x8];
-    const void* p7d40;
-    unsigned char b7d48[0x8];
-    const void* p7d50;
-    unsigned char b7d58[0x20];
-    const void* p7d78;
-    unsigned char b7d80[0xf0];
-    const void* p7e70;
-    unsigned char b7e78[0x8];
-    const void* p7e80;
-    unsigned char b7e88[0x8];
-    const void* p7e90;
-    unsigned char b7e98[0x20];
-    const void* p7eb8;
-    unsigned char b7ec0[0xf0];
-    const void* p7fb0;
-    unsigned char b7fb8[0x40];
-    const void* p7ff8;
-    unsigned char b8000[0xf0];
-    const void* p80f0;
-    unsigned char b80f8[0x40];
-    const void* p8138;
-    unsigned char b8140[0xf0];
-    const void* p8230;
-    unsigned char b8238[0x40];
-    const void* p8278;
-    unsigned char b8280[0xf8];
-    const void* p8378;
-    unsigned char b8380[0xf8];
-    const void* p8478;
-    unsigned char b8480[0xf8];
-    const void* p8578;
-    unsigned char b8580[0xf8];
-    const void* p8678;
-    unsigned char b8680[0xf8];
-    const void* p8778;
-    unsigned char b8780[0xf8];
-    const void* p8878;
-    unsigned char b8880[0xf8];
-    const void* p8978;
-    unsigned char b8980[0xf8];
-    const void* p8a78;
-    unsigned char b8a80[0xf8];
-    const void* p8b78;
-    unsigned char b8b80[0xf8];
-    const void* p8c78;
-    unsigned char b8c80[0xf8];
-    const void* p8d78;
-    unsigned char b8d80[0xf8];
-    const void* p8e78;
-    unsigned char b8e80[0xf8];
-    const void* p8f78;
-    unsigned char b8f80[0xf8];
-    const void* p9078;
-    unsigned char b9080[0xf8];
-    const void* p9178;
-    unsigned char b9180[0xf8];
-    const void* p9278;
-    unsigned char b9280[0xf8];
-    const void* p9378;
-    unsigned char b9380[0xf8];
-    const void* p9478;
-    unsigned char b9480[0xf8];
-    const void* p9578;
-    unsigned char b9580[0xf8];
-    const void* p9678;
-    unsigned char b9680[0xf8];
-    const void* p9778;
-    unsigned char b9780[0xf8];
-    const void* p9878;
-    unsigned char b9880[0xf8];
-    const void* p9978;
-    unsigned char b9980[0xf8];
-    const void* p9a78;
-    unsigned char b9a80[0xf8];
-    const void* p9b78;
-    unsigned char b9b80[0xf8];
-    const void* p9c78;
-    unsigned char b9c80[0xf8];
-    const void* p9d78;
-    unsigned char b9d80[0xf8];
-    const void* p9e78;
-    unsigned char b9e80[0xf8];
-    const void* p9f78;
-    unsigned char b9f80[0xf8];
-    const void* pa078;
-    unsigned char ba080[0xf8];
-    const void* pa178;
-    unsigned char ba180[0xf8];
-    const void* pa278;
-    unsigned char ba280[0xf8];
-    const void* pa378;
-    unsigned char ba380[0xf8];
-    const void* pa478;
-    unsigned char ba480[0xf8];
-    const void* pa578;
-    unsigned char ba580[0xf8];
-    const void* pa678;
-    unsigned char ba680[0xf8];
-    const void* pa778;
-    unsigned char ba780[0xf8];
-    const void* pa878;
-    unsigned char ba880[0xf8];
-    const void* pa978;
-    unsigned char ba980[0xf8];
-    const void* paa78;
-    unsigned char baa80[0xf8];
-    const void* pab78;
-    unsigned char bab80[0xf8];
-    const void* pac78;
-    unsigned char bac80[0xf8];
-    const void* pad78;
-    unsigned char bad80[0xf8];
-    const void* pae78;
-    unsigned char bae80[0xf8];
-    const void* paf78;
-    unsigned char baf80[0xf8];
-    const void* pb078;
-    unsigned char bb080[0xf8];
-    const void* pb178;
-    unsigned char bb180[0xf8];
-    const void* pb278;
-    unsigned char bb280[0xf8];
-    const void* pb378;
-    unsigned char bb380[0xf8];
-    const void* pb478;
-    unsigned char bb480[0xf8];
-    const void* pb578;
-    unsigned char bb580[0xf8];
-    const void* pb678;
-    unsigned char bb680[0xf8];
-    const void* pb778;
-    unsigned char bb780[0xf8];
-    const void* pb878;
-    unsigned char bb880[0xf8];
-    const void* pb978;
-    unsigned char bb980[0xf8];
-    const void* pba78;
-    unsigned char bba80[0xf8];
-    const void* pbb78;
-    unsigned char bbb80[0xf8];
-    const void* pbc78;
-    unsigned char bbc80[0xf8];
-    const void* pbd78;
-    unsigned char bbd80[0xf8];
-    const void* pbe78;
-    unsigned char bbe80[0xf8];
-    const void* pbf78;
-    unsigned char bbf80[0xf8];
-    const void* pc078;
-    unsigned char bc080[0xf8];
-    const void* pc178;
-    unsigned char bc180[0xf8];
-    const void* pc278;
-    unsigned char bc280[0xf8];
-    const void* pc378;
-    unsigned char bc380[0xf8];
-    const void* pc478;
-    unsigned char bc480[0xf8];
-    const void* pc578;
-    unsigned char bc580[0xf8];
-    const void* pc678;
-    unsigned char bc680[0xf8];
-    const void* pc778;
-    unsigned char bc780[0xf8];
-    const void* pc878;
-    unsigned char bc880[0xf8];
-    const void* pc978;
-    unsigned char bc980[0xf8];
-    const void* pca78;
-    unsigned char bca80[0xf8];
-    const void* pcb78;
-    unsigned char bcb80[0xf8];
-    const void* pcc78;
-    unsigned char bcc80[0xf8];
-    const void* pcd78;
-    unsigned char bcd80[0xf8];
-    const void* pce78;
-    unsigned char bce80[0xf8];
-    const void* pcf78;
-    unsigned char bcf80[0xf8];
-    const void* pd078;
-    unsigned char bd080[0xf8];
-    const void* pd178;
-    unsigned char bd180[0xf8];
-    const void* pd278;
-    unsigned char bd280[0xf8];
-    const void* pd378;
-    unsigned char bd380[0xf8];
-    const void* pd478;
-    unsigned char bd480[0xf8];
-    const void* pd578;
-    unsigned char bd580[0xf8];
-    const void* pd678;
-    unsigned char bd680[0xf8];
-    const void* pd778;
-    unsigned char bd780[0xf8];
-    const void* pd878;
-    unsigned char bd880[0xf8];
-    const void* pd978;
-    unsigned char bd980[0xf8];
-    const void* pda78;
-    unsigned char bda80[0xf8];
-    const void* pdb78;
-    unsigned char bdb80[0xf8];
-    const void* pdc78;
-    unsigned char bdc80[0xf8];
-    const void* pdd78;
-    unsigned char bdd80[0xf8];
-    const void* pde78;
-    unsigned char bde80[0xf8];
-    const void* pdf78;
-    unsigned char bdf80[0xf8];
-    const void* pe078;
-    unsigned char be080[0xf8];
-    const void* pe178;
-    unsigned char be180[0xf8];
-    const void* pe278;
-    unsigned char be280[0xf8];
-    const void* pe378;
-    unsigned char be380[0xf8];
-    const void* pe478;
-    unsigned char be480[0xf8];
-    const void* pe578;
-    unsigned char be580[0xf8];
-    const void* pe678;
-    unsigned char be680[0xf8];
-    const void* pe778;
-    unsigned char be780[0xf8];
-    const void* pe878;
-    unsigned char be880[0xf8];
-    const void* pe978;
-    unsigned char be980[0xf8];
-    const void* pea78;
-    unsigned char bea80[0xf8];
-    const void* peb78;
-    unsigned char beb80[0xf8];
-    const void* pec78;
-    unsigned char bec80[0xf8];
-    const void* ped78;
-    unsigned char bed80[0xf8];
-    const void* pee78;
-    unsigned char bee80[0xf8];
-    const void* pef78;
-    unsigned char bef80[0xf8];
-    const void* pf078;
-    unsigned char bf080[0xf8];
-    const void* pf178;
-    unsigned char bf180[0xf8];
-    const void* pf278;
-    unsigned char bf280[0xf8];
-    const void* pf378;
-    unsigned char bf380[0xf8];
-    const void* pf478;
-    unsigned char bf480[0xf8];
-    const void* pf578;
-    unsigned char bf580[0xf8];
-    const void* pf678;
-    unsigned char bf680[0xf8];
-    const void* pf778;
-    unsigned char bf780[0xf8];
-    const void* pf878;
-    unsigned char bf880[0xf8];
-    const void* pf978;
-    unsigned char bf980[0xf8];
-    const void* pfa78;
-    unsigned char bfa80[0xf8];
-    const void* pfb78;
-    unsigned char bfb80[0xf8];
-    const void* pfc78;
-    unsigned char bfc80[0xf8];
-    const void* pfd78;
-    unsigned char bfd80[0xf8];
-    const void* pfe78;
-    unsigned char bfe80[0xf8];
-    const void* pff78;
-    unsigned char bff80[0xf8];
-    const void* p10078;
-    unsigned char b10080[0xf8];
-    const void* p10178;
-    unsigned char b10180[0xf8];
-    const void* p10278;
-    unsigned char b10280[0xf8];
-    const void* p10378;
-    unsigned char b10380[0xf8];
-    const void* p10478;
-    unsigned char b10480[0xf8];
-    const void* p10578;
-    unsigned char b10580[0xf8];
-    const void* p10678;
-    unsigned char b10680[0xf8];
-    const void* p10778;
-    unsigned char b10780[0xf8];
-    const void* p10878;
-    unsigned char b10880[0xf8];
-    const void* p10978;
-    unsigned char b10980[0xf8];
-    const void* p10a78;
-    unsigned char b10a80[0xf8];
-    const void* p10b78;
-    unsigned char b10b80[0xf8];
-    const void* p10c78;
-    unsigned char b10c80[0xf8];
-    const void* p10d78;
-    unsigned char b10d80[0xf8];
-    const void* p10e78;
-    unsigned char b10e80[0xf8];
-    const void* p10f78;
-    unsigned char b10f80[0xf8];
-    const void* p11078;
-    unsigned char b11080[0xf8];
-    const void* p11178;
-    unsigned char b11180[0xf8];
-    const void* p11278;
-    unsigned char b11280[0xf8];
-    const void* p11378;
-    unsigned char b11380[0xf8];
-    const void* p11478;
-    unsigned char b11480[0xf8];
-    const void* p11578;
-    unsigned char b11580[0xf8];
-    const void* p11678;
-    unsigned char b11680[0xf8];
-    const void* p11778;
-    unsigned char b11780[0xf8];
-    const void* p11878;
-    unsigned char b11880[0xf8];
-    const void* p11978;
-    unsigned char b11980[0xf8];
-    const void* p11a78;
-    unsigned char b11a80[0xf8];
-    const void* p11b78;
-    unsigned char b11b80[0xf8];
-    const void* p11c78;
-    unsigned char b11c80[0xf8];
-    const void* p11d78;
-    unsigned char b11d80[0xf8];
-    const void* p11e78;
-    unsigned char b11e80[0xf8];
-    const void* p11f78;
-    unsigned char b11f80[0xf8];
-    const void* p12078;
-    unsigned char b12080[0xf8];
-    const void* p12178;
-    unsigned char b12180[0xf8];
-    const void* p12278;
-    unsigned char b12280[0xf8];
-    const void* p12378;
-    unsigned char b12380[0xf8];
-    const void* p12478;
-    unsigned char b12480[0xf8];
-    const void* p12578;
-    unsigned char b12580[0xf8];
-    const void* p12678;
-    unsigned char b12680[0xf8];
-    const void* p12778;
-    unsigned char b12780[0xf8];
-    const void* p12878;
-    unsigned char b12880[0xf8];
-    const void* p12978;
-    unsigned char b12980[0xf8];
-    const void* p12a78;
-    unsigned char b12a80[0xf8];
-    const void* p12b78;
-    unsigned char b12b80[0xf8];
-    const void* p12c78;
-    unsigned char b12c80[0xf8];
-    const void* p12d78;
-    unsigned char b12d80[0xf8];
-    const void* p12e78;
-    unsigned char b12e80[0xf8];
-    const void* p12f78;
-    unsigned char b12f80[0xf8];
-    const void* p13078;
-    unsigned char b13080[0xf8];
-    const void* p13178;
-    unsigned char b13180[0xf8];
-    const void* p13278;
-    unsigned char b13280[0xf8];
-    const void* p13378;
-    unsigned char b13380[0xf8];
-    const void* p13478;
-    unsigned char b13480[0xf8];
-    const void* p13578;
-    unsigned char b13580[0xf8];
-    const void* p13678;
-    unsigned char b13680[0xf8];
-    const void* p13778;
-    unsigned char b13780[0xf8];
-    const void* p13878;
-    unsigned char b13880[0xf8];
-    const void* p13978;
-    unsigned char b13980[0xf8];
-    const void* p13a78;
-    unsigned char b13a80[0xf8];
-    const void* p13b78;
-    unsigned char b13b80[0xf8];
-    const void* p13c78;
-    unsigned char b13c80[0xf8];
-    const void* p13d78;
-    unsigned char b13d80[0xf8];
-    const void* p13e78;
-    unsigned char b13e80[0xf8];
-    const void* p13f78;
-    unsigned char b13f80[0xf8];
-    const void* p14078;
-    unsigned char b14080[0xf8];
-    const void* p14178;
-    unsigned char b14180[0xf8];
-    const void* p14278;
-    unsigned char b14280[0xf8];
-    const void* p14378;
-    unsigned char b14380[0xf8];
-    const void* p14478;
-    unsigned char b14480[0xf8];
-    const void* p14578;
-    unsigned char b14580[0xf8];
-    const void* p14678;
-    unsigned char b14680[0xf8];
-    const void* p14778;
-    unsigned char b14780[0xf8];
-    const void* p14878;
-    unsigned char b14880[0xf8];
-    const void* p14978;
-    unsigned char b14980[0xf8];
-    const void* p14a78;
-    unsigned char b14a80[0xf8];
-    const void* p14b78;
-    unsigned char b14b80[0xf8];
-    const void* p14c78;
-    unsigned char b14c80[0xf8];
-    const void* p14d78;
-    unsigned char b14d80[0xf8];
-    const void* p14e78;
-    unsigned char b14e80[0xf8];
-    const void* p14f78;
-    unsigned char b14f80[0xf8];
-    const void* p15078;
-    unsigned char b15080[0xf8];
-    const void* p15178;
-    unsigned char b15180[0xf8];
-    const void* p15278;
-    unsigned char b15280[0xf8];
-    const void* p15378;
-    unsigned char b15380[0xf8];
-    const void* p15478;
-    unsigned char b15480[0xf8];
-    const void* p15578;
-    unsigned char b15580[0x120];
+    unsigned char b650[0xf0];
+    const void* p740;
+    unsigned char b748[0x8];
+    const void* p750;
+    unsigned char b758[0x8];
+    const void* p760;
+    unsigned char b768[0x20];
+    const void* p788;
+    unsigned char b790[0xf0];
+    const void* p880;
+    unsigned char b888[0x8];
+    const void* p890;
+    unsigned char b898[0x30];
+    const void* p8c8;
+    unsigned char b8d0[0xf0];
+    const void* p9c0;
+    unsigned char b9c8[0x8];
+    const void* p9d0;
+    unsigned char b9d8[0x8];
+    const void* p9e0;
+    unsigned char b9e8[0x20];
+    const void* pa08;
+    unsigned char ba10[0xf0];
+    const void* pb00;
+    unsigned char bb08[0x8];
+    const void* pb10;
+    unsigned char bb18[0x30];
+    const void* pb48;
+    unsigned char bb50[0xf0];
+    const void* pc40;
+    unsigned char bc48[0x8];
+    const void* pc50;
+    unsigned char bc58[0x30];
+    const void* pc88;
+    unsigned char bc90[0xf0];
+    const void* pd80;
+    unsigned char bd88[0x8];
+    const void* pd90;
+    unsigned char bd98[0x8];
+    const void* pda0;
+    unsigned char bda8[0x20];
+    const void* pdc8;
+    unsigned char bdd0[0xf0];
+    const void* pec0;
+    unsigned char bec8[0x8];
+    const void* ped0;
+    unsigned char bed8[0x8];
+    const void* pee0;
+    unsigned char bee8[0x20];
+    const void* pf08;
+    unsigned char bf10[0xf0];
+    const void* p1000;
+    unsigned char b1008[0x40];
+    const void* p1048;
+    unsigned char b1050[0xf0];
+    const void* p1140;
+    unsigned char b1148[0x8];
+    const void* p1150;
+    unsigned char b1158[0x30];
+    const void* p1188;
+    unsigned char b1190[0xf0];
+    const void* p1280;
+    unsigned char b1288[0x40];
+    const void* p12c8;
+    unsigned char b12d0[0xf0];
+    const void* p13c0;
+    unsigned char b13c8[0x8];
+    const void* p13d0;
+    unsigned char b13d8[0x30];
+    const void* p1408;
+    unsigned char b1410[0xf0];
+    const void* p1500;
+    unsigned char b1508[0x8];
+    const void* p1510;
+    unsigned char b1518[0x30];
+    const void* p1548;
+    unsigned char b1550[0xf0];
+    const void* p1640;
+    unsigned char b1648[0x8];
+    const void* p1650;
+    unsigned char b1658[0x8];
+    const void* p1660;
+    unsigned char b1668[0x20];
+    const void* p1688;
+    unsigned char b1690[0xf0];
+    const void* p1780;
+    unsigned char b1788[0x8];
+    const void* p1790;
+    unsigned char b1798[0x30];
+    const void* p17c8;
+    unsigned char b17d0[0xf0];
+    const void* p18c0;
+    unsigned char b18c8[0x8];
+    const void* p18d0;
+    unsigned char b18d8[0x8];
+    const void* p18e0;
+    unsigned char b18e8[0x20];
+    const void* p1908;
+    unsigned char b1910[0xf0];
+    const void* p1a00;
+    unsigned char b1a08[0x8];
+    const void* p1a10;
+    unsigned char b1a18[0x30];
+    const void* p1a48;
+    unsigned char b1a50[0xf0];
+    const void* p1b40;
+    unsigned char b1b48[0x8];
+    const void* p1b50;
+    unsigned char b1b58[0x30];
+    const void* p1b88;
+    unsigned char b1b90[0xf0];
+    const void* p1c80;
+    unsigned char b1c88[0x8];
+    const void* p1c90;
+    unsigned char b1c98[0x8];
+    const void* p1ca0;
+    unsigned char b1ca8[0x20];
+    const void* p1cc8;
+    unsigned char b1cd0[0xf0];
+    const void* p1dc0;
+    unsigned char b1dc8[0x8];
+    const void* p1dd0;
+    unsigned char b1dd8[0x8];
+    const void* p1de0;
+    unsigned char b1de8[0x20];
+    const void* p1e08;
+    unsigned char b1e10[0xf0];
+    const void* p1f00;
+    unsigned char b1f08[0x8];
+    const void* p1f10;
+    unsigned char b1f18[0x30];
+    const void* p1f48;
+    unsigned char b1f50[0xf0];
+    const void* p2040;
+    unsigned char b2048[0x8];
+    const void* p2050;
+    unsigned char b2058[0x30];
+    const void* p2088;
+    unsigned char b2090[0xf0];
+    const void* p2180;
+    unsigned char b2188[0x8];
+    const void* p2190;
+    unsigned char b2198[0x30];
+    const void* p21c8;
+    unsigned char b21d0[0xf0];
+    const void* p22c0;
+    unsigned char b22c8[0x8];
+    const void* p22d0;
+    unsigned char b22d8[0x30];
+    const void* p2308;
+    unsigned char b2310[0xf0];
+    const void* p2400;
+    unsigned char b2408[0x8];
+    const void* p2410;
+    unsigned char b2418[0x8];
+    const void* p2420;
+    unsigned char b2428[0x20];
+    const void* p2448;
+    unsigned char b2450[0xf0];
+    const void* p2540;
+    unsigned char b2548[0x8];
+    const void* p2550;
+    unsigned char b2558[0x8];
+    const void* p2560;
+    unsigned char b2568[0x20];
+    const void* p2588;
+    unsigned char b2590[0xf0];
+    const void* p2680;
+    unsigned char b2688[0x8];
+    const void* p2690;
+    unsigned char b2698[0x8];
+    const void* p26a0;
+    unsigned char b26a8[0x20];
+    const void* p26c8;
+    unsigned char b26d0[0xf0];
+    const void* p27c0;
+    unsigned char b27c8[0x8];
+    const void* p27d0;
+    unsigned char b27d8[0x8];
+    const void* p27e0;
+    unsigned char b27e8[0x20];
+    const void* p2808;
+    unsigned char b2810[0xf0];
+    const void* p2900;
+    unsigned char b2908[0x8];
+    const void* p2910;
+    unsigned char b2918[0x30];
+    const void* p2948;
+    unsigned char b2950[0xf0];
+    const void* p2a40;
+    unsigned char b2a48[0x8];
+    const void* p2a50;
+    unsigned char b2a58[0x30];
+    const void* p2a88;
+    unsigned char b2a90[0xf0];
+    const void* p2b80;
+    unsigned char b2b88[0x8];
+    const void* p2b90;
+    unsigned char b2b98[0x8];
+    const void* p2ba0;
+    unsigned char b2ba8[0x20];
+    const void* p2bc8;
+    unsigned char b2bd0[0xf0];
+    const void* p2cc0;
+    unsigned char b2cc8[0x8];
+    const void* p2cd0;
+    unsigned char b2cd8[0x8];
+    const void* p2ce0;
+    unsigned char b2ce8[0x20];
+    const void* p2d08;
+    unsigned char b2d10[0xf0];
+    const void* p2e00;
+    unsigned char b2e08[0x8];
+    const void* p2e10;
+    unsigned char b2e18[0x30];
+    const void* p2e48;
+    unsigned char b2e50[0xf0];
+    const void* p2f40;
+    unsigned char b2f48[0x8];
+    const void* p2f50;
+    unsigned char b2f58[0x30];
+    const void* p2f88;
+    unsigned char b2f90[0xf0];
+    const void* p3080;
+    unsigned char b3088[0x8];
+    const void* p3090;
+    unsigned char b3098[0x30];
+    const void* p30c8;
+    unsigned char b30d0[0xf0];
+    const void* p31c0;
+    unsigned char b31c8[0x8];
+    const void* p31d0;
+    unsigned char b31d8[0x30];
+    const void* p3208;
+    unsigned char b3210[0xf0];
+    const void* p3300;
+    unsigned char b3308[0x8];
+    const void* p3310;
+    unsigned char b3318[0x8];
+    const void* p3320;
+    unsigned char b3328[0x20];
+    const void* p3348;
+    unsigned char b3350[0xf0];
+    const void* p3440;
+    unsigned char b3448[0x8];
+    const void* p3450;
+    unsigned char b3458[0x8];
+    const void* p3460;
+    unsigned char b3468[0x20];
+    const void* p3488;
+    unsigned char b3490[0xf0];
+    const void* p3580;
+    unsigned char b3588[0x8];
+    const void* p3590;
+    unsigned char b3598[0x8];
+    const void* p35a0;
+    unsigned char b35a8[0x20];
+    const void* p35c8;
+    unsigned char b35d0[0xf0];
+    const void* p36c0;
+    unsigned char b36c8[0x8];
+    const void* p36d0;
+    unsigned char b36d8[0x8];
+    const void* p36e0;
+    unsigned char b36e8[0x20];
+    const void* p3708;
+    unsigned char b3710[0xf0];
+    const void* p3800;
+    unsigned char b3808[0x8];
+    const void* p3810;
+    unsigned char b3818[0x30];
+    const void* p3848;
+    unsigned char b3850[0xf0];
+    const void* p3940;
+    unsigned char b3948[0x8];
+    const void* p3950;
+    unsigned char b3958[0x30];
+    const void* p3988;
+    unsigned char b3990[0xf0];
+    const void* p3a80;
+    unsigned char b3a88[0x8];
+    const void* p3a90;
+    unsigned char b3a98[0x8];
+    const void* p3aa0;
+    unsigned char b3aa8[0x20];
+    const void* p3ac8;
+    unsigned char b3ad0[0xf0];
+    const void* p3bc0;
+    unsigned char b3bc8[0x8];
+    const void* p3bd0;
+    unsigned char b3bd8[0x8];
+    const void* p3be0;
+    unsigned char b3be8[0x20];
+    const void* p3c08;
+    unsigned char b3c10[0xf0];
+    const void* p3d00;
+    unsigned char b3d08[0x8];
+    const void* p3d10;
+    unsigned char b3d18[0x30];
+    const void* p3d48;
+    unsigned char b3d50[0xf0];
+    const void* p3e40;
+    unsigned char b3e48[0x8];
+    const void* p3e50;
+    unsigned char b3e58[0x8];
+    const void* p3e60;
+    unsigned char b3e68[0x20];
+    const void* p3e88;
+    unsigned char b3e90[0xf0];
+    const void* p3f80;
+    unsigned char b3f88[0x8];
+    const void* p3f90;
+    unsigned char b3f98[0x30];
+    const void* p3fc8;
+    unsigned char b3fd0[0xf0];
+    const void* p40c0;
+    unsigned char b40c8[0x8];
+    const void* p40d0;
+    unsigned char b40d8[0x8];
+    const void* p40e0;
+    unsigned char b40e8[0x20];
+    const void* p4108;
+    unsigned char b4110[0xf0];
+    const void* p4200;
+    unsigned char b4208[0x8];
+    const void* p4210;
+    unsigned char b4218[0x8];
+    const void* p4220;
+    unsigned char b4228[0x20];
+    const void* p4248;
+    unsigned char b4250[0xf0];
+    const void* p4340;
+    unsigned char b4348[0x8];
+    const void* p4350;
+    unsigned char b4358[0x8];
+    const void* p4360;
+    unsigned char b4368[0x8];
+    const void* p4370;
+    unsigned char b4378[0x10];
+    const void* p4388;
+    unsigned char b4390[0xf0];
+    const void* p4480;
+    unsigned char b4488[0x8];
+    const void* p4490;
+    unsigned char b4498[0x8];
+    const void* p44a0;
+    unsigned char b44a8[0x20];
+    const void* p44c8;
+    unsigned char b44d0[0xf0];
+    const void* p45c0;
+    unsigned char b45c8[0x8];
+    const void* p45d0;
+    unsigned char b45d8[0x8];
+    const void* p45e0;
+    unsigned char b45e8[0x8];
+    const void* p45f0;
+    unsigned char b45f8[0x10];
+    const void* p4608;
+    unsigned char b4610[0xf0];
+    const void* p4700;
+    unsigned char b4708[0x8];
+    const void* p4710;
+    unsigned char b4718[0x8];
+    const void* p4720;
+    unsigned char b4728[0x20];
+    const void* p4748;
+    unsigned char b4750[0xf0];
+    const void* p4840;
+    unsigned char b4848[0x8];
+    const void* p4850;
+    unsigned char b4858[0x8];
+    const void* p4860;
+    unsigned char b4868[0x20];
+    const void* p4888;
+    unsigned char b4890[0xf0];
+    const void* p4980;
+    unsigned char b4988[0x8];
+    const void* p4990;
+    unsigned char b4998[0x8];
+    const void* p49a0;
+    unsigned char b49a8[0x8];
+    const void* p49b0;
+    unsigned char b49b8[0x10];
+    const void* p49c8;
+    unsigned char b49d0[0xf0];
+    const void* p4ac0;
+    unsigned char b4ac8[0x8];
+    const void* p4ad0;
+    unsigned char b4ad8[0x8];
+    const void* p4ae0;
+    unsigned char b4ae8[0x8];
+    const void* p4af0;
+    unsigned char b4af8[0x10];
+    const void* p4b08;
+    unsigned char b4b10[0xf0];
+    const void* p4c00;
+    unsigned char b4c08[0x8];
+    const void* p4c10;
+    unsigned char b4c18[0x30];
+    const void* p4c48;
+    unsigned char b4c50[0xf0];
+    const void* p4d40;
+    unsigned char b4d48[0x8];
+    const void* p4d50;
+    unsigned char b4d58[0x8];
+    const void* p4d60;
+    unsigned char b4d68[0x20];
+    const void* p4d88;
+    unsigned char b4d90[0xf0];
+    const void* p4e80;
+    unsigned char b4e88[0x8];
+    const void* p4e90;
+    unsigned char b4e98[0x30];
+    const void* p4ec8;
+    unsigned char b4ed0[0xf0];
+    const void* p4fc0;
+    unsigned char b4fc8[0x8];
+    const void* p4fd0;
+    unsigned char b4fd8[0x8];
+    const void* p4fe0;
+    unsigned char b4fe8[0x20];
+    const void* p5008;
+    unsigned char b5010[0xf0];
+    const void* p5100;
+    unsigned char b5108[0x8];
+    const void* p5110;
+    unsigned char b5118[0x8];
+    const void* p5120;
+    unsigned char b5128[0x20];
+    const void* p5148;
+    unsigned char b5150[0xf0];
+    const void* p5240;
+    unsigned char b5248[0x8];
+    const void* p5250;
+    unsigned char b5258[0x8];
+    const void* p5260;
+    unsigned char b5268[0x8];
+    const void* p5270;
+    unsigned char b5278[0x10];
+    const void* p5288;
+    unsigned char b5290[0xf0];
+    const void* p5380;
+    unsigned char b5388[0x8];
+    const void* p5390;
+    unsigned char b5398[0x8];
+    const void* p53a0;
+    unsigned char b53a8[0x20];
+    const void* p53c8;
+    unsigned char b53d0[0xf0];
+    const void* p54c0;
+    unsigned char b54c8[0x8];
+    const void* p54d0;
+    unsigned char b54d8[0x8];
+    const void* p54e0;
+    unsigned char b54e8[0x8];
+    const void* p54f0;
+    unsigned char b54f8[0x10];
+    const void* p5508;
+    unsigned char b5510[0xf0];
+    const void* p5600;
+    unsigned char b5608[0x8];
+    const void* p5610;
+    unsigned char b5618[0x8];
+    const void* p5620;
+    unsigned char b5628[0x20];
+    const void* p5648;
+    unsigned char b5650[0xf0];
+    const void* p5740;
+    unsigned char b5748[0x8];
+    const void* p5750;
+    unsigned char b5758[0x8];
+    const void* p5760;
+    unsigned char b5768[0x20];
+    const void* p5788;
+    unsigned char b5790[0xf0];
+    const void* p5880;
+    unsigned char b5888[0x8];
+    const void* p5890;
+    unsigned char b5898[0x8];
+    const void* p58a0;
+    unsigned char b58a8[0x8];
+    const void* p58b0;
+    unsigned char b58b8[0x10];
+    const void* p58c8;
+    unsigned char b58d0[0xf0];
+    const void* p59c0;
+    unsigned char b59c8[0x8];
+    const void* p59d0;
+    unsigned char b59d8[0x8];
+    const void* p59e0;
+    unsigned char b59e8[0x8];
+    const void* p59f0;
+    unsigned char b59f8[0x10];
+    const void* p5a08;
+    unsigned char b5a10[0xf0];
+    const void* p5b00;
+    unsigned char b5b08[0x40];
+    const void* p5b48;
+    unsigned char b5b50[0xf0];
+    const void* p5c40;
+    unsigned char b5c48[0x8];
+    const void* p5c50;
+    unsigned char b5c58[0x8];
+    const void* p5c60;
+    unsigned char b5c68[0x20];
+    const void* p5c88;
+    unsigned char b5c90[0xf0];
+    const void* p5d80;
+    unsigned char b5d88[0x8];
+    const void* p5d90;
+    unsigned char b5d98[0x30];
+    const void* p5dc8;
+    unsigned char b5dd0[0xf0];
+    const void* p5ec0;
+    unsigned char b5ec8[0x8];
+    const void* p5ed0;
+    unsigned char b5ed8[0x30];
+    const void* p5f08;
+    unsigned char b5f10[0xf0];
+    const void* p6000;
+    unsigned char b6008[0x40];
+    const void* p6048;
+    unsigned char b6050[0xf0];
+    const void* p6140;
+    unsigned char b6148[0x8];
+    const void* p6150;
+    unsigned char b6158[0x8];
+    const void* p6160;
+    unsigned char b6168[0x20];
+    const void* p6188;
+    unsigned char b6190[0xf0];
+    const void* p6280;
+    unsigned char b6288[0x8];
+    const void* p6290;
+    unsigned char b6298[0x30];
+    const void* p62c8;
+    unsigned char b62d0[0xf0];
+    const void* p63c0;
+    unsigned char b63c8[0x8];
+    const void* p63d0;
+    unsigned char b63d8[0x30];
+    const void* p6408;
+    unsigned char b6410[0xf0];
+    const void* p6500;
+    unsigned char b6508[0x8];
+    const void* p6510;
+    unsigned char b6518[0x30];
+    const void* p6548;
+    unsigned char b6550[0xf0];
+    const void* p6640;
+    unsigned char b6648[0x8];
+    const void* p6650;
+    unsigned char b6658[0x8];
+    const void* p6660;
+    unsigned char b6668[0x8];
+    const void* p6670;
+    unsigned char b6678[0x10];
+    const void* p6688;
+    unsigned char b6690[0xf0];
+    const void* p6780;
+    unsigned char b6788[0x8];
+    const void* p6790;
+    unsigned char b6798[0x8];
+    const void* p67a0;
+    unsigned char b67a8[0x20];
+    const void* p67c8;
+    unsigned char b67d0[0xf0];
+    const void* p68c0;
+    unsigned char b68c8[0x8];
+    const void* p68d0;
+    unsigned char b68d8[0x8];
+    const void* p68e0;
+    unsigned char b68e8[0x20];
+    const void* p6908;
+    unsigned char b6910[0xf0];
+    const void* p6a00;
+    unsigned char b6a08[0x8];
+    const void* p6a10;
+    unsigned char b6a18[0x30];
+    const void* p6a48;
+    unsigned char b6a50[0xf0];
+    const void* p6b40;
+    unsigned char b6b48[0x8];
+    const void* p6b50;
+    unsigned char b6b58[0x8];
+    const void* p6b60;
+    unsigned char b6b68[0x8];
+    const void* p6b70;
+    unsigned char b6b78[0x10];
+    const void* p6b88;
+    unsigned char b6b90[0xf0];
+    const void* p6c80;
+    unsigned char b6c88[0x8];
+    const void* p6c90;
+    unsigned char b6c98[0x8];
+    const void* p6ca0;
+    unsigned char b6ca8[0x20];
+    const void* p6cc8;
+    unsigned char b6cd0[0xf0];
+    const void* p6dc0;
+    unsigned char b6dc8[0x8];
+    const void* p6dd0;
+    unsigned char b6dd8[0x8];
+    const void* p6de0;
+    unsigned char b6de8[0x20];
+    const void* p6e08;
+    unsigned char b6e10[0xf0];
+    const void* p6f00;
+    unsigned char b6f08[0x8];
+    const void* p6f10;
+    unsigned char b6f18[0x30];
+    const void* p6f48;
+    unsigned char b6f50[0xf0];
+    const void* p7040;
+    unsigned char b7048[0x8];
+    const void* p7050;
+    unsigned char b7058[0x8];
+    const void* p7060;
+    unsigned char b7068[0x8];
+    const void* p7070;
+    unsigned char b7078[0x10];
+    const void* p7088;
+    unsigned char b7090[0xf0];
+    const void* p7180;
+    unsigned char b7188[0x8];
+    const void* p7190;
+    unsigned char b7198[0x8];
+    const void* p71a0;
+    unsigned char b71a8[0x20];
+    const void* p71c8;
+    unsigned char b71d0[0xf0];
+    const void* p72c0;
+    unsigned char b72c8[0x8];
+    const void* p72d0;
+    unsigned char b72d8[0x8];
+    const void* p72e0;
+    unsigned char b72e8[0x20];
+    const void* p7308;
+    unsigned char b7310[0xf0];
+    const void* p7400;
+    unsigned char b7408[0x8];
+    const void* p7410;
+    unsigned char b7418[0x30];
+    const void* p7448;
+    unsigned char b7450[0xf0];
+    const void* p7540;
+    unsigned char b7548[0x8];
+    const void* p7550;
+    unsigned char b7558[0x8];
+    const void* p7560;
+    unsigned char b7568[0x8];
+    const void* p7570;
+    unsigned char b7578[0x10];
+    const void* p7588;
+    unsigned char b7590[0xf0];
+    const void* p7680;
+    unsigned char b7688[0x8];
+    const void* p7690;
+    unsigned char b7698[0x8];
+    const void* p76a0;
+    unsigned char b76a8[0x20];
+    const void* p76c8;
+    unsigned char b76d0[0xf0];
+    const void* p77c0;
+    unsigned char b77c8[0x8];
+    const void* p77d0;
+    unsigned char b77d8[0x8];
+    const void* p77e0;
+    unsigned char b77e8[0x20];
+    const void* p7808;
+    unsigned char b7810[0xf0];
+    const void* p7900;
+    unsigned char b7908[0x40];
+    const void* p7948;
+    unsigned char b7950[0xf0];
+    const void* p7a40;
+    unsigned char b7a48[0x40];
+    const void* p7a88;
+    unsigned char b7a90[0xf0];
+    const void* p7b80;
+    unsigned char b7b88[0x40];
+    const void* p7bc8;
+    unsigned char b7bd0[0xf8];
+    const void* p7cc8;
+    unsigned char b7cd0[0xf8];
+    const void* p7dc8;
+    unsigned char b7dd0[0xf8];
+    const void* p7ec8;
+    unsigned char b7ed0[0xf8];
+    const void* p7fc8;
+    unsigned char b7fd0[0xf8];
+    const void* p80c8;
+    unsigned char b80d0[0xf8];
+    const void* p81c8;
+    unsigned char b81d0[0xf8];
+    const void* p82c8;
+    unsigned char b82d0[0xf8];
+    const void* p83c8;
+    unsigned char b83d0[0xf8];
+    const void* p84c8;
+    unsigned char b84d0[0xf8];
+    const void* p85c8;
+    unsigned char b85d0[0xf8];
+    const void* p86c8;
+    unsigned char b86d0[0xf8];
+    const void* p87c8;
+    unsigned char b87d0[0xf8];
+    const void* p88c8;
+    unsigned char b88d0[0xf8];
+    const void* p89c8;
+    unsigned char b89d0[0xf8];
+    const void* p8ac8;
+    unsigned char b8ad0[0xf8];
+    const void* p8bc8;
+    unsigned char b8bd0[0xf8];
+    const void* p8cc8;
+    unsigned char b8cd0[0xf8];
+    const void* p8dc8;
+    unsigned char b8dd0[0xf8];
+    const void* p8ec8;
+    unsigned char b8ed0[0xf8];
+    const void* p8fc8;
+    unsigned char b8fd0[0xf8];
+    const void* p90c8;
+    unsigned char b90d0[0xf8];
+    const void* p91c8;
+    unsigned char b91d0[0xf8];
+    const void* p92c8;
+    unsigned char b92d0[0xf8];
+    const void* p93c8;
+    unsigned char b93d0[0xf8];
+    const void* p94c8;
+    unsigned char b94d0[0xf8];
+    const void* p95c8;
+    unsigned char b95d0[0xf8];
+    const void* p96c8;
+    unsigned char b96d0[0xf8];
+    const void* p97c8;
+    unsigned char b97d0[0xf8];
+    const void* p98c8;
+    unsigned char b98d0[0xf8];
+    const void* p99c8;
+    unsigned char b99d0[0xf8];
+    const void* p9ac8;
+    unsigned char b9ad0[0xf8];
+    const void* p9bc8;
+    unsigned char b9bd0[0xf8];
+    const void* p9cc8;
+    unsigned char b9cd0[0xf8];
+    const void* p9dc8;
+    unsigned char b9dd0[0xf8];
+    const void* p9ec8;
+    unsigned char b9ed0[0xf8];
+    const void* p9fc8;
+    unsigned char b9fd0[0xf8];
+    const void* pa0c8;
+    unsigned char ba0d0[0xf8];
+    const void* pa1c8;
+    unsigned char ba1d0[0xf8];
+    const void* pa2c8;
+    unsigned char ba2d0[0xf8];
+    const void* pa3c8;
+    unsigned char ba3d0[0xf8];
+    const void* pa4c8;
+    unsigned char ba4d0[0xf8];
+    const void* pa5c8;
+    unsigned char ba5d0[0xf8];
+    const void* pa6c8;
+    unsigned char ba6d0[0xf8];
+    const void* pa7c8;
+    unsigned char ba7d0[0xf8];
+    const void* pa8c8;
+    unsigned char ba8d0[0xf8];
+    const void* pa9c8;
+    unsigned char ba9d0[0xf8];
+    const void* paac8;
+    unsigned char baad0[0xf8];
+    const void* pabc8;
+    unsigned char babd0[0xf8];
+    const void* pacc8;
+    unsigned char bacd0[0xf8];
+    const void* padc8;
+    unsigned char badd0[0xf8];
+    const void* paec8;
+    unsigned char baed0[0xf8];
+    const void* pafc8;
+    unsigned char bafd0[0xf8];
+    const void* pb0c8;
+    unsigned char bb0d0[0xf8];
+    const void* pb1c8;
+    unsigned char bb1d0[0xf8];
+    const void* pb2c8;
+    unsigned char bb2d0[0xf8];
+    const void* pb3c8;
+    unsigned char bb3d0[0xf8];
+    const void* pb4c8;
+    unsigned char bb4d0[0xf8];
+    const void* pb5c8;
+    unsigned char bb5d0[0xf8];
+    const void* pb6c8;
+    unsigned char bb6d0[0xf8];
+    const void* pb7c8;
+    unsigned char bb7d0[0xf8];
+    const void* pb8c8;
+    unsigned char bb8d0[0xf8];
+    const void* pb9c8;
+    unsigned char bb9d0[0xf8];
+    const void* pbac8;
+    unsigned char bbad0[0xf8];
+    const void* pbbc8;
+    unsigned char bbbd0[0xf8];
+    const void* pbcc8;
+    unsigned char bbcd0[0xf8];
+    const void* pbdc8;
+    unsigned char bbdd0[0xf8];
+    const void* pbec8;
+    unsigned char bbed0[0xf8];
+    const void* pbfc8;
+    unsigned char bbfd0[0xf8];
+    const void* pc0c8;
+    unsigned char bc0d0[0xf8];
+    const void* pc1c8;
+    unsigned char bc1d0[0xf8];
+    const void* pc2c8;
+    unsigned char bc2d0[0xf8];
+    const void* pc3c8;
+    unsigned char bc3d0[0xf8];
+    const void* pc4c8;
+    unsigned char bc4d0[0xf8];
+    const void* pc5c8;
+    unsigned char bc5d0[0xf8];
+    const void* pc6c8;
+    unsigned char bc6d0[0xf8];
+    const void* pc7c8;
+    unsigned char bc7d0[0xf8];
+    const void* pc8c8;
+    unsigned char bc8d0[0xf8];
+    const void* pc9c8;
+    unsigned char bc9d0[0xf8];
+    const void* pcac8;
+    unsigned char bcad0[0xf8];
+    const void* pcbc8;
+    unsigned char bcbd0[0xf8];
+    const void* pccc8;
+    unsigned char bccd0[0xf8];
+    const void* pcdc8;
+    unsigned char bcdd0[0xf8];
+    const void* pcec8;
+    unsigned char bced0[0xf8];
+    const void* pcfc8;
+    unsigned char bcfd0[0xf8];
+    const void* pd0c8;
+    unsigned char bd0d0[0xf8];
+    const void* pd1c8;
+    unsigned char bd1d0[0xf8];
+    const void* pd2c8;
+    unsigned char bd2d0[0xf8];
+    const void* pd3c8;
+    unsigned char bd3d0[0xf8];
+    const void* pd4c8;
+    unsigned char bd4d0[0xf8];
+    const void* pd5c8;
+    unsigned char bd5d0[0xf8];
+    const void* pd6c8;
+    unsigned char bd6d0[0xf8];
+    const void* pd7c8;
+    unsigned char bd7d0[0xf8];
+    const void* pd8c8;
+    unsigned char bd8d0[0xf8];
+    const void* pd9c8;
+    unsigned char bd9d0[0xf8];
+    const void* pdac8;
+    unsigned char bdad0[0xf8];
+    const void* pdbc8;
+    unsigned char bdbd0[0xf8];
+    const void* pdcc8;
+    unsigned char bdcd0[0xf8];
+    const void* pddc8;
+    unsigned char bddd0[0xf8];
+    const void* pdec8;
+    unsigned char bded0[0xf8];
+    const void* pdfc8;
+    unsigned char bdfd0[0xf8];
+    const void* pe0c8;
+    unsigned char be0d0[0xf8];
+    const void* pe1c8;
+    unsigned char be1d0[0xf8];
+    const void* pe2c8;
+    unsigned char be2d0[0xf8];
+    const void* pe3c8;
+    unsigned char be3d0[0xf8];
+    const void* pe4c8;
+    unsigned char be4d0[0xf8];
+    const void* pe5c8;
+    unsigned char be5d0[0xf8];
+    const void* pe6c8;
+    unsigned char be6d0[0xf8];
+    const void* pe7c8;
+    unsigned char be7d0[0xf8];
+    const void* pe8c8;
+    unsigned char be8d0[0xf8];
+    const void* pe9c8;
+    unsigned char be9d0[0xf8];
+    const void* peac8;
+    unsigned char bead0[0xf8];
+    const void* pebc8;
+    unsigned char bebd0[0xf8];
+    const void* pecc8;
+    unsigned char becd0[0xf8];
+    const void* pedc8;
+    unsigned char bedd0[0xf8];
+    const void* peec8;
+    unsigned char beed0[0xf8];
+    const void* pefc8;
+    unsigned char befd0[0xf8];
+    const void* pf0c8;
+    unsigned char bf0d0[0xf8];
+    const void* pf1c8;
+    unsigned char bf1d0[0xf8];
+    const void* pf2c8;
+    unsigned char bf2d0[0xf8];
+    const void* pf3c8;
+    unsigned char bf3d0[0xf8];
+    const void* pf4c8;
+    unsigned char bf4d0[0xf8];
+    const void* pf5c8;
+    unsigned char bf5d0[0xf8];
+    const void* pf6c8;
+    unsigned char bf6d0[0xf8];
+    const void* pf7c8;
+    unsigned char bf7d0[0xf8];
+    const void* pf8c8;
+    unsigned char bf8d0[0xf8];
+    const void* pf9c8;
+    unsigned char bf9d0[0xf8];
+    const void* pfac8;
+    unsigned char bfad0[0xf8];
+    const void* pfbc8;
+    unsigned char bfbd0[0xf8];
+    const void* pfcc8;
+    unsigned char bfcd0[0xf8];
+    const void* pfdc8;
+    unsigned char bfdd0[0xf8];
+    const void* pfec8;
+    unsigned char bfed0[0xf8];
+    const void* pffc8;
+    unsigned char bffd0[0xf8];
+    const void* p100c8;
+    unsigned char b100d0[0xf8];
+    const void* p101c8;
+    unsigned char b101d0[0xf8];
+    const void* p102c8;
+    unsigned char b102d0[0xf8];
+    const void* p103c8;
+    unsigned char b103d0[0xf8];
+    const void* p104c8;
+    unsigned char b104d0[0xf8];
+    const void* p105c8;
+    unsigned char b105d0[0xf8];
+    const void* p106c8;
+    unsigned char b106d0[0xf8];
+    const void* p107c8;
+    unsigned char b107d0[0xf8];
+    const void* p108c8;
+    unsigned char b108d0[0xf8];
+    const void* p109c8;
+    unsigned char b109d0[0xf8];
+    const void* p10ac8;
+    unsigned char b10ad0[0xf8];
+    const void* p10bc8;
+    unsigned char b10bd0[0xf8];
+    const void* p10cc8;
+    unsigned char b10cd0[0xf8];
+    const void* p10dc8;
+    unsigned char b10dd0[0xf8];
+    const void* p10ec8;
+    unsigned char b10ed0[0xf8];
+    const void* p10fc8;
+    unsigned char b10fd0[0xf8];
+    const void* p110c8;
+    unsigned char b110d0[0xf8];
+    const void* p111c8;
+    unsigned char b111d0[0xf8];
+    const void* p112c8;
+    unsigned char b112d0[0xf8];
+    const void* p113c8;
+    unsigned char b113d0[0xf8];
+    const void* p114c8;
+    unsigned char b114d0[0xf8];
+    const void* p115c8;
+    unsigned char b115d0[0xf8];
+    const void* p116c8;
+    unsigned char b116d0[0xf8];
+    const void* p117c8;
+    unsigned char b117d0[0xf8];
+    const void* p118c8;
+    unsigned char b118d0[0xf8];
+    const void* p119c8;
+    unsigned char b119d0[0xf8];
+    const void* p11ac8;
+    unsigned char b11ad0[0xf8];
+    const void* p11bc8;
+    unsigned char b11bd0[0xf8];
+    const void* p11cc8;
+    unsigned char b11cd0[0xf8];
+    const void* p11dc8;
+    unsigned char b11dd0[0xf8];
+    const void* p11ec8;
+    unsigned char b11ed0[0xf8];
+    const void* p11fc8;
+    unsigned char b11fd0[0xf8];
+    const void* p120c8;
+    unsigned char b120d0[0xf8];
+    const void* p121c8;
+    unsigned char b121d0[0xf8];
+    const void* p122c8;
+    unsigned char b122d0[0xf8];
+    const void* p123c8;
+    unsigned char b123d0[0xf8];
+    const void* p124c8;
+    unsigned char b124d0[0xf8];
+    const void* p125c8;
+    unsigned char b125d0[0xf8];
+    const void* p126c8;
+    unsigned char b126d0[0xf8];
+    const void* p127c8;
+    unsigned char b127d0[0xf8];
+    const void* p128c8;
+    unsigned char b128d0[0xf8];
+    const void* p129c8;
+    unsigned char b129d0[0xf8];
+    const void* p12ac8;
+    unsigned char b12ad0[0xf8];
+    const void* p12bc8;
+    unsigned char b12bd0[0xf8];
+    const void* p12cc8;
+    unsigned char b12cd0[0xf8];
+    const void* p12dc8;
+    unsigned char b12dd0[0xf8];
+    const void* p12ec8;
+    unsigned char b12ed0[0xf8];
+    const void* p12fc8;
+    unsigned char b12fd0[0xf8];
+    const void* p130c8;
+    unsigned char b130d0[0xf8];
+    const void* p131c8;
+    unsigned char b131d0[0xf8];
+    const void* p132c8;
+    unsigned char b132d0[0xf8];
+    const void* p133c8;
+    unsigned char b133d0[0xf8];
+    const void* p134c8;
+    unsigned char b134d0[0xf8];
+    const void* p135c8;
+    unsigned char b135d0[0xf8];
+    const void* p136c8;
+    unsigned char b136d0[0xf8];
+    const void* p137c8;
+    unsigned char b137d0[0xf8];
+    const void* p138c8;
+    unsigned char b138d0[0xf8];
+    const void* p139c8;
+    unsigned char b139d0[0xf8];
+    const void* p13ac8;
+    unsigned char b13ad0[0xf8];
+    const void* p13bc8;
+    unsigned char b13bd0[0xf8];
+    const void* p13cc8;
+    unsigned char b13cd0[0xf8];
+    const void* p13dc8;
+    unsigned char b13dd0[0xf8];
+    const void* p13ec8;
+    unsigned char b13ed0[0xf8];
+    const void* p13fc8;
+    unsigned char b13fd0[0xf8];
+    const void* p140c8;
+    unsigned char b140d0[0xf8];
+    const void* p141c8;
+    unsigned char b141d0[0xf8];
+    const void* p142c8;
+    unsigned char b142d0[0xf8];
+    const void* p143c8;
+    unsigned char b143d0[0xf8];
+    const void* p144c8;
+    unsigned char b144d0[0xf8];
+    const void* p145c8;
+    unsigned char b145d0[0xf8];
+    const void* p146c8;
+    unsigned char b146d0[0xf8];
+    const void* p147c8;
+    unsigned char b147d0[0xf8];
+    const void* p148c8;
+    unsigned char b148d0[0xf8];
+    const void* p149c8;
+    unsigned char b149d0[0xf8];
+    const void* p14ac8;
+    unsigned char b14ad0[0xf8];
+    const void* p14bc8;
+    unsigned char b14bd0[0xf8];
+    const void* p14cc8;
+    unsigned char b14cd0[0xf8];
+    const void* p14dc8;
+    unsigned char b14dd0[0xf8];
+    const void* p14ec8;
+    unsigned char b14ed0[0x120];
 };
 struct Sd_143a462f0 {
     const void* p0;
@@ -5035,31 +4537,13 @@ struct Sd_143a462f0 {
     const void* p100;
     unsigned char b108[0x38];
 };
-struct Sd_143a46430 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-};
-struct Sd_143a46450 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-};
-struct Sd_143a46470 {
-    const void* p0;
-};
-struct Sd_143a46478 {
-    const void* p0;
-    const void* p8;
-};
-struct Sd_143a46488 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0x8];
+// local layout of the CRI heap entry table CriHeapVtbl {AllocFix, AllocTemporary, AllocDynamic, Free} (cri_movie.h);
+// only the image bytes matter here
+struct CriHeapVtbl {
+    const void* AllocFix;
+    const void* AllocTemporary;
+    const void* AllocDynamic;
+    const void* Free;
 };
 struct Sd_143a47bc0 {
     const void* p0;
@@ -5262,433 +4746,118 @@ struct Sd_143a51180 {
     const void* p148;
     unsigned char b150[0x10];
 };
-struct Sd_143a512e0 {
+namespace Scaleform { namespace GFx { namespace AS2 {
+// local view of as2_avmcharacter.h AvmCharacter::MemberTableType (0x10 bytes)
+enum StandardMember : int {};
+#pragma pack(push, 8)
+class AvmCharacter { public: struct MemberTableType { const char* pName; StandardMember Id; bool CaseInsensitive; }; static const MemberTableType MemberTable[]; };
+#pragma pack(pop)
+} } }
+struct Sd_143a52110 {
     const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x8];
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x8];
-    const void* p70;
-    unsigned char b78[0x8];
-    const void* p80;
-    unsigned char b88[0x8];
-    const void* p90;
-    unsigned char b98[0x8];
-    const void* pa0;
-    unsigned char ba8[0x8];
-    const void* pb0;
-    unsigned char bb8[0x8];
-    const void* pc0;
-    unsigned char bc8[0x8];
-    const void* pd0;
-    unsigned char bd8[0x8];
-    const void* pe0;
-    unsigned char be8[0x8];
-    const void* pf0;
-    unsigned char bf8[0x8];
-    const void* p100;
-    unsigned char b108[0x8];
-    const void* p110;
-    unsigned char b118[0x8];
-    const void* p120;
-    unsigned char b128[0x8];
-    const void* p130;
-    unsigned char b138[0x8];
-    const void* p140;
-    unsigned char b148[0x8];
-    const void* p150;
-    unsigned char b158[0x8];
-    const void* p160;
-    unsigned char b168[0x8];
-    const void* p170;
-    unsigned char b178[0x8];
-    const void* p180;
-    unsigned char b188[0x8];
-    const void* p190;
-    unsigned char b198[0x8];
-    const void* p1a0;
-    unsigned char b1a8[0x8];
-    const void* p1b0;
-    unsigned char b1b8[0x8];
-    const void* p1c0;
-    unsigned char b1c8[0x8];
-    const void* p1d0;
-    unsigned char b1d8[0x8];
-    const void* p1e0;
-    unsigned char b1e8[0x8];
-    const void* p1f0;
-    unsigned char b1f8[0x8];
-    const void* p200;
-    unsigned char b208[0x8];
-    const void* p210;
-    unsigned char b218[0x8];
-    const void* p220;
-    unsigned char b228[0x8];
-    const void* p230;
-    unsigned char b238[0x8];
-    const void* p240;
-    unsigned char b248[0x8];
-    const void* p250;
-    unsigned char b258[0x8];
-    const void* p260;
-    unsigned char b268[0x8];
-    const void* p270;
-    unsigned char b278[0x8];
-    const void* p280;
-    unsigned char b288[0x8];
-    const void* p290;
-    unsigned char b298[0x8];
-    const void* p2a0;
-    unsigned char b2a8[0x8];
-    const void* p2b0;
-    unsigned char b2b8[0x8];
-    const void* p2c0;
-    unsigned char b2c8[0x8];
-    const void* p2d0;
-    unsigned char b2d8[0x8];
-    const void* p2e0;
-    unsigned char b2e8[0x8];
-    const void* p2f0;
-    unsigned char b2f8[0x8];
-    const void* p300;
-    unsigned char b308[0x8];
-    const void* p310;
-    unsigned char b318[0x8];
-    const void* p320;
-    unsigned char b328[0x8];
-    const void* p330;
-    unsigned char b338[0x8];
-    const void* p340;
-    unsigned char b348[0x8];
-    const void* p350;
-    unsigned char b358[0x8];
-    const void* p360;
-    unsigned char b368[0x8];
-    const void* p370;
-    unsigned char b378[0x8];
-    const void* p380;
-    unsigned char b388[0x8];
-    const void* p390;
-    unsigned char b398[0x8];
-    const void* p3a0;
-    unsigned char b3a8[0x8];
-    const void* p3b0;
-    unsigned char b3b8[0x8];
-    const void* p3c0;
-    unsigned char b3c8[0x8];
-    const void* p3d0;
-    unsigned char b3d8[0x8];
-    const void* p3e0;
-    unsigned char b3e8[0x8];
-    const void* p3f0;
-    unsigned char b3f8[0x8];
-    const void* p400;
-    unsigned char b408[0x8];
-    const void* p410;
-    unsigned char b418[0x8];
-    const void* p420;
-    unsigned char b428[0x8];
-    const void* p430;
-    unsigned char b438[0x8];
-    const void* p440;
-    unsigned char b448[0x8];
-    const void* p450;
-    unsigned char b458[0x8];
-    const void* p460;
-    unsigned char b468[0x8];
-    const void* p470;
-    unsigned char b478[0x8];
-    const void* p480;
-    unsigned char b488[0x8];
-    const void* p490;
-    unsigned char b498[0x8];
-    const void* p4a0;
-    unsigned char b4a8[0x8];
-    const void* p4b0;
-    unsigned char b4b8[0x8];
-    const void* p4c0;
-    unsigned char b4c8[0x8];
-    const void* p4d0;
-    unsigned char b4d8[0x8];
-    const void* p4e0;
-    unsigned char b4e8[0x8];
-    const void* p4f0;
-    unsigned char b4f8[0x8];
-    const void* p500;
-    unsigned char b508[0x8];
-    const void* p510;
-    unsigned char b518[0x8];
-    const void* p520;
-    unsigned char b528[0x8];
-    const void* p530;
-    unsigned char b538[0x8];
-    const void* p540;
-    unsigned char b548[0x8];
-    const void* p550;
-    unsigned char b558[0x8];
-    const void* p560;
-    unsigned char b568[0x8];
-    const void* p570;
-    unsigned char b578[0x8];
-    const void* p580;
-    unsigned char b588[0x8];
-    const void* p590;
-    unsigned char b598[0x8];
-    const void* p5a0;
-    unsigned char b5a8[0x8];
-    const void* p5b0;
-    unsigned char b5b8[0x8];
-    const void* p5c0;
-    unsigned char b5c8[0x8];
-    const void* p5d0;
-    unsigned char b5d8[0x8];
-    const void* p5e0;
-    unsigned char b5e8[0x8];
-    const void* p5f0;
-    unsigned char b5f8[0x8];
-    const void* p600;
-    unsigned char b608[0x8];
-    const void* p610;
-    unsigned char b618[0x8];
-    const void* p620;
-    unsigned char b628[0x8];
-    const void* p630;
-    unsigned char b638[0x8];
-    const void* p640;
-    unsigned char b648[0x8];
-    const void* p650;
-    unsigned char b658[0x8];
-    const void* p660;
-    unsigned char b668[0x8];
-    const void* p670;
-    unsigned char b678[0x8];
-    const void* p680;
-    unsigned char b688[0x8];
-    const void* p690;
-    unsigned char b698[0x8];
-    const void* p6a0;
-    unsigned char b6a8[0x8];
-    const void* p6b0;
-    unsigned char b6b8[0x8];
-    const void* p6c0;
-    unsigned char b6c8[0x8];
-    const void* p6d0;
-    unsigned char b6d8[0x8];
-    const void* p6e0;
-    unsigned char b6e8[0x8];
-    const void* p6f0;
-    unsigned char b6f8[0x8];
-    const void* p700;
-    unsigned char b708[0x8];
-    const void* p710;
-    unsigned char b718[0x8];
-    const void* p720;
-    unsigned char b728[0x8];
-    const void* p730;
-    unsigned char b738[0x8];
-    const void* p740;
-    unsigned char b748[0x18];
-    const void* p760;
-    const void* p768;
-    const void* p770;
-    const void* p778;
-    const void* p780;
-    const void* p788;
-    const void* p790;
-    const void* p798;
-    const void* p7a0;
-    const void* p7a8;
-    const void* p7b0;
-    const void* p7b8;
-    const void* p7c0;
-    const void* p7c8;
-    const void* p7d0;
-    const void* p7d8;
-    const void* p7e0;
-    const void* p7e8;
-    const void* p7f0;
-    const void* p7f8;
-    const void* p800;
-    const void* p808;
-    const void* p810;
-    const void* p818;
-    const void* p820;
-    const void* p828;
-    const void* p830;
-    const void* p838;
-    const void* p840;
-    const void* p848;
-    const void* p850;
-    const void* p858;
-    const void* p860;
-    const void* p868;
-};
-struct Sd_143a51c30 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
+    unsigned char b8[0x10];
     const void* p18;
-    const void* p20;
-    const void* p28;
+    unsigned char b20[0x10];
     const void* p30;
-    const void* p38;
-    const void* p40;
+    unsigned char b38[0x10];
     const void* p48;
-    const void* p50;
-    const void* p58;
+    unsigned char b50[0x10];
     const void* p60;
-    const void* p68;
-    const void* p70;
+    unsigned char b68[0x10];
     const void* p78;
-    const void* p80;
-    const void* p88;
+    unsigned char b80[0x10];
     const void* p90;
-    const void* p98;
-    const void* pa0;
+    unsigned char b98[0x10];
     const void* pa8;
-    const void* pb0;
-    const void* pb8;
+    unsigned char bb0[0x10];
     const void* pc0;
-    const void* pc8;
-    const void* pd0;
+    unsigned char bc8[0x10];
     const void* pd8;
-    const void* pe0;
-    const void* pe8;
+    unsigned char be0[0x10];
     const void* pf0;
-    const void* pf8;
-    const void* p100;
+    unsigned char bf8[0x10];
     const void* p108;
-    const void* p110;
-    const void* p118;
+    unsigned char b110[0x10];
     const void* p120;
-    const void* p128;
-    const void* p130;
+    unsigned char b128[0x10];
     const void* p138;
-    const void* p140;
-    const void* p148;
+    unsigned char b140[0x10];
     const void* p150;
-    const void* p158;
-    const void* p160;
+    unsigned char b158[0x10];
     const void* p168;
-    const void* p170;
-    const void* p178;
+    unsigned char b170[0x10];
     const void* p180;
-    const void* p188;
-    const void* p190;
+    unsigned char b188[0x10];
     const void* p198;
-    const void* p1a0;
-    const void* p1a8;
+    unsigned char b1a0[0x10];
     const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
+    unsigned char b1b8[0x10];
     const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
+    unsigned char b1d0[0x10];
     const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
+    unsigned char b1e8[0x10];
     const void* p1f8;
-    const void* p200;
-    const void* p208;
+    unsigned char b200[0x10];
     const void* p210;
-    const void* p218;
-    const void* p220;
+    unsigned char b218[0x10];
     const void* p228;
-    const void* p230;
-    const void* p238;
+    unsigned char b230[0x10];
     const void* p240;
-    const void* p248;
-    const void* p250;
+    unsigned char b248[0x10];
     const void* p258;
-    const void* p260;
-    const void* p268;
+    unsigned char b260[0x10];
     const void* p270;
-    const void* p278;
-    const void* p280;
+    unsigned char b278[0x10];
     const void* p288;
-    const void* p290;
-    const void* p298;
+    unsigned char b290[0x10];
     const void* p2a0;
-    const void* p2a8;
-    const void* p2b0;
+    unsigned char b2a8[0x10];
     const void* p2b8;
-    const void* p2c0;
-    const void* p2c8;
+    unsigned char b2c0[0x10];
     const void* p2d0;
-    const void* p2d8;
-    const void* p2e0;
+    unsigned char b2d8[0x10];
     const void* p2e8;
-    const void* p2f0;
-    const void* p2f8;
+    unsigned char b2f0[0x10];
     const void* p300;
-    const void* p308;
-    const void* p310;
+    unsigned char b308[0x10];
     const void* p318;
-    const void* p320;
-    const void* p328;
+    unsigned char b320[0x10];
     const void* p330;
-    const void* p338;
-    const void* p340;
+    unsigned char b338[0x10];
     const void* p348;
-    const void* p350;
-    const void* p358;
+    unsigned char b350[0x10];
     const void* p360;
-    const void* p368;
-    const void* p370;
+    unsigned char b368[0x10];
     const void* p378;
-    const void* p380;
-    const void* p388;
+    unsigned char b380[0x10];
     const void* p390;
-    const void* p398;
-    const void* p3a0;
+    unsigned char b398[0x10];
     const void* p3a8;
-    const void* p3b0;
-    const void* p3b8;
+    unsigned char b3b0[0x10];
     const void* p3c0;
-    const void* p3c8;
-    const void* p3d0;
+    unsigned char b3c8[0x10];
     const void* p3d8;
-    const void* p3e0;
-    const void* p3e8;
+    unsigned char b3e0[0x10];
     const void* p3f0;
-    const void* p3f8;
-    const void* p400;
+    unsigned char b3f8[0x10];
     const void* p408;
-    const void* p410;
-    const void* p418;
+    unsigned char b410[0x10];
     const void* p420;
-    const void* p428;
-    const void* p430;
+    unsigned char b428[0x10];
     const void* p438;
-    const void* p440;
-    const void* p448;
+    unsigned char b440[0x10];
     const void* p450;
-    const void* p458;
-    const void* p460;
+    unsigned char b458[0x10];
     const void* p468;
-    const void* p470;
-    const void* p478;
+    unsigned char b470[0x10];
     const void* p480;
-    const void* p488;
-    const void* p490;
+    unsigned char b488[0x10];
     const void* p498;
-    const void* p4a0;
-    const void* p4a8;
+    unsigned char b4a0[0x10];
     const void* p4b0;
-    const void* p4b8;
-    const void* p4c0;
+    unsigned char b4b8[0x10];
     const void* p4c8;
-    const void* p4d0;
-    const void* p4d8;
+    unsigned char b4d0[0x10];
     const void* p4e0;
     unsigned char b4e8[0x10];
     const void* p4f8;
@@ -5786,111 +4955,7 @@ struct Sd_143a51c30 {
     const void* p948;
     unsigned char b950[0x10];
     const void* p960;
-    unsigned char b968[0x10];
-    const void* p978;
-    unsigned char b980[0x10];
-    const void* p990;
-    unsigned char b998[0x10];
-    const void* p9a8;
-    unsigned char b9b0[0x10];
-    const void* p9c0;
-    unsigned char b9c8[0x10];
-    const void* p9d8;
-    unsigned char b9e0[0x10];
-    const void* p9f0;
-    unsigned char b9f8[0x10];
-    const void* pa08;
-    unsigned char ba10[0x10];
-    const void* pa20;
-    unsigned char ba28[0x10];
-    const void* pa38;
-    unsigned char ba40[0x10];
-    const void* pa50;
-    unsigned char ba58[0x10];
-    const void* pa68;
-    unsigned char ba70[0x10];
-    const void* pa80;
-    unsigned char ba88[0x10];
-    const void* pa98;
-    unsigned char baa0[0x10];
-    const void* pab0;
-    unsigned char bab8[0x10];
-    const void* pac8;
-    unsigned char bad0[0x10];
-    const void* pae0;
-    unsigned char bae8[0x10];
-    const void* paf8;
-    unsigned char bb00[0x10];
-    const void* pb10;
-    unsigned char bb18[0x10];
-    const void* pb28;
-    unsigned char bb30[0x10];
-    const void* pb40;
-    unsigned char bb48[0x10];
-    const void* pb58;
-    unsigned char bb60[0x10];
-    const void* pb70;
-    unsigned char bb78[0x10];
-    const void* pb88;
-    unsigned char bb90[0x10];
-    const void* pba0;
-    unsigned char bba8[0x10];
-    const void* pbb8;
-    unsigned char bbc0[0x10];
-    const void* pbd0;
-    unsigned char bbd8[0x10];
-    const void* pbe8;
-    unsigned char bbf0[0x10];
-    const void* pc00;
-    unsigned char bc08[0x10];
-    const void* pc18;
-    unsigned char bc20[0x10];
-    const void* pc30;
-    unsigned char bc38[0x10];
-    const void* pc48;
-    unsigned char bc50[0x10];
-    const void* pc60;
-    unsigned char bc68[0x10];
-    const void* pc78;
-    unsigned char bc80[0x10];
-    const void* pc90;
-    unsigned char bc98[0x10];
-    const void* pca8;
-    unsigned char bcb0[0x10];
-    const void* pcc0;
-    unsigned char bcc8[0x10];
-    const void* pcd8;
-    unsigned char bce0[0x10];
-    const void* pcf0;
-    unsigned char bcf8[0x10];
-    const void* pd08;
-    unsigned char bd10[0x10];
-    const void* pd20;
-    unsigned char bd28[0x10];
-    const void* pd38;
-    unsigned char bd40[0x10];
-    const void* pd50;
-    unsigned char bd58[0x10];
-    const void* pd68;
-    unsigned char bd70[0x10];
-    const void* pd80;
-    unsigned char bd88[0x10];
-    const void* pd98;
-    unsigned char bda0[0x10];
-    const void* pdb0;
-    unsigned char bdb8[0x10];
-    const void* pdc8;
-    unsigned char bdd0[0x10];
-    const void* pde0;
-    unsigned char bde8[0x10];
-    const void* pdf8;
-    unsigned char be00[0x10];
-    const void* pe10;
-    unsigned char be18[0x10];
-    const void* pe28;
-    unsigned char be30[0x10];
-    const void* pe40;
-    unsigned char be48[0x8];
+    unsigned char b968[0x8];
 };
 struct Sd_143a59c28 {
     const void* p0;
@@ -12041,9 +11106,11 @@ struct Sd_143a8da88 {
 #pragma pack(pop)
 
 extern Sd_143a07838 DAT_143a07838;
-extern Sd_143a08d08 DAT_143a08d08;
-extern Sd_143a2fcb0 DAT_143a2fcb0;
-extern Sd_143a30c50 DAT_143a30c50;
+extern Sd_143a08d14 DAT_143a08d14;
+namespace efd { class Point3 { public: float x, y, z; }; }
+extern efd::Point3 DAT_143a08d08;
+extern Sd_143a2fcb8 DAT_143a2fcb8;
+extern Sd_143a31300 DAT_143a31300;
 
 // 0x143a07838
 alignas(8) Sd_143a07838 DAT_143a07838 = {
@@ -12373,11 +11440,12 @@ alignas(8) Sd_143a07838 DAT_143a07838 = {
     (const unsigned char*)&DAT_143a07838 + 0x1178,
     (const unsigned char*)&DAT_143a07838 + 0x11b8,
 };
-// 0x143a08d08
-alignas(8) Sd_143a08d08 DAT_143a08d08 = {
+// 0x143a08d08: efd::Point3 (1, 1, 1)
+alignas(8) efd::Point3 DAT_143a08d08 = { 1.0f, 1.0f, 1.0f };
+// 0x143a08d14
+alignas(4) Sd_143a08d14 DAT_143a08d14 = {
     {
-        0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     "Destinations",
     "UseDefaults",
@@ -12395,7 +11463,7 @@ alignas(8) Sd_143a08d08 DAT_143a08d08 = {
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 0x00,
     },
     "Logger",
-    (const unsigned char*)&DAT_143a08d08 + 0x78,
+    (const unsigned char*)&DAT_143a08d14 + 0x6c,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -12477,7 +11545,7 @@ alignas(8) Sd_143a08d08 DAT_143a08d08 = {
         0x10, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 0x00,
     },
     "ServiceManager",
-    (const unsigned char*)&DAT_143a08d08 + 0x4e8,
+    (const unsigned char*)&DAT_143a08d14 + 0x4dc,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -12544,12 +11612,15 @@ alignas(8) Sd_143a08d08 DAT_143a08d08 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
-// 0x143a09600
-alignas(16) Sd_143a09600 DAT_143a09600 = {
+// local layout of efd::Matrix3 (3x3 floats); only the image bytes matter here
+namespace efd { class Matrix3 { public: float m_pEntry[3][3]; }; }
+// 0x143a09600: efd::Matrix3 identity. Const, but the exe has it in .data.
+#pragma section(".data$ddg_143a09600", read, write)
+__declspec(allocate(".data$ddg_143a09600")) alignas(16) extern const efd::Matrix3 DAT_143a09600 = { { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } } };
+// 0x143a09624
+alignas(4) Sd_143a09624 DAT_143a09624 = {
     {
-        0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     },
     "@*",
@@ -12560,230 +11631,230 @@ alignas(16) Sd_143a09600 DAT_143a09600 = {
     "",
     {0},
 };
-// 0x143a09660
-alignas(16) unsigned char DAT_143a09660[0x10] = {
-    0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0xff, 0xff, 0xff, 0xff,
-};
-// 0x143a09670
-alignas(16) unsigned char DAT_143a09670[0x10] = {
-    0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f,
-};
+// local layouts of efd::Color {r, g, b} and efd::ColorA {r, g, b, a}; only the image bytes matter here
+namespace efd { class Color { public: float r, g, b; }; class ColorA { public: float r, g, b, a; }; }
+// 0x143a09660: white (the exe has 0xffffffff in the 4 padding bytes after it)
+#pragma section(".data$ddg_143a09660", read, write)
+__declspec(allocate(".data$ddg_143a09660")) alignas(16) extern const efd::Color g_143a09660 = { 1.0f, 1.0f, 1.0f };
+// 0x143a09670: opaque white
+alignas(16) efd::ColorA DAT_143a09670 = { 1.0f, 1.0f, 1.0f, 1.0f };
 // 0x143a28a30
-alignas(16) Sd_143a28a30 DAT_143a28a30 = {
-    &::Scaleform::GFx::AS3::fl_accessibility::ISearchableTextCI,
-    &::Scaleform::GFx::AS3::fl_accessibility::ISimpleTextSelectionCI,
-    &::Scaleform::GFx::AS3::fl_accessibility::AccessibilityCI,
-    &::Scaleform::GFx::AS3::fl_accessibility::AccessibilityImplementationCI,
-    &::Scaleform::GFx::AS3::fl_accessibility::AccessibilityPropertiesCI,
-    &::Scaleform::GFx::AS3::fl::ErrorCI,
-    &::Scaleform::GFx::AS3::fl::DefinitionErrorCI,
-    &::Scaleform::GFx::AS3::fl::EvalErrorCI,
-    &::Scaleform::GFx::AS3::fl::RangeErrorCI,
-    &::Scaleform::GFx::AS3::fl::ReferenceErrorCI,
-    &::Scaleform::GFx::AS3::fl::SecurityErrorCI,
-    &::Scaleform::GFx::AS3::fl::SyntaxErrorCI,
-    &::Scaleform::GFx::AS3::fl::TypeErrorCI,
-    &::Scaleform::GFx::AS3::fl::URIErrorCI,
-    &::Scaleform::GFx::AS3::fl::VerifyErrorCI,
-    &::Scaleform::GFx::AS3::fl::UninitializedErrorCI,
-    &::Scaleform::GFx::AS3::fl::ArgumentErrorCI,
-    &::Scaleform::GFx::AS3::fl::DateCI,
-    &::Scaleform::GFx::AS3::fl::MathCI,
-    &::Scaleform::GFx::AS3::fl::RegExpCI,
-    &::Scaleform::GFx::AS3::fl_display::ActionScriptVersionCI,
-    &::Scaleform::GFx::AS3::fl_display::AVM1MovieCI,
-    &::Scaleform::GFx::AS3::fl_display::BitmapCI,
-    &::Scaleform::GFx::AS3::fl_display::BitmapDataCI,
-    &::Scaleform::GFx::AS3::fl_display::BitmapDataChannelCI,
-    &::Scaleform::GFx::AS3::fl_display::BlendModeCI,
-    &::Scaleform::GFx::AS3::fl_display::CapsStyleCI,
-    &::Scaleform::GFx::AS3::fl_display::DisplayObjectCI,
-    &::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI,
-    &::Scaleform::GFx::AS3::fl_display::FrameLabelCI,
-    &::Scaleform::GFx::AS3::fl_display::GradientTypeCI,
-    &::Scaleform::GFx::AS3::fl_display::GraphicsCI,
-    &::Scaleform::GFx::AS3::fl_display::IBitmapDrawableCI,
-    &::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI,
-    &::Scaleform::GFx::AS3::fl_display::InterpolationMethodCI,
-    &::Scaleform::GFx::AS3::fl_display::JointStyleCI,
-    &::Scaleform::GFx::AS3::fl_display::LineScaleModeCI,
-    &::Scaleform::GFx::AS3::fl_display::LoaderCI,
-    &::Scaleform::GFx::AS3::fl_display::LoaderInfoCI,
-    &::Scaleform::GFx::AS3::fl_display::MorphShapeCI,
-    &::Scaleform::GFx::AS3::fl_display::MovieClipCI,
-    &::Scaleform::GFx::AS3::fl_display::PixelSnappingCI,
-    &::Scaleform::GFx::AS3::fl_display::SceneCI,
-    &::Scaleform::GFx::AS3::fl_display::ShapeCI,
-    &::Scaleform::GFx::AS3::fl_display::SimpleButtonCI,
-    &::Scaleform::GFx::AS3::fl_display::SpreadMethodCI,
-    &::Scaleform::GFx::AS3::fl_display::SpriteCI,
-    &::Scaleform::GFx::AS3::fl_display::StageCI,
-    &::Scaleform::GFx::AS3::fl_display::StageAlignCI,
-    &::Scaleform::GFx::AS3::fl_display::StageDisplayStateCI,
-    &::Scaleform::GFx::AS3::fl_display::StageQualityCI,
-    &::Scaleform::GFx::AS3::fl_display::StageScaleModeCI,
-    &::Scaleform::GFx::AS3::fl_display::SWFVersionCI,
-    &::Scaleform::GFx::AS3::fl_display::ShaderDataCI,
-    &::Scaleform::GFx::AS3::fl_display::ShaderCI,
-    &::Scaleform::GFx::AS3::fl_errors::IllegalOperationErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::InvalidSWFErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::IOErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::EOFErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::MemoryErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::ScriptTimeoutErrorCI,
-    &::Scaleform::GFx::AS3::fl_errors::StackOverflowErrorCI,
-    &::Scaleform::GFx::AS3::fl_events::ActivityEventCI,
-    &::Scaleform::GFx::AS3::fl_events::AsyncErrorEventCI,
-    &::Scaleform::GFx::AS3::fl_events::ContextMenuEventCI,
-    &::Scaleform::GFx::AS3::fl_events::DataEventCI,
-    &::Scaleform::GFx::AS3::fl_events::ErrorEventCI,
-    &::Scaleform::GFx::AS3::fl_events::EventCI,
-    &::Scaleform::GFx::AS3::fl_events::EventDispatcherCI,
-    &::Scaleform::GFx::AS3::fl_events::EventPhaseCI,
-    &::Scaleform::GFx::AS3::fl_events::FocusEventCI,
-    &::Scaleform::GFx::AS3::fl_events::FullScreenEventCI,
-    &::Scaleform::GFx::AS3::fl_events::HTTPStatusEventCI,
-    &::Scaleform::GFx::AS3::fl_events::IEventDispatcherCI,
-    &::Scaleform::GFx::AS3::fl_events::IOErrorEventCI,
-    &::Scaleform::GFx::AS3::fl_events::KeyboardEventCI,
-    &::Scaleform::GFx::AS3::fl_events::MouseEventCI,
-    &::Scaleform::GFx::AS3::fl_events::NetStatusEventCI,
-    &::Scaleform::GFx::AS3::fl_events::ProgressEventCI,
-    &::Scaleform::GFx::AS3::fl_events::SecurityErrorEventCI,
-    &::Scaleform::GFx::AS3::fl_events::StatusEventCI,
-    &::Scaleform::GFx::AS3::fl_events::SyncEventCI,
-    &::Scaleform::GFx::AS3::fl_events::TextEventCI,
-    &::Scaleform::GFx::AS3::fl_events::TimerEventCI,
-    &::Scaleform::GFx::AS3::fl_events::GestureEventCI,
-    &::Scaleform::GFx::AS3::fl_events::TransformGestureEventCI,
-    &::Scaleform::GFx::AS3::fl_events::PressAndTapGestureEventCI,
-    &::Scaleform::GFx::AS3::fl_events::TouchEventCI,
-    &::Scaleform::GFx::AS3::fl_events::GesturePhaseCI,
-    &::Scaleform::GFx::AS3::fl_events::AppLifecycleEventCI,
-    &::Scaleform::GFx::AS3::fl_events::StageOrientationEventCI,
-    &::Scaleform::GFx::AS3::fl_events::StageOrientationCI,
-    &::Scaleform::GFx::AS3::fl_external::ExternalInterfaceCI,
-    &::Scaleform::GFx::AS3::fl_filters::BevelFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::BitmapFilterQualityCI,
-    &::Scaleform::GFx::AS3::fl_filters::BitmapFilterTypeCI,
-    &::Scaleform::GFx::AS3::fl_filters::BlurFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::ColorMatrixFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::ConvolutionFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::DisplacementMapFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::DisplacementMapFilterModeCI,
-    &::Scaleform::GFx::AS3::fl_filters::DropShadowFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::GlowFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::GradientBevelFilterCI,
-    &::Scaleform::GFx::AS3::fl_filters::GradientGlowFilterCI,
-    &::Scaleform::GFx::AS3::fl_geom::ColorTransformCI,
-    &::Scaleform::GFx::AS3::fl_geom::Vector3DCI,
-    &::Scaleform::GFx::AS3::fl_geom::Matrix3DCI,
-    &::Scaleform::GFx::AS3::fl_geom::MatrixCI,
-    &::Scaleform::GFx::AS3::fl_geom::PerspectiveProjectionCI,
-    &::Scaleform::GFx::AS3::fl_geom::PointCI,
-    &::Scaleform::GFx::AS3::fl_geom::RectangleCI,
-    &::Scaleform::GFx::AS3::fl_geom::TransformCI,
-    &::Scaleform::GFx::AS3::fl_net::URLRequestCI,
-    &::Scaleform::GFx::AS3::fl_system::ApplicationDomainCI,
-    &::Scaleform::GFx::AS3::fl_system::CapabilitiesCI,
-    &::Scaleform::GFx::AS3::fl_system::LoaderContextCI,
-    &::Scaleform::GFx::AS3::fl_system::SecurityCI,
-    &::Scaleform::GFx::AS3::fl_system::SecurityDomainCI,
-    &::Scaleform::GFx::AS3::fl_system::SecurityPanelCI,
-    &::Scaleform::GFx::AS3::fl_system::SystemCI,
-    &::Scaleform::GFx::AS3::fl_text::AntiAliasTypeCI,
-    &::Scaleform::GFx::AS3::fl_text::CSMSettingsCI,
-    &::Scaleform::GFx::AS3::fl_text::FontCI,
-    &::Scaleform::GFx::AS3::fl_text::FontStyleCI,
-    &::Scaleform::GFx::AS3::fl_text::FontTypeCI,
-    &::Scaleform::GFx::AS3::fl_text::GridFitTypeCI,
-    &::Scaleform::GFx::AS3::fl_text::StaticTextCI,
-    &::Scaleform::GFx::AS3::fl_text::StyleSheetCI,
-    &::Scaleform::GFx::AS3::fl_text::TextColorTypeCI,
-    &::Scaleform::GFx::AS3::fl_text::TextDisplayModeCI,
-    &::Scaleform::GFx::AS3::fl_text::TextFieldCI,
-    &::Scaleform::GFx::AS3::fl_text::TextFieldAutoSizeCI,
-    &::Scaleform::GFx::AS3::fl_text::TextFieldTypeCI,
-    &::Scaleform::GFx::AS3::fl_text::TextFormatCI,
-    &::Scaleform::GFx::AS3::fl_text::TextFormatAlignCI,
-    &::Scaleform::GFx::AS3::fl_text::TextLineMetricsCI,
-    &::Scaleform::GFx::AS3::fl_text::TextRendererCI,
-    &::Scaleform::GFx::AS3::fl_text::TextSnapshotCI,
-    &::Scaleform::GFx::AS3::fl_ui::ContextMenuBuiltInItemsCI,
-    &::Scaleform::GFx::AS3::fl_ui::ContextMenuClipboardItemsCI,
-    &::Scaleform::GFx::AS3::fl_ui::ContextMenuItemCI,
-    &::Scaleform::GFx::AS3::fl_ui::ContextMenuCI,
-    &::Scaleform::GFx::AS3::fl_ui::KeyboardCI,
-    &::Scaleform::GFx::AS3::fl_ui::KeyLocationCI,
-    &::Scaleform::GFx::AS3::fl_ui::MouseCI,
-    &::Scaleform::GFx::AS3::fl_ui::MouseCursorCI,
-    &::Scaleform::GFx::AS3::fl_utils::ByteArrayCI,
-    &::Scaleform::GFx::AS3::fl_utils::DictionaryCI,
-    &::Scaleform::GFx::AS3::fl_utils::EndianCI,
-    &::Scaleform::GFx::AS3::fl_utils::IDataInputCI,
-    &::Scaleform::GFx::AS3::fl_utils::IDataOutputCI,
-    &::Scaleform::GFx::AS3::fl_utils::ProxyCI,
-    &::Scaleform::GFx::AS3::fl_utils::TimerCI,
-    &::Scaleform::GFx::AS3::fl_gfx::SystemExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::FocusManagerCI,
-    &::Scaleform::GFx::AS3::fl_gfx::ExtensionsCI,
-    &::Scaleform::GFx::AS3::fl_gfx::MouseCursorEventCI,
-    &::Scaleform::GFx::AS3::fl_gfx::InteractiveObjectExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::TextFieldExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::MouseEventExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::KeyboardEventExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::GamePadCI,
-    &::Scaleform::GFx::AS3::fl_gfx::GamePadAnalogEventCI,
-    &::Scaleform::GFx::AS3::fl_gfx::FocusEventExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::TextEventExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::IMEEventExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::IMEExCI,
-    &::Scaleform::GFx::AS3::fl_gfx::IMECandidateListStyleCI,
-    &::Scaleform::GFx::AS3::fl::XMLCI,
-    &::Scaleform::GFx::AS3::fl::XMLListCI,
-    &::Scaleform::GFx::AS3::fl::QNameCI,
-    &::Scaleform::GFx::AS3::fl_net::XMLSocketCI,
-    &::Scaleform::GFx::AS3::fl_security::XMLSignatureValidatorCI,
-    &::Scaleform::GFx::AS3::fl_xml::XMLDocumentCI,
-    &::Scaleform::GFx::AS3::fl_xml::XMLNodeCI,
-    &::Scaleform::GFx::AS3::fl_xml::XMLNodeTypeCI,
-    &::Scaleform::GFx::AS3::fl_media::ID3InfoCI,
-    &::Scaleform::GFx::AS3::fl_media::MicrophoneCI,
-    &::Scaleform::GFx::AS3::fl_media::SoundCI,
-    &::Scaleform::GFx::AS3::fl_media::SoundChannelCI,
-    &::Scaleform::GFx::AS3::fl_media::SoundLoaderContextCI,
-    &::Scaleform::GFx::AS3::fl_media::SoundMixerCI,
-    &::Scaleform::GFx::AS3::fl_media::SoundTransformCI,
-    &::Scaleform::GFx::AS3::fl_events::IMEEventCI,
-    &::Scaleform::GFx::AS3::fl_system::IMECI,
-    &::Scaleform::GFx::AS3::fl_system::IMEConversionModeCI,
-    &::Scaleform::GFx::AS3::fl_media::CameraCI,
-    &::Scaleform::GFx::AS3::fl_net::FileFilterCI,
-    &::Scaleform::GFx::AS3::fl_net::FileReferenceCI,
-    &::Scaleform::GFx::AS3::fl_net::FileReferenceListCI,
-    &::Scaleform::GFx::AS3::fl_net::IDynamicPropertyOutputCI,
-    &::Scaleform::GFx::AS3::fl_net::IDynamicPropertyWriterCI,
-    &::Scaleform::GFx::AS3::fl_net::LocalConnectionCI,
-    &::Scaleform::GFx::AS3::fl_net::NetConnectionCI,
-    &::Scaleform::GFx::AS3::fl_net::ObjectEncodingCI,
-    &::Scaleform::GFx::AS3::fl_net::ResponderCI,
-    &::Scaleform::GFx::AS3::fl_net::SocketCI,
-    &::Scaleform::GFx::AS3::fl_net::URLLoaderCI,
-    &::Scaleform::GFx::AS3::fl_net::URLLoaderDataFormatCI,
-    &::Scaleform::GFx::AS3::fl_net::URLRequestHeaderCI,
-    &::Scaleform::GFx::AS3::fl_net::URLRequestMethodCI,
-    &::Scaleform::GFx::AS3::fl_net::URLStreamCI,
-    &::Scaleform::GFx::AS3::fl_net::URLVariablesCI,
-    &::Scaleform::GFx::AS3::fl_net::SharedObjectCI,
-    &::Scaleform::GFx::AS3::fl_net::SharedObjectFlushStatusCI,
-    &::Scaleform::GFx::AS3::fl_ui::MultitouchCI,
-    &::Scaleform::GFx::AS3::fl_ui::MultitouchInputModeCI,
-    &::Scaleform::GFx::AS3::fl_utils::IExternalizableCI,
-    {0},
+alignas(16) const Scaleform::GFx::AS3::ClassInfo* Scaleform::GFx::AS3::ClassRegistrationTable[212] = {
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_accessibility::ISearchableTextCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_accessibility::ISimpleTextSelectionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_accessibility::AccessibilityCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_accessibility::AccessibilityImplementationCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_accessibility::AccessibilityPropertiesCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::ErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::DefinitionErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::EvalErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::RangeErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::ReferenceErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::SecurityErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::SyntaxErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::TypeErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::URIErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::VerifyErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::UninitializedErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::ArgumentErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::DateCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::MathCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::RegExpCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::ActionScriptVersionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::AVM1MovieCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::BitmapCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::BitmapDataCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::BitmapDataChannelCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::BlendModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::CapsStyleCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::DisplayObjectCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::DisplayObjectContainerCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::FrameLabelCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::GradientTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::GraphicsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::IBitmapDrawableCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::InteractiveObjectCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::InterpolationMethodCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::JointStyleCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::LineScaleModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::LoaderCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::LoaderInfoCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::MorphShapeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::MovieClipCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::PixelSnappingCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::SceneCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::ShapeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::SimpleButtonCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::SpreadMethodCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::SpriteCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::StageCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::StageAlignCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::StageDisplayStateCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::StageQualityCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::StageScaleModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::SWFVersionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::ShaderDataCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_display::ShaderCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::IllegalOperationErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::InvalidSWFErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::IOErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::EOFErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::MemoryErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::ScriptTimeoutErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_errors::StackOverflowErrorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::ActivityEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::AsyncErrorEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::ContextMenuEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::DataEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::ErrorEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::EventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::EventDispatcherCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::EventPhaseCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::FocusEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::FullScreenEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::HTTPStatusEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::IEventDispatcherCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::IOErrorEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::KeyboardEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::MouseEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::NetStatusEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::ProgressEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::SecurityErrorEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::StatusEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::SyncEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::TextEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::TimerEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::GestureEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::TransformGestureEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::PressAndTapGestureEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::TouchEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::GesturePhaseCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::AppLifecycleEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::StageOrientationEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::StageOrientationCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_external::ExternalInterfaceCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::BevelFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::BitmapFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::BitmapFilterQualityCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::BitmapFilterTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::BlurFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::ColorMatrixFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::ConvolutionFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::DisplacementMapFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::DisplacementMapFilterModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::DropShadowFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::GlowFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::GradientBevelFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_filters::GradientGlowFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::ColorTransformCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::Vector3DCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::Matrix3DCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::MatrixCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::PerspectiveProjectionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::PointCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::RectangleCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_geom::TransformCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLRequestCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::ApplicationDomainCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::CapabilitiesCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::LoaderContextCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::SecurityCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::SecurityDomainCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::SecurityPanelCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::SystemCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::AntiAliasTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::CSMSettingsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::FontCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::FontStyleCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::FontTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::GridFitTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::StaticTextCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::StyleSheetCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextColorTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextDisplayModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextFieldCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextFieldAutoSizeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextFieldTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextFormatCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextFormatAlignCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextLineMetricsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextRendererCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_text::TextSnapshotCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::ContextMenuBuiltInItemsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::ContextMenuClipboardItemsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::ContextMenuItemCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::ContextMenuCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::KeyboardCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::KeyLocationCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::MouseCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::MouseCursorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::ByteArrayCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::DictionaryCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::EndianCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::IDataInputCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::IDataOutputCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::ProxyCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::TimerCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::SystemExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::FocusManagerCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::ExtensionsCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::MouseCursorEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::InteractiveObjectExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::TextFieldExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::MouseEventExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::KeyboardEventExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::GamePadCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::GamePadAnalogEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::FocusEventExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::TextEventExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::IMEEventExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::IMEExCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_gfx::IMECandidateListStyleCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::XMLCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::XMLListCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl::QNameCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::XMLSocketCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_security::XMLSignatureValidatorCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_xml::XMLDocumentCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_xml::XMLNodeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_xml::XMLNodeTypeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::ID3InfoCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::MicrophoneCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::SoundCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::SoundChannelCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::SoundLoaderContextCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::SoundMixerCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::SoundTransformCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_events::IMEEventCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::IMECI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_system::IMEConversionModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_media::CameraCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::FileFilterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::FileReferenceCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::FileReferenceListCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::IDynamicPropertyOutputCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::IDynamicPropertyWriterCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::LocalConnectionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::NetConnectionCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::ObjectEncodingCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::ResponderCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::SocketCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLLoaderCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLLoaderDataFormatCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLRequestHeaderCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLRequestMethodCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLStreamCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::URLVariablesCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::SharedObjectCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_net::SharedObjectFlushStatusCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::MultitouchCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_ui::MultitouchInputModeCI),
+    (const Scaleform::GFx::AS3::ClassInfo*)(&::Scaleform::GFx::AS3::fl_utils::IExternalizableCI),
+    nullptr,
+    nullptr,
 };
 // 0x143a293e0
-alignas(16) Sd_143a293e0 DAT_143a293e0 = {
+extern "C" alignas(16) Sd_143a293e0 DAT_143a293e0 = {
     "Chinese (Traditional) - Phonetic",
     "Phonetic",
     {
@@ -13426,7 +12497,7 @@ alignas(16) Sd_143a293e0 DAT_143a293e0 = {
     },
 };
 // 0x143a2a3e0
-alignas(16) Sd_143a2a3e0 DAT_143a2a3e0 = {
+extern "C" alignas(16) Sd_143a2a3e0 DAT_143a2a3e0 = {
     "GFxIME_English",
     {
         0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00,
@@ -13609,9 +12680,9 @@ alignas(16) Sd_143a2a3e0 DAT_143a2a3e0 = {
     },
 };
 // 0x143a2a6b0: entry count of the table sfr_as2_01c walks
-int DAT_143a2a6b0 = 0x2d;
+extern "C" int DAT_143a2a6b0 = 0x2d;
 // 0x143a2a6b4
-alignas(4) Sd_143a2a6b4 DAT_143a2a6b4 = {
+extern "C" alignas(4) Sd_143a2a6b4 DAT_143a2a6b4 = {
     {
         0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00,
@@ -13631,75 +12702,28 @@ alignas(4) Sd_143a2a6b4 DAT_143a2a6b4 = {
     "CandidateList_OnItemSelect",
     {0},
 };
-// 0x143a2a710
-alignas(16) Sd_143a2a710 DAT_143a2a710 = {
-    "Infinity",
-    {
-        0x40, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "-Infinity",
-    {
-        0x48, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "NaN",
-    {
-        0x50, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "undefined",
-    {
-        0x58, 0x00, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "HIDE_NSURI_METHODS",
-    {
-        0x78, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_BASES",
-    {
-        0x7c, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_INTERFACES",
-    {
-        0x80, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_VARIABLES",
-    {
-        0x84, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_ACCESSORS",
-    {
-        0x88, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_METHODS",
-    {
-        0x8c, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_METADATA",
-    {
-        0x90, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_CONSTRUCTOR",
-    {
-        0x94, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "INCLUDE_TRAITS",
-    {
-        0x98, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "USE_ITRAITS",
-    {
-        0x9c, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "HIDE_OBJECT",
-    {
-        0xa0, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "FLASH10_FLAGS",
-    {
-        0xa4, 0x00, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+// 0x143a2a710 (the native slots of the AS3 global object: name, offset, SlotInfo::BindingType, const)
+#pragma section(".data$ddg_143a2a710", read, write)
+__declspec(allocate(".data$ddg_143a2a710")) alignas(16) const Scaleform::GFx::AS3::MemberInfo Scaleform::GFx::AS3::Instances::fl::GlobalObjectCPP_mi[16] = {
+    { "Infinity", 0x40, 8, 1 },
+    { "-Infinity", 0x48, 8, 1 },
+    { "NaN", 0x50, 8, 1 },
+    { "undefined", 0x58, 2, 1 },
+    { "HIDE_NSURI_METHODS", 0x78, 7, 1 },
+    { "INCLUDE_BASES", 0x7c, 7, 1 },
+    { "INCLUDE_INTERFACES", 0x80, 7, 1 },
+    { "INCLUDE_VARIABLES", 0x84, 7, 1 },
+    { "INCLUDE_ACCESSORS", 0x88, 7, 1 },
+    { "INCLUDE_METHODS", 0x8c, 7, 1 },
+    { "INCLUDE_METADATA", 0x90, 7, 1 },
+    { "INCLUDE_CONSTRUCTOR", 0x94, 7, 1 },
+    { "INCLUDE_TRAITS", 0x98, 7, 1 },
+    { "USE_ITRAITS", 0x9c, 7, 1 },
+    { "HIDE_OBJECT", 0xa0, 7, 1 },
+    { "FLASH10_FLAGS", 0xa4, 7, 1 },
 };
 // 0x143a2a810
-alignas(16) Sd_143a2a810 DAT_143a2a810 = {
+alignas(16) const char* Scaleform::GFx::AS3::Instances::fl::DateWeekDayNames[8] = {
     "Sun",
     "Mon",
     "Tue",
@@ -13707,10 +12731,10 @@ alignas(16) Sd_143a2a810 DAT_143a2a810 = {
     "Thu",
     "Fri",
     "Sat",
-    {0},
+    nullptr,
 };
 // 0x143a2a850
-alignas(16) Sd_143a2a850 DAT_143a2a850 = {
+alignas(16) const char* Scaleform::GFx::AS3::Instances::fl::DateMonthNames[12] = {
     "Jan",
     "Feb",
     "Mar",
@@ -13723,6 +12747,9 @@ alignas(16) Sd_143a2a850 DAT_143a2a850 = {
     "Oct",
     "Nov",
     "Dec",
+};
+// 0x143a2a8b0 (the bytes after it)
+alignas(16) Sd_143a2a8b0 DAT_143a2a8b0 = {
     (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3isPrototypeOf,
     &::Scaleform::GFx::AS3::fl::BooleanCI,
     "isPrototypeOf",
@@ -13743,71 +12770,34 @@ alignas(16) Sd_143a2a850 DAT_143a2a850 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// the ThunkInfo tables of the InstanceTraits thunk wrappers (AS3_Traits.h: Thunk / MethodInd / VTableInd ::f)
+namespace Scaleform { namespace GFx { namespace AS3 { namespace InstanceTraits {
+class Thunk { public: static const ThunkInfo f[]; };
+class MethodInd { public: static const ThunkInfo f[]; };
+class VTableInd { public: static const ThunkInfo f[]; };
+} } } }
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d128[];
+extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d5c0[];
 // 0x143a2a930
-alignas(16) Sd_143a2a930 DAT_143a2a930 = {
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
-    {0},
-    "apply",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::call,
-    {0},
-    "call",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::FUN_142429360,
-    &::Scaleform::GFx::AS3::fl::uintCI,
-    "length",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+#pragma section(".data$ddg_143a2a930", read, write)
+__declspec(allocate(".data$ddg_143a2a930")) alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::InstanceTraits::Thunk::f[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply, 0, "apply", 0, 0, 0, 2 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::call, 0, "call", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::FUN_142429360, (const void*)&::Scaleform::GFx::AS3::fl::uintCI, "length", 0, 1, 0, 0 },
 };
 // 0x143a2a9b0
-alignas(16) Sd_143a2a9b0 DAT_143a2a9b0 = {
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
-    {0},
-    "apply",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::call,
-    {0},
-    "call",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&Scaleform::GFx::AS3::FUN_1424292c0,
-    &::Scaleform::GFx::AS3::fl::uintCI,
-    "length",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+#pragma section(".data$ddg_143a2a9b0", read, write)
+__declspec(allocate(".data$ddg_143a2a9b0")) alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::InstanceTraits::MethodInd::f[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply, 0, "apply", 0, 0, 0, 2 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::call, 0, "call", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&Scaleform::GFx::AS3::FUN_1424292c0, (const void*)&::Scaleform::GFx::AS3::fl::uintCI, "length", 0, 1, 0, 0 },
 };
 // 0x143a2aa30
-alignas(16) Sd_143a2aa30 DAT_143a2aa30 = {
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
-    {0},
-    "apply",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::call,
-    {0},
-    "call",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&Scaleform::GFx::AS3::FUN_1424293d0,
-    &::Scaleform::GFx::AS3::fl::uintCI,
-    "length",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+#pragma section(".data$ddg_143a2aa30", read, write)
+__declspec(allocate(".data$ddg_143a2aa30")) alignas(16) const Scaleform::GFx::AS3::ThunkInfo Scaleform::GFx::AS3::InstanceTraits::VTableInd::f[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply, 0, "apply", 0, 0, 0, 2 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::FunctionBase::call, 0, "call", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&Scaleform::GFx::AS3::FUN_1424293d0, (const void*)&::Scaleform::GFx::AS3::fl::uintCI, "length", 0, 1, 0, 0 },
 };
 // 0x143a2aab0
 alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
@@ -15101,7 +14091,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     },
 };
 // 0x143a2d0d0
-alignas(16) Sd_143a2d0d0 DAT_143a2d0d0 = {
+alignas(16) const char* DAT_143a2d0d0[11] = {
     "",
     " ",
     "  ",
@@ -15115,16 +14105,15 @@ alignas(16) Sd_143a2d0d0 DAT_143a2d0d0 = {
     "          ",
 };
 // 0x143a2d128
-alignas(8) Sd_143a2d128 DAT_143a2d128 = {
-    (const void*)&::Scaleform::GFx::AS3::Classes::fl::RegExp::toStringProto,
-    &::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
+#pragma section(".data$ddg_143a2d128", read, write)
+__declspec(allocate(".data$ddg_143a2d128")) alignas(8) const Scaleform::GFx::AS3::ThunkInfo DAT_143a2d128[1] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Classes::fl::RegExp::toStringProto, (const void*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
 };
 const char* DAT_143a2d150 = "Global Object constructor. Method ind: "; // 0x143a2d150
-// 0x143a2d158
-alignas(8) Sd_143a2d158 DAT_143a2d158 = {
-    {0},
+// 0x143a2d158 (TextEvent phase names, then the null-ended charset alias lists us-ascii.. / utf-8.. / unicode..)
+#pragma section(".data$ddg_143a2d158", read, write)
+__declspec(allocate(".data$ddg_143a2d158")) alignas(8) const char* const DAT_143a2d158[25] = {
+    0,
     "all",
     "begin",
     "end",
@@ -15139,82 +14128,41 @@ alignas(8) Sd_143a2d158 DAT_143a2d158 = {
     "ISO_646.irv:1991",
     "ISO646-US",
     "iso-ir-6us",
-    {0},
+    0,
     "utf-8",
     "unicode-1-1-utf-8",
     "unicode-2-0-utf-8",
     "x-unicode-2-0-utf-8",
-    {0},
+    0,
     "unicode",
     "utf-16",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    {0},
-    "callProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "deleteProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    {0},
-    "getDescendants",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    {0},
-    "getProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "hasProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "isAttribute",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    &::Scaleform::GFx::AS3::fl::StringCI,
-    "nextName",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    &::Scaleform::GFx::AS3::fl::int_CI,
-    "nextNameIndex",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    {0},
-    "nextValue",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc,
-    {0},
-    "setProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+    0,
+    0,
 };
-const char* DAT_143a2d3b0 = "http://adobe.com/AS3/2006/builtin"; // 0x143a2d3b0
-const char* DAT_143a2d3b8 = "http://www.adobe.com/flash/proxy"; // 0x143a2d3b8
-const char* DAT_143a2d3c0 = "__AS3__.vec";                      // 0x143a2d3c0
-const char* DAT_143a2d3c8 = "http://www.w3.org/XML/1998/namespace"; // 0x143a2d3c8
+// 0x143a2d220 (Proxy: callProperty, deleteProperty, getDescendants, ...; sfr_as3di_05 sets the namespaces)
+// sfr_as3di_05 writes NamespaceName into these at startup, so they stay in a writable section like the exe (.data)
+#pragma section(".data$ddg_143a2d220", read, write)
+__declspec(allocate(".data$ddg_143a2d220")) alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_143a2d220[10] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "callProperty", 0, 0, 0, 1023 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "deleteProperty", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "getDescendants", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "getProperty", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "hasProperty", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "isAttribute", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl::StringCI, "nextName", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, (const void*)&::Scaleform::GFx::AS3::fl::int_CI, "nextNameIndex", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "nextValue", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::ThunkInfo::EmptyFunc, 0, "setProperty", 0, 0, 2, 2 },
+};
+// The AS3 namespace URI strings, by their real names.
+namespace Scaleform { namespace GFx { namespace AS3 {
+namespace fl { const char* NS_AS3 = "http://adobe.com/AS3/2006/builtin"; } // 0x143a2d3b0
+namespace fl { const char* NS_flash_proxy = "http://www.adobe.com/flash/proxy"; } // 0x143a2d3b8
+namespace fl_vec { const char* NS_Vector = "__AS3__.vec"; } // 0x143a2d3c0
+namespace fl { const char* NS_XML = "http://www.w3.org/XML/1998/namespace"; } // 0x143a2d3c8
+}}}
 // 0x143a2d3d0
-alignas(16) Sd_143a2d3d0 DAT_143a2d3d0 = {
+alignas(16) const char* Scaleform::GFx::AS3::DAT_143a2d3d0[62] = {
     "",
     "undefined",
     "null",
@@ -15276,32 +14224,18 @@ alignas(16) Sd_143a2d3d0 DAT_143a2d3d0 = {
     "textInput",
     "change",
     "scroll",
-    {0},
+    nullptr,
 };
 // 0x143a2d5c0
-alignas(16) Sd_143a2d5c0 DAT_143a2d5c0 = {
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3isPrototypeOf,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "isPrototypeOf",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3hasOwnProperty,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "hasOwnProperty",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3propertyIsEnumerable,
-    &::Scaleform::GFx::AS3::fl::BooleanCI,
-    "propertyIsEnumerable",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
+// sfr_as3di_05 writes NamespaceName into these at startup, so they stay in a writable section like the exe (.data)
+#pragma section(".data$ddg_143a2d5c0", read, write)
+__declspec(allocate(".data$ddg_143a2d5c0")) alignas(16) const Scaleform::GFx::AS3::ThunkInfo DAT_143a2d5c0[3] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3isPrototypeOf, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "isPrototypeOf", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3hasOwnProperty, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "hasOwnProperty", 0, 0, 1, 1 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3propertyIsEnumerable, (const void*)&::Scaleform::GFx::AS3::fl::BooleanCI, "propertyIsEnumerable", 0, 0, 1, 1 },
 };
 // 0x143a2d640
-alignas(16) unsigned char DAT_143a2d640[0x250] = {
+extern "C" alignas(16) unsigned char DAT_143a2d640[0x250] = {
     0xe8, 0x03, 0x00, 0x00, 0xe9, 0x03, 0x00, 0x00, 0xea, 0x03, 0x00, 0x00, 0xeb, 0x03, 0x00, 0x00,
     0xec, 0x03, 0x00, 0x00, 0xed, 0x03, 0x00, 0x00, 0xee, 0x03, 0x00, 0x00, 0xef, 0x03, 0x00, 0x00,
     0xf0, 0x03, 0x00, 0x00, 0xf1, 0x03, 0x00, 0x00, 0xf2, 0x03, 0x00, 0x00, 0xf3, 0x03, 0x00, 0x00,
@@ -15341,7 +14275,7 @@ alignas(16) unsigned char DAT_143a2d640[0x250] = {
     0x3d, 0x08, 0x00, 0x00, 0x58, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a2d890
-alignas(16) Sd_143a2d890 DAT_143a2d890 = {
+extern "C" alignas(16) Sd_143a2d890 DAT_143a2d890 = {
     "The system is out of memory.",
     "The method {0} is not implemented.",
     "Number.toPrecision has a range of 1 to 21. Number.toFixed and Number.toExponential have a range of 0 to 20. Specified value is not within expected range.",
@@ -15490,18 +14424,18 @@ alignas(16) Sd_143a2d890 DAT_143a2d890 = {
     "The SWF file {0} contains invalid data.",
 };
 // 0x143a2dd20: an AS3 Value singleton, kind byte 0x0c (destroyed by the exe exit dtor, sfr_atexit_01)
-alignas(16) unsigned char DAT_143a2dd20[0x20] = {
+extern "C" alignas(16) unsigned char DAT_143a2dd20[0x20] = {
     0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a2dd40
-alignas(16) Sd_143a2dd40 DAT_143a2dd40 = {
+extern "C" alignas(16) Sd_143a2dd40 DAT_143a2dd40 = {
     "scaleform.gfx",
     {
         0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
 // 0x143a2dd50
-alignas(16) Sd_143a2dd50 DAT_143a2dd50 = {
+extern "C" alignas(16) Sd_143a2dd50 DAT_143a2dd50 = {
     "Vector.<",
     {
         0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -16156,96 +15090,122 @@ alignas(16) Sd_143a2dd50 DAT_143a2dd50 = {
     },
     DAT_142f7df88,
 };
+// the tag loader tables (gfx_loaderimpl.h: LoaderImpl::LoaderFunction, by tag type and by tag type - 1000)
+namespace Scaleform { namespace GFx {
+typedef void (*LoaderFunction)(LoadProcess* p, const TagInfo& tagInfo);
+extern LoaderFunction SWF_TagLoaderTable[92];
+extern LoaderFunction GFx_GFX_TagLoaderTable[10];
+} }
 // 0x143a2efe0
-alignas(16) Sd_143a2efe0 DAT_143a2efe0 = {
-    (const void*)&FUN_1425c5850,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineShapeLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_PlaceObjectLoader,
-    (const void*)&::Scaleform::GFx::GFx_RemoveObjectLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineBitsJpegLoader,
-    (const void*)&::Scaleform::GFx::GFx_ButtonCharacterLoader,
-    (const void*)&Scaleform::GFx::GFx_JpegTablesLoader,
-    (const void*)&::Scaleform::GFx::GFx_SetBackgroundColorLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineFontLoader,
-    (const void*)&::Scaleform::GFx::GFx_DefineTextLoader,
-    (const void*)&::Scaleform::GFx::GFx_DoActionLoader,
-    (const void*)&::Scaleform::GFx::GFx_DefineFontInfoLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineSoundLoader,
-    (const void*)&Scaleform::GFx::GFx_StartSoundLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_ButtonSoundLoader,
-    (const void*)&Scaleform::GFx::GFx_SoundStreamHeadLoader,
-    (const void*)&Scaleform::GFx::GFx_SoundStreamBlockLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineBitsLossless2Loader,
-    (const void*)&Scaleform::GFx::GFx_DefineBitsJpeg2Loader,
-    (const void*)&Scaleform::GFx::GFx_DefineShapeLoader,
-    {0},
-    (const void*)&FUN_1425c4320,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_PlaceObject2Loader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_RemoveObject2Loader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineShapeLoader,
-    (const void*)&::Scaleform::GFx::GFx_DefineTextLoader,
-    (const void*)&::Scaleform::GFx::GFx_ButtonCharacterLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineBitsJpeg3Loader,
-    (const void*)&Scaleform::GFx::GFx_DefineBitsLossless2Loader,
-    (const void*)&::Scaleform::GFx::GFx_DefineEditTextLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_SpriteLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_FrameLabelLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_SoundStreamHeadLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineShapeMorphLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineFontLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_ExportLoader,
-    (const void*)&Scaleform::GFx::GFx_ImportLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_DoInitActionLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineVideoStreamLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_DefineFontInfoLoader,
-    (const void*)&::Scaleform::GFx::GFx_DebugIDLoader,
-    {0},
-    (const void*)&::Scaleform::GFx::GFx_SetTabIndexLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_FileAttributesLoader,
-    (const void*)&::Scaleform::GFx::GFx_PlaceObject3Loader,
-    (const void*)&Scaleform::GFx::GFx_ImportLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_CSMTextSettings,
-    (const void*)&Scaleform::GFx::GFx_DefineFontLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_MetadataLoader,
-    (const void*)&Scaleform::GFx::GFx_Scale9GridLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineShapeLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineShapeMorphLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineSceneAndFrameLabelDataLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineBinaryDataLoader,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_DefineBitsJpeg3Loader,
-    {0},
+alignas(16) Scaleform::GFx::LoaderFunction Scaleform::GFx::SWF_TagLoaderTable[92] = {
+    (Scaleform::GFx::LoaderFunction)&FUN_1425c5850,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_PlaceObjectLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_RemoveObjectLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsJpegLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_ButtonCharacterLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_JpegTablesLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_SetBackgroundColorLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineFontLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DefineTextLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DoActionLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DefineFontInfoLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineSoundLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_StartSoundLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_ButtonSoundLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_SoundStreamHeadLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_SoundStreamBlockLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsLossless2Loader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsJpeg2Loader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&FUN_1425c4320,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_PlaceObject2Loader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_RemoveObject2Loader,
+    0,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DefineTextLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_ButtonCharacterLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsJpeg3Loader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsLossless2Loader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DefineEditTextLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_SpriteLoader,
+    0,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_FrameLabelLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_SoundStreamHeadLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeMorphLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineFontLoader,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_ExportLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_ImportLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DoInitActionLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineVideoStreamLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DefineFontInfoLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_DebugIDLoader,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_SetTabIndexLoader,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_FileAttributesLoader,
+    (Scaleform::GFx::LoaderFunction)&::Scaleform::GFx::GFx_PlaceObject3Loader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_ImportLoader,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_CSMTextSettings,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineFontLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_MetadataLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_Scale9GridLoader,
+    0,
+    0,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineShapeMorphLoader,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineSceneAndFrameLabelDataLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBinaryDataLoader,
+    0,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineBitsJpeg3Loader,
+    0,
 };
 // 0x143a2f2c0
-alignas(16) Sd_143a2f2c0 DAT_143a2f2c0 = {
-    (const void*)&FUN_1425c6940,
-    {0},
-    (const void*)&Scaleform::GFx::GFx_FontTextureInfoLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineExternalGradientImageLoader,
-    (const void*)&FUN_1425c7a40,
-    (const void*)&Scaleform::GFx::GFx_DefineFontLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineExternalSoundLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineExternalStreamSoundLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineSubImageLoader,
-    (const void*)&Scaleform::GFx::GFx_DefineExternalImageLoader,
+alignas(16) Scaleform::GFx::LoaderFunction Scaleform::GFx::GFx_GFX_TagLoaderTable[10] = {
+    (Scaleform::GFx::LoaderFunction)&FUN_1425c6940,
+    0,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_FontTextureInfoLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineExternalGradientImageLoader,
+    (Scaleform::GFx::LoaderFunction)&FUN_1425c7a40,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineFontLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineExternalSoundLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineExternalStreamSoundLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineSubImageLoader,
+    (Scaleform::GFx::LoaderFunction)&Scaleform::GFx::GFx_DefineExternalImageLoader,
+};
+// 0x143a2f310 (the bytes after GFx_GFX_TagLoaderTable)
+alignas(16) Sd_143a2f310 DAT_143a2f310 = {
     DAT_14318b278,
     DAT_14318b208,
     {
@@ -16255,10 +15215,15 @@ alignas(16) Sd_143a2f2c0 DAT_143a2f2c0 = {
     },
 };
 // 0x143a2f3a0
-alignas(16) Sd_143a2f3a0 DAT_143a2f3a0 = {
+namespace Scaleform { namespace Render {
+// local layout of the SDK Cxform {float M[2][4]}; only the image bytes matter here
+class Cxform { public: float M[2][4]; static const Cxform Identity; };
+#pragma section(".data$ddg_143a2f3a0", read, write)
+__declspec(allocate(".data$ddg_143a2f3a0")) alignas(16) const Cxform Cxform::Identity = { { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 0.0f } } };
+} }
+// 0x143a2f3c0 (the 0x50 bytes after Cxform::Identity)
+alignas(16) Sd_143a2f3c0 DAT_143a2f3c0 = {
     {
-        0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x80, 0x3f,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x00,
@@ -16270,47 +15235,51 @@ alignas(16) Sd_143a2f3a0 DAT_143a2f3a0 = {
 alignas(16) Sd_143a2f420 DAT_143a2f420 = {
     (const void*)&DAT_14318ee08,
 };
-int DAT_143a2f428 = 1;                                          // 0x143a2f428
+namespace Scaleform { namespace GFx { int DAT_143a2f428 = 1; } }                                        // 0x143a2f428
 // 0x143a2f780
-alignas(16) unsigned char DAT_143a2f780[0x1e8] = {
-    0x8a, 0x05, 0x01, 0x00, 0x10, 0x20, 0x01, 0x00, 0x12, 0x20, 0x01, 0x00, 0x13, 0x20, 0x01, 0x00,
-    0x14, 0x20, 0x01, 0x00, 0x18, 0x20, 0x02, 0x00, 0x19, 0x20, 0x01, 0x00, 0x1c, 0x20, 0x02, 0x00,
-    0x1d, 0x20, 0x01, 0x00, 0x24, 0x20, 0x01, 0x00, 0x25, 0x20, 0x01, 0x00, 0x26, 0x20, 0x01, 0x00,
-    0x27, 0x20, 0x01, 0x00, 0x32, 0x20, 0x01, 0x00, 0x33, 0x20, 0x01, 0x00, 0x35, 0x20, 0x02, 0x00,
-    0xa7, 0x20, 0x02, 0x00, 0x03, 0x21, 0x01, 0x00, 0x09, 0x21, 0x01, 0x00, 0x16, 0x21, 0x02, 0x00,
-    0x12, 0x22, 0x02, 0x00, 0x13, 0x22, 0x02, 0x00, 0x22, 0x21, 0x01, 0x00, 0x74, 0x25, 0x01, 0x00,
-    0x6f, 0x26, 0x02, 0x00, 0x01, 0x30, 0x01, 0x00, 0x02, 0x30, 0x01, 0x00, 0x05, 0x30, 0x01, 0x00,
-    0x08, 0x30, 0x02, 0x00, 0x09, 0x30, 0x01, 0x00, 0x0a, 0x30, 0x02, 0x00, 0x0b, 0x30, 0x01, 0x00,
-    0x0c, 0x30, 0x02, 0x00, 0x0d, 0x30, 0x01, 0x00, 0x0e, 0x30, 0x02, 0x00, 0x0f, 0x30, 0x01, 0x00,
-    0x10, 0x30, 0x02, 0x00, 0x11, 0x30, 0x01, 0x00, 0x12, 0x30, 0x02, 0x00, 0x14, 0x30, 0x02, 0x00,
-    0x15, 0x30, 0x01, 0x00, 0x1c, 0x30, 0x01, 0x00, 0x1d, 0x30, 0x02, 0x00, 0x1e, 0x30, 0x01, 0x00,
-    0x1f, 0x30, 0x01, 0x00, 0x41, 0x30, 0x01, 0x00, 0x43, 0x30, 0x01, 0x00, 0x45, 0x30, 0x01, 0x00,
-    0x47, 0x30, 0x01, 0x00, 0x49, 0x30, 0x01, 0x00, 0x63, 0x30, 0x01, 0x00, 0x83, 0x30, 0x01, 0x00,
-    0x85, 0x30, 0x01, 0x00, 0x87, 0x30, 0x01, 0x00, 0x8e, 0x30, 0x01, 0x00, 0x9b, 0x30, 0x01, 0x00,
-    0x9c, 0x30, 0x01, 0x00, 0x9d, 0x30, 0x01, 0x00, 0x9e, 0x30, 0x01, 0x00, 0xa1, 0x30, 0x01, 0x00,
-    0xa3, 0x30, 0x01, 0x00, 0xa5, 0x30, 0x01, 0x00, 0xa7, 0x30, 0x01, 0x00, 0xa9, 0x30, 0x01, 0x00,
-    0xc3, 0x30, 0x01, 0x00, 0xe3, 0x30, 0x01, 0x00, 0xe5, 0x30, 0x01, 0x00, 0xe7, 0x30, 0x01, 0x00,
-    0xee, 0x30, 0x01, 0x00, 0xf5, 0x30, 0x01, 0x00, 0xf6, 0x30, 0x01, 0x00, 0xfb, 0x30, 0x01, 0x00,
-    0xfc, 0x30, 0x01, 0x00, 0xfd, 0x30, 0x01, 0x00, 0xfe, 0x30, 0x01, 0x00, 0xfc, 0xfd, 0x01, 0x00,
-    0x50, 0xfe, 0x01, 0x00, 0x51, 0xfe, 0x01, 0x00, 0x52, 0xfe, 0x01, 0x00, 0x54, 0xfe, 0x01, 0x00,
-    0x55, 0xfe, 0x01, 0x00, 0x56, 0xfe, 0x01, 0x00, 0x57, 0xfe, 0x01, 0x00, 0x59, 0xfe, 0x02, 0x00,
-    0x5a, 0xfe, 0x01, 0x00, 0x5b, 0xfe, 0x02, 0x00, 0x5c, 0xfe, 0x01, 0x00, 0x5d, 0xfe, 0x02, 0x00,
-    0x5e, 0xfe, 0x01, 0x00, 0x6a, 0xfe, 0x01, 0x00, 0x01, 0xff, 0x01, 0x00, 0x04, 0xff, 0x02, 0x00,
-    0x05, 0xff, 0x01, 0x00, 0x08, 0xff, 0x02, 0x00, 0x09, 0xff, 0x01, 0x00, 0x0c, 0xff, 0x01, 0x00,
-    0x0e, 0xff, 0x01, 0x00, 0x1a, 0xff, 0x01, 0x00, 0x1b, 0xff, 0x01, 0x00, 0x1f, 0xff, 0x01, 0x00,
-    0x20, 0xff, 0x02, 0x00, 0x3b, 0xff, 0x02, 0x00, 0x3d, 0xff, 0x01, 0x00, 0x5b, 0xff, 0x02, 0x00,
-    0x5d, 0xff, 0x01, 0x00, 0x61, 0xff, 0x01, 0x00, 0x64, 0xff, 0x01, 0x00, 0xe0, 0xff, 0x03, 0x00,
-    0xe1, 0xff, 0x02, 0x00, 0xe5, 0xff, 0x02, 0x00, 0xe6, 0xff, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+namespace Scaleform { namespace Render { namespace Text {
+// local view of text_wwhelper.h: WordWrapHelper::CharBreakInfo {wchar_t Char; UByte Flags;}
+class WordWrapHelper { public: struct CharBreakInfo { wchar_t Char; unsigned char Flags; }; };
+} } }
+// the render copy of the prohibition table (111 entries, as WordWrapHelper::CharBreakInfoArray; sfr_render_05k)
+alignas(16) Scaleform::Render::Text::WordWrapHelper::CharBreakInfo DAT_143a2f780[111] = {
+    { 0x058a, 1 }, { 0x2010, 1 }, { 0x2012, 1 }, { 0x2013, 1 }, { 0x2014, 1 }, { 0x2018, 2 },
+    { 0x2019, 1 }, { 0x201c, 2 }, { 0x201d, 1 }, { 0x2024, 1 }, { 0x2025, 1 }, { 0x2026, 1 },
+    { 0x2027, 1 }, { 0x2032, 1 }, { 0x2033, 1 }, { 0x2035, 2 }, { 0x20a7, 2 }, { 0x2103, 1 },
+    { 0x2109, 1 }, { 0x2116, 2 }, { 0x2212, 2 }, { 0x2213, 2 }, { 0x2122, 1 }, { 0x2574, 1 },
+    { 0x266f, 2 }, { 0x3001, 1 }, { 0x3002, 1 }, { 0x3005, 1 }, { 0x3008, 2 }, { 0x3009, 1 },
+    { 0x300a, 2 }, { 0x300b, 1 }, { 0x300c, 2 }, { 0x300d, 1 }, { 0x300e, 2 }, { 0x300f, 1 },
+    { 0x3010, 2 }, { 0x3011, 1 }, { 0x3012, 2 }, { 0x3014, 2 }, { 0x3015, 1 }, { 0x301c, 1 },
+    { 0x301d, 2 }, { 0x301e, 1 }, { 0x301f, 1 }, { 0x3041, 1 }, { 0x3043, 1 }, { 0x3045, 1 },
+    { 0x3047, 1 }, { 0x3049, 1 }, { 0x3063, 1 }, { 0x3083, 1 }, { 0x3085, 1 }, { 0x3087, 1 },
+    { 0x308e, 1 }, { 0x309b, 1 }, { 0x309c, 1 }, { 0x309d, 1 }, { 0x309e, 1 }, { 0x30a1, 1 },
+    { 0x30a3, 1 }, { 0x30a5, 1 }, { 0x30a7, 1 }, { 0x30a9, 1 }, { 0x30c3, 1 }, { 0x30e3, 1 },
+    { 0x30e5, 1 }, { 0x30e7, 1 }, { 0x30ee, 1 }, { 0x30f5, 1 }, { 0x30f6, 1 }, { 0x30fb, 1 },
+    { 0x30fc, 1 }, { 0x30fd, 1 }, { 0x30fe, 1 }, { 0xfdfc, 1 }, { 0xfe50, 1 }, { 0xfe51, 1 },
+    { 0xfe52, 1 }, { 0xfe54, 1 }, { 0xfe55, 1 }, { 0xfe56, 1 }, { 0xfe57, 1 }, { 0xfe59, 2 },
+    { 0xfe5a, 1 }, { 0xfe5b, 2 }, { 0xfe5c, 1 }, { 0xfe5d, 2 }, { 0xfe5e, 1 }, { 0xfe6a, 1 },
+    { 0xff01, 1 }, { 0xff04, 2 }, { 0xff05, 1 }, { 0xff08, 2 }, { 0xff09, 1 }, { 0xff0c, 1 },
+    { 0xff0e, 1 }, { 0xff1a, 1 }, { 0xff1b, 1 }, { 0xff1f, 1 }, { 0xff20, 2 }, { 0xff3b, 2 },
+    { 0xff3d, 1 }, { 0xff5b, 2 }, { 0xff5d, 1 }, { 0xff61, 1 }, { 0xff64, 1 }, { 0xffe0, 3 },
+    { 0xffe1, 2 }, { 0xffe5, 2 }, { 0xffe6, 2 },
+};
+// 0x143a2f940 (the 0x28 bytes after the table: 16 bytes, then the VertexElement array of Image9GridVertex::Format at +0x10)
+struct Sd_143a2f940 { unsigned char b0[0x10]; unsigned char b10[0x18]; };
+alignas(16) Sd_143a2f940 DAT_143a2f940 = {
+    {
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
+    {
+        0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
 };
 // 0x143a2f968
-alignas(8) Sd_143a2f968 DAT_143a2f968 = {
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::Image9GridVertex::Format = {
     {
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    DAT_143a2f780 + 0x1d0,
+    DAT_143a2f940.b10,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16333,7 +15302,7 @@ alignas(16) unsigned char DAT_143a2f9a0[0xd8] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a2fb70
-alignas(16) Sd_143a2fb70 DAT_143a2fb70 = {
+alignas(16) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16i::Format = {
     {
         0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16343,7 +15312,7 @@ alignas(16) Sd_143a2fb70 DAT_143a2fb70 = {
     },
 };
 // 0x143a2fb88
-alignas(8) Sd_143a2fb88 DAT_143a2fb88 = {
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16f::Format = {
     {
         0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16353,7 +15322,7 @@ alignas(8) Sd_143a2fb88 DAT_143a2fb88 = {
     },
 };
 // 0x143a2fba0
-alignas(16) Sd_143a2fba0 DAT_143a2fba0 = {
+alignas(16) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16fAlpha::Format = {
     {
         0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16363,7 +15332,7 @@ alignas(16) Sd_143a2fba0 DAT_143a2fba0 = {
     },
 };
 // 0x143a2fbb8
-alignas(8) Sd_143a2fbb8 DAT_143a2fbb8 = {
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16iC32::Format = {
     {
         0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16373,7 +15342,7 @@ alignas(8) Sd_143a2fbb8 DAT_143a2fbb8 = {
     },
 };
 // 0x143a2fbd0
-alignas(16) Sd_143a2fbd0 DAT_143a2fbd0 = {
+alignas(16) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16iAlpha::Format = {
     {
         0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16383,7 +15352,7 @@ alignas(16) Sd_143a2fbd0 DAT_143a2fbd0 = {
     },
 };
 // 0x143a2fbe8
-alignas(8) Sd_143a2fbe8 DAT_143a2fbe8 = {
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16iCF32::Format = {
     {
         0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16393,7 +15362,7 @@ alignas(8) Sd_143a2fbe8 DAT_143a2fbe8 = {
     },
 };
 // 0x143a2fc00
-alignas(16) Sd_143a2fc00 DAT_143a2fc00 = {
+alignas(16) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16iInstance::Format = {
     {
         0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16403,7 +15372,7 @@ alignas(16) Sd_143a2fc00 DAT_143a2fc00 = {
     },
 };
 // 0x143a2fc18
-alignas(8) Sd_143a2fc18 DAT_143a2fc18 = {
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::VertexXY16iUV::Format = {
     {
         0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
@@ -16412,18 +15381,28 @@ alignas(8) Sd_143a2fc18 DAT_143a2fc18 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
-// 0x143a2fc60
-alignas(16) unsigned char DAT_143a2fc60[0x50] = {
+// 0x143a2fc60: the unit offsets of the matrix pool elements of each format
+namespace Scaleform { namespace Render { namespace MatrixPoolImpl {
+// local layout of the SDK HMatrixConstants::ElementsInfo {UByte Offsets[5]}; only the image bytes matter here
+struct HMatrixConstants { struct ElementsInfo { unsigned char Offsets[5]; }; static ElementsInfo MatrixElementSizeTable[16]; };
+} } }
+alignas(16) Scaleform::Render::MatrixPoolImpl::HMatrixConstants::ElementsInfo Scaleform::Render::MatrixPoolImpl::HMatrixConstants::MatrixElementSizeTable[16] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00,
     0x02, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00, 0x00,
     0x02, 0x00, 0x04, 0x00, 0x02, 0x04, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
     0x02, 0x06, 0x00, 0x00, 0x00, 0x02, 0x06, 0x00, 0x02, 0x00, 0x04, 0x08, 0x00, 0x00, 0x00, 0x02,
     0x06, 0x00, 0x00, 0x02, 0x04, 0x08, 0x00, 0x00, 0x02, 0x04, 0x08, 0x00, 0x02, 0x04, 0x06, 0x0a,
 };
-// 0x143a2fcb0
-alignas(16) Sd_143a2fcb0 DAT_143a2fcb0 = {
-    (const unsigned char*)&DAT_143a2fcb0 + 0x8,
-    (const void*)&DAT_143a2fcb0,
+// 0x143a2fcb0: HMatrix::NullHandle, the shared null handle. Its pHeader is the null DataHeader right after it,
+// whose pHandle points back here. Local layouts of the SDK EntryHandle {DataHeader* pHeader} and HMatrix.
+namespace Scaleform { namespace Render { namespace MatrixPoolImpl {
+struct EntryHandle { void* pHeader; };
+class HMatrix { public: static EntryHandle NullHandle; };
+} } }
+alignas(16) Scaleform::Render::MatrixPoolImpl::EntryHandle Scaleform::Render::MatrixPoolImpl::HMatrix::NullHandle = { &DAT_143a2fcb8 };
+// 0x143a2fcb8: the null DataHeader {pHandle, RefCount, DataPageOffset, UnitSize, Format}, then zero bytes
+alignas(8) Sd_143a2fcb8 DAT_143a2fcb8 = {
+    (const void*)&Scaleform::Render::MatrixPoolImpl::HMatrix::NullHandle,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -16442,7 +15421,7 @@ alignas(16) Sd_143a2fe50 DAT_143a2fe50 = {
     DAT_143a2fe30,
 };
 // 0x143a2fe60: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
-alignas(16) unsigned char DAT_143a2fe60[0x8] = {};
+extern "C" alignas(16) unsigned char DAT_143a2fe60[0x8] = {};
 // 0x143a30310: VertexElement[] (RasterGlyphVertex/ImageGlyphVertex::Format.pElements)
 alignas(16) unsigned char DAT_143a30310[0x18] = {
     0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -16455,102 +15434,32 @@ alignas(8) Sd_143a30328 DAT_143a30328 = {
     DAT_143a30310,
 };
 // 0x143a30338: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
-alignas(8) unsigned char DAT_143a30338[0x8] = {};
-// 0x143a303c0
-alignas(16) Sd_143a303c0 DAT_143a303c0 = {
+extern "C" alignas(8) unsigned char DAT_143a30338[0x8] = {};
+// 0x143a303c0 (the D3D9 texture formats: ImageFormat, D3DFORMAT, bytes per pixel, mappable, copy / uncopy scanline; Image_None ends it)
+alignas(16) Scaleform::Render::D3D9::TextureFormat::Mapping Scaleform::Render::D3D9::D3D9TextureFormatMapping[19] = {
+    { 1, 32, 4, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 1, 21, 4, false, (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR, (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR },
+    { 2, 21, 4, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 2, 32, 4, false, (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR, (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR },
+    { 3, 21, 4, false, (const void*)&::Scaleform::Render::Image_CopyScanline24_Extend_RGB_BGRA, (const void*)&::Scaleform::Render::Image_CopyScanline32_Retract_BGRA_RGB },
+    { 4, 21, 4, false, (const void*)&::Scaleform::Render::Image_CopyScanline24_Extend_RGB_RGBA, (const void*)&::Scaleform::Render::Image_CopyScanline32_Retract_RGBA_RGB },
+    { 9, 28, 1, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 9, 51, 2, false, (const void*)&FUN_142729eb0, (const void*)&FUN_142729f10 },
+    { 9, 26, 2, false, (const void*)&FUN_142729ee0, (const void*)&FUN_142729f40 },
+    { 50, 827611204, 0, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 51, 861165636, 0, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 52, 894720068, 0, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 200, 28, 1, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 200, 51, 2, false, (const void*)&FUN_142729eb0, (const void*)&FUN_142729f10 },
+    { 200, 26, 2, false, (const void*)&FUN_142729ee0, (const void*)&FUN_142729f40 },
+    { 201, 28, 1, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
+    { 201, 51, 1, false, (const void*)&FUN_142729eb0, (const void*)&FUN_142729f10 },
+    { 201, 26, 2, false, (const void*)&FUN_142729ee0, (const void*)&FUN_142729f40 },
+    { 0, 0, 0, false, 0, 0 },
+};
+// 0x143a30620
+alignas(16) Sd_143a30620 DAT_143a30620 = {
     {
-        0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0x01, 0x00, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR,
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR,
-    {
-        0x02, 0x00, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0x02, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR,
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_SwapBR,
-    {
-        0x03, 0x00, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::Image_CopyScanline24_Extend_RGB_BGRA,
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_Retract_BGRA_RGB,
-    {
-        0x04, 0x00, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::Image_CopyScanline24_Extend_RGB_RGBA,
-    (const void*)&::Scaleform::Render::Image_CopyScanline32_Retract_RGBA_RGB,
-    {
-        0x09, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0x09, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729eb0,
-    (const void*)&FUN_142729f10,
-    {
-        0x09, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729ee0,
-    (const void*)&FUN_142729f40,
-    {
-        0x32, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, 0x31, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0x33, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, 0x33, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0x34, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, 0x35, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0xc8, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0xc8, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729eb0,
-    (const void*)&FUN_142729f10,
-    {
-        0xc8, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729ee0,
-    (const void*)&FUN_142729f40,
-    {
-        0xc9, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault,
-    {
-        0xc9, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729eb0,
-    (const void*)&FUN_142729f10,
-    {
-        0xc9, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_142729ee0,
-    (const void*)&FUN_142729f40,
-    {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,
     },
 };
@@ -16597,7 +15506,7 @@ alignas(16) Sd_143a30650 DAT_143a30650 = {
     },
 };
 // 0x143a308a0
-alignas(16) Sd_143a308a0 DAT_143a308a0 = {
+alignas(16) const char* Scaleform::Render::D3D9::ShaderUniformNames[18] = {
     "color",
     "cxadd",
     "cxmul",
@@ -16618,325 +15527,328 @@ alignas(16) Sd_143a308a0 DAT_143a308a0 = {
     "vfuniforms",
 };
 // 0x143a30930
-alignas(16) Sd_143a30930 DAT_143a30930 = {
-    {0},
-    (const unsigned char*)&DAT_143a30c50 + 0x6b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x930,
-    (const unsigned char*)&DAT_143a30c50 + 0xa70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbb0,
-    (const unsigned char*)&DAT_143a30c50 + 0xcf0,
-    (const unsigned char*)&DAT_143a30c50 + 0xe30,
-    (const unsigned char*)&DAT_143a30c50 + 0xf70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x11f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x1330,
-    (const unsigned char*)&DAT_143a30c50 + 0x1470,
-    (const unsigned char*)&DAT_143a30c50 + 0x15b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x16f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x1830,
-    (const unsigned char*)&DAT_143a30c50 + 0x1970,
-    (const unsigned char*)&DAT_143a30c50 + 0x1ab0,
-    (const unsigned char*)&DAT_143a30c50 + 0x1bf0,
-    (const unsigned char*)&DAT_143a30c50 + 0x1d30,
-    (const unsigned char*)&DAT_143a30c50 + 0x1e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x1fb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x20f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x2230,
-    (const unsigned char*)&DAT_143a30c50 + 0x2370,
-    (const unsigned char*)&DAT_143a30c50 + 0x24b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x25f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x2730,
-    (const unsigned char*)&DAT_143a30c50 + 0x2870,
-    (const unsigned char*)&DAT_143a30c50 + 0x29b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x2af0,
-    (const unsigned char*)&DAT_143a30c50 + 0x2c30,
-    (const unsigned char*)&DAT_143a30c50 + 0x2d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x2eb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x2ff0,
-    (const unsigned char*)&DAT_143a30c50 + 0x3130,
-    (const unsigned char*)&DAT_143a30c50 + 0x3270,
-    (const unsigned char*)&DAT_143a30c50 + 0x33b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x34f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x3630,
-    (const unsigned char*)&DAT_143a30c50 + 0x3770,
-    (const unsigned char*)&DAT_143a30c50 + 0x38b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x39f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x3b30,
-    (const unsigned char*)&DAT_143a30c50 + 0x3c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x3db0,
-    (const unsigned char*)&DAT_143a30c50 + 0x3ef0,
-    (const unsigned char*)&DAT_143a30c50 + 0x4030,
-    (const unsigned char*)&DAT_143a30c50 + 0x4170,
-    (const unsigned char*)&DAT_143a30c50 + 0x42b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x43f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x4530,
-    (const unsigned char*)&DAT_143a30c50 + 0x4670,
-    (const unsigned char*)&DAT_143a30c50 + 0x47b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x48f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x4a30,
-    (const unsigned char*)&DAT_143a30c50 + 0x4b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x4cb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x4df0,
-    (const unsigned char*)&DAT_143a30c50 + 0x4f30,
-    (const unsigned char*)&DAT_143a30c50 + 0x5070,
-    (const unsigned char*)&DAT_143a30c50 + 0x51b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x52f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x5430,
-    (const unsigned char*)&DAT_143a30c50 + 0x5570,
-    (const unsigned char*)&DAT_143a30c50 + 0x56b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x57f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x5930,
-    (const unsigned char*)&DAT_143a30c50 + 0x5a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x5bb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x5cf0,
-    (const unsigned char*)&DAT_143a30c50 + 0x5e30,
-    (const unsigned char*)&DAT_143a30c50 + 0x5f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x60b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x61f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x6330,
-    (const unsigned char*)&DAT_143a30c50 + 0x6470,
-    (const unsigned char*)&DAT_143a30c50 + 0x65b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x66f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x6830,
-    (const unsigned char*)&DAT_143a30c50 + 0x6970,
-    (const unsigned char*)&DAT_143a30c50 + 0x6ab0,
-    (const unsigned char*)&DAT_143a30c50 + 0x6bf0,
-    (const unsigned char*)&DAT_143a30c50 + 0x6d30,
-    (const unsigned char*)&DAT_143a30c50 + 0x6e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x6fb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x70f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7230,
-    (const unsigned char*)&DAT_143a30c50 + 0x7370,
-    (const unsigned char*)&DAT_143a30c50 + 0x74b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x75f0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7730,
-    (const unsigned char*)&DAT_143a30c50 + 0x7870,
-    (const unsigned char*)&DAT_143a30c50 + 0x79b0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7af0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7c30,
-    (const unsigned char*)&DAT_143a30c50 + 0x7d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x7eb0,
-    (const unsigned char*)&DAT_143a30c50 + 0x7ff0,
-    (const unsigned char*)&DAT_143a30c50 + 0x8130,
+alignas(16) const Scaleform::Render::D3D9::VertexShaderDesc* Scaleform::Render::D3D9::VertexShaderDesc::Descs[100] = {
+    nullptr,
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x140),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x280),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x500),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x640),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x780),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1040),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1180),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1400),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1540),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1680),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x17c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1900),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1a40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1b80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1cc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1e00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x1f40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2080),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x21c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2300),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2440),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2580),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x26c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2800),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2940),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2a80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2bc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2d00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2e40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x2f80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x30c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3200),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3340),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3480),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x35c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3700),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3840),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3980),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3ac0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3c00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3d40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3e80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x3fc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4100),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4240),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4380),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x44c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4600),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4740),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4880),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x49c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4b00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4c40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4d80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x4ec0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5000),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5140),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5280),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x53c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5500),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5640),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5780),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x58c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5a00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5b40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5c80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5dc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x5f00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6040),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6180),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x62c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6400),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6540),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6680),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x67c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6900),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6a40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6b80),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6cc0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6e00),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x6f40),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7080),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x71c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7300),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7440),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7580),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x76c0),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7800),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7940),
+    (const Scaleform::Render::D3D9::VertexShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7a80),
 };
-// 0x143a30c50
-alignas(16) Sd_143a30c50 DAT_143a30c50 = {
-    {0},
-    (const unsigned char*)&DAT_143a30c50 + 0x8270,
-    (const unsigned char*)&DAT_143a30c50 + 0x8370,
-    (const unsigned char*)&DAT_143a30c50 + 0x8470,
-    (const unsigned char*)&DAT_143a30c50 + 0x8570,
-    (const unsigned char*)&DAT_143a30c50 + 0x8670,
-    (const unsigned char*)&DAT_143a30c50 + 0x8770,
-    (const unsigned char*)&DAT_143a30c50 + 0x8870,
-    (const unsigned char*)&DAT_143a30c50 + 0x8970,
-    (const unsigned char*)&DAT_143a30c50 + 0x8a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x8b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x8c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x8d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x8e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x8f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9070,
-    (const unsigned char*)&DAT_143a30c50 + 0x9170,
-    (const unsigned char*)&DAT_143a30c50 + 0x9270,
-    (const unsigned char*)&DAT_143a30c50 + 0x9370,
-    (const unsigned char*)&DAT_143a30c50 + 0x9470,
-    (const unsigned char*)&DAT_143a30c50 + 0x9570,
-    (const unsigned char*)&DAT_143a30c50 + 0x9670,
-    (const unsigned char*)&DAT_143a30c50 + 0x9770,
-    (const unsigned char*)&DAT_143a30c50 + 0x9870,
-    (const unsigned char*)&DAT_143a30c50 + 0x9970,
-    (const unsigned char*)&DAT_143a30c50 + 0x9a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x9f70,
-    (const unsigned char*)&DAT_143a30c50 + 0xa070,
-    (const unsigned char*)&DAT_143a30c50 + 0xa170,
-    (const unsigned char*)&DAT_143a30c50 + 0xa270,
-    (const unsigned char*)&DAT_143a30c50 + 0xa370,
-    (const unsigned char*)&DAT_143a30c50 + 0xa470,
-    (const unsigned char*)&DAT_143a30c50 + 0xa570,
-    (const unsigned char*)&DAT_143a30c50 + 0xa670,
-    (const unsigned char*)&DAT_143a30c50 + 0xa770,
-    (const unsigned char*)&DAT_143a30c50 + 0xa870,
-    (const unsigned char*)&DAT_143a30c50 + 0xa970,
-    (const unsigned char*)&DAT_143a30c50 + 0xaa70,
-    (const unsigned char*)&DAT_143a30c50 + 0xab70,
-    (const unsigned char*)&DAT_143a30c50 + 0xac70,
-    (const unsigned char*)&DAT_143a30c50 + 0xad70,
-    (const unsigned char*)&DAT_143a30c50 + 0xae70,
-    (const unsigned char*)&DAT_143a30c50 + 0xaf70,
-    (const unsigned char*)&DAT_143a30c50 + 0xb070,
-    (const unsigned char*)&DAT_143a30c50 + 0xb170,
-    (const unsigned char*)&DAT_143a30c50 + 0xb270,
-    (const unsigned char*)&DAT_143a30c50 + 0xb370,
-    (const unsigned char*)&DAT_143a30c50 + 0xb470,
-    (const unsigned char*)&DAT_143a30c50 + 0xb570,
-    (const unsigned char*)&DAT_143a30c50 + 0xb670,
-    (const unsigned char*)&DAT_143a30c50 + 0xb770,
-    (const unsigned char*)&DAT_143a30c50 + 0xb870,
-    (const unsigned char*)&DAT_143a30c50 + 0xb970,
-    (const unsigned char*)&DAT_143a30c50 + 0xba70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbb70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbc70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbd70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbe70,
-    (const unsigned char*)&DAT_143a30c50 + 0xbf70,
-    (const unsigned char*)&DAT_143a30c50 + 0xc070,
-    (const unsigned char*)&DAT_143a30c50 + 0xc170,
-    (const unsigned char*)&DAT_143a30c50 + 0xc270,
-    (const unsigned char*)&DAT_143a30c50 + 0xc370,
-    (const unsigned char*)&DAT_143a30c50 + 0xc470,
-    (const unsigned char*)&DAT_143a30c50 + 0xc570,
-    (const unsigned char*)&DAT_143a30c50 + 0xc670,
-    (const unsigned char*)&DAT_143a30c50 + 0xc770,
-    (const unsigned char*)&DAT_143a30c50 + 0xc870,
-    (const unsigned char*)&DAT_143a30c50 + 0xc970,
-    (const unsigned char*)&DAT_143a30c50 + 0xca70,
-    (const unsigned char*)&DAT_143a30c50 + 0xcb70,
-    (const unsigned char*)&DAT_143a30c50 + 0xcc70,
-    (const unsigned char*)&DAT_143a30c50 + 0xcd70,
-    (const unsigned char*)&DAT_143a30c50 + 0xce70,
-    (const unsigned char*)&DAT_143a30c50 + 0xcf70,
-    (const unsigned char*)&DAT_143a30c50 + 0xd070,
-    (const unsigned char*)&DAT_143a30c50 + 0xd170,
-    (const unsigned char*)&DAT_143a30c50 + 0xd270,
-    (const unsigned char*)&DAT_143a30c50 + 0xd370,
-    (const unsigned char*)&DAT_143a30c50 + 0xd470,
-    (const unsigned char*)&DAT_143a30c50 + 0xd570,
-    (const unsigned char*)&DAT_143a30c50 + 0xd670,
-    (const unsigned char*)&DAT_143a30c50 + 0xd770,
-    (const unsigned char*)&DAT_143a30c50 + 0xd870,
-    (const unsigned char*)&DAT_143a30c50 + 0xd970,
-    (const unsigned char*)&DAT_143a30c50 + 0xda70,
-    (const unsigned char*)&DAT_143a30c50 + 0xdb70,
-    (const unsigned char*)&DAT_143a30c50 + 0xdc70,
-    (const unsigned char*)&DAT_143a30c50 + 0xdd70,
-    (const unsigned char*)&DAT_143a30c50 + 0xde70,
-    (const unsigned char*)&DAT_143a30c50 + 0xdf70,
-    (const unsigned char*)&DAT_143a30c50 + 0xe070,
-    (const unsigned char*)&DAT_143a30c50 + 0xe170,
-    (const unsigned char*)&DAT_143a30c50 + 0xe270,
-    (const unsigned char*)&DAT_143a30c50 + 0xe370,
-    (const unsigned char*)&DAT_143a30c50 + 0xe470,
-    (const unsigned char*)&DAT_143a30c50 + 0xe570,
-    (const unsigned char*)&DAT_143a30c50 + 0xe670,
-    (const unsigned char*)&DAT_143a30c50 + 0xe770,
-    (const unsigned char*)&DAT_143a30c50 + 0xe870,
-    (const unsigned char*)&DAT_143a30c50 + 0xe970,
-    (const unsigned char*)&DAT_143a30c50 + 0xea70,
-    (const unsigned char*)&DAT_143a30c50 + 0xeb70,
-    (const unsigned char*)&DAT_143a30c50 + 0xec70,
-    (const unsigned char*)&DAT_143a30c50 + 0xed70,
-    (const unsigned char*)&DAT_143a30c50 + 0xee70,
-    (const unsigned char*)&DAT_143a30c50 + 0xef70,
-    (const unsigned char*)&DAT_143a30c50 + 0xf070,
-    (const unsigned char*)&DAT_143a30c50 + 0xf170,
-    (const unsigned char*)&DAT_143a30c50 + 0xf270,
-    (const unsigned char*)&DAT_143a30c50 + 0xf370,
-    (const unsigned char*)&DAT_143a30c50 + 0xf470,
-    (const unsigned char*)&DAT_143a30c50 + 0xf570,
-    (const unsigned char*)&DAT_143a30c50 + 0xf670,
-    (const unsigned char*)&DAT_143a30c50 + 0xf770,
-    (const unsigned char*)&DAT_143a30c50 + 0xf870,
-    (const unsigned char*)&DAT_143a30c50 + 0xf970,
-    (const unsigned char*)&DAT_143a30c50 + 0xfa70,
-    (const unsigned char*)&DAT_143a30c50 + 0xfb70,
-    (const unsigned char*)&DAT_143a30c50 + 0xfc70,
-    (const unsigned char*)&DAT_143a30c50 + 0xfd70,
-    (const unsigned char*)&DAT_143a30c50 + 0xfe70,
-    (const unsigned char*)&DAT_143a30c50 + 0xff70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10070,
-    (const unsigned char*)&DAT_143a30c50 + 0x10170,
-    (const unsigned char*)&DAT_143a30c50 + 0x10270,
-    (const unsigned char*)&DAT_143a30c50 + 0x10370,
-    (const unsigned char*)&DAT_143a30c50 + 0x10470,
-    (const unsigned char*)&DAT_143a30c50 + 0x10570,
-    (const unsigned char*)&DAT_143a30c50 + 0x10670,
-    (const unsigned char*)&DAT_143a30c50 + 0x10770,
-    (const unsigned char*)&DAT_143a30c50 + 0x10870,
-    (const unsigned char*)&DAT_143a30c50 + 0x10970,
-    (const unsigned char*)&DAT_143a30c50 + 0x10a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x10f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11070,
-    (const unsigned char*)&DAT_143a30c50 + 0x11170,
-    (const unsigned char*)&DAT_143a30c50 + 0x11270,
-    (const unsigned char*)&DAT_143a30c50 + 0x11370,
-    (const unsigned char*)&DAT_143a30c50 + 0x11470,
-    (const unsigned char*)&DAT_143a30c50 + 0x11570,
-    (const unsigned char*)&DAT_143a30c50 + 0x11670,
-    (const unsigned char*)&DAT_143a30c50 + 0x11770,
-    (const unsigned char*)&DAT_143a30c50 + 0x11870,
-    (const unsigned char*)&DAT_143a30c50 + 0x11970,
-    (const unsigned char*)&DAT_143a30c50 + 0x11a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x11f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12070,
-    (const unsigned char*)&DAT_143a30c50 + 0x12170,
-    (const unsigned char*)&DAT_143a30c50 + 0x12270,
-    (const unsigned char*)&DAT_143a30c50 + 0x12370,
-    (const unsigned char*)&DAT_143a30c50 + 0x12470,
-    (const unsigned char*)&DAT_143a30c50 + 0x12570,
-    (const unsigned char*)&DAT_143a30c50 + 0x12670,
-    (const unsigned char*)&DAT_143a30c50 + 0x12770,
-    (const unsigned char*)&DAT_143a30c50 + 0x12870,
-    (const unsigned char*)&DAT_143a30c50 + 0x12970,
-    (const unsigned char*)&DAT_143a30c50 + 0x12a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x12f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13070,
-    (const unsigned char*)&DAT_143a30c50 + 0x13170,
-    (const unsigned char*)&DAT_143a30c50 + 0x13270,
-    (const unsigned char*)&DAT_143a30c50 + 0x13370,
-    (const unsigned char*)&DAT_143a30c50 + 0x13470,
-    (const unsigned char*)&DAT_143a30c50 + 0x13570,
-    (const unsigned char*)&DAT_143a30c50 + 0x13670,
-    (const unsigned char*)&DAT_143a30c50 + 0x13770,
-    (const unsigned char*)&DAT_143a30c50 + 0x13870,
-    (const unsigned char*)&DAT_143a30c50 + 0x13970,
-    (const unsigned char*)&DAT_143a30c50 + 0x13a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x13f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14070,
-    (const unsigned char*)&DAT_143a30c50 + 0x14170,
-    (const unsigned char*)&DAT_143a30c50 + 0x14270,
-    (const unsigned char*)&DAT_143a30c50 + 0x14370,
-    (const unsigned char*)&DAT_143a30c50 + 0x14470,
-    (const unsigned char*)&DAT_143a30c50 + 0x14570,
-    (const unsigned char*)&DAT_143a30c50 + 0x14670,
-    (const unsigned char*)&DAT_143a30c50 + 0x14770,
-    (const unsigned char*)&DAT_143a30c50 + 0x14870,
-    (const unsigned char*)&DAT_143a30c50 + 0x14970,
-    (const unsigned char*)&DAT_143a30c50 + 0x14a70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14b70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14c70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14d70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14e70,
-    (const unsigned char*)&DAT_143a30c50 + 0x14f70,
-    (const unsigned char*)&DAT_143a30c50 + 0x15070,
-    (const unsigned char*)&DAT_143a30c50 + 0x15170,
-    (const unsigned char*)&DAT_143a30c50 + 0x15270,
-    (const unsigned char*)&DAT_143a30c50 + 0x15370,
-    (const unsigned char*)&DAT_143a30c50 + 0x15470,
-    (const unsigned char*)&DAT_143a30c50 + 0x15570,
+// 0x143a30c50 (the D3D9 fragment shader descriptors by ShaderIndex; FSI_None is null)
+alignas(16) const Scaleform::Render::D3D9::FragShaderDesc* Scaleform::Render::D3D9::FragShaderDesc::Descs[213] = {
+    nullptr,
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x7fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x80c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x81c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x82c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x83c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x84c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x85c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x86c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x87c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x88c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x89c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x8fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x90c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x91c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x92c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x93c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x94c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x95c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x96c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x97c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x98c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x99c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x9fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xa9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xaac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xabc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xacc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xadc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xaec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xafc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xb9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbbc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbcc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbdc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xbfc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xc9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xcac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xcbc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xccc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xcdc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xcec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xcfc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xd9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdbc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdcc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xddc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xdfc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xe9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xeac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xebc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xecc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xedc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xeec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xefc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf0c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf1c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf2c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf3c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf4c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf5c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf6c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf7c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf8c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xf9c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xfac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xfbc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xfcc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xfdc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xfec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0xffc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x100c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x101c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x102c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x103c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x104c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x105c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x106c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x107c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x108c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x109c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x10fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x110c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x111c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x112c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x113c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x114c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x115c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x116c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x117c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x118c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x119c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x11fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x120c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x121c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x122c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x123c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x124c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x125c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x126c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x127c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x128c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x129c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x12fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x130c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x131c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x132c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x133c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x134c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x135c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x136c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x137c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x138c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x139c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13ec0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x13fc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x140c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x141c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x142c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x143c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x144c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x145c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x146c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x147c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x148c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x149c0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x14ac0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x14bc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x14cc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x14dc0),
+    (const Scaleform::Render::D3D9::FragShaderDesc*)((const unsigned char*)&DAT_143a31300 + 0x14ec0),
+};
+// 0x143a31300 (the vertex / fragment shader descriptors and their bytecode, after FragShaderDesc::Descs and its 8 alignment bytes)
+alignas(16) Sd_143a31300 DAT_143a31300 = {
     {
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     (const unsigned char*)DAT_14319e6f0 + 0x0,
     {
@@ -23944,39 +22856,45 @@ alignas(16) Sd_143a462f0 DAT_143a462f0 = {
         0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
     },
 };
-// 0x143a46430
-alignas(16) Sd_143a46430 DAT_143a46430 = {
+// 0x143a46430: the serialized heap entry points
+#pragma section(".data$ddg_143a46430", read, write)
+__declspec(allocate(".data$ddg_143a46430")) alignas(16) extern const CriHeapVtbl DAT_143a46430 = {
     (const void*)&FUN_1400280a4,
     (const void*)&FUN_140028100,
     (const void*)&FUN_14002815c,
     (const void*)&FUN_1400281b8,
 };
-// 0x143a46450
-alignas(16) Sd_143a46450 DAT_143a46450 = {
+// 0x143a46450: the plain heap entry points
+#pragma section(".data$ddg_143a46450", read, write)
+__declspec(allocate(".data$ddg_143a46450")) alignas(16) extern const CriHeapVtbl DAT_143a46450 = {
     (const void*)&criheap_AllocFixNoLock,
     (const void*)&criheap_AllocTemporaryNoLock,
     (const void*)&criheap_AllocDynamicNoLock,
     (const void*)&criheap_FreeNoLock,
 };
 // 0x143a46470
-alignas(16) Sd_143a46470 DAT_143a46470 = {
-    "(no name)",
-};
+extern const char* const DAT_143a46470;
+#pragma section(".data$ddg_143a46470", read, write)
+__declspec(allocate(".data$ddg_143a46470")) alignas(16) const char* const DAT_143a46470 = "(no name)";
 // 0x143a46478
-alignas(8) Sd_143a46478 DAT_143a46478 = {
+extern const char* const DAT_143a46478[2];
+#pragma section(".data$ddg_143a46478", read, write)
+__declspec(allocate(".data$ddg_143a46478")) alignas(8) const char* const DAT_143a46478[2] = {
     "FREE",
     "ALOC",
 };
 // 0x143a46488
-alignas(8) Sd_143a46488 DAT_143a46488 = {
+extern const char* const DAT_143a46488[5];
+#pragma section(".data$ddg_143a46488", read, write)
+__declspec(allocate(".data$ddg_143a46488")) alignas(8) const char* const DAT_143a46488[5] = {
     "NONE",
     "FIX ",
     "TEMP",
     "DYNA",
-    {0},
+    nullptr,
 };
 // 0x143a47bc0
-alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
+extern "C" alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
     (const void*)&criVmpv_Initialize,
     (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
@@ -24009,7 +22927,7 @@ alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
     {0},
 };
 // 0x143a47cb0
-alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
+extern "C" alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
     (const void*)&criVmpv_Initialize,
     (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
@@ -24039,18 +22957,18 @@ alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
     {0},
 };
 // 0x143a482e8
-alignas(8) unsigned char DAT_143a482e8[0x9] = {
+extern "C" alignas(8) unsigned char DAT_143a482e8[0x9] = {
     0x3c, 0x53, 0x55, 0x44, 0x50, 0x53, 0x5f, 0x3e, 0x00,
 };
 // 0x143a48350
-alignas(16) Sd_143a48350 DAT_143a48350 = {
+extern "C" alignas(16) Sd_143a48350 PTR_LAB_143a48350 = {
     (const void*)&FUN_140041d00,
     (const void*)&FUN_140041d00,
     (const void*)&FUN_140041d00,
     (const void*)&FUN_140041d20,
 };
 // 0x143a485d8
-alignas(8) Sd_143a485d8 DAT_143a485d8 = {
+extern "C" alignas(8) Sd_143a485d8 PTR_FUN_143a485d8 = {
     (const void*)&FUN_140045998,
     (const void*)&criSjUni_Reset,
     (const void*)&criSjUni_GetChunk,
@@ -24059,7 +22977,7 @@ alignas(8) Sd_143a485d8 DAT_143a485d8 = {
     (const void*)&criSjUni_GetTotalSize,
 };
 // 0x143a48608
-alignas(8) Sd_143a48608 DAT_143a48608 = {
+extern "C" alignas(8) Sd_143a48608 PTR_FUN_143a48608 = {
     (const void*)&FUN_140045fdc,
     (const void*)&criSjRbf_Reset,
     (const void*)&criSjRbf_GetChunk,
@@ -24068,7 +22986,7 @@ alignas(8) Sd_143a48608 DAT_143a48608 = {
     (const void*)&FUN_140046000,
 };
 // 0x143a48638
-alignas(8) Sd_143a48638 DAT_143a48638 = {
+extern "C" alignas(8) Sd_143a48638 PTR_FUN_143a48638 = {
     (const void*)&FUN_1400463c8,
     (const void*)&criSjUni_Reset,
     (const void*)&criSjUni_GetChunk,
@@ -24077,7 +22995,7 @@ alignas(8) Sd_143a48638 DAT_143a48638 = {
     (const void*)&criSjUni_GetTotalSize,
 };
 // 0x143a48668
-alignas(8) Sd_143a48668 DAT_143a48668 = {
+extern "C" alignas(8) Sd_143a48668 PTR_FUN_143a48668 = {
     (const void*)&FUN_140046598,
     (const void*)&criSjRbf_Reset,
     (const void*)&criSjRbf_GetChunk,
@@ -24100,14 +23018,14 @@ alignas(8) Sd_143a48668 DAT_143a48668 = {
     "Guid",
 };
 // 0x143a48708
-alignas(8) unsigned char DAT_143a48708[0x38] = {
-    0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
-    0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+extern const unsigned int DAT_143a48708[14];
+#pragma section(".data$ddg_143a48708", read, write)
+__declspec(allocate(".data$ddg_143a48708")) alignas(8) const unsigned int DAT_143a48708[14] = {
+    0x00000001, 0x00000001, 0x00000002, 0x00000002, 0x00000004, 0x00000004, 0x00000008, 0x00000008,
+    0x00000004, 0x00000008, 0x00000004, 0x00000008, 0x00000010, 0x00000000,
 };
 // 0x143a48740
-alignas(16) unsigned char DAT_143a48740[0x50] = {
+extern "C" alignas(16) unsigned char DAT_143a48740[0x50] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0xd3, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xe2, 0x3f,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xbd, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc6, 0xbf,
     0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xd5, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0xe0, 0x3f,
@@ -24115,15 +23033,12 @@ alignas(16) unsigned char DAT_143a48740[0x50] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xb5, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a48790
-alignas(16) unsigned char DAT_143a48790[0x50] = {
-    0x00, 0x00, 0x00, 0x20, 0xb0, 0x72, 0xd0, 0x3f, 0x00, 0x00, 0x00, 0xa0, 0xc4, 0x20, 0xe0, 0x3f,
-    0x00, 0x00, 0x00, 0x20, 0x87, 0x16, 0xb9, 0x3f, 0x00, 0x00, 0x00, 0x00, 0xaa, 0xf1, 0xc2, 0xbf,
-    0x00, 0x00, 0x00, 0x80, 0xbe, 0x9f, 0xd2, 0xbf, 0x00, 0x00, 0x00, 0x80, 0x93, 0x18, 0xdc, 0x3f,
-    0x00, 0x00, 0x00, 0x80, 0x93, 0x18, 0xdc, 0x3f, 0x00, 0x00, 0x00, 0xe0, 0x4f, 0x8d, 0xd7, 0xbf,
-    0x00, 0x00, 0x00, 0x60, 0x0e, 0x2d, 0xb2, 0xbf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+alignas(16) double DAT_143a48790[10] = {
+    0x1.072b020000000p-2, 0x1.020c4a0000000p-1, 0x1.9168720000000p-4, -0x1.2f1aa00000000p-3, -0x1.29fbe80000000p-2, 0x1.c189380000000p-2, 0x1.c189380000000p-2, -0x1.78d4fe0000000p-2,
+    -0x1.22d0e60000000p-4, 0x0.0p+0,
 };
 // 0x143a487e0
-alignas(16) Sd_143a487e0 DAT_143a487e0 = {
+extern "C" alignas(16) Sd_143a487e0 DAT_143a487e0 = {
     {0},
     (const void*)&SJMEM_Destroy,
     (const void*)&SJMEM_GetUuid,
@@ -24136,7 +23051,7 @@ alignas(16) Sd_143a487e0 DAT_143a487e0 = {
     (const void*)&SJMEM_EntryErrFunc,
 };
 // 0x143a48840
-alignas(16) Sd_143a48840 DAT_143a48840 = {
+extern "C" alignas(16) Sd_143a48840 DAT_143a48840 = {
     {0},
     (const void*)&SJRBF_Destroy,
     (const void*)&SJRBF_GetUuid,
@@ -24149,7 +23064,7 @@ alignas(16) Sd_143a48840 DAT_143a48840 = {
     (const void*)&SJRBF_EntryErrFunc,
 };
 // 0x143a488c0
-alignas(16) unsigned char DAT_143a488c0[0x1800] = {
+extern "C" alignas(16) unsigned char DAT_143a488c0[0x1800] = {
     0x78, 0xfb, 0x78, 0xfb, 0x78, 0xfb, 0xc0, 0x3f, 0xc2, 0xfb, 0xc2, 0xfb, 0xc2, 0xfb, 0xc0, 0x3f,
     0x0d, 0xfc, 0x0d, 0xfc, 0x0d, 0xfc, 0xc0, 0x3f, 0x57, 0xfc, 0x57, 0xfc, 0x57, 0xfc, 0xc0, 0x3f,
     0xa2, 0xfc, 0xa2, 0xfc, 0xa2, 0xfc, 0xc0, 0x3f, 0xec, 0xfc, 0xec, 0xfc, 0xec, 0xfc, 0xc0, 0x3f,
@@ -24536,30 +23451,30 @@ alignas(16) unsigned char DAT_143a488c0[0x1800] = {
     0x00, 0x00, 0x64, 0xe6, 0x46, 0x32, 0x00, 0x00, 0x00, 0x00, 0x30, 0xe6, 0xad, 0x32, 0x00, 0x00,
 };
 // 0x143a4a0c0
-alignas(16) Sd_143a4a0c0 DAT_143a4a0c0 = {
+extern "C" alignas(16) Sd_143a4a0c0 PTR_s_This_CFT_function_doesn_t_suppor_143a4a0c0 = {
     "This CFT function doesn't support the function to get own name",
 };
 // 0x143a4a0c8
-alignas(8) unsigned char DAT_143a4a0c8[0x4] = {
+extern "C" alignas(8) unsigned char DAT_143a4a0c8[0x4] = {
     0xff, 0xff, 0xff, 0xff,
 };
 // 0x143a4a0cc
-alignas(4) unsigned char DAT_143a4a0cc[0x4] = {
+extern "C" alignas(4) unsigned char DAT_143a4a0cc[0x4] = {
     0xff, 0xff, 0xff, 0xff,
 };
 // 0x143a4a0d0
-alignas(16) unsigned char DAT_143a4a0d0[0x8] = {
+extern "C" alignas(16) unsigned char DAT_143a4a0d0[0x8] = {
     0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a4a0d8
-alignas(8) Sd_143a4a0d8 DAT_143a4a0d8 = {
+extern "C" alignas(8) Sd_143a4a0d8 PTR_FUN_143a4a0d8 = {
     (const void*)&mpvsl_DecTaskOne,
     (const void*)&mpvsl_DuplicateObj,
     (const void*)&FUN_1400653f0,
     (const void*)&FUN_140065410,
 };
 // 0x143a4a120
-alignas(16) unsigned char DAT_143a4a120[0x1c0] = {
+extern "C" alignas(16) unsigned char DAT_143a4a120[0x1c0] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -24590,11 +23505,11 @@ alignas(16) unsigned char DAT_143a4a120[0x1c0] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 // 0x143a4a420
-alignas(16) unsigned char DAT_143a4a420[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a420[0x10] = {
     0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00,
 };
 // 0x143a4a430
-alignas(16) unsigned char DAT_143a4a430[0x4] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a430[0x4] = {
     0x00, 0x08, 0x00, 0x00,
 };
 // 0x143a4a434
@@ -24610,102 +23525,102 @@ alignas(4) unsigned char DAT_143a4a43c[0x4] = {
     0x00, 0x08, 0x00, 0x00,
 };
 // 0x143a4a440
-alignas(16) unsigned char DAT_143a4a440[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a440[0x10] = {
     0x10, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00,
 };
 // 0x143a4a450
-alignas(16) unsigned char DAT_143a4a450[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a450[0x10] = {
     0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00,
 };
 // 0x143a4a460
-alignas(16) unsigned char DAT_143a4a460[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a460[0x10] = {
     0xec, 0x32, 0xec, 0x32, 0xec, 0x32, 0xec, 0x32, 0xec, 0x32, 0xec, 0x32, 0xec, 0x32, 0xec, 0x32,
 };
 // 0x143a4a470
-alignas(16) unsigned char DAT_143a4a470[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a470[0x10] = {
     0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a, 0x0a, 0x6a,
 };
 // 0x143a4a480
-alignas(16) unsigned char DAT_143a4a480[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a480[0x10] = {
     0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab, 0x0e, 0xab,
 };
 // 0x143a4a490
-alignas(16) unsigned char DAT_143a4a490[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a490[0x10] = {
     0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5, 0x05, 0xb5,
 };
 // 0x143a4a4a0
-alignas(16) unsigned char DAT_143a4a4a0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4a0[0x10] = {
     0x00, 0x40, 0x9f, 0x53, 0x00, 0x40, 0xa3, 0x22, 0x00, 0x40, 0x5d, 0xdd, 0x00, 0x40, 0x61, 0xac,
 };
 // 0x143a4a4b0
-alignas(16) unsigned char DAT_143a4a4b0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4b0[0x10] = {
     0x00, 0x40, 0xa3, 0x22, 0x00, 0xc0, 0x61, 0xac, 0x00, 0xc0, 0x9f, 0x53, 0x00, 0x40, 0x5d, 0xdd,
 };
 // 0x143a4a4c0
-alignas(16) unsigned char DAT_143a4a4c0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4c0[0x10] = {
     0xc5, 0x58, 0x42, 0x4b, 0x42, 0x4b, 0x58, 0xee, 0x49, 0x32, 0x3b, 0xa7, 0xa8, 0x11, 0xb7, 0xcd,
 };
 // 0x143a4a4d0
-alignas(16) unsigned char DAT_143a4a4d0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4d0[0x10] = {
     0x49, 0x32, 0xa8, 0x11, 0x3b, 0xa7, 0xb7, 0xcd, 0xa8, 0x11, 0x42, 0x4b, 0x42, 0x4b, 0x3b, 0xa7,
 };
 // 0x143a4a4e0
-alignas(16) unsigned char DAT_143a4a4e0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4e0[0x10] = {
     0xc5, 0x58, 0xfc, 0x73, 0xc5, 0x58, 0x0b, 0x30, 0xc5, 0x58, 0xf5, 0xcf, 0xc5, 0x58, 0x04, 0x8c,
 };
 // 0x143a4a4f0
-alignas(16) unsigned char DAT_143a4a4f0[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a4f0[0x10] = {
     0xc5, 0x58, 0x0b, 0x30, 0x3b, 0xa7, 0x04, 0x8c, 0x3b, 0xa7, 0xfc, 0x73, 0xc5, 0x58, 0xf5, 0xcf,
 };
 // 0x143a4a500
-alignas(16) unsigned char DAT_143a4a500[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a500[0x10] = {
     0x21, 0x7b, 0x62, 0x68, 0x62, 0x68, 0x82, 0xe7, 0xbf, 0x45, 0xdf, 0x84, 0x7e, 0x18, 0x41, 0xba,
 };
 // 0x143a4a510
-alignas(16) unsigned char DAT_143a4a510[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a510[0x10] = {
     0xbf, 0x45, 0x7e, 0x18, 0xdf, 0x84, 0x41, 0xba, 0x7e, 0x18, 0x62, 0x68, 0x62, 0x68, 0xdf, 0x84,
 };
 // 0x143a4a520
-alignas(16) unsigned char DAT_143a4a520[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a520[0x10] = {
     0x9f, 0x53, 0x41, 0x6d, 0x9f, 0x53, 0x41, 0x2d, 0x9f, 0x53, 0xbf, 0xd2, 0x9f, 0x53, 0xbf, 0x92,
 };
 // 0x143a4a530
-alignas(16) unsigned char DAT_143a4a530[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a530[0x10] = {
     0x9f, 0x53, 0x41, 0x2d, 0x61, 0xac, 0xbf, 0x92, 0x61, 0xac, 0x41, 0x6d, 0x9f, 0x53, 0xbf, 0xd2,
 };
 // 0x143a4a540
-alignas(16) unsigned char DAT_143a4a540[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a540[0x10] = {
     0xfc, 0x73, 0x54, 0x62, 0x54, 0x62, 0xee, 0xe8, 0xb3, 0x41, 0x04, 0x8c, 0x12, 0x17, 0x4d, 0xbe,
 };
 // 0x143a4a550
-alignas(16) unsigned char DAT_143a4a550[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a550[0x10] = {
     0xb3, 0x41, 0x12, 0x17, 0x04, 0x8c, 0x4d, 0xbe, 0x12, 0x17, 0x54, 0x62, 0x54, 0x62, 0x04, 0x8c,
 };
 // 0x143a4a560
-alignas(16) unsigned char DAT_143a4a560[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a560[0x10] = {
     0x42, 0x4b, 0x54, 0x62, 0x42, 0x4b, 0xba, 0x28, 0x42, 0x4b, 0x46, 0xd7, 0x42, 0x4b, 0xac, 0x9d,
 };
 // 0x143a4a570
-alignas(16) unsigned char DAT_143a4a570[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a570[0x10] = {
     0x42, 0x4b, 0xba, 0x28, 0xbe, 0xb4, 0xac, 0x9d, 0xbe, 0xb4, 0x54, 0x62, 0x42, 0x4b, 0x46, 0xd7,
 };
 // 0x143a4a580
-alignas(16) unsigned char DAT_143a4a580[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a580[0x10] = {
     0x62, 0x68, 0x7e, 0x58, 0x7e, 0x58, 0x3d, 0xeb, 0x21, 0x3b, 0x9e, 0x97, 0xc3, 0x14, 0xdf, 0xc4,
 };
 // 0x143a4a590
-alignas(16) unsigned char DAT_143a4a590[0x10] = {
+extern "C" alignas(16) unsigned char _DAT_143a4a590[0x10] = {
     0x21, 0x3b, 0xc3, 0x14, 0x9e, 0x97, 0xdf, 0xc4, 0xc3, 0x14, 0x7e, 0x58, 0x7e, 0x58, 0x9e, 0x97,
 };
 // 0x143a4a5a0
-alignas(16) Sd_143a4a5a0 DAT_143a4a5a0 = {
+extern "C" alignas(16) Sd_143a4a5a0 PTR_FUN_143a4a5a0 = {
     (const void*)&m2vsl_DecTaskOne,
     (const void*)&m2vsl_DuplicateObj,
     (const void*)&FUN_140089fa0,
     (const void*)&FUN_140089fc0,
 };
 // 0x143a4a5c0
-alignas(16) Sd_143a4a5c0 DAT_143a4a5c0 = {
+extern "C" alignas(16) Sd_143a4a5c0 PTR_FUN_143a4a5c0 = {
     (const void*)&FUN_1400b09d0,
     {
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x75, 0x98, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
@@ -24763,537 +23678,150 @@ alignas(16) Sd_143a51180 DAT_143a51180 = {
     (const void*)&Scaleform::GFx::AS2::GAS_GlobalASnative,
     {0},
 };
-// 0x143a512e0
-alignas(16) Sd_143a512e0 DAT_143a512e0 = {
-    "_x",
-    {
-        0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_y",
-    {
-        0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_xscale",
-    {
-        0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_yscale",
-    {
-        0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_currentframe",
-    {
-        0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_totalframes",
-    {
-        0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_alpha",
-    {
-        0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_visible",
-    {
-        0x07, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_width",
-    {
-        0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_height",
-    {
-        0x09, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_rotation",
-    {
-        0x0a, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_target",
-    {
-        0x0b, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_framesloaded",
-    {
-        0x0c, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_name",
-    {
-        0x0d, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_droptarget",
-    {
-        0x0e, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_url",
-    {
-        0x0f, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_highquality",
-    {
-        0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_focusrect",
-    {
-        0x11, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_soundbuftime",
-    {
-        0x12, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_quality",
-    {
-        0x13, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_xmouse",
-    {
-        0x14, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_ymouse",
-    {
-        0x15, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_parent",
-    {
-        0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "blendMode",
-    {
-        0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "cacheAsBitmap",
-    {
-        0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "filters",
-    {
-        0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "enabled",
-    {
-        0x1a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "trackAsMenu",
-    {
-        0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "_lockroot",
-    {
-        0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "tabEnabled",
-    {
-        0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "tabIndex",
-    {
-        0x1e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "useHandCursor",
-    {
-        0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "edgeaaMode",
-    {
-        0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "menu",
-    {
-        0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "focusEnabled",
-    {
-        0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "tabChildren",
-    {
-        0x23, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "transform",
-    {
-        0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "scale9Grid",
-    {
-        0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "hitArea",
-    {
-        0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "scrollRect",
-    {
-        0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "text",
-    {
-        0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "textWidth",
-    {
-        0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "textHeight",
-    {
-        0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "textColor",
-    {
-        0x2b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "length",
-    {
-        0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "html",
-    {
-        0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "htmlText",
-    {
-        0x2e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "styleSheet",
-    {
-        0x2f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "autoSize",
-    {
-        0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "wordWrap",
-    {
-        0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "multiline",
-    {
-        0x32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "border",
-    {
-        0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "variable",
-    {
-        0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "selectable",
-    {
-        0x35, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "embedFonts",
-    {
-        0x36, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "antiAliasType",
-    {
-        0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "hscroll",
-    {
-        0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "scroll",
-    {
-        0x39, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "maxscroll",
-    {
-        0x3a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "maxhscroll",
-    {
-        0x3b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "background",
-    {
-        0x3c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "backgroundColor",
-    {
-        0x3d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "borderColor",
-    {
-        0x3e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "bottomScroll",
-    {
-        0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "type",
-    {
-        0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "maxChars",
-    {
-        0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "condenseWhite",
-    {
-        0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "mouseWheelEnabled",
-    {
-        0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "password",
-    {
-        0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowStyle",
-    {
-        0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowColor",
-    {
-        0x46, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "hitTestDisable",
-    {
-        0x47, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "noTranslate",
-    {
-        0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "caretIndex",
-    {
-        0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "numLines",
-    {
-        0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "verticalAutoSize",
-    {
-        0x4b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "fontScaleFactor",
-    {
-        0x4c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "verticalAlign",
-    {
-        0x4d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "textAutoSize",
-    {
-        0x4e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "useRichTextClipboard",
-    {
-        0x4f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "alwaysShowSelection",
-    {
-        0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "selectionBeginIndex",
-    {
-        0x51, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "selectionEndIndex",
-    {
-        0x52, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "selectionBkgColor",
-    {
-        0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "selectionTextColor",
-    {
-        0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "inactiveSelectionBkgColor",
-    {
-        0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "inactiveSelectionTextColor",
-    {
-        0x56, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "noAutoSelection",
-    {
-        0x57, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "disableIME",
-    {
-        0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "topmostLevel",
-    {
-        0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "noAdvance",
-    {
-        0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "focusGroupMask",
-    {
-        0x5b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "autoFit",
-    {
-        0x5c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "blurX",
-    {
-        0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "blurY",
-    {
-        0x5e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "blurStrength",
-    {
-        0x5f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "outline",
-    {
-        0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "fauxBold",
-    {
-        0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "fauxItalic",
-    {
-        0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "restrict",
-    {
-        0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowAlpha",
-    {
-        0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowAngle",
-    {
-        0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowBlurX",
-    {
-        0x66, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowBlurY",
-    {
-        0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowDistance",
-    {
-        0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowHideObject",
-    {
-        0x69, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowKnockOut",
-    {
-        0x6a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowQuality",
-    {
-        0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowStrength",
-    {
-        0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "shadowOutline",
-    {
-        0x6d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    "_z",
-    {
-        0x6e, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_zscale",
-    {
-        0x6f, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_xrotation",
-    {
-        0x70, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_yrotation",
-    {
-        0x71, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_matrix3d",
-    {
-        0x72, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "_perspfov",
-    {
-        0x73, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
-    },
-    "$version",
-    {
-        0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "normal",
-    "normal",
-    "layer",
-    "multiply",
-    "screen",
-    "lighten",
-    "darken",
-    "difference",
-    "add",
-    "subtract",
-    "invert",
-    "alpha",
-    "erase",
-    "overlay",
-    "hardlight",
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+// 0x143a512e0 (the AS2 character member names: name, StandardMember id, case-insensitive; null-name end)
+#pragma section(".data$ddg_143a512e0", read, write)
+__declspec(allocate(".data$ddg_143a512e0")) alignas(16) const Scaleform::GFx::AS2::AvmCharacter::MemberTableType Scaleform::GFx::AS2::AvmCharacter::MemberTable[118] = {
+    { "_x", (StandardMember)0, true },
+    { "_y", (StandardMember)1, true },
+    { "_xscale", (StandardMember)2, true },
+    { "_yscale", (StandardMember)3, true },
+    { "_currentframe", (StandardMember)4, true },
+    { "_totalframes", (StandardMember)5, true },
+    { "_alpha", (StandardMember)6, true },
+    { "_visible", (StandardMember)7, true },
+    { "_width", (StandardMember)8, true },
+    { "_height", (StandardMember)9, true },
+    { "_rotation", (StandardMember)10, true },
+    { "_target", (StandardMember)11, true },
+    { "_framesloaded", (StandardMember)12, true },
+    { "_name", (StandardMember)13, true },
+    { "_droptarget", (StandardMember)14, true },
+    { "_url", (StandardMember)15, true },
+    { "_highquality", (StandardMember)16, true },
+    { "_focusrect", (StandardMember)17, true },
+    { "_soundbuftime", (StandardMember)18, true },
+    { "_quality", (StandardMember)19, true },
+    { "_xmouse", (StandardMember)20, true },
+    { "_ymouse", (StandardMember)21, true },
+    { "_parent", (StandardMember)22, false },
+    { "blendMode", (StandardMember)23, false },
+    { "cacheAsBitmap", (StandardMember)24, false },
+    { "filters", (StandardMember)25, false },
+    { "enabled", (StandardMember)26, false },
+    { "trackAsMenu", (StandardMember)27, false },
+    { "_lockroot", (StandardMember)28, false },
+    { "tabEnabled", (StandardMember)29, false },
+    { "tabIndex", (StandardMember)30, false },
+    { "useHandCursor", (StandardMember)31, false },
+    { "edgeaaMode", (StandardMember)32, false },
+    { "menu", (StandardMember)33, false },
+    { "focusEnabled", (StandardMember)34, false },
+    { "tabChildren", (StandardMember)35, false },
+    { "transform", (StandardMember)36, false },
+    { "scale9Grid", (StandardMember)37, false },
+    { "hitArea", (StandardMember)38, false },
+    { "scrollRect", (StandardMember)39, false },
+    { "text", (StandardMember)40, false },
+    { "textWidth", (StandardMember)41, false },
+    { "textHeight", (StandardMember)42, false },
+    { "textColor", (StandardMember)43, false },
+    { "length", (StandardMember)44, false },
+    { "html", (StandardMember)45, false },
+    { "htmlText", (StandardMember)46, false },
+    { "styleSheet", (StandardMember)47, false },
+    { "autoSize", (StandardMember)48, false },
+    { "wordWrap", (StandardMember)49, false },
+    { "multiline", (StandardMember)50, false },
+    { "border", (StandardMember)51, false },
+    { "variable", (StandardMember)52, false },
+    { "selectable", (StandardMember)53, false },
+    { "embedFonts", (StandardMember)54, false },
+    { "antiAliasType", (StandardMember)55, false },
+    { "hscroll", (StandardMember)56, false },
+    { "scroll", (StandardMember)57, false },
+    { "maxscroll", (StandardMember)58, false },
+    { "maxhscroll", (StandardMember)59, false },
+    { "background", (StandardMember)60, false },
+    { "backgroundColor", (StandardMember)61, false },
+    { "borderColor", (StandardMember)62, false },
+    { "bottomScroll", (StandardMember)63, false },
+    { "type", (StandardMember)64, false },
+    { "maxChars", (StandardMember)65, false },
+    { "condenseWhite", (StandardMember)66, false },
+    { "mouseWheelEnabled", (StandardMember)67, false },
+    { "password", (StandardMember)68, false },
+    { "shadowStyle", (StandardMember)69, false },
+    { "shadowColor", (StandardMember)70, false },
+    { "hitTestDisable", (StandardMember)71, false },
+    { "noTranslate", (StandardMember)72, false },
+    { "caretIndex", (StandardMember)73, false },
+    { "numLines", (StandardMember)74, false },
+    { "verticalAutoSize", (StandardMember)75, false },
+    { "fontScaleFactor", (StandardMember)76, false },
+    { "verticalAlign", (StandardMember)77, false },
+    { "textAutoSize", (StandardMember)78, false },
+    { "useRichTextClipboard", (StandardMember)79, false },
+    { "alwaysShowSelection", (StandardMember)80, false },
+    { "selectionBeginIndex", (StandardMember)81, false },
+    { "selectionEndIndex", (StandardMember)82, false },
+    { "selectionBkgColor", (StandardMember)83, false },
+    { "selectionTextColor", (StandardMember)84, false },
+    { "inactiveSelectionBkgColor", (StandardMember)85, false },
+    { "inactiveSelectionTextColor", (StandardMember)86, false },
+    { "noAutoSelection", (StandardMember)87, false },
+    { "disableIME", (StandardMember)88, false },
+    { "topmostLevel", (StandardMember)89, false },
+    { "noAdvance", (StandardMember)90, false },
+    { "focusGroupMask", (StandardMember)91, false },
+    { "autoFit", (StandardMember)92, false },
+    { "blurX", (StandardMember)93, false },
+    { "blurY", (StandardMember)94, false },
+    { "blurStrength", (StandardMember)95, false },
+    { "outline", (StandardMember)96, false },
+    { "fauxBold", (StandardMember)97, false },
+    { "fauxItalic", (StandardMember)98, false },
+    { "restrict", (StandardMember)99, false },
+    { "shadowAlpha", (StandardMember)100, false },
+    { "shadowAngle", (StandardMember)101, false },
+    { "shadowBlurX", (StandardMember)102, false },
+    { "shadowBlurY", (StandardMember)103, false },
+    { "shadowDistance", (StandardMember)104, false },
+    { "shadowHideObject", (StandardMember)105, false },
+    { "shadowKnockOut", (StandardMember)106, false },
+    { "shadowQuality", (StandardMember)107, false },
+    { "shadowStrength", (StandardMember)108, false },
+    { "shadowOutline", (StandardMember)109, false },
+    { "_z", (StandardMember)110, true },
+    { "_zscale", (StandardMember)111, true },
+    { "_xrotation", (StandardMember)112, true },
+    { "_yrotation", (StandardMember)113, true },
+    { "_matrix3d", (StandardMember)114, true },
+    { "_perspfov", (StandardMember)115, true },
+    { "$version", (StandardMember)116, false },
+    { 0, (StandardMember)-1, false },
 };
-// 0x143a51b50
-alignas(16) unsigned char DAT_143a51b50[0x20] = {
-    0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-// 0x143a51b70
-alignas(16) unsigned char DAT_143a51b70[0x40] = {
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-// 0x143a51bb0
-alignas(16) unsigned char DAT_143a51bb0[0x80] = {
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-// 0x143a51c30
-alignas(16) Sd_143a51c30 DAT_143a51c30 = {
+// 0x143a51a40 BlendModeNames (15 names) and the Date day/month name tables at 0x143a51ab8/0x143a51af0 follow
+// MemberTable in the exe; their AS2 TUs define them (sfr_as2_05gb/06w, sfr_as2_02), so the image stops at 0x760 bytes.
+// local layout of the AS2 Value (0x20 bytes: the type byte, then the value); only the image bytes matter here.
+// The exe builds these three in .CRT$XCU (sfr_gfx_13) and destroys them at exit (sfr_atexit_01).
+namespace Scaleform { namespace GFx { namespace AS2 {
+class Value { public: unsigned char T; unsigned char b1[0x1f]; };
+// 0x143a51b50: Value(Value::NOTSET) (type 0x0a)
+#pragma section(".data$ddg_143a51b50", read, write)
+__declspec(allocate(".data$ddg_143a51b50")) alignas(16) extern const Value Object_NotsetVal = { 0x0a };
+// 0x143a51b70: Value[2] of numbers (type 0x04, 0)
+#pragma section(".data$ddg_143a51b70", read, write)
+__declspec(allocate(".data$ddg_143a51b70")) alignas(16) extern const Value Point_DefaultParams[2] = { { 0x04 }, { 0x04 } };
+// 0x143a51bb0: Value[4] of numbers (type 0x04, 0)
+#pragma section(".data$ddg_143a51bb0", read, write)
+__declspec(allocate(".data$ddg_143a51bb0")) alignas(16) extern const Value Rectangle_DefaultParams[4] = { { 0x04 }, { 0x04 }, { 0x04 }, { 0x04 } };
+} } }
+// 0x143a51c30: the AS2 builtin names (one per ASBuiltinType), StringManager::BuiltinStrings[BuiltinCount]
+namespace Scaleform { namespace GFx { namespace AS2 {
+// local layout of the SDK AS2 StringManager; only its BuiltinStrings static matters here
+class StringManager { public: static const char* BuiltinStrings[156]; };
+} } }
+alignas(16) const char* Scaleform::GFx::AS2::StringManager::BuiltinStrings[156] = {
     "",
     "Object",
     "Array",
@@ -25450,6 +23978,9 @@ alignas(16) Sd_143a51c30 DAT_143a51c30 = {
     "rendererMatrix",
     "Amp",
     "length",
+};
+// 0x143a52110 (the bytes after BuiltinStrings)
+alignas(16) Sd_143a52110 DAT_143a52110 = {
     ":/",
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -47090,134 +45621,12 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 };
 
 #pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B")
-#pragma comment(linker, "/alternatename:?DAT_143a08d08@@3VPoint3@efd@@A=?DAT_143a08d08@@3USd_143a08d08@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a09600@@3DA=?DAT_143a09600@@3USd_143a09600@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a09600@@3UUnk_EfdMatrix3@@A=?DAT_143a09600@@3USd_143a09600@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a09600@@3VMatrix3@efd@@B=?DAT_143a09600@@3USd_143a09600@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a09660@@3DA=?DAT_143a09660@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_143a09660@@3VColor@efd@@B=?DAT_143a09660@@3PAEA")
-#pragma comment(linker, "/alternatename:?g_143a09660@@3VNiColor@@B=?DAT_143a09660@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143a09670@@3VColorA@efd@@A=?DAT_143a09670@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143a284b0@@3HA=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
 #pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropertyVisualizationService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
-#pragma comment(linker, "/alternatename:?ClassRegistrationTable@AS3@GFx@Scaleform@@3PAPEBUClassInfo@123@A=?DAT_143a28a30@@3USd_143a28a30@@A")
-#pragma comment(linker, "/alternatename:DAT_143a293e0=?DAT_143a293e0@@3USd_143a293e0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2a3e0=?DAT_143a2a3e0@@3USd_143a2a3e0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2a6b0=?DAT_143a2a6b0@@3HA")
-#pragma comment(linker, "/alternatename:DAT_143a2a6b4=?DAT_143a2a6b4@@3USd_143a2a6b4@@A")
-#pragma comment(linker, "/alternatename:?GlobalObjectCPP_mi@fl@Instances@AS3@GFx@Scaleform@@3QBUMemberInfo@345@B=?DAT_143a2a710@@3USd_143a2a710@@A")
-#pragma comment(linker, "/alternatename:?DateWeekDayNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA=?DAT_143a2a810@@3USd_143a2a810@@A")
-#pragma comment(linker, "/alternatename:?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA=?DAT_143a2a850@@3USd_143a2a850@@A")
-#pragma comment(linker, "/alternatename:?f@Thunk@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B=?DAT_143a2a930@@3USd_143a2a930@@A")
-#pragma comment(linker, "/alternatename:?f@MethodInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B=?DAT_143a2a9b0@@3USd_143a2a9b0@@A")
-#pragma comment(linker, "/alternatename:?f@VTableInd@InstanceTraits@AS3@GFx@Scaleform@@2QBUThunkInfo@345@B=?DAT_143a2aa30@@3USd_143a2aa30@@A")
 #pragma comment(linker, "/alternatename:?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2aab0@@3USd_143a2aab0@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2d0d0@@3PAPEBDA=?DAT_143a2d0d0@@3USd_143a2d0d0@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2d128@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2d128@@3USd_143a2d128@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2d158@@3QBQEBDB=?DAT_143a2d158@@3USd_143a2d158@@A")
-#pragma comment(linker, "/alternatename:?NS_AS3@fl@AS3@GFx@Scaleform@@3PEBDEB=?DAT_143a2d3b0@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?NS_flash_proxy@fl@AS3@GFx@Scaleform@@3PEBDEB=?DAT_143a2d3b8@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?NS_AS3@fl@AS3@GFx@Scaleform@@3QEBDEB=?DAT_143a2d3b0@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?NS_flash_proxy@fl@AS3@GFx@Scaleform@@3QEBDEB=?DAT_143a2d3b8@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?NS_Vector@fl_vec@AS3@GFx@Scaleform@@3PEBDEB=?DAT_143a2d3c0@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?NS_XML@fl@AS3@GFx@Scaleform@@3PEBDEB=?DAT_143a2d3c8@@3PEBDEB")
-#pragma comment(linker, "/alternatename:?DAT_143a2d3d0@AS3@GFx@Scaleform@@3PAPEBDA=?DAT_143a2d3d0@@3USd_143a2d3d0@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2d5c0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2d5c0@@3USd_143a2d5c0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2d640=?DAT_143a2d640@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a2d890=?DAT_143a2d890@@3USd_143a2d890@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2dd20=?DAT_143a2dd20@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a2dd40=?DAT_143a2dd40@@3USd_143a2dd40@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2dd50=?DAT_143a2dd50@@3USd_143a2dd50@@A")
-#pragma comment(linker, "/alternatename:?SWF_TagLoaderTable@GFx@Scaleform@@3PAP6AXPEAVLoadProcess@12@AEBUTagInfo@12@@ZA=?DAT_143a2efe0@@3USd_143a2efe0@@A")
-#pragma comment(linker, "/alternatename:?GFx_GFX_TagLoaderTable@GFx@Scaleform@@3PAP6AXPEAVLoadProcess@12@AEBUTagInfo@12@@ZA=?DAT_143a2f2c0@@3USd_143a2f2c0@@A")
-#pragma comment(linker, "/alternatename:?Identity@Cxform@Render@Scaleform@@2V123@B=?DAT_143a2f3a0@@3USd_143a2f3a0@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a2f428@GFx@Scaleform@@3HA=?DAT_143a2f428@@3HA")
-#pragma comment(linker, "/alternatename:?DAT_143a2f780@@3PAUCharBreakInfo@WordWrapHelper@Text@Render@Scaleform@@A=?DAT_143a2f780@@3PAEA")
-#pragma comment(linker, "/alternatename:?Format@Image9GridVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2f968@@3USd_143a2f968@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16i@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fb70@@3USd_143a2fb70@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16iAlpha@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fbd0@@3USd_143a2fbd0@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16iCF32@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fbe8@@3USd_143a2fbe8@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16f@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fb88@@3USd_143a2fb88@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16fAlpha@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fba0@@3USd_143a2fba0@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16iC32@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fbb8@@3USd_143a2fbb8@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16iInstance@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fc00@@3USd_143a2fc00@@A")
-#pragma comment(linker, "/alternatename:?Format@VertexXY16iUV@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fc18@@3USd_143a2fc18@@A")
-#pragma comment(linker, "/alternatename:?MatrixElementSizeTable@HMatrixConstants@MatrixPoolImpl@Render@Scaleform@@2PAUElementsInfo@1234@A=?DAT_143a2fc60@@3PAEA")
-#pragma comment(linker, "/alternatename:?NullHandle@HMatrix@MatrixPoolImpl@Render@Scaleform@@2UEntryHandle@234@A=?DAT_143a2fcb0@@3USd_143a2fcb0@@A")
 #pragma comment(linker, "/alternatename:?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fe50@@3USd_143a2fe50@@A")
-#pragma comment(linker, "/alternatename:DAT_143a2fe60=?DAT_143a2fe60@@3PAEA")
 #pragma comment(linker, "/alternatename:?Format@ImageGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a30328@@3USd_143a30328@@A")
-#pragma comment(linker, "/alternatename:DAT_143a30338=?DAT_143a30338@@3PAEA")
-#pragma comment(linker, "/alternatename:?D3D9TextureFormatMapping@D3D9@Render@Scaleform@@3PAUMapping@TextureFormat@123@A=?DAT_143a303c0@@3USd_143a303c0@@A")
-#pragma comment(linker, "/alternatename:?ShaderUniformNames@D3D9@Render@Scaleform@@3PAPEBDA=?DAT_143a308a0@@3USd_143a308a0@@A")
-#pragma comment(linker, "/alternatename:?Descs@VertexShaderDesc@D3D9@Render@Scaleform@@2PAPEBU1234@A=?DAT_143a30930@@3USd_143a30930@@A")
-#pragma comment(linker, "/alternatename:?Descs@FragShaderDesc@D3D9@Render@Scaleform@@2PAPEBU1234@A=?DAT_143a30c50@@3USd_143a30c50@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a46430@@3UCriHeapVtbl@@B=?DAT_143a46430@@3USd_143a46430@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a46450@@3UCriHeapVtbl@@B=?DAT_143a46450@@3USd_143a46450@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a46470@@3QEBDEB=?DAT_143a46470@@3USd_143a46470@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a46478@@3QBQEBDB=?DAT_143a46478@@3USd_143a46478@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a46488@@3QBQEBDB=?DAT_143a46488@@3USd_143a46488@@A")
-#pragma comment(linker, "/alternatename:DAT_143a47bc0=?DAT_143a47bc0@@3USd_143a47bc0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a47cb0=?DAT_143a47cb0@@3USd_143a47cb0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a482e8=?DAT_143a482e8@@3PAEA")
-#pragma comment(linker, "/alternatename:PTR_LAB_143a48350=?DAT_143a48350@@3USd_143a48350@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a485d8=?DAT_143a485d8@@3USd_143a485d8@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a48608=?DAT_143a48608@@3USd_143a48608@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a48638=?DAT_143a48638@@3USd_143a48638@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a48668=?DAT_143a48668@@3USd_143a48668@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a48708@@3QBIB=?DAT_143a48708@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143a48740@@3PANA=?DAT_143a48740@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a48740=?DAT_143a48740@@3PAEA")
-#pragma comment(linker, "/alternatename:?DAT_143a48790@@3PANA=?DAT_143a48790@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a487e0=?DAT_143a487e0@@3USd_143a487e0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a48840=?DAT_143a48840@@3USd_143a48840@@A")
-#pragma comment(linker, "/alternatename:DAT_143a488c0=?DAT_143a488c0@@3PAEA")
-#pragma comment(linker, "/alternatename:PTR_s_This_CFT_function_doesn_t_suppor_143a4a0c0=?DAT_143a4a0c0@@3USd_143a4a0c0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a4a0c8=?DAT_143a4a0c8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a4a0cc=?DAT_143a4a0cc@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a4a0d0=?DAT_143a4a0d0@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_143a4a120=?DAT_143a4a120@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a420=?DAT_143a4a420@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a430=?DAT_143a4a430@@3PAEA")
-#pragma comment(linker, "/alternatename:iRam0000000143a4a434=?DAT_143a4a434@@3PAEA")
-#pragma comment(linker, "/alternatename:iRam0000000143a4a438=?DAT_143a4a438@@3PAEA")
-#pragma comment(linker, "/alternatename:iRam0000000143a4a43c=?DAT_143a4a43c@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a440=?DAT_143a4a440@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a450=?DAT_143a4a450@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a460=?DAT_143a4a460@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a470=?DAT_143a4a470@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a480=?DAT_143a4a480@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a490=?DAT_143a4a490@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4a0=?DAT_143a4a4a0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4b0=?DAT_143a4a4b0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4c0=?DAT_143a4a4c0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4d0=?DAT_143a4a4d0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4e0=?DAT_143a4a4e0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a4f0=?DAT_143a4a4f0@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a500=?DAT_143a4a500@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a510=?DAT_143a4a510@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a520=?DAT_143a4a520@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a530=?DAT_143a4a530@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a540=?DAT_143a4a540@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a550=?DAT_143a4a550@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a560=?DAT_143a4a560@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a570=?DAT_143a4a570@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a580=?DAT_143a4a580@@3PAEA")
-#pragma comment(linker, "/alternatename:_DAT_143a4a590=?DAT_143a4a590@@3PAEA")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a4a0d8=?DAT_143a4a0d8@@3USd_143a4a0d8@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a4a5a0=?DAT_143a4a5a0@@3USd_143a4a5a0@@A")
-#pragma comment(linker, "/alternatename:PTR_FUN_143a4a5c0=?DAT_143a4a5c0@@3USd_143a4a5c0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a4a5e8=?DAT_143a4a5e8@@3_KA")
-#pragma comment(linker, "/alternatename:?MemberTable@AvmCharacter@AS2@GFx@Scaleform@@2QBUMemberTableType@1234@B=?DAT_143a512e0@@3USd_143a512e0@@A")
-#pragma comment(linker, "/alternatename:?Object_NotsetVal@AS2@GFx@Scaleform@@3VValue@123@B=?DAT_143a51b50@@3PAEA")
-#pragma comment(linker, "/alternatename:?Point_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B=?DAT_143a51b70@@3PAEA")
-#pragma comment(linker, "/alternatename:?Rectangle_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B=?DAT_143a51bb0@@3PAEA")
-#pragma comment(linker, "/alternatename:?BuiltinStrings@StringManager@AS2@GFx@Scaleform@@2PAPEBDA=?DAT_143a51c30@@3USd_143a51c30@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a59c28@@3DA=?DAT_143a59c28@@3USd_143a59c28@@A")
-#pragma comment(linker, "/alternatename:?CStat_RTTI_Type_Descriptor@@3QBDB=?DAT_143a65c80@@3USd_143a65c80@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a7b760@@3DA=?DAT_143a7b760@@3USd_143a7b760@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a7b788@@3DA=?DAT_143a7b788@@3USd_143a7b788@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a8da88@@3DA=?DAT_143a8da88@@3USd_143a8da88@@A")
+#pragma comment(linker, "/alternatename:?DAT_143a48740@@3PANA=DAT_143a48740")
 #pragma comment(linker, "/alternatename:?DAT_142dc9d48@@3PAEA=??_7RefCountImplCore@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_142f7df88@@3PAEA=??_7DefaultAcquireInterface@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1430bbb10@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CAAE@@efd@@6B@")

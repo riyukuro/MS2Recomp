@@ -64,7 +64,7 @@ namespace egmAnimation { class AnimationService { public: NiActorManager* GetAct
 
 // ---- exe data ----
 extern unsigned char DAT_143afc898; // assertions throw when set
-extern char DAT_1439fc800;          // texture format preferences
+extern NiTexture::FormatPrefs DAT_1439fc800;         // texture format preferences
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up axis
 #define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; reference axis
@@ -504,7 +504,7 @@ void CPonyTailController::vfunc_37()
             if (efd::File::Access((const char*)strControl, (efd::File::OpenMode)0))
             {
                 NiFixedString kName((const char*)strControl);
-                reinterpret_cast<efd::SmartPointer<NiTexture>&>(m_kControlMap) = NiSourceTexture::Create(kName, reinterpret_cast<NiTexture::FormatPrefs&>(DAT_1439fc800), false, false, true);
+                reinterpret_cast<efd::SmartPointer<NiTexture>&>(m_kControlMap) = NiSourceTexture::Create(kName, DAT_1439fc800, false, false, true);
             }
         }
     }

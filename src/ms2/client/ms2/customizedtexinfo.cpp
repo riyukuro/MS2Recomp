@@ -74,7 +74,7 @@ MS2_CHECK_SIZE(CCustomizedTexInfo, 0x60);
 class CCustomizedTextureManager { public: char m_pad_00[8]; };
 
 // ---- exe callees ----
-extern char DAT_1439fb040[];
+extern const NiPixelFormat DAT_1439fb040;
 void* FUN_140876480(void* out, int cat);
 void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 class NiPixelData* ConvertToRGBA32(class NiPixelData*, unsigned int, unsigned int);   // C3: was FUN_14184d8c0
@@ -153,7 +153,7 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
     NiPixelDataPtr hBaseB(pBaseB ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseB)), nWidth, nHeight) : 0);
     NiPixelDataPtr hDecalB(pDecalB ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalB)), nWidth, nHeight) : 0);
 
-    NiPixelData* pPix = EE_NEW NiPixelData(nWidth, nHeight, *(const NiPixelFormat*)DAT_1439fb040, 1, 1);
+    NiPixelData* pPix = EE_NEW NiPixelData(nWidth, nHeight, DAT_1439fb040, 1, 1);
     unsigned nStride = pPix->GetPixelStride();
     char* pDst = ((char*)pPix->GetPixels(0, 0));
     for (unsigned y = 0; y < nHeight; ++y)

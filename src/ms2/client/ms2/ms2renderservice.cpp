@@ -97,7 +97,7 @@ extern void (*DAT_143d6eb40)(Unk_RsRendererSize*);
 extern void (*DAT_143d6eb48)();
 extern void (*DAT_143d6eb50)(bool);
 extern int DAT_143afa750;                                                    // last renderer creation failure code
-extern int DAT_143af7d58;                                                    // "keep window hidden" switch
+extern int g_143af7d58;                                                    // "keep window hidden" switch
 NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
 
 // Debug log (console) of the game.
@@ -615,7 +615,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
         windowInfo.cbSize = sizeof(windowInfo);
         GetWindowInfo(m_parentHandle, &windowInfo);
         ((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91290(bFullscreen, settings.m_uiScreenWidth, settings.m_uiScreenHeight);
-        if (bFullscreen && (((class Unk_RsApp*)FUN_140aadf80()), DAT_143af7d58 == 0)) {
+        if (bFullscreen && (((class Unk_RsApp*)FUN_140aadf80()), g_143af7d58 == 0)) {
             ShowWindow(m_parentHandle, SW_SHOWMAXIMIZED);
         }
     }
@@ -749,7 +749,7 @@ efd::AsyncResult MS2RenderService::OnInit()
         TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
     }
     ((class Unk_RsApp*)FUN_140aadf80());
-    if (DAT_143af7d58 == 0) {
+    if (g_143af7d58 == 0) {
         ShowWindow(m_parentHandle, SW_SHOWNORMAL);
     }
     if (m_pDefaultSurfaceCreator == 0 || !m_pDefaultSurfaceCreator->CreateDefaultSurface(this, m_defaultContextBackgroundColor)) {

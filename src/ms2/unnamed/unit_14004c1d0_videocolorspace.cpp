@@ -60,11 +60,11 @@ struct Unk_Surface
 struct Unk_YuvEntry { short v[4]; };
 
 // Colour tables (all indexed by a byte value). A and C are the 256-entry centred curves built by FUN_14004c370.
-extern double DAT_143babdf0[256];
-extern double DAT_143bac690[256];
-extern double DAT_143bace90[256];
+extern "C" double DAT_143babdf0[256];
+extern "C" double DAT_143bac690[256];
+extern "C" double DAT_143bace90[256];
 extern double DAT_143bac5f0[9];
-extern double DAT_143bac640[9];
+extern "C" double DAT_143bac640[9];
 extern double DAT_143a48740[9];
 extern double DAT_143a48790[9];
 

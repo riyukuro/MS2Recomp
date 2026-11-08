@@ -14,7 +14,7 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
+extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0

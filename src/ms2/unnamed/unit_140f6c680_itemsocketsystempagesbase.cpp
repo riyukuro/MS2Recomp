@@ -270,7 +270,7 @@ bool SendItemSocketSystem(MS2Ptr<CItem>, const CMsgBoxData&);
 unsigned short FUN_140626f20(unsigned);
 void FUN_1406284f0(unsigned short, int, int*, int*);
 extern __int64 DAT_143ab2898;
-extern unsigned DAT_143ab2914;
+extern int DAT_143ab2914;
 CStringW FUN_1409404f0(__int64);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);

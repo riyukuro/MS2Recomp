@@ -97,7 +97,6 @@ const NiRTTI MS2ShadowVisitor::ms_RTTI("MS2ShadowVisitor", MS2_VIS_BASE);
 // ---- out-of-unit data and helpers ----
 extern NiFixedString DAT_143ae51a8;      // extra-data name that marks a shadow caster
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
-extern int DAT_143ae2b44;       // model-node culling enabled
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
 

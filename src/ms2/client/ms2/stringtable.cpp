@@ -465,7 +465,7 @@ int CFieldQuest::GetQuestType() { return 8; }
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CStringTable::s_bInit;
 #endif
-extern int DAT_143ae0fc0;                                           // debug switch: append the ids to the texts
+extern int g_nDebugUI;                                           // debug switch: append the ids to the texts
 
 // The xml helpers every table unit uses.
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -710,7 +710,7 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
         }
         spCache->m_strings.Lookup(nId, strText);
     }
-    if (DAT_143ae0fc0 != 0)
+    if (g_nDebugUI != 0)
     {
         switch (nTable)
         {
@@ -790,7 +790,7 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
     }
     if (strTag.CompareNoCase("name") == 0)
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceLevelToken(strText, nLevel);
-    if (DAT_143ae0fc0 != 0 && strTag.CompareNoCase("name") == 0)
+    if (g_nDebugUI != 0 && strTag.CompareNoCase("name") == 0)
         strText.AppendFormat(L" [%d][%d]", nBuffId, nLevel);
     return strText;
 }

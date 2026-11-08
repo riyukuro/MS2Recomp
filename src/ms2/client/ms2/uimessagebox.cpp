@@ -292,7 +292,8 @@ struct Unk_MessageBoxXform
 MS2_CHECK_SIZE(Unk_MessageBoxXform, 0x34);
 
 #include <NiTransform.h>
-extern Unk_EfdMatrix3 DAT_143a09600;                  // identity rotation
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;                  // identity rotation
 class CItemDataTable;
 
 // The skill a bound item casts (avatarpc.cpp / inventory.cpp layout).
@@ -1366,7 +1367,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
             xf.m_fScale = 1.0f;
             reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600));
             xf.m_rotate = rot;
             CString strSound = TSingleton<CItemDataTable>::GetInstance()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())
@@ -1400,7 +1401,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
             xf.m_fScale = 1.0f;
             reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600));
             xf.m_rotate = rot;
             CString strSound = TSingleton<CItemDataTable>::GetInstance()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())
@@ -1435,7 +1436,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
             xf.m_fScale = 1.0f;
             reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600));
             xf.m_rotate = rot;
             CString strSound = TSingleton<CItemDataTable>::GetInstance()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())

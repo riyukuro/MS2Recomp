@@ -91,7 +91,7 @@ int FUN_1418fd6c0(__int64 nHomeId);                            // opens a home
 void FUN_140710590(COutPacket& pkt);                            // sends the packet
 extern int DAT_143ab2914;
 extern unsigned short DAT_143ab2964;
-extern int DAT_143ab2970;
+extern unsigned DAT_143ab2970;
 
 // The string table and the job table.
 

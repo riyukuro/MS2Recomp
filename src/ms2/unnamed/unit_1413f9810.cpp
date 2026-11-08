@@ -83,7 +83,7 @@ public:
 
 // ---- externs (unrecovered exe code; names are the exe addresses) ---------------------------------------------------------
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // the object at +8 of the main system; returns its service manager
-extern char DAT_143a09600;
+extern const efd::Matrix3 DAT_143a09600;
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class HardwareInstancingService   // C3: member view for the former free stand-ins
 {

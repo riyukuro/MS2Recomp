@@ -102,7 +102,7 @@ void* FUN_140c77560(void*);   // C3: was FUN_140c77560
 CLogString* GetLogString();
 
 // options of Optimization.xml (contiguous dwords) and the "loaded" flag
-extern int DAT_143ae2b30, DAT_143ae2b34, DAT_143ae2b38, DAT_143ae2b3c, DAT_143ae2b40, DAT_143ae2b44, DAT_143ae2b48;
+extern int DAT_143ae2b30, DAT_143ae2b34, DAT_143ae2b38, DAT_143ae2b3c, DAT_143ae2b40, DAT_143ae2b48;  // 0x143ae2b44 = COptimizer::ms_nModelCulling
 extern int DAT_143ae2b4c, DAT_143ae2b50, DAT_143ae2b54, DAT_143ae2b58, DAT_143ae2bf8;
 
 // The unit's log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0).
@@ -311,7 +311,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bUseProgressiveLoading %s", pszProgressive);
     const char* pszRemoveShadow;
-    if (DAT_143ae2b44 != 0)
+    if (COptimizer::ms_nModelCulling != 0)
     {
         pszRemoveShadow = "TRUE";
     }
@@ -396,7 +396,7 @@ void COptimizer::LoadOptimization()
                 void* pProgressive = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("ProgressiveLoading"));
                 if (pProgressive != 0) XmlGetAttr((class TiXmlElement*)(pProgressive), "value", DAT_143ae2b40);
                 void* pRemoveShadow = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("RemoveShadowEntity"));
-                if (pRemoveShadow != 0) XmlGetAttr((class TiXmlElement*)(pRemoveShadow), "value", DAT_143ae2b44);
+                if (pRemoveShadow != 0) XmlGetAttr((class TiXmlElement*)(pRemoveShadow), "value", COptimizer::ms_nModelCulling);
                 void* pKfm = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("MS2KFM"));
                 if (pKfm != 0) XmlGetAttr((class TiXmlElement*)(pKfm), "value", DAT_143ae2b48);
                 void* pPiece = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("Piece"));
@@ -417,7 +417,7 @@ void COptimizer::LoadOptimization()
             DAT_143ae2b38 = nEnabled;
             DAT_143ae2b3c = nEnabled;
             DAT_143ae2b40 = nEnabled;
-            DAT_143ae2b44 = nEnabled;
+            COptimizer::ms_nModelCulling = nEnabled;
             DAT_143ae2b4c = nEnabled;
             DAT_143ae2b48 = nEnabled;
             DAT_143ae2b50 = 0;

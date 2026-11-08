@@ -70,13 +70,12 @@ public:
     virtual void vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, float fTime); // 0x1422d2a30 swf "loadComplete"
 };
 
-extern UISwfEntityManager* DAT_143abb058;                          // the UISwfEntityManager instance
 
 // ---- COMDAT helpers of this unit ----
 // @0x140b632f0 the UISwfEntityManager instance (inline getter)
 UISwfEntityManager* FUN_140b632f0()
 {
-    return DAT_143abb058;
+    return SingletonClass<UISwfEntityManager>::ms_pSingleton;
 }
 
 // @0x140b62550 the text of a font id

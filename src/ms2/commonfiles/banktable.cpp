@@ -41,7 +41,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-int FUN_14021bdc0(CString& str);                                         // enum value of a slot name
+int Parse_14021bdc0(const CStringA& str);                                // enum value of a slot name (commonenum)
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 
 // The item record the table classifies (the same record FUN_14053f870 returns elsewhere).
@@ -304,7 +304,7 @@ int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut)
     int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
-    *pnOut = FUN_14021bdc0(str);
+    *pnOut = Parse_14021bdc0(str);
     return nRead;
 }
 #undef MS2_THIS_FILE

@@ -34,7 +34,7 @@ extern const char* g_szCefMessageDlDoAction;            // 0x1439f7f10 "dl_do_ac
 extern const char* g_szCefMessageDlExecuteCommand;      // 0x1439f7f18 "dl_execute_command"
 
 extern __int64 DAT_143ab2828;                           // the own account id
-extern int DAT_143ab2830;                               // the own world id
+extern unsigned DAT_143ab2830;                          // the own world id
 extern ATL::CAtlArray<unsigned int> DAT_143ab3078;               // the visited field ids
 
 class WorldService   // C3: member view for the former free stand-ins

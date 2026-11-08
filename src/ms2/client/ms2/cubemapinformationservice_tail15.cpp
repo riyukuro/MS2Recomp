@@ -504,10 +504,8 @@ void FUN_141125970(void* p)
 {
     Unk_CMISDestroy((MS2Ptr<Cube>*)((char*)p + 8));
 }
-// cubemapinformationservice_3's declared Unk_CMISTree<0x11a> dtor is this slice's efd::map<Unk_CMISKindA,int> dtor
-// (0x1411257d0), and its Unk_CMISHouseRef dtor is the Unk_PayloadPtr<NoticeCubeInfo> one (0x141123820).
+// cubemapinformationservice_3's Unk_CMISHouseRef dtor is the Unk_PayloadPtr<NoticeCubeInfo> one (0x141123820).
 #ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??1?$Unk_CMISTree@$0BBK@@@QEAA@XZ=??1?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@@efd@@QEAA@XZ")
 #pragma comment(linker, "/alternatename:??1Unk_CMISHouseRef@@QEAA@XZ=??1?$Unk_PayloadPtr@VNoticeCubeInfo@@@@QEAA@XZ")
 #endif
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a10 ; gp1: by its exe callers

@@ -104,11 +104,11 @@ DecoEditService* BrushService();
 
 #ifndef MS2_HOOK_DLL   // the exe's own RTTI objects are the registered ones
 // @0x1400f8ee0
-const NiRTTI MS2MaterialSwapProcessor::ms_RTTI("MS2MaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
+const NiRTTI MS2MaterialSwapProcessor::ms_RTTI("MS2MaterialSwapProcessor", &NiShaderSortProcessor::ms_RTTI);
 // @0x1400f8f10
-const NiRTTI MS2OuterGlowMaterialSwapProcessor::ms_RTTI("MS2OuterGlowMaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
+const NiRTTI MS2OuterGlowMaterialSwapProcessor::ms_RTTI("MS2OuterGlowMaterialSwapProcessor", &NiShaderSortProcessor::ms_RTTI);
 // @0x1400f8f40
-const NiRTTI MS2OutlinePreProcessor::ms_RTTI("MS2OutlinePreProcessor", &MS2RenderListProcessor::ms_RTTI);
+const NiRTTI MS2OutlinePreProcessor::ms_RTTI("MS2OutlinePreProcessor", &NiShaderSortProcessor::ms_RTTI);
 #endif
 static CString s_sortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1("skill");
@@ -116,7 +116,7 @@ static CString s_strStun1("stun");
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 #ifndef MS2_HOOK_DLL
 // @0x1400f90e0
-const NiRTTI MS2OverdrawProcessor::ms_RTTI("MS2OverdrawProcessor", &MS2RenderListProcessor::ms_RTTI);
+const NiRTTI MS2OverdrawProcessor::ms_RTTI("MS2OverdrawProcessor", &NiShaderSortProcessor::ms_RTTI);
 #endif
 static CString s_strSkill2("skill");
 static CString s_strStun2("stun");
@@ -941,8 +941,8 @@ MS2_REPLACE(0x1414DEE00, CompareAlpha, 79, 0x89149BAE);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2fb0-0x142cb30c0 .text$yd
 
-// MS2RenderListProcessor declares RTTI the exe never builds: its GetRTTI (0x1414e6700) and the derived processors' base
-// pointers use NiShaderSortProcessor::ms_RTTI (0x143afa798, NiRTTI ctor 0x140122680). The hook DLL binds both by row.
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:?ms_RTTI@MS2RenderListProcessor@@2VNiRTTI@@B=?ms_RTTI@NiShaderSortProcessor@@2VNiRTTI@@B")
-#endif
+// MS2RenderListProcessor has no RTTI of its own: its vftable's GetRTTI (0x1414e6700) is NiShaderSortProcessor's
+// inline one, and the derived processors' base pointers name NiShaderSortProcessor::ms_RTTI (0x143afa798).
+//
+//
+//

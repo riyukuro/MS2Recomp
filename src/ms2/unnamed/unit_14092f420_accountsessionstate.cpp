@@ -165,7 +165,7 @@ class UIServerEventDispatcher;
 extern int DAT_1439f4a7c;
 extern int DAT_1439f4a80;
 extern __int64 DAT_143ab28f0;
-extern int DAT_143ab2864;
+extern int g_upperTargetId;
 extern int DAT_143ab2878;
 extern int DAT_143ab287c;
 extern int DAT_143ab2884;
@@ -523,7 +523,7 @@ int SendKeyTableMode8(int nSlot)
 // @0x140930110
 bool FUN_140930110(int nValue)
 {
-    return DAT_143ab2864 == nValue;
+    return g_upperTargetId == nValue;
 }
 
 // @0x140930150

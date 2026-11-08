@@ -40,7 +40,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
 
-extern unsigned int DAT_143ab2914;                              // the client build level
+extern int DAT_143ab2914;                                       // the client build level
 
 // The "m_apply" button of the option swf.
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog

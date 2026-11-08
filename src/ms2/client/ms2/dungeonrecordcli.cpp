@@ -61,7 +61,7 @@ CStringW FUN_140b8e9a0(const CMsTime& t);
 void FUN_140d73ff0(CStringW text);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb);
-extern unsigned __int64 DAT_143ab2828;
+extern __int64 DAT_143ab2828;
 
 // Methods of the commonfiles units (their link symbols are not in the committed table), bound by VA: this first.
 class DungeonRoomTable;

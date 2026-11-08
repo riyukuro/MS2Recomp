@@ -986,7 +986,7 @@ struct Unk_BillOwner
     __int64 d;
 };
 extern __int64 DAT_143ab2820;
-extern int DAT_143ab2830;
+extern unsigned DAT_143ab2830;
 extern __int64 DAT_143ab2838;
 extern int DAT_143ab2834;
 class Unk_MeratButtonHelper* FUN_1409c1740();

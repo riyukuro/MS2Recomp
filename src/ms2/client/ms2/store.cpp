@@ -75,7 +75,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 Unk_SSGDlg4e47* FUN_140de48d0(int nId);
 class Unk_Inventory; extern Unk_Inventory g_143ab2a90;   // C3: was extern char DAT_143ab2a90 (the inventory)
 extern __int64 DAT_143ab2828;
-extern int DAT_143ab2864;
+extern int g_upperTargetId;
 extern __int64 DAT_143ab28f8;
 // /Ob0: the exe reads these globals inline, so they are macros
 #define Unk_Inventory() (&g_143ab2a90)
@@ -855,7 +855,7 @@ void CStore::OnList(CInPacket* pPacket)
         int nAmount = pPacket->ReadInt32();
         MS2Ptr<CItem> pItem(new CItem());
         if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
-            ((CItem*)pItem)->SetObjectId(DAT_143ab2864);
+            ((CItem*)pItem)->SetObjectId(g_upperTargetId);
             ((CItem*)pItem)->SetItemUid(nUid);
             ((CItem*)pItem)->FUN_140526b70((int)nSlot);
             ((CItem*)pItem)->FUN_140524eb0(*pPacket);
@@ -931,7 +931,7 @@ void CStore::ReadItem(CInPacket* pPacket)
     int nAmount = pPacket->ReadInt32();
     MS2Ptr<CItem> pItem(new CItem());
     if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
-        ((CItem*)pItem)->SetObjectId(DAT_143ab2864);
+        ((CItem*)pItem)->SetObjectId(g_upperTargetId);
         ((CItem*)pItem)->SetItemUid(nUid);
         ((CItem*)pItem)->FUN_140526b70((int)nSlot);
         ((CItem*)pItem)->FUN_140524eb0(*pPacket);

@@ -251,7 +251,7 @@ extern unsigned char** DAT_143aaeae8;
 extern unsigned char** DAT_143aaeaf0;
 extern unsigned char** DAT_143aaeaf8;
 extern std::string g_strLocaleDir2, g_strLocaleDir;
-extern int DAT_143ab0560;
+extern int g_nLocaleMode;
 class Unk_FileIgnoreList;
 Unk_FileIgnoreList* FUN_1403a9410();
 __time64_t FUN_1403a9480(CFileBuffer*);
@@ -944,7 +944,7 @@ std::string CFileSystem::FUN_14039b810(std::string path) {
 MS2_REPLACE_METHOD(0x14039b810, CFileSystem, FUN_14039b810, 813, 0x0D22C404);
 // @0x14039bb50
 std::string CFileSystem::FUN_14039bb50(std::string path) {
-    if (DAT_143ab0560 != 2) return std::string("");
+    if (g_nLocaleMode != 2) return std::string("");
     path = FUN_14039c050(path, true);
     std::string result;
     size_t slash = path.find_last_of('/');

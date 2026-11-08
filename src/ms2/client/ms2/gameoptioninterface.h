@@ -7,6 +7,7 @@
 
 struct Unk_InterfaceState
 {
+    Unk_InterfaceState();                         // 0x14125b770 (resets to the defaults)
     bool m_b00;                                                     // +0x00 (default 0)
     bool m_b01;                                                     // +0x01 (default 1)
     bool m_b02;                                                     // +0x02 (default 1)
@@ -22,6 +23,7 @@ MS2_CHECK_SIZE(Unk_InterfaceState, 0x18);
 
 struct Unk_InterfaceFlag
 {
+    Unk_InterfaceFlag();                         // 0x14125bc30 (resets to the defaults)
     bool m_b;                                                       // +0x00 (default 0)
 };
 

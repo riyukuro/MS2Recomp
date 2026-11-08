@@ -45,7 +45,8 @@ public:
     char m_pad_20[0x50];
 };
 MS2_CHECK_SIZE(NoticeMessage, 0x70);
-extern Unk_EfdMatrix3 DAT_143a09600;                    // identity rotation
+namespace efd { class Matrix3; }
+extern const efd::Matrix3 DAT_143a09600;                    // identity rotation
 
 // Game-wide constants table; the two entries used are 0x58-byte slots with a "set" flag at +8 and the value at +0x50.
 struct Unk_CeConstUInt { void* m_pad_00; unsigned char m_bSet; char m_pad_09[0x47]; unsigned m_value; int m_pad_54; };
@@ -208,7 +209,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
     xf.m_fScale = 1.0f;
     *reinterpret_cast<NiPoint3*>(xf.m_afTranslate) = *reinterpret_cast<const NiPoint3*>(&m_posEffect);
     Unk_CoupleRot rot;
-    reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
+    reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600));
     xf.m_rotate = rot;
     NoticeMessage request;
     request.m_strName = FUN_140b0efb0();
