@@ -17,7 +17,7 @@ extern char DAT_14311e038[];
 extern char DAT_14311e200[];
 extern char DAT_14311e220[];
 extern char DAT_14311e3e8[];
-extern char DAT_143b0dc48[];
+// 0x143b0dc48 = CryptoPP::AAD_CHANNEL (cryptlib.h)
 
 // the exe's `new OutputProxy(*this, false)`: 0x28 bytes, Algorithm(false), the two OutputProxy vptrs, owner, passSignal
 static CryptoPP::OutputProxy* NewCryptoPPOutputProxy(void* owner)
@@ -81,7 +81,7 @@ void* FUN_14230ff90(void* self, void* cipher, void* attachment, bool putAAD,
     outerVtable[1] = DAT_14311e200;
 
     auto* hashOutput = NewCryptoPPOutputProxy(self);
-    const void* aadChannel = DAT_143b0dc48;
+    const void* aadChannel = &CryptoPP::AAD_CHANNEL;
     new (static_cast<std::uint8_t*>(self) + 0xb8) CryptoPP::HashFilter(*static_cast<CryptoPP::HashTransformation*>(hashModule),
                   hashOutput, putAAD, truncatedDigestSize,
                   *static_cast<const std::string*>(aadChannel), *static_cast<const std::string*>(macChannel));

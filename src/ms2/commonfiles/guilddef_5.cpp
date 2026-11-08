@@ -356,9 +356,9 @@ class CSeasonDataTable;
 Unk_SingletonObj* Unk_GetSingleton_4540() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSeasonDataTable>::s_instance); }
 MS2_REPLACE(0x1404F4540, Unk_GetSingleton_4540, 8, 0x384AE20B);
 // @0x1404fa010
-// Setter of the flag byte at 0x143aaef5f next to the CGuildXmlData singleton pointer
-extern bool DAT_143aaef5f;
-void Unk_SetGuildFlag_a010(bool value) { DAT_143aaef5f = value; }
+// Setter of the flag byte at 0x143aaef60 next to the CGuildXmlData singleton pointer
+extern bool DAT_143aaef60;
+void Unk_SetGuildFlag_a010(bool value) { DAT_143aaef60 = value; }
 MS2_REPLACE(0x1404FA010, Unk_SetGuildFlag_a010, 16, 0x6EF0073A);
 
 // @0x1404f24fc

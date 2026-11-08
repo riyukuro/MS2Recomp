@@ -1,3 +1,6 @@
 30c
 typedef efd::map<efd::utf8string, egfPhysX::PhysXSceneData*>::_Mybase MS2SceneTree; /* MS2: see utf8string.inl */ EE_MS2_EQRANGE(MS2SceneTree)
 .
+14c
+#include <egfLua/EntityProxyLua.h> // MS2 (v2525): the exe TU defines egfLua::InvalidEntity (0x140131510) first; same line keeps __LINE__. Pre-compiled header:
+.

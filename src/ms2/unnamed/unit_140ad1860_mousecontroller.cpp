@@ -66,7 +66,7 @@ extern unsigned DAT_143af62d4;                                  // client area w
 extern unsigned DAT_143af62d8;                                  // client area height
 extern RECT g_rcWindow;                                         // 0x143af7d48: last GetWindowRect of the game window
 class Unk_McEntityRules;
-extern Unk_McEntityRules* DAT_143ab9510;
+// 0x143ab9510 = TSingleton<CTriggerService>::s_instance (FUN_140ad4b90)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
@@ -1051,7 +1051,7 @@ MS2_REPLACE_METHOD(0x140AD4B40, CameraMgr, FUN_140ad4b40, 70, 0x8A6FD2BB);
 // @0x140ad4b90
 Unk_McEntityRules* FUN_140ad4b90()
 {
-    return DAT_143ab9510;
+    return static_cast<Unk_McEntityRules*>(TSingleton<CTriggerService>::s_instance);
 }
 
 // @0x140ad4ba0

@@ -371,12 +371,12 @@ std::string* FUN_1423798d0(std::string* out)
     return new (out) std::string(std::move(std::move(h) + "SHA-1") + ")");
 }
 
-extern int DAT_143b10184;   // CryptoPP cached CPU feature value (cache line size)
+namespace CryptoPP { enum PowerUpSelfTestStatus : int; extern PowerUpSelfTestStatus g_powerUpSelfTestStatus; }   // 0x143b10184 (fips140.h)
 
 // @0x142353790
 int FUN_142353790()
 {
-    return DAT_143b10184;
+    return CryptoPP::g_powerUpSelfTestStatus;
 }
 
 // std::ws<char>(std::istream&): the STL's own instantiation (skip leading whitespace; used by Crypto++ Integer text parsing)

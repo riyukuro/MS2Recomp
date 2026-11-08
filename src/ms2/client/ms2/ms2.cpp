@@ -466,7 +466,7 @@ class ShadowCullingProcess* FUN_141753990();                    // the shadow cu
 void MS2ExcludeFromShadows(NiAVObject* pkObject);               // excludes an object from the shadow casters
 extern void (*DAT_143afbfc8)(NiAVObject*);
 extern NiFixedString DAT_143ae5290, DAT_143ae5298, DAT_143ae52a0;   // the dir / point / spot shadow materials
-extern char DAT_143afc8d0, DAT_143afc898, DAT_143afc8e8, DAT_143afc900, DAT_143afcb90, DAT_143afcba8, DAT_143b08a3c;
+extern unsigned char DAT_143afc898; extern char DAT_143afc8d0, DAT_143afc8e8, DAT_143afc900, DAT_143afcb90, DAT_143afcba8, DAT_143b08a3c;
 extern int DAT_143ab0248;                                       // the service locale
 CString FUN_14028dc80(int nId);                                 // a string table text
 int FUN_1414a5a40(CStringW sPath);                              // _wmkdir
@@ -496,7 +496,7 @@ void FUN_1414a6230(efd::IBase* (*pfnFactory)());                // the KFM cache
 efd::IBase* FUN_1414a9a10();                                    // creates an MS2KFMCache
 struct Unk_MCPPtr;
 Unk_MCPPtr FUN_140d96230(NiVisibleArray* pVisibleSet, NiSPWorkflowManager* pWorkflowManager);  // MS2MeshCullingProcess
-extern Unk_MCPPtr (*DAT_143afe6f8)(NiVisibleArray*, NiSPWorkflowManager*);   // the mesh culling process factory
+extern unsigned char DAT_143afe6f8[];   // the mesh culling process factory: Unk_MCPPtr (*)(NiVisibleArray*, NiSPWorkflowManager*)
 extern void (*DAT_143b0d368)();
 extern "C" {
 int luaopen_egmAnimation(lua_State* L);
@@ -970,7 +970,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     spSceneGraph->SetDataPath(CMainSystem::GetInstance()->GetDataPath());
     m_spServiceManager->RegisterSystemService(spSceneGraph, 1500);
 
-    DAT_143afe6f8 = FUN_140d96230;
+    *reinterpret_cast<Unk_MCPPtr (**)(NiVisibleArray*, NiSPWorkflowManager*)>(DAT_143afe6f8) = FUN_140d96230;
     ecr::RenderServicePtr spRender = EE_NEW MS2RenderService(0);
     m_pSurfaceCreator = new CMS2DefaultSurfaceCreator;
     spRender->SetDefaultSurfaceCreator(m_pSurfaceCreator);

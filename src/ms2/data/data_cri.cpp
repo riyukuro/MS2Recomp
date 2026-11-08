@@ -3021,15 +3021,15 @@ extern "C" { alignas(16) unsigned char DAT_143ffd550[0x8]; }                   /
 #pragma bss_seg()
 
 //
-#pragma comment(linker, "/alternatename:_DAT_143d49f80=DAT_143d49f80")
-#pragma comment(linker, "/alternatename:_DAT_143d4a080=DAT_143d4a080")
-#pragma comment(linker, "/alternatename:_DAT_143d4a200=DAT_143d4a200")
-#pragma comment(linker, "/alternatename:_DAT_143d4a240=DAT_143d4a240")
-#pragma comment(linker, "/alternatename:_DAT_143d4a2c0=DAT_143d4a2c0")
-#pragma comment(linker, "/alternatename:_DAT_143d4a300=DAT_143d4a300")
-#pragma comment(linker, "/alternatename:_DAT_143d4a3c0=DAT_143d4a3c0")
-#pragma comment(linker, "/alternatename:_DAT_143d4aa80=DAT_143d4aa80")
-#pragma comment(linker, "/alternatename:_DAT_143d74820=DAT_143d74820")
+// _DAT_143d49f80: users name DAT_143d49f80 directly
+// _DAT_143d4a080: users name DAT_143d4a080 directly
+// _DAT_143d4a200: users name DAT_143d4a200 directly
+// _DAT_143d4a240: users name DAT_143d4a240 directly
+// _DAT_143d4a2c0: users name DAT_143d4a2c0 directly
+// _DAT_143d4a300: users name DAT_143d4a300 directly
+// _DAT_143d4a3c0: users name DAT_143d4a3c0 directly
+// _DAT_143d4aa80: users name DAT_143d4aa80 directly
+// _DAT_143d74820: users name DAT_143d74820 directly
 #pragma comment(linker, "/alternatename:?DAT_14002d490@@3PAEA=?GetFileSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
 #pragma comment(linker, "/alternatename:?DAT_14002d4a0@@3PAEA=?GetReadSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
 #pragma comment(linker, "/alternatename:?DAT_14002d4b0@@3PAEA=?GetOpenStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")

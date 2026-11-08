@@ -57,9 +57,9 @@ extern const char DAT_143196938[] = "unexpected zlib return";
 #pragma comment(linker, "/alternatename:?DAT_143aa7e90@@3Vtype_info@@B=??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8")
 
 // 0x143b0dc48 CryptoPP::AAD_CHANNEL (its ??__E 0x14013b180 constructs "AAD" there)
-#pragma comment(linker, "/alternatename:?DAT_143b0dc48@@3PADA=?AAD_CHANNEL@CryptoPP@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B")
+// ?DAT_143b0dc48: lib_cryptopp_filters_cx13 names CryptoPP::AAD_CHANNEL directly
 // 0x143b10184 CryptoPP::g_powerUpSelfTestStatus (fips140: GetPowerUpSelfTestStatus 0x142353790 reads it,
 // SimulatePowerUpSelfTestFailure 0x1423537d0 stores POWER_UP_SELF_TEST_FAILED)
-#pragma comment(linker, "/alternatename:?DAT_143b10184@@3HA=?g_powerUpSelfTestStatus@CryptoPP@@3W4PowerUpSelfTestStatus@1@A")
+// ?DAT_143b10184: lib_cryptopp_code names CryptoPP::g_powerUpSelfTestStatus directly
 
 #endif // MS2_HOOK_DLL

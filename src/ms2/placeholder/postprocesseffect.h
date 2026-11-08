@@ -106,5 +106,5 @@ efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* 
 void* FUN_140c8f690(const efd::SmartPointer<NiViewRenderClick>& res);
 class Unk_SingletonObj* FUN_1401d31f0();   // the client config (0x1401d31f0, cachedata.cpp, the definer's signature)
 #define FUN_1401d31f0() (static_cast<void*>(FUN_1401d31f0()))   // read as void*; callers cast to their view
-extern char DAT_1439fc800;
+extern NiTexture::FormatPrefs DAT_1439fc800;   // NiSourceTexture's default format preferences (data_data_1439ed000)
 void FUN_14169f6d0(void* smartPtrA, void* p);

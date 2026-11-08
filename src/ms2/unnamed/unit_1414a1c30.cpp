@@ -406,7 +406,7 @@ public:
     unsigned long long FUN_1414a55e0(); unsigned long long FUN_1414a55f0(); unsigned long long FUN_1414a5600(); void* FUN_1414a5640(); int* FUN_1414a5650(); int* FUN_1414a5660();
 };
 // ---- misc externs ---------------------------------------------------------------------------------------------------------
-extern int DAT_143a284b0; extern int DAT_143ae2b48;
+extern int DAT_143ae2b48;   // (0x143a284b0 = egmVisualizers::PropertyVisualizationService::ms_ClassInfo)
 #include <NiMaterialSwapProcessor.h>   // C3: was struct CResultObj (a view of NiMaterialSwapProcessorPtr)
 class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend NiMaterialSwapProcessorPtr FUN_1414a58c0(int idx); };
 #define DAT_143afa980 (*reinterpret_cast<char**>(&NiShadowManager::ms_pkShadowManager))   // C3: was extern char* DAT_143afa980
@@ -1829,7 +1829,7 @@ void* Unk_MiscThis::FUN_1414a5640() { return (void*)&MS2::ms_ClassInfo; }
 // @0x1414a5650
 int* Unk_MiscThis::FUN_1414a5650() { return (int*)&ecr::PickService::ms_ClassInfo; }
 // @0x1414a5660
-int* Unk_MiscThis::FUN_1414a5660() { return &DAT_143a284b0; }
+int* Unk_MiscThis::FUN_1414a5660() { return (int*)&egmVisualizers::PropertyVisualizationService::ms_ClassInfo; }
 // @0x1414a5670
 int FUN_1414a5670(Unk_ShutdownValue30* pThis) { return pThis->m_value; }
 MS2_REPLACE(0x1414A5670, FUN_1414a5670, 14, 0x828204CF);

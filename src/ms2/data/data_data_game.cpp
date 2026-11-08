@@ -270,10 +270,10 @@ public: static void call(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::
 }
 }
 }
-struct Sd_1431b7160;
-struct Sd_1431b7b50;
-extern Sd_1431b7160 DAT_1431b7160;
-extern Sd_1431b7b50 DAT_1431b7b50;
+// The AS3 class infos DAT_143a462f0 points at:
+// fl_net::NetStreamCI 0x1431b7160, fl_media::VideoCI 0x1431b7b50.
+namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo;
+namespace fl_net { extern const ClassInfo NetStreamCI; } namespace fl_media { extern const ClassInfo VideoCI; } } } }
 
 extern unsigned char DAT_142dc9d48[];
 extern unsigned char DAT_142f7df88[];
@@ -327,7 +327,7 @@ long FUN_14003c190(long, long, long);
 extern "C" void * criVmpv_Create(void *, unsigned long const *);
 void criVmpv_SetProcessorMask(void *, unsigned long);
 void criVmpv_SetInitDlgPara(void *, long, long const *, long const *);
-extern "C" void criVmpv_Destroy(void *);
+void criVmpv_Destroy(void *);   // C++ linkage, as defined in sfr_cri_03 (0x14003cae0)
 long criVmpv_GetStatus(void const *);
 void FUN_14003cca0(void *);
 void FUN_14003d4b0(void *, void *, void *);
@@ -3198,6 +3198,8 @@ struct VertexXY16fAlpha { static VertexFormat Format; };
 struct VertexXY16iC32 { static VertexFormat Format; };
 struct VertexXY16iInstance { static VertexFormat Format; };
 struct VertexXY16iUV { static VertexFormat Format; };
+struct RasterGlyphVertex { static VertexFormat Format; };
+struct ImageGlyphVertex { static VertexFormat Format; };
 } }
 struct Sd_143a2f968 {
     unsigned char b0[0x8];
@@ -3247,14 +3249,6 @@ struct Sd_143a2fc18 {
 struct Sd_143a2fcb8 {
     const void* p0;
     unsigned char b8[0x28];
-};
-struct Sd_143a2fe50 {
-    unsigned char b0[0x8];
-    const void* p8;
-};
-struct Sd_143a30328 {
-    unsigned char b0[0x8];
-    const void* p8;
 };
 namespace Scaleform { namespace Render { namespace D3D9 {
 // local view of d3d9_texture.h TextureFormat::Mapping (0x20 bytes; ImageFormat / D3DFORMAT are int enums, the scanline funcs pointers)
@@ -15413,28 +15407,30 @@ alignas(8) Sd_143a2fcb8 DAT_143a2fcb8 = {
 alignas(16) unsigned char DAT_143a2fe30[0x20] = {
     0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x51, 0x02, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-// 0x143a2fe50
-alignas(16) Sd_143a2fe50 DAT_143a2fe50 = {
+// 0x143a2fe50 (pSysFormat at 0x143a2fe60 is released by the exe exit dtor, sfr_atexit_01)
+alignas(16) Scaleform::Render::VertexFormat Scaleform::Render::RasterGlyphVertex::Format = {
     {
         0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     DAT_143a2fe30,
+    {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
 };
-// 0x143a2fe60: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
-extern "C" alignas(16) unsigned char DAT_143a2fe60[0x8] = {};
 // 0x143a30310: VertexElement[] (RasterGlyphVertex/ImageGlyphVertex::Format.pElements)
 alignas(16) unsigned char DAT_143a30310[0x18] = {
     0x00, 0x00, 0x00, 0x00, 0x62, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-// 0x143a30328
-alignas(8) Sd_143a30328 DAT_143a30328 = {
+// 0x143a30328 (pSysFormat at 0x143a30338 is released by the exe exit dtor, sfr_atexit_01)
+alignas(8) Scaleform::Render::VertexFormat Scaleform::Render::ImageGlyphVertex::Format = {
     {
         0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
     DAT_143a30310,
+    {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
 };
-// 0x143a30338: a static Ptr<> (released by the exe exit dtor, sfr_atexit_01)
-extern "C" alignas(8) unsigned char DAT_143a30338[0x8] = {};
 // 0x143a303c0 (the D3D9 texture formats: ImageFormat, D3DFORMAT, bytes per pixel, mappable, copy / uncopy scanline; Image_None ends it)
 alignas(16) Scaleform::Render::D3D9::TextureFormat::Mapping Scaleform::Render::D3D9::D3D9TextureFormatMapping[19] = {
     { 1, 32, 4, true, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault, (const void*)&::Scaleform::Render::ImageBase::CopyScanlineDefault },
@@ -22826,8 +22822,8 @@ alignas(16) Sd_143a31300 DAT_143a31300 = {
 };
 // 0x143a462f0
 alignas(16) Sd_143a462f0 DAT_143a462f0 = {
-    (const void*)&DAT_1431b7b50,
-    (const void*)&DAT_1431b7160,
+    (const void*)&Scaleform::GFx::AS3::fl_media::VideoCI,
+    (const void*)&Scaleform::GFx::AS3::fl_net::NetStreamCI,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
         0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
@@ -45621,12 +45617,10 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 };
 
 #pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B")
-#pragma comment(linker, "/alternatename:?DAT_143a284b0@@3HA=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
+// (0x143a284b0: unit_1414a1c30 names egmVisualizers::PropertyVisualizationService::ms_ClassInfo directly.)
 #pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropertyVisualizationService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
 #pragma comment(linker, "/alternatename:?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2aab0@@3USd_143a2aab0@@A")
-#pragma comment(linker, "/alternatename:?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a2fe50@@3USd_143a2fe50@@A")
-#pragma comment(linker, "/alternatename:?Format@ImageGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A=?DAT_143a30328@@3USd_143a30328@@A")
-#pragma comment(linker, "/alternatename:?DAT_143a48740@@3PANA=DAT_143a48740")
+// DAT_143a48740: videocolorspace declares it extern "C" (no C++-name alias)
 #pragma comment(linker, "/alternatename:?DAT_142dc9d48@@3PAEA=??_7RefCountImplCore@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_142f7df88@@3PAEA=??_7DefaultAcquireInterface@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1430bbb10@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CAAE@@efd@@6B@")

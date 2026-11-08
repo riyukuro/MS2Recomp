@@ -423,10 +423,10 @@ extern "C" { alignas(1) unsigned char DAT_143e668c1[0x1]; }                    /
 extern "C" { alignas(2) unsigned char DAT_143e668c2[0x7fffe]; }                // 0x143e668c2
 #pragma bss_seg()
 
-#pragma comment(linker, "/alternatename:?DAT_143aaef5f@@3_NA=?DAT_143aaef60@@3_NA")
-#pragma comment(linker, "/alternatename:?DAT_143ab9510@@3PEAVUnk_McEntityRules@@EA=?s_instance@?$TSingleton@VCTriggerService@@@@2PEAVCTriggerService@@EA")
+// guilddef_5, mousecontroller and ms2.cpp name 0x143aaef60, 0x143ab9510, 0x143afc898 and 0x143afe6f8 by their
+// definitions' names. The stock engine objs keep their own types (NiPhysXActorDesc: char; ecr::RenderContext:
+// the factory pointer), bound here:
 #pragma comment(linker, "/alternatename:?DAT_143afc898@@3DA=?DAT_143afc898@@3EA")
-#pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AUUnk_MCPPtr@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AV?$SmartPointer@VNiCullingProcess@@@efd@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
 
 #endif // MS2_HOOK_DLL
