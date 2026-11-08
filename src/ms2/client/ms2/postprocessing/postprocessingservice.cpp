@@ -3024,7 +3024,7 @@ efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* 
             {
                 spClick->SetName(pcName);
                 spClick->SetBackgroundColor(efd::ColorA::BLACK);
-                spClick->SetClearColorBuffers(false);
+                spClick->SetUseRendererBackgroundColor(false);
                 spClick->AppendRenderView(spView);
                 spClick->SetPreProcessingCallbackFunc(pfnCallback, pvCallbackData);
                 NiRenderObject* pkQuad = &spView->GetScreenFillingQuad();

@@ -6602,7 +6602,7 @@ bool UIMeratMarketDialog::FillSearchData(MS2Ptr<CMeratMarketSchCond> spCond, ASc
             if (!((Scaleform::GFx::Value*)(void*)(&vSort))->IsUndefined())
             {
                 ASObj sortObj(vSort, 2);
-                nSortKey = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sortObj.GetMember(s_strJobCode)))->GetInt();
+                nSortKey = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sortObj.GetMember(s_strSortValue)))->GetInt();
             }
         }
         Scaleform::GFx::Value vSortJob = data.GetMember("sortJob");
@@ -6611,7 +6611,7 @@ bool UIMeratMarketDialog::FillSearchData(MS2Ptr<CMeratMarketSchCond> spCond, ASc
             if (!((Scaleform::GFx::Value*)(void*)(&vSortJob))->IsUndefined())
             {
                 ASObj jobObj(vSortJob, 2);
-                nJob = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(jobObj.GetMember(s_strSortValue)))->GetInt();
+                nJob = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(jobObj.GetMember(s_strJobCode)))->GetInt();
             }
         }
         int nPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("page")))->GetInt();

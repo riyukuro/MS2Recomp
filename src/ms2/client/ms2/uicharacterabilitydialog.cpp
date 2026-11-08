@@ -687,3 +687,4 @@ static __inline errno_t ms2_ca_memcpy_s(void* const d, size_t const dsz, void co
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnCaMemcpyS)(void*, size_t, const void*, size_t) = &ms2_ca_memcpy_s;
+// MS2-PIN: ??1CAtlStringMgr@ATL@@UEAA@XZ 0x140f2b1d0 ; byte-identical look-alike, keep the copy with this unit

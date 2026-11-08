@@ -17315,3 +17315,6 @@ criVdec_Create	140044470	func
 ?OnOpCode@Tracer@AS3@GFx@Scaleform@@UEAA_N_K@Z	14251acb0	func
 ??__EvtMissing@@YAXXZ	14014d1d0	func
 ??__E_Fac_tidy_reg@std@@YAXXZ	14014d1dc	func
+??__FvtMissing@@YAXXZ	142cc9a90	func
+?DAT_143ab4330@@3HA	143ab4330	data
+?FlushResultsArray@NiPick@@QEAAXXZ	141cb1890	func

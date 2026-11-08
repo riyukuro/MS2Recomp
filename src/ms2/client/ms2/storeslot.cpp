@@ -696,7 +696,7 @@ void StoreSlotBag::vfunc_il11(void* p)
 }
 
 // @0x14180b6c0
-void StoreSlotBag::vfunc_12()
+void StoreSlotBag::vfunc_il12()
 {
     Unk_SsDialog* pDlg = ((class Unk_SsDialog*)FUN_140de48d0(0x4e47));
     if (pDlg != 0)

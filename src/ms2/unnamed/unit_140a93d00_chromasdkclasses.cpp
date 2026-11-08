@@ -2265,6 +2265,7 @@ bool ChromaManagerImpl::LoadSDK()
     }
     catch (const char*)
     {
+        UnloadSDK();
         return false;
     }
     return true;

@@ -996,6 +996,7 @@ int FUN_14028e900(CString strPath)
     catch (CFileException* pException)
     {
         pException->Delete();
+        nResult = 0;
     }
     return nResult;
 }

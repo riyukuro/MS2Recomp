@@ -23,7 +23,7 @@ public:
     virtual void vfunc_9(void*) {}                  // 9  0x140be54f0
     virtual void vfunc_10(void*) {}                 // 10 0x140be5520
     virtual void vfunc_il11(void*) {}               // 11 0x140be5510
-    virtual void vfunc_12() {}                      // 12 0x140be5530
+    virtual void vfunc_il12() {}                    // 12 0x140be5530 (distinct name: UISwfEntity::vfunc_12 is another slot)
     virtual void vfunc_il13() {}                     // 13 0x140be5500
     virtual void vfunc_14(void*) {}                 // 14 0x140be5570
     virtual void vfunc_15(void*) {}                 // 15 0x140be55a0

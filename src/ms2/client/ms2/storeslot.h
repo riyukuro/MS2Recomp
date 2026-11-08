@@ -74,7 +74,7 @@ public:
     virtual void vfunc_9(void* p) override;             // UIItemEventListener 0x14180b560
     virtual void vfunc_10(void* p) override;            // 0x14180b5e0
     virtual void vfunc_il11(void* p) override;          // 0x14180b640
-    virtual void vfunc_12() override;                   // 0x14180b6c0
+    virtual void vfunc_il12() override;                 // 0x14180b6c0
 
     int FUN_14180b3e0(CStringW strSearch);              // first slot index whose item name contains strSearch
 

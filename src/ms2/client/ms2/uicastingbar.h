@@ -27,7 +27,7 @@ class ASTextField;
 // The arguments of one cast (0x38 bytes; ctor 0x140ac2eb0, dtor 0x140ac3070).
 struct Unk_CastingParam
 {
-    Unk_CastingParam() : m_nDuration(0), m_bShowTime(false), m_bActive(true), m_fStart(0.0f), m_fScale(1.0f), m_n10(0) {}
+    Unk_CastingParam() : m_nDuration(0), m_bShowTime(false), m_bActive(true), m_fStart(0.0f), m_fScale(1.0f), m_n10(0) { m_str20 = "yellow"; m_str18 = "show"; }
     int m_nDuration;                                                // +0x00 gauge time in ms
     bool m_bShowTime;                                               // +0x04 show the two time lines
     bool m_bActive;                                                 // +0x05

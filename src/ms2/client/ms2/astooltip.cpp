@@ -633,12 +633,17 @@ void ASTooltip::FUN_1409c7060(const CStringW& strLhs, const CStringW& strRhs)
 MS2_REPLACE_METHOD(0x1409C7060, ASTooltip, FUN_1409c7060, 600, 0x33E89F47);
 
 extern CStringW GetStringCommonByKey(const CStringW& strKey);
-static int s_bTextsLoaded;
+// The exe's one flag at 0x143ab4330: FUN_1409e5480 tests and sets it, FUN_1409c51f0 (unit_1409c4b40) clears it for a string reload.
+#ifdef MS2_HOOK_DLL
+static int DAT_143ab4330;   // DLL-local, like the s_ws* strings it guards
+#else
+int DAT_143ab4330;
+#endif
 
 // @0x1409e5480  loads the tooltip texts once
 void FUN_1409e5480()
 {
-    if (s_bTextsLoaded != 0)
+    if (DAT_143ab4330 != 0)
         return;
 
     s_wsKindLabel[0] = GetStringCommon(0xbf3);
@@ -670,9 +675,9 @@ void FUN_1409e5480()
     s_wsSocketTransfer = GetStringCommonByKey(L"s_tooltip_itemoption_socket_transfer");
     s_wsPetEvolutionPoint = GetStringCommonByKey(L"s_pet_tooltip_evolution_point");
     s_wsPetExp = GetStringCommonByKey(L"s_pet_tooltip_exp");
-    s_bTextsLoaded = 1;
+    DAT_143ab4330 = 1;
 }
-// not hooked: writes the unit statics s_ws*/s_bTextsLoaded (DLL-local copies; the exe readers would see empty strings)
+// not hooked: writes the unit statics s_ws*/DAT_143ab4330 (DLL-local copies; the exe readers would see empty strings)
 
 
 

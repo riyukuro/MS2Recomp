@@ -338,6 +338,8 @@ int Parse_140218100(const CStringA& value);                         // commonenu
 int Parse_1402199e0(const CStringA& value);                         // commonenum.cpp: the dungeon cooldown type
 
 // XmlEnumName (enum attribute given by name): placeholder/xmlattr.h.
+template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut);   // 0x140179060 for Unk_DungeonGroupType: the attribute holds the group name.
+template <> int XmlValueByName(TiXmlElement* pElem, const char* pszName, Unk_DungeonGroupType& eOut);
 
 // Count-prefixed vector streaming.
 template <class T> COutputStream& operator<<(COutputStream& out, const std::vector<T>& vec)
@@ -749,7 +751,7 @@ DungeonBonusRewardCtx::DungeonBonusRewardCtx()
 void DungeonBonusRewardCtx::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dungeonID", reinterpret_cast<unsigned int&>(m_dungeonID));
-    XmlValue(pElem, "groupType", m_groupType);
+    XmlValueByName(pElem, "groupType", m_groupType);
     XmlGetAttr((class TiXmlElement*)(pElem), "mesoRate", reinterpret_cast<float&>(m_mesoRate));
     XmlGetAttr((class TiXmlElement*)(pElem), "expRate", reinterpret_cast<float&>(m_expRate));
     XmlGetAttr((class TiXmlElement*)(pElem), "itemRolls", reinterpret_cast<int&>(m_itemRolls));

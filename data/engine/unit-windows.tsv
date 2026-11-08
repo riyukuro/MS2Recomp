@@ -18,7 +18,7 @@ gb:CryptoPP/	include	142303bd0	1423915b0
 # its cryptlib.cpp AAD_CHANNEL and DEFAULT_CHANNEL statics (/O2 di in the library .text$di run, atexit thunks in .text$yd:
 # AAD 0x142cc8bb0, DEFAULT 0x142cc8c20 by each ??__E lea rcx; gap4, fe66)
 gb:CryptoPP/	include	14013b180	14013b1bc
-gb:CryptoPP/	include	142cc8bb0	142cc8c90
+gb:CryptoPP/	include	142cc8bb0	142cc92b0
 # PCRE 8.21 (engine/units-lib-pcre.json, lb2): Scaleform pcre.lib between the import thunks and the Gamebryo tail
 gb:pcre/	include	1428d8f40	1428eb050
 # Crypto++ TUs the exe has no own code of (every pair is an ICF look-alike other TUs already match): compiled only so the

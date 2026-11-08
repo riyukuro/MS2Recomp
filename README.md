@@ -8,8 +8,22 @@ original. Together with the patched Gamebryo engine and the statically linked li
 replacement `MapleStory2.exe` (the "full executable", see [`BUILDING.md`](BUILDING.md)) that boots, logs in and plays
 on a server.
 
-The full executable is not finished. Its build still reads the original exe, a small amount of generated glue and a
-runtime shim cover what is not recovered yet, and the Nexon Messenger code is stubbed out.
+No function is left to write (see the table below), and `cmake/fullexe-plain` builds the full executable from this
+repository and your own SDKs without the original exe ([`BUILDING.md`](BUILDING.md#without-the-original-exe)). It is
+still not the same as the original. The gaps:
+
+- The equivalent functions in the table behave the same but are not byte matches, and the exe as a whole is not
+  byte-identical to the original.
+- The Nexon Messenger code is stubbed out.
+- The no-exe build uses stand-in resources: the exe's dev dialogs, menus, bitmaps and strings are absent, and its
+  dialogs look different.
+- The link still carries generated glue: the link aliases counted under the table, a zero-filled data stub and a small
+  runtime shim (entry point, crash log and a few startup patches).
+- That glue comes from a maintainer's build that reads the exe, so only the published tip builds without it, and the
+  default `cmake/fullexe` build still reads the exe.
+- Bugs the byte-match checks can't see still turn up (see [Recent fixes](#recent-fixes)), and not every gameplay flow
+  has been tested on the full executable.
+- To play you still need the game's data files and a server.
 
 The same sources also build a proxy `dinput8.dll` that uses Microsoft Detours to redirect functions of the original
 `MapleStory2.exe` to the recompiled ones. It is the development build: the per-unit gates link it, and it runs the
@@ -37,17 +51,17 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 176,769 | 176,621 (99.9%) | 144 (0.1%) | 100.0% |
-| Runtime & middleware | 24,743 | 23,987 (96.9%) | 639 (2.6%) | 99.5% |
-| Gamebryo engine | 16,736 | 16,696 (99.8%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 12,888 | 12,876 (99.9%) | 11 (0.1%) | 100.0% |
-| Libraries | 6,705 | 6,346 (94.6%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,003 | 12,999 (100.0%) | 4 (0.0%) | 100.0% |
+| Game · ms2 | 176,747 | 176,600 (99.9%) | 142 (0.1%) | 100.0% |
+| Runtime & middleware | 24,765 | 24,009 (96.9%) | 639 (2.6%) | 99.5% |
+| Gamebryo engine | 16,881 | 16,841 (99.8%) | 27 (0.2%) | 99.9% |
+| Game framework · egf | 13,113 | 13,101 (99.9%) | 11 (0.1%) | 100.0% |
+| Libraries | 6,731 | 6,372 (94.7%) | 22 (0.3%) | 95.0% |
+| Foundation | 13,065 | 13,061 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
-| **Total** | **251,626** | 250,305 (99.5%) | 848 (0.3%) | 99.8% |
+| **Total** | **252,084** | 250,764 (99.5%) | 846 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
-| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 73 | | | |
+| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 74 | | | |
 | Microsoft library code the rebuild holds once, as one identical copy shared by several | 5 | | | |
 | Microsoft library code linked from another version of the same library | 1 | | | |
 | Microsoft library code the original never calls, left out of the rebuild's link | 56 | | | |
@@ -55,10 +69,30 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Exception filters of done functions that the rebuild's compiler folds into a constant (same behaviour) | 4 | | | |
 | *Not done, still to write* | 0 | | | |
 
-Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 473 functions that are neither matched nor equivalent. Counting the 473 that are not missing, 100.0% is done.
+Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 474 functions that are neither matched nor equivalent. Counting the 474 that are not missing, 100.0% is done. Functions rose by 458 since the last publish: 458 atexit destructors, real functions of the original that no earlier table listed, are now counted.
 
 Link aliases: 269 left: 8 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 261 `#pragma comment(linker, "/alternatename:...")` lines in 41 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. Part of the drop since then is aliases moved into the sources, not removed, which is why both places are counted.
 <!-- progress:end -->
+
+### Recent fixes
+
+Fixed since the last publish. The byte-match checks can't see any of these bugs. The equip crash is the only one seen in
+the client; the other effects come from reading the code.
+
+- Equipping an item (dragging a sword onto the Character window) crashed the client.
+- The Merat market search read its job and sort values from each other's keys.
+- Reloading strings left the tooltip texts stale: the reset cleared a flag nothing read.
+- A failed Razer Chroma SDK load left the SDK half-loaded. Two other catch blocks were also missing code, with no
+  change in normal behaviour.
+- Each world change left the pick records holding references to the old scene's objects.
+- Post-process render clicks cleared to the renderer's background colour instead of black.
+- An item chat link printed its uid and item id as signed numbers, which only shows for negative values.
+- Some casting bars got an empty colour and start frame unless the skill data set them. The on-screen effect has not
+  been checked.
+- A dungeon bonus reward read its group type as a number, so a group name would not load.
+- Item event broadcasts also reloaded the character-create dialog's customize controller.
+- Scaleform: a font-config translator dropped trailing newlines, a pattern-chain lookup left the caller's range stale,
+  and an E4X search walked the whole subtree instead of stopping at the first match.
 
 ## Layout
 
@@ -95,8 +129,8 @@ Link aliases: 269 left: 8 `/alternatename` lines in `data/fullexe/plain/alias.rs
   and with `engine-patches-v2525/` into `engine/gamebryo-v2525/` (the full-executable configure does the second one;
   see [`BUILDING.md`](BUILDING.md))
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
-- The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`): the full-executable build reads it, and
-  the DLL runs against it
+- The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`): the default full-executable build reads it,
+  and the DLL runs against it. The no-exe build (`cmake/fullexe-plain`) does not need it
 - For the full executable, the other SDKs and library sources listed in [`BUILDING.md`](BUILDING.md#your-sdks)
 
 ## Build
@@ -115,6 +149,10 @@ cmake --preset fullexe && cmake --build build/fullexe
 ```
 
 The result is `build/fullexe/out/MapleStory2.exe` (a copy of `fullexe3.exe`, which stays next to it).
+
+That build reads the original exe. To build without it, use `cmake/fullexe-plain` with `-DMS2_PLAIN_COMPILE=ON` (the
+`windows-noexe` preset in Visual Studio; on Linux, pass the flag to CMake): see
+[Without the original exe](BUILDING.md#without-the-original-exe).
 
 ### Hook DLL (development)
 
@@ -147,8 +185,8 @@ The per-unit gate does these builds for you (`python tools\unit_check.py`). Both
 ### Full executable
 
 In a copy of the game folder, replace `x64/MapleStory2.exe` with the built `MapleStory2.exe` and remove any `dinput8.dll`, then
-start the game as usual (under Wine: `wine x64/MapleStory2.exe`). The runtime shim logs fatal exceptions, and any call to a
-function that is not recovered yet, to `fullexe-trap.log` beside the exe.
+start the game as usual (under Wine: `wine x64/MapleStory2.exe`). The runtime shim logs fatal exceptions to
+`fullexe-trap.log` beside the exe.
 
 ### Hook DLL (development)
 

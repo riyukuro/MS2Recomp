@@ -1502,7 +1502,6 @@ obj/commonfiles/achievecondition.obj
 gb/obj/stock/stock__engine__gamebryo__3rdParty__Effects11__Package__EffectNonRuntime.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__EngineLibs__NiTerrain__NiTerrainSectorFileDeveloper.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecrInput__ControlBuiltins.cpp.obj
-gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ServiceAllocator.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efdNetwork__BridgeService.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__Foundation__efdNetwork__TransportFactory.cpp.obj
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__BreakpointMessages.cpp.obj
@@ -3615,6 +3614,7 @@ obj/scaleform/gfx/sfr_gfx_09.obj
 obj/scaleform/gfx/sfr_gfx_09b.obj
 obj/scaleform/gfx/sfr_gfx_09c.obj
 obj/unnamed/lib_atl_moduleterm.obj
+gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ServiceAllocator.cpp.obj
 obj/unnamed/lib_cryptopp_tail.obj
 obj/scaleform/kernel/sfr_atexit_01.obj
 obj/unnamed/lib_yd_atl.obj

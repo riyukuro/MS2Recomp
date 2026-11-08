@@ -496,6 +496,7 @@ inline bool FUN_1401d3720(CString& str)
     catch (CException* e)
     {
         (void)e;
+        (void)((!!(0)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 0x193), 0));
         return false;
     }
     return true;

@@ -128,7 +128,7 @@ class FontTranslator : public Scaleform::GFx::Translator
 public:
     typedef Scaleform::Hash<Scaleform::String, Scaleform::String, Scaleform::String::HashFunctor> MappingHash;
 
-    virtual unsigned GetCaps() const { return Cap_StripTrailingNewLines; }
+    // no GetCaps override: vftable 0x14311af20 slot 1 is the base Translator::GetCaps (0x1422fce40)
 
     void AddMapping(const Scaleform::String& key, const Scaleform::String& value);      // 0x1422f9cd0
     void AddMappings(const MappingHash& mappings);

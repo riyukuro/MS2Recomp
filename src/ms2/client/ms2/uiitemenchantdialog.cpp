@@ -2218,7 +2218,7 @@ void UIItemEventDispatcher::vfunc_11()
     for (size_t i = 0; i < m_listeners.GetCount(); i++) {
         UIItemEventListener* listener = m_listeners.GetAt(i);
         if (listener != 0 && listener->vfunc_il1() != 0)
-            listener->vfunc_12();
+            listener->vfunc_il12();
     }
 }
 

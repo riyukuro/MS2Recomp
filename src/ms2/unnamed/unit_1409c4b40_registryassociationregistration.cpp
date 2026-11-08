@@ -8,7 +8,6 @@
 #include "ms2/ms2recover.h"
 #include <efd/StringUtilities.h>
 
-static int s_flag_143ab4330;                                    // 0x143ab4330
 
 // HKEY hand-holder (the exe's CRegKey-shaped helper): ctor zeroes the handle, dtor closes it.
 class Unk_1409c4ef0
@@ -115,9 +114,10 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 void FUN_1409c51f0(void);
 #ifndef MS2_HOOK_DLL
+extern int DAT_143ab4330;   // astooltip.cpp: the flag FUN_1409e5480 tests before loading the tooltip texts
 // @0x1409c51f0
 void FUN_1409c51f0(void)
 {
-    s_flag_143ab4330 = 0;
+    DAT_143ab4330 = 0;
 }
 #endif

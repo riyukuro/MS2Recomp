@@ -508,7 +508,7 @@ void UIMyInfoDialog::vfunc_21(void* p)
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0)
     {
-        MS2Ptr<CItem> spItem = FUN_140ccac60(*static_cast<MS2Ptr<CItem>*>(p));
+        MS2Ptr<CItem> spItem = FUN_140ccac60(MS2Ptr<CItem>(static_cast<CItem*>(p)));
         spItem->SetObjectId(pAvatar->vfunc_25());
         pAvatar->FUN_1418baf40(spItem.get());
     }
@@ -566,7 +566,7 @@ void UIMyInfoDialog::vfunc_30(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->EquipItem(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->EquipItem(MS2Ptr<CItem>(static_cast<CItem*>(p)));
 }
 
 // @0x141a5a090
@@ -576,7 +576,7 @@ void UIMyInfoDialog::vfunc_31(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->RemoveItemOfSameGemType(MS2Ptr<CItem>(*static_cast<MS2Ptr<CItem>*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->RemoveItemOfSameGemType(MS2Ptr<CItem>(static_cast<CItem*>(p)));
 }
 
 // @0x141a5a190

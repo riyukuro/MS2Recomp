@@ -1503,7 +1503,6 @@ obj/commonfiles/achievecondition.obj	cl	${ROOT}	${ROOT}/src/ms2/commonfiles/achi
 gb/obj/stock/stock__engine__gamebryo__3rdParty__Effects11__Package__EffectNonRuntime.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/3rdParty/Effects11/Package/EffectNonRuntime.cpp	130
 gb/obj/stock/stock__engine__gamebryo__CoreRuntime__EngineLibs__NiTerrain__NiTerrainSectorFileDeveloper.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/CoreRuntime/EngineLibs/NiTerrain/NiTerrainSectorFileDeveloper.cpp	14
 gb/obj/stock/stock__engine__gamebryo__GameFramework__ecrInput__ControlBuiltins.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/GameFramework/ecrInput/ControlBuiltins.cpp	64
-gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ServiceAllocator.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/Foundation/efd/ServiceAllocator.cpp	71
 gb/obj/stock/stock__engine__gamebryo__Foundation__efdNetwork__BridgeService.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/Foundation/efdNetwork/BridgeService.cpp	122
 gb/obj/stock/stock__engine__gamebryo__Foundation__efdNetwork__TransportFactory.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/Foundation/efdNetwork/TransportFactory.cpp	122
 gb/obj/stock/stock__engine__gamebryo__GameFramework__egf__BreakpointMessages.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/GameFramework/egf/BreakpointMessages.cpp	85
@@ -3616,6 +3615,7 @@ obj/scaleform/gfx/sfr_gfx_09.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/gfx/sfr_gf
 obj/scaleform/gfx/sfr_gfx_09b.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/gfx/sfr_gfx_09b.cpp	6
 obj/scaleform/gfx/sfr_gfx_09c.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/gfx/sfr_gfx_09c.cpp	6
 obj/unnamed/lib_atl_moduleterm.obj	cl	${ROOT}	${ROOT}/src/ms2/unnamed/lib_atl_moduleterm.cpp	28
+gb/obj/stock/stock__engine__gamebryo__Foundation__efd__ServiceAllocator.cpp.obj	cl	${ROOT}	${ENGINE}/gamebryo/Foundation/efd/ServiceAllocator.cpp	71
 obj/unnamed/lib_cryptopp_tail.obj	cl	${ROOT}	${ROOT}/src/ms2/unnamed/lib_cryptopp_tail.cpp	28
 obj/scaleform/kernel/sfr_atexit_01.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/kernel/sfr_atexit_01.cpp	6
 obj/unnamed/lib_yd_atl.obj	cl	${ROOT}	${ROOT}/src/ms2/unnamed/lib_yd_atl.cpp	28

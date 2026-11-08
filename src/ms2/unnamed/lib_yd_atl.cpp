@@ -2,7 +2,7 @@
 // lib_di_atl initializers register. Two linked objects each carry the selectany _AtlComModule / _AtlWinModule
 // pair, so each destructor appears twice.
 // MS2-UNIT: lib_yd_atl
-// MS2-RANGE: 0x142cc99b4-0x142cc9a7c .text$yd
+// MS2-RANGE: 0x142cc99b4-0x142cc9a88 .text$yd
 // MS2-FLAGS: gamebryo
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -58,3 +58,10 @@ void FUN_142cc9a38()
     reinterpret_cast<AtlWinModuleDtor&>(ATL::_AtlWinModule).~AtlWinModuleDtor();
 }
 #pragma optimize("", on)
+
+// ~CAtlBaseModule on the exe's _AtlBaseModule; FUN_14014d1ac registers it.
+// @0x142cc9a7c
+void FUN_142cc9a7c()
+{
+    ATL::_AtlBaseModule.~CAtlBaseModule();
+}

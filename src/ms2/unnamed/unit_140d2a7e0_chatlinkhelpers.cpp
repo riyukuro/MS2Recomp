@@ -717,7 +717,7 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
 {
     unsigned __int64 nLinkId = nUid;
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
-    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nUid, nItemId, nGrade);
+    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, reinterpret_cast<unsigned __int64&>(nUid), reinterpret_cast<unsigned&>(nItemId), reinterpret_cast<ItemGradeKey&>(nGrade));
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == NULL)

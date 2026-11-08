@@ -881,7 +881,7 @@ void MS2PickService::vfunc_3(int)
 {
     if (m_pPicker != 0) {
         m_pPicker->RemoveTarget();
-        m_pPicker->ClearResultsArray();
+        m_pPicker->FlushResultsArray();
     }
 }
 MS2_REPLACE_METHOD_VIA(0x1414EE810, MS2PickService, IWorldServiceCallback, vfunc_3, 58, 0x6B060310);
