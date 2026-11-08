@@ -4,8 +4,8 @@
 // MS2-RANGE: 0x1400fe8a0-0x1400feaa0 .text$di
 // MS2-RANGE: 0x142cb5990-0x142cb5aa0 .text$yd
 // MS2-PIN: ?FUN_1416d2910@CQuestManager@@QEAAHIAEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@std@@H@Z 0x1416d2910
-// MS2-PIN: ??0<lambda_6d510819a8f69a3a4b14e1326e882a6b>@@QEAA@I@Z 0x1416dbb80
-// MS2-PIN: ??R<lambda_6d510819a8f69a3a4b14e1326e882a6b>@@QEBA_NAEBUUnk_QmNpcQuestEntry@@0@Z 0x1416dcda0
+// MS2-PIN: ??0Unk_QmNpcQuestSort@@QEAA@I@Z 0x1416dbb80
+// MS2-PIN: ??RUnk_QmNpcQuestSort@@QEBA_NAEBUUnk_QmNpcQuestEntry@@0@Z 0x1416dcda0
 // MS2-PIN: ??R<lambda_ffd9fd9b7ed9f8dca7c54b6016c3fa67>@@QEBAXV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x1416dcb40
 // MS2-PIN: ??R<lambda_32cce3d07944f0fc8bfd10ee14b4b6f1>@@QEBAXAEBV?$list@IV?$allocator@I@std@@@std@@@Z 0x1416dcb90
 // MS2-PIN: ??0<lambda_ffd9fd9b7ed9f8dca7c54b6016c3fa67>@@QEAA@AEBH@Z 0x1416dad20
@@ -1861,6 +1861,26 @@ void CQuestManager::FUN_1416d1060(ATL::CAtlArray<MS2Ptr<CQuest>>& out)
 MS2_REPLACE_METHOD(0x1416d1060, CQuestManager, FUN_1416d1060, 152, 0xCE32F7F4);
 
 // @0x1416d12d0
+// The comparator of the FUN_1416d12d0 sort (a capturing lambda in the original). EXE BUG, reproduced: its capture ctor
+// 0x1416dbb80 ignores the argument and copies the member onto itself, so m_bestQuest is whatever the stack slot held and
+// the "best quest first" tests in operator() don't fire. The list stays in score, then level, order. The SDK-correct
+// form is m_bestQuest(bestQuest). A lambda can't express this ctor (no capture spelling gives it, 14 probed), so this
+// is a named class.
+struct Unk_QmNpcQuestSort {
+    unsigned m_bestQuest;
+    Unk_QmNpcQuestSort(unsigned bestQuest) : m_bestQuest(m_bestQuest) {}
+    bool operator()(const Unk_QmNpcQuestEntry& a, const Unk_QmNpcQuestEntry& b) const {
+        if (a.m_questId == m_bestQuest) return true;
+        if (b.m_questId == m_bestQuest) return false;
+        if (a.m_score == b.m_score) {
+            MS2Ptr<CQuestData> dataA = FUN_14074bc40(a.m_questId);
+            MS2Ptr<CQuestData> dataB = FUN_14074bc40(b.m_questId);
+            if (dataA.IsNull() || dataB.IsNull()) return false;
+            return dataA->m_level > dataB->m_level;
+        }
+        return a.m_score > b.m_score;
+    }
+};
 int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
 {
     const std::vector<unsigned>* quests = ((std::vector<unsigned int, std::allocator<unsigned int>> const*)((QuestDataTable*)(Unk_QgQuestTable*)(reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())))->GetQuestIdsByNpc(npcId));
@@ -1888,19 +1908,7 @@ int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
         }
     }
     if (state->m_wantText != 0) {
-        // MS2: the exe's capture ctor (0x1416dbb80) ignores its argument and copies the member onto itself (no source
-        // form found in two probes); this one stores the argument (functional COMDAT).
-        std::sort(entries.begin(), entries.end(), [bestQuest = state->m_questId](const Unk_QmNpcQuestEntry& a, const Unk_QmNpcQuestEntry& b) {
-            if (a.m_questId == bestQuest) return true;
-            if (b.m_questId == bestQuest) return false;
-            if (a.m_score == b.m_score) {
-                MS2Ptr<CQuestData> dataA = FUN_14074bc40(a.m_questId);
-                MS2Ptr<CQuestData> dataB = FUN_14074bc40(b.m_questId);
-                if (dataA.IsNull() || dataB.IsNull()) return false;
-                return dataA->m_level > dataB->m_level;
-            }
-            return a.m_score > b.m_score;
-        });
+        std::sort(entries.begin(), entries.end(), Unk_QmNpcQuestSort(state->m_questId));
         CStringW text;
         for (auto it = entries.begin(); it != entries.end(); ++it) {
             if (it != entries.begin()) text.Append(L"\n");

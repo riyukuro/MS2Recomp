@@ -99,6 +99,8 @@
 ?TrackAllocate@MemTracker@efd@@UEAA_NQEBX_KVMemHint@2@W4MemEventType@2@PEBDH4@Z	142089dc0	func
 ?TrackDeallocate@MemTracker@efd@@UEAA_NQEBXW4MemEventType@2@@Z	14208a050	func
 ?UpdateConstantBufferPacking@D3D11ShaderConstantMap@ecr@@QEAA_NPEBVConstantBufferDesc@2@AEAVNiDataStreamElementSet@@@Z	14283df40	func
+# fe66: 14283f8a0 = FixedString::operator=(&ms_globalConstantBufferString 0x143d717a0, "$Globals"); the adjacent _SDMShutdown 14283f8c0 nulls the same global. It was byte-search paired to ??__Eg_NullVS@D3DX11Effects (Effects11 is not in the exe)
+?_SDMInit@D3D11ShaderConstantMap@ecr@@SAXXZ	14283f8a0	func
 ?WriteCompiledTextures@NiTerrainSurfacePackageFileVersion1@@IEAA_NXZ	141f8f680	func
 ?WriteConfiguration@ConfigManager@efd@@UEAAXAEBVutf8string@2@_N@Z	1420b4ff0	func
 ?getErrorMessage@Socket@efd@@QEAA?AVutf8string@2@I@Z	1428caa20	func
@@ -285,6 +287,7 @@ _wrap_new_Point4__SWIG_3	14221e680	func
 ??__F?ms_kCriticalSection@NiLogger@@1VFastCriticalSection@efd@@A@@YAXXZ	142cc4c80	func
 ??__EAAD_CHANNEL@CryptoPP@@YAXXZ	14013b180	func
 ??__FAAD_CHANNEL@CryptoPP@@YAXXZ	142cc8bb0	func
+??__FDEFAULT_CHANNEL@CryptoPP@@YAXXZ	142cc8c20	func
 # gb15: engine copy of a name the game's TinyXML (commonfiles\tinyxmlhelper.cpp, 0x1408720d0) also defines
 ?TiXmlFOpen@@YAPEAU_iobuf@@PEBD0@Z	1420bf550	func
 # gb16: empty _SDMInit (ret 0) sits between the TU's _Rrotate and _SDMShutdown; unpinned it took a byte-identical $yd ret-0 slot
@@ -763,6 +766,45 @@ LocalPcreFree	1428ea360	func	pcre_globals.c static: pcre_free/pcre_stack_free 0x
 ??__FkCAT_INVALID@efd@@YAXXZ	142cc6f40	alias	__kfmfactoryresponse.
 ??__FkCAT_INVALID@efd@@YAXXZ	142cc6fd0	alias	__animationservice.
 ??__FkCAT_INVALID@efd@@YAXXZ	142cc6ff0	alias	__kfmcacheresponse.
+# fe66: the 23 `ret 0` band dtors merge 71 left rowless (fe64 18f7b0fa6 removed their false names). Each is the lea rcx target of a matched
+# ??__EkCAT_INVALID thunk (lea rcx,<dtor>; jmp atexit 0x142749970), so its name is ??__FkCAT_INVALID. The obj is the one its ??__E row is paired to;
+# only KFMFactory 142cc6f30 has a proven owner (TU block from its own ms_ClassInfo, one kCAT before the next name-order boundary), the rest are labels
+??__FkCAT_INVALID@efd@@YAXXZ	142cc50a0	alias	__niphysxsrc.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc5280	alias	__scenegraphcacheresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc5290	alias	__scenegraphcacheresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc57e0	alias	__inputservicedpad.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6a30	alias	__luaresumecoroutinetask.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6d50	alias	__sceneservice.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6f30	alias	__kfmfactory.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7140	alias	__propertyvisualizationservice.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7160	alias	__propertyvisualizationservice.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7170	alias	__animationservice.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc71d0	alias	__kfmcacheresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc71e0	alias	__kfmcacheresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc71f0	alias	__kfmfactoryresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7200	alias	__ecrphysxbindings.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7210	alias	__kfmcache.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7220	alias	__egmanimationpch.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7250	alias	__egmanimationpch.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7270	alias	__kfmfactoryrequest.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7280	alias	__visualtrackerservice.
+??__FkCAT_INVALID@efd@@YAXXZ	142cca290	alias	__ischedulerscripting.
+??__FkCAT_INVALID@efd@@YAXXZ	142cca2a0	alias	__scriptfactoryresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cca2b0	alias	__scriptfactoryresponse.
+??__FkCAT_INVALID@efd@@YAXXZ	142cca2c0	alias	__scenegraphcache.
+# fe66: and the neighbours these rows would shift onto a false kCAT_LocalMessage/NetEvent/NetSystem name; each is the lea rcx target of a matched ??__EkCAT_INVALID
+??__FkCAT_INVALID@efd@@YAXXZ	142cc5180	alias	__scenegraphcache.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc52a0	alias	__rendersurfacestep.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6a40	alias	__luaresumeentitycreatetask.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6a50	alias	__luaresumewaitertask.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6b20	alias	__matrix3_luawrap_release.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6d80	alias	__quaternion_luawrap_release.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6f00	alias	__kfmcache.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6f10	alias	__kfmfactoryrequest.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc7180	alias	__iattachedobjectsproperty.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6b70	alias	__point2_luawrap_release.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6bc0	alias	__point3_luawrap_release.
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6c10	alias	__point4_luawrap_release.
 # fe57: pin the HEAD pairings these ??__F aliases would otherwise shift (kCAT_INVALID/map-dtor copy pool)
 ??__EkCAT_INVALID@efd@@YAXXZ	14012ba20	alias	__inputservicedpad.
 ??__E?ms_propertyMap@ActorModel@egmAnimation@@0V?$map@IV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@U?$less@I@std@@@efd@@A@@YAXXZ	140132500	alias	__actormodel.

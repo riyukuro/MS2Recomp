@@ -292,7 +292,7 @@ void CCameraMode::FUN_140afdaa0(MS2Ptr<CCameraMode> pPrev)
     }
     else
     {
-        m_48 = 3.92699082f;
+        m_48 = 3.926991f;   // the exe constant is 0x407b53d2 (3.926991f), one ULP above 5*pi/4
         m_4c = 0.698131740f;
         m_50 = 1200.0f;
         m_54 = 1200.0f;

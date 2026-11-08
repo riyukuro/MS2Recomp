@@ -99,15 +99,15 @@ public:
 
 // The fly-by camera request stored in the camera manager at +0x34 (0x80 bytes, camera.h's Unk_CameraFlyBy):
 // interpolation kind (1 linear, 2 log, 3 exp), duration, then the start and end camera settings. FUN_140aed580 copies
-// all 0x80 bytes; the setting the fly-by returns to (+0x58) is left unset here, as the exe's triggerservice local does.
+// all 0x80 bytes, including the setting the fly-by returns to (+0x58). The exe's local in FUN_141863460 runs the 3-setting
+// ctor 0x140947440, so m_return holds the default setting, not stack garbage.
 struct Unk_FlyByCameraData
 {
     int m_nKind;                                // +0x00
     float m_fDuration;                          // +0x04
     Unk_CameraSetting m_from;                   // +0x08
     Unk_CameraSetting m_to;                     // +0x30
-    float m_r58, m_r5c, m_r60, m_r64, m_r68;    // +0x58 the return Unk_CameraSetting, not constructed
-    float m_r6c, m_r70, m_r74, m_r78, m_r7c;
+    Unk_CameraSetting m_return;                 // +0x58
 };
 MS2_CHECK_SIZE(Unk_FlyByCameraData, 0x80);
 

@@ -36,11 +36,12 @@ struct Unk_EmPlayer : public PC
 };
 struct Unk_EmWorld { Unk_EmPlayer* FUN_141bd0cc0(); };          // the local player
 
-// The app framework: +8 holds the service manager and the frame clock.
+// The app framework: +8 is the game context, whose +8 (CMainSystem+0x10) holds the service manager.
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
 struct Unk_EmApp
 {
     void* m_pad_00;
-    efd::SmartPointer<Unk_ServiceManager> m_spServiceManager;   // +0x08
+    Unk_GameContext m_context;   // +0x08
     // C3: the application time is CMainSystem::FUN_141473280
 };
 
@@ -223,7 +224,7 @@ NiAVObject* FUN_141167cf0(const CString& strName)
                     return pMesh;
             }
         } else {
-            Unk_ServiceManager* pServices = reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager;
+            Unk_ServiceManager* pServices = reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->m_context.FUN_140af8310());
             egmAnimation::AnimationService* pAnimation = pServices->GetSystemServiceAs<egmAnimation::AnimationService>();
             NiActorManager* pActor = pAnimation->GetActorManager(pPlayer->FUN_14123c460());
             if (pActor == 0)

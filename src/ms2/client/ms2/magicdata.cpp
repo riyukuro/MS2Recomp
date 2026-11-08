@@ -417,8 +417,11 @@ struct Unk_MagicAttacker { char m_pad[0x150]; int m_nTag; };
 struct Unk_MagicAttackerPtr { void* m_pad; Unk_MagicAttacker* m_p; };   // MS2Ptr<SkillData>
 MS2_CHECK_SIZE(Unk_MagicAttackerPtr, 0x10);
 
-// A 12 byte sub-record of the skill row whose first int is a flag (0x1407dfbb0).
-struct Unk_MagicRowFlag { int m_nPad; int m_nValue; int m_nPad2; int FUN_1407dfbb0() const { return m_nValue == 1; } };
+// The head of the skill row's SkillArrow (skillattackdata.h): +0 overlap, +4 explosion, +8 nonTarget.
+// FUN_1407dfbb0 = SkillArrow::IsNonTargetOne (0x1407dfbb0), which tests nonTarget (+8). It used to test +4, so in
+// fullexe and the hook DLL a basic attack's hits were all dropped (only the caster's own id was kept) and no
+// 'Attack Target' packet was sent.
+struct Unk_MagicRowFlag { int m_nPad; int m_nValue; int m_nPad2; int FUN_1407dfbb0() const { return m_nPad2 == 1; } };
 
 // The skill row (skillrecord.cpp); only the members the projectile reads.
 struct Unk_MagicSkillRow {

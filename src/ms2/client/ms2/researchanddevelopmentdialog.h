@@ -26,7 +26,7 @@ public:
     afx_msg void OnBnClickedOk();                                   // 0x140c9c6d0: IDOK
     afx_msg void OnBnClickedPlay();                                 // 0x140c9c6f0: 0x4e5 play the net stream at the slider volume
     afx_msg void OnBnClickedStop();                                 // 0x140c9c7d0: 0x4e6 drop the net stream
-    afx_msg void OnNMCustomdrawVolume(NMHDR* pNMHDR, LRESULT* pResult);   // 0x140c9c800: 0x4e7 slider moved
+    afx_msg void OnNMReleasedcaptureVolume(NMHDR* pNMHDR, LRESULT* pResult);   // 0x140c9c800: 0x4e7 slider released (NM_RELEASEDCAPTURE)
     afx_msg void OnBnClickedRecord();                               // 0x140c9c8b0: 0x4ec start the recording
     afx_msg void OnBnClickedStopRecord();                           // 0x140c9c950: 0x4ed stop the recording
     afx_msg void OnNMClickHelp(NMHDR* pNMHDR, LRESULT* pResult);    // 0x140c9c980: 0x4ef open the codec help page

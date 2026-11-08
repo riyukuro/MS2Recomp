@@ -3534,7 +3534,7 @@ void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Cate
         {
             Unk_Ws1EntMap::iterator it = reinterpret_cast<Unk_Ws1EntMap*>(&m_2e8)->find(ent->GetEntityID());
             if (it != reinterpret_cast<Unk_Ws1EntMap*>(&m_2e8)->end())
-                m_2e8.erase(reinterpret_cast<std::map<unsigned __int64, Unk_WsV2e8>::iterator&>(it));
+                reinterpret_cast<Unk_Ws1EntMap*>(&m_2e8)->erase(it);    // releases the entity reference taken by the insert (node dtor 0x141bf9fd0)
         }
         if (!reinterpret_cast<Unk_Ws1M11*>(&m_2f8)->IsEmpty())
         {
@@ -8776,7 +8776,7 @@ void FUN_141bf18d0(Unk_WsP16* self, const Unk_WsP16* src);
 MS2Ptr<UgcBannerObject> WorldService::FUN_141bda6d0(unsigned key)
 {
     MS2Ptr<UgcBannerObject> rec;
-    if (m_708.Lookup(key, reinterpret_cast<Unk_WsV708&>(rec)))
+    if (reinterpret_cast<Unk_Ws1F7*>(&m_708)->Lookup(key, reinterpret_cast<MS2Ptr<Unk_WsTargetF7>&>(rec)))
         return rec;
     return 0;
 }

@@ -101,7 +101,7 @@ BEGIN_MESSAGE_MAP(CToolTreeNodesDialog, CDialog)
     ON_COMMAND(IDOK, &CToolTreeNodesDialog::OnBnClickedOk)
     ON_COMMAND(IDCANCEL, &CToolTreeNodesDialog::OnBnClickedCancel)
     ON_WM_CLOSE()
-    ON_NOTIFY(TVN_SELCHANGED, 0x458, &CToolTreeNodesDialog::OnTvnSelchangedTree)
+    ON_NOTIFY(TVN_SELCHANGING, 0x458, &CToolTreeNodesDialog::OnTvnSelchangingTree)   // exe code 0xfe6f (TVN_SELCHANGINGA)
 END_MESSAGE_MAP()
 
 // @0x141858b50
@@ -153,7 +153,7 @@ void CToolTreeNodesDialog::OnClose()
 }
 
 // @0x141858d70
-void CToolTreeNodesDialog::OnTvnSelchangedTree(NMHDR* pNMHDR, LRESULT* pResult)
+void CToolTreeNodesDialog::OnTvnSelchangingTree(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
     CString strText = m_treeNodes.GetItemText(pNMTreeView->itemNew.hItem);

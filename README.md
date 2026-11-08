@@ -39,23 +39,23 @@ Merged totals by area (functions in the original executable; regenerated on each
 |---|---:|---:|---:|---:|
 | Game · ms2 | 176,769 | 176,621 (99.9%) | 144 (0.1%) | 100.0% |
 | Runtime & middleware | 24,743 | 23,987 (96.9%) | 639 (2.6%) | 99.5% |
-| Gamebryo engine | 16,746 | 16,696 (99.7%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 12,882 | 12,857 (99.8%) | 11 (0.1%) | 99.9% |
-| Libraries | 6,704 | 6,346 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,000 | 12,996 (100.0%) | 4 (0.0%) | 100.0% |
+| Gamebryo engine | 16,736 | 16,696 (99.8%) | 27 (0.2%) | 99.9% |
+| Game framework · egf | 12,888 | 12,876 (99.9%) | 11 (0.1%) | 100.0% |
+| Libraries | 6,705 | 6,346 (94.6%) | 22 (0.3%) | 95.0% |
+| Foundation | 13,003 | 12,999 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
-| **Total** | **251,626** | 250,283 (99.5%) | 848 (0.3%) | 99.8% |
+| **Total** | **251,626** | 250,305 (99.5%) | 848 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
-| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 71 | | | |
+| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 73 | | | |
 | Microsoft library code the rebuild holds once, as one identical copy shared by several | 5 | | | |
 | Microsoft library code linked from another version of the same library | 1 | | | |
 | Microsoft library code the original never calls, left out of the rebuild's link | 56 | | | |
 | Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
 | Exception filters of done functions that the rebuild's compiler folds into a constant (same behaviour) | 4 | | | |
-| *Not done, still to write* | 24 | | | |
+| *Not done, still to write* | 0 | | | |
 
-Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 495 functions that are neither matched nor equivalent. Counting the 471 that are not missing, 99.9% is done. The 24 still to write are 23 three-byte `ret` atexit destructors and one 12-byte thunk that had been credited under false names; they stay uncredited until their real names are proven. The latest merge lowers the Gamebryo engine, framework and Foundation rows, and the Matched total, by design: 32 Scaleform atexit thunks moved to their real Scaleform owners under Runtime & middleware, and atexit destructor names now count only inside the exe's atexit address range, which removed false engine names.
+Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 473 functions that are neither matched nor equivalent. Counting the 473 that are not missing, 100.0% is done.
 
 Link aliases: 269 left: 8 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 261 `#pragma comment(linker, "/alternatename:...")` lines in 41 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. Part of the drop since then is aliases moved into the sources, not removed, which is why both places are counted.
 <!-- progress:end -->

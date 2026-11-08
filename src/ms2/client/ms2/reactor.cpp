@@ -653,19 +653,20 @@ int FUN_140b7a650(PCBase* pPc)
     ATL::CRBMap<unsigned, Unk_WsV148>* pActors = pWorld->FUN_141bd36d0();
     for (POSITION pos = pActors->GetHeadPosition(); pos != 0; pActors->GetNext(pos))
     {
-        MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
-        if (spActor == 0)
+        // m_148 holds efd::SmartPointer<CNpc> (8 bytes, value at node+8, copy 0x140a7b390)
+        efd::SmartPointer<PCBase> spActor(*reinterpret_cast<efd::SmartPointer<PCBase>*>(&pActors->GetValueAt(pos)));
+        if (spActor == (PCBase*)0)
             continue;
-        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->GetCurStateId() == 2)
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.operator->()))->GetCurStateId() == 2)
             continue;
         bool bNotNpcKind = ((CNpcData*)(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData()).operator->())->GetFriendly() != 2;
         if (bNotNpcKind)
             continue;
-        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() != 0)
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.operator->()))->FUN_1416769d0() != 0)
             continue;
         Vector3 pt;
         // the exe copies the vfunc_18 result straight into the by-value arg
-        int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
+        int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.operator->())->vfunc_18()));
         FUN_1408a15b0(FUN_1408a0400(nActorCell), reinterpret_cast<efd::Point3&>(pt));
         float fDist = (pt - ptCenter).Length();
         if (fDist < fNear)

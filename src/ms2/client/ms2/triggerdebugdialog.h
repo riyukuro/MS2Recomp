@@ -31,7 +31,7 @@ public:
     int LoadXml();                                                  // 0x140b9c190
 
     afx_msg void OnTimer(UINT_PTR nIDEvent);                        // 0x140b9b8f0
-    afx_msg void OnMoving(UINT fwSide, LPRECT pRect);               // 0x140b9bd60
+    afx_msg void OnSizing(UINT fwSide, LPRECT pRect);               // 0x140b9bd60
     afx_msg void OnSize(UINT nType, int cx, int cy);                // 0x140b9bdb0
     afx_msg void OnDestroy();                                       // 0x140b9be10
     afx_msg void OnClose();                                         // 0x140b9be40

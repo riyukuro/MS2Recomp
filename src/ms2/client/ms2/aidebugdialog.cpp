@@ -182,9 +182,9 @@ void AiDebugDialog::OnTimer(UINT_PTR nIDEvent)
 }
 
 // @0x140988520
-void AiDebugDialog::OnMoving(UINT fwSide, LPRECT pRect)
+void AiDebugDialog::OnSizing(UINT fwSide, LPRECT pRect)
 {
-    CDialog::OnMoving(fwSide, pRect);
+    CDialog::OnSizing(fwSide, pRect);
     if (m_bInit)
         Resize();
 }
@@ -218,7 +218,7 @@ void AiDebugDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(AiDebugDialog, CDialog)
-    ON_WM_MOVING()
+    ON_WM_SIZING()   // the exe map entry is WM_SIZING (0x214); CWnd::OnMoving and OnSizing fold to one body (0x14098a620)
     ON_WM_SIZE()
     ON_WM_TIMER()
     ON_WM_CLOSE()

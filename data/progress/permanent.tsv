@@ -1,4 +1,4 @@
-# tools/permanent.py: 840 compiler-limited functions (functional, codegen not reproducible from source)
+# tools/permanent.py: 836 compiler-limited functions (functional, codegen not reproducible from source)
 #va	unit	reason
 140002100	sfr_video_04	builtin registration: keyValue/member slot sharing + GetStringManager scheduling (cl 15-era codegen note); inner-block and FUN_1400020d0 forms tried
 140002240	sfr_video_04	as 140002100
@@ -288,7 +288,6 @@
 1423d2410	sfr_ime_01	loop regalloc
 1423d2710	sfr_ime_01	opaque recovered code; register/slot/scheduling diffs (tried: vptr-first, ArrayDataBase field stores, early-return shapes, local order)
 1423d3510	sfr_ime_01	opaque recovered code; register/slot/scheduling diffs (tried: vptr-first, ArrayDataBase field stores, early-return shapes, local order)
-1423d41f0	sfr_ime_01	register allocation only
 1423d46f0	sfr_ime_01	frame slots + r12/r13 swap; exe list-ptr spill to rbp+0x77
 1423d4c20	sfr_ime_01	opaque recovered code; register/slot/scheduling diffs (tried: vptr-first, ArrayDataBase field stores, early-return shapes, local order)
 1423d54d0	sfr_ime_01	/O2 store scheduling, all 8-store orders give 12 lines
@@ -307,7 +306,6 @@
 1423da150	sfr_ime_01	rdi/rbx output vs node register swap; String-ref and decl-order variants tried
 1423da320	242	scheduling: exe loads second before the hr2 sign test and its failure jump skips the reload; same length (2 diff lines, one moved instruction) tried hoisted copy, _ReadWriteBarrier, hr2>=0&&second; this run kept that form, no source order moves the load
 1423daae0	sfr_ime_01	home-slot choice (rbx at rcx home, local at r8 home)
-1423db0c0	sfr_ime_01	frame 0x118 vs 0x148, r14/r15 vs rsi/r15 prolog regalloc through whole body; 276 lines
 1423de620	sfr_as3_01	exe lea slot + indexed load + [slot] store before FirstFreeRootIndex; next-in-local / ref / double-index forms all drop the lea (indexed store)
 1423de770	sfr_as3_01	regalloc/scheduling noise; 2 independent attempts; now 781 difflines obj 3361/exe 3229 |: not attempted in depth; hand-written body, exe has differing delayed-release block layout + regalloc (edi=1, 0 imm); needs a rework, not a 10-min lever
 1423df980	sfr_as2_01	ReleaseChildCall rbx/rdi swap; the SDK ReleaseCall form (Decrement expression, no child local) and a forceinline AddToList-with-IsInList helper give no change
@@ -684,8 +682,6 @@
 1427439b8	sfr_kernel_03o	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
 1427439c4	sfr_kernel_03o	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
 1427443c0	sfr_as2_01g	sdbm hash seed-constant add order (rdx vs rax); 8 shape variants insensitive
-1427447f0	sfr_as3_22	CreateBufferedAudioRequest: exit register allocation; the exe returns through r15 (null path copies the zero register) and restores r13 per createSound arm, ours returns through r12; early-return, if(object), separate result and SF_NEW-helper shapes all move it the wrong way
-1427449f0	sfr_as3_22	null-test fold before final inline Release ( tried mem test: size+7); 4 independent attempts; now 10 difflines obj 1194/exe 1199;: nested if(sample) no effect
 142744fe0	sfr_as3_22	exe immediate zero stores vs our rdi zero reg; tried early return, volatile
 1427451c0	sfr_as3_22	format/mode regs r8d/edx vs r9d/r8d; tried |= OPENRAW, mode decl order x3, mode per case, useropen before cbsize
 1427462b0	sfr_as3_22	register choice: the exe keeps the parameter in rcx until the first call; four helper and branch-order shapes gave no change

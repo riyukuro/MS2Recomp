@@ -137,7 +137,7 @@ void CUGCBallObject::FUN_140ded6d0()
     if (m_pActor == 0)
         return;
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
-    m_pActor->wakeUp(0.4f);
+    m_pActor->wakeUp(0.39999998f);   // the exe constant is 0x3ecccccc, one ULP below 0.4f
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
 

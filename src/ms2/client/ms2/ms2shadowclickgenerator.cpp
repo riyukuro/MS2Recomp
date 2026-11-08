@@ -633,7 +633,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     // Spin the light's world rotation by 45 degrees around the light direction.
     NiMatrix3 kRotation = pkDirLight->GetWorldRotate();
     NiMatrix3 kSpin;
-    kSpin.MakeRotation(0.78539819f, pkDirLight->GetWorldDirection());
+    kSpin.MakeRotation(0.785398f, pkDirLight->GetWorldDirection());   // the exe constant is 0x3f490fd8 (0.785398f), not pi/4
     kRotation = kSpin * kRotation;
     pkShadowCamera->SetRotate(kRotation);
     pkShadowCamera->SetScale(pkDirLight->GetWorldScale());

@@ -32,7 +32,7 @@ public:
     void AddStartMarker();                                          // 0x140988b70
 
     afx_msg void OnTimer(UINT_PTR nIDEvent);                        // 0x140988060
-    afx_msg void OnMoving(UINT fwSide, LPRECT pRect);               // 0x140988520
+    afx_msg void OnSizing(UINT fwSide, LPRECT pRect);               // 0x140988520
     afx_msg void OnSize(UINT nType, int cx, int cy);                // 0x140988570
     afx_msg void OnDestroy();                                       // 0x1409885d0
     afx_msg void OnClose();                                         // 0x140988600

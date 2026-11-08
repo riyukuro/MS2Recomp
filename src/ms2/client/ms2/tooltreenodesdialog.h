@@ -47,7 +47,7 @@ public:
     afx_msg void OnBnClickedOk();                                     // 0x141858d00
     afx_msg void OnBnClickedCancel();                                 // 0x141858d10
     afx_msg void OnClose();                                           // 0x141858d20
-    afx_msg void OnTvnSelchangedTree(NMHDR* pNMHDR, LRESULT* pResult);   // 0x141858d70
+    afx_msg void OnTvnSelchangingTree(NMHDR* pNMHDR, LRESULT* pResult);   // 0x141858d70
     DECLARE_MESSAGE_MAP()
 
 public:

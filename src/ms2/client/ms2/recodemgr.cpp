@@ -286,7 +286,7 @@ BEGIN_MESSAGE_MAP(CResearchAndDevelopmentDialog, CDialogEx)
     ON_BN_CLICKED(1, &CResearchAndDevelopmentDialog::OnBnClickedOk)
     ON_BN_CLICKED(0x4e5, &CResearchAndDevelopmentDialog::OnBnClickedPlay)
     ON_BN_CLICKED(0x4e6, &CResearchAndDevelopmentDialog::OnBnClickedStop)
-    ON_NOTIFY(NM_CUSTOMDRAW, 0x4e7, &CResearchAndDevelopmentDialog::OnNMCustomdrawVolume)
+    ON_NOTIFY(NM_RELEASEDCAPTURE, 0x4e7, &CResearchAndDevelopmentDialog::OnNMReleasedcaptureVolume)   // exe code 0xfff0
     ON_BN_CLICKED(0x4ec, &CResearchAndDevelopmentDialog::OnBnClickedRecord)
     ON_BN_CLICKED(0x4ed, &CResearchAndDevelopmentDialog::OnBnClickedStopRecord)
     ON_NOTIFY(NM_CLICK, 0x4ef, &CResearchAndDevelopmentDialog::OnNMClickHelp)
@@ -327,7 +327,7 @@ void CResearchAndDevelopmentDialog::OnBnClickedStop()
 }
 
 // @0x140c9c800
-void CResearchAndDevelopmentDialog::OnNMCustomdrawVolume(NMHDR* pNMHDR, LRESULT* pResult)
+void CResearchAndDevelopmentDialog::OnNMReleasedcaptureVolume(NMHDR* pNMHDR, LRESULT* pResult)
 {
     int nPos = m_sldVolume.GetPos();
     if (FUN_140c9cb10() != 0)
