@@ -98,6 +98,12 @@ SPEC_OWN = os.environ.get("MS2_GB_SPEC_OWN", "1") != "0"
 if SPEC_OWN:
     MATCH_KEY += "+specown"
     RELOK_KEY = "specown:" + RELOK_KEY
+# MS2_GB_YD_KIND (default on, =0 turns it off; fe64): an atexit destructor (??__F, .text$yd) lives only in the band every
+# atexit thunk points into, and nothing else lives there. All 223 `lea rcx,dtor; jmp atexit` thunks in the exe target
+# [YD_LO, YD_HI). Without this rule assign_copies treats their `ret 0` bodies as copies of any empty function: 50 of
+# them carried names like ?Do_LockRenderer@NiRenderer, and 14 ??__F names sat on `ret` bodies in .text$mn.
+YD_KIND = os.environ.get("MS2_GB_YD_KIND", "1") != "0"
+YD_LO, YD_HI = 0x142cc3de0, 0x142cca4e6
 _SPEC_OWNED = {}                # <cache>/gb/specown.json -> {obj path: [mangled names of its own inline specializations]}
 _SPEC_RE = re.compile(r"template\s*<\s*>\s*inline\s+__declspec\s*\(\s*noinline\s*\)\s+([^;{}]*?)::\s*(~?[A-Za-z_]\w*)\s*\(")
 
@@ -1096,7 +1102,11 @@ def assign_copies(res, cgroups, paths, j, log=print):
     for k, c in res.items():
         for n, gid in c.get("cands", ()):
             if gid in cgroups:
-                groups[(k, tuple(cgroups[gid]))].append(n)
+                hits = cgroups[gid]
+                if YD_KIND:
+                    # a function-local static's ??__F (@?1??) is ordinary .text code, registered at run time
+                    hits = [v for v in hits if (YD_LO <= v < YD_HI) == n.startswith("??__F") or "@?1??" in n]
+                groups[(k, tuple(hits))].append(n)
 
     # relocation consistency (gb12): the obj's exact pairs give exe VAs for its relocation targets (vftable, RTTI,
     # strings, statics); a copy whose relocations resolve elsewhere is another TU's (sibling classes' CreateObject /

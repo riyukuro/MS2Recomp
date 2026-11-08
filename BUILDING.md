@@ -21,7 +21,7 @@ copy of the objects is made.
   - vc11: cl 17.00.61030 for the Scaleform Video add-on (`tools/fetch-vs2012.sh`, from Microsoft's VS2012.4.iso and
     VS2012_WDX_ENU.iso; `--download` fetches both). It installs the VS2012 Update 4 compiler and VC headers and the
     Windows SDK 8.0 headers.
-- CMake 3.25 or newer, Ninja, Python 3 with the packages of `tools/` (the default is `.venv/bin/python`; override with
+- CMake 3.20 or newer, Ninja, Python 3 with the packages of `tools/` (the default is `.venv/bin/python`; override with
   `-DMS2_PYTHON=...`), LLVM binutils (`llvm-nm`, `llvm-undname`).
 - The original x64 `MapleStory2.exe` (KMS2_DEV build): `-DMS2_EXE=<file>` or the `MS2_EXE` environment variable, else `Game Versions/KMS2_DEV/x64/MapleStory2.exe` in the checkout (verified by `tools/check_exe.py`).
 - One free heavy slot (`tools/heavy_lock.py`): the link and the compile stage take it. The slots are files in `work/locks/`;
@@ -304,7 +304,7 @@ needs:
   `MS2_MSVC_ROOT` is needed;
 - nothing for the resources: the stand-in builds in (only the exe's own `.res` gives the original resources and a
   byte-identical `.rsrc`);
-- for a byte-identical exe, the reference build's checkout path (see "What matches" below). Any other path builds a
+- for a byte-identical exe, the reference build's checkout path (see "What matches" above). Any other path builds a
   working exe that differs in its `__FILE__` strings and layout.
 
 Still exe-bound: the default `cmake/fullexe` build (the stages above), and every glue refresh, which runs from an

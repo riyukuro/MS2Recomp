@@ -1676,7 +1676,7 @@ extern unsigned char DAT_14251b0e0[];
 extern unsigned char DAT_14251f430[];
 extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
 namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo; namespace fl_media { alignas(16) extern const ClassInfo SoundTransformCI; } } } }
-namespace Scaleform { namespace GFx { namespace AS3 { namespace Instances { namespace fl { extern const char* DateMonthNames[]; } } } } }
+struct Sd_143a2a8b0; extern Sd_143a2a8b0 DAT_143a2a8b0;  // Object's AS3 methods (data_data_game)
 extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2aab0[];
 extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d220[];
 // void FUN_1423c8ce0();
@@ -9220,7 +9220,7 @@ alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d850[6] = {
 // 0x14313d940
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ClassClassCI = { 0x3, "Class", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; } } } }
 // 0x14313d990
-namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ObjectCI = { 0x3, "Object", "", 0, &::Scaleform::GFx::AS3::ClassTraits::fl::Object::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)((const char*)::Scaleform::GFx::AS3::Instances::fl::DateMonthNames + 0x60), 0 }; } } } }
+namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo ObjectCI = { 0x3, "Object", "", 0, &::Scaleform::GFx::AS3::ClassTraits::fl::Object::MakeClassTraits, 0, 0, 3, 0, 0, 0, (const ThunkInfo*)&::DAT_143a2a8b0, 0 }; } } } }
 // 0x14313d9e0
 namespace Scaleform { namespace GFx { namespace AS3 { namespace fl { alignas(16) extern const ClassInfo StringCI = { 0x9, "String", "", (const TypeInfo*)&::Scaleform::GFx::AS3::fl::ObjectCI, &::Scaleform::GFx::AS3::ClassTraits::fl::String::MakeClassTraits, 2, 0, 20, 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x7c0), 0, (const ThunkInfo*)((const char*)DAT_143a2aab0 + 0x4a0), 0 }; } } } }
 // 0x14313da30

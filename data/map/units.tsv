@@ -766,7 +766,9 @@
 140142910	140146150	sfr_as3di_03	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140146150	140149990	sfr_as3di_04	none	300	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
 140149990	14014c8e0	sfr_as3di_05	none	250	di	sfr0 10-20: Scaleform 4.1.18 recovery, AS3 di
+14014cbb0	14014cc20	sfr_gfx_13	none	7	di	fe64 11-08: Scaleform atexit thunks (.text$di); owners per MS2-RANGE, row keeps them out of engine credit
 14014cc20	14014ce60	sfr_gfx_13	none	9	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
+14014ce60	14014d11c	sfr_gfx_13	none	37	di	fe64 11-08: Scaleform atexit thunks (.text$di); owners per MS2-RANGE, row keeps them out of engine credit
 140157e80	140157faf	sfr_gfx_13	none	5	di	sfr25 10-23: Scaleform gap plan: GFx static initialisers (unowned .text$di)
 1401580a0	14016da90	?\achievecondition.cpp	low	682	mn	
 14016da90	14016fda0	?\adbannerdata.cpp	low	65	mn	

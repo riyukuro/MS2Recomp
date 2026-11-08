@@ -10278,7 +10278,7 @@ criHeap_Destroy	140028074	func
 ?Sfr31WriteRecord3@AS3@GFx@Scaleform@@YAX_KKKK@Z	14252c8b0	func
 ?Sfr31TraceNoteJump@AS3@GFx@Scaleform@@YAX_K_J0JJ@Z	14252c9f0	func
 ?Sfr31StoreScopeStack@AS3@GFx@Scaleform@@YAX_K0PEA_K@Z	14252cad0	func
-?Sfr31TracerCommonOp@AS3@GFx@Scaleform@@YAD_KEPEA_K0@Z	14252d100	func
+?Sfr31TracerCommonOp@AS3@GFx@Scaleform@@YAD_KHPEA_K0@Z	14252d100	func
 ?Sfr31TracerHasTraits@AS3@GFx@Scaleform@@YA_N_K0@Z	14252e480	func
 ?Sfr31SwapChildren@AS3@GFx@Scaleform@@YA_N_K00@Z	14252e590	func
 ?Sfr31SwapChildrenAt@AS3@GFx@Scaleform@@YA_N_KKK@Z	14252e6d0	func
@@ -16727,7 +16727,7 @@ FUN_1423c9330	1423c9330	func
 ?WillTrigger@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEBA_NAEBVASString@56@_N@Z	14246c9a0	func
 ?FUN_1424d61c0@Render@Scaleform@@YAPEAVAllocator@Text@12@PEAV3412@PEAVMemoryHeap@2@E@Z	1424d61c0	func
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEBV0123@@Z	1424d8f90	func
-?FUN_1424d9f30@AS3@GFx@Scaleform@@YAPEA_KPEA_K_K111@Z	1424d9f30	func
+??0Tracer@AS3@GFx@Scaleform@@QEAA@PEAVMemoryHeap@3@AEBVCallFrame@123@AEAV?$ArrayLH_POD@_K$0BFC@UArrayDefaultPolicy@Scaleform@@@3@AEAUException@MethodBodyInfo@Abc@123@@Z	1424d9f30	func
 ??0Value@AS3@GFx@Scaleform@@QEAA@AEBV0123@W4StrongRefType@123@@Z	1424dbe60	func
 ?FUN_1424dcac0@@YAXPEAX@Z	1424dcac0	func
 ?FUN_1424dcb40@@YAXPEAX@Z	1424dcb40	func
@@ -17312,3 +17312,6 @@ criVdec_Create	140044470	func
 ?DAT_143a0ad08@@3USd_143a0ad08@@A	143a0ad08	data
 ?DAT_142e6b3a0@@3QBDB	142e6b3a0	data
 ?DAT_142f2d1e8@@3QBDB	142f2d1e8	data
+??1Tracer@AS3@GFx@Scaleform@@UEAA@XZ	1424df070	func
+?Output@Tracer@AS3@GFx@Scaleform@@UEAAXW4OutputMessageType@FlashUI@234@PEBD@Z	14251bda0	func
+?OnOpCode@Tracer@AS3@GFx@Scaleform@@UEAA_N_K@Z	14251acb0	func
