@@ -10271,7 +10271,7 @@ criHeap_Destroy	140028074	func
 ?Sfr27SetPropertyOfValue@AS3@GFx@Scaleform@@YAPEADPEADPEAVVM@123@PEBVValue@123@PEBVMultiname@123@2@Z	142528810	func
 ?Sfr31SetGcRefClearFlags@AS3@GFx@Scaleform@@YAXPEAK_K@Z	142528d20	func
 ?Sfr27SlotSetValueThis@AS3@GFx@Scaleform@@YAPEADPEBVSlotInfo@123@PEADPEAVVM@123@PEBVValue@123@3PEAVVTable@123@@Z	142529030	func
-?Sfr27SlotSetValueObj@AS3@GFx@Scaleform@@YAPEADPEBVSlotInfo@123@PEADPEAVVM@123@PEBVValue@123@PEAVObject@123@@Z	142529720	func
+?SetSlotValue@SlotInfo@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVVM@234@AEBVValue@234@QEAVObject@234@@Z	142529720	func
 ?Sfr31ButtonSetStateObject@AS3@GFx@Scaleform@@YAX_KH0@Z	142529f70	func
 ?Sfr31SetTextOnObjectUtf8@AS3@GFx@Scaleform@@YA_NPEA_K_KPEBD_N@Z	14252a230	func
 ?Sfr31SetTextOnObject@AS3@GFx@Scaleform@@YA_NPEA_K_KPEB_W_N@Z	14252a360	func

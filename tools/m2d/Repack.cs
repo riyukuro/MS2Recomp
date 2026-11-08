@@ -106,7 +106,13 @@ static class Repack {
         using (var hf = new FileStream(outm2h, FileMode.Create, FileAccess.Write))
         using (var bw = new BinaryWriter(hf)) {
             bw.Write((uint)version);
-            stream.Encode(bw);
+            if (version == PackVersion.NS2F) {
+                // NS2F: u32 file count, then six u64 sizes in the order PackStreamVer2's reader takes them
+                // (its Encode writes a u64 count, which shifts every field and makes the archive unreadable)
+                bw.Write((uint)stream.FileListCount);
+                bw.Write(stream.CompressedDataSize); bw.Write(stream.EncodedDataSize); bw.Write(stream.HeaderSize);
+                bw.Write(stream.CompressedHeaderSize); bw.Write(stream.EncodedHeaderSize); bw.Write(stream.DataSize);
+            } else stream.Encode(bw);
             bw.Write(encNames);
             bw.Write(encTable);
         }

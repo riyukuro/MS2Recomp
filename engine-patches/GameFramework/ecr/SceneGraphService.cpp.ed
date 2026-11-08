@@ -52,11 +52,11 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 3219,3220c
             if (spAssetData->m_state == AssetData::ADS_Ready)
             {
-                m_spSceneGraphCache->UnCacheSceneGraph(spAssetData->m_cacheHandle);
+                m_spSceneGraphCache->UnCacheSceneGraph(pCacheData);
                 m_assetsByPhysicalID.erase(spAssetData->m_physicalID);
 .
 3217c
-        if (spAssetData->m_cacheHandle)
+        if (auto* pCacheData = spAssetData->m_cacheHandle.data())
 .
 2582a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's

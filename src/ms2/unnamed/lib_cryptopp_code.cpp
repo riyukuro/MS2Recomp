@@ -336,29 +336,29 @@ extern const std::type_info DAT_143aa1768;
 extern const std::type_info DAT_143aa3860;
 
 // DL_PrivateKeyImpl<GP>::GenerateRandom: take the group parameters from the source if it carries them, else generate them; x = random in [1, max exponent]
-static __forceinline void CppDLGenerateRandom(CppDLPrivateKey& key, void* rng, const CppNameValuePairs* params, const std::type_info& gpType)
+// the key (CppKeyObj base at -0x10) is reached from the group part with raw offsets, like the exe ([rcx-0x10] each time, no adjusted pointer kept)
+static __forceinline CppKeyObj* CppKeyOf(CppKeyGroupPart* sub) { return reinterpret_cast<CppKeyObj*>(reinterpret_cast<char*>(sub) - 0x10); }
+static __forceinline void CppDLGenerateRandom(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params, const std::type_info& gpType)
 {
-    if (!CppGetThisObject(params, gpType, &key.groupObject))
-        key.group.GenerateRandom(rng, params);
+    if (!CppGetThisObject(params, gpType, &sub->groupObject))
+        sub->group.GenerateRandom(rng, params);
     CppInteger x;
-    new (&x) CryptoPP::Integer(*static_cast<CryptoPP::RandomNumberGenerator*>(rng), CryptoPP::Integer::One(), reinterpret_cast<const CryptoPP::Integer&>(static_cast<const CppInteger&>(key.GetAbstractGroupParameters()->GetMaxExponent())), CryptoPP::Integer::ANY, CryptoPP::Integer::Zero(), CryptoPP::Integer::One());
-    key.SetPrivateExponent(&x);
+    new (&x) CryptoPP::Integer(*static_cast<CryptoPP::RandomNumberGenerator*>(rng), CryptoPP::Integer::One(), reinterpret_cast<const CryptoPP::Integer&>(static_cast<const CppInteger&>(CppKeyOf(sub)->GetAbstractGroupParameters()->GetMaxExponent())), CryptoPP::Integer::ANY, CryptoPP::Integer::Zero(), CryptoPP::Integer::One());
+    CppKeyOf(sub)->SetPrivateExponent(&x);
 }
 
-// MS2-FUNCTIONAL: same calls and logic; the exe has no frame pointer, addresses the key through the incoming group-part pointer ([rcx-0x10]) and stores zeros as immediates; ours sets up an rbp frame and keeps a zero register
+// MS2-FUNCTIONAL: same calls, frame and registers; the string temporaries sit in other stack slots (exe: name +0x90, moved temp +0x70) and the exe keeps the out-of-line string ctor result in rbx for the append, one more EH state
 // @0x1423770a0
 void FUN_1423770a0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
 {
-    __assume(sub != nullptr);
-    CppDLGenerateRandom(*static_cast<CppDLPrivateKey*>(sub), rng, params, DAT_143aa1768);
+    CppDLGenerateRandom(sub, rng, params, DAT_143aa1768);
 }
 
-// MS2-FUNCTIONAL: same calls and logic; the exe has no frame pointer, addresses the key through the incoming group-part pointer ([rcx-0x10]) and stores zeros as immediates; ours sets up an rbp frame and keeps a zero register
+// MS2-FUNCTIONAL: same calls, frame and registers; the string temporaries sit in other stack slots (exe: name +0x90, moved temp +0x70) and the exe keeps the out-of-line string ctor result in rbx for the append, one more EH state
 // @0x1423772f0
 void FUN_1423772f0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* params)
 {
-    __assume(sub != nullptr);
-    CppDLGenerateRandom(*static_cast<CppDLPrivateKey*>(sub), rng, params, DAT_143aa3860);
+    CppDLGenerateRandom(sub, rng, params, DAT_143aa3860);
 }
 
 // HMAC<SHA1>::StaticAlgorithmName: "HMAC(" + SHA1::StaticAlgorithmName() + ")"

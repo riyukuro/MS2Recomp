@@ -8,5 +8,11 @@ option(MS2_BUILD_TOK_TOOL "Also build tools/tok/builder (32-bit .tok builder; ne
 if(MS2_BUILD_TOK_TOOL)
     include(tools/tok/builder/tok-tool.cmake)
 endif()
+# Optional, off by default: the MS2.Tok Gamebryo Toolbench plugin (tools/tok/plugin; no PathEngine code, needs your own
+# Toolbench assemblies in MS2_TOOLBENCH_DIR and the .NET SDK).
+option(MS2_TOK_TOOLBENCH_PLUGIN "Also build the MS2.Tok Toolbench plugin (tools/tok/plugin)" OFF)
+if(MS2_TOK_TOOLBENCH_PLUGIN)
+    include(tools/tok/plugin/tok-plugin.cmake)
+endif()
 
 add_subdirectory(cmake/fullexe)
