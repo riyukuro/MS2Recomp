@@ -10,7 +10,7 @@
 // which the engine's pcre_globals.c defines.
 // Groups 143a07430 / 143a284b0 start at 0x143a07838 / 0x143a288b8: their first 0x408 bytes are the efd::ClassInfo
 // objects PropService::ms_ClassInfo / PropertyVisualizationService::ms_ClassInfo, which the engine's
-// PropService.cpp / PropertyVisualizationService.cpp define; the names users declare there are mapped to them.
+// PropService.cpp / PropertyVisualizationService.cpp define.
 // 0x143a288b8-0x143a28a30 after it are GB message-handler statics as well (MessageHandlerImpl /
 // MessageWrapperSubclassHandler objects of PropertyVisualizationService and VisualTrackerService, which
 // VisualTrackerService::OnInit and the engine TUs' initializers use), so this unit starts at 0x143a28a30.
@@ -25,6 +25,7 @@
 // MS2-RANGE: 0x143a8da88-0x143aa1220 .data
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 // Functions and objects the tables below point at (static members, free functions and globals defined in other
 // units), declared here so the slots name them directly; the owning classes are reduced to those members.
@@ -275,9 +276,30 @@ public: static void call(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::
 namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo;
 namespace fl_net { extern const ClassInfo NetStreamCI; } namespace fl_media { extern const ClassInfo VideoCI; } } } }
 
-extern unsigned char DAT_142dc9d48[];
-extern unsigned char DAT_142f7df88[];
-extern unsigned char DAT_1430bbb10[], DAT_1430bbb28[], DAT_1430bbb70[], DAT_1430bbb88[], DAT_1430bbbd0[], DAT_1430bbbe8[], DAT_1430bbc00[], DAT_1430bbc48[], DAT_1430bbc60[], DAT_1430bbc78[];
+extern "C" unsigned char __identifier("??_7RefCountImplCore@Scaleform@@6B@")[];
+#define DAT_142dc9d48 __identifier("??_7RefCountImplCore@Scaleform@@6B@")
+extern "C" unsigned char __identifier("??_7DefaultAcquireInterface@Scaleform@@6B@")[];
+#define DAT_142f7df88 __identifier("??_7DefaultAcquireInterface@Scaleform@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CAAE@@efd@@6B@")[];
+#define DAT_1430bbb10 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CAAE@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CADO@@efd@@6B@")[];
+#define DAT_1430bbb28 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CADO@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAB@@efd@@6B@")[];
+#define DAT_1430bbb70 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAB@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAC@@efd@@6B@")[];
+#define DAT_1430bbb88 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAC@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACE@@efd@@6B@")[];
+#define DAT_1430bbbd0 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACE@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACF@@efd@@6B@")[];
+#define DAT_1430bbbe8 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACF@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACG@@efd@@6B@")[];
+#define DAT_1430bbc00 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACG@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACI@@efd@@6B@")[];
+#define DAT_1430bbc48 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACI@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACJ@@efd@@6B@")[];
+#define DAT_1430bbc60 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACJ@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACL@@efd@@6B@")[];
+#define DAT_1430bbc78 __identifier("??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACL@@efd@@6B@")
 namespace Scaleform {
 namespace GFx {
 namespace AS3 {
@@ -302,8 +324,10 @@ namespace fl_xml { alignas(16) extern const ClassInfo XMLDocumentCI; alignas(16)
 }
 }
 }
-extern unsigned char DAT_14318b208[];
-extern unsigned char DAT_14318b278[];
+extern "C" unsigned char __identifier("??_7GFxMovieDefImplKeyInterface@GFx@Scaleform@@6B@")[];
+#define DAT_14318b208 __identifier("??_7GFxMovieDefImplKeyInterface@GFx@Scaleform@@6B@")
+extern "C" unsigned char __identifier("??_7GFxMovieDataDefFileKeyInterface@GFx@Scaleform@@6B@")[];
+#define DAT_14318b278 __identifier("??_7GFxMovieDataDefFileKeyInterface@GFx@Scaleform@@6B@")
 namespace Scaleform { namespace GFx { namespace AS2 { class FnCall; } } }
 namespace Scaleform { namespace GFx { namespace AS3 { struct ThunkInfo; } } }
 namespace Scaleform { namespace GFx { namespace AS3 { class VM; } } }
@@ -327,7 +351,7 @@ long FUN_14003c190(long, long, long);
 extern "C" void * criVmpv_Create(void *, unsigned long const *);
 void criVmpv_SetProcessorMask(void *, unsigned long);
 void criVmpv_SetInitDlgPara(void *, long, long const *, long const *);
-void criVmpv_Destroy(void *);   // C++ linkage, as defined in sfr_cri_03 (0x14003cae0)
+extern "C" void criVmpv_Destroy(void *);   // sfr_cri_03 (0x14003cae0)
 long criVmpv_GetStatus(void const *);
 void FUN_14003cca0(void *);
 void FUN_14003d4b0(void *, void *, void *);
@@ -440,7 +464,8 @@ namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalIMECommand(
 namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalSetIMECandidateListStyle(::Scaleform::GFx::AS2::FnCall const &); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalGetIMECandidateListStyle(::Scaleform::GFx::AS2::FnCall const &); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { void GAS_GlobalGetInputLanguage(::Scaleform::GFx::AS2::FnCall const &); } } }
-extern unsigned char DAT_1431bf070[];
+extern "C" unsigned char __identifier("??_7type_info@@6B@")[];
+#define DAT_1431bf070 __identifier("??_7type_info@@6B@")
 extern void* DAT_143b018a0;
 void criVmpv_Initialize();
 void criVmpv_Finalize();
@@ -45616,25 +45641,6 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
     },
 };
 
-#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B")
-// (0x143a284b0: unit_1414a1c30 names egmVisualizers::PropertyVisualizationService::ms_ClassInfo directly.)
-#pragma comment(linker, "/alternatename:?ms_ClassInfo@MS2PropertyVisualizationService@@2VClassInfo@efd@@B=?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B")
-#pragma comment(linker, "/alternatename:?DAT_143a2aab0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_143a2aab0@@3USd_143a2aab0@@A")
 // DAT_143a48740: videocolorspace declares it extern "C" (no C++-name alias)
-#pragma comment(linker, "/alternatename:?DAT_142dc9d48@@3PAEA=??_7RefCountImplCore@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_142f7df88@@3PAEA=??_7DefaultAcquireInterface@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbb10@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CAAE@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbb28@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VEntityChangeMessage@egf@@V34@$0CADO@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbb70@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAB@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbb88@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneGraphMessage@ecr@@V34@$0DAAC@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbbd0@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACE@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbbe8@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACF@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbc00@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSceneMessage@egfPhysX@@V34@$0CACG@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbc48@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACI@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbc60@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACJ@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430bbc78@@3PAEA=??_7?$MessageWrapperSubclassHandler@VPropService@ecrPhysX@@VSimulationMessage@egfPhysX@@V34@$0CACL@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14318b208@@3PAEA=??_7GFxMovieDefImplKeyInterface@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14318b278@@3PAEA=??_7GFxMovieDataDefFileKeyInterface@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1431bf070@@3PAEA=??_7type_info@@6B@")
 
 #endif // MS2_HOOK_DLL

@@ -20,6 +20,7 @@
 // MS2-RANGE: 0x143ffbce0-0x143ffd558 .bss
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 // Functions the tables below point at (defined in the CRI and Scaleform video units), declared with their
 // definitions' signatures so the slots name them directly.
@@ -192,45 +193,78 @@ namespace Scaleform {
 extern "C" void FUN_142746d70(void*);
 // 0x1427458e0 is the member Sfr22ChannelPlayerView::QueryChannelTime (sfr_as3_22.cpp), which this void* slot can't
 // name directly: the pragma binds the slot name to that member
-void FUN_1427458e0(); __pragma(comment(linker, "/alternatename:?FUN_1427458e0@@YAXXZ=?QueryChannelTime@Sfr22ChannelPlayerView@Scaleform@@QEAAMXZ"))
+extern "C" unsigned char __identifier("?QueryChannelTime@Sfr22ChannelPlayerView@Scaleform@@QEAAMXZ")[];
+#define FUN_1427458e0 __identifier("?QueryChannelTime@Sfr22ChannelPlayerView@Scaleform@@QEAAMXZ")
 
 extern unsigned char DAT_14001d720[];
 void* FUN_1400284b0(void*, unsigned char);
 void* FUN_140029280(void*, unsigned char);
-extern unsigned char DAT_14002d490[];
-extern unsigned char DAT_14002d4a0[];
-extern unsigned char DAT_14002d4b0[];
-extern unsigned char DAT_14002d4c0[];
-extern unsigned char DAT_14002d4d0[];
+extern "C" unsigned char __identifier("?GetFileSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")[];
+#define DAT_14002d490 __identifier("?GetFileSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
+extern "C" unsigned char __identifier("?GetReadSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")[];
+#define DAT_14002d4a0 __identifier("?GetReadSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
+extern "C" unsigned char __identifier("?GetOpenStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")[];
+#define DAT_14002d4b0 __identifier("?GetOpenStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
+extern "C" unsigned char __identifier("?GetCloseStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")[];
+#define DAT_14002d4c0 __identifier("?GetCloseStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
+extern "C" unsigned char __identifier("?GetReadStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")[];
+#define DAT_14002d4d0 __identifier("?GetReadStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
 long FUN_140041270(void*);
-extern unsigned char DAT_142443950[];
-extern unsigned char DAT_142444340[];
-extern unsigned char DAT_142444bc0[];
-extern unsigned char DAT_142447310[];
-extern unsigned char DAT_142447340[];
-extern unsigned char DAT_14257aa60[];
-extern unsigned char DAT_14257b4a0[];
-extern unsigned char DAT_14257b4e0[];
-extern unsigned char DAT_14257b550[];
-extern unsigned char DAT_14257b5f0[];
-extern unsigned char DAT_14257b970[];
-extern unsigned char DAT_14257b9a0[];
-extern unsigned char DAT_14257b9b0[];
-extern unsigned char DAT_14257ba20[];
-extern unsigned char DAT_14257bda0[];
-extern unsigned char DAT_14257c140[];
-extern unsigned char DAT_14257c210[];
-extern unsigned char DAT_14257c310[];
-extern unsigned char DAT_14257c500[];
-extern unsigned char DAT_14257cb10[];
-extern unsigned char DAT_14257d120[];
-extern unsigned char DAT_14257d1b0[];
-extern unsigned char DAT_14257d470[];
-extern unsigned char DAT_14257d4c0[];
-extern unsigned char DAT_14257dc40[];
-extern unsigned char DAT_14257dcf0[];
+extern "C" unsigned char __identifier("?GetAsMemoryImage@Image@Render@Scaleform@@UEAAPEAVMemoryBufferImage@23@XZ")[];
+#define DAT_142443950 __identifier("?GetAsMemoryImage@Image@Render@Scaleform@@UEAAPEAVMemoryBufferImage@23@XZ")
+extern "C" unsigned char __identifier("?GetRect@Image@Render@Scaleform@@UEBA?AV?$Rect@K@23@XZ")[];
+#define DAT_142444340 __identifier("?GetRect@Image@Render@Scaleform@@UEBA?AV?$Rect@K@23@XZ")
+extern "C" unsigned char __identifier("?IsDelegate@ImageBase@Render@Scaleform@@UEBA_NXZ")[];
+#define DAT_142444bc0 __identifier("?IsDelegate@ImageBase@Render@Scaleform@@UEBA_NXZ")
+extern "C" unsigned char __identifier("?Update@Image@Render@Scaleform@@UEAA_NPEAVImageUpdate@23@@Z")[];
+#define DAT_142447310 __identifier("?Update@Image@Render@Scaleform@@UEAA_NPEAVImageUpdate@23@@Z")
+extern "C" unsigned char __identifier("?Update@Image@Render@Scaleform@@UEAA_NXZ")[];
+#define DAT_142447340 __identifier("?Update@Image@Render@Scaleform@@UEAA_NXZ")
+extern "C" unsigned char __identifier("?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@K@23@PEAVMemoryHeap@3@@Z")[];
+#define DAT_14257aa60 __identifier("?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@K@23@PEAVMemoryHeap@3@@Z")
+extern "C" unsigned char __identifier("?GetAsImage@TextureImage@Render@Scaleform@@UEAAPEAVImage@23@XZ")[];
+#define DAT_14257b4a0 __identifier("?GetAsImage@TextureImage@Render@Scaleform@@UEAAPEAVImage@23@XZ")
+extern "C" unsigned char __identifier("?GetBaseImageId@TextureImage@Render@Scaleform@@UEBAKXZ")[];
+#define DAT_14257b4e0 __identifier("?GetBaseImageId@TextureImage@Render@Scaleform@@UEBAKXZ")
+extern "C" unsigned char __identifier("?GetBytes@TextureImage@Render@Scaleform@@UEBA_KPEAH@Z")[];
+#define DAT_14257b550 __identifier("?GetBytes@TextureImage@Render@Scaleform@@UEBA_KPEAH@Z")
+extern "C" unsigned char __identifier("?GetFormat@TextureImage@Render@Scaleform@@UEBA?AW4ImageFormat@23@XZ")[];
+#define DAT_14257b5f0 __identifier("?GetFormat@TextureImage@Render@Scaleform@@UEBA?AW4ImageFormat@23@XZ")
+extern "C" unsigned char __identifier("?GetImageId@TextureImage@Render@Scaleform@@UEBAKXZ")[];
+#define DAT_14257b970 __identifier("?GetImageId@TextureImage@Render@Scaleform@@UEBAKXZ")
+extern "C" unsigned char __identifier("?GetImageType@TextureImage@Render@Scaleform@@UEBA?AW4ImageType@ImageBase@23@XZ")[];
+#define DAT_14257b9a0 __identifier("?GetImageType@TextureImage@Render@Scaleform@@UEBA?AW4ImageType@ImageBase@23@XZ")
+extern "C" unsigned char __identifier("?GetMatrix@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")[];
+#define DAT_14257b9b0 __identifier("?GetMatrix@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")
+extern "C" unsigned char __identifier("?GetMatrixInverse@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")[];
+#define DAT_14257ba20 __identifier("?GetMatrixInverse@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")
+extern "C" unsigned char __identifier("?GetMipmapCount@TextureImage@Render@Scaleform@@UEBAIXZ")[];
+#define DAT_14257bda0 __identifier("?GetMipmapCount@TextureImage@Render@Scaleform@@UEBAIXZ")
+extern "C" unsigned char __identifier("?GetSize@TextureImage@Render@Scaleform@@UEBA?AV?$Size@K@23@XZ")[];
+#define DAT_14257c140 __identifier("?GetSize@TextureImage@Render@Scaleform@@UEBA?AV?$Size@K@23@XZ")
+extern "C" unsigned char __identifier("?GetUVGenMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")[];
+#define DAT_14257c210 __identifier("?GetUVGenMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")
+extern "C" unsigned char __identifier("?GetUVNormMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")[];
+#define DAT_14257c310 __identifier("?GetUVNormMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")
+extern "C" unsigned char __identifier("?GetUse@TextureImage@Render@Scaleform@@UEBAIXZ")[];
+#define DAT_14257c500 __identifier("?GetUse@TextureImage@Render@Scaleform@@UEBAIXZ")
+extern "C" unsigned char __identifier("?Map@TextureImage@Render@Scaleform@@UEAA_NPEAVImageData@23@II@Z")[];
+#define DAT_14257cb10 __identifier("?Map@TextureImage@Render@Scaleform@@UEAA_NPEAVImageData@23@II@Z")
+extern "C" unsigned char __identifier("?SetMatrix@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")[];
+#define DAT_14257d120 __identifier("?SetMatrix@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")
+extern "C" unsigned char __identifier("?SetMatrixInverse@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")[];
+#define DAT_14257d1b0 __identifier("?SetMatrixInverse@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")
+extern "C" unsigned char __identifier("?TextureLost@TextureImage@Render@Scaleform@@UEAAXW4TextureLossReason@Image@23@@Z")[];
+#define DAT_14257d470 __identifier("?TextureLost@TextureImage@Render@Scaleform@@UEAAXW4TextureLossReason@Image@23@@Z")
+extern "C" unsigned char __identifier("?Unmap@TextureImage@Render@Scaleform@@UEAA_NXZ")[];
+#define DAT_14257d4c0 __identifier("?Unmap@TextureImage@Render@Scaleform@@UEAA_NXZ")
+extern "C" unsigned char __identifier("?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ")[];
+#define DAT_14257dc40 __identifier("?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ")
+extern "C" unsigned char __identifier("?Release@RefCountVImpl@Scaleform@@UEAAXXZ")[];
+#define DAT_14257dcf0 __identifier("?Release@RefCountVImpl@Scaleform@@UEAAXXZ")
 extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
-extern unsigned char DAT_143224848[];
+extern "C" unsigned char __identifier("??_7DOMBuilder@XML@GFx@Scaleform@@6B@")[];
+#define DAT_143224848 __identifier("??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
 void FUN_140029970();
 void FUN_1400299d0();
 void FUN_140029a50();
@@ -3030,37 +3064,5 @@ extern "C" { alignas(16) unsigned char DAT_143ffd550[0x8]; }                   /
 // _DAT_143d4a3c0: users name DAT_143d4a3c0 directly
 // _DAT_143d4aa80: users name DAT_143d4aa80 directly
 // _DAT_143d74820: users name DAT_143d74820 directly
-#pragma comment(linker, "/alternatename:?DAT_14002d490@@3PAEA=?GetFileSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
-#pragma comment(linker, "/alternatename:?DAT_14002d4a0@@3PAEA=?GetReadSize@VideoReader@Video@GFx@Scaleform@@UEAA_JXZ")
-#pragma comment(linker, "/alternatename:?DAT_14002d4b0@@3PAEA=?GetOpenStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14002d4c0@@3PAEA=?GetCloseStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14002d4d0@@3PAEA=?GetReadStatus@VideoReader@Video@GFx@Scaleform@@UEAA?AW4AsyncStatus@CriMvFileReaderInterface@@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142443950@@3PAEA=?GetAsMemoryImage@Image@Render@Scaleform@@UEAAPEAVMemoryBufferImage@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142444340@@3PAEA=?GetRect@Image@Render@Scaleform@@UEBA?AV?$Rect@K@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142444bc0@@3PAEA=?IsDelegate@ImageBase@Render@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142447310@@3PAEA=?Update@Image@Render@Scaleform@@UEAA_NPEAVImageUpdate@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142447340@@3PAEA=?Update@Image@Render@Scaleform@@UEAA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257aa60@@3PAEA=?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@K@23@PEAVMemoryHeap@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257b4a0@@3PAEA=?GetAsImage@TextureImage@Render@Scaleform@@UEAAPEAVImage@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14257b4e0@@3PAEA=?GetBaseImageId@TextureImage@Render@Scaleform@@UEBAKXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257b550@@3PAEA=?GetBytes@TextureImage@Render@Scaleform@@UEBA_KPEAH@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257b5f0@@3PAEA=?GetFormat@TextureImage@Render@Scaleform@@UEBA?AW4ImageFormat@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14257b970@@3PAEA=?GetImageId@TextureImage@Render@Scaleform@@UEBAKXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257b9a0@@3PAEA=?GetImageType@TextureImage@Render@Scaleform@@UEBA?AW4ImageType@ImageBase@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14257b9b0@@3PAEA=?GetMatrix@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257ba20@@3PAEA=?GetMatrixInverse@Image@Render@Scaleform@@UEBAXPEAV?$Matrix2x4@M@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257bda0@@3PAEA=?GetMipmapCount@TextureImage@Render@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257c140@@3PAEA=?GetSize@TextureImage@Render@Scaleform@@UEBA?AV?$Size@K@23@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14257c210@@3PAEA=?GetUVGenMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257c310@@3PAEA=?GetUVNormMatrix@Image@Render@Scaleform@@UEAAXPEAV?$Matrix2x4@M@23@PEAVTextureManager@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257c500@@3PAEA=?GetUse@TextureImage@Render@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257cb10@@3PAEA=?Map@TextureImage@Render@Scaleform@@UEAA_NPEAVImageData@23@II@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257d120@@3PAEA=?SetMatrix@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257d1b0@@3PAEA=?SetMatrixInverse@Image@Render@Scaleform@@UEAAXAEBV?$Matrix2x4@M@23@PEAVMemoryHeap@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257d470@@3PAEA=?TextureLost@TextureImage@Render@Scaleform@@UEAAXW4TextureLossReason@Image@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14257d4c0@@3PAEA=?Unmap@TextureImage@Render@Scaleform@@UEAA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257dc40@@3PAEA=?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14257dcf0@@3PAEA=?Release@RefCountVImpl@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_143224848@@3PAEA=??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
 
 #endif // MS2_HOOK_DLL

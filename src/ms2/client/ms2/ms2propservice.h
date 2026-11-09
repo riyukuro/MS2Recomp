@@ -11,13 +11,13 @@ namespace ecr { class SceneGraphCache; }
 
 class MS2PropService : public ecrPhysX::PropService, public egf::IPropertyCallback {
 public:
-    static const efd::ClassInfo ms_ClassInfo;
-    virtual const efd::ClassInfo* GetClassDesc() const { return &ms_ClassInfo; }
+    // no ms_ClassInfo of its own: the exe's GetClassDesc/TypeCast use PropService's.
+    virtual const efd::ClassInfo* GetClassDesc() const { return &ecrPhysX::PropService::ms_ClassInfo; }
     virtual bool TypeCast(efd::ClassID id, const void** out) const {
-        *out = ms_ClassInfo.TypeCast(id, this); if (*out != NULL) return true; return false;
+        *out = ecrPhysX::PropService::ms_ClassInfo.TypeCast(id, this); if (*out != NULL) return true; return false;
     }
     virtual bool TypeCast(efd::ClassID id, void** out) const {
-        *out = ms_ClassInfo.TypeCast(id, this); if (*out != NULL) return true; return false;
+        *out = ecrPhysX::PropService::ms_ClassInfo.TypeCast(id, this); if (*out != NULL) return true; return false;
     }
     virtual void IncRefCount() const { ++m_RefCount; }
     virtual void DecRefCount() const { if (--m_RefCount == 0) DeleteThis(); }

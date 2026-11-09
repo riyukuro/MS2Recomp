@@ -191,7 +191,13 @@ CString FUN_140188f50(const char* psz, int nCodePage);
 CString FUN_14016a5c0(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/<file>
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
+#ifdef MS2_HOOK_DLL
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" CString& __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
+#define FUN_1401c0cc0 __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")
+#endif
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };

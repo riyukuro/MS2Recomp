@@ -142,7 +142,18 @@ class Unk_SmClip : public ASMovieClip
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
-template <> MS2Ptr<ASMDragTarget> Unk_ASCreate<ASMDragTarget>(int, const Scaleform::GFx::Value&);          // 0x140c3bb40
+#ifndef MS2_HOOK_DLL
+// Same body as uiitemdropinfodialog's MakeDropChild<ASMDragTarget> (0x140c3bb40): /opt:icf folds them.
+#include "ms2/placeholder/ms2ptr_impl.h"
+template <> inline MS2Ptr<ASMDragTarget> Unk_ASCreate<ASMDragTarget>(int nMovieId, const Scaleform::GFx::Value& v)
+{
+    MS2Ptr<ASMDragTarget> h(new ASMDragTarget(v, nMovieId));
+    return h;
+}
+#else
+template <> MS2Ptr<ASMDragTarget> Unk_ASCreate<ASMDragTarget>(int, const Scaleform::GFx::Value&);
+#endif
+//          // 0x140c3bb40
 class Unk_Finder : public ASDisplayObjectContainer { public: MS2Ptr<ASButton> FUN_140d01e70(const Scaleform::GFx::Value& root, const CString& strName); };   // 0x140d01e70, the definer's spelling (unit_140cff310); was Unk_SmNode::FUN_deep<ASButton>
 
 #define MS2_ASDOC_ASSERT(line, expression) \

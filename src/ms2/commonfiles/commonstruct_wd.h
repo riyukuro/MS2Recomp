@@ -45,7 +45,14 @@ Unk_TIter* FUN_14027f720(Unk_TIter*); Unk_TIter* FUN_14027f600(Unk_TIter*); void
 __int64* FUN_140274b10(__int64* out, __int64 it, __int64 flag);
 __int64* FUN_140274d10(__int64* out, __int64 it, __int64 flag);
 __int64 FUN_14027be90(__int64 tree, __int64 out, __int64 where, __int64 piecewise, __int64 keytuple, __int64 valtuple);
-void* FUN_140162f80(void*); char* FUN_140177620(char*, char*);
+void* FUN_140162f80(void*);
+#ifdef MS2_HOOK_DLL
+char* FUN_140177620(char*, char*);
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char* __identifier("??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z")(char*, char*);
+#define FUN_140177620 __identifier("??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z")
+#endif
 
 // ---- vector<Unk_E16> helpers outside the slice ----
 i64 FUN_14027bc70(i64 first, i64 last); u64 FUN_1401a4580(i64);

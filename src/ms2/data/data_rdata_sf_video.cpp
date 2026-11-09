@@ -10,6 +10,7 @@
 // MS2-RANGE: 0x1431b4be0-0x1431b8030 .rdata
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 // Functions and objects the tables below point at (static members, free functions and globals defined in other
 // units), declared here so the slots name them directly; the owning classes are reduced to those members.
@@ -62,10 +63,14 @@ bool AvmVideoCharacter_OnUnloading(::Scaleform::GFx::AS2::AvmCharacter *);
 }
 }
 }
-extern unsigned char DAT_1424f0700[]; __pragma(comment(linker, "/alternatename:?DAT_1424f0700@@3PAEA=?Construct@Instance@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")) // AS3 Instance::Construct
-extern unsigned char DAT_142503800[]; __pragma(comment(linker, "/alternatename:?DAT_142503800@@3PAEA=?ForEachChild_GC@Class@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@234@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z@Z")) // AS3 Class::ForEachChild_GC
-extern unsigned char DAT_142503f50[]; __pragma(comment(linker, "/alternatename:?DAT_142503f50@@3PAEA=?ForEachChild_GC@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")) // AS3 ClassTraits::Traits::ForEachChild_GC
-extern unsigned char DAT_142503fa0[]; __pragma(comment(linker, "/alternatename:?DAT_142503fa0@@3PAEA=?ForEachChild_GC@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")) // AS3 InstanceTraits::Traits::ForEachChild_GC
+extern "C" unsigned char __identifier("?Construct@Instance@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")[];
+#define DAT_1424f0700 __identifier("?Construct@Instance@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")
+extern "C" unsigned char __identifier("?ForEachChild_GC@Class@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@234@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z@Z")[];
+#define DAT_142503800 __identifier("?ForEachChild_GC@Class@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@234@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z@Z")
+extern "C" unsigned char __identifier("?ForEachChild_GC@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")[];
+#define DAT_142503f50 __identifier("?ForEachChild_GC@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")
+extern "C" unsigned char __identifier("?ForEachChild_GC@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")[];
+#define DAT_142503fa0 __identifier("?ForEachChild_GC@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@345@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@345@@Z@Z")
 //
 //
 void FUN_140012e10(void *, void *, void *);
@@ -154,9 +159,11 @@ float FUN_140002e00(void *);
 void FUN_140002e10(void *);
 void FUN_140002e20(void *);
 void * FUN_140002e40(void *, unsigned int);
-::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *); __pragma(comment(linker, "/alternatename:?FUN_140007ff0@@YAPEAVFunctionRef@AS2@GFx@Scaleform@@PEAVObjectInterface@234@PEAV1234@PEAVASStringContext@234@@Z=?Get__constructor__@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@PEAVASStringContext@234@@Z")) // AS2 ObjectInterface::Get__constructor__
+extern "C" unsigned char __identifier("?Get__constructor__@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@PEAVASStringContext@234@@Z")[];
+#define FUN_140007ff0 __identifier("?Get__constructor__@ObjectInterface@AS2@GFx@Scaleform@@UEAA?AVFunctionRef@234@PEAVASStringContext@234@@Z")
 extern unsigned char DAT_14000a110[];
-extern unsigned char DAT_14252e480[];
+extern "C" unsigned char __identifier("?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z")[];
+#define DAT_14252e480 __identifier("?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z")
 extern unsigned char DAT_14000d760[];
 namespace Scaleform { namespace GFx { namespace AS2 { void FUN_14000e470(void **, void *, void *, void *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { int FUN_14000e500(void *); } } }
@@ -222,7 +229,8 @@ void FUN_140017670(void *, void *, void *, unsigned __int64, unsigned int, unsig
 void FUN_1400182f0(void *, unsigned int const *);
 void FUN_140018930(void *, unsigned int const *);
 void FUN_140019890(void *, unsigned __int64 const *, unsigned __int64 const *);
-extern unsigned char DAT_140002b00[];
+extern "C" unsigned char __identifier("?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")[];
+#define DAT_140002b00 __identifier("?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")
 extern unsigned char DAT_140007ba0[];
 extern unsigned char DAT_140007d90[];
 extern unsigned char DAT_140007da0[];
@@ -260,35 +268,56 @@ extern unsigned char DAT_14000e3e0[];
 extern unsigned char DAT_14000e3f0[];
 extern unsigned char DAT_14000e400[];
 extern unsigned char DAT_14000e4d0[];
-extern unsigned char DAT_142300840[];
+extern "C" unsigned char __identifier("?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")[];
+#define DAT_142300840 __identifier("?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
 extern unsigned char DAT_1423dc0b0[];
 extern unsigned char DAT_1423dcd60[];
-extern unsigned char DAT_1423df420[];
-extern unsigned char DAT_1423df430[];
-extern unsigned char DAT_1423df460[];
-extern unsigned char DAT_1423df4a0[];
-extern unsigned char DAT_1423df580[];
-extern unsigned char DAT_1423df590[];
-extern unsigned char DAT_1423df5a0[];
-extern unsigned char DAT_1423df5b0[];
-extern unsigned char DAT_142442e10[];
-extern unsigned char DAT_142443380[];
-extern unsigned char DAT_1424e4290[];
-extern unsigned char DAT_1424e42a0[];
-extern unsigned char DAT_1424e8060[];
+extern "C" unsigned char __identifier("?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")[];
+#define DAT_1423df420 __identifier("?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")
+extern "C" unsigned char __identifier("?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")[];
+#define DAT_1423df430 __identifier("?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
+extern "C" unsigned char __identifier("?GetAS3ObjectName@Traits@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")[];
+#define DAT_1423df460 __identifier("?GetAS3ObjectName@Traits@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
+extern "C" unsigned char __identifier("?GetAS3ObjectName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVString@5@XZ")[];
+#define DAT_1423df4a0 __identifier("?GetAS3ObjectName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVString@5@XZ")
+extern "C" unsigned char __identifier("?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")[];
+#define DAT_1423df580 __identifier("?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")
+extern "C" unsigned char __identifier("?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")[];
+#define DAT_1423df590 __identifier("?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
+extern "C" unsigned char __identifier("?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")[];
+#define DAT_1423df5a0 __identifier("?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")
+extern "C" unsigned char __identifier("?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")[];
+#define DAT_1423df5b0 __identifier("?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")
+extern "C" unsigned char __identifier("?ForEachChild_GC@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z")[];
+#define DAT_142442e10 __identifier("?ForEachChild_GC@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z")
+extern "C" unsigned char __identifier("?GetAS3ObjectName@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@UEBA?AVString@6@XZ")[];
+#define DAT_142443380 __identifier("?GetAS3ObjectName@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@UEBA?AVString@6@XZ")
+extern "C" unsigned char __identifier("?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")[];
+#define DAT_1424e4290 __identifier("?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")
+extern "C" unsigned char __identifier("?AS3Constructor@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXAEBV1345@AEBVValue@345@IPEBV6345@@Z")[];
+#define DAT_1424e42a0 __identifier("?AS3Constructor@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXAEBV1345@AEBVValue@345@IPEBV6345@@Z")
+extern "C" unsigned char __identifier("?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")[];
+#define DAT_1424e8060 __identifier("?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
 extern unsigned char DAT_1424eb250[];
-extern unsigned char DAT_1424eb770[];
-extern unsigned char DAT_1424ee6f0[];
-extern unsigned char DAT_1424ee7f0[];
+extern "C" unsigned char __identifier("?ApplyTypeArgs@Class@AS3@GFx@Scaleform@@UEAAAEAV1234@IPEBVValue@234@@Z")[];
+#define DAT_1424eb770 __identifier("?ApplyTypeArgs@Class@AS3@GFx@Scaleform@@UEAAAEAV1234@IPEBVValue@234@@Z")
+extern "C" unsigned char __identifier("?Call@Class@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")[];
+#define DAT_1424ee6f0 __identifier("?Call@Class@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
+extern "C" unsigned char __identifier("?Call@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")[];
+#define DAT_1424ee7f0 __identifier("?Call@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
 extern unsigned char DAT_1424eeca0[];
-extern unsigned char DAT_1424effa0[];
-extern unsigned char DAT_1424f0610[];
+extern "C" unsigned char __identifier("?Coerce@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA_NAEBVValue@345@AEAV6345@@Z")[];
+#define DAT_1424effa0 __identifier("?Coerce@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA_NAEBVValue@345@AEAV6345@@Z")
+extern "C" unsigned char __identifier("?Construct@Class@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")[];
+#define DAT_1424f0610 __identifier("?Construct@Class@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")
 extern unsigned char DAT_1424f2400[];
-extern unsigned char DAT_1424f4a40[];
+extern "C" unsigned char __identifier("?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")[];
+#define DAT_1424f4a40 __identifier("?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 extern unsigned char DAT_1424f7180[];
 extern unsigned char DAT_1424f74d0[];
 extern unsigned char DAT_1424fe610[];
-extern unsigned char DAT_142500e50[];
+extern "C" unsigned char __identifier("?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")[];
+#define DAT_142500e50 __identifier("?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
 extern unsigned char DAT_142501a60[];
 extern unsigned char DAT_142504840[];
 extern unsigned char DAT_142505f20[];
@@ -297,25 +326,37 @@ extern unsigned char DAT_142507590[];
 extern unsigned char DAT_1425084c0[];
 extern unsigned char DAT_1425084d0[];
 extern unsigned char DAT_142509990[];
-extern unsigned char DAT_142509a80[];
-extern unsigned char DAT_142509ca0[];
-extern unsigned char DAT_142509d30[];
+extern "C" unsigned char __identifier("?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")[];
+#define DAT_142509a80 __identifier("?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
+extern "C" unsigned char __identifier("?GetFilePtr@Traits@AS3@GFx@Scaleform@@UEBAPEAVVMAbcFile@234@XZ")[];
+#define DAT_142509ca0 __identifier("?GetFilePtr@Traits@AS3@GFx@Scaleform@@UEBAPEAVVMAbcFile@234@XZ")
+extern "C" unsigned char __identifier("?GetFixedMemSize@Traits@AS3@GFx@Scaleform@@UEBAIXZ")[];
+#define DAT_142509d30 __identifier("?GetFixedMemSize@Traits@AS3@GFx@Scaleform@@UEBAIXZ")
 extern unsigned char DAT_142509d40[];
 extern unsigned char DAT_142509da0[];
 extern unsigned char DAT_142509dc0[];
-extern unsigned char DAT_14250a5b0[];
+extern "C" unsigned char __identifier("?GetGlobalObjectScript@Traits@AS3@GFx@Scaleform@@UEBAPEAVGlobalObjectScript@fl@Instances@234@XZ")[];
+#define DAT_14250a5b0 __identifier("?GetGlobalObjectScript@Traits@AS3@GFx@Scaleform@@UEBAPEAVGlobalObjectScript@fl@Instances@234@XZ")
 extern unsigned char DAT_14250b360[];
 extern unsigned char DAT_14250b3a0[];
-extern unsigned char DAT_14250bbd0[];
-extern unsigned char DAT_14250bc40[];
-extern unsigned char DAT_14250be40[];
-extern unsigned char DAT_14250c010[];
-extern unsigned char DAT_14250c060[];
+extern "C" unsigned char __identifier("?GetName@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")[];
+#define DAT_14250bbd0 __identifier("?GetName@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
+extern "C" unsigned char __identifier("?GetName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")[];
+#define DAT_14250bc40 __identifier("?GetName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
+extern "C" unsigned char __identifier("?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")[];
+#define DAT_14250be40 __identifier("?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
+extern "C" unsigned char __identifier("?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")[];
+#define DAT_14250c010 __identifier("?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
+extern "C" unsigned char __identifier("?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")[];
+#define DAT_14250c060 __identifier("?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
 extern unsigned char DAT_14250c2e0[];
 extern unsigned char DAT_14250cc20[];
-extern unsigned char DAT_14250cc60[];
-extern unsigned char DAT_14250d550[];
-extern unsigned char DAT_14250d570[];
+extern "C" unsigned char __identifier("?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")[];
+#define DAT_14250cc60 __identifier("?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
+extern "C" unsigned char __identifier("?GetQualifiedName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")[];
+#define DAT_14250d550 __identifier("?GetQualifiedName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
+extern "C" unsigned char __identifier("?GetQualifiedName@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")[];
+#define DAT_14250d570 __identifier("?GetQualifiedName@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
 extern unsigned char DAT_14250d620[];
 extern unsigned char DAT_14250d6f0[];
 extern unsigned char DAT_14250ee20[];
@@ -326,13 +367,19 @@ extern unsigned char DAT_142510a30[];
 extern unsigned char DAT_142510d10[];
 extern unsigned char DAT_142510d40[];
 extern unsigned char DAT_142510e60[];
-extern unsigned char DAT_1425117e0[];
-extern unsigned char DAT_1425117f0[];
-extern unsigned char DAT_142511810[];
-extern unsigned char DAT_142512620[];
-extern unsigned char DAT_142514320[];
+extern "C" unsigned char __identifier("?InitOnDemand@Traits@AS3@GFx@Scaleform@@MEBAXXZ")[];
+#define DAT_1425117e0 __identifier("?InitOnDemand@Traits@AS3@GFx@Scaleform@@MEBAXXZ")
+extern "C" unsigned char __identifier("?InitOnDemand@Traits@ClassTraits@AS3@GFx@Scaleform@@MEBAXXZ")[];
+#define DAT_1425117f0 __identifier("?InitOnDemand@Traits@ClassTraits@AS3@GFx@Scaleform@@MEBAXXZ")
+extern "C" unsigned char __identifier("?InitPrototype@Class@AS3@GFx@Scaleform@@UEBAXAEAVObject@234@@Z")[];
+#define DAT_142511810 __identifier("?InitPrototype@Class@AS3@GFx@Scaleform@@UEBAXAEAVObject@234@@Z")
+extern "C" unsigned char __identifier("?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")[];
+#define DAT_142512620 __identifier("?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
+extern "C" unsigned char __identifier("?IsGlobal@Traits@AS3@GFx@Scaleform@@UEBA_NXZ")[];
+#define DAT_142514320 __identifier("?IsGlobal@Traits@AS3@GFx@Scaleform@@UEBA_NXZ")
 extern unsigned char DAT_142515190[];
-extern unsigned char DAT_142516630[];
+extern "C" unsigned char __identifier("?MakePrototype@Class@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@4@XZ")[];
+#define DAT_142516630 __identifier("?MakePrototype@Class@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@4@XZ")
 extern unsigned char DAT_1425185d0[];
 extern unsigned char DAT_142518990[];
 extern unsigned char DAT_14251a100[];
@@ -342,8 +389,10 @@ extern unsigned char DAT_14251ac20[];
 extern unsigned char DAT_14251ac30[];
 extern unsigned char DAT_14251ace0[];
 extern unsigned char DAT_14251cab0[];
-extern unsigned char DAT_14251ced0[];
-extern unsigned char DAT_14251cfc0[];
+extern "C" unsigned char __identifier("?PostInit@Class@AS3@GFx@Scaleform@@UEBAXAEBVValue@234@IPEBV5234@@Z")[];
+#define DAT_14251ced0 __identifier("?PostInit@Class@AS3@GFx@Scaleform@@UEBAXAEBVValue@234@IPEBV5234@@Z")
+extern "C" unsigned char __identifier("?PreInit@Class@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEBVValue@234@@Z")[];
+#define DAT_14251cfc0 __identifier("?PreInit@Class@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEBVValue@234@@Z")
 extern unsigned char DAT_14251f3a0[];
 extern unsigned char DAT_14251f540[];
 extern unsigned char DAT_14251f550[];
@@ -356,11 +405,13 @@ extern unsigned char DAT_1425265f0[];
 extern unsigned char DAT_142526720[];
 extern unsigned char DAT_1425287f0[];
 extern unsigned char DAT_142528800[];
-extern unsigned char DAT_142528a50[];
+extern "C" unsigned char __identifier("?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")[];
+#define DAT_142528a50 __identifier("?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 extern unsigned char DAT_142528d90[];
 extern unsigned char DAT_142529f50[];
 extern unsigned char DAT_14252b580[];
-extern unsigned char DAT_14252c4e0[];
+extern "C" unsigned char __identifier("?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z")[];
+#define DAT_14252c4e0 __identifier("?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z")
 extern unsigned char DAT_14252c9c0[];
 extern unsigned char DAT_14252c9d0[];
 extern unsigned char DAT_14252c9e0[];
@@ -1290,53 +1341,5 @@ alignas(16) void* DAT_1431b7d50[15] = {
     DAT_1424effa0,
 };
 
-#pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6BObjectInterface@123@@")
-#pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@")
-#pragma comment(linker, "/alternatename:?DAT_140002b00@@3PAEA=?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142300840@@3PAEA=?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423df420@@3PAEA=?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df430@@3PAEA=?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df460@@3PAEA=?GetAS3ObjectName@Traits@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df4a0@@3PAEA=?GetAS3ObjectName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVString@5@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14252e480@@3PAEA=?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423df580@@3PAEA=?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df590@@3PAEA=?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423df5a0@@3PAEA=?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df5b0@@3PAEA=?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142442e10@@3PAEA=?ForEachChild_GC@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z")
-#pragma comment(linker, "/alternatename:?DAT_142443380@@3PAEA=?GetAS3ObjectName@DisplayObject@fl_display@Instances@AS3@GFx@Scaleform@@UEBA?AVString@6@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1424e4290@@3PAEA=??1CheckResult@AS3@GFx@Scaleform@@QEAA@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1424e42a0@@3PAEA=?AS3Constructor@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBAXAEBV1345@AEBVValue@345@IPEBV6345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424e8060@@3PAEA=?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424eb770@@3PAEA=?ApplyTypeArgs@Class@AS3@GFx@Scaleform@@UEAAAEAV1234@IPEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ee6f0@@3PAEA=?Call@Class@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424ee7f0@@3PAEA=?Call@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IQEBV5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424effa0@@3PAEA=?Coerce@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA_NAEBVValue@345@AEAV6345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f0610@@3PAEA=?Construct@Class@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@IPEBV5234@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142500e50@@3PAEA=?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509ca0@@3PAEA=?GetFilePtr@Traits@AS3@GFx@Scaleform@@UEBAPEAVVMAbcFile@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_142509d30@@3PAEA=?GetFixedMemSize@Traits@AS3@GFx@Scaleform@@UEBAIXZ")
-#pragma comment(linker, "/alternatename:?DAT_14250a5b0@@3PAEA=?GetGlobalObjectScript@Traits@AS3@GFx@Scaleform@@UEBAPEAVGlobalObjectScript@fl@Instances@234@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250bbd0@@3PAEA=?GetName@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250bc40@@3PAEA=?GetName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14250be40@@3PAEA=?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250c010@@3PAEA=?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250c060@@3PAEA=?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250cc60@@3PAEA=?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250d550@@3PAEA=?GetQualifiedName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250d570@@3PAEA=?GetQualifiedName@Traits@InstanceTraits@AS3@GFx@Scaleform@@UEBA?AVASString@45@W4QNameFormat@1345@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425117e0@@3PAEA=?InitOnDemand@Traits@AS3@GFx@Scaleform@@MEBAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1425117f0@@3PAEA=?InitOnDemand@Traits@ClassTraits@AS3@GFx@Scaleform@@MEBAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_142511810@@3PAEA=?InitPrototype@Class@AS3@GFx@Scaleform@@UEBAXAEAVObject@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142512620@@3PAEA=?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
-#pragma comment(linker, "/alternatename:?DAT_142514320@@3PAEA=?IsGlobal@Traits@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_142516630@@3PAEA=?MakePrototype@Class@AS3@GFx@Scaleform@@UEBA?AV?$Pickable@VObject@AS3@GFx@Scaleform@@@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_14251ced0@@3PAEA=?PostInit@Class@AS3@GFx@Scaleform@@UEBAXAEBVValue@234@IPEBV5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251cfc0@@3PAEA=?PreInit@Class@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14252c4e0@@3PAEA=?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z")
 
 #endif // MS2_HOOK_DLL

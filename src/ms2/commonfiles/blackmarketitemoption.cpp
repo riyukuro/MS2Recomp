@@ -1262,6 +1262,3 @@ void CBlackMarketTable::SetInit(bool b)
 
 // soundproperty declares 0x1401c0cc0 as CString& FUN_1401c0cc0(CAtlArray<CString>*, unsigned __int64). The exe copy there
 // is this unit's CAtlArray<CStringA>::operator[] (the folded 8-byte-element copy), so the declared name is bound to it here.
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:?FUN_1401c0cc0@@YAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@2@_K@Z=??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")
-#endif

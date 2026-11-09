@@ -80,11 +80,41 @@ public:
     static const Integer& One();
 };
 }
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143a57d68;        // typeid(int)
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0H@8");        // typeid(int)
+#define DAT_143a57d68 __identifier("??_R0H@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa1220;        // typeid(T) of the first instantiation
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AW4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@8");        // typeid(T) of the first instantiation
+#define DAT_143aa1220 __identifier("??_R0?AW4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa7a80;        // typeid(T) of the second instantiation
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AW4RandomNumberType@Integer@CryptoPP@@@8");        // typeid(T) of the second instantiation
+#define DAT_143aa7a80 __identifier("??_R0?AW4RandomNumberType@Integer@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_14311ee90[];                      // vftable of the first instantiation
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char __identifier("??_7?$AlgorithmParametersTemplate@W4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@CryptoPP@@6B@")[];                      // vftable of the first instantiation
+#define DAT_14311ee90 __identifier("??_7?$AlgorithmParametersTemplate@W4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@CryptoPP@@6B@")
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_14312dbf8[];                      // vftable of the second instantiation
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char __identifier("??_7?$AlgorithmParametersTemplate@W4RandomNumberType@Integer@CryptoPP@@@CryptoPP@@6B@")[];                      // vftable of the second instantiation
+#define DAT_14312dbf8 __identifier("??_7?$AlgorithmParametersTemplate@W4RandomNumberType@Integer@CryptoPP@@@CryptoPP@@6B@")
+#endif
 
 // @0x142311c70
 void FUN_142311c70(CppIntParam* self, const char* name, const std::type_info& valueType, void* pValue)
@@ -125,8 +155,20 @@ void FUN_1423697c0(CppIntParam* self, CppIntParam* dst)
 #include <string>
 #include <exception>
 
+#ifdef MS2_HOOK_DLL
 extern char DAT_14312d848[];   // vftable of Integer::OpenPGPDecodeErr
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char __identifier("??_7OpenPGPDecodeErr@Integer@CryptoPP@@6B@")[];   // vftable of Integer::OpenPGPDecodeErr
+#define DAT_14312d848 __identifier("??_7OpenPGPDecodeErr@Integer@CryptoPP@@6B@")
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_143130c18[];   // vftable of PolynomialMod2::DivideByZero
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char __identifier("??_7DivideByZero@PolynomialMod2@CryptoPP@@6B@")[];   // vftable of PolynomialMod2::DivideByZero
+#define DAT_143130c18 __identifier("??_7DivideByZero@PolynomialMod2@CryptoPP@@6B@")
+#endif
 
 namespace CryptoPP   // C3: cryptlib.h's Exception, verbatim (the full header clashes with this unit's other CryptoPP
 {                    // views); its vftable COMDAT is the exe's ??_7Exception@CryptoPP@@6B@ (0x142d30650)
@@ -197,11 +239,41 @@ struct CppAssignHelper
     bool m_done;
 };
 extern const char DAT_14312b860[];
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa7e90;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8");
+#define DAT_143aa7e90 __identifier("??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa1e90;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AV?$DL_PrivateKey@VInteger@CryptoPP@@@CryptoPP@@@8");
+#define DAT_143aa1e90 __identifier("??_R0?AV?$DL_PrivateKey@VInteger@CryptoPP@@@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa7e20;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AV?$DL_PublicKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8");
+#define DAT_143aa7e20 __identifier("??_R0?AV?$DL_PublicKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa1de0;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AV?$DL_PublicKey@VInteger@CryptoPP@@@CryptoPP@@@8");
+#define DAT_143aa1de0 __identifier("??_R0?AV?$DL_PublicKey@VInteger@CryptoPP@@@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa1d00;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AVDL_GroupParameters_IntegerBased@CryptoPP@@@8");
+#define DAT_143aa1d00 __identifier("??_R0?AVDL_GroupParameters_IntegerBased@CryptoPP@@@8")
+#endif
 
 // NameValuePairs::GetThisObject: GetValue("ThisObject:" + typeid(T).name(), object)
 static __forceinline std::string CppCat(std::string&& a, const std::type_info& t) { return std::move(a) + t.name(); }
@@ -332,8 +404,20 @@ struct CppKeyGroupPart
     CppGroupParams group;
 };
 struct CppDLPrivateKey : CppKeyObj, CppKeyGroupPart {};
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa1768;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AVDL_GroupParameters_GFP@CryptoPP@@@8");
+#define DAT_143aa1768 __identifier("??_R0?AVDL_GroupParameters_GFP@CryptoPP@@@8")
+#endif
+#ifdef MS2_HOOK_DLL
 extern const std::type_info DAT_143aa3860;
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const std::type_info __identifier("??_R0?AVDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@8");
+#define DAT_143aa3860 __identifier("??_R0?AVDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@8")
+#endif
 
 // DL_PrivateKeyImpl<GP>::GenerateRandom: take the group parameters from the source if it carries them, else generate them; x = random in [1, max exponent]
 // the key (CppKeyObj base at -0x10) is reached from the group part with raw offsets, like the exe ([rcx-0x10] each time, no adjusted pointer kept)

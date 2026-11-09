@@ -2350,7 +2350,6 @@ criVmpv_Create	14003c390	func
 createMpvHn	14003c8d0	func
 ?criVmpv_SetProcessorMask@@YAXPEAXK@Z	14003c9a0	func
 ?criVmpv_SetInitDlgPara@@YAXPEAXJPEBJ1@Z	14003ca00	func
-?criVmpv_Destroy@@YAXPEAX@Z	14003cae0	func
 criVmpv_Destroy	14003cae0	func
 ?criVmpv_GetStatus@@YAJPEBX@Z	14003cc70	func
 ?FUN_14003cca0@@YAXPEAX@Z	14003cca0	func
@@ -3570,10 +3569,7 @@ UINT_1400afc20	1400afc20	func
 ?ReleaseImpl@?$MS2Ptr@VCAchieveGradeData@@@@AEAAXPEAX@Z	14015b260	func
 ?ReleaseImpl@?$MS2Ptr@VGameEvent@@@@AEAAXPEAX@Z	14015b2b0	func
 ?__empty_global_delete@@YAXPEAX@Z	14015b300	func
-?FUN_14015b310@@YAXPEAX_K@Z	14015b310	func
-?FUN_14015b310@GFx@Scaleform@@YAXPEAX_K@Z	14015b310	func
 ?__empty_global_delete@@YAXPEAX_K@Z	14015b310	func
-FUN_14015b310	14015b310	func
 ?data@CAtlPlex@ATL@@QEAAPEAXXZ	14015b320	func
 HRESULT_FROM_WIN32	14015b330	func
 ??0CAchieveGradeData@@QEAA@XZ	14015b490	func
@@ -4424,7 +4420,6 @@ HRESULT_FROM_WIN32	14015b330	func
 ??$make_pair@MAEAM@std@@YA?AU?$pair@MM@0@$$QEAMAEAM@Z	1401775a0	func
 ??$?0MM$0A@@?$pair@MM@std@@QEAA@XZ	1401775f0	func
 ??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z	140177620	func
-?FUN_140177620@@YAPEADPEAD0@Z	140177620	func
 ??$?0U_Exact_args_t@std@@AEBW4SAType@@$$V$0A@@?$tuple@AEBW4SAType@@@std@@QEAA@U_Exact_args_t@1@AEBW4SAType@@@Z	140177630	func
 ??$?0V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@1@$$QEA_N@Z	140177690	func
 ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@1@$$QEA_N@Z	1401776e0	func
@@ -7653,7 +7648,6 @@ wmemmove	140191580	func
 ?Owner@?$Unk_BmBoxPtr@V?$CAtlList@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@V?$CElementTraits@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@@ATL@@@ATL@@@@CAPEAV?$TPtredDummy@V?$CAtlList@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@V?$CElementTraits@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@@ATL@@@ATL@@@@PEAV?$CAtlList@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@V?$CElementTraits@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@@ATL@@@ATL@@@Z	1401c0c00	func
 ?Owner@?$Unk_BmBoxPtr@V?$CRBMap@IV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@@CAPEAV?$TPtredDummy@V?$CRBMap@IV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@@PEAV?$CRBMap@IV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@Z	1401c0c40	func
 ?GetAt@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEAAAEAI_K@Z	1401c0c80	func
-?FUN_1401c0cc0@@YAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@2@_K@Z	1401c0cc0	func
 ?GetAt@?$CAtlList@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@V?$CElementTraits@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@PEAU__POSITION@@@Z	1401c0d00	func
 ?GetHeadPosition@?$CAtlList@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@V?$CElementTraits@V?$Unk_BmPtr@VTabInfo@CBlackMarketTable@@@@@ATL@@@ATL@@QEBAPEAU__POSITION@@XZ	1401c0d70	func
 ?FUN_1401c0d80@@YAPEAVCBlackMarketTable@@XZ	1401c0d80	func
@@ -63899,7 +63893,6 @@ _vsnprintf_s	140872d50	func
 ?FUN_1408a01e0@@YAHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	1408a01e0	func
 ?FUN_1408a02a0@@YAHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	1408a02a0	func
 ?FUN_1408a0370@@YAHHHH@Z	1408a0370	func
-?FUN_1408a03c0@@YAHAEBUUnk_Int3@@@Z	1408a03c0	func
 ?FUN_1408a03c0@@YAHUUnk_Int3@@@Z	1408a03c0	func
 ?FUN_1408a0400@@YA?AUUnk_Int3@@H@Z	1408a0400	func
 ?FUN_1408a0480@@YAXPEAVCube@@@Z	1408a0480	func
@@ -123848,8 +123841,8 @@ _vscprintf_l	1410409c0	func
 ?_Get_first@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAAAEAU?$less@VEntityID@egf@@@2@XZ	141143420	func
 ?_Get_first@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEBAAEBU?$less@VEntityID@egf@@@2@XZ	141143430	func
 ?_Get_first@?$_Compressed_pair@U?$less@_K@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@2@$00@std@@QEAAAEAU?$less@_K@2@XZ	141143440	func
+??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@std@@QEAA@XZ	141143450	func
 ?_Get_first@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@2@$00@std@@QEBAAEBU?$less@VEntityID@egf@@@2@XZ	141143450	func
-?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@XZ	141143450	func
 ?_Get_first@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@VEntityID@egf@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@$00@2@$00@std@@QEAAAEAU?$less@VEntityID@egf@@@2@XZ	141143460	func
 ?_Get_first@?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@VEntityID@egf@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@$00@2@$00@std@@QEBAAEBU?$less@VEntityID@egf@@@2@XZ	141143470	func
 ?_Get_first@?$_Compressed_pair@U?$less@W4Unk_CMISKindA@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@$00@2@$00@std@@QEAAAEAU?$less@W4Unk_CMISKindA@@@2@XZ	141143480	func
@@ -123870,17 +123863,17 @@ _vscprintf_l	1410409c0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@XZ	141143570	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@XZ	141143580	func
 ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@2@XZ	141143590	func
+??0?$allocator@W4Unk_CMISKindC@@@std@@QEAA@XZ	1411435a0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@XZ	1411435a0	func
-?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@XZ	1411435a0	func
 ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@PEAX@std@@@2@XZ	1411435b0	func
+?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@@std@@@std@@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ	1411435c0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@std@@@efd@@XZ	1411435c0	func
-?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@XZ	1411435c0	func
+?_Get_first@?$_Compressed_pair@U?$less@K@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@$00@2@$00@std@@QEBAAEBU?$less@K@2@XZ	1411435d0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@std@@@efd@@XZ	1411435d0	func
-?_Get_first@?$_Compressed_pair@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@V?$_Vector_val@U?$_Simple_types@UUnk_CMISElem52@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@UUnk_CMISElem52@@@efd@@XZ	1411435d0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@PEAX@std@@@efd@@XZ	1411435e0	func
-?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@2@XZ	1411435e0	func
+?_Get_second@?$_Compressed_pair@U?$less@K@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@$00@2@XZ	1411435e0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@PEAX@std@@@efd@@XZ	1411435f0	func
-?_Get_second@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@2@XZ	1411435f0	func
+?_Get_second@?$_Compressed_pair@U?$less@_K@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@std@@@std@@$00@2@XZ	1411435f0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@XZ	141143600	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@XZ	141143610	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@XZ	141143620	func
@@ -123892,7 +123885,9 @@ _vscprintf_l	1410409c0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@XZ	141143680	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@XZ	141143690	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@XZ	1411436a0	func
+?_Get_second@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@2@XZ	1411436a0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@XZ	1411436b0	func
+?_Get_second@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@XZ	1411436b0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@XZ	1411436c0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@XZ	1411436d0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@XZ	1411436e0	func
@@ -123902,10 +123897,13 @@ _vscprintf_l	1410409c0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@XZ	141143720	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@XZ	141143730	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@XZ	141143740	func
+?_Get_second@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@XZ	141143740	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@XZ	141143750	func
+?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@XZ	141143750	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@XZ	141143760	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@XZ	141143770	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@XZ	141143780	func
+?_Get_second@?$_Compressed_pair@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@XZ	141143780	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@XZ	141143790	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@efd@@XZ	1411437a0	func
 ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@$00@std@@QEBAAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@std@@@efd@@XZ	1411437b0	func
@@ -168744,7 +168742,6 @@ FUN_141485590	141485590	func
 ??A?$map@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@@std@@QEAAAEAV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@1@AEBH@Z	1417a2290	func
 ?Value@?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@CAPEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@PEAV?$TPtredDummy@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@@Z	1417a22d0	func
 ??C?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEBAPEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@XZ	1417a2310	func
-?get@?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEBAPEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@XZ	1417a2310	func
 ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@1@XZ	1417a2320	func
 ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@1@XZ	1417a2340	func
 ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_EventVoice@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHUUnk_EventVoice@@@1@XZ	1417a2360	func
@@ -191158,9 +191155,11 @@ FUN_141485590	141485590	func
 ??$_Uninitialized_move_al_unchecked@PEAV?$MS2Ptr@VCLiftableTargetBox@@@@PEAV1@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@YAPEAV?$MS2Ptr@VCLiftableTargetBox@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z	141bec920	func
 ??$_Uninitialized_move_al_unchecked@PEAV?$MS2Ptr@VMS2ActorUpdater@@@@PEAV1@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@YAPEAV?$MS2Ptr@VMS2ActorUpdater@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z	141bec9b0	func
 ??$addressof@$$CBV?$_Tree@V?$_Tmap_traits@HU?$pair@VEntityID@egf@@I@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHU?$pair@VEntityID@egf@@I@std@@@std@@@2@$0A@@std@@@std@@@std@@YAPEBV?$_Tree@V?$_Tmap_traits@HU?$pair@VEntityID@egf@@I@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHU?$pair@VEntityID@egf@@I@std@@@std@@@2@$0A@@std@@@0@AEBV10@@Z	141beca40	func
+??$addressof@$$CBV?$_Tree@V?$_Tmap_traits@IV?$SmartPointer@VEntity@egf@@@efd@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@@std@@@std@@YAPEBV?$_Tree@V?$_Tmap_traits@IV?$SmartPointer@VEntity@egf@@@efd@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@@0@AEBV10@@Z	141beca40	func
 ??$move@AEAUUnk_WsFieldRefRaw@@@std@@YA$$QEAUUnk_WsFieldRefRaw@@AEAU1@@Z	141beca40	func
 ??$addressof@$$CBV?$_List_val@U?$_List_simple_types@PEAVEntity@egf@@@std@@@std@@@std@@YAPEBV?$_List_val@U?$_List_simple_types@PEAVEntity@egf@@@std@@@0@AEBV10@@Z	141beca50	func
 ??$addressof@$$CBV?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VVisibleObjectRecord@WsReal@@U?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@std@@@6@$0A@@std@@@std@@@std@@YAPEBV?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VVisibleObjectRecord@WsReal@@U?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@std@@@6@$0A@@std@@@0@AEBV10@@Z	141beca50	func
+??$addressof@$$CBV?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@std@@@std@@YAPEBV?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@0@AEBV10@@Z	141beca50	func
 ??$addressof@$$CBV?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@@std@@YAPEBV?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@0@AEBV10@@Z	141beca60	func
 ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@@std@@@0@AEBV10@@Z	141beca70	func
 ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@0@AEBV10@@Z	141beca80	func
@@ -198901,7 +198900,6 @@ ImmGetCompositionStringW	1422acf04	func
 ??0WStringBuffer@Scaleform@@QEAA@XZ	1422fbef0	func
 ??1?$Array@UToken@ConfigParser@@$01UArrayDefaultPolicy@Scaleform@@@Scaleform@@QEAA@XZ	1422fbf40	func
 ??1?$ArrayLH@VString@Scaleform@@$01UArrayDefaultPolicy@2@@Scaleform@@QEAA@XZ	1422fbf60	func
-FUN_1422fbf60	1422fbf60	func
 ??1?$ArrayBase@U?$ArrayData@UToken@ConfigParser@@U?$AllocatorGH@UToken@ConfigParser@@$01@Scaleform@@UArrayDefaultPolicy@4@@Scaleform@@@Scaleform@@QEAA@XZ	1422fbf80	func
 ??1?$ArrayBase@U?$ArrayData@VString@Scaleform@@U?$AllocatorLH@VString@Scaleform@@$01@2@UArrayDefaultPolicy@2@@Scaleform@@@Scaleform@@QEAA@XZ	1422fbfa0	func
 ??1?$ArrayData@UToken@ConfigParser@@U?$AllocatorGH@UToken@ConfigParser@@$01@Scaleform@@UArrayDefaultPolicy@4@@Scaleform@@QEAA@XZ	1422fbfc0	func
@@ -199838,7 +199836,6 @@ FUN_1423d9730	1423d9730	func
 ?CreateASIMEManager@AS3Support@GFx@Scaleform@@UEAA?AV?$Ptr@VASIMEManager@GFx@Scaleform@@@3@XZ	1423dc110	func
 ?DAT_1423dc110@@3PAEA	1423dc110	func
 ?CreateCharacterInstance@AS3Support@GFx@Scaleform@@UEAAPEAVDisplayObjectBase@23@PEAVMovieImpl@23@AEBUCharacterCreateInfo@23@PEAVInteractiveObject@23@VResourceId@23@W4CharacterDefType@CharacterDef@23@@Z	1423dc160	func
-?FUN_1423dc160@@YAXXZ	1423dc160	func
 ?CreateMemoryContext@AS3Support@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z	1423dc560	func
 ?DAT_1423dc560@@3PAEA	1423dc560	func
 ?CreateMovie@AS3Support@GFx@Scaleform@@UEAAPEAVMovieImpl@23@PEAVMemoryContext@23@@Z	1423dc710	func
@@ -199847,7 +199844,6 @@ FUN_1423d9730	1423d9730	func
 ?DoActionLoader@AS3Support@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z	1423dcab0	func
 ?FUN_1423dcab0@GFx@Scaleform@@YAXPEAXPEAVLoadProcess@12@AEBUTagInfo@12@@Z	1423dcab0	func
 ?DoActions@AS3Support@GFx@Scaleform@@UEAAXXZ	1423dcac0	func
-?FUN_1423dcac0@@YAXXZ	1423dcac0	func
 ?DoInitActionLoader@AS3Support@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z	1423dcad0	func
 ?FUN_1423dcad0@GFx@Scaleform@@YAXPEAXPEAVLoadProcess@12@AEBUTagInfo@12@@Z	1423dcad0	func
 ?Execute@DoAbc@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObjContainer@34@@Z	1423dcae0	func
@@ -207799,7 +207795,6 @@ FUN_1423d9730	1423d9730	func
 ??0LoadQueueEntry@AS3@GFx@Scaleform@@QEAA@PEAVURLRequest@fl_net@Instances@123@PEAVURLLoader@56123@W4LoadMethod@023@_N@Z	1424d8350	func
 ??0LoadQueueEntryMT_LoadMovie@AS3@GFx@Scaleform@@QEAA@PEAVLoadQueueEntry@123@PEAVMovieImpl@23@@Z	1424d84e0	func
 ??0MovieRoot@AS3@GFx@Scaleform@@QEAA@PEAVMemoryContextImpl@123@PEAVMovieImpl@23@PEAVASSupport@23@@Z	1424d8640	func
-?FUN_1424d8640@AS3@GFx@Scaleform@@YAPEAXPEAXPEAVMemoryContextImpl@123@PEAVMovieImpl@23@PEAVASSupport@23@@Z	1424d8640	func
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVNamespace@Instances@123@AEBVValue@123@@Z	1424d8a90	func
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@@Z	1424d8bb0	func
 ??0Multiname@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@AEBVValue@123@@Z	1424d8cb0	func
@@ -207925,7 +207920,6 @@ FUN_1424de650	1424de650	func
 ??1SlotInfo@AS3@GFx@Scaleform@@QEAA@XZ	1424def30	func
 ??1Stage@AS3@GFx@Scaleform@@UEAA@XZ	1424defe0	func
 ??1Tracer@AS3@GFx@Scaleform@@UEAA@XZ	1424df070	func
-FUN_1424df070	1424df070	func
 ??1Traits@AS3@GFx@Scaleform@@UEAA@XZ	1424df220	func
 ??1Traits@InstanceTraits@AS3@GFx@Scaleform@@UEAA@XZ	1424df2f0	func
 ??1UDBase@Classes@AS3@GFx@Scaleform@@UEAA@XZ	1424df350	func
@@ -208164,7 +208158,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?DAT_1424eb250@@3PAEA	1424eb250	func
 ?AdvanceFrame@FrameCounter@AS3@GFx@Scaleform@@UEAAX_NM@Z	1424eb260	func
 ?AdvanceFrame@MovieRoot@AS3@GFx@Scaleform@@UEAAX_N@Z	1424eb2f0	func
-?FUN_1424eb2f0@@YAXXZ	1424eb2f0	func
 ?Alloc@LinearHeap@Render@Scaleform@@QEAAPEAX_K@Z	1424eb4d0	func
 ?Sfr21LinearHeapAlloc@Render@Scaleform@@YAPEAXPEAX_K@Z	1424eb4d0	func
 ?Alloc@Traits@AS3@GFx@Scaleform@@QEBAPEAXXZ	1424eb610	func
@@ -208217,7 +208210,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?CanBeNull@Tracer@AS3@GFx@Scaleform@@QEBA?AW4TraceNullType@Value@234@AEBV6234@@Z	1424ee9e0	func
 ?CanBeNull@Tracer@AS3@GFx@Scaleform@@QEBA?AW4TraceNullType@Value@234@AEBVTraits@InstanceTraits@234@@Z	1424eea80	func
 ?ChangeMouseCursorType@Sfr33MovieRootCursor@AS3@GFx@Scaleform@@UEAAXII@Z	1424eeae0	func
-?FUN_1424eeae0@@YAXXZ	1424eeae0	func
 ?CheckAdvanceStatus@FrameCounter@AS3@GFx@Scaleform@@UEAAH_N@Z	1424eec90	func
 ?CheckAdvanceStatus@InteractiveObject@GFx@Scaleform@@UEAAH_N@Z	1424eeca0	func
 ?DAT_1424eeca0@@3PAEA	1424eeca0	func
@@ -208241,7 +208233,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?Sfr33CheckObject@AS3@GFx@Scaleform@@YAXPEBQEAVVM@123@AEBVValue@123@@Z	1424ef180	func
 ?Sfr33IsObjectElseThrow@AS3@GFx@Scaleform@@YA_NAEAVVM@123@AEBVValue@123@@Z	1424ef210	func
 ?Clear@?$ArrayBase@U?$ArrayData@PEAVVMAbcFile@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVVMAbcFile@AS3@GFx@Scaleform@@$0BEJ@@4@UArrayDefaultPolicy@4@@Scaleform@@@Scaleform@@QEAAXXZ	1424ef2a0	func
-?FUN_1424ef2a0@@YAX_K@Z	1424ef2a0	func
 ?Clear@?$HashSetBase@PEBXV?$FixedSizeHash@PEBX@Scaleform@@V12@U?$AllocatorGH@PEBX$01@2@V?$HashsetCachedEntry@PEBXV?$FixedSizeHash@PEBX@Scaleform@@@2@@Scaleform@@QEAAXXZ	1424ef320	func
 ?Clear@?$HashSetBase@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorGH@PEAVObject@AS2@GFx@Scaleform@@$01@2@V?$HashsetNodeEntry@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXXZ	1424ef320	func
 ?Clear@?$HashSetBase@U?$HashNode@HV?$AutoPtr@V?$ArrayLH@V?$WeakPtr@VDisplayObject@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@Scaleform@@@Scaleform@@V?$IdentityHash@H@2@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorLH@H$01@2@V?$HashsetNodeEntry@U?$HashNode@HV?$AutoPtr@V?$ArrayLH@V?$WeakPtr@VDisplayObject@GFx@Scaleform@@@Scaleform@@$01UArrayDefaultPolicy@2@@Scaleform@@@Scaleform@@V?$IdentityHash@H@2@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXXZ	1424ef380	func
@@ -208259,7 +208250,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ??1?$ArrayPagedBase@PEBV?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@$09$04U?$AllocatorPagedLH_POD@PEBV?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@$01@4@@Scaleform@@QEAA@XZ	1424efab0	func
 ?ClearAndRelease@?$ArrayPagedBase@PEBV?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@$09$04U?$AllocatorPagedLH_POD@PEBV?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@$01@4@@Scaleform@@QEAAXXZ	1424efab0	func
 ?ClearDisplayList@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ	1424efb40	func
-?FUN_1424efb40@@YAXXZ	1424efb40	func
 ?ClearFor@IntervalTimer@AS3@GFx@Scaleform@@UEAA_NPEAVMovieImpl@34@PEAVMovieDefImpl@34@@Z	1424efc30	func
 ?ClearOpStack@CallFrame@AS3@GFx@Scaleform@@QEAAXXZ	1424efcd0	func
 ?ClearScopeStack@CallFrame@AS3@GFx@Scaleform@@QEAAXXZ	1424efd80	func
@@ -208319,7 +208309,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?DAT_1424f2400@@3PAEA	1424f2400	func
 ?CreateASInstanceNoCtor@AvmDisplayObj@AS3@GFx@Scaleform@@QEAA_N_N@Z	1424f2450	func
 ?CreateArray@Sfr33MovieRootArray@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@@Z	1424f2700	func
-?FUN_1424f2700@@YAXXZ	1424f2700	func
 ?FUN_1424f27b0@@YA_NPEAVAvmBitmap@AS3@GFx@Scaleform@@@Z	1424f27b0	func
 ?CreateCharacters@AvmButton@AS3@GFx@Scaleform@@UEAAXXZ	1424f2e90	func
 ?CreateChildren@AvmSprite@AS3@GFx@Scaleform@@QEAAXXZ	1424f3320	func
@@ -208327,7 +208316,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?CreateEmptyMovieClip@Sfr34d_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@PEBDJ@Z	1424f33d0	func
 ?Sfr33MovieRootCreateEventObject@AS3@GFx@Scaleform@@YAPEAXPEAVMovieRoot@123@PEAXAEBVASString@23@_N3@Z	1424f3710	func
 ?CreateFunction@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEAVFunctionHandler@34@PEAX@Z	1424f3780	func
-?FUN_1424f3780@@YAXXZ	1424f3780	func
 ?CreateMovieClip@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAPEAVSprite@34@PEAVCharacterDef@34@PEAVMovieDefImpl@34@PEAVInteractiveObject@34@VResourceId@34@_N@Z	1424f38a0	func
 ?DAT_1424f3910@@3PAEA	1424f3910	func
 ?Sfr33MovieRootCreateMovieDefRootNode@AS3@GFx@Scaleform@@YAPEAXPEAVMovieRoot@123@PEAVMemoryHeap@3@PEAVMovieDefImpl@23@_N@Z	1424f3910	func
@@ -208345,9 +208333,7 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?FUN_1424f4000@@YAPEAVAvmInteractiveObj@AS3@GFx@Scaleform@@PEAVMovieRoot@234@PEAVMovieDefImpl@34@@Z	1424f4000	func
 ?FUN_1424f4000@@YAXPEAVMovieRoot@AS3@GFx@Scaleform@@PEAVMovieDefImpl@34@@Z	1424f4000	func
 ?CreateString@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBD@Z	1424f41f0	func
-?FUN_1424f41f0@@YAXXZ	1424f41f0	func
 ?CreateStringW@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEB_W@Z	1424f42d0	func
-?FUN_1424f42d0@@YAXXZ	1424f42d0	func
 ?Sfr33CreateWeakProxy@AS3@GFx@Scaleform@@YAPEAPEAVWeakProxy@123@PEBVGASRefCountBase@123@PEAPEAV4123@@Z	1424f43c0	func
 ?DeleteDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@AEBVMultiname@234@@Z	1424f4540	func
 ?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z	1424f4780	func
@@ -208506,11 +208492,8 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?ForceShutdown@FrameCounter@AS3@GFx@Scaleform@@UEAAXXZ	142504850	func
 ?ForceShutdown@Stage@AS3@GFx@Scaleform@@UEAAXXZ	142504860	func
 ?GFxValue2ASValue@MovieRoot@AS3@GFx@Scaleform@@QEAAXAEBVValue@34@PEAV5234@@Z	1425048d0	func
-?FUN_142504b40@@YAXXZ	142504b40	func
 ?GenerateGestureEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@IAEBV?$Point@M@Render@3@11MI@Z	142504b40	func
-?FUN_142504b50@@YAXXZ	142504b50	func
 ?GenerateMouseEvents@MovieRoot@AS3@GFx@Scaleform@@UEAAXI@Z	142504b50	func
-?FUN_1425057e0@@YAXXZ	1425057e0	func
 ?GenerateTouchEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXI@Z	1425057e0	func
 ?Get@?$AbcMultinameHash@V?$SPtr@VNamespace@Instances@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@$0BFE@@AS3@GFx@Scaleform@@QEAAPEAV?$SPtr@VNamespace@Instances@AS3@GFx@Scaleform@@@234@_KJ@Z	1425057f0	func
 ?Sfr33WordHashGet@AS3@GFx@Scaleform@@YA_NAEBV?$HashLH@_K_KV?$FixedSizeHash@_K@Scaleform@@$01U?$HashNode@_K_KV?$FixedSizeHash@_K@Scaleform@@@2@V?$HashsetCachedNodeEntry@U?$HashNode@_K_KV?$FixedSizeHash@_K@Scaleform@@@Scaleform@@UNodeHashF@12@@2@@3@AEB_KPEA_K@Z	1425058c0	func
@@ -208846,7 +208829,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?GetValueUnsafe@STPtr@AS3@GFx@Scaleform@@QEAAXAEAVValue@234@@Z	1425100f0	func
 ?DAT_142510180@@3PAEA	142510180	func
 ?GetVariable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEAVValue@34@PEBD@Z	142510180	func
-?FUN_142510240@@YAXXZ	142510240	func
 ?GetVariableArray@MovieRoot@AS3@GFx@Scaleform@@UEAA_NHPEBDIPEAXI@Z	142510240	func
 ?DAT_142510770@@3PAEA	142510770	func
 ?GetVariableArraySize@MovieRoot@AS3@GFx@Scaleform@@UEAAIPEBD@Z	142510770	func
@@ -209027,7 +209009,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?ObjectRelease@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z	142518570	func
 ?DAT_1425185d0@@3PAEA	1425185d0	func
 ?OnAdded@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAX_N@Z	1425185d0	func
-?FUN_142518730@@YAXXZ	142518730	func
 ?OnAppLifecycleEvent@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVAppLifecycleEvent@23@@Z	142518730	func
 ?FUN_142518740@AS3@GFx@Scaleform@@YA_N_K@Z	142518740	func
 ?OnButtonKeyEvent@AvmButton@AS3@GFx@Scaleform@@UEAA_NAEBVEventId@34@PEAH@Z	142518740	func
@@ -209036,7 +209017,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?OnCharEvent@InteractiveObject@GFx@Scaleform@@UEAA_NII@Z	142518990	func
 ?OnCharEvent@InteractiveObject@GFx@Scaleform@@UEAA_NKI@Z	142518990	func
 ?OnDetachFromTimeline@AvmDisplayObj@AS3@GFx@Scaleform@@QEAAXXZ	1425189a0	func
-?FUN_142518a00@@YAXXZ	142518a00	func
 ?OnDeviceOrientationChanged@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVOrientationEvent@23@@Z	142518a00	func
 ?FUN_142518a10@AS3@GFx@Scaleform@@YA_N_KAEBVEventId@23@@Z	142518a10	func
 ?OnEvent@AvmButton@AS3@GFx@Scaleform@@UEAA_NAEBVEventId@34@@Z	142518a10	func
@@ -209155,7 +209135,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?FUN_14251ac90@AS3@GFx@Scaleform@@YA_N_K@Z	14251ac90	func
 ?FUN_14251aca0@@YAXPEAX0H@Z	14251aca0	func
 ?FUN_14251aca0@@YAXXZ	14251aca0	func
-?FUN_14251acb0@AS3@GFx@Scaleform@@YA_N_K@Z	14251acb0	func
 ?OnOpCode@Tracer@AS3@GFx@Scaleform@@UEAA_N_K@Z	14251acb0	func
 ?FUN_14251acc0@AS3@GFx@Scaleform@@YAX_K@Z	14251acc0	func
 ?FUN_14251acd0@@YAXPEAX_K1@Z	14251acd0	func
@@ -209187,7 +209166,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?FUN_14251bb20@AS3@GFx@Scaleform@@YAXPEBVVM@123@PEAVFlashUI@123@PEBVValueRegisterFile@123@@Z	14251bb20	func
 ?FUN_14251bbc0@AS3@GFx@Scaleform@@YAXPEBVVM@123@PEAVFlashUI@123@PEBVValueStack@123@@Z	14251bbc0	func
 ?FUN_14251bc40@AS3@GFx@Scaleform@@YAX_KW4OutputMessageType@FlashUI@123@PEBD@Z	14251bc40	func
-?FUN_14251bda0@AS3@GFx@Scaleform@@YAX_KW4OutputMessageType@FlashUI@123@PEBD@Z	14251bda0	func
 ?Output@Tracer@AS3@GFx@Scaleform@@UEAAXW4OutputMessageType@FlashUI@234@PEBD@Z	14251bda0	func
 ?OutputError@VM@AS3@GFx@Scaleform@@QEAAXAEBVValue@234@@Z	14251bdc0	func
 ?FUN_14251c1c0@@YAXPEBVMovieRoot@AS3@GFx@Scaleform@@AEAV?$Array@VValue@AS3@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@4@PEBD2PEAD@Z	14251c1c0	func
@@ -209225,7 +209203,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?ProcessLoadBinaryMT@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@23@PEAVLoadStates@23@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@3@_K_N@Z	14251e4a0	func
 ?DAT_14251e4b0@@3PAEA	14251e4b0	func
 ?ProcessLoadBinaryMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@4@_K_N@Z	14251e4b0	func
-?FUN_14251e560@@YAXXZ	14251e560	func
 ?ProcessLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@@Z	14251e560	func
 ?DAT_14251f250@@3PAEA	14251f250	func
 ?ProcessLoadVarsMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBVString@4@_K_N@Z	14251f250	func
@@ -209486,7 +209463,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ?SetupSlotValues@Traits@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVVMAbcFile@234@AEBVHasTraits@Abc@234@AEAVObject@234@@Z	14252c0e0	func
 ?DAT_14252c4e0@@3PAEA	14252c4e0	func
 ?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z	14252c4e0	func
-?FUN_14252c4f0@@YAXXZ	14252c4f0	func
 ?Shutdown@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ	14252c4f0	func
 ?FUN_14252c640@@YAX_KPEA_K@Z	14252c640	func
 ?Sfr31TracerSkipOrigOpCode@AS3@GFx@Scaleform@@YAX_KPEA_K0@Z	14252c7e0	func
@@ -211105,8 +211081,6 @@ Sfr16ScalarDeletingDtor_1424e1fe0	1424e1fe0	func
 ??1Context@ContextImpl@Render@Scaleform@@QEAA@XZ	14257e9d0	func
 ??1ContextCaptureNotify@ContextImpl@Render@Scaleform@@UEAA@XZ	14257eac0	func
 ??1EntryData@ContextImpl@Render@Scaleform@@UEAA@XZ	14257eb30	func
-?FUN_14257eb30@@YAXPEAX@Z	14257eb30	func
-FUN_14257eb30	14257eb30	func
 ??1HandleData@RTHandle@ContextImpl@Render@Scaleform@@UEAA@XZ	14257eb40	func
 ??1LinearHeap@Render@Scaleform@@QEAA@XZ	14257ebc0	func
 ??1RTHandle@ContextImpl@Render@Scaleform@@QEAA@XZ	14257ec50	func
@@ -211636,7 +211610,6 @@ FUN_14257eb30	14257eb30	func
 ??$add@U?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@@?$HashSetBase@U?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorLH@VASString@GFx@Scaleform@@$0BEE@@2@V?$HashsetNodeEntry@U?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@AEAAXPEAXAEBU?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@1@_K@Z	142591860	func
 ??$add@UNodeRef@?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@@?$HashSetBase@U?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorLH@VASString@GFx@Scaleform@@$0BEE@@2@V?$HashsetNodeEntry@U?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@AEAAXPEAXAEBUNodeRef@?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@1@_K@Z	142591a00	func
 ??0Audio@GFx@Scaleform@@QEAA@PEAVSoundRenderer@Sound@2@MIW4SyncTypeFlags@AudioBase@12@@Z	142591be0	func
-?FUN_142591be0@GFx@Scaleform@@YAPEAXPEAX0MII@Z	142591be0	func
 ?FUN_142591c90@GFx@Scaleform@@YAXPEAX@Z	142591c90	func
 ??4?$HashNode@VASString@GFx@Scaleform@@UClassRegEntry@GlobalContext@AS2@23@UASStringHashFunctor@23@@Scaleform@@QEAAAEAU01@AEBU01@@Z	142591cf0	func
 ?FUN_142591cf0@GFx@Scaleform@@YAPEAXPEAXPEBX@Z	142591cf0	func
@@ -214711,7 +214684,6 @@ FUN_14257eb30	14257eb30	func
 ??0ResourceBinding@GFx@Scaleform@@QEAA@PEAVMemoryHeap@2@@Z	142636600	func
 ??1ResourceBinding@GFx@Scaleform@@QEAA@XZ	142636630	func
 ?Destroy@ResourceBinding@GFx@Scaleform@@QEAAXXZ	1426366b0	func
-?FUN_142636720@ResourceBinding@GFx@Scaleform@@QEBAXPEAUResourceBindData@23@I@Z	142636720	func
 ?GetResourceData_Locked@ResourceBinding@GFx@Scaleform@@QEBAXPEAUResourceBindData@23@I@Z	142636720	func
 ?SetBindData@ResourceBinding@GFx@Scaleform@@QEAAXIAEBUResourceBindData@23@@Z	142636820	func
 ?AddRef@DataInterface@ResourceData@GFx@Scaleform@@UEAAXPEAX@Z	1426369e0	func
@@ -217674,7 +217646,6 @@ deflateInit_	142725fc0	func
 ?QueryMasterVolume@Scaleform@@YAMPEAX@Z	142745840	func
 ?ReadSoundData@Scaleform@@YAIPEAX0I@Z	142745880	func
 ?QueryChannelPan@Scaleform@@YAMPEAX@Z	1427458b0	func
-?FUN_1427458e0@@YAXXZ	1427458e0	func
 ?QueryChannelTime@Sfr22ChannelPlayerView@Scaleform@@QEAAMXZ	1427458e0	func
 ?QueryAudioElapsedSeconds@Scaleform@@YAMPEAX@Z	142745980	func
 ?FUN_142745a90@GFx@Scaleform@@YA_NPEAXPEAI@Z	142745a90	func
@@ -220389,7 +220360,6 @@ pcre_fullinfo	1428ea0d0	func
 ?GetTextAllocator@MovieRoot@AS2@GFx@Scaleform@@UEAAPEAVAllocator@Text@Render@4@XZ	142956380	func
 ?GetTextFieldASObject@AvmTextField@AS2@GFx@Scaleform@@QEAAPEAVTextFieldObject@234@XZ	142956410	func
 ?CSSHolder_GetTextStyleManager@AS2@GFx@Scaleform@@YAPEBXPEBX@Z	1429565c0	func
-?FUN_1429565c0@@YAXXZ	1429565c0	func
 ?GetTextValue@ArrayObject@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	1429565d0	func
 ?GetTextValue@AvmTextField@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	142956690	func
 ?GetTextValue@BooleanObject@AS2@GFx@Scaleform@@UEBAPEBDPEAVEnvironment@234@@Z	1429566a0	func
@@ -220455,7 +220425,6 @@ pcre_fullinfo	1428ea0d0	func
 ?DAT_14295d3a0@@3PAEA	14295d3a0	func
 ?GotoAndPlay@AS2ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z	14295d3a0	func
 ?CSSHolder_HasStyleSheet@GFx@Scaleform@@YA_NPEBX@Z	14295d440	func
-?FUN_14295d440@@YAXXZ	14295d440	func
 ?HasClipEventHandler@AvmCharacter@AS2@GFx@Scaleform@@QEBA_NAEBVEventId@34@@Z	14295d450	func
 ?HasEventHandler@AvmButton@AS2@GFx@Scaleform@@UEBA_NAEBVEventId@34@@Z	14295d4e0	func
 ?HasEventHandler@AvmButton@AS2@GFx@Scaleform@@WDA@EBA_NAEBVEventId@34@@Z	14295d4e4	func
@@ -221585,9 +221554,7 @@ cef_string_userfree_utf16_free	1429a897d	func
 ?FUN_142cc5d90@@YAXXZ	142cc5d90	func
 ?FUN_142cc8c20@@YAXXZ	142cc8c20	func
 ??$_Destroy_range1@V?$allocator@G@std@@@std@@YAXPEAG0AEAV?$allocator@G@0@U?$integral_constant@_N$00@0@@Z	142cc8c90	func
-?_Destroy@?$vector@GV?$allocator@G@std@@@std@@AEAAXPEAG0@Z	142cc8c90	func
 ??$_Destroy_range@V?$allocator@G@std@@@std@@YAXPEAG0AEAV?$allocator@G@0@@Z	142cc8ca0	func
-?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@GV?$allocator@G@std@@@std@@@std@@QEAAXXZ	142cc8ca0	func
 ?FUN_142cc8ce0@@YAXXZ	142cc8ce0	func
 ?FUN_142cc8d00@@YAXXZ	142cc8d00	func
 ?FUN_142cc8d20@@YAXXZ	142cc8d20	func
@@ -231597,7 +231564,6 @@ DAT_1439f8358	1439f8358	data
 ?ms_ClassInfo@InputService@ecrInput@@2VClassInfo@efd@@B	143a03500	data
 ?s_bUpdateOK@?1??OnTick@InputService@ecrInput@@UEAA?AW4AsyncResult@efd@@XZ@4_NA	143a03960	data
 ?DAT_143a07430@@3USd_143a07430@@A	143a07430	data
-?ms_ClassInfo@MS2PropService@@2VClassInfo@efd@@B	143a07430	data
 ?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B	143a07430	data
 ?DAT_143a07838@@3USd_143a07838@@A	143a07838	data
 ?DAT_143a08cd8@@3DA	143a08cd8	data
@@ -231791,10 +231757,13 @@ DAT_143a2fcf8	143a2fcf8	data
 DAT_143a2fd08	143a2fd08	data
 ?Instance3D@SKI_ComplexPrimitive@Render@Scaleform@@2V123@A	143a2fd18	data
 DAT_143a2fd18	143a2fd18	data
+?Instance@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd28	data
 DAT_143a2fd28	143a2fd28	data
+?InstanceClipped@SKI_MaskStart@Render@Scaleform@@2V123@A	143a2fd38	data
 DAT_143a2fd38	143a2fd38	data
 ?EndMaskItem@SKI_MaskEnd@Render@Scaleform@@2VRQII_EndMask@123@A	143a2fd48	data
 DAT_143a2fd48	143a2fd48	data
+?Instance@SKI_MaskEnd@Render@Scaleform@@2V123@A	143a2fd50	data
 DAT_143a2fd50	143a2fd50	data
 ?BlendModeItem@SKI_BlendMode@Render@Scaleform@@2VRQII_BlendMode@123@A	143a2fd80	data
 DAT_143a2fd80	143a2fd80	data

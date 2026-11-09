@@ -59,7 +59,13 @@ i64 FUN_140278730(i64); i64 FUN_140278740(i64);
 i64 FUN_1402787a0(i64, i64); i64 FUN_1402787b0(i64, i64);
 i64 FUN_140278920(i64*, i64*); i64 FUN_140278950(i64*, i64*);
 char FUN_14027a640(i64*, i64*); char FUN_14027a670(i64*, i64*);
+#ifdef MS2_HOOK_DLL
 char* FUN_140177620(char*, char*);
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" char* __identifier("??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z")(char*, char*);
+#define FUN_140177620 __identifier("??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z")
+#endif
 void FUN_14027a6e0(i64*, i64); void FUN_14027a700(i64*, i64);
 void FUN_140277870(i64, i64); void FUN_1402778d0(i64, i64); void FUN_140277930(i64, i64);
 void FUN_1402774c0(i64, i64, i64); void FUN_140277470(i64, i64, i64);

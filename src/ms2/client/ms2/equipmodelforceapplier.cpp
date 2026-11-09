@@ -40,7 +40,13 @@
 #include "ms2/client/ms2/equipitem.h"  // C3
 #include "ms2/placeholder/fittingdollpc.h"
 
+#ifdef MS2_HOOK_DLL
 extern unsigned char DAT_143afc898;                                        // assertions throw when set
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" unsigned char __identifier("?DAT_143afc898@@3DA");   // assertions throw when set (the engine's name)
+#define DAT_143afc898 __identifier("?DAT_143afc898@@3DA")
+#endif
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names) ----
 void* FUN_141200a90(CEquipModel* pModel);                           // the model's info record (CEquipModel +0x18)

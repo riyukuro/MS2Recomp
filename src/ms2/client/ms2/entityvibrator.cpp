@@ -47,7 +47,13 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 extern int DAT_143ad1b20;                                           // running actor counter
 extern int DAT_1439f7060;                                           // number of collision masks (8)
 extern unsigned DAT_1439f7040[];                                    // the collision masks
+#ifdef MS2_HOOK_DLL
 extern unsigned char DAT_143afc898;                                          // assertions throw when set
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" unsigned char __identifier("?DAT_143afc898@@3DA");   // assertions throw when set (the engine's name)
+#define DAT_143afc898 __identifier("?DAT_143afc898@@3DA")
+#endif
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
 
 class Unk_VibZoneMap : public ATL::CRBMap<CString, CString> { };   // C3: unit-local view

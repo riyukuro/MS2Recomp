@@ -1983,6 +1983,3 @@ inline void AdditionalLevelData::SpreadProperty::Clear()
 
 // commonstruct_wd/commonstruct_2 declare 0x140177620 as char* FUN_140177620(char*, char*). The exe's copy there is this
 // unit's std::_Unused_parameter ctor from true_type&& (it returns this), so the declared name is bound to it here.
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:?FUN_140177620@@YAPEADPEAD0@Z=??$?0U?$integral_constant@_N$00@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$00@1@@Z")
-#endif

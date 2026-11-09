@@ -11,10 +11,14 @@
 // MS2-RANGE: 0x143a0acf8-0x143a0fc10 .data
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
-extern unsigned char DAT_142db4cf0[];
-extern unsigned char DAT_1430cd5b8[];
-extern unsigned char DAT_1430d1570[];
+extern "C" unsigned char __identifier("??_7AssetID@efd@@6B@")[];
+#define DAT_142db4cf0 __identifier("??_7AssetID@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VReloadManager@efd@@VAssetLocatorResponse@2@V32@$0BADD@@efd@@6B@")[];
+#define DAT_1430cd5b8 __identifier("??_7?$MessageWrapperSubclassHandler@VReloadManager@efd@@VAssetLocatorResponse@2@V32@$0BADD@@efd@@6B@")
+extern "C" unsigned char __identifier("??_7?$MessageWrapperSubclassHandler@VAssetConfigService@efd@@VAssetConfigurationMessage@2@V32@$0BADI@@efd@@6B@")[];
+#define DAT_1430d1570 __identifier("??_7?$MessageWrapperSubclassHandler@VAssetConfigService@efd@@VAssetConfigurationMessage@2@V32@$0BADI@@efd@@6B@")
 
 #pragma pack(push, 1)
 struct Sd_143a0ad08 {
@@ -968,8 +972,5 @@ alignas(8) Sd_143a0ad08 DAT_143a0ad08 = {
     },
 };
 
-#pragma comment(linker, "/alternatename:?DAT_142db4cf0@@3PAEA=??_7AssetID@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430cd5b8@@3PAEA=??_7?$MessageWrapperSubclassHandler@VReloadManager@efd@@VAssetLocatorResponse@2@V32@$0BADD@@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430d1570@@3PAEA=??_7?$MessageWrapperSubclassHandler@VAssetConfigService@efd@@VAssetConfigurationMessage@2@V32@$0BADI@@efd@@6B@")
 
 #endif // MS2_HOOK_DLL

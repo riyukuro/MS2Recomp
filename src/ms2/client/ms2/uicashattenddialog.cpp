@@ -206,12 +206,23 @@ void FUN_140bc5f90(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const AT
 // The "m_check" marks: plain movie clips, but their vector glue is a second copy next to uidungeonhelper's
 // vector<MS2Ptr<ASMovieClip>>, so they get their own element type; the MS2Ptr glue itself is the shared ASMovieClip one.
 class Unk_CadCheck : public ASMovieClip {};
+// Real bodies under the stand-in's own names: /opt:icf folds them with aseffect's and
+// uibingoeventdialog's ASMovieClip copies (0x1409b40c0, 0x1409b48b0, 0x1409b48e0, 0x1409b4a90, 0x1409b4c60, 0x140bb56d0).
+#ifdef MS2_HOOK_DLL
 template<> MS2Ptr<Unk_CadCheck> Unk_ASCreate<Unk_CadCheck>(int,const Scaleform::GFx::Value&);
 template<> MS2Ptr<Unk_CadCheck>::MS2Ptr(int);
 template<> MS2Ptr<Unk_CadCheck>::MS2Ptr(const MS2Ptr&);
 template<> MS2Ptr<Unk_CadCheck>::MS2Ptr(MS2Ptr&&);
 template<> MS2Ptr<Unk_CadCheck>::~MS2Ptr();
 template<> Unk_CadCheck* MS2Ptr<Unk_CadCheck>::operator->() const;
+#else
+#include "ms2/placeholder/ms2ptr_impl.h"
+template<> inline MS2Ptr<Unk_CadCheck> Unk_ASCreate<Unk_CadCheck>(int n,const Scaleform::GFx::Value& v)
+{
+    MS2Ptr<Unk_CadCheck> sp(static_cast<Unk_CadCheck*>(new ASMovieClip(v, n)));
+    return sp;
+}
+#endif
 template<> MS2Ptr<Unk_CadCheck>& MS2Ptr<Unk_CadCheck>::operator=(const MS2Ptr&);
 template<> MS2Ptr<Unk_CadCheck>& MS2Ptr<Unk_CadCheck>::operator=(int);
 // The button binder's lookup is an earlier COMDAT (0x140bb4b10).

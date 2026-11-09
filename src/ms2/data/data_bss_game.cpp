@@ -53,6 +53,7 @@
 // MS2-RANGE: 0x143e64b00-0x143ee68c0 .bss
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): 0x143afc898 and 0x143afe6f8 carry the stock engine objs' names
 
 class UISwfEntityManager;
 class Unk_140e45740;
@@ -168,13 +169,13 @@ int DAT_143afa750;                                              // 0x143afa750
 alignas(8) void (__cdecl *DAT_143afbb98)(void);                    // 0x143afbb98
 alignas(16) void (__cdecl *DAT_143afbba0)(void);                // 0x143afbba0
 alignas(8) void (__cdecl *DAT_143afbfc8)(class NiAVObject *);                    // 0x143afbfc8
-unsigned char DAT_143afc898;                                             // 0x143afc898
+extern "C" { unsigned char __identifier("?DAT_143afc898@@3DA"); }                                             // 0x143afc898
 char DAT_143afc8d0;                                             // 0x143afc8d0
 char DAT_143afc8e8;                                             // 0x143afc8e8
 char DAT_143afc900;                                             // 0x143afc900
 char DAT_143afcb90;                                             // 0x143afcb90
 char DAT_143afcba8;                                             // 0x143afcba8
-alignas(8) unsigned char DAT_143afe6f8[0x68];                   // 0x143afe6f8
+extern "C" { alignas(8) unsigned char __identifier("?DAT_143afe6f8@@3P6A?AV?$SmartPointer@VNiCullingProcess@@@efd@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA")[0x68]; }                   // 0x143afe6f8
 void* DAT_143b018a0;                                            // 0x143b018a0: luaopen_PhysX static
 alignas(16) void (__cdecl *DAT_143b023c0)(void);                   // 0x143b023c0
 alignas(8) int (__cdecl *DAT_143b023c8)(unsigned __int64);                 // 0x143b023c8
@@ -423,10 +424,5 @@ extern "C" { alignas(1) unsigned char DAT_143e668c1[0x1]; }                    /
 extern "C" { alignas(2) unsigned char DAT_143e668c2[0x7fffe]; }                // 0x143e668c2
 #pragma bss_seg()
 
-// guilddef_5, mousecontroller and ms2.cpp name 0x143aaef60, 0x143ab9510, 0x143afc898 and 0x143afe6f8 by their
-// definitions' names. The stock engine objs keep their own types (NiPhysXActorDesc: char; ecr::RenderContext:
-// the factory pointer), bound here:
-#pragma comment(linker, "/alternatename:?DAT_143afc898@@3DA=?DAT_143afc898@@3EA")
-#pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AV?$SmartPointer@VNiCullingProcess@@@efd@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
 
 #endif // MS2_HOOK_DLL

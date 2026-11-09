@@ -38,6 +38,7 @@
 // MS2-RANGE: 0x14316fd10-0x143173d28 .rdata
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 // Functions the tables below point at (static members and free functions defined in other units), declared
 // here so the slots name them directly; the owning classes are reduced to those members.
@@ -1616,14 +1617,21 @@ void FUN_1423dd070(void *, ::Scaleform::GFx::LoadProcess *, ::Scaleform::GFx::Bu
 void * FUN_1424aa770(void *, unsigned int);
 void * FUN_1424aa810(void *, unsigned int);
 
-extern unsigned char DAT_1423dbf30[];
-extern unsigned char DAT_1423dbf90[];
-extern unsigned char DAT_1423dbff0[];
-extern unsigned char DAT_1423dc050[];
+extern "C" unsigned char __identifier("?AllocPlaceObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject2Tag@23@PEAVLoadProcess@23@_KE@Z")[];
+#define DAT_1423dbf30 __identifier("?AllocPlaceObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject2Tag@23@PEAVLoadProcess@23@_KE@Z")
+extern "C" unsigned char __identifier("?AllocPlaceObject3Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject3Tag@23@PEAVLoadProcess@23@_K@Z")[];
+#define DAT_1423dbf90 __identifier("?AllocPlaceObject3Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject3Tag@23@PEAVLoadProcess@23@_K@Z")
+extern "C" unsigned char __identifier("?AllocRemoveObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObject2Tag@23@PEAVLoadProcess@23@@Z")[];
+#define DAT_1423dbff0 __identifier("?AllocRemoveObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObject2Tag@23@PEAVLoadProcess@23@@Z")
+extern "C" unsigned char __identifier("?AllocRemoveObjectTag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObjectTag@23@PEAVLoadProcess@23@@Z")[];
+#define DAT_1423dc050 __identifier("?AllocRemoveObjectTag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObjectTag@23@PEAVLoadProcess@23@@Z")
 extern unsigned char DAT_1423dc0b0[];
-extern unsigned char DAT_1423dc110[];
-extern unsigned char DAT_1423dc560[];
-extern unsigned char DAT_1423dc710[];
+extern "C" unsigned char __identifier("?CreateASIMEManager@AS3Support@GFx@Scaleform@@UEAA?AV?$Ptr@VASIMEManager@GFx@Scaleform@@@3@XZ")[];
+#define DAT_1423dc110 __identifier("?CreateASIMEManager@AS3Support@GFx@Scaleform@@UEAA?AV?$Ptr@VASIMEManager@GFx@Scaleform@@@3@XZ")
+extern "C" unsigned char __identifier("?CreateMemoryContext@AS3Support@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z")[];
+#define DAT_1423dc560 __identifier("?CreateMemoryContext@AS3Support@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z")
+extern "C" unsigned char __identifier("?CreateMovie@AS3Support@GFx@Scaleform@@UEAAPEAVMovieImpl@23@PEAVMemoryContext@23@@Z")[];
+#define DAT_1423dc710 __identifier("?CreateMovie@AS3Support@GFx@Scaleform@@UEAAPEAVMovieImpl@23@PEAVMemoryContext@23@@Z")
 extern unsigned char DAT_1423dccc0[];
 extern unsigned char DAT_1423dcd60[];
 extern unsigned char DAT_1423dd4f0[];
@@ -1677,7 +1685,9 @@ extern unsigned char DAT_14251f430[];
 extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
 namespace Scaleform { namespace GFx { namespace AS3 { struct ClassInfo; namespace fl_media { alignas(16) extern const ClassInfo SoundTransformCI; } } } }
 struct Sd_143a2a8b0; extern Sd_143a2a8b0 DAT_143a2a8b0;  // Object's AS3 methods (data_data_game)
-extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2aab0[];
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" const ::Scaleform::GFx::AS3::ThunkInfo __identifier("?DAT_143a2aab0@@3USd_143a2aab0@@A")[];
+#define DAT_143a2aab0 __identifier("?DAT_143a2aab0@@3USd_143a2aab0@@A")
 extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_143a2d220[];
 // void FUN_1423c8ce0();
 void FUN_1423c9000();
@@ -1700,8 +1710,10 @@ void FUN_1423c9b90();
 //
 //
 //
-void FUN_1423dc160(); __pragma(comment(linker, "/alternatename:?FUN_1423dc160@@YAXXZ=?CreateCharacterInstance@AS3Support@GFx@Scaleform@@UEAAPEAVDisplayObjectBase@23@PEAVMovieImpl@23@AEBUCharacterCreateInfo@23@PEAVInteractiveObject@23@VResourceId@23@W4CharacterDefType@CharacterDef@23@@Z")) // AS3Support::CreateCharacterInstance
-void FUN_1423dcac0(); __pragma(comment(linker, "/alternatename:?FUN_1423dcac0@@YAXXZ=?DoActions@AS3Support@GFx@Scaleform@@UEAAXXZ")) // AS3Support::DoActions
+extern "C" unsigned char __identifier("?CreateCharacterInstance@AS3Support@GFx@Scaleform@@UEAAPEAVDisplayObjectBase@23@PEAVMovieImpl@23@AEBUCharacterCreateInfo@23@PEAVInteractiveObject@23@VResourceId@23@W4CharacterDefType@CharacterDef@23@@Z")[];
+#define FUN_1423dc160 __identifier("?CreateCharacterInstance@AS3Support@GFx@Scaleform@@UEAAPEAVDisplayObjectBase@23@PEAVMovieImpl@23@AEBUCharacterCreateInfo@23@PEAVInteractiveObject@23@VResourceId@23@W4CharacterDefType@CharacterDef@23@@Z")
+extern "C" unsigned char __identifier("?DoActions@AS3Support@GFx@Scaleform@@UEAAXXZ")[];
+#define FUN_1423dcac0 __identifier("?DoActions@AS3Support@GFx@Scaleform@@UEAAXXZ")
 //
 //
 //
@@ -19742,13 +19754,6 @@ alignas(16) Sd_143172720 DAT_143172720 = {
 //
 //
 //
-#pragma comment(linker, "/alternatename:?DAT_1423dbf30@@3PAEA=?AllocPlaceObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject2Tag@23@PEAVLoadProcess@23@_KE@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dbf90@@3PAEA=?AllocPlaceObject3Tag@AS3Support@GFx@Scaleform@@UEAAPEAVPlaceObject3Tag@23@PEAVLoadProcess@23@_K@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dbff0@@3PAEA=?AllocRemoveObject2Tag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObject2Tag@23@PEAVLoadProcess@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dc050@@3PAEA=?AllocRemoveObjectTag@AS3Support@GFx@Scaleform@@UEAAPEAVRemoveObjectTag@23@PEAVLoadProcess@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dc110@@3PAEA=?CreateASIMEManager@AS3Support@GFx@Scaleform@@UEAA?AV?$Ptr@VASIMEManager@GFx@Scaleform@@@3@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1423dc560@@3PAEA=?CreateMemoryContext@AS3Support@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423dc710@@3PAEA=?CreateMovie@AS3Support@GFx@Scaleform@@UEAAPEAVMovieImpl@23@PEAVMemoryContext@23@@Z")
 
 // 0x14305cd3c: the root block of VerQueryValue (sfr_ime_01), a C name (group 14305cd3c; the generator sizes
 // unmangled names to the next known global, 0x506c4 bytes here, so it is written by hand)

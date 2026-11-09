@@ -32,6 +32,64 @@ set(MS2_PLAIN_STUBS_OBJ "" CACHE FILEPATH "data-stub obj (tools/fullexe/plainglu
 set(MS2_RESOURCES_RES "" CACHE FILEPATH "the .res (tools/extract_resources.py --compile); empty = standin/standin.rc's")
 set(MS2_PLAIN_IMPORTS "${MS2_ROOT}/data/fullexe/imports.tsv" CACHE FILEPATH "import names (dll, symbol)")
 set(MS2_PLAIN_GLUE "${MS2_ROOT}/data/fullexe/plain" CACHE PATH "dir with objs.txt, alias.rsp, stubs.tsv [, stubs.obj, order.txt or order.tar.xz] (tools/fullexe/plainglue.py write)")
+# MS2_PLAIN_DERIVE: the glue of this checkout, made at configure by tools/fullexe/plainglue.py derive from the repository
+# alone (no exe, no exe-reading build): objs.txt from the tracked game sources (MS2-UNIT, their status.tsv VAs) plus
+# MS2_PLAIN_GLUE/link.tsv's engine, library and closure objs, ordered and moved by MS2_PLAIN_GLUE/before.tsv; compile.tsv,
+# flags.tsv, tree.tsv from tools/progress.py and tools/gbtree.py; order.txt from the symbol tables and data/map;
+# stubs.obj from stubs.tsv. AUTO: when MS2_PLAIN_COMPILE is on and the glue has link.tsv (falls back to the committed
+# glue, with a warning, when the derive step fails). Needs the venv's Python (MS2_PLAIN_PYTHON). cmake re-runs it when
+# the tables change or a src/ms2 .cpp is added, removed or renamed.
+set(MS2_PLAIN_DERIVE AUTO CACHE STRING "make the glue from this checkout at configure (plainglue.py derive): AUTO, ON, OFF")
+set_property(CACHE MS2_PLAIN_DERIVE PROPERTY STRINGS AUTO ON OFF)
+option(MS2_PLAIN_COMPILE "compile the objs here from MS2_PLAIN_GLUE/compile.tsv, flags.tsv, tree.tsv (plainglue.py compile) instead of reading MS2_PLAIN_OBJ_ROOT" OFF)
+set(MS2_PLAIN_CHECKOUT "${MS2_ROOT}" CACHE PATH "MS2_PLAIN_COMPILE: the checkout whose sources compile.tsv names (\${ROOT})")
+set(MS2_PLAIN_ENGINE "${MS2_ROOT}/engine" CACHE PATH "MS2_PLAIN_COMPILE: the dir holding gamebryo/ and fmt-ms2/ (\${ENGINE}, MS2_GAMEBRYO_ROOT)")
+set(MS2_MSVC_ROOT "" CACHE PATH "third_party/-layout dir: msvc/ (MSVC 14.16 + Windows SDK, msvc-wine), dxsdk/, src/cryptopp562; empty = third_party")
+if(CMAKE_HOST_WIN32)
+  set(_venv "${MS2_ROOT}/.venv/Scripts/python.exe")
+else()
+  set(_venv "${MS2_ROOT}/.venv/bin/python")
+endif()
+if(NOT EXISTS "${_venv}")
+  find_package(Python3 COMPONENTS Interpreter QUIET)
+  set(_venv "${Python3_EXECUTABLE}")
+endif()
+set(MS2_PLAIN_PYTHON "${_venv}" CACHE FILEPATH "MS2_PLAIN_DERIVE: Python with requirements.txt (default <root>/.venv)")
+set(_derive OFF)
+if(MS2_PLAIN_DERIVE STREQUAL "ON" OR (MS2_PLAIN_DERIVE STREQUAL "AUTO" AND MS2_PLAIN_COMPILE AND EXISTS "${MS2_PLAIN_GLUE}/link.tsv"))
+  set(_derive ON)
+endif()
+set(MS2_PLAIN_DERIVED OFF)
+if(_derive)
+  set(_dg "${CMAKE_BINARY_DIR}/glue-derived")
+  set(_denv "")
+  if(MS2_MSVC_ROOT)
+    list(APPEND _denv "MS2_THIRD_PARTY=${MS2_MSVC_ROOT}")
+  endif()
+  list(APPEND _denv "MS2_ENGINE_DIR=${MS2_PLAIN_ENGINE}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E env ${_denv} "${MS2_PLAIN_PYTHON}" -P
+                          "${MS2_PLAIN_CHECKOUT}/tools/fullexe/plainglue.py" derive "${_dg}" --base "${MS2_PLAIN_GLUE}"
+                  WORKING_DIRECTORY "${MS2_PLAIN_CHECKOUT}" RESULT_VARIABLE _rc OUTPUT_VARIABLE _out ERROR_VARIABLE _err)
+  if(_rc EQUAL 0)
+    message(STATUS "plainglue.py derive: ${_out}")
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+                 "${MS2_PLAIN_GLUE}/link.tsv" "${MS2_PLAIN_GLUE}/before.tsv" "${MS2_PLAIN_GLUE}/alias.rsp" "${MS2_PLAIN_GLUE}/stubs.tsv"
+                 "${MS2_PLAIN_CHECKOUT}/progress/symbols.tsv" "${MS2_PLAIN_CHECKOUT}/progress/symbols-manual.tsv"
+                 "${MS2_PLAIN_CHECKOUT}/data/map/functions.tsv" "${MS2_PLAIN_CHECKOUT}/data/engine/units-gb.json")
+    if(EXISTS "${MS2_PLAIN_CHECKOUT}/progress/status.tsv")
+      set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${MS2_PLAIN_CHECKOUT}/progress/status.tsv")
+    endif()
+    # a game source added, removed or renamed re-runs configure (and so derive) at the next build; an edit to an
+    # existing source's MS2-UNIT/MS2-RANGE line does not (re-configure by hand)
+    file(GLOB_RECURSE _ms2_srcs CONFIGURE_DEPENDS LIST_DIRECTORIES false "${MS2_PLAIN_CHECKOUT}/src/ms2/*.cpp")
+    set(MS2_PLAIN_GLUE "${_dg}")      # a normal variable: shadows the cache entry from here on
+    set(MS2_PLAIN_DERIVED ON)
+  elseif(MS2_PLAIN_DERIVE STREQUAL "ON")
+    message(FATAL_ERROR "plainglue.py derive failed (${_rc}):\n${_out}${_err}")
+  else()
+    message(WARNING "plainglue.py derive failed (${_rc}), linking the committed glue ${MS2_PLAIN_GLUE}:\n${_out}${_err}")
+  endif()
+endif()
 if(EXISTS "${MS2_PLAIN_GLUE}/order.txt")
   set(_orderfile "${MS2_PLAIN_GLUE}/order.txt")
 elseif(EXISTS "${MS2_PLAIN_GLUE}/order.tar.xz")
@@ -54,13 +112,9 @@ option(MS2_PLAIN_ORDER "link with MS2_PLAIN_GLUE/order.txt, the exe's function l
 option(MS2_PLAIN_LEGACY_STDIO "link legacy_stdio_definitions.lib (link.py adds it when MS2-TOOLSET objs are linked)" ON)
 set(MS2_PLAIN_NAME fullexe-plain CACHE STRING "output name: <name>.exe/.map (the exe's export directory records it; fullexe3 = link2's)")
 set(MS2_PLAIN_LAUNCHER "" CACHE STRING "command the link runs under (e.g. a lock wrapper); empty = none")
-set(MS2_MSVC_ROOT "" CACHE PATH "third_party/-layout dir: msvc/ (MSVC 14.16 + Windows SDK, msvc-wine), dxsdk/, src/cryptopp562; empty = third_party")
 set(WINSDK_VERSION "10.0.19041.0" CACHE STRING "Windows SDK version of the MSVC tree")
 set(MSVC_TOOLSET "14.16.27023" CACHE STRING "MSVC toolset dir of the MSVC tree")
-option(MS2_PLAIN_COMPILE "compile the objs here from MS2_PLAIN_GLUE/compile.tsv, flags.tsv, tree.tsv (plainglue.py compile) instead of reading MS2_PLAIN_OBJ_ROOT" OFF)
 set(MS2_PLAIN_GEN "${CMAKE_BINARY_DIR}/gen" CACHE PATH "MS2_PLAIN_COMPILE: where tree.tsv's generated include trees go (\${GEN}; the exporting build's is <checkout>/build)")
-set(MS2_PLAIN_CHECKOUT "${MS2_ROOT}" CACHE PATH "MS2_PLAIN_COMPILE: the checkout whose sources compile.tsv names (\${ROOT})")
-set(MS2_PLAIN_ENGINE "${MS2_ROOT}/engine" CACHE PATH "MS2_PLAIN_COMPILE: the dir holding gamebryo/ and fmt-ms2/ (\${ENGINE}, MS2_GAMEBRYO_ROOT)")
 if(MS2_PLAIN_COMPILE)
   set(MS2_PLAIN_OBJ_ROOT "${CMAKE_BINARY_DIR}/cache")
   file(MAKE_DIRECTORY "${MS2_PLAIN_OBJ_ROOT}")
@@ -250,6 +304,9 @@ set(RSP "/nologo /machine:x64 /subsystem:windows,6.0 /base:0x140000000 /dynamicb
 string(APPEND RSP "/opt:ref /opt:icf /debug:none /nodefaultlib:D3DX9.lib /nodefaultlib:D3DX10.lib /nodefaultlib:D3DX11.lib "
                   "/nodefaultlib:D3DCompiler.lib /nodefaultlib:NiDX9Renderer.lib\n")
 string(APPEND RSP "/out:\"${_exe}\" /map:\"${_map}\"\n")
+if(MS2_PLAIN_DERIVED)
+  string(APPEND RSP "/ignore:4037\n")   # derived order.txt is not filtered to the defined names (that needs the objs)
+endif()
 # MS2_PLAIN_COMPILE: one cl command per obj, as progress.py / gbprogress.py ran it (compile.tsv: obj, tool, cwd, source,
 # flag set; flags.tsv: id, args). Paths are tokens: ${TP} the third_party layout, ${ENGINE} the engine dir, ${GEN} the
 # generated include trees (tree.tsv: L = symlink, F = one-line forwarding header), ${ROOT} the checkout. Sources keep

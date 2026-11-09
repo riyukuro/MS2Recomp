@@ -14,6 +14,7 @@
 // MS2-RANGE: 0x143196858-0x14319694f .rdata
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
 
 // Crypto++ 5.6.2 literals (lib_cryptopp_code)
 extern const char DAT_14311c1e0[] = "BitBucket";                            // BitBucket::AlgorithmName
@@ -35,26 +36,8 @@ extern const char DAT_143196918[] = "unsupported zlib version";
 extern const char DAT_143196938[] = "unexpected zlib return";
 
 // vftables (the RTTI complete-object locator before each names the class and subobject)
-#pragma comment(linker, "/alternatename:?DAT_14311e038@@3PADA=??_7AuthenticatedEncryptionFilter@CryptoPP@@6BAlgorithm@1@@")
-#pragma comment(linker, "/alternatename:?DAT_14311e200@@3PADA=??_7AuthenticatedEncryptionFilter@CryptoPP@@6BWaitable@1@@")
-#pragma comment(linker, "/alternatename:?DAT_14311e220@@3PADA=??_7AuthenticatedDecryptionFilter@CryptoPP@@6BAlgorithm@1@@")
-#pragma comment(linker, "/alternatename:?DAT_14311e3e8@@3PADA=??_7AuthenticatedDecryptionFilter@CryptoPP@@6BWaitable@1@@")
-#pragma comment(linker, "/alternatename:?DAT_14311ee90@@3PADA=??_7?$AlgorithmParametersTemplate@W4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@CryptoPP@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14312d848@@3PADA=??_7OpenPGPDecodeErr@Integer@CryptoPP@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14312dbf8@@3PADA=??_7?$AlgorithmParametersTemplate@W4RandomNumberType@Integer@CryptoPP@@@CryptoPP@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143130c18@@3PADA=??_7DivideByZero@PolynomialMod2@CryptoPP@@6B@")
 
 // RTTI type descriptors: typeid(T)
-#pragma comment(linker, "/alternatename:?DAT_143a57d68@@3Vtype_info@@B=??_R0H@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa1220@@3Vtype_info@@B=??_R0?AW4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa1768@@3Vtype_info@@B=??_R0?AVDL_GroupParameters_GFP@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa1d00@@3Vtype_info@@B=??_R0?AVDL_GroupParameters_IntegerBased@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa1de0@@3Vtype_info@@B=??_R0?AV?$DL_PublicKey@VInteger@CryptoPP@@@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa1e90@@3Vtype_info@@B=??_R0?AV?$DL_PrivateKey@VInteger@CryptoPP@@@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa3860@@3Vtype_info@@B=??_R0?AVDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa7a80@@3Vtype_info@@B=??_R0?AW4RandomNumberType@Integer@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa7e20@@3Vtype_info@@B=??_R0?AV?$DL_PublicKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8")
-#pragma comment(linker, "/alternatename:?DAT_143aa7e90@@3Vtype_info@@B=??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8")
 
 // 0x143b0dc48 CryptoPP::AAD_CHANNEL (its ??__E 0x14013b180 constructs "AAD" there)
 // ?DAT_143b0dc48: lib_cryptopp_filters_cx13 names CryptoPP::AAD_CHANNEL directly

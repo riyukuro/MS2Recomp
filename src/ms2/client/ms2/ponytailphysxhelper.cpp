@@ -63,7 +63,13 @@ namespace egf { class EntityID; }
 namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
 
 // ---- exe data ----
+#ifdef MS2_HOOK_DLL
 extern unsigned char DAT_143afc898; // assertions throw when set
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" unsigned char __identifier("?DAT_143afc898@@3DA");   // assertions throw when set (the engine's name)
+#define DAT_143afc898 __identifier("?DAT_143afc898@@3DA")
+#endif
 extern NiTexture::FormatPrefs DAT_1439fc800;         // texture format preferences
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up axis

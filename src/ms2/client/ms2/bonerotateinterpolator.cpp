@@ -73,7 +73,13 @@ static __inline errno_t ms2_memcpy_s_copy2(void* const d, size_t const dsz, void
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy2)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy2;
 
 // ---- out-of-unit callees (unit-local views) ----
+#ifdef MS2_HOOK_DLL
 extern unsigned char DAT_143afc898;                              // assertions throw when set
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" unsigned char __identifier("?DAT_143afc898@@3DA");   // assertions throw when set (the engine's name)
+#define DAT_143afc898 __identifier("?DAT_143afc898@@3DA")
+#endif
 extern "C" float(__cdecl* __imp_acosf)(float);       // acosf through the CRT import table (the exe calls it indirectly)
 extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
 class Unk_BrAnimSvc { public: };   // the animation service

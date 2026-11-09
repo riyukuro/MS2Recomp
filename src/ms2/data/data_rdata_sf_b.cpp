@@ -20,6 +20,7 @@
 // MS2-RANGE: 0x143222128-0x1432227a8 .rdata
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 #include "ms2/scaleform/kernel/heappt/sf_heappt_bitset1.h"   // BitSet1 private static tables (0x143193310..)
 
@@ -1108,28 +1109,38 @@ extern unsigned char DAT_1423dc0b0[];
 extern unsigned char DAT_1423dccc0[];
 extern unsigned char DAT_1423dcd60[];
 extern unsigned char DAT_1423dd4f0[];
-extern unsigned char DAT_1423df420[];
-extern unsigned char DAT_1423df430[];
-extern unsigned char DAT_1423df580[];
-extern unsigned char DAT_1423df590[];
-extern unsigned char DAT_1423df5a0[];
-extern unsigned char DAT_1423df5b0[];
+extern "C" unsigned char __identifier("?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")[];
+#define DAT_1423df420 __identifier("?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")
+extern "C" unsigned char __identifier("?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")[];
+#define DAT_1423df430 __identifier("?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
+extern "C" unsigned char __identifier("?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")[];
+#define DAT_1423df580 __identifier("?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")
+extern "C" unsigned char __identifier("?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")[];
+#define DAT_1423df590 __identifier("?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
+extern "C" unsigned char __identifier("?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")[];
+#define DAT_1423df5a0 __identifier("?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")
+extern "C" unsigned char __identifier("?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")[];
+#define DAT_1423df5b0 __identifier("?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")
 // DAT_1424057c0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142407230: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142414f60: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424e2730[];
 extern unsigned char DAT_1424e29e0[];
-extern unsigned char DAT_1424e4290[];
-extern unsigned char DAT_1424e8060[];
+extern "C" unsigned char __identifier("?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")[];
+#define DAT_1424e4290 __identifier("?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")
+extern "C" unsigned char __identifier("?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")[];
+#define DAT_1424e8060 __identifier("?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
 extern unsigned char DAT_1424eb250[];
 // DAT_1424ede80: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_1424f2400[];
 // DAT_1424f33d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_1424f39c0[];
+extern "C" unsigned char __identifier("?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")[];
+#define DAT_1424f39c0 __identifier("?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")
 // DAT_1424f3d20: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_1424f3f40: was a slot of the dropped ShapeObject vftable image (ShapeObject::CreateRenderNode, now a real member)
 // DAT_1424f4780: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_1424f4a40[];
+extern "C" unsigned char __identifier("?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")[];
+#define DAT_1424f4a40 __identifier("?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 extern unsigned char DAT_1424f7180[];
 extern unsigned char DAT_1424f74c0[];
 namespace Scaleform {
@@ -1146,7 +1157,8 @@ public: static void EmptyFunc(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scalef
 }
 
 // DAT_142500250: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_142500e50[];
+extern "C" unsigned char __identifier("?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")[];
+#define DAT_142500e50 __identifier("?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
 extern unsigned char DAT_142501a60[];
 // DAT_1425038d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142504840[];
@@ -1161,16 +1173,21 @@ extern unsigned char DAT_1425084c0[];
 // DAT_1425094e0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142509850: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142509990[];
-extern unsigned char DAT_142509a80[];
+extern "C" unsigned char __identifier("?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")[];
+#define DAT_142509a80 __identifier("?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
 // DAT_142509ad0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142509da0[];
 // DAT_14250b3c0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_14250b4a0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_14250be40[];
-extern unsigned char DAT_14250c010[];
-extern unsigned char DAT_14250c060[];
+extern "C" unsigned char __identifier("?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")[];
+#define DAT_14250be40 __identifier("?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
+extern "C" unsigned char __identifier("?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")[];
+#define DAT_14250c010 __identifier("?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
+extern "C" unsigned char __identifier("?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")[];
+#define DAT_14250c060 __identifier("?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
 extern unsigned char DAT_14250c2e0[];
-extern unsigned char DAT_14250cc60[];
+extern "C" unsigned char __identifier("?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")[];
+#define DAT_14250cc60 __identifier("?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
 extern unsigned char DAT_14250d620[];
 extern unsigned char DAT_14250d830[];
 extern unsigned char DAT_14250d970[];
@@ -1181,8 +1198,10 @@ extern unsigned char DAT_14250f820[];
 extern unsigned char DAT_14250f850[];
 extern unsigned char DAT_14250f890[];
 // DAT_14250f980: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_142510180[];
-extern unsigned char DAT_142510770[];
+extern "C" unsigned char __identifier("?GetVariable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEAVValue@34@PEBD@Z")[];
+#define DAT_142510180 __identifier("?GetVariable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEAVValue@34@PEBD@Z")
+extern "C" unsigned char __identifier("?GetVariableArraySize@MovieRoot@AS3@GFx@Scaleform@@UEAAIPEBD@Z")[];
+#define DAT_142510770 __identifier("?GetVariableArraySize@MovieRoot@AS3@GFx@Scaleform@@UEAAIPEBD@Z")
 extern unsigned char DAT_142510a30[];
 // DAT_142510a70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142510b70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
@@ -1190,11 +1209,14 @@ extern unsigned char DAT_142510a30[];
 extern unsigned char DAT_142510d40[];
 extern unsigned char DAT_142510dc0[];
 // DAT_142510e70: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_142511530[];
-extern unsigned char DAT_142512620[];
+extern "C" unsigned char __identifier("?Init@MovieRoot@AS3@GFx@Scaleform@@UEAA_NPEAVMovieDefImpl@34@@Z")[];
+#define DAT_142511530 __identifier("?Init@MovieRoot@AS3@GFx@Scaleform@@UEAA_NPEAVMovieDefImpl@34@@Z")
+extern "C" unsigned char __identifier("?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")[];
+#define DAT_142512620 __identifier("?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
 // DAT_142512870: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142513920: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_142513f90[];
+extern "C" unsigned char __identifier("?IsAvailable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEBD@Z")[];
+#define DAT_142513f90 __identifier("?IsAvailable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEBD@Z")
 // DAT_142514240: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 extern unsigned char DAT_142515190[];
 // DAT_142518530: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
@@ -1205,8 +1227,10 @@ extern unsigned char DAT_142519200[];
 extern unsigned char DAT_14251ace0[];
 // DAT_14251cac0: was a slot of the dropped ShapeObject vftable image (ShapeObject::PointTestLocal, now a real member)
 // DAT_14251cbe0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_14251e4b0[];
-extern unsigned char DAT_14251f250[];
+extern "C" unsigned char __identifier("?ProcessLoadBinaryMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@4@_K_N@Z")[];
+#define DAT_14251e4b0 __identifier("?ProcessLoadBinaryMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@4@_K_N@Z")
+extern "C" unsigned char __identifier("?ProcessLoadVarsMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBVString@4@_K_N@Z")[];
+#define DAT_14251f250 __identifier("?ProcessLoadVarsMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBVString@4@_K_N@Z")
 extern unsigned char DAT_14251f3a0[];
 // DAT_14251f780: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_1425227e0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
@@ -1218,8 +1242,10 @@ extern unsigned char DAT_142525c90[];
 // DAT_142527300: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_1425278d0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142527d60: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_142528740[];
-extern unsigned char DAT_142528a50[];
+extern "C" unsigned char __identifier("?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")[];
+#define DAT_142528740 __identifier("?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")
+extern "C" unsigned char __identifier("?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")[];
+#define DAT_142528a50 __identifier("?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 extern unsigned char DAT_142528d90[];
 extern unsigned char DAT_142529f40[];
 // DAT_14252a230: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
@@ -1232,9 +1258,12 @@ extern unsigned char DAT_14252f480[];
 // DAT_14252fd40: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142531550: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 // DAT_142531630: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
-extern unsigned char DAT_14256e2e0[];
-extern unsigned char DAT_14256e350[];
-extern unsigned char DAT_1425ab870[];
+extern "C" unsigned char __identifier("?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")[];
+#define DAT_14256e2e0 __identifier("?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")
+extern "C" unsigned char __identifier("?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")[];
+#define DAT_14256e350 __identifier("?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")
+extern "C" unsigned char __identifier("?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")[];
+#define DAT_1425ab870 __identifier("?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")
 extern unsigned char DAT_1425f1ae0[];
 extern unsigned char DAT_1425f1ca0[];
 extern unsigned char DAT_1425f1d50[];
@@ -1288,25 +1317,41 @@ extern unsigned char DAT_1425f6f20[];
 extern unsigned char DAT_1425f6fe0[];
 extern unsigned char DAT_1425f75c0[];
 extern unsigned char DAT_1425f7af0[];
-extern unsigned char DAT_14261bbd0[];
-extern unsigned char DAT_14261bc40[];
-extern unsigned char DAT_14261bfc0[];
-extern unsigned char DAT_14261c910[];
-extern unsigned char DAT_14261ce60[];
-extern unsigned char DAT_14261e030[];
+extern "C" unsigned char __identifier("?CloneCreate@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")[];
+#define DAT_14261bbd0 __identifier("?CloneCreate@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")
+extern "C" unsigned char __identifier("?CloneInit@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")[];
+#define DAT_14261bc40 __identifier("?CloneInit@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")
+extern "C" unsigned char __identifier("?CopyGeomData@NodeData@TreeNode@Render@Scaleform@@UEAAXPEAV234@AEBV234@@Z")[];
+#define DAT_14261bfc0 __identifier("?CopyGeomData@NodeData@TreeNode@Render@Scaleform@@UEAAXPEAV234@AEBV234@@Z")
+extern "C" unsigned char __identifier("?PropagateUp@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVEntry@ContextImpl@34@@Z")[];
+#define DAT_14261c910 __identifier("?PropagateUp@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVEntry@ContextImpl@34@@Z")
+extern "C" unsigned char __identifier("?ReleaseNodes@NodeData@TreeContainer@Render@Scaleform@@UEBAXXZ")[];
+#define DAT_14261ce60 __identifier("?ReleaseNodes@NodeData@TreeContainer@Render@Scaleform@@UEBAXXZ")
+extern "C" unsigned char __identifier("?updateCache@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeCacheNode@34@PEAV534@0PEAVTreeNode@34@G@Z")[];
+#define DAT_14261e030 __identifier("?updateCache@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeCacheNode@34@PEAV534@0PEAVTreeNode@34@G@Z")
 extern unsigned char DAT_14263a800[];
-extern unsigned char DAT_142646630[];
-extern unsigned char DAT_1426467f0[];
-extern unsigned char DAT_1426468c0[];
-extern unsigned char DAT_142646b40[];
-extern unsigned char DAT_142646dd0[];
-extern unsigned char DAT_142646f00[];
-extern unsigned char DAT_142646f90[];
-extern unsigned char DAT_142647090[];
+extern "C" unsigned char __identifier("?ReadButtonSoundDef@SoundTagsReader@GFx@Scaleform@@UEAAPEAVButtonSoundDef@23@PEAVLoadProcess@23@@Z")[];
+#define DAT_142646630 __identifier("?ReadButtonSoundDef@SoundTagsReader@GFx@Scaleform@@UEAAPEAVButtonSoundDef@23@PEAVLoadProcess@23@@Z")
+extern "C" unsigned char __identifier("?ReadButtonSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_1426467f0 __identifier("?ReadButtonSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadDefineExternalSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_1426468c0 __identifier("?ReadDefineExternalSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadDefineExternalStreamSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_142646b40 __identifier("?ReadDefineExternalStreamSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadDefineSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_142646dd0 __identifier("?ReadDefineSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadSoundStreamBlockTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_142646f00 __identifier("?ReadSoundStreamBlockTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadSoundStreamHeadTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_142646f90 __identifier("?ReadSoundStreamHeadTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
+extern "C" unsigned char __identifier("?ReadStartSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")[];
+#define DAT_142647090 __identifier("?ReadStartSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
 extern "C" int __cdecl _purecall(void); // 0x14280ef52 vftable pure-virtual slot
 extern unsigned char DAT_142935ea0[];
-extern unsigned char DAT_14293fcd0[];
-extern unsigned char DAT_14293fdf0[];
+extern "C" unsigned char __identifier("?Execute@GFxAS2LoadCSSTask@AS2@GFx@Scaleform@@UEAAXXZ")[];
+#define DAT_14293fcd0 __identifier("?Execute@GFxAS2LoadCSSTask@AS2@GFx@Scaleform@@UEAAXXZ")
+extern "C" unsigned char __identifier("?Execute@GFxAS2LoadXMLTask@AS2@GFx@Scaleform@@UEAAXXZ")[];
+#define DAT_14293fdf0 __identifier("?Execute@GFxAS2LoadXMLTask@AS2@GFx@Scaleform@@UEAAXXZ")
 extern unsigned char DAT_1429411f0[];
 extern unsigned char DAT_14294a500[];
 extern unsigned char DAT_14294a8f0[];
@@ -1351,31 +1396,41 @@ void FUN_1424e3ac0();
 // FUN_1424e3de0: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 //
 //
-void FUN_1424eb2f0(); __pragma(comment(linker, "/alternatename:?FUN_1424eb2f0@@YAXXZ=?AdvanceFrame@MovieRoot@AS3@GFx@Scaleform@@UEAAX_N@Z")) // MovieRoot::AdvanceFrame
-void FUN_1424eeae0(); __pragma(comment(linker, "/alternatename:?FUN_1424eeae0@@YAXXZ=?ChangeMouseCursorType@Sfr33MovieRootCursor@AS3@GFx@Scaleform@@UEAAXII@Z")) // Sfr33MovieRootCursor::ChangeMouseCursorType
-void FUN_1424efb40(); __pragma(comment(linker, "/alternatename:?FUN_1424efb40@@YAXXZ=?ClearDisplayList@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")) // MovieRoot::ClearDisplayList
+extern "C" unsigned char __identifier("?AdvanceFrame@MovieRoot@AS3@GFx@Scaleform@@UEAAX_N@Z")[];
+#define FUN_1424eb2f0 __identifier("?AdvanceFrame@MovieRoot@AS3@GFx@Scaleform@@UEAAX_N@Z")
+extern "C" unsigned char __identifier("?ChangeMouseCursorType@Sfr33MovieRootCursor@AS3@GFx@Scaleform@@UEAAXII@Z")[];
+#define FUN_1424eeae0 __identifier("?ChangeMouseCursorType@Sfr33MovieRootCursor@AS3@GFx@Scaleform@@UEAAXII@Z")
+extern "C" unsigned char __identifier("?ClearDisplayList@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")[];
+#define FUN_1424efb40 __identifier("?ClearDisplayList@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")
 //
 //
 //
 //
 //
-void FUN_1424f2700(); __pragma(comment(linker, "/alternatename:?FUN_1424f2700@@YAXXZ=?CreateArray@Sfr33MovieRootArray@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@@Z")) // Sfr33MovieRootArray::CreateArray
+extern "C" unsigned char __identifier("?CreateArray@Sfr33MovieRootArray@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@@Z")[];
+#define FUN_1424f2700 __identifier("?CreateArray@Sfr33MovieRootArray@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@@Z")
 //
-void FUN_1424f3780(); __pragma(comment(linker, "/alternatename:?FUN_1424f3780@@YAXXZ=?CreateFunction@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEAVFunctionHandler@34@PEAX@Z")) // Sfr33MovieRoot::CreateFunction
+extern "C" unsigned char __identifier("?CreateFunction@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEAVFunctionHandler@34@PEAX@Z")[];
+#define FUN_1424f3780 __identifier("?CreateFunction@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEAVFunctionHandler@34@PEAX@Z")
 //
-void FUN_1424f41f0(); __pragma(comment(linker, "/alternatename:?FUN_1424f41f0@@YAXXZ=?CreateString@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBD@Z")) // Sfr33MovieRootStrings::CreateString
-void FUN_1424f42d0(); __pragma(comment(linker, "/alternatename:?FUN_1424f42d0@@YAXXZ=?CreateStringW@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEB_W@Z")) // Sfr33MovieRootStrings::CreateStringW
-//
-//
-//
-//
-//
-//
+extern "C" unsigned char __identifier("?CreateString@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBD@Z")[];
+#define FUN_1424f41f0 __identifier("?CreateString@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBD@Z")
+extern "C" unsigned char __identifier("?CreateStringW@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEB_W@Z")[];
+#define FUN_1424f42d0 __identifier("?CreateStringW@Sfr33MovieRootStrings@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEB_W@Z")
 //
 //
-void FUN_142504b40(); __pragma(comment(linker, "/alternatename:?FUN_142504b40@@YAXXZ=?GenerateGestureEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@IAEBV?$Point@M@Render@3@11MI@Z")) // ASMovieRootBase::GenerateGestureEvents
-void FUN_142504b50(); __pragma(comment(linker, "/alternatename:?FUN_142504b50@@YAXXZ=?GenerateMouseEvents@MovieRoot@AS3@GFx@Scaleform@@UEAAXI@Z")) // MovieRoot::GenerateMouseEvents
-void FUN_1425057e0(); __pragma(comment(linker, "/alternatename:?FUN_1425057e0@@YAXXZ=?GenerateTouchEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXI@Z")) // ASMovieRootBase::GenerateTouchEvents
+//
+//
+//
+//
+//
+//
+extern "C" unsigned char __identifier("?GenerateGestureEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@IAEBV?$Point@M@Render@3@11MI@Z")[];
+#define FUN_142504b40 __identifier("?GenerateGestureEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVInteractiveObject@23@IAEBV?$Point@M@Render@3@11MI@Z")
+extern "C" unsigned char __identifier("?GenerateMouseEvents@MovieRoot@AS3@GFx@Scaleform@@UEAAXI@Z")[];
+#define FUN_142504b50 __identifier("?GenerateMouseEvents@MovieRoot@AS3@GFx@Scaleform@@UEAAXI@Z")
+extern "C" unsigned char __identifier("?GenerateTouchEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXI@Z")[];
+#define FUN_1425057e0 __identifier("?GenerateTouchEvents@ASMovieRootBase@GFx@Scaleform@@UEAAXI@Z")
 //
 //
 //
@@ -1386,7 +1441,8 @@ void FUN_1425057e0(); __pragma(comment(linker, "/alternatename:?FUN_1425057e0@@Y
 // FUN_14250b490: slot of a dropped vftable image (real ??_7 in sfr_as3_16z)
 //
 //
-void FUN_142510240(); __pragma(comment(linker, "/alternatename:?FUN_142510240@@YAXXZ=?GetVariableArray@MovieRoot@AS3@GFx@Scaleform@@UEAA_NHPEBDIPEAXI@Z")) // MovieRoot::GetVariableArray
+extern "C" unsigned char __identifier("?GetVariableArray@MovieRoot@AS3@GFx@Scaleform@@UEAA_NHPEBDIPEAXI@Z")[];
+#define FUN_142510240 __identifier("?GetVariableArray@MovieRoot@AS3@GFx@Scaleform@@UEAA_NHPEBDIPEAXI@Z")
 //
 //
 //
@@ -1396,8 +1452,10 @@ void FUN_142510240(); __pragma(comment(linker, "/alternatename:?FUN_142510240@@Y
 //
 //
 void FUN_1425181b0();
-void FUN_142518730(); __pragma(comment(linker, "/alternatename:?FUN_142518730@@YAXXZ=?OnAppLifecycleEvent@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVAppLifecycleEvent@23@@Z")) // ASMovieRootBase::OnAppLifecycleEvent
-void FUN_142518a00(); __pragma(comment(linker, "/alternatename:?FUN_142518a00@@YAXXZ=?OnDeviceOrientationChanged@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVOrientationEvent@23@@Z")) // ASMovieRootBase::OnDeviceOrientationChanged
+extern "C" unsigned char __identifier("?OnAppLifecycleEvent@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVAppLifecycleEvent@23@@Z")[];
+#define FUN_142518730 __identifier("?OnAppLifecycleEvent@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVAppLifecycleEvent@23@@Z")
+extern "C" unsigned char __identifier("?OnDeviceOrientationChanged@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVOrientationEvent@23@@Z")[];
+#define FUN_142518a00 __identifier("?OnDeviceOrientationChanged@ASMovieRootBase@GFx@Scaleform@@UEAAXAEBVOrientationEvent@23@@Z")
 //
 //
 //
@@ -1419,9 +1477,11 @@ void FUN_142518a00(); __pragma(comment(linker, "/alternatename:?FUN_142518a00@@Y
 //
 //
 //
-void FUN_14251e560(); __pragma(comment(linker, "/alternatename:?FUN_14251e560@@YAXXZ=?ProcessLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@@Z")) // MovieRoot::ProcessLoadQueueEntry
+extern "C" unsigned char __identifier("?ProcessLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@@Z")[];
+#define FUN_14251e560 __identifier("?ProcessLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@@Z")
 //
-void FUN_14252c4f0(); __pragma(comment(linker, "/alternatename:?FUN_14252c4f0@@YAXXZ=?Shutdown@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")) // MovieRoot::Shutdown
+extern "C" unsigned char __identifier("?Shutdown@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")[];
+#define FUN_14252c4f0 __identifier("?Shutdown@MovieRoot@AS3@GFx@Scaleform@@UEAAXXZ")
 //
 //
 //
@@ -1446,7 +1506,8 @@ void FUN_1429024e0();
 void FUN_142902880();
 void FUN_142902ae0();
 void FUN_142902f40();
-void FUN_142928a40(); __pragma(comment(linker, "/alternatename:?FUN_142928a40@@YAXXZ=??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z")) // RefCountBaseStatImpl<RefCountImpl,2> scalar deleting dtor (SF copy; the ??_7 name is bound to the game copy 0x142dc9d68)
+extern "C" unsigned char __identifier("??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z")[];
+#define FUN_142928a40 __identifier("??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z")
 //
 void FUN_14292bdc0();
 void FUN_14292be50();
@@ -1460,8 +1521,12 @@ void FUN_14292dc40();
 //
 //
 //
-void FUN_1429565c0();
-void FUN_14295d440();
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void __identifier("?CSSHolder_GetTextStyleManager@AS2@GFx@Scaleform@@YAPEBXPEBX@Z")();
+#define FUN_1429565c0 __identifier("?CSSHolder_GetTextStyleManager@AS2@GFx@Scaleform@@YAPEBXPEBX@Z")
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void __identifier("?CSSHolder_HasStyleSheet@GFx@Scaleform@@YA_NPEBX@Z")();
+#define FUN_14295d440 __identifier("?CSSHolder_HasStyleSheet@GFx@Scaleform@@YA_NPEBX@Z")
 namespace Scaleform { namespace GFx { namespace AS2 {
 void* DeleteAs2_14292a0e0(void* p, unsigned flags);
 } } }
@@ -1470,7 +1535,9 @@ void* DeleteAs2_14292a0e0(void* p, unsigned flags);
 //
 //
 //
-void FUN_142966210();
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void __identifier("?LocalFrame_VSlot4@AS2@GFx@Scaleform@@YA_NPEBX@Z")();
+#define FUN_142966210 __identifier("?LocalFrame_VSlot4@AS2@GFx@Scaleform@@YA_NPEBX@Z")
 //
 //
 //
@@ -3386,10 +3453,13 @@ alignas(8) Sd_14317b058 DAT_14317b058 = {
 };
 // 0x14317b938
 namespace Scaleform { namespace GFx { namespace AS3 { extern const void* DAT_14317b938[]; } } }
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void __identifier("?Output@Tracer@AS3@GFx@Scaleform@@UEAAXW4OutputMessageType@FlashUI@234@PEBD@Z")(unsigned __int64, ::Scaleform::GFx::AS3::FlashUI::OutputMessageType, char const *);   // Tracer::Output
+extern "C" bool __identifier("?OnOpCode@Tracer@AS3@GFx@Scaleform@@UEAA_N_K@Z")(unsigned __int64);   // Tracer::OnOpCode
 alignas(8) const void* Scaleform::GFx::AS3::DAT_14317b938[3] = {
     (const void*)&::Scaleform::GFx::AS3::DeleteAs3_1424e3b90,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251bda0,
-    (const void*)&::Scaleform::GFx::AS3::FUN_14251acb0,
+    (const void*)&__identifier("?Output@Tracer@AS3@GFx@Scaleform@@UEAAXW4OutputMessageType@FlashUI@234@PEBD@Z"),
+    (const void*)&__identifier("?OnOpCode@Tracer@AS3@GFx@Scaleform@@UEAA_N_K@Z"),
 };
 // 0x14317b950 (string literals after the vftable)
 unsigned char DAT_14317b950[0x1f0] = {
@@ -7128,72 +7198,42 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 // #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
 // #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
 // #pragma comment(linker, "/alternatename:... (moved to sfr_as3_16z, now = the ??_7)
-#pragma comment(linker, "/alternatename:DAT_14317d8c0=??_7MovieDefRootNode@AS3@GFx@Scaleform@@6B@")
 //
 //
 //
-#pragma comment(linker, "/alternatename:DAT_14317ef38=??_7UserDefinedFunction@AS3@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14317eff8@AS3@GFx@Scaleform@@3PAPEBXA=??_7AS3ValueObjectInterface@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:DAT_14317eff8=??_7AS3ValueObjectInterface@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143217750@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadMovie@AS2@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_143217780@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadXML@AS2@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1432177b0@AS2@GFx@Scaleform@@3PAPEBXA=??_7GFxAS2LoadQueueEntryMT_LoadCSS@AS2@GFx@Scaleform@@6B@")
 //
-#pragma comment(linker, "/alternatename:?DAT_1423df420@@3PAEA=?Finalize_GC@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@MEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df430@@3PAEA=?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df580@@3PAEA=?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df590@@3PAEA=?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1423df5a0@@3PAEA=?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")
-#pragma comment(linker, "/alternatename:?DAT_1423df5b0@@3PAEA=?IsAS3Object@Object@AS3@GFx@Scaleform@@UEBA_NXZ")
 //#pragma comment(linker, "/alternatename:?DAT_1424057c0@@3PAEA=?Call@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEBVValue@345@AEAV6345@IQEBV6345@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142407230@@3PAEA=?Construct@FunctionBase@Instances@AS3@GFx@Scaleform@@UEAAXAEAVValue@345@IPEBV6345@_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142414f60@@3PAEA=?GetAS3ObjectType@Object@fl@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ")
-#pragma comment(linker, "/alternatename:?DAT_1424e4290@@3PAEA=?AS3Constructor@Object@AS3@GFx@Scaleform@@UEAAXIPEBVValue@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424e8060@@3PAEA=?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@0W4Attribute@SlotInfo@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1424ede80@@3PAEA=?AttachMovie@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBD2JPEBVMemberValueSet@23@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1424f33d0@@3PAEA=?CreateEmptyMovieClip@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f39c0@@3PAEA=?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1424f3d20@@3PAEA=?CreateObjectValue@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAVValue@23@PEAX_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1424f3f40@@3PAEA=?CreateRenderNode@Sfr33ShapeObject@AS3@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@4@AEAVContext@ContextImpl@Render@4@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1424f4780@@3PAEA=?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142500250@@3PAEA=?ExecuteUnsafe@UserDefinedFunction@AS3@GFx@Scaleform@@UEAAXAEBVValue@234@AEAV5234@IPEBV5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142500e50@@3PAEA=?FindDynamicSlot@Object@AS3@GFx@Scaleform@@UEAA?AVPropRef@234@AEBVMultiname@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425038d0@@3PAEA=?FUN_1425038d0@@YAXPEAX0P6AX000@Z@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425071d0@@3PAEA=?GetAdvanceStats@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVViewStats@AMP@23@XZ")
 //#pragma comment(linker, "/alternatename:?DAT_142507540@@3PAEA=?GetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEBAIPEAX@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142508560@@3PAEA=?GetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVCxform@Render@3@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425094e0@@3PAEA=?GetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVDisplayInfo@Value@23@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142509850@@3PAEA=?GetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAV?$Matrix2x4@M@Render@3@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142509ad0@@3PAEA=?GetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXIPEAVValue@23@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14250b3c0@@3PAEA=?GetMatrix3D@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix3x4@M@Render@4@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14250b4a0@@3PAEA=?GetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBDPEAVValue@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250be40@@3PAEA=?GetNextDynPropIndex@Object@AS3@GFx@Scaleform@@UEBA?AVGlobalSlotIndex@234@V5234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250c010@@3PAEA=?GetNextPropertyName@Object@AS3@GFx@Scaleform@@UEBAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250c060@@3PAEA=?GetNextPropertyValue@Object@AS3@GFx@Scaleform@@UEAAXAEAVValue@234@VGlobalSlotIndex@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14250cc60@@3PAEA=?GetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEAVValue@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14250f110@@3PAEA=?GetText@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAVValue@23@_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14250f770@@3PAEA=?GetTopMostMouseEntity@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@34@AEBV?$Point@M@Render@4@PEAUTopMostDescr@634@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14250f980@@3PAEA=?GetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEBAPEAVASUserData@23@PEAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510180@@3PAEA=?GetVariable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEAVValue@34@PEBD@Z")
-#pragma comment(linker, "/alternatename:?DAT_142510770@@3PAEA=?GetVariableArraySize@MovieRoot@AS3@GFx@Scaleform@@UEAAIPEBD@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142510a70@@3PAEA=?GetWorldMatrix@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix2x4@M@Render@4@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142510b70@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXI_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142510c30@@3PAEA=?GotoAndPlay@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEBD_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142510e70@@3PAEA=?HasMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBD_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142511530@@3PAEA=?Init@MovieRoot@AS3@GFx@Scaleform@@UEAA_NPEAVMovieDefImpl@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142512620@@3PAEA=?InitializeOnDemand@Object@AS3@GFx@Scaleform@@UEAAPEBVSlotInfo@234@PEBV5234@AEBVASString@34@AEBVNamespace@Instances@234@AEA_K@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142512870@@3PAEA=?Invoke@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDPEBV423@_K_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142513920@@3PAEA=?InvokeClosure@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAX_KPEAVValue@23@PEBV423@1@Z")
-#pragma comment(linker, "/alternatename:?DAT_142513f90@@3PAEA=?IsAvailable@MovieRoot@AS3@GFx@Scaleform@@UEBA_NPEBD@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142514240@@3PAEA=?IsDisplayObjectActive@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAX@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142518530@@3PAEA=?ObjectAddRef@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142518570@@3PAEA=?ObjectRelease@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAVValue@23@PEAX@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14251cac0@@3PAEA=?PointTestLocal@Sfr34_ShapeObjectView@AS3@GFx@Scaleform@@UEBA_NAEBV?$Point@M@Render@4@E@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14251cbe0@@3PAEA=?PopBack@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251e4b0@@3PAEA=?ProcessLoadBinaryMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBV?$ArrayPOD@E$01UArrayDefaultPolicy@Scaleform@@@4@_K_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14251f250@@3PAEA=?ProcessLoadVarsMT@MovieRoot@AS3@GFx@Scaleform@@UEAAXPEAVLoadQueueEntry@34@PEAVLoadStates@34@AEBVString@4@_K_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14251f780@@3PAEA=?PushBack@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXAEBVValue@34@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425227e0@@3PAEA=?RemoveElements@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXIH@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425265d0@@3PAEA=?SetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXI@Z")
@@ -7203,33 +7243,12 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 //#pragma comment(linker, "/alternatename:?DAT_142527300@@3PAEA=?SetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXIAEBVValue@23@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_1425278d0@@3PAEA=?SetMatrix3D@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix3x4@M@Render@3@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142527d60@@3PAEA=?SetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBDAEBVValue@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528740@@3PAEA=?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14252a230@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14252a360@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEB_W_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?SetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAXPEAVASUserData@23@_N@Z")
 //#pragma comment(linker, "/alternatename:?DAT_14252fd40@@3PAEA=?ToString@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAVString@3@AEBVValue@23@@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142531550@@3PAEA=?VisitElements@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVArrVisitor@ObjectInterface@Value@23@IH@Z")
 //#pragma comment(linker, "/alternatename:?DAT_142531630@@3PAEA=?VisitMembers@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVObjVisitor@ObjectInterface@Value@23@_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14256e2e0@@3PAEA=?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14256e350@@3PAEA=?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")
-#pragma comment(linker, "/alternatename:?DAT_1425ab870@@3PAEA=?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261bbd0@@3PAEA=?CloneCreate@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261bc40@@3PAEA=?CloneInit@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVTreeNode@34@PEAVContext@ContextImpl@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261bfc0@@3PAEA=?CopyGeomData@NodeData@TreeNode@Render@Scaleform@@UEAAXPEAV234@AEBV234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261c910@@3PAEA=?PropagateUp@NodeData@TreeContainer@Render@Scaleform@@UEBA_NPEAVEntry@ContextImpl@34@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14261ce60@@3PAEA=?ReleaseNodes@NodeData@TreeContainer@Render@Scaleform@@UEBAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14261e030@@3PAEA=?updateCache@NodeData@TreeContainer@Render@Scaleform@@UEBAPEAVTreeCacheNode@34@PEAV534@0PEAVTreeNode@34@G@Z")
-#pragma comment(linker, "/alternatename:?DAT_142646630@@3PAEA=?ReadButtonSoundDef@SoundTagsReader@GFx@Scaleform@@UEAAPEAVButtonSoundDef@23@PEAVLoadProcess@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1426467f0@@3PAEA=?ReadButtonSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_1426468c0@@3PAEA=?ReadDefineExternalSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142646b40@@3PAEA=?ReadDefineExternalStreamSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142646dd0@@3PAEA=?ReadDefineSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142646f00@@3PAEA=?ReadSoundStreamBlockTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142646f90@@3PAEA=?ReadSoundStreamHeadTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_142647090@@3PAEA=?ReadStartSoundTag@SoundTagsReader@GFx@Scaleform@@UEAAXPEAVLoadProcess@23@AEBUTagInfo@23@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14293fcd0@@3PAEA=?Execute@GFxAS2LoadCSSTask@AS2@GFx@Scaleform@@UEAAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14293fdf0@@3PAEA=?Execute@GFxAS2LoadXMLTask@AS2@GFx@Scaleform@@UEAAXXZ")
 
 // rt1: vftables the AS2/AS3 TUs declare by address
 

@@ -287,16 +287,6 @@ MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v)
     MS2Ptr<ASMovieClip> sp(new ASMovieClip(v, nMovieId));
     return sp;
 }
-// uicashattenddialog's "m_check" marks (Unk_CadCheck) are plain movie clips: its declared creator and
-// MS2Ptr<Unk_CadCheck> members are this unit's ASMovieClip ones (0x1409b40c0, 0x1409b48b0, 0x1409b48e0,
-// 0x1409b4a90, 0x1409b4c60).
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??$Unk_ASCreate@VUnk_CadCheck@@@@YA?AV?$MS2Ptr@VUnk_CadCheck@@@@HAEBVValue@GFx@Scaleform@@@Z=?FUN_1409b40c0@@YA?AV?$MS2Ptr@VASMovieClip@@@@HAEBVValue@GFx@Scaleform@@@Z")
-#pragma comment(linker, "/alternatename:??0?$MS2Ptr@VUnk_CadCheck@@@@QEAA@$$QEAV0@@Z=??0?$MS2Ptr@VASMovieClip@@@@QEAA@$$QEAV0@@Z")
-#pragma comment(linker, "/alternatename:??0?$MS2Ptr@VUnk_CadCheck@@@@QEAA@H@Z=??0?$MS2Ptr@VASMovieClip@@@@QEAA@H@Z")
-#pragma comment(linker, "/alternatename:??1?$MS2Ptr@VUnk_CadCheck@@@@QEAA@XZ=??1?$MS2Ptr@VASMovieClip@@@@QEAA@XZ")
-#pragma comment(linker, "/alternatename:??C?$MS2Ptr@VUnk_CadCheck@@@@QEBAPEAVUnk_CadCheck@@XZ=??C?$MS2Ptr@VASMovieClip@@@@QEBAPEAVASMovieClip@@XZ")
-#endif
 
 // @0x1409b41a0
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v)

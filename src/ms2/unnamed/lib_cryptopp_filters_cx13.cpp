@@ -13,10 +13,34 @@
 
 #include "cryptopp562/filters.h"   // the real Crypto++ 5.6.2 classes: OutputProxy's vftables are emitted here
 
+#ifdef MS2_HOOK_DLL
 extern char DAT_14311e038[];
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void (*const __identifier("??_7AuthenticatedEncryptionFilter@CryptoPP@@6BAlgorithm@1@@")[])();
+#define DAT_14311e038 ((char*)__identifier("??_7AuthenticatedEncryptionFilter@CryptoPP@@6BAlgorithm@1@@"))
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_14311e200[];
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void (*const __identifier("??_7AuthenticatedEncryptionFilter@CryptoPP@@6BWaitable@1@@")[])();
+#define DAT_14311e200 ((char*)__identifier("??_7AuthenticatedEncryptionFilter@CryptoPP@@6BWaitable@1@@"))
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_14311e220[];
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void (*const __identifier("??_7AuthenticatedDecryptionFilter@CryptoPP@@6BAlgorithm@1@@")[])();
+#define DAT_14311e220 ((char*)__identifier("??_7AuthenticatedDecryptionFilter@CryptoPP@@6BAlgorithm@1@@"))
+#endif
+#ifdef MS2_HOOK_DLL
 extern char DAT_14311e3e8[];
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void (*const __identifier("??_7AuthenticatedDecryptionFilter@CryptoPP@@6BWaitable@1@@")[])();
+#define DAT_14311e3e8 ((char*)__identifier("??_7AuthenticatedDecryptionFilter@CryptoPP@@6BWaitable@1@@"))
+#endif
 // 0x143b0dc48 = CryptoPP::AAD_CHANNEL (cryptlib.h)
 
 // the exe's `new OutputProxy(*this, false)`: 0x28 bytes, Algorithm(false), the two OutputProxy vptrs, owner, passSignal

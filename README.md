@@ -19,7 +19,8 @@ still not the same as the original. The gaps:
   dialogs look different.
 - The link still carries generated glue: the link aliases counted under the table, a zero-filled data stub and a small
   runtime shim (entry point, crash log and a few startup patches).
-- That glue comes from a maintainer's build that reads the exe, so only the published tip builds without it, and the
+- Most of that glue is now derived from the checkout at configure time, but two link tables still come from a
+  maintainer's build that reads the exe, so a commit that adds an engine or library unit needs a refresh first. The
   default `cmake/fullexe` build still reads the exe.
 - Bugs the byte-match checks can't see still turn up (see [Recent fixes](#recent-fixes)), and not every gameplay flow
   has been tested on the full executable.
@@ -51,14 +52,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 176,747 | 176,600 (99.9%) | 142 (0.1%) | 100.0% |
+| Game · ms2 | 176,747 | 176,595 (99.9%) | 147 (0.1%) | 100.0% |
 | Runtime & middleware | 24,765 | 24,009 (96.9%) | 639 (2.6%) | 99.5% |
 | Gamebryo engine | 16,881 | 16,841 (99.8%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 13,110 | 13,098 (99.9%) | 11 (0.1%) | 100.0% |
+| Game framework · egf | 13,111 | 13,099 (99.9%) | 11 (0.1%) | 100.0% |
 | Libraries | 6,731 | 6,372 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,068 | 13,064 (100.0%) | 4 (0.0%) | 100.0% |
+| Foundation | 13,067 | 13,063 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
-| **Total** | **252,084** | 250,764 (99.5%) | 846 (0.3%) | 99.8% |
+| **Total** | **252,084** | 250,759 (99.5%) | 851 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
 | Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 74 | | | |
@@ -69,17 +70,27 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Exception filters of done functions that the rebuild's compiler folds into a constant (same behaviour) | 4 | | | |
 | *Not done, still to write* | 0 | | | |
 
-Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 474 functions that are neither matched nor equivalent. Counting the 474 that are not missing, 100.0% is done. Functions rose by 458 since the last publish: 458 atexit destructors, real functions of the original that no earlier table listed, are now counted.
+Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 474 functions that are neither matched nor equivalent. Counting the 474 that are not missing, 100.0% is done.
 
-Link aliases: 269 left: 8 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 261 `#pragma comment(linker, "/alternatename:...")` lines in 41 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. Part of the drop since then is aliases moved into the sources, not removed, which is why both places are counted.
+Link aliases: 9 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 9 `#pragma comment(linker, "/alternatename:...")` lines in 7 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. The no-exe build no longer needs an alias file; the rest are in the sources.
 <!-- progress:end -->
 
 ### Recent fixes
 
-The project is now licensed under the GNU GPL v3, with an attribution requirement (see [`NOTICE`](NOTICE) and
-[License](#license)).
+Since the last publish:
 
-Fixed since the last publish. The byte-match checks can't see any of these bugs. None was seen in the client; the
+- The link aliases are almost gone: the no-exe build needs no alias file any more, and 9 aliases remain in the
+  sources, down from 19,884 on 2026-10-31. The recovered code now names the real functions, vftables and data objects
+  directly.
+- The no-exe build (`cmake/fullexe-plain`) now makes most of its glue from the checkout at configure time: the list of
+  game objects, the compile commands and flags, the function order and the zero-filled data stub. A commit made after
+  the last glue refresh therefore builds without the exe as well (unless it adds an engine or library unit), and adding, renaming or removing a unit re-runs
+  configure. Two small tables, the engine and library object picks and the init-order rules (`link.tsv`,
+  `before.tsv`), still come from a maintainer's build that passed its smoke test, and are refreshed with each publish.
+  See [`BUILDING.md`](BUILDING.md#glue-derived-at-configure).
+- No new bugs that the byte-match checks can't see were fixed in this round; the merge was the alias removal.
+
+Fixed in the previous publish. The byte-match checks can't see any of these bugs. None was seen in the client; the
 effects come from reading the code.
 
 - The mastery dialog's craft and magic-scroll craft boxes had their Craft and Cancel labels swapped (the buttons still

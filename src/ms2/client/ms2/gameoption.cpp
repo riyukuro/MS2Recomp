@@ -1622,6 +1622,17 @@ struct Unk_GsEtc* FUN_141261750(struct Unk_GsEtc*);   // C3: was FUN_141261750
 struct Unk_LgState* FUN_14125f090(struct Unk_LgState*);   // C3: was FUN_14125f090
 struct Unk_GpState* FUN_14125f290(struct Unk_GpState*);   // C3: was FUN_14125f290
 struct Unk_GoChroma* FUN_141261670(struct Unk_GoChroma*);   // C3: was FUN_141261670
+#ifndef MS2_HOOK_DLL
+// The one Unk_GoMember<T> ctor CGameOption's ctor still calls (the other 17 blocks have real ctors). Same stores as
+// CPersonalInfoAgreement's ctor (gameoptionstruct.cpp, 0x141261cf0): /opt:icf folds them.
+struct Unk_PiAgreeBlock { bool m_bAgreeVisitHome; int m_nFlags; bool m_bAnswered; };
+template <> inline Unk_GoMember<Unk_PiAgreeState>::Unk_GoMember()
+{
+    ((Unk_PiAgreeBlock*)this)->m_bAgreeVisitHome = false;
+    ((Unk_PiAgreeBlock*)this)->m_nFlags = 0;
+    ((Unk_PiAgreeBlock*)this)->m_bAnswered = false;
+}
+#endif
 class CPersonalInfoAgreement { public: CPersonalInfoAgreement(); };   // 0x141261cf0 (gameoptionpersonalinfoagreement.cpp)
 int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc);
 int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc);
@@ -2167,9 +2178,3 @@ MS2_REPLACE_METHOD(0x14124D890, CGameOptionGraphicDefault, vfunc_14, 106, 0xDC75
 // MS2-PIN: ?FUN_141242990@@YAXPEAX@Z 0x141242990
 // MS2-PIN: ?FUN_141242990@Unk_ClUserMgr@@QEAAXXZ 0x141242990
 
-// The one Unk_GoMember<T> member ctor CGameOption's ctor still calls is only declared (cgameoption.h); it is the
-// exe's ctor for its block, bound here by alternatename (the other 17 blocks have real ctors in gameoptionstruct.cpp).
-#ifndef MS2_HOOK_DLL
-//
-#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_PiAgreeState@@@@QEAA@XZ=??0CPersonalInfoAgreement@@QEAA@XZ")
-#endif

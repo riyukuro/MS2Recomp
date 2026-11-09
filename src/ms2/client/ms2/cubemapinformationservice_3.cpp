@@ -1845,6 +1845,10 @@ bool CubeMapInformationService::FUN_1410c3cd0(int nKey)
 }
 struct Unk_CMISHouseRec { __int64 m_q0, m_q1, m_q2; int m_state, m_pad; __int64 m_value; };   // the house record (state at 0x18, value at 0x20)
 int FUN_1408a0890(int, int, int*);
+#ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" int __identifier("?FUN_1408a03c0@@YAHUUnk_Int3@@@Z")(const Unk_Int3&);
+#endif
 struct Unk_CMISHouseRef                                                                     // MS2Ptr<house record>
 {
     Unk_CMISHouseRef(void* p);                                                              // 0x14111ea00
@@ -3335,11 +3339,17 @@ void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
             Vector3 ptCube = *(Vector3*)&spCube->position;
             Unk_CMISObj498* pObj = ((Unk_CMISObj498*)(void*)((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->());
             void* pItem = ((void*)((MS2Ptr<CubeItemInfo>*)(void*)(&spCube->item))->get());
-            int FUN_1408a03c0(const Unk_Int3& pt);   // C3: this caller passes ptCube by address (no arg copy) - the one const& view
+            // C3: this caller passes ptCube by address (no arg copy): the one const& view of the by-value function
+#ifdef MS2_HOOK_DLL
+            int FUN_1408a03c0(const Unk_Int3& pt);
+#define MS2_FUN_1408a03c0_REF FUN_1408a03c0
+#else
+#define MS2_FUN_1408a03c0_REF __identifier("?FUN_1408a03c0@@YAHUUnk_Int3@@@Z")
+#endif
             __int64 nOwner = GetOwnerId(spCube->field50, spCube->field54);
-            if (pObj->vfunc_2(pCtx, &((Unk_CMISObjRec30*)spData.operator->())->m_n30, FUN_1408a03c0(*(Unk_Int3*)&ptCube), nOwner, pItem) != 0) {
+            if (pObj->vfunc_2(pCtx, &((Unk_CMISObjRec30*)spData.operator->())->m_n30, MS2_FUN_1408a03c0_REF(*(Unk_Int3*)&ptCube), nOwner, pItem) != 0) {
                 CString strKey;
-                strKey.Format("%d_%d", spCube->field44, FUN_1408a03c0(Unk_Int3(*(Unk_Int3*)&spCube->position)));
+                strKey.Format("%d_%d", spCube->field44, MS2_FUN_1408a03c0_REF(Unk_Int3(*(Unk_Int3*)&spCube->position)));
                 ((class CFunctionCubeObject*)(class Unk_CMISObj498*)(((Unk_CMISObj498*)(void*)((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->())))->SetId(strKey);
                 ((class Unk_CMISMagicCube*)FUN_1409670b0())->AddCube(MS2Ptr<CFunctionCubeObject>(slot));
                 int nKind = ((Unk_CMISObjRec*)spData.operator->())->nKind;

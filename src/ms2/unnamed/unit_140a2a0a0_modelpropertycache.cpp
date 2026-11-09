@@ -61,7 +61,13 @@ void FUN_14028c2d0(CStringA str, efd::Point3* pOut);
 __int64 FUN_14028d260(float f);   // C3: the definition's __int64 return; the caller below reads it as int through an int(*)(float) cast (the exe keeps eax, no (int) temp)
 CStringA FUN_140188f50(const char* psz, int nCodePage);
 // The exe's CAtlArray<CStringA>::operator[] COMDAT copy used by the int/float property readers (same body as 0x140164930).
+#ifdef MS2_HOOK_DLL
 CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, size_t i);
+#else
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" CStringA& __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")(Unk_ValueList* pArr, size_t i);
+#define FUN_1401c0cc0 __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")
+#endif
 
 class Unk_ModelMgr
 {

@@ -446,9 +446,10 @@ void FUN_140c7e6a0(Unk_TcBstrHolder* p)
 }
 
 // @0x140c7e9b0 vector/scalar deleting destructor of the 0x10 byte BSTR holders
-void FUN_142749a60(void* p, size_t nSize, size_t nCount, void (*pfnDtor)(void*));   // eh vector destructor iterator
+#pragma warning(disable : 4483)   // __identifier("<mangled name>")
+extern "C" void __identifier("??_M@YAXPEAX_K1P6AX0@Z@Z")(void* p, size_t nSize, size_t nCount, void (*pfnDtor)(void*));   // eh vector destructor iterator
+#define FUN_142749a60 __identifier("??_M@YAXPEAX_K1P6AX0@Z@Z")
 // 0x142749a60 is in the exe's CRT, which is never mapped: bind it to the DLL CRT's `eh vector destructor iterator'
-#pragma comment(linker, "/alternatename:?FUN_142749a60@@YAXPEAX_K1P6AX0@Z@Z=??_M@YAXPEAX_K1P6AX0@Z@Z")
 void* FUN_140c7e9b0(void* p, unsigned int nFlags) noexcept
 {
     if (nFlags & 2) {

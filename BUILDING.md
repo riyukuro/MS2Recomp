@@ -153,26 +153,52 @@ that commit's fullexe-latest build has linked and passed, run these against that
 2. `plainglue.py compile data/fullexe/plain` (in that build's checkout and environment)
 3. `plainglue.py pack data/fullexe/plain`
 
-Then delete `order.txt` and commit `objs.txt`, `alias.rsp`, `stubs.tsv`, `order.tar.xz`, `compile.tsv`, `flags.tsv` and
-`tree.tsv` together. Rerun `plainglue.py stubs` and commit `stubs.obj` only when `stubs.tsv` changes and the tool still
-reports zero fill. The glue names that build's objs, so a checkout other than that commit links only by luck: a
-renamed, added or removed unit breaks the link (LNK1120).
+Then delete `order.txt` and commit `objs.txt`, `alias.rsp`, `stubs.tsv`, `order.tar.xz`, `compile.tsv`, `flags.tsv`,
+`tree.tsv`, `link.tsv` and `before.tsv` together (step 1 writes the last two; `plainglue.py tables <dir>` writes only them). Rerun `plainglue.py stubs` and commit `stubs.obj` only when `stubs.tsv` changes and the tool still
+reports zero fill. `objs.txt` and the compile list name that build's objs, so a checkout other than that commit links
+with them only by luck: a renamed, added or removed unit breaks the link (LNK1120). The derived glue (below) does not
+have that limit.
 
 `tools/fullexe/glue-refresh.sh [--commit]` runs those steps in one command, from the latest published
 `fullexe-latest` build. It takes `work/fx29/fx/fullexe-latest.glue`, which `latest.sh` publishes only on a smoke
 PASS. If that dir holds no glue for the published commit (a `latest.sh --loop` started before 10-30 keeps none), the
 script runs step 1 itself on the build's `out` dir, after checking that `out/fullexe3.exe` is the published exe. It
-writes a `commit` file naming the build's commit. Run it while up1's worktree is still at that commit; the script stops
-once the worktree has moved on. It also stops when `stubs.tsv` changed. It does not open the original exe.
+writes a `commit` file naming the build's commit. Run it while that build's checkout (the `latest.sh` checkout, or `--wt <dir>`) is
+still at that commit; the script stops once the checkout has moved on. It also stops when `stubs.tsv` changed. It does not open the original exe.
 
 Each published merge carries fresh glue: after `work/merge/<rev8>/apply.sh` and before `tools/publish-github.sh`, run
 `MS2_AGENT=<name> tools/fullexe/glue-refresh.sh --commit`. It commits the glue for the newest smoke-passed
 `fullexe-latest` build, which can be older than the merge. The published tip must be that build's own sources, so
 `glue-refresh.sh --side <branch> [--overlay <path>]...` makes a side commit: parent the build's commit, tree that commit
 with the refreshed glue (plus any `--overlay` path, such as this file, as master has it). `PUBLISH_REV=<branch>
-tools/publish-github.sh` then publishes that commit instead of master. When the script stops because up1's worktree
+tools/publish-github.sh` then publishes that commit instead of master. When the script stops because the build's checkout
 has moved past the published build, refresh after the next smoke PASS. When it stops because `stubs.tsv` changed, run
 `plainglue.py stubs` against an exe first (above).
+
+#### Glue derived at configure
+
+With `-DMS2_PLAIN_COMPILE=ON`, configure makes the glue from the checkout itself when the glue dir has `link.tsv`
+(`MS2_PLAIN_DERIVE`: `AUTO`, the default, `ON` or `OFF`). It runs `tools/fullexe/plainglue.py derive
+<build>/glue-derived --base <glue dir>` with `MS2_PLAIN_PYTHON` (default `<root>/.venv/bin/python`; it needs the packages
+of `requirements.txt`) and links that glue. Without a usable Python, `AUTO` warns and links the committed glue; `ON`
+stops. derive reads no exe and no obj cache:
+
+- `objs.txt`: one obj per git-tracked `src/ms2` source with `MS2-UNIT`, placed as `plan.py` places it (the `NO-EXE`
+  place, else the lowest `progress/status.tsv` VA, else `link.tsv`'s VA, else the lowest `MS2-RANGE`; units in the NM
+  zone 0x14156a020-0x14160a7f0 are left out), plus the engine, library and closure objs that `link.tsv` names, sorted
+  as `plan.py` sorts and moved by the `before.tsv` rules as `link.py --before` moves them;
+- `compile.tsv`, `flags.tsv`, `tree.tsv`: as `plainglue.py compile` writes them (from `progress.py` and `gbtree.py`),
+  without the `.deps` check;
+- `order.txt`: `order.py`'s list from `data/map/functions.tsv` and the symbol tables, not filtered to the names the objs
+  define, so the link adds `/ignore:4037`;
+- `stubs.obj`: zero fill from `stubs.tsv`; `alias.rsp` and `stubs.tsv` are copied.
+
+`link.tsv` (plan.py's `order.tsv`: the engine and library twin picks and closure objs, with each unit's VA) and
+`before.tsv` (`initorder.py`'s `--before` rules) are the only glue inputs taken from an exe-reading build. They hold
+names, VAs and paths. A source added, renamed or removed at a later commit is picked up by the next build, which re-runs
+configure (an edit to an existing source's `MS2-UNIT` or `MS2-RANGE` line needs a re-configure by hand). A new engine or library unit, or a new closure obj, needs a `link.tsv` refresh first. Checked on the
+2026-11-09 glue: derive gave the committed glue's `objs.txt`, `compile.tsv`, `flags.tsv`, `tree.tsv` and `stubs.obj`
+byte for byte, and its `order.txt` filtered to the reference names was the reference `order.txt`.
 
 ### Compile list
 
@@ -200,8 +226,8 @@ on the compiler command line, and the anonymous-namespace names (`?A0x<hash>`) h
 matches. A build from another path gave an exe 37,888 bytes larger. Byte identity needs the same checkout path, with
 `MS2_MSVC_ROOT` and `MS2_PLAIN_ENGINE` spelled as in the reference build, and the exe's own `.res` (the stand-in
 changes `.rsrc`). For this project's reference builds that is
-the checkout `z:/home/riyu/Documents/MS2_decomp/work/up1/wt` (as the exe's `__FILE__` strings spell it), with its
-`third_party` and `engine` under it.
+the maintainer's build checkout as the exe's `__FILE__` strings spell it (a `z:` path under Wine; the link's `/out`
+paths use a second spelling of the same dir through a symlink), with its `third_party` and `engine` under it.
 
 A full `-DMS2_PLAIN_COMPILE=ON` build on Linux (the 10-31 glue: 3637 steps, about 85 minutes at `-j16`) of a
 clean worktree with that build's glue
@@ -225,7 +251,8 @@ exe logged in on a local server and entered a field):
 
 - Install VS 2022 (Community is enough) with the "Desktop development with C++" workload and these individual
   components: MSVC v141 VS 2017 C++ x64/x86 build tools (14.16), C++ ATL for v141, C++ MFC for v141, C++ CMake tools
-  for Windows (CMake and Ninja come with VS; no Python or Wine is needed to build), and the Windows 10 SDK (10.0.19041).
+  for Windows (CMake and Ninja come with VS; no Python or Wine is needed to build the tip as cloned: without a
+  `.venv`, configure links the committed glue instead of deriving it), and the Windows 10 SDK (10.0.19041).
 - Use a developer prompt for the 14.16 toolset: `"C:\Program Files\Microsoft Visual
   Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.16`. A plain VS 2022 prompt gives cl 14.4x,
   which is not the build's compiler. Check with `cl` (it prints 19.16).
@@ -295,8 +322,9 @@ from `stubs.obj`, the `/ORDER` list from `order.tar.xz` and the resources from t
 The glue is committed in `data/fullexe/plain` (`tools/fullexe/glue-refresh.sh` refreshes them). A user without the exe still
 needs:
 
-- the published tip as cloned, with its submodule (step 1 above); the glue names that tip's objs, so sources from any
-  other commit fail to compile or link;
+- the published tip as cloned, with its submodule (step 1 above). With the derived glue (Python with `requirements.txt`)
+  a later commit builds too, as long as it adds no engine or library unit; with the committed glue alone (no Python,
+  or `-DMS2_PLAIN_DERIVE=OFF`) sources from any other commit fail to compile or link;
 - every SDK root above, the 14.16 toolset, and the old compilers for `vc9`, `vc9c`, `vc9v`, `vc11`, `1414`, `1415` (or the
   14.16 fallback, not byte-identical);
 - `third_party/` at the checkout's top level when the SDKs live elsewhere: some sources reach SDK headers through

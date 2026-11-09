@@ -39,6 +39,7 @@
 // MS2-RANGE: 0x1430e3b20-0x1430e3b21 .rdata
 
 #ifndef MS2_HOOK_DLL
+#pragma warning(disable : 4483)   // __identifier("<mangled name>"): vftable slots and vftables name the real symbol
 
 // Functions and objects the tables below point at (static members, free functions and globals defined in other
 // units), declared here so the slots name them directly; the owning classes are reduced to those members.
@@ -59,8 +60,10 @@ extern const Unk_ClEquipSlotEntry DAT_142d34e50[];
 extern int g_ItemFunctionFlags[4];
 extern const char DAT_142ec24a0[];
 
-extern unsigned char DAT_143224848[];
-extern unsigned char DAT_14326a2c8[];
+extern "C" unsigned char __identifier("??_7DOMBuilder@XML@GFx@Scaleform@@6B@")[];
+#define DAT_143224848 __identifier("??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
+extern "C" unsigned char __identifier("??_R4CNodeViewerDlg@@6B@")[];
+#define DAT_14326a2c8 __identifier("??_R4CNodeViewerDlg@@6B@")
 
 #pragma pack(push, 1)
 struct Sd_142d34f28 {
@@ -554,7 +557,5 @@ alignas(4) const char DAT_142ffa83c[5] = {
 unsigned char DAT_1430c3b20 = 0x0u;                             // 0x1430c3b20
 unsigned char DAT_1430e3b20 = 0x0u;                             // 0x1430e3b20
 
-#pragma comment(linker, "/alternatename:?DAT_143224848@@3PAEA=??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_14326a2c8@@3PAEA=??_R4CNodeViewerDlg@@6B@")
 
 #endif // MS2_HOOK_DLL

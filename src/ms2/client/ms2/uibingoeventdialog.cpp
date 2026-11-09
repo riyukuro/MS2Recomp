@@ -1293,10 +1293,6 @@ void Unk_BingoPanel::FUN_140bb8100()
         m_effect->vfunc_4(true);
 }
 
-// uicashattenddialog's declared MS2Ptr<Unk_CadCheck> copy ctor is this unit's MS2Ptr<ASMovieClip> one (0x140bb56d0).
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??0?$MS2Ptr@VUnk_CadCheck@@@@QEAA@AEBV0@@Z=??0?$MS2Ptr@VASMovieClip@@@@QEAA@AEBV0@@Z")
-#endif
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x140BAD410, UIBingoEventDialog, GetTypeName, 61, 0xF19E5FDD);
