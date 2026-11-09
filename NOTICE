@@ -1,0 +1,42 @@
+MS2Recomp
+Copyright (C) 2026 the MS2Recomp contributors
+https://github.com/riyukuro/MS2Recomp
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, version 3 of the License, with the additional term below. See
+LICENSE for the license text.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+
+Additional term (GNU GPL version 3, section 7(b))
+--------------------------------------------------
+
+Any conveyed copy of this program or of a work based on it, in source or object form, must preserve this attribution:
+
+    Based on MS2Recomp (https://github.com/riyukuro/MS2Recomp)
+
+A work with an interactive user interface must display that attribution among its Appropriate Legal Notices (GPLv3
+section 0), in an About, credits, start-up or similar screen that the user can reach. A work without one must keep it in
+its documentation and its source. Under section 7 this term may not be removed from any copy that carries it.
+
+
+What this license covers
+------------------------
+
+The license covers the original work of the MS2Recomp contributors in this repository: the recompiled source code, the
+build system, the tools, the tables and the documentation.
+
+It grants no rights in anything owned by others, and nothing here is a statement that any such rights are available:
+
+- MapleStory2, its executable, its data files and its trademarks belong to Nexon. The recompiled source reproduces the
+  behaviour of the original client. To build and run it you need your own legally obtained copy of the game and its
+  data. This project is not affiliated with or endorsed by Nexon.
+- Third-party software keeps its own license, in the file next to it:
+  - Microsoft Detours: src/hook/detours/LICENSE.md
+  - ATL Server: src/ms2/atlserver/License.txt
+  - {fmt}: fmt-patches/LICENSE.fmt
+- The Scaleform GFx and CRI recoveries in src/ms2/scaleform are published separately; see their NOTICE.md.
+- The Gamebryo engine, PhysX, PathEngine, Scaleform, CRI and every other SDK are not included. You need your own
+  licensed copies. The engine patches in engine-patches/ apply to that SDK and are of no use without it.

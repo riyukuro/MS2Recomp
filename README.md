@@ -54,9 +54,9 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Game · ms2 | 176,747 | 176,600 (99.9%) | 142 (0.1%) | 100.0% |
 | Runtime & middleware | 24,765 | 24,009 (96.9%) | 639 (2.6%) | 99.5% |
 | Gamebryo engine | 16,881 | 16,841 (99.8%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 13,113 | 13,101 (99.9%) | 11 (0.1%) | 100.0% |
+| Game framework · egf | 13,110 | 13,098 (99.9%) | 11 (0.1%) | 100.0% |
 | Libraries | 6,731 | 6,372 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,065 | 13,061 (100.0%) | 4 (0.0%) | 100.0% |
+| Foundation | 13,068 | 13,064 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
 | **Total** | **252,084** | 250,764 (99.5%) | 846 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
@@ -76,23 +76,26 @@ Link aliases: 269 left: 8 `/alternatename` lines in `data/fullexe/plain/alias.rs
 
 ### Recent fixes
 
-Fixed since the last publish. The byte-match checks can't see any of these bugs. The equip crash is the only one seen in
-the client; the other effects come from reading the code.
+The project is now licensed under the GNU GPL v3, with an attribution requirement (see [`NOTICE`](NOTICE) and
+[License](#license)).
 
-- Equipping an item (dragging a sword onto the Character window) crashed the client.
-- The Merat market search read its job and sort values from each other's keys.
-- Reloading strings left the tooltip texts stale: the reset cleared a flag nothing read.
-- A failed Razer Chroma SDK load left the SDK half-loaded. Two other catch blocks were also missing code, with no
-  change in normal behaviour.
-- Each world change left the pick records holding references to the old scene's objects.
-- Post-process render clicks cleared to the renderer's background colour instead of black.
-- An item chat link printed its uid and item id as signed numbers, which only shows for negative values.
-- Some casting bars got an empty colour and start frame unless the skill data set them. The on-screen effect has not
-  been checked.
-- A dungeon bonus reward read its group type as a number, so a group name would not load.
-- Item event broadcasts also reloaded the character-create dialog's customize controller.
-- Scaleform: a font-config translator dropped trailing newlines, a pattern-chain lookup left the caller's range stale,
-  and an E4X search walked the whole subtree instead of stopping at the first match.
+Fixed since the last publish. The byte-match checks can't see any of these bugs. None was seen in the client; the
+effects come from reading the code.
+
+- The mastery dialog's craft and magic-scroll craft boxes had their Craft and Cancel labels swapped (the buttons still
+  did the right thing), and the dungeon search page showed its random and custom titles the wrong way round.
+- Four formatted strings passed a value as signed where the original passes it unsigned, so a value of 2^31 or more
+  would print as negative.
+- With several active events giving an item trade limit, the lowest event id's limit was used instead of the highest.
+- The world service's visible-object set held only scene-node pointers instead of whole records, so the background
+  transparency code read past the end of each node.
+- A new world-service visibility entry started in group 0 instead of -1, so removing it touched the wrong group.
+- The cube map information service built and freed three maps with different allocators, and clearing one map
+  destroyed its entity ids as if they were smart pointers.
+- Scaleform: destroying an AS2 object's string hashes released some children a second time; an AS3 XML
+  `describeType` call now does its parent-type check the way the original does; and a MovieClip frame-script call
+  that names one frame three or more times fills its slots as the original does.
+- CRI audio: one decoder step added in double precision instead of float, which could differ by one rounding step.
 
 ## Layout
 
@@ -202,7 +205,18 @@ Environment switches: `MS2HOOK_DISABLE='*'` (or a list of names and addresses) t
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the setup, the gates a unit has to pass, and how to claim a batch of units
 from the issues.
 
+## License
+
+GNU GPL version 3 ([`LICENSE`](LICENSE)) with one additional term under section 7(b), in [`NOTICE`](NOTICE): a
+distributed version, or a work based on this one, must keep the attribution "Based on MS2Recomp
+(https://github.com/riyukuro/MS2Recomp)" and, if it has a user interface, show it in an About, credits or start-up
+screen.
+
+The license covers the contributors' own work here: the recompiled source, the build system, the tools and the
+documentation. Third-party code keeps its own license (listed in [`NOTICE`](NOTICE)).
+
 ## Legal
 
 This project is not affiliated with Nexon. MapleStory2 is a trademark of Nexon. The repository contains no game
-assets, executables or engine source.
+assets, executables or engine source, and its license grants no rights in the game: to build and run it you need your
+own copy of the game, its data files and the SDKs.

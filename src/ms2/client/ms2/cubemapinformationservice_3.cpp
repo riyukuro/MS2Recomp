@@ -280,8 +280,7 @@ class Unk_CMISUidRecord : public CPtred                                         
 public:
     virtual ~Unk_CMISUidRecord();
 };
-typedef std::map<unsigned __int64, Unk_CubeOwnerPtr> CMISMap_u64_CubeOwnerPtr;                      // f148 (the exe's folded rows name this instantiation for find/end/==/!=/[])
-typedef std::map<unsigned __int64, MS2Ptr<Unk_CMISUidRecord>, std::less<unsigned __int64>, efd::CustomAllocator<std::pair<const unsigned __int64, MS2Ptr<Unk_CMISUidRecord>>> > CMISEMap_u64_MS2Ptr_UidRecord;   // f148 (and this one for erase/clear)
+typedef std::map<unsigned __int64, Unk_CubeOwnerPtr> CMISMap_u64_CubeOwnerPtr;                      // f148: insert, erase and clear all go through this type, as in the exe (erase and clear end in operator delete)
 void FUN_1411552b0(Unk_CMISTree<270>*, const CString*);                                   // erase
 //
 //
@@ -1284,7 +1283,7 @@ bool CubeMapInformationService::ClearCubes()
     ((std::_Tree<std::_Tmap_traits<int, MS2Ptr<Cube>, std::less<int>, efd::CustomAllocator<std::pair<int const, MS2Ptr<Cube>>>, 0>>*)(void*)(&fb8))->clear();
     f2a8.Clear();
     ((std::_Tree<std::_Tmap_traits<int, efd::set<int, std::less<int>>, std::less<int>, efd::CustomAllocator<std::pair<int const, efd::set<int, std::less<int>>>>, 0>>*)(void*)(&fd8))->clear();
-    ((std::_Tree<std::_Tmap_traits<int, std::map<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube>>>>, std::less<int>, efd::CustomAllocator<std::pair<int const, std::map<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube>>>>>>, 0>>*)(void*)(&fc8))->clear();
+    fc8.clear();   // the exe's 0x14114f2c0 ends in ~efd::map<__int64, MS2Ptr<Cube> > (0x1411258b0); the inner nodes come from efd::_Malloc
     FUN_1402237c0((struct Unk_LevelArray*)(&a458));
     return true;
 }
@@ -1341,7 +1340,7 @@ void CubeMapInformationService::AddOwner(Unk_CubeOwnerPtr spOwner)
 void CubeMapInformationService::RemoveOwner(Unk_CubeOwnerPtr spOwner)
 {
     if (reinterpret_cast<CMISMap_u64_CubeOwnerPtr*>(&f148)->find(*reinterpret_cast<const unsigned __int64*>(&spOwner->ownerID)) != reinterpret_cast<CMISMap_u64_CubeOwnerPtr*>(&f148)->end())
-        reinterpret_cast<CMISEMap_u64_MS2Ptr_UidRecord*>(&f148)->erase(*reinterpret_cast<const unsigned __int64*>(&spOwner->ownerID));
+        reinterpret_cast<CMISMap_u64_CubeOwnerPtr*>(&f148)->erase(*reinterpret_cast<const unsigned __int64*>(&spOwner->ownerID));
 }
 // @0x1410c5280
 void CubeMapInformationService::FUN_1410c5280(int nKey)
@@ -5205,7 +5204,7 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
             Unk_CMISTree<287>* pCubes = (Unk_CMISTree<287>*)FUN_141127dd0(&fc8, &spCube->fieldD8);
             for (CMISMap_int_MS2Ptr_Cube::iterator itCube = reinterpret_cast<CMISMap_int_MS2Ptr_Cube*>(pCubes)->begin(); (reinterpret_cast<std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<long const, MS2Ptr<Cube>>>>>&>(itCube) != reinterpret_cast<const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<long const, MS2Ptr<Cube>>>>>&>(static_cast<const CMISMap_int_MS2Ptr_Cube::iterator&>(reinterpret_cast<CMISMap_int_MS2Ptr_Cube*>(pCubes)->end()))); ++itCube) {
                 if (reinterpret_cast<Unk_CMISColEntry*>(FUN_140885360(reinterpret_cast<Unk_CMISIter<287>*>(&itCube)))->m_value == (Cube*)spCube)
-                    ((std::_Tree<std::_Tmap_traits<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube>>>, 0>>*)(void*)(pCubes))->erase(*(int const*)(&reinterpret_cast<Unk_CMISColEntry*>(FUN_140885360(reinterpret_cast<Unk_CMISIter<287>*>(&itCube)))->m_key));
+                    ((std::_Tree<std::_Tmap_traits<long, MS2Ptr<Cube>, std::less<long>, efd::CustomAllocator<std::pair<long const, MS2Ptr<Cube>>>, 0>>*)(void*)(pCubes))->erase(*(long const*)(&reinterpret_cast<Unk_CMISColEntry*>(FUN_140885360(reinterpret_cast<Unk_CMISIter<287>*>(&itCube)))->m_key));
             }
         }
     }
@@ -5468,7 +5467,7 @@ void CubeMapInformationService::FUN_1410d0310()
     FUN_14112f280(reinterpret_cast<Unk_CMISArr16*>(&a388));
     FUN_14112f260(reinterpret_cast<Unk_CMISArr16*>(&a3a8));
     reinterpret_cast<CMISEMap_KindA_int*>(&f3c8)->clear();
-    ((std::_Tree<std::_Tmap_traits<int, efd::vector<efd::SmartPointer<egf::Entity>>, std::less<int>, efd::CustomAllocator<std::pair<int const, efd::vector<efd::SmartPointer<egf::Entity>>>>, 0>>*)(void*)(&f1e8))->clear();
+    f1e8.clear();   // efd::map<int, efd::vector<egf::EntityID> >: the exe's 0x14114f400 ends in ~pair<const int, vector<EntityID>> (0x141125a70)
     reinterpret_cast<CMISEMap_int_KindA*>(&f298)->clear();
     reinterpret_cast<CMISEMap_int_Cell*>(&f2b8)->clear();
     reinterpret_cast<CMISEMap_std_pair_int_int_MS2Ptr_SaleStateData*>(&fe8)->clear();
@@ -5499,10 +5498,10 @@ void CubeMapInformationService::FUN_1410d0310()
     f2a8.Clear();
     FUN_1402237c0((struct Unk_LevelArray*)(&a458));
     ((std::_Tree<std::_Tmap_traits<int, efd::set<int, std::less<int>>, std::less<int>, efd::CustomAllocator<std::pair<int const, efd::set<int, std::less<int>>>>, 0>>*)(void*)(&fd8))->clear();
-    ((std::_Tree<std::_Tmap_traits<int, std::map<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube>>>>, std::less<int>, efd::CustomAllocator<std::pair<int const, std::map<int, MS2Ptr<Cube>, std::less<int>, std::allocator<std::pair<int const, MS2Ptr<Cube>>>>>>, 0>>*)(void*)(&fc8))->clear();
+    fc8.clear();   // the exe's 0x14114f2c0 ends in ~efd::map<__int64, MS2Ptr<Cube> > (0x1411258b0); the inner nodes come from efd::_Malloc
     ((std::_Tree<std::_Tmap_traits<int, efd::SmartPointer<egf::Entity>, std::less<int>, efd::CustomAllocator<std::pair<int const, efd::SmartPointer<egf::Entity>>>, 0>>*)(void*)(&ff8))->clear();
     ((std::_Tree<std::_Tmap_traits<int, std::map<int, Unk_PayloadPtr<CubeOwner>, std::less<int>, std::allocator<std::pair<int const, Unk_PayloadPtr<CubeOwner>>>>, std::less<int>, std::allocator<std::pair<int const, std::map<int, Unk_PayloadPtr<CubeOwner>, std::less<int>, std::allocator<std::pair<int const, Unk_PayloadPtr<CubeOwner>>>>>>, 0>>*)(void*)(reinterpret_cast<Unk_CubeOwners*>(&f138)))->clear();
-    reinterpret_cast<CMISEMap_u64_MS2Ptr_UidRecord*>(&f148)->clear();
+    reinterpret_cast<CMISMap_u64_CubeOwnerPtr*>(&f148)->clear();   // the exe's 0x14114fe00 ends in ~Unk_PayloadPtr<CubeOwner> and operator delete
     ((std::_Tree<std::_Tmap_traits<int, egf::EntityID, std::less<int>, efd::CustomAllocator<std::pair<int const, egf::EntityID>>, 0>>*)(void*)(&f108))->clear();
     ((std::_Tree<std::_Tmap_traits<int, MS2Ptr<FittingDollData>, std::less<int>, efd::CustomAllocator<std::pair<int const, MS2Ptr<FittingDollData>>>, 0>>*)(void*)(&f118))->clear();
     ((std::_Tree<std::_Tset_traits<int, std::less<int>, efd::CustomAllocator<int>, 0>>*)(void*)(&f128))->clear();

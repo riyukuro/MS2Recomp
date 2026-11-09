@@ -454,18 +454,21 @@ char* FUN_141127d50(void* pMap, void* key)
     return (FUN_141128620(reinterpret_cast<Unk_IterA<9>*>(const_cast<Unk_CMISMapBuckets::iterator*>(&static_cast<const std::pair<Unk_CMISMapBuckets::iterator, bool>&>(((Unk_CMISMapBuckets*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
+// fc8 as declared: the exe builds the inner map through 0x1411228d0 and frees it through 0x1411258b0, both CustomAllocator
+typedef efd::map<int, efd::map<__int64, MS2Ptr<Cube> > > Unk_CMISFc8Map;
+
 // @0x141127d90
 char* FUN_141127d90(void* pMap, Unk_Key* pKey)
 {
     // real try_emplace (0x14111d9e0), read through the unit's iterator view
-    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISMapCubeGroups::iterator*>(&static_cast<const std::pair<Unk_CMISMapCubeGroups::iterator, bool>&>(((Unk_CMISMapCubeGroups*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
+    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISFc8Map::iterator*>(&static_cast<const std::pair<Unk_CMISFc8Map::iterator, bool>&>(((Unk_CMISFc8Map*)pMap)->try_emplace(std::move(*(int*)pKey))).first))) + 8);
 }
 
 // @0x141127dd0
 char* FUN_141127dd0(void* pMap, void* key)
 {
     // real try_emplace (0x14111da20), read through the unit's iterator view
-    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISMapCubeGroups::iterator*>(&static_cast<const std::pair<Unk_CMISMapCubeGroups::iterator, bool>&>(((Unk_CMISMapCubeGroups*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
+    return (FUN_141128640(reinterpret_cast<Unk_IterA<10>*>(const_cast<Unk_CMISFc8Map::iterator*>(&static_cast<const std::pair<Unk_CMISFc8Map::iterator, bool>&>(((Unk_CMISFc8Map*)pMap)->try_emplace(*(const int*)key)).first))) + 8);
 }
 
 // @0x141127e10

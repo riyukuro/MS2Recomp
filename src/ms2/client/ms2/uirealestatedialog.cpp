@@ -644,9 +644,9 @@ void UIRealEstateDialog::FUN_141ab42a0()
     obj.FUN_1407cbb20("extensionPrice", FUN_140719a00(nExtPrice));
     CStringW strDesc(L"");
     if (FUN_14053f8c0(nExtItem) || FUN_14053f940(nExtItem))
-        strDesc = FUN_14028dee0(0x7df, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
+        strDesc = FUN_14028dee0(0x7df, FUN_1409404f0(nExtPrice), nExtItem);
     else
-        strDesc = FUN_14028dee0(0x7e0, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
+        strDesc = FUN_14028dee0(0x7e0, FUN_1409404f0(nExtPrice), nExtItem);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strDesc);
     obj.FUN_1407cbb20("description", FUN_14028dee0(0x7e1, group.contractDate, strDesc));
     static_cast<Unk_ReObj&>(obj).FUN_141ab5b30("buildingIcon", group.buildingType);

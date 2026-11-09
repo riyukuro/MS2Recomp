@@ -156,6 +156,8 @@ struct Unk_WsV148 { void* p; };
 struct Unk_WsV1a8 { void* m_obj; unsigned __int64 m_id; };      // proven by OnTick (G): {GameObject*, entity id}
 struct Unk_WsV1d8                                      // proven by FUN_141bbfe30 (helper A): a tracked scene-graph entity
 {
+    // The exe's value ctor 0x141bf4740 (m_1d8[id] on a new entry): group starts at -1, not 0. The pads stay unset, as there.
+    Unk_WsV1d8() : m_sceneNode(0), m_state(0), m_entityId(0), m_group(-1) {}
     void* m_sceneNode;                                  // +0x00
     int m_state;                                        // +0x08
     int m_pad_0c;

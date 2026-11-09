@@ -1389,7 +1389,7 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_craft_messagebox_title"));
-            spBox->SetButtonLabels(GetStringCommonByKey(L"s_word_cancel"), GetStringCommonByKey(L"s_word_craft"), L"");
+            spBox->SetButtonLabels(GetStringCommonByKey(L"s_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a02a30(ingredients);
@@ -1434,7 +1434,7 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_magicscroll_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_magicscroll_craft_messagebox_title"));
-            spBox->SetButtonLabels(GetStringCommonByKey(L"s_word_cancel"), GetStringCommonByKey(L"s_magicscroll_word_craft"), L"");
+            spBox->SetButtonLabels(GetStringCommonByKey(L"s_magicscroll_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a02a30(ingredients);

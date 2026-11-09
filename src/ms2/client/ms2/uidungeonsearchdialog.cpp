@@ -359,9 +359,9 @@ void UIDungeonSearchPage::FUN_140e18f90()
     {
         CStringW strTitle;
         if (m_rooms.empty())
-            strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_custom"), TranslateEnumDungeonGroup(m_nPage));
-        else
             strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_random"), TranslateEnumDungeonGroup(m_nPage));
+        else
+            strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_custom"), TranslateEnumDungeonGroup(m_nPage));
         FUN_140cff1b0((*m_movie).FUN_1422bb890(), "m_title", CStringW(strTitle));
     }
     FUN_140e19770();

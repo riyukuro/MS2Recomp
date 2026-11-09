@@ -4796,8 +4796,9 @@ void WorldService::FUN_141bc72f0()
 }
 MS2_REPLACE_METHOD(0x141BC72F0, WorldService, FUN_141bc72f0, 220, 0xDD58EB78);
 
-struct Unk_WsVisibleObj;                                                                    // the exe's set element (insert 0x141beec50)
-// Collects the objects of m_1d8 inside the camera frustum; true when one is visible.
+// Collects the records of m_1d8 inside the camera frustum; true when one is visible. The out set really is
+// set<VisibleObjectRecord> (0x20-byte value, node 0x40, ordered by EntityID), and the whole record is inserted (insert
+// 0x141beec50): BGTransparencyMgr::vfunc_1 reads the record's kind and id from each element.
 // @0x141bc7920
 int WorldService::FUN_141bc7920(std::set<void*>& visible)
 {
@@ -4812,7 +4813,7 @@ int WorldService::FUN_141bc7920(std::set<void*>& visible)
             {
                 bound = ((class NiAVObject*)(void*)(obj))->GetWorldBound();
                 if (((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->IsSphereInFrustum(reinterpret_cast<const efd::Point3&>(bound.GetCenter()), bound.GetRadius()))
-                    reinterpret_cast<std::set<Unk_WsVisibleObj*>&>(visible).insert(reinterpret_cast<Unk_WsVisibleObj* const&>(it->second.m_sceneNode));
+                    reinterpret_cast<std::set<WsReal::VisibleObjectRecord>&>(visible).insert(reinterpret_cast<const WsReal::VisibleObjectRecord&>(it->second));
             }
         }
         return !visible.empty();

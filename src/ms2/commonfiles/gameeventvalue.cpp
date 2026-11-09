@@ -1706,7 +1706,7 @@ unsigned short CGameEventValueItemTradeRestriction::GetLimit(Unk_ItemTradeRestri
 {
     if (Unk_LockGuard guard = m_lock) {} else
     {
-        for (POSITION pos = m_events.GetHeadPosition(); pos != NULL; m_events.GetNext(pos)) {
+        for (POSITION pos = m_events.GetTailPosition(); pos != NULL; m_events.GetPrev(pos)) {
             const MS2Ptr<RestrictionData>& spData = m_events.GetValueAt(pos);
             unsigned short limit = spData->GetLimit(eType, itemId);
             if (limit != 0)

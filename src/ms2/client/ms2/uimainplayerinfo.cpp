@@ -1083,7 +1083,7 @@ void UIMainPlayerInfo::FUN_1419f19c0()
         ((CKeyTable*)FUN_1409331f0())->ApplySkillSetToQuickSlots(spSet);
         if (spSet->m_nSlotLock == 0)
         {
-            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", reinterpret_cast<const int&>(spSet->m_nId), spSet->m_nVersion);
+            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", reinterpret_cast<const unsigned&>(spSet->m_nId), spSet->m_nVersion);
             ((CKeyTable*)FUN_1409331f0())->LoadKeySetting(strName);
         }
     }

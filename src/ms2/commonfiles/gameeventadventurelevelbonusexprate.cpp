@@ -5,6 +5,7 @@
 // MS2-UNIT: ?\gameeventadventurelevelbonusexprate.cpp
 // MS2-RANGE: 0x1403e4a90-0x1403e8230 .text$mn
 // MS2-PIN: ??1?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x1403e4c10 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??1?$CAtlArray@W4Unk_ItemTradeRestrictionType@@V?$CElementTraits@W4Unk_ItemTradeRestrictionType@@@ATL@@@ATL@@QEAA@XZ 0x1403e4c50 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-PIN: ??1?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@QEAA@XZ 0x1403e4f40 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-PIN: ??1?$MS2Ptr@VGameEventAdventureLevelBonusExpRate@@@@QEAA@XZ 0x1403e5180 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-PIN: ??1?$MS2Ptr@VGameEventArcadeOpen@@@@QEAA@XZ 0x1403e5630 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy

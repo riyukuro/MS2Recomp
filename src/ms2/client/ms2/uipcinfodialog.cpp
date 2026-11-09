@@ -786,7 +786,7 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
             goto show;
         }
     }
-    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), ((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
+    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), (unsigned int)((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
                             ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
                             ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
                             ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));

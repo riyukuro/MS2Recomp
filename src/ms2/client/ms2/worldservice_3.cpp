@@ -367,7 +367,7 @@
 // Part 1 helpers (see Unk_WsInst3Part1).
 // MS2-PIN: ??$destroy@V?$MS2Ptr@VMS2ActorUpdater@@@@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@1@QEAV?$MS2Ptr@VMS2ActorUpdater@@@@@Z 0x141bedcf0
 // MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVIWorldServiceCallback@@@std@@@std@@@std@@_N@1@AEBQEAVIWorldServiceCallback@@@Z 0x141beec10
-// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAUUnk_WsVisibleObj@@U?$less@PEAUUnk_WsVisibleObj@@@std@@V?$allocator@PEAUUnk_WsVisibleObj@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAUUnk_WsVisibleObj@@@std@@@std@@@std@@_N@1@AEBQEAUUnk_WsVisibleObj@@@Z 0x141beec50
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@VVisibleObjectRecord@WsReal@@U?$less@VVisibleObjectRecord@WsReal@@@std@@V?$allocator@VVisibleObjectRecord@WsReal@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VVisibleObjectRecord@WsReal@@@std@@@std@@@std@@_N@1@AEBVVisibleObjectRecord@WsReal@@@Z 0x141beec50
 // MS2-PIN: ??$swap@UUnk_WsFieldRefRaw@@X@std@@YAXAEAUUnk_WsFieldRefRaw@@0@Z 0x141bef110
 // MS2-PIN: ??0?$SmartPointer@VGameObject@@@efd@@QEAA@PEAVGameObject@@@Z 0x141bf0fd0
 // MS2-PIN: ??0?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@QEAA@AEBV01@@Z 0x141bf10a0
@@ -642,6 +642,8 @@ void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServi
     callbacks.insert(pCallback);
     std::set<Unk_WsVisibleObj*> visible;
     visible.insert(pVisible);
+    std::set<WsReal::VisibleObjectRecord> records;      // set<VisibleObjectRecord>::insert 0x141beec50 (FUN_141bc7920's out set)
+    records.insert(reinterpret_cast<const WsReal::VisibleObjectRecord&>(*pVisible));
     std::swap(a, b);
     WsDriveDestroy<WsReal::Vec9a0::allocator_type>(static_cast<WsReal::Vec9a0::value_type*>(0));
 }
