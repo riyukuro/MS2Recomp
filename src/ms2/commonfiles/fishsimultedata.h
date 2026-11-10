@@ -123,7 +123,7 @@ public:
     virtual ~CFishingTable();                                       // 0x1403b1e60
 
     int Load();                                                     // 0x1403b1f00 the four xml files (0 on the first failure)
-    int FUN_1403b1f70(const CStringW& strHabitat);                  // habitat name -> id (8 = unknown)
+    int GetHabitatId(const CStringW& strHabitat);                  // habitat name -> id (8 = unknown)
     CStringW GetHabitatName(int nHabitat);                           // habitat id -> string table text
     CStringW FUN_1403b2240(int n);                                  // string table text 0xbba + n
     int LoadFish();                                                 // 0x1403b2540 fish.xml

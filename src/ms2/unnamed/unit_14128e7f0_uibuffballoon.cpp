@@ -45,7 +45,7 @@ class Unk_BuffActor : public PCBase
 };
 class Unk_BuffMgr;
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_BuffUIMgr { };   // C3: FUN_141adcea0 is CUIService's
 UIBuffBalloon* FUN_14128f650(int nUiId);
 
@@ -192,7 +192,7 @@ void UIBuffBalloon::OnLoadComplete()
 }
 
 // @0x14128ef70
-MS2Ptr<UIBuffBalloon::Entity> FUN_14128ef70(int nActorId)
+MS2Ptr<UIBuffBalloon::Entity> GetBuffBalloonEntity(int nActorId)
 {
     UIBuffBalloon* pBar = FUN_14128f650(0x4ea4);
     if (pBar != 0)
@@ -242,7 +242,7 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
         {
             if (m_78.IsEmpty())
             {
-                bool bFlag = FUN_140930110(nActorId);
+                bool bFlag = IsUpperTargetId(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -266,8 +266,8 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
                     int nOld = pEntity->FUN_140f48d20();
                     if (nActorId != nOld)
                     {
-                        bool bNew = FUN_140930110(nActorId);
-                        if (FUN_140930110(nOld) || bNew)
+                        bool bNew = IsUpperTargetId(nActorId);
+                        if (IsUpperTargetId(nOld) || bNew)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())

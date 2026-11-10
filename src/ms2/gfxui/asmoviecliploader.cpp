@@ -13,8 +13,8 @@
 
 // Scaleform::GFx::Value setters of the GFx UI library (asarray.cpp range).
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // Int
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);      // UInt
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);      // string
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);      // UInt
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);      // string
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);  // wide string
 CStringW FUN_14016a730(const char* sz, int nCodePage);                  // widen (as commonfiles/packet.h)
 
@@ -122,11 +122,11 @@ void ASMovieClipLoader::ReportMemoryLeak()
 MS2_REPLACE_METHOD(0x1422D0610, ASMovieClipLoader, ReportMemoryLeak, 46, 0x3888FEE2);
 
 // @0x1422d0650
-void ASMovieClipLoader::FUN_1422d0650()
+void ASMovieClipLoader::ReportForceGarbageCollect()
 {
     Invoke("reportForceGarbargeCollect");
 }
-MS2_REPLACE_METHOD(0x1422D0650, ASMovieClipLoader, FUN_1422d0650, 46, 0xD2EA3DE7);
+MS2_REPLACE_METHOD(0x1422D0650, ASMovieClipLoader, ReportForceGarbageCollect, 46, 0xD2EA3DE7);
 
 // @0x1422d0690
 void ASMovieClipLoader::Shutdown()
@@ -141,8 +141,8 @@ inline Scaleform::GFx::Value ASMovieClipLoader::FUN_1422d06c0(const char* szMeth
     ASArgList args;
     args.resize(3);
     FUN_1422bcea0(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
-    FUN_1422bcd10(&args[2], a3);
+    SetString(&args[1], a2);
+    SetUInt(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -152,8 +152,8 @@ inline Scaleform::GFx::Value ASMovieClipLoader::FUN_1422d07e0(const char* szMeth
     ASArgList args;
     args.resize(4);
     FUN_1422bcea0(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
-    FUN_1422bcd10(&args[2], a3);
+    SetString(&args[1], a2);
+    SetUInt(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }

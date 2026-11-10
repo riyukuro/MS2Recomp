@@ -16,18 +16,18 @@ CStringW FUN_14016a730(const char*,int);
 CString FUN_1401d4330(const wchar_t*,int);
 int FUN_14020abc0(const unsigned char&);
 int FUN_14020ac40(unsigned char,unsigned char*);
-int FUN_14020abd0(const short&);
-int FUN_14020ace0(short,unsigned char*);
-int FUN_14020abe0(const int&);
-int FUN_14020ad80(int,unsigned char*);
-int FUN_14020abf0(const __int64&);
-int FUN_14020ae20(__int64,unsigned char*);
-__int64 FUN_14020ac00(CStringA const &);  // C3: the definition's signature
-int FUN_14020b020(const CString&,unsigned char*);
-__int64 FUN_14020ac20(CStringW const &);  // C3: the definition's signature
-int FUN_14020b170(const CStringW&,unsigned char*);
-int FUN_14020b410(float,unsigned char*);
-int FUN_14020aec0(void const *, unsigned int, unsigned char *);  // C3: the definition's signature
+int GetInt16Size(const short&);
+int StoreInt16(short,unsigned char*);
+int GetInt32Size(const int&);
+int StoreInt32(int,unsigned char*);
+int GetInt64Size(const __int64&);
+int StoreInt64(__int64,unsigned char*);
+__int64 GetStringSize(CStringA const &);  // C3: the definition's signature
+int StoreString(const CString&,unsigned char*);
+__int64 GetUnicodeStringSize(CStringW const &);  // C3: the definition's signature
+int StoreUnicodeString(const CStringW&,unsigned char*);
+int StoreFloat(float,unsigned char*);
+int StoreBytes(void const *, unsigned int, unsigned char *);  // C3: the definition's signature
 struct Unk_StreamTest { unsigned char byte; int number; CStringW text; };
 // @0x140838d50
 std::string CByteBuffer::ToHex() const {
@@ -39,7 +39,7 @@ MS2_REPLACE_METHOD(0x140838D50, CByteBuffer, ToHex, 282, 0x77B3A344);
 // @0x140838e70
 void CByteBuffer::FromHex(const std::string& hex) {
     unsigned char digits[256]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,0,0,0,0,0,0,0,10,11,12,13,14,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,11,12,13,14,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    FUN_140518490(); size_t length=hex.length();
+    Clear(); size_t length=hex.length();
     if(length%2!=0) {MS2_ASSERT_AT(65,FALSE);return;}
     {
         for(size_t i=0;i<length;i+=2) {
@@ -59,7 +59,7 @@ bool CByteBuffer::Compress(CByteBuffer& dest) const {
     if(len>=0x80000000u) return false;
     dest.FUN_140715230(len+4);
     MS2_ASSERT_AT(342,dest.GetLength() >= len + 4);
-    if(compress(dest.FUN_140204eb0()+4,&len,GetData(),length)==0) {
+    if(compress(dest.GetBuffer()+4,&len,GetData(),length)==0) {
         dest.SetLength(len+4);result=len+4;
         dest[0]=(length&0xff000000)>>24;dest[1]=(length&0xff0000)>>16;dest[2]=(length&0xff00)>>8;dest[3]=length&0xff;
     } else dest.FUN_140715230(0);
@@ -77,7 +77,7 @@ bool CByteBuffer::Uncompress(CByteBuffer& dest) const {
     dest.FUN_140715230(len);
     MS2_ASSERT_AT(385,dest.GetLength() >= len);
     unsigned long original=len;
-    if(uncompress(dest.FUN_140204eb0(),&len,GetData()+4,length-4)==0) {
+    if(uncompress(dest.GetBuffer(),&len,GetData()+4,length-4)==0) {
         if(len!=original && len>=0x80000000u) return false;
         dest.SetLength(len);result=len;
     } else dest.FUN_140715230(0);
@@ -85,10 +85,10 @@ bool CByteBuffer::Uncompress(CByteBuffer& dest) const {
 }
 MS2_REPLACE_METHOD(0x1408398E0, CByteBuffer, Uncompress, 461, 0x5CF06288);
 // @0x140839ac0
-void CByteBuffer::WriteBuffer(CByteBuffer& data) { WriteInt32(data.GetLength());WriteBytes(data.FUN_140204eb0(),data.GetLength()); }
+void CByteBuffer::WriteBuffer(CByteBuffer& data) { WriteInt32(data.GetLength());WriteBytes(data.GetBuffer(),data.GetLength()); }
 MS2_REPLACE_METHOD(0x140839AC0, CByteBuffer, WriteBuffer, 125, 0xBA8A965F);
 // @0x140839b50
-void CByteBuffer::ReadBuffer(CByteBuffer& data) { unsigned count=ReadInt32();data.FUN_140204670(count);ReadBytes(data.FUN_140204eb0(),count); }
+void CByteBuffer::ReadBuffer(CByteBuffer& data) { unsigned count=ReadInt32();data.FUN_140204670(count);ReadBytes(data.GetBuffer(),count); }
 MS2_REPLACE_METHOD(0x140839B50, CByteBuffer, ReadBuffer, 120, 0xF6A84ABE);
 // @0x140839bd0
 void CByteBuffer::WriteBool(bool value) { WriteUInt8(value?1:0); }
@@ -97,28 +97,28 @@ MS2_REPLACE_METHOD_VIA(0x140839BD0, CByteBuffer, COutputStream, WriteBool, 79, 0
 void CByteBuffer::WriteUInt8(unsigned char value) { FUN_140204670(FUN_14020abc0(value));m_uOffset+=FUN_14020ac40(value,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839C30, CByteBuffer, COutputStream, WriteUInt8, 103, 0x2FD21646);
 // @0x140839ca0
-void CByteBuffer::WriteInt16(short value) { FUN_140204670(FUN_14020abd0(value));m_uOffset+=FUN_14020ace0(value,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteInt16(short value) { FUN_140204670(GetInt16Size(value));m_uOffset+=StoreInt16(value,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839CA0, CByteBuffer, COutputStream, WriteInt16, 104, 0x67347359);
 // @0x140839d10
-void CByteBuffer::WriteInt32(int value) { FUN_140204670(FUN_14020abe0(value));m_uOffset+=FUN_14020ad80(value,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteInt32(int value) { FUN_140204670(GetInt32Size(value));m_uOffset+=StoreInt32(value,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839D10, CByteBuffer, COutputStream, WriteInt32, 102, 0x5F2254FE);
 // @0x140839d80
-void CByteBuffer::WriteInt64(__int64 value) { FUN_140204670(FUN_14020abf0(value));m_uOffset+=FUN_14020ae20(value,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteInt64(__int64 value) { FUN_140204670(GetInt64Size(value));m_uOffset+=StoreInt64(value,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839D80, CByteBuffer, COutputStream, WriteInt64, 104, 0xF4C239B8);
 // @0x140839df0
-void CByteBuffer::WriteFloat(float value) { FUN_140204670(FUN_14020abe0((int)(unsigned)value));m_uOffset+=FUN_14020b410(value,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteFloat(float value) { FUN_140204670(GetInt32Size((int)(unsigned)value));m_uOffset+=StoreFloat(value,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839DF0, CByteBuffer, COutputStream, WriteFloat, 117, 0x1ADB8C62);
 // @0x140839e70
-void CByteBuffer::WriteUnicodeStringA(const CString& value) { CStringW text=FUN_14016a730(value,0);if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(FUN_14020ac20(text));m_uOffset+=FUN_14020b170(text,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteUnicodeStringA(const CString& value) { CStringW text=FUN_14016a730(value,0);if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(GetUnicodeStringSize(text));m_uOffset+=StoreUnicodeString(text,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839E70, CByteBuffer, COutputStream, WriteUnicodeStringA, 235, 0x03341E78);
 // @0x140839f70
-void CByteBuffer::WriteString(const CString& value) { CString text=value;if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(FUN_14020ac00(text));m_uOffset+=FUN_14020b020(text,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteString(const CString& value) { CString text=value;if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(GetStringSize(text));m_uOffset+=StoreString(text,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x140839F70, CByteBuffer, COutputStream, WriteString, 224, 0x15C4855C);
 // @0x14083a060
-void CByteBuffer::WriteUnicodeString(const CStringW& value) { CStringW text=value;if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(FUN_14020ac20(text));m_uOffset+=FUN_14020b170(text,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteUnicodeString(const CStringW& value) { CStringW text=value;if(text.GetLength()>65535)text=text.Left(65535); FUN_140204670(GetUnicodeStringSize(text));m_uOffset+=StoreUnicodeString(text,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x14083A060, CByteBuffer, COutputStream, WriteUnicodeString, 224, 0x84884C79);
 // @0x14083a150
-void CByteBuffer::WriteBytes(const void* data,int count) { FUN_140204670(count);m_uOffset+=FUN_14020aec0(data,count,&m_aByteBuff[0]+m_uOffset); }
+void CByteBuffer::WriteBytes(const void* data,int count) { FUN_140204670(count);m_uOffset+=StoreBytes(data,count,&m_aByteBuff[0]+m_uOffset); }
 MS2_REPLACE_METHOD_VIA(0x14083A150, CByteBuffer, COutputStream, WriteBytes, 108, 0xAF97CEE0);
 // @0x14083a1d0
 void CByteBuffer::WriteVector3(const Vector3& value) { WriteFloat(value.x);WriteFloat(value.y);WriteFloat(value.z); }
@@ -127,7 +127,7 @@ MS2_REPLACE_METHOD_VIA(0x14083A1D0, CByteBuffer, COutputStream, WriteVector3, 13
 void CByteBuffer::WriteVector3Short(const Vector3& value) { WriteInt16((short)value.x);WriteInt16((short)value.y);WriteInt16((short)(value.z+0.0001f)); }
 MS2_REPLACE_METHOD_VIA(0x14083A260, CByteBuffer, COutputStream, WriteVector3Short, 147, 0x0CFE1934);
 // @0x14083a300
-void CByteBuffer::vfunc_2(int n,unsigned uOffset) { MS2_ASSERT_MSG_AT(200,L"m_aByteBuff.GetCount() >= uOffset + _BM::EncSize4(n)",m_aByteBuff.GetCount() >= uOffset + FUN_14020abe0(n));FUN_14020ad80(n,&m_aByteBuff[0]+uOffset); }
+void CByteBuffer::vfunc_2(int n,unsigned uOffset) { MS2_ASSERT_MSG_AT(200,L"m_aByteBuff.GetCount() >= uOffset + _BM::EncSize4(n)",m_aByteBuff.GetCount() >= uOffset + GetInt32Size(n));StoreInt32(n,&m_aByteBuff[0]+uOffset); }
 MS2_REPLACE_METHOD(0x14083A300, CByteBuffer, vfunc_2, 141, 0xC46FB140);
 // @0x14083a3a0
 void CByteBuffer::WriteShortX10(float value) { short n=(short)(value/10.f);WriteInt16(n); }
@@ -227,13 +227,13 @@ void Unk_CompressedStream::Encode(COutputStream& out) {
     CByteBuffer* data=0;
     if(m_raw.GetLength()<m_threshold)m_useCompression=false;
     if(m_useCompression){m_raw.Compress(m_compressed);data=&Compressed();} else {m_raw.SetOffset(0);m_raw.AppendRemainingTo(m_compressed);data=&FUN_140714de0();}
-    out.WriteBool(m_useCompression);out.WriteInt32(data->GetLength());out.WriteBytes(data->FUN_140204eb0(),data->GetLength());
+    out.WriteBool(m_useCompression);out.WriteInt32(data->GetLength());out.WriteBytes(data->GetBuffer(),data->GetLength());
 }
 MS2_REPLACE_METHOD(0x14083B2F0, Unk_CompressedStream, Encode, 298, 0x2C116931);
 // @0x14083b420
 CByteBuffer& Unk_CompressedStream::Decode(CInputStream& in) {
     m_useCompression=in.ReadBool();unsigned count=in.ReadInt32();
-    m_raw.FUN_140204670(count);in.ReadBytes(m_raw.FUN_140204eb0(),count);
+    m_raw.FUN_140204670(count);in.ReadBytes(m_raw.GetBuffer(),count);
     if(m_useCompression){bool ok=m_raw.Uncompress(m_compressed);MS2_ASSERT_AT(593,ok);}
     else {m_raw.AppendRemainingTo(m_compressed);m_compressed.SetOffset(0);}
     return m_compressed;
@@ -242,12 +242,12 @@ MS2_REPLACE_METHOD(0x14083B420, Unk_CompressedStream, Decode, 260, 0xE4D13373);
 // @0x14083b530
 void Unk_CompressedStream::EncodeReady(COutputStream& out) {
     CByteBuffer* data=0; if(m_useCompression)data=&Compressed();else data=&FUN_140714de0();
-    out.WriteBool(m_useCompression);out.WriteInt32(data->GetLength());out.WriteBytes(data->FUN_140204eb0(),data->GetLength());
+    out.WriteBool(m_useCompression);out.WriteInt32(data->GetLength());out.WriteBytes(data->GetBuffer(),data->GetLength());
 }
 MS2_REPLACE_METHOD(0x14083B530, Unk_CompressedStream, EncodeReady, 201, 0xD0C38066);
 // @0x14083b600
 void Unk_StreamWrapper::Encode(COutputStream& out,bool raw) {
-    if(raw){CByteBuffer& data=Raw();out.WriteBytes(data.FUN_140204eb0(),data.GetLength());}
+    if(raw){CByteBuffer& data=Raw();out.WriteBytes(data.GetBuffer(),data.GetLength());}
     else {if(m_dirty){Prepare(out);SetDirty(false);}else EncodeReady(out);}
 }
 MS2_REPLACE_METHOD(0x14083B600, Unk_StreamWrapper, Encode, 170, 0xACEB3D74);

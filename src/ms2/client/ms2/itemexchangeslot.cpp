@@ -124,7 +124,7 @@ void ItemExchangeSlot::SetItem(MS2Ptr<CItem> spItem)
 // @0x140b6cbc0 (ITooltip::vfunc_0)
 int ItemExchangeSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -140,7 +140,7 @@ int ItemExchangeSlot::vfunc_0(void* p)
 // @0x140b6cce0
 int ItemExchangeSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

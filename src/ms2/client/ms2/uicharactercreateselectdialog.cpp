@@ -54,11 +54,11 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // The TinyXML document loader of the file system singleton (as in datatable_impl.h).
 class Unk_CsLoader : public CFileSystem { };
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-int FUN_1406516b0();                                                    // current language id
+int GetRegion();                                                    // current language id
 int GetRandomRange(int, int);   // C3: was GetRandomRange
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
 #define DAT_143b01a60 (*(NiPoint3*)&efd::Point3::ZERO)          // C3: was extern NiPoint3 DAT_143b01a60
@@ -312,7 +312,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     {
         for (TiXmlElement* pRow = pData; pRow != 0; pRow = ((class TiXmlElement*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pRow)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pRow)))
                 continue;
             int nJobCode = 0;
             XmlGetAttr((class TiXmlElement*)(pRow), "jobCode", reinterpret_cast<int&>(nJobCode));
@@ -375,7 +375,7 @@ MS2_REPLACE_METHOD(0x140F2F9C0, UICharacterCreateSelectDialog, FUN_140f2f9c0, 58
 // @0x140f2fa00
 void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
 {
-    if (FUN_1406516b0() == 1)
+    if (GetRegion() == 1)
     {
         MS2Ptr<CMsgBoxData> box = CreateMessageBoxWithCallback(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateSelectDialog::FUN_140f301d0));

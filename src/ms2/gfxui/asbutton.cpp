@@ -114,18 +114,18 @@ void ASButton::SetVerticalAlign(int nMode)
 MS2_REPLACE_METHOD(0x1422CE1F0, ASButton, SetVerticalAlign, 69, 0xF7814A72);
 
 // @0x1422ce240
-void ASButton::FUN_1422ce240(const ASCallback& onClick, void* pUser)
+void ASButton::AddClickHandler(const ASCallback& onClick, void* pUser)
 {
     AddEventListener("buttonClick", onClick, false, 0, 0, pUser);
 }
-// not hooked: FUN_1422ce240 is overloaded in asbutton.h (int / void* user value), MS2_REPLACE_METHOD needs a unique name
+// not hooked: AddClickHandler is overloaded in asbutton.h (int / void* user value), MS2_REPLACE_METHOD needs a unique name
 
 // @0x1422ce2c0
-void ASButton::FUN_1422ce2c0(const ASCallback& onClick)
+void ASButton::RemoveClickHandler(const ASCallback& onClick)
 {
     RemoveEventListener("buttonClick", onClick, false);
 }
-MS2_REPLACE_METHOD(0x1422CE2C0, ASButton, FUN_1422ce2c0, 82, 0xE370F22A);
+MS2_REPLACE_METHOD(0x1422CE2C0, ASButton, RemoveClickHandler, 82, 0xE370F22A);
 
 // @0x1422ce320
 void ASButton::AddSelectHandler(const ASCallback& onSelect, void* pUser)

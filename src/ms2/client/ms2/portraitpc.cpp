@@ -59,8 +59,8 @@ public:
 class WorldService   // C3: member view (real class not in this TU)
 {
 public:
-    int FUN_141bbb1e0(GameObject*, int, unsigned int);
-    void* FUN_141bd0cc0();
+    int OnObjectCreated(GameObject*, int, unsigned int);
+    void* GetLocalPlayer();
     void* FUN_141bd3620();
     static WorldService* GetInstance();
 };
@@ -136,7 +136,7 @@ PortraitPC* CreatePortraitPC(PC* pSource)
     pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
     pPortrait->FUN_141658ed0(((class PC*)(class PC*)(pSource))->FUN_141658f10());
     pPortrait->FUN_141662d60(((class PC*)(pSource))->FUN_141662e90());
-    if (WorldService::GetInstance()->FUN_141bbb1e0((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
+    if (WorldService::GetInstance()->OnObjectCreated((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
         return pPortrait;
     return 0;
 }
@@ -209,7 +209,7 @@ int PortraitPC::vfunc_10()
     PC::vfunc_10();
     vfunc_149();
     vfunc_109(0);
-    PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pMyPC = ((PC*)WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC != 0 && m_pSourcePC != 0)
     {
         if (m_pSourcePC->GetObjectId() == pMyPC->GetObjectId())
@@ -311,7 +311,7 @@ void PortraitPC::vfunc_31(void*)
 // @0x14169a860
 NiPoint3 FUN_14169a860()
 {
-    PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pMyPC = ((PC*)WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC != 0)
     {
         efd::Point3 kLook(0.0f, -1.0f, 0.0f);

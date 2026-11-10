@@ -36,7 +36,7 @@ public:
     void WriteToStream(COutputStream&);
     MS2Ptr<CItemStatus> Clone();
     void ReadFromStream(CInputStream&);
-    int FUN_14062fea0(unsigned nType);
+    int GetTotalStatValue(unsigned nType);
     int FUN_14062ff70(unsigned nType);
     int GetStatValue(unsigned nType, int nWhich, int nSub);
     int GetSpecialValue(unsigned nType, int nWhich, int nSub);
@@ -143,7 +143,7 @@ class CItemCustomMusicScore : public CPtred
 {
 public:
     CItemCustomMusicScore();                // 0x14052c1a0
-    bool FUN_140632780();
+    bool IsEmpty();
     void WriteToStream(COutputStream&);
     MS2Ptr<CItemCustomMusicScore> Clone();
     void ReadFromStream(CInputStream&);

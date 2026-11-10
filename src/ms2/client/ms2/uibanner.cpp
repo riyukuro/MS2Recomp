@@ -64,11 +64,11 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real ac
 class Unk_BannerActor : public PCBase
 {
 };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_1409614b0
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // Value = b
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);                  // Value = b
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // Value = v (callee destroys)
 
 // @0x140ba8280
@@ -317,7 +317,7 @@ UIBanner::Entity* UIBanner::GetOrCreateEntity(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -341,8 +341,8 @@ UIBanner::Entity* UIBanner::GetOrCreateEntity(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -377,9 +377,9 @@ Scaleform::GFx::Value Unk_BannerClip::CreateEntity(const char* szMethod, int nAc
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], nActorId);
-    FUN_1422bce70(&args[1], strCache);
-    FUN_1422bcce0(&args[2], bFlag);
+    SetUInt(&args[0], nActorId);
+    SetString(&args[1], strCache);
+    SetBoolean(&args[2], bFlag);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -389,7 +389,7 @@ Scaleform::GFx::Value Unk_BannerClip::UpdateEntity(const char* szMethod, Scalefo
     ASArgList args;
     args.resize(2);
     SetValue(&args[0], clip);
-    FUN_1422bcce0(&args[1], bFlag);
+    SetBoolean(&args[1], bFlag);
     return FUN_1422bb8f0(szMethod, args);
 }
 

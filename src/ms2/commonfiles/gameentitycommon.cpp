@@ -73,19 +73,19 @@ int FUN_1403ba2a0(const CStringW& name) {
 MS2_REPLACE(0x1403BA2A0, FUN_1403ba2a0, 385, 0xBEA91F92);
 
 // @0x1403ba480
-bool FUN_1403ba480(int value) {
+bool IsCurrencyKind(int value) {
     int currency = 14;
     int color = 99;
     return FUN_1403ba590(value, currency, color);
 }
-MS2_REPLACE(0x1403BA480, FUN_1403ba480, 48, 0xEEB2064C);
+MS2_REPLACE(0x1403BA480, IsCurrencyKind, 48, 0xEEB2064C);
 
 // @0x1403ba4c0
-bool FUN_1403ba4c0(const int& value) {
+bool IsCurrencyItem(const int& value) {
     int kind = FUN_1403ba790(value);
-    return FUN_1403ba480(kind);
+    return IsCurrencyKind(kind);
 }
-MS2_REPLACE(0x1403BA4C0, FUN_1403ba4c0, 39, 0x7B6E4561);
+MS2_REPLACE(0x1403BA4C0, IsCurrencyItem, 39, 0x7B6E4561);
 
 // @0x1403ba4f0
 int FUN_1403ba4f0(int value) {
@@ -371,7 +371,7 @@ int FUN_1403bb120(int value) {
 MS2_REPLACE(0x1403BB120, FUN_1403bb120, 172, 0xCBE933F8);
 
 // @0x1403bb210
-int FUN_1403bb210(int color, bool all) {
+int GetColorMask(int color, bool all) {
     if (color == 4 || color == 99 || all) return -1;
     switch (color) {
     case 0: return 1;
@@ -381,7 +381,7 @@ int FUN_1403bb210(int color, bool all) {
     default: MS2_ASSERT_AT(554, FALSE); return 0;
     }
 }
-MS2_REPLACE(0x1403BB210, FUN_1403bb210, 149, 0xC8A7FEBC);
+MS2_REPLACE(0x1403BB210, GetColorMask, 149, 0xC8A7FEBC);
 
 // @0x1403bb2b0
 int FUN_1403bb2b0(int color) {
@@ -401,7 +401,7 @@ int FUN_1403bb2b0(int color) {
 MS2_REPLACE(0x1403BB2B0, FUN_1403bb2b0, 101, 0x12DDD303);
 
 // @0x1403bb320
-int FUN_1403bb320(int currency, unsigned int mask) {
+int GetColorFromMask(int currency, unsigned int mask) {
     int color = 0;
     if (mask & 1) color = 0;
     if (mask & 2) color = 1;
@@ -411,6 +411,6 @@ int FUN_1403bb320(int currency, unsigned int mask) {
     if (color > maxColor) color = maxColor;
     return color;
 }
-MS2_REPLACE(0x1403BB320, FUN_1403bb320, 136, 0xB34AD0FF);
+MS2_REPLACE(0x1403BB320, GetColorFromMask, 136, 0xB34AD0FF);
 
 MS2_EMIT_CRT_MEMMOVE_S();

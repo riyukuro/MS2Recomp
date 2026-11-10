@@ -98,7 +98,7 @@ extern const char* DAT_143ba9d50;                               // version banne
 void criErr_Notify(long level, const char* msg);   // sfr_cri_02c, 0x140038ddc
 void criErr_NotifyGeneric(long level, const char* code, long err);   // sfr_cri_02c, 0x140038e24
 struct CriUtfRtvView; struct CriUtfRtvColumn; unsigned long criUtfRtv_GetField(const CriUtfRtvView* table, const unsigned char* field, CriUtfRtvColumn* column);   // C3: sfr_cri_03a
-int FUN_140ccaae0(const char* fmt, ...);
+int Printf(const char* fmt, ...);
 unsigned FUN_140047158(unsigned type);
 unsigned FUN_140047170(const unsigned char* src, unsigned* out);
 unsigned FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out);
@@ -107,7 +107,7 @@ unsigned FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out);
 // MS2-FUNCTIONAL: exe keeps head[] in the table (rcx) home slot where ours uses the p5 slot, so the callee-save home slots shift by 8,
 // and it keeps the header byte count in r11 past the m_p40 store. The volatile reads of m_base and m_columns reproduce the exe's reloads
 // after calls (VC9 forwards them otherwise, since the callees are in this TU), and cur keeps data in its stack slot as in the exe
-Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, Unk_CriUtfColumn* columns, void* p5,
+Unk_CriUtfTable* ParseUtfTable(Unk_CriUtfTable* table, void* ctx, void* unused, Unk_CriUtfColumn* columns, void* p5,
                                const unsigned char* data, unsigned size, const Unk_CriUtfInit* init, unsigned flags)
 {
     unsigned head[2];
@@ -170,52 +170,52 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
 }
 
 // @0x14004702c
-void FUN_14004702c(int type, const Unk_CriUtfValue* value)
+void PrintUtfValue(int type, const Unk_CriUtfValue* value)
 {
     switch (type)
     {
     case 0:
-        FUN_140ccaae0("%d", (unsigned)value->v.u8);
+        Printf("%d", (unsigned)value->v.u8);
         break;
     case 1:
-        FUN_140ccaae0("%d", (int)value->v.s8);
+        Printf("%d", (int)value->v.s8);
         break;
     case 2:
-        FUN_140ccaae0("%d", (unsigned)value->v.u16);
+        Printf("%d", (unsigned)value->v.u16);
         break;
     case 3:
-        FUN_140ccaae0("%d", (int)value->v.s16);
+        Printf("%d", (int)value->v.s16);
         break;
     case 4:
-        FUN_140ccaae0("%d", value->v.u32);
+        Printf("%d", value->v.u32);
         break;
     case 5:
-        FUN_140ccaae0("%d", value->v.u32);
+        Printf("%d", value->v.u32);
         break;
     case 6:
-        FUN_140ccaae0("%lld", value->v.s64);
+        Printf("%lld", value->v.s64);
         break;
     case 7:
-        FUN_140ccaae0("%lld", value->v.s64);
+        Printf("%lld", value->v.s64);
         break;
     case 8:
-        FUN_140ccaae0("%f", (double)value->v.f32);
+        Printf("%f", (double)value->v.f32);
         break;
     case 9:
-        FUN_140ccaae0("%lf", value->v.f64);
+        Printf("%lf", value->v.f64);
         break;
     case 10:
-        FUN_140ccaae0("%s", value->v.str);
+        Printf("%s", value->v.str);
         break;
     case 11:
-        FUN_140ccaae0("%08x:%08x", value->v.u32, value->v2.d);
+        Printf("%08x:%08x", value->v.u32, value->v2.d);
         break;
     case 12:
-        FUN_140ccaae0("%08x-%04x-%04x-%04x-%04x%08x", (unsigned)(value->v.q >> 32), value->v.w.hi, value->v.w.lo,
+        Printf("%08x-%04x-%04x-%04x-%04x%08x", (unsigned)(value->v.q >> 32), value->v.w.hi, value->v.w.lo,
                       value->v2.w16, value->v2.w14, value->v2.d);
         break;
     default:
-        FUN_140ccaae0("%s", "<NOT DEFINED>");
+        Printf("%s", "<NOT DEFINED>");
         break;
     }
 }
@@ -340,7 +340,7 @@ int FUN_14004730c(const Unk_CriUtfValue* a, const Unk_CriUtfValue* b)
 // The M2V decoder's version entry (LAB_140047420, the first slot of unit_140047430's FUN_1400478a0 table).
 // MS2-FUNCTIONAL: the version text is a literal here, not the exe's .rdata copy.
 // @0x140047420
-const char* FUN_140047420(void)
+const char* GetVersionString(void)
 {
     return "\nCRI M2V/PCx64 Ver.2.076 Build:Jan 13 2012 18:29:31\n";
 }

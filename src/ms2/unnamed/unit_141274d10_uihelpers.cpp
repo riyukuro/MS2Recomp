@@ -104,7 +104,7 @@ public:
 };
 class PC { public: int IsInCubeMode(); int FUN_141659690(); };   // C3: unit-local view
 CStringW GetStringCommon(int nId);
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 UISystemText* FindSystemText(int nId);
 UITopLayerNotify* FindTopLayerNotify(int nId);
 void FUN_1412751b0(const CStringW&, int);
@@ -169,13 +169,13 @@ int FUN_141274df0(MS2Ptr<UIDialog> pDlg)
 MS2_REPLACE(0x141274df0, FUN_141274df0, 331, 0xD4D42BD8);
 
 // @0x141274f50
-void FUN_141274f50()
+void CloseAllDialogs()
 {
     FUN_14151f460(0);
     ClosePopupMenu();
     TSingleton<CUIService>::GetInstance()->CloseAllDialogs();
 }
-MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
+MS2_REPLACE(0x141274f50, CloseAllDialogs, 34, 0x61491953);
 
 // @0x141274f80
 int FUN_141274f80()
@@ -206,18 +206,18 @@ int FUN_141274ff0()
 MS2_REPLACE(0x141274ff0, FUN_141274ff0, 97, 0x12D8B30D);
 
 // @0x141275060
-int FUN_141275060()
+int IsTalking()
 {
     return ((class UITalkManager*)(void*)(GetUITalkManager()))->GetTalking();
 }
-MS2_REPLACE(0x141275060, FUN_141275060, 22, 0x80B1C3A0);
+MS2_REPLACE(0x141275060, IsTalking, 22, 0x80B1C3A0);
 
 // @0x141275080
 int FUN_141275080()
 {
-    if (FUN_141275060() != 0)
+    if (IsTalking() != 0)
         return 0;
-    void* pActor = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
+    void* pActor = ((class WorldService*)(void*)(WorldService::GetInstance()))->GetLocalPlayer();
     if (pActor != 0) {
         if (((PC*)pActor)->IsInCubeMode() != 0 && ((PC*)pActor)->FUN_141659690() == 0)
             return 0;
@@ -276,7 +276,7 @@ MS2_REPLACE(0x141275260, FUN_141275260, 105, 0x8556833F);
 // @0x1412752d0
 void FUN_1412752d0(const CStringW& str, int a)
 {
-    CStringW text = FUN_140298ea0(str);
+    CStringW text = GetStringByKey(str);
     if (text.GetLength() == 0)
         return;
     ShowSystemNotice(text, a, 1);
@@ -302,7 +302,7 @@ void ShowSystemText(const CStringW& str, int a, int b)
 MS2_REPLACE(0x1412753b0, ShowSystemText, 71, 0x21351DE1);
 
 // @0x141275400
-void FUN_141275400(const CStringW& str, int a)
+void ShowTopLayerNotify(const CStringW& str, int a)
 {
     UITopLayerNotify* pNotify = FindTopLayerNotify(0x4ef5);
     if (pNotify != 0) {
@@ -310,7 +310,7 @@ void FUN_141275400(const CStringW& str, int a)
         FUN_1412751b0(str, 0x1d);
     }
 }
-MS2_REPLACE(0x141275400, FUN_141275400, 76, 0x2195EA41);
+MS2_REPLACE(0x141275400, ShowTopLayerNotify, 76, 0x2195EA41);
 
 // @0x141275460
 void FUN_141275460(int nId, int a, int b, const fmt::ArgList& args)
@@ -383,12 +383,12 @@ extern __int64 DAT_143ab2828;
 CStringW FUN_140b8f7a0(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_140719a00(__int64);
-__int64 FUN_140718320(const CStringW&);
+__int64 ParseInt64W(const CStringW&);
 
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot);
 CString FUN_1412756c0(__int64 a, __int64 b);
 CStringW FUN_141275790(const CStringW& str);
-CStringW FUN_1412757d0(__int64 n);
+CStringW GetNumberText(__int64 n);
 
 // @0x1412755a0
 int FUN_1412755a0()
@@ -444,19 +444,19 @@ CStringW FUN_141275790(const CStringW& str)
 MS2_REPLACE(0x141275790, FUN_141275790, 58, 0x43C292A0);
 
 // @0x1412757d0
-CStringW FUN_1412757d0(__int64 n)
+CStringW GetNumberText(__int64 n)
 {
     if (n < 10000)
         return FUN_1409404f0(n);
     CStringW strNum = FUN_140719a00(n);
     return FUN_141275790(strNum);
 }
-MS2_REPLACE(0x1412757d0, FUN_1412757d0, 138, 0x632A0D97);
+MS2_REPLACE(0x1412757d0, GetNumberText, 138, 0x632A0D97);
 
 // @0x141275860
 CStringW FUN_141275860(__int64 n)
 {
-    return FUN_14028dfa0<CStringW>(CStringW(L"s_number_string_meso"), FUN_1412757d0(n));
+    return FUN_14028dfa0<CStringW>(CStringW(L"s_number_string_meso"), GetNumberText(n));
 }
 MS2_REPLACE(0x141275860, FUN_141275860, 146, 0xE1F2ADA4);
 
@@ -468,13 +468,13 @@ CStringW FUN_141275900(const CStringW& str)
 MS2_REPLACE(0x141275900, FUN_141275900, 146, 0xEBEE6EE7);
 
 // @0x1412759a0
-__int64 FUN_1412759a0(const CStringW& str)
+__int64 ParseNumber(const CStringW& str)
 {
     CStringW num(str);
     num.Replace(L",", L"");
-    return FUN_140718320(num);
+    return ParseInt64W(num);
 }
-MS2_REPLACE(0x1412759a0, FUN_1412759a0, 96, 0xFED3BB25);
+MS2_REPLACE(0x1412759a0, ParseNumber, 96, 0xFED3BB25);
 
 // @0x141275a10
 int GetItemUsableState(CItem* pItem)
@@ -494,7 +494,7 @@ int GetItemUsableState(CItem* pItem)
 MS2_REPLACE(0x141275a10, GetItemUsableState, 126, 0xBF3ECD51);
 
 // @0x141275aa0
-int FUN_141275aa0(int nCode)
+int GetColorByCode(int nCode)
 {
     if (UNK_CLIENT_CONSTS()->m_colorTable.FUN_1412788b0()->IsEmpty())
         return 0xffffff;
@@ -505,7 +505,7 @@ int FUN_141275aa0(int nCode)
         return 0xffffff;
     return (*pColors)[nIndex];
 }
-MS2_REPLACE(0x141275aa0, FUN_141275aa0, 139, 0x50397E44);
+MS2_REPLACE(0x141275aa0, GetColorByCode, 139, 0x50397E44);
 
 // @0x141275b40
 unsigned FUN_141275b40()
@@ -555,7 +555,7 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft,
 {
     if (pLeft == 0 || pRight == 0)
         return;
-    MS2Ptr<ASWindow> winLeft(dynamic_cast<ASWindow*>((AScript*)pLeft->FUN_1422dba00()));
+    MS2Ptr<ASWindow> winLeft(dynamic_cast<ASWindow*>((AScript*)pLeft->GetScript()));
     if (winLeft.IsNull())
         return;
     float fLeftWidth = 436.0f;
@@ -566,7 +566,7 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft,
         fLeftWidth = (float)panel->GetWidthCeil();
     else
         fLeftWidth = (float)winLeft->GetWindowWidth();
-    MS2Ptr<ASWindow> winRight(dynamic_cast<ASWindow*>((AScript*)pRight->FUN_1422dba00()));
+    MS2Ptr<ASWindow> winRight(dynamic_cast<ASWindow*>((AScript*)pRight->GetScript()));
     if (winRight.IsNull())
         return;
     float fRightWidth = 436.0f;
@@ -589,25 +589,25 @@ MS2_REPLACE(0x141275c30, FUN_141275c30, 1201, 0xE804638C);
 // ---- helpers for the name-filter / screen-scale functions below -----------------------------------------------------
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);
 class CEffectService { public: unsigned PlaySystemSound(const CString& strName, const CString& strArg); };
-int FUN_141276180(const CString& str, const CString& strArg);
+int PlaySystemSound(const CString& str, const CString& strArg);
 
 // @0x1412760f0
 int FUN_1412760f0(const CStringW& str, const CString& strArg)
 {
     if (str.IsEmpty())
         return 0;
-    return FUN_141276180(FUN_1401d4330(str, 0), strArg);
+    return PlaySystemSound(FUN_1401d4330(str, 0), strArg);
 }
 MS2_REPLACE(0x1412760f0, FUN_1412760f0, 126, 0x92BD5363);
 
 // @0x141276180
-int FUN_141276180(const CString& str, const CString& strArg)
+int PlaySystemSound(const CString& str, const CString& strArg)
 {
     if (str.IsEmpty())
         return 0;
     return TSingleton<CEffectService>::GetInstance()->PlaySystemSound(str, strArg) != 0;
 }
-MS2_REPLACE(0x141276180, FUN_141276180, 90, 0x95D6641F);
+MS2_REPLACE(0x141276180, PlaySystemSound, 90, 0x95D6641F);
 
 // @0x1412761e0
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow)
@@ -698,7 +698,7 @@ public:
     int GetSceneId();
     int GetSubSceneId();
 };
-bool FUN_14028d470(float, float);
+bool IsNearlyEqual(float, float);
 
 float FUN_141276490(float fWidth, float fHeight);
 #ifndef MS2_HOOK_DLL
@@ -724,7 +724,7 @@ float FUN_141276490(float fWidth, float fHeight)
         fScale = 2.2f - fWidth / fRefWidth;
     else if (fWidth == 1024.0f)
         fScale = 2.32f - fWidth / fRefWidth;
-    if ((!FUN_14028d470(fScale, 1.0f) || !FUN_14028d470(fHeight, 1.0f)) && !FUN_14028d470(fHeight, 1.0f))
+    if ((!IsNearlyEqual(fScale, 1.0f) || !IsNearlyEqual(fHeight, 1.0f)) && !IsNearlyEqual(fHeight, 1.0f))
     {
         float fScalePct = fScale * 100.0f;
         float fHeightPct = fHeight * 100.0f;
@@ -759,7 +759,7 @@ public:
 CStringW FUN_14183e930(const CStringW&, unsigned nColor);
 
 // @0x141276700
-void FUN_141276700(MS2Ptr<Unk_GdTextArea> console)
+void ClearConsole(MS2Ptr<Unk_GdTextArea> console)
 {
     {
         CString strEmpty("");
@@ -768,7 +768,7 @@ void FUN_141276700(MS2Ptr<Unk_GdTextArea> console)
     Unk_GdTextArea* pView = console.operator->();
     pView->vfunc_24(true);
 }
-MS2_REPLACE(0x141276700, FUN_141276700, 124, 0x0745A959);
+MS2_REPLACE(0x141276700, ClearConsole, 124, 0x0745A959);
 
 // @0x141276790
 void FUN_141276790(MS2Ptr<Unk_GdTextArea> console)
@@ -780,15 +780,15 @@ void FUN_141276790(MS2Ptr<Unk_GdTextArea> console)
 MS2_REPLACE(0x141276790, FUN_141276790, 88, 0x0E6E447B);
 
 // @0x1412767f0
-void FUN_1412767f0(MS2Ptr<Unk_GdTextArea> console)
+void AppendConsoleSeparator(MS2Ptr<Unk_GdTextArea> console)
 {
     CStringW strLine(L"------------------------------------------\n");
     reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(strLine, 0xffff));
 }
-MS2_REPLACE(0x1412767f0, FUN_1412767f0, 136, 0xF81C6C2B);
+MS2_REPLACE(0x1412767f0, AppendConsoleSeparator, 136, 0xF81C6C2B);
 
 // @0x141276880
-void FUN_141276880(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* pszFormat, ...)
+void AppendConsoleLine(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* pszFormat, ...)
 {
     CStringW str;
     va_list args;
@@ -797,7 +797,7 @@ void FUN_141276880(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* ps
     va_end(args);
     reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(str + L"\n", nColor));
 }
-MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
+MS2_REPLACE(0x141276880, AppendConsoleLine, 246, 0x4A32C7FC);
 
 // ---- filters ----------------------------------------------------------------------------------------------------------
 class UITalkCinematic : public UISwfEntity { };
@@ -832,7 +832,7 @@ MS2_REPLACE(0x141276a30, FUN_141276a30, 139, 0x026130D4);
 int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
 {
     if ((nMask & 4) != 0) {
-        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer != 0) {
             if (strName.CompareNoCase(pPlayer->vfunc_77()) == 0) {
                 *pnResult = 4;
@@ -856,10 +856,10 @@ int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
 MS2_REPLACE(0x141276ad0, FUN_141276ad0, 413, 0x0BBFEC7E);
 
 // @0x141276c80
-int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
+int CheckName(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
 {
     if (bCheckSelf) {
-        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer != 0) {
             if (strName.CompareNoCase(pPlayer->vfunc_77()) == 0) {
                 strOut = GetStringCommon(0);
@@ -876,12 +876,12 @@ int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
     }
     return 0;
 }
-MS2_REPLACE(0x141276c80, FUN_141276c80, 378, 0xC17F18AE);
+MS2_REPLACE(0x141276c80, CheckName, 378, 0xC17F18AE);
 
 // @0x141276e00
 int FUN_141276e00(const CStringW& strName, CStringW& strOut)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(((class WorldService*)(void*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0) {
         bool bSame = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
         if (bSame) {
@@ -937,7 +937,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     if (DAT_143ab2914 < 0x32) {
-        int nRestricted = WorldService::GetInstance()->FUN_141bd30a0()->HasLimitContent(0x100);
+        int nRestricted = WorldService::GetInstance()->GetFieldData()->HasLimitContent(0x100);
         if (nRestricted != 0) {
             FUN_1412751b0(GetStringCommonByKey(L"s_field_limit_content_chat"), 0x14);
             return 0;
@@ -952,7 +952,7 @@ MS2_REPLACE(0x141276f80, FUN_141276f80, 867, 0x9FE0BD97);
 
 // ---- number / icon helpers --------------------------------------------------------------------------------------------
 // @0x1412772f0
-int FUN_1412772f0(__int64 nValue, int bGrouped)
+int GetNumberTextLength(__int64 nValue, int bGrouped)
 {
     char szBuf[24];
     CString strDigits(_i64toa(nValue, szBuf, 10));
@@ -961,7 +961,7 @@ int FUN_1412772f0(__int64 nValue, int bGrouped)
         nLen += nLen * 0.33;
     return nLen;
 }
-MS2_REPLACE(0x1412772f0, FUN_1412772f0, 162, 0x506850F8);
+MS2_REPLACE(0x1412772f0, GetNumberTextLength, 162, 0x506850F8);
 
 // @0x1412773a0
 int FUN_1412773a0(int nValue)
@@ -1048,7 +1048,7 @@ CStringW GetLapenshardName(MS2Ptr<CItemData> item);
 CStringW FUN_141277b90(const CStringW& str);
 
 // @0x141277910
-CStringW FUN_141277910(MS2Ptr<CItemData> item)
+CStringW GetItemNameText(MS2Ptr<CItemData> item)
 {
     if (item.IsNull() != 0)
         return CStringW(L"");
@@ -1058,7 +1058,7 @@ CStringW FUN_141277910(MS2Ptr<CItemData> item)
         return GetLapenshardName(item);
     return GetIconCodeName(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
 }
-MS2_REPLACE(0x141277910, FUN_141277910, 365, 0x0A17FA5D);
+MS2_REPLACE(0x141277910, GetItemNameText, 365, 0x0A17FA5D);
 
 // @0x141277a90
 CStringW GetUgcItemName(CUgcItemLook* pSource, const CStringW& strFallback)

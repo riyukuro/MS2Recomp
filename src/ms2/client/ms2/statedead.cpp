@@ -53,7 +53,7 @@ class Unk_DeadField : public CFieldData { };
 class Unk_DeadWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();                               // the local player
+    MyPC* GetLocalPlayer();                               // the local player
 };
 
 
@@ -109,7 +109,7 @@ void StateDead::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        MS2Ptr<CFieldDataCli> kField = WorldService::GetInstance()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> kField = WorldService::GetInstance()->GetFieldData();
         if (kField == 0)
             return;
         if (reinterpret_cast<PC*>(pPC)->HasPvPPoint() != 0)
@@ -301,7 +301,7 @@ void StateDeadNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         {
             if (pNpc->FUN_141094e20() <= 0)
                 return;
-            MyPC* pMyPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            MyPC* pMyPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pMyPC != 0)
                 pMyPC->FUN_1415294f0(m_pOwner->GetObjectId(), pNpc->FUN_141094e20());
         }

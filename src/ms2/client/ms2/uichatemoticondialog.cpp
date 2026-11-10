@@ -240,7 +240,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     if (spCli.IsNull())
         return;
     int nEmoticonId = pArgs->PopUInt();
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!spEmo)
         return;
     MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FindGroup(spEmo->m_nGroupId);
@@ -259,7 +259,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     int nMonth = expire.GetMonth();
     int nYear = expire.GetYear();
     CStringW strText = BlockFormat(nStringId, nYear, nMonth, nDay, nHour, nMinute);
-    ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 1, 2);
+    ASTooltip tooltip(WorldService::GetInstance()->GetLocalPlayer(), 1, 2);
     tooltip.SetTooltipAlign(4);
     if (tooltip.ApplyTextTooltip(strText) == 0)
         return;
@@ -317,7 +317,7 @@ void UIChatEmoticonDialog::FUN_140bd1720()
     for (std::list<UIChatEmoticonTab>::const_iterator it = tabList.begin(); it != itEnd; ++it)
     {
         int nCategoryId = it->m_nCategoryId;
-        ChatEmoticonCategoryDataPtr spCategory = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7270(nCategoryId);
+        ChatEmoticonCategoryDataPtr spCategory = TSingleton<CChatEmoticonTable>::GetInstance()->GetCategory(nCategoryId);
         if (!spCategory)
             continue;
         bool bNew = m_setNewTabs.find(nCategoryId) != m_setNewTabs.end();
@@ -362,7 +362,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         MS2Ptr<UIChatEmoticonInfo> spInfo = *it;
         if (spInfo.IsNull())
             continue;
-        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(spInfo->m_nEmoticonId);
+        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(spInfo->m_nEmoticonId);
         if (!spEmo)
             continue;
         bool bEnable = !spCli->IsGroupExpired(spEmo->m_nGroupId) ? true : false;
@@ -404,7 +404,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
         if (spGroup.IsNull())
             continue;
         std::list<ChatEmoticonDataPtr> emoticons;
-        TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e73c0(spGroup->m_nId, &emoticons);
+        TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticonsByGroup(spGroup->m_nId, &emoticons);
         bool bNew = m_setNewGroups.find(spGroup->m_nId) != m_setNewGroups.end();
         std::list<ChatEmoticonDataPtr>& emoList = emoticons;
         std::list<ChatEmoticonDataPtr>::const_iterator itEmoEnd = emoList.end();
@@ -428,7 +428,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
     for (std::list<unsigned>::const_iterator itId = ids.begin(); itId != ids.end(); ++itId)
     {
         int nEmoticonId = *itId;
-        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+        ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
         if (!spEmo)
             continue;
         MS2Ptr<UIChatEmoticonInfo> spInfo(new UIChatEmoticonInfo);
@@ -471,7 +471,7 @@ MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, AddNewGroup, 80, 0x9F8D5E9
 // @0x140bd2720
 CStringW UIChatEmoticonDialog::GetEmoticonCommand(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!spEmo)
         return CStringW(L"");
     return CStringW(spEmo->m_strCommand);

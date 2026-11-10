@@ -281,7 +281,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 bool FUN_140e146a0();
@@ -289,11 +289,11 @@ int UserDataToInt(void*);
 void FUN_140710590(COutPacket&);
 COutputStream& FUN_140c0dd90(COutputStream&, const std::set<unsigned>&);
 class COutputStream& FUN_14070f820(class COutputStream&, bool);   // C3: was FUN_14070f820
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void SetChildTextAutoSize(const Scaleform::GFx::Value& root, CString strName, int n);
 CStringW TranslateEnumDungeonGroup(unsigned nDungeonKind);
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 void FUN_1412751b0(const CStringW& text, int flags);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_140d73ff0(CStringW);
@@ -334,9 +334,9 @@ bool UIDungeonSearchPage::Init(MS2Ptr<ASMovieClip> root)
     DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_settingButton", m_settingButton), m_settingButton, 0x24);
     DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_findButton", m_findButton), m_findButton, 0x25);
     DS_BIND(m_movie->FUN_140bbe640<ASButton>("m_cancelButton", m_cancelButton), m_cancelButton, 0x26);
-    m_findButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::OnClickFind), 0);
-    m_cancelButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::SendPartyMode34), 0);
-    m_settingButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e19380), 0);
+    m_findButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::OnClickFind), 0);
+    m_cancelButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::SendPartyMode34), 0);
+    m_settingButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e19380), 0);
     SetChildTextAutoSize((*m_movie).FUN_1422bb890(), "m_title", 2);
     return true;
 }
@@ -462,8 +462,8 @@ MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4EC
 void UIDungeonSearchPage::FUN_140e19770()
 {
     bool bSearching = TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(1);
-    FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressIcon", bSearching);
-    FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressBg", bSearching);
+    SetChildVisible((*m_movie).FUN_1422bb890(), "m_progressIcon", bSearching);
+    SetChildVisible((*m_movie).FUN_1422bb890(), "m_progressBg", bSearching);
     m_findButton->vfunc_4(!bSearching);
     m_cancelButton->vfunc_4(bSearching);
     m_findButton->SetEnabled(1);
@@ -481,7 +481,7 @@ MS2_REPLACE_METHOD(0x140e19770, UIDungeonSearchPage, FUN_140e19770, 570, 0x3A42B
 void UIDungeonSearchPage::GetAvailableRooms(Unk_DsRoomVec& out)
 {
     out.clear();
-    Unk_DsActor* pActor = (Unk_DsActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    Unk_DsActor* pActor = (Unk_DsActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pActor == NULL)
         return;
     short nLevelMin = 0;
@@ -556,18 +556,18 @@ void UIDungeonSearchDialog::OnLoadComplete()
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                   MS2_THIS_FILE, MS2_LINE(0x10b), __FUNCTION__));
     typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
-    m_subButtons[0]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)8);
-    m_subButtons[2]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 0);
-    m_subButtons[7]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)9);
-    m_subButtons[5]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)10);
-    m_subButtons[1]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)7);
-    m_subButtons[6]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)11);
-    m_subButtons[4]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode4), 0);
-    m_subButtons[3]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1ba50), 0);
-    m_subButtons[8]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode12), 0);
-    m_subButtons[9]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)12);
-    m_subButtons[10]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode14), 0);
-    m_subButtons[11]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode13), 0);
+    m_subButtons[0]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)8);
+    m_subButtons[2]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 0);
+    m_subButtons[7]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)9);
+    m_subButtons[5]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)10);
+    m_subButtons[1]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)7);
+    m_subButtons[6]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)11);
+    m_subButtons[4]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode4), 0);
+    m_subButtons[3]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1ba50), 0);
+    m_subButtons[8]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode12), 0);
+    m_subButtons[9]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), (void*)12);
+    m_subButtons[10]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode14), 0);
+    m_subButtons[11]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode13), 0);
     m_pageCustom->RefreshTitle();
     m_pageRandom->RefreshTitle();
     m_unitedReward->FUN_140e13c00();
@@ -625,7 +625,7 @@ MS2_REPLACE_METHOD(0x140e1b6f0, UIDungeonSearchDialog, OnRewardResetPacket, 92, 
 // @0x140e1b760
 void UIDungeonSearchDialog::OnUnitedRewardReset(CInPacket& packet)
 {
-    FUN_1412751b0(FUN_140298ea0(CStringW(L"s_dungeonSearch_success_united_reward_reset")), 0x14);
+    FUN_1412751b0(GetStringByKey(CStringW(L"s_dungeonSearch_success_united_reward_reset")), 0x14);
     m_unitedReward->FUN_140e13c00();
 }
 MS2_REPLACE_METHOD(0x140e1b760, UIDungeonSearchDialog, OnUnitedRewardReset, 145, 0x7DFB33D4);

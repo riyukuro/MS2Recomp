@@ -16,7 +16,7 @@ public:
     virtual ~ASTextArea();
     void SetPosition(int nPosition);                                  // 0x1422e45f0 set "position"
     int GetPosition();                                                // 0x1422e4620 "position"
-    int FUN_1422e4680();                                                // 0x1422e4680 scrolled to the last line
+    int IsScrolledToEnd();                                                // 0x1422e4680 scrolled to the last line
     void ScrollToEnd();                                               // 0x1422e4720 scroll to the last line
 };
 MS2_CHECK_SIZE(ASTextArea, 0x88);

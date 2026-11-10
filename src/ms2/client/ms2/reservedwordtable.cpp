@@ -41,12 +41,12 @@ typedef ATL::CAtlArray<CStringW> CStrArray;
 // Unrecovered helpers (externs bound by VA).
 // ---------------------------------------------------------------------------------------------------------------
 void FUN_14025a680(CStringW& str, CStrArray& rOut, const wchar_t* pszSep);    // splits into parts
-void FUN_14083d2b0(CStringW& str);                                                  // strips the markup of a word
-int FUN_1413faab0(wchar_t ch);                                                      // 1: the word ends in a final consonant
+void StripTags(CStringW& str);                                                  // strips the markup of a word
+int GetFinalConsonantType(wchar_t ch);                                                      // 1: the word ends in a final consonant
 int FUN_1413fab50(wchar_t ch);                                                      // the same for the second josa pair
 int FUN_140718200(const CStringW& str);                                             // the number of an argument
 int FUN_1407181a0(const CStringW& str);
-unsigned __int64 FUN_140718370(const CStringW& str);
+unsigned __int64 ParseUInt64W(const CStringW& str);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                             // utf-8 to wide
 CStringW GetQuestName(int nQuestId);                                               // the name of a quest
 CStringW GetStringCommon(int nStringId);
@@ -59,10 +59,10 @@ CString FUN_140740ef0(const char* pszFormat, const CString& strKind, const int& 
 class Unk_RwWorld
 {
 public:
-    PC* FUN_141bd0cc0();                                    // the local player
+    PC* GetLocalPlayer();                                    // the local player
 };
 struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: the definition's signature (blackmarketitemoption.cpp); was CLua*
+class Unk_BmPriceMgr* GetLuaClient();   // C3: the definition's signature (blackmarketitemoption.cpp); was CLua*
 
 // Locale switch of the name tables ("npcNamePlural" differs by locale).
 // C3: FUN_140cfd280 is CGameOption's (&m_language, cgameoption.h)
@@ -84,7 +84,7 @@ public:
 class Unk_RwUIManager { public: };
 UIRouletteDialog* FindRouletteDialog(int nId);
 class CScriptTable;
-void* FUN_141371b30();   // C3: was FUN_141371b30
+void* GetScriptTable();   // C3: was GetScriptTable
 
 // The view / dictionary (maview) switches.
 MS2Ptr<CNpcData> FindNpcData(int nNpcId);             // the common npc row
@@ -320,7 +320,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
         else
             str.Replace(L"$OwnerName$", GetStringCommon(0x787));
     }
-    str.Replace(L"$MaidName$", ((CNpc*)pMaid)->FUN_141093310());
+    str.Replace(L"$MaidName$", ((CNpc*)pMaid)->GetName());
     str.Replace(L"$MaidEndDate$", strEnd);
     str.Replace(L"$MaidExtendDate$", strExtend);
     CStringW strPassed = BlockFormat<int>(0x7a5, nPassed);
@@ -519,7 +519,7 @@ void CReservedWordTable::FUN_1416fc710(CStringW& str, int nCount)
 // @0x1416fc9c0
 static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
     {
         strOut = L"";
@@ -531,7 +531,7 @@ static void Rw_MyPCHp(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fca60
 static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
     {
         strOut = L"";
@@ -543,7 +543,7 @@ static void Rw_MyPCName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcb10
 static void Rw_MyPCLevel(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
     {
         strOut = L"";
@@ -643,19 +643,19 @@ static void Rw_Key(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd360
 static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
     {
         strOut = L"";
         return;
     }
-    if (!WorldService::GetInstance()->FUN_141bd30a0())
+    if (!WorldService::GetInstance()->GetFieldData())
     {
         strOut = L"";
         return;
     }
-    unsigned int nPrice = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
-                                                          ((class CFieldData*)(void*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
+    unsigned int nPrice = reinterpret_cast<CLua*>(GetLuaClient())->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
+                                                          ((class CFieldData*)(void*)(WorldService::GetInstance()->GetFieldData().operator->()))->GetShadowContinent());
     strOut.Format(L"%d", nPrice);
 }
 
@@ -677,7 +677,7 @@ static void Rw_Ppr(CStringW& strOut, CStringW strArg, CStringW& strWhole)
         if (strOut.Compare(aWords[i]) == 0 && i != 0)
         {
             CStringW strPrev(aWords[i - 1]);
-            FUN_14083d2b0(strPrev);
+            StripTags(strPrev);
             strPrev.Remove(L']');
             strPrev.Remove(L')');
             CStringW strWord(strPrev);
@@ -687,7 +687,7 @@ static void Rw_Ppr(CStringW& strOut, CStringW strArg, CStringW& strWhole)
             FUN_14025a680(strArg, aForms, L", ");
             if (aForms.GetCount() != 2)
                 return;
-            int nFinal = FUN_1413faab0(strWord.GetAt(strWord.GetLength() - 1));
+            int nFinal = GetFinalConsonantType(strWord.GetAt(strWord.GetLength() - 1));
             strOut = nFinal != 1 ? aForms[0] : aForms[1];
             return;
         }
@@ -705,7 +705,7 @@ static void Rw_Pp2(CStringW& strOut, CStringW strArg, CStringW& strWhole)
         if (strOut.Compare(aWords[i]) == 0 && i != 0)
         {
             CStringW strPrev(aWords[i - 1]);
-            FUN_14083d2b0(strPrev);
+            StripTags(strPrev);
             strPrev.Remove(L']');
             strPrev.Remove(L')');
             CStringW strWord(strPrev);
@@ -736,10 +736,10 @@ static void Rw_Achieve(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 static void Rw_Script(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    unsigned __int64 nId = FUN_140718370(strArg);
+    unsigned __int64 nId = ParseUInt64W(strArg);
     if (nId == 0)
         return;
-    strOut = ((class CScriptTable*)FUN_141371b30())->GetScript(nId);
+    strOut = ((class CScriptTable*)GetScriptTable())->GetScript(nId);
 }
 
 // @0x1416fdc80
@@ -802,7 +802,7 @@ static void Rw_RoulettePrev(CStringW& strOut, CStringW strArg, CStringW& strWhol
 // @0x1416fdfd0
 static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
     {
         strOut = L"";
@@ -864,7 +864,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
     int nGender = 0;
     if (pPc == 0)
     {
-        PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pLocal == 0)
         {
             strToken = L"";
@@ -898,7 +898,7 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
 // @0x1416fe660
 static void Rw_GenderId(CStringW& strToken, int nGender)
 {
-    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == 0)
         strToken = L"";
     else

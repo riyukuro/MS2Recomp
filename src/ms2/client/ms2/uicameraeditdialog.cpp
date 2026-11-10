@@ -208,7 +208,7 @@ GameObject* UICameraEditDialog::CameraData::GetTarget() const
     GameObject* pTarget = WorldService::GetInstance()->FindObjectById(m_nTargetId);
     if (pTarget != 0)
         return pTarget;
-    return static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    return static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
 }
 
 // ---- UICameraEditDialog ----
@@ -403,7 +403,7 @@ void UICameraEditDialog::vfunc_35(void* p, float x, float y)
     MS2Ptr<ASMouseCursor> spCursor = GetGFxManager()->GetMouseCursor(6);
     if (spCursor == 0)
         return;
-    spCursor->FUN_1422cee50((Unk_MouseCursorType)0);
+    spCursor->ChangeType((Unk_MouseCursorType)0);
 }
 
 // @0x1418de110
@@ -424,7 +424,7 @@ void UICameraEditDialog::vfunc_36(void* p, float x, float y)
         MS2Ptr<ASMouseCursor> spCursor = GetGFxManager()->GetMouseCursor(6);
         if (spCursor == 0)
             return;
-        spCursor->FUN_1422cee50((Unk_MouseCursorType)4);
+        spCursor->ChangeType((Unk_MouseCursorType)4);
     }
 }
 
@@ -548,7 +548,7 @@ GameObject* UICameraEditDialog::GetTargetObject()
     GameObject* pTarget = WorldService::GetInstance()->FindObjectById(m_nTargetId);
     if (pTarget != 0)
         return pTarget;
-    return static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    return static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
 }
 
 // @0x1418dead0
@@ -662,7 +662,7 @@ int UICartoonDialog::vfunc_13()
         m_30->Invoke("handleKeyUp", 1);
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyReleased(0x7f, 0, 0))
         m_30->Invoke("handleKeyUp", 0);
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed())
         m_30->Invoke("handleEscDown", 0);
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyReleased(1, 0, 0))
         m_30->Invoke("handleEscUp", 0);
@@ -849,7 +849,7 @@ int UICartoonDialog::vfunc_48()
 // ---- UICastingBar ----
 
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                // set a Float value
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                 // set a Boolean value
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);                 // set a Boolean value
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);      // set a String value
 int FUN_141277f50();                                                       // the UI object type of the hud
 
@@ -872,7 +872,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, flo
     FUN_1422bcd70(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
-    FUN_1422bcce0(&args[4], a5);
+    SetBoolean(&args[4], a5);
     FUN_1422bcea0(&args[5], a6);
     FUN_1422bcea0(&args[6], a7);
     FUN_1422bccb0(&args[7], a8);
@@ -1222,13 +1222,13 @@ class AvatarPC;
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, AvatarPC* pPc);                // the worn item of the kind
 int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
 bool FUN_141900750(ASObj* pObj);                                             // fill the initData object
-unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
+unsigned int Float3ToArgb(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 CString FUN_140719210(long n);
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_141424580(MS2Ptr<CEquipItem> spEquip, unsigned int* pnColor, int n);        // the colour of the worn item (spEquip by value)
 struct Unk_UgcItemData; int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut);   // itemugcmesh (nKey = const int*)
 void FUN_140710590(COutPacket& packet);                                     // send
-void FUN_140f324f0(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
+void WriteItemInfo(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
 class Unk_CcScript : public AScript
 {
 };
@@ -1267,7 +1267,7 @@ CString UICharacterCreateDialog::GetTypeName()
 void UICharacterCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     ((class Unk_ItemEventSystem*)(void*)(((void*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
@@ -1439,7 +1439,7 @@ void UICharacterCreateDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (vfunc_55() != 0)
         return;
-    switch (static_cast<CInPacket*>(p)->FUN_14070fe80())
+    switch (static_cast<CInPacket*>(p)->GetOpcode())
     {
     case 0xc:
         if (static_cast<CInPacket*>(p)->ReadUInt8() == 1)
@@ -1488,7 +1488,7 @@ void UICharacterCreateDialog::vfunc_12()
     if (!(vfunc_55() == 0 && !(m_30 == 0)))
         return;
     UISwfEntity::vfunc_12();
-    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->GetObjectId(),
@@ -1505,7 +1505,7 @@ void UICharacterCreateDialog::vfunc_26(int nItemId)
         return;
     if (m_nTab == -1 || m_nCategory == -1)
         return;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (pPc->GetCurStateId() != 0xe)
@@ -1688,15 +1688,15 @@ void UICharacterCreateDialog::OnCreateCharacterAnswer(CInPacket* pPacket)
 // @0x1418e3f50
 int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     CCCharacterManagementPacket::Create kCreate;
     kCreate.m_nGender = (char)pPc->GetGender();
     kCreate.m_nJob = pPc->GetJobGroupId();
     kCreate.m_strName = strName;
-    kCreate.m_anColor[0] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(0));
-    kCreate.m_anColor[1] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(1));
+    kCreate.m_anColor[0] = Float3ToArgb((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(0));
+    kCreate.m_anColor[1] = Float3ToArgb((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(1));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
     reinterpret_cast<CEquipment*>(pPc->GetEquipment())->CollectShownItems(aEquips);
     int nCount = (int)aEquips.GetCount();
@@ -1706,7 +1706,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
         MS2Ptr<CItem> spItem = aEquips.GetAt(pos)->GetItem();
         kCreate.m_items.WriteInt32(spItem->GetItemId());
         kCreate.m_items.WriteUInt8((unsigned char)spItem->FUN_140526c30());
-        Unk_CcProxy* pProxy = reinterpret_cast<Unk_CcProxy*>(spItem->FUN_140527870());
+        Unk_CcProxy* pProxy = reinterpret_cast<Unk_CcProxy*>(spItem->GetProxy());
         pProxy->vfunc_5(&static_cast<COutputStream&>(kCreate.m_items));
     }
     kCreate.m_nElapsed = (int)m_dElapsed;
@@ -1820,7 +1820,7 @@ void UICharacterCreateDialog::FUN_1418e47e0(int nTab, int nCategory)
     m_aRows.RemoveAll();
     if (nTab == -1 || nCategory == -1)
         return;
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc != 0)
     {
         int nGender = pPc->GetGender();
@@ -1857,7 +1857,7 @@ void UICharacterCreateDialog::BuildItems(int nTab, int nCategory)
 {
     if (m_aRows.IsEmpty())
         return;
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (!m_aRows.IsEmpty())
@@ -1885,7 +1885,7 @@ void UICharacterCreateDialog::BuildItems(int nTab, int nCategory)
                 strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRow->m_nItemId);
             }
             ASObj kRow(2);
-            FUN_140f324f0(kRow, MS2Ptr<CItemData>(spData), true);
+            WriteItemInfo(kRow, MS2Ptr<CItemData>(spData), true);
             if (spData->FUN_14053d2b0())
             {
                 int nLink = nCategory == 4 ? 5 : 4;
@@ -1906,7 +1906,7 @@ void UICharacterCreateDialog::BuildCurrentItems()
         return;
     if (m_spCustomize == 0)
         return;
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
@@ -1981,7 +1981,7 @@ void UICharacterCreateDialog::BuildColors(MS2Ptr<CItemData> spData)
     if ((spData.get() != 0 ? true : false) && (unsigned)spData->FUN_14053e260() > 0)
     {
         int nCurColor = 0;
-        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPc == 0)
             return;
         if (spData->IsAvatarColorItem())
@@ -2079,7 +2079,7 @@ void UICharacterCreateDialog::BuildCustom(MS2Ptr<CItemData> spData)
             int nCurPos = pPart->vfunc_17();
             if (spData->FUN_14053d070())
             {
-                CharacterDecalData* pDecal = spData->GetModelOrEmpty()->FUN_14054b6b0();
+                CharacterDecalData* pDecal = spData->GetModelOrEmpty()->GetDecalData();
                 if (pDecal != 0)
                     pList = pDecal->GetCustoms();
             }
@@ -2188,7 +2188,7 @@ void UICharacterCreateDialog::FUN_1418e6680(int nRandom)
     CSceneStateMulti* pScene = GetSceneStateMulti();
     if (!pScene)
         return;
-    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->GetLocalPlayer();
     if (!pPc)
         return;
     pScene->FUN_14174ec40(nRandom, false);
@@ -2208,7 +2208,7 @@ void UICharacterCreateDialog::OnChangeGender(int nGender)
     CSceneStateMulti* pScene = GetSceneStateMulti();
     if (!pScene)
         return;
-    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->GetLocalPlayer();
     if (!pPc)
         return;
     MS2Ptr<CSceneStateMulti::BackUpCharacterInfo> spOld(m_spBackUp);
@@ -2229,7 +2229,7 @@ void UICharacterCreateDialog::OnChangeGender(int nGender)
 // @0x1418e6950
 int UICharacterCreateDialog::FUN_1418e6950(int nItemId, int nTab, int nCategory)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -2267,7 +2267,7 @@ void UICharacterCreateDialog::OnChangeTab(int nTab)
     {
         if (nTab == -1)
             return;
-        PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPc != 0)
         {
             if (pPc->GetCurStateId() != 0xe)
@@ -2288,7 +2288,7 @@ void UICharacterCreateDialog::OnChangeCategory(int nTab, int nCategory)
         return;
     if (nTab == -1 || nCategory == -1)
         return;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (pPc->GetCurStateId() != 0xe)
@@ -2396,7 +2396,7 @@ void UICharacterCreateDialog::FUN_1418e7340(int, int, int)
 // @0x1418e7380
 void UICharacterCreateDialog::FUN_1418e7380(int nItemId)
 {
-    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -2422,7 +2422,7 @@ void UICharacterCreateDialog::UpdateCurrentItem(MS2Ptr<CItemData> spData)
         return;
     if (spData->GetEquipSubtype() == 0xe || spData->GetEquipSubtype() == 0xf || spData->GetEquipSubtype() == 0x16)
     {
-        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPc != 0)
         {
             int nCategory = m_nCategory;

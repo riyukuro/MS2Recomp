@@ -21,7 +21,7 @@ struct ItemFunctionArgs
     float FUN_1408d2280(unsigned nIndex, float fDefault);       // word n as float
     double FUN_1408d22c0(unsigned nIndex, double dDefault);     // word n as double (_wtof)
     CStringW GetText();                                   // copy of the raw text
-    unsigned FUN_1408d2380();                                   // the argument count
+    unsigned GetArgCount();                                   // the argument count
 };
 MS2_CHECK_SIZE(ItemFunctionArgs, 0x70);
 
@@ -46,7 +46,7 @@ CStringW ItemFunctionArgs::GetText()
 }
 
 // @0x1408d2380
-unsigned ItemFunctionArgs::FUN_1408d2380()
+unsigned ItemFunctionArgs::GetArgCount()
 {
     return (unsigned)words.GetCount();
 }

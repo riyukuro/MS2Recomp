@@ -44,7 +44,7 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 class Unk_PrdWorld                                                  // the world service
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
 };
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
@@ -63,12 +63,12 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
  // the profile key of the player
 CString FUN_141028be0(__int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a UI sound
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // @0x140f90780
@@ -190,7 +190,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         return;
     CString strUnused1;
     CString strUnused2;
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     bool bLeftWins = pResult->m_nCharIdL == pResult->m_nWinnerId;
@@ -247,7 +247,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrdItemData*>(spItem.operator->())->GetIconPath());
         return;
     }
-    FUN_141276180(s_strGuildBattleReward, "");
+    PlaySystemSound(s_strGuildBattleReward, "");
 }
 
 // @0x140f919d0
@@ -255,8 +255,8 @@ Scaleform::GFx::Value Unk_PrdScript::FUN_140f919d0(const char* szMethod, bool a1
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bcce0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetBoolean(&args[0], a1);
+    SetBoolean(&args[1], a2);
     FUN_1422bccb0(&args[2], a3);
     FUN_1422bcea0(&args[3], (const wchar_t*)a4);
     FUN_1422bcea0(&args[4], (const wchar_t*)a5);

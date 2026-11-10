@@ -23,7 +23,7 @@ void FUN_14112cd60(Unk_CMISStr* pStr, const char* pSz)
 }
 
 // @0x14112cd90
-Unk_CMISStr* FUN_14112cd90(Unk_CMISStr* pStr, Unk_CMISStr* pAdd)
+Unk_CMISStr* AppendString(Unk_CMISStr* pStr, Unk_CMISStr* pAdd)
 {
     pStr->m_body += pAdd->m_body;
     return pStr;

@@ -197,8 +197,8 @@ void CGameOptionGamePad::vfunc_10()
         MS2Ptr<ASMouseCursor> spHud = GetGFxManager()->GetMouseCursor(6);
         if (static_cast<ASMouseCursor*>(spHud) != 0)
         {
-            spHud->FUN_1422cee00();
-            spHud->FUN_1422cee50((Unk_MouseCursorType)0);
+            spHud->Unlock();
+            spHud->ChangeType((Unk_MouseCursorType)0);
         }
     }
 }

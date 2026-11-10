@@ -260,7 +260,7 @@ void CExpEffectInfo::Update(float fElapsed)
 // @0x141272cb0
 void CExpEffectInfo::UpdateMove(float fElapsed)
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     GetTargetPos(pPlayer, &m_ptTarget);
@@ -291,7 +291,7 @@ void CExpEffectInfo::UpdateMove(float fElapsed)
 // @0x141272f20
 int CExpEffectInfo::Create(int nObjectId, void* pOwner)
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     Unk_ExpActor* pObj = reinterpret_cast<Unk_ExpActor*>(WorldService::GetInstance()->FUN_141bd1200(nObjectId));
@@ -364,7 +364,7 @@ void CExpEffectInfo::SetVisible(int nHide)
 // @0x141273680
 void CExpEffectInfo::Finish()
 {
-    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->GetScale();

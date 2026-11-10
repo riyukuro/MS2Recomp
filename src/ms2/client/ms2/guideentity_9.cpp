@@ -52,7 +52,7 @@ int FUN_1413b1fc0(TiXmlElement* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
 
 struct Unk_MergeRange;
-bool FUN_1405c7ba0(const Unk_MergeRange* pRange);                          // is set
+bool IsRangeSet(const Unk_MergeRange* pRange);                          // is set
 int FUN_1413b1d60(class TiXmlElement*, char const*, void*);   // C3: was FUN_1413b1d60
 class Unk_ImNullableInt   // C3: member view for the former free stand-ins
 {
@@ -62,7 +62,7 @@ public:
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                     // Nullable<int>::GetValue
 Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nullable<int>()
 
-class TiXmlElement* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
+class TiXmlElement* GetFirstChildElement(class TiXmlDocument*);   // C3: was GetFirstChildElement
 MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag);                 // the condition class of a tag
 void* FUN_141395500(void* pNode);
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
@@ -297,7 +297,7 @@ MS2Ptr<CGuideCondition> FUN_1413a52c0(TiXmlElement* pElem)
 MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag)
 {
     CStringW strClass = StringFormat<CStringA>(L"CGuideCondition{0}", strTag);
-    MS2Ptr<CGuideCondition> ref(static_cast<CGuideCondition*>(FUN_1401f7f50(strClass)));
+    MS2Ptr<CGuideCondition> ref(static_cast<CGuideCondition*>(CreateClassObject(strClass)));
     return ref;
 }
 
@@ -451,7 +451,7 @@ void CGuideConditionTrigger::vfunc_2(TiXmlElement* pElem)
 // @0x1413a5bb0
 int CGuideConditionTrigger::vfunc_3()
 {
-    if (FUN_1405c7ba0((const Unk_MergeRange*)&m_range))
+    if (IsRangeSet((const Unk_MergeRange*)&m_range))
         return ApplyNot(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
     return ApplyNot(((class CGuideManager*)FUN_1409331e0())->CheckTrigger((CGuideManager::TriggerType)m_n28, m_a, m_b) != 0);
 }
@@ -656,7 +656,7 @@ bool CGuideEntity::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "isNoSave", m_nNoSave);
     if (!FUN_1413a4b50())
         XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
-    for (TiXmlElement* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = (TiXmlElement*)((const TiXmlNode*)pChild)->NextSiblingElement())
+    for (TiXmlElement* pChild = GetFirstChildElement((class TiXmlDocument*)(pElem)); pChild != 0; pChild = (TiXmlElement*)((const TiXmlNode*)pChild)->NextSiblingElement())
     {
         CStringA strName(pChild->Value());
         if (strName == "open")

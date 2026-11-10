@@ -29,7 +29,7 @@ public:
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
 class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 void FUN_1412751b0(const CStringW&, int);
 
 // @0x140c9d950
@@ -200,7 +200,7 @@ void RoomStageDungeonCli::OnFlag(CInPacket& packet)
 // @0x140c9d670
 void RoomStageDungeonCli::OnGiveUp(CInPacket&)
 {
-    FUN_1412751b0(FUN_140298ea0(CStringW(L"s_party_notify_dungeon_giveup")), 0x14);
+    FUN_1412751b0(GetStringByKey(CStringW(L"s_party_notify_dungeon_giveup")), 0x14);
 }
 
 // @0x140c9d6f0

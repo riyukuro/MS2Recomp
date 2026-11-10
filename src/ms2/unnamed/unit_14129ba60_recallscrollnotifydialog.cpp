@@ -147,7 +147,7 @@ int UIRecallScrollNotifyDialog::vfunc_13()
 int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0) return 0;
     if (!_stricmp(szMethod, "OnNotify")) {
         ASData data;
@@ -239,7 +239,7 @@ void UIRecallScrollNotifyDialog::CloseNotify(int nSlot)
 }
 
 // @0x14129cb20
-void UIRecallScrollNotifyDialog::FUN_14129cb20() { memset(m_times, 0, sizeof(m_times)); }
+void UIRecallScrollNotifyDialog::ClearTimes() { memset(m_times, 0, sizeof(m_times)); }
 
 // @0x14129cb50
 CStringW UIRecallScrollNotifyDialog::FUN_14129cb50(ATL::CTimeSpan span)

@@ -15,7 +15,7 @@
 #include "ms2/placeholder/cguildxmldata.h"
 #include <algorithm>
 // C3: unit-local views of the real classes behind the guilddef_1.h stand-ins
-class Unk_UserProxy { public: CStringW GetName(); CString FUN_1408f1a60(); };   // Unk_GuildCharacter's accessors
+class Unk_UserProxy { public: CStringW GetName(); CString GetImage(); };   // Unk_GuildCharacter's accessors
 #include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 //
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
@@ -68,7 +68,7 @@ void FUN_1404ee6b0(Unk_GuildStrRec*); void FUN_1404ee640(Unk_GuildStrRec*,Unk_Gu
 // Npc shop manager handle (+0x360) and the manager itself
 void FUN_1404ec820(Unk_GuildRef* dst,Unk_GuildRef* src); __int64 FUN_1404f0ad0(Unk_GuildRef*); void* FUN_1404f0bb0(Unk_GuildRef*); bool FUN_1404f00e0(Unk_GuildRef*,int); void FUN_1404efb30(Unk_GuildRef*,void*);
 void* FUN_1404ee230(void* mem);   // CGuildNpcShopMgr::CGuildNpcShopMgr
-void FUN_1404d8d50(void* mgr,COutputStream* out); void FUN_1404d8e80(void* mgr,CInPacket* in); void ReadShop(void* mgr,int a,void* b); void FUN_1404d9060(void* mgr,int a,void* b);
+void FUN_1404d8d50(void* mgr,COutputStream* out); void FUN_1404d8e80(void* mgr,CInPacket* in); void ReadShop(void* mgr,int a,void* b); void ReadShopProduct(void* mgr,int a,void* b);
 // guild xml data queries
 void FUN_1404d74e0(void* xml,Unk_GuildRef* out,int a,int b); void FUN_1404d7410(void* xml,Unk_GuildRef* out,int a); void FUN_1404d79b0(void* xml,Unk_GuildRef* out,int a,int b);
 char FUN_1404effa0(Unk_GuildRef*,int); char FUN_1404eff60(Unk_GuildRef*,int); char FUN_1404eff20(Unk_GuildRef*,int);
@@ -77,7 +77,7 @@ void FUN_1404eea40(Unk_GuildRef*); void FUN_1404ee9b0(Unk_GuildRef*); void FUN_1
 int* FUN_1404eb7e0(void* map,void* key);
 // ---- container/ctor helpers in neighbouring chunks (loose types) ----
  void FUN_1402fec60(void*); char FUN_1402ffdc0(void*,int); void* FUN_140300710(void*);
-void FUN_140374140(void*,__int64); char FUN_140375310(void*);
+void FindField(void*,__int64); char FUN_140375310(void*);
 Unk_GuildPair* FUN_140407ed0(Unk_GuildPair*,int*,int*); Unk_GuildPair* FUN_1404d9660(Unk_GuildPair*,int*,int*);
 void FUN_1404ebaf0(void*,int,float,float,float,int); void FUN_1404ebbe0(void*,int,float,float,float,int);
 void FUN_1404ebcd0(void*,int,float,float,float,int); void FUN_1404ebdc0(void*,int,float,float,float,int);
@@ -97,7 +97,7 @@ void FUN_140791e40(void*,Unk_GuildRef*,int);
 // @0x1404c5c80
  Unk_GuildSeason::Unk_GuildSeason()
 {
-    FUN_1404c5d20();
+    Reset();
 }
 
 // @0x1404c5cf0
@@ -107,19 +107,19 @@ void FUN_140791e40(void*,Unk_GuildRef*,int);
 }
 
 // @0x1404c5d20
-void Unk_GuildSeason::FUN_1404c5d20()
+void Unk_GuildSeason::Reset()
 {
     id=0; name=L""; begin=__time64_t(0); end=__time64_t(0); memset(points,0,sizeof(points));
 }
 
 // @0x1404c5da0
-void Unk_GuildSeason::FUN_1404c5da0(COutputStream& out)
+void Unk_GuildSeason::Write(COutputStream& out)
 {
     out.WriteInt32(id); out.WriteUnicodeString(name); out.WriteInt64(begin.Get()); out.WriteInt64(end.Get()); for(int i=1;i<8;++i) out.WriteInt32(points[i]);
 }
 
 // @0x1404c5ea0
-void Unk_GuildSeason::FUN_1404c5ea0(CInPacket& packet)
+void Unk_GuildSeason::Read(CInPacket& packet)
 {
     id=packet.ReadInt32(); name=packet.ReadUnicodeString(); begin=packet.ReadInt64(); end=packet.ReadInt64(); for(int i=1;i<8;++i) points[i]=packet.ReadInt32();
 }
@@ -131,7 +131,7 @@ void Unk_GuildSeason::FUN_1404c6030(const Unk_GuildSeason& other)
 }
 
 // @0x1404c60e0
-int Unk_GuildSeason::FUN_1404c60e0(int rank)
+int Unk_GuildSeason::GetRankPoints(int rank)
 {
     if (rank < 1 || rank >= 8)
         return 0;
@@ -139,7 +139,7 @@ int Unk_GuildSeason::FUN_1404c60e0(int rank)
 }
 
 // @0x1404c6110
-int Unk_GuildSeason::FUN_1404c6110(int score)
+int Unk_GuildSeason::GetRankForScore(int score)
 {
     for(int i=1;i<8;++i) if(points[i]>score) return i-1; return 7;
 }
@@ -156,7 +156,7 @@ bool Unk_GuildSeason::FUN_1404c6160()
 // @0x1404c61d0
  Unk_GuildProfile::Unk_GuildProfile()
 {
-    FUN_1404c6350();
+    Reset();
 }
 
 // @0x1404c62a0
@@ -166,7 +166,7 @@ bool Unk_GuildSeason::FUN_1404c6160()
 }
 
 // @0x1404c6350
-void Unk_GuildProfile::FUN_1404c6350()
+void Unk_GuildProfile::Reset()
 {
     name=""; code=""; f18=0; f20=""; f28=""; f30=""; f38=0; f40=0; f48=""; f50=0; f58=0; f60=0; f68=0; f70=0; f78.Empty(); f80=0; f84=0; f88=0; f8c=0; f90=0; f94=0; f98=0; f9c=1; fa0=255; fa4=0; fa8=0; fb8=1; fbc=1; fc0=0; fc8=0; array.FUN_1401c0580();
 }
@@ -174,7 +174,7 @@ void Unk_GuildProfile::FUN_1404c6350()
 // @0x1404c6570
  CGuildPVPHistoryData::CGuildPVPHistoryData()
 {
-    FUN_1404c66f0();
+    Reset();
 }
 
 // @0x1404c6640
@@ -184,7 +184,7 @@ void Unk_GuildProfile::FUN_1404c6350()
 }
 
 // @0x1404c66f0
-void CGuildPVPHistoryData::FUN_1404c66f0()
+void CGuildPVPHistoryData::Reset()
 {
     f18=0; f1c=0; f20=0; f28=0; f30=0; f38=L""; f40=L""; f48=0; f4c=0; f50=0; f54=0; for(int i=0;i<5;++i) { f58[i]=L""; f80[i]=L""; fa8[i]=0; } fb0=0; fb8=0;
 }
@@ -203,9 +203,9 @@ void CGuildPVPHistoryData::FUN_1404c6a00(COutPacket* out)
 }
 
 // @0x1404c6a30
-void CGuildPVPHistoryData::FUN_1404c6a30(CInPacket* in)
+void CGuildPVPHistoryData::ReadPacket(CInPacket* in)
 {
-    FUN_1404c6cb0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c6a80
@@ -215,7 +215,7 @@ void CGuildPVPHistoryData::Write(COutputStream& out)
 }
 
 // @0x1404c6cb0
-void CGuildPVPHistoryData::FUN_1404c6cb0(CInputStream& in)
+void CGuildPVPHistoryData::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt32(); f1c=in.ReadInt32(); f20=in.ReadUInt8(); f28=in.ReadInt64(); f30=in.ReadInt64(); f38=in.ReadUnicodeString(); f40=in.ReadUnicodeString(); f48=in.ReadInt32(); f4c=in.ReadInt32(); f50=in.ReadInt32(); f54=in.ReadInt32(); for(int i=0;i<5;++i) { f58[i]=in.ReadUnicodeString(); f80[i]=in.ReadUnicodeString(); fa8[i]=in.ReadUInt8(); } fb0=in.ReadInt64(); fb8=in.ReadInt64();
 }
@@ -223,7 +223,7 @@ void CGuildPVPHistoryData::FUN_1404c6cb0(CInputStream& in)
 // @0x1404c7000
  CGuildGrade::CGuildGrade()
 {
-    FUN_1404c70a0();
+    Reset();
 }
 
 // @0x1404c7060
@@ -233,7 +233,7 @@ void CGuildPVPHistoryData::FUN_1404c6cb0(CInputStream& in)
 }
 
 // @0x1404c70a0
-void CGuildGrade::FUN_1404c70a0()
+void CGuildGrade::Reset()
 {
     grade=6; name=""; permissions=0;
 }
@@ -251,7 +251,7 @@ void CGuildGrade::Write(COutputStream& out)
 }
 
 // @0x1404c71d0
-void CGuildGrade::FUN_1404c71d0(CInPacket& packet)
+void CGuildGrade::ReadPacket(CInPacket& packet)
 {
     grade=packet.ReadUInt8(); name=packet.ReadUnicodeString(); permissions=packet.ReadInt32();
 }
@@ -265,7 +265,7 @@ int CGuildGrade::IsValid()
 // @0x1404c7300
  CGuildNameInfo::CGuildNameInfo()
 {
-    FUN_1404c73d0();
+    Reset();
 }
 
 // @0x1404c7370
@@ -275,27 +275,27 @@ int CGuildGrade::IsValid()
 }
 
 // @0x1404c73d0
-void CGuildNameInfo::FUN_1404c73d0()
+void CGuildNameInfo::Reset()
 {
     id=0; name.Empty(); code.Empty();
 }
 
 // @0x1404c7420
-void CGuildNameInfo::FUN_1404c7420(const CGuildNameInfo* other)
+void CGuildNameInfo::CopyFrom(const CGuildNameInfo* other)
 {
-    if(!other) { FUN_1404c73d0(); } else { id=other->id; name=other->name; code=other->code; }
+    if(!other) { Reset(); } else { id=other->id; name=other->name; code=other->code; }
 }
 
 // @0x1404c74a0
-void CGuildNameInfo::FUN_1404c74a0(COutPacket* out)
+void CGuildNameInfo::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404c74d0
-void CGuildNameInfo::FUN_1404c74d0(CInPacket* in)
+void CGuildNameInfo::ReadPacket(CInPacket* in)
 {
-    FUN_1404c75a0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c7520
@@ -305,7 +305,7 @@ void CGuildNameInfo::Write(COutputStream& out)
 }
 
 // @0x1404c75a0
-void CGuildNameInfo::FUN_1404c75a0(CInputStream& in)
+void CGuildNameInfo::ReadStream(CInputStream& in)
 {
     id=in.ReadInt64(); name=in.ReadUnicodeString(); code=in.ReadUnicodeStringA();
 }
@@ -313,7 +313,7 @@ void CGuildNameInfo::FUN_1404c75a0(CInputStream& in)
 // @0x1404c7670
  CGuildJoinRequestForGuild::CGuildJoinRequestForGuild()
 {
-    FUN_1404c7750();
+    Reset();
 }
 
 // @0x1404c76f0
@@ -323,27 +323,27 @@ void CGuildNameInfo::FUN_1404c75a0(CInputStream& in)
 }
 
 // @0x1404c7750
-void CGuildJoinRequestForGuild::FUN_1404c7750()
+void CGuildJoinRequestForGuild::Reset()
 {
     f18=0; f20=0; f28=0; f30=0; f38.Empty(); f40.Empty(); f48=0; f4c=0; f50=0; ((Unk_IntTriple&)f54).Clear(); f60=0;
 }
 
 // @0x1404c7800
-void CGuildJoinRequestForGuild::FUN_1404c7800(const CGuildJoinRequestForGuild* other)
+void CGuildJoinRequestForGuild::CopyFrom(const CGuildJoinRequestForGuild* other)
 {
-    if(!other) { FUN_1404c7750(); } else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; f40=other->f40; f48=other->f48; f4c=other->f4c; f50=other->f50; ((Unk_IntTriple&)f54).Copy((const Unk_IntTriple&)other->f54); f60=other->f60; }
+    if(!other) { Reset(); } else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; f40=other->f40; f48=other->f48; f4c=other->f4c; f50=other->f50; ((Unk_IntTriple&)f54).Copy((const Unk_IntTriple&)other->f54); f60=other->f60; }
 }
 
 // @0x1404c7910
-void CGuildJoinRequestForGuild::FUN_1404c7910(COutPacket* out)
+void CGuildJoinRequestForGuild::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404c7940
-void CGuildJoinRequestForGuild::FUN_1404c7940(CInPacket* in)
+void CGuildJoinRequestForGuild::ReadPacket(CInPacket* in)
 {
-    FUN_1404c7ad0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c7990
@@ -353,7 +353,7 @@ void CGuildJoinRequestForGuild::Write(COutputStream& out)
 }
 
 // @0x1404c7ad0
-void CGuildJoinRequestForGuild::FUN_1404c7ad0(CInputStream& in)
+void CGuildJoinRequestForGuild::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt64(); f20=in.ReadInt64(); f28=in.ReadInt64(); f30=in.ReadInt64(); f38=in.ReadUnicodeString(); f40=in.ReadUnicodeStringA(); f48=in.ReadInt32(); f4c=in.ReadInt32(); f50=in.ReadInt32(); ((Unk_IntTriple&)f54).Read(in); f60=in.ReadInt64();
 }
@@ -361,7 +361,7 @@ void CGuildJoinRequestForGuild::FUN_1404c7ad0(CInputStream& in)
 // @0x1404c7c60
  CGuildJoinRequestForChar::CGuildJoinRequestForChar()
 {
-    FUN_1404c7d70();
+    Reset();
 }
 
 // @0x1404c7d00
@@ -371,27 +371,27 @@ void CGuildJoinRequestForGuild::FUN_1404c7ad0(CInputStream& in)
 }
 
 // @0x1404c7d70
-void CGuildJoinRequestForChar::FUN_1404c7d70()
+void CGuildJoinRequestForChar::Reset()
 {
     f18=0; f20=0; f28.Empty(); f30=0; f38.Empty(); ((Unk_IntTriple&)f44).Clear(); f50=0; f40=0; f58.Empty(); f60=0; f68=0; f70=0;
 }
 
 // @0x1404c7e30
-void CGuildJoinRequestForChar::FUN_1404c7e30(const CGuildJoinRequestForChar* other)
+void CGuildJoinRequestForChar::CopyFrom(const CGuildJoinRequestForChar* other)
 {
-    if(!other) { FUN_1404c7d70(); } else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; ((Unk_IntTriple&)f44).Copy((const Unk_IntTriple&)other->f44); f50=other->f50; f40=other->f40; f58=other->f58; f60=other->f60; f68=other->f68; f70=other->f70; }
+    if(!other) { Reset(); } else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; ((Unk_IntTriple&)f44).Copy((const Unk_IntTriple&)other->f44); f50=other->f50; f40=other->f40; f58=other->f58; f60=other->f60; f68=other->f68; f70=other->f70; }
 }
 
 // @0x1404c7f60
-void CGuildJoinRequestForChar::FUN_1404c7f60(COutPacket* out)
+void CGuildJoinRequestForChar::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404c7f90
-void CGuildJoinRequestForChar::FUN_1404c7f90(CInPacket* in)
+void CGuildJoinRequestForChar::ReadPacket(CInPacket* in)
 {
-    FUN_1404c8150(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c7fe0
@@ -401,7 +401,7 @@ void CGuildJoinRequestForChar::Write(COutputStream& out)
 }
 
 // @0x1404c8150
-void CGuildJoinRequestForChar::FUN_1404c8150(CInputStream& in)
+void CGuildJoinRequestForChar::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt64(); f20=in.ReadInt64(); f28=in.ReadUnicodeString(); f30=in.ReadInt32(); f38=in.ReadUnicodeStringA(); ((Unk_IntTriple&)f44).Read(in); f50=in.ReadInt32(); f40=in.ReadInt32(); f58=in.ReadUnicodeString(); f60=in.ReadInt64(); f68=in.ReadInt64(); f70=in.ReadInt64();
 }
@@ -409,7 +409,7 @@ void CGuildJoinRequestForChar::FUN_1404c8150(CInputStream& in)
 // @0x1404c8390
  CGuildJoinRequestSchCond::CGuildJoinRequestSchCond()
 {
-    FUN_1404c8410();
+    Reset();
 }
 
 // @0x1404c83e0
@@ -419,7 +419,7 @@ void CGuildJoinRequestForChar::FUN_1404c8150(CInputStream& in)
 }
 
 // @0x1404c8410
-void CGuildJoinRequestSchCond::FUN_1404c8410()
+void CGuildJoinRequestSchCond::Reset()
 {
     f18=0; f1c=0;
 }
@@ -427,7 +427,7 @@ void CGuildJoinRequestSchCond::FUN_1404c8410()
 // @0x1404c8440
 void CGuildJoinRequestSchCond::CopyFrom(const CGuildJoinRequestSchCond* other)
 {
-    FUN_1404c8410(); if(!other) return;
+    Reset(); if(!other) return;
     f18=other->f18; f1c=other->f1c;
 }
 
@@ -438,7 +438,7 @@ int CGuildJoinRequestSchCond::IsEqual(const CGuildJoinRequestSchCond* other)
 }
 
 // @0x1404c84e0
-void CGuildJoinRequestSchCond::FUN_1404c84e0(COutPacket* out)
+void CGuildJoinRequestSchCond::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
@@ -492,7 +492,7 @@ int CGuildJoinRequestSchCond::FUN_1404c86f0()
 // @0x1404c8750
  CSearchGuildJoin::CSearchGuildJoin()
 {
-    FUN_1404c8860();
+    Reset();
 }
 
 // @0x1404c87f0
@@ -502,27 +502,27 @@ int CGuildJoinRequestSchCond::FUN_1404c86f0()
 }
 
 // @0x1404c8860
-void CSearchGuildJoin::FUN_1404c8860()
+void CSearchGuildJoin::Reset()
 {
     f18=0; f20.Empty(); f28.Empty(); ((Unk_IntTriple&)f38).Clear(); f44=0; f30=0; f34=0; f48=0; f50=0; f58.Empty();
 }
 
 // @0x1404c8910
-void CSearchGuildJoin::FUN_1404c8910(const CSearchGuildJoin* other)
+void CSearchGuildJoin::CopyFrom(const CSearchGuildJoin* other)
 {
-    if(!other) { FUN_1404c8860(); } else { f18=other->f18; f20=other->f20; f28=other->f28; ((Unk_IntTriple&)f38).Copy((const Unk_IntTriple&)other->f38); f44=other->f44; f30=other->f30; f34=other->f34; f48=other->f48; f50=other->f50; f58=other->f58; }
+    if(!other) { Reset(); } else { f18=other->f18; f20=other->f20; f28=other->f28; ((Unk_IntTriple&)f38).Copy((const Unk_IntTriple&)other->f38); f44=other->f44; f30=other->f30; f34=other->f34; f48=other->f48; f50=other->f50; f58=other->f58; }
 }
 
 // @0x1404c8a20
-void CSearchGuildJoin::FUN_1404c8a20(COutPacket* out)
+void CSearchGuildJoin::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404c8a50
-void CSearchGuildJoin::FUN_1404c8a50(CInPacket* in)
+void CSearchGuildJoin::ReadPacket(CInPacket* in)
 {
-    FUN_1404c8be0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c8aa0
@@ -532,7 +532,7 @@ void CSearchGuildJoin::Write(COutputStream& out)
 }
 
 // @0x1404c8be0
-void CSearchGuildJoin::FUN_1404c8be0(CInputStream& in)
+void CSearchGuildJoin::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt64(); f20=in.ReadUnicodeString(); f28=in.ReadUnicodeStringA(); ((Unk_IntTriple&)f38).Read(in); f44=in.ReadInt32(); f30=in.ReadInt32(); f34=in.ReadInt32(); f48=in.ReadInt64(); f50=in.ReadInt64(); f58=in.ReadUnicodeString();
 }
@@ -540,7 +540,7 @@ void CSearchGuildJoin::FUN_1404c8be0(CInputStream& in)
 // @0x1404c8de0
  CGuildInviteInfo::CGuildInviteInfo()
 {
-    FUN_1404c8f00();
+    Reset();
 }
 
 // @0x1404c8e80
@@ -550,15 +550,15 @@ void CSearchGuildJoin::FUN_1404c8be0(CInputStream& in)
 }
 
 // @0x1404c8f00
-void CGuildInviteInfo::FUN_1404c8f00()
+void CGuildInviteInfo::Reset()
 {
     f18=0; f20.Empty(); f28.Empty(); f30.Empty(); f38.Empty();
 }
 
 // @0x1404c8f70
-void CGuildInviteInfo::FUN_1404c8f70(const CGuildInviteInfo* other)
+void CGuildInviteInfo::CopyFrom(const CGuildInviteInfo* other)
 {
-    if(!other) FUN_1404c8f00(); else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; }
+    if(!other) Reset(); else { f18=other->f18; f20=other->f20; f28=other->f28; f30=other->f30; f38=other->f38; }
 }
 
 // @0x1404c9020
@@ -575,7 +575,7 @@ void CGuildInviteInfo::Write(COutputStream& out)
 }
 
 // @0x1404c9230
-void CGuildInviteInfo::FUN_1404c9230(CInputStream& in)
+void CGuildInviteInfo::ReadStream(CInputStream& in)
 {
     f18=in.ReadInt64(); f20=in.ReadUnicodeString(); f28=in.ReadUnicodeStringA(); f30=in.ReadUnicodeString(); f38=in.ReadUnicodeString();
 }
@@ -583,7 +583,7 @@ void CGuildInviteInfo::FUN_1404c9230(CInputStream& in)
 // @0x1404c93c0
  Unk_GuildMemberData::Unk_GuildMemberData()
 {
-    FUN_1404c9490();
+    Reset();
 }
 
 // @0x1404c9440
@@ -593,7 +593,7 @@ void CGuildInviteInfo::FUN_1404c9230(CInputStream& in)
 }
 
 // @0x1404c9490
-void Unk_GuildMemberData::FUN_1404c9490()
+void Unk_GuildMemberData::Reset()
 {
     f00=0; f08=0; f10=3; f14=0; f18=0; f1c=0; f20=0; f24=0; f28=0; ((Unk_IntTriple&)f2c).Clear(); f38=0; f3c=0; f40=0; f48=0; SetName(L""); SetCode("");
 }
@@ -611,15 +611,15 @@ void Unk_GuildMemberData::FUN_1404c95f0(CInPacket& in)
 }
 
 // @0x1404c9640
-void Unk_GuildMemberData::FUN_1404c9640(COutPacket* out)
+void Unk_GuildMemberData::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404c9670
-void Unk_GuildMemberData::FUN_1404c9670(CInPacket* in)
+void Unk_GuildMemberData::ReadPacket(CInPacket* in)
 {
-    FUN_1404c9bd0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404c96c0
@@ -641,7 +641,7 @@ void Unk_GuildMemberData::Write(COutputStream& out)
 }
 
 // @0x1404c9bd0
-void Unk_GuildMemberData::FUN_1404c9bd0(CInputStream& in)
+void Unk_GuildMemberData::ReadStream(CInputStream& in)
 {
     CStringW n; CString c; f00=in.ReadInt64(); f08=in.ReadInt64(); n=in.ReadUnicodeString(); f10=in.ReadUInt8(); f14=in.ReadInt32(); f18=in.ReadInt32(); f1c=in.ReadInt16(); f20=in.ReadInt32(); f24=in.ReadInt32(); f28=(unsigned short)in.ReadInt16(); c=in.ReadUnicodeStringA(); f38=in.ReadInt32(); f3c=in.ReadInt32(); f40=in.ReadInt32(); f48=in.ReadInt64(); ((Unk_IntTriple&)f2c).Read(in); SetName(n); SetCode(c);
 }
@@ -659,7 +659,7 @@ void Unk_GuildMemberData::FUN_1404c9fe0(CInputStream& in)
 }
 
 // @0x1404ca1a0
-void Unk_GuildMemberData::FUN_1404ca1a0(const Unk_GuildMemberData& other)
+void Unk_GuildMemberData::CopyFrom(const Unk_GuildMemberData& other)
 {
     CStringW n; CString c; f00=other.f00; f08=other.f08; n=other.name; f10=other.f10; f14=other.f14; f18=other.f18; f1c=other.f1c; f20=other.f20; f24=other.f24; f28=other.f28; c=other.code; f38=other.f38; f3c=other.f3c; f40=other.f40; f48=other.f48; ((Unk_IntTriple&)f2c).Copy((const Unk_IntTriple&)other.f2c); SetName(n); SetCode(c);
 }
@@ -679,7 +679,7 @@ void Unk_GuildMemberData::FUN_1404ca3e0(Unk_GuildCharacter* other)
     f20=other->m_d0;
     f24=other->m_2c;
     f28=other->m_38;
-    c=((Unk_UserProxy*)other)->FUN_1408f1a60();
+    c=((Unk_UserProxy*)other)->GetImage();
     f38=other->m_98;
     f3c=other->m_9c;
     f40=other->m_a0;
@@ -690,7 +690,7 @@ void Unk_GuildMemberData::FUN_1404ca3e0(Unk_GuildCharacter* other)
 }
 
 // @0x1404ca680
-void Unk_GuildMemberData::FUN_1404ca680(const CGuildJoinRequestForGuild* other)
+void Unk_GuildMemberData::SetFromJoinRequest(const CGuildJoinRequestForGuild* other)
 {
     if(!other) return;
     CStringW n; CString c; f00=other->f28; f08=other->f30; n=other->f38; f10=0; f14=other->f48; f18=other->f4c; f1c=(short)other->f50; f20=0; f24=0; f28=1; c=other->f40; f38=0; f3c=0; f40=0; f48=0; ((Unk_IntTriple&)f2c).Copy((const Unk_IntTriple&)other->f54); SetName(n); SetCode(c);
@@ -733,7 +733,7 @@ void Unk_GuildMemberData::SetCode(CString value)
 }
 
 // @0x1404cab20
-bool CGuildMemberRaid::FUN_1404cab20()
+bool CGuildMemberRaid::Clear()
 {
     Unk_CriticalSectionLock guard(lock,1);
     if (raids.empty())
@@ -786,7 +786,7 @@ void CGuildMemberRaid::Write(COutputStream& out)
 }
 
 // @0x1404cb070
-void CGuildMemberRaid::FUN_1404cb070(CInputStream& in)
+void CGuildMemberRaid::ReadStream(CInputStream& in)
 {
     Unk_CriticalSectionLock guard(lock,1); raids.clear(); int count=in.ReadInt32(); for(int i=0;i<count;++i) { unsigned long id=in.ReadInt32(); int value=in.ReadInt32(); raids[id]=value; }
 }
@@ -794,7 +794,7 @@ void CGuildMemberRaid::FUN_1404cb070(CInputStream& in)
 // @0x1404cb150
  CGuildMember::CGuildMember()
 {
-    FUN_1404cb250();
+    Reset();
 }
 
 // @0x1404cb1e0
@@ -804,13 +804,13 @@ void CGuildMemberRaid::FUN_1404cb070(CInputStream& in)
 }
 
 // @0x1404cb250
-void CGuildMember::FUN_1404cb250()
+void CGuildMember::Reset()
 {
-    f18=0; data.FUN_1404c9490(); fb4=0; fb0=0; fb8.Empty(); fc0=0; fc8=0; fd0=0; fd8=0; fe0=0; fe4=0; fe8=0; fec=0; ff0=0; ff8=0; raid.FUN_1404cab20(); f158=1;
+    f18=0; data.Reset(); fb4=0; fb0=0; fb8.Empty(); fc0=0; fc8=0; fd0=0; fd8=0; fe0=0; fe4=0; fe8=0; fec=0; ff0=0; ff8=0; raid.Clear(); f158=1;
 }
 
 // @0x1404cb370
-int CGuildMember::FUN_1404cb370()
+int CGuildMember::GetItemLevel()
 {
     return data.f20;
 }
@@ -835,15 +835,15 @@ int CGuildMember::FUN_1404cb3e0()
 }
 
 // @0x1404cb420
-void CGuildMember::FUN_1404cb420(COutPacket* out)
+void CGuildMember::WritePacket(COutPacket* out)
 {
     Write(*out);
 }
 
 // @0x1404cb450
-void CGuildMember::FUN_1404cb450(CInPacket* in)
+void CGuildMember::ReadPacket(CInPacket* in)
 {
-    FUN_1404cb6c0(*static_cast<CInputStream*>(in));
+    ReadStream(*static_cast<CInputStream*>(in));
 }
 
 // @0x1404cb4a0
@@ -853,9 +853,9 @@ void CGuildMember::Write(COutputStream& out)
 }
 
 // @0x1404cb6c0
-void CGuildMember::FUN_1404cb6c0(CInputStream& in)
+void CGuildMember::ReadStream(CInputStream& in)
 {
-    fb0=in.ReadUInt8(); fb4=in.ReadUInt8(); if(fb0==3) { f18=in.ReadInt64(); data.FUN_1404c9bd0(in); fb8=in.ReadUnicodeString(); fc8=in.ReadInt64(); fd0=in.ReadInt64(); fd8=in.ReadInt64(); fe0=in.ReadInt32(); fe4=in.ReadInt32(); fe8=in.ReadInt32(); fec=in.ReadInt32(); ff0=in.ReadInt32(); ff8=in.ReadInt64(); raid.FUN_1404cb070(in); f158=in.ReadUInt8(); } else { f18=in.ReadInt64(); data.FUN_1404c9fe0(in); }
+    fb0=in.ReadUInt8(); fb4=in.ReadUInt8(); if(fb0==3) { f18=in.ReadInt64(); data.ReadStream(in); fb8=in.ReadUnicodeString(); fc8=in.ReadInt64(); fd0=in.ReadInt64(); fd8=in.ReadInt64(); fe0=in.ReadInt32(); fe4=in.ReadInt32(); fe8=in.ReadInt32(); fec=in.ReadInt32(); ff0=in.ReadInt32(); ff8=in.ReadInt64(); raid.ReadStream(in); f158=in.ReadUInt8(); } else { f18=in.ReadInt64(); data.FUN_1404c9fe0(in); }
 }
 
 // @0x1404cb910
@@ -909,7 +909,7 @@ int CGuildSkill::GetRemainingCooldown()
 }
 
 // @0x1404cbcd0
-bool CGuildSkill::FUN_1404cbcd0()
+bool CGuildSkill::IsUsable()
 {
     if(GetRemainingDuration()>0) return false;
     int n=GetRemainingCooldown(); if(n>0) return false;
@@ -919,7 +919,7 @@ bool CGuildSkill::FUN_1404cbcd0()
 // @0x1404cbd20
 bool CGuildSkill::FUN_1404cbd20()
 {
-    if(!FUN_1404cbcd0()) return false;
+    if(!IsUsable()) return false;
     f20=GetServerTime();
     return true;
 }
@@ -936,7 +936,7 @@ CGuildCustomEvent::~CGuildCustomEvent()
 }
 
 // @0x1404cbde0
-void CGuildCustomEvent::FUN_1404cbde0(const CGuildCustomEvent* other)
+void CGuildCustomEvent::CopyFrom(const CGuildCustomEvent* other)
 {
     f18=other->f18; f20=other->f20;
 }
@@ -948,13 +948,13 @@ void CGuildCustomEvent::Write(COutputStream& out)
 }
 
 // @0x1404cbe70
-void CGuildCustomEvent::FUN_1404cbe70(CInPacket& packet)
+void CGuildCustomEvent::ReadPacket(CInPacket& packet)
 {
     f18=packet.ReadInt32(); f20=(unsigned)packet.ReadInt32();
 }
 
 // @0x1404cbee0
-bool CGuildCustomEvent::FUN_1404cbee0()
+bool CGuildCustomEvent::IsActive()
 {
     __int64 now=GetServerTime();
     if(f20+0x1e>now) return true;
@@ -983,7 +983,7 @@ CGuildStorage::~CGuildStorage()
 }
 
 // @0x1404cc110
-void CGuildStorage::FUN_1404cc110(const CGuildStorage* other)
+void CGuildStorage::CopyFrom(const CGuildStorage* other)
 {
     f18.clear();
     f18=other->f18;
@@ -999,7 +999,7 @@ void CGuildStorage::Write(COutputStream& out)
 }
 
 // @0x1404cc210
-void CGuildStorage::FUN_1404cc210(CInPacket& packet)
+void CGuildStorage::ReadPacket(CInPacket& packet)
 {
     f18.clear();
     unsigned __int64 count=(unsigned)packet.ReadInt32();
@@ -1021,7 +1021,7 @@ CGuildNpc::~CGuildNpc()
 }
 
 // @0x1404cc3b0
-void CGuildNpc::FUN_1404cc3b0(const CGuildNpc* other)
+void CGuildNpc::CopyFrom(const CGuildNpc* other)
 {
     f18=other->f18; f1c=other->f1c;
 }
@@ -1033,7 +1033,7 @@ void CGuildNpc::Write(COutputStream& out)
 }
 
 // @0x1404cc440
-void CGuildNpc::FUN_1404cc440(CInPacket& packet)
+void CGuildNpc::ReadPacket(CInPacket& packet)
 {
     f18=packet.ReadInt32(); f1c=packet.ReadInt32();
 }
@@ -1041,7 +1041,7 @@ void CGuildNpc::FUN_1404cc440(CInPacket& packet)
 // @0x1404cc4b0
 CGuildInfo::CGuildInfo()
 {
-    FUN_1404cc900();
+    Reset();
     f360.AssignRaw(new CGuildNpcShopMgr);
 }
 
@@ -1051,7 +1051,7 @@ CGuildInfo::~CGuildInfo()
 }
 
 // @0x1404cc900
-void CGuildInfo::FUN_1404cc900()
+void CGuildInfo::Reset()
 {
     f38=0; f40=""; f48=""; f50=0; f58=""; f60=""; f68=0; f70=0; f78=0; f80=""; f88=0; f90=0; f98="";
     fc0=0; fc4=0; fd8.Empty(); fc8=0; fd0=0;
@@ -1258,7 +1258,7 @@ void CGuildInfo::Read(CInPacket& packet)
         SetMaster(l48,l50,s198,1);
         SetCreateTime(l40);
         FUN_1404d11b0(v6,v7,v8,v9,v10,v11,v12);
-        FUN_1404d1140(b2);
+        SetPvpState(b2);
         FUN_1404d3600(v13);
         FUN_1404d17e0(b3,v14);
         SetExp(v15);
@@ -1266,7 +1266,7 @@ void CGuildInfo::Read(CInPacket& packet)
         SetEventFund(v17,false);
         ReadMembers(packet); ReadGrades(packet); ReadSkills(packet); ReadCustomEvents(packet);
         FUN_1404cf1e0(packet); ReadNpcs(packet); ReadNpcShop(packet);
-        storage.FUN_1404cc210(packet);
+        storage.ReadPacket(packet);
     }
 }
 
@@ -1278,7 +1278,7 @@ void CGuildInfo::WriteMembers(COutputStream& out)
         out.WriteUInt8(count);
         for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;f320.GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*((struct Unk_GuildRef*)&((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetValueAt((struct __POSITION*)(pos)))));
-            ref->FUN_1404cb420((COutPacket*)&out);
+            ref->WritePacket((COutPacket*)&out);
         }
     }
 }
@@ -1290,7 +1290,7 @@ void CGuildInfo::ReadMembers(CInPacket& packet)
         int count=packet.ReadUInt8();
         for(int i=0;i<count;++i) {
             MS2Ptr<CGuildMember> member(new CGuildMember);
-            member->FUN_1404cb450(&packet);
+            member->ReadPacket(&packet);
             vfunc_0(member);
         }
     }
@@ -1317,7 +1317,7 @@ void CGuildInfo::ReadGrades(CInPacket& packet)
         fa0.SetCount(count);
         for(int i=0;i<count;++i) {
             MS2Ptr<CGuildGrade> grade(new CGuildGrade);
-            grade->FUN_1404c71d0(packet);
+            grade->ReadPacket(packet);
             fa0.SetAt(i,grade);
         }
     }
@@ -1369,7 +1369,7 @@ void CGuildInfo::ReadCustomEvents(CInPacket& packet)
         int count=packet.ReadUInt8();
         for(int i=0;i<count;++i) {
             MS2Ptr<CGuildCustomEvent> ev(new CGuildCustomEvent);
-            ev->FUN_1404cbe70(packet);
+            ev->ReadPacket(packet);
             f280.SetAt(ev->f18,ev);
         }
     }
@@ -1425,7 +1425,7 @@ void CGuildInfo::ReadNpcs(CInPacket& packet)
     int count=packet.ReadUInt8();
     for(int i=0;i<count;++i) {
         MS2Ptr<CGuildNpc> ref(new CGuildNpc);
-        ref->FUN_1404cc440(packet);
+        ref->ReadPacket(packet);
         f2c8.SetAt(reinterpret_cast<Unk_GuildNpcKind&>(ref->f18),ref);
     }
 }
@@ -1523,7 +1523,7 @@ void CGuildInfo::FUN_1404cfdb0(const CStringW& name,int value)
 }
 
 // @0x1404cfe60
-void CGuildInfo::FUN_1404cfe60(const CStringW& name,__int64 value)
+void CGuildInfo::SetMemberContribution(const CStringW& name,__int64 value)
 {
     MS2Ptr<CGuildMember> ref(0);
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
@@ -1585,7 +1585,7 @@ void CGuildInfo::FUN_1404d0330(void* out)
 }
 
 // @0x1404d0420
-void CGuildInfo::FUN_1404d0420(void* out)
+void CGuildInfo::GetMembers(void* out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         for(void* pos=((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition());pos!=0;f320.GetNext(reinterpret_cast<POSITION&>(pos))) {
@@ -1670,7 +1670,7 @@ CStringW CGuildInfo::GetGradeName(int index)
 }
 
 // @0x1404d0c00
-int CGuildInfo::FUN_1404d0c00()
+int CGuildInfo::GetTotalTrophy()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
@@ -1697,7 +1697,7 @@ int CGuildInfo::FUN_1404d0d00()
 }
 
 // @0x1404d0df0
-int CGuildInfo::FUN_1404d0df0()
+int CGuildInfo::GetTotalItemLevel()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
@@ -1737,13 +1737,13 @@ void CGuildInfo::SetScore(int v)
 }
 
 // @0x1404d10d0
-unsigned CGuildInfo::FUN_1404d10d0()
+unsigned CGuildInfo::GetPvpState()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f130; }
 }
 
 // @0x1404d1140
-void CGuildInfo::FUN_1404d1140(int v)
+void CGuildInfo::SetPvpState(int v)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { f130=v; }
 }
@@ -1853,7 +1853,7 @@ void CGuildInfo::SetExp(int v)
 }
 
 // @0x1404d1990
-bool CGuildInfo::FUN_1404d1990(int delta)
+bool CGuildInfo::AddExp(int delta)
 {
     Unk_CriticalSectionLock guard(lock,1);
     int before=f15c;
@@ -1887,7 +1887,7 @@ void CGuildInfo::SetFund(int v,bool bNotify)
 }
 
 // @0x1404d1ba0
-bool CGuildInfo::FUN_1404d1ba0(int delta)
+bool CGuildInfo::AddFund(int delta)
 {
     Unk_CriticalSectionLock guard(lock,1);
     int before=f160;
@@ -1909,7 +1909,7 @@ void CGuildInfo::SetEventFund(int v,bool bNotify)
 }
 
 // @0x1404d1d00
-bool CGuildInfo::FUN_1404d1d00(int delta)
+bool CGuildInfo::AddEventFund(int delta)
 {
     Unk_CriticalSectionLock guard(lock,1);
     int before=f164;
@@ -2124,7 +2124,7 @@ void CGuildInfo::FUN_1404d2b00(int a,void* b)
 void CGuildInfo::FUN_1404d2ba0(int a,void* b)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else if(f360) {
-        f360->FUN_1404d9060(a,(CInPacket*)b);
+        f360->ReadShopProduct(a,(CInPacket*)b);
     }
 }
 
@@ -2141,7 +2141,7 @@ int CGuildInfo::FUN_1404d2ca0()
 }
 
 // @0x1404d2cc0
-void CGuildInfo::FUN_1404d2cc0(ItemEntity* item)
+void CGuildInfo::SetStorageItem(ItemEntity* item)
 {
     Unk_CriticalSectionLock guard(lock,1);
     std::pair<unsigned,int> key(item->vfunc_o18_0(),item->vfunc_o18_1());
@@ -2210,7 +2210,7 @@ void CGuildInfo::UpdateSeason()
 {
     MS2Ptr<CSeasonData> spData=CSeasonDataTable::GetInstance()->GetCurrent((SeasonRankType)2);
     if(spData==NULL) {
-        season.FUN_1404c5d20();
+        season.Reset();
         return;
     }
     if(season.id!=spData->m_nSeasonID) {
@@ -2238,7 +2238,7 @@ int CGuildInfo::FUN_1404d3400(ATL::CAtlMap<__int64,__int64>* out)
             if(spMember==NULL) continue;
             if(spMember->f158!=0) continue;
             if(spMember->fb0!=3) continue;
-            MS2Ptr<CFieldData> spField=CFieldData::FUN_140374140(spMember->data.f24);
+            MS2Ptr<CFieldData> spField=CFieldData::FindField(spMember->data.f24);
             if(spField==NULL) continue;
             if(spField->HasTutorialType()==1) continue;
             out->SetAt(spMember->data.f08,spMember->data.f08);
@@ -2260,13 +2260,13 @@ int CGuildInfo::FUN_1404d3620()
 }
 
 // @0x1404d3640
-MS2Ptr<CGuildNpcShopMgr> CGuildInfo::FUN_1404d3640()
+MS2Ptr<CGuildNpcShopMgr> CGuildInfo::GetNpcShopMgr()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else { return f360; }
 }
 
 // @0x1404d36d0
-void CGuildInfo::FUN_1404d36d0()
+void CGuildInfo::ResetGrades()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         fa0.RemoveAll();
@@ -2294,13 +2294,13 @@ void CGuildInfo::FUN_1404d36d0()
 
 
 // @0x1404d3b80
-void CGuildInfo::FUN_1404d3b80()
+void CGuildInfo::ResetSkills()
 {
     Unk_CriticalSectionLock guard(lock,1);
     f238.RemoveAll();
     {
         std::vector<int> v1;
-        TSingleton<CGuildXmlData>::GetInstance()->FUN_1404d7630(v1);
+        TSingleton<CGuildXmlData>::GetInstance()->GetGuildSkillIds(v1);
         for(unsigned __int64 i=0;i<v1.size();++i) {
             MS2Ptr<CGuildSkill> ref(new CGuildSkill);
             ref->f18=v1[i];
@@ -2321,7 +2321,7 @@ void CGuildInfo::FUN_1404d3b80()
 }
 
 // @0x1404d3e70
-void CGuildInfo::FUN_1404d3e70()
+void CGuildInfo::ResetCustomEvents()
 {
     Unk_CriticalSectionLock guard(lock,1);
     f280.RemoveAll();

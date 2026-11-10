@@ -53,7 +53,7 @@ public:
 // Entity properties read by hash.
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
-void FUN_1401d3700(CString& str);
+void ToLower(CString& str);
 
 // The item service handed out by the global at 0x143b059e8 (reference counted) and its cube lookup.
 class Unk_LiftCube : public Cube
@@ -102,7 +102,7 @@ struct Unk_LiftQuestMgr
     Unk_LiftQuestCond m_cond;                                       // +0x10
 };
 void* FUN_140764020();   // C3: was FUN_140764020
-int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
+int ParseQuestMask(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds
@@ -186,7 +186,7 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
         efd::utf8string name;
         efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetDataFileID(), name);
         m_strName = name.c_str();
-        FUN_1401d3700(m_strName);
+        ToLower(m_strName);
     }
     float fRange = 150.0f;
     if (m_ent->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
@@ -206,7 +206,7 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(pt));
         Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(FUN_1408a03c0(cell));
         if (pCube != 0)
-            m_nA8 = pCube->FUN_1408b4f20();
+            m_nA8 = pCube->GetItemId();
     }
     UpdateConditions();
     NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyAddLiftable(this)));
@@ -215,13 +215,13 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
 // @0x1414477f0
 void CLiftableObject::FUN_1414477f0(CString strA, CString strB)
 {
-    FUN_140764310(strA, strB, &m_maskA);
+    ParseQuestMask(strA, strB, &m_maskA);
 }
 
 // @0x141447850
 void CLiftableObject::FUN_141447850(CString strA, CString strB)
 {
-    FUN_140764310(strA, strB, &m_maskB);
+    ParseQuestMask(strA, strB, &m_maskB);
 }
 
 // @0x1414478b0

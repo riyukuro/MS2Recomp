@@ -34,7 +34,7 @@ void* FUN_141200ab0(CEquipModel* pModel);                         // C3: the par
 struct Unk_EmPlayer : public PC
 {
 };
-struct Unk_EmWorld { Unk_EmPlayer* FUN_141bd0cc0(); };          // the local player
+struct Unk_EmWorld { Unk_EmPlayer* GetLocalPlayer(); };          // the local player
 
 // The app framework: +8 is the game context, whose +8 (CMainSystem+0x10) holds the service manager.
 class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera)
@@ -132,7 +132,7 @@ NiAVObject* CEquipModel::GetPartMesh(const CString* pPartName) const
 
 // @0x141167840
 // Sets the value of every interpolator of the first interpolator controller of the node named strName, then updates it.
-void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
+void SetMorphWeight(NiAVObject* pRoot, const CString& strName, float fValue)
 {
     if (pRoot == 0)
         return;
@@ -158,11 +158,11 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
 // @0x1411679d0
 // Highlights (fMode != 0) or un-highlights the meshes of the part; pNode narrows the highlight to one mesh.
 // The skip-tag test reads the extra data of the root, not of each walked node (as in the exe).
-void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
+void CEquipModel::SetHighlight(float fScale, float fMode, NiAVObject* pNode)
 {
     if (this == 0)
         return;
-    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     CAtlArray<NiAVObject*> aRoots;
@@ -206,7 +206,7 @@ void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 // The mesh named strName of the local player's equipment slot of that name (from the equip item's parts, else the actor's model).
 NiAVObject* FUN_141167cf0(const CString& strName)
 {
-    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_EmPlayer* pPlayer = ((Unk_EmPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     {

@@ -44,8 +44,8 @@ class Unk_TrScript
 public:
     // C3: FUN_140eba060 is AScript::FUN_140eba060(const char*, const AScript&, unsigned) (ascript.h)
 };
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetString(Scaleform::GFx::Value* pValue, const char* szText);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 
 // The counter tables (0x143ab3010): lookup by (kind, id) with a default.
 class Unk_AttendTable { public: int GetValue(int nKind, unsigned nId, const int& nDefault); };
@@ -57,7 +57,7 @@ class UIGameMenuDialog* FindGameMenuDialog(int nType);
 void* GetGameRule();
 void* FUN_140764020();
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 int FUN_140718170(const CString& str);
 __int64 GetServerTime();                                // the server time
 __int64 FUN_140761ba0(int nA, int nB);
@@ -84,7 +84,7 @@ CString UITimeRunEventDialog::GetTypeName() { return "TimeRunEventDialog"; }
 int UITimeRunEventDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65()) return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     return 1;
 }
 
@@ -92,7 +92,7 @@ int UITimeRunEventDialog::vfunc_65()
 void UITimeRunEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
@@ -141,7 +141,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
             int nQuest = pArgs->PopUInt();
             MS2Ptr<CQuestData> data = GetQuestData(nQuest);
             if (data.get() != 0) {
-                void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
+                void* pMyPC = WorldService::GetInstance()->GetLocalPlayer();
                 if (pMyPC == 0) return;
                 ASTooltip tip(2);
                 if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nQuest, 1)))) {
@@ -482,8 +482,8 @@ Scaleform::GFx::Value AScript::FUN_140ee5060(const char* szMethod, CString a1, b
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], (const char*)a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetString(&args[0], (const char*)a1);
+    SetBoolean(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

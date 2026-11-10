@@ -23,7 +23,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 __int64 GetServerTime();                                                       // current server time
-CStringW FUN_14083d340(CStringW);
+CStringW GetLocalizedText(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 
 
@@ -203,7 +203,7 @@ bool Unk_MailTimeRange::IsUnclaimed() const
     return m_nBegin > 0 && m_nClaim == 0;
 }
 
-bool Unk_MailTimeRange::FUN_140693b00(__int64 claim)
+bool Unk_MailTimeRange::TryClaim(__int64 claim)
 {
     if (m_nClaim != 0)
         return false;
@@ -383,27 +383,27 @@ void CMailInfo::FUN_140690d20(__int64 a, __int64 b)
     m_rangeB0.m_nClaim = b;
 }
 
-void CMailInfo::FUN_140690d60(__int64 time)
+void CMailInfo::ClaimRangeB0(__int64 time)
 {
-    if (m_rangeB0.FUN_140693b00(time) == 1)
+    if (m_rangeB0.TryClaim(time) == 1)
         SetState(1);
 }
 
-__int64 CMailInfo::FUN_140690db0() const { return m_rangeB0.m_nBegin; }
-__int64 CMailInfo::FUN_140690dd0() const { return m_rangeB0.m_nClaim; }
+__int64 CMailInfo::GetRangeB0Begin() const { return m_rangeB0.m_nBegin; }
+__int64 CMailInfo::GetRangeB0Claim() const { return m_rangeB0.m_nClaim; }
 
-void CMailInfo::FUN_140690df0(__int64 time)
+void CMailInfo::ClaimRangeC0(__int64 time)
 {
-    if (m_rangeC0.FUN_140693b00(time) == 1)
+    if (m_rangeC0.TryClaim(time) == 1)
         SetState(1);
 }
 
-__int64 CMailInfo::FUN_140690e40() const { return m_rangeC0.m_nBegin; }
+__int64 CMailInfo::GetRangeC0Begin() const { return m_rangeC0.m_nBegin; }
 __int64 CMailInfo::FUN_140690e60() const { return m_rangeC0.m_nClaim; }
 
 void CMailInfo::FUN_140690e80(__int64 time)
 {
-    if (m_rangeD0.FUN_140693b00(time) == 1)
+    if (m_rangeD0.TryClaim(time) == 1)
         SetState(1);
 }
 
@@ -652,9 +652,9 @@ void CMailInfo::Read(CInPacket& packet)
     }
     if (!FUN_1406926e0(m_nKind))
     {
-        m_str30 = FUN_14083d340(m_str30);
-        m_str48 = FUN_14083d340(m_str48);
-        m_str50 = FUN_14083d340(m_str50);
+        m_str30 = GetLocalizedText(m_str30);
+        m_str48 = GetLocalizedText(m_str48);
+        m_str50 = GetLocalizedText(m_str50);
         MailText repl0(0);
         repl0.Load(m_str30, L"");
         MailText repl1(1);

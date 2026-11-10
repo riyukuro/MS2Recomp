@@ -135,11 +135,11 @@ MS2_REPLACE(0x1407180B0, FUN_1407180b0, 34, 0x025377C4);
 int FUN_1407180e0(const CStringW& value) { return (int)_wtoi(value); }
 MS2_REPLACE(0x1407180E0, FUN_1407180e0, 34, 0xEFA5A5A7);
 // @0x140718110
-unsigned short FUN_140718110(const CString& value) { return (unsigned short)atoi(value); }
-MS2_REPLACE(0x140718110, FUN_140718110, 34, 0xDD3E476F);
+unsigned short ParseUInt16(const CString& value) { return (unsigned short)atoi(value); }
+MS2_REPLACE(0x140718110, ParseUInt16, 34, 0xDD3E476F);
 // @0x140718140
-unsigned FUN_140718140(const CStringW& value) { return (unsigned)_wtoi(value); }
-MS2_REPLACE(0x140718140, FUN_140718140, 34, 0x72E13427);
+unsigned ParseUIntW(const CStringW& value) { return (unsigned)_wtoi(value); }
+MS2_REPLACE(0x140718140, ParseUIntW, 34, 0x72E13427);
 // @0x140718170
 int FUN_140718170(const CString& value) { return atoi(value); }
 MS2_REPLACE(0x140718170, FUN_140718170, 34, 0x6A12126F);
@@ -147,56 +147,56 @@ MS2_REPLACE(0x140718170, FUN_140718170, 34, 0x6A12126F);
 int FUN_1407181a0(const CStringW& value) { return _wtoi(value); }
 MS2_REPLACE(0x1407181A0, FUN_1407181a0, 34, 0x98CF054B);
 // @0x1407181d0
-unsigned int FUN_1407181d0(const CString& value) { return atoi(value); }
-MS2_REPLACE(0x1407181D0, FUN_1407181d0, 34, 0x50004183);
+unsigned int ParseUInt(const CString& value) { return atoi(value); }
+MS2_REPLACE(0x1407181D0, ParseUInt, 34, 0x50004183);
 // @0x140718200
 int FUN_140718200(const CStringW& value) { return _wtoi(value); }
 MS2_REPLACE(0x140718200, FUN_140718200, 34, 0x3EB409CB);
 // @0x140718230
-long FUN_140718230(const CString& value) { return (long)atol(value); }
-MS2_REPLACE(0x140718230, FUN_140718230, 34, 0x72CD199B);
+long ParseLong(const CString& value) { return (long)atol(value); }
+MS2_REPLACE(0x140718230, ParseLong, 34, 0x72CD199B);
 // @0x140718260
-long FUN_140718260(const CStringW& value) { return (long)_wtol(value); }
-MS2_REPLACE(0x140718260, FUN_140718260, 34, 0xB8D1A564);
+long ParseLongW(const CStringW& value) { return (long)_wtol(value); }
+MS2_REPLACE(0x140718260, ParseLongW, 34, 0xB8D1A564);
 // @0x140718290
-unsigned long FUN_140718290(const CString& value) { return (unsigned long)atol(value); }
-MS2_REPLACE(0x140718290, FUN_140718290, 34, 0x7790581B);
+unsigned long ParseULong(const CString& value) { return (unsigned long)atol(value); }
+MS2_REPLACE(0x140718290, ParseULong, 34, 0x7790581B);
 // @0x1407182c0
-unsigned long FUN_1407182c0(const CStringW& value) { return (unsigned long)_wtol(value); }
-MS2_REPLACE(0x1407182C0, FUN_1407182c0, 34, 0xBBFF2B24);
+unsigned long ParseULongW(const CStringW& value) { return (unsigned long)_wtol(value); }
+MS2_REPLACE(0x1407182C0, ParseULongW, 34, 0xBBFF2B24);
 // @0x1407182f0
 __int64 FUN_1407182f0(const CString& value) { return (__int64)_atoi64(value); }
 MS2_REPLACE(0x1407182F0, FUN_1407182f0, 34, 0xBE8E21FF);
 // @0x140718320
-__int64 FUN_140718320(const CStringW& value) { return (__int64)_wtoi64(value); }
-MS2_REPLACE(0x140718320, FUN_140718320, 34, 0xA55FE927);
+__int64 ParseInt64W(const CStringW& value) { return (__int64)_wtoi64(value); }
+MS2_REPLACE(0x140718320, ParseInt64W, 34, 0xA55FE927);
 // @0x140718350
 unsigned __int64 FUN_140718350(const CString& value) {return XmlConvert<unsigned __int64>(value);}
 MS2_REPLACE(0x140718350, FUN_140718350, 24, 0xFD556A71);
 // @0x140718370
-unsigned __int64 FUN_140718370(const CStringW& value) {return FUN_1403d7cb0(value);}
-MS2_REPLACE(0x140718370, FUN_140718370, 24, 0x4BA512C4);
+unsigned __int64 ParseUInt64W(const CStringW& value) {return FUN_1403d7cb0(value);}
+MS2_REPLACE(0x140718370, ParseUInt64W, 24, 0x4BA512C4);
 // @0x140718390
 bool FUN_140718390(const CString& value) {if(value.IsEmpty())return false;return value.FindOneOf("1oOtT")!=-1;}
 MS2_REPLACE(0x140718390, FUN_140718390, 82, 0xBF97EEFE);
 // @0x1407183f0
-bool FUN_1407183f0(const CStringW& value) {if(value.IsEmpty())return false;return value.FindOneOf(L"1oOtT")!=-1;}
-MS2_REPLACE(0x1407183F0, FUN_1407183f0, 82, 0x41F3574A);
+bool ParseBoolW(const CStringW& value) {if(value.IsEmpty())return false;return value.FindOneOf(L"1oOtT")!=-1;}
+MS2_REPLACE(0x1407183F0, ParseBoolW, 82, 0x41F3574A);
 // @0x140718450
 float FUN_140718450(const CString& value) {return (float)atof(value);}
 MS2_REPLACE(0x140718450, FUN_140718450, 38, 0xD5B205B4);
 // @0x140718480
-float FUN_140718480(const CStringW& value) {return (float)_wtof(value);}
-MS2_REPLACE(0x140718480, FUN_140718480, 38, 0x335E5377);
+float ParseFloatW(const CStringW& value) {return (float)_wtof(value);}
+MS2_REPLACE(0x140718480, ParseFloatW, 38, 0x335E5377);
 // @0x1407184b0
-double FUN_1407184b0(const CString& value) {return (double)atof(value);}
-MS2_REPLACE(0x1407184B0, FUN_1407184b0, 34, 0xD6F6A6A4);
+double ParseDouble(const CString& value) {return (double)atof(value);}
+MS2_REPLACE(0x1407184B0, ParseDouble, 34, 0xD6F6A6A4);
 // @0x1407184e0
-double FUN_1407184e0(const CStringW& value) {return (double)_wtof(value);}
-MS2_REPLACE(0x1407184E0, FUN_1407184e0, 34, 0x1A085EE7);
+double ParseDoubleW(const CStringW& value) {return (double)_wtof(value);}
+MS2_REPLACE(0x1407184E0, ParseDoubleW, 34, 0x1A085EE7);
 // @0x140718510
-char FUN_140718510(const CString& value) {if(value.GetLength()>0 && !value.IsEmpty())return value[0];return 0;}
-MS2_REPLACE(0x140718510, FUN_140718510, 64, 0x689D98BC);
+char GetFirstChar(const CString& value) {if(value.GetLength()>0 && !value.IsEmpty())return value[0];return 0;}
+MS2_REPLACE(0x140718510, GetFirstChar, 64, 0x689D98BC);
 // @0x140718560
 wchar_t FUN_140718560(const CStringW& value) {if(value.GetLength()>0 && !value.IsEmpty())return value[0];return 0;}
 MS2_REPLACE(0x140718560, FUN_140718560, 64, 0xA74129BE);
@@ -210,5 +210,5 @@ MS2_REPLACE(0x140718600, FUN_140718600, 59, 0xCCCC7D48);
 CStringW FUN_140718650(const CString& value) {return FUN_14016a730(value,0);}
 MS2_REPLACE(0x140718650, FUN_140718650, 70, 0x5C616411);
 // @0x1407186a0
-CString FUN_1407186a0(const CStringW& value) {return FUN_14016a600(value,0);}
-MS2_REPLACE(0x1407186A0, FUN_1407186a0, 70, 0x1C0BFAF3);
+CString ToNarrowString(const CStringW& value) {return FUN_14016a600(value,0);}
+MS2_REPLACE(0x1407186A0, ToNarrowString, 70, 0x1C0BFAF3);

@@ -289,8 +289,8 @@ int FUN_14074b0e0(CQuestData* data, int value, int n);
 int IsConditionTypeCounted(int nType);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;
-UIQuestEventDispatcher* FUN_140bfc4b0();
-int FUN_141276180(const CString& sound, const CString& arg);
+UIQuestEventDispatcher* GetQuestEventDispatcher();
+int PlaySystemSound(const CString& sound, const CString& arg);
 int Unk_ClubBuffTypeOf(int roomKind);
 class UIPopupNpcTalkDialog : public UIDialog {
 public:
@@ -421,7 +421,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9850, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c98a0
 unsigned short CQuestManager::vfunc_o10_4()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return player->vfunc_78();
 }
@@ -430,7 +430,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c98a0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c98f0
 int CQuestManager::vfunc_o10_5()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     MS2Ptr<CProxyGameObject> proxy = WorldService::GetInstance()->FindProxyObject(((class GameObject*)(class PCBase*)(player))->GetObjectId());
     if (proxy.IsNull()) return 0;
@@ -441,7 +441,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c98f0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c99a0
 int CQuestManager::vfunc_o10_6()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return ((class PC*)(class PCBase*)(player))->GetJobGroupId();
 }
@@ -450,7 +450,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c99a0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c99e0
 int CQuestManager::vfunc_o10_7()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return ((class PC*)(class PCBase*)(player))->GetSubJob();
 }
@@ -480,7 +480,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9a80, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9ab0
 __int64 CQuestManager::vfunc_o10_12()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     MS2Ptr<CGuildMember> member = TSingleton<CGuildManager>::GetInstance()->FindMemberByName(player->vfunc_77());
     if (member == 0) return 0;
@@ -491,7 +491,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9ab0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9b90
 __int64 CQuestManager::vfunc_o10_8()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return ((class PC*)(class PCBase*)(player))->FUN_141658eb0();
 }
@@ -508,7 +508,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9bd0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9c10
 int CQuestManager::vfunc_o10_14(int id)
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return ((class CMasteryTable*)(void*)(((void*)FUN_1409670c0())))->Grade(id, ((class PC*)(class PCBase*)(player))->GetMastery(id));
 }
@@ -545,7 +545,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9da0, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9dd0
 int CQuestManager::vfunc_o10_19()
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     return ((class PC*)(class PCBase*)(player))->IsVip();
 }
@@ -559,17 +559,17 @@ int CQuestManager::vfunc_1(int questId, int flag)
     if (!data) return 0;
     {
         if (FUN_14074b050(data.operator->()) == 4) {
-            int mapId = WorldService::GetInstance()->FUN_141bd3060();
+            int mapId = WorldService::GetInstance()->GetFieldId();
             if (data->m_fields.GetCount() == 0) return 0;
             int field = data->m_fields[0];
             if (field != mapId) {
                 unsigned parent = 0;
-                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(mapId, &parent) == 0) return 0;
+                if (TSingleton<CFieldMetaTable>::GetInstance()->GetParentField(mapId, &parent) == 0) return 0;
                 if (field != parent) return 0;
             }
         } else if (FUN_14074b050(data.operator->()) == 5) {
             if (data->m_350.m_value == 2) {
-                MS2Ptr<StampEventContext> event = ((CGameRule*)GetGameRule())->FUN_14047ca40(*(Unk_AttendTable*)&DAT_143ab2fc0);
+                MS2Ptr<StampEventContext> event = ((CGameRule*)GetGameRule())->GetStampEvent(*(Unk_AttendTable*)&DAT_143ab2fc0);
                 if (event.IsNull()) return 0;
                 if (event->HasStamp(questId) == 0) return 0;
             }
@@ -696,7 +696,7 @@ void CQuestManager::UpdateQuests()
         FUN_1416d3250();
     }
     if (m_field178 != 0) {
-        Unk_WsC_GameObj* target = WorldService::GetInstance()->FUN_141bd1320(m_field190);
+        Unk_WsC_GameObj* target = WorldService::GetInstance()->FindNpcById(m_field190);
         if (target == 0) return;
         FUN_1410943b0((class PCBase*)(target), 10);
         m_field178 = 0;
@@ -1014,7 +1014,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
                 AddQuest(quest);
                 FUN_1416cfc60(questId);
                 MarkItemsDirty();
-                FUN_140bfc4b0()->vfunc_1(quest.get());
+                GetQuestEventDispatcher()->vfunc_1(quest.get());
             }
         }
         refresh = 1;
@@ -1027,7 +1027,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         quest->SetState(1);
         quest->DecodeProgress(packet);
         refresh = quest->IsComplete();
-        FUN_140bfc4b0()->vfunc_3(quest.get());
+        GetQuestEventDispatcher()->vfunc_3(quest.get());
         int progress = static_cast<int>(quest->GetProgress(0));
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1d, questId, progress);
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)7, questId);
@@ -1041,7 +1041,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         quest->Set68(value68);
         quest->SetCompleteTime(completeTime);
         quest->Complete(packet);
-        FUN_140bfc4b0()->vfunc_2(quest.get());
+        GetQuestEventDispatcher()->vfunc_2(quest.get());
         m_levelDirty = 1;
         m_availableDirty = 1;
         refresh = 1;
@@ -1051,7 +1051,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         int questId = packet.ReadInt32();
         int result = packet.ReadInt32();
         if (result == 0) RemoveQuest(questId, 1);
-        FUN_140bfc4b0()->vfunc_7(questId, result);
+        GetQuestEventDispatcher()->vfunc_7(questId, result);
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)7, 0);
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)8, 0);
         refresh = 1;
@@ -1060,7 +1060,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         RemoveQuest(questId, 0);
-        FUN_140bfc4b0()->vfunc_5(quest.get());
+        GetQuestEventDispatcher()->vfunc_5(quest.get());
         refresh = 1;
     } else if (mode == 7) {
         int count = packet.ReadInt32();
@@ -1070,7 +1070,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
             if (quest.IsNull()) continue;
             quest->ShowExpired();
             RemoveQuest(questId, 0);
-            FUN_140bfc4b0()->vfunc_5(quest.get());
+            GetQuestEventDispatcher()->vfunc_5(quest.get());
         }
         refresh = 1;
     } else if (mode == 9) {
@@ -1079,7 +1079,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetTrackingState(tracking);
-        FUN_140bfc4b0()->vfunc_6(quest.get());
+        GetQuestEventDispatcher()->vfunc_6(quest.get());
     } else if (mode == 0x19) {
         __int64 now = packet.ReadInt64();
         POSITION pos = m_quests50.GetHeadPosition();
@@ -1216,7 +1216,7 @@ MS2_REPLACE_METHOD(0x1416ce140, CQuestManager, FUN_1416ce140, 40, 0x655404CF);
 // @0x1416ce170
 int CQuestManager::IsItemUsedByQuest(MS2Ptr<CItem> item)
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     ATL::CAtlArray<Unk_QuestItemLink> links;
     GetQuestItemLinks(item, links);
@@ -1303,7 +1303,7 @@ MS2_REPLACE_METHOD(0x1416ce6a0, CQuestManager, FUN_1416ce6a0, 438, 0xCC2D1DC6);
 // @0x1416ce860
 void CQuestManager::GetQuestItemLinks(MS2Ptr<CItem> item, ATL::CAtlArray<Unk_QuestItemLink>& out)
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return;
     if (item.IsNull()) return;
     for (size_t kind = 0; kind < 2; kind++) {
@@ -1376,7 +1376,7 @@ MS2_REPLACE_METHOD(0x1416cede0, CQuestManager, FUN_1416cede0, 417, 0xCADF5D79);
 // @0x1416cef90
 void CQuestManager::UpdateQuestProgress(int silent)
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return;
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001b) return;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
@@ -1413,13 +1413,13 @@ void CQuestManager::UpdateQuestProgress(int silent)
                     continue;
                 int increased = have > quest->GetProgress(static_cast<int>(i));
                 quest->SetProgress(static_cast<int>(i), have);
-                FUN_140bfc4b0()->vfunc_3(quest.get());
+                GetQuestEventDispatcher()->vfunc_3(quest.get());
                 WorldService::GetInstance()->FUN_141bd3860();
                 if (silent == 0 && increased != 0) {
                     quest->ShowProgress(static_cast<int>(i));
                     {
                         CString arg("");
-                        FUN_141276180(quest->IsComplete() ? s_completeSound : s_progressSound, arg);
+                        PlaySystemSound(quest->IsComplete() ? s_completeSound : s_progressSound, arg);
                     }
                     reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1d, quest->GetQuestId(), static_cast<int>(have));
                 }
@@ -1434,7 +1434,7 @@ void CQuestManager::SendQuestMode12(int questId)
 {
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
-    if (quest->FUN_1407441f0(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
+    if (quest->FUN_1407441f0(WorldService::GetInstance()->GetFieldId()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.WriteUInt8(0xc);
     packet.WriteInt32(questId);
@@ -1447,7 +1447,7 @@ void CQuestManager::SendQuestMode13(int questId)
 {
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
-    if (quest->FUN_1407443e0(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
+    if (quest->FUN_1407443e0(WorldService::GetInstance()->GetFieldId()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.WriteUInt8(0xd);
     packet.WriteInt32(questId);
@@ -1460,7 +1460,7 @@ void CQuestManager::SendQuestMode19(int questId)
 {
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
-    if (quest->FUN_140744670(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
+    if (quest->FUN_140744670(WorldService::GetInstance()->GetFieldId()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.WriteUInt8(0x13);
     packet.WriteInt32(questId);
@@ -1487,7 +1487,7 @@ void CQuestManager::FUN_1416cf980(int questId, int leave)
 {
     MS2Ptr<CQuest> quest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(questId);
     if (quest.IsNull()) return;
-    if (quest->HasMultiUserRoom(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
+    if (quest->HasMultiUserRoom(WorldService::GetInstance()->GetFieldId()) == 0) return;
     MS2Ptr<CQuestData> data = quest->GetData();
     if (!data) return;
     DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom((unsigned)data->m_30c.m_roomId);
@@ -1610,10 +1610,10 @@ MS2_REPLACE_METHOD(0x1416d0210, CQuestManager, IsLastRound, 62, 0xD8B73C66);
 int CQuestManager::FUN_1416d0260(MS2Ptr<CLearningQuestData> learning, int checkRequirements)
 {
     if (!learning) return 0;
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     if (checkRequirements != 0) {
-        if (learning->m_nReqField != 0 && learning->m_nReqField != WorldService::GetInstance()->FUN_141bd3060()) return 0;
+        if (learning->m_nReqField != 0 && learning->m_nReqField != WorldService::GetInstance()->GetFieldId()) return 0;
         if (learning->m_nReqLevel > static_cast<unsigned short>(player->vfunc_78())) return 0;
     }
     MS2Ptr<CQuestData> data = GetQuestData(learning->m_nReqQuest);
@@ -1729,13 +1729,13 @@ int CQuestManager::CanEnterSkyFortress(int mapId, int warn)
         }
         return 0;
     }
-    if (WorldService::GetInstance()->FUN_141bd3060() == mapId) {
+    if (WorldService::GetInstance()->GetFieldId() == mapId) {
         if (warn != 0) {
             ShowSystemNotice(GetStringCommonByKey(L"s_sky_fortress_warn_field"), 1, 1);
         }
         return 0;
     }
-    if (WorldService::GetInstance()->FUN_141bd3060() != 62000000 && FUN_1409312f0() == 0) {
+    if (WorldService::GetInstance()->GetFieldId() != 62000000 && FUN_1409312f0() == 0) {
         if (warn != 0) {
             ShowSystemNotice(GetStringCommonByKey(L"s_sky_fortress_warn_field"), 1, 1);
         }
@@ -1924,7 +1924,7 @@ MS2_REPLACE_METHOD(0x1416d12d0, CQuestManager, GetNpcQuestState, 987, 0x181F2CD6
 void CQuestManager::FUN_1416d16c0(int group, ATL::CAtlList<unsigned>& out)
 {
     Unk_FieldIdList npcs(10);
-    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(WorldService::GetInstance()->FUN_141bd3060(), group, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->GetGroupNpcs(WorldService::GetInstance()->GetFieldId(), group, npcs);
     ATL::CAtlArray<Unk_QmNpcQuestState> states;
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned npcId = npcs.GetAt(pos);
@@ -1939,7 +1939,7 @@ MS2_REPLACE_METHOD(0x1416d16c0, CQuestManager, FUN_1416d16c0, 306, 0x0FAF77D9);
 void CQuestManager::GetBestNpcQuestState(int group, Unk_QmNpcQuestState* best)
 {
     Unk_FieldIdList npcs(10);
-    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(WorldService::GetInstance()->FUN_141bd3060(), group, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->GetGroupNpcs(WorldService::GetInstance()->GetFieldId(), group, npcs);
     ATL::CAtlArray<Unk_QmNpcQuestState> states;
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned npcId = npcs.GetAt(pos);
@@ -1982,7 +1982,7 @@ void CQuestManager::CollectQuestTargetUsers(unsigned questId)
     for (POSITION pos = users->GetHeadPosition(); pos != 0; users->GetNext(pos)) {
         PCBase* pc = reinterpret_cast<TPtr<PCBase>&>(users->GetValueAt(pos)).get();
         if (pc == 0) continue;
-        if (world->FUN_141bd0cc0() == pc) continue;
+        if (world->GetLocalPlayer() == pc) continue;
         if (quest->CheckUserFind(pc) == 0) continue;
         m_targets250[questId].insert(pc->FUN_141656a80());
     }
@@ -2012,8 +2012,8 @@ std::pair<unsigned, __int64> CQuestManager::FindNearestQuestTarget()
     std::pair<unsigned, __int64> best(0, 0);
     WorldService* world = WorldService::GetInstance();
     if (world == 0) return best;
-    if (CFieldData::FUN_1403744a0(world->FUN_141bd3060())) return best;
-    PCBase* player = static_cast<PCBase*>(world->FUN_141bd0cc0());
+    if (CFieldData::FUN_1403744a0(world->GetFieldId())) return best;
+    PCBase* player = static_cast<PCBase*>(world->GetLocalPlayer());
     if (player == 0) return best;
     float bestDistance = FLT_MAX;
     const NiPoint3& playerPos = player->vfunc_18();
@@ -2086,7 +2086,7 @@ MS2_REPLACE_METHOD(0x1416d2600, CQuestManager, GetNextQuestId, 173, 0x8B7C30EA);
 // @0x1416d26c0
 int CQuestManager::GetFollowingQuests(int questId, std::list<unsigned>& out, int checkAccept)
 {
-    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     int job = ((class PC*)(class PCBase*)(player))->GetJobGroupId();
     MS2Ptr<CQuestData> data = GetQuestData(questId);
@@ -2194,7 +2194,7 @@ void CQuestManager::FUN_1416d3250()
 {
     if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000c) return;
     ATL::CAtlArray<unsigned> candidates;
-    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->GetAutoStartAndMapQuestIds(WorldService::GetInstance()->FUN_141bd3060(), candidates);
+    reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->GetAutoStartAndMapQuestIds(WorldService::GetInstance()->GetFieldId(), candidates);
     ATL::CAtlArray<unsigned> available;
     for (size_t i = 0; i < candidates.GetCount(); i = i + 1) {
         unsigned questId = candidates[i];
@@ -2249,7 +2249,7 @@ int CQuestManager::FUN_1416d3510()
 {
     ATL::CAtlArray<unsigned> ids;
     reinterpret_cast<Unk_QgQuestTable*>(TSingleton<QuestDataTable>::GetInstance())->GetRemoteAcceptQuestIds(ids);
-    int mapId = WorldService::GetInstance()->FUN_141bd3060();
+    int mapId = WorldService::GetInstance()->GetFieldId();
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> data = GetQuestData(ids[i]);
         if (!data) continue;
@@ -2308,7 +2308,7 @@ MS2_REPLACE_METHOD(0x1416d38a0, CQuestManager, RemoveQuestsByTypeAndState, 582, 
 // Number of distinct worn item ids that are in itemIds.
 int CQuestManager::FUN_1416d3af0(const ATL::CAtlArray<unsigned>& itemIds)
 {
-    PC* player = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* player = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0) return 0;
     ATL::CAtlList<MS2Ptr<CEquipItem>> equips(10);
     reinterpret_cast<CEquipment*>(player->GetEquipment())->CollectShownItems(equips);
@@ -2356,7 +2356,7 @@ int CQuestManager::FUN_1416d3ed0(MS2Ptr<CQuestData> data, int checkAccept, int j
     if (data->m_30 != 0) return 0;
     if (data->m_require.m_job.GetCount() != 0) {
         if (job == 200) {
-            PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+            PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
             if (player == 0) return 0;
             job = ((class PC*)(class PCBase*)(player))->GetJobGroupId();
         }

@@ -86,14 +86,14 @@ int UIAlignWidget::FUN_1422e65a0(const CString& strName, int bAny)
 MS2_REPLACE_METHOD(0x1422E65A0, UIAlignWidget, FUN_1422e65a0, 144, 0x35C92FD7);
 
 // @0x1422e6640
-void UIAlignWidget::FUN_1422e6640(const CString& strName)
+void UIAlignWidget::AddEntity(const CString& strName)
 {
     POSITION pos = m_listEntities.Find(strName);
     if (pos != NULL)
         return;
     m_listEntities.AddTail(strName);
 }
-MS2_REPLACE_METHOD(0x1422E6640, UIAlignWidget, FUN_1422e6640, 81, 0xE3730B32);
+MS2_REPLACE_METHOD(0x1422E6640, UIAlignWidget, AddEntity, 81, 0xE3730B32);
 
 // @0x1422e66a0
 void UIAlignWidget::LayoutEntities(int bAny)
@@ -176,7 +176,7 @@ void UIAlignWidgetManager::LoadWidgets()
                     XmlGetAttr((TiXmlElement*)pEntity, "name", strName);
                     if (strName.IsEmpty())
                         continue;
-                    spWidget->FUN_1422e6640(strName);
+                    spWidget->AddEntity(strName);
                 }
                 m_listWidgets.AddTail(spWidget);
             }
@@ -218,7 +218,7 @@ void UIAlignWidgetManager::ProcessPendingLayout()
 {
     if (m_bLayoutPending != 0)
     {
-        FUN_1422e6d80(m_nLayoutArg);
+        LayoutAllWidgets(m_nLayoutArg);
         m_bLayoutPending = 0;
         m_nLayoutArg = 0;
     }
@@ -226,7 +226,7 @@ void UIAlignWidgetManager::ProcessPendingLayout()
 MS2_REPLACE_METHOD(0x1422E6D30, UIAlignWidgetManager, ProcessPendingLayout, 67, 0xF69AB0F6);
 
 // @0x1422e6d80
-void UIAlignWidgetManager::FUN_1422e6d80(int bAny)
+void UIAlignWidgetManager::LayoutAllWidgets(int bAny)
 {
     POSITION pos = m_listWidgets.GetHeadPosition();
     while (pos != NULL)
@@ -236,7 +236,7 @@ void UIAlignWidgetManager::FUN_1422e6d80(int bAny)
             spWidget->LayoutEntities(bAny);
     }
 }
-MS2_REPLACE_METHOD(0x1422E6D80, UIAlignWidgetManager, FUN_1422e6d80, 143, 0x8E6BFA2A);
+MS2_REPLACE_METHOD(0x1422E6D80, UIAlignWidgetManager, LayoutAllWidgets, 143, 0x8E6BFA2A);
 
 // @0x1422e6e20
 void UIAlignWidgetManager::SetXmlLoader(Delegate<bool(TiXmlDocument&)> loader)

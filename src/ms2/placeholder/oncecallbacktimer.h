@@ -26,7 +26,7 @@ public:
 
     OnceCallbackTimer();                                    // 0x140ca7030
     virtual ~OnceCallbackTimer();
-    void FUN_140ca70d0();                                   // binds the clock
+    void BindClock();                                   // binds the clock
     void Update();                                          // 0x140ca7100
     int Add(int delayMs, TFunctor<void, EmptyParam> callback);       // 0x140ca7230, returns the timer id
     void Cancel(unsigned id);                               // 0x140ca73a0

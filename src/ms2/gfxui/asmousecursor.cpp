@@ -88,31 +88,31 @@ void ASMouseCursor::FUN_1422cedb0()
 MS2_REPLACE_METHOD(0x1422CEDB0, ASMouseCursor, FUN_1422cedb0, 62, 0xFCF37239);
 
 // @0x1422cee00
-void ASMouseCursor::FUN_1422cee00()
+void ASMouseCursor::Unlock()
 {
     if (m_bDisabled != 0)
         return;
     Invoke("unlock");
 }
-MS2_REPLACE_METHOD(0x1422CEE00, ASMouseCursor, FUN_1422cee00, 62, 0xDA4ED8B6);
+MS2_REPLACE_METHOD(0x1422CEE00, ASMouseCursor, Unlock, 62, 0xDA4ED8B6);
 
 // @0x1422cee50
-void ASMouseCursor::FUN_1422cee50(Unk_MouseCursorType eType)
+void ASMouseCursor::ChangeType(Unk_MouseCursorType eType)
 {
     if (m_bDisabled != 0)
         return;
     Invoke("changeType", eType);
 }
-MS2_REPLACE_METHOD(0x1422CEE50, ASMouseCursor, FUN_1422cee50, 71, 0x133479F8);
+MS2_REPLACE_METHOD(0x1422CEE50, ASMouseCursor, ChangeType, 71, 0x133479F8);
 
 // @0x1422ceea0
-void ASMouseCursor::FUN_1422ceea0(const CStringW& strText)
+void ASMouseCursor::SetText(const CStringW& strText)
 {
     if (m_bDisabled != 0)
         return;
     Invoke("setText", strText);
 }
-MS2_REPLACE_METHOD(0x1422CEEA0, ASMouseCursor, FUN_1422ceea0, 103, 0x0D3A4B38);
+MS2_REPLACE_METHOD(0x1422CEEA0, ASMouseCursor, SetText, 103, 0x0D3A4B38);
 
 // @0x1422cef10
 int ASMouseCursor::GetCursorType()
@@ -137,17 +137,17 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_MouseCursorType 
 // @0x1422cf060
 Unk_GFxUIHal* FUN_1422cf060()
 {
-    return reinterpret_cast<Unk_GFxUIHal*>(reinterpret_cast<Scaleform::Render::Renderer2D*>(FUN_1422cf080())->GetHAL());
+    return reinterpret_cast<Unk_GFxUIHal*>(reinterpret_cast<Scaleform::Render::Renderer2D*>(GetRenderer2D())->GetHAL());
 }
 
 // @0x1422cf080
-Unk_GFxUIRenderer2D* FUN_1422cf080()
+Unk_GFxUIRenderer2D* GetRenderer2D()
 {
     return reinterpret_cast<GFxManager*>(GetGFxManager())->GetRenderer2D();
 }
 
 // @0x1422cf0a0
-NiDX9Renderer* FUN_1422cf0a0()
+NiDX9Renderer* GetDX9Renderer()
 {
     return NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
 }
@@ -155,7 +155,7 @@ NiDX9Renderer* FUN_1422cf0a0()
 // @0x1422cf0d0
 LPDIRECT3DDEVICE9 GetD3DDevice()
 {
-    return FUN_1422cf0a0()->GetD3DDevice();
+    return GetDX9Renderer()->GetD3DDevice();
 }
 
 // @0x1422cf0f0

@@ -42,10 +42,10 @@ public:
     // implicit virtual dtor 0x1405c4590 (no vptr store in the exe)
     CItemMergeOptionVariation& operator=(const CItemMergeOptionVariation& o);   // 0x1405c4670 (not the pad)
     int FUN_1405beaa0();                            // the number of values of the range
-    int FUN_1405beac0();                            // the minimum, as an integer
-    int FUN_1405beae0();                            // the maximum, as an integer
-    float FUN_1405beb00();                          // the minimum, as a rate
-    float FUN_1405beb20();                          // the maximum, as a rate
+    int GetMin();                            // the minimum, as an integer
+    int GetMax();                            // the maximum, as an integer
+    float GetMinFloat();                          // the minimum, as a rate
+    float GetMaxFloat();                          // the maximum, as a rate
 
     Unk_MergeRange m_range;                         // +0x18
     int m_nIndex;                                   // +0x20 the step of the <slot> the range belongs to
@@ -126,8 +126,8 @@ class CItemMergeOptionProxy : public CPtred
 public:
     CItemMergeOptionProxy();                        // 0x1405beb40
     // implicit virtual dtor 0x1405c4530 (no vptr store in the exe)
-    void FUN_1405bec30(COutputStream& stream);      // write the record
-    void FUN_1405bef60(CInPacket& packet);          // read the record from the packet
+    void Write(COutputStream& stream);      // write the record
+    void Read(CInPacket& packet);          // read the record from the packet
 
     __int64 m_nMeso;                                // +0x18 the price
     CIngredientContainer m_ingredients;             // +0x20 the needed ingredients

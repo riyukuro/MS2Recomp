@@ -83,7 +83,7 @@ public:
     TiXmlDocument* FUN_1412442c0();                         // &m_docAccountDefault
     TiXmlDocument* GetGameDoc();                         // &m_docGame
     TiXmlDocument* GetCharacterDoc();                         // &m_docCharacter
-    Unk_GoChroma* FUN_140aaaa90();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
+    Unk_GoChroma* GetChroma();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
     Unk_InterfaceState* FUN_140e09150();                    // &m_interface
     Unk_InterfaceFlag* GetInterfaceChar();                     // &m_interfaceChar
     Unk_StatusState* GetStatus();                       // &m_status

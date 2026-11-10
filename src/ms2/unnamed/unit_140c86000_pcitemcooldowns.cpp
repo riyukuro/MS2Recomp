@@ -30,21 +30,21 @@ MS2_CHECK_SIZE(Unk_PCItemCooldowns, 0x40);
 // @0x140c86000
 Unk_PCItemCooldowns::Unk_PCItemCooldowns()
 {
-    FUN_140c86060();
+    Clear();
 }
 
 // @0x140c86060
-void Unk_PCItemCooldowns::FUN_140c86060()
+void Unk_PCItemCooldowns::Clear()
 {
     for (int i = 0; i < 4; i++)
         m_items[i] = 0;
 }
-MS2_REPLACE_METHOD(0x140C86060, Unk_PCItemCooldowns, FUN_140c86060, 73, 0xCCA14FC7);
+MS2_REPLACE_METHOD(0x140C86060, Unk_PCItemCooldowns, Clear, 73, 0xCCA14FC7);
 
 // @0x140c860b0
-void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
+void Unk_PCItemCooldowns::ReadFromStream(CInputStream& stream, int nObjId)
 {
-    FUN_140c86060();
+    Clear();
     unsigned nCount = stream.ReadUInt8();
     for (int i = 0; i < (int)nCount; i++)
     {
@@ -64,10 +64,10 @@ void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
         m_items[nSlot] = spItem;
     }
 }
-MS2_REPLACE_METHOD(0x140C860B0, Unk_PCItemCooldowns, FUN_140c860b0, 517, 0x254F634E);
+MS2_REPLACE_METHOD(0x140C860B0, Unk_PCItemCooldowns, ReadFromStream, 517, 0x254F634E);
 
 // @0x140c862c0
-MS2Ptr<CItem> Unk_PCItemCooldowns::FUN_140c862c0(__int64 nItemUid)
+MS2Ptr<CItem> Unk_PCItemCooldowns::FindItemByUid(__int64 nItemUid)
 {
     for (int i = 0; i < 4; i++)
     {
@@ -79,16 +79,16 @@ MS2Ptr<CItem> Unk_PCItemCooldowns::FUN_140c862c0(__int64 nItemUid)
     }
     return MS2Ptr<CItem>(0);
 }
-MS2_REPLACE_METHOD(0x140C862C0, Unk_PCItemCooldowns, FUN_140c862c0, 248, 0xC0FC3870);
+MS2_REPLACE_METHOD(0x140C862C0, Unk_PCItemCooldowns, FindItemByUid, 248, 0xC0FC3870);
 
 // @0x140c863c0
-MS2Ptr<CItem> Unk_PCItemCooldowns::FUN_140c863c0(int nSlot)
+MS2Ptr<CItem> Unk_PCItemCooldowns::GetItemBySlot(int nSlot)
 {
     if (nSlot >= 4 || nSlot < 0)
         return MS2Ptr<CItem>(0);
     return m_items[nSlot];
 }
-MS2_REPLACE_METHOD(0x140C863C0, Unk_PCItemCooldowns, FUN_140c863c0, 125, 0xB4758069);
+MS2_REPLACE_METHOD(0x140C863C0, Unk_PCItemCooldowns, GetItemBySlot, 125, 0xB4758069);
 
 // @0x140c86450
 bool Unk_PCItemCooldowns::SetItem(MS2Ptr<CItem> spItem)
@@ -104,7 +104,7 @@ bool Unk_PCItemCooldowns::SetItem(MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x140C86450, Unk_PCItemCooldowns, SetItem, 180, 0xD90BCC37);
 
 // @0x140c86510
-bool Unk_PCItemCooldowns::FUN_140c86510(__int64 nItemUid)
+bool Unk_PCItemCooldowns::RemoveItemByUid(__int64 nItemUid)
 {
     for (int i = 0; i < 4; i++)
     {
@@ -119,7 +119,7 @@ bool Unk_PCItemCooldowns::FUN_140c86510(__int64 nItemUid)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140C86510, Unk_PCItemCooldowns, FUN_140c86510, 218, 0xE9ECD27E);
+MS2_REPLACE_METHOD(0x140C86510, Unk_PCItemCooldowns, RemoveItemByUid, 218, 0xE9ECD27E);
 
 // @0x140c865f0
 // memcpy_s (the CRT's _VALIDATE_RETURN_ERRCODE form, per-TU static __inline copy).

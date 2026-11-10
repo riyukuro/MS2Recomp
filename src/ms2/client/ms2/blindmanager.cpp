@@ -30,10 +30,10 @@ public:
 
 // Unrecovered helpers.
 CString GetAccountFolder();                                                // the user data directory
-CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // dir + "\\" + file
+CString JoinPath(const CString& strDir, const CString& strFile);   // dir + "\\" + file
 CString FUN_1409a2360(const char* psz, int n);                          // text conversion
 CString ToCString(const char* psz, int n);                          // path conversion
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 __int64 Unk_ExpGetInt64(TiXmlElement* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
@@ -80,7 +80,7 @@ void BlindManager::Load()
 {
     ClearLists();
     CreateLists();
-    CString strPath = FUN_140cc2a00(GetAccountFolder(), "BlindList.xml");
+    CString strPath = JoinPath(GetAccountFolder(), "BlindList.xml");
     if (GetFileSystem()->FileExists(std::string((const char*)strPath)) == 0)
         return;
     TiXmlDocument document;
@@ -89,7 +89,7 @@ void BlindManager::Load()
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&document)->FirstChild("ms2");
     for (TiXmlElement* pNode = ((class TiXmlElement*)(pRoot->FirstChild("blind"))); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
     {
-        int nType = FUN_140197350(pNode, "type", 0);
+        int nType = GetIntAttr(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));
         __int64 nExpire = Unk_ExpGetInt64(pNode, "time", 0);
         if (nType < 0 || nType >= 6)
@@ -130,7 +130,7 @@ void BlindManager::Save()
         }
     }
     ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(root));
-    CString strPath = FUN_140cc2a00(GetAccountFolder(), "BlindList.xml");
+    CString strPath = JoinPath(GetAccountFolder(), "BlindList.xml");
     document.SaveFile(ToCString(strPath, 0));
 }
 

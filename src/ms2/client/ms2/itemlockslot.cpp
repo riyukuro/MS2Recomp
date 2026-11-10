@@ -31,7 +31,7 @@
 class CItemLockManager
 {
 public:
-    MS2Ptr<CItem> FUN_1406127a0(int nSlot);
+    MS2Ptr<CItem> GetLockedItem(int nSlot);
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
 };
@@ -113,7 +113,7 @@ MS2Ptr<CItem> ItemLockSlot::vfunc_25()
 // @0x140d41b90 (ITooltip::vfunc_0)
 int ItemLockSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -131,7 +131,7 @@ int ItemLockSlot::vfunc_0(void* p)
 // @0x140d41cf0
 int ItemLockSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -172,7 +172,7 @@ void FUN_140d42100(const CString& strName)
     ItemLockSlotBag* pBag = FUN_140d42380(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -197,7 +197,7 @@ CString ItemLockSlotBag::vfunc_15(int nIndex)
 // @0x140d42220
 DragSlot* ItemLockSlotBag::vfunc_16(int nIndex)
 {
-    MS2Ptr<CItem> spItem = ((class CItemLockManager*)FUN_140535310())->FUN_1406127a0(nIndex);
+    MS2Ptr<CItem> spItem = ((class CItemLockManager*)FUN_140535310())->GetLockedItem(nIndex);
     return new (efd::MemHint(efd::MemHint::NONE)) ItemLockSlot(vfunc_15(nIndex), nIndex, spItem);
 }
 

@@ -166,7 +166,7 @@ struct Unk_PciConstants
     Unk_PciCfgFloat m_ae10;                                     // +0xae10 the doubled ring divisor
 };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 
 class UIWebBrowser* FindWebBrowser(int nId);
 
@@ -196,7 +196,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_141b720b0(int nTitle, __int64 n);
 CStringW FUN_141b72150(int nTitle, int nGender);
 CStringW GetStatCommonText(unsigned nStat);
-CStringW FUN_140630e10(int nStat);
+CStringW GetSATypeName(int nStat);
 CStringW FUN_14016a730(const char* sz, int n);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);
 const CStringA& GetStatName(unsigned nStat);
@@ -291,7 +291,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
     if ((PCInfo*)m_spInfo != 0)
         return;
     CPCData data;
-    pPack->FUN_14071f8a0(&data);
+    pPack->ReadRecord(&data);
     MS2Ptr<PCInfo> spInfo(new PCInfo());
     spInfo->m_18 = data.m_n30;
     spInfo->m_1c = data.m_n34;
@@ -327,7 +327,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
     CPCDataPack::ItemArray aEquip;
     CPCDataPack::ItemArray aGems;
     CPCDataPack::ItemArray aSkins;
-    pPack->FUN_140720030(aEquip, aGems, spInfo->m_508, spInfo->m_510, spInfo->m_520, aSkins);
+    pPack->ReadItems(aEquip, aGems, spInfo->m_508, spInfo->m_510, spInfo->m_520, aSkins);
 
     m_spAvatar.AssignRaw(new UIAvatarPC(reinterpret_cast<MS2Ptr<Unk_PCArg125>&>(spInfo), false));
     m_spAvatar->vfunc_1(this);
@@ -369,7 +369,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
             spCopy->SetObjectId(pAvatar->vfunc_25());
             pAvatarPC->vfunc_127(spCopy.get(), 0);
         }
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()));
         if (spData == 0)
             continue;
         if (spItem->HasSkin() != 0)
@@ -418,7 +418,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
         int nAddMin = 0;
         int nAddMax = 0;
-        ((class CLua*)FUN_1401c0db0())->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        ((class CLua*)GetLuaClient())->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
         nAttackMin += nAddMin;
         nAttackMax += nAddMax;
         break;
@@ -505,7 +505,7 @@ MS2_REPLACE_METHOD(0x14132D600, UIPCInfoDialog, vfunc_26, 34, 0xC51D4F67);
 void UIPCInfoDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    if (((CInPacket*)pPacket)->FUN_14070fe80() != 0x78)
+    if (((CInPacket*)pPacket)->GetOpcode() != 0x78)
         return;
     __int64 nCharacterId = ((CInPacket*)pPacket)->ReadInt64();
     if (nCharacterId != m_188)
@@ -608,7 +608,7 @@ void UIPCInfoDialog::OnLoadComplete()
     vfunc_98(GetProfileImagePath());
     TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(this);
     m_spMyNews = GetChild<ASButton>("m_myNews");
-    m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::OnClickMyNews), 0);
+    m_spMyNews->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::OnClickMyNews), 0);
     if (MS2Ptr<ASButton> spScreenshot = GetChild<ASButton>("m_screenshot"))
     {
         if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xf7))
@@ -735,7 +735,7 @@ void UIPCInfoDialog::OnClickMyNews(const Scaleform::GFx::FunctionHandler::Params
         strUrl = GetMaviewURL();
     else
         strUrl = StringFormat("maview:/Main/SearchNews?c={0}", reinterpret_cast<const unsigned __int64&>(m_spInfo->m_30));   // formatted unsigned
-    pBrowser->FUN_14135ec00(strUrl, true);
+    pBrowser->Navigate(strUrl, true);
 }
 MS2_REPLACE_METHOD(0x14132ED50, UIPCInfoDialog, OnClickMyNews, 304, 0x65E39183);
 
@@ -752,7 +752,7 @@ MS2_REPLACE_METHOD(0x14132EE90, UIPCInfoDialog, OnResetStatPointsAnswer, 56, 0x8
 // @0x14132eed0
 void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     int nStat = FUN_140bd09c0(params.pUserData);
@@ -769,7 +769,7 @@ MS2_REPLACE_METHOD(0x14132EED0, UIPCInfoDialog, FUN_14132eed0, 324, 0xD7BCCED3);
 // @0x14132f020
 void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     CStringW strText;
@@ -803,7 +803,7 @@ MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98)
 // @0x14132f5d0
 void UIPCInfoDialog::GetWeddingTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (m_spInfo == 0)
@@ -1024,7 +1024,7 @@ void UIPCInfoDialog::vfunc_87()
     unsigned int nUsed = 0;
     if (m_spInfo->m_3c0 != 0)
     {
-        Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPC == 0)
             return;
         nRemaining = ((MyPC*)pPC)->GetStatPointManager()->GetRemaining();
@@ -1048,7 +1048,7 @@ void UIPCInfoDialog::vfunc_87()
             if (m_spInfo->m_3c0 != 0)
             {
                 unsigned int nColor = 0xffffff;
-                Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+                Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
                 if (pPC != 0)
                 {
                     unsigned int nPoints = ((MyPC*)pPC)->GetStatPointManager()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
@@ -1468,10 +1468,10 @@ __int64 UIPCInfoDialog::GetOffenseScore()
         score.m_b0 = (__int64)GetBasicStat(0x1e, &fA, &fB, &fC);
         score.m_b8 = GetSpecialStat(0xb1, true, &fA, &fB, &fC);
         score.m_bc = GetSpecialStat(0xb2, true, &fA, &fB, &fC);
-        return (int)((class CLua*)FUN_1401c0db0())->CalePcOffenseScore(&score);
+        return (int)((class CLua*)GetLuaClient())->CalePcOffenseScore(&score);
     }
     int nFieldLevel = 0;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.get() != 0)
         nFieldLevel = reinterpret_cast<Unk_PciFieldInfo*>(spField.operator->())->m_4c;
     __int64 nMeanAttack = GetAverageStat();
@@ -1480,7 +1480,7 @@ __int64 UIPCInfoDialog::GetOffenseScore()
     float fA1, fB1, fC1;
     __int64 nCritical = (__int64)GetSpecialStat(0xcb, false, &fA1, &fB1, &fC1);
     __int64 nPierce = m_spInfo->m_aStats2[0x12];
-    float fCritRate = ((class CLua*)FUN_1401c0db0())->FUN_140674a70(nPierce, 0, nCritical);
+    float fCritRate = ((class CLua*)GetLuaClient())->FUN_140674a70(nPierce, 0, nCritical);
     __int64 nDex = m_spInfo->m_aStats2[3];
     __int64 nLuk = m_spInfo->m_aStats2[0x11];
     __int64 nBase = 0x32;
@@ -1488,8 +1488,8 @@ __int64 UIPCInfoDialog::GetOffenseScore()
     __int64 nAccuracy = (__int64)GetSpecialStat(0xca, false, &fA2, &fB2, &fC2);
     float fA3, fB3, fC3;
     __int64 nCritDamage = (__int64)GetSpecialStat(0xcd, false, &fA3, &fB3, &fC3);
-    float fDamage = ((class CLua*)FUN_1401c0db0())->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
-    __int64 nScore = ((class CLua*)FUN_1401c0db0())->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
+    float fDamage = ((class CLua*)GetLuaClient())->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
+    __int64 nScore = ((class CLua*)GetLuaClient())->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
     return nScore;
 }
 MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, GetOffenseScore, 2554, 0xA471D6B9);
@@ -1524,7 +1524,7 @@ __int64 UIPCInfoDialog::GetDefenseScore()
         score.m_64 = GetSpecialStat(0x24, true, &fA, &fB, &fC);
         score.m_68 = (__int64)GetBasicStat(5, &fA, &fB, &fC);
         score.m_70 = (__int64)GetSpecialStat(0x37, false, &fA, &fB, &fC);
-        return (int)((class CLua*)FUN_1401c0db0())->CalePcDefenseScore(&score);
+        return (int)((class CLua*)GetLuaClient())->CalePcDefenseScore(&score);
     }
     return m_spInfo->m_aStats2[0x14];
 }
@@ -1588,10 +1588,10 @@ float UIPCInfoDialog::GetBasicStat(int nStat, float* pfBase, float* pfBonus, flo
         float fA, fB, fC;
         __int64 nCritical = (__int64)GetSpecialStat(0xcb, false, &fA, &fB, &fC);
         float fZero = 0.0f;
-        *pfBase = ((class CLua*)FUN_1401c0db0())->FUN_140674a70((__int64)*pfBase, fZero, 0) * 100.0f;
+        *pfBase = ((class CLua*)GetLuaClient())->FUN_140674a70((__int64)*pfBase, fZero, 0) * 100.0f;
         *pfBonus = *pfBonus + (float)nCritical;
         *pfBonus = *pfBonus * 0.1f;
-        *pfTotal = ((class CLua*)FUN_1401c0db0())->FUN_140674a70((__int64)*pfTotal, fZero, nCritical) * 100.0f;
+        *pfTotal = ((class CLua*)GetLuaClient())->FUN_140674a70((__int64)*pfTotal, fZero, nCritical) * 100.0f;
     }
     else if (nStat == 0x11)
     {
@@ -1730,7 +1730,7 @@ Scaleform::GFx::Value UIPCInfoDialog::BuildSpecialStatRow(int nStat, int nContai
     }
     row.SetMemberUInt("containerIndex", nContainer);
     row.SetMemberUInt("labelIndex", nLabel);
-    row.SetWStringMember("name", FUN_140630e10(nStat));
+    row.SetWStringMember("name", GetSATypeName(nStat));
     row.SetWStringMember("value", strValue);
     row.SetWStringMember("detail", strDetail);
     return row.GetValue();
@@ -1744,7 +1744,7 @@ Scaleform::GFx::Value UIPCInfoDialog::BuildShieldRow(unsigned int nContainer, in
     if (m_spInfo == 0)
         return row.GetValue();
     __int64 nShield = 0;
-    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC != 0)
         nShield = ((class AdditionalCliList*)(void*)(((void*)((class PCBase*)(class PC*)(pPC))->FUN_1416749a0())))->GetTotalShieldValue();
     CStringW strName = GetStringCommonByKey(L"s_pc_info_name_shield");

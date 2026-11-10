@@ -29,7 +29,7 @@ void FUN_1418c34c0(Unk_ItemProxySummary* result, MS2Ptr<class CItem> node)
     if (node.get()) {
         result->m_itemId = node->GetItemId();
         result->m_itemUid = (void*)node->GetItemUid();
-        void* proxy = node->FUN_140527870();
+        void* proxy = node->GetProxy();
         if (proxy) {
             for (int i = 0; i < 3; ++i)
                 result->m_values[i] = ((class CItemExtraData*)(void*)(proxy))->GetCurrentRgbComponent(i);

@@ -84,7 +84,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
         return 0;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x800, 2);
@@ -99,7 +99,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
 // @0x140f24fd0
 int UIBossRewardPreviewDialog::Slot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -131,7 +131,7 @@ void FUN_140f25170(const CString& strName)
     UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -155,7 +155,7 @@ DragSlot* UIBossRewardPreviewDialog::SlotBag::vfunc_16(int nIndex)
 // @0x140f25400
 void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(GetRewardPreviewTable())->GetBoss(m_nNpcId);

@@ -106,7 +106,7 @@ class CMouseController   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_140ad2070();
-    int FUN_140ad21f0();
+    int HasMove();
     Vector3 GetMove();
 };
 class Unk_PCServices;
@@ -121,9 +121,9 @@ public:
     bool IsKeyDown(int nKey);
     bool IsActionKeyDown(int nKey);
     bool WasKeyPressed(int nKey);
-    bool FUN_141683100(int nKey);
+    bool IsActionKeyPressed(int nKey);
     bool WasKeyReleased(int nKey);
-    bool FUN_141683200(int nKey);
+    bool IsActionKeyReleased(int nKey);
     Vector3 GetMoveDirection();
     Vector3 GetPressedMoveDirection();
     Vector3 FUN_141683900();
@@ -177,7 +177,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void ResetIdleTimer();
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     int FUN_141bdb5e0();
     static class WorldService* GetInstance();
 };
@@ -265,7 +265,7 @@ bool Unk_PCMove::WasKeyPressed(int nKey)
 }
 
 // @0x141683100
-bool Unk_PCMove::FUN_141683100(int nKey)
+bool Unk_PCMove::IsActionKeyPressed(int nKey)
 {
     if (!FUN_1416840c0(nKey))
         return false;
@@ -273,7 +273,7 @@ bool Unk_PCMove::FUN_141683100(int nKey)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x141683100, Unk_PCMove, FUN_141683100, 70, 0x1110430A);
+MS2_REPLACE_METHOD(0x141683100, Unk_PCMove, IsActionKeyPressed, 70, 0x1110430A);
 
 // @0x141683150
 bool Unk_PCMove::WasKeyReleased(int nKey)
@@ -292,7 +292,7 @@ bool Unk_PCMove::WasKeyReleased(int nKey)
 }
 
 // @0x141683200
-bool Unk_PCMove::FUN_141683200(int nKey)
+bool Unk_PCMove::IsActionKeyReleased(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
@@ -351,7 +351,7 @@ Vector3 Unk_PCMove::GetMoveDirection()
         }
     }
     if (TSingleton<CMouseController>::GetInstance() != 0) {
-        if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21f0() != 0) {
+        if (TSingleton<CMouseController>::GetInstance()->HasMove() != 0) {
             if (reinterpret_cast<const efd::Point3&>(kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
                 *reinterpret_cast<efd::Point3*>(&kDir) = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(TSingleton<CMouseController>::GetInstance()->GetMove()));
         } else {
@@ -386,26 +386,26 @@ Vector3 Unk_PCMove::GetMoveDirection()
 Vector3 Unk_PCMove::GetPressedMoveDirection()
 {
     Vector3 kDir = DAT_143b01a60;
-    if (FUN_141683100(0x30d43)) {
+    if (IsActionKeyPressed(0x30d43)) {
         kDir.x = 1.0f;
-    } else if (FUN_141683100(0x30d44)) {
+    } else if (IsActionKeyPressed(0x30d44)) {
         kDir.x = -1.0f;
     }
-    if (FUN_141683100(0x30d41)) {
+    if (IsActionKeyPressed(0x30d41)) {
         kDir.y = 1.0f;
-    } else if (FUN_141683100(0x30d42)) {
+    } else if (IsActionKeyPressed(0x30d42)) {
         kDir.y = -1.0f;
     }
-    if (FUN_141683100(0x30d45)) {
+    if (IsActionKeyPressed(0x30d45)) {
         kDir.x = 1.0f;
         kDir.y = 1.0f;
-    } else if (FUN_141683100(0x30d46)) {
+    } else if (IsActionKeyPressed(0x30d46)) {
         kDir.x = -1.0f;
         kDir.y = 1.0f;
-    } else if (FUN_141683100(0x30d47)) {
+    } else if (IsActionKeyPressed(0x30d47)) {
         kDir.x = 1.0f;
         kDir.y = -1.0f;
-    } else if (FUN_141683100(0x30d48)) {
+    } else if (IsActionKeyPressed(0x30d48)) {
         kDir.x = -1.0f;
         kDir.y = -1.0f;
     }
@@ -455,28 +455,28 @@ void Unk_PCMove::UpdateMoveDirection()
 {
     int nDelay = 0x32;
     m_moving = 0;
-    if ((FUN_141683200(0x30d43) && IsActionKeyDown(0x30d41)) || (FUN_141683200(0x30d41) && IsActionKeyDown(0x30d43))) {
+    if ((IsActionKeyReleased(0x30d43) && IsActionKeyDown(0x30d41)) || (IsActionKeyReleased(0x30d41) && IsActionKeyDown(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = 1.0f;
         reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
-    } else if ((FUN_141683200(0x30d43) && IsActionKeyDown(0x30d42)) || (FUN_141683200(0x30d42) && IsActionKeyDown(0x30d43))) {
+    } else if ((IsActionKeyReleased(0x30d43) && IsActionKeyDown(0x30d42)) || (IsActionKeyReleased(0x30d42) && IsActionKeyDown(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = -1.0f;
         reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
-    } else if ((FUN_141683200(0x30d44) && IsActionKeyDown(0x30d41)) || (FUN_141683200(0x30d41) && IsActionKeyDown(0x30d44))) {
+    } else if ((IsActionKeyReleased(0x30d44) && IsActionKeyDown(0x30d41)) || (IsActionKeyReleased(0x30d41) && IsActionKeyDown(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = 1.0f;
         reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
-    } else if ((FUN_141683200(0x30d44) && IsActionKeyDown(0x30d42)) || (FUN_141683200(0x30d42) && IsActionKeyDown(0x30d44))) {
+    } else if ((IsActionKeyReleased(0x30d44) && IsActionKeyDown(0x30d42)) || (IsActionKeyReleased(0x30d42) && IsActionKeyDown(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = -1.0f;
         reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
-    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && reinterpret_cast<Timer*>(m_timer)->IsRunning() != 0) {
+    } else if ((IsActionKeyReleased(0x30d43) || IsActionKeyReleased(0x30d44) || IsActionKeyReleased(0x30d41) || IsActionKeyReleased(0x30d42)) && reinterpret_cast<Timer*>(m_timer)->IsRunning() != 0) {
         reinterpret_cast<Timer*>(m_timer)->Reset();
         m_moving = 1;
-    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44)) && (FUN_141683200(0x30d41) || FUN_141683200(0x30d42))) {
+    } else if ((IsActionKeyReleased(0x30d43) || IsActionKeyReleased(0x30d44)) && (IsActionKeyReleased(0x30d41) || IsActionKeyReleased(0x30d42))) {
         reinterpret_cast<Timer*>(m_timer)->Reset();
-    } else if (FUN_141683100(0x30d43) || FUN_141683100(0x30d44) || FUN_141683100(0x30d41) || FUN_141683100(0x30d42)) {
+    } else if (IsActionKeyPressed(0x30d43) || IsActionKeyPressed(0x30d44) || IsActionKeyPressed(0x30d41) || IsActionKeyPressed(0x30d42)) {
         reinterpret_cast<Timer*>(m_timer)->Reset();
     }
     if (m_pOwner != 0) {
@@ -496,7 +496,7 @@ bool Unk_PCMove::FUN_141683ef0()
 {
     if (m_pOwner == 0)
         return false;
-    Unk_PCActor* pSelf = ((class Unk_PCActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PCActor* pSelf = ((class Unk_PCActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (m_pOwner->GetKind() != 0x6200045 && pSelf != m_pOwner && reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671b20() == 0
         && m_pOwner->GetKind() != 0x6200064 && m_pOwner->GetKind() != 0x6200081)
         return false;

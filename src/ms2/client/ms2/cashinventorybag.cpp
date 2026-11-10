@@ -140,7 +140,7 @@ void FUN_141275460(int, int, int, const fmt::ArgList&);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 CStringW GetStringCommon(int nId);                        // string table text by id
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -225,7 +225,7 @@ void FUN_140b05680(const CString& strName)
     CashInventoryBag* pBag = CastToCashInventoryBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -673,7 +673,7 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
                     ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->OnBuyResult(nArg, packet);
                 }
             }
-            FUN_141276180(s_strCashBuy, "");
+            PlaySystemSound(s_strCashBuy, "");
         }
     }
     else
@@ -902,7 +902,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
         if (((class CFeatureManager*)FUN_140166410())->IsRegionKR())
         {
             FUN_140d73bc0(0xa65, 0, 0, CStringW(L""));
-            FUN_141276180(s_strCashInventoryToBag, "");
+            PlaySystemSound(s_strCashInventoryToBag, "");
         }
         else if (((class CFeatureManager*)FUN_140166410())->IsRegionJP())
         {
@@ -910,7 +910,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
                 FUN_140d73bc0(0xa61, 0, 0, CStringW(L""));
             else
                 FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
-            FUN_141276180(s_strCashBuy, "");
+            PlaySystemSound(s_strCashBuy, "");
         }
         MS2Ptr<CCashInventoryProduct> spProd = GetInstance()->FindInventoryProduct(nA, nB);
         if (spProd.get() != 0)
@@ -1022,7 +1022,7 @@ int CashInventorySlot::vfunc_14()
 // @0x140b0d0a0 (ITooltip::vfunc_0)
 int CashInventorySlot::vfunc_0(void* p)
 {
-    ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
+    ASTooltip tip(WorldService::GetInstance()->GetLocalPlayer(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         tip.SetEnableUseDbClick(GetStringCommon(0xa5d));
@@ -1035,7 +1035,7 @@ int CashInventorySlot::vfunc_0(void* p)
 // @0x140b0d1a0
 int CashInventorySlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -1076,8 +1076,8 @@ void CashInventorySlot::FUN_140b0d440()
         {
             int bFlag = spProd->m_data.m_n50 != 0 && spProd->m_strA8.GetLength() == 0;
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetRetraction(bFlag);
-            spBox->FUN_141a01ee0(m_spItem, m_spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01800(1);
+            spBox->SetItemEntry(m_spItem, m_spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->SetButtonPreset(1);
             FUN_140d73c60(spBox);
         }
     }

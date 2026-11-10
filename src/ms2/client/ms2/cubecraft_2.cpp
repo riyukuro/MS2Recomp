@@ -42,7 +42,7 @@
 class Unk_C2World : public WorldService
 {
 public:
-    PC* FUN_141bd0cc0();                                            // the local player
+    PC* GetLocalPlayer();                                            // the local player
 };
 
 // A liftable object standing in the world (mirror of Unk_WsB_Lift in actionkeyobject.cpp).
@@ -161,11 +161,11 @@ struct Unk_C2Ease
     float FUN_1410af700(float t);       // 0x1410af700 ease in (1 - sqrt(1 - t^2))
 };
 void FUN_141275260(int nA, int nB, int nC);
-int FUN_141276180(const CString& str, const CString& strArg);
-void FUN_140291b70(float* pfDegrees);
+int PlaySystemSound(const CString& str, const CString& strArg);
+void NormalizeDegrees(float* pfDegrees);
 
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-int FUN_140707bc0(int nId);
+int HasConfigurableCube(int nId);
 
 int FUN_1408a18d0(__int64);
 Unk_Int3 FUN_1408a1430(NiPoint3 kPos);
@@ -290,9 +290,9 @@ Unk_PCCubeCraft::Unk_PCCubeCraft(PC* pOwner, int nMode, CubeItemInfo* pInfo)
     m_nHud = 1;
     m_fLift = 0.0f;
     m_spItem.AssignRaw(new CubeItemInfo());
-    m_spItem->FUN_1408b3700(pInfo);
+    m_spItem->CopyFrom(pInfo);
     m_spItem2.AssignRaw(new CubeItemInfo());
-    m_spItem2->FUN_1408b3810();
+    m_spItem2->Clear();
     m_fYaw = 0.0f;
     m_fRotFrom = 0.0f;
     m_fRotTo = 0.0f;
@@ -345,7 +345,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
         m_tPulse.Reset();
         m_tSlide.Reset();
         m_bFirstMove = false;
-        PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0 && pPC == m_pOwner)
         {
             m_fLift = 0.0f;
@@ -406,7 +406,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
             GetCubeMotionManager()->AddScale(spCube->entity->GetEntityID(), fScale, m_fScale, 200);
         }
         FUN_1410add30();
-        PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0 && pPC == m_pOwner)
         {
             int nValue = 0;
@@ -421,7 +421,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
 void Unk_PCCubeCraft::CreateGuide()
 {
     ReleaseGuide();
-    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == 0)
         return;
     if (m_pOwner != pLocal)
@@ -436,7 +436,7 @@ void Unk_PCCubeCraft::CreateGuide()
     }
     else if (m_nMode == 1)
     {
-        m_spItem->FUN_1408b3810();
+        m_spItem->Clear();
         strAsset = ((class Unk_C2Config*)GetCommonResource())->m_strGuideInventory;
     }
     else
@@ -566,7 +566,7 @@ MS2_REPLACE_METHOD(0x1410A9E70, Unk_PCCubeCraft, ReleaseGuides, 103, 0xEEC9DFD1)
 // @0x1410a9ee0
 void Unk_PCCubeCraft::UpdateGuidePositions()
 {
-    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pLocal = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == 0)
         return;
     if (m_spGuide.get() != 0)
@@ -710,14 +710,14 @@ void Unk_PCCubeCraft::SetCurrentItem(CubeItemInfo* pInfo)
     m_bPending = false;
     if (pInfo == 0)
     {
-        m_spItem->FUN_1408b3810();
+        m_spItem->Clear();
         return;
     }
     if (m_spItem->instanceId == pInfo->instanceId && m_spItem->itemId == pInfo->itemId)
         return;
-    m_spItem->FUN_1408b3700(pInfo);
+    m_spItem->CopyFrom(pInfo);
     RebuildGuides();
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC != 0 && pPC == m_pOwner)
         reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->SelectCube(m_spItem);
 }
@@ -836,7 +836,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectA->SetObjectId(m_pOwner->GetObjectId());
     m_spEffectA->SetItemUid(GenerateUniqueId());
     m_spEffectA->FUN_140526c10(6);
-    m_spEffectA->FUN_14052a130(5);
+    m_spEffectA->SetVariant(5);
     m_pOwner->vfunc_127(m_spEffectA.get(), 0);
     if (((class PC*)(m_pOwner))->IsCubeMode1() == 0)
         return;
@@ -849,7 +849,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectB->SetObjectId(m_pOwner->GetObjectId());
     m_spEffectB->SetItemUid(GenerateUniqueId());
     m_spEffectB->FUN_140526c10(4);
-    m_spEffectB->FUN_14052a130(5);
+    m_spEffectB->SetVariant(5);
     m_pOwner->vfunc_127(m_spEffectB.get(), 0);
     m_spEffectC.AssignRaw(new CItem);
     if (!m_spEffectC->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)GetClientConstants())->m_effectC), 1, 0))
@@ -860,7 +860,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectC->SetObjectId(m_pOwner->GetObjectId());
     m_spEffectC->SetItemUid(GenerateUniqueId());
     m_spEffectC->FUN_140526c10(5);
-    m_spEffectC->FUN_14052a130(5);
+    m_spEffectC->SetVariant(5);
     m_pOwner->vfunc_127(m_spEffectC.get(), 0);
 }
 MS2_REPLACE_METHOD(0x1410AD780, Unk_PCCubeCraft, FUN_1410ad780, 1450, 0xC4517146);
@@ -935,7 +935,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
 // @0x1410aad50
 void Unk_PCCubeCraft::ConfirmPlacement()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (((class PC*)(pPC))->IsCubeMode1() != 0 && ((class Unk_C2Lift*)((class PC*)(pPC))->GetConstructionGuide()) == 0)
@@ -993,7 +993,7 @@ void Unk_PCCubeCraft::ConfirmPlacement()
                 kEuler.z = (float)(int)((kEuler.z - 89.0f) / 90.0f) * 90.0f;
             else
                 kEuler.z = (float)(int)((kEuler.z + 89.0f) / 90.0f) * 90.0f;
-            FUN_140291b70(&kEuler.z);
+            NormalizeDegrees(&kEuler.z);
             CubeItemInfo kInfo(*m_spItem.get());
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.Encode1(10);
@@ -1004,7 +1004,7 @@ void Unk_PCCubeCraft::ConfirmPlacement()
         }
         else
         {
-            if (((class Cube*)(spCell.operator->()))->FUN_1408b4f20() != GetItemId() || ((class CubeItemInfo*)(spCell->item.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
+            if (((class Cube*)(spCell.operator->()))->GetItemId() != GetItemId() || ((class CubeItemInfo*)(spCell->item.operator->()))->IsSameItem((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
             {
                 Vector3 kEuler;
                 if (((class PC*)(pPC))->IsCubeMode1() != 0)
@@ -1034,12 +1034,12 @@ void Unk_PCCubeCraft::ConfirmPlacement()
             }
             else
             {
-                if (((class Cube*)(spCell.operator->()))->FUN_1408b4f20() == GetItemId())
+                if (((class Cube*)(spCell.operator->()))->GetItemId() == GetItemId())
                 {
                     if (((class PC*)(pPC))->FUN_141659690() != 0)
                     {
                         FUN_141275260(0x6c9, 1, 1);
-                        FUN_141276180(DAT_143acf6b8, "");
+                        PlaySystemSound(DAT_143acf6b8, "");
                     }
                     else
                     {
@@ -1061,7 +1061,7 @@ MS2_REPLACE_METHOD(0x1410AB5A0, Unk_PCCubeCraft, FUN_1410ab5a0, 26, 0x3243A98E);
 // @0x1410ab5c0
 void Unk_PCCubeCraft::RemoveCube(bool bNotice)
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     Vector3 kCell = m_ptCell;
@@ -1113,7 +1113,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
 {
     if (GetMode() == 2)
         return;
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     Vector3 kCell = m_ptCell;
@@ -1165,7 +1165,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
         }
         if (spCube->field44 == 2)
         {
-            reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)7, ((class Cube*)(spCube.operator->()))->FUN_1408b4f20(), 0);
+            reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)7, ((class Cube*)(spCube.operator->()))->GetItemId(), 0);
         }
     }
     else
@@ -1177,7 +1177,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
 // @0x1410ac1c0
 void Unk_PCCubeCraft::FUN_1410ac1c0()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     unsigned nFirst = 0;
@@ -1205,7 +1205,7 @@ MS2_REPLACE_METHOD(0x1410AC1C0, Unk_PCCubeCraft, FUN_1410ac1c0, 438, 0x354524C7)
 // @0x1410ac380
 void Unk_PCCubeCraft::FUN_1410ac380()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     unsigned nFirst = 0;
@@ -1240,7 +1240,7 @@ MS2_REPLACE(0x1410AF7A0, HasLift, 51, 0xD550EB77);
 // @0x1410ac540
 void Unk_PCCubeCraft::FUN_1410ac540()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (((class PC*)(pPC))->IsInCubeMode() == 0)
@@ -1269,7 +1269,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
     MS2Ptr<Cube> spCube(m_svc->GetCubeAtPoint(kCell));
     if (spCube.operator==(0))
         return;
-    if (FUN_140707bc0(spCube->fieldB4) == 0)
+    if (HasConfigurableCube(spCube->fieldB4) == 0)
         return;
     CObjectData* pRow = GetObjectData(spCube->fieldB4).get();
     if (pRow == 0)
@@ -1283,7 +1283,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
 // @0x1410aded0
 void Unk_PCCubeCraft::FUN_1410aded0()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     MS2Ptr<Cube> spCube(m_svc->GetCubeAtPoint(m_ptCell));
@@ -1307,8 +1307,8 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }
-    else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() != GetItemId()
-        || ((class CubeItemInfo*)(spCube->item.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
+    else if (((class Cube*)(spCube.operator->()))->GetItemId() != GetItemId()
+        || ((class CubeItemInfo*)(spCube->item.operator->()))->IsSameItem((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.Encode1(0x10);
@@ -1318,12 +1318,12 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }
-    else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() == GetItemId())
+    else if (((class Cube*)(spCube.operator->()))->GetItemId() == GetItemId())
     {
         if (((class PC*)(pPC))->FUN_141659690() != 0)
         {
             FUN_141275260(0x6c9, 1, 1);
-            FUN_141276180(DAT_143acf6b8, "");
+            PlaySystemSound(DAT_143acf6b8, "");
         }
         else
         {
@@ -1335,7 +1335,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
 // @0x1410ae380
 void Unk_PCCubeCraft::FUN_1410ae380(Vector3 kPos)
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (m_nMode == 2)
@@ -1364,14 +1364,14 @@ void Unk_PCCubeCraft::FUN_1410ae380(Vector3 kPos)
                 CUGCBuildValidatorCli kValidator(static_cast<const Unk_CubePoint&>(kGrid), FUN_1410ad670(), nCell);
                 m_nCheck = kValidator.vfunc_37(&nErr);
             }
-            else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() != GetItemId()
-                || ((class CubeItemInfo*)(spCube->item.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
+            else if (((class Cube*)(spCube.operator->()))->GetItemId() != GetItemId()
+                || ((class CubeItemInfo*)(spCube->item.operator->()))->IsSameItem((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
             {
                 unsigned nErr;
                 CUGCBuildValidatorCli kValidator(static_cast<const Unk_CubePoint&>(kGrid), FUN_1410ad670(), nCell);
                 m_nCheck = kValidator.vfunc_39(&nErr);
             }
-            else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() == GetItemId())
+            else if (((class Cube*)(spCube.operator->()))->GetItemId() == GetItemId())
             {
                 m_nCheck = 0;
             }
@@ -1384,14 +1384,14 @@ void Unk_PCCubeCraft::FUN_1410ae380(Vector3 kPos)
                 CUGCBuildValidatorCli kValidator(static_cast<const Unk_CubePoint&>(kGrid), FUN_1410ad670());
                 m_nCheck = kValidator.vfunc_36(&nErr);
             }
-            else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() != GetItemId()
-                || ((class CubeItemInfo*)(spCube->item.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
+            else if (((class Cube*)(spCube.operator->()))->GetItemId() != GetItemId()
+                || ((class CubeItemInfo*)(spCube->item.operator->()))->IsSameItem((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
             {
                 unsigned nErr;
                 CUGCBuildValidatorCli kValidator(static_cast<const Unk_CubePoint&>(kGrid), FUN_1410ad670());
                 m_nCheck = kValidator.vfunc_38(&nErr);
             }
-            else if (((class Cube*)(spCube.operator->()))->FUN_1408b4f20() == GetItemId())
+            else if (((class Cube*)(spCube.operator->()))->GetItemId() == GetItemId())
             {
                 m_nCheck = 0;
             }
@@ -1408,7 +1408,7 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
 {
     *pRight = 0;
     *pLeft = 0;
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     Vector3 kFloor;
@@ -1485,7 +1485,7 @@ MS2_REPLACE_METHOD(0x1410AEEC0, Unk_PCCubeCraft, FUN_1410aeec0, 494, 0x9CC59312)
 // @0x1410af1f0
 void Unk_PCCubeCraft::FUN_1410af1f0()
 {
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (pPC != m_pOwner)
@@ -1534,7 +1534,7 @@ void Unk_PCCubeCraft::Update()
     m_spGuide->vfunc_1();
     if (m_spGuide3.get() != 0)
         m_spGuide3->vfunc_1();
-    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == m_pOwner)
     {
         if (((class PCBase*)(class PC*)(pPC))->GetCurStateId() == 0x10)
@@ -1583,14 +1583,14 @@ void Unk_PCCubeCraft::Update()
                 bSameColumn = true;
             FUN_1410aa6f0(kOld, bSameColumn);
             if (((class PC*)(pPC))->FUN_141659690() == 0 && m_bFirstMove != 0)
-                FUN_141276180(DAT_143acf6c0, "");
+                PlaySystemSound(DAT_143acf6c0, "");
             if (m_bFirstMove == 0)
                 m_bFirstMove = 1;
         }
         if ((GetMode() == 0 || GetMode() == 2)
             && (m_tRotate.IsRunning() != 0 || m_tRotate.IsExpired() != 0))
         {
-            float fEase = Unk_EaseOut().Evaluate(m_tRotate.FUN_140868940());
+            float fEase = Unk_EaseOut().Evaluate(m_tRotate.GetRatio());
             float fYaw = m_fRotFrom + (m_fRotTo - m_fRotFrom) * fEase;
             Vector3 kAngles;
             NiMatrix3 kCur = m_spGuide->vfunc_5();
@@ -1606,7 +1606,7 @@ void Unk_PCCubeCraft::Update()
         }
         if (m_tSlide.IsRunning() != 0 || m_tSlide.IsExpired() != 0)
         {
-            float fEase = Unk_EaseOut().Evaluate(m_tSlide.FUN_140868940());
+            float fEase = Unk_EaseOut().Evaluate(m_tSlide.GetRatio());
             Vector3 kDelta = (m_ptCell - m_ptLast);
             float fLen = kDelta.Length();
             kDelta.Unitize();
@@ -1623,15 +1623,15 @@ void Unk_PCCubeCraft::Update()
         }
         if (m_tPulse.IsRunning() != 0 || m_tPulse.IsExpired() != 0)
         {
-            if (m_tPulse.FUN_140868940() <= 0.5f)
+            if (m_tPulse.GetRatio() <= 0.5f)
             {
-                float fIn = Unk_EaseOut().Evaluate(m_tPulse.FUN_140868940() * 2.0f);
+                float fIn = Unk_EaseOut().Evaluate(m_tPulse.GetRatio() * 2.0f);
                 float fScale = 1.0f + 0.20000005f * fIn;
                 m_spGuide->vfunc_9(fScale);
             }
             else
             {
-                float fOut = Unk_C2Ease().FUN_1410af700((m_tPulse.FUN_140868940() - 0.5f) * 2.0f);
+                float fOut = Unk_C2Ease().FUN_1410af700((m_tPulse.GetRatio() - 0.5f) * 2.0f);
                 float fScale = 1.2f + -0.20000005f * fOut;
                 m_spGuide->vfunc_9(fScale);
                 if (m_tPulse.IsExpired() != 0)

@@ -285,7 +285,7 @@ void UIHudEntity::TimerEntity::vfunc_3()
 {
     Entity::vfunc_3();
     m_60 = 0;
-    m_68.FUN_140868820();
+    m_68.SetExpired();
 }
 
 // @0x140f49540

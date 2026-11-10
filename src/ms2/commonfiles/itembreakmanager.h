@@ -27,7 +27,7 @@ public:
 };
 typedef MS2Ptr<BreakItem> Ptr;   // C3: was the Unk_BreakPtr stand-in (same COMDATs as MS2Ptr<CMsgBoxData>)
 typedef ATL::CAtlArray<Ptr> Items;
-int FUN_140530a10(const Items&,__int64); void FUN_140530b00(Items&,unsigned); bool FUN_140530b40(Items&,int,__int64,int);
+int FUN_140530a10(const Items&,__int64); void FUN_140530b00(Items&,unsigned); bool SetItem(Items&,int,__int64,int);
 }
 MS2_CHECK_SIZE(ItemBreakCommon::BreakItem,0x28);
 MS2_CHECK_SIZE(ItemBreakCommon::BreakPreview,0x20);
@@ -41,7 +41,7 @@ class CItemBreakManager : public TSingleton<CItemBreakManager> {
 public:
     typedef Unk_BreakItemPtr ItemPtr;
     CItemBreakManager(); virtual ~CItemBreakManager();
-    int CanBreakItem(ItemPtr); int FUN_140531510(ItemPtr); int FUN_140531630(ItemPtr); bool FUN_1405316d0(ItemPtr); bool FUN_140531850(ItemPtr);
+    int CanBreakItem(ItemPtr); int FUN_140531510(ItemPtr); int FUN_140531630(ItemPtr); bool FUN_1405316d0(ItemPtr); bool HasBreakReward(ItemPtr);
     int CanAddItem(ItemPtr); int IsBreakDialogOpen(); void SendItemDismantleMode0(int); void ResetBreakMode(); ItemPtr GetSlotItemClone(int);
     void RemoveMissingItems(); void RefreshActiveDialog(); void UpdateActiveDialogSlot(int); void ForwardPacketToDialog(Unk_BreakPacket&); void FUN_140532220();
     void OnItemDismantlePacket(Unk_BreakPacket&); int FUN_140532ab0(); int HasBreakItems(); int GetMaxItemRarity(); int SendItemDismantleMode3();

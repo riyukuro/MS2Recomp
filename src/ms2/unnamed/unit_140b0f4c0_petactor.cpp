@@ -114,7 +114,7 @@ Unk_ScriptPtr<CTalkScript> FUN_140856fa0(int nNpcId, int nAnimId);
 
 // The lua state / grade tables, the string table, the notices.
 class Unk_LuaState;
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 class CLua   // C3: member view for the former free stand-ins
 {
 public:
@@ -125,13 +125,13 @@ CString FUN_140291c10(int nFxId);
 __int64 FUN_14028d260(float fTime);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void ShowSystemNotice(const CStringW& str, int a, int b);
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 
 // Pet-related helpers of other units.
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC);
 int FUN_140b118f0(int nItemId, PCBase* pPC);
-unsigned FUN_140b119c0(int nItemId, PCBase* pPC);
+unsigned HasAdditionalSkill(int nItemId, PCBase* pPC);
 
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -267,7 +267,7 @@ float CPet::vfunc_97()
     if (m_spNpcData.get() != 0)
         fBase = m_spNpcData->m_model.m_fScale;
     float fCur = m_fScaleAC;
-    if (!FUN_14028d470(m_fScaleA8, 1.0f))
+    if (!IsNearlyEqual(m_fScaleA8, 1.0f))
         fCur = m_fScaleA8;
     if (fCur != fBase)
     {
@@ -298,7 +298,7 @@ void CPet::vfunc_53(float f)
         }
     }
     FUN_140b11180();
-    FUN_140b11320(f);
+    UpdateIdleTime(f);
     FUN_140b10400();
     UpdateTamingEffects();
 }
@@ -427,15 +427,15 @@ int CPet::FUN_140b10300()
 }
 
 // @0x140b10320
-PCBase* CPet::FUN_140b10320()
+PCBase* CPet::GetOwnerPC()
 {
-    return FUN_140b120b0(WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
+    return FUN_140b120b0(WorldService::GetInstance()->FindPCById(m_nOwnerId));
 }
 
 // @0x140b10360
 PCBase* CPet::FUN_140b10360()
 {
-    return (PCBase*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
+    return (PCBase*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)WorldService::GetInstance()->FindPCById(m_nOwnerId));
 }
 
 // @0x140b103a0
@@ -445,7 +445,7 @@ CCPetInfoPacket::Info* CPet::GetInfo()
 }
 
 // @0x140b103c0
-void CPet::FUN_140b103c0(void* p)
+void CPet::SetInfo(void* p)
 {
     m_info.FUN_1401ffd00(p);
 }
@@ -482,7 +482,7 @@ void CPet::UpdateTamingEffects()
     {
         if (m_nFxMax == 0)
         {
-            void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
+            void* pLocal = WorldService::GetInstance()->GetLocalPlayer();
             if (pLocal != 0)
             {
                 if (static_cast<PCBase*>(pLocal)->GetObjectId() == GetKind())
@@ -511,7 +511,7 @@ void CPet::UpdateTamingEffects()
     }
     else if (m_nFxOther == 0)
     {
-        void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pLocal = WorldService::GetInstance()->GetLocalPlayer();
         if (pLocal != 0)
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
@@ -530,7 +530,7 @@ void CPet::UpdateTamingEffects()
 void CPet::SetKind(int nKind)
 {
     m_nKind = nKind;
-    void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pLocal = WorldService::GetInstance()->GetLocalPlayer();
     if (pLocal != 0)
     {
         if (static_cast<PCBase*>(pLocal)->GetObjectId() == m_nKind)
@@ -559,7 +559,7 @@ void CPet::SetTamingPoint(unsigned __int64 nPoint)
     {
         if (nPoint == *Client::Constants::GetInstance()->TamingPetMaxPoint.Get())
         {
-            void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
+            void* pLocal = WorldService::GetInstance()->GetLocalPlayer();
             if (pLocal != 0 && static_cast<PCBase*>(pLocal)->GetObjectId() == GetKind())
                 ShowSystemNotice(GetStringCommonByKey(L"s_pet_msg_taming_max_point"), 1, 1);
             bRename = 1;
@@ -619,7 +619,7 @@ void CPet::FUN_140b10c80(CStringW str)
 void CPet::SetGrade(unsigned short nGrade)
 {
     m_nGrade = nGrade;
-    m_nGradeFx = ((class CLua*)(class Unk_LuaState*)(reinterpret_cast<Unk_LuaState*>(((class Unk_LuaState*)FUN_1401c0db0()))))->CalcTamingPetRank(m_nGrade);
+    m_nGradeFx = ((class CLua*)(class Unk_LuaState*)(reinterpret_cast<Unk_LuaState*>(((class Unk_LuaState*)GetLuaClient()))))->CalcTamingPetRank(m_nGrade);
 }
 
 // @0x140b10fe0
@@ -671,7 +671,7 @@ int CPet::FUN_140b11180()
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return 0;
-        if (FUN_140b11810(pOwner->GetCurStateId(), spData->GetSkillId(), spData->GetSkillLevel()) != 0)
+        if (CanUseSkill(pOwner->GetCurStateId(), spData->GetSkillId(), spData->GetSkillLevel()) != 0)
         {
             if (reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->UseItemById(nItemId) != 0)
                 return 1;
@@ -681,7 +681,7 @@ int CPet::FUN_140b11180()
 }
 
 // @0x140b11320
-void CPet::FUN_140b11320(float fTime)
+void CPet::UpdateIdleTime(float fTime)
 {
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() != 0)
         return;
@@ -752,7 +752,7 @@ void CPet::PlayEffect(CString strEffect)
 }
 
 // @0x140b11810
-int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel)
+int CPet::CanUseSkill(int nSkillType, unsigned nSkillId, unsigned short nLevel)
 {
     if (nSkillType == 5)
         return 0;
@@ -763,7 +763,7 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
         MS2Ptr<SkillLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(nSkillId, nLevel);
         if (spLevel.get() != 0 ? true : false)
         {
-            if (spLevel.operator->()->FUN_140804450() != 0)
+            if (spLevel.operator->()->HasSequenceName() != 0)
                 return 0;
         }
     }
@@ -782,7 +782,7 @@ int FUN_140b118f0(int nItemId, PCBase* pPC)
 }
 
 // @0x140b119c0
-unsigned FUN_140b119c0(int nItemId, PCBase* pPC)
+unsigned HasAdditionalSkill(int nItemId, PCBase* pPC)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
@@ -831,7 +831,7 @@ int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC)
             continue;
         if (FUN_140b118f0(kRule.m_nItemId, pPC) != 0)
             continue;
-        if (FUN_140b119c0(kRule.m_nItemId, pPC) != 0)
+        if (HasAdditionalSkill(kRule.m_nItemId, pPC) != 0)
             continue;
         if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)
         {

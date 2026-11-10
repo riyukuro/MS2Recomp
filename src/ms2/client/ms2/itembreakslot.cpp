@@ -120,7 +120,7 @@ MS2Ptr<CItem> ItemBreakSlot::vfunc_25()
 // @0x141410210 (ITooltip::vfunc_0)
 int ItemBreakSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -138,7 +138,7 @@ int ItemBreakSlot::vfunc_0(void* p)
 // @0x141410370
 int ItemBreakSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
@@ -179,7 +179,7 @@ void FUN_141410780(const CString& strName)
     ItemBreakSlotBag* pBag = FUN_1414109f0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

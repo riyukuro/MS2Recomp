@@ -142,13 +142,13 @@ float CItemMorphController::vfunc_20()
 // @0x141416f70
 const Unk_CustomizeRange* CItemMorphController::vfunc_23()
 {
-    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(m_nCurIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->GetFloatList(m_nCurIndex);
 }
 
 // @0x141416fd0
 const Unk_CustomizeRange* CItemMorphController::vfunc_24(int nIndex)
 {
-    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(nIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->GetFloatList(nIndex);
 }
 
 // @0x141417030
@@ -178,7 +178,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 {
     if (m_spEquipItem == (CEquipItem*)0)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         NiInterpController* pCtrl = SelectMorphController(nIndex);
@@ -190,7 +190,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 // @0x1414171e0
 int CItemMorphController::vfunc_27()
 {
-    return (int)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140545090();
+    return (int)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->GetFloatListCount();
 }
 
 // @0x141417230
@@ -198,7 +198,7 @@ void CItemMorphController::vfunc_11()
 {
     if (m_spEquipItem == (CEquipItem*)0)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         NiInterpController* pCtrl = FindMorphController(1);
@@ -218,7 +218,7 @@ void CItemMorphController::vfunc_11()
 // @0x141417310
 int CItemMorphController::vfunc_29()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spEquipItem.IsNull())
@@ -334,7 +334,7 @@ void CItemMorphController::ResetMeshHighlight()
                     {
                         NiObject* pRender = NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pFound));
                         if (pRender != 0)
-                            spPart.get()->FUN_1411679d0(0, 0, 0);
+                            spPart.get()->SetHighlight(0, 0, 0);
                         return;
                     }
                     pTime = pTime->GetNext();
@@ -376,7 +376,7 @@ void CItemMorphController::ApplyMorph()
 // @0x141417ea0
 NiInterpController* CItemMorphController::FindMorphController(int bTrack)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (bTrack != 0)
@@ -486,7 +486,7 @@ NiInterpController* CItemMorphController::SelectMorphController(int nIndex)
 // @0x141418620
 efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         CAtlArray<CString> aParts;

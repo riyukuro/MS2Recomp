@@ -170,7 +170,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
-    void FUN_141bbae40(void* p);
+    void AddCallback(void* p);
 };
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -499,12 +499,12 @@ efd::AsyncResult EntityWorldManager::OnInit() {
     messages->Subscribe(this, entities->GetEntityLoadCategory(), 0, false);
     loader->SetMaxEntityLoadThrottle(0xffff);
     loader->SetMaxEntityUnloadThrottle(0xffff);
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
     if (NiDX9Renderer* device = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer())) {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);
     }
-    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &EntityWorldManager::WriteCrashLog));
+    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->AddCallback(TFunctor<void, EmptyParam>(this, &EntityWorldManager::WriteCrashLog));
     return efd::AsyncResult_Complete;
 }
 // @0x1411d08e0

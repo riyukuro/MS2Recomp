@@ -72,9 +72,9 @@ void UIDungeonExpenseRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_acceptButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_acceptButton)))
-        m_acceptButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnAccept), 0);
+        m_acceptButton->AddClickHandler(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnAccept), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_cancelButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_cancelButton)))
-        m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnCancel), 0);
+        m_cancelButton->AddClickHandler(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnCancel), 0);
     SetText();
     ((class Unk_DxHost*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
 }

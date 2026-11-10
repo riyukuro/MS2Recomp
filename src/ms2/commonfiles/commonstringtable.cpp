@@ -109,8 +109,8 @@ template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Root() const;
 
 CStringW GetStringCommon(int nStringId);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+CString JoinPath(const CString& strRoot, const CString& strFile);   // path join
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
@@ -119,7 +119,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // path of a Table file
 CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW strDefault);   // string attribute with default (callee destroys the default)
-unsigned FUN_14025ed00(const wchar_t* psz);                             // string hash
+unsigned GetUrlHash(const wchar_t* psz);                             // string hash
 struct Unk_BanFlags { int FUN_1402c4c90(int nFlag); };                          // blocked-action flag set
 struct Unk_BanConfig { unsigned char m_pad_0[8]; Unk_BanFlags m_8; };
 Unk_BanConfig* FUN_14025e7b0();                                                 // global client config
@@ -1168,7 +1168,7 @@ void CBanTextChecker::BuildUrlHashes()
     {
         const CStringW& strUrl = urls.GetAt(pos);
         CStringW strHash;
-        strHash.Format(L"%d", FUN_14025ed00(strUrl));
+        strHash.Format(L"%d", GetUrlHash(strUrl));
         m_mapUrlHash.SetAt(strUrl, strHash);
     }
 }
@@ -1438,7 +1438,7 @@ MS2Ptr<CBanTextChecker> CommonString::GetChecker()
 }
 
 // @0x14025ed00
-unsigned FUN_14025ed00(const wchar_t* psz)
+unsigned GetUrlHash(const wchar_t* psz)
 {
     ATLENSURE(psz != NULL);
     ULONG nHash = 0;
@@ -5051,7 +5051,7 @@ int CommonString::LoadCommon()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strId = FUN_1401bf530(pNode, "id", CStringW(L""));
         CStringW strValue = FUN_1401bf530(pNode, "value", CStringW(L""));
@@ -5066,7 +5066,7 @@ int CommonString::LoadCommon()
 bool CommonString::LoadDebug()
 {
     TextMap& map = m_maps[0];
-    CString strPath = FUN_140cc2a00("../XmlDebug", "stringDebug.xml");
+    CString strPath = JoinPath("../XmlDebug", "stringDebug.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
@@ -5116,7 +5116,7 @@ void CommonString::LoadStrings(TiXmlElement* pRoot)
     TextMap& map = m_maps[0];
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strId = FUN_1401bf530(pNode, "id", CStringW(L""));
         CStringW strValue = FUN_1401bf530(pNode, "value", CStringW(L""));

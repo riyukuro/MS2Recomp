@@ -74,7 +74,7 @@ class Unk_ModelMgr
 public:
     Unk_ModelMgr();                         // 0x140a2a0a0
     ~Unk_ModelMgr();                        // 0x140a2a140
-    int FUN_140a2a180();                   // load every .flat file
+    int Load();                   // load every .flat file
     int FUN_140a2a920(const CStringA& strModel, CStringA strMixin);                // model is, or inherits, strMixin
     Unk_ValueList* GetPropertyValues(CStringA strModel, const CStringA& strProp);       // cached values of a property
     int FUN_140a2aab0(TiXmlElement* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
@@ -99,7 +99,7 @@ Unk_ModelMgr::Unk_ModelMgr() : m_bLoaded(0) {}
 Unk_ModelMgr::~Unk_ModelMgr() {}
 
 // @0x140a2a180
-int Unk_ModelMgr::FUN_140a2a180()
+int Unk_ModelMgr::Load()
 {
     m_mixins.RemoveAll();
     m_props.RemoveAll();

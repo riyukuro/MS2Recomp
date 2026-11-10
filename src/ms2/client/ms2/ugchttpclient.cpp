@@ -49,7 +49,7 @@ CUgcHttpClient::CUgcHttpClient()
     m_hInternet = 0;
     m_hConnect = 0;
     m_hRequest = 0;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
     m_nResult = 0;
 }
 
@@ -59,7 +59,7 @@ CUgcHttpClient::~CUgcHttpClient()
     m_hInternet = 0;
     m_hConnect = 0;
     m_hRequest = 0;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
 }
 
 // @0x140dfa290
@@ -226,7 +226,7 @@ int CUgcHttpClient::RequestPost(const char* pszUrl)
         if (HttpAddRequestHeadersA(m_hRequest, "Accept: */*\r\n", 0xd, 0x80000000) == 0) {
             throw Exception(CString("RequestPost : HttpAddRequestHeaders"), GetLastError());
         }
-        if (HttpSendRequestA(m_hRequest, strHeaders, (DWORD)strlen(strHeaders), m_buffer.FUN_140204eb0(),
+        if (HttpSendRequestA(m_hRequest, strHeaders, (DWORD)strlen(strHeaders), m_buffer.GetBuffer(),
                              m_buffer.GetLength()) == 0) {
             throw Exception(CString("RequestPost : HttpSendRequest"), GetLastError());
         }
@@ -258,7 +258,7 @@ int CUgcHttpClient::ResponseOfBytes(void* pData, unsigned nSize)
 void CUgcHttpClient::Append(CByteBuffer& buffer)
 {
     unsigned nSize = buffer.GetLength();
-    m_buffer.WriteBytes(buffer.FUN_140204eb0(), nSize);
+    m_buffer.WriteBytes(buffer.GetBuffer(), nSize);
 }
 
 // @0x140dfb480

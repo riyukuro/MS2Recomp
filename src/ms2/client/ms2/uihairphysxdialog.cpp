@@ -80,7 +80,7 @@ MS2_CHECK_OFFSET(Unk_HpxHairData, m_afScale, 0x58);
 MS2_CHECK_OFFSET(Unk_HpxHairData, m_akPos, 0x60);
 MS2_CHECK_OFFSET(Unk_HpxHairData, m_akRot, 0x78);
 
-class Unk_HpxWorld { public: PCBase* FUN_141bd0cc0(); };       // the player (NULL outside the game)
+class Unk_HpxWorld { public: PCBase* GetLocalPlayer(); };       // the player (NULL outside the game)
 class Unk_HpxUIMgr
 {
 public:
@@ -191,7 +191,7 @@ void UIHairPhysxDialog::OnLoadComplete()
     FUN_1419264e0("m_reset", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::ResetTransforms));
     FUN_1419264e0("m_mirror", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982940));
     FUN_1419264e0("m_save", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982860));
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -224,7 +224,7 @@ MS2_REPLACE_METHOD(0x141981450, UIHairPhysxDialog, OnLoadComplete, 1441, 0xDB01E
 void UIHairPhysxDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc)
     {
         pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
@@ -375,7 +375,7 @@ MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, SetPhysXDebugRender, 377, 0x1
 // @0x141982350
 void UIHairPhysxDialog::SetOnlyPonytail(int nOnly)
 {
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     if (nOnly)
@@ -580,7 +580,7 @@ void UIHairPhysxDialog::SaveJoints()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     CEquipModel* pPart = 0;
-    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
@@ -652,7 +652,7 @@ MS2_REPLACE_METHOD(0x1419834A0, UIHairPhysxDialog, GetTransformMode, 344, 0xEAC2
 CString UIHairPhysxDialog::GetSelectedJoint()
 {
     if (MS2Ptr<ASDropdownMenu> sp = GetChild<ASDropdownMenu>("m_joints"))
-        return FUN_14016a600(sp->FUN_1422dfe00(), 0);
+        return FUN_14016a600(sp->GetSelectedLabel(), 0);
     return CString("");
 }
 MS2_REPLACE_METHOD(0x141983600, UIHairPhysxDialog, GetSelectedJoint, 296, 0xB2F98612);
@@ -667,7 +667,7 @@ void UIHairPhysxDialog::FillJointList()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     CEquipModel* pPart = 0;
-    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
@@ -745,7 +745,7 @@ MS2_REPLACE_METHOD(0x141983C60, UIHairPhysxDialog, FUN_141983c60, 746, 0x967CAED
 // @0x141983f50
 void UIHairPhysxDialog::UpdateTransformInputs()
 {
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     int nSide;
     int nMode;
     if (pPc == 0)
@@ -833,7 +833,7 @@ void UIHairPhysxDialog::UpdateTransformText()
         }
         if (pModel != 0)
         {
-            Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
+            Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->GetProxy());
             if (pData != 0)
             {
                 int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
@@ -853,7 +853,7 @@ MS2_REPLACE_METHOD(0x141984360, UIHairPhysxDialog, UpdateTransformText, 1698, 0x
 // @0x141984a10
 int UIHairPhysxDialog::GetModelForSide(int nSide, Unk_HpxModel** ppModel)
 {
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     CEquipModel* pFirst = 0;
@@ -882,7 +882,7 @@ MS2_REPLACE_METHOD(0x141984A10, UIHairPhysxDialog, GetModelForSide, 217, 0xD88E4
 // @0x141984af0
 int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight)
 {
-    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     CEquipModel* pFirst = 0;
@@ -966,7 +966,7 @@ void UIHairPhysxDialog::SetModelPosition(Unk_HpxModel* pModel, NiPoint3 kPos)
 {
     if (!pModel)
         return;
-    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
+    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->GetProxy());
     if (pData)
     {
         int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
@@ -987,7 +987,7 @@ void UIHairPhysxDialog::SetModelRotation(Unk_HpxModel* pModel, NiPoint3 kDeg)
 {
     if (!pModel)
         return;
-    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
+    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->GetProxy());
     if (pData)
     {
         int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
@@ -1008,7 +1008,7 @@ void UIHairPhysxDialog::SetModelTransform(Unk_HpxModel* pModel, const NiTransfor
 {
     if (!pModel)
         return;
-    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
+    Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->GetProxy());
     if (pData)
     {
         int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;

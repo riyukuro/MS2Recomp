@@ -46,7 +46,7 @@ class CMsgBoxData : public CPtred
 public:
     int FUN_141a02e50(int a, int b) const;
     void SetItemUid(__int64 n);
-    void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
+    void SetItemEntry(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
     void SetButtonLabelIds(int a, int b, int c);
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     template <class T> void Append(T v);                            // Append<int> 0x140533ff0 (inline COMDAT)
@@ -197,7 +197,7 @@ int UIItemEnchantTransformDialog::vfunc_28(const char* szMethod, const Scaleform
 void UIItemEnchantTransformDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x104)
+    if (((CInPacket*)pPacket)->GetOpcode() == 0x104)
         OnTransformResult();
 }
 
@@ -224,7 +224,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
         MS2Ptr<CItem> item = ((Unk_TfInventory*)&g_143ab2a90)->FindItemByUid(uids[i]);
         if (item == 0)
             continue;
-        if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
+        if (CItemEnchantTransformTable::CanTransform(item) == 0)
             continue;
         m_targets.Add(item);
     }
@@ -251,7 +251,7 @@ void UIItemEnchantTransformDialog::OnSelectTargetItem(int nIndex)
     if (nIndex < 0 || nIndex >= (int)m_targets.GetCount())
         return;
     MS2Ptr<CItem> item = m_targets[nIndex];
-    if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
+    if (CItemEnchantTransformTable::CanTransform(item) == 0)
         return;
     CStringW strOption;
     bool bHighSa = false;
@@ -266,7 +266,7 @@ void UIItemEnchantTransformDialog::OnSelectTargetItem(int nIndex)
         if (box.get() != 0) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
             box->SetItemUid(item->GetItemUid());
-            box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
+            box->SetItemEntry(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<int>(nIndex);
             FUN_140d73c60(box);
@@ -285,7 +285,7 @@ void UIItemEnchantTransformDialog::SelectTargetItem(int nIndex)
     if (nIndex < 0 || nIndex >= (int)m_targets.GetCount())
         return;
     MS2Ptr<CItem> item = m_targets[nIndex];
-    if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
+    if (CItemEnchantTransformTable::CanTransform(item) == 0)
         return;
     CEnchantTransformDataPtr row = TSingleton<CItemEnchantTransformTable>::GetInstance()->FindByItem(item);
     if (row == 0)

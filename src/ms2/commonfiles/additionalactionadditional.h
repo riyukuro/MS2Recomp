@@ -166,7 +166,7 @@ struct Unk_RangeShape
     Unk_RangeShape();                                       // 0x1408001f0
     bool IsDifferent(const Unk_RangeShape& o);            // is different
     void Load(TiXmlElement* pElem);               // reads the shape attributes
-    void FUN_140800570(void* pElem);                        // writes the shape attributes
+    void SaveAttributes(void* pElem);                        // writes the shape attributes
     // Declared (0x140184190), so SpreadProperty::Clear assigns through the copy operator= 0x1401945c0 like the exe.
     ~Unk_RangeShape() {}
 };

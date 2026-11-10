@@ -40,20 +40,20 @@ extern std::string g_strLocaleDir2;
 extern std::string g_strLocaleDir;
 
 CString FUN_140651c00(int nLanguage);                 // language enum -> "KR"/"JP"/...
-int FUN_140651920(CString strCode);                   // language code -> enum
+int GetLanguageId(CString strCode);                   // language code -> enum
 CString FUN_1406504c0(CString& s);
 CString FUN_140650500(CString& s);
 void FUN_140650090(CString& s);
-bool FUN_1406500b0(CString& s);
+bool TryMakeUpper(CString& s);
 CString GetLanguageCode();
 CString FUN_140651390();
 CString FUN_1406522f0(int);
 CString FUN_140652330(int);
-void FUN_140650b30(int);
-int FUN_1406516c0();
-void FUN_1406507a0(int);
+void SetVoice(int);
+int GetVoice();
+void SetLanguage(int);
 void FUN_1406509e0(int);
-void FUN_140650ac0(int);
+void SetCodePage(int);
 
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 int DAT_143ab0240;
@@ -104,7 +104,7 @@ int CLocaleLanguageData::GetDefaultLanguage()
     if (m_languages.GetCount() <= 0)
         return 0;
     CString s = m_languages[0];
-    return FUN_140651920(s);
+    return GetLanguageId(s);
 }
 
 // @0x14064edf0
@@ -114,7 +114,7 @@ void CLocaleLanguageData::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementT
     for (unsigned __int64 i = 0; i < m_languages.GetCount(); ++i)
     {
         CString s = m_languages[i];
-        int e = FUN_140651920(s);
+        int e = GetLanguageId(s);
         out.Add(e);
     }
 }
@@ -254,24 +254,24 @@ CString FUN_140650500(CString& s)
 }
 
 // @0x140650b30
-void FUN_140650b30(int n)
+void SetVoice(int n)
 {
     DAT_143ab0244 = n;
 }
 
 // @0x140650b50
-void FUN_140650b50(CString strCode)
+void SetVoiceByCode(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1406522f0(FUN_1406516c0()) == strCode) return;
-    if (strCode == FUN_1406522f0(0)) FUN_140650b30(0);
-    else if (strCode == FUN_1406522f0(1)) FUN_140650b30(1);
-    else if (strCode == FUN_1406522f0(2)) FUN_140650b30(2);
-    else if (strCode == FUN_1406522f0(3)) FUN_140650b30(3);
-    else if (strCode == FUN_1406522f0(4)) FUN_140650b30(4);
-    else if (strCode == FUN_1406522f0(5)) FUN_140650b30(5);
-    else if (strCode == FUN_1406522f0(6)) FUN_140650b30(6);
-    else if (strCode == FUN_1406522f0(7)) FUN_140650b30(7);
+    if (FUN_1406522f0(GetVoice()) == strCode) return;
+    if (strCode == FUN_1406522f0(0)) SetVoice(0);
+    else if (strCode == FUN_1406522f0(1)) SetVoice(1);
+    else if (strCode == FUN_1406522f0(2)) SetVoice(2);
+    else if (strCode == FUN_1406522f0(3)) SetVoice(3);
+    else if (strCode == FUN_1406522f0(4)) SetVoice(4);
+    else if (strCode == FUN_1406522f0(5)) SetVoice(5);
+    else if (strCode == FUN_1406522f0(6)) SetVoice(6);
+    else if (strCode == FUN_1406522f0(7)) SetVoice(7);
 }
 
 // @0x140650e70
@@ -279,18 +279,18 @@ void SetLanguageByCode(CString strCode)
 {
     strCode.MakeUpper();
     if (GetLanguageCode() == strCode) return;
-    if (strCode == FUN_1406522f0(0)) FUN_1406507a0(0);
-    else if (strCode == FUN_1406522f0(1)) FUN_1406507a0(1);
-    else if (strCode == FUN_1406522f0(2)) FUN_1406507a0(2);
-    else if (strCode == FUN_1406522f0(3)) FUN_1406507a0(3);
-    else if (strCode == FUN_1406522f0(4)) FUN_1406507a0(4);
-    else if (strCode == FUN_1406522f0(5)) FUN_1406507a0(5);
-    else if (strCode == FUN_1406522f0(6)) FUN_1406507a0(6);
-    else if (strCode == FUN_1406522f0(7)) FUN_1406507a0(7);
+    if (strCode == FUN_1406522f0(0)) SetLanguage(0);
+    else if (strCode == FUN_1406522f0(1)) SetLanguage(1);
+    else if (strCode == FUN_1406522f0(2)) SetLanguage(2);
+    else if (strCode == FUN_1406522f0(3)) SetLanguage(3);
+    else if (strCode == FUN_1406522f0(4)) SetLanguage(4);
+    else if (strCode == FUN_1406522f0(5)) SetLanguage(5);
+    else if (strCode == FUN_1406522f0(6)) SetLanguage(6);
+    else if (strCode == FUN_1406522f0(7)) SetLanguage(7);
 }
 
 // @0x140651190
-void FUN_140651190(CString strCode)
+void SetRegionByCode(CString strCode)
 {
     strCode.MakeUpper();
     if (FUN_140651390() == strCode) return;
@@ -313,7 +313,7 @@ CString FUN_140651390()
 }
 
 // @0x1406513d0
-CString FUN_1406513d0(CString strFile)
+CString GetServerConfigPath(CString strFile)
 {
     CString strPath = "./ServerConfig/" + strFile;
     CString strSuffix = "_" + FUN_140188f50(DAT_143ab0258, 0);
@@ -357,7 +357,7 @@ int GetFallbackLanguages(int nRegion, ATL::CAtlArray<int, ATL::CDefaultElementTr
 }
 
 // @0x1406515e0
-bool FUN_1406515e0(unsigned int nRegion, int nLanguage)
+bool IsLanguageInRegion(unsigned int nRegion, int nLanguage)
 {
     switch (nRegion)
     {
@@ -385,19 +385,19 @@ bool FUN_1406515e0(unsigned int nRegion, int nLanguage)
 }
 
 // @0x1406516a0
-int FUN_1406516a0()
+int GetLanguage()
 {
     return DAT_143ab0240;
 }
 
 // @0x1406516b0
-int FUN_1406516b0()
+int GetRegion()
 {
     return DAT_143ab0248;
 }
 
 // @0x1406516c0
-int FUN_1406516c0()
+int GetVoice()
 {
     return DAT_143ab0244;
 }
@@ -430,7 +430,7 @@ CString FUN_140651710(int n)
 }
 
 // @0x1406518d0
-int FUN_1406518d0(short langid)
+int GetLanguageFromLangId(short langid)
 {
     int id = (unsigned short)langid;
     switch (id)
@@ -442,7 +442,7 @@ int FUN_1406518d0(short langid)
 }
 
 // @0x140651920
-int FUN_140651920(CString strCode)
+int GetLanguageId(CString strCode)
 {
     if (strCode.CompareNoCase("KR") == 0) return 0;
     else if (strCode.CompareNoCase("JP") == 0) return 1;
@@ -485,7 +485,7 @@ CString FUN_140651c00(int n)
 }
 
 // @0x140651d70
-CStringW FUN_140651d70(int n)
+CStringW GetLanguageCodeW(int n)
 {
     switch (n)
     {
@@ -502,7 +502,7 @@ CStringW FUN_140651d70(int n)
 }
 
 // @0x140651f30
-CStringW FUN_140651f30(int n)
+CStringW GetRegionCodeW(int n)
 {
     switch (n)
     {
@@ -559,11 +559,11 @@ CString FUN_140652330(int n)
 // @0x140650090
 void FUN_140650090(CString& s)
 {
-    FUN_1406500b0(s);
+    TryMakeUpper(s);
 }
 
 // @0x1406500b0
-bool FUN_1406500b0(CString& s)
+bool TryMakeUpper(CString& s)
 {
     try {
         s.MakeUpper();
@@ -575,11 +575,11 @@ bool FUN_1406500b0(CString& s)
 }
 
 // @0x1406507a0
-void FUN_1406507a0(int n)
+void SetLanguage(int n)
 {
     DAT_143ab0240 = n;
     DAT_143ab0250 = FUN_1406522f0(n);
-    FUN_140650ac0(n);
+    SetCodePage(n);
     switch (n)
     {
     case 1: g_strLocaleDir2 = "jp/"; DAT_143aad168 = _create_locale(4, "japanese"); break;
@@ -609,7 +609,7 @@ void FUN_1406509e0(int n)
 }
 
 // @0x140650ac0
-void FUN_140650ac0(int n)
+void SetCodePage(int n)
 {
     switch (n)
     {

@@ -105,7 +105,7 @@ template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B&
 void FUN_1412751b0(const CStringW& text, int channel);
 void ShowSystemNotice(const CStringW& text, int a, int b);
 void FUN_141275260(int stringId, int a, int b);
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 void FUN_140f8ff40(int, int, int);
 void FUN_140710590(COutPacket& packet);
@@ -426,7 +426,7 @@ void CTradeManagerEx::OnTradeRequestSent(CInPacket& packet)
 {
     FUN_141275260(0x822, 1, 1);
     CString strArg("");
-    FUN_141276180(s_inviteSuccess, strArg);
+    PlaySystemSound(s_inviteSuccess, strArg);
 }
 
 // @0x14185c2a0

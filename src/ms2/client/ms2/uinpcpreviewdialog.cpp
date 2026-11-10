@@ -84,7 +84,7 @@ static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_NpWorld : public WorldService
 {
 public:
-    PCBase* FUN_141bd0cc0();                            // the local player
+    PCBase* GetLocalPlayer();                            // the local player
 };
 int FUN_141274aa0(class Unk_ExpActor* pObj);            // the actor filter of the collection above (getexp.cpp)
 CNpc* CastToNpc(const efd::SmartPointer<GameObject>& spObj);
@@ -104,7 +104,7 @@ TalkArrayPtr GetNpcTalks(int nNpcId);                 // the select / job talks 
 TalkArrayPtr GetNpcMonologues(int nNpcId);                 // the monologues of an npc
 TalkPtr FUN_140856820(int nNpcId, int nTalkId);
 TalkPtr FUN_140856af0(int nNpcId, int nTalkId);
-TalkPtr FUN_140856c50(int nNpcId, int nKind);
+TalkPtr GetNpcPickTalk(int nNpcId, int nKind);
 TalkPtr FindQuestTalk(int nQuestId, int nTalkId);
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }   // -1 = absent
 
@@ -226,7 +226,7 @@ void UINpcPreviewDialog::vfunc_15()
         return;
     if (m_nActorOid == 0)
         return;
-    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid));
+    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nActorOid));
     if (pActor == 0)
         return;
     std::vector<CString> names;
@@ -350,7 +350,7 @@ int UINpcPreviewDialog::SelectNpc(int nNpcId)
             }
         }
         for (size_t i = 0; i < 2; i++) {
-            TalkPtr spTalk = FUN_140856c50(nNpcId, (int)i);
+            TalkPtr spTalk = GetNpcPickTalk(nNpcId, (int)i);
             if (spTalk.get() != 0) {
                 Unk_NpRow rowCine;
                 rowCine.m_kind = 4;
@@ -436,7 +436,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
         spOut->SetTextHTMLW(strOut);
     } else if (row.m_kind == 4) {
         CStringW strOut;
-        TalkPtr spTalk = FUN_140856c50(m_nNpcId, row.m_c);
+        TalkPtr spTalk = GetNpcPickTalk(m_nNpcId, row.m_c);
         if (spTalk.IsNull())
             return 0;
         for (size_t j = 0; j < spTalk->m_contents.GetCount(); j++) {
@@ -517,7 +517,7 @@ void UINpcPreviewDialog::FUN_141a70b90(int nRow)
         CTalkScript* pTalk = FindQuestTalk(row.m_a, row.m_b != 0 ? 100 : 300).get();
         TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
     } else if (row.m_kind == 4) {
-        CTalkScript* pTalk = FUN_140856c50(m_nNpcId, row.m_c).get();
+        CTalkScript* pTalk = GetNpcPickTalk(m_nNpcId, row.m_c).get();
         TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
     } else if (row.m_kind == 3) {
         CTalkScript* pTalk = FUN_140856820(m_nNpcId, row.m_c).get();
@@ -528,7 +528,7 @@ void UINpcPreviewDialog::FUN_141a70b90(int nRow)
             return;
         if (spTalk->m_contents.GetCount() >= 0) {
             ATL::CAtlList<efd::SmartPointer<GameObject> > npcs(10);
-            WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >*>(&npcs), reinterpret_cast<int (*)(class Unk_WsC_GameObj*)>(FUN_141274aa0));
+            WorldService::GetInstance()->CollectObjects(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >*>(&npcs), reinterpret_cast<int (*)(class Unk_WsC_GameObj*)>(FUN_141274aa0));
             for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
                 CNpc* pNpc = CastToNpc(npcs.GetAt(pos));
                 if (pNpc != 0) {
@@ -546,7 +546,7 @@ void UINpcPreviewDialog::PlayRowAnimation(int nRow)
 {
     if (nRow < 0 || nRow >= (int)m_rows.GetCount())
         return;
-    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid));
+    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nActorOid));
     if (pActor == 0)
         return;
     Unk_NpRow row = m_rows.GetAt(nRow);
@@ -582,7 +582,7 @@ void UINpcPreviewDialog::SpawnPreviewNpc()
 {
     efd::Point3 kPos;
     efd::Point3 kDir;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0) {
         kPos = pPlayer->vfunc_18();
         kDir = pPlayer->vfunc_20();
@@ -606,7 +606,7 @@ void UINpcPreviewDialog::SpawnPreviewNpc()
         spNpc->SetCurrentStat(i, 100);
     }
     spNpc->vfunc_59(1, 0, 0, 0);
-    if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb1e0(spNpc, 0, 1) == 0)
+    if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->OnObjectCreated(spNpc, 0, 1) == 0)
         return;
     m_nActorOid = spNpc->GetObjectId();
 }
@@ -614,7 +614,7 @@ void UINpcPreviewDialog::SpawnPreviewNpc()
 // @0x141a717c0
 void UINpcPreviewDialog::RemovePreviewNpc()
 {
-    efd::SmartPointer<PCBase> spActor(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nActorOid)));
+    efd::SmartPointer<PCBase> spActor(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nActorOid)));
     if (spActor) {
         reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb7f0(spActor, 0);
         m_nActorOid = 0;

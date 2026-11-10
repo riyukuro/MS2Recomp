@@ -57,10 +57,10 @@ class Unk_TamingWorld;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_TamingUIMgr { public: };
 void FUN_1422bcdd0(Scaleform::GFx::Value*, __int64);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
@@ -158,7 +158,7 @@ int UITamingBar::Entity::vfunc_8(int n)
     Unk_TamingTamed* pTamed = static_cast<Unk_TamingTamed*>(efd::DynamicCast<CPet, PCBase>(pActor));
     if (pTamed != 0)
     {
-        Unk_TamingPlayer* pPlayer = ((class Unk_TamingPlayer*)((class WorldService*)(class Unk_TamingWorld*)(((class Unk_TamingWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_TamingPlayer* pPlayer = ((class Unk_TamingPlayer*)((class WorldService*)(class Unk_TamingWorld*)(((class Unk_TamingWorld*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pPlayer != 0)
         {
             if (pPlayer->GetObjectId() != pTamed->GetKind())
@@ -298,7 +298,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
         {
             if (m_78.IsEmpty())
             {
-                bool bFlag = FUN_140930110(nActorId);
+                bool bFlag = IsUpperTargetId(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -322,8 +322,8 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
                     int nOld = pEntity->FUN_140f48d20();
                     if (nActorId != nOld)
                     {
-                        bool bNew = FUN_140930110(nActorId);
-                        if (FUN_140930110(nOld) || bNew)
+                        bool bNew = IsUpperTargetId(nActorId);
+                        if (IsUpperTargetId(nOld) || bNew)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())

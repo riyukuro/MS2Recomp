@@ -48,8 +48,8 @@ class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 
 
 // Movie helpers: set a member of the movie root to a visibility / enable flag / text.
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int bOn);
+void SetChildEnabled(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
 void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void SetButtonText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
@@ -58,7 +58,7 @@ void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<C
 MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void DestroyItemInfoSlot(const CString& strBindID);                               // release the item bound to the name
 void CreateItemInfoSlot(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n2, int n3);   // bind an item to the name
-int FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
+int PlaySystemSound(const CString& strName, const CString& strArg);          // play a system sound
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_140710590(COutPacket& packet);                                     // send
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
@@ -175,7 +175,7 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
 {
 #define TM_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (TM_PKT->FUN_14070fe80() == 0xf5)
+    if (TM_PKT->GetOpcode() == 0xf5)
     {
         if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
             return;
@@ -276,9 +276,9 @@ void UIItemTreasureMapDialog::ShowSelectPage()
     m_nCost = 0;
     RefreshTreasureMapBag();
     SetButtonText((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_appraise"));
-    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
+    SetChildEnabled((*m_board).FUN_1422bb890(), "m_submit", 0);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc1", 0);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc2", 0);
 }
 
 // Collects the treasure maps of the inventory and hands them to the item bag.
@@ -331,9 +331,9 @@ void UIItemTreasureMapDialog::StartAppraise()
         m_nState = 1;
         m_nTargetUid = m_spTarget->GetItemUid();
         m_spTarget = 0;
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
-        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
+        SetChildVisible((*m_board).FUN_1422bb890(), "m_desc1", 0);
+        SetChildVisible((*m_board).FUN_1422bb890(), "m_desc2", 0);
+        SetChildEnabled((*m_board).FUN_1422bb890(), "m_submit", 0);
     }
 }
 
@@ -354,12 +354,12 @@ void UIItemTreasureMapDialog::ReturnToSelectPage()
         ASObj obj(2);
         obj.SetStringMember("binding", m_strBind);
         spSlot->Invoke("setData", obj.GetValue());
-        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
-        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
+        SetChildVisible((*spSlot).FUN_1422bb890(), "eff1", 1);
+        SetChildVisible((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
     m_board->vfunc_13("wait");
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc1", 0);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc2", 0);
     ShowSelectPage();
 }
 
@@ -387,22 +387,22 @@ void UIItemTreasureMapDialog::OnAppraiseCost(__int64 nUid, __int64 nCost)
         obj.SetWStringMember((const char*)s_strItemName, m_spTarget->FUN_140528160());
         obj.SetStringMember("binding", m_strBind);
         spSlot->Invoke("setData", obj.GetValue());
-        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
-        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
+        SetChildVisible((*spSlot).FUN_1422bb890(), "eff1", 1);
+        SetChildVisible((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
     CStringW strCost = FUN_14028dfa0<CStringW>(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
     if (nCost < 0)
     {
         strCost = GetStringCommonByKey(L"s_item_treasure_map_cant_appraise");
-        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
+        SetChildEnabled((*m_board).FUN_1422bb890(), "m_submit", 0);
     }
     else
-        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
+        SetChildEnabled((*m_board).FUN_1422bb890(), "m_submit", 1);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc1", 1);
     SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc1", m_spTarget->FUN_140528160());
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 1);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc2", 1);
     SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc2", CStringW(strCost));
-    FUN_141276180(s_sndChoice, "");
+    PlaySystemSound(s_sndChoice, "");
 }
 
 // The appraised item: show it and the back button.
@@ -423,19 +423,19 @@ void UIItemTreasureMapDialog::ShowAppraisedItem(int nItemId, int nRank)
             obj.SetWStringMember((const char*)s_strItemName, spItem->FUN_140528160());
             obj.SetStringMember("binding", m_strBind);
             spSlot->Invoke("setData", obj.GetValue());
-            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 0);
-            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 0);
+            SetChildVisible((*spSlot).FUN_1422bb890(), "eff1", 0);
+            SetChildVisible((*spSlot).FUN_1422bb890(), "eff2", 0);
         }
     }
     m_board->vfunc_13("appraise");
     MS2Ptr<ASMovieClip> spEff = m_board->FUN_1409b4560("m_eff1");
     if (spEff.get() != 0)
         spEff->vfunc_12(1);
-    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
+    SetChildVisible((*m_board).FUN_1422bb890(), "m_desc1", 1);
     SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
-    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
+    SetChildEnabled((*m_board).FUN_1422bb890(), "m_submit", 1);
     SetButtonText((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_back"));
-    FUN_141276180(s_sndStamp, "");
+    PlaySystemSound(s_sndStamp, "");
     RefreshTreasureMapBag();
     m_nState = 2;
 }
@@ -446,9 +446,9 @@ bool UIItemTreasureMapDialog::IsTreasureMap(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    if (spItem->FUN_140527840() == 0)
+    if (spItem->GetData() == 0)
         return false;
-    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name != L"TreasureMap")
+    if (reinterpret_cast<CItemData*>(spItem->GetData())->function.name != L"TreasureMap")
         return false;
     return true;
 }

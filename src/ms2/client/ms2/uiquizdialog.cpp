@@ -26,7 +26,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class ASDialog : public ASDisplayObject {};
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CStringW FUN_14083d340(CStringW str);
+CStringW GetLocalizedText(CStringW str);
 void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 
@@ -132,8 +132,8 @@ void UIQuizDialog::OnQuizPacket(CInPacket& packet)
     switch (m_nMode)
     {
     case 0:
-        m_strCategory = FUN_14083d340(packet.ReadUnicodeString());
-        m_strQuestion = FUN_14083d340(packet.ReadUnicodeString());
+        m_strCategory = GetLocalizedText(packet.ReadUnicodeString());
+        m_strQuestion = GetLocalizedText(packet.ReadUnicodeString());
         reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read11(strExtra);
         reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read6(reinterpret_cast<unsigned&>(m_nSeconds));
         m_nDeadline = GetTickCountMs2() + m_nSeconds * 1000;
@@ -143,7 +143,7 @@ void UIQuizDialog::OnQuizPacket(CInPacket& packet)
         break;
     case 1:
         m_bCorrect = packet.ReadBool();
-        m_strAnswer = FUN_14083d340(packet.ReadUnicodeString());
+        m_strAnswer = GetLocalizedText(packet.ReadUnicodeString());
         m_nSeconds = packet.ReadInt32();
         m_nDeadline = GetTickCountMs2() + m_nSeconds * 1000;
         m_strAnswer.Replace(L"\\n", L"\n");

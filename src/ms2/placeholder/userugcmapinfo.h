@@ -18,7 +18,7 @@ public:
     UserUGCMapInfo();
     ~UserUGCMapInfo();
     void FUN_1408b4220(CInPacket& packet, int* pResult);    // decode
-    void FUN_1408b40d0(Unk_BmPtr<UserUGCMapInfo> spOther);  // copy from another info
+    void CopyFrom(Unk_BmPtr<UserUGCMapInfo> spOther);  // copy from another info
     void FUN_1408b4020(int n18, int n1c, int n20, int n24, CStringW str28, __int64 n30, __int64 n38, unsigned char n40);
     void FUN_1408b41c0(COutPacket& packet, int nFlag) const;   // encode the 0x69/0x14 packet
     void FUN_1408b4450(COutputStream& stream, int nFlag) const;   // write

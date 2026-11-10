@@ -54,7 +54,7 @@ class Unk_SingletonObj* FUN_140939a10();
 
 void* GetGameRule();
 void* FUN_140764020();   // C3: was FUN_140764020
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 CStringW FUN_1416e5660(int);
 CStringW GetQuestName(int);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -83,7 +83,7 @@ MS2_REPLACE_METHOD(0x140ED7680, UIStampEventDialog, GetTypeName, 61, 0x64489ED9)
 int UIStampEventDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65()) return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140ED76D0, UIStampEventDialog, vfunc_65, 90, 0xE3027E9F);
@@ -92,7 +92,7 @@ MS2_REPLACE_METHOD(0x140ED76D0, UIStampEventDialog, vfunc_65, 90, 0xE3027E9F);
 void UIStampEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 MS2_REPLACE_METHOD(0x140ED7730, UIStampEventDialog, vfunc_67, 77, 0x039209C9);
 
@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x140ED7730, UIStampEventDialog, vfunc_67, 77, 0x039209C9);
 void UIStampEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     AddStamps(spContext);
     FUN_140ed8590(spContext);
@@ -132,7 +132,7 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
     } else if ((strMethod == "getTooltipItem")) {
         int nItem = pArgs->PopUInt();
         int nRank = pArgs->PopUInt();
-        void* pActor = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pActor = WorldService::GetInstance()->GetLocalPlayer();
         if (pActor) {
             ASTooltip tip(pActor, 32, 2);
             if (tip.FUN_1409e1770(nItem, nRank)) *pOut = tip.GetValue();
@@ -167,7 +167,7 @@ MS2_REPLACE_METHOD(0x140ED7BB0, UIStampEventDialog, vfunc_28, 300, 0xBCEE9D23);
 void UIStampEventDialog::vfunc_o178_10(void* pQuest)
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     if (reinterpret_cast<CQuest*>(pQuest)->GetData()->m_350.m_value != 2) return;
     if (reinterpret_cast<CQuest*>(pQuest)->GetState() != 2) return;
@@ -181,7 +181,7 @@ MS2_REPLACE_METHOD_VIA(0x140ED7CF0, UIStampEventDialog, UIQuestEventListener, vf
 void UIStampEventDialog::FUN_140ed7ea0()
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     FUN_140ed8590(spContext);
     SetCompleteReward(spContext);
@@ -192,7 +192,7 @@ MS2_REPLACE_METHOD(0x140ED7EA0, UIStampEventDialog, FUN_140ed7ea0, 223, 0xB0ED89
 void UIStampEventDialog::FUN_140ed7f90(NotifyObject*)
 {
     if (WorldService::GetInstance()->HasTutorial()) return;
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext == 0) return;
     if (spContext->m_98 == 0) return;
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f33)));
@@ -202,7 +202,7 @@ MS2_REPLACE_METHOD(0x140ED7F90, UIStampEventDialog, FUN_140ed7f90, 167, 0xF65B92
 // @0x140ed8040
 int UIStampEventDialog::GetClaimableRewardCount()
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     int nCount = 0;
     for (size_t i = 0; i < spContext->m_rewards.GetCount(); ++i) {
@@ -296,7 +296,7 @@ MS2_REPLACE_METHOD(0x140ED8C20, UIStampEventDialog, UpdateStamp, 70, 0x63E446D4)
 // @0x140ed8c70
 void UIStampEventDialog::FUN_140ed8c70()
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     int nDone = 0;
     int nTotal = spContext->m_stamps.GetCount();
@@ -313,7 +313,7 @@ MS2_REPLACE_METHOD(0x140ED8C70, UIStampEventDialog, FUN_140ed8c70, 475, 0x07A666
 // @0x140ed8e60
 void UIStampEventDialog::SendEventRewardMode0(int nCount, int nSpecial)
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     if (GetRewardState(nCount, nSpecial) != 1) return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
@@ -337,7 +337,7 @@ MS2_REPLACE_METHOD(0x140ED8F50, UIStampEventDialog, SendEventRewardMode1, 91, 0x
 // @0x140ed8fc0
 int UIStampEventDialog::CanClaimCompleteReward()
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     Unk_AttendTable* pTable = 0;
     if (spContext->m_b9c) pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab2fc0);
@@ -355,7 +355,7 @@ MS2_REPLACE_METHOD(0x140ED8FC0, UIStampEventDialog, CanClaimCompleteReward, 442,
 // @0x140ed9180
 int UIStampEventDialog::GetRewardState(int nCount, int nSpecial)
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     Unk_AttendTable* pTable = 0;
     if (spContext->m_b9c) pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab2fc0);
@@ -393,7 +393,7 @@ MS2_REPLACE_METHOD(0x140ED9480, UIStampEventDialog, GetItemIconPath, 211, 0x4478
 // @0x140ed9560
 CString UIStampEventDialog::GetEventTag()
 {
-    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return "";
     return FUN_14016a600(spContext->m_strTitle, 0);
 }

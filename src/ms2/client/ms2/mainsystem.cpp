@@ -118,7 +118,7 @@ private:
     __int64 m_00, m_08, m_10, m_18;
     int m_iFrameLimit;                                  // +0x20
 };
-void FUN_141610410(int nFrameLimit);
+void SetFrameLimit(int nFrameLimit);
 __int64 FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 ecr::SceneGraphService* GetSceneGraphService();
@@ -587,7 +587,7 @@ efd::AsyncResult CMainSystem::OnShutdown()
 void CMainSystem::ApplyFrameLimit()
 {
     int nLimit = static_cast<Unk_GraphicsOptions*>(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->GetGraphicOption()))->GetFrameLimit();
-    FUN_141610410(nLimit);
+    SetFrameLimit(nLimit);
 }
 
 // @0x141474490

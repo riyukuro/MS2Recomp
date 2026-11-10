@@ -149,10 +149,10 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
         m_checks.resize(m_rows.size(), spNone);
     }
     for (unsigned i = 0; i < m_rows.size(); ++i) {
-        m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28280), FUN_140bd09d0(i));
+        m_rows[i]->SetDataHandler(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28280), FUN_140bd09d0(i));
         if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]).get()) {
             m_checks[i]->AddSelectHandler(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e288f0), FUN_140bd09d0(i));
-            m_checks[i]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28a40), 0);
+            m_checks[i]->AddClickHandler(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28a40), 0);
         }
     }
     TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)m_nPage, m_rooms);
@@ -237,7 +237,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
     MS2Ptr<ASCheckBox> check = m_checks[nRow];
     if (row == NULL || check == NULL)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     unsigned nRoom = params.pArgs[0].GetUInt();

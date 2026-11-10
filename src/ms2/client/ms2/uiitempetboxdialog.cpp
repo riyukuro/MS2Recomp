@@ -76,7 +76,7 @@ class Unk_PetBoxData : public CItemData
 {
 };
 class Unk_PetBoxSelf : public PC { };
-class Unk_PetBoxWorld { public: Unk_PetBoxSelf* FUN_141bd0cc0(); };
+class Unk_PetBoxWorld { public: Unk_PetBoxSelf* GetLocalPlayer(); };
 class Unk_PetBoxUIMgr { public: void FUN_141adc530(int); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;
@@ -132,7 +132,7 @@ private:
     unsigned char m_18[0xb0];
 };
 MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void DestroyItemSlotBag(const CString&);
 void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
 MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
@@ -200,16 +200,16 @@ void UIItemPetBoxDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     BindCloseButton("m_closeButton");
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_singleOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_singleOpen)).get())
-        m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
+        m_singleOpen->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_multiOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_multiOpen)).get())
-        m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)1);
+        m_multiOpen->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)1);
     if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
         if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())
-            m_closeSingle->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
+            m_closeSingle->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
     if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewMulti", m_previewMulti).get()) {
         if (m_previewMulti->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeMulti).get())
-            m_closeMulti->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
+            m_closeMulti->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_itemBox", m_itemBox);
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_resultItem", m_resultItem);
@@ -222,7 +222,7 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
 {
 #define PETBOX_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (PETBOX_PKT->FUN_14070fe80() == 0xf5) {
+    if (PETBOX_PKT->GetOpcode() == 0xf5) {
         if (m_30 == 0)
             return;
         m_sent = false;
@@ -246,15 +246,15 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
             FUN_140e504e0();
             ShowPetCards();
             m_itemBox->vfunc_13("result");
-            FUN_141276180(s_sndOpen, "");
+            PlaySystemSound(s_sndOpen, "");
             if (PETBOX_ITEMS.size() > 1)
-                FUN_141276180(s_snd10, "");
+                PlaySystemSound(s_snd10, "");
             MS2Ptr<ASMovieClip> fw = m_itemBox->FUN_1409b4560("m_fireworkEffect");
             if (fw.get()) {
                 fw->vfunc_4(hasSpecial);
                 if (hasSpecial) {
                     fw->vfunc_12(1);
-                    FUN_141276180(s_sndSpecial, "");
+                    PlaySystemSound(s_sndSpecial, "");
                 }
             }
         }
@@ -431,7 +431,7 @@ bool UIItemPetBoxDialog::InitItemData()
 {
     if (m_30 == 0)
         return false;
-    Unk_PetBoxSelf* self = ((Unk_PetBoxSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetBoxSelf* self = ((Unk_PetBoxSelf*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (self == 0)
         return false;
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);

@@ -98,13 +98,13 @@ static CString s_strTabIndex = "tabIndex";
 #include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 //
 
-Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int nMode);              // the default script of an npc
+Unk_ScriptPtr<CTalkScript> GetNpcPickTalk(int nNpcId, int nMode);              // the default script of an npc
 Unk_ScriptPtr<CTalkScript> FindNpcTalkByTag(int nNpcId, const CStringW& strTag); // the script with the tag
 
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class CEffectService;
@@ -120,12 +120,12 @@ struct Unk_AqActorView
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual NiPoint3 GetPos(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short GetLevel();
 };
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 CString FUN_140cc2c70(const CString& strPath);                          // the full path of an illust
 CStringW FUN_1401aa6a0(int nId);                                        // npc name
 
 // out-of-unit callees (names describe uses)
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 class Unk_AqInventory { public: char m_pad; };
 class Unk_Inventory { public: int GetItemCountByTag(int nTag, int nRarity); };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_AqInventory
@@ -149,9 +149,9 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_EmoNpcTable* GetFameTable();   // C3: was GetFameTable
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b070(CQuestData* pData);
-int FUN_14074b1c0(CQuestData* pData, int nBit);
+int HasProperty(CQuestData* pData, int nBit);
 int FUN_14074b030(CQuestData* pData);
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 int GetAllianceByNpc(int nNpcId);
 int GetFamePoints(Unk_FameAlliance nAlliance);
 int FUN_140931250(Unk_FameAlliance nAlliance);
@@ -161,7 +161,7 @@ CStringW GetAllianceName(int nAlliance);
 void GetFamePointProgress(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);
 CString GetAllianceSymbol(int nAlliance);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CStringW FUN_140763e10(int value);
 CStringW FUN_1409404f0(__int64 n);
 CString FUN_14021aa20(int nGrade);
@@ -179,7 +179,7 @@ CStringW FUN_14016a730(const char* psz, int n);                         // narro
 // Small COMDATs of the unit.
 int GetSelector(CQuestManagerCommon* p) { return p->m_selector; }     // @0x140bfc5b0
 class UIQuestEventDispatcher;
-UIQuestEventDispatcher* FUN_140bfc4b0() { return TSingleton<UIQuestEventDispatcher>::s_instance; }       // @0x140bfc4b0
+UIQuestEventDispatcher* GetQuestEventDispatcher() { return TSingleton<UIQuestEventDispatcher>::s_instance; }       // @0x140bfc4b0
 
 // @0x140bfa1b0 the order of a repeat kind
 int GetRepeatSortOrder(int nRepeat)
@@ -262,17 +262,17 @@ void UIAllianceQuestDialog::vfunc_67()
     m_180.FUN_140d43990();
     UIDialog::vfunc_67();
     ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 
 // @0x140bf6360
 void UIAllianceQuestDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     FUN_140bf7630();
     FUN_140bf70f0();
-    FUN_140bf6ef0();
+    SetFameHeader();
     if (MS2Ptr<ASButton> spAcceptAll = GetChild<ASButton>("m_acceptAll"))
         spAcceptAll->SetEnabled(CanAcceptAllQuests());
     if (MS2Ptr<ASButton> spCompleteAll = GetChild<ASButton>("m_completeAll"))
@@ -368,7 +368,7 @@ int UIAllianceQuestDialog::FUN_140bf6af0(int nNpc)
 }
 
 // @0x140bf6b20
-CStringW UIAllianceQuestDialog::FUN_140bf6b20(int nAlliance)
+CStringW UIAllianceQuestDialog::GetCurrentFameGradeText(int nAlliance)
 {
     int nGrade = GetFamePoints((Unk_FameAlliance)nAlliance);
     return FUN_14028dfa0<CStringW>(L"s_alliance_quest_current_fame_grade", FUN_140762ee0(nAlliance, nGrade));
@@ -407,7 +407,7 @@ CStringW UIAllianceQuestDialog::GetQuestResetTimeText(unsigned nQuest)
 }
 
 // @0x140bf6ef0
-void UIAllianceQuestDialog::FUN_140bf6ef0()
+void UIAllianceQuestDialog::SetFameHeader()
 {
     int nAlliance = FUN_140bf6af0(DAT_143abdc30);
     int nCurrent;
@@ -415,7 +415,7 @@ void UIAllianceQuestDialog::FUN_140bf6ef0()
     CStringW strPoint;
     GetFamePointProgress(nAlliance, &nCurrent, &nMax, strPoint);
     ASObj data(2);
-    data.SetWStringMember("fameStr", FUN_140bf6b20(nAlliance));
+    data.SetWStringMember("fameStr", GetCurrentFameGradeText(nAlliance));
     data.SetWStringMember("allianceStr", GetDailyMissionText(nAlliance));
     data.SetIntMember("currentFame", nCurrent);
     data.SetIntMember("maxFame", nMax);
@@ -428,7 +428,7 @@ void UIAllianceQuestDialog::FUN_140bf6ef0()
 void UIAllianceQuestDialog::FUN_140bf70f0()
 {
     CStringW strText;
-    Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(DAT_143abdc30, 0);
+    Unk_ScriptPtr<CTalkScript> spScript = GetNpcPickTalk(DAT_143abdc30, 0);
     CStringW strLimit = FUN_140bf9e10();
     if (strLimit.GetLength() != 0)
         spScript = FindNpcTalkByTag(DAT_143abdc30, L"limitFameGrade");
@@ -446,13 +446,13 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
         strText = spScript->m_contents.GetAt(0).operator->()->m_text;
         if (spScript->m_contents.GetAt(0).operator->()->m_voiceId.GetLength() != 0)
         {
-            void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+            void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
             if (pActor != 0)
                 TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(spScript->m_contents.GetAt(0).operator->()->m_voiceId, static_cast<Unk_AqActorView*>(pActor)->GetPos());
         }
     }
     ASObj data(2);
-    data.SetStringMember("imgPath", FUN_140cc2c70(((class NpcDataTableCli*)FUN_1406d6e90())->GetIllust(DAT_143abdc30)));
+    data.SetStringMember("imgPath", FUN_140cc2c70(((class NpcDataTableCli*)GetNpcDataTableCli())->GetIllust(DAT_143abdc30)));
     data.SetWStringMember("npcName", FUN_1401aa6a0(DAT_143abdc30));
     data.SetWStringMember("npcScript", strText);
     m_30.operator->()->Invoke("setNpc", data);
@@ -532,7 +532,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
                 strReward += FUN_14028dfa0<CStringW>(L"s_alliance_quest_reward_exp", FUN_1409404f0(nExp));
             }
             CString strGrade = FUN_14021aa20(spData->m_50);
-            if (FUN_14074b1c0(spData.get(), 0) != 0)
+            if (HasProperty(spData.get(), 0) != 0)
                 strGrade = "Special";
             ASObj row(2);
             row.SetMemberUInt("id", nQuest);
@@ -553,7 +553,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             }
             if (CanUseCompletionTicket(nQuest) != 0)
             {
-                int nCost = ((CLua*)FUN_1401c0db0())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
+                int nCost = ((CLua*)GetLuaClient())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
                 if (nCost > 0)
                     row.SetWStringMember("ticketStr", FUN_14028dfa0<int>(L"s_alliance_quest_completion_ticket_count", nCost));
             }
@@ -601,7 +601,7 @@ int UIAllianceQuestDialog::CanUseCompletionTicket(unsigned nQuest)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return 0;
-    if (FUN_14074b1c0(spData.get(), 2) == 0)
+    if (HasProperty(spData.get(), 2) == 0)
         return 0;
     if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) == 0)
         return 0;
@@ -658,7 +658,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
-    int nCost = ((CLua*)FUN_1401c0db0())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
+    int nCost = ((CLua*)GetLuaClient())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
     if (nCost == 0)
         return;
     int nCount = g_143ab2a90.GetItemCountByTag(0xd1, 0);
@@ -757,13 +757,13 @@ void UIAllianceQuestDialog::CollectCompletableQuests()
 }
 
 // @0x140bf94e0
-int UIAllianceQuestDialog::FUN_140bf94e0(int nQuest)
+int UIAllianceQuestDialog::IsAcceptableQuest(int nQuest)
 {
     return Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(m_1c0), (int&)nQuest) != -1;
 }
 
 // @0x140bf9530
-int UIAllianceQuestDialog::FUN_140bf9530(int nQuest)
+int UIAllianceQuestDialog::IsCompletableQuest(int nQuest)
 {
     return Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(m_1e0), (int&)nQuest) != -1;
 }
@@ -848,7 +848,7 @@ CStringW UIAllianceQuestDialog::GetRequirementText()
     MS2Ptr<CFameSeasonDef> spSeason = ((class CFameTable*)GetFameTable())->GetSeason(static_cast<Unk_FameAlliance>(nAlliance));
     if (!spSeason)
         return L"";
-    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pActor == 0)
         return L"";
     if (static_cast<Unk_AqActorView*>(pActor)->GetLevel() < spSeason->m_nRequireLv || ((class CQuestManager*)FUN_140764020())->IsQuestRewarded(spSeason->m_nRequireQuest) == 0)
@@ -876,7 +876,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf9e10()
         {
             CStringW strOne = FUN_14028dfa0<CStringW, CStringW>(L"s_alliance_quest_limit_alliance", GetAllianceName(nOther), FUN_140762f50(nOther, nGrade));
             if (strLimits.GetLength() != 0)
-                strLimits += FUN_140298ea0(L"s_alliance_quest_limit_alliance_delimeter");
+                strLimits += GetStringByKey(L"s_alliance_quest_limit_alliance_delimeter");
             strLimits += strOne;
         }
     }

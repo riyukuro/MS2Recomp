@@ -31,7 +31,7 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
+    MS2Ptr<CFieldDataCli> GetFieldData();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 class Unk_UmvClock;
@@ -41,11 +41,11 @@ public:
     double GetGameTime();
     double GetDeltaTime();
 };
-void FUN_14107b010();                                           // refreshes the sun direction constants
+void RefreshSunDirection();                                           // refreshes the sun direction constants
 void SetSunDirection(efd::Point3 const&);   // C3: was FUN_14107b050
 void NormalizeAngle(float* pAngle);                              // wraps an angle (degrees)
-void FUN_141568a10(NiNode* pRoot);
-void FUN_1415687f0(class NiAVObject*);   // C3: was FUN_1415687f0
+void DetachAllChildren(NiNode* pRoot);
+void RemoveFog(class NiAVObject*);   // C3: was RemoveFog
 void RemoveLights(class NiAVObject*);   // C3: was RemoveLights
 class Unk_UmvEffectMgr;
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
@@ -95,8 +95,8 @@ void UIModelView::vfunc_2()
 void UIModelView::vfunc_3()
 {
     UIRenderView::vfunc_3();
-    FUN_14107b010();
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    RefreshSunDirection();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField)
         FUN_141ab7b80(spField->m_bFog);
 }
@@ -197,7 +197,7 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
     if (!m_spClick)
         return;
     m_spClick->vfunc_14();
-    FUN_141568a10(m_spEffectRoot);
+    DetachAllChildren(m_spEffectRoot);
     if (arrNodes.GetCount() < 1)
         return;
     if (spRoot)
@@ -214,7 +214,7 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
         NiNode* pNode = arrNodes[i];
         if (pNode != 0)
         {
-            FUN_1415687f0((class NiAVObject*)(pNode));
+            RemoveFog((class NiAVObject*)(pNode));
             RemoveLights((class NiAVObject*)(pNode));
             pNode->DetachEffect(m_spDirLight);
             pNode->DetachEffect(m_spAmbientLight);

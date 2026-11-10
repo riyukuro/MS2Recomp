@@ -23,14 +23,14 @@ class AScript;
 class ASData;
 
 // Value conversions of the ASData readers (free functions, asdata.cpp).
-int FUN_1422b9390(const Scaleform::GFx::Value& v);
-unsigned int FUN_1422b93b0(const Scaleform::GFx::Value& v);
-bool FUN_1422b93d0(const Scaleform::GFx::Value& v);
-float FUN_1422b93f0(const Scaleform::GFx::Value& v);
-double FUN_1422b9420(const Scaleform::GFx::Value& v);
-CString FUN_1422b9440(const Scaleform::GFx::Value& v);
-CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);
-__int64 FUN_1422b9550(const Scaleform::GFx::Value& v);
+int ValueToInt(const Scaleform::GFx::Value& v);
+unsigned int ValueToUInt(const Scaleform::GFx::Value& v);
+bool ValueToBool(const Scaleform::GFx::Value& v);
+float ValueToFloat(const Scaleform::GFx::Value& v);
+double ValueToDouble(const Scaleform::GFx::Value& v);
+CString ValueToString(const Scaleform::GFx::Value& v);
+CStringW ValueToStringW(const Scaleform::GFx::Value& v);
+__int64 ValueToInt64(const Scaleform::GFx::Value& v);
 
 class ASData : public CPtred
 {
@@ -74,7 +74,7 @@ public:
     unsigned __int64 PopUInt64();                                               // next argument as unsigned __int64
     Scaleform::GFx::Value PopValue();                                          // next argument
     bool IsEmpty();                                                           // no arguments left
-    int FUN_1422b9360();                                                            // argument count
+    int GetArgCount();                                                            // argument count
     int AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst);                  // append all arguments to a list (TRUE if any)
     int SetArgsIfAny(const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // replace the arguments
 

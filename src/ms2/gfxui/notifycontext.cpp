@@ -66,7 +66,7 @@ void BindData::FUN_1422c8a40()
 MS2_REPLACE_METHOD(0x1422C8A40, BindData, FUN_1422c8a40, 114, 0x0B236149);
 
 // @0x1422c8ac0
-int BindData::FUN_1422c8ac0(const CString& strName)
+int BindData::ContainsName(const CString& strName)
 {
     for (unsigned int i = 0; i < m_arr58.GetCount(); ++i)
     {
@@ -75,7 +75,7 @@ int BindData::FUN_1422c8ac0(const CString& strName)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422C8AC0, BindData, FUN_1422c8ac0, 123, 0x9906C579);
+MS2_REPLACE_METHOD(0x1422C8AC0, BindData, ContainsName, 123, 0x9906C579);
 
 // @0x1422c8b50
 void BindData::ClearBinding()
@@ -108,13 +108,13 @@ void BindData::PushBinding()
 MS2_REPLACE_METHOD(0x1422C8BE0, BindData, PushBinding, 199, 0x29681822);
 
 // @0x1422c8cb0
-void BindData::FUN_1422c8cb0(const Value& v)
+void BindData::SetData(const Value& v)
 {
     m_value18 = v;
     if (!m_value18.IsNull())
         vfunc_9();
 }
-MS2_REPLACE_METHOD(0x1422C8CB0, BindData, FUN_1422c8cb0, 81, 0x3A980BB3);
+MS2_REPLACE_METHOD(0x1422C8CB0, BindData, SetData, 81, 0x3A980BB3);
 
 // @0x1422c8d10
 void BindData::SetTarget(const Value& v)
@@ -124,11 +124,11 @@ void BindData::SetTarget(const Value& v)
 MS2_REPLACE_METHOD(0x1422C8D10, BindData, SetTarget, 41, 0xBCD8186A);
 
 // @0x1422c8d40
-Value& BindData::FUN_1422c8d40()
+Value& BindData::GetData()
 {
     return m_value18;
 }
-MS2_REPLACE_METHOD(0x1422C8D40, BindData, FUN_1422c8d40, 15, 0x271C8F51);
+MS2_REPLACE_METHOD(0x1422C8D40, BindData, GetData, 15, 0x271C8F51);
 
 // @0x1422c8d60
 void BindData::vfunc_5()
@@ -168,7 +168,7 @@ void Unk_NotifyContext::LogAndClearBindings()
         for (POSITION pos = ms_mapBindings.GetHeadPosition(); pos != NULL; ms_mapBindings.GetNext(pos))
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Unremoved binding slot : %s", (const char*)ms_mapBindings.GetKeyAt(pos));
     }
-    FUN_1422c9010();
+    ClearAllBindings();
 }
 
 // @0x1422c8e90
@@ -199,7 +199,7 @@ void Unk_NotifyContext::UnregisterBinding(const CString& strName)
 }
 
 // @0x1422c9010
-void Unk_NotifyContext::FUN_1422c9010()
+void Unk_NotifyContext::ClearAllBindings()
 {
     for (POSITION pos = ms_mapBindings.GetHeadPosition(); pos != NULL; ms_mapBindings.GetNext(pos))
     {
@@ -228,7 +228,7 @@ void Unk_NotifyContext::NotifyChangedBindings()
             CString strName = spData->GetName();
             if (ms_setPushed.find(strName) != ms_setPushed.end())
                 continue;
-            if (spData->FUN_1422c8ac0(strChanged))
+            if (spData->ContainsName(strChanged))
                 mapNotify.SetAt(spData, strChanged);
         }
     }

@@ -54,7 +54,7 @@ UIGameMenuDialog* FindGameMenuDialog(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
-CStringW FUN_140298ea0(CStringW str);
+CStringW GetStringByKey(CStringW str);
 CStringW BlockFormat(int nId);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FormatMonthDayWeekday(const CMsTime& t);
@@ -426,13 +426,13 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         FUN_140d73ff0(L"s_room_dungeon_cant_enter_in_partymember");
         break;
     case 0x1f:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_used_reset_united_reward")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_room_dungeon_error_used_reset_united_reward")), 1, 1);
         break;
     case 0x20:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_still_have_united_reawrd")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_room_dungeon_error_still_have_united_reawrd")), 1, 1);
         break;
     case 0x21:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_shutdown_united_reawrd_reset")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_room_dungeon_error_shutdown_united_reawrd_reset")), 1, 1);
         break;
     default:
         MS2_ASSERT_AT(0x15c, 0);
@@ -508,7 +508,7 @@ bool DungeonRecordManagerCli::HasProgress(unsigned nRoomID)
 // @0x140b223d0
 bool DungeonRecordManagerCli::CanClaimHelperReward(unsigned nRoomID)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return false;
     DungeonRoomPtr spRoom = reinterpret_cast<DungeonRoomTable*>(DungeonRoomTable::GetInstance())->GetRoom(nRoomID);

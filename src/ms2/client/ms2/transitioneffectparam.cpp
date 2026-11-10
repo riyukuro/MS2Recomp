@@ -11,7 +11,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 
-bool FUN_14028d470(float a, float b);                   // nearly equal
+bool IsNearlyEqual(float a, float b);                   // nearly equal
 float FUN_1409f25a0(float f);                           // sine
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
@@ -161,7 +161,7 @@ bool TransitionEffect::FUN_14185f6f0(double dNow, unsigned int* pnIndex, float* 
         fEnd = fStart + fDuration;
         if (fEnd > fElapsed)
         {
-            *pfT = FUN_14028d470(fDuration, 0.0f) ? 1.0f : (fElapsed - fStart) / fDuration;
+            *pfT = IsNearlyEqual(fDuration, 0.0f) ? 1.0f : (fElapsed - fStart) / fDuration;
             break;
         }
     }
@@ -175,7 +175,7 @@ bool TransitionEffect::FUN_14185f6f0(double dNow, unsigned int* pnIndex, float* 
             return true;
         }
         fElapsed -= fLoopStart;
-        if (!FUN_14028d470(fLoopLength, 0.0f))
+        if (!IsNearlyEqual(fLoopLength, 0.0f))
         {
             while (fElapsed > fLoopLength)
                 fElapsed -= fLoopLength;
@@ -188,7 +188,7 @@ bool TransitionEffect::FUN_14185f6f0(double dNow, unsigned int* pnIndex, float* 
             fEnd = fStart + fDuration;
             if (fEnd > fElapsed)
             {
-                *pfT = FUN_14028d470(fDuration, 0.0f) ? 1.0f : (fElapsed - fStart) / fDuration;
+                *pfT = IsNearlyEqual(fDuration, 0.0f) ? 1.0f : (fElapsed - fStart) / fDuration;
                 break;
             }
         }

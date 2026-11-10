@@ -139,7 +139,7 @@ void UIUGCCubeNoticePopup::vfunc_15()
     UIObject::vfunc_15();
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (m_bPending != 0)
@@ -161,7 +161,7 @@ int UIUGCCubeNoticePopup::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 // @0x140fb4eb0
 void UIUGCCubeNoticePopup::UpdateScreenPosition()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (m_bVisible != 0)

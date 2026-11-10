@@ -21,7 +21,7 @@ Unk_LinkNode** FUN_141bf8220(Unk_LinkNode** ppNode)
 }
 
 // @0x141bf81d0
-Unk_LinkNode** FUN_141bf81d0(Unk_LinkNode** ppNode, Unk_LinkNode** ppNodeOld, int nUnknown)
+Unk_LinkNode** PostIncrement(Unk_LinkNode** ppNode, Unk_LinkNode** ppNodeOld, int nUnknown)
 {
     Unk_LinkNode* pNode = *ppNode;
     FUN_141bf8220(ppNode);

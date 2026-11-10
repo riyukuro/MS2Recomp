@@ -34,8 +34,8 @@ public:
     int GetStat();                        // the stat (-1 for a special stat)
     unsigned GetSpecial();                   // the special stat
     bool HasValue();                       // the value is set
-    bool FUN_1405ce3f0();
-    BOOL FUN_1405ce470();                       // a special stat
+    bool IsKindOne();
+    BOOL IsSpecial();                       // a special stat
     CString FUN_1405ce4a0();                    // the xml name of the stat
     int GetValue();                        // the value
     void SetValue(int nValue);             // sets the value
@@ -111,7 +111,7 @@ public:
     ItemOptionStatGroup GetStatGroup();        // the random row's statGroup
     int GetRank();                        // m_n50
     void SetTarget(MS2Ptr<Unk_1405e74c0> spTarget);    // sets the reroll request
-    BOOL FUN_1405d9c30(CString strName);        // the option already holds a stat of the name's exclusive group
+    BOOL HasExclusiveStat(CString strName);        // the option already holds a stat of the name's exclusive group
     BOOL FUN_1405d9d10(CString strName);        // the same for the reroll result
     MS2Ptr<CItemOption> GetOption();        // the option
     int AddRandomValue(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount, Unk_ProbabilityLog* pLogs);
@@ -132,10 +132,10 @@ class ItemOptionValueRandom : public CPtred
 public:
     ItemOptionValueRandom();                    // 0x1405d2520
     bool LoadFromXml(TiXmlElement* pElem);   // xml read
-    CString FUN_1405d26c0();                    // the xml name of the stat
+    CString GetName();                    // the xml name of the stat
     int GetStat();                        // the stat (-1 for a special stat)
     unsigned GetSpecial();                   // the special stat
-    BOOL FUN_1405d2790();                       // a special stat
+    BOOL IsSpecial();                       // a special stat
     int GetStatId();                        // "statID"
     int GetWeight();                        // "weight"
     int FUN_1405d2800(MS2Ptr<ItemOptionRandomContext> spContext);
@@ -248,7 +248,7 @@ public:
     ItemOptionVariationData();                  // 0x1405d37e0
     void Load(TiXmlElement* pElem);   // xml read
     int GetId();                        // "id"
-    int FUN_1405d3a40();                        // a random stat (0 when none)
+    int PickStat();                        // a random stat (0 when none)
     int FUN_1405d3a90(Unk_Random* pRandom);
     int GetFirstStat();                        // the first stat
     int GetLastStat() const;                   // the last stat
@@ -279,7 +279,7 @@ public:
     bool RollPresetOptions(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
     void FUN_1405d48d0(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom,
                        const std::vector<std::pair<int, int> >& vLocked, unsigned nCount, Unk_ProbabilityLog* pLogs);
-    bool FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);    // rerolls until the result differs
+    bool RerollUntilChanged(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);    // rerolls until the result differs
     bool FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);
     int GetPickCount(int nRank);               // the pick count of a rank
     bool AddRandomOption(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);   // adds one random option
@@ -299,8 +299,8 @@ public:
                        Unk_ProbabilityLog* pLogs);
     void FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std::vector<ItemOptionValueRandom*>& vOut,
                        MS2Ptr<ItemOptionRandomContext> spContext);
-    MS2Ptr<ItemOptionValueRandom> FUN_1405d8f30(MS2Ptr<ItemOptionRandomContext> spContext, Unk_Random* pRandom);
-    double FUN_1405d9660(std::vector<unsigned>& vWeights, size_t nPick, size_t nIndex);  // P(entry nIndex in nPick picks)
+    MS2Ptr<ItemOptionValueRandom> PickValue(MS2Ptr<ItemOptionRandomContext> spContext, Unk_Random* pRandom);
+    double GetPickProbability(std::vector<unsigned>& vWeights, size_t nPick, size_t nIndex);  // P(entry nIndex in nPick picks)
 private:
     int m_nCode;                                // +0x18 "code"
     int m_nProbVer;                             // +0x1c "probVer"

@@ -63,12 +63,12 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString ToCString(const char* psz, int n);
 enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);     // enum value (mastery type)
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+CStringA JoinResourcePath(const CString& strCategory, const CString& strFile);   // icon file path in a category
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
+bool IsNearlyEqual(float fValue, float fTolerance);                          // commonutil: nearly equal
 
 // Item counts the player holds back by the production limit (id -> count; the exe global named by the zone unit).
 extern ATL::CAtlMap<int, int> g_143ab3150;
@@ -141,7 +141,7 @@ int CMasteryReceipe::Load(TiXmlElement* pNode)
 CStringA CMasteryReceipe::IconPath()
 {
     CString strFile = StringFormat("{0}.png", m_nId);
-    return FUN_140cc2ad0("MasteryReceipe", strFile);
+    return JoinResourcePath("MasteryReceipe", strFile);
 }
 
 // @0x140669a20
@@ -190,7 +190,7 @@ int CMasteryTable::LoadMastery()
             continue;
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pType))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
                 continue;
             MasteryPtr spMastery(new Mastery);
             XmlGetAttr((class TiXmlElement*)(pNode), "value", spMastery->m_nValue);
@@ -235,7 +235,7 @@ int CMasteryTable::LoadReceipes()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("receipe")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("receipe")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned&>(nId));
@@ -617,8 +617,8 @@ int CMasteryTable::LimitState(int nReceipeId)
         return 3;
     int nHeld = 0;
     g_143ab3150.Lookup(nReceipeId, nHeld);
-    double dLimit = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgSuccessProp(nHeld, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
-    if (FUN_14028d470((float)dLimit, 0.0f))
+    double dLimit = ((class CLua*)GetLuaClient())->CalcGatheringObjectgSuccessProp(nHeld, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
+    if (IsNearlyEqual((float)dLimit, 0.0f))
         return 3;
     if ((unsigned)nHeld < sp->m_nHighPropLimit)
         return 0;

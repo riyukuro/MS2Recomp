@@ -316,7 +316,7 @@ void CClubMemberProxy::Reset()
 }
 
 // @0x14020d4a0
-void CClubMemberProxy::FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture)
+void CClubMemberProxy::SetInfo(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture)
 {
     Reset();
     m_jobCode = nJobCode;
@@ -351,7 +351,7 @@ void CClubMemberProxy::FUN_14020d640(CInPacket* packet)
 }
 
 // @0x14020d690
-void CClubMemberProxy::FUN_14020d690(COutputStream& out)
+void CClubMemberProxy::WriteShort(COutputStream& out)
 {
     out.WriteUnicodeString(GetName());
     out.WriteInt32(m_jobCode);
@@ -429,7 +429,7 @@ void CClubMemberProxy::FUN_14020de80(COutputStream& out)
 }
 
 // @0x14020df70
-void CClubMemberProxy::FUN_14020df70(CInputStream* in)
+void CClubMemberProxy::ReadShort(CInputStream* in)
 {
     CStringW strName;
     CStringA strPicture;
@@ -480,7 +480,7 @@ void CClubMemberProxy::SetFromUserProxy(Unk_UserProxy* p)
     m_level = p->m_34;
     m_mapId = p->m_2c;
     m_channel = p->m_38;
-    strPicture = p->FUN_1408f1a60();
+    strPicture = p->GetImage();
     m_40 = p->m_98;
     m_44 = p->m_9c;
     m_48 = p->m_a0;
@@ -607,14 +607,14 @@ void CClubMember::Read(CInputStream* in)
     else
     {
         m_18 = in->ReadInt64();
-        m_info.FUN_14020df70(in);
+        m_info.ReadShort(in);
     }
 }
 
 // @0x14020eca0
 int CClubMember::FUN_14020eca0(Club::SaveMember* pSave)
 {
-    if (FUN_14020edd0() == 0)
+    if (GetDirty() == 0)
         return 0;
     pSave->m_id = m_18;
     pSave->m_gender = m_info.m_gender;
@@ -635,7 +635,7 @@ void CClubMember::SetDirty(int nDirty)
 }
 
 // @0x14020edd0
-int CClubMember::FUN_14020edd0()
+int CClubMember::GetDirty()
 {
     return m_f4;
 }
@@ -647,7 +647,7 @@ Unk_IntTriple* CClubMember::GetTrophy()
 }
 
 // @0x14020ee10
-void CClubMember::FUN_14020ee10()
+void CClubMember::SumTrophy()
 {
     ((class Unk_IntTriple&)(m_info.m_trophy)).Sum();
 }
@@ -1227,7 +1227,7 @@ void CClub::GetDirtyMembers(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
             if (sp == 0)
                 continue;
-            if (sp->FUN_14020edd0() == 1)
+            if (sp->GetDirty() == 1)
                 members.Add(sp);
         }
     }
@@ -1406,7 +1406,7 @@ CClubDataTable::~CClubDataTable()
 }
 
 // @0x1402113c0
-int CClubDataTable::FUN_1402113c0()
+int CClubDataTable::Load()
 {
     if (!LoadClubBuff())
         return 0;
@@ -1531,8 +1531,8 @@ CClubDataTable::BuffPtr CClubDataTable::GetFirstBuff()
 
 // (FUN_140217140 is the protected CRBTree<u64, MS2Ptr<NameInfo>>::Successor; the const GetNext below calls it)
 
-struct Unk_MS2PtrAccess { static void FUN_140217650(MS2Ptr<CClubDataTable::ClubBuffData>& sp); };   // MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
-extern void* FUN_1401ba820(void* p);
+struct Unk_MS2PtrAccess { static void Release(MS2Ptr<CClubDataTable::ClubBuffData>& sp); };   // MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
+extern void* InitRefCount(void* p);
 
 // the MS2Ptr<ClubBuffData> fields the raw-view helpers touch
 struct Unk_BuffPtrView { void* m_0; void* m_p; };
@@ -1546,11 +1546,11 @@ CClubDataTable::ClubBuffData* Unk_NewClubBuffData(void* pTag)
 // @0x140217680
 void* Unk_BuffPtrAlloc(void* pTag)
 {
-    return FUN_1401ba820(Unk_NewClubBuffData(0));
+    return InitRefCount(Unk_NewClubBuffData(0));
 }
 
 // @0x140217650 (FUN_1402176a0 was the private MS2Ptr<ClubBuffData>::Release; called through the friend now)
-void Unk_MS2PtrAccess::FUN_140217650(MS2Ptr<CClubDataTable::ClubBuffData>& sp)
+void Unk_MS2PtrAccess::Release(MS2Ptr<CClubDataTable::ClubBuffData>& sp)
 {
     sp.Release();
     sp.m_p = static_cast<CClubDataTable::ClubBuffData*>(Unk_BuffPtrAlloc(0));
@@ -1560,7 +1560,7 @@ void Unk_MS2PtrAccess::FUN_140217650(MS2Ptr<CClubDataTable::ClubBuffData>& sp)
 template <> MS2Ptr<CClubDataTable::ClubBuffData>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    Unk_MS2PtrAccess::FUN_140217650(*this);
+    Unk_MS2PtrAccess::Release(*this);
 }
 
 // @0x140212650
@@ -1664,17 +1664,17 @@ MS2_REPLACE_METHOD(0x14020cda0, Club::UserClub, FUN_14020cda0, 169, 0xD83E39ED);
 MS2_REPLACE_METHOD(0x14020ce50, Club::UserClub, FUN_14020ce50, 355, 0x5318A284);
 MS2_REPLACE_METHOD(0x14020cfc0, Club::UserClub, FUN_14020cfc0, 427, 0xB8263F99);
 MS2_REPLACE_METHOD(0x14020d380, CClubMemberProxy, Reset, 270, 0x7284E1A2);
-MS2_REPLACE_METHOD(0x14020d4a0, CClubMemberProxy, FUN_14020d4a0, 217, 0xEE53AE2B);
+MS2_REPLACE_METHOD(0x14020d4a0, CClubMemberProxy, SetInfo, 217, 0xEE53AE2B);
 MS2_REPLACE_METHOD(0x14020d580, CClubMemberProxy, WriteMapId, 43, 0x5228BC05);
 MS2_REPLACE_METHOD(0x14020d5c0, CClubMemberProxy, ReadMapId, 61, 0x4CD742F6);
 MS2_REPLACE_METHOD(0x14020d610, CClubMemberProxy, FUN_14020d610, 34, 0xEDF9DFF8);
 MS2_REPLACE_METHOD(0x14020d640, CClubMemberProxy, FUN_14020d640, 67, 0x531AF82C);
-MS2_REPLACE_METHOD(0x14020d690, CClubMemberProxy, FUN_14020d690, 204, 0x4CEE299F);
+MS2_REPLACE_METHOD(0x14020d690, CClubMemberProxy, WriteShort, 204, 0x4CEE299F);
 MS2_REPLACE_METHOD(0x14020d770, CClubMemberProxy, FUN_14020d770, 549, 0xFB59E4E7);
 MS2_REPLACE_METHOD(0x14020d9a0, CClubMemberProxy, Write, 470, 0x35F96B66);
 MS2_REPLACE_METHOD(0x14020db80, CClubMemberProxy, Read, 760, 0x9BEF4172);
 MS2_REPLACE_METHOD(0x14020de80, CClubMemberProxy, FUN_14020de80, 227, 0x5FE41701);
-MS2_REPLACE_METHOD(0x14020df70, CClubMemberProxy, FUN_14020df70, 429, 0xF2A1C911);
+MS2_REPLACE_METHOD(0x14020df70, CClubMemberProxy, ReadShort, 429, 0xF2A1C911);
 MS2_REPLACE_METHOD(0x14020e130, CClubMemberProxy, CopyFrom, 535, 0x8241E2B1);
 MS2_REPLACE_METHOD(0x14020e350, CClubMemberProxy, SetFromUserProxy, 629, 0x59329419);
 MS2_REPLACE_METHOD(0x14020e5d0, CClubMemberProxy, GetName, 116, 0xF3D7B713);
@@ -1689,9 +1689,9 @@ MS2_REPLACE_METHOD(0x14020eaa0, CClubMember, Write, 245, 0xADC73256);
 MS2_REPLACE_METHOD(0x14020eba0, CClubMember, Read, 249, 0x5D098D43);
 MS2_REPLACE_METHOD(0x14020eca0, CClubMember, FUN_14020eca0, 265, 0xA7ED6637);
 MS2_REPLACE_METHOD(0x14020edb0, CClubMember, SetDirty, 25, 0xC37424D3);
-MS2_REPLACE_METHOD(0x14020edd0, CClubMember, FUN_14020edd0, 17, 0xE3FAF62F);
+MS2_REPLACE_METHOD(0x14020edd0, CClubMember, GetDirty, 17, 0xE3FAF62F);
 MS2_REPLACE_METHOD(0x14020edf0, CClubMember, GetTrophy, 15, 0x680A76B1);
-MS2_REPLACE_METHOD(0x14020ee10, CClubMember, FUN_14020ee10, 31, 0x09CC4898);
+MS2_REPLACE_METHOD(0x14020ee10, CClubMember, SumTrophy, 31, 0x09CC4898);
 MS2_REPLACE_METHOD(0x14020f0c0, CClub, GetClubId, 104, 0xDA5FFFAA);
 MS2_REPLACE_METHOD(0x14020f130, CClub, SetClubId, 91, 0xC1D5427A);
 MS2_REPLACE_METHOD(0x14020f1a0, CClub, GetName, 137, 0x7E65C264);
@@ -1732,7 +1732,7 @@ MS2_REPLACE_METHOD(0x140210f70, CClub, GetLeader, 138, 0x038BCF06);
 MS2_REPLACE_METHOD(0x140211000, CClub, SetLeaderMember, 113, 0x3186B5D2);
 MS2_REPLACE_METHOD(0x140211080, CClub, IsLeaderName, 356, 0x330D17F1);
 MS2_REPLACE_METHOD(0x140211280, CClubDataTable::ClubBuffData, FUN_140211280, 106, 0x47549914);
-MS2_REPLACE_METHOD(0x1402113c0, CClubDataTable, FUN_1402113c0, 37, 0x66A38C51);
+MS2_REPLACE_METHOD(0x1402113c0, CClubDataTable, Load, 37, 0x66A38C51);
 MS2_REPLACE_METHOD(0x1402113f0, CClubDataTable, LoadClubBuff, 672, 0x5962A366);
 MS2_REPLACE_METHOD(0x1402116a0, CClubDataTable, FindBuffById, 171, 0x34AEE797);
 MS2_REPLACE_METHOD(0x140211760, CClubDataTable, FindBuffByEffect, 364, 0x07E0BEF5);

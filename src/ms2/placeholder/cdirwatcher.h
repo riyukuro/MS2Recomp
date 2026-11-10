@@ -24,7 +24,7 @@ class CDirWatcher : public CThread, public TSingleton<CDirWatcher>
 public:
     CDirWatcher();                                          // 0x1401d1940
     virtual ~CDirWatcher();
-    void FUN_1401d1cd0();                                   // stops the watch (InitInstance teardown)
+    void Stop();                                   // stops the watch (InitInstance teardown)
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_20[0x28 - 0x20];

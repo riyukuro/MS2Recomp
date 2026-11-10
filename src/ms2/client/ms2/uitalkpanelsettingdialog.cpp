@@ -58,7 +58,7 @@ CStringW BlockFormat(int nStringId);
 void ShowMessageBox(CStringW strText, int nA, void* pListener, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTag);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int n);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n);
 void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned int* pOut);
 
@@ -407,12 +407,12 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x56) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_club", pSetting->FUN_141482200()->m_nClub);
     else
-        FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_club", 0);
+        SetChildVisible((*m_spRoot).FUN_1422bb890(), "m_club", 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_partyInvite", pSetting->FUN_141482200()->m_nPartyInvite);
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x93) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", pSetting->FUN_141482200()->m_nDungeonHelp);
     else
-        FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", 0);
+        SetChildVisible((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_requireAll", pSetting->FUN_1414821e0()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_meso", pSetting->FUN_1414821e0()->m_nMeso);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_merat", pSetting->FUN_1414821e0()->m_nMerat);

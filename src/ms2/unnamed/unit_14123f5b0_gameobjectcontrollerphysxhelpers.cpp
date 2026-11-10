@@ -74,7 +74,7 @@ GameObjectController::~GameObjectController()
 
 // @0x14123f5b0
 // MS2-FUNCTIONAL: EH state numbering / frame layout of the desc + setName temporaries differ from exe
-void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius)
+void GameObjectController::CreateController(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius)
 {
     m_pOwner = pOwner;
     m_pManager = static_cast<NxControllerManager*>(((class CPhysXHelper*)GetPhysXHelper())->GetControllerManager());
@@ -116,14 +116,14 @@ void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, e
         if (pActor != 0)
             pActor->userData = m_spActorData;
         pActor->setName(FUN_140390ea0(pOwner->vfunc_77(), 0));
-        FUN_14123fa70(pActor);
+        SetRestitutionMaterial(pActor);
     }
     ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
-MS2_REPLACE_METHOD(0x14123F5B0, GameObjectController, FUN_14123f5b0, 1205, 0x5F88E8D4);
+MS2_REPLACE_METHOD(0x14123F5B0, GameObjectController, CreateController, 1205, 0x5F88E8D4);
 
 // @0x14123fa70
-void GameObjectController::FUN_14123fa70(NxActor* pActor)
+void GameObjectController::SetRestitutionMaterial(NxActor* pActor)
 {
     ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     NxShape* pShape = pActor->getShapes()[0];
@@ -138,7 +138,7 @@ void GameObjectController::FUN_14123fa70(NxActor* pActor)
     pShape->setMaterial(m_pMaterial->getMaterialIndex());
     ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
-MS2_REPLACE_METHOD(0x14123FA70, GameObjectController, FUN_14123fa70, 363, 0xF2C614DB);
+MS2_REPLACE_METHOD(0x14123FA70, GameObjectController, SetRestitutionMaterial, 363, 0xF2C614DB);
 
 // @0x14123fbf0
 void GameObjectController::SetCollisionGroup(NxCollisionGroup nGroup)
@@ -163,15 +163,15 @@ void GameObjectController::SetCollisionGroup(NxCollisionGroup nGroup)
 MS2_REPLACE_METHOD(0x14123FBF0, GameObjectController, SetCollisionGroup, 300, 0xAC5D3404);
 
 // @0x14123fd30
-void GameObjectController::FUN_14123fd30(unsigned int nGroups)
+void GameObjectController::SetGroups(unsigned int nGroups)
 {
     m_nGroups = nGroups;
     m_groupsMask.bits0 = m_groupsMask.bits1 = m_groupsMask.bits2 = m_groupsMask.bits3 = m_nGroups;
 }
-MS2_REPLACE_METHOD(0x14123FD30, GameObjectController, FUN_14123fd30, 86, 0x541B5E13);
+MS2_REPLACE_METHOD(0x14123FD30, GameObjectController, SetGroups, 86, 0x541B5E13);
 
 // @0x14123fd90
-efd::Point3 GameObjectController::FUN_14123fd90()
+efd::Point3 GameObjectController::GetFeetPosition()
 {
     ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     NxExtendedVec3 kPos = m_pController->getPosition();
@@ -183,10 +183,10 @@ efd::Point3 GameObjectController::FUN_14123fd90()
     kResult.z += GetCenterOffset();
     return kResult;
 }
-MS2_REPLACE_METHOD(0x14123FD90, GameObjectController, FUN_14123fd90, 208, 0x55BC2F64);
+MS2_REPLACE_METHOD(0x14123FD90, GameObjectController, GetFeetPosition, 208, 0x55BC2F64);
 
 // @0x14123fe70
-void GameObjectController::FUN_14123fe70(efd::Point3 kPos)
+void GameObjectController::SetFeetPosition(efd::Point3 kPos)
 {
     NxExtendedVec3 kNxPos;
     kPos.z -= GetCenterOffset();
@@ -199,7 +199,7 @@ void GameObjectController::FUN_14123fe70(efd::Point3 kPos)
     m_pController->setPosition(kNxPos);
     ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
-MS2_REPLACE_METHOD(0x14123FE70, GameObjectController, FUN_14123fe70, 216, 0xC522256A);
+MS2_REPLACE_METHOD(0x14123FE70, GameObjectController, SetFeetPosition, 216, 0xC522256A);
 
 // @0x14123ff50
 void GameObjectController::ReportSceneChanged()
@@ -243,7 +243,7 @@ void GameObjectController::Move(efd::Point3 kDisp, unsigned int nExcludeGroups)
                 {
                     StopJump();
                     if (m_bLiftFalling != 0)
-                        FUN_141240d70();
+                        EndLift();
                 }
             }
             if (m_nIgnoreGroups != 0 && m_hitReport.GetOtherController() == 0)
@@ -267,7 +267,7 @@ void GameObjectController::Move(efd::Point3 kDisp, unsigned int nExcludeGroups)
                 {
                     StopJump();
                     if (m_bLiftFalling != 0)
-                        FUN_141240d70();
+                        EndLift();
                 }
                 else
                 {
@@ -279,13 +279,13 @@ void GameObjectController::Move(efd::Point3 kDisp, unsigned int nExcludeGroups)
             {
                 StopJump();
                 if (m_bLiftFalling != 0)
-                    FUN_141240d70();
+                    EndLift();
             }
         }
         else
         {
             if (m_kFallTimer.IsRunning() == 0)
-                m_kFallTimer.FUN_1408687c0();
+                m_kFallTimer.StartInfinite();
         }
         m_hitReport.ClearOtherController();
     }
@@ -344,11 +344,11 @@ int GameObjectController::IsJumping()
 MS2_REPLACE_METHOD(0x141240780, GameObjectController, IsJumping, 14, 0x69D980EB);
 
 // @0x1412407a0
-int GameObjectController::FUN_1412407a0()
+int GameObjectController::IsRising()
 {
     return m_fJumpTime < m_fJumpApex;
 }
-MS2_REPLACE_METHOD(0x1412407A0, GameObjectController, FUN_1412407a0, 60, 0x6E54CF7F);
+MS2_REPLACE_METHOD(0x1412407A0, GameObjectController, IsRising, 60, 0x6E54CF7F);
 
 // @0x1412407f0
 efd::Point3 GameObjectController::FUN_1412407f0(float fDelta, int bMove)
@@ -422,12 +422,12 @@ void GameObjectController::StartLift(float fDuration, float fPeak, float fBase)
 MS2_REPLACE_METHOD(0x141240CB0, GameObjectController, StartLift, 177, 0xBC6079B3);
 
 // @0x141240d70
-void GameObjectController::FUN_141240d70()
+void GameObjectController::EndLift()
 {
     m_bLift = 0;
     m_kFallTimer.Reset();
 }
-MS2_REPLACE_METHOD(0x141240D70, GameObjectController, FUN_141240d70, 48, 0xB43DF174);
+MS2_REPLACE_METHOD(0x141240D70, GameObjectController, EndLift, 48, 0xB43DF174);
 
 // @0x141240db0
 int GameObjectController::IsLift()
@@ -472,7 +472,7 @@ MS2_REPLACE_METHOD(0x141240ED0, GameObjectController, GetCollisionFlags, 14, 0xB
 // @0x141240ef0
 int GameObjectController::GetFallTime()
 {
-    return m_kFallTimer.FUN_140868a70();
+    return m_kFallTimer.GetElapsed();
 }
 MS2_REPLACE_METHOD(0x141240EF0, GameObjectController, GetFallTime, 33, 0x55952518);
 
@@ -484,11 +484,11 @@ GameObjectControllerHitReport* GameObjectController::GetHitReport()
 MS2_REPLACE_METHOD(0x141240F20, GameObjectController, GetHitReport, 15, 0x271C8F51);
 
 // @0x141240f40
-int GameObjectController::FUN_141240f40()
+int GameObjectController::IsOnGround()
 {
     return (m_nCollisionFlags & NXCC_COLLISION_DOWN) != 0 && IsJumping() == 0 && IsLift() == 0;
 }
-MS2_REPLACE_METHOD(0x141240F40, GameObjectController, FUN_141240f40, 79, 0xABB10CA2);
+MS2_REPLACE_METHOD(0x141240F40, GameObjectController, IsOnGround, 79, 0xABB10CA2);
 
 // @0x141240fa0
 void GameObjectController::ResetFallTimer()
@@ -505,7 +505,7 @@ efd::Point3 GameObjectController::GetKVelocity()
 MS2_REPLACE_METHOD(0x141240FD0, GameObjectController, GetKVelocity, 41, 0x604E0F2C);
 
 // @0x141241000
-float GameObjectController::FUN_141241000()
+float GameObjectController::GetRadius()
 {
     if (m_pController != 0)
     {
@@ -516,7 +516,7 @@ float GameObjectController::FUN_141241000()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141241000, GameObjectController, FUN_141241000, 95, 0x2E35979C);
+MS2_REPLACE_METHOD(0x141241000, GameObjectController, GetRadius, 95, 0x2E35979C);
 
 // @0x141241070
 void GameObjectController::ClearCollisionFlags()
@@ -562,7 +562,7 @@ MS2_REPLACE_METHOD(0x1412410C0, GameObjectController, IsCapsuleOverlapping, 485,
 int GameObjectController::FUN_1412412b0()
 {
     if (m_bJumping != 0)
-        return (m_kFallTimer.IsRunning() == 0 || FUN_1412407a0() != 0) ? 0 : 1;
+        return (m_kFallTimer.IsRunning() == 0 || IsRising() != 0) ? 0 : 1;
     return m_kFallTimer.IsRunning();
 }
 MS2_REPLACE_METHOD(0x1412412B0, GameObjectController, FUN_1412412b0, 105, 0x4B49306D);

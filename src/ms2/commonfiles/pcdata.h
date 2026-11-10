@@ -1,8 +1,8 @@
 // CPCData / CPCDataPack (RTTI names): the persisted record of a player character as it travels between the servers and the
 // client. CPCData is the 0x440 byte record (ids, name, three 0x118 byte blobs, a stat map, the strings and a few counters;
-// FUN_14071e570 serialises it to a COutputStream, FUN_14071ec80 reads it back from a CInputStream). CPCDataPack holds three
-// CByteBuffers: the CPCData record, the equipped / inventory items and the extra items (FUN_14071f950 packs the item lists
-// into them, FUN_140720030 unpacks them, FUN_140720850 is the CRC over the three buffers). Member names are invented
+// Write serialises it to a COutputStream, Read reads it back from a CInputStream). CPCDataPack holds three
+// CByteBuffers: the CPCData record, the equipped / inventory items and the extra items (WriteItems packs the item lists
+// into them, ReadItems unpacks them, FUN_140720850 is the CRC over the three buffers). Member names are invented
 // from use. Both classes derive from CPtred and have only the deleting destructor in their vftable.
 #pragma once
 #include <afx.h>
@@ -22,8 +22,8 @@ class CPCData : public CPtred
 public:
     CPCData();                                              // 0x14071e2f0
     virtual ~CPCData() = default;                           // 0x1407209c0 (deleting 0x140720b00); the exe dtor stores no vptr
-    void FUN_14071e570(COutputStream& out);                 // write the record
-    void FUN_14071ec80(CInputStream& in);                   // read the record
+    void Write(COutputStream& out);                 // write the record
+    void Read(CInputStream& in);                   // read the record
     MS2_LAYOUT_FRIEND;
     __int64 m_n18;                                          // +0x18
     __int64 m_n20;                                          // +0x20
@@ -77,11 +77,11 @@ public:
     virtual ~CPCDataPack();                                 // 0x14071f510 (deleting 0x140720b40)
     void Write(COutputStream& out);                 // write the three buffers
     void Read(CInputStream& in);                   // read the three buffers
-    void FUN_14071f8a0(CPCData* pData);                     // fill the record from the first buffer
-    void FUN_14071f920(CPCData* pData);                     // store the record into the first buffer
-    void FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra, const CMsTime& tmBegin, const CMsTime& tmEnd,
+    void ReadRecord(CPCData* pData);                     // fill the record from the first buffer
+    void WriteRecord(CPCData* pData);                     // store the record into the first buffer
+    void WriteItems(const ItemArray& aEquip, const ItemArray& aExtra, const CMsTime& tmBegin, const CMsTime& tmEnd,
                        const ItemArray& aMore);             // pack the item lists
-    void FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTimed, CMsTime& tmBegin, CMsTime& tmEnd,
+    void ReadItems(ItemArray& aEquip, ItemArray& aExtra, bool& bTimed, CMsTime& tmBegin, CMsTime& tmEnd,
                        ItemArray& aMore);                   // unpack the item lists
     int FUN_140720850();                                    // CRC32 of the three buffers, summed
     MS2_LAYOUT_FRIEND;

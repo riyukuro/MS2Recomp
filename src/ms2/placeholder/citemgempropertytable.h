@@ -28,7 +28,7 @@ public:
     virtual ~CItemGemPropertyTable();                       // 0x1405abdc0
 
     bool Load();                                            // 0x1405abe50 the four ItemGemProperty_*.xml
-    MS2Ptr<CGemDataBase> FUN_1405ac160(int nGemId);         // 0x1405ac160 the row of a gem (null when missing)
+    MS2Ptr<CGemDataBase> GetGemData(int nGemId);         // 0x1405ac160 the row of a gem (null when missing)
     bool ReloadIfChanged();                                   // 0x1405ac260 reloads when a file changed on disk
 
     // @0x1405afa00

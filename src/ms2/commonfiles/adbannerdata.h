@@ -78,7 +78,7 @@ MS2_CHECK_SIZE(Unk_AdbPtr, 0x10);
 class Unk_AdbArray : public ATL::CAtlArray<Unk_AdbPtr>
 {
 public:
-    void FUN_14016e150(const ATL::CAtlArray<Unk_AdbPtr>& src);   // 0x14016e150 (Copy)
+    void CopyFrom(const ATL::CAtlArray<Unk_AdbPtr>& src);   // 0x14016e150 (Copy)
 };
 
 class CAdBannerManager
@@ -89,7 +89,7 @@ public:
 
     void FUN_14016df70();                                       // forget all banners
     void SetBanners(const ATL::CAtlArray<Unk_AdbPtr>& src);  // replace the banners
-    void FUN_14016dfd0(Unk_AbOut* pOut);                        // write the banner list
+    void WriteBanners(Unk_AbOut* pOut);                        // write the banner list
 
     Unk_AdbArray m_banners;                       // +0x00
     ATL::CAtlMap<EAdBannerType, CStringW> m_typeNames;                    // +0x20 1 cash, 2 merat, 3 pcbang, 4 playgift, 5 title
@@ -97,5 +97,5 @@ public:
 MS2_CHECK_SIZE(CAdBannerManager, 0x68);
 
 class CInputStream;
-void FUN_14016e060(CAdBannerManager& manager, CInputStream& stream);   // 0x14016e060 read the banner list (adbannermanagercli)
+void ReadBanners(CAdBannerManager& manager, CInputStream& stream);   // 0x14016e060 read the banner list (adbannermanagercli)
 MS2_CHECK_OFFSET(CAdBannerManager, m_typeNames, 0x20);

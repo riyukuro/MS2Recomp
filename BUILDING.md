@@ -23,7 +23,7 @@ The `linux` preset's condition is "the host is not Windows", so cmake offers it 
 the only one described here.
 
 The result is `build/<preset>/out/MapleStory2.exe`, a copy of `fullexe-plain.exe` (its `.map` is beside it). A clean
-build has about 3,700 steps; the 2026-11-09 one took 16 minutes at `-j12` on Linux. Header dependencies are not
+build has about 3,700 steps; the 2026-11-10 one took about 12 minutes at `-j12` on Linux. Header dependencies are not
 tracked: after a header edit, rebuild from clean.
 
 The build uses only this checkout:

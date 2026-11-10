@@ -75,7 +75,7 @@ class Unk_SingletonObj1;
 
 class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -611,7 +611,7 @@ int RideeData::Passengers::FUN_140784010(TiXmlElement* pRoot)
         return 1;
     for (TiXmlElement* pSeat = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("passenger")); pSeat != 0; pSeat = ((class TiXmlElement*)((class Unk_XmlNode*)(pSeat))->NextSibling("passenger")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pSeat)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pSeat)))
             continue;
         Unk_RiderPtr spRider(Unk_SocketNew(0));
         spRider->FUN_140782110(pSeat);
@@ -662,7 +662,7 @@ CRideeData::~CRideeData()
 }
 
 // @0x140784390
-bool CRideeData::FUN_140784390(const CRideeData& o)
+bool CRideeData::IsDifferent(const CRideeData& o)
 {
     if (m_basic.FUN_140782b10(o.m_basic))
         return 1;
@@ -678,23 +678,23 @@ bool CRideeData::FUN_140784390(const CRideeData& o)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140784390, CRideeData, FUN_140784390, 277, 0x98E2C4B7);
+MS2_REPLACE_METHOD(0x140784390, CRideeData, IsDifferent, 277, 0x98E2C4B7);
 
 // @0x140784880
-CString CRideeData::FUN_140784880(int nLevel)
+CString CRideeData::GetKfmName(int nLevel)
 {
     if (nLevel == 0 && !m_basic.m_strKfm2.IsEmpty())
         return m_basic.m_strKfm2;
     return m_basic.m_strKfm;
 }
-MS2_REPLACE_METHOD(0x140784880, CRideeData, FUN_140784880, 144, 0xD6E811E9);
+MS2_REPLACE_METHOD(0x140784880, CRideeData, GetKfmName, 144, 0xD6E811E9);
 
 // @0x140784920
-CString CRideeData::FUN_140784920(int nLevel)
+CString CRideeData::GetNifName(int nLevel)
 {
     return m_basic.m_strNif;
 }
-MS2_REPLACE_METHOD(0x140784920, CRideeData, FUN_140784920, 71, 0xF65BB79D);
+MS2_REPLACE_METHOD(0x140784920, CRideeData, GetNifName, 71, 0xF65BB79D);
 
 // @0x140784970
 Unk_RiderPtr CRideeData::GetDefaultRider()
@@ -704,11 +704,11 @@ Unk_RiderPtr CRideeData::GetDefaultRider()
 MS2_REPLACE_METHOD(0x140784970, CRideeData, GetDefaultRider, 67, 0x571C2301);
 
 // @0x1407849c0
-Unk_RiderPtr CRideeData::FUN_1407849c0(int nIndex)
+Unk_RiderPtr CRideeData::GetPassenger(int nIndex)
 {
     return m_passengers.FUN_1407841b0(nIndex);
 }
-MS2_REPLACE_METHOD(0x1407849c0, CRideeData, FUN_1407849c0, 77, 0x44B7A6B5);
+MS2_REPLACE_METHOD(0x1407849c0, CRideeData, GetPassenger, 77, 0x44B7A6B5);
 
 // @0x1407844b0
 CRideeDataPtr GetRideeData(unsigned nId)
@@ -733,7 +733,7 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
         return false;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("riding")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("riding")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CRideeDataPtr spData(new CRideeData);
         spData->SetPath(strPath);
@@ -763,7 +763,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
     CRideeDataPtr spResult(0);
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("riding")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("riding")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         spResult = new CRideeData;
         spResult->SetPath(strPath);

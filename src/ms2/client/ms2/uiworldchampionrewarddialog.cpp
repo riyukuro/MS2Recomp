@@ -51,8 +51,8 @@ class CInPacket { public: void* p0; Unk_OSInput stream; };   // C3: the stream i
 MS2_CHECK_OFFSET(CInPacket, stream, 8);
 class Unk_140bccd50* GetPacketHandlerManager();
 class Unk_WcAvatar;
-class Unk_WcField : public WorldService { public: Unk_WcAvatar* FUN_141bd0cc0(); };
-CStringW FUN_140298ea0(CStringW);
+class Unk_WcField : public WorldService { public: Unk_WcAvatar* GetLocalPlayer(); };
+CStringW GetStringByKey(CStringW);
 void ShowSystemNotice(const CStringW&, int, int);
 void FUN_140d73ff0(CStringW);
 CStringW FormatMonthDayHourMinuteSecond(const CMsTime&);
@@ -98,7 +98,7 @@ MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool(int,
 MS2Ptr<CMsgBoxData> ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 
 class Unk_CadCheck; template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);   // C3: was FUN_140bc7c10 (uicashattenddialog, T = Unk_CadCheck)
-void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
+void SetChildVisible(const Scaleform::GFx::Value&, CString, int);
 class Unk_WcAvatar {
 public:
     virtual void vfunc_0();
@@ -214,7 +214,7 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
         MS2Ptr<ASButton> button = slot->FUN_140acce30<ASButton>("m_levelButton");
         if (button == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(49), __FUNCTION__));
         m_stepSlotButtonVecotr.push_back(button);
-        button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnStepClick), (void*)m_stepSlotButtonVecotr.size());
+        button->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnStepClick), (void*)m_stepSlotButtonVecotr.size());
     }
     WC_BIND("m_prevPage", m_prev, 55);
     WC_BIND("m_nextPage", m_next, 56);
@@ -224,9 +224,9 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
         m_30->FUN_140bc71c0("m_rewardItemArea", m_area);
         if (m_area == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(59), __FUNCTION__));
     } while (0);
-    m_prev->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnPrevPageClick), 0);
-    m_next->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnNextPageClick), 0);
-    m_move->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::FUN_140fec310), 0);
+    m_prev->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnPrevPageClick), 0);
+    m_next->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnNextPageClick), 0);
+    m_move->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::FUN_140fec310), 0);
     FUN_140feb6b0();
 }
 MS2_REPLACE_METHOD(0x140fea140, UIWorldChampionRewardDialog, OnLoadComplete, 3777, 0xA8DC52E4);
@@ -245,7 +245,7 @@ void UIWorldChampionRewardDialog::OnPacket(CInPacket& packet) {
     switch (type) {
     case 8: OnSeasonRewardPacket(packet); break;
     case 10: OnNextSeasonPacket(packet); break;
-    case 11: ShowSystemNotice(FUN_140298ea0(L"s_world_champion_msg_not_found_season"), 1, 1); break;
+    case 11: ShowSystemNotice(GetStringByKey(L"s_world_champion_msg_not_found_season"), 1, 1); break;
     }
 }
 MS2_REPLACE_METHOD(0x140feb1b0, UIWorldChampionRewardDialog, OnPacket, 251, 0x7C1EE59C);
@@ -314,18 +314,18 @@ MS2_REPLACE_METHOD(0x140feb870, UIWorldChampionRewardDialog, FUN_140feb870, 963,
 // @0x140febc40
 void UIWorldChampionRewardDialog::FUN_140febc40() {
     if (m_title == NULL || m_area == NULL) return;
-    Unk_WcAvatar* avatar = ((Unk_WcAvatar*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_WcAvatar* avatar = ((Unk_WcAvatar*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!avatar) return;
     size_t index = m_selected - 1;
     if (index >= m_rewardVector.size()) {
-        m_title->FUN_1422e4a50(FUN_140298ea0(L"s_world_champion_clear_title"));
+        m_title->FUN_1422e4a50(GetStringByKey(L"s_world_champion_clear_title"));
         m_area->vfunc_4(false);
-        FUN_140cff840(GetGFxValue(), "m_clearIcon", 1);
+        SetChildVisible(GetGFxValue(), "m_clearIcon", 1);
         return;
     }
     m_title->FUN_1422e4a50(FUN_14028dfa0(L"s_world_champion_reward_title", m_selected));
     m_area->vfunc_4(true);
-    FUN_140cff840(GetGFxValue(), "m_clearIcon", 0);
+    SetChildVisible(GetGFxValue(), "m_clearIcon", 0);
     RewardContentsTable::Result rewards;
     if (!((RewardContentsTable*)GetRewardContentsTable())->GetReward(m_rewardVector[index], avatar->vfunc_78(), rewards)) return;
     EnsureItemSlots(rewards.m_items.size());
@@ -369,7 +369,7 @@ void UIWorldChampionRewardDialog::OnNextPageClick(const Scaleform::GFx::Function
 MS2_REPLACE_METHOD(0x140fec2b0, UIWorldChampionRewardDialog, OnNextPageClick, 84, 0x1B6547EA);
 // @0x140fec310
 void UIWorldChampionRewardDialog::FUN_140fec310(const Scaleform::GFx::FunctionHandler::Params&) {
-    if (reinterpret_cast<Unk_WcField*>(WorldService::GetInstance())->FUN_141bd3060() == m_field) {
+    if (reinterpret_cast<Unk_WcField*>(WorldService::GetInstance())->GetFieldId() == m_field) {
         FUN_140d73ff0(L"s_world_champion_msg_current_field");
         return;
     }

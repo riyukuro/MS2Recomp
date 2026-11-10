@@ -70,7 +70,7 @@ struct Unk_ICCPlayer : public PC
 };
 struct Unk_ICCWorld
 {
-    Unk_ICCPlayer* FUN_141bd0cc0();                             // the local player
+    Unk_ICCPlayer* GetLocalPlayer();                             // the local player
 };
 struct Unk_ICCEntityLoader
 {
@@ -221,7 +221,7 @@ void CItemCustomizeController::vfunc_4()
 // @0x141411270
 int CItemCustomizeController::RefreshEquipItem()
 {
-    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         m_spEquipItem = pPlayer->FUN_141655e10(m_nSlot);
@@ -323,7 +323,7 @@ float CItemCustomizeController::GetWheelDelta()
 // @0x1414117a0
 void CItemCustomizeController::ApplyValues()
 {
-    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_spEquipItem.IsNull())
@@ -341,7 +341,7 @@ void CItemCustomizeController::ApplyValues()
 // @0x141411920
 void CItemCustomizeController::ReadValues()
 {
-    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     {
@@ -406,7 +406,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
         if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
             return;
         void* pCameraManager = ((void*)FindRenderView());
-        Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer == 0)
             return;
         NiRenderer* pRenderer = NiRenderer::GetRenderer();
@@ -442,7 +442,7 @@ void CItemCustomizeController::UpdateDrag()
         vfunc_31();
         return;
     }
-    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Unk_ICCEntityLoader* pLoader = reinterpret_cast<Unk_ICCEntityLoader*>(FUN_141b6f910());
@@ -544,9 +544,9 @@ void CItemCustomizeController::vfunc_39(int bActive)
         if (pTarget == 0)
             continue;
         if (!reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->FUN_14053ec70()->FUN_140547170())
-            pTarget->FUN_1411679d0(fScale, fMode, m_spPicker->m_spMesh.FUN_141412c90());
+            pTarget->SetHighlight(fScale, fMode, m_spPicker->m_spMesh.FUN_141412c90());
         else
-            pTarget->FUN_1411679d0(fScale, fMode, 0);
+            pTarget->SetHighlight(fScale, fMode, 0);
     }
 }
 

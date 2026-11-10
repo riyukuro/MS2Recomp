@@ -57,8 +57,8 @@ public:
         virtual void vfunc_1(Unk_MentorReader& stream) { FUN_14069abe0(stream); }
         __int64 id; bool enabled;
     };
-    void FUN_14069ab00(Unk_MentorWriter&);
-    void FUN_14069ab50(Unk_MentorReader&);
+    void Write(Unk_MentorWriter&);
+    void Read(Unk_MentorReader&);
     unsigned char protocol; ATL::CAtlArray<CPairMode> entries;
 };
 MS2_CHECK_SIZE(CMentorPairModePacket::CPairMode,0x18);
@@ -100,7 +100,7 @@ public:
 class Unk_MentorResultPacket {
 public:
     void FUN_14069a3d0(Unk_MentorWriter& stream);
-    void FUN_14069a420(Unk_MentorReader& stream);
+    void ReadResult(Unk_MentorReader& stream);
     void FUN_14069a8c0(Unk_MentorWriter& stream);
     void FUN_14069a910(Unk_MentorReader& stream);
     unsigned char protocol,result; int value;
@@ -115,8 +115,8 @@ public:
 };
 class Unk_MentorNamePacket {
 public:
-    void FUN_14069a540(Unk_MentorWriter& stream);
-    void FUN_14069a5a0(Unk_MentorReader& stream);
+    void Write(Unk_MentorWriter& stream);
+    void Read(Unk_MentorReader& stream);
     unsigned char protocol; __int64 id; CStringW name;
 };
 class Unk_MentorIdPacket {
@@ -129,20 +129,20 @@ public:
 };
 class Unk_MentorDetailPacket {
 public:
-    void FUN_14069a7e0(Unk_MentorWriter& stream);
-    void FUN_14069a850(Unk_MentorReader& stream);
+    void Write(Unk_MentorWriter& stream);
+    void Read(Unk_MentorReader& stream);
     Unk_MentorDetailPacket(); unsigned char protocol; CStringW name; Unk_MentorPtr<CMentor> mentor;
 };
 class Unk_MentorValuePacket {
 public:
-    void FUN_14069a970(Unk_MentorWriter& stream);
-    void FUN_14069a9c0(Unk_MentorReader& stream);
+    void Write(Unk_MentorWriter& stream);
+    void Read(Unk_MentorReader& stream);
     unsigned char protocol; int value; __int64 id;
 };
 class Unk_MentorTwoValuePacket {
 public:
-    void FUN_14069aa20(Unk_MentorWriter& stream);
-    void FUN_14069aa90(Unk_MentorReader& stream);
+    void Write(Unk_MentorWriter& stream);
+    void Read(Unk_MentorReader& stream);
     unsigned char protocol; int a,b; __int64 id;
 };
 class Unk_MentorTwoIdPacket {

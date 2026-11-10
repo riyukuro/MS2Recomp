@@ -33,7 +33,7 @@
 // ---- unit-local views of exe objects ----
 
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 // (0x1401783d0 is XmlSplitImpl<unsigned>(const CString&, std::vector<unsigned>&, const char*), placeholder/xmlattr.h)
 __int64 GetNextExp(unsigned short nRule);                            // the rule's limit
@@ -185,7 +185,7 @@ HideAndSeek::ObjectData::~ObjectData()
 }
 
 // @0x14050a770
-void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
+void HideAndSeek::GetRidingObjects(unsigned nMapCode, std::vector<int>& out)
 {
     if (Unk_LockGuard guard = s_lock) {} else
     {
@@ -214,7 +214,7 @@ void HideAndSeek::LoadHideAndSeek()
         return;
     for (Unk_XmlNode* pNode = pRoot->FirstChild("field"); pNode != 0; pNode = pNode->NextSibling("field"))
     {
-        if (FUN_14028f710((struct Unk_XmlElement*)(pNode)) == 0)
+        if (IsElementAvailable((struct Unk_XmlElement*)(pNode)) == 0)
             continue;
         unsigned nMapCode = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "mapCode", nMapCode);

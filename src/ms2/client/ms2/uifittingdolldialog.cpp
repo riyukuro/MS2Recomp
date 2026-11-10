@@ -108,7 +108,7 @@ public:
 };
 
 // The doll / player helpers.
-class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
+class MyPC* GetMyPC(class Unk_QueryObj*);   // C3: was GetMyPC
 class Unk_AkoFittingDoll   // C3: member view for the former free stand-ins
 {
 public:
@@ -179,7 +179,7 @@ CString UIFittingDollDialog::GetTypeName()
 // @0x141933390
 void UIFittingDollDialog::SendFittingDoll()
 {
-    PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
@@ -293,7 +293,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("OnTransform", szMethod) == 0)
     {
-        PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
+        PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->GetLocalPlayer());
         if (pPlayer == 0)
             return 0;
         int nResult = CanWearEquipment();
@@ -327,7 +327,7 @@ void UIFittingDollDialog::vfunc_33(int nClassId, int n)
 // @0x141933b00
 void UIFittingDollDialog::SetDollInfo()
 {
-    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
+    FittingDollPC* pDoll = ((class FittingDollPC*)GetMyPC((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
         return;
     int nItemId = ((class Unk_AkoFittingDoll*)(class FittingDollPC*)(pDoll))->FUN_140967160();
@@ -363,10 +363,10 @@ void UIFittingDollDialog::SetDollInfo()
 // @0x141934070
 void UIFittingDollDialog::FUN_141934070()
 {
-    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pMe == 0)
         return;
-    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
+    FittingDollPC* pDoll = ((class FittingDollPC*)GetMyPC((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
         return;
     int bOwner = 0;
@@ -395,7 +395,7 @@ void UIFittingDollDialog::EnableTransformButton()
 {
     if (m_nTransforming == 0)
         return;
-    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pMe == 0)
         return;
     if (((class PCBase*)(class PC*)(pMe))->GetCurStateId() == 0x22)
@@ -410,10 +410,10 @@ void UIFittingDollDialog::EnableTransformButton()
 // @0x141934430
 int UIFittingDollDialog::CanWearEquipment()
 {
-    FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
+    FittingDollPC* pDoll = ((class FittingDollPC*)GetMyPC((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
         return 0xd;
-    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
@@ -429,7 +429,7 @@ int UIFittingDollDialog::CanWearEquipment()
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
-        bool bSkip = static_cast<bool>(spEquip->GetItem().get()) && reinterpret_cast<CItemData*>(spEquip->GetItem()->FUN_140527840())->FUN_14053d550();
+        bool bSkip = static_cast<bool>(spEquip->GetItem().get()) && reinterpret_cast<CItemData*>(spEquip->GetItem()->GetData())->FUN_14053d550();
         if (bSkip)
             continue;
         int nResult = pDoll->FUN_14121c870(list.GetAt(pos)->GetItem().get());
@@ -447,9 +447,9 @@ int UIFittingDollDialog::CanWearEquipment()
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CItem> spItem = list.GetAt(pos)->GetItem();
-        if (nType != 0 && !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c810())
+        if (nType != 0 && !reinterpret_cast<CItemData*>(spItem->GetData())->FUN_14053c810())
             continue;
-        if (nType == 0 && !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c870())
+        if (nType == 0 && !reinterpret_cast<CItemData*>(spItem->GetData())->FUN_14053c870())
             continue;
         if (spItem->HasSkin() != nType)
             continue;

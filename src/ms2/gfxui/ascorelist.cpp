@@ -19,7 +19,7 @@
 #include "hook/ms2hook.h"
 
 // new ASDataProvider(v, nMovieId) in an MS2Ptr (inline COMDAT, first emitted in uiwritemusicdialog.cpp).
-MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v);
+MS2Ptr<ASDataProvider> CreateDataProvider(int nMovieId, Scaleform::GFx::Value& v);
 // Text conversions (the CP_ACP helpers of the string utilities; the int is the code page / flags, 0 here).
 CStringW XmlWide(const char* sz);                                 // CStringW from a narrow string
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow -> wide
@@ -151,7 +151,7 @@ void ASCoreList::FUN_1422dd1d0()
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
-        spProvider->FUN_1422df120();
+        spProvider->Clear();
 }
 MS2_REPLACE_METHOD(0x1422DD1D0, ASCoreList, FUN_1422dd1d0, 83, 0xC4AB9264);
 
@@ -213,7 +213,7 @@ CStringW ASCoreList::GetSelectedLabelW()
         return L"";
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        AScript item = spProvider->FUN_1422df140(GetSelectedIndex());
+        AScript item = spProvider->GetItemAt(GetSelectedIndex());
         Scaleform::GFx::Value label = item.GetMember("label");
         if (label.IsString())
             return XmlWide(label.GetString());
@@ -233,7 +233,7 @@ bool ASCoreList::GetSelectedItem(AScript& item)
         return false;
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
-        item = spProvider->FUN_1422df140(GetSelectedIndex());
+        item = spProvider->GetItemAt(GetSelectedIndex());
         return true;
     }
     return false;
@@ -246,7 +246,7 @@ void ASCoreList::SelectByIntMember(const CString& strMember, int nValue)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
         for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
-            AScript item = spProvider->FUN_1422df140((unsigned)i);
+            AScript item = spProvider->GetItemAt((unsigned)i);
             if (item.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString() && nValue == (int)v.GetInt()) {
@@ -265,7 +265,7 @@ void ASCoreList::SelectByUIntMember(const CString& strMember, int nValue)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
         for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
-            AScript item = spProvider->FUN_1422df140((unsigned)i);
+            AScript item = spProvider->GetItemAt((unsigned)i);
             if (item.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString() && nValue == (int)v.GetUInt()) {
@@ -284,7 +284,7 @@ void ASCoreList::SelectByStringMember(const CString& strMember, const CStringW& 
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
         for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
-            AScript item = spProvider->FUN_1422df140((unsigned)i);
+            AScript item = spProvider->GetItemAt((unsigned)i);
             if (item.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = item.GetMember(strMember);
                 if (v.IsString()) {
@@ -320,7 +320,7 @@ void ASCoreList::RemoveItemByLabel(const CString& strLabel)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
         for (unsigned __int64 i = 0; i < GetItemCount(); i++) {
-            AScript item = spProvider->FUN_1422df140((unsigned)i);
+            AScript item = spProvider->GetItemAt((unsigned)i);
             if (item.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = item.GetMember("label");
                 if (v.IsString()) {
@@ -416,6 +416,6 @@ template <class T> MS2Ptr<T> AScript::FUN_1422de460(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return FUN_140ff6b60(m_nMovieId, v);
+        return CreateDataProvider(m_nMovieId, v);
     return MS2Ptr<T>(0);
 }

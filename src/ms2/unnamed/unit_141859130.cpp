@@ -37,7 +37,7 @@ struct Unk_XBlockGuid
 };
 #pragma intrinsic(memcmp, memset)
 
-bool FUN_141859a60(const efd::utf8string& strGuid, Unk_XBlockGuid* pGuid);
+bool ParseGuid(const efd::utf8string& strGuid, Unk_XBlockGuid* pGuid);
 
 class Unk_XBlockNameMap
 {
@@ -87,7 +87,7 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
         Unk_XBlockGuid guid;
         {
             efd::utf8string strId(pszId);
-            FUN_141859a60(strId, &guid);
+            ParseGuid(strId, &guid);
         }
         m_names.SetAt(guid, strName);
     }
@@ -103,7 +103,7 @@ CString Unk_XBlockNameMap::FindName(const Unk_XBlockGuid& key)
 }
 
 // @0x141859a60   parses a 32-hex-digit GUID string ("{}" and "-" ignored) into its in-memory byte layout
-bool FUN_141859a60(const efd::utf8string& strGuid, Unk_XBlockGuid* pGuid)
+bool ParseGuid(const efd::utf8string& strGuid, Unk_XBlockGuid* pGuid)
 {
     efd::utf8string str(strGuid);
     str.trim(efd::TrimAll, " \t{}");

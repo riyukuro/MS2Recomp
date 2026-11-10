@@ -176,7 +176,7 @@ template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wch
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 struct Unk_XmlElement; void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
@@ -192,9 +192,9 @@ class Unk_DropItemData : public CItemData
 {
 };
 bool HasRank(int nItemId, int nRank);                 // the item exists in that rank
-int FUN_14053feb0(int nItemId);                             // default rank of an item
+int GetItemRank(int nItemId);                             // default rank of an item
 int GetRandomRange(int, int);  // C3: the definition's signature
-bool FUN_14028d470(float a, float b);                       // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);                       // a == b (within epsilon)
 CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -244,7 +244,7 @@ bool ItemDropData::Load(TiXmlElement* pElem)
     }
     {
         MS2Ptr<ItemDropItemLife> pLife(new ItemDropItemLife);
-        if (pLife->FUN_14026f290(pElem))
+        if (pLife->LoadFromXml(pElem))
             m_itemLife = pLife;
     }
     if (m_itemID == 0 || m_weight == 0)
@@ -564,7 +564,7 @@ bool ItemDropGlobalGroup::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupID", m_dropGroupID);
     for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropDataGlobal> pData(new ItemDropDataGlobal);
         if (!pData->Load(pChild))
@@ -714,7 +714,7 @@ bool ItemDropGlobalBox::CheckContinent(int nMapId)
 {
     if (m_continentCondition == 0)
         return true;
-    MS2Ptr<CFieldData> pField = CFieldData::FUN_140374140(nMapId);
+    MS2Ptr<CFieldData> pField = CFieldData::FindField(nMapId);
     if (pField == 0)
         return false;
     return m_continentCondition == pField->GetContinentCode();
@@ -726,7 +726,7 @@ bool ItemDropGlobalBox::CheckMapType(int nMapId)
 {
     if (m_mapTypeCondition == 0)
         return true;
-    MS2Ptr<CFieldData> pField = CFieldData::FUN_140374140(nMapId);
+    MS2Ptr<CFieldData> pField = CFieldData::FindField(nMapId);
     if (pField == 0)
         return false;
     return m_mapTypeCondition == pField->m_nMapType;
@@ -751,7 +751,7 @@ bool ItemDropGlobalBoxGroup::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "dropBoxID", m_dropBoxID);
     for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropGlobalBox> pBox(new ItemDropGlobalBox);
         if (!pBox->Load(pChild))
@@ -833,7 +833,7 @@ bool ItemDropIndividualGroup::Load(TiXmlElement* pElem)
     }
     for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropDataIndividual> pData(new ItemDropDataIndividual);
         pData->Load(pChild);
@@ -889,7 +889,7 @@ bool ItemDropIndividualBox::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "probVer", m_probVer);
     for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("group")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
             continue;
         MS2Ptr<ItemDropIndividualGroup> pGroup(new ItemDropIndividualGroup);
         if (!pGroup->Load(pChild))
@@ -1050,7 +1050,7 @@ void ItemDropResult::SetRank(int nRank)
 {
     m_rank = nRank;
     if (m_rank == 0)
-        m_rank = FUN_14053feb0(m_itemId);
+        m_rank = GetItemRank(m_itemId);
 }
 MS2_REPLACE_METHOD(0x1402E98F0, ItemDropResult, SetRank, 62, 0xCAEEAB4F);
 
@@ -1139,7 +1139,7 @@ void ItemDropTable::DropGlobal(unsigned nBoxId, ItemDropContext& ctx, std::vecto
                 break;
             int nItemCount = 0;
             float fRate = TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(2, pBox->GetDropGroupId());
-            if (FUN_14028d470(fRate, 1.0f) == true)
+            if (IsNearlyEqual(fRate, 1.0f) == true)
                 nItemCount = pData->GetCount();
             else
                 nItemCount = pData->GetCountScaled(fRate);
@@ -1514,7 +1514,7 @@ bool ItemDropTable::LoadGlobalGroups()
     }
     for (TiXmlElement* pElem : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pElem)))
             continue;
         MS2Ptr<ItemDropGlobalGroup> pGroup(new ItemDropGlobalGroup);
         if (!pGroup->Load(pElem))

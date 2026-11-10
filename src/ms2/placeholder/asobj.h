@@ -25,7 +25,7 @@ public:
     unsigned int PushInt(int n);                                   // push an int
     unsigned int PushBool(bool b);                                  // push a bool
     unsigned int PushUInt(unsigned int n);                          // push a UInt
-    unsigned int FUN_1422bbdb0(unsigned long n);                         // push a UInt (unsigned long)
+    unsigned int PushULong(unsigned long n);                         // push a UInt (unsigned long)
     unsigned int PushFloat(float f);                                 // push a Number
     unsigned int PushDouble(double d);                                // push a Number
     unsigned int PushObj(const ASObj& obj);                        // push an AS object
@@ -46,7 +46,7 @@ public:
     Scaleform::GFx::Value Pop();                               // pop()
     Scaleform::GFx::Value Shift();                               // shift()
     unsigned int GetLength();                                        // element count ("length")
-    void FUN_1422bc630();                                                // remove every element (Value::ClearElements)
+    void ClearElements();                                                // remove every element (Value::ClearElements)
     void Splice(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
     Scaleform::GFx::Value GetElement(unsigned nIndex);                // the element at an index (merat market buy rows)
     void SetElementIfInRange(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element if the index is in range (uiclosetdialog.cpp)
@@ -57,7 +57,7 @@ public:
     void GetULong(unsigned nIndex, unsigned long& nOut);
     void GetFloat(unsigned nIndex, float& fOut);
     void GetDouble(unsigned nIndex, double& dOut);
-    void FUN_1422bca20(unsigned nIndex, CString& strOut);
+    void GetString(unsigned nIndex, CString& strOut);
     void GetWString(unsigned nIndex, CStringW& strOut);
     // AScript::Invoke overloads called here (members of ASArray so AScript's overload set stays unchanged)
     Scaleform::GFx::Value InvokeDouble(const char* szMethod, double a1);              // 0x140e06cc0 Invoke(method, Number)
@@ -79,8 +79,8 @@ public:
     virtual ~ASDataProvider();                                           // 0x1422df070
     void CleanUp();                                                // cleanUp()
     void Invalidate(unsigned int nIndex);                             // invalidate(index)
-    void FUN_1422df120();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
-    AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
+    void Clear();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
+    AScript GetItemAt(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
     void FUN_140f1fd70(unsigned nIndex, const CString& strMember, __int64* pOut);   // 0x140f1fd70 a member of an entry (inline COMDAT, defined in uiblackmarketpagemeso.cpp)
     // The flash.events.IEventDispatcher methods (the same AS calls as ASEventDispatcher's).
     void AddEventListener(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,

@@ -490,7 +490,7 @@ void CItemDataTable::LoadAllItemData()
     Concurrency::parallel_for_each(std::begin(files), std::end(files), [this](CString strFile) {
         CString strName = PathFindFileNameA(strFile);
         strName.Replace(".xml", "");
-        unsigned nFile = FUN_1407181d0(strName);
+        unsigned nFile = ParseUInt(strName);
         LoadItemDataFile(nFile);
     });
 }
@@ -1557,7 +1557,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
     ModelPtr spModel(new ItemModelData);
     spModel->FUN_14054aee0(nPreset);
     spModel->SetPath(strPath);
-    spModel->FUN_14054af00(pRoot);
+    spModel->Load(pRoot);
     {
         Unk_CriticalSectionLock lock(m_csModel, 1);
         m_mapModel[nPreset] = spModel;
@@ -1588,7 +1588,7 @@ bool CItemDataTable::LoadModelFile(unsigned nFile)
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         spModel->FUN_14054aee0(nId);
         spModel->SetPath(strPath);
-        spModel->FUN_14054af00(pNode);
+        spModel->Load(pNode);
         m_mapModel[nId] = spModel;
     }
     m_setModelFile.insert(nFile);

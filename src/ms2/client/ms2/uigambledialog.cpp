@@ -56,8 +56,8 @@ void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex
 #include "ms2/ms2format.h"
 CStringW FUN_1418fec00(int, __int64, bool);          // money text by pay type
 int FUN_1403bafd0(int id);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -121,7 +121,7 @@ void UIGambleDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
     int cResult;
-    if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x9c && (cResult = ((CInPacket*)pPacket)->ReadUInt8()) == 1) {
+    if (((CInPacket*)pPacket)->GetOpcode() == 0x9c && (cResult = ((CInPacket*)pPacket)->ReadUInt8()) == 1) {
         for (size_t i = 0; i < m_binds.GetCount(); i++)
             DestroyItemInfoSlot(m_binds[i]);
         m_binds.RemoveAll();
@@ -191,10 +191,10 @@ inline Scaleform::GFx::Value ASDialog::FUN_141935bc0(const char* szMethod, CStri
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bce70(&args[0], strBind);
-    FUN_1422bcd10(&args[1], nSlot);
+    SetString(&args[0], strBind);
+    SetUInt(&args[1], nSlot);
     FUN_1422bcea0(&args[2], strName);
-    FUN_1422bce70(&args[3], strIcon);
+    SetString(&args[3], strIcon);
     FUN_1422bccb0(&args[4], nFlag);
     return FUN_1422bb8f0(szMethod, args);
 }

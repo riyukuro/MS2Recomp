@@ -62,9 +62,9 @@ void FUN_14125f260(Unk_LgState* pDst, const Unk_LgState* pSrc);
 CLocaleLanguage* GetLocaleLanguage();
 CString FUN_140652030(int nLanguage);                                   // language enum -> code
 CString GetRegionCode(int nRegion);                                     // region enum -> code
-int FUN_140651920(CString strCode);                                     // language code -> enum
+int GetLanguageId(CString strCode);                                     // language code -> enum
 int FUN_140651b00(CString strCode);                                     // region code -> enum
-int FUN_1406516c0();
+int GetVoice();
 extern int DAT_143ab0248;                                               // the client region
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
@@ -186,7 +186,7 @@ void CGameOptionLanguage::vfunc_7()
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
         if (((void*)list.get()) != 0)
         {
-            AScript item = list->GetDataProvider().operator->()->FUN_1422df140(list->GetSelectedIndex());
+            AScript item = list->GetDataProvider().operator->()->GetItemAt(list->GetSelectedIndex());
             if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nLanguage = item.GetMember("index").GetInt();
         }
@@ -195,7 +195,7 @@ void CGameOptionLanguage::vfunc_7()
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
         if (((void*)list.get()) != 0)
         {
-            AScript item = list->GetDataProvider().operator->()->FUN_1422df140(list->GetSelectedIndex());
+            AScript item = list->GetDataProvider().operator->()->GetItemAt(list->GetSelectedIndex());
             if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nVoice = item.GetMember("index").GetInt();
         }
@@ -277,7 +277,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     ASObj item(2);
                     CString strCode(row->m_languages.GetAt(i));
                     item.SetWStringMember("label", FUN_140cfc970(CString(strCode)));
-                    item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
+                    item.FUN_140cfd0d0("index", GetLanguageId(CString(strCode)));
                     list->AddItemRow(item);
                 }
                 if (row->m_languages.GetCount() <= 3)
@@ -332,7 +332,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     ASObj item(2);
                     CString strCode(row->m_voices.GetAt(i));
                     item.SetWStringMember("label", FUN_140cfca00(CString(strCode)));
-                    item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
+                    item.FUN_140cfd0d0("index", GetLanguageId(CString(strCode)));
                     list->AddItemRow(item);
                 }
                 if (row->m_voices.GetCount() <= 3)
@@ -386,7 +386,7 @@ void CGameOptionLanguage::vfunc_10()
         }
         else
         {
-            if (FUN_1406516c0() != m_state.m_nVoice)
+            if (GetVoice() != m_state.m_nVoice)
                 bRestart = 1;
         }
     }

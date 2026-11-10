@@ -67,7 +67,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 // The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its Vector3 local.
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
 void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
@@ -76,7 +76,7 @@ class NoticeMessage   // C3: member view for the former free stand-ins
 public:
     class NiNode* GetRoot();
 };
-void FUN_1415672e0(NiAVObject* pObj, bool bFlag);
+void PrepareLoadedNif(NiAVObject* pObj, bool bFlag);
 // Time controller / extra data helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
 // The Catmull-Rom point between four control points (beameffect.cpp).
@@ -310,9 +310,9 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(pZBuffer);
     }
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
+    PrepareLoadedNif(m_spMesh->GetMesh(), (bool)0);
     m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
-    if (FUN_14028d470(pRibbon->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pRibbon->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

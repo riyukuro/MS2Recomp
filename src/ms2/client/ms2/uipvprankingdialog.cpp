@@ -33,12 +33,12 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 class Unk_PvPRankWorld                                              // the world service
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
 };
@@ -154,7 +154,7 @@ void UIPvPRankingDialog::FUN_1413432b0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     for (int nRank = 1; nRank <= 3; nRank++) {

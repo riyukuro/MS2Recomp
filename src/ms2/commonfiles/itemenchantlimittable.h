@@ -34,11 +34,11 @@ public:
     virtual ~CItemEnchantLimitTable();          // 0x14058dbf0
 
     int Load();                                 // 0x14058dc50 parses the xml into the map
-    int FUN_14058df90(CItem* pItem);            // the item may start an enchant (level band, grade, not excluded)
+    int CanEnchant(CItem* pItem);            // the item may start an enchant (level band, grade, not excluded)
     int FUN_14058e230(CItem* pItem);            // the same without the enchant grade test
     unsigned IsMaxGrade(CItem* pItem);       // the item is at the limit grade
     bool HasLimit(CItemData* pData);       // the item data has a limit row
-    int FUN_14058e500(unsigned nItemId, int nGrade);   // the item id may be enchanted to a grade
+    int CanEnchantToGrade(unsigned nItemId, int nGrade);   // the item id may be enchanted to a grade
 
     static void CheckInit();                    // 0x14058f330
     static void SetInit(bool b);                // 0x1405902a0

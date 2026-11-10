@@ -67,7 +67,7 @@ CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns 
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 
 // The statics of this unit: two enum name tables around a name -> id map.
 static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -234,7 +234,7 @@ void UGCCubeCategoryTable::LoadMenus()
             {
                 for (TiXmlElement* pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenus))->FirstChild("menu")); pMenu != 0; pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
                 {
-                    if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
+                    if (!IsElementAvailable((struct Unk_XmlElement*)(pMenu)))
                         continue;
                     int nName = 0;
                     XmlGetAttr((class TiXmlElement*)(pMenu), "name", *(unsigned int*)&static_cast<int&>(nName));
@@ -344,7 +344,7 @@ void UGCCubeCategoryTable::ReadTabsInto(int nCategory, TiXmlElement* pElem, TabA
 // @0x140887530
 UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(TiXmlElement* pElem)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(pElem)))
         return TabPtr(0);
     TabPtr tab((Unk_CubeNewTag(0)));
     int nName = 0;

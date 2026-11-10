@@ -219,7 +219,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             kTarget.FromRotation(kLocal.m_Rotate);
             efd::Quaternion kCurrent;
             kCurrent.FromRotation(kLast);
-            float fT = m_tmLookOut.FUN_140868940();
+            float fT = m_tmLookOut.GetRatio();
             fT = fT * fT;
             efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
             NiQuaternion kOut(kBlend);
@@ -299,13 +299,13 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 kCurrent.FromRotation(kLocal.m_Rotate);
                 if (m_tmLookIn.IsRunning() != 0)
                 {
-                    float fT = m_tmLookIn.FUN_140868940();
+                    float fT = m_tmLookIn.GetRatio();
                     fT = fT * fT;
                     efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
                 }
                 else if (m_tmAim.IsRunning() != 0)
                 {
-                    float fT = m_tmAim.FUN_140868940();
+                    float fT = m_tmAim.GetRatio();
                     fT = fT * fT;
                     kCurrent.FromRotation(m_kLastRotate);
                     efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
@@ -495,7 +495,7 @@ void CBoneRotateManager::LookAtPosition(const efd::Point3& kPos, int nStart, int
         return;
     m_kLookPos = kPos;
     if (nDuration == 0)
-        m_tmLook.FUN_1408687c0();
+        m_tmLook.StartInfinite();
     else
         m_tmLook.Start(nDuration);
     m_nStart = nStart;
@@ -513,7 +513,7 @@ void CBoneRotateManager::LookAtEntity(const egf::EntityID& kId, CString strBone,
         return;
     m_kTargetId = kId;
     if (nDuration == 0)
-        m_tmLook.FUN_1408687c0();
+        m_tmLook.StartInfinite();
     else
         m_tmLook.Start(nDuration);
     m_nStart = nStart;

@@ -23,7 +23,7 @@ extern unsigned short DAT_143ab2848;
 template <class A, class B> void Unk_SSGFormatMsg(int nStringId, int nA, int nB, const A& a, const B& b);   // C3: was FUN_141740b00 (scenestategame)
 CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 class UIObject* FindUIObject(int);   // C3: was FindUIObject
 int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned);
@@ -98,7 +98,7 @@ void CSceneStateMove::OnUpdate(double fTime)
         {
             if (GetNetworkService()->RestoreServerAddress())
             {
-                CStringW text = FUN_140298ea0(CStringW(L"s_reconnect_to_server_fail"));
+                CStringW text = GetStringByKey(CStringW(L"s_reconnect_to_server_fail"));
                 void* loading = ((void*)FindUIObject(0x3ed));
                 if (loading)
                     reinterpret_cast<UILoadingProgress*>(loading)->SetMoveChannelMessage(text);

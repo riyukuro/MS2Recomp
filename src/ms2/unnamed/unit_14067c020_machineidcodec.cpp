@@ -20,7 +20,7 @@ class Unk_MachineId
 public:
     Unk_MachineId();                                                // 0x14067c020, zero-inits
     Unk_MachineId* CopyFrom(const Unk_MachineId* pOther);      // copy
-    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);      // assignment
+    Unk_MachineId* Assign(const Unk_MachineId* pOther);      // assignment
     Unk_MachineId* SetFromBuffer(const CByteBuffer& buf);           // from a buffer of up to 16 bytes
     bool IsEqual(const Unk_MachineId* pOther) const;          // equal
     bool IsNotEqual(const Unk_MachineId* pOther) const;          // not equal
@@ -51,13 +51,13 @@ Unk_MachineId* Unk_MachineId::CopyFrom(const Unk_MachineId* pOther)
 MS2_REPLACE_METHOD(0x14067C050, Unk_MachineId, CopyFrom, 37, 0x65761C45);
 
 // @0x14067c080
-Unk_MachineId* Unk_MachineId::FUN_14067c080(const Unk_MachineId* pOther)
+Unk_MachineId* Unk_MachineId::Assign(const Unk_MachineId* pOther)
 {
     if (this != pOther)
         memcpy(m_data, pOther->m_data, 16);
     return this;
 }
-MS2_REPLACE_METHOD(0x14067C080, Unk_MachineId, FUN_14067c080, 49, 0xD3408B84);
+MS2_REPLACE_METHOD(0x14067C080, Unk_MachineId, Assign, 49, 0xD3408B84);
 
 // The length is read inside the memcpy call.
 // @0x14067c0c0

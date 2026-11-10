@@ -69,7 +69,7 @@ typedef Unk_SocketNew Unk_RankNewTag;
 
 // ---- unit-local smart pointers (16 bytes: field 0 unused, field 1 the pointee) ----
 
-CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 
 // Pointer to a CPtred-derived object (the CPtred is the pointee). Members are defined out of the class so that they stay
 // out-of-line COMDATs like the exe's (one instance per T).
@@ -131,7 +131,7 @@ template <class T> void Unk_RankPtr<T>::ReleaseImpl(void*)
     }
 }
 template <class T> void Unk_RankPtr<T>::Make() { Release(); m_p = Create(0); }
-template <class T> T* Unk_RankPtr<T>::Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate(0))); }
+template <class T> T* Unk_RankPtr<T>::Create(void*) { return static_cast<T*>(InitRefCount(Allocate(0))); }
 template <class T> T* Unk_RankPtr<T>::Allocate(void*) { return new T; }
 
 typedef Unk_RankPtr<GameRankingCategory> Unk_RankCatPtr;
@@ -204,7 +204,7 @@ template <class T> TPtredDummy<T>* Unk_RankBoxPtr<T>::Owner(T* p)
 }
 template <class T> T* Unk_RankBoxPtr<T>::Create(void*)
 {
-    return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0))));
+    return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0))));
 }
 
 typedef Unk_RankBoxPtr<Unk_RankTabArray> Unk_RankTabsPtr;

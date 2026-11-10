@@ -109,9 +109,9 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
             Scaleform::GFx::Value vLoader(pArgs[3]);
             SetStage(CreateStage(m_18, vStage));
             SetMovieClipLoader(CreateMovieClipLoader(m_18, vLoader));
-            GetGFxManager()->FUN_1422b0790(m_18);
-            FUN_1422be140();
-            FUN_1422be2a0();
+            GetGFxManager()->UpdateStageSize(m_18);
+            RegisterFormatFunction();
+            InvokeCommonCallback();
             m_90 = true;
         }
         else if (_stricmp("sharedDataInit", szName) == 0)
@@ -224,7 +224,7 @@ MS2_REPLACE_METHOD(0x1422F0040, GFxMovieMain, vfunc_8, 36, 0xD6D44938);
 void GFxMovieMain::vfunc_17(void* hwnd)
 {
     GFxMovieEventHandler::vfunc_17(hwnd);
-    FUN_1422d8e80(hwnd);
+    RegisterClipboardViewer(hwnd);
 }
 MS2_REPLACE_METHOD(0x1422F0070, GFxMovieMain, vfunc_17, 49, 0x216A8A57);
 

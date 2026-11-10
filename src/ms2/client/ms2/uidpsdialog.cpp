@@ -47,7 +47,7 @@ class Unk_DpsWorld;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141b70720(unsigned nMs, CString& strOut);                      // "mm:ss" text
 void FUN_140710590(COutPacket& packet);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);      // Value::SetString
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);      // Value::SetString
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);           // Value::SetNumber
 
 CToolBaseDialog* FUN_14192a1e0();                                       // TSingleton<CDPSDialog>::CreateInstance
@@ -225,7 +225,7 @@ void UIDPSDialog::AddHistoryLine()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_DpsWorld*)(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_DpsWorld*)(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPC == 0)
             return;
         if (reinterpret_cast<JobSystem*>(reinterpret_cast<PC*>(pPC)->GetJobSystem())->GetJobData().operator==((JobData*)0))
@@ -300,9 +300,9 @@ Scaleform::GFx::Value ASDialog::FUN_14192a060(const char* szMethod, CString strT
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], strTime);
+    SetString(&args[0], strTime);
     FUN_1422bcdd0(&args[1], nDamage);
-    FUN_1422bce70(&args[2], strDps);
+    SetString(&args[2], strDps);
     return FUN_1422bb8f0(szMethod, args);
 }
 

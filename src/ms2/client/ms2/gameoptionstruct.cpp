@@ -240,7 +240,7 @@ int CGameOptionInterface::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (strTag == L"resetSwfLayout")
-                GetUISwfEntityManager()->FUN_1422d21b0();
+                GetUISwfEntityManager()->ResetLayout();
         }
         FUN_14151f200();
     }
@@ -411,7 +411,7 @@ void CGameOptionInterface::vfunc_12()
     FUN_14125bc60(&m_flag);
     FUN_14125bc80(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
     vfunc_6();
-    GetUISwfEntityManager()->FUN_1422d21b0();
+    GetUISwfEntityManager()->ResetLayout();
 }
 MS2_REPLACE_METHOD(0x141256BB0, CGameOptionInterface, vfunc_12, 147, 0x6286211F);
 
@@ -1013,7 +1013,7 @@ void CGameOptionStatus::vfunc_10()
         pExpBar->SetPointVisible(m_state.m_bDisplayExpValue);
     UIAdventureLevelExpBar* pAdvBar = Unk_GsFindUI<UIAdventureLevelExpBar>((eUIClassID)0x4f66);
     if (pAdvBar != 0)
-        pAdvBar->FUN_140ba7080(m_state.m_bDisplayExpValue);
+        pAdvBar->SetPointVisible(m_state.m_bDisplayExpValue);
     if (m_state.m_bDisplayShowOnlyMyPet != TSingleton<CGameOption>::GetInstance()->GetStatus()->m_bDisplayShowOnlyMyPet)
         FUN_14125b130(m_state.m_bDisplayShowOnlyMyPet);
     if (m_state.m_bDisplayHideMyPet != TSingleton<CGameOption>::GetInstance()->GetStatus()->m_bDisplayHideMyPet)
@@ -1457,7 +1457,7 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
             *pnType = 1;
             return 1;
         }
-        PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+        PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
         MS2Ptr<CNpcData> spNpc = FindNpcData(nNpcId);
@@ -1544,7 +1544,7 @@ int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc)
     bool bValue = false;
     if (ReadGameOptionBool(pDoc, "status", "displayLearningQuestV2", &bValue) == 0)
     {
-        Unk_GsMyPC* pPlayer = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        Unk_GsMyPC* pPlayer = (Unk_GsMyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer != 0)
         {
             CMsTime timeLimit(2017, 6, 29, 0, 0, 0);
@@ -2021,7 +2021,7 @@ MS2_REPLACE(0x14125DFF0, FUN_14125dff0, 32, 0x03873F7C);
 // @0x14125e020
 bool IsFogEnabled(const Unk_GraphicState* p)
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (static_cast<CFieldDataCli*>(spField) != 0 && ((Unk_GsFieldFlags*)spField.operator->())->m_b1fd == false)
         return false;
     return p->m_b18;
@@ -2031,7 +2031,7 @@ MS2_REPLACE(0x14125E020, IsFogEnabled, 128, 0x83CC57EA);
 // @0x14125e0b0
 bool IsHdrEnabled(const Unk_GraphicState* p)
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (static_cast<CFieldDataCli*>(spField) != 0 && ((Unk_GsFieldFlags*)spField.operator->())->m_b220 == false)
         return false;
     return p->m_bHdr;
@@ -2048,7 +2048,7 @@ MS2_REPLACE(0x14125E140, FUN_14125e140, 15, 0x1AEA23D8);
 // @0x14125e160
 bool IsOuterGlowEnabled(const Unk_GraphicState* p)
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (static_cast<CFieldDataCli*>(spField) != 0 && ((Unk_GsFieldFlags*)spField.operator->())->m_b1fc == false)
         return false;
     return p->m_b1e;
@@ -3103,24 +3103,24 @@ bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bAuto)
         return false;
     if (FUN_14053f900(pItem->GetItemId()))
         return true;
-    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return false;
     if ((unsigned short)pPC->vfunc_78() < 1)
         return false;
     if (pItem->IsPetItem() != 0)
         return p->m_bPet;
-    if (pItem->FUN_140527840()->FUN_14053d840() || pItem->FUN_140527840()->GetType() == 0xe)
+    if (pItem->GetData()->FUN_14053d840() || pItem->GetData()->GetType() == 0xe)
         return p->m_bGemStone;
     if (pItem->IsMeso() != 0)
         return p->m_bMeso;
     if (pItem->IsMerat() != 0)
         return p->m_bMerat;
-    if (pItem->FUN_140525950() != 0 || pItem->FUN_140527840()->GetType() == 0x14)
+    if (pItem->IsToken() != 0 || pItem->GetData()->GetType() == 0x14)
         return p->m_bToken;
-    if (pItem->FUN_140527840()->GetType() == 2)
+    if (pItem->GetData()->GetType() == 2)
         return p->m_bConsume;
-    if (pItem->FUN_140527840()->FUN_14053cbc0())
+    if (pItem->GetData()->FUN_14053cbc0())
     {
         if (p->m_bEquip && pItem->GetRarity() >= p->m_nEquipGrade)
             return true;
@@ -3330,7 +3330,7 @@ UIGameMenuDialog* FindGameMenuDialog(int nUiId);
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pUnk, CStringW tag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
 CStringW GetStringCommonByKey(const CStringW& str);                      // string table text by key
-CStringW FUN_140298ea0(CStringW str);                             // string table text by key
+CStringW GetStringByKey(CStringW str);                             // string table text by key
                                      // 0x4f7c
 UIHomeMenuDialog* GetHomeMenuDialog(int nUiId);
            // 0x4e6a
@@ -3527,7 +3527,7 @@ void CPersonalInfoAgreement::FUN_141262180()
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x117))
         return;
-    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return;
     bool bShow = !HasGroupAgreement(1);
@@ -3544,7 +3544,7 @@ void CPersonalInfoAgreement::FUN_141262180()
         bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
         if (bMyHouse)
         {
-            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(4, GetStringByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
             if (spBox.get())
             {
                 CStringW strPublic = GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_btn_public");
@@ -3571,7 +3571,7 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x117))
         return;
-    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return;
     if (pPC->HasNoHome() != 0)
@@ -3599,7 +3599,7 @@ void CPersonalInfoAgreement::OpenLink(CString strUrl)
     UIWebBrowserBase* pLink = FindWebBrowser(0x4e6a);
     if (pLink == 0)
         return;
-    pLink->FUN_14135ec00(strUrl, true);
+    pLink->Navigate(strUrl, true);
 }
 MS2_REPLACE_METHOD(0x1412627C0, CPersonalInfoAgreement, OpenLink, 94, 0xA1CF5C66);
 
@@ -3607,7 +3607,7 @@ MS2_REPLACE_METHOD(0x1412627C0, CPersonalInfoAgreement, OpenLink, 94, 0xA1CF5C66
 // @0x141262830
 bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
 {
-    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return false;
     if (nResult == 0)
@@ -3664,7 +3664,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
                 return false;
             }
         }
-        Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPC != 0)
         {
             m_bAnswered = true;

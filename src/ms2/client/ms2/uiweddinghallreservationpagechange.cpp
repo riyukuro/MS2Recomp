@@ -17,7 +17,7 @@ class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
-    class WeddingProxy* FUN_140d295d0();
+    class WeddingProxy* GetWeddingProxy();
     class WeddingHallTicket const& GetTicket();
     void ShowError(int);
 };
@@ -103,7 +103,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
         ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         return;
     }
-    int n = ((class WeddingProxy*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0())))->CheckReservationCancel(*(class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket())), DAT_143ab2828);
+    int n = ((class WeddingProxy*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance()->GetWeddingProxy())))->CheckReservationCancel(*(class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket())), DAT_143ab2828);
     if (n != 0)
     {
         TSingleton<WeddingManager>::GetInstance()->ShowError(n);

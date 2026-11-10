@@ -28,7 +28,7 @@ public:
     void SetAlignType(int nAlignType);                                 // set the align type
     // The movie strName belongs to the widget and is loaded (bAny != 0) or loaded and hidden (slot 6 returns 0).
     int FUN_1422e65a0(const CString& strName, int bAny);
-    void FUN_1422e6640(const CString& strName);                         // add a movie name (once)
+    void AddEntity(const CString& strName);                         // add a movie name (once)
     void LayoutEntities(int bAny);                                       // lay the widget's visible movies out
 
 private:
@@ -54,7 +54,7 @@ public:
     int HasWidgetForEntity(UISwfEntity* pEntity, int bAny);                  // some widget holds the movie (FUN_1422e65a0)
     void RequestLayout(int bAny);                                       // request a layout (done by ProcessPendingLayout)
     void ProcessPendingLayout();                                               // run a requested layout
-    void FUN_1422e6d80(int bAny);                                       // lay every widget out
+    void LayoutAllWidgets(int bAny);                                       // lay every widget out
     static void SetXmlLoader(Delegate<bool(TiXmlDocument&)> loader);   // set the XML loader (by value)
 
     static Delegate<bool(TiXmlDocument&)> ms_kXmlLoader;                // 0x143b0d358 (initializer 0x14013ae70, unit_14013acc0.cpp)

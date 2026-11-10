@@ -53,7 +53,7 @@ class AScript; typedef AScript ASObj;
 class ASArray;
 class NiTexture;
 
-CPtred* FUN_1401ba820(CPtred* p);                           // sets the count of a new box to 1
+CPtred* InitRefCount(CPtred* p);                           // sets the count of a new box to 1
 
 // The creating-constructor tag of the boxed pointer below (`Unk_UgcBoxPtr<T> p(Unk_UgcNewTag(0))`).
 #include "ms2/placeholder/socketptr.h"   // C3: Unk_UgcNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
@@ -119,7 +119,7 @@ template <class T> TPtredDummy<T>* Unk_UgcBoxPtr<T>::Owner(T* p)
     return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value));
 }
 template <class T> void Unk_UgcBoxPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-template <class T> T* Unk_UgcBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+template <class T> T* Unk_UgcBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 template <class T> void Unk_UgcBoxPtr<T>::AddRefImpl(void*) const { Ref(Owner(m_p)); }
 template <class T> void Unk_UgcBoxPtr<T>::ReleaseImpl(void*)
 {

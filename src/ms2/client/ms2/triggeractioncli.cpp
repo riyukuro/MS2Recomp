@@ -69,7 +69,7 @@
 #pragma push_macro("max")
 #undef min
 #undef max
-#include <NxVec3.h>       // C3: FUN_141b6e0e0 returns NxVec3
+#include <NxVec3.h>       // C3: Point3ToNxVec3 returns NxVec3
 #pragma pop_macro("max")
 #pragma pop_macro("min")
 #include <atlcoll.h>
@@ -394,7 +394,7 @@ void TriggerObject::Init(int nId, egf::EntityPtr ent)
 // ---- trigger-box test ----
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
-NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3 (C3: was Unk_CtbVec3 (const Vector3&))
+NxVec3 Point3ToNxVec3(const efd::Point3& v);                         // efd::Point3 -> NxVec3 (C3: was Unk_CtbVec3 (const Vector3&))
 
 // @0x140de5f60
 bool TriggerObject::Contains(const Vector3& pt)
@@ -421,7 +421,7 @@ bool TriggerObject::Contains(const Vector3& pt)
         pose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
         NxBox obb;
         NxCreateBox(obb, bounds, pose);
-        return NxBoxContainsPoint(obb, static_cast<const NxVec3&>(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(pt))));
+        return NxBoxContainsPoint(obb, static_cast<const NxVec3&>(Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(pt))));
     }
     return false;
 }
@@ -648,7 +648,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     std::string strModel((const char*)(&pEvent->m_arg)->vfunc_6());
     float fSkin = (&pEvent->m_arg)->vfunc_5();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = WorldService::GetInstance()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = WorldService::GetInstance()->FadeEntity(TRIG_ENT()->GetEntityID(), bShow, fFade);
     if (bShow != 0)
     {
         if (!((std::basic_string<char, std::char_traits<char>, std::allocator<char>>*)&static_cast<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>> const&>(strModel))->empty())
@@ -741,7 +741,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     bool bFlag = (&pEvent->m_arg)->vfunc_0();
     int nFade = (&pEvent->m_arg)->vfunc_3();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = WorldService::GetInstance()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = WorldService::GetInstance()->FadeEntity(TRIG_ENT()->GetEntityID(), bShow, fFade);
     SetCachedBoolProperty((Unk_CachedEntity *)(TRIG_ENT()), 0x4df0c0de, bFlag);
     FUN_140b60e40(TRIG_ENT_RAW(), bShow);
     if (bOk && !bSkipFx)
@@ -776,7 +776,7 @@ TriggerObjectEffect::~TriggerObjectEffect()
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nHandle);
 }
 
-efd::Point3 FUN_140b60d30(egf::Entity *);  // C3: the definition's signature
+efd::Point3 GetAngle(egf::Entity *);  // C3: the definition's signature
 float GetScale(egf::Entity *);  // C3: the definition's signature
 efd::Point3 GetPosition(egf::Entity *);  // C3: the definition's signature
 CStringA GetEffectName(egf::Entity* pObj);                          // effect name
@@ -791,7 +791,7 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nHandle);
     if (bOn)
     {
-        efd::Point3 kAngle = FUN_140b60d30(TRIG_ENT_RAW());
+        efd::Point3 kAngle = GetAngle(TRIG_ENT_RAW());
         NiMatrix3 kRot;
         kRot.MakeZRotation(kAngle.z);
         NiTransform kXform;
@@ -824,7 +824,7 @@ void TriggerObjectCube::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
 // ---- TriggerObjectCamera ----
 
 class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 void* GetUITalkManager();
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
@@ -905,7 +905,7 @@ void TriggerObjectCamera::vfunc_3()
             set.m_18.z = set.m_18.z - 360.0f;
         CameraMgr::GetInstance()->FUN_140aed720(set);
     }
-    if (!((efd::utf8string*)&static_cast<class efd::utf8string const&>(kPath))->empty() && FUN_14028d470(fSpeed, 0.0f) && spPath.get())
+    if (!((efd::utf8string*)&static_cast<class efd::utf8string const&>(kPath))->empty() && IsNearlyEqual(fSpeed, 0.0f) && spPath.get())
     {
         CString strFile("./Data/Resource/Model/Camera/");
         strFile += spPath->GetInfo()->m_strPath;
@@ -947,7 +947,7 @@ void TriggerObjectCamera::vfunc_3()
     if (nMode == 4)
         ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     CameraMgr::GetInstance()->SetMode(nMode, 0);
-    if (nMode == 4 && FUN_14028d470(fSpeed, 0.0f))
+    if (nMode == 4 && IsNearlyEqual(fSpeed, 0.0f))
         ((class CTriggerService*)(void*)(((void*)GetTriggerService())))->RunNextCameraStep();
 }
 

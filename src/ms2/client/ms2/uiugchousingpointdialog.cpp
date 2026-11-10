@@ -79,7 +79,7 @@ class Unk_UhpPc;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 
@@ -153,7 +153,7 @@ int UIUGCHousingPointDialog::vfunc_il1()
 {
     if (vfunc_55())
         return 0;
-    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (reinterpret_cast<PC*>(pPc)->FUN_141659690())
@@ -280,7 +280,7 @@ MS2_REPLACE_METHOD(0x140FAE1D0, UIUGCHousingPointDialog, RefreshInfo, 1011, 0x63
 // @0x140fae5d0
 void UIUGCHousingPointDialog::RefreshList()
 {
-    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -314,7 +314,7 @@ MS2_REPLACE_METHOD(0x140FAE5D0, UIUGCHousingPointDialog, RefreshList, 1026, 0x64
 // @0x140fae9e0
 void UIUGCHousingPointDialog::vfunc_84()
 {
-    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -366,7 +366,7 @@ MS2_REPLACE_METHOD(0x140FAEFE0, UIUGCHousingPointDialog, OnRewardItem, 114, 0xD3
 // @0x140faf060
 bool UIUGCHousingPointDialog::IsInMyHome()
 {
-    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     return reinterpret_cast<PC*>(pPc)->IsInCubeMode() ? true : false;

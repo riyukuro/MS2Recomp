@@ -71,7 +71,7 @@ void FUN_140930fe0(CInPacket&);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 CNetworkService* GetNetworkService();
 
@@ -122,7 +122,7 @@ CString GetXmlPath(const CString&, const CString&);
 class CFileSystem { public: int LoadXmlFile(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };   // C3: unit-local view (def in filesystem)
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 // C3 #8: the cast-only Unk_140168650 view removed
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 unsigned char FUN_1401d1320(CCacheData*);
@@ -148,11 +148,11 @@ class Unk_PatchTextOwner   // C3: member view for the former free stand-ins
 public:
     class Unk_PatchTextFilter* FUN_140a87690();
 };
-CStringW FUN_14083d340(CStringW);
-void FUN_141275400(const CStringW&, int);
+CStringW GetLocalizedText(CStringW);
+void ShowTopLayerNotify(const CStringW&, int);
 void ShowSystemText(const CStringW&, int, int);
 void ShowMessageBox(CStringW, int, void*, CStringW);
-int FUN_1406516b0();
+int GetRegion();
 CStringW GetStringCommon(int);
 UIMessageBox* GetMessageBoxLayer();
 Unk_MessageBoxPtr CreateMessageBox(int, CStringW, void*, CStringW);
@@ -244,7 +244,7 @@ int LobbyFieldTable::Load()
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0;
              pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strKey)))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
                 continue;
             int nJobCode = 0;
             XmlQuery((class TiXmlElement*)(pNode), strJobCode, nJobCode);
@@ -343,7 +343,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
         Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
     m_lobbyField.Load();
     FUN_141275500();
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     if (nPrevState == 0x6200009)
         FUN_14174f4a0();
@@ -369,7 +369,7 @@ void CSceneStateMulti::OnLeave(int nNextState)
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
     ReleasePreviewPC();
-    WorldService::GetInstance()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->RemoveCallback(static_cast<IWorldServiceCallback*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
 }
@@ -437,7 +437,7 @@ void CSceneStateMulti::OnUpdate(double fTime)
 void CSceneStateMulti::OnPacket(CInPacket& packet)
 {
     CSceneStateBase::OnPacket(packet);
-    switch (packet.FUN_14070fe80())
+    switch (packet.GetOpcode())
     {
     case static_cast<int>(RecvOp::Notice):
         OnNotice(packet);
@@ -522,7 +522,7 @@ int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x14174eaf0
 int CSceneStateMulti::HasMyPC()
 {
-    return WorldService::GetInstance()->FUN_141bd0cc0() != 0;
+    return WorldService::GetInstance()->GetLocalPlayer() != 0;
 }
 
 // @0x14174eb30
@@ -531,7 +531,7 @@ void CSceneStateMulti::ExitToServerList()
     ExitMapMode();
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001a);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001a);
 }
 
 // @0x14174eb80
@@ -539,7 +539,7 @@ void CSceneStateMulti::SelectCreateJob(int nJobCode)
 {
     m_nJobCode = nJobCode;
     EnterCreateMode();
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001c);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001c);
 }
 
 // @0x14174ebc0
@@ -556,7 +556,7 @@ void CSceneStateMulti::EnterSelectScene()
         EnterSelectMode();
     }
     m_nMode = 1;
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001b);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001b);
 }
 
 // @0x14174ec40
@@ -696,7 +696,7 @@ void CSceneStateMulti::OnNotice(CInPacket& packet)
         CStringW text(info.m_text);
         text = ((class Unk_TextFilter*)((class Unk_PatchTextOwner*)(class Unk_TextFilter*)(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance())))->FUN_140a87690())->GetString(text);
         int nValue = info.m_value;
-        text = FUN_14083d340(CStringW(text));
+        text = GetLocalizedText(CStringW(text));
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
             ShowMessageBox(CStringW(text), 0, 0, CStringW(L""));
@@ -713,7 +713,7 @@ void CSceneStateMulti::OnNotice(CInPacket& packet)
         else if ((nFlags & 0x200) != 0)
         {
             int nRead = packet.ReadInt32();
-            FUN_141275400(text, nRead);
+            ShowTopLayerNotify(text, nRead);
         }
     }
     else if (nKind == 5)
@@ -732,7 +732,7 @@ void CSceneStateMulti::OnNotice(CInPacket& packet)
 // @0x14174f8d0
 void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
 {
-    if (FUN_1406516b0() == 3)
+    if (GetRegion() == 3)
     {
         UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
         if (pList != 0)
@@ -779,7 +779,7 @@ void CSceneStateMulti::ReleasePreviewPC()
 // @0x14174fd70
 int CSceneStateMulti::FUN_14174fd70()
 {
-    return WorldService::GetInstance()->FUN_141bd3060() == 1;
+    return WorldService::GetInstance()->GetFieldId() == 1;
 }
 
 // @0x14174fdb0
@@ -829,7 +829,7 @@ unsigned int CSceneStateMulti::GetLobbyMap()
 {
     if (IsServerTimeSameMonth())
         return ((struct Unk_Settings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nLobbyMap;
-    return reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047b9b0();
+    return reinterpret_cast<CGameRule*>(GetGameRule())->GetLobbyMap();
 }
 
 // @0x14174ffb0

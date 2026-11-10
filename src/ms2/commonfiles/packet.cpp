@@ -32,7 +32,7 @@
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_14016a600(const wchar_t*, int);                     // wide -> CString
 int FUN_1401cde60(CBufferCryptManager*, unsigned char* data, int length, int connectionState, unsigned* key);   // decrypt
-void FUN_1401cddd0(CBufferCryptManager *, unsigned char *, int, int, unsigned int *);  // C3: the definition's signature
+void EncryptBuffer(CBufferCryptManager *, unsigned char *, int, int, unsigned int *);  // C3: the definition's signature
 // The byte vectors streamed by the operators below are CAtlArray<char> (a distinct instantiation from CInPacket::m_data's
 // CAtlArray<unsigned char>: operator[] 0x1406c35b0 vs 0x140203bf0, both byte-identical).
 int FUN_1406c3660(const ATL::CAtlArray<char>&);                       // element count
@@ -40,7 +40,7 @@ const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>&);      // data po
 class CBufferCryptManager;
 CBufferCryptManager* GetBufferCryptManager();
 CNetworkService* GetNetworkService();
-CPacketBuffer* FUN_1407138b0(unsigned, const Unk_SocketNew&);
+CPacketBuffer* CreateBuffer(unsigned, const Unk_SocketNew&);
 
 // _wassert with the original text/line where the source spelling differs from the printed text.
 #define MS2_PK_ASSERT(line, text, expr) (void)((!!(expr)) || (_wassert(L##text, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
@@ -78,7 +78,7 @@ CInputStream& ReadByteBuffer(CInputStream& in, CByteBuffer& value)
 {
     int count = in.ReadInt32();
     value.FUN_140715230(count);
-    in.ReadBytes(value.FUN_140204eb0(), count);
+    in.ReadBytes(value.GetBuffer(), count);
     return in;
 }
 // @0x14070f820
@@ -122,7 +122,7 @@ COutputStream& WriteSerializable(COutputStream& out, const Unk_PktSerializable& 
 COutputStream& WriteByteBuffer(COutputStream& out, CByteBuffer& value)
 {
     out.WriteInt32(value.GetLength());
-    out.WriteBytes(value.FUN_140204eb0(), value.GetLength());
+    out.WriteBytes(value.GetBuffer(), value.GetLength());
     return out;
 }
 
@@ -143,7 +143,7 @@ CInPacket::CInPacket(CInPacket& iPacket)
     iPacket.Reset();
 }
 // @0x14070fe80
-int CInPacket::FUN_14070fe80() { SetOffset(6); return (unsigned short)FUN_1407140a0(); }
+int CInPacket::GetOpcode() { SetOffset(6); return (unsigned short)FUN_1407140a0(); }
 // @0x14070feb0
 bool CInPacket::ReadBool() { return ReadUInt8() ? true : false; }
 // @0x14070ff00
@@ -207,14 +207,14 @@ CString CInPacket::ToHexString() const
     return result;
 }
 // @0x1407103f0
-void FUN_1407103f0(CInPacket* packet)
+void DecompressPacket(CInPacket* packet)
 {
     Unk_CompressedStream stream(true, 0x28);
     CByteBuffer& decoded = stream.Decode(static_cast<CInputStream&>(*packet));
     unsigned header = 8;
     unsigned length = decoded.GetLength();
     packet->m_data.SetCount(length + header, -1);
-    memcpy(&packet->m_data[0] + header, decoded.FUN_140204eb0(), length);
+    memcpy(&packet->m_data[0] + header, decoded.GetBuffer(), length);
     packet->m_length = header + length;
     packet->m_offset = header;
 }
@@ -287,7 +287,7 @@ void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer
     if (hasSequence != 0) total += sizeof(int);
     const char* source = &static_cast<const Unk_PodArray<char>&>(packet->m_aBuffer)[0];
     unsigned chunk = pkmin<unsigned>(total, 0x5b4);
-    Unk_SocketPtr<CPacketBuffer> buffer(FUN_1407138b0(chunk, Unk_SocketNew(0)));
+    Unk_SocketPtr<CPacketBuffer> buffer(CreateBuffer(chunk, Unk_SocketNew(0)));
     if (packet->IsLoopback() != 0) (*buffer).FUN_140715360(buffer.operator->());
     char* cursor = buffer.get()->GetData();
     char* end = cursor + chunk;
@@ -307,7 +307,7 @@ void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer
     list->AddTail(buffer);
     while ((total -= chunk) > 0) {
         chunk = pkmin<unsigned>(total, 0x5b4);
-        buffer = FUN_1407138b0(chunk, Unk_SocketNew(0));
+        buffer = CreateBuffer(chunk, Unk_SocketNew(0));
         if (packet->IsLoopback() != 0) (*buffer).FUN_140715360(buffer.operator->());
         cursor = buffer.get()->GetData();
         end = cursor + chunk;
@@ -317,7 +317,7 @@ void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer
     }
 }
 // @0x140710b90
-void FUN_140710b90(COutPacket* packet, int state, unsigned* key)
+void EncryptPacket(COutPacket* packet, int state, unsigned* key)
 {
     if (packet->m_n14 == state) return;
     if (packet->m_n14 != 0 && packet->m_n14 != state) {
@@ -325,7 +325,7 @@ void FUN_140710b90(COutPacket* packet, int state, unsigned* key)
         return;
     }
     unsigned char* pData = (unsigned char*)&packet->m_aBuffer[0];
-    FUN_1401cddd0(GetBufferCryptManager(), pData, packet->m_nLength, state, key);
+    EncryptBuffer(GetBufferCryptManager(), pData, packet->m_nLength, state, key);
     packet->m_n14 = state;
 }
 // @0x140710c50
@@ -341,7 +341,7 @@ CString COutPacket::ToHexString() const
     return result;
 }
 // @0x140710d40
-void FUN_140710d40(COutPacket* packet, bool useCompression, unsigned threshold)
+void CompressPacket(COutPacket* packet, bool useCompression, unsigned threshold)
 {
     Unk_CompressedStream stream(useCompression, threshold);
     CByteBuffer& raw = stream.FUN_140714de0();
@@ -385,7 +385,7 @@ CPacketBuffer* CPacketBuffer::CreateSlice(unsigned offset, int size, const Unk_S
 // @0x140715db0
 void** CPacketBuffer::FUN_140715db0() { return reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0x10); }
 // @0x1407138b0
-CPacketBuffer* FUN_1407138b0(unsigned size, const Unk_SocketNew&)
+CPacketBuffer* CreateBuffer(unsigned size, const Unk_SocketNew&)
 {
     char* data = new char[size];
     CPacketBuffer* buffer = new CPacketBuffer(size, data, 0);
@@ -650,18 +650,18 @@ MS2_REPLACE(0x14070fb70, WriteMsTime, 63, 0x808A85EC);
 MS2_REPLACE(0x14070fbc0, WriteByteArray, 122, 0x62046D9B);
 MS2_REPLACE(0x14070fc40, WriteSerializable, 44, 0x85434CD2);
 MS2_REPLACE(0x14070fc80, WriteByteBuffer, 122, 0x93D8A2F2);
-MS2_REPLACE_METHOD(0x14070fe80, CInPacket, FUN_14070fe80, 42, 0xF20168B1);
+MS2_REPLACE_METHOD(0x14070fe80, CInPacket, GetOpcode, 42, 0xF20168B1);
 MS2_REPLACE_METHOD_VIA(0x14070feb0, CInPacket, CInputStream, ReadBool, 67, 0xE061F660);
 MS2_REPLACE_METHOD(0x14070ff00, CInPacket, FUN_14070ff00, 889, 0xCC51CDC9);
 MS2_REPLACE_METHOD(0x140710280, CInPacket, DecryptPayload, 120, 0xA9790E51);
-MS2_REPLACE(0x1407103f0, FUN_1407103f0, 262, 0x9CDB8DAB);
+MS2_REPLACE(0x1407103f0, DecompressPacket, 262, 0x9CDB8DAB);
 MS2_REPLACE(0x140710590, FUN_140710590, 42, 0x7966F887);
 MS2_REPLACE(0x1407105c0, SendPacketThrottled, 259, 0x35988C99);
 MS2_REPLACE(0x1407106d0, ClearPacketThrottle, 54, 0xD8D41D66);
 MS2_REPLACE_METHOD(0x140710710, COutPacket, WriteBool, 39, 0x553FDBF2);
 MS2_REPLACE(0x140710870, FUN_140710870, 790, 0xF5FD8FA4);
-MS2_REPLACE(0x140710b90, FUN_140710b90, 181, 0xA1C676CB);
-MS2_REPLACE(0x140710d40, FUN_140710d40, 246, 0x9461C257);
+MS2_REPLACE(0x140710b90, EncryptPacket, 181, 0xA1C676CB);
+MS2_REPLACE(0x140710d40, CompressPacket, 246, 0x9461C257);
 MS2_REPLACE_METHOD(0x140713530, CPacketBuffer, GetData, 15, 0xCBEE5D21);
 MS2_REPLACE_METHOD(0x140714fa0, CPacketBuffer, GetSize, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140715000, CPacketBuffer, FUN_140715000, 81, 0x3433AD85);

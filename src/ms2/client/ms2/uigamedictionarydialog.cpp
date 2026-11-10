@@ -95,7 +95,7 @@ int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search t
 
 // The string formatters (key by value: the callee destroys it).
 #include "ms2/placeholder/wcformat.h"
-CStringW FUN_1406cd420(int nKind);                          // the function name of an npc kind
+CStringW GetNpcKindName(int nKind);                          // the function name of an npc kind
 MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 // The AS object with its value member visible (the helpers below read it inline).
@@ -478,13 +478,13 @@ void UIGameDictionaryDialog::SetDetailInfo(int nId, int nType, CStringW strName,
                         unsigned nField = 0;
                         unsigned nOutdoor = 0;
                         CStringW strMaps;
-                        CFieldMetaTable::GetInstance()->FUN_1406fb700(entry.m_id, &nField);
-                        CFieldMetaTable::GetInstance()->FUN_1406fc110(nField, &nOutdoor);
+                        CFieldMetaTable::GetInstance()->FindNpcField(entry.m_id, &nField);
+                        CFieldMetaTable::GetInstance()->GetParentField(nField, &nOutdoor);
                         if (nOutdoor != 0)
                             strMaps = StringFormat<unsigned int, unsigned int>(L"$map:{0}$ > $map:{1}$", nField, nOutdoor);
                         else
                             strMaps = StringFormat<unsigned int>(L"$map:{0}$", nField);
-                        CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
+                        CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, GetNpcKindName(pNpc->GetKind()));
                         TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.SetWStringMember("content", CStringW(strContent));
@@ -555,7 +555,7 @@ void UIGameDictionaryDialog::SetDetailInfo(int nId, int nType, CStringW strName,
                     {
                         if (spItem->FUN_14052b130(entry.m_id, entry.m_levelOrGrade, 0) != 0)
                         {
-                            void* pOwner = WorldService::GetInstance()->FUN_141bd0cc0();
+                            void* pOwner = WorldService::GetInstance()->GetLocalPlayer();
                             if (pOwner != 0)
                             {
                                 ASTooltip tip(pOwner, 0x800, 2);

@@ -91,7 +91,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                
 ecr::SceneGraphService* FUN_1413f98b0();                                                 // the scene graph service
 efd::Color GetEntityColor(egf::Entity* pEntity);                                          // the entity's tint
 
-void FUN_1415672e0(NiAVObject* pRoot, bool bShadow);
+void PrepareLoadedNif(NiAVObject* pRoot, bool bShadow);
 void SetShadowCaster(NiAVObject* pRoot, bool bShadow);
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567b60(NiAVObject* pRoot);
@@ -101,8 +101,8 @@ void ReplaceMaterial(NiAVObject* pRoot, CStringA strFrom, CStringA strTo);
 void SetEntityTint(egf::Entity* pEntity, const efd::Color& kTint);
 unsigned int FUN_141568d50(NiAVObject* pkObject);
 unsigned int IsShadowCaster(NiAVObject* pkObject);
-void FUN_141569040(NiAVObject* pkObject);
-void FUN_141569080(NiAVObject* pkObject);
+void SetShadowCasterFlag(NiAVObject* pkObject);
+void ClearShadowCasterFlag(NiAVObject* pkObject);
 bool HasAlphaKeyAboveOne(NiObjectNET* pkProperty);
 void FUN_141569280(NiRenderObject* pkObject);
 int GetFacePartCode(NiRenderObject* pkObject);
@@ -120,9 +120,9 @@ void FUN_141567000(egf::Entity* pEntity, NiAVObject* pRoot, bool bShadow)
             bCastShadow = bShadow;
         const egf::FlatModel* pModel = pEntity->GetModel();
         if (pModel->ContainsModel(0xbd4f8e8e))
-            FUN_1415672e0(pRoot, bCastShadow);
+            PrepareLoadedNif(pRoot, bCastShadow);
         if (pModel->ContainsModel(0x48ccc02d))
-            FUN_1415672e0(pRoot, bCastShadow);
+            PrepareLoadedNif(pRoot, bCastShadow);
         bool bICMed = pModel->ContainsModel(0xb8d7c226);
         if (!bICMed && pModel->ContainsProperty(0x4c54402f))
             pEntity->GetPropertyValue(0x4c54402f, bICMed);
@@ -169,7 +169,7 @@ bool FUN_141567260(NiAVObject* pkObject)
 MS2_REPLACE(0x141567260, FUN_141567260, 107, 0x65B28B4E);
 
 // @0x1415672e0
-void FUN_1415672e0(NiAVObject* pRoot, bool bShadow)
+void PrepareLoadedNif(NiAVObject* pRoot, bool bShadow)
 {
     if (pRoot)
     {
@@ -179,7 +179,7 @@ void FUN_1415672e0(NiAVObject* pRoot, bool bShadow)
         FUN_1415681c0(pRoot);
     }
 }
-MS2_REPLACE(0x1415672E0, FUN_1415672e0, 71, 0x250EEDF7);
+MS2_REPLACE(0x1415672E0, PrepareLoadedNif, 71, 0x250EEDF7);
 
 // @0x141567330
 // Marks (or unmarks) the render objects of a subtree as shadow casters, skipping "NoShadow" tagged subtrees.
@@ -204,10 +204,10 @@ void SetShadowCaster(NiAVObject* pRoot, bool bShadow)
                 if (bShadow)
                 {
                     if (IsShadowCaster(pRender) == 0)
-                        FUN_141569040(pRender);
+                        SetShadowCasterFlag(pRender);
                 }
                 else
-                    FUN_141569080(pRender);
+                    ClearShadowCasterFlag(pRender);
             }
             else if (bShadow)
             {
@@ -245,10 +245,10 @@ void FUN_141567540(NiAVObject* pRoot, bool bShadow)
                 if (bShadow)
                 {
                     if (IsShadowCaster(pRender) == 0)
-                        FUN_141569040(pRender);
+                        SetShadowCasterFlag(pRender);
                 }
                 else
-                    FUN_141569080(pRender);
+                    ClearShadowCasterFlag(pRender);
             }
             else if (bShadow)
             {
@@ -540,7 +540,7 @@ MS2_REPLACE(0x141568650, ReplaceMaterial, 395, 0xD0697876);
 
 // @0x1415687f0
 // Strips the fog properties of a subtree.
-void FUN_1415687f0(NiAVObject* pRoot)
+void RemoveFog(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
@@ -550,7 +550,7 @@ void FUN_1415687f0(NiAVObject* pRoot)
         pObject->RemoveProperty(NiProperty::FOG);
     pRoot->UpdateProperties();
 }
-MS2_REPLACE(0x1415687F0, FUN_1415687f0, 137, 0x3C094854);
+MS2_REPLACE(0x1415687F0, RemoveFog, 137, 0x3C094854);
 
 // @0x141568880
 // Detaches the lights attached anywhere in a subtree.
@@ -584,7 +584,7 @@ MS2_REPLACE(0x141568880, RemoveLights, 390, 0x9068B09E);
 
 // @0x141568a10
 // Detaches all children of a node, last first.
-void FUN_141568a10(NiNode* pNode)
+void DetachAllChildren(NiNode* pNode)
 {
     if (pNode == 0)
         return;
@@ -594,14 +594,14 @@ void FUN_141568a10(NiNode* pNode)
     for (int i = uiCount - 1; i >= 0; --i)
         pNode->DetachChildAt(i);
 }
-MS2_REPLACE(0x141568A10, FUN_141568a10, 117, 0x35CD2DD1);
+MS2_REPLACE(0x141568A10, DetachAllChildren, 117, 0x35CD2DD1);
 
 // @0x141568a90
-void FUN_141568a90(egf::Entity* pEntity)
+void ApplyEntityTint(egf::Entity* pEntity)
 {
     SetEntityTint(pEntity, GetEntityColor(pEntity));
 }
-MS2_REPLACE(0x141568A90, FUN_141568a90, 42, 0x731A1C00);
+MS2_REPLACE(0x141568A90, ApplyEntityTint, 42, 0x731A1C00);
 
 // @0x141568ac0
 // Tints the materials of a tintable entity (any colour but the default grey 180/255).
@@ -773,7 +773,7 @@ unsigned int IsShadowCaster(NiAVObject* pkObject)
 MS2_REPLACE(0x141569010, IsShadowCaster, 39, 0x41AFDF71);
 
 // @0x141569040
-void FUN_141569040(NiAVObject* pkObject)
+void SetShadowCasterFlag(NiAVObject* pkObject)
 {
     if (pkObject)
     {
@@ -781,10 +781,10 @@ void FUN_141569040(NiAVObject* pkObject)
         pkObject->SetMS2Flags(uiFlags);
     }
 }
-MS2_REPLACE(0x141569040, FUN_141569040, 53, 0xC3A95AFA);
+MS2_REPLACE(0x141569040, SetShadowCasterFlag, 53, 0xC3A95AFA);
 
 // @0x141569080
-void FUN_141569080(NiAVObject* pkObject)
+void ClearShadowCasterFlag(NiAVObject* pkObject)
 {
     if (pkObject)
     {
@@ -792,7 +792,7 @@ void FUN_141569080(NiAVObject* pkObject)
         pkObject->SetMS2Flags(uiFlags);
     }
 }
-MS2_REPLACE(0x141569080, FUN_141569080, 53, 0x8F30FDBE);
+MS2_REPLACE(0x141569080, ClearShadowCasterFlag, 53, 0x8F30FDBE);
 
 // @0x1415690c0
 unsigned int FUN_1415690c0(NiAVObject* pkObject)

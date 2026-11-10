@@ -62,7 +62,7 @@ struct Unk_CameraOption
 class Unk_GameContext : public WorldService
 {
 public:
-    Unk_LocalPlayer* FUN_141bd0cc0();
+    Unk_LocalPlayer* GetLocalPlayer();
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -97,7 +97,7 @@ float FUN_14059d930(float f);                       // fabs
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
-bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);               // a == b (within epsilon)
 int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ CTargetCameraMode::CTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode
 {
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         CTargetCameraMode::vfunc_31();
-    m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
+    m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->GetPlayerHeight();
 }
 
 // @0x14183a230
@@ -318,7 +318,7 @@ void CTargetCameraMode::vfunc_9()
         ptMove.y = -1.0f;
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.y = 1.0f;
-    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->IsActionKeyDown(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->IsActionKeyDown(300009))
@@ -370,7 +370,7 @@ void CTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_54;
         if (m_bc && g_143aef240 != 0.0f)
             m_50 = g_143aef240;
-        m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
+        m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->GetPlayerHeight();
         m_68 = m_48;
         m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
         m_78 = pTarget->vfunc_17();
@@ -472,7 +472,7 @@ MS2_REPLACE_METHOD(0x14183bdf0, CTargetCameraMode, vfunc_21, 120, 0x6EA7BBE0);
 // @0x14183be70
 void CTargetCameraMode::vfunc_33()
 {
-    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->GetFieldData();
     if (reinterpret_cast<Unk_CameraOption*>(spOption.get()))
     {
         float fRotation = reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_154;
@@ -824,13 +824,13 @@ void CTargetCameraMode::vfunc_39(double fTime)
                 }
             }
         }
-        else if (!FUN_14028d470(fDist, 0.0f) && fDist <= 10.0f)
+        else if (!IsNearlyEqual(fDist, 0.0f) && fDist <= 10.0f)
         {
             m_fc = 1;
             m_100 = 0.0f;
             fBlend = 0.0f;
         }
-        if (FUN_14028d470(fDist, 0.0f))
+        if (IsNearlyEqual(fDist, 0.0f))
         {
             m_c0 = m_d8;
         }

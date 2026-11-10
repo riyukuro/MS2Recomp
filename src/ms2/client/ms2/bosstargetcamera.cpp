@@ -31,7 +31,7 @@ float FUN_14029d220(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
-bool FUN_14028d470(float a, float b);               // nearly equal
+bool IsNearlyEqual(float a, float b);               // nearly equal
 float FUN_141b6fdb0(float fRatio, int nKind);       // easing curve
 
 // @0x140a38cd0
@@ -230,14 +230,14 @@ void CBossTargetCamera::vfunc_39(double fTime)
         }
         else
         {
-            if (!FUN_14028d470(fDist, 0) && fDist <= 10.0f)
+            if (!IsNearlyEqual(fDist, 0) && fDist <= 10.0f)
             {
                 m_fc = 1;
                 m_100 = 0;
                 fBlend = 0.0f;
             }
         }
-        if (FUN_14028d470(fDist, 0))
+        if (IsNearlyEqual(fDist, 0))
         {
             m_c0 = m_d8;
         }
@@ -268,7 +268,7 @@ void CBossTargetCamera::vfunc_39(double fTime)
                 if (m_data.m_lerpDelayDistanceMin <= fDist)
                 {
                     float fRange = m_data.m_lerpDelayDistanceMax - m_data.m_lerpDelayDistanceMin;
-                    if (!FUN_14028d470(fRange, 0))
+                    if (!IsNearlyEqual(fRange, 0))
                     {
                         float fRatio = (fDist - m_data.m_lerpDelayDistanceMin) / fRange;
                         fLerp = fRatio * m_data.m_lerpSpeedMin + (1.0f - fRatio) * m_data.m_lerpSpeedMax;

@@ -313,7 +313,7 @@ CString FUN_140223190(int nKind)
 
 // @0x140223380
 // The name of a match result.
-CString FUN_140223380(int nResult)
+CString GetResultName(int nResult)
 {
     switch (nResult) {
     case 0: return CString("draw");
@@ -371,7 +371,7 @@ bool Unk_SharedMemory::IsValid() const
 // @0x140223b40
 // memcpy_s (the CRT's _VALIDATE_RETURN_ERRCODE form).
 #define MS2_VALIDATE_ERRCODE(expr, err) { int nExprVal = !!(expr); if (!nExprVal) { *_errno() = err; _invalid_parameter_noinfo(); return err; } }
-int FUN_140223b40(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
+int SafeMemMove(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
 {
     if (nCount == 0)
         return 0;

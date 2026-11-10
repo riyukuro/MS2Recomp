@@ -76,7 +76,7 @@ template<> struct Unk_SocketRef<Unk_MagicList> {
         else result = &static_cast<TPtredDummy<Unk_MagicList>*>(p)->value;
         return result;
     }
-    static Unk_MagicList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_MagicList* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_MagicList)
 typedef Unk_SocketPtr<Unk_MagicList> Unk_MagicListPtr;
@@ -293,7 +293,7 @@ template<> struct Unk_SocketRef<Unk_MagicModelMap> {
         else result = &static_cast<TPtredDummy<Unk_MagicModelMap>*>(p)->value;
         return result;
     }
-    static Unk_MagicModelMap* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_MagicModelMap* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_MagicModelMap)
 typedef Unk_SocketPtr<Unk_MagicModelMap> Unk_MagicModelMapPtr;

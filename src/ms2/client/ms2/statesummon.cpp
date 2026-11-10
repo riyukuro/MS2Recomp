@@ -107,7 +107,7 @@ public:
     int FUN_140b11180();
     void FUN_140b114e0(int);
     MS2Ptr<CPetData> GetRow();                                           // the pet's row (by value)
-    PCBase* FUN_140b10320();                                               // the owner
+    PCBase* GetOwnerPC();                                               // the owner
 };
 int FindPetFoodItem(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FindPetFoodItem
 
@@ -129,7 +129,7 @@ public:
 };
 UICastingBar* GetCastingBar(int nId);                                      // 0x140ac2270 the casting bar dialog
 CStringW GetStringCommon(int nId);                                           // 0x14028de60 the string-table text of an id
-int FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
+int PlaySystemSound(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
 class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
@@ -213,7 +213,7 @@ void StateSummon::vfunc_4(StateData* pData)
         {
             if (spItem->IsPetItem() != 0)
             {
-                int nPetId = spItem->FUN_140527840()->GetPetId();
+                int nPetId = spItem->GetData()->GetPetId();
                 MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
                 if (spRow.get() != 0)
                 {
@@ -222,9 +222,9 @@ void StateSummon::vfunc_4(StateData* pData)
                 }
                 m_n10 = 0x83;
             }
-            else if (spItem->FUN_140527840()->IsRideItem())
+            else if (spItem->GetData()->IsRideItem())
             {
-                int nRideeId = spItem->FUN_140527840()->GetRideeId();
+                int nRideeId = spItem->GetData()->GetRideeId();
                 MS2SvrPtr<CRideeData> spRow = GetRideeData(nRideeId);
                 if (spRow != 0)
                 {
@@ -311,7 +311,7 @@ void StateSummon::vfunc_8(double fTime)
             {
                 if (spItem->IsPetItem() != 0)
                 {
-                    int nPetId = spItem->FUN_140527840()->GetPetId();
+                    int nPetId = spItem->GetData()->GetPetId();
                     MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
                     if (spRow.get() != 0)
                     {
@@ -337,9 +337,9 @@ void StateSummon::vfunc_8(double fTime)
                         }
                     }
                 }
-                else if (spItem->FUN_140527840()->IsRideItem())
+                else if (spItem->GetData()->IsRideItem())
                 {
-                    int nItemId = spItem->FUN_140527840()->GetRideeId();
+                    int nItemId = spItem->GetData()->GetRideeId();
                     MS2SvrPtr<CRideeData> spRow = GetRideeData(nItemId);
                     if (spRow != 0)
                     {
@@ -438,7 +438,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
                                 true, strExtra);
         }
         CStringA strArg("");
-        FUN_141276180(s_strReturnHouse6, strArg);
+        PlaySystemSound(s_strReturnHouse6, strArg);
     }
 }
 
@@ -632,7 +632,7 @@ void StateSummonIdle::vfunc_9(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet == 0)
         return;
-    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->FUN_140b10320();
+    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->GetOwnerPC();
     if (pOwner == 0)
         return;
 
@@ -830,7 +830,7 @@ void StateSummonRevive::vfunc_9(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet == 0)
         return;
-    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->FUN_140b10320();
+    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->GetOwnerPC();
     if (pOwner == 0)
         return;
 

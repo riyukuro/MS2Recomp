@@ -51,13 +51,13 @@ int CUserMail::FUN_1408e3050() {
 }
 
 // @0x1408e30a0
-CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CStringW d, CStringW e) {
+CUserMail::MailPtr CUserMail::CreateSendMail(__int64 a, CStringW b, __int64 c, CStringW d, CStringW e) {
     MailPtr mail(new CMailInfo(1));
     mail->SetId(0);
     mail->SetSender(a, b);
     mail->FUN_140690460(c);
     mail->SetTitleAndContent(d, e);
-    mail->FUN_140690d20(FUN_1408e44e0(), 0);
+    mail->FUN_140690d20(GetSendMoney(), 0);
     for (int i = 0; i < 5; ++i) {
         KeepPtr keep = GetSendKeep(i);
         if (keep == 0)
@@ -85,22 +85,22 @@ void CUserMail::SetUnreadCount(unsigned v) {
 MS2_REPLACE_METHOD(0x1408E3490, CUserMail, SetUnreadCount, 71, 0x7046536C);
 
 // @0x1408e34e0
-int CUserMail::FUN_1408e34e0() {
+int CUserMail::GetUnreadCount() {
     return m_00;
 }
-MS2_REPLACE_METHOD(0x1408E34E0, CUserMail, FUN_1408e34e0, 13, 0xA5869133);
+MS2_REPLACE_METHOD(0x1408E34E0, CUserMail, GetUnreadCount, 13, 0xA5869133);
 
 // @0x1408e3500
-void CUserMail::FUN_1408e3500(int v) {
+void CUserMail::SetUnreadAlarm(int v) {
     m_04 = v;
 }
-MS2_REPLACE_METHOD(0x1408E3500, CUserMail, FUN_1408e3500, 22, 0x1E8921CF);
+MS2_REPLACE_METHOD(0x1408E3500, CUserMail, SetUnreadAlarm, 22, 0x1E8921CF);
 
 // @0x1408e3520
-int CUserMail::FUN_1408e3520() {
+int CUserMail::GetUnreadAlarm() {
     return m_04;
 }
-MS2_REPLACE_METHOD(0x1408E3520, CUserMail, FUN_1408e3520, 14, 0x7AB52803);
+MS2_REPLACE_METHOD(0x1408E3520, CUserMail, GetUnreadAlarm, 14, 0x7AB52803);
 
 // @0x1408e3540
 void CUserMail::FUN_1408e3540(__int64 key, __int64 value) {
@@ -354,10 +354,10 @@ void CUserMail::SetSendMoney(__int64 value) {
 }
 
 // @0x1408e44e0
-__int64 CUserMail::FUN_1408e44e0() {
+__int64 CUserMail::GetSendMoney() {
     return m_08;
 }
-MS2_REPLACE_METHOD(0x1408E44E0, CUserMail, FUN_1408e44e0, 15, 0x5B8A7339);
+MS2_REPLACE_METHOD(0x1408E44E0, CUserMail, GetSendMoney, 15, 0x5B8A7339);
 
 // @0x1408e4500
 int CUserMail::FindFreeSendSlot() {
@@ -389,7 +389,7 @@ void CUserMail::UpdateSendFee() {
             sum6 += keep->FUN_14068fe20(6);
         }
     }
-    __int64 total = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcSendMailFee(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
+    __int64 total = reinterpret_cast<CLua*>(GetLuaClient())->CalcSendMailFee(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
     m_30 = total;
 }
 
@@ -431,12 +431,12 @@ void CUserMail::FUN_1408e48f0() {
         }
         m_d8 = 0;
         if (((GFxSceneService*)GetGFxSceneService())->FUN_1422b9ea0() == 0) {
-            FUN_141276180(s_143ab25d8, "");
+            PlaySystemSound(s_143ab25d8, "");
         }
     }
     if (m_dc != 0) {
         m_dc = 0;
-        FUN_141276180(s_143ab25e0, "");
+        PlaySystemSound(s_143ab25e0, "");
     }
 }
 

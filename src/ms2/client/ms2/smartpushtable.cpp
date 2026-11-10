@@ -37,13 +37,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
 CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-unsigned int FUN_1407181d0(const CString& str);                                       // string to int
+unsigned int ParseUInt(const CString& str);                                       // string to int
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // split into a std::vector<CString>
 int Parse_140219650(const CStringA& value);
@@ -115,7 +115,7 @@ void CSmartPushTable::Load()
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("push")); pNode != 0;
          pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("push")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         DataPtr spData(new CSmartPushData);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", spData->m_nId);
@@ -135,10 +135,10 @@ void CSmartPushTable::Load()
             std::vector<CString> idTag;   // C3: was Unk_StrVec
             FUN_140275080(parts[0], &idTag, ":");
             if (idTag.size() > 0)
-                spData->m_requireItem.m_a = FUN_1407181d0(idTag[0]);
+                spData->m_requireItem.m_a = ParseUInt(idTag[0]);
             if (idTag.size() > 1)
                 spData->m_requireItem.m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(idTag[1]);
-            spData->m_requireItem.m_c = FUN_1407181d0(parts[2]);
+            spData->m_requireItem.m_c = ParseUInt(parts[2]);
         }
         m_data.SetAt(spData->m_nId, spData);
     }

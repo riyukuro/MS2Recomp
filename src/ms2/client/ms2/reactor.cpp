@@ -123,7 +123,7 @@ bool FUN_140930b70();
 // Inventory (0x143ab2a90) and the daily counters (0x143ab2fc0).
 class Unk_Inventory { public: int FUN_140a5f180(int nItemId, int nRank); };
 extern Unk_Inventory g_143ab2a90;
-int FUN_14053feb0(int nItemId);                                 // default rank of an item
+int GetItemRank(int nItemId);                                 // default rank of an item
 class Unk_AttendTable { public: int GetValue(int a, unsigned b, const int& nDefault); };
 class GameEventUserValue; extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
 #define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
@@ -325,7 +325,7 @@ void CReactor::UpdateConnectedEffect()
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return;
-    PCBase* pPc = (PCBase*)pWorld->FUN_141bd0cc0();
+    PCBase* pPc = (PCBase*)pWorld->GetLocalPlayer();
     if (pPc == 0)
         return;
     unsigned __int64 nId = ((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80();
@@ -414,7 +414,7 @@ bool CReactor::CanUse()
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return false;
-    PCBase* pPc = (PCBase*)pWorld->FUN_141bd0cc0();
+    PCBase* pPc = (PCBase*)pWorld->GetLocalPlayer();
     if (pPc == 0)
         return false;
     if (FUN_140b7a5e0(pPc) != 0)
@@ -485,7 +485,7 @@ int CReactor::FUN_140b79ee0(PCBase* pPc)
             if (nCode == 0 || nCheck == 0)
                 break;
             if (nRank == 0)
-                nRank = FUN_14053feb0(nCode);
+                nRank = GetItemRank(nCode);
             int nHave = g_143ab2a90.FUN_140a5f180(nCode, nRank);
             if (nHave < nCheck)
                 return 1;
@@ -571,7 +571,7 @@ int CheckReactorGameEvent(PCBase* pPc, int nReactorId)
         return 4;
     if (spRec->m_eventId != nEvent)
         return 4;
-    int nField = WorldService::GetInstance()->FUN_141bd3060();
+    int nField = WorldService::GetInstance()->GetFieldId();
     if (!ContainsId(spRec->m_30, nField))
         return 5;
     int nDummy = 0;
@@ -604,11 +604,11 @@ int CheckReactorPlacement(PCBase* pPc)
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return 1;
-    if (pWorld->FUN_141bd30a0() == (CFieldDataCli*)0)
+    if (pWorld->GetFieldData() == (CFieldDataCli*)0)
         return 1;
     // the temp MS2Ptr of the last operand is destroyed under the exe's [rsp+0x60] flag
     bool bBlocked = FUN_140930b10() || !FUN_140930b70()
-        || reinterpret_cast<Unk_RxMapInfo*>(pWorld->FUN_141bd30a0().operator->())->m_nKind == 1;
+        || reinterpret_cast<Unk_RxMapInfo*>(pWorld->GetFieldData().operator->())->m_nKind == 1;
     if (bBlocked)
         return 1;
 

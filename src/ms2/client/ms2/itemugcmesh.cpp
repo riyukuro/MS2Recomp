@@ -129,7 +129,7 @@ struct Unk_UgcPartInfo
     std::map<CString, CString> m_names;                             // +0x118
 };
 
-CString FUN_141421740(const CString& strName, int* pnFlag);
+CString GetModelVariant(const CString& strName, int* pnFlag);
 
 // Model-root virtual 18 (look a scene node up by name).
 struct Unk_UgcRoot
@@ -186,7 +186,7 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T, class U>
 void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030 (itemdatastruct.cpp)
 void FUN_140710590(COutPacket& kPacket);
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void FUN_1412750f0(class CItem* pItem, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -202,7 +202,7 @@ CStringW GetStringCommonByKey(const CStringW& str);
 NiColor FUN_141b6dea0(unsigned nArgb);
 struct Unk_UtilFloat3;                                              // util.cpp
 struct Unk_Colc;                                                    // util.cpp
-unsigned FUN_141b6df90(const Unk_UtilFloat3* pColor);
+unsigned Float3ToArgb(const Unk_UtilFloat3* pColor);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 void FUN_141b6f220(NiAVObject* pObj, int nSlot, const Unk_Colc& kColor);
 // The avatar-change service; only vtable slot 0xd0 is called.
@@ -254,7 +254,7 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
         return "";
     CString& strFirst = aNames[0];
     int nIndex = 0;
-    FUN_141421740(strFirst, &nIndex);
+    GetModelVariant(strFirst, &nIndex);
     CString strMapped(strSuffix);
     std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)FUN_141200ab0(aParts[0].operator->()))->m_names.find(strSuffix);
     if (it != ((Unk_UgcPartInfo*)FUN_141200ab0(aParts[0].operator->()))->m_names.end())
@@ -327,19 +327,19 @@ float GetPartScale(CEquipModel* pPart, int nIndex)
         return 1.0f;
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053cfd0())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0)
             return pProxy->m_afValue[nIndex];
     }
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0)
             return pProxy->m_f58;
     }
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053d070())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0)
             return pProxy->m_f60;
     }
@@ -361,13 +361,13 @@ void SetItemScale(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
         return;
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053cfd0())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0)
             pProxy->m_afValue[nIndex] = fValue < 0.0f ? 0.0f : fValue;
     }
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0 && nIndex == 0)
             pProxy->m_f58 = fValue < 0.0f ? 0.0f : fValue;
     }
@@ -427,7 +427,7 @@ void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Ve
                             (kEuler.z * 3.1415927f) / 180.0f);
     if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
         if (pProxy != 0)
         {
             NiMatrix3 kBase;
@@ -563,7 +563,7 @@ int FUN_141423650(unsigned* pArgb, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
@@ -588,7 +588,7 @@ int FUN_141423760(const ItemColorEx& kLook, PC* pPlayer)
 {
     if (pPlayer == 0)
     {
-        pPlayer = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (PC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
@@ -612,7 +612,7 @@ int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
@@ -636,7 +636,7 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
@@ -645,7 +645,7 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         bSlot = 0;
     else
         bSlot = 1;
-    *pOut = FUN_141b6df90((const Unk_UtilFloat3*)&((PC*)pPlayer)->FUN_141659220(nSlot));
+    *pOut = Float3ToArgb((const Unk_UtilFloat3*)&((PC*)pPlayer)->FUN_141659220(nSlot));
     return 1;
 }
 
@@ -656,14 +656,14 @@ int FUN_141423a70(__int64 nUid, const Unk_UgcColorList& kColors, Unk_UgcPlayer* 
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
+    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->GetProxy());
     if (spProxy == 0)
         return 0;
     spProxy->SetSlotRgbFromArray(*(CAtlArray<int>*)&kColors, nIndex);
@@ -680,14 +680,14 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
+    Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->GetProxy();
     if (pProxy == 0)
         return 0;
     bool bFlag = false;
@@ -707,14 +707,14 @@ int FUN_141423fb0(__int64 nUid, void* pColor, int nIndex, Unk_UgcPlayer* pPlayer
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
+    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->GetProxy());
     if (spProxy == 0)
         return 0;
     spProxy->SetSlotRgbComponent(nIndex, *(const int*)pColor, nValue);
@@ -731,14 +731,14 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
-    if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
+    if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->GetProxy() == 0)
         return 0;
-    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData()));
+    ((Unk_UgcProxy*)spItem->GetItem()->GetProxy())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData()));
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -752,7 +752,7 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
     }
@@ -763,22 +763,22 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
 // @0x141424580
 int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex)
 {
-    if (spItem == 0 || spItem->GetItem() == 0 || spItem->GetItem()->FUN_140527870() == 0)
+    if (spItem == 0 || spItem->GetItem() == 0 || spItem->GetItem()->GetProxy() == 0)
         return 0;
-    *pOut = ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->GetCurrentRgbComponent(nIndex);
+    *pOut = ((Unk_UgcProxy*)spItem->GetItem()->GetProxy())->GetCurrentRgbComponent(nIndex);
     return 1;
 }
 
 // @0x141424760
 int FUN_141424760(MS2Ptr<CItem> spItem, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlayer)
 {
-    if (spItem.IsNull() || spItem->FUN_140527840() == 0)
+    if (spItem.IsNull() || spItem->GetData() == 0)
         return 0;
-    if (((Unk_UgcItemData*)spItem->FUN_140527840())->IsAvatarColorItem())
+    if (((Unk_UgcItemData*)spItem->GetData())->IsAvatarColorItem())
     {
         if (pPlayer == 0)
         {
-            pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+            pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
             if (pPlayer == 0)
                 return 0;
         }
@@ -786,7 +786,7 @@ int FUN_141424760(MS2Ptr<CItem> spItem, unsigned* pOut, int nIndex, Unk_UgcPlaye
     }
     else
     {
-        *pOut = ((Unk_UgcProxy*)spItem->FUN_140527870())->GetCurrentRgbComponent(nIndex);
+        *pOut = ((Unk_UgcProxy*)spItem->GetProxy())->GetCurrentRgbComponent(nIndex);
         return 1;
     }
     return 0;
@@ -833,7 +833,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         unsigned nItemId = ((Unk_UgcItemData*)spData.operator->())->FUN_14053e260();
         if (nItemId > 0)
         {
-            CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->FUN_140527870();
+            CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->GetProxy();
             MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->FindPaletteColor(
                 nItemId, spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>(pExtra, &CItemExtraData::IsSameColor));
             if (kRow.get() != 0)
@@ -988,7 +988,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem.get() != 0)
         return spItem;
-    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CEquipItem> spEquip = ((PC*)pPlayer)->GetEquipByUid(nUid);
@@ -1085,7 +1085,7 @@ void RequestSellItem(__int64 nUid, int nCount, void* pCallback)
 {
     if (nCount <= 0)
         return;
-    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (((PCBase*)pPlayer)->FUN_141676b00(nUid) != 0)
@@ -1101,7 +1101,7 @@ void RequestSellItem(__int64 nUid, int nCount, void* pCallback)
     FUN_140710590(kPacket);
     {
         CString strEmpty("");
-        FUN_141276180(s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
+        PlaySystemSound(s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
     }
     if (pCallback != 0)
         FUN_1412750f0((class CItem*)pCallback, nCount, 0x28b, 0x28a);
@@ -1499,15 +1499,15 @@ MS2_REPLACE_METHOD(0x141426AF0, CItemUgcMeshContainer, FUN_141426af0, 574, 0x0C2
 MS2_REPLACE_METHOD(0x141426D40, CItemUgcMeshContainer, FUN_141426d40, 234, 0xA6B44080);
 MS2_REPLACE_METHOD(0x141426E30, CItemUgcMeshContainer, FUN_141426e30, 476, 0x58A38968);
 
-// Model path with its variant letter replaced (the letter FUN_141421740 finds); sits just before this TU's range start.
+// Model path with its variant letter replaced (the letter GetModelVariant finds); sits just before this TU's range start.
 // MS2-RANGE: 0x1414218c0-0x141421ab0 .text$mn
-CString FUN_141421740(const CString& strPath, int* pnFlag);            // the variant letter of a model path
+CString GetModelVariant(const CString& strPath, int* pnFlag);            // the variant letter of a model path
 
 // @0x1414218c0
 CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
 {
     int nIndex = 0;
-    FUN_141421740(strPath, &nIndex);
+    GetModelVariant(strPath, &nIndex);
     CString strLetter(strSuffix);
     CString strResult;
     strResult = strPath.Left(nIndex);

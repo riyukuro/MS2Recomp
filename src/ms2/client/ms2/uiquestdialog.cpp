@@ -213,11 +213,11 @@ public:
 class Unk_QdWorld : public WorldService
 {
 public:
-    Unk_QdActor* FUN_141bd0cc0();                       // the local player
+    Unk_QdActor* GetLocalPlayer();                       // the local player
 };
 class Unk_QdUIMgr { public: void FUN_141adc530(int nUIType); };
 class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074bc90(int nQuestId);                                // the quest type
@@ -225,7 +225,7 @@ int FUN_1416e8060(int nChapter);                                // the chapter i
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 int FUN_14074b070(CQuestData* pData);                           // the repeat kind
 int FUN_14074b050(CQuestData* pData);                           // the quest type
-int FUN_14074b1c0(CQuestData* pData, int nKind);
+int HasProperty(CQuestData* pData, int nKind);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent
 __int64 FUN_141aa4980(CQuest* pQuest);                          // when the quest was completed
 bool FUN_14074b090(CQuestData* pData);
@@ -244,7 +244,7 @@ CStringW GetQuestConditionText(int nQuestId, int nCondition);
 CString ToCString(const char* psz, int n);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
-int FUN_141276180(const CString& strSound, const CString& strExtra);
+int PlaySystemSound(const CString& strSound, const CString& strExtra);
 void FUN_141275260(int nStringId, int a, int b);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
@@ -270,8 +270,8 @@ class ASDialog : public ASDisplayObject
 {
 public:
 };
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 // The option block of the quest guide: the "world" / "epic" / "repeat" flags of the quest list.
 struct Unk_QdFlags { char m_pad_00[0x20]; bool m_20; bool m_21; bool m_22; };
 class Unk_QdOptions : public CGameOption
@@ -296,14 +296,14 @@ UIQuestDialog::UIQuestDialog()
     m_188 = 0;
     SetTweenEnabled(1);
     ResetFilters();
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
 // @0x141a99600
 UIQuestDialog::~UIQuestDialog()
 {
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
@@ -394,7 +394,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             {
                 int nQuestId = dataReg.PopUInt();
                 int bRegist = dataReg.PopBool();
-                Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+                Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
                 if (pPlayer == 0)
                     return 0;
                 MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
@@ -450,7 +450,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_22 = dataSetting.PopBool();
                 Unk_QdGuide* pGuide = static_cast<Unk_QdGuide*>(Unk_GetUI<UIWorldMapDialog>(0x4e42));
                 if (pGuide != 0 && pGuide->FUN_141924630() != 0)
-                    pGuide->FUN_141b5bd30();
+                    pGuide->OnDisplaySettingsChanged();
                 Unk_QdMap* pMap = ((class Unk_QdMap*)FindMinimapDialog(0x4e29));
                 if (pMap != 0 && pMap->FUN_141924630() != 0)
                     pMap->RefreshQuestIconChecks();
@@ -593,7 +593,7 @@ void UIQuestDialog::vfunc_o178_1(void* pQuest)
 // @0x141a9ab10
 void UIQuestDialog::vfunc_o178_2(void* pQuest)
 {
-    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     int nChapter = static_cast<CQuest*>(pQuest)->GetData()->m_28;
@@ -663,7 +663,7 @@ void UIQuestDialog::RefreshTab()
 // @0x141a9ae90
 void UIQuestDialog::RefreshEpisodes()
 {
-    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
@@ -1084,7 +1084,7 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
         CStringW strText;
         if (nMap == 0)
             strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable_invalid_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
-        else if (nMap == reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd3060())
+        else if (nMap == reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->GetFieldId())
             strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable_current_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
         else
             strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable"), reinterpret_cast<const unsigned&>(nMap), reinterpret_cast<const unsigned&>(spData->m_2e8));
@@ -1252,7 +1252,7 @@ void UIQuestDialog::ClearFlags()
 // @0x141a9ea80
 int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
 {
-    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (FUN_1416e8060(nChapter) != 0)
@@ -1331,7 +1331,7 @@ int FUN_140761c60(int nQuestId, int nKind);                     // guild coin
     // the exp a level needs
 void* GetExpTable();   // C3: was GetExpTable
 float Floor(float f);                                   // floor
-int FUN_14053feb0(int nItemId);                                 // default rank of an item
+int GetItemRank(int nItemId);                                 // default rank of an item
 int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);
 
 // @0x141a9f3c0
@@ -1340,7 +1340,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return;
-    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     __int64 nExp = FUN_140761ba0(nQuestId, 1);
@@ -1385,7 +1385,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
     {
         CString strBind;
         strBind.Format("reward%d", nIndex++);
-        CString strIcon = RewardIconName(0x1c9c6dd, FUN_14053feb0(0x1c9c6dd), nCoin, strBind);
+        CString strIcon = RewardIconName(0x1c9c6dd, GetItemRank(0x1c9c6dd), nCoin, strBind);
         items.PushString((const char*)strIcon);
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strIcon);
     }
@@ -1410,7 +1410,7 @@ void UIQuestDialog::AddConditions(int nQuestId, ASObj& rOut)
             int nItemId = (int)spCond->m_code.GetFirstValue();
             CString strTag;
             strTag.Format("summary%d", i);
-            strBind = RewardIconName(nItemId, FUN_14053feb0(nItemId), 1, strTag);
+            strBind = RewardIconName(nItemId, GetItemRank(nItemId), 1, strTag);
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strBind);
         }
         cond.SetWStringMember("condition", ConditionText(nQuestId, (int)i));
@@ -1487,7 +1487,7 @@ void UIQuestDialog::AddButtons(MS2Ptr<CQuest> spQuest, ASObj& rOut)
     MS2Ptr<CQuestData> spData = spQuest->GetData();
     if (!spData)
         return;
-    int nMapId = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+    int nMapId = reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->GetFieldId();
     ASArray buttons(2);
     if (spData->m_2e == 0)
     {
@@ -1645,7 +1645,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
         if (spFocus.get() != 0)
             nFocusChapter = spFocus->m_28;
     }
-    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     CAtlMap<int, int> seenQuests(17, 0.75f, 0.25f, 2.25f, 10);
@@ -1672,7 +1672,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
                     continue;
                 if (IsInCurrentTab(FUN_14074b030(spData.operator->())) == 0)
                     continue;
-                if (FUN_14074b1c0(spData.operator->(), 1) != 0)
+                if (HasProperty(spData.operator->(), 1) != 0)
                     continue;
                 sorted.Insert(spData->m_level, spData);
                 seenQuests.SetAt(FUN_14074b030(spData.operator->()), 1);
@@ -1698,7 +1698,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
                         continue;
                     if (IsInCurrentTab(FUN_14074b030(spNext.operator->())) == 0)
                         continue;
-                    if (FUN_14074b1c0(spNext.operator->(), 1) != 0)
+                    if (HasProperty(spNext.operator->(), 1) != 0)
                         continue;
                     sorted.Insert(spNext->m_level, spNext);
                     seenChapters.SetAt(nChapter, 1);
@@ -1902,7 +1902,7 @@ void UIQuestDialog::SelectChapter(int nChapter)
         spFlags->Lookup(nChapter, bOpen);
         spFlags->SetAt(nChapter, !bOpen);
         CString strEmpty("");
-        FUN_141276180(bOpen ? s_strChapterClose : s_strChapterOpen, strEmpty);
+        PlaySystemSound(bOpen ? s_strChapterClose : s_strChapterOpen, strEmpty);
     }
 }
 
@@ -1949,8 +1949,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const char* a1, bool
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetString(&args[0], a1);
+    SetBoolean(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

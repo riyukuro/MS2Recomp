@@ -116,7 +116,7 @@ class Unk_140166420 : public CFileSystem { };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszDelim);   // split
 int Parse_14021baf0(const CStringA& value);                             // the wedding reward type by name (commonenum.cpp)
 int Parse_14021bbd0(const CStringA& value);                             // the reward limit by name (commonenum.cpp)
@@ -629,7 +629,7 @@ bool WeddingTable::LoadMaintenance()
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mainternance")); pNode != 0;
          pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mainternance")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<WeddingMaintenanceData> spData(new WeddingMaintenanceData);
         if (!spData->Read(pNode))
@@ -655,7 +655,7 @@ bool WeddingTable::LoadSkill()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<WeddingSkillData> spSkill(new WeddingSkillData);
         if (!spSkill->Read(pNode))
@@ -689,7 +689,7 @@ MS2Ptr<WeddingPackage> WeddingTable::FindPackageByPlanner(int nPlanner)
 MS2_REPLACE_METHOD(0x140908c50, WeddingTable, FindPackageByPlanner, 250, 0x737940CE);
 
 // @0x140908d50
-unsigned int WeddingTable::FUN_140908d50(int nPackageId, int nHallId, bool bNight)
+unsigned int WeddingTable::GetHallFieldId(int nPackageId, int nHallId, bool bNight)
 {
     MS2Ptr<WeddingPackage> spPackage = FindPackage(nPackageId);
     if (spPackage == 0)
@@ -700,7 +700,7 @@ unsigned int WeddingTable::FUN_140908d50(int nPackageId, int nHallId, bool bNigh
     unsigned int nFieldId = spHall->GetFieldId(bNight);
     return nFieldId;
 }
-MS2_REPLACE_METHOD(0x140908d50, WeddingTable, FUN_140908d50, 253, 0x73D8FEEF);
+MS2_REPLACE_METHOD(0x140908d50, WeddingTable, GetHallFieldId, 253, 0x73D8FEEF);
 
 // @0x140908e60
 __int64 WeddingTable::GetRewardExp(int nType, __int64 nLastTime)
@@ -772,7 +772,7 @@ int WeddingTable::GetHallGrade(int nPackageId, int nHallId)
 MS2_REPLACE_METHOD(0x140909130, WeddingTable, GetHallGrade, 227, 0x4882E462);
 
 // @0x140909220
-__int64 WeddingTable::FUN_140909220(int nPackageId, int nHallId)
+__int64 WeddingTable::GetHallPrice(int nPackageId, int nHallId)
 {
     MS2Ptr<WeddingPackage> spPackage = FindPackage(nPackageId);
     if (spPackage == 0)
@@ -782,7 +782,7 @@ __int64 WeddingTable::FUN_140909220(int nPackageId, int nHallId)
         return 0;
     return spHall->m_nMerat;
 }
-MS2_REPLACE_METHOD(0x140909220, WeddingTable, FUN_140909220, 234, 0xA4931C76);
+MS2_REPLACE_METHOD(0x140909220, WeddingTable, GetHallPrice, 234, 0xA4931C76);
 
 // @0x140909310
 bool WeddingTable::GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToPackageId, int nToHallId,

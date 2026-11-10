@@ -26,7 +26,7 @@ public:
 
     void FUN_140bd8040(int nJobCode);                                       // 0x140bd8040 "setData": show the job
     int CanChangeJob();                                                    // 0x140bd88e0 the player may change job now
-    void FUN_140bd89d0(int nJobCode);                                       // 0x140bd89d0 announce the new job
+    void ShowJobChangeNotice(int nJobCode);                                       // 0x140bd89d0 announce the new job
 
 private:
     MS2_LAYOUT_FRIEND;

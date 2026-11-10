@@ -87,9 +87,9 @@ class WorldService   // C3: static member view for the former free stand-ins
 public:
     static class WorldService* GetInstance();
 public:
-    void* FUN_141bd0cc0();   // C3: was free FUN_141bd0cc0
+    void* GetLocalPlayer();   // C3: was free GetLocalPlayer
 };
-int FUN_141276180(const CString& strName, const CString& strExtra);
+int PlaySystemSound(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
 void ShowMessageBox(CStringW text, int nA, void* pListener, CStringW tag);
@@ -156,7 +156,7 @@ template <class T> T* Unk_RankDialog(int nId)
     return 0;
 }
 
-#define RANK_SFX(name) { CString strExtra(""); FUN_141276180(name, strExtra); }
+#define RANK_SFX(name) { CString strExtra(""); PlaySystemSound(name, strExtra); }
 
 // ---- exe globals 0x143ac47e0-0x143ac48f8 (symbols-manual.tsv; the hook DLL binds the exe's) ----
 extern CString DAT_143ac47f0[7];
@@ -346,7 +346,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     else if (nMessage == 0x13)
     {
         bool bFlag = packet.ReadBool();
-        Unk_RankActor* pActor = ((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_RankActor* pActor = ((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pActor == 0)
             return;
         if (bFlag)
@@ -449,7 +449,7 @@ void CPvpRankDuelComponent::RefreshLeague()
 // @0x140dbf160
 bool CPvpRankDuelComponent::RequestCancelMatch()
 {
-    Unk_RankComPtr<Unk_RankActor> spActor(((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
+    Unk_RankComPtr<Unk_RankActor> spActor(((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()));
     if (spActor == 0)
         return false;
     if (((PCBase*)(spActor).operator->())->IsDead() == 1)

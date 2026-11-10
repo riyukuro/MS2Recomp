@@ -260,7 +260,7 @@ found:
     bool bOpened = false;
     if (GetGFxManager() != NULL)
     {
-        pFile = GetGFxManager()->FUN_1422b0d60(String(strPath));
+        pFile = GetGFxManager()->GetCachedFile(String(strPath));
         if (pFile)
             pMemFile = dynamic_cast<MemoryFile*>(pFile.GetPtr());
         if (pMemFile != NULL)
@@ -301,10 +301,10 @@ found:
                 if (!((Unk_MemoryFileView*)pMemFile)->FUN_1422ef1e0())
                 {
                     if (GetGFxManager() != NULL)
-                        GetGFxManager()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
+                        GetGFxManager()->SetCachedFile(String(strPath), Ptr<File>(NULL));
                 }
                 else if (bOpened && GetGFxManager() != NULL)
-                    GetGFxManager()->FUN_1422b0e20(String(strPath), pFile);
+                    GetGFxManager()->SetCachedFile(String(strPath), pFile);
                 if (bCached)
                     kLock.Unlock();
             }
@@ -318,10 +318,10 @@ found:
         if (!((Unk_MemoryFileView*)pMemFile)->FUN_1422ef1e0())
         {
             if (GetGFxManager() != NULL)
-                GetGFxManager()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
+                GetGFxManager()->SetCachedFile(String(strPath), Ptr<File>(NULL));
         }
         else if (bOpened && GetGFxManager() != NULL)
-            GetGFxManager()->FUN_1422b0e20(String(strPath), pFile);
+            GetGFxManager()->SetCachedFile(String(strPath), pFile);
         if (bCached)
             kLock.Unlock();
     }

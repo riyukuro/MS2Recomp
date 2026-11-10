@@ -21,7 +21,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallbac
 
 CStringW XmlWide(const char* sz);                         // a UTF-8 text as a wide string
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (an ASArray COMDAT)
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);           // Value = n (UInt)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);           // Value = n (UInt)
 
 // @0x1422e2cd0
 ASButtonBar::ASButtonBar(const Scaleform::GFx::Value& v, int nMovieId)
@@ -163,7 +163,7 @@ void ASButtonBar::ClearDataProvider()
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
-        spProvider->FUN_1422df120();
+        spProvider->Clear();
 }
 MS2_REPLACE_METHOD(0x1422E3400, ASButtonBar, ClearDataProvider, 83, 0x6E710504);
 
@@ -194,7 +194,7 @@ void ASButtonBar::FUN_1422e3590(const CStringW& strLabel)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
-            AScript row = spProvider->FUN_1422df140((unsigned)i);
+            AScript row = spProvider->GetItemAt((unsigned)i);
             if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
@@ -231,7 +231,7 @@ CStringW ASButtonBar::GetLabelAt(int nIndex)
         return L"";
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
-        AScript row = spProvider->FUN_1422df140(nIndex);
+        AScript row = spProvider->GetItemAt(nIndex);
         Scaleform::GFx::Value v = row.GetMember("label");
         if (v.IsString())
             return XmlWide(v.GetString());
@@ -257,7 +257,7 @@ void ASButtonBar::RemoveItemByLabel(const CStringW& strLabel)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
-            AScript row = spProvider->FUN_1422df140((unsigned)i);
+            AScript row = spProvider->GetItemAt((unsigned)i);
             if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
@@ -284,7 +284,7 @@ void ASButtonBar::FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
-            AScript row = spProvider->FUN_1422df140((unsigned)i);
+            AScript row = spProvider->GetItemAt((unsigned)i);
             if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
@@ -314,7 +314,7 @@ int ASButtonBar::FUN_1422e3ee0(const CString& strField, Scaleform::GFx::Value& v
         return 0;
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
-        AScript row = spProvider->FUN_1422df140(GetSelectedIndex());
+        AScript row = spProvider->GetItemAt(GetSelectedIndex());
         vOut = row.GetMember(strField);
         if (!vOut.IsNull())
             return 1;
@@ -324,7 +324,7 @@ int ASButtonBar::FUN_1422e3ee0(const CString& strField, Scaleform::GFx::Value& v
 MS2_REPLACE_METHOD(0x1422E3EE0, ASButtonBar, FUN_1422e3ee0, 369, 0xBEFC5CC9);
 
 // @0x1422e4060
-void ASButtonBar::FUN_1422e4060(int nIndex)
+void ASButtonBar::UpdateRendererAt(int nIndex)
 {
     if (nIndex >= GetItemCount())
         return;
@@ -334,7 +334,7 @@ void ASButtonBar::FUN_1422e4060(int nIndex)
     FUN_1422e4350("updateRendererAt", spButton->GetValue(), (unsigned)nIndex);
     spButton->vfunc_24(false);
 }
-MS2_REPLACE_METHOD(0x1422E4060, ASButtonBar, FUN_1422e4060, 293, 0x0444936C);
+MS2_REPLACE_METHOD(0x1422E4060, ASButtonBar, UpdateRendererAt, 293, 0x0444936C);
 
 // @0x1422e4190
 void ASButtonBar::AddIndexChangeHandler(const ASCallback& onChange, void* pUser)
@@ -370,7 +370,7 @@ Scaleform::GFx::Value AScript::FUN_1422e4350(const char* szMethod, Scaleform::GF
     ASArgList args;
     args.resize(2);
     SetValue(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

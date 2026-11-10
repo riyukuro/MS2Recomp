@@ -195,9 +195,9 @@ CStringW GetStringCommonByKey(const CStringW&);
 void ShowSystemNotice(const CStringW&,int,int);
 CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2);
 void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
-void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
-void FUN_140d01780(const Scaleform::GFx::Value&,bool);
-int FUN_14053feb0(int);
+void SetChildVisible(const Scaleform::GFx::Value&,CString,int);
+void SetHitTestDisable(const Scaleform::GFx::Value&,bool);
+int GetItemRank(int);
 template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId,const Scaleform::GFx::Value& v);
 // The slot and movie clip creators are earlier COMDATs (0x140bb4a60, 0x1409b40c0).
 template<> MS2Ptr<ASItemSlot> Unk_ASCreate<ASItemSlot>(int,const Scaleform::GFx::Value&);
@@ -254,7 +254,7 @@ void* FUN_140bd09d0(unsigned n) { return (void*)(unsigned __int64)n; }
 UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<ASItemRendererBase> spClip)
     : m_clip(spClip), m_pDialog(pDialog)
 {
-    m_clip->FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendGifList::FUN_140bc2620),0);
+    m_clip->SetDataHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendGifList::FUN_140bc2620),0);
     do { m_clip->FUN_140bc71c0("m_bg1",m_bg1);
     if(m_bg1==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(29),__FUNCTION__)); } while(0);
     do { m_clip->FUN_140bc71c0("m_bg2",m_bg2);
@@ -272,7 +272,7 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<ASIt
         ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(spCheck.operator->()))->SetMouseEnabled(false);
     }
     m_disabled->vfunc_4(false);
-    FUN_140d01780((*m_disabled).FUN_1422bb890(),true);
+    SetHitTestDisable((*m_disabled).FUN_1422bb890(),true);
 }
 
 // @0x140bc2620
@@ -358,11 +358,11 @@ void UICashAttendDialog::OnLoadComplete()
     for(unsigned int i=0;i<7;i++) {
         MS2Ptr<ASButton> spButton;
         if(FUN_140bc6d10(StringFormat("m_eventButton{0}",i),spButton).get()) {
-            spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::OnEventTabClick),FUN_140bd09d0(i));
+            spButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::OnEventTabClick),FUN_140bd09d0(i));
             m_eventButtons.Add(spButton);
         }
     }
-    m_usePointButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::FUN_140bc4230),0);
+    m_usePointButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::FUN_140bc4230),0);
     FUN_140bc4460();
 }
 
@@ -474,12 +474,12 @@ void UICashAttendDialog::RefreshEventButtons()
         }
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
-        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!GetMyCharacter()->HasTime(events[i]->GetID()));
+        SetChildVisible((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!GetMyCharacter()->HasTime(events[i]->GetID()));
         m_eventButtons[i]->SetTooltipText(events[i]->GetDesc());
         m_eventButtons[i]->SetSelected(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
         if(m_eventButtons[i]->FUN_140bc7100("m_slot",spSlot).get()) {
-            int nRarity=FUN_14053feb0(events[i]->FUN_1403fbdc0());
+            int nRarity=GetItemRank(events[i]->FUN_1403fbdc0());
             spSlot->SetItem(events[i]->FUN_1403fbdc0(),nRarity,0);
         }
     }

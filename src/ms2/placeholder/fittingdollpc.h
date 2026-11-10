@@ -404,7 +404,7 @@ public:
     // @0x1409763e0
     MS2Ptr<CostumeManager> GetCostumeManager() { return m_spCostume; }
     // @0x141c04f70
-    unsigned char FUN_141c04f70() { return m_b1204; }       // faded out (?\worldservice.cpp#6)
+    unsigned char IsFaded() { return m_b1204; }       // faded out (?\worldservice.cpp#6)
     // @0x141bfaec0
     void SetFaded(bool bFaded) { m_b1204 = bFaded; }    // (COMDAT in worldservice.cpp)
     // @0x141bfed80

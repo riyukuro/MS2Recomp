@@ -41,7 +41,7 @@ private:
     void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; void* m_90;
 };
 MS2_CHECK_SIZE(UIDungeonSearchUnitedReward, 0x98);
-CStringW FUN_140298ea0(CStringW key);
+CStringW GetStringByKey(CStringW key);
 void FUN_1412751b0(const CStringW& text, int flags);
 
 // @0x140c0ec90
@@ -96,7 +96,7 @@ void UIDungeonPopupRewardDialog::FUN_140c0f210(CInPacket& packet)
     switch (command) {
     case 0x17:
         m_reward->FUN_140e13c00();
-        FUN_1412751b0(FUN_140298ea0(L"s_dungeonSearch_success_united_reward_reset"), 0x14);
+        FUN_1412751b0(GetStringByKey(L"s_dungeonSearch_success_united_reward_reset"), 0x14);
         break;
     }
 }

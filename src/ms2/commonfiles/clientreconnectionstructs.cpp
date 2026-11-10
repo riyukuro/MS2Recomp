@@ -41,7 +41,7 @@ ReconnectionOptions::ReconnectionOptions() { memset(&m_values, 0, sizeof(m_value
 // @0x140208400
 ReconnectionOptions::ReconnectionOptions(const ReconnectionOptions& other) : CPtred() { m_values = other.m_values; }
 // @0x140208460
-ReconnectionOptions& ReconnectionOptions::FUN_140208460(const ReconnectionOptions& other) { m_values = other.m_values; return *this; }
+ReconnectionOptions& ReconnectionOptions::Assign(const ReconnectionOptions& other) { m_values = other.m_values; return *this; }
 // @0x1402084a0
 void ReconnectionOptions::Write(COutputStream& out) const { for (int i = 0; i < 11; ++i) out.WriteInt32(m_values.v[i]); }
 // @0x140208500
@@ -74,11 +74,11 @@ void COutPacketBuffer::FUN_140208960(CGameSocket* pSocket, COutPacket& packet)
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         for (POSITION pos = m_pending.GetHeadPosition(); pos != NULL; m_pending.GetNext(pos)) {
             COutPacketPtr& pending = m_pending.GetAt(pos);
-            FUN_140209510(*pending, false);
+            CapturePacket(*pending, false);
             ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*pending);
         }
         m_pending.RemoveAll();
-        if (packet.IsLoopback() == 0) FUN_140209510(packet, false);
+        if (packet.IsLoopback() == 0) CapturePacket(packet, false);
         ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(packet);
     }
 }
@@ -97,7 +97,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
             if (captured->GetSequence() <= lastSequence) continue;
             ++newSequence;
             static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}. type={1} seqOld={2}, seqNew={3}", L"COutPacketBuffer::RetransmitClientPackets",
-                                 captured->FUN_14020ba20(), captured->GetSequence(), newSequence);
+                                 captured->GetType(), captured->GetSequence(), newSequence);
             captured->SetSequence(newSequence);
             ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*captured);
         }
@@ -162,12 +162,12 @@ void COutPacketBuffer::DiscardAcked(unsigned ackSequence)
 void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
-        COutPacketPtr copy = FUN_14020aaa0(packet);
+        COutPacketPtr copy = ClonePacket(packet);
         if (packet.IsLoopback() != 0) {
             m_loopbackSize += copy->GetLength();
             m_loopback.AddTail(copy);
             static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}[line={1}] m_pendingLoopbackPackets(type={2})", L"COutPacketBuffer::PushPendingPacket",
-                                 MS2_LINE(0x219), packet.FUN_14020ba20());
+                                 MS2_LINE(0x219), packet.GetType());
         } else {
             m_pendingSize += copy->GetLength();
             m_pending.AddTail(copy);
@@ -201,14 +201,14 @@ void COutPacketBuffer::FUN_1402094b0(int value)
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else m_value = value;
 }
 // @0x140209510
-void COutPacketBuffer::FUN_140209510(COutPacket& packet, bool bControl)
+void COutPacketBuffer::CapturePacket(COutPacket& packet, bool bControl)
 {
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else if (m_resending == 0) {
         ++m_sequence;
         packet.SetSequence(m_sequence);
         if (m_captureEnabled != 0) {
-            if (!FUN_140209640(packet.FUN_14020ba20(), bControl)) {
-                COutPacketPtr copy = FUN_14020aaa0(packet);
+            if (!IsControlPacket(packet.GetType(), bControl)) {
+                COutPacketPtr copy = ClonePacket(packet);
                 m_capturedSize += copy->GetLength();
                 m_captured.AddTail(copy);
             }
@@ -216,7 +216,7 @@ void COutPacketBuffer::FUN_140209510(COutPacket& packet, bool bControl)
     }
 }
 // @0x140209640
-bool COutPacketBuffer::FUN_140209640(int type, bool bControl)
+bool COutPacketBuffer::IsControlPacket(int type, bool bControl)
 {
     if (bControl == 1) {
         switch (type) { case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: return true; }
@@ -227,10 +227,10 @@ bool COutPacketBuffer::FUN_140209640(int type, bool bControl)
 }
 
 // @0x14020aaa0
-COutPacketPtr COutPacketBuffer::FUN_14020aaa0(COutPacket& packet)
+COutPacketPtr COutPacketBuffer::ClonePacket(COutPacket& packet)
 {
     COutPacketPtr copy(Unk_PktNewTag(0));
-    copy->FUN_140710740(packet.FUN_14020ba20(), packet.IsLoopback(), false);
+    copy->FUN_140710740(packet.GetType(), packet.IsLoopback(), false);
     copy->SetSequence(packet.GetSequence());
     copy->FUN_14020c090(packet.FUN_14020ba10());
     copy->AppendPayload(packet, 0);
@@ -238,7 +238,7 @@ COutPacketPtr COutPacketBuffer::FUN_14020aaa0(COutPacket& packet)
 }
 
 // Hooks (client replaces the exe bodies with these).
-MS2_REPLACE_METHOD(0x140208460, ReconnectionOptions, FUN_140208460, 45, 0x017AEA6A);
+MS2_REPLACE_METHOD(0x140208460, ReconnectionOptions, Assign, 45, 0x017AEA6A);
 MS2_REPLACE_METHOD(0x1402084A0, ReconnectionOptions, Write, 88, 0xA22007A0);
 MS2_REPLACE_METHOD(0x140208500, ReconnectionOptions, Read, 78, 0xDC37A21F);
 MS2_REPLACE_METHOD(0x1402085C0, ReconnectionContext, Reset, 63, 0xAD914FF8);
@@ -256,7 +256,7 @@ MS2_REPLACE_METHOD(0x140209430, COutPacketBuffer, GetSequence, 14, 0x6A78E4AB);
 MS2_REPLACE_METHOD(0x140209450, COutPacketBuffer, SetCaptureEnabled, 47, 0x92F6C3F9);
 MS2_REPLACE_METHOD(0x140209490, COutPacketBuffer, GetCaptureEnabled, 14, 0xA25B27BF);
 MS2_REPLACE_METHOD(0x1402094B0, COutPacketBuffer, FUN_1402094b0, 88, 0x0208595C);
-MS2_REPLACE_METHOD(0x140209510, COutPacketBuffer, FUN_140209510, 284, 0xEA511BF5);
-MS2_REPLACE_METHOD(0x140209640, COutPacketBuffer, FUN_140209640, 90, 0x6996CB7F);
+MS2_REPLACE_METHOD(0x140209510, COutPacketBuffer, CapturePacket, 284, 0xEA511BF5);
+MS2_REPLACE_METHOD(0x140209640, COutPacketBuffer, IsControlPacket, 90, 0x6996CB7F);
 
 MS2_EMIT_CRT_MEMMOVE_S();

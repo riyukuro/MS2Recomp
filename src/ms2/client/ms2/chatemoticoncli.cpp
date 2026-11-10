@@ -324,7 +324,7 @@ MS2_REPLACE_METHOD(0x140A39A20, CChatEmoticonCli, OnEmoticonResult, 938, 0x5E574
 // @0x140a39dd0
 bool CChatEmoticonCli::IsEmoticonUsable(int nEmoticonId)
 {
-    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!data)
         return false;
     std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> >::iterator it = m_groupById.find(data->m_nGroupId);
@@ -347,7 +347,7 @@ MS2_REPLACE_METHOD(0x140A39DD0, CChatEmoticonCli, IsEmoticonUsable, 454, 0xE5D9D
 // @0x140a39fa0
 bool CChatEmoticonCli::IsEmoticonFavorite(int nEmoticonId)
 {
-    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!data)
         return false;
     MS2_FOR_EACH(unsigned nId, m_ids)
@@ -362,7 +362,7 @@ MS2_REPLACE_METHOD(0x140A39FA0, CChatEmoticonCli, IsEmoticonFavorite, 266, 0xE11
 // @0x140a3a0b0
 bool CChatEmoticonCli::FUN_140a3a0b0(int nEmoticonId)
 {
-    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!data)
         return false;
     return IsGroupExpired(data->m_nGroupId);

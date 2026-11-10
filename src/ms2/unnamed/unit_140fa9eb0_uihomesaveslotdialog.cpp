@@ -209,7 +209,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
                     FUN_140fabe80(nSlot);
                 else
-                    FUN_140fab8c0(nSlot);
+                    AskLoadSlot(nSlot);
             }
         }
     }
@@ -457,7 +457,7 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
 }
 
 // @0x140fab8c0
-void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
+void UIHomeSaveSlotDialog::AskLoadSlot(int nSlot)
 {
     if (nSlot < 0 || nSlot > 5)
         return;

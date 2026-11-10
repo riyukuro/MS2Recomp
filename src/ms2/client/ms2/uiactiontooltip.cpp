@@ -73,7 +73,7 @@ public:
     Vector3& GetValue();
     const Vector3& GetValue() const;
 };
-void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
+void WorldToScreen(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
 template <class T> T ClampProxyValue(const T& x, T lo, T hi);   // C3: userproxy.cpp
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ void UIActionTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1418b1900
 ActionKeyObject* UIActionTooltip::GetCurrentAction()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->GetCurrentAction();
@@ -249,7 +249,7 @@ void UIActionTooltip::FUN_1418b1ef0()
         else
         {
             efd::Point2 kScreen;
-            FUN_140d00fb0(*((Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
+            WorldToScreen(*((Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
             int nWidth = spEntity->ASDisplayObject::FUN_1422c1500();
             float fX = ClampProxyValue<float>(kScreen.x, 0, (float)(nWidth - spEntity->GetWidthCeil()));
             int nHeight = spEntity->ASDisplayObject::FUN_1422c1530();
@@ -262,7 +262,7 @@ void UIActionTooltip::FUN_1418b1ef0()
 // @0x1418b2140
 int UIActionTooltip::FUN_1418b2140()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 1;
     if (((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->IsEnabled() == 0)
@@ -278,7 +278,7 @@ int UIActionTooltip::FUN_1418b2140()
     case 0x11:
     case 0x12:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == 0)
             return 1;
         return pMyPC->GetCurStateId() == 0x19;
@@ -289,14 +289,14 @@ int UIActionTooltip::FUN_1418b2140()
         return TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4ebd) == 0;
     case 0x1a:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == 0)
             return 1;
         return pMyPC->GetCurStateId() == 0x3d;
     }
     case 0x1c:
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == 0)
             return 1;
         return pMyPC->GetCurStateId() == 0x3e;
@@ -308,7 +308,7 @@ int UIActionTooltip::FUN_1418b2140()
 // @0x1418b23a0
 int UIActionTooltip::FUN_1418b23a0()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 0x1e;
     return ((class Unk_ActionKeyManager*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->GetCur();

@@ -613,7 +613,7 @@ void Unk_ActionKeyManager::ActivateCurrentAction()
     MS2Ptr<ActionKeyObject> spAction(0);
     if (!pActions->Lookup(m_nCur, spAction))
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->GetHeldItem())
@@ -633,7 +633,7 @@ bool Unk_ActionKeyManager::TryActivateCurrentAction()
     MS2Ptr<ActionKeyObject> spAction(0);
     if (!pActions->Lookup(m_nCur, spAction))
         return false;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return false;
     if (spAction->vfunc_11())
@@ -706,7 +706,7 @@ MS2_REPLACE_METHOD(0x1409536D0, Unk_ActionKeyManager, FUN_1409536d0, 147, 0xB05C
 // @0x140953770
 Unk_ActionKeyMap* Unk_ActionKeyManager::GetActiveActionMap()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return &m_actions;
     if (pPlayer->IsInCubeMode())
@@ -768,7 +768,7 @@ MS2_REPLACE_METHOD(0x14095BF90, TaxiStationAction, vfunc_5, 11, 0x2093C54B);
 // @0x14095bca0
 int TaxiStationAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsDead() != 0)
@@ -810,7 +810,7 @@ MS2_REPLACE_METHOD(0x14095BCA0, TaxiStationAction, vfunc_1, 572, 0xE33AD181);
 // @0x14095bef0
 void TaxiStationAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e42))
@@ -859,7 +859,7 @@ MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
 // @0x140955280
 int PortalAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsInCubeMode())
@@ -902,7 +902,7 @@ MS2_REPLACE_METHOD(0x140955280, PortalAction, vfunc_1, 753, 0x5083C8D8);
 // @0x140955580
 void PortalAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->IsInCubeMode())
@@ -970,7 +970,7 @@ MS2_REPLACE_METHOD(0x140955A80, PortalAction, vfunc_5, 11, 0x112851C6);
 // @0x140955aa0
 CStringW PortalAction::vfunc_6()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return L"";
     if (!m_spEntity)
@@ -1098,10 +1098,10 @@ MS2_REPLACE_METHOD(0x140956310, PortalAction, SendRoomDungeon, 75, 0xAAB9ED2B);
 // @0x140956370
 void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
-    MS2Ptr<CFieldDataCli> spCurrent = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spCurrent = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->GetFieldData();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
     if ((spCurrent.get() ? true : false) && (spField.get() ? true : false) && spField->GetShadowContinent() && !spCurrent->GetPkMode()
         && spField->GetPkMode())
@@ -1140,7 +1140,7 @@ MS2_REPLACE_METHOD(0x140956370, PortalAction, FUN_140956370, 1570, 0x80A0D7E5);
 // @0x140956be0
 bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return true;
     if (nButton == 0)
@@ -1191,14 +1191,14 @@ MS2_REPLACE_METHOD(0x140956A20, PortalAction, FUN_140956a20, 117, 0x78FA43EB);
 // @0x140956aa0
 void PortalAction::RequestMoveFromCube(Cube* pCell, int nTarget, int nPortalId)
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (!pCell)
         return;
     int nCubeId = pCell->field50;                           // the cube id
     int nKind = 0;
-    FUN_1408a0890(WorldService::GetInstance()->FUN_141bd3060(), nCubeId, &nKind);
+    FUN_1408a0890(WorldService::GetInstance()->GetFieldId(), nCubeId, &nKind);
     int bInside = 0;
     if (nKind == 1)
         bInside = 1;
@@ -1228,7 +1228,7 @@ void BuyCubeAction::vfunc_2()
 {
     if (m_n18 == 0)
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
@@ -1237,7 +1237,7 @@ void BuyCubeAction::vfunc_2()
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
         if (UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76))
-            pDialog->SetGroupAndMapId(m_n18, WorldService::GetInstance()->FUN_141bd3060());
+            pDialog->SetGroupAndMapId(m_n18, WorldService::GetInstance()->GetFieldId());
     }
     else
     {
@@ -1279,7 +1279,7 @@ LiftCubeAction::~LiftCubeAction() {}
 // @0x1409572c0
 int LiftCubeAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return false;
     if (pPlayer->FUN_141523c00().get())
@@ -1297,7 +1297,7 @@ MS2_REPLACE_METHOD(0x1409572C0, LiftCubeAction, vfunc_1, 637, 0x43810EFB);
 // @0x140957550
 void LiftCubeAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->FUN_141523c00().get())
@@ -1317,7 +1317,7 @@ MS2_REPLACE_METHOD(0x140957550, LiftCubeAction, vfunc_2, 452, 0x3B43636C);
 // @0x140957890 the liftable object in reach of the player
 Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
@@ -1365,7 +1365,7 @@ TalkAction::TalkAction()
 // @0x140957bb0
 int TalkAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsInCubeMode())
@@ -1399,7 +1399,7 @@ int TalkAction::vfunc_1()
         {
             m_n18 = reinterpret_cast<CNpc*>(pNpc)->GetNpcId();
             m_nNpcId = reinterpret_cast<GameObject*>(pNpc)->GetObjectId();
-            m_strName = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
+            m_strName = reinterpret_cast<CNpc*>(pNpc)->GetName();
             return 1;
         }
     }
@@ -1412,7 +1412,7 @@ MS2_REPLACE_METHOD(0x140957F10, TalkAction, vfunc_5, 11, 0xF06BEBEF);
 // @0x140957e80
 void TalkAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->GetCurStateId() == 0x16)
@@ -1481,7 +1481,7 @@ CInteractObject* InteractAction::FindUsableInteractObject()
 {
     if (((class Unk_AkoGuide*)FUN_1409331e0())->IsRestricted(3) != 0)
         return 0;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     NiPoint3 pos = pPlayer->FUN_1416767d0();
@@ -1534,7 +1534,7 @@ void InteractAction::vfunc_2()
     CInteractObject* pObject = (CInteractObject*)WorldService::GetInstance()->FindProp(m_strObjectId);
     if (!pObject)
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     MS2Ptr<CInteractObjectData> spData = pObject->GetRow();
@@ -1638,7 +1638,7 @@ void InteractNpcAction::vfunc_2()
 {
     if (m_pNpc == 0)
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->FUN_141527160(0x1a) == 0)
@@ -1657,17 +1657,17 @@ void InteractNpcAction::vfunc_2()
 // @0x140959330
 Unk_WsC_GameObj* InteractNpcAction::FindInteractNpc()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
-    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd2170(2, GetClientConstants()->InteractionDistance.Read(), 1, 0);
+    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FindNearestNpc(2, GetClientConstants()->InteractionDistance.Read(), 1, 0);
     if (!pNpc)
     {
         int nKind = 1;
         bool bRide = (pPlayer->GetPvPInfo() ? true : false) && reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->HasPoint();
         if (bRide)
             nKind = reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->GetPoint();
-        pNpc = WorldService::GetInstance()->FUN_141bd2170(nKind, GetClientConstants()->InteractionDistance.Read(), 1, 0);
+        pNpc = WorldService::GetInstance()->FindNearestNpc(nKind, GetClientConstants()->InteractionDistance.Read(), 1, 0);
     }
     if (!pNpc)
         return 0;
@@ -1685,7 +1685,7 @@ CStringW InteractNpcAction::vfunc_6()
 {
     if (m_pNpc == 0)
         return L"";
-    return GetActionCaption(0x634, reinterpret_cast<CNpc*>(m_pNpc)->FUN_141093310());
+    return GetActionCaption(0x634, reinterpret_cast<CNpc*>(m_pNpc)->GetName());
 }
 MS2_REPLACE_METHOD(0x140959240, InteractNpcAction, vfunc_6, 145, 0xD2B6814B);
 // @0x140959630
@@ -1762,7 +1762,7 @@ MS2_REPLACE_METHOD(0x140959A70, RegistUgcAction, vfunc_3, 66, 0x541E758C);
 // @0x1409598c0
 int RegistUgcAction::vfunc_1()
 {
-    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bd0220(pPlayer->vfunc_18(), GetClientConstants()->RegistUgcDistance.Read());
@@ -1780,7 +1780,7 @@ CStringW RegistUgcAction::vfunc_6()
 {
     if (m_spEntity == 0)
         return L"";
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     int nBannerId = FUN_140b60d90(m_spEntity);
     Unk_BannerPtr spBanner = CFieldBannerData::GetBanner(nBannerId);
     if (spBanner == 0)
@@ -1809,7 +1809,7 @@ MS2_REPLACE_METHOD(0x140959D70, RegistUgcAction, HighlightUgcEntity, 108, 0x9EED
 // @0x140959eb0 the object weapon cube in front of the player (the two cells ahead and the one below), kept in m_spCube
 int PullObjectWeaponAction::FUN_140959eb0()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->GetHeldItem())
@@ -1875,7 +1875,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
             continue;
         float fRange = 150.0f;
         pCube->entity->GetPropertyValue(0x2f9d016f, fRange);
-        if (GetDistance(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->FUN_1408b5370())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0()))) > fRange)
+        if (GetDistance(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->GetWorldPosition())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0()))) > fRange)
             continue;
         if (pCube->field48 != 0)
             continue;
@@ -1918,7 +1918,7 @@ MS2_REPLACE_METHOD(0x14095A4B0, PullObjectWeaponAction, vfunc_1, 627, 0x4930EE27
 // @0x14095a730
 void PullObjectWeaponAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->GetHeldItem())
@@ -1960,7 +1960,7 @@ Unk_AkoTarget PullObjectWeaponAction::vfunc_12()
 {
     if (m_spCube == 0)
         return ActionKeyObject::vfunc_12();
-    return Unk_AkoTarget(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spCube->FUN_1408b5370())));
+    return Unk_AkoTarget(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spCube->GetWorldPosition())));
 }
 MS2_REPLACE_METHOD(0x14095A980, PullObjectWeaponAction, vfunc_12, 115, 0x730CB897);
 // @0x14095a940
@@ -1971,7 +1971,7 @@ MS2_REPLACE_METHOD(0x14095A940, PullObjectWeaponAction, vfunc_6, 58, 0xDC4D8F98)
 // @0x14095aa70 a lift stands on the cell in front of the player (or the player is already putting one down)
 int PutDownLiftableAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141659690() && pPlayer->GetCurStateId() == 1)
@@ -2006,7 +2006,7 @@ MS2_REPLACE_METHOD(0x14095ADB0, PutDownLiftableAction, vfunc_5, 11, 0xBB301AD7);
 // @0x14095ad50
 void PutDownLiftableAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (Unk_PCCubeCraft* pCraft = pPlayer->GetActiveCubeCraft())
@@ -2030,7 +2030,7 @@ MS2_REPLACE_METHOD(0x14095B690, FunctionCubeAction, vfunc_10, 14, 0xA25B27BF);
 // @0x14095ae90 the function cube in reach of the player
 int FunctionCubeAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->GetCurStateId() == 0x29)
@@ -2063,7 +2063,7 @@ MS2_REPLACE_METHOD(0x14095AE90, FunctionCubeAction, vfunc_1, 989, 0xC35FC05B);
 // @0x14095b280
 void FunctionCubeAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     MS2Ptr<CFunctionCubeObject> spObject = GetFunctionCubeService()->FindCube(CString(m_str18));
@@ -2203,7 +2203,7 @@ MS2_REPLACE_METHOD(0x14095C6B0, HoldAction, vfunc_10, 14, 0x72E52537);
 // @0x14095c060
 int HoldAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsDead() != 0)
@@ -2222,11 +2222,11 @@ int HoldAction::vfunc_1()
         return 0;
     if (pPlayer->GetObjectId() == nTargetId)
         return 0;
-    Unk_WsC_GameObj* pPc = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
+    Unk_WsC_GameObj* pPc = WorldService::GetInstance()->FindPCById(nTargetId);
     if (pPc != 0)
         return 0;
     m_n18 = 0;
-    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd1320(nTargetId);
+    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FindNpcById(nTargetId);
     if (pNpc != 0)
     {
         if (m_nNpcId != reinterpret_cast<CNpc*>(pNpc)->GetNpcId())
@@ -2249,7 +2249,7 @@ MS2_REPLACE_METHOD(0x14095C060, HoldAction, vfunc_1, 649, 0x9CD66B21);
 // @0x14095c2f0
 void HoldAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->IsDead() != 0)
@@ -2280,7 +2280,7 @@ MS2_REPLACE_METHOD(0x14095C2F0, HoldAction, vfunc_2, 571, 0xA683D970);
 // @0x14095c560
 CStringW HoldAction::vfunc_6()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer && pPlayer->GetCurStateId() == 0x20)
     {
         m_n1c = 1;
@@ -2307,7 +2307,7 @@ MS2_REPLACE_METHOD(0x14095CB70, HoldPCAction, vfunc_10, 8, 0x7F371472);
 // @0x14095c720
 int HoldPCAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsDead() != 0)
@@ -2324,7 +2324,7 @@ int HoldPCAction::vfunc_1()
         return 0;
     if (pPlayer->GetObjectId() == nTargetId)
         return 0;
-    Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
+    Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FindPCById(nTargetId);
     if (pTarget != 0)
     {
         if (pPlayer->GetCurStateId() == 0x20)
@@ -2348,7 +2348,7 @@ MS2_REPLACE_METHOD(0x14095C720, HoldPCAction, vfunc_1, 632, 0x519B515F);
 // @0x14095c9a0
 void HoldPCAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->IsDead() != 0)
@@ -2390,7 +2390,7 @@ MS2_REPLACE_METHOD(0x14095CF70, ReleasePCAction, vfunc_10, 8, 0x7F371472);
 // @0x14095cbd0
 int ReleasePCAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsDead() != 0)
@@ -2407,7 +2407,7 @@ int ReleasePCAction::vfunc_1()
         return 0;
     if (pPlayer->GetObjectId() == nTargetId)
         return 0;
-    Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
+    Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FindPCById(nTargetId);
     if (pTarget != 0)
     {
         if (pPlayer->GetCurStateId() != 0x20)
@@ -2427,7 +2427,7 @@ MS2_REPLACE_METHOD(0x14095CBD0, ReleasePCAction, vfunc_1, 519, 0x89715AB0);
 // @0x14095cde0
 void ReleasePCAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     if (pPlayer->IsDead() != 0)
@@ -2448,7 +2448,7 @@ MS2_REPLACE_METHOD(0x14095CDE0, ReleasePCAction, vfunc_2, 181, 0x6265257E);
 // @0x14095ceb0
 CStringW ReleasePCAction::vfunc_6()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer && pPlayer->GetCurStateId() == 0x20 && m_n18 != 0)
         return GetStringCommonByKey(L"s_action_hold_pc_end");
     return L"";
@@ -2468,7 +2468,7 @@ int GatheringAction::vfunc_1()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
     WorldService::GetInstance()->GetInteractObjectsByCategory(&aObjects, 6);
-    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     float fNearest = FLT_MAX;
@@ -2603,7 +2603,7 @@ HomemadeCubeAction::HomemadeCubeAction() {}
 // @0x14095dd20
 int HomemadeCubeAction::vfunc_1()
 {
-    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
@@ -2688,7 +2688,7 @@ NurturingCubeAction::NurturingCubeAction() : m_n30(0) {}
 // @0x14095e4d0
 int NurturingCubeAction::vfunc_1()
 {
-    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> > aCubes;
@@ -2728,7 +2728,7 @@ MS2_REPLACE_METHOD(0x14095E850, NurturingCubeAction, vfunc_5, 11, 0xA6B3D596);
 // @0x14095e870
 CStringW NurturingCubeAction::vfunc_6()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return L"";
     if (m_n30 != 0)
@@ -2760,7 +2760,7 @@ BannerAction::~BannerAction() {}
 // @0x14095eb80
 int BannerAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (!FUN_140b7f400(pPlayer))
@@ -2808,14 +2808,14 @@ MS2_REPLACE_METHOD(0x14095ED20, BannerAction, vfunc_6, 191, 0x7C5FCB93);
 // @0x14095edf0
 PCBase* BannerAction::FindNearestMicroGamePC()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsInCubeMode())
         return 0;
     NiPoint3 ptMine = pPlayer->vfunc_18();
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > objects(10);
-    WorldService::GetInstance()->FUN_141bd2db0(&objects, (int (*)(Unk_WsC_GameObj*))FUN_141274b10);
+    WorldService::GetInstance()->CollectObjects(&objects, (int (*)(Unk_WsC_GameObj*))FUN_141274b10);
     float fMaxDist = static_cast<float>(*static_cast<Client::Constants*>(GetClientConstants())->MicroGameMaxDistance.Get());
     float fMaxUp = 50.0f;
     float fMaxDown = 50.0f;
@@ -2888,7 +2888,7 @@ void ReactorAction::vfunc_2()
     efd::SmartPointer<CReactor> spReactor = reinterpret_cast<CReactor*>(WorldService::GetInstance()->FindObjectById(m_nReactorId));
     if (spReactor == 0)
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return;
     MS2Ptr<ReactorData> spData = spReactor->GetData();
@@ -2976,7 +2976,7 @@ MS2_REPLACE_METHOD(0x14095FB80, ReactorAction, vfunc_12, 183, 0x59BCCBEC);
 // @0x14095fcb0
 CReactor* ReactorAction::FUN_14095fcb0()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     NiPoint3 pos = pPlayer->FUN_1416767d0();
@@ -3012,7 +3012,7 @@ int QuestUserFindAction::vfunc_1()
     WorldService* pWorld = WorldService::GetInstance();
     if (!pWorld)
         return 0;
-    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(pWorld->FUN_141bd0cc0());
+    Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(pWorld->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     std::pair<unsigned, __int64> user = ((CQuestManager*)FUN_140764020())->FindNearestQuestTarget();
@@ -3121,7 +3121,7 @@ TreeWateringAction::~TreeWateringAction() {}
 // @0x1409602c0
 int TreeWateringAction::vfunc_1()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (pPlayer->IsDead() != 0)
@@ -3163,7 +3163,7 @@ MS2_REPLACE_METHOD(0x1409602C0, TreeWateringAction, vfunc_1, 985, 0x74DFA7D4);
 // @0x1409606a0
 void TreeWateringAction::vfunc_2()
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)GetGameRule())->GetTreeWatering();
@@ -3188,7 +3188,7 @@ MS2_REPLACE_METHOD(0x1409606A0, TreeWateringAction, vfunc_2, 837, 0xF791FF78);
 // @0x140960a10
 CStringW TreeWateringAction::vfunc_6()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return CStringW(L"");
     MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)GetGameRule())->GetTreeWatering();

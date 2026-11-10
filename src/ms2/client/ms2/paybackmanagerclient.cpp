@@ -74,7 +74,7 @@ void FUN_1407a9710(Unk_1407a9690& v, CInPacket& in);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
-CStringW FUN_140298ea0(CStringW strKey);                            // string table text
+CStringW GetStringByKey(CStringW strKey);                            // string table text
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
 void FUN_141275260(int nStringId, int nA, int nB);                  // notice by string id
 __int64 GetServerTime();                                            // the server clock
@@ -205,7 +205,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
             {
                 if (spBuy->vfunc_4() == 3)
                 {
-                    spParam->m_str70 = FUN_140298ea0(CStringW(L"s_payback_bill_bottom_detail_text"));
+                    spParam->m_str70 = GetStringByKey(CStringW(L"s_payback_bill_bottom_detail_text"));
                     break;
                 }
             }
@@ -217,7 +217,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         {
             if (spBuy->vfunc_4() == 3)
             {
-                spParam->m_str70 = FUN_140298ea0(CStringW(L"s_payback_bill_bottom_detail_text"));
+                spParam->m_str70 = GetStringByKey(CStringW(L"s_payback_bill_bottom_detail_text"));
                 break;
             }
         }

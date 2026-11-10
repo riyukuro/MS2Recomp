@@ -79,7 +79,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 void ShowSystemNotice(const CStringW& strText, int nType, int nFlags);         // notice message box
 void DestroyItemInfoSlot(const CString& strName);                                 // drop the item shown under a dialog name
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
-int FUN_14053feb0(int nItemId);                                             // the rank of the box item
+int GetItemRank(int nItemId);                                             // the rank of the box item
 bool SendPacketThrottled(COutPacket* packet, int key, int delay);                 // rate limited send
 
 // @0x140e47540
@@ -128,7 +128,7 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
     GetChildInto<ASUIComponent>("m_slot", m_1d8);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_requestButton", m_1c8).get())
     {
-        ((class ASButton*)(m_1c8))->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
+        ((class ASButton*)(m_1c8))->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
         CStringW strLabel(L"s_event_open_item_box_ui_button");
         ((class ASButton*)(m_1c8))->FUN_1422cdfb0(GetStringCommonByKey(strLabel));
     }
@@ -163,11 +163,11 @@ MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, OnNotifyCompleteMyPC, 
 // @0x140e48050
 void UIItemEventOpenBoxDialog::FUN_140e48050()
 {
-    int nFieldId = WorldService::GetInstance()->FUN_141bd3060();
+    int nFieldId = WorldService::GetInstance()->GetFieldId();
     MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)nFieldId);
     if (spCtx == 0)
         return;
-    if (WorldService::GetInstance()->FUN_141bd0cc0() == 0)
+    if (WorldService::GetInstance()->GetLocalPlayer() == 0)
         return;
     if (spCtx->m_fieldID != nFieldId)
         return;
@@ -213,7 +213,7 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)WorldService::GetInstance()->FUN_141bd3060());
+    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(TSingleton<CGameEventValueManager>::GetInstance()->ItemBox())->Get((unsigned)WorldService::GetInstance()->GetFieldId());
     if (spCtx == 0)
     {
         {
@@ -237,7 +237,7 @@ CString UIItemEventOpenBoxDialog::BindBoxItem(unsigned nItemId)
     CString strKey;
     strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     MS2Ptr<CItem> spItem(new CItem);
-    if (spItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0) == 0)
+    if (spItem->FUN_140523c40(nItemId, GetItemRank(nItemId), 0) == 0)
         return "";
     CreateItemInfoSlot(strKey, MS2Ptr<CItem>(spItem), 0, 0, 0);
     m_1e8 = strKey;

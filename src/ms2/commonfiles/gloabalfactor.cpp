@@ -54,9 +54,9 @@ CGloabalFactor::~CGloabalFactor()
 // @0x1404c1290
 bool CGloabalFactor::Load()
 {
-    if (!FUN_1404c12f0())
+    if (!ResetExpRates())
         return false;
-    if (!FUN_1404c1370())
+    if (!ResetMesoRates())
         return false;
     if (!LoadMultiControl())
         return false;
@@ -64,7 +64,7 @@ bool CGloabalFactor::Load()
 }
 
 // @0x1404c12f0
-bool CGloabalFactor::FUN_1404c12f0()
+bool CGloabalFactor::ResetExpRates()
 {
     for (int i = 0; i < 11; ++i)
     {
@@ -76,7 +76,7 @@ bool CGloabalFactor::FUN_1404c12f0()
 }
 
 // @0x1404c1370
-bool CGloabalFactor::FUN_1404c1370()
+bool CGloabalFactor::ResetMesoRates()
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -177,7 +177,7 @@ float CGloabalFactor::GetMesoRate(unsigned int nLevel, int nKind)
 }
 
 // @0x1404c17a0
-float CGloabalFactor::FUN_1404c17a0(unsigned int nLevel, int nKind)
+float CGloabalFactor::GetExpRate(unsigned int nLevel, int nKind)
 {
     CheckInit();
     if (nLevel < 1 || nLevel > (unsigned short)reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLevelCap())

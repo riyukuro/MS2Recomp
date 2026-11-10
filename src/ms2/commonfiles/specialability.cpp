@@ -232,7 +232,7 @@ unsigned FUN_14081d260(const CStringA& strName)
 }
 
 // @0x14081d2f0
-SAType FUN_14081d2f0(const CStringA& strName)
+SAType GetSATypeByName(const CStringA& strName)
 {
     std::map<CStringA, SAType, Unk_SANameLess>::iterator it = g_mapSANameToType.find(strName);
     if (it != g_mapSANameToType.end())
@@ -298,7 +298,7 @@ int FUN_14081d480(int nType)
 }
 
 // @0x14081d650 the option has one of the abilities of the group
-int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
+int HasSpecialAbility(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
 {
     Unk_SAListPtr spList = GetSpecialAbilityList((eSpecialAbility)nType);
     if (spList.get() != 0)
@@ -382,7 +382,7 @@ int FUN_14081d980(int nValue)
 }
 
 // @0x14081d9e0 the ability is a skill level up tier (0x4d - 0x5a)
-int FUN_14081d9e0(int nType)
+int IsSkillLevelUpTier(int nType)
 {
     switch (nType)
     {
@@ -407,7 +407,7 @@ int FUN_14081d9e0(int nType)
 }
 
 // @0x14081da20 the tier of it
-int FUN_14081da20(int nType)
+int GetSkillTier(int nType)
 {
     switch (nType)
     {
@@ -479,7 +479,7 @@ int FUN_14081dd50(int nIndex)
 // @0x14081dd80
 SAType FindSpecialAbilityByName(const CStringA& strName)
 {
-    return FUN_14081d2f0(strName);
+    return GetSATypeByName(strName);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c330-0x142c9c3b0 .text$yd

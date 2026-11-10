@@ -123,9 +123,9 @@ public:
     bool OpenConsole();
     void CloseConsole();
     void SetFileLog(int);
-    void FUN_1411683e0(const char* pszFormat, ...);   // append a line
+    void Print(const char* pszFormat, ...);   // append a line
 };
-int FUN_1406516c0();                                            // current language id
+int GetVoice();                                            // current language id
 CSoundService* GetSoundService();
 
 class Unk_SoundMgr : public CSoundEventMgr
@@ -180,7 +180,7 @@ public:
     ~Unk_ModelMgr();                                            // 0x140a2a140
     void* m_pad[0x13];
 public:
-    int FUN_140a2a180();   // C3: was free FUN_140a2a180
+    int Load();   // C3: was free Load
     // Property readers: (entity element, model name, property name, out).
     int FUN_140a2a920(const CString& strModel, CString strFilter);
     int FUN_140a2aab0(TiXmlElement* pEntity, CString strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData> >* pOut);
@@ -278,9 +278,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_1408733e0(TiXmlElement* pElem, const char* pszName, CString& rValue);
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rValue);
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);                      // root element
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc);                      // root element
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
-bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
+bool IsElementAvailable(Unk_XmlElement *);  // C3: the definition's signature
 class CLogString;
 template <class T> void Unk_AchieveLog(CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -290,9 +290,9 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 
 // Region spawn tables.
-TPtr<CFieldSpawnTag> FUN_1403728d0(int nFieldId, int nSpawnPointId);   // the spawn tag of a field spawn point
+TPtr<CFieldSpawnTag> GetOrCreateSpawnTag(int nFieldId, int nSpawnPointId);   // the spawn tag of a field spawn point
 struct Unk_SpawnMgr { char m_pad[8]; char m_groups[1]; };
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 void* FUN_14182fd90(Unk_Ref* pRef);
 typedef ATL::CAtlArray<MS2Ptr<CRegionSpawnProb> > Unk_ProbArray;   // CRegionSpawnResult::m_aProb
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
@@ -321,14 +321,14 @@ void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
 {
     ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->OpenConsole();
     ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->SetFileLog(1);
-    CDebugConsole::GetInstance()->FUN_1411683e0("Export FieldMetaTable");
-    CDebugConsole::GetInstance()->FUN_1411683e0("Read Model....");
+    CDebugConsole::GetInstance()->Print("Export FieldMetaTable");
+    CDebugConsole::GetInstance()->Print("Read Model....");
     Unk_ModelMgr mgr;
-    if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->FUN_140a2a180() == 0) {
+    if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->Load() == 0) {
         MessageBoxA(NULL, "Fail to initialize Model Manager.", "Error", 0);
         return;
     }
-    CDebugConsole::GetInstance()->FUN_1411683e0("Read Model Complete");
+    CDebugConsole::GetInstance()->Print("Read Model Complete");
 
     ATL::CAtlArray<CString> props;
     Unk_SplitA(strDeleteProps, &props, ",");
@@ -347,7 +347,7 @@ void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
             TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
             if (pNode == NULL)
                 continue;
-            CDebugConsole::GetInstance()->FUN_1411683e0(FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
+            CDebugConsole::GetInstance()->Print(FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
             for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
                  pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
                 CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("modelName"), 0);
@@ -364,7 +364,7 @@ void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::GetInstance()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
+                CDebugConsole::GetInstance()->Print(Unk_SocketFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
             }
         }
     }
@@ -383,7 +383,7 @@ void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
             TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("entities"));
             if (pNode == NULL)
                 continue;
-            CDebugConsole::GetInstance()->FUN_1411683e0(FUN_141827280("{0} Read block {1}", i, blocks[i]));
+            CDebugConsole::GetInstance()->Print(FUN_141827280("{0} Read block {1}", i, blocks[i]));
             for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
                  pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
                 CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("model-name"), 0);
@@ -403,7 +403,7 @@ void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::GetInstance()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+                CDebugConsole::GetInstance()->Print(Unk_SocketFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
             }
         }
     }
@@ -572,9 +572,9 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
 bool ExportSoundDataTable(bool bMessageBox)
 {
     bool bOk = true;
-    int nLanguage = FUN_1406516c0();
+    int nLanguage = GetVoice();
     TSingleton<CSoundDataTable>::GetInstance()->SetLanguage(nLanguage);
-    CDebugConsole::GetInstance()->FUN_1411683e0("Export SoundDataTable");
+    CDebugConsole::GetInstance()->Print("Export SoundDataTable");
     {
         CSoundDataTable::SoundList events;
         CollectEventSounds("ms2sound/sound/voice", events);
@@ -598,7 +598,7 @@ bool ExportSoundDataTable(bool bMessageBox)
         strResult.Format("saved [%s]", (const char*)strPath);
     else
         strResult.Format("failed to save [%s]", (const char*)strPath);
-    CDebugConsole::GetInstance()->FUN_1411683e0(strResult);
+    CDebugConsole::GetInstance()->Print(strResult);
     if (bMessageBox)
         AfxMessageBox(strResult, 0, 0);
     return bOk;
@@ -679,16 +679,16 @@ bool ExportFieldMetaTable(bool bLog)
 {
     if (bLog) {
         ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->OpenConsole();
-        CDebugConsole::GetInstance()->FUN_1411683e0("Export FieldMetaTable");
-        CDebugConsole::GetInstance()->FUN_1411683e0("Read Model....");
+        CDebugConsole::GetInstance()->Print("Export FieldMetaTable");
+        CDebugConsole::GetInstance()->Print("Read Model....");
     }
     Unk_ModelMgr mgr;
-    if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->FUN_140a2a180() == 0) {
+    if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->Load() == 0) {
         MessageBoxA(NULL, "Fail to initialize Model Manager.", "Error", 0);
         return false;
     }
     if (bLog)
-        CDebugConsole::GetInstance()->FUN_1411683e0("Read Model Complete");
+        CDebugConsole::GetInstance()->Print("Read Model Complete");
 
     std::vector<MS2Ptr<CFieldData> > blocks;
     CFieldData::LoadFieldData();
@@ -711,7 +711,7 @@ bool ExportFieldMetaTable(bool bLog)
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             if (bLog) {
                 nBlock++;
-                CDebugConsole::GetInstance()->FUN_1411683e0("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
+                CDebugConsole::GetInstance()->Print("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
             }
             if (nFieldId >= 90000000)
                 continue;
@@ -790,9 +790,9 @@ bool ExportFieldMetaTable(bool bLog)
                                mgr.FUN_140a2a920(strModel, CString("MS2RegionBoxSpawn")) != 0) {
                         int nSpawnPoint;
                         mgr.FUN_140a2b270(pEntity, strModel, "SpawnPointID", &nSpawnPoint);
-                        TPtr<CFieldSpawnTag> region = FUN_1403728d0(nFieldId, nSpawnPoint);
+                        TPtr<CFieldSpawnTag> region = GetOrCreateSpawnTag(nFieldId, nSpawnPoint);
                         if (region->population > 0) {
-                            MS2Ptr<CRegionSpawnResult> group = ((CNpcDataTable*)(void*)((struct Unk_SpawnMgr*)FUN_1406d6e90())->m_groups)->FindSpawnResult(CStringW(region->tag),
+                            MS2Ptr<CRegionSpawnResult> group = ((CNpcDataTable*)(void*)((struct Unk_SpawnMgr*)GetNpcDataTableCli())->m_groups)->FindSpawnResult(CStringW(region->tag),
                                           region->difficultyMin, region->difficulty);
                             if (FUN_14182fd90((Unk_Ref*)&group) != 0) {
                                 for (unsigned int i = 0; i < ((const Unk_ProbArray*)&group->m_aProb)->GetCount(); i++) {
@@ -800,7 +800,7 @@ bool ExportFieldMetaTable(bool bLog)
                                     if (entry->m_pSpawn == 0)
                                         continue;
                                     int nNpcId = entry->m_pSpawn->m_nNpcId;
-                                    MS2Ptr<NpcDataCli> npcRow = ((NpcDataTableCli*)(void*)FUN_1406d6e90())->Find(nNpcId);
+                                    MS2Ptr<NpcDataCli> npcRow = ((NpcDataTableCli*)(void*)GetNpcDataTableCli())->Find(nNpcId);
                                     if (FUN_1409f90f0((Unk_AvBox *)&npcRow, 0) != 0)
                                         continue;
                                     _NpcInfo npc;
@@ -840,8 +840,8 @@ bool ExportFieldMetaTable(bool bLog)
     }
 
     if (bLog) {
-        CDebugConsole::GetInstance()->FUN_1411683e0("Parse blockfile Complete");
-        CDebugConsole::GetInstance()->FUN_1411683e0("Parse TimeEvent NpcSpawn");
+        CDebugConsole::GetInstance()->Print("Parse blockfile Complete");
+        CDebugConsole::GetInstance()->Print("Parse TimeEvent NpcSpawn");
     }
     {
         CString strTimeEvent = GetXmlPath("Table/Server", "timeEventData.xml");
@@ -852,7 +852,7 @@ bool ExportFieldMetaTable(bool bLog)
         if (pTimeRoot == NULL)
             return false;
         for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pTimeRoot))->FirstChild("event")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("event"))) {
-            if (!FUN_14028f710((Unk_XmlElement *)pEvent))
+            if (!IsElementAvailable((Unk_XmlElement *)pEvent))
                 continue;
             int nEventId = 0;
             int nType = 0;
@@ -888,7 +888,7 @@ bool ExportFieldMetaTable(bool bLog)
     }
 
     if (bLog)
-        CDebugConsole::GetInstance()->FUN_1411683e0("Parse GameEvent NpcSpwan");
+        CDebugConsole::GetInstance()->Print("Parse GameEvent NpcSpwan");
     {
         CString strGameEvent = GetXmlPath("Table/Server", "GameEvent.xml");
         TiXmlDocument docGame;
@@ -900,7 +900,7 @@ bool ExportFieldMetaTable(bool bLog)
             return false;
         }
         for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pGameRoot))->FirstChild("gameEvent")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("gameEvent"))) {
-            if (!FUN_14028f710((Unk_XmlElement *)pEvent))
+            if (!IsElementAvailable((Unk_XmlElement *)pEvent))
                 continue;
             CStringW strEventType = FUN_1401bf530(pEvent, "eventType", CStringW(L""));
             if (operator==(strEventType, L"SpawnNpc")) {
@@ -909,7 +909,7 @@ bool ExportFieldMetaTable(bool bLog)
                 TiXmlDocument docNpc;
                 if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFromString(&docNpc, strNpcFile) == 0)
                     continue;
-                TiXmlElement* pNpcRoot = FUN_140345b40(&docNpc);
+                TiXmlElement* pNpcRoot = GetFirstChildElement(&docNpc);
                 if (pNpcRoot == NULL)
                     continue;
                 unsigned int nNpcId = 0;
@@ -929,7 +929,7 @@ bool ExportFieldMetaTable(bool bLog)
     }
 
     if (bLog)
-        CDebugConsole::GetInstance()->FUN_1411683e0("Write FieldMetaTable");
+        CDebugConsole::GetInstance()->Print("Write FieldMetaTable");
     TiXmlDocument docOut;
     TiXmlDeclaration decl("1.0", "utf-8", "");
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(decl);
@@ -1046,7 +1046,7 @@ bool ExportFieldMetaTable(bool bLog)
     }
 
     if (bLog)
-        CDebugConsole::GetInstance()->FUN_1411683e0("Write FieldMetaTable Complete.");
+        CDebugConsole::GetInstance()->Print("Write FieldMetaTable Complete.");
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(elemRoot);
     CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", static_cast<const CString&>(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetLocaleName()));
     if (!docOut.SaveFile(strOut))

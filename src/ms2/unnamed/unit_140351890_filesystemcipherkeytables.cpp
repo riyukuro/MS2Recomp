@@ -33,7 +33,7 @@ extern unsigned char** DAT_143aaeaf8;
 void XorBytes(const unsigned char* a, const unsigned char* b, unsigned char* out, unsigned int count);
 
 // @0x140351890
-void FUN_140351890()
+void InitCipherKeyTables()
 {
     if (DAT_143aaead0 == 0)
     {
@@ -111,7 +111,7 @@ void FUN_140351890()
     XorBytes(DAT_1439f3830, DAT_1439f4030, DAT_143aadad0, 0x800);
     XorBytes(DAT_1439f4030, DAT_1439f3030, DAT_143aae2d0, 0x800);
 }
-MS2_REPLACE(0x140351890, FUN_140351890, 1527, 0xAE1F3259);
+MS2_REPLACE(0x140351890, InitCipherKeyTables, 1527, 0xAE1F3259);
 
 // @0x140351e90
 void FreeCipherKeyTables()

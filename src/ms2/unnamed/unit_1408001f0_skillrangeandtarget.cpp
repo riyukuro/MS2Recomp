@@ -85,7 +85,7 @@ void Unk_RangeShape::Load(TiXmlElement* pElem)
 }
 
 // @0x140800570
-void Unk_RangeShape::FUN_140800570(void* pElem)
+void Unk_RangeShape::SaveAttributes(void* pElem)
 {
     static Unk_RangeShape kDefault;
     if (m_str != kDefault.m_str)
@@ -183,7 +183,7 @@ void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
     if (IsDifferent(kDefault))
     {
         TiXmlElement elem(strName);
-        FUN_140800570(&elem);
+        SaveAttributes(&elem);
         if (m_n40 != kDefault.m_n40)
             XmlSetAttr((class TiXmlElement*)(&elem), "includeCaster", m_n40);
         if (m_n44 != kDefault.m_n44)

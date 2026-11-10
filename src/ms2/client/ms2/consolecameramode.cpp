@@ -56,7 +56,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
-    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
+    class Unk_WsC_GameObj* FindObjectByMesh(void* mesh);   // C3: was Unk_GameContext::FindObjectByMesh
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -109,7 +109,7 @@ float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
-void FUN_140291b70(float* pfDegree);                // wraps an angle to (-180, 180]
+void NormalizeDegrees(float* pfDegree);                // wraps an angle to (-180, 180]
 int LoadTestCamerValue();                                // reloads the camera xml (returns 0 on failure)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,7 +252,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
             if (fYaw != 0.0f)
             {
                 float fDegree = m_68 * 180.0f / 3.14159265f + fYaw * m_114;
-                FUN_140291b70(&fDegree);
+                NormalizeDegrees(&fDegree);
                 float fRadian = fDegree * 3.14159265f / 180.0f;
                 m_68 = fRadian;
                 m_10c = fRadian;
@@ -283,7 +283,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
                         if (fWant > fCur)
                             fCur = fWant;
                     }
-                    FUN_140291b70(&fCur);
+                    NormalizeDegrees(&fCur);
                     m_68 = fCur * 3.14159265f / 180.0f;
                 }
                 m_108 = m_68 != m_10c;
@@ -367,7 +367,7 @@ void CConsoleCameraMode::vfunc_30()
     for (unsigned int i = 0; i < pList->GetPickResult()->GetSize(); ++i)
     {
         Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList->GetPickResult()->GetAt(i));
-        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(pContext->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
+        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(pContext->FindObjectByMesh(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {

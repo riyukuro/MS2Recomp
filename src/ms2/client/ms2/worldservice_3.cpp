@@ -477,17 +477,17 @@ void Unk_WsInst3Bases(const efd::SmartPointer<egf::EntityManager>& spEntityManag
 // new instantiates them without a second set of self-registering statics.
 void Unk_WsInst3Handlers(void* p)
 {
-    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorAddedMessage>(&WorldService::FUN_141bbfb50);
+    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorAddedMessage>(&WorldService::OnActorAdded);
     new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorRemovedMessage>(&WorldService::OnActorRemoved);
     new (p) efd::MessageHandlerImpl<WorldService, efd::AssetLoadResponse>(&WorldService::FUN_141bbf9f0);
     new (p) efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>(&WorldService::FUN_141bc0a70);
     new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>(&WorldService::FUN_141bbfe30);
     new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessage>(&WorldService::FUN_141bc0290);
     new (p) efd::MessageSubclassHandler<WorldService, efd::AssetLoadResponse, egf::FlatModelFactoryResponse>(&WorldService::OnFlatModelFactoryResponse);
-    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8196>(&WorldService::FUN_141bbfa50);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8196>(&WorldService::OnEntityChanged);
     new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>(&WorldService::FUN_141bbd640);
-    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>(&WorldService::FUN_141bbf2f0);
-    new (p) efd::MessageWrapperSubclassHandler<WorldService, ecrPhysX::PhysXPropMessage, ecrPhysX::PhysXPropMessage, 12299>(&WorldService::FUN_141bc0530);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>(&WorldService::OnEntityRemoved);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, ecrPhysX::PhysXPropMessage, ecrPhysX::PhysXPropMessage, 12299>(&WorldService::OnPhysXProp);
 }
 
 // The ClassFunHandler constructors (0x141bf0640-0x141bf07c4: object/method and copy) of the two functors of the CU.

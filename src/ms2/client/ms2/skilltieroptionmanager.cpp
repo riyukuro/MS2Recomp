@@ -33,12 +33,12 @@ class CFileSystem * GetFileSystem(void);
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
+bool IsElementAvailable(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 unsigned char FUN_1401d1320(CCacheData*);                                // the file changed since it was loaded
-int FUN_14081d9e0(int nTier);                                       // the tier id is used
-int FUN_14081da20(int nTier);                                       // the tier's skill group id
+int IsSkillLevelUpTier(int nTier);                                       // the tier id is used
+int GetSkillTier(int nTier);                                       // the tier's skill group id
 struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
@@ -119,7 +119,7 @@ int CSkillTierOptionManager::Update()
             continue;
         bChanged = 1;
         ATL::CAtlArray<unsigned int> aSkills;
-        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)reinterpret_cast<PC*>(m_pOwner)->GetJobGroupId(), &aSkills);
+        FUN_14080c370(GetSkillTier(nTier), (eJobCode)reinterpret_cast<PC*>(m_pOwner)->GetJobGroupId(), &aSkills);
         for (unsigned j = 0; j < aSkills.GetCount(); j++)
         {
             if (Unk_LockGuard guard = m_lock) { __assume(0); } else
@@ -166,7 +166,7 @@ int LoadItemOptionSkillTier()
         {
             for (unsigned nTier = 0; nTier < 0xcf; nTier++)
             {
-                if (FUN_14081d9e0(nTier) == 0)
+                if (IsSkillLevelUpTier(nTier) == 0)
                     continue;
                 s_tierIds.Add((CSkillTierOptionManager::TierId)nTier);
             }
@@ -180,7 +180,7 @@ int LoadItemOptionSkillTier()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("skillTier")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("skillTier")))
     {
-        if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
+        if (!IsElementAvailable(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
         unsigned nId = 0;
         CString strSkills;

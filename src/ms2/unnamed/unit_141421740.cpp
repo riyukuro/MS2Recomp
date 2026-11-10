@@ -7,7 +7,7 @@
 
 
 // @0x141421740
-CString FUN_141421740(const CString& text, int* pOutIndex)
+CString GetModelVariant(const CString& text, int* pOutIndex)
 {
     int start = 0;
     CString token = text.Tokenize(".", start);

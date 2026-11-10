@@ -39,7 +39,7 @@ public:
 
     int GetFontId();                                                    // the attribute's +0x18, 0 without one
     bool FUN_140e0dc30();                                                   // stamp the attribute with the current time
-    __int64 FUN_140e0dca0();                                                // the attribute's time stamp
+    __int64 GetTimeStamp();                                                // the attribute's time stamp
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -96,7 +96,7 @@ bool UIDamageFont::FUN_140e0dc30()
 }
 
 // @0x140e0dca0
-__int64 UIDamageFont::FUN_140e0dca0()
+__int64 UIDamageFont::GetTimeStamp()
 {
     if (m_spAttr == 0 || m_30 == 0)
         return 0;

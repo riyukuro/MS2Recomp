@@ -26,7 +26,7 @@ public:
     void FUN_140867180(const CString& strLine);             // as 0x140867020 for a CString
     void ClearTail();                                   // clear the second list
     void SetLimit(unsigned long long nLimit);                // set the byte limit
-    void FUN_140867330(__int64 nLen);                       // account a line against the budget
+    void TrimTail(__int64 nLen);                       // account a line against the budget
     const CStringW& GetName() const;                  // the file name
 
 private:

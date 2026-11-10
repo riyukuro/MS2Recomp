@@ -16,7 +16,7 @@
 #include <stdarg.h>
 
 // @0x1402e1150 - the va_list wide formatter (vswprintf core)
-int FUN_1402e1150(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszFormat, _locale_t pLocale, va_list args)
+int Vswprintf(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszFormat, _locale_t pLocale, va_list args)
 {
     int nCount = __stdio_common_vswprintf(*__local_stdio_printf_options(), pBuffer, nBufferCount, pszFormat, pLocale, args);
     int nResult;
@@ -27,18 +27,18 @@ int FUN_1402e1150(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszForma
     return nResult;
 }
 
-// @0x1402e1070 - the variadic wide formatter: builds the va_list and defers to FUN_1402e1150
+// @0x1402e1070 - the variadic wide formatter: builds the va_list and defers to Vswprintf
 int FUN_1402e1070(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszFormat, _locale_t pLocale, ...)
 {
     va_list args;
     va_start(args, pLocale);
-    int nCount = FUN_1402e1150(pBuffer, nBufferCount, pszFormat, pLocale, args);
+    int nCount = Vswprintf(pBuffer, nBufferCount, pszFormat, pLocale, args);
     va_end(args);
     return nCount;
 }
 
 // @0x1402e10d0 - the va_list narrow, bounded formatter (vsnprintf_s core)
-int FUN_1402e10d0(char* pBuffer, size_t nBufferCount, size_t nMaxCount, const char* pszFormat,
+int VsnprintfS(char* pBuffer, size_t nBufferCount, size_t nMaxCount, const char* pszFormat,
                   _locale_t pLocale, va_list args)
 {
     int nCount = __stdio_common_vsnprintf_s(*__local_stdio_printf_options(), pBuffer, nBufferCount, nMaxCount,

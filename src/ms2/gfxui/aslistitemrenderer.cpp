@@ -94,7 +94,7 @@ ASItemRendererBase::ASItemRendererBase(const Scaleform::GFx::Value& v, int nMovi
 
 // Not hooked: onData is destroyed by the callee.
 // @0x1422e1f50
-void ASItemRendererBase::FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onData, void* pUser)
+void ASItemRendererBase::SetDataHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onData, void* pUser)
 {
     SetFunction("fnSetData", ASFunction(onData, (__int64)pUser, m_nMovieId));
 }

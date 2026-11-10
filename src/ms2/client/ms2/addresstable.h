@@ -71,7 +71,7 @@ template<> struct Unk_SocketRef<Unk_AddressBlockMap> {
         else result = &static_cast<TPtredDummy<Unk_AddressBlockMap>*>(p)->value;
         return result;
     }
-    static Unk_AddressBlockMap* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_AddressBlockMap* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_AddressBlockMap)
 MS2_CHECK_OFFSET(TPtredDummy<Unk_AddressBlockMap>, value, 0x18);

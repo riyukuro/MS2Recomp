@@ -575,7 +575,7 @@ void StateCoupleEmotion::vfunc_24()
             break;
         }
         int nPartner = GetPartnerId();
-        PCBase* pPeer = (PCBase*)WorldService::GetInstance()->FUN_141bd1290(nPartner);
+        PCBase* pPeer = (PCBase*)WorldService::GetInstance()->FindPCById(nPartner);
         if (pPeer == 0)
             break;
         kPos.z = pPeer->vfunc_18().z;
@@ -836,7 +836,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         MS2_ASSERT_AT(0x286, "pWorldService" && 0);
         return false;
     }
-    PCBase* pPeerPC = (PCBase*)pWorldService->FUN_141bd1290(m_spCoupleData->m_nPartnerId);
+    PCBase* pPeerPC = (PCBase*)pWorldService->FindPCById(m_spCoupleData->m_nPartnerId);
     if (pPeerPC == 0)
     {
         MS2_ASSERT_AT(0x289, "pPeerPC" && 0);
@@ -907,7 +907,7 @@ PCBase* StateCoupleEmotion::GetPartner()
         MS2_ASSERT_AT(0x32d, "pWorldService" && 0);
         return 0;
     }
-    return (PCBase*)pWorldService->FUN_141bd1290(m_spCoupleData->m_nPartnerId);
+    return (PCBase*)pWorldService->FindPCById(m_spCoupleData->m_nPartnerId);
 }
 
 // Leaves the state: tells the server (packet 0xa3) and optionally shows the "partner left" notice.
@@ -1088,7 +1088,7 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
     m_spLoopEffectNode->SetWorldTranslate(kCenterXf.m_Translate);
     m_spLoopEffectNode->SetWorldRotate(*reinterpret_cast<const NiMatrix3*>(static_cast<const NiTransform*>(&kCenterXf)));
     m_spLoopEffectNode->SetLocalFromWorldTransform(kCenterXf);
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x37f, "pMyPC" && 0);
@@ -1220,7 +1220,7 @@ void FUN_140b84010(int nWhy)
     CStringW strPartner(L"");
     do
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == 0)
         {
             MS2_ASSERT_AT(0x3cf, "pMyPC" && 0);
@@ -1234,7 +1234,7 @@ void FUN_140b84010(int nWhy)
             MS2_ASSERT_AT(0x3d5, "pState" && 0);
             break;
         }
-        PCBase* pPeer = (PCBase*)WorldService::GetInstance()->FUN_141bd1290(pState->GetPartnerId());
+        PCBase* pPeer = (PCBase*)WorldService::GetInstance()->FindPCById(pState->GetPartnerId());
         if (pPeer == 0)
             break;
         strPartner = pPeer->vfunc_77();
@@ -1332,7 +1332,7 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
         MS2_ASSERT_AT(0x409, "pWorldService" && 0);
         return false;
     }
-    MyPC* pMyPC = static_cast<MyPC*>(pWorldService->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(pWorldService->GetLocalPlayer());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x40c, "pMyPC" && 0);

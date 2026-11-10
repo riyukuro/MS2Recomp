@@ -24,7 +24,7 @@
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 
 // @0x140f35340
 UIDarkStreamScoreDialog::UIDarkStreamScoreDialog()
@@ -106,7 +106,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, bool a2)
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetBoolean(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

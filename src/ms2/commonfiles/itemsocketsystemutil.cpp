@@ -102,7 +102,7 @@ template<> inline Delegate<bool(int, const CMsgBoxData&)>::Delegate(const Delega
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -114,7 +114,7 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Init(MS2Ptr<CItem> pItem
 {
     if (pItem == (CItem*)0 || pItem.get()->GetSocket() == 0)
         return false;
-    m_n18 = ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId();
+    m_n18 = ((class CItemData*)(void*)(pItem.get()->GetData()))->GetOriginOrItemId();
     m_n1C = pItem.get()->GetRarity();
     m_n20 = pItem.get()->GetItemUid();
     m_n28 = ((class CItemSocket*)(void*)(pItem.get()->GetSocket()))->GetOpenSlotCount();
@@ -130,7 +130,7 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Matches(MS2Ptr<CItem> pI
         return false;
     if (m_n20 == (unsigned __int64)pItem.get()->GetItemUid())
         return false;
-    if (m_n18 != ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId() || m_n1C != pItem.get()->GetRarity())
+    if (m_n18 != ((class CItemData*)(void*)(pItem.get()->GetData()))->GetOriginOrItemId() || m_n1C != pItem.get()->GetRarity())
         return false;
     void* pEnhance = pItem.get()->GetSocket();
     if (pEnhance == 0 || ((class CItemSocket*)(void*)(pEnhance))->GetMaxSlot() == 0)
@@ -164,7 +164,7 @@ class CItemGemStoneUpgradeTable;
 class Unk_Random;
 class CIngredientContainer;
 CItemGemStoneUpgradeTable* GetItemGemStoneUpgradeTable();
-int FUN_1406516b0();                                                // the language / region id
+int GetRegion();                                                // the language / region id
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -175,7 +175,7 @@ void* GetGameRule();
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 int FUN_1406198a0(int nBase, float fRate);                          // (int)(nBase * fRate + 1e-6)
 unsigned int FUN_140482050(unsigned int, unsigned int);  // C3: the definition's signature
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 class CLua   // C3: member view for the former free stand-ins
 {
 public:
@@ -270,7 +270,7 @@ bool FUN_1406271b0(MS2Ptr<CItemGemStoneData> spRow, short* pMin, short* pMax, in
 MS2_REPLACE(0x1406271B0, FUN_1406271b0, 308, 0x26C469AB);
 
 // @0x1406272f0
-bool FUN_1406272f0(unsigned nMask, MS2Ptr<CItemGemStoneData> spRow)
+bool HasGemStoneMask(unsigned nMask, MS2Ptr<CItemGemStoneData> spRow)
 {
     if (nMask == 0 || spRow == 0)
         return false;
@@ -278,17 +278,17 @@ bool FUN_1406272f0(unsigned nMask, MS2Ptr<CItemGemStoneData> spRow)
         return true;
     return false;
 }
-MS2_REPLACE(0x1406272F0, FUN_1406272f0, 140, 0x04DF3904);
+MS2_REPLACE(0x1406272F0, HasGemStoneMask, 140, 0x04DF3904);
 
 // @0x140627390
-CStringW FUN_140627390(unsigned nId)
+CStringW GetGemStoneName(unsigned nId)
 {
     MS2Ptr<CItemGemStoneData> spRow = GetItemGemStoneUpgradeTable()->FindData(nId);
     if ((CItemGemStoneData*)spRow)
         return CStringW(spRow->m_strName);
     return CStringW(L"");
 }
-MS2_REPLACE(0x140627390, FUN_140627390, 174, 0x0188DA8B);
+MS2_REPLACE(0x140627390, GetGemStoneName, 174, 0x0188DA8B);
 
 // @0x140627450
 // The socket scroll can be used on the item: 0 = yes, else the error code of the first rule that fails.
@@ -298,7 +298,7 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
         return 1;
     if (spScroll == 0)
         return 2;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->GetData()));
     if (spData == 0)
         return 1;
     if (!FUN_140627930(spData, spScroll))
@@ -401,18 +401,18 @@ MS2_REPLACE(0x140627B80, FUN_140627b80, 137, 0x9251C7E8);
 // @0x140627c10
 bool FUN_140627c10(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
+    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->GetData()) == 0)
         return false;
-    return !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType();
+    return !reinterpret_cast<CItemData*>(spItem->GetData())->HasSkinType();
 }
 MS2_REPLACE(0x140627C10, FUN_140627c10, 162, 0x0B1DA3C6);
 
 // @0x140627cc0
 bool FUN_140627cc0(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
+    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->GetData()) == 0)
         return false;
-    return FUN_140627d70(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spItem->FUN_140527840())));
+    return FUN_140627d70(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spItem->GetData())));
 }
 MS2_REPLACE(0x140627CC0, FUN_140627cc0, 162, 0x7D4C7F44);
 
@@ -426,7 +426,7 @@ bool FUN_140627d70(MS2Ptr<CItemData> spData)
     if (!bResult && spData->FUN_14053d840() == 1)
     {
         MS2Ptr<CItemGemStoneData> spRow = GetItemGemStoneUpgradeTable()->FindData(spData->GetItemId());
-        bResult = FUN_1406272f0(8, spRow);
+        bResult = HasGemStoneMask(8, spRow);
     }
     return bResult;
 }
@@ -436,9 +436,9 @@ MS2_REPLACE(0x140627D70, FUN_140627d70, 259, 0xA98525E6);
 // The item is an equip with a socket record that is unlocked (and not yet used).
 int FUN_140627e80(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
+    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->GetData()) == 0)
         return 0;
-    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType())
+    if (!reinterpret_cast<CItemData*>(spItem->GetData())->HasSkinType())
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->GetTransfer())->CanTransferSocket() == 0)
         return 0;
@@ -457,9 +457,9 @@ MS2_REPLACE(0x140627E80, FUN_140627e80, 458, 0xBE0452AB);
 // @0x140628050
 int FUN_140628050(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
+    if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->GetData()) == 0)
         return 0;
-    if (!reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasSkinType())
+    if (!reinterpret_cast<CItemData*>(spItem->GetData())->HasSkinType())
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->GetTransfer())->CanTransferSocket() == 0)
         return 0;
@@ -506,7 +506,7 @@ void GetSocketUnlockCost(int nLevel, unsigned short nRate, int nCount, CIngredie
         int nPrice = 0;
         if (nRate < 0x32)
             nRate = 0x32;
-        if (FUN_1406516b0() != 3)
+        if (GetRegion() != 3)
         {
             unsigned short nCap = 0x38;
             nRate = (std::min)(nCap, nRate);
@@ -542,7 +542,7 @@ void FUN_1406284f0(unsigned short nRate, int nCount, int* pItemId, int* pPrice)
     *pPrice = 0;
     if (nCount > 0)
         return;
-    if (FUN_1406516b0() == 3)
+    if (GetRegion() == 3)
     {
         if (nRate <= 7)
         {
@@ -551,7 +551,7 @@ void FUN_1406284f0(unsigned short nRate, int nCount, int* pItemId, int* pPrice)
         else
         {
             *pPrice = nRate * nRate * 200 + -0x12c0;
-            *pPrice = ((class CLua*)(void*)(((void*)FUN_1401c0db0())))->Round((double)*pPrice, -3);
+            *pPrice = ((class CLua*)(void*)(((void*)GetLuaClient())))->Round((double)*pPrice, -3);
         }
     }
     else
@@ -739,7 +739,7 @@ MS2_REPLACE(0x140628D30, FUN_140628d30, 232, 0x60A61AD2);
 
 // @0x140628e20
 // The uid list of an item list (0 for an empty slot).
-void FUN_140628e20(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS2Ptr<CItem> >& aItems)
+void SetItemUids(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS2Ptr<CItem> >& aItems)
 {
     v.m_nUid = nUid;
     v.m_aUids.clear();
@@ -757,17 +757,17 @@ void FUN_140628e20(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS
         }
     }
 }
-MS2_REPLACE(0x140628E20, FUN_140628e20, 311, 0xF06FA885);
+MS2_REPLACE(0x140628E20, SetItemUids, 311, 0xF06FA885);
 
 // @0x140628f60
-void FUN_140628f60(Unk_SockUidList& v, const __int64& nUid, const std::vector<__int64>& aUids)
+void SetUids(Unk_SockUidList& v, const __int64& nUid, const std::vector<__int64>& aUids)
 {
     v.m_nUid = nUid;
     v.m_aUids.clear();
     if (!aUids.empty())
         v.m_aUids.assign(aUids.begin(), aUids.end());
 }
-MS2_REPLACE(0x140628F60, FUN_140628f60, 134, 0xAB162D3C);
+MS2_REPLACE(0x140628F60, SetUids, 134, 0xAB162D3C);
 
 // @0x140629340
 void FUN_140629340(Unk_SockUidPair& v, COutputStream& out)
@@ -1131,7 +1131,7 @@ class Unk_ItemEquipData : public CItemData
 // the fee item and count) whose result goes to cb.
 bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegate<bool(int, const CMsgBoxData&)> cb)
 {
-    if (spItem == (CItem*)0 || spItem->FUN_140527840() == 0 || spGem == (CItem*)0)
+    if (spItem == (CItem*)0 || spItem->GetData() == 0 || spGem == (CItem*)0)
         return false;
     void* pSocket = spItem->GetSocket();
     if (pSocket == 0)
@@ -1170,7 +1170,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
     unsigned short nRate = FUN_140626f20(spGem->GetItemId());
     int nFeeItem = 0;
     int nFeeCount = 0;
-    FUN_1406284f0(nRate, spItem->FUN_140527840()->GetSkinType(), &nFeeItem, &nFeeCount);
+    FUN_1406284f0(nRate, spItem->GetData()->GetSkinType(), &nFeeItem, &nFeeCount);
     CStringW strMsg;
     int nSocketNo = nTarget + 1;
     unsigned nFeeName = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)nFeeItem);
@@ -1220,7 +1220,7 @@ MS2_REPLACE(0x14062ABB0, SendItemSocketSystem, 443, 0xB6C836FB);
 CStringW GetStringCommonByKey(const CStringW& str);
 class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 CStringW FUN_140631600(int nStat, BaseOption* pBase);
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
 
@@ -1283,7 +1283,7 @@ MS2_REPLACE(0x14062AEB0, FUN_14062aeb0, 351, 0x74D6C1BF);
 // @0x14062ae60
 CStringW GetGemstoneOptionText(int nItemId)
 {
-    int nGrade = FUN_14053feb0(nItemId);
+    int nGrade = GetItemRank(nItemId);
     return FUN_14062aeb0(nItemId, nGrade);
 }
 MS2_REPLACE(0x14062AE60, GetGemstoneOptionText, 74, 0x2E79F9D4);
@@ -1387,7 +1387,7 @@ int CItemSocketTable::Load()
     const CString& strFixOpenCount = "fixOpenCount";
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strItemSocket)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strItemSocket)))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nItemId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), strId, nItemId);
@@ -1459,7 +1459,7 @@ unsigned CItemSocketTable::GetMaxSocketCount(int nSocketId, int nGrade, MS2Ptr<C
         unsigned short nLevel = (unsigned short)spData->limit.levelLimit;
         int nItemType = spData->GetEquipSubtype();
         int nSubType = spData->GetSkinType();
-        ((class CLua*)(void*)(((void*)FUN_1401c0db0())))->CalcItemSocketMaxCount(nItemType, nGrade, nLevel, nSubType, &nCount);
+        ((class CLua*)(void*)(((void*)GetLuaClient())))->CalcItemSocketMaxCount(nItemType, nGrade, nLevel, nSubType, &nCount);
         return nCount;
     }
     MS2Ptr<CItemSocketData> spRow = Find(nSocketId, nGrade);
@@ -1567,8 +1567,8 @@ struct Unk_SATypeInfo                                   // uiitemmergeoptiondial
     CStringW m_strName;                                 // +0x18
 };
 bool FUN_14081dcd0(int nSaType);                        // the SA value is a percent
-int FUN_14081d9e0(int nSaType);                         // the SA is a skill level up tier (0x4d - 0x5a)
-int FUN_14081da20(int nSaType);                         // the tier of it
+int IsSkillLevelUpTier(int nSaType);                         // the SA is a skill level up tier (0x4d - 0x5a)
+int GetSkillTier(int nSaType);                         // the tier of it
 bool IsStatKindTwo(int nStat);                          // the stat value is a percent
 CStringW GetStatCommonText(unsigned nStat);             // the stat name
 CStringW FormatInt(int nValue);
@@ -1581,7 +1581,7 @@ class Unk_ObjTable { };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class Unk_Actor { };
@@ -1593,7 +1593,7 @@ public:
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
 CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData);
-__int64 FUN_140632990(__int64 nValue, float fRate);
+__int64 ScaleValue(__int64 nValue, float fRate);
 void FUN_1406334d0(CStringW& str);
 
 // @0x14062fa00
@@ -1791,13 +1791,13 @@ void CItemCustomMusicScore::ReadFromStream(CInputStream& in)
 MS2_REPLACE_METHOD(0x140632620, CItemCustomMusicScore, ReadFromStream, 344, 0x07AB5DCE);
 
 // @0x140632780
-bool CItemCustomMusicScore::FUN_140632780()
+bool CItemCustomMusicScore::IsEmpty()
 {
     if (m_str20.IsEmpty())
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x140632780, CItemCustomMusicScore, FUN_140632780, 45, 0x11A618AD);
+MS2_REPLACE_METHOD(0x140632780, CItemCustomMusicScore, IsEmpty, 45, 0x11A618AD);
 
 // A market listing's music score (uimeratmarketcommon.cpp passes the record at +0x3a0 of its listing).
 struct Unk_MusicScoreInfo
@@ -1860,7 +1860,7 @@ void CItemStatus::WriteToStream(COutputStream& out)
 {
     m_spOption->Serialize(out);
     m_spEnchant->Write(reinterpret_cast<Unk_EnchantWrite&>(out));
-    m_spUnlimited->FUN_1408bbd30(out);
+    m_spUnlimited->WriteToStream(out);
 }
 MS2_REPLACE_METHOD(0x14062FDA0, CItemStatus, WriteToStream, 109, 0x4F2E960D);
 
@@ -1869,12 +1869,12 @@ void CItemStatus::ReadFromStream(CInputStream& in)
 {
     m_spOption->Deserialize(in);
     m_spEnchant->Read(reinterpret_cast<Unk_EnchantRead&>(in));
-    m_spUnlimited->FUN_1408bbef0(in);
+    m_spUnlimited->ReadFromStream(in);
 }
 MS2_REPLACE_METHOD(0x14062FE20, CItemStatus, ReadFromStream, 109, 0xBA262CEC);
 
 // @0x14062fea0
-int CItemStatus::FUN_14062fea0(unsigned nType)
+int CItemStatus::GetTotalStatValue(unsigned nType)
 {
     int nValue = m_spOption->SumStatValue(nType);
     if (IsRatioStat(nType))
@@ -1887,7 +1887,7 @@ int CItemStatus::FUN_14062fea0(unsigned nType)
     }
     return nValue;
 }
-MS2_REPLACE_METHOD(0x14062FEA0, CItemStatus, FUN_14062fea0, 189, 0x47444B3B);
+MS2_REPLACE_METHOD(0x14062FEA0, CItemStatus, GetTotalStatValue, 189, 0x47444B3B);
 
 // @0x14062ff70
 int CItemStatus::FUN_14062ff70(unsigned nType)
@@ -1921,7 +1921,7 @@ int CItemStatus::GetStatValue(unsigned nType, int nWhich, int nSub)
             if (IsRatioStat(nType))
             {
                 __int64 nBase = GetStatValue(nType, 0, 0);
-                __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
+                __int64 nScaled = ScaleValue(nBase, spBase->GetRate());
                 nResult += nScaled;
             }
             else
@@ -1938,7 +1938,7 @@ int CItemStatus::GetStatValue(unsigned nType, int nWhich, int nSub)
             if (IsRatioStat(nType))
             {
                 __int64 nBase = GetStatValue(nType, 0, 0);
-                __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
+                __int64 nScaled = ScaleValue(nBase, spBase->GetRate());
                 nResult += nScaled;
             }
             else
@@ -1986,7 +1986,7 @@ float CItemStatus::GetEnchantRatio(unsigned nType)
         return 0;
     if (!IsRatioStat(nType))
         return 0;
-    return spBase->FUN_140266e10();
+    return spBase->GetRate();
 }
 MS2_REPLACE_METHOD(0x1406303E0, CItemStatus, GetEnchantRatio, 197, 0xE7166FB6);
 
@@ -2129,13 +2129,13 @@ bool CItemStatus::IsRatioStat(int nType)
 MS2_REPLACE_METHOD(0x140630DC0, CItemStatus, IsRatioStat, 59, 0x69FAA13A);
 
 // @0x140630e10
-CStringW FUN_140630e10(int nSaType)
+CStringW GetSATypeName(int nSaType)
 {
     CStringW str;
     str = reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nSaType].m_strName;
     return str;
 }
-MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
+MS2_REPLACE(0x140630E10, GetSATypeName, 128, 0x6BB2121D);
 
 // @0x140630ea0
 // One line per job that can use the option, built from its skill list. The job the player
@@ -2143,10 +2143,10 @@ MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
 CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
 {
     CStringW strResult;
-    Unk_Actor* pActor = ((class Unk_Actor*)((class WorldService*)(class Unk_ObjTable*)(((class Unk_ObjTable*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_Actor* pActor = ((class Unk_Actor*)((class WorldService*)(class Unk_ObjTable*)(((class Unk_ObjTable*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return strResult;
-    if (FUN_14081d9e0(nSaType) != 0)
+    if (IsSkillLevelUpTier(nSaType) != 0)
     {
         ATL::CAtlArray<int> aJobs;
         FUN_140222be0(reinterpret_cast<ATL::CAtlArray<Unk_LevelEntry>&>(aJobs));
@@ -2157,7 +2157,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
             if (pData != 0 && pData->IsJobAllowed(nJob) == 0)
                 continue;
             ATL::CAtlArray<unsigned> aSa;
-            FUN_14080c370(FUN_14081da20(nSaType), (eJobCode)nJob, &aSa);
+            FUN_14080c370(GetSkillTier(nSaType), (eJobCode)nJob, &aSa);
             if (((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&(aSa))->IsEmpty())
                 continue;
             CStringW strJob =
@@ -2170,7 +2170,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
             }
             FUN_1406334d0(strList);
             if (strResult.IsEmpty())
-                strResult.Append(FUN_140630e10(nSaType));
+                strResult.Append(GetSATypeName(nSaType));
             CStringW strLine;
             if (!strResult.IsEmpty())
                 strLine.Append(L"\n   -");
@@ -2188,16 +2188,16 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
 MS2_REPLACE(0x140630EA0, FUN_140630ea0, 1348, 0xF81FC732);
 
 // @0x1406313f0
-CStringW FUN_1406313f0(int nStat, BaseOption* pBase)
+CStringW GetStatOptionText(int nStat, BaseOption* pBase)
 {
     CStringW str;
     if (IsStatKindTwo(nStat))
-        str = FormatStringId(0x48b, GetStatCommonText(nStat), FormatRatePercent(pBase->FUN_140266e10()));
+        str = FormatStringId(0x48b, GetStatCommonText(nStat), FormatRatePercent(pBase->GetRate()));
     else
         str = FormatStringId(0x48b, GetStatCommonText(nStat), FormatInt(pBase->GetValue()));
     return str;
 }
-MS2_REPLACE(0x1406313F0, FUN_1406313f0, 515, 0x242D2E53);
+MS2_REPLACE(0x1406313F0, GetStatOptionText, 515, 0x242D2E53);
 
 // @0x140631600
 CStringW FUN_140631600(int nStat, BaseOption* pBase)
@@ -2234,7 +2234,7 @@ CStringW FUN_140631830(int nStat, int nValue, CItemData* pData)
     }
     else
     {
-        if (FUN_14081d9e0(nStat) != 0)
+        if (IsSkillLevelUpTier(nStat) != 0)
             return FUN_140630ea0(nStat, nValue, pData);
         str = StringFormat(reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nStat].m_strFormat, nValue);
     }
@@ -2243,13 +2243,13 @@ CStringW FUN_140631830(int nStat, int nValue, CItemData* pData)
 MS2_REPLACE(0x140631830, FUN_140631830, 437, 0xF776E1D4);
 
 // @0x1406319f0
-CStringW FUN_1406319f0(int nBuffId, unsigned short nLevel)
+CStringW GetBuffName(int nBuffId, unsigned short nLevel)
 {
     CStringW str;
     str = ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141812290(nBuffId, nLevel, CString("name"));
     return str;
 }
-MS2_REPLACE(0x1406319F0, FUN_1406319f0, 240, 0xFB0E0A77);
+MS2_REPLACE(0x1406319F0, GetBuffName, 240, 0xFB0E0A77);
 
 // @0x140631af0
 CStringW GetEnchantStatText(int nStat, MS2Ptr<BaseOption> spBase, CItemStatus* pStatus)
@@ -2259,7 +2259,7 @@ CStringW GetEnchantStatText(int nStat, MS2Ptr<BaseOption> spBase, CItemStatus* p
     {
         __int64 nBase = pStatus->GetStatValue(nStat, 0, 0);
         float fBase = (float)nBase;
-        __int64 nExtra = (__int64)(fBase * spBase->FUN_140266e10());
+        __int64 nExtra = (__int64)(fBase * spBase->GetRate());
         CStringW strUnused;
         if (nExtra == 0)
             strResult = FormatStringId(0x48c, GetStatCommonText(nStat));
@@ -2285,11 +2285,11 @@ void FUN_1406334d0(CStringW& str)
 MS2_REPLACE(0x1406334D0, FUN_1406334d0, 264, 0x8473584E);
 
 // @0x140632990
-__int64 FUN_140632990(__int64 nValue, float fRate)
+__int64 ScaleValue(__int64 nValue, float fRate)
 {
     return (__int64)((double)nValue * (double)fRate + 0.000001);
 }
-MS2_REPLACE(0x140632990, FUN_140632990, 42, 0xC9ADCF11);
+MS2_REPLACE(0x140632990, ScaleValue, 42, 0xC9ADCF11);
 
 // The per-action "can the item be X'd" checks: the item must exist, its transfer
 // (trade/bind) state must allow it, its gem sockets must allow it, and for some
@@ -2515,7 +2515,7 @@ bool FUN_140634290(MS2Ptr<CItem> spItem, int* pReason)
         return false;
     }
     Unk_ItemOwnerRef* pTransfer = spItem->GetTransfer();
-    if (pTransfer != 0 && pTransfer->FUN_140635940() == true)
+    if (pTransfer != 0 && pTransfer->IsBound() == true)
     {
         *pReason = 1;
         return true;
@@ -2557,12 +2557,12 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId, ItemUtilTr
     }
     Unk_ItemOwnerRef* pTransfer = spItem->GetTransfer();
     bool bBound = false;
-    if (pTransfer != 0 && pTransfer->FUN_140635940())
+    if (pTransfer != 0 && pTransfer->IsBound())
     {
         if ((unsigned __int64)spItem->GetTransfer()->GetBinding()->FUN_14052d1c0() > 0)
             bBound = true;
     }
-    if (spItem->FUN_140527840()->FUN_14053d7c0())
+    if (spItem->GetData()->FUN_14053d7c0())
         bBound = true;
     if (bBound && pTransfer != 0 && pTransfer->FUN_140635980(pCharacterId) == false)
     {
@@ -2643,7 +2643,7 @@ void CItemTransfer::InitFromItem(CItem* pItem)
     m_pItem = pItem;
     if (m_pItem != 0)
     {
-        CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
+        CItemData* pData = reinterpret_cast<CItemData*>(pItem->GetData());
         if (pData != 0)
         {
             m_nType = pData->limit.transferType;
@@ -2652,7 +2652,7 @@ void CItemTransfer::InitFromItem(CItem* pItem)
                 m_b3E = 1;
             m_b3A = pData->CanRegisterMeratMarket() ? true : false;
             m_nCount = pData->FUN_14053d800() ? 1 : 0;
-            m_b41 = ((class CItemSocketTable*)GetItemSocketTable())->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->FUN_140527840()), pItem->GetRarity());
+            m_b41 = ((class CItemSocketTable*)GetItemSocketTable())->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->GetData()), pItem->GetRarity());
             m_b42 = m_b41;
             RefreshRule();
         }
@@ -3050,11 +3050,11 @@ int CItemTransfer::CanTransferSocket()
 MS2_REPLACE_METHOD(0x140635900, CItemTransfer, CanTransferSocket, 45, 0xF1A2447C);
 
 // @0x140635940
-bool CItemTransfer::FUN_140635940()
+bool CItemTransfer::IsBound()
 {
     return HasBinding() == 1;
 }
-MS2_REPLACE_METHOD(0x140635940, CItemTransfer, FUN_140635940, 52, 0xE032FB84);
+MS2_REPLACE_METHOD(0x140635940, CItemTransfer, IsBound, 52, 0xE032FB84);
 
 // @0x140635980
 bool CItemTransfer::FUN_140635980(const __int64* pId)
@@ -3086,9 +3086,9 @@ void CItemTransfer::RefreshRule()
 {
     if (m_pItem == 0)
         return;
-    if (m_pItem->FUN_140527840() == 0)
+    if (m_pItem->GetData() == 0)
         return;
-    CItemData* pData = reinterpret_cast<CItemData*>(m_pItem->FUN_140527840());
+    CItemData* pData = reinterpret_cast<CItemData*>(m_pItem->GetData());
     m_nRule = ComputeRule(m_nType, pData, m_pItem->GetRarity());
 }
 MS2_REPLACE_METHOD(0x140635A60, CItemTransfer, RefreshRule, 111, 0xE6CA5D84);
@@ -3124,11 +3124,11 @@ unsigned CItemTransfer::ComputeRule(int nType, CItemData* pData, int nId)
 MS2_REPLACE(0x140635AE0, CItemTransfer::ComputeRule, 136, 0x921CFB58);
 
 // @0x140635b90
-bool FUN_140635b90(unsigned a, unsigned b)
+bool HasFlags(unsigned a, unsigned b)
 {
     return (a & b) == b;
 }
-MS2_REPLACE(0x140635B90, FUN_140635b90, 55, 0xCE1FD842);
+MS2_REPLACE(0x140635B90, HasFlags, 55, 0xCE1FD842);
 
 // @0x140635cf0
 CItemTransfer& CItemTransfer::operator=(const CItemTransfer& o)

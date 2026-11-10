@@ -109,7 +109,7 @@ struct Unk_MailTimeRange {
     Unk_MailTimeRange();                                       // 0x140692840
     bool IsClaimed() const;                                // begin set, not claimed
     bool IsUnclaimed() const;
-    bool FUN_140693b00(__int64 claim);                         // claims once
+    bool TryClaim(__int64 claim);                         // claims once
     void Read(CInputStream* stream);                  // read both values
 };
 MS2_CHECK_SIZE(Unk_MailTimeRange, 0x10);
@@ -161,11 +161,11 @@ public:
     int FUN_1406909b0() const;
     int FUN_140690b80() const;
     void FUN_140690d20(__int64 a, __int64 b);
-    void FUN_140690d60(__int64 time);
-    __int64 FUN_140690db0() const;
-    __int64 FUN_140690dd0() const;
-    void FUN_140690df0(__int64 time);
-    __int64 FUN_140690e40() const;
+    void ClaimRangeB0(__int64 time);
+    __int64 GetRangeB0Begin() const;
+    __int64 GetRangeB0Claim() const;
+    void ClaimRangeC0(__int64 time);
+    __int64 GetRangeC0Begin() const;
     __int64 FUN_140690e60() const;
     void FUN_140690e80(__int64 time);
     __int64 FUN_140690ed0() const;

@@ -56,7 +56,7 @@ bool SetItemOptionPart::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pElem), (const char*)GetStatName(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
         if (spOption->HasValue())
-            FUN_1407bca10(nStat, spOption);
+            AddStat(nStat, spOption);
     }
     const SpecialKey* pSpecials = DAT_1439f4910;
     for (unsigned i = 0; i < 4; i++)
@@ -67,7 +67,7 @@ bool SetItemOptionPart::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pElem), (const char*)FUN_14081d380(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
         if (spOption->HasValue())
-            FUN_1407bcac0(nStat, spOption);
+            AddSpecial(nStat, spOption);
     }
     return true;
 }
@@ -91,7 +91,7 @@ ATL::CAtlArray<unsigned short>& SetItemOptionPart::GetEffectLevels()
 }
 
 // @0x1407bca10
-void SetItemOptionPart::FUN_1407bca10(StatKey nStat, MS2Ptr<BaseOption> spOption)
+void SetItemOptionPart::AddStat(StatKey nStat, MS2Ptr<BaseOption> spOption)
 {
     if (!spOption->HasValue())
         return;
@@ -99,7 +99,7 @@ void SetItemOptionPart::FUN_1407bca10(StatKey nStat, MS2Ptr<BaseOption> spOption
 }
 
 // @0x1407bcac0
-void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, MS2Ptr<BaseOption> spOption)
+void SetItemOptionPart::AddSpecial(SpecialKey nStat, MS2Ptr<BaseOption> spOption)
 {
     if (!spOption->HasValue())
         return;
@@ -107,7 +107,7 @@ void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, MS2Ptr<BaseOption> spOpt
 }
 
 // @0x1407bcb70
-MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcb70(StatKey nStat) const
+MS2Ptr<BaseOption> SetItemOptionPart::GetStat(StatKey nStat) const
 {
     StatMap::const_iterator it = m_stats.find(nStat);
     if (it == m_stats.end())
@@ -116,7 +116,7 @@ MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcb70(StatKey nStat) const
 }
 
 // @0x1407bcc30
-MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcc30(SpecialKey nStat) const
+MS2Ptr<BaseOption> SetItemOptionPart::GetSpecial(SpecialKey nStat) const
 {
     SpecialMap::const_iterator it = m_specials.find(nStat);
     if (it == m_specials.end())
@@ -125,7 +125,7 @@ MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcc30(SpecialKey nStat) const
 }
 
 // @0x1407bccf0
-void SetItemOptionPart::FUN_1407bccf0(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn)
+void SetItemOptionPart::ForEachStat(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn)
 {
     for (std::pair<const StatKey, MS2Ptr<BaseOption> >& rValue : m_stats)
     {
@@ -135,7 +135,7 @@ void SetItemOptionPart::FUN_1407bccf0(std::function<void(const std::pair<StatKey
 }
 
 // @0x1407bcdb0
-void SetItemOptionPart::FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn)
+void SetItemOptionPart::ForEachSpecial(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn)
 {
     for (std::pair<const SpecialKey, MS2Ptr<BaseOption> >& rValue : m_specials)
     {

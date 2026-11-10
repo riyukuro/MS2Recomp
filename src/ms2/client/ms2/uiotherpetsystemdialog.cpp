@@ -110,7 +110,7 @@ MS2Ptr<CItem> UIOtherPetSystemDialog::vfunc_85()
 // @0x140e6d6b0
 void UIOtherPetSystemDialog::FUN_140e6d6b0()
 {
-    if (Unk_OpOwner* pOwner = reinterpret_cast<Unk_OpOwner*>(WorldService::GetInstance()->FUN_141bd1290(m_1e0)))
+    if (Unk_OpOwner* pOwner = reinterpret_cast<Unk_OpOwner*>(WorldService::GetInstance()->FindPCById(m_1e0)))
     {
         if (MS2Ptr<ASLabel> spTitle = GetChild<ASLabel>("m_title"))
             spTitle->FUN_1422e4a50(FUN_14028dfa0<CStringW>(CStringW(L"s_pet_owner"), pOwner->vfunc_77()));

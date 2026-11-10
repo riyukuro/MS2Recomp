@@ -23,7 +23,7 @@ class Unk_UmPlayer;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class MyPC   // C3: member view for the former free stand-ins
@@ -74,7 +74,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     ASData data;
     if (_stricmp("OnHomeConcept", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0) {
-        Unk_UmPlayer* pPlayer = ((class Unk_UmPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_UmPlayer* pPlayer = ((class Unk_UmPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pPlayer == 0)
             return 0;
         int nConcept = data.PopInt();

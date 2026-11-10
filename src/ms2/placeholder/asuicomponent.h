@@ -28,9 +28,9 @@ public:
     void SetFocusable(int n);                                      // 0x1422c7840
     void SetFocused(int n);                                      // 0x1422c7630 focus
     int GetFocused();                                            // 0x1422c76c0
-    void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de700 mouse over listener
-    void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de780 mouse out listener
-    void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // 0x1422de960 remove the mouse out listener (uiclosetdialog.cpp)
+    void AddFocusInListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de700 mouse over listener
+    void AddFocusOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de780 mouse out listener
+    void RemoveFocusOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // 0x1422de960 remove the mouse out listener (uiclosetdialog.cpp)
     bool SetTooltipText(CStringW strTooltip);                        // 0x1422c7b40 set the tooltip text (by value: the callee destroys it)
     void SetTooltipOffset(int nWidth, int n2);                         // 0x1422c7d30 (uidungeonroomdialog: sub tab 3 gets 300, 0)
 

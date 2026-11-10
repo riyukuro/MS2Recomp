@@ -289,7 +289,7 @@ public:
 #undef PI_V
     virtual void vfunc_59(int a1, int a2, int a3, int a4);
 };
-class Unk_WorldSvc { public: Unk_PiPlayer* FUN_141bd0cc0(); };
+class Unk_WorldSvc { public: Unk_PiPlayer* GetLocalPlayer(); };
 
 // The instrument manager (singleton).
 class Unk_PiMgr : public CInstrumentManager
@@ -351,7 +351,7 @@ void FUN_141b706a0(unsigned nMs, unsigned* pMin, unsigned* pSec, unsigned* pCent
 __int64 FUN_141b71960(const char* sz);                                      // text -> uid
 CStringW FUN_141b71910(__int64 nUid);                                       // uid -> text
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_140298ea0(CStringW strKey);                             // notice text
+CStringW GetStringByKey(CStringW strKey);                             // notice text
 void ShowSystemNotice(const CStringW& str, int a, int b);                      // notice
 void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);       // message box
 void FUN_14151f200();
@@ -485,7 +485,7 @@ void UIPlayInstrumentDialog::vfunc_26()
 // @0x14100ad90
 void UIPlayInstrumentDialog::vfunc_67()
 {
-    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
         pPlayer->vfunc_59(1, 0, 0, 0);
     m_nAutoPlay = 0;
@@ -494,7 +494,7 @@ void UIPlayInstrumentDialog::vfunc_67()
         if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4f07))))
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
         if ((unsigned)((class Unk_PiMgr*)GetInstrumentManager())->GetVolume() > 0)
-            ShowSystemNotice(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
+            ShowSystemNotice(GetStringByKey(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
         ((class Unk_PiMgr*)GetInstrumentManager())->SetVolume(0);
     }
 }
@@ -523,7 +523,7 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     if (strMethod.CompareNoCase("getItemTooltip") == 0)
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tip(((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
+        ASTooltip tip(((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 0x20, 2);
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
@@ -666,7 +666,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4f07))))
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
             if ((unsigned)((class Unk_PiMgr*)GetInstrumentManager())->GetVolume() > 0)
-                ShowSystemNotice(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
+                ShowSystemNotice(GetStringByKey(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
             ((class Unk_PiMgr*)GetInstrumentManager())->SetVolume(0);
         }
         m_nAutoPlay = 0;
@@ -793,7 +793,7 @@ void UIPlayInstrumentDialog::SetPage(int nPage)
 // @0x14100c2c0
 void UIPlayInstrumentDialog::UpdateMasteryBar()
 {
-    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (!m_spScorePage)
@@ -910,7 +910,7 @@ void UIPlayInstrumentDialog::SetScore(int nIndex, MS2Ptr<CItem> spItem)
     {
         if (spItem->FUN_140527340() < 1)
             return;
-        if (!((CItemData*)spItem->FUN_140527840())->FUN_14053cd10())
+        if (!((CItemData*)spItem->GetData())->IsScoreItem())
             return;
         if (spItem->FUN_140525730())
             return;
@@ -921,12 +921,12 @@ void UIPlayInstrumentDialog::SetScore(int nIndex, MS2Ptr<CItem> spItem)
     if (m_spScores[nIndex].get() != 0)
     {
         ASSlot slot(2);
-        if (slot.FUN_1409c3860(spItem.get(), ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x415))
+        if (slot.FUN_1409c3860(spItem.get(), ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 0x415))
         {
-            CStringW strTitle = m_spScores[nIndex]->FUN_1405296c0();
-            CStringW strWriter = m_spScores[nIndex]->FUN_140529890();
+            CStringW strTitle = m_spScores[nIndex]->GetMusicTitle();
+            CStringW strWriter = m_spScores[nIndex]->GetMusicWriter();
             CStringW strInstrument = m_spScores[nIndex]->FUN_140529aa0();
-            int nDuration = (int)((float)m_spScores[nIndex]->FUN_1405299a0() / 1000.0f);
+            int nDuration = (int)((float)m_spScores[nIndex]->GetMusicDuration() / 1000.0f);
             CStringW strWriterText(L"");
             if (strWriter.GetLength() > 0)
                 strWriterText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
@@ -960,9 +960,9 @@ void UIPlayInstrumentDialog::OnScorePlayStart(int nStart, int nEnd)
         {
             CStringW strText;
             if (m_nKind == 0)
-                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->GetMusicTitle());
             else
-                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->GetMusicTitle());
             m_spFold->SetTextW(strText);
         }
     }
@@ -1074,9 +1074,9 @@ void UIPlayInstrumentDialog::UpdatePlayTimer()
         {
             CStringW strScore;
             if (m_nKind == 0)
-                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->GetMusicTitle());
             else
-                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
+                strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->GetMusicTitle());
             CStringW strFold = StringFormat<CStringW, CStringW>(L"{0} {1}", strText, strScore);
             m_spFold->SetTextW(strFold);
         }
@@ -1188,7 +1188,7 @@ void UIPlayInstrumentDialog::SetMode(int nMode)
             spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_solo"));
         else if (m_nKind == 1)
         {
-            Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_PiPlayer* pPlayer = ((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPlayer == 0)
                 return;
             if (((class CPartyManager*)(class Unk_PiPartyMgr*)(reinterpret_cast<Unk_PiPartyMgr*>(TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader())

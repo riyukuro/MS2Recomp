@@ -56,7 +56,7 @@ int FUN_14037c8c0(CString& str)
 }
 
 // @0x14037cb70
-int FUN_14037cb70(TiXmlElement* pElem, const char* pszName, int* pnType)
+int XmlGetRewardType(TiXmlElement* pElem, const char* pszName, int* pnType)
 {
     if (FALSE)
     {
@@ -109,7 +109,7 @@ int CFieldMissionTable::Load()
         RewardPtr spReward(new CFieldMissionReward);
         int nRound = 0;
         XmlGetAttr((class TiXmlElement*)(pRound), "mission", reinterpret_cast<int&>(nRound));
-        FUN_14037cb70(pRound, "type", &spReward->m_nType);
+        XmlGetRewardType(pRound, "type", &spReward->m_nType);
         if (spReward->m_nType == 1)
         {
             CStringW strValue;

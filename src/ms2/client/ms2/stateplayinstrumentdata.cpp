@@ -309,7 +309,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
             {
                 spNew->SetObjectId(m_pOwner->GetObjectId());
                 spNew->SetItemUid(GenerateUniqueId());
-                spNew->FUN_14052a130(5);
+                spNew->SetVariant(5);
                 pPC->vfunc_127(spNew.get(), 0);
                 m_spItem = spNew;
             }

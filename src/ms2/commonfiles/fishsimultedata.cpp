@@ -36,7 +36,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -103,7 +103,7 @@ int CFishData::Load(TiXmlElement* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "companion", m_nCompanion);
     CStringW strHabitat;
     XmlGetAttr((class TiXmlElement*)(pNode), "habitat", strHabitat);
-    m_nHabitat = CFishingTable::GetInstance()->FUN_1403b1f70(strHabitat);
+    m_nHabitat = CFishingTable::GetInstance()->GetHabitatId(strHabitat);
     ATL::CAtlArray<int> arr;
     CString strSmall;
     XmlQuery((class TiXmlElement *)(pNode), "smallSize", strSmall);
@@ -237,7 +237,7 @@ int CFishingSpotData::Load(TiXmlElement* pNode)
     m_arrLiquid.RemoveAll();
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        int nHabitat = CFishingTable::GetInstance()->FUN_1403b1f70(arr[i]);
+        int nHabitat = CFishingTable::GetInstance()->GetHabitatId(arr[i]);
         if (nHabitat != 8)
             m_arrLiquid.Add(nHabitat);
     }
@@ -276,7 +276,7 @@ int CFishingTable::Load()
 }
 
 // @0x1403b1f70
-int CFishingTable::FUN_1403b1f70(const CStringW& strHabitat)
+int CFishingTable::GetHabitatId(const CStringW& strHabitat)
 {
     if (strHabitat == L"water")
         return 0;
@@ -343,7 +343,7 @@ int CFishingTable::LoadSpots()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("spot")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("spot")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
@@ -369,7 +369,7 @@ int CFishingTable::LoadFish()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fish")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fish")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
@@ -395,7 +395,7 @@ int CFishingTable::LoadRods()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("rod")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("rod")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "rodCode", nId);
@@ -475,7 +475,7 @@ CStringW CFishingTable::FUN_1403b2ee0(unsigned nFishId)
         for (size_t i = 0; i < spMaps->GetCount(); i++)
         {
             unsigned nMapId = (*spMaps)[i];
-            MS2Ptr<CFieldData> spMap = CFieldData::FUN_140374140(nMapId);
+            MS2Ptr<CFieldData> spMap = CFieldData::FindField(nMapId);
             if (!spMap)
                 continue;
             if (str.GetLength() != 0)

@@ -8,7 +8,7 @@
 // Unit-local intrusive wrapper: the owned value is the second base of TPtredDummy.
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/socketptr.h"
-CPtred* FUN_1401ba820(CPtred*);
+CPtred* InitRefCount(CPtred*);
 template<class T> class Unk_PopupPtr {
 public:
     Unk_PopupPtr(Unk_PopupPtr&& p) : m_p(p.m_p) { p.m_p = 0; }
@@ -38,7 +38,7 @@ private:
     // @0x140bebc20
     static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     // @0x140bebca0
-    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
     // @0x140bebc40
     void AddRefImpl(void*) const { Ref(Owner(m_p)); }
     // @0x140bebd10

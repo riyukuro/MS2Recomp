@@ -127,13 +127,13 @@
 void FUN_140710590(COutPacket& packet);                                 // send a packet
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
 CStringW GetStringCommon(int nId);                                        // string table text by id
-CStringW FUN_140298ea0(CStringW strKey);                                // string table text (the callee destroys the key)
+CStringW GetStringByKey(CStringW strKey);                                // string table text (the callee destroys the key)
 template <class A> CStringW StringFormat(const wchar_t* pszFormat, const A& a);   // "{0}" formatting of a key
 template <class A> CStringA StringFormat(const char* pszFormat, const A& a);      // "{0}" formatting of a narrow key
 template <class A> CStringW BlockFormat(int nId, const A& a);                     // string table entry, one argument
 void FUN_140841420(CStringW& str);                                      // the mastery name of a row content
 int FUN_1407181a0(const CStringW& str);                                 // _wtoi of a CStringW
-int FUN_14053feb0(int nItemId);                                         // default rank of an item
+int GetItemRank(int nItemId);                                         // default rank of an item
 bool IsFirstUseRedMerat(int nKind);                                          // the first use is paid with red merat
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
@@ -184,7 +184,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 CFunctionCubeService* GetFunctionCubeService();                                  // the function cube service
 
 // The auto interaction use counts of today (recipe id -> count).
@@ -242,7 +242,7 @@ void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
 
 static MyPC* Unk_SpGetMyPC()
 {
-    return static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    return static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
 }
 
 // ---- Registration (.text$di 0x1400d5a30..) ------------------------------------------------------------------------------
@@ -296,7 +296,7 @@ void CSmartPush::vfunc_3()
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x20, strText, 0, CStringW(L""));
         if (spBox)
         {
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
             spBox->SetBuff(m_data->m_nActionValue, 1, CStringW(L""));
             spBox->FUN_141a024a0(0);
@@ -412,7 +412,7 @@ CSmartPushAutoFishing::~CSmartPushAutoFishing()
 // @0x140dcf960
 void CSmartPushAutoFishing::vfunc_2()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
@@ -464,7 +464,7 @@ void CSmartPushAutoFishing::vfunc_3()
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
     if (spBox)
     {
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
         spBox->SetBuff(m_data->m_nActionValue, 1,
             BlockFormat<unsigned>(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
@@ -501,7 +501,7 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
 // @0x140dd0470
 int CSmartPushAutoFishing::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
@@ -646,7 +646,7 @@ CSmartPushAutoPlayInstrument::~CSmartPushAutoPlayInstrument()
 // @0x140dd0d50
 void CSmartPushAutoPlayInstrument::vfunc_2()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return;
     if (pMy->GetCurStateId() != 0x2f)
@@ -710,13 +710,13 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
 {
     if (m_data == 0)
         return;
-    unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
+    unsigned nSale = CGameRule::GetInstance()->GetAutoPlayInstrumentSale();
     CStringW strText;
     CStringW strTitle;
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
     if (spBox)
     {
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
         spBox->SetBuff(m_data->m_nActionValue, 1,
             FUN_14028dfa0<unsigned>(CStringW(L"s_msg_auto_play_instrument_extend_desc"),
@@ -750,7 +750,7 @@ void CSmartPushAutoPlayInstrument::vfunc_4(int nValue)
 // @0x140dd1830
 int CSmartPushAutoPlayInstrument::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (pMy->GetCurStateId() != 0x2f)
@@ -785,7 +785,7 @@ CStringW CSmartPushAutoPlayInstrument::vfunc_8()
 // @0x140dd19e0
 CStringW CSmartPushAutoPlayInstrument::vfunc_10()
 {
-    unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
+    unsigned nSale = CGameRule::GetInstance()->GetAutoPlayInstrumentSale();
     if (nSale != 0)
     {
         unsigned nRate = nSale / 100;
@@ -816,7 +816,7 @@ bool CSmartPushAutoPlayInstrument::CanPayPackagePrice()
     if (!pkg)
         return false;
     __int64 nPrice = 0;
-    unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
+    unsigned nSale = CGameRule::GetInstance()->GetAutoPlayInstrumentSale();
     if (pkg->m_nMerat != 0)
     {
         nPrice = pkg->m_nMerat;
@@ -898,7 +898,7 @@ CSmartPushSafeRiding::~CSmartPushSafeRiding()
 // @0x140dd2140
 int CSmartPushSafeRiding::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (pMy->IsRiding() == 0)
@@ -935,7 +935,7 @@ CStringW CSmartPushSafeRiding::vfunc_9()
 // @0x140dd2470
 bool CSmartPushSafeRiding::vfunc_12()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return false;
     if (((class CAdventureLevelTableHelper*)GetAdventureLevelTableHelper())->IsReached(pMy->vfunc_141()))
@@ -970,7 +970,7 @@ CSmartPushSafeWaterRiding::~CSmartPushSafeWaterRiding()
 // @0x140dd2600
 int CSmartPushSafeWaterRiding::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (pMy->IsRiding() == 0)
@@ -1051,7 +1051,7 @@ void CSmartPushSafeWaterRidingToggle::vfunc_13()
 // @0x140dd2b30
 int CSmartPushSafeWaterRidingToggle::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (pMy->IsRiding() == 0)
@@ -1133,11 +1133,11 @@ void CSmartPushAutoInteraction::vfunc_3()
         return;
     int nUsed = 0;
     reinterpret_cast<CGatherCountMap*>(&g_143ab3150)->Lookup(nId, nUsed);
-    int nMax = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgMaxCount(spRecipe->m_nHighPropLimit, spRecipe->m_nNormalPropLimit);
+    int nMax = ((class CLua*)GetLuaClient())->CalcGatheringObjectgMaxCount(spRecipe->m_nHighPropLimit, spRecipe->m_nNormalPropLimit);
     int nAvail = nMax - nUsed;
     if (nAvail == 0)
     {
-        ShowSystemNotice(FUN_140298ea0(L"s_mastery_autointeraction_none_available_count"), 1, 1);
+        ShowSystemNotice(GetStringByKey(L"s_mastery_autointeraction_none_available_count"), 1, 1);
         return;
     }
     int nHave = 0;
@@ -1158,13 +1158,13 @@ void CSmartPushAutoInteraction::vfunc_3()
     {
         MS2Ptr<CItem> spItem(new CItem);
         int nItem = m_data->m_requireItem.GetItemId();
-        if (static_cast<CItem*>(spItem)->FUN_140523c40(nItem, FUN_14053feb0(nItem), 0))
+        if (static_cast<CItem*>(spItem)->FUN_140523c40(nItem, GetItemRank(nItem), 0))
         {
             static_cast<CItem*>(spItem)->SetCountClamped(m_data->m_requireItem.m_c);
             Unk_SetBoxString(spBox.operator->(), "buffIcon", m_data->m_strImgPath);
             Unk_SetBoxString(spBox.operator->(), "buffDesc", strDesc);
-            spBox->FUN_141a01800(1);
-            spBox->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, m_data->m_requireItem.m_c, nUse, -1, 1);
+            spBox->SetButtonPreset(1);
+            spBox->SetItemEntry(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, m_data->m_requireItem.m_c, nUse, -1, 1);
             spBox->FUN_141a024a0(0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteraction::FUN_140dd3a70));
         }
@@ -1177,7 +1177,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 {
     if (nResult != 0)
         return true;
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return true;
     CStringW strCount = data.FUN_141a02d50();
@@ -1205,7 +1205,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 // @0x140dd3cb0
 int CSmartPushAutoInteractObject::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
@@ -1217,7 +1217,7 @@ int CSmartPushAutoInteractObject::vfunc_6()
 // @0x140dd3d10
 int CSmartPushAutoInteractObject::vfunc_13()
 {
-    return WorldService::GetInstance()->FUN_141bd99d0(vfunc_14());
+    return WorldService::GetInstance()->CountGatheringObjects(vfunc_14());
 }
 
 // @0x140dd3d50
@@ -1232,7 +1232,7 @@ int CSmartPushAutoInteractObject::vfunc_14()
 // @0x140dd3dd0
 CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 {
-    Unk_SpGameObj* pMy = static_cast<Unk_SpGameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_SpGameObj* pMy = static_cast<Unk_SpGameObj*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
@@ -1260,7 +1260,7 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 // @0x140dd40a0
 int CSmartPushAutoFunctionCubeObject::vfunc_6()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     if (reinterpret_cast<PC*>(pMy)->GetCubeMode() != 0)
@@ -1276,7 +1276,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_6()
 // @0x140dd4130
 int CSmartPushAutoFunctionCubeObject::vfunc_13()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     return GetFunctionCubeService()->FUN_141232430(vfunc_14(), reinterpret_cast<PC*>(pMy)->GetAccountId());
@@ -1294,7 +1294,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_14()
 // @0x140dd4230
 CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
 {
-    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
@@ -1513,11 +1513,11 @@ int FindBestBuffItemId(int nAbility)
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];
-        if (spItem == 0 || ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840())) == 0)
+        if (spItem == 0 || ((CItemData*)(static_cast<CItem*>(spItem)->GetData())) == 0)
             continue;
-        if (((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillId() == 0)
+        if (((CItemData*)(static_cast<CItem*>(spItem)->GetData()))->GetSkillId() == 0)
             continue;
-        MS2Ptr<SkillLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillId(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillLevel());
+        MS2Ptr<SkillLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(((CItemData*)(static_cast<CItem*>(spItem)->GetData()))->GetSkillId(), ((CItemData*)(static_cast<CItem*>(spItem)->GetData()))->GetSkillLevel());
         if (spSkill.get())
         {
             std::vector<MS2Ptr<SkillActionAdditional> >& effects = spSkill->m_vAdditional;

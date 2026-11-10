@@ -63,7 +63,7 @@ public:
     CItem* FUN_14140c030(MS2Ptr<CItem> spItem);         // the worn item the item would replace
     void FUN_14140c100();                               // re-check the item (the quest listener slots)
     bool FUN_14140c180(MS2Ptr<CItem> spItem);           // the item matches the inventory search text
-    int FUN_140d1c3a0(MS2Ptr<CItem> spItem);            // 0x140d1c3a0 (another unit) equip the item; notice 0x55 while its cooldown runs
+    int TryUseItem(MS2Ptr<CItem> spItem);            // 0x140d1c3a0 (another unit) equip the item; notice 0x55 while its cooldown runs
 
 public:
     MS2_LAYOUT_FRIEND;

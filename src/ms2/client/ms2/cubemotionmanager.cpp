@@ -41,7 +41,7 @@
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
-bool FUN_14028d470(float a, float b);                           // nearly equal
+bool IsNearlyEqual(float a, float b);                           // nearly equal
 NiNode* FUN_1413fa070(egf::EntityID id);                     // entity id -> scene root
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // entity -> scene node
 void SetShadowCaster(NiAVObject* pNode, bool b);                  // set the node's visibility flag
@@ -102,7 +102,7 @@ Unk_CmRotate::Unk_CmRotate(float fFrom, float fTo, unsigned nMs)
     m_fFrom = fFrom;
     m_fTo = fTo;
     m_timer.Start(nMs);
-    if (FUN_14028d470(m_fFrom, 0.0f) && 180.0f < m_fTo - m_fFrom)
+    if (IsNearlyEqual(m_fFrom, 0.0f) && 180.0f < m_fTo - m_fFrom)
         m_fFrom = 360.0f;
 }
 
@@ -306,7 +306,7 @@ void CCubeMotionManager::Update()
         Unk_CmRotate& rotate = m_rotate.GetValueAt(pos1);
         if (rotate.m_timer.IsRunning() != 0 || rotate.m_timer.IsExpired() != 0)
         {
-            float fRatio = Unk_EaseOut().Evaluate(rotate.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(rotate.m_timer.GetRatio());
             float fValue = rotate.m_fFrom + (rotate.m_fTo - rotate.m_fFrom) * fRatio;
             efd::Point3 pt;
             reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(pt));
@@ -346,9 +346,9 @@ void CCubeMotionManager::Update()
         }
         if (bounce.m_timer.IsRunning() != 0 || bounce.m_timer.IsExpired() != 0)
         {
-            if (bounce.m_timer.FUN_140868940() <= 0.5f)
+            if (bounce.m_timer.GetRatio() <= 0.5f)
             {
-                float fRatio = Unk_EaseOut().Evaluate(bounce.m_timer.FUN_140868940() * 2.0f);
+                float fRatio = Unk_EaseOut().Evaluate(bounce.m_timer.GetRatio() * 2.0f);
                 float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
                 efd::Point3 pt;
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
@@ -357,7 +357,7 @@ void CCubeMotionManager::Update()
             }
             else
             {
-                float fRatio = Unk_C2Ease().FUN_1410af700((bounce.m_timer.FUN_140868940() - 0.5f) * 2.0f);
+                float fRatio = Unk_C2Ease().FUN_1410af700((bounce.m_timer.GetRatio() - 0.5f) * 2.0f);
                 float fValue = bounce.m_fTo + (bounce.m_fFrom - bounce.m_fTo) * fRatio;
                 efd::Point3 pt;
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
@@ -393,7 +393,7 @@ void CCubeMotionManager::Update()
         Unk_CmScale& scale = m_scale.GetValueAt(pos5);
         if (scale.m_timer.IsRunning() != 0 || scale.m_timer.IsExpired() != 0)
         {
-            float fRatio = Unk_EaseOut().Evaluate(scale.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(scale.m_timer.GetRatio());
             float fValue = scale.m_fFrom + (scale.m_fTo - scale.m_fFrom) * fRatio;
             reinterpret_cast<Unk_CachedEntity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<float>(0x2d7cad2d, fValue);
             if (scale.m_timer.IsExpired() != 0)
@@ -425,7 +425,7 @@ void CCubeMotionManager::Update()
         Unk_CmFade& fade = m_fade.GetValueAt(pos7);
         if (fade.m_timer.IsRunning() != 0 || fade.m_timer.IsExpired() != 0)
         {
-            float fRatio = Unk_EaseOut().Evaluate(fade.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(fade.m_timer.GetRatio());
             float fAlpha = fade.m_fFrom + (fade.m_fTo - fade.m_fFrom) * fRatio;
             Unk_CmMaterialList& rMaterials = fade.m_materials;
             Unk_CmMaterialList::const_iterator itEnd = rMaterials.end();

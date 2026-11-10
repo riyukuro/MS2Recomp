@@ -71,7 +71,7 @@ void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);   
 void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Vector3 pt);   // SetPointAttribute
 void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
-bool FUN_14028d470(float a, float b);                       // nearly equal
+bool IsNearlyEqual(float a, float b);                       // nearly equal
 float FUN_140a38cd0(float f);                       // fabs
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ void CEditCameraMode::vfunc_9()
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;
-        if (FUN_14028d470(m_78.x, 0.0f))
+        if (IsNearlyEqual(m_78.x, 0.0f))
         {
             if (nWheel > 0)
                 m_78.x = 15.0f;

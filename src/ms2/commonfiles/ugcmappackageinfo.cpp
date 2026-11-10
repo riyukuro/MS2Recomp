@@ -70,7 +70,7 @@ static int FUN_1408ba070(void* pNode, const char* pszName, int* pOut)
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\ugcmappackageinfo.cpp"
 // @0x1408ba3b0
-static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
+static Unk_Int3* ParseInt3(Unk_Int3* out, CString& text)
 {
     {
     ATL::CAtlArray<int> parts;
@@ -92,14 +92,14 @@ static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
 }
 
 // @0x1408b98f0
-void UGCMapPackageInfo::FUN_1408b98f0(void* pXmlNode)
+void UGCMapPackageInfo::LoadFromXml(void* pXmlNode)
 {
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemID", *(unsigned int*)&static_cast<int&>(m_nItemId));
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "itemCount", *(unsigned int*)&static_cast<int&>(m_nItemCount));
     CString strPoint;
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "offsetCubePoint3", strPoint);
     Unk_Int3 tmp;
-    FUN_1408ba3b0(&tmp, strPoint);
+    ParseInt3(&tmp, strPoint);
     m_offsetCubePoint = tmp;
     XmlGetAttr((class TiXmlElement*)(pXmlNode), "rotation", m_fRotation);
     FUN_1408ba070(pXmlNode, "wallDir", &m_nWallDir);
@@ -133,7 +133,7 @@ int CUGCMapPackageData::FUN_1408b9ab0(int nItemId)
 #endif
 
 // @0x1408b9b90
-UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName)
+UGCMapPackageDataPtr GetUGCMapPackageData(const CString& strName)
 {
     UGCMapPackageDataPtr found(0);
     if (Unk_LockGuard guard = s_lock) {}
@@ -148,10 +148,10 @@ UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName)
     return LoadExportedUGCMap(strName);
 }
 
-void FUN_1408b9c90();
+void ClearCache();
 #ifndef MS2_HOOK_DLL
 // @0x1408b9c90
-void FUN_1408b9c90()
+void ClearCache()
 {
     s_cache.RemoveAll();
 }
@@ -178,7 +178,7 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
          pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("cube")))
     {
         UGCMapPackageInfoPtr info(new UGCMapPackageInfo);
-        info->FUN_1408b98f0(pNode);
+        info->LoadFromXml(pNode);
         data->m_cubes.Add(info);
     }
     {

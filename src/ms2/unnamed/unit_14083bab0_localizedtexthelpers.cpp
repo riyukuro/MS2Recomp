@@ -21,18 +21,18 @@
 // return types of the getters this unit calls
 class CFileSystem;
 
-int FUN_1406516a0();                                                    // client language (localepath.cpp)
+int GetLanguage();                                                    // client language (localepath.cpp)
 int GetFallbackLanguages(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& rLanguages);     // fallback language list of a country
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
 CStringA ToCString(const char* psz, int n);
 class Unk_Be790Xml;
 class TiXmlElement;
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 void FUN_140873420(Unk_Be790Xml* pElem, const char* pszName, CStringW& rOut);   // string attribute
 class Unk_Be790Loader : public CFileSystem { };
 CFileSystem* GetFileSystem();
-double FUN_1407184e0(const CStringW& str);                              // text -> number
-long long FUN_140718320(const CStringW& str);
+double ParseDoubleW(const CStringW& str);                              // text -> number
+long long ParseInt64W(const CStringW& str);
 CStringW FUN_140719a00(long long n);                                    // integer text
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -45,14 +45,14 @@ extern CStringA DAT_143ab0250;                                          // xml a
 CStringW GetDateSeparator(int nLang);
 CStringW GetThousandsSeparator(int nLang);
 CStringW GetDecimalSeparator(int nLang);
-bool FUN_14083f280(const CStringW& str, wchar_t ch);
+bool IsSingleChar(const CStringW& str, wchar_t ch);
 bool StartsWith(const CStringW& str, const CStringW& strPrefix);
 
 // @0x14083bab0
 // Date text "<d1><sep><d2><sep><d3>"; the field order follows the language.
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep)
 {
-    int nLang = FUN_1406516a0();
+    int nLang = GetLanguage();
     CStringW strOut;
     if (operator==(strSep, L"/"))
         strSep = GetDateSeparator(nLang);
@@ -93,7 +93,7 @@ CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep)
 // Date and time text; bShort24 selects the 24-hour clock (no AM/PM suffix).
 CStringW FUN_14083bdc0(const CMsTime& time, bool bShort24, CStringW strDateSep, CStringW strTimeSep)
 {
-    int nLang = FUN_1406516a0();
+    int nLang = GetLanguage();
     CStringW strOut;
     int nHour = 0;
     CStringW strAmPm;
@@ -169,7 +169,7 @@ CStringW FUN_14083bdc0(const CMsTime& time, bool bShort24, CStringW strDateSep, 
 CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTimeSep)
 {
     bool b24 = false;
-    int nLang = FUN_1406516a0();
+    int nLang = GetLanguage();
     CStringW strOut;
     CStringW strHour;
     CStringW strAmPm;
@@ -269,7 +269,7 @@ CStringW FUN_14083ccf0(const CStringW& str)
         {
             if (ch == '-' && i == 0)
                 strDigits.AppendChar(ch);
-            else if (FUN_14083f280(strSep, ch))
+            else if (IsSingleChar(strSep, ch))
             {
                 strDigits.AppendChar(ch);
                 bFraction = true;
@@ -281,11 +281,11 @@ CStringW FUN_14083ccf0(const CStringW& str)
     CStringW strOut;
     if (!bFraction)
     {
-        strOut = FUN_140719a00(FUN_140718320(strDigits));
+        strOut = FUN_140719a00(ParseInt64W(strDigits));
     }
     else
     {
-        double d = FUN_1407184e0(strDigits);
+        double d = ParseDoubleW(strDigits);
         strOut = StringFormat<double>(L"{0}", d);
     }
     return strOut;
@@ -306,7 +306,7 @@ CStringW FormatPercent(int nValue, bool bLocalized)
     if (nFrac > 0)
     {
         CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);
-        double d = FUN_1407184e0(strNumber);
+        double d = ParseDoubleW(strNumber);
         CStringW strFixed = StringFormat<double>(L"{0:.2f}", d);
         return bLocalized ? FUN_14028dfa0<CStringW>(L"s_common_percent", strFixed) : CStringW(strFixed);
     }
@@ -316,7 +316,7 @@ CStringW FormatPercent(int nValue, bool bLocalized)
 
 // @0x14083d2b0
 // Removes every <...> tag from the text.
-void FUN_14083d2b0(CStringW& str)
+void StripTags(CStringW& str)
 {
     int nOpen = 0;
     while ((nOpen = str.Find(L"<", 0)) != -1)
@@ -330,17 +330,17 @@ void FUN_14083d2b0(CStringW& str)
 
 // @0x14083d340
 // For "<ms2>" xml text: the first child element's localized attribute (the client language, then its fallbacks).
-CStringW FUN_14083d340(CStringW str)
+CStringW GetLocalizedText(CStringW str)
 {
     if (!StartsWith(str, L"<ms2>"))
         return str;
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->LoadXmlFromString(&doc, str) == 0)
         return str;
-    Unk_Be790Xml* pRoot = reinterpret_cast<Unk_Be790Xml*>(FUN_140345b40(&doc));
+    Unk_Be790Xml* pRoot = reinterpret_cast<Unk_Be790Xml*>(GetFirstChildElement(&doc));
     if (pRoot == NULL)
         return str;
-    Unk_Be790Xml* pElem = reinterpret_cast<Unk_Be790Xml*>(FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pRoot)));
+    Unk_Be790Xml* pElem = reinterpret_cast<Unk_Be790Xml*>(GetFirstChildElement(reinterpret_cast<TiXmlDocument*>(pRoot)));
     if (pElem == NULL)
         return str;
     CStringW strText;
@@ -396,7 +396,7 @@ bool FUN_14083d890(CStringW str)
 }
 
 // @0x14083d990
-bool FUN_14083d990(CStringA str)
+bool SetClipboardTextA(CStringA str)
 {
     if (!OpenClipboard(NULL))
         return false;
@@ -460,7 +460,7 @@ CStringW GetDecimalSeparator(int nLang)
 }
 
 // @0x14083f280
-bool FUN_14083f280(const CStringW& str, wchar_t ch)
+bool IsSingleChar(const CStringW& str, wchar_t ch)
 {
     return str.GetLength() == 1 && str[0] == ch;
 }

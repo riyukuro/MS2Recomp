@@ -25,7 +25,7 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-bool FUN_14028d470(float a, float b);                                   // 0x14028d470 approx equal
+bool IsNearlyEqual(float a, float b);                                   // 0x14028d470 approx equal
 CString FUN_1409a2360(const char* psz, int n);                          // 0x1409a2360 CString from text
 float GetAnimationDuration(const egf::EntityID& kId, CString strName);         // 0x14099eb30 the animation length in seconds
 class Unk_AnimSvc* GetAnimationService();   // C3: was GetAnimationService
@@ -34,7 +34,7 @@ class Unk_AnimSvc* GetAnimationService();   // C3: was GetAnimationService
 
 // The actor's buffs (PCBase::FUN_14166d240).
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
-class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 GetPressedMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 GetPressedMoveDirection(); bool IsActionKeyPressed(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The owner's vtable up to slot 22: slot 18 returns the position as an efd::Point3 straight into the local, slot 22
 // takes the direction by value.
@@ -84,11 +84,11 @@ void StateHit::vfunc_4(StateData* pData)
         m_strC0 = pHit->m_str;
     }
     m_timer.Reset();
-    if (!FUN_14028d470(m_fB0, 0))
+    if (!IsNearlyEqual(m_fB0, 0))
     {
         m_strAnim = (const char*)FUN_1409a2360("Jump_FlyDamg_A", 0);
         Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
-        reinterpret_cast<GameObjectController*>(pBody)->FUN_141240d70();
+        reinterpret_cast<GameObjectController*>(pBody)->EndLift();
         reinterpret_cast<GameObjectController*>(pBody)->StartLift(m_fA4, m_fB0, m_fAc);
     }
     else
@@ -139,7 +139,7 @@ void StateHit::vfunc_5(int n)
     {
         Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
         if (pBody != 0)
-            reinterpret_cast<GameObjectController*>(pBody)->FUN_141240d70();
+            reinterpret_cast<GameObjectController*>(pBody)->EndLift();
     }
     m_bC8 = true;
 }
@@ -161,7 +161,7 @@ void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID
         Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)GetAnimationService());
         int nDamg = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->GetEntityID(), "Damg_C");
         int nFly = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->GetEntityID(), "Jump_FlyDamg_A");
-        if ((FUN_14028d470(m_fA4, 0) && FUN_14028d470(m_f9c, 0)) || (int)eSequenceID == nDamg)
+        if ((IsNearlyEqual(m_fA4, 0) && IsNearlyEqual(m_f9c, 0)) || (int)eSequenceID == nDamg)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
         }
@@ -194,7 +194,7 @@ void StateHit::vfunc_8(double fTime)
         reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetPressedMoveDirection())));
     if (s_nMove != 0 && m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
-    else if (s_nJump != 0 && m_pOwner->vfunc_99(0) == 0 && pBuff->FUN_141683100(0x493e1))
+    else if (s_nJump != 0 && m_pOwner->vfunc_99(0) == 0 && pBuff->IsActionKeyPressed(0x493e1))
         m_pOwner->vfunc_59(6, 0, 0, 0);
     else if (s_nSkill != 0)
         FUN_1417b9460();
@@ -214,7 +214,7 @@ int StateHit::vfunc_36()
 int StateHit::FUN_1417cb160()
 {
     float fNow = (float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->GetGameTime();
-    if (fNow < m_fA0 && !FUN_14028d470(m_fB0, 0))
+    if (fNow < m_fA0 && !IsNearlyEqual(m_fB0, 0))
         return 0;
     return 1;
 }
@@ -238,7 +238,7 @@ void StateHit::FUN_1417cb1d0()
 // @0x1417cb2a0
 int StateHit::HasHitDuration()
 {
-    return !FUN_14028d470(m_fA4, 0);
+    return !IsNearlyEqual(m_fA4, 0);
 }
 
 // @0x1417cb2f0
@@ -306,7 +306,7 @@ void StateHitNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenc
     {
         Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)GetAnimationService());
         int nDamg = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->GetEntityID(), "Damg_C");
-        if ((FUN_14028d470(m_f4c, 0) && FUN_14028d470(m_f44, 0)) || (int)eSequenceID == nDamg)
+        if ((IsNearlyEqual(m_f4c, 0) && IsNearlyEqual(m_f44, 0)) || (int)eSequenceID == nDamg)
             m_pOwner->vfunc_59(1, 0, 0, 0);
         else
             m_fEndTime = m_f4c + m_f44;

@@ -129,7 +129,7 @@ int SetItemTable::LoadSets()
             FUN_1401e0850<CString, unsigned>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] SetID is Duplicated, setID = {1}", strPath, nSetId);
             return 0;
         }
-        std::vector<unsigned>& items = spInfo->FUN_1407ad710();
+        std::vector<unsigned>& items = spInfo->GetItemIds();
         std::vector<unsigned>::iterator itEnd = items.end();
         for (std::vector<unsigned>::iterator it = items.begin(); it != itEnd; ++it)
         {

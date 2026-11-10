@@ -98,9 +98,9 @@ public:
     class GFxMovie* FindMovie(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
-int FUN_1406c34c0();
+int IsNexonPlatform();
 CString ToCString(const char* psz, int n);          // text conversion
-int FUN_1406516b0();
+int GetRegion();
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class CNetworkService* GetNetworkService();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -171,7 +171,7 @@ int UISceneLogin::vfunc_49(int n)
     reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())->ClearCallback();
     m_nTitleDone = 0;
     m_nShown = 0;
-    if (FUN_1406c34c0() != 0)
+    if (IsNexonPlatform() != 0)
         m_nProgress = 0;
     else
         m_nProgress = 0x4000;
@@ -201,7 +201,7 @@ void UISceneLogin::vfunc_15()
         OnPreloadProgress(0x3ffe);
     if (m_nProgress == 0xffff)
     {
-        if (FUN_1406c34c0() != 0)
+        if (IsNexonPlatform() != 0)
         {
             if (GetNetworkService() != 0)
             {
@@ -231,7 +231,7 @@ int UISceneLogin::vfunc_13()
     }
     if ((m_nProgress & 0x8000) != 0)
     {
-        if (((class CInputKeyHandler*)(class Unk_LgInput*)(((class Unk_LgInput*)FUN_14025e7c0())))->FUN_14116d840() && m_nTitleDone == 0)
+        if (((class CInputKeyHandler*)(class Unk_LgInput*)(((class Unk_LgInput*)FUN_14025e7c0())))->IsEscapePressed() && m_nTitleDone == 0)
         {
             FUN_141acf7c0();
             return 1;
@@ -276,7 +276,7 @@ void UISceneLogin::OnLoadComplete()
         if (pBg->IsLoaded() != 0)
             vfunc_60(pBg->GetScript());
     }
-    if (FUN_1406c34c0() == 0 && m_nShown != 0)
+    if (IsNexonPlatform() == 0 && m_nShown != 0)
         OpenLoginDialogs();
 }
 
@@ -347,7 +347,7 @@ void UISceneLogin::ShowTitle()
     {
         CStringW strAni(L"logo_ani");
         kObj.SetWStringMember("logoAniName", strAni);
-        if (FUN_1406516b0() == 1)
+        if (GetRegion() == 1)
             kObj.SetBoolMember("showCopyRight", true);
     }
     m_30->Invoke("show", Scaleform::GFx::Value(kObj.GetValue()));
@@ -443,7 +443,7 @@ void UISceneLogin::FUN_141acfad0(__int64 nUnused)
 // @0x141acfb40
 bool UISceneLogin::IsRegionListUsed()
 {
-    if (FUN_1406c34c0() != 0)
+    if (IsNexonPlatform() != 0)
     {
         Unk_LgMsgBox* pBox = ((class Unk_LgMsgBox*)((void*)GetClientPlatform()));
         if (pBox->vfunc_0() == 1)
@@ -491,7 +491,7 @@ static int FUN_141acfd00()
 {
     if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LgPlayerState*)GetKeyTable()))) == 0)
         return reinterpret_cast<CInputKeyHandler*>(((class Unk_LgInput*)FUN_14025e7c0()))->WasKeyPressed(0x75, 0, 0);
-    return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dd30(0x493ef, 0, 0);
+    return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsActionKeyPressed(0x493ef, 0, 0);
 }
 
 // @0x141acfe40

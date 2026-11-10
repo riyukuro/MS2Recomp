@@ -34,7 +34,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 CString ToCString(const char* pszName, int nFlags);     // undecorated class name
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int Parse_14021a270(const CStringA& value);                 // commonenum.cpp: the "type" name -> enum (C3: was FUN_14021a270)
 
@@ -49,7 +49,7 @@ bool CItemExchangeScrollTable::s_bInit;
 
 // The price with the discount rate (per 10000) applied.
 // @0x1405957d0
-__int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
+__int64 ApplyDiscount(__int64 nMeso, unsigned int nRate);
 
 // ---- CExchangeItemInfo ----
 
@@ -58,7 +58,7 @@ __int64 CExchangeItemInfo::GetMeso() const
 {
     int nRate = ((class Unk_1403ed190*)((class CGameEventValueManager*)(class Unk_140302b00*)(reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetExchangeScrollSale())->Get(m_nId);
     if (nRate != 0)
-        return FUN_1405957d0(m_nMeso, nRate);
+        return ApplyDiscount(m_nMeso, nRate);
     return m_nMeso;
 }
 
@@ -99,7 +99,7 @@ void CItemExchangeScrollTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exchange")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("exchange")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
@@ -155,7 +155,7 @@ CExchangeItemInfoPtr CItemExchangeScrollTable::GetData(unsigned int nId)
 }
 
 // @0x1405957d0
-__int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate)
+__int64 ApplyDiscount(__int64 nMeso, unsigned int nRate)
 {
     double dRate = 1.0 - (double)nRate / 10000.0;
     return (__int64)((double)nMeso * dRate + 1e-06);

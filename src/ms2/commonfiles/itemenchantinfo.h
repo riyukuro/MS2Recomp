@@ -25,23 +25,23 @@ class BaseOption {
 public:
     BaseOption();
     bool HasValue() const;             // 0x140266ce0 (uiitemenchantdialog.cpp)
-    float FUN_140266e10() const;            // 0x140266e10 (float)[+0x18] / divisor
+    float GetRate() const;            // 0x140266e10 (float)[+0x18] / divisor
     int GetValue() const;              // 0x140266e30 the value [+0x18] (itemsocketsystemutil.cpp)
     void SetValue(int nValue);         // 0x140266e90 sets the value [+0x18] (itemsocket.cpp)
     void Write(Unk_EnchantWrite&) const;
     void Read(Unk_EnchantRead&);
     void CopyFrom(const BaseOption* pSource);   // copy
     void FUN_140266dd0(const BaseOption* pSource);   // add the values (unlimitedenchantoption.cpp)
-    void FUN_140266e50(float fRate);        // sets the rate (unlimitedenchantoption.cpp)
-    bool FUN_140266ee0(const BaseOption* pOther) const;   // the same option (itemoptiondata.cpp)
+    void SetRate(float fRate);        // sets the rate (unlimitedenchantoption.cpp)
+    bool IsEqual(const BaseOption* pOther) const;   // the same option (itemoptiondata.cpp)
 private: void* p0; void* p8; void* p10; int m_nValue;
 public:
     int m_nIndex;                           // +0x1c the roll order (ItemOptionRandomContext::FUN_1405da4b0)
 };
 MS2_CHECK_SIZE(BaseOption, 0x20);
 struct Unk_EnchantHistory {
-    Unk_EnchantHistory() { FUN_14058c160(); }
-    void FUN_14058c160();
+    Unk_EnchantHistory() { Reset(); }
+    void Reset();
     void Write(Unk_EnchantWrite&) const;
     void Read(Unk_EnchantRead&);
     __int64 itemId; int attempts,failures; bool failed,enabled; int extra;
@@ -81,7 +81,7 @@ public:
     void Read(Unk_EnchantRead& stream);
     void SetDirty(bool dirty);
     bool GetDirty();
-    int FUN_14058ccf0();
+    int GetFailStackCount();
     Unk_EnchantMap& GetOptions();
     int NeedsChargeVersionUpdate();
     void SetVersion(int version);

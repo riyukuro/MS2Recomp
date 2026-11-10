@@ -21,14 +21,14 @@ ClassObject::ClassObject() {}
 ClassObject::~ClassObject() {}
 
 // @0x1401f7f50
-ClassObject* FUN_1401f7f50(CStringW strName)
+ClassObject* CreateClassObject(CStringW strName)
 {
     ClassObjectCreateFn pfnCreate = NULL;
     if (FUN_1401f7fe0()->Lookup(strName, pfnCreate))
         return pfnCreate();
     return NULL;
 }
-MS2_REPLACE(0x1401F7F50, FUN_1401f7f50, 133, 0x1120D2F1);
+MS2_REPLACE(0x1401F7F50, CreateClassObject, 133, 0x1120D2F1);
 
 // @0x1401f7fe0
 ClassObjectFactoryMap* FUN_1401f7fe0()
@@ -109,7 +109,7 @@ struct Unk_LoginA {
 MS2_CHECK_SIZE(Unk_LoginA, 0x40);
 
 // @0x1401f9020
-void FUN_1401f9020(Unk_LoginA* p, COutputStream* out)
+void WriteLoginA(Unk_LoginA* p, COutputStream* out)
 {
     out->WriteUInt8(p->m_nType);
     out->WriteUnicodeStringA(p->m_s08);
@@ -120,10 +120,10 @@ void FUN_1401f9020(Unk_LoginA* p, COutputStream* out)
     out->WriteInt32(p->m_n30);
     out->WriteString(p->m_s38);
 }
-MS2_REPLACE(0x1401F9020, FUN_1401f9020, 252, 0x01402197);
+MS2_REPLACE(0x1401F9020, WriteLoginA, 252, 0x01402197);
 
 // @0x1401f9130
-void FUN_1401f9130(Unk_LoginA* p, Unk_PayloadReader& in)
+void ReadLoginA(Unk_LoginA* p, Unk_PayloadReader& in)
 {
     // (range: Unk_140203550<unsigned char> argument temp)
     p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
@@ -135,7 +135,7 @@ void FUN_1401f9130(Unk_LoginA* p, Unk_PayloadReader& in)
     p->m_n30 = in.ReadInt32();
     p->m_s38 = in.ReadString();
 }
-MS2_REPLACE(0x1401F9130, FUN_1401f9130, 563, 0xCA288641);
+MS2_REPLACE(0x1401F9130, ReadLoginA, 563, 0xCA288641);
 
 struct Unk_LoginB {
     unsigned m_nType; CString m_s08; CString m_s10; unsigned m_n18; int m_n1c; Unk_LoginMachineId m_id;
@@ -144,7 +144,7 @@ struct Unk_LoginB {
 MS2_CHECK_SIZE(Unk_LoginB, 0x38);
 
 // @0x1401f9370
-void FUN_1401f9370(Unk_LoginB* p, COutputStream* out)
+void WriteLoginB(Unk_LoginB* p, COutputStream* out)
 {
     out->WriteUInt8(p->m_nType);
     out->WriteUnicodeStringA(p->m_s08);
@@ -155,10 +155,10 @@ void FUN_1401f9370(Unk_LoginB* p, COutputStream* out)
     out->WriteInt32(p->m_n30);
     out->WriteInt32(p->m_n34);
 }
-MS2_REPLACE(0x1401F9370, FUN_1401f9370, 238, 0xC5A4FE67);
+MS2_REPLACE(0x1401F9370, WriteLoginB, 238, 0xC5A4FE67);
 
 // @0x1401f9470
-void FUN_1401f9470(Unk_LoginB* p, Unk_PayloadReader& in)
+void ReadLoginB(Unk_LoginB* p, Unk_PayloadReader& in)
 {
     // (range: Unk_140203550<unsigned char> argument temp)
     p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
@@ -170,7 +170,7 @@ void FUN_1401f9470(Unk_LoginB* p, Unk_PayloadReader& in)
     p->m_n30 = in.ReadInt32();
     p->m_n34 = in.ReadInt32();
 }
-MS2_REPLACE(0x1401F9470, FUN_1401f9470, 522, 0x6226ED33);
+MS2_REPLACE(0x1401F9470, ReadLoginB, 522, 0x6226ED33);
 
 struct Unk_LoginC {
     unsigned m_nType; int m_n04; __int64 m_n08; ATL::CAtlArray<char> m_blob10; ATL::CAtlArray<char> m_blob30; unsigned m_n50;
@@ -179,7 +179,7 @@ struct Unk_LoginC {
 MS2_CHECK_SIZE(Unk_LoginC, 0x78);
 
 // @0x1401f9680
-void FUN_1401f9680(Unk_LoginC* p, COutputStream* out)
+void WriteLoginC(Unk_LoginC* p, COutputStream* out)
 {
     out->WriteUInt8(p->m_nType);
     out->WriteInt64(p->m_n08);
@@ -193,10 +193,10 @@ void FUN_1401f9680(Unk_LoginC* p, COutputStream* out)
     out->WriteUInt8((unsigned char)p->m_n70);
     out->WriteInt32(p->m_n04);
 }
-MS2_REPLACE(0x1401F9680, FUN_1401f9680, 280, 0x4C0A9F22);
+MS2_REPLACE(0x1401F9680, WriteLoginC, 280, 0x4C0A9F22);
 
 // @0x1401f97a0
-void FUN_1401f97a0(Unk_LoginC* p, Unk_PayloadReader& in)
+void ReadLoginC(Unk_LoginC* p, Unk_PayloadReader& in)
 {
     // (range: Unk_140203550<unsigned char> argument temp)
     p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
@@ -211,7 +211,7 @@ void FUN_1401f97a0(Unk_LoginC* p, Unk_PayloadReader& in)
     p->m_n70 = in.ReadUInt8();
     p->m_n04 = in.ReadInt32();
 }
-MS2_REPLACE(0x1401F97A0, FUN_1401f97a0, 428, 0x8048F6B8);
+MS2_REPLACE(0x1401F97A0, ReadLoginC, 428, 0x8048F6B8);
 
 struct Unk_LoginD {
     unsigned m_nType; __int64 m_n08; CString m_s10; unsigned m_n18; int m_n1c; Unk_LoginMachineId m_id;
@@ -220,7 +220,7 @@ struct Unk_LoginD {
 MS2_CHECK_SIZE(Unk_LoginD, 0x48);
 
 // @0x1401f9960
-void FUN_1401f9960(Unk_LoginD* p, COutputStream* out)
+void WriteLoginD(Unk_LoginD* p, COutputStream* out)
 {
     out->WriteUInt8(p->m_nType);
     out->WriteInt64(p->m_n08);
@@ -233,10 +233,10 @@ void FUN_1401f9960(Unk_LoginD* p, COutputStream* out)
     out->WriteString(p->m_s38);
     out->WriteUInt8((unsigned char)p->m_n40);
 }
-MS2_REPLACE(0x1401F9960, FUN_1401f9960, 288, 0x69F24D7E);
+MS2_REPLACE(0x1401F9960, WriteLoginD, 288, 0x69F24D7E);
 
 // @0x1401f9a90
-void FUN_1401f9a90(Unk_LoginD* p, Unk_PayloadReader& in)
+void ReadLoginD(Unk_LoginD* p, Unk_PayloadReader& in)
 {
     // (range: Unk_140203550<unsigned char> argument temp)
     p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
@@ -250,7 +250,7 @@ void FUN_1401f9a90(Unk_LoginD* p, Unk_PayloadReader& in)
     p->m_s38 = in.ReadString();
     p->m_n40 = in.ReadUInt8();
 }
-MS2_REPLACE(0x1401F9A90, FUN_1401f9a90, 640, 0x732160F3);
+MS2_REPLACE(0x1401F9A90, ReadLoginD, 640, 0x732160F3);
 
 // The field-enter request (Unk_NetworkAuth in networkservice.cpp, Unk_SSGEnterRequest in scenestategame.cpp).
 struct Unk_LoginEnter { __int64 m_nAccount; int m_n08; int m_n0c; Unk_LoginMachineId m_id; };
@@ -280,11 +280,11 @@ struct Unk_LoginPing { __int64 m_nValue; short m_nCode; };
 MS2_CHECK_SIZE(Unk_LoginPing, 0x10);
 
 // @0x1401f9e60
-void FUN_1401f9e60(Unk_LoginPing* p, COutputStream* out)
+void WriteLoginPing(Unk_LoginPing* p, COutputStream* out)
 {
     out->WriteInt64(p->m_nValue);
     out->WriteInt16(p->m_nCode);
 }
-MS2_REPLACE(0x1401F9E60, FUN_1401f9e60, 68, 0x049D5AFD);
+MS2_REPLACE(0x1401F9E60, WriteLoginPing, 68, 0x049D5AFD);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a2a0-0x142c9a2c0 .text$yd

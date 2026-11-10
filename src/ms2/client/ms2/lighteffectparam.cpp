@@ -74,7 +74,7 @@ void ReadTransitionData(TransitionData* pData, TiXmlElement* pNode, float* pfTim
 //
 //
 //
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 
 void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -380,7 +380,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     Vector3 ptWorld = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
     reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(ptWorld));
     TSingleton<EntityWorldManager>::GetInstance()->AddEntity((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity), 0);
-    if (FUN_14028d470(pLightParam->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pLightParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

@@ -15,12 +15,12 @@ public:
     CBuddy();
     void ReadFromPacket(Unk_BuddyInput&);
     ~CBuddy();
-    int FUN_1401cc3e0(); int FUN_1401cc3a0(); int FUN_1401cc5d0(); int FUN_1401cc5f0(); int IsOnline(); int FUN_1401cc660();
-    void FUN_1401cc4b0(int); __int64 FUN_1401cc230(); __int64 GetId(); CStringW FUN_1401cc350();
+    int FUN_1401cc3e0(); int FUN_1401cc3a0(); int FUN_1401cc5d0(); int IsFriend(); int IsOnline(); int FUN_1401cc660();
+    void SetIsNew(int); __int64 FUN_1401cc230(); __int64 GetId(); CStringW GetHomeName();
     // Remaining accessors of buddy.cpp (w4s10); the packet reader above is in buddy.cpp too.
-    CString FUN_1401cc0d0(); CStringW GetName(); int GetLevel(); __int64 FUN_1401cc250(); int GetMapId(); int FUN_1401cc290();
+    CString FUN_1401cc0d0(); CStringW GetName(); int GetLevel(); __int64 FUN_1401cc250(); int GetMapId(); int GetJobId();
     int GetJobCode(); int GetChannel(); Unk_UserProxyColor* FUN_1401cc330(); int FUN_1401cc3c0(); int FUN_1401cc400(Vector3*);
-    int FUN_1401cc4d0(); int FUN_1401cc4f0(); CStringA* FUN_1401cc530(); CStringW* FUN_1401cc550(); CStringW* GetTodayMemo(); CStringW* GetMemo();
+    int IsNew(); int ConsumeIsNew(); CStringA* FUN_1401cc530(); CStringW* FUN_1401cc550(); CStringW* GetTodayMemo(); CStringW* GetMemo();
     unsigned FUN_1401cc5b0(); void SetOnline(); void SetOffline(); unsigned FUN_1401cc6a0(); void SetAway();
     // Layout from ctor 0x1401cbd50, dtor 0x1401cc020 and packet reader ReadFromPacket (read order in comments).
     POSITION position;              // +0x18 node in CBuddyManager::list

@@ -141,7 +141,7 @@ public:
 typedef UIMsg Unk_LsUIMsg;
 
 class CUIService;
-class WorldService { public: static WorldService* GetInstance(); void* FUN_141bd0cc0(); int FUN_141bcfbd0(); };   // C3: worldservice.h would add the efd ID statics
+class WorldService { public: static WorldService* GetInstance(); void* GetLocalPlayer(); int FUN_141bcfbd0(); };   // C3: worldservice.h would add the efd ID statics
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
@@ -151,7 +151,7 @@ class HomeBlockManager;
 template <class T> T* Unk_MMDialog(int nId);   // C3: mentoringmanager.cpp
 class UIDamageText;
 template <class T> T* Unk_DmgFindUI(int nId);
-int FUN_141b712e0();
+int IsMouseCursorVisible();
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 int FUN_141acdeb0();
@@ -240,7 +240,7 @@ int UISceneLobby::vfunc_13()
         TakeScreenshotJpg(1, 0);
         return 1;
     }
-    if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x927c1, 0, 0)) {
+    if (((class Unk_LsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 0, 0)) {
         FUN_140930150(0x32);
         ((class Unk_LsLogin*)FUN_14025e7c0())->SetDebugMode(((class Unk_LsLogin*)FUN_14025e7c0())->IsDebugMode() == 0);
     } else {
@@ -248,7 +248,7 @@ int UISceneLobby::vfunc_13()
             if (((class Unk_LsLogin*)FUN_14025e7c0())->WasKeyPressed(0x16, 1, 0)) {
                 if (((class Unk_LsLogin*)FUN_14025e7c0())->IsKeyDown(0x38, 1, 0)) {
                     if (FUN_140aadf80() != 0) {
-                        FUN_141b91b20((FUN_140aadf80(), FUN_141b712e0()) == 1);
+                        FUN_141b91b20((FUN_140aadf80(), IsMouseCursorVisible()) == 1);
                     }
                     return 1;
                 }
@@ -288,7 +288,7 @@ MS2_REPLACE_METHOD(0x141ACDE60, UISceneLobby, vfunc_28, 67, 0x774DFD16);
 int FUN_141acdeb0()
 {
     if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LsPlayerState*)GetKeyTable()))) == 0) return ((class Unk_LsLogin*)FUN_14025e7c0())->WasKeyPressed(0x75, 0, 0);
-    return ((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493ef, 0, 0);
+    return ((class Unk_LsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x493ef, 0, 0);
 }
 MS2_REPLACE(0x141ACDEB0, FUN_141acdeb0, 82, 0xD9098B92);
 
@@ -314,7 +314,7 @@ MS2_REPLACE_METHOD(0x141ACDFE0, UISceneLobbyCreate, GetTypeName, 61, 0x8A27D619)
 void UISceneLobbyCreate::OnLoadComplete()
 {
     UISwfEntity::OnLoadComplete();
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0) {
         if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e26) != 0) {
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e26)));

@@ -14,10 +14,10 @@ template<class Map> void CopyEnchantMap(Map& to,const Map& from) {
 }
 
 // @0x14058c160
-void Unk_EnchantHistory::FUN_14058c160() {
+void Unk_EnchantHistory::Reset() {
     itemId=0; attempts=0; failures=0; failed=false; enabled=true; extra=0;
 }
-MS2_REPLACE_METHOD(0x14058C160, Unk_EnchantHistory, FUN_14058c160, 72, 0x6F00E9E1);
+MS2_REPLACE_METHOD(0x14058C160, Unk_EnchantHistory, Reset, 72, 0x6F00E9E1);
 
 // @0x14058c1b0
 void Unk_EnchantHistory::Write(Unk_EnchantWrite& stream) const {
@@ -44,7 +44,7 @@ MS2Ptr<CItemEnchantInfo> CItemEnchantInfo::Clone() {
 
 // @0x14058c510
 void CItemEnchantInfo::Reset() {
-    m_level=0; m_charge=0; m_version=0; m_history.FUN_14058c160(); m_options.RemoveAll(); m_dirty=false;
+    m_level=0; m_charge=0; m_version=0; m_history.Reset(); m_options.RemoveAll(); m_dirty=false;
 }
 MS2_REPLACE_METHOD(0x14058C510, CItemEnchantInfo, Reset, 96, 0x8247595A);
 
@@ -218,10 +218,10 @@ bool CItemEnchantInfo::GetDirty() {
 MS2_REPLACE_METHOD(0x14058CCB0, CItemEnchantInfo, GetDirty, 18, 0x61F4ABA5);
 
 // @0x14058ccf0
-int CItemEnchantInfo::FUN_14058ccf0() {
+int CItemEnchantInfo::GetFailStackCount() {
     return m_history.extra;
 }
-MS2_REPLACE_METHOD(0x14058CCF0, CItemEnchantInfo, FUN_14058ccf0, 14, 0x7A15C443);
+MS2_REPLACE_METHOD(0x14058CCF0, CItemEnchantInfo, GetFailStackCount, 14, 0x7A15C443);
 
 // @0x14058cd40
 Unk_EnchantMap& CItemEnchantInfo::GetOptions() {

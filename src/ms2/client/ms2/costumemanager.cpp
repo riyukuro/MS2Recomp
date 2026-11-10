@@ -23,7 +23,7 @@
 #include "ms2/placeholder/costumesettable.h"
 
 __int64 GenerateUniqueId();                                    // the current server time
-int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
+int GetItemCustomizeId(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
 
 
 // @0x140b1db00
@@ -58,11 +58,11 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             continue;
-        int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
+        int nCustomize = GetItemCustomizeId(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->SetItemUid(GenerateUniqueId());
         spItem->SetObjectId(m_pOwner->GetObjectId());
-        spItem->FUN_14052a130(4);
+        spItem->SetVariant(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
     }
@@ -74,11 +74,11 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return;
-        int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
+        int nCustomize = GetItemCustomizeId(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->SetObjectId(m_pOwner->GetObjectId());
         spItem->SetItemUid(GenerateUniqueId());
-        spItem->FUN_14052a130(4);
+        spItem->SetVariant(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
     }

@@ -62,9 +62,9 @@ void ReadManufacture(CManufacture& v, CByteBuffer& in)
 }
 
 // @0x140694170
-__int64 CManufacture::FUN_140694170()
+__int64 CManufacture::GetReadyTime()
 {
-    return FUN_1406941f0() + FUN_140694200();
+    return FUN_1406941f0() + GetDuration();
 }
 
 // @0x1406941f0
@@ -74,7 +74,7 @@ __int64 CManufacture::FUN_1406941f0()
 }
 
 // @0x140694200
-int CManufacture::FUN_140694200()
+int CManufacture::GetDuration()
 {
     return m_38;
 }

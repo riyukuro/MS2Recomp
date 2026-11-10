@@ -50,39 +50,39 @@ public:
     virtual void vfunc_oa0_11(void* a1);        // UIStatusEventListener slot 11 (Ghidra vfunc_o70_11): the meso amount
     virtual void vfunc_oa0_14(void* a1, int a2);   // slot 14 (vfunc_o70_14): the marat amount and its change
 
-    void FUN_141356cd0(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356d00(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnTokenPocketClick(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnMaidStatusClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356dc0(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356df0(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356e20(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnFishingBookClick(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnKeyboardGuideClick(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnInputModeClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void OnGamePadOnClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void OnGamePadOffClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void OpenEventBrowser(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356f90(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnSearchClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141357050(const Scaleform::GFx::FunctionHandler::Params& params);
     void OnPcBangNotify(NotifyObject* pObj);
     void OnTokenMoneyChanged(NotifyObject* pObj);
     void OnGameEventChanged(NotifyObject* pObj);
-    void FUN_141357330(NotifyObject* pObj);
+    void OnSkillSetMode(NotifyObject* pObj);
     void SetNoticeSpeed(float f);
     void SetNotice(CStringW strText);
     void SetGamePadMode(int nMode);
     void SetInputMode(int nMode);
-    void FUN_141357640(__int64 tTime, __int64 nBonus);
+    void SetVersionText(__int64 tTime, __int64 nBonus);
     bool ToggleVersionText();
     void OnSearchDungeonPacket(CInPacket& packet);
     void ResetClock();
     void UpdateClock();
     void UpdateMaidReadyCount(int nQuiet);
-    void FUN_141358020(bool bForce);
-    void FUN_1413581f0();
+    void UpdateHotTime(bool bForce);
+    void UpdateNoticeScroll();
     void RefreshPcBang();
     void UpdateSearchDungeon();
     void RefreshNotice();
     void FUN_1413586c0(Scaleform::GFx::Value* pRetVal);
-    void FUN_141358b20(Scaleform::GFx::Value* pRetVal);
-    void FUN_141358df0(Scaleform::GFx::Value* pRetVal);
+    void GetHotTimeTooltip(Scaleform::GFx::Value* pRetVal);
+    void GetMeratTooltip(Scaleform::GFx::Value* pRetVal);
     void ShowPendingNotice();
     void SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount);
     void SetPcBangState(int nState);
@@ -150,7 +150,7 @@ public:
     virtual void vfunc_89(const CString& strUrl);                           // 89 0x14135f660 navigate
     virtual bool vfunc_90(POINT* pPos);                                       // 90 0x14135f840 hit test (window -> view coordinates)
 
-    void FUN_14135ec00(const CString& strUrl, bool bOnce);
+    void Navigate(const CString& strUrl, bool bOnce);
     int IsVisible() const;
     void FUN_14135eda0(int nWidth, int nHeight);
     void CloseBrowser();
@@ -221,7 +221,7 @@ public:
     virtual void vfunc_67();                                                // 67 0x14135e540
     virtual int vfunc_48();                                                 // 48 0x14135eab0
 
-    CString FUN_14135e570();
+    CString GetTargetNode();
     void OnChangeSliderRotation(ASData& data);
     void OnChangeSliderTranslation(ASData& data);
     void FUN_14135e880(const CString& strNode, const NiPoint3& kRot, const NiPoint3& kTrans);

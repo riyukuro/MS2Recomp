@@ -42,7 +42,7 @@ class GameEventUserValue;
 extern GameEventUserValue DAT_143ab2fc0;
 class CGameRule {   // C3: member view of gamerule.h's CGameRule
 public:
-    MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
+    MS2Ptr<StampEventContext> GetStampEvent(Unk_AttendTable& table);
 };
 void* GetGameRule();
 
@@ -187,7 +187,7 @@ void CEventMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     if (m_78 == 2) {
-        MS2Ptr<StampEventContext> ref = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+        MS2Ptr<StampEventContext> ref = reinterpret_cast<CGameRule*>(GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
         if (ref.IsNull()) return;
         int n = ref->GetStampFlag(GetQuestId());
         if (n == -1) return;

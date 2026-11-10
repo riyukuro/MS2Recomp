@@ -80,7 +80,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // The doctor NPC talk script (1 = a script page shown by the NPC dialog service). C3: the definers' types (talkscript.cpp).
 Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nTalkId);   // by id and script (empty when unknown)
-Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int nMode);
+Unk_ScriptPtr<CTalkScript> GetNpcPickTalk(int nNpcId, int nMode);
 class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HcBuffMgr { public: };
 // the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
@@ -214,7 +214,7 @@ void StateHomeConvenient::Finish(double fTime)
                 unsigned nNpc = *static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorNpcID.Get();
                 if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
-                    if (CTalkScript* pScript = FUN_140856c50(nNpc, 1).get())
+                    if (CTalkScript* pScript = GetNpcPickTalk(nNpc, 1).get())
                         TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pScript), nNpc, 1, 0x12);
                 }
                 else

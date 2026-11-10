@@ -32,7 +32,7 @@ private:
 };
 
 class Unk_TOSession;
-Unk_TOPtr<Unk_TOField> FUN_140374140(unsigned id);
+Unk_TOPtr<Unk_TOField> FindField(unsigned id);
 Unk_TOSession* FUN_1403ed2d0();
 
 class CTrafficOptimizer : public TSingleton<CTrafficOptimizer> {

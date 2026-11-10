@@ -42,7 +42,7 @@ public:
     virtual bool vfunc_11() { return true; }
     int GetKind() { return m_nKind; }
     int GetId() { return m_nId; }
-    bool FUN_140e42580() { return m_bTick; }
+    bool IsTick() { return m_bTick; }
 protected:
     MS2_LAYOUT_FRIEND;
     int m_nId;                      // +0x18

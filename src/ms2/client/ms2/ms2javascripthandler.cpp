@@ -40,8 +40,8 @@ extern ATL::CAtlArray<unsigned int> DAT_143ab3078;               // the visited 
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
-    int FUN_141bd3060();
+    void* GetLocalPlayer();
+    int GetFieldId();
     static class WorldService* GetInstance();
 };
 class CGuildManager   // C3: member view for the former free stand-ins
@@ -147,7 +147,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
     retval = CefV8Value::CreateObject(NULL, NULL);
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == NULL)
         return false;
 
@@ -187,7 +187,7 @@ bool CMS2JavascriptHandler::GetCurrentMap(CefRefPtr<CefV8Value> object, const Ce
         return true;
 
     CStringA strMap;
-    strMap.Format("%08d", ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060());
+    strMap.Format("%08d", ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetFieldId());
     {
         CefString csMap((const char*)strMap);
         retval = CefV8Value::CreateString(csMap);
@@ -220,7 +220,7 @@ bool CMS2JavascriptHandler::HaveHome(CefRefPtr<CefV8Value> object, const CefV8Va
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
     bool bHome = false;
-    MyPC* pPC = static_cast<MyPC*>(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
+    MyPC* pPC = static_cast<MyPC*>(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()));
     if (pPC != NULL)
         bHome = pPC->HasNoHome() == 0;
     retval = CefV8Value::CreateBool(bHome);

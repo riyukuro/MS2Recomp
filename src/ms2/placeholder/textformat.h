@@ -12,7 +12,7 @@ public:
     ~Unk_TextFormat() {}                                        // 0x141025530
     Unk_TextFormat& FUN_14083ff40(const wchar_t* pszArg);       // replaces "{n}" / "{n:fmt}" by the next argument
     Unk_TextFormat& FUN_140840530(CStringW strArg);
-    CStringA FUN_140840580() const;                             // the formatted text, narrowed
+    CStringA GetTextA() const;                             // the formatted text, narrowed
     // the formatted text (0x1408405d0). Callers convert implicitly (ms2.cpp passes it as a CStringW,
     operator CStringW() const;                                  // StringIdInterface FUN_141024e60 converts through a temporary)
                                                                 // C3: was GetStr on the definer; one name now.

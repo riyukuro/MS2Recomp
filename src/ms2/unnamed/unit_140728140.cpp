@@ -40,7 +40,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -58,7 +58,7 @@ unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
 unsigned short FUN_140729360(const CStringW& str) { return (unsigned short)_wtoi(str); }
 
 // @0x140729390
-static void FUN_140729390(CStringW& str, std::vector<unsigned short>& rOut, const wchar_t* pszSep)
+static void ParseUShortList(CStringW& str, std::vector<unsigned short>& rOut, const wchar_t* pszSep)
 {
     int nPos = 0;
     CStringW strToken = str.Tokenize(pszSep, nPos);
@@ -106,7 +106,7 @@ CPetData::~CPetData() {}
 // @0x140728320
 bool CPetData::Load(TiXmlElement* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
         return false;
     XmlGetAttr((class TiXmlElement*)(pNode), "code", m_nId);
     FUN_140729460(pNode, "type", &m_nType);
@@ -136,7 +136,7 @@ bool CPetData::Load(TiXmlElement* pNode)
         std::vector<unsigned int> ids;
         std::vector<unsigned short> levels;
         FUN_1402929a0(strIds, reinterpret_cast<std::vector<int>&>(ids), L",");
-        FUN_140729390(strLevels, levels, L",");
+        ParseUShortList(strLevels, levels, L",");
         int nCount = (int)(std::min)(ids.size(), levels.size());
         for (int i = 0; i < nCount; ++i)
         {

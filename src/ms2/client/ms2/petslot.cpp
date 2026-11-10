@@ -72,7 +72,7 @@ class Unk_PsPane : public UIItemAutoUseOptionDialog
 class UIItemAutoUseOptionDialog* FUN_140cbe1c0(int);   // C3: was FUN_140cbe1c0
 
 // The quest event dispatcher the slot registers with.
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 // The item event hub the bag registers with.
 struct Unk_PsItemEvents;
 class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
@@ -87,7 +87,7 @@ public:
 void* FUN_140764020();   // C3: was FUN_140764020
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
-int FUN_141276180(const CString& strA, const CString& strB);
+int PlaySystemSound(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
@@ -135,20 +135,20 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 PetSlot::PetSlot(const CString& strName, int nIndex, unsigned __int64 nPetItemUid)
     : MS2DragSlot(strName, nIndex), m_nPetItemUid(nPetItemUid)
 {
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     SetEnabled(true);
 }
 
 // @0x140dbae00
 PetSlot::~PetSlot()
 {
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 
 // @0x140dbaeb0
 float PetSlot::GetCooldown()
 {
-    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return ((Unk_PsSkills*)((MyPC*)(Unk_PsPlayer*)(pPlayer))->GetSkillSystem())->FUN_141765fe0(GetPetItemType(), 0);
@@ -159,7 +159,7 @@ int PetSlot::GetPetItemType()
 {
     MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(GetPetItemUid());
     if (spItem.get() != 0)
-        return spItem->FUN_140527840()->GetSkillId();
+        return spItem->GetData()->GetSkillId();
     return 0;
 }
 
@@ -193,7 +193,7 @@ void PetSlot::vfunc_6(void* p)
     MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(GetPetItemUid());
     if (spItem.get() ? true : false)
     {
-        if (spItem->FUN_140527840()->GetType() == 2)
+        if (spItem->GetData()->GetType() == 2)
         {
             str.Format("%d", spItem->GetItemId());
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(str);
@@ -216,7 +216,7 @@ int PetSlot::vfunc_13()
     MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(GetPetItemUid());
     if (spItem.get() ? true : false)
     {
-        if (spItem->FUN_140527840()->FUN_14053d150())
+        if (spItem->GetData()->FUN_14053d150())
         {
             FUN_140d73bc0(0xc14, 0, 0, L"");
             return 1;
@@ -264,7 +264,7 @@ int PetSlot::vfunc_17()
 // @0x140dbb5c0
 int PetSlot::vfunc_18(void* p)
 {
-    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     MS2Ptr<CItem> spPet = g_143ab2a90.FindItemByUid(((class CPetManager*)GetPetManager())->GetSummonUid());
@@ -303,7 +303,7 @@ MS2Ptr<CItem> PetSlot::vfunc_25()
 // @0x140dbb860 (ITooltip::vfunc_0)
 int PetSlot::vfunc_0(void* p)
 {
-    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(m_nPetItemUid);
@@ -323,12 +323,12 @@ int PetSlot::vfunc_0(void* p)
             tip.SetEnablePutonBoth(L"", L"");
         else
             tip.SetEnablePutonBoth(L"", strName);
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40() != 0 && spItem->GetData()->FUN_14053d510())
         {
             MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655e10(4);
             bool bSame = (spEquip.get() ? true : false) && spEquip->GetItem() == spWorn.get();
             if (bSame)
-                FUN_141276180(s_strChangeDagger, "");
+                PlaySystemSound(s_strChangeDagger, "");
         }
         if (IsEnabled() == true)
             tip.SetEnablePreviewBoth(MS2Ptr<CItem>(0), spItem);
@@ -341,7 +341,7 @@ int PetSlot::vfunc_0(void* p)
 // @0x140dbbda0
 int PetSlot::vfunc_8(void* p)
 {
-    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PsPlayer* pPlayer = ((Unk_PsPlayer*)((WorldService*)(Unk_PsWorld*)(reinterpret_cast<Unk_PsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(m_nPetItemUid);
@@ -423,7 +423,7 @@ void FUN_140dbc420(const CString& strName)
     PetSlotBag* pBag = AsPetSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

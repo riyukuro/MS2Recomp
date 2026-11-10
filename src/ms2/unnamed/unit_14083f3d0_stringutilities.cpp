@@ -19,7 +19,7 @@
 #include "hook/ms2hook.h"
 #pragma intrinsic(memcpy, memset, strcmp, strlen)                       // strlen inline in UrlEncode
 
-void FUN_1401d3700(CStringA& str);                                      // MakeLower
+void ToLower(CStringA& str);                                      // MakeLower
 bool MakeLower(CStringW& str);                                      // MakeLower
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // wide -> narrow
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
@@ -34,21 +34,21 @@ inline void FUN_140841420(CStringW& str)
 
 // @0x14083f3d0
 // Replaces nCount characters at nPos by strNew.
-CStringW FUN_14083f3d0(const CStringW& str, int nPos, int nCount, const CStringW& strNew)
+CStringW ReplaceRange(const CStringW& str, int nPos, int nCount, const CStringW& strNew)
 {
     std::wstring wstr(str);
     std::wstring wstrNew(strNew);
     wstr.replace(nPos, nCount, wstrNew);
     return CStringW(wstr.c_str());
 }
-MS2_REPLACE(0x14083F3D0, FUN_14083f3d0, 240, 0xE1C60247);
+MS2_REPLACE(0x14083F3D0, ReplaceRange, 240, 0xE1C60247);
 
 // @0x14083f4d0
 // Case-insensitive compare (strcmp of the lower-cased copies).
 int CompareNoCase(CStringA strA, CStringA strB)
 {
-    FUN_1401d3700(strA);
-    FUN_1401d3700(strB);
+    ToLower(strA);
+    ToLower(strB);
     return strcmp(strA, strB);
 }
 MS2_REPLACE(0x14083F4D0, CompareNoCase, 138, 0xC8811D59);
@@ -166,8 +166,8 @@ MS2_REPLACE(0x14083FA60, FUN_14083fa60, 971, 0x9886EC44);
 // Case-insensitive find (-1 if not found).
 int FindNoCase(CStringA str, CStringA strFind)
 {
-    FUN_1401d3700(str);
-    FUN_1401d3700(strFind);
+    ToLower(str);
+    ToLower(strFind);
     return str.Find(strFind, 0);
 }
 MS2_REPLACE(0x14083FE40, FindNoCase, 107, 0xB4A832D8);
@@ -229,11 +229,11 @@ Unk_TextFormat& Unk_TextFormat::FUN_140840530(CStringW strArg)
 MS2_REPLACE_METHOD(0x140840530, Unk_TextFormat, FUN_140840530, 73, 0x41600FE9);
 
 // @0x140840580
-CStringA Unk_TextFormat::FUN_140840580() const
+CStringA Unk_TextFormat::GetTextA() const
 {
     return FUN_14016a600(m_str, 0);
 }
-MS2_REPLACE_METHOD(0x140840580, Unk_TextFormat, FUN_140840580, 73, 0xFC51BFCB);
+MS2_REPLACE_METHOD(0x140840580, Unk_TextFormat, GetTextA, 73, 0xFC51BFCB);
 
 // @0x1408405d0
 Unk_TextFormat::operator CStringW() const

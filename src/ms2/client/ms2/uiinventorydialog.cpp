@@ -308,7 +308,7 @@ int FUN_140a66750(int nTab);                                        // the extra
 extern __int64 DAT_143ab2898;                                       // the mesos
 
 // The bag bound to a name.
-DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pBind);
+DragSlotBag* GetDragSlotBag(NotifyContext::BindData* pBind);
 
 // The platform (text filter) service.
 class Unk_InvPlatform
@@ -645,7 +645,7 @@ MS2_REPLACE_METHOD_VIA(0x141997880, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997920
 void UIInventoryDialog::vfunc_oa0_25(void* a1)
 {
-    if (DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)))
+    if (DragSlotBag* pBag = GetDragSlotBag(Unk_NotifyContext::FindBinding(m_188)))
         pBag->vfunc_11(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141997920, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_25, 78, 0);
@@ -653,7 +653,7 @@ MS2_REPLACE_METHOD_VIA(0x141997920, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997980
 void UIInventoryDialog::vfunc_oa0_26(void* a1)
 {
-    if (DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)))
+    if (DragSlotBag* pBag = GetDragSlotBag(Unk_NotifyContext::FindBinding(m_188)))
         pBag->vfunc_12(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141997980, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_26, 78, 0);
@@ -661,7 +661,7 @@ MS2_REPLACE_METHOD_VIA(0x141997980, UIInventoryDialog, UIStatusEventListener, vf
 // @0x1419979e0
 void UIInventoryDialog::vfunc_26(int nItemId)
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     if (pPc->GetCurStateId() != 1 && pPc->GetCurStateId() != 0xe)
@@ -846,7 +846,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 if (box.get() != 0)
                 {
                     box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::OnSortConfirm));
-                    box->FUN_141a01800(1);
+                    box->SetButtonPreset(1);
                     box->FUN_141a024a0(0);
                     box->SetModaless(1);
                     FUN_140d73c60(box);
@@ -888,7 +888,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("onClickItemEnchantTransform", szMethod) == 0)
     {
-        MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
             {
@@ -924,7 +924,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             FUN_141275260(0x2f7, 1, 1);
             return 1;
         }
-        MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPc != 0 && pPc->vfunc_65() == 1)
         {
             {
@@ -944,7 +944,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("onClickItemRemakeOption", szMethod) == 0)
     {
-        MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPc == 0)
             return 0;
         pPc->FUN_141528970();
@@ -1134,7 +1134,7 @@ MS2_REPLACE_METHOD(0x141999F10, UIInventoryDialog, GetScrollPosition, 73, 0);
 // The original reads the dialogs' vfunc_55 without null checks (kept).
 void UIInventoryDialog::UpdateButtonState()
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     m_1a4 = 0;
@@ -1262,7 +1262,7 @@ MS2_REPLACE_METHOD(0x14199A620, UIInventoryDialog, OnSearchTextChanged, 743, 0);
 // @0x14199a910
 void UIInventoryDialog::OnClickOpenBank()
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc != 0)
     {
         UIDialog* pStore = ((class UIDialog*)GetStoreDialog(0x4e47));
@@ -1558,7 +1558,7 @@ int UIInventoryDialog::FUN_14199bfc0()
 {
     if (TSingleton<CTradeManagerEx>::GetInstance()->CanStartTrade() == 0)
         return 0;
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc != 0 && pPc->IsDead() == 0)
         return 1;
     return 0;
@@ -1811,7 +1811,7 @@ MS2_REPLACE_METHOD(0x14199D980, UIInventoryDialog, CanExpandTab, 53, 0);
 // @0x14199d9c0
 CStringW UIInventoryDialog::GetItemBreakTooltip()
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
@@ -1847,7 +1847,7 @@ MS2_REPLACE_METHOD(0x14199DDD0, UIInventoryDialog, GetExpandTooltip, 207, 0);
 // @0x14199deb0
 CStringW UIInventoryDialog::GetOpenBankTooltip(int bBank)
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
@@ -2167,7 +2167,7 @@ MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, CollectPartyMembers, 243, 0
 void UIInviteGroupDialog::CollectGuildMembers(EntryList& entries)
 {
     ATL::CAtlArray<MS2Ptr<CGuildMember> > members;
-    reinterpret_cast<Unk_InvGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d0420(&members);
+    reinterpret_cast<Unk_InvGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetMembers(&members);
     size_t nCount = members.GetCount();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2248,10 +2248,10 @@ void FUN_141410780(const CString& strName);                         // drop the 
 void FUN_1414106d0(const CString& strName);                         // create the item break bag of a name
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int nFlags, int b);   // bind an item slot to a name
 void DestroyItemInfoSlot(const CString& strName);                         // release an item slot name
-int FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
-int FUN_14053feb0(int nItemId);                                     // the default rarity of an item
+int PlaySystemSound(const CString& strSound, const CString& strArg);  // play a UI sound
+int GetItemRank(int nItemId);                                     // the default rarity of an item
 CStringW GetItemDisplayName(unsigned nItemId);                           // the item name
-CStringW FUN_140298ea0(CStringW strKey);                            // a localized string
+CStringW GetStringByKey(CStringW strKey);                            // a localized string
 void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
 class Unk_SlotBreakManager* GetItemBreakManager();   // C3: was GetItemBreakManager
 class UIInventoryDialog;
@@ -2447,7 +2447,7 @@ void UIItemBreakBase::vfunc_43()
         float fX = 0.0f;
         float fY = 0.0f;
         ASDialog* pOther;
-        ASDialog* pPos = pOther = dynamic_cast<ASDialog*>((AScript*)pInventory->FUN_1422dba00());
+        ASDialog* pPos = pOther = dynamic_cast<ASDialog*>((AScript*)pInventory->GetScript());
         if (pOther != 0)
         {
             fX = pOther->GetX();
@@ -2511,7 +2511,7 @@ void UIItemBreakBase::StartBreak()
         m_30->Invoke("startBreak");
         m_188 = 1;
     }
-    FUN_141276180(s_strExtractProgress, "");
+    PlaySystemSound(s_strExtractProgress, "");
 }
 MS2_REPLACE_METHOD(0x1419A2060, UIItemBreakBase, StartBreak, 155, 0);
 
@@ -2523,7 +2523,7 @@ void UIItemBreakBase::EndBreak()
         m_30->Invoke("endBreak");
         m_188 = 0;
     }
-    FUN_141276180(s_strExtractEnd, "");
+    PlaySystemSound(s_strExtractEnd, "");
 }
 MS2_REPLACE_METHOD(0x1419A2110, UIItemBreakBase, EndBreak, 155, 0);
 
@@ -2606,7 +2606,7 @@ void UIItemBreakDialog::OnLoadComplete()
     }
     if (MS2Ptr<ASDropdownMenu> spRank = GetChild<ASDropdownMenu>("m_bundleRankDropdown"))
     {
-        CStringW strOrBelow = FUN_140298ea0(CStringW(L"s_itembreak_rank_or_below"));
+        CStringW strOrBelow = GetStringByKey(CStringW(L"s_itembreak_rank_or_below"));
         for (int nRank = 1; nRank < 7; nRank++)
         {
             ASObj rank(2);
@@ -2734,7 +2734,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
         ASObj row(2);
         {
             CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), GetItemDisplayName(nItemId), reinterpret_cast<const unsigned&>(nAmount));
-            CString strBinding = BindRewardItem(nItemId, FUN_14053feb0(nItemId), nAmount);
+            CString strBinding = BindRewardItem(nItemId, GetItemRank(nItemId), nAmount);
             row.SetStringMember("slotBinding", CString(strBinding));
             row.SetBoolMember("toggle", false);
             row.SetWStringMember("text", CStringW(strText));
@@ -2766,7 +2766,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x19, strText, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01800(1);
+                    spBox->SetButtonPreset(1);
                     spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);
@@ -2896,7 +2896,7 @@ MS2_REPLACE_METHOD(0x1419A44D0, UIItemBreakDialog, FUN_1419a44d0, 1478, 0);
 CString UIItemBreakDialog::BindPreviewItem(int nItemId)
 {
     CItem* pItem = new CItem();
-    if (pItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0))
+    if (pItem->FUN_140523c40(nItemId, GetItemRank(nItemId), 0))
     {
         CString strName;
         strName.Format("%s_preview_%d", (const char*)GetTypeName(), nItemId);
@@ -3025,7 +3025,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
                 MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x19, strText, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01800(1);
+                    spBox->SetButtonPreset(1);
                     spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);

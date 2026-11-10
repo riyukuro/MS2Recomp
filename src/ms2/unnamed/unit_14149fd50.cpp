@@ -252,7 +252,7 @@ class Unk_ALCurrent* GetAdventureLevelTableHelper();   // C3: was GetAdventureLe
 struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
 class Unk_RpTable* GetItemRePackingScrollTable();   // C3: was GetItemRePackingScrollTable
-void* FUN_141371b20();
+void* GetGFxLanguage();
 
 void FUN_14149fe70(Unk_SceneCacheData* p);
 
@@ -355,7 +355,7 @@ void DestroyBlindManager()
 MS2_REPLACE(0x1414A0060, DestroyBlindManager, 94, 0x6273A9F4);
 
 // @0x1414a00c0
-void FUN_1414a00c0()
+void DestroyAchieveManager()
 {
     if (TSingleton<CAchieveManager>::s_instance != 0)
     {
@@ -363,10 +363,10 @@ void FUN_1414a00c0()
         TSingleton<CAchieveManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A00C0, FUN_1414a00c0, 94, 0x4A6BE7CF);
+MS2_REPLACE(0x1414A00C0, DestroyAchieveManager, 94, 0x4A6BE7CF);
 
 // @0x1414a0120
-void FUN_1414a0120()
+void DestroyAdBannerManagerCli()
 {
     if (TSingleton<CAdBannerManagerCli>::s_instance != 0)
     {
@@ -374,10 +374,10 @@ void FUN_1414a0120()
         TSingleton<CAdBannerManagerCli>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0120, FUN_1414a0120, 94, 0xB97A7C60);
+MS2_REPLACE(0x1414A0120, DestroyAdBannerManagerCli, 94, 0xB97A7C60);
 
 // @0x1414a0180
-void FUN_1414a0180()
+void DestroyAdventureLevelTable()
 {
     if (TSingleton<CAdventureLevelTable>::s_instance != 0)
     {
@@ -385,10 +385,10 @@ void FUN_1414a0180()
         TSingleton<CAdventureLevelTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0180, FUN_1414a0180, 94, 0x24B54FB7);
+MS2_REPLACE(0x1414A0180, DestroyAdventureLevelTable, 94, 0x24B54FB7);
 
 // @0x1414a01e0
-void FUN_1414a01e0()
+void DestroyAdventureLevelTableHelper()
 {
     if (TSingleton<CAdventureLevelTableHelper>::s_instance != 0)
     {
@@ -396,10 +396,10 @@ void FUN_1414a01e0()
         TSingleton<CAdventureLevelTableHelper>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A01E0, FUN_1414a01e0, 94, 0x434DD445);
+MS2_REPLACE(0x1414A01E0, DestroyAdventureLevelTableHelper, 94, 0x434DD445);
 
 // @0x1414a0240
-void FUN_1414a0240()
+void DestroyArcadeDataTable()
 {
     if (TSingleton<CArcadeDataTable>::s_instance != 0)
     {
@@ -407,10 +407,10 @@ void FUN_1414a0240()
         TSingleton<CArcadeDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0240, FUN_1414a0240, 94, 0xB9BB425B);
+MS2_REPLACE(0x1414A0240, DestroyArcadeDataTable, 94, 0xB9BB425B);
 
 // @0x1414a02a0
-void FUN_1414a02a0()
+void DestroyAsyncImageLoader()
 {
     if (TSingleton<CAsyncImageLoader>::s_instance != 0)
     {
@@ -418,10 +418,10 @@ void FUN_1414a02a0()
         TSingleton<CAsyncImageLoader>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A02A0, FUN_1414a02a0, 94, 0x8D2FCE7D);
+MS2_REPLACE(0x1414A02A0, DestroyAsyncImageLoader, 94, 0x8D2FCE7D);
 
 // @0x1414a0300
-void FUN_1414a0300()
+void DestroyAutoFindTaxiStation()
 {
     if (TSingleton<CAutoFindTaxiStation>::s_instance != 0)
     {
@@ -429,7 +429,7 @@ void FUN_1414a0300()
         TSingleton<CAutoFindTaxiStation>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0300, FUN_1414a0300, 94, 0x23417763);
+MS2_REPLACE(0x1414A0300, DestroyAutoFindTaxiStation, 94, 0x23417763);
 
 // @0x1414a0360
 void DestroyBankTable()
@@ -788,7 +788,7 @@ void DestroyGFxLanguage()
 {
     if (TSingleton<CGFxLanguage>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_141371b20();
+        delete (Unk_VirtualDtor*)GetGFxLanguage();
         TSingleton<CGFxLanguage>::s_instance = 0;
     }
 }

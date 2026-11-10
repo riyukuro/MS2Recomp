@@ -112,7 +112,7 @@ bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409475f0(void* sp);   void* FU
 void* FUN_1409478e0(void* p);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);
 float GetPartScale(class CEquipModel*, int);   // C3: was GetPartScale
-   void FUN_141167840(NiAVObject* o, const CString& s, float f);
+   void SetMorphWeight(NiAVObject* o, const CString& s, float f);
 unsigned FUN_1405258b0(void* p);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
@@ -183,7 +183,7 @@ bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
 bool FUN_1409a1140(const efd::utf8string& a, const efd::utf8string& b);
 CString FUN_1409a2360(const char* psz, int n);   CString FUN_140719190(int v);
 size_t FUN_14028b4c0(void* v);   CString* FUN_140fe01a0(void* v, unsigned __int64 i);
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 void FUN_14120a440(void* p, void* v);
 void FUN_141205320(void* s);   void FUN_141205530(void* s);
 void* FUN_141c43700(void* a, int b, unsigned c, int d);
@@ -459,15 +459,15 @@ void CKfmModel::vfunc_10()
     if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItemData()))->FUN_14053cfd0()) {
         {
             CString s("HR:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
+            SetMorphWeight((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR0:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
+            SetMorphWeight((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR1:1");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 1));
+            SetMorphWeight((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 1));
         }
     }
 }
@@ -487,7 +487,7 @@ void CKfmModel::vfunc_11()
     m_nUpdateTransform = (vfunc_9() == 0);
     if (m_nUpdateTransform != 0)
         return;
-    void* pPartList = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->FUN_140527870());
+    void* pPartList = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->GetProxy());
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
@@ -562,7 +562,7 @@ void CKfmModel::vfunc_13()
         return;
     int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->GetEquipment())->FUN_1411e99a0(spItem->FUN_140527a20(),
                                 ((CEquipModel*)this)->GetPartName(), spItem->HasSkin(),
-                                ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+                                ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->GetData())))->FUN_14053d2b0());
     if (nResult != 0) {
         NiNode* pTarget;
         {
@@ -944,7 +944,7 @@ void CKfmModel::FUN_141440bc0()
 {
     if (CFG->m_bPhysics == 0) return;
     if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItemData()))->FUN_14053cfd0()) {
-        void* pData = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->FUN_140527870());
+        void* pData = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->GetProxy());
         if (pData != 0) {
             float fScale = ((float*)((char*)pData + 0x58))[0];
             efd::Point3 kPos = ((efd::Point3*)((char*)pData + 0x60))[CFG->m_nIndex];
@@ -972,7 +972,7 @@ bool CKfmModel::IsDefaultScale()
 {
     if (m_unk_20 == 0)
         return false;
-    return FUN_14028d470(CFG->m_fScale, 1.0f);
+    return IsNearlyEqual(CFG->m_fScale, 1.0f);
 }
 
 // @0x141440f60
@@ -1002,7 +1002,7 @@ typedef NiPhysXPropDesc Unk_WindPropDesc;   // its joint accessors, GetJointCoun
 // @0x14143f3d0
 void CKfmModel::ScalePhysXJointAnchors()
 {
-    if (CFG->m_bPhysics != 0 || CFG->m_bHead != 0 || FUN_14028d470(CFG->m_fScale, 1.0f) == 0) {
+    if (CFG->m_bPhysics != 0 || CFG->m_bHead != 0 || IsNearlyEqual(CFG->m_fScale, 1.0f) == 0) {
         efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>((char*)TSingleton<CMainSystem>::GetInstance() + 8)->GetServiceManager();
         ecrPhysX::PropService* pService = pServiceManager->GetSystemServiceAs<ecrPhysX::PropService>();
         unsigned nProps = pService->GetNumProps(GetEntityID());

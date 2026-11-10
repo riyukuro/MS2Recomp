@@ -131,7 +131,7 @@
 #endif
 #include <ctype.h>
 #define MS2_SEARCH_CONCAT(a,b) ((a)+(b))
-void FUN_1401d3700(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
+void ToLower(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
 // Local synchronization only, no registry writes. Methods using this lock are not hooked.
 static CLockCriticalSection g_searchLock;
 CFileSearcher* TSingleton<CFileSearcher>::s_instance=0;
@@ -207,7 +207,7 @@ void CFileSearcher::SearchDirectory(CString directory) {
     BOOL more=find.FindFile(MS2_SEARCH_CONCAT(directory,"*.*"),0);
     while(more && !cancelled) {
         more=find.FindNextFile();
-        CString name=find.GetFileName();FUN_1401d3700(name);
+        CString name=find.GetFileName();ToLower(name);
         if(find.IsDirectory()) {
             if(name.GetAt(0)!='.') SearchDirectory(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
         }
@@ -249,7 +249,7 @@ void CFileSearcher::FUN_141219020(CString directory) {
     BOOL more=find.FindFile(MS2_SEARCH_CONCAT(directory,"*.*"),0);
     while(more && !cancelled && !queries.empty()) {
         more=find.FindNextFile();
-        CString name=find.GetFileName();FUN_1401d3700(name);
+        CString name=find.GetFileName();ToLower(name);
         if(find.IsDirectory()) {
             if(name.GetAt(0)!='.') FUN_141219020(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
         }

@@ -54,7 +54,7 @@ void* FUN_141200ab0(CEquipModel* self);
 struct Unk_FactoryPlayer : public PC
 {
 };
-struct Unk_FactoryWorld { Unk_FactoryPlayer* FUN_141bd0cc0(); };    // the local player
+struct Unk_FactoryWorld { Unk_FactoryPlayer* GetLocalPlayer(); };    // the local player
 
 // util.cpp: toggles the highlight shader under a node (its colour arg is util's Unk_Colc view of a NiColorA).
 void SetHighlight(NiAVObject* pRoot, bool bEnable, const struct Unk_Colc& kColor);
@@ -295,7 +295,7 @@ void ClearControllers()
 // Switches the highlight of every attached node of the local player.
 void FUN_141414250(bool bOn)
 {
-    Unk_FactoryPlayer* pPlayer = ((Unk_FactoryPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_FactoryPlayer* pPlayer = ((Unk_FactoryPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         std::list<NiAVObject*> listNodes;

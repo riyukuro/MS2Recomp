@@ -77,14 +77,14 @@ class Unk_MiItem;
 class Unk_MiWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();                                      // the player
+    MyPC* GetLocalPlayer();                                      // the player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
+    MS2Ptr<CFieldDataCli> GetFieldData();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 class Unk_MiUIMgr
@@ -110,7 +110,7 @@ public:
     void FUN_1419308c0(UIEntityEventListener* p);
     void FUN_141930950(UIEntityEventListener* p);
 };
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
 
 // The player actor (MyPC) members used here.
 class Unk_MiPc : public MyPC
@@ -165,7 +165,7 @@ typedef ATL::CAtlArray<Unk_StatType, ATL::CDefaultElementTraits<Unk_StatType> > 
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);               // a copy of the item
-class DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pBind);   // its bag (DragSlotBag cast)
+class DragSlotBag* GetDragSlotBag(NotifyContext::BindData* pBind);   // its bag (DragSlotBag cast)
    // the tab bar
 class Unk_MiNtMgr
 {
@@ -226,7 +226,7 @@ int UIMyInfoDialog::vfunc_65()
 {
     if (UIPCInfoDialog::vfunc_65() == 0)
         return 0;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     m_spInfo.AssignRaw(new PCInfo());
@@ -249,7 +249,7 @@ void UIMyInfoDialog::vfunc_67()
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIDialogEventListener*>(this));
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
@@ -305,7 +305,7 @@ void UIMyInfoDialog::OnLoadComplete()
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->AddListener(static_cast<UIDialogEventListener*>(this));
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
@@ -321,7 +321,7 @@ void UIMyInfoDialog::OnLoadComplete()
         if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xe3))
         {
             m_280->vfunc_4(true);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
-            m_280->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::OnClosetButtonClick), 0);
+            m_280->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::OnClosetButtonClick), 0);
         }
         else
         {
@@ -623,10 +623,10 @@ void UIMyInfoDialog::vfunc_dl_3(void* p)
             if (pDialog != 0)
             {
                 CString strKind;
-                if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetType() == 7)
+                if (reinterpret_cast<CItemData*>(spItem->GetData())->GetType() == 7)
                     strKind = "gem";
                 else
-                    strKind = Name_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->GetFirstGroupType());
+                    strKind = Name_14021c050(reinterpret_cast<CItemData*>(spItem->GetData())->GetModelOrEmpty()->GetFirstGroupType());
                 pDialog->Invoke("onDragStart", CString(strKind));
             }
         }
@@ -690,7 +690,7 @@ void UIMyInfoDialog::OnChangeProfile()
 // @0x141a5a750
 void UIMyInfoDialog::OnChangeTodayMemo()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
@@ -749,7 +749,7 @@ void UIMyInfoDialog::RebuildPCInfo(int bRefresh, int bStatLists, int bBag)
 {
     if ((m_spInfo == 0))
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_spInfo.AssignRaw(new PCInfo());
@@ -767,7 +767,7 @@ void UIMyInfoDialog::SetSymbol(unsigned short nLevel)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x27, nLevel); // string table 0x27: the symbol's name text
@@ -781,7 +781,7 @@ void UIMyInfoDialog::SetSymbol(unsigned short nLevel)
 void UIMyInfoDialog::vfunc_84()
 {
     UIPCInfoDialog::vfunc_84();
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0)
         SetSymbol(static_cast<Unk_MiPc*>(pPc)->FUN_141661e00());
 }
@@ -797,7 +797,7 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 // @0x141a5af10
 void UIMyInfoDialog::vfunc_91(int nStat)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -818,7 +818,7 @@ void UIMyInfoDialog::vfunc_91(int nStat)
 // @0x141a5b080
 void UIMyInfoDialog::OnAddStatPointRepeat(int nStat)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -855,7 +855,7 @@ void UIMyInfoDialog::vfunc_92()
         return;
     if (vfunc_93() == 0)
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_250 = 0;
@@ -882,7 +882,7 @@ void UIMyInfoDialog::vfunc_90(int nTab)
 // @0x141a5b470
 int UIMyInfoDialog::vfunc_93()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (pPc->vfunc_65() != 0)
@@ -890,7 +890,7 @@ int UIMyInfoDialog::vfunc_93()
         ShowMessageBox(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, CStringW(L""));
         return 0;
     }
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return 0;
     if (spField->HasLimitContent(0x10) != 0)
@@ -912,7 +912,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 {
     if (m_30 == 0 || m_nTab != 3)
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     Unk_PCEquipSet* pEquip = pPc->GetEquipment();
@@ -987,7 +987,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
 // @0x141a5bed0
 void UIMyInfoDialog::OnActiveCodiTabChanged()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     Unk_PCEquipSet* pEquip = pPc->GetEquipment();
@@ -1002,7 +1002,7 @@ void UIMyInfoDialog::OnActiveCodiTabChanged()
         m_278 = kTitle->IsActive();
         if ((m_30.get() ? true : false) && m_nTab == 3)
         {
-            void* pBag = FUN_140c544d0((NotifyContext::BindData*)Unk_NotifyContext::FindBinding(m_strEquipBag));
+            void* pBag = GetDragSlotBag((NotifyContext::BindData*)Unk_NotifyContext::FindBinding(m_strEquipBag));
             if (pBag != 0)
                 ((class DragSlotBag*)(void*)(pBag))->FUN_1422cca90();
         }
@@ -1014,7 +1014,7 @@ void UIMyInfoDialog::FUN_141a5c080()
 {
     if (m_30 == 0 || (m_spAvatar == 0))
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
@@ -1047,7 +1047,7 @@ void UIMyInfoDialog::FUN_141a5c2a0(NotifyObject* pNotify)
 {
     if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     AvatarPC* pAvatar = dynamic_cast<AvatarPC*>(m_spAvatar->vfunc_24());
@@ -1068,7 +1068,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
 {
     if (nNewTab != 3)
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     Unk_PCEquipSet* pEquip = pPc->GetEquipment();
@@ -1113,7 +1113,7 @@ int UIMyInfoDialog::GetTab()
 // @0x141a5c7c0
 void UIMyInfoDialog::UpdateStatPointRow(int nStat)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_spInfo == 0)
@@ -1173,7 +1173,7 @@ void UIMyInfoDialog::UpdateStatPointRow(int nStat)
 // @0x141a5cf30
 void UIMyInfoDialog::FUN_141a5cf30(int nStat)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if ((unsigned)m_250 <= 0)

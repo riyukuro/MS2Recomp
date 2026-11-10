@@ -63,7 +63,7 @@ public:
     void Shutdown();                                                                       // shutdown (GFxService::OnShutdown)
     int FUN_1422d1c20();                                                                        // per tick (GFxService::OnTick): input taken
     void UpdateEntities();                                                                       //   then this
-    void FUN_1422d21b0();                                                                       // all entities: slot 19
+    void ResetLayout();                                                                       // all entities: slot 19
     void FlushUnloading();                                                                       // drop the pending unloads
     UISwfEntity* FindSceneById(int nId);                                                        // the scene of a scene id
     MS2Ptr<UISwfEntity> GetUISwfEntity(const CString& strName);                                 // a movie by key (else by class name)
@@ -74,7 +74,7 @@ public:
     void BringToFront(UISwfEntity* p, int nLayer);                                             // bring to the top (uimessagebox.cpp)
     UISwfEntity* GetTopEntity(int nLayer);                                                     // the dialog on top of a layer
     void FUN_1422d49f0();                                                                       // toggle m_0a
-    void FUN_1422d4a30(bool b);                                                                 // m_0a, forwarded to GFxManager
+    void SetEnabled(bool b);                                                                 // m_0a, forwarded to GFxManager
     int IsPendingUnload(POSITION pos);                                                            // the movie is pending unload
     UISwfEntity* GetLoadedEntity(POSITION pos);                                                   // a loaded movie (not pending unload)
     void SetInputTakenCallback(int (*pfn)());                                                           // the input-taken override of FUN_1422d1c20

@@ -31,7 +31,7 @@ class Unk_KcWorld { };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
@@ -113,7 +113,7 @@ void UIKillCount::OnNpcKilled(void* pKilled)
         {
             if (pMob->IsDead() == 0)
             {
-                PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+                PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     if (m_kill.RegisterKill(pPlayer->vfunc_78(), pMob->vfunc_78()) != 0)
@@ -145,7 +145,7 @@ void UIKillCount::vfunc_15()
 {
     if (static_cast<bool>(m_30.get()) && 0 < m_nShown)
     {
-        if (m_kill.FUN_14064c840(GetTickCountMs2()) == 0)
+        if (m_kill.IsComboAlive(GetTickCountMs2()) == 0)
             Hide();
     }
     UISwfEntity::vfunc_15();
@@ -181,7 +181,7 @@ void UIKillCount::ShowKillCountBalloon()
     CStringW strKey = m_kill.GetKillCountMessage();
     if (!strKey.IsEmpty())
     {
-        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pPlayer != 0)
             pPlayer->ShowChatBalloon(GetStringCommonByKey(strKey));
     }

@@ -68,7 +68,7 @@ public:
 MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);  // new ASGameEntity(v, n)
 CStringW FUN_140719630(int n);
 CString Name_140219830(int value);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
@@ -328,7 +328,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
         return;
     if (FUN_141914d40(pTarget) == 1)
         return;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_pInterfaceOption == 0 || m_pBattleOption == 0)
@@ -337,7 +337,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
     if (kPos == efd::Point3::ZERO)
         GetAnchorPosition(pTarget, kPos, m_strDamageNode);
     bool bMySummon = false;
-    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
+    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FindPetById(nCasterId)));
     if (pSummon != 0)
         bMySummon = pSummon->GetOwnerId() == pPlayer->GetObjectId();
     efd::Point3 kScreen;
@@ -469,7 +469,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
         }
         Scaleform::GFx::Value clip = m_30->Invoke("damageText", obj.GetValue());
         MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
-        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
         spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->GetObjectId() == pPlayer->GetObjectId() : false;
         FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
@@ -491,7 +491,7 @@ void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString&
         Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
                                                   GetTargetKindName(GetTargetKind(pTarget), true), FUN_1419149d0(2), strIcon);
         MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
-        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
         spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->GetObjectId() == pPlayer->GetObjectId() : false;
         FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
@@ -610,7 +610,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
 {
     if (nGrade == 4)
         return 0;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (m_pBattleOption == 0)
@@ -620,7 +620,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     unsigned int nTargetMask = 0;
     int nTargetId = pTarget->GetObjectId();
     int nPlayerId = pPlayer->GetObjectId();
-    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
+    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FindPetById(nCasterId)));
     if (pSummon != 0)
         nCasterId = pSummon->GetOwnerId();
     if (nTargetId == nPlayerId)
@@ -723,7 +723,7 @@ int UIDamageText::IsWithinShowDistance(GameObject* pTarget)
     }
     else if (pTarget != 0)
     {
-        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPlayer != 0)
             return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&GetClientConstants()->DamageDistance)->Get();
     }
@@ -735,7 +735,7 @@ MS2_REPLACE_METHOD(0x1419141A0, UIDamageText, IsWithinShowDistance, 244, 0xBDDE2
 int UIDamageText::GetTargetKind(GameObject* pTarget)
 {
     int nKind = 1;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer != 0)
     {
         if (efd::ClassInfo::IsKindOf(pTarget ? pTarget->GetClassDesc() : 0, 0x6200004))
@@ -935,7 +935,7 @@ MS2_REPLACE_METHOD(0x1419149D0, UIDamageText, FUN_1419149d0, 185, 0x278A2D2D);
 float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
 {
     float fScale = 1.0f;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 1.0f;
     if (pPlayer->vfunc_18() == kPos)
@@ -960,7 +960,7 @@ float UIDamageText::FUN_141914c40(GameObject* pTarget)
     float fScale = 1.0f;
     if (pTarget == 0)
         return 1.0f;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 1.0f;
     if (pPlayer->GetEntityID() == pTarget->GetEntityID())
@@ -1589,9 +1589,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, C
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
-    FUN_1422bce70(&args[2], a3);
-    FUN_1422bce70(&args[3], a4);
+    SetString(&args[0], a1);
+    SetString(&args[1], a2);
+    SetString(&args[2], a3);
+    SetString(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }

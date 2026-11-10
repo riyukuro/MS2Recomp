@@ -223,9 +223,9 @@ extern char DAT_143acdb20;                                  // set while the ava
 
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
 MS2Ptr<CNpcData> FindNpcData(int nNpcId);
-// The npc table of the pet effect (FUN_1406d6e90).
+// The npc table of the pet effect (GetNpcDataTableCli).
 #include "ms2/client/ms2/npcdatacli.h"   // C3: NpcDataTableCli::Find (0x140a7cab0)
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 
 // CString comparisons of the exe.
 char FUN_1401c0090(const CString& a, const CString& b);     // a == b
@@ -306,7 +306,7 @@ class Unk_PCLook;
 #include "ms2/placeholder/pcgemequip.h"   // C3: PCGemEquip::EquipItem (0x141270bf0)
 #include "ms2/client/ms2/ridee.h"   // C3: Ridee::FUN_1417083a0 (0x1417083a0)
 unsigned int FUN_141088660();   // C3: was FUN_141088660
-int FUN_14107c5f0(int, class PC*, class PC*);   // C3: was FUN_14107c5f0
+int CopyPCAppearance(int, class PC*, class PC*);   // C3: was CopyPCAppearance
 bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pAvatar);
 int FUN_14107c2d0(int, unsigned int, unsigned int, class PC*);   // C3: was FUN_14107c2d0
 CString FUN_14107b3d0(int nSex);
@@ -377,7 +377,7 @@ AvatarPC* CreateAvatarFromPC(PC* pSource)
             pAvatar->SetType(pSourceAvatar->GetType());
         else
             pAvatar->SetType(0);
-        if (FUN_14107c5f0(nId, pSource, (class PC*)(pAvatar)) != 0)
+        if (CopyPCAppearance(nId, pSource, (class PC*)(pAvatar)) != 0)
             return pAvatar;
     }
     return 0;
@@ -461,7 +461,7 @@ AvatarPC* CreatePreviewAvatar(int nGender, int nPreset)
         kGround.z = kGround.z + 1.0f;
         spAvatar->vfunc_19(reinterpret_cast<const efd::Point3&>(kGround));
     }
-    pWorld->FUN_141bbb1e0(spAvatar, 0, 1);
+    pWorld->OnObjectCreated(spAvatar, 0, 1);
     return spAvatar;
 }
 
@@ -519,7 +519,7 @@ void AvatarPC::FUN_1409f42a0(MS2Ptr<CItemData> spData)
     Unk_AvGlobals* pGlobals = ((class Unk_AvGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()));
     spState->m_nAction = pGlobals->m_nGlideAction;
     spState->m_nLevel = 1;
-    spState->m_nItemId = ((class CItemData*)(spData.operator->()))->FUN_14053dde0();
+    spState->m_nItemId = ((class CItemData*)(spData.operator->()))->GetGlideItemId();
     vfunc_59(0x1e, spState.get(), 0, 1);
 }
 
@@ -580,7 +580,7 @@ void AvatarPC::ShowRidee(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         {
             pRidee->SetRider(this);
             m_spRidee = pRidee;
-            if (((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pRidee, 0, 1) != 0)
+            if (((class Unk_AvWorld*)WorldService::GetInstance())->OnObjectCreated(pRidee, 0, 1) != 0)
                 pRidee->SetListener(this);
         }
     }
@@ -610,10 +610,10 @@ void AvatarPC::FUN_1409f4cf0(unsigned a, unsigned b)
 // @0x1409f4d80
 void AvatarPC::EquipItem(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || ((class CItemData*)((class CItem*)(spItem.operator->()))->FUN_140527840()) == 0)
+    if (spItem == 0 || ((class CItemData*)((class CItem*)(spItem.operator->()))->GetData()) == 0)
         return;
     reinterpret_cast<PCGemEquip*>(GetGemEquip())->EquipItem(MS2Ptr<CItem>(spItem));
-    int nKind = ((class CItemData*)(((class CItemData*)((class CItem*)(spItem.operator->()))->FUN_140527840())))->FUN_14053e900();
+    int nKind = ((class CItemData*)(((class CItemData*)((class CItem*)(spItem.operator->()))->GetData())))->FUN_14053e900();
     if (nKind == 5)
         FUN_1409f68e0(MS2Ptr<CItem>(spItem));
     else if (nKind == 8)
@@ -1065,7 +1065,7 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
         if (spGuide->vfunc_124(FUN_141088660(), kRay, reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_20())), this) == 0)
             return;
         spGuide->vfunc_127();
-        ((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bbb1e0(spGuide, 0, 1);
+        ((class Unk_AvWorld*)WorldService::GetInstance())->OnObjectCreated(spGuide, 0, 1);
         m_spFishing = spGuide;
     }
 }
@@ -1096,7 +1096,7 @@ unsigned int FUN_1409f6ee0()
 {
     for (unsigned int nId = 0x3fb; nId < 0x40f; nId++)
     {
-        if (WorldService::GetInstance()->FUN_141bd1290(nId) == 0)
+        if (WorldService::GetInstance()->FindPCById(nId) == 0)
             return nId;
     }
     return 0;
@@ -1231,7 +1231,7 @@ void AvatarPet::FUN_1409f8e10()
     MS2Ptr<CPetData> kPet = TSingleton<CPetDataTable>::GetInstance()->Find(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
     if (kPet == 0)
         return;
-    MS2Ptr<NpcDataCli> kNpc = ((NpcDataTableCli*)FUN_1406d6e90())->Find(kPet->GetId());
+    MS2Ptr<NpcDataCli> kNpc = ((NpcDataTableCli*)GetNpcDataTableCli())->Find(kPet->GetId());
     if (kNpc == 0)
         return;
     if (!kNpc->m_strKeepEffect.IsEmpty())
@@ -1408,7 +1408,7 @@ void AvatarRidee::FUN_1409f9ea0(MS2SvrPtr<CRideeData> spRow)
     m_spItemData = 0;
     CString strModel;
     if (spRow != 0)
-        strModel.Format((const char*)m_strModelFormat, (const char*)spRow->FUN_140784880(1));
+        strModel.Format((const char*)m_strModelFormat, (const char*)spRow->GetKfmName(1));
     else
         strModel = m_strModel;
     m_spRow = spRow;
@@ -1457,7 +1457,7 @@ AvatarRidee::AvatarRidee(MS2Ptr<CItemData> spData)
 
 // @0x1409fa300
 AvatarRidee::AvatarRidee(MS2SvrPtr<CRideeData> spRow)
-    : CloneCube(MS2Ptr<CItemData>(0), "urn:gamebryo-animation:" + spRow->FUN_140784880(1))
+    : CloneCube(MS2Ptr<CItemData>(0), "urn:gamebryo-animation:" + spRow->GetKfmName(1))
     , m_spAttach(0)
 {
     m_str88 = "GameObject";

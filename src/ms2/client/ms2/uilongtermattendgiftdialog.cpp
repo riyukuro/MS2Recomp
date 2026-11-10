@@ -167,7 +167,7 @@ namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& a
 void FUN_140710590(COutPacket&);
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // @0x140c6db60 (inline COMDAT)
@@ -177,7 +177,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
     args.resize(4);
     FUN_1422bcea0(&args[0], a1);
     FUN_1422bcea0(&args[1], a2);
-    FUN_1422bcd10(&args[2], a3);
+    SetUInt(&args[2], a3);
     SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -282,7 +282,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
     if ((method == "getTooltipItem")) {
         int id = args->PopUInt();
         int rank = args->PopUInt();
-        void* owner = reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        void* owner = reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())->GetLocalPlayer();
         if (owner) {
             MS2Ptr<CItem> item(new CItem);
             if (item == 0)

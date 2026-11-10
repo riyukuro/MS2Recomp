@@ -132,7 +132,7 @@ public:
     int GetModeType();                                    // the kind of the active camera mode (2: trigger)
 };
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
+class GFxSceneService { public: int SetSubScene(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
 class Unk_McEntityRules* GetTriggerService();   // the trigger service (calls cast back)
 void* FindGuideEvent(int nId);                       // the guide event window
@@ -262,7 +262,7 @@ MS2Ptr<CGuideAction> CreateGuideAction(TiXmlElement* pElem)
 {
     CStringA strType(reinterpret_cast<TiXmlElement*>(pElem)->Attribute("type"));
     CStringW strName = StringFormat(L"CGuideAction{0}", strType);
-    MS2Ptr<CGuideAction> spAction(static_cast<CGuideAction*>(FUN_1401f7f50(CStringW(strName))));
+    MS2Ptr<CGuideAction> spAction(static_cast<CGuideAction*>(CreateClassObject(CStringW(strName))));
     if (spAction.get())
         spAction->vfunc_2(pElem);
     else
@@ -1159,7 +1159,7 @@ void CGuideActionSequenceCamera::vfunc_3()
     ((CTriggerService*)GetTriggerService())->QueueCameraSteps(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x6200041);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetSubScene(0x6200041);
         CStringW strEmpty;
         if (UICutSceneCinematic* pCinematic = (UICutSceneCinematic*)FindCutSceneCinematic(0x4e52))
         {
@@ -1183,7 +1183,7 @@ void CGuideActionSequenceCamera::vfunc_4()
         ((CTriggerService*)GetTriggerService())->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetSubScene(0x620001d);
         NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
             Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::OnSkip));
     }

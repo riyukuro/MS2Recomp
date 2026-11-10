@@ -25,7 +25,7 @@ public:
     virtual void vfunc_11();                                        // 11 0x1422f0a30 drop m_90 and the ids, then the base's
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422f0ea0 mouse
 
-    int FUN_1422f1020();                                            // destroy every open tooltip; 0 if none was open
+    int DestroyTooltips();                                            // destroy every open tooltip; 0 if none was open
     // "createTooltip"(id, a, b): remember the id, call the TooltipManager clip
     void CreateTooltip(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB);
     void DestroyTooltip(const Scaleform::GFx::Value& vId);           // "destroyTooltip"(id)

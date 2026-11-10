@@ -58,7 +58,7 @@ class PCBase;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 int FUN_140ec2ab0();
@@ -167,7 +167,7 @@ bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (spProduct == 0)
         return false;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     pRow->SetWStringMember("productOID", spProduct->m_key.GetKeyString());
@@ -196,7 +196,7 @@ int SetProductTooltip(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarket
         return 0;
     if (bPlain)
     {
-        ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), FUN_140ec2ab0(), 2);
+        ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()), FUN_140ec2ab0(), 2);
         if (tip.FUN_1409e0d40(spItem.get()) != 0)
         {
             ASTooltip tipCopy(tip.GetValue(), 2);
@@ -205,7 +205,7 @@ int SetProductTooltip(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarket
     }
     else
     {
-        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         int nType = FUN_140ec2ab0();
         ASTooltip tipLhs(pPlayer, nType, 2);
         ASTooltip tipRhs(pPlayer, nType, 2);
@@ -481,7 +481,7 @@ CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct)
 // @0x140ebced0
 CStringW FUN_140ebced0(CMeratMarketPremiumProduct* pProduct, int nSubId)
 {
-    bool bDay = pProduct->FUN_14069fe40() == 2;
+    bool bDay = pProduct->GetItemKind() == 2;
     CStringW strResult;
     CDBPremiumProduct* pText = 0;
     if (nSubId == 0)
@@ -805,7 +805,7 @@ public:
     int GetJobGroupId();
     unsigned char FUN_141658f10();
 };
-int FUN_1406a59f0(struct Unk_MeratJobLimit*, int);   // C3: was FUN_1406a59f0
+int CheckJobLimit(struct Unk_MeratJobLimit*, int);   // C3: was CheckJobLimit
 bool FUN_140222a70(unsigned nMask, struct Unk_LevelArray* pOut);
 class JobTable;
 
@@ -856,7 +856,7 @@ bool IsLevelAllowed(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSh
 // @0x140ebfdd0
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError)
 {
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         return IsLevelAllowed((unsigned short)pPlayer->vfunc_78(), pProduct, bShowError);
     return true;
@@ -868,7 +868,7 @@ bool FUN_140ebfe30(CDBPremiumProduct* pProduct, bool bShowError)
 {
     if (pProduct->FUN_14069fee0() == 0)
         return true;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         int nLevel = ((class PC*)(class PCBase*)(pPlayer))->FUN_141658f10();
@@ -899,10 +899,10 @@ bool FUN_140ebfe30(CDBPremiumProduct* pProduct, bool bShowError)
 // @0x140ebff70
 bool IsJobAllowed(CDBPremiumProduct* pProduct, bool bShowError)
 {
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
-    int nResult = FUN_1406a59f0((struct Unk_MeratJobLimit*)(pProduct), ((class PC*)(class PCBase*)(pPlayer))->GetJobGroupId());
+    int nResult = CheckJobLimit((struct Unk_MeratJobLimit*)(pProduct), ((class PC*)(class PCBase*)(pPlayer))->GetJobGroupId());
     if (bShowError && nResult == 0xb5)
     {
     const CStringW& strSep = L", ";
@@ -1159,7 +1159,7 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
         key.b = DAT_143ab2830;
         key.c = (void*)DAT_143ab2838;
         key.d = DAT_143ab2834;
-        if (((class CUgcMarketProduct*)(class CUgcMarketProduct*)(&spProduct->m_ugc))->FUN_140896230(*(class Unk_CommonOwner*)(&key)))
+        if (((class CUgcMarketProduct*)(class CUgcMarketProduct*)(&spProduct->m_ugc))->IsOwnedBy(*(class Unk_CommonOwner*)(&key)))
         {
             FUN_140d73bc0(0xa14, 0, 0, CStringW(L""));
             return;
@@ -1210,7 +1210,7 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
 class Unk_McCategoryEntry : public CPtred { public: MS2Ptr<CPtred> m_sp18; };
 CStringW FUN_14016a730(const char* sz, int n);
 unsigned __int64 FUN_140718350(const CString& str);
-bool FUN_141b70f50(const CStringW& strA, const CStringW& strB);
+bool IsEqualNoCase(const CStringW& strA, const CStringW& strB);
 CStringW FUN_1409404f0(__int64 n);
 CStringW GetStringCommon(int nId);
 void FUN_141b70f90(const CMsTime& tm, const CStringW& strFormat, CStringW& strOut);
@@ -1222,7 +1222,7 @@ class Unk_McSortTabInfo : public CPtred { public: char m_pad[0x78 - 0x18]; bool 
 // @0x140ec1340
 void ReportProduct(ASData& data)
 {
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Unk_ReportId id;
@@ -1230,7 +1230,7 @@ void ReportProduct(ASData& data)
     __int64 nTarget = FUN_140718350(static_cast<const CString&>(data.FUN_1422b8d30()));
     CStringW strReason = data.FUN_1422b8f40();
     CStringW strName = data.FUN_1422b8f40();
-    if (!FUN_141b70f50(static_cast<const CStringW&>(pPlayer->vfunc_77()), strName))
+    if (!IsEqualNoCase(static_cast<const CStringW&>(pPlayer->vfunc_77()), strName))
     {
         MS2Ptr<CUserReportData> spReport = new CUserReportData(3);
         spReport->SetField28(3);
@@ -1261,14 +1261,14 @@ int FUN_140ec1950(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spData = ((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840());
+    MS2Ptr<CItemData> spData = ((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData());
     if (spData == 0)
         return 0;
     if (IsPackageItem(spData))
         return 0x79;
     else if (spData->FUN_14053ce40())
         return 0x7b;
-    else if (spData->FUN_14053cb40())
+    else if (spData->IsSkillItem())
         return 0x7b;
     else if (spData->FUN_14053cd50())
         return 0x7b;
@@ -1276,7 +1276,7 @@ int FUN_140ec1950(MS2Ptr<CItem> spItem)
         return 0x7f;
     else if (spData->IsRideItem())
         return 0x7b;
-    else if (spData->FUN_14053cd10())
+    else if (spData->IsScoreItem())
         return 0x7c;
     else if (spData->FUN_14053d900())
         return 0x7d;

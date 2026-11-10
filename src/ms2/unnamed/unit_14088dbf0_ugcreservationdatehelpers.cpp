@@ -31,7 +31,7 @@ struct Unk_DateParts
     int m_nHour2;           // +0x28
     int m_nMinute;          // +0x2c
 
-    CStringW FUN_14088e040();
+    CStringW GetDateText();
 };
 MS2_CHECK_SIZE(Unk_DateParts, 0x30);
 
@@ -59,7 +59,7 @@ __int64 FUN_14088dcc0()
 }
 
 // @0x14088dcf0
-int FUN_14088dcf0(MS2Ptr<CItemData> spItemData)
+int GetUgcKind(MS2Ptr<CItemData> spItemData)
 {
     if (spItemData->FUN_14053cbc0())
         return 1;
@@ -118,7 +118,7 @@ Unk_DateParts* FUN_14088dff0(Unk_DateParts* pOut, const Unk_DateParts* pBase, in
 }
 
 // @0x14088e040
-CStringW Unk_DateParts::FUN_14088e040()
+CStringW Unk_DateParts::GetDateText()
 {
     CStringW strDay = FUN_140b8e760(m_nDayOfWeek);
     CStringW strRet = FormatStringId(0x56a, m_nMonth, m_nDay, strDay);

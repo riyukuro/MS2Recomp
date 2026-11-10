@@ -43,7 +43,7 @@ template <class T> class MS2Ptr;
 // External character record: never constructed here; the fields are the ones CGuildMember's data copy
 // (Unk_GuildMemberData::FUN_1404ca3e0) reads, at the exe offsets.
 class Unk_GuildCharacter {
-public: CStringW GetName(); CString FUN_1408f1a60();
+public: CStringW GetName(); CString GetImage();
     __int64 m_00, m_08;
     char m_pad10[4];
     unsigned char m_14;
@@ -73,12 +73,12 @@ class Unk_GuildSeason {
 public:
     Unk_GuildSeason();
     ~Unk_GuildSeason();
-    void FUN_1404c5d20();
-    void FUN_1404c5da0(COutputStream& out);
-    void FUN_1404c5ea0(CInPacket& packet);
+    void Reset();
+    void Write(COutputStream& out);
+    void Read(CInPacket& packet);
     void FUN_1404c6030(const Unk_GuildSeason& other);
-    int FUN_1404c60e0(int rank);
-    int FUN_1404c6110(int score);
+    int GetRankPoints(int rank);
+    int GetRankForScore(int score);
     bool FUN_1404c6160();
     int id; CStringW name; CMsTime begin,end; int points[8];
 };
@@ -87,7 +87,7 @@ class Unk_GuildProfile {
 public:
     Unk_GuildProfile();
     ~Unk_GuildProfile();
-    void FUN_1404c6350();
+    void Reset();
     __int64 p00; CStringW name; CString code; int f18; CStringW f20,f28; CString f30;
     __int64 f38,f40; CStringW f48; __int64 f50,f58; int f60; __int64 f68,f70; CStringW f78;
     int f80,f84,f88,f8c,f90,f94,f98,f9c,fa0,fa4,fa8,fac,fb0,fb4,fb8,fbc; __int64 fc0,fc8; Unk_GuildArray array;
@@ -97,12 +97,12 @@ class CGuildPVPHistoryData : public CPtred {
 public:
     CGuildPVPHistoryData();
     virtual ~CGuildPVPHistoryData();
-    void FUN_1404c66f0();
+    void Reset();
     void FUN_1404c6840(const CGuildPVPHistoryData* other);
     void FUN_1404c6a00(COutPacket* out);
-    void FUN_1404c6a30(CInPacket* in);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404c6cb0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     int f18,f1c; unsigned char f20; __int64 f28,f30; CStringW f38,f40; int f48,f4c,f50,f54; CStringW f58[5],f80[5]; unsigned char fa8[5]; __int64 fb0,fb8;
 };
 MS2_CHECK_SIZE(CGuildPVPHistoryData,0xc0);
@@ -110,10 +110,10 @@ class CGuildGrade : public CPtred {
 public:
     CGuildGrade();
     virtual ~CGuildGrade();
-    void FUN_1404c70a0();
+    void Reset();
     void Set(int g,CStringW n,int p);
     void Write(COutputStream& out);
-    void FUN_1404c71d0(CInPacket& packet);
+    void ReadPacket(CInPacket& packet);
     int IsValid();
     int grade; CStringW name; int permissions;
 };
@@ -122,12 +122,12 @@ class CGuildNameInfo : public CPtred {
 public:
     CGuildNameInfo();
     virtual ~CGuildNameInfo();
-    void FUN_1404c73d0();
-    void FUN_1404c7420(const CGuildNameInfo* other);
-    void FUN_1404c74a0(COutPacket* out);
-    void FUN_1404c74d0(CInPacket* in);
+    void Reset();
+    void CopyFrom(const CGuildNameInfo* other);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404c75a0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 id; CStringW name; CString code;
 };
 MS2_CHECK_SIZE(CGuildNameInfo,0x30);
@@ -135,12 +135,12 @@ class CGuildJoinRequestForGuild : public CPtred {
 public:
     CGuildJoinRequestForGuild();
     virtual ~CGuildJoinRequestForGuild();
-    void FUN_1404c7750();
-    void FUN_1404c7800(const CGuildJoinRequestForGuild* other);
-    void FUN_1404c7910(COutPacket* out);
-    void FUN_1404c7940(CInPacket* in);
+    void Reset();
+    void CopyFrom(const CGuildJoinRequestForGuild* other);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404c7ad0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 f18,f20,f28,f30; CStringW f38; CString f40; int f48,f4c,f50; Unk_IntTriple f54; __int64 f60;
 };
 MS2_CHECK_SIZE(CGuildJoinRequestForGuild,0x68);
@@ -148,12 +148,12 @@ class CGuildJoinRequestForChar : public CPtred {
 public:
     CGuildJoinRequestForChar();
     virtual ~CGuildJoinRequestForChar();
-    void FUN_1404c7d70();
-    void FUN_1404c7e30(const CGuildJoinRequestForChar* other);
-    void FUN_1404c7f60(COutPacket* out);
-    void FUN_1404c7f90(CInPacket* in);
+    void Reset();
+    void CopyFrom(const CGuildJoinRequestForChar* other);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404c8150(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 f18,f20; CStringW f28; int f30; CString f38; int f40; Unk_IntTriple f44; int f50; CStringW f58; __int64 f60,f68,f70;
 };
 MS2_CHECK_SIZE(CGuildJoinRequestForChar,0x78);
@@ -161,8 +161,8 @@ class CGuildJoinRequestSchCond : public CPtred {
 public:
     CGuildJoinRequestSchCond();
     virtual ~CGuildJoinRequestSchCond();
-    void FUN_1404c8410();
-    void FUN_1404c84e0(COutPacket* out);
+    void Reset();
+    void WritePacket(COutPacket* out);
     void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
     void ReadStream(CInputStream& in);
@@ -179,12 +179,12 @@ class CSearchGuildJoin : public CPtred {
 public:
     CSearchGuildJoin();
     virtual ~CSearchGuildJoin();
-    void FUN_1404c8860();
-    void FUN_1404c8910(const CSearchGuildJoin* other);
-    void FUN_1404c8a20(COutPacket* out);
-    void FUN_1404c8a50(CInPacket* in);
+    void Reset();
+    void CopyFrom(const CSearchGuildJoin* other);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404c8be0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 f18; CStringW f20; CString f28; int f30,f34; Unk_IntTriple f38; int f44; __int64 f48,f50; CStringW f58;
 };
 MS2_CHECK_SIZE(CSearchGuildJoin,0x60);
@@ -192,11 +192,11 @@ class CGuildInviteInfo : public CPtred {
 public:
     CGuildInviteInfo();
     virtual ~CGuildInviteInfo();
-    void FUN_1404c8f00();
-    void FUN_1404c8f70(const CGuildInviteInfo* other);
+    void Reset();
+    void CopyFrom(const CGuildInviteInfo* other);
     void FUN_1404c9020(CGuildInfo* guild,CStringW a,CStringW b);
     void Write(COutputStream& out);
-    void FUN_1404c9230(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 f18; CStringW f20; CString f28; CStringW f30,f38;
 };
 MS2_CHECK_SIZE(CGuildInviteInfo,0x40);
@@ -204,20 +204,20 @@ class Unk_GuildMemberData {
 public:
     Unk_GuildMemberData();
     ~Unk_GuildMemberData();
-    void FUN_1404c9490();
+    void Reset();
     void FUN_1404c95b0(COutputStream& out);
     void FUN_1404c95f0(CInPacket& in);
-    void FUN_1404c9640(COutPacket* out);
-    void FUN_1404c9670(CInPacket* in);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void FUN_1404c96c0(COutputStream& out);
     void FUN_1404c97a0(CInPacket& in);
     void Write(COutputStream& out);
-    void FUN_1404c9bd0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     void FUN_1404c9ef0(COutputStream& out);
     void FUN_1404c9fe0(CInputStream& in);
-    void FUN_1404ca1a0(const Unk_GuildMemberData& other);
+    void CopyFrom(const Unk_GuildMemberData& other);
     void FUN_1404ca3e0(Unk_GuildCharacter* other);
-    void FUN_1404ca680(const CGuildJoinRequestForGuild* other);
+    void SetFromJoinRequest(const CGuildJoinRequestForGuild* other);
     CStringW GetName();
     void SetName(CStringW value);
     CString GetCode();
@@ -229,14 +229,14 @@ class CGuildMemberRaid : public CPtred {
 public:
     CGuildMemberRaid();
     virtual ~CGuildMemberRaid();
-    bool FUN_1404cab20();
+    bool Clear();
     void CopyFrom(const CGuildMemberRaid& other);
     bool UpdateRaidCountIfHigher(unsigned long id,int count);
     void SetRaidCount(unsigned long id,int count,bool);
     int GetTotalCount();
     int GetRaidCount(unsigned long id);
     void Write(COutputStream& out);
-    void FUN_1404cb070(CInputStream& in);
+    void ReadStream(CInputStream& in);
     std::map<unsigned long,int> raids; CLockCriticalSection lock;
 };
 MS2_CHECK_SIZE(CGuildMemberRaid,0x58);
@@ -244,15 +244,15 @@ class CGuildMember : public CPtred {
 public:
     CGuildMember();
     virtual ~CGuildMember();
-    void FUN_1404cb250();
-    int FUN_1404cb370();
+    void Reset();
+    int GetItemLevel();
     Unk_IntTriple* FUN_1404cb390();
     int FUN_1404cb3b0();
     int FUN_1404cb3e0();
-    void FUN_1404cb420(COutPacket* out);
-    void FUN_1404cb450(CInPacket* in);
+    void WritePacket(COutPacket* out);
+    void ReadPacket(CInPacket* in);
     void Write(COutputStream& out);
-    void FUN_1404cb6c0(CInputStream& in);
+    void ReadStream(CInputStream& in);
     __int64 f18; Unk_GuildMemberData data; int fb0,fb4; CStringW fb8; int fc0; __int64 fc8,fd0,fd8; int fe0,fe4,fe8,fec,ff0; __int64 ff8; CGuildMemberRaid raid; int f158;
 };
 MS2_CHECK_SIZE(CGuildMember,0x160);
@@ -294,7 +294,7 @@ public:
     void Read(CInPacket& packet);
     int GetRemainingDuration();
     int GetRemainingCooldown();
-    bool FUN_1404cbcd0();
+    bool IsUsable();
     bool FUN_1404cbd20();
     int f18,f1c; __int64 f20;
 };
@@ -303,10 +303,10 @@ class CGuildCustomEvent : public CPtred {
 public:
     CGuildCustomEvent();
     virtual ~CGuildCustomEvent();
-    void FUN_1404cbde0(const CGuildCustomEvent* other);
+    void CopyFrom(const CGuildCustomEvent* other);
     void Write(COutputStream& out);
-    void FUN_1404cbe70(CInPacket& packet);
-    bool FUN_1404cbee0();
+    void ReadPacket(CInPacket& packet);
+    bool IsActive();
     int f18; __int64 f20;
 };
 MS2_CHECK_SIZE(CGuildCustomEvent,0x28);
@@ -330,9 +330,9 @@ public:
     };
     CGuildStorage();
     virtual ~CGuildStorage();
-    void FUN_1404cc110(const CGuildStorage* other);
+    void CopyFrom(const CGuildStorage* other);
     void Write(COutputStream& out);
-    void FUN_1404cc210(CInPacket& packet);
+    void ReadPacket(CInPacket& packet);
     std::map<std::pair<unsigned,int>,ItemEntity> f18;                    // items by (id, rank)
     std::map<std::pair<__int64,int>,ItemEntity> f28;
     std::deque<MS2Ptr<CGuildStroageHistory> > f38;               // history, newest last
@@ -346,9 +346,9 @@ class CGuildNpc : public CPtred {
 public:
     CGuildNpc();
     virtual ~CGuildNpc();
-    void FUN_1404cc3b0(const CGuildNpc* other);
+    void CopyFrom(const CGuildNpc* other);
     void Write(COutputStream& out);
-    void FUN_1404cc440(CInPacket& packet);
+    void ReadPacket(CInPacket& packet);
     int f18,f1c;
 };
 MS2_CHECK_SIZE(CGuildNpc,0x20);
@@ -360,7 +360,7 @@ public:
     virtual int vfunc_0(MS2Ptr<CGuildMember> member);
     virtual void vfunc_1(CStringW name);
     virtual void vfunc_2(__int64 value,CStringW name,int key,const CStringW& text);
-    void FUN_1404cc900();
+    void Reset();
     __int64 GetGuildId(); void SetGuildId(__int64 v);
     CStringW GetGuildName(); void SetGuildName(const CStringW& v);
     CString FUN_1404ccdb0(); void FUN_1404cce40(CString v);
@@ -386,22 +386,22 @@ public:
     MS2Ptr<CGuildMember> FindMemberById(__int64 id);      // member by character id (sret)
     void RenameMember(const CStringW& oldName,const CStringW& newName);
     void FUN_1404cfdb0(const CStringW& name,int value);
-    void FUN_1404cfe60(const CStringW& name,__int64 value);
+    void SetMemberContribution(const CStringW& name,__int64 value);
     int FUN_1404cff20();
     int GetMemberCount();
     MS2Ptr<CGuildMember> GetMasterMember();   // the master
     void SetMasterMember(MS2Ptr<CGuildMember> v);
     int IsMaster(CStringW name);
-    void FUN_1404d0330(void* out); void FUN_1404d0420(void* out);
+    void FUN_1404d0330(void* out); void GetMembers(void* out);
     int FUN_1404d0510(); int GetMaxGradeIndex();
     int HasMemberPermission(CStringW name,unsigned mask);
     unsigned GetMemberPermissions(CStringW name);
     MS2Ptr<CGuildGrade> GetGrade(int index);
     int SetOrAddGrade(int index,MS2Ptr<CGuildGrade> grade);
     CStringW GetGradeName(int index);
-    int FUN_1404d0c00(); int FUN_1404d0d00(); int FUN_1404d0df0(); int GetTotalRaidCount();
+    int GetTotalTrophy(); int FUN_1404d0d00(); int GetTotalItemLevel(); int GetTotalRaidCount();
     unsigned GetScore(); void SetScore(int v);
-    unsigned FUN_1404d10d0(); void FUN_1404d1140(int v);
+    unsigned GetPvpState(); void SetPvpState(int v);
     void FUN_1404d11b0(int a,int b,int c,int d,int e,int f,int g);
     unsigned GetWinCount(); void SetWinCount(int v);
     unsigned GetLoseCount(); void SetLoseCount(int v);
@@ -412,12 +412,12 @@ public:
     void FUN_1404d17e0(int a,int b);
     unsigned FUN_1404d1860(); unsigned GetPropensity();
     void SetExp(int v);
-    bool FUN_1404d1990(int delta);
+    bool AddExp(int delta);
     int GetExp(); int GetGuildLevel();
     void SetFund(int v,bool bNotify);
-    bool FUN_1404d1ba0(int delta);
+    bool AddFund(int delta);
     void SetEventFund(int v,bool bNotify);
-    bool FUN_1404d1d00(int delta);
+    bool AddEventFund(int delta);
     int GetFund(); int GetEventFund(); int GetMaxFund();
     int FUN_1404d1f20();
     void SetHouseLevel(int v); int GetHouseLevel();
@@ -437,7 +437,7 @@ public:
     void FUN_1404d2a10(CInPacket* packet);
     void FUN_1404d2b00(int a,void* b); void FUN_1404d2ba0(int a,void* b);
     bool FUN_1404d2c60(); int FUN_1404d2ca0();
-    void FUN_1404d2cc0(ItemEntity* item);
+    void SetStorageItem(ItemEntity* item);
     int GetStorageItemCount(unsigned a,int b);
     void AddStorageHistory(const Unk_GuildHist* a,const Unk_GuildHist* b,const ItemEntity* item,__int64 c);   // MS2: the callers pass Unk_GuildHist (ctor 0x1404ee5f0)
     void SetStorageHistory(void* list);
@@ -446,10 +446,10 @@ public:
     void UpdateSeason();
     int FUN_1404d3400(ATL::CAtlMap<__int64,__int64>* out);   // fills a member map, returns its count
     void FUN_1404d3600(int v); int FUN_1404d3620();
-    MS2Ptr<CGuildNpcShopMgr> FUN_1404d3640();
-    void FUN_1404d36d0();
-    void FUN_1404d3b80();
-    void FUN_1404d3e70();
+    MS2Ptr<CGuildNpcShopMgr> GetNpcShopMgr();
+    void ResetGrades();
+    void ResetSkills();
+    void ResetCustomEvents();
     // @0x1404d3fe0 / 0x1404d4060: the Unk_GuildStrRec (de)serializers are free helpers in guilddef_1.cpp.
     CLockCriticalSection lock; __int64 f38; CStringW f40; CString f48; int f50; CStringW f58,f60; __int64 f68,f70,f78; CStringW f80; __int64 f88,f90; CStringW f98;
     ATL::CAtlArray<MS2Ptr<CGuildGrade> > fa0; int fc0,fc4; __int64 fc8,fd0; CStringW fd8; Unk_GuildSeason season;   // MS2: fa0 holds the grades (CAtlArray<MS2Ptr<CGuildGrade>> RemoveAll 0x1404f86e0 / SetCount 0x1404f9b50 / SetAt 0x1404f9730)

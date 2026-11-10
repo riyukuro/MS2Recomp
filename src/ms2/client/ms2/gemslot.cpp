@@ -68,7 +68,7 @@ public:
 class Unk_GmWorld
 {
 public:
-    Unk_GmActor* FUN_141bd0cc0();                       // the local player's actor
+    Unk_GmActor* GetLocalPlayer();                       // the local player's actor
 };
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
@@ -120,7 +120,7 @@ int GemSlot::vfunc_18(void* p)
     {
         if (m_spPC->FUN_140dba1c0() != 0)
         {
-            Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor == 0)
                 return 0;
             void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
@@ -167,7 +167,7 @@ int GemSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -178,7 +178,7 @@ int GemSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -195,12 +195,12 @@ int GemSlot::FUN_14126d880(CItem* pItem)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pActor == 0)
         return 0;
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527840()->GetType() != 7)
+    if (pItem->GetData()->GetType() != 7)
         return 0;
     if (m_spPC->FUN_140dba1c0() == 0)
         return 0;
@@ -228,7 +228,7 @@ int GemSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pActor == 0)
         return 0;
     bool bInvalid = IsValidGemType(m_nGemType) == false;
@@ -265,7 +265,7 @@ int GemSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pActor == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -284,7 +284,7 @@ int GemSlot::vfunc_8(void* p)
             if (slot.FUN_1409c3860(vfunc_25(), pActor, nFlags))
             {
                 if (m_spPC->FUN_140dba1c0() != 0)
-                    slot.SetBoolMember("config", vfunc_25()->FUN_140527840()->GetSubtype() == 1);
+                    slot.SetBoolMember("config", vfunc_25()->GetData()->GetSubtype() == 1);
                 else
                     slot.SetBoolMember("config", false);
                 int nGemSystem = spItem->GetGem()->vfunc_1();
@@ -325,7 +325,7 @@ void FUN_14126e3f0(const CString& strName)
     GemSlotBag* pBag = FUN_14126e9a0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

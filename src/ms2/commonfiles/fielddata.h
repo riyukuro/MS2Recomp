@@ -61,15 +61,15 @@ public:
 
     // --- table accessors (static in the unit; names invented, bound by FUN_<va>) ---
     // 0x140373d30: clear the table (CAtlMap::RemoveAll on 0x143aaec00).
-    static void FUN_140373d30();
+    static void ClearFields();
     // 0x140373d50: load ./Data/Xml/Table/fieldData.xml into the table.
     static void LoadFieldData();
     // 0x140374090: append every table entry to out (vector::push_back 0x14037bed0), under the table lock.
     static void GetAllFields(std::vector<MS2Ptr<CFieldData> >& out);
     // 0x140374140: look up a field id (0 -> null; logs "FieldID : {0}" when missing).
-    static MS2Ptr<CFieldData> FUN_140374140(int fieldId);
+    static MS2Ptr<CFieldData> FindField(int fieldId);
     // 0x140374270: find the entry whose m_strXBlock equals xblock (case-insensitive compare 0x1401c0090).
-    static MS2Ptr<CFieldData> FUN_140374270(CString xblock);
+    static MS2Ptr<CFieldData> FindFieldByXBlock(CString xblock);
     // 0x1403743e0: FUN_1403744a0(this->m_nFieldID). Non-static.
     bool FUN_1403743e0();
     // 0x140374410 / 0x1403744a0: lookup(fieldId)->m_nMapType == 3 / == 9 (false when not found).
@@ -77,10 +77,10 @@ public:
     static bool FUN_1403744a0(int fieldId);
 
     // Recovered predicates and accessors (appended by a3; the shared layout is unchanged).
-    bool FUN_140375100(); bool IsIndoor(); bool FUN_140375170(); bool FUN_140375190();
+    bool IsOutdoor(); bool IsIndoor(); bool IsIndoorMask2(); bool IsIndoorMask4();
     bool FUN_1403751b0(); bool FUN_140375270(); bool FUN_1403752c0(); bool HasTutorialType();
     int GetContinentCode(); int GetRegionCode();
-    int FUN_140375390(); int FUN_1403753d0(); int FUN_140375410(); int FUN_140375450(); int FUN_140375490();
+    int IsCashTaxiDepartureAllowed(); int IsCashTaxiDestinationAllowed(); int IsCashCallMedicAllowed(); int IsCashCallMarketAllowed(); int IsRecallOtherUserAllowed();
     int GetPkMode(); int GetShadowContinent();
     int HasAutoRevivalType1(); int HasAutoRevivalType2(); int GetOnlyDarkTomb();
     int HasLimitContent(unsigned); int FUN_140375690(void*); bool HasLimitMove(unsigned);

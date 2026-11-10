@@ -119,7 +119,7 @@ struct Unk_WhisperItemMgr
 };
 void* FUN_140764020();   // C3: was FUN_140764020
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value src);
 
@@ -137,8 +137,8 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52b40(const char* szMethod, CSt
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], (const char*)a1);
-    FUN_1422bce70(&args[1], (const char*)a2);
+    SetString(&args[0], (const char*)a1);
+    SetString(&args[1], (const char*)a2);
     FUN_1422bcea0(&args[2], (const wchar_t*)a3);
     return FUN_1422bb8f0(szMethod, args);
 }

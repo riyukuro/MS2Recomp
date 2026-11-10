@@ -142,7 +142,7 @@ bool CInputKeyHandler::FUN_14116d7a0(unsigned nMask)
 MS2_REPLACE_METHOD(0x14116D7A0, CInputKeyHandler, FUN_14116d7a0, 143, 0x00EC7853);
 
 // @0x14116d840
-bool CInputKeyHandler::FUN_14116d840()
+bool CInputKeyHandler::IsEscapePressed()
 {
     if (FUN_140a58540()->WasKeyPressedGated(1))
         return true;
@@ -150,10 +150,10 @@ bool CInputKeyHandler::FUN_14116d840()
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14116D840, CInputKeyHandler, FUN_14116d840, 71, 0x5C1438AB);
+MS2_REPLACE_METHOD(0x14116D840, CInputKeyHandler, IsEscapePressed, 71, 0x5C1438AB);
 
 // @0x14116d890
-bool CInputKeyHandler::FUN_14116d890(bool bAlt)
+bool CInputKeyHandler::IsEnterPressed(bool bAlt)
 {
     if (FUN_140a58540()->WasKeyPressedGated(0x1c))
         return true;
@@ -174,7 +174,7 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x14116D890, CInputKeyHandler, FUN_14116d890, 180, 0x2308ADB8);
+MS2_REPLACE_METHOD(0x14116D890, CInputKeyHandler, IsEnterPressed, 180, 0x2308ADB8);
 
 // @0x14116d950
 bool CInputKeyHandler::IsKeyDown(int nKey, bool bDebugOnly, int nLevel)
@@ -277,7 +277,7 @@ bool CInputKeyHandler::IsActionKeyDown(int nSetting, bool bDebugOnly, int nLevel
 MS2_REPLACE_METHOD(0x14116DCB0, CInputKeyHandler, IsActionKeyDown, 114, 0x384BBBA6);
 
 // @0x14116dd30
-bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::IsActionKeyPressed(int nSetting, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -289,10 +289,10 @@ bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14116DD30, CInputKeyHandler, FUN_14116dd30, 114, 0x662885F5);
+MS2_REPLACE_METHOD(0x14116DD30, CInputKeyHandler, IsActionKeyPressed, 114, 0x662885F5);
 
 // @0x14116ddb0
-bool CInputKeyHandler::FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::IsActionKeyReleased(int nSetting, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -304,7 +304,7 @@ bool CInputKeyHandler::FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14116DDB0, CInputKeyHandler, FUN_14116ddb0, 114, 0xFBF30D0E);
+MS2_REPLACE_METHOD(0x14116DDB0, CInputKeyHandler, IsActionKeyReleased, 114, 0xFBF30D0E);
 
 // @0x14116de30
 bool CInputKeyHandler::InjectKeyPress(int nKey)

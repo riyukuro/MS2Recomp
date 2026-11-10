@@ -76,7 +76,7 @@ efd::Point3 GetPosition(egf::Entity* pEntity)
 }
 
 // @0x140b60d30
-efd::Point3 FUN_140b60d30(egf::Entity* pEntity)
+efd::Point3 GetAngle(egf::Entity* pEntity)
 {
     efd::Point3 kPoint;
     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kPoint));

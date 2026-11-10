@@ -160,7 +160,7 @@ efd::AsyncResult CNifAnimationService::OnTick()
                 m_mapInfo.RemoveAt(pos);
                 continue;
             }
-            float fTime = (float)pInfo->m_timer.FUN_140868a70() / 1000.0f;
+            float fTime = (float)pInfo->m_timer.GetElapsed() / 1000.0f;
             pInfo->m_spClone->Update(fTime, true);
         }
     }

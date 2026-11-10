@@ -79,7 +79,7 @@ static Unk_1402a9d70 s_unk1402a9d70_0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
 
-unsigned __int64 FUN_140718370(const CStringW& str);                 // value
+unsigned __int64 ParseUInt64W(const CStringW& str);                 // value
 extern template class MS2Ptr<CMsgBoxData>;
 typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 
@@ -97,7 +97,7 @@ class Unk_ClubWorldObj;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     class Unk_WsC_GameObj* FUN_141bd1420(CStringW strName);   // a player by name
     static class WorldService* GetInstance();
 };
@@ -132,8 +132,8 @@ CStringW BlockFormat(int nId);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void ShowSystemNotice(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
-bool FUN_141b70f50(const CStringW& a, const CStringW& b);
-int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strError);
+bool IsEqualNoCase(const CStringW& a, const CStringW& b);
+int CheckName(const CStringW& strName, bool bCheckSelf, CStringW& strError);
 void FUN_140710590(COutPacket& packet);
 
 CStringW GetLocalPlayerName();
@@ -319,7 +319,7 @@ void CClubCli::FUN_140b135d0(CInPacket& packet)
         return;
     SetLeaderInfo(spSecond->m_info.m_accountId, spSecond->m_info.m_characterId, spSecond->m_info.GetName(), 1);
     m_leader = spSecond;
-    bool bMe = FUN_141b70f50(strFirst, GetLocalPlayerName());
+    bool bMe = IsEqualNoCase(strFirst, GetLocalPlayerName());
     if (bMe)
     {
         UIClubDialog* pDialog = FindClubDialog(0x4f25);
@@ -443,7 +443,7 @@ bool CClubCli::FUN_140b14230(CStringW strName)
     if (IsLeaderName(CStringW(strMe)) == 0)
         return false;
     CStringW strError;
-    int nResult = FUN_141276c80(strName, true, strError);
+    int nResult = CheckName(strName, true, strError);
     if (nResult != 0)
     {
         int nMessage = (nResult == 10) ? 0x349 : 0x34a;
@@ -1217,7 +1217,7 @@ void CClubClientManager::FUN_140b17780(CInPacket& packet)
     int nCode = packet.ReadInt32();
     if (nCode == 0xcf)
     {
-        if (FUN_141b70f50(strName, GetLocalPlayerName()) == 1)
+        if (IsEqualNoCase(strName, GetLocalPlayerName()) == 1)
             FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->GetName()), 0xf);
         else
             FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->GetName()), 0xf);
@@ -1505,7 +1505,7 @@ void FUN_140b18700(int nKind, int nCode)
 // @0x140b18ef0
 CStringW GetLocalPlayerName()
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return CStringW(L"");
     return pPlayer->vfunc_77();
@@ -1534,7 +1534,7 @@ bool CMsgBoxData::FUN_140b19130(unsigned nIndex, __int64& nValue) const
 {
     if (!(nIndex < m_args.GetCount()))
         return false;
-    nValue = FUN_140718370(m_args[nIndex]);
+    nValue = ParseUInt64W(m_args[nIndex]);
     return true;
 }
 

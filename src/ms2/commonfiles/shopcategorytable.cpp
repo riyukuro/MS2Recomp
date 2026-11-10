@@ -49,9 +49,9 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
-bool FUN_1406a5040(int nTabId);                                          // the tab opens on its best page
+bool IsShopTab(int nTabId);                                          // the tab opens on its best page
 
 // View for the identical-code TPtrValue::get copy LoadCategories passes to LoadTabs.
 // C3: FUN_1407cc3e0 is TPtrValue<TabList>::operator* (tptrvalue.h; this unit owns the copy), was Unk_ScTabListView
@@ -142,7 +142,7 @@ void CShopCategoryTable::TabInfo::Write(Unk_AsOut* pOut)
     ((AScript*)pOut)->SetStringMember("symbol", m_strSymbol);
     ((AScript*)pOut)->SetIntMember("priority", m_nPriority);
     ((AScript*)pOut)->SetWStringMember("name", GetName());
-    bool bBestPage = m_nStatic == 1 && FUN_1406a5040(m_nId);
+    bool bBestPage = m_nStatic == 1 && IsShopTab(m_nId);
     if (bBestPage)
         ((AScript*)pOut)->SetBoolMember("bestPage", true);
     ((AScript*)pOut)->SetBoolMember("alwaysOpen", m_bAlwaysOpen);
@@ -244,7 +244,7 @@ void CShopCategoryTable::LoadCategories(TiXmlElement* pRoot)
         XmlGetAttr((class TiXmlElement*)(pCategory), "id", nId);
         if (nId <= 0)
             continue;
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pCategory)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pCategory)))
             continue;
         CString strTabType;
         XmlGetAttr((class TiXmlElement*)(pCategory), "tabType", strTabType);
@@ -274,7 +274,7 @@ void CShopCategoryTable::LoadTabs(int nTabType, TiXmlElement* pParent, TabMap& r
 {
     for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild("tab")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("tab")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pElem)))
             continue;
         int nName = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), "name", reinterpret_cast<int&>(nName));

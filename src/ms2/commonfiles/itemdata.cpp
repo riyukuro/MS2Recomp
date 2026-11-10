@@ -73,7 +73,7 @@ template <class A, class B> void Unk_BurningLevelupLog(Unk_CommonLog*, int, int,
 // The GameDictionaryManager instance getter's own return view (the lookup is GameDictionaryManager::Get).
 class Unk_PcBangTable;
 Unk_PcBangTable* FUN_140541580();
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 unsigned char FUN_1401d1320(CCacheData*);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -166,7 +166,7 @@ int GetIconCode(int nItemId);
 bool FUN_14053fc90(int nSub);
 bool FUN_14053fd10(int nSub);
 bool FUN_14053fd50(int nSub);
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 bool HasRank(int nItemId, int nRank);
 unsigned GetTagByName(const CString& strName);
 
@@ -204,7 +204,7 @@ bool CItemChangeBeautyTable::Load()
     const CStringA& strItemId = "itemID";
     for (TiXmlElement* pNode = ((TiXmlElement*)((Unk_XmlNode*)(pRoot))->FirstChild(strBeauty)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strBeauty)))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
         XmlGetAttr((class TiXmlElement*)(pNode), strId, *(unsigned int*)&static_cast<int&>(nId));
@@ -217,7 +217,7 @@ bool CItemChangeBeautyTable::Load()
         data->FUN_14053a7c0(pNode);
         for (TiXmlElement* pItem = ((TiXmlElement*)((Unk_XmlNode*)(pNode))->FirstChild(strItem)); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling(strItem)))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pItem)))
                 continue;
             int nItemId;
             XmlGetAttr((class TiXmlElement*)(pItem), strItemId, *(unsigned int*)&static_cast<int&>(nItemId));
@@ -349,7 +349,7 @@ bool CItemData::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pProperty), "param2", param2);
         property.Load(pProperty);
     }
-    if (!material.FUN_1405473c0(pElem)) return false;
+    if (!material.Load(pElem)) return false;
     if (!period.Load(pElem)) return false;
     if (!limit.Load(pElem)) return false;
     if (!skill.LoadXml(pElem)) return false;
@@ -357,7 +357,7 @@ bool CItemData::Load(TiXmlElement* pElem)
     if (!cubeTextureName.LoadXml(pElem)) return false;
     if (!effect.Load(pElem)) return false;
     if (!fusion.LoadXml(pElem)) return false;
-    if (!additionalEffect.FUN_140549c00(pElem)) return false;
+    if (!additionalEffect.Load(pElem)) return false;
     if (!function.Load(pElem)) return false;
     TiXmlElement* pTool = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("tool"));
     if (pTool) {
@@ -402,7 +402,7 @@ bool CItemData::Save(void* pParent)
         if (skinType != 0) XmlSetAttr(&property, "skinType", skinType);
         if (param1 != 0) XmlSetAttr(&property, "param1", param1);
         if (param2 != 0) XmlSetAttr(&property, "param2", param2);
-        this->property.FUN_1405479a0(&property);
+        this->property.SaveAttributes(&property);
         reinterpret_cast<TiXmlNode*>(pParent)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(property));
     }
     cubeTextureName.SaveXml(pParent);
@@ -423,7 +423,7 @@ bool CItemData::Save(void* pParent)
 }
 
 // @0x14053c170
-bool CItemData::FUN_14053c170(const CItemData* pOther)
+bool CItemData::IsDifferent(const CItemData* pOther)
 {
     if (originID != pOther->originID) return true;
     if (stringTag != pOther->stringTag) return true;
@@ -435,17 +435,17 @@ bool CItemData::FUN_14053c170(const CItemData* pOther)
     if (itemGroup != pOther->itemGroup) return true;
     if (param1 != pOther->param1) return true;
     if (param2 != pOther->param2) return true;
-    if (property.FUN_140547ec0(&pOther->property)) return true;
-    if (material.FUN_140547460(&pOther->material)) return true;
-    if (period.FUN_140546620(&pOther->period)) return true;
-    if (limit.FUN_140545ad0(&pOther->limit)) return true;
-    if (skill.FUN_140546810(&pOther->skill)) return true;
-    if (install.FUN_140548aa0(&pOther->install)) return true;
+    if (property.IsNotEqual(&pOther->property)) return true;
+    if (material.IsNotEqual(&pOther->material)) return true;
+    if (period.IsNotEqual(&pOther->period)) return true;
+    if (limit.IsNotEqual(&pOther->limit)) return true;
+    if (skill.IsNotEqual(&pOther->skill)) return true;
+    if (install.IsNotEqual(&pOther->install)) return true;
     if (cubeTextureName.mesh != pOther->cubeTextureName.mesh) return true;
-    if (effect.FUN_140549a40(&pOther->effect)) return true;
+    if (effect.IsNotEqual(&pOther->effect)) return true;
     if (fusion.fusionable != pOther->fusion.fusionable) return true;
-    if (additionalEffect.FUN_140549d60(&pOther->additionalEffect)) return true;
-    if (function.FUN_14054a2b0(&pOther->function)) return true;
+    if (additionalEffect.IsNotEqual(&pOther->additionalEffect)) return true;
+    if (function.IsNotEqual(&pOther->function)) return true;
     if (itemPreset != pOther->itemPreset) return true;
     if (constantID != pOther->constantID) return true;
     if (randomID != pOther->randomID) return true;
@@ -631,7 +631,7 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
             for (size_t j = 0; j < pGroup->GetPartCount(); ++j)
             {
                 const ModelPart* pPart = pGroup->GetPart(j);
-                if (pPart->FUN_140544aa0(nGender, nB) != 0)
+                if (pPart->IsWornBy(nGender, nB) != 0)
                     return 1;
             }
         }
@@ -648,7 +648,7 @@ int CItemData::FUN_14053cae0(int nGender, int nCategory)
     return IsGenderAllowed(nGender);
 }
 // @0x14053cb40
-bool CItemData::FUN_14053cb40()
+bool CItemData::IsSkillItem()
 {
     return GetType() == 5;
 }
@@ -666,7 +666,7 @@ bool CItemData::FUN_14053cbc0()
 }
 
 // @0x14053cc00
-bool CItemData::FUN_14053cc00()
+bool CItemData::IsGemItem()
 {
     return GetType() == 7;
 }
@@ -692,7 +692,7 @@ bool CItemData::FUN_14053ccc0()
 }
 
 // @0x14053cd10
-bool CItemData::FUN_14053cd10()
+bool CItemData::IsScoreItem()
 {
     return GetType() == 0xc;
 }
@@ -821,7 +821,7 @@ bool CItemData::FUN_14053d150()
 }
 
 // @0x14053d1f0
-bool CItemData::FUN_14053d1f0()
+bool CItemData::IsVipItem()
 {
     return limit.flag6a;
 }
@@ -1041,7 +1041,7 @@ bool CItemData::FUN_14053d840()
 }
 
 // @0x14053d880
-bool CItemData::FUN_14053d880()
+bool CItemData::IsCoinItem()
 {
     return GetType() == 0x14;
 }
@@ -1109,7 +1109,7 @@ int CItemData::CanRegisterMeratMarket()
             return limit.enableRegisterMeratMarket;
         return 0;
     }
-    if (FUN_14053cd10())
+    if (IsScoreItem())
     {
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xa9))
             return limit.enableRegisterMeratMarket;
@@ -1178,7 +1178,7 @@ int CItemData::GetRideeId()
 }
 
 // @0x14053ddb0
-int CItemData::FUN_14053ddb0()
+int CItemData::GetShopId()
 {
     if (GetType() != 0x14)
         return 0;
@@ -1186,7 +1186,7 @@ int CItemData::FUN_14053ddb0()
 }
 
 // @0x14053dde0
-int CItemData::FUN_14053dde0()
+int CItemData::GetGlideItemId()
 {
     if (GetType() != 5)
         return 0;
@@ -1194,7 +1194,7 @@ int CItemData::FUN_14053dde0()
 }
 
 // @0x14053de10
-int CItemData::FUN_14053de10()
+int CItemData::GetMergeOptionId()
 {
     if (GetType() != 0x13)
         return 0;
@@ -1359,7 +1359,7 @@ bool CItemData::FUN_14053e460()
 {
     if (FUN_14053d270())
         return true;
-    if (FUN_14053cb40())
+    if (IsSkillItem())
         return true;
     if (IsPetItem())
         return true;
@@ -1459,7 +1459,7 @@ bool CItemData::IsMoveDisabled()
 // @0x14053e900
 int CItemData::FUN_14053e900()
 {
-    if (!FUN_14053cc00())
+    if (!IsGemItem())
         return 0;
     return GetSubtype();
 }
@@ -1846,7 +1846,7 @@ double CItemData::FUN_14053f620(int nIdx)
 }
 
 // @0x14053f750
-bool CItemData::FUN_14053f750(long long nParam)
+bool CItemData::HasStat(long long nParam)
 {
     if ((nParam == 0x1b || nParam == 0x1c) && FUN_14053d760())
         return true;
@@ -2081,7 +2081,7 @@ CString CItemData::GetIconPath()
 }
 
 // @0x14053feb0
-int FUN_14053feb0(int nItemId)
+int GetItemRank(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)

@@ -128,7 +128,7 @@ extern __int64 DAT_143af37b8;                                       // the mail 
 
 template <class T> T* Unk_SSGGetDialog(int nId);                     // scenestategame.cpp (0x141742fb0 for the send dialog)
 CStringW FUN_141b71910(__int64 n);                                  // number -> text
-unsigned __int64 FUN_140718370(const CStringW& text);               // text -> number
+unsigned __int64 ParseUInt64W(const CStringW& text);               // text -> number
 CStringW FUN_14016a730(const char* psz, int n);                     // multibyte -> wide
 CStringW GetStringCommon(int nStrId);                                 // string table text by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
@@ -151,7 +151,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static WorldService* GetInstance();
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
 };
 __int64 GetServerTime();                                            // the server time
 
@@ -206,8 +206,8 @@ CStringW GetDaysLeftString(CMailInfo* pMail, int bTooltip);             // the "
 __int64 GetMesoAmount(CMailInfo* pMail)
 {
     __int64 nTotal = 0;
-    if (pMail->FUN_140690db0() != 0 && pMail->FUN_140690dd0() == 0)
-        nTotal = nTotal + pMail->FUN_140690db0();
+    if (pMail->GetRangeB0Begin() != 0 && pMail->GetRangeB0Claim() == 0)
+        nTotal = nTotal + pMail->GetRangeB0Begin();
     Unk_CommonPriceRecord rec;
     if (pMail->FindBenefit(0, 0, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
@@ -220,8 +220,8 @@ MS2_REPLACE(0x1419E9160, GetMesoAmount, 148, 0x1A71F3E1); // GetMesoAmount
 __int64 GetMeratAmount(CMailInfo* pMail)
 {
     __int64 nTotal = 0;
-    if (pMail->FUN_140690e40() != 0 && pMail->FUN_140690e60() == 0)
-        nTotal = nTotal + pMail->FUN_140690e40();
+    if (pMail->GetRangeC0Begin() != 0 && pMail->FUN_140690e60() == 0)
+        nTotal = nTotal + pMail->GetRangeC0Begin();
     Unk_CommonPriceRecord rec;
     if (pMail->FindBenefit(2, 0, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
@@ -717,7 +717,7 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
     ATL::CAtlArray<unsigned __int64> aUnused;
     for (size_t i = 0; i < aIds.GetCount(); i++)
     {
-        unsigned __int64 nId = FUN_140718370(aIds[i]);
+        unsigned __int64 nId = ParseUInt64W(aIds[i]);
         CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nId);
         if (spMail.get() != 0 && spMail->HasAttachment() != 0)
             return 1;
@@ -793,7 +793,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     MS2Ptr<CMailAdItem> spAd = pMail->GetAd(spAdBill->vfunc_5());
     if (spAd == 0)
         return false;
-    PCBase* pPlayer = ((class PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)WorldService::GetInstance()->GetLocalPlayer());
     ASTooltip tip(pPlayer, 0x20, 2);
     if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
         *pRetVal = tip.GetValue();
@@ -926,7 +926,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x19, 0x231, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01800(1);
+                    spBox->SetButtonPreset(1);
                     spBox->SetCheckbox0(GetStringCommon(0x232), 0);
                     spBox->AddStringArg(CStringW(strIds));
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
@@ -965,7 +965,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nMailId = ParseUInt64W(data.FUN_1422b8f40());
             int bChecked = data.PopBool();
             m_mapChecked.SetAt(nMailId, bChecked);
         }
@@ -977,7 +977,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             ASData data;
             if (data.SetArgsIfAny(pArgs, nArgs) == 0)
                 break;
-            unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nMailId = ParseUInt64W(data.FUN_1422b8f40());
             CStringW strSender = data.FUN_1422b8f40();
             float fX = data.PopFloat();
             float fY = data.PopFloat();
@@ -998,7 +998,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nMailId = ParseUInt64W(data.FUN_1422b8f40());
             OnBuyAd(nMailId);
         }
     }
@@ -1162,7 +1162,7 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0)
         return true;
-    __int64 nMailId = FUN_140718370(data.FUN_141a02fd0(0, CStringW()));
+    __int64 nMailId = ParseUInt64W(data.FUN_141a02fd0(0, CStringW()));
     if (HasLockedAttachment(nMailId) != 0)
     {
         ShowMessageBox(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, L"");
@@ -1187,7 +1187,7 @@ void UIMailListDialog::ParseMailIds(CStringW strIds, ATL::CAtlArray<__int64>& aI
     FUN_14025a680(strIds, aTexts, L",");
     for (size_t i = 0; i < aTexts.GetCount(); i++)
     {
-        __int64 nMailId = FUN_140718370(aTexts[i]);
+        __int64 nMailId = ParseUInt64W(aTexts[i]);
         CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nMailId);
         if (spMail.get() != 0)
         {
@@ -1435,7 +1435,7 @@ MS2_REPLACE_METHOD(0x1419ec570, UIMailSendDialog, OnLoadComplete, 60, 0x1D20BAF1
 void UIMailSendDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    switch (static_cast<CInPacket*>(p)->FUN_14070fe80()) {
+    switch (static_cast<CInPacket*>(p)->GetOpcode()) {
     case 0x54: {
         int nMode = static_cast<CInPacket*>(p)->ReadUInt8();
         if (nMode == 0x14) {
@@ -1667,7 +1667,7 @@ void UIMailSendDialog::FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& n
     for (size_t i = 0; i < buddies.GetCount(); i++)
         names.SetAt(buddies[i]->FUN_1401cc230(), buddies[i]->GetName());
     ATL::CAtlArray<MS2Ptr<CGuildMember> > members;
-    CGuildManager::GetInstance()->FUN_1404d0420(&members);
+    CGuildManager::GetInstance()->GetMembers(&members);
     for (size_t i = 0; i < members.GetCount(); i++)
     {
         if (members[i]->data.f08 != DAT_143ab2828)

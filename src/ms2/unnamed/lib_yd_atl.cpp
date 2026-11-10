@@ -61,7 +61,7 @@ void FUN_142cc9a38()
 
 // ~CAtlBaseModule on the exe's _AtlBaseModule; FUN_14014d1ac registers it.
 // @0x142cc9a7c
-void FUN_142cc9a7c()
+void DestroyAtlBaseModule()
 {
     ATL::_AtlBaseModule.~CAtlBaseModule();
 }

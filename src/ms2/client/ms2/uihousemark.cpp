@@ -130,16 +130,16 @@ float FUN_14029d220(float f);                                       // fabs
 
 class CBuddyManager;
 
-int FUN_1406516b0();
+int GetRegion();
 int FUN_141277f40();
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a UI sound
 #include "ms2/ms2format.h"
 CStringW FUN_1409404f0(__int64 n);                                  // a number with separators
 #include "ms2/placeholder/formatstringid.h"
 int FUN_1408a0890(int nMapId, int nGroup, int* pnResult);
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& group, int nMapId);
-Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners, int nGroup, int nBlock);
+Unk_CubeOwnerPtr FindCubeOwner(Unk_CubeOwners& owners, int nGroup, int nBlock);
 bool FUN_14053f8c0(unsigned nItem);
 bool FUN_14053f940(unsigned nItem);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -177,9 +177,9 @@ void UIHouseMarkEntity::AttachMovieClip(MS2Ptr<ASMovieClip> spClip)
     m_btn = m_clip->FUN_140acce30<ASButton>("m_btn");
     if (m_btn.get() != NULL)
     {
-        m_btn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c670), 0);
-        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de800(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOver), 0, 0);
-        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de880(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOut), 0, 0);
+        m_btn->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c670), 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->AddRollOverListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOver), 0, 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->AddRollOutListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOut), 0, 0);
     }
 }
 MS2_REPLACE_METHOD(0x14198AE60, UIHouseMarkEntity, AttachMovieClip, 659, 0x37455A51);
@@ -205,7 +205,7 @@ void UIHouseMarkEntity::Update()
         SetVisible(false);
         return;
     }
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->IsInCubeMode() != 0)
     {
         if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_4390)->Get()) < GetTickCountMs2())
@@ -267,7 +267,7 @@ void UIHouseMarkEntity::UpdateScreenPosition()
 {
     if (m_clip == NULL)
         return;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == NULL)
         return;
     bool bShow = true;
@@ -333,7 +333,7 @@ void UIHouseMarkEntity::UpdateSaleState()
     {
         int nStatus;
         __int64 nStartTime;
-        if (spService->FUN_1410c8470(m_nId, WorldService::GetInstance()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
+        if (spService->FUN_1410c8470(m_nId, WorldService::GetInstance()->GetFieldId(), &nStatus, &nStartTime) != 0 && nStatus == 4)
         {
             __int64 nNow = GetServerTime();
             int nWaitTime = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_4180));
@@ -378,10 +378,10 @@ void UIHouseMarkEntity::UpdateAddress()
 {
     if (m_clip == NULL)
         return;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == NULL)
         return;
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     int nGroup = GetId();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
@@ -398,7 +398,7 @@ void UIHouseMarkEntity::UpdateAddress()
     CStringW strOwner;
     {
         Unk_CubeOwners* pOwners = spService->FUN_1410d3360();
-        Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
+        Unk_CubeOwnerPtr spOwner = FindCubeOwner(*pOwners, nGroup, nBlock);
         if (spOwner.get() != NULL)
         {
             strOwner = spOwner->ownerName;
@@ -455,7 +455,7 @@ void UIHouseMarkEntity::FUN_14198c140(bool bPopup)
     if (bPopup)
     {
         m_nPopupTick = GetTickCountMs2();
-        FUN_141276180(s_strHouseIcon, "");
+        PlaySystemSound(s_strHouseIcon, "");
     }
     m_bPopup = bPopup;
     m_clip->Invoke("showPopup", m_bPopup);
@@ -510,7 +510,7 @@ MS2_REPLACE_METHOD(0x14198C3F0, UIHouseMarkEntity, IsPopup, 15, 0x52CC66EC);
 // @0x14198c410
 void UIHouseMarkEntity::FUN_14198c410()
 {
-    if (m_nIconType == 0 && FUN_1406516b0() == 1)
+    if (m_nIconType == 0 && GetRegion() == 1)
     {
         UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
         if (pDlg != NULL && pDlg->FUN_141924630() == 0)
@@ -534,7 +534,7 @@ void UIHouseMarkEntity::FUN_14198c5a0()
 {
     UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
-        pDlg->SetGroupAndMapId(m_nId, WorldService::GetInstance()->FUN_141bd3060());
+        pDlg->SetGroupAndMapId(m_nId, WorldService::GetInstance()->GetFieldId());
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
 }
 MS2_REPLACE_METHOD(0x14198C5A0, UIHouseMarkEntity, FUN_14198c5a0, 103, 0x92B76A5E);

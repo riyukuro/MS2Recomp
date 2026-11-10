@@ -30,7 +30,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 float FUN_14028d280(unsigned);
 CStringW FUN_140719a00(__int64);
 CStringW FUN_1407197a0(float);
-float FUN_140718480(const CStringW&);
+float ParseFloatW(const CStringW&);
 CStringW FUN_14083cb20(const CStringW&);
 template <class A> CStringW FormatStringId(int nStringId, const A& a);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -297,7 +297,7 @@ CStringW CBattleRecordManager::FUN_140a04830(int group,__int64 id,int type) {
     CBattleRecordGroup::Ptr record=groups[group]->GetRecord(id); if(record==0) return CStringW();
     switch(type) {
     case 0: case 1: case 2: case 3: case 6: case 7: case 8: return StringFormat<CStringW>(L"{0}",FUN_14083cb20(GetRecordValueText(group,id,type)));
-    case 4: case 5: return FormatStringId(0x98e,StringFormat(L"{0:0.2f}",FUN_140718480(GetRecordValueText(group,id,type))));
+    case 4: case 5: return FormatStringId(0x98e,StringFormat(L"{0:0.2f}",ParseFloatW(GetRecordValueText(group,id,type))));
     }
     return CStringW();
 }
@@ -325,7 +325,7 @@ MS2_REPLACE(0x140a04bc0, CBattleRecordManager::FUN_140a04bc0, 762, 0x64D39263);
 void CBattleRecordManager::RecordDamage(Unk_BattleDamage* damage) {
     if(!damage) return;
     __int64 source=WorldService::GetInstance()->FUN_141bd1980(damage->source);
-    if(!source) { CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd13a0(damage->source)); if(npc && npc->GetOwnerId()) source=WorldService::GetInstance()->FUN_141bd1980(npc->GetOwnerId()); }
+    if(!source) { CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindPetById(damage->source)); if(npc && npc->GetOwnerId()) source=WorldService::GetInstance()->FUN_141bd1980(npc->GetOwnerId()); }
     __int64 target=WorldService::GetInstance()->FUN_141bd1980(damage->target);
     for(unsigned i=0;i<3;++i) {
         Ptr group=groups[i]; if(!group->IsActive()) continue;
@@ -334,7 +334,7 @@ void CBattleRecordManager::RecordDamage(Unk_BattleDamage* damage) {
             unsigned count=(unsigned)damage->values.GetCount();
             group->RecordAmount(record,2,count);
             group->RecordAmount(record,0,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
-            CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
+            CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(damage->target));
             if(npc && npc->GetNpcClass()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {

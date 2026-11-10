@@ -72,7 +72,7 @@ void UIGameModeSelectDialog::OnLoadComplete()
     }
     m_178 = m_30->FUN_140acce30<ASButton>("m_start");
     if (m_178.get() != 0)
-        m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::OnStartClick), 0);
+        m_178.operator->()->AddClickHandler(GmClickDelegate(this, &UIGameModeSelectDialog::OnStartClick), 0);
     ASObj obj(2);
     ((class AScript&)(obj)).SetWStringMember("rpgMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e548);
     ((class AScript&)(obj)).SetWStringMember("royaleMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e550);

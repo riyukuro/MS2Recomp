@@ -47,7 +47,7 @@ class GFxManager : public efd::MemObject, public SingletonClass<GFxManager>
 public:
     GFxManager();                                                   // 0x1422acf10
     virtual ~GFxManager();                                          // 0 0x1422ad3a0 (??_G 0x1422b4d60)
-    int FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer);            // initialise Scaleform (GFxService::OnInit; 0 = failed)
+    int Initialize(HWND hWnd, NiRenderer* pRenderer);            // initialise Scaleform (GFxService::OnInit; 0 = failed)
     int ResizeMovies(unsigned int uiWidth, unsigned int uiHeight); // the render target size (device restored); 1
     int LoadBackgroundMovie(GFxMovie* pMovie);                           // load and add the background movie (id 4)
     int UnloadBackgroundMovie();                                            // remove it
@@ -57,7 +57,7 @@ public:
     void FUN_1422ae180();                                           // per tick (GFxService::OnTick)
     void Shutdown();                                           // shutdown (GFxService::OnShutdown)
     void OnDeviceLost();                                           // render device lost
-    bool FUN_1422ae690();                                           // render device restored (false = failed)
+    bool OnDeviceRestored();                                           // render device restored (false = failed)
     void FUN_1422ae7d0();                                           // hand the HAL and the Renderer2D to every movie
     void FUN_1422ae920(int n);                                      // m_184 =
     int FUN_1422ae940();                                            // m_184: nonzero = advance in one step
@@ -83,11 +83,11 @@ public:
     CString GetImeInputLanguage(int nMovieId);                            // the IME input language ("UNKNOWN")
     void FUN_1422afb00();                                           // "unloadCache" of every movie clip loader
     void FUN_1422afc00();                                           // GFx::Movie slot 48 of every movie
-    Ni2DBuffer* FUN_1422afcf0();                                    // the renderer's render texture buffer
+    Ni2DBuffer* GetRenderBuffer();                                    // the renderer's render texture buffer
     void MuteSound(bool bMute);                                 // the UI sound renderer slot 9
     void SetMasterVolume(float fVolume);                              // the UI sound volume
-    void FUN_1422afe50();                                           // recreate the UI sound
-    void FUN_1422afe90();                                           // drop the UI sound
+    void RecreateSound();                                           // recreate the UI sound
+    void ReleaseSound();                                           // drop the UI sound
     float GetMovieScale(int nMovieId);                              // the scale of a movie (1.0f if not loaded)
     int FUN_1422aff10(float fScale);                                // scale every movie except the background
     void SetMoviesScale(float fScale);                               // the same without the viewport (if it differs from movie 2's)
@@ -106,28 +106,28 @@ public:
     int InvokeSoundCallback(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
     void SetSoundCallback(TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > fn);
     void GetStageSize(int nMovieId, int* pnWidth, int* pnHeight);  // the stage size of a movie
-    void FUN_1422b0790(int nMovieId);                               // remember the stage size of a movie ("initializeClass")
+    void UpdateStageSize(int nMovieId);                               // remember the stage size of a movie ("initializeClass")
     void FUN_1422b0840(int nMovieId, int* pnWidth, int* pnHeight);  // the remembered stage size
-    void FUN_1422b08f0(const char* szFormat, ...);                  // log line (GFxRenderSingleThread reset failures)
+    void Log(const char* szFormat, ...);                  // log line (GFxRenderSingleThread reset failures)
     void FUN_1422b09a0();                                           // reload the string tables
     int FUN_1422b09d0(CString a, CString b, int n);                 // m_pfn110(a, b, n) (0 without callback)
-    int FUN_1422b0a70(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // GFxService::vfunc_18
+    int HandleWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // GFxService::vfunc_18
     int FUN_1422b0bc0(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // GFxService::vfunc_19 (every window message)
     CString GetIme();                                        // the path of the IME movie
-    Scaleform::Ptr<Scaleform::File> FUN_1422b0d60(Scaleform::String strPath);   // the cached memory file of a path
-    void FUN_1422b0e20(Scaleform::String strPath, Scaleform::Ptr<Scaleform::File> pFile);   // cache (NULL: drop) it
-    void FUN_1422b0ea0(const CStringW& strText);                    // copy to the clipboard (GFxMovieMain)
+    Scaleform::Ptr<Scaleform::File> GetCachedFile(Scaleform::String strPath);   // the cached memory file of a path
+    void SetCachedFile(Scaleform::String strPath, Scaleform::Ptr<Scaleform::File> pFile);   // cache (NULL: drop) it
+    void SetClipboardText(const CStringW& strText);                    // copy to the clipboard (GFxMovieMain)
     int CloseTooltips();                                            // close the tooltips (GFxMovieTooltip::FUN_1422f1020)
     int CreateVideo(HWND hWnd);                                   // create the video
     int FUN_1422b1030();                                            // the loader states
     int FUN_1422b1620(CString strFontConfig, const CString& strLocale);   // the string tables / font config
     int FUN_1422b1750(NiRenderer* pRenderer);                       // create the renderer
     int InitIME(HWND hWnd);                                   // the IME manager
-    int FUN_1422b19d0(HWND hWnd, CString strPath);                  // load GFxMovieMain (id 2)
-    int FUN_1422b1bb0(HWND hWnd, CString strPath);                  // load GFxMovieTooltip (id 5)
-    int FUN_1422b1d70(HWND hWnd, CString strPath);                  // load GFxMovieMouseCursor (id 6)
-    int FUN_1422b1f30(HWND hWnd, CString strPath);                  // load GFxMovieHeadUpDisplay (id 0)
-    int FUN_1422b20f0(HWND hWnd, CString strPath);                  // load GFxMoviePostDisplay (id 3)
+    int LoadMainMovie(HWND hWnd, CString strPath);                  // load GFxMovieMain (id 2)
+    int LoadTooltipMovie(HWND hWnd, CString strPath);                  // load GFxMovieTooltip (id 5)
+    int LoadMouseCursorMovie(HWND hWnd, CString strPath);                  // load GFxMovieMouseCursor (id 6)
+    int LoadHeadUpDisplayMovie(HWND hWnd, CString strPath);                  // load GFxMovieHeadUpDisplay (id 0)
+    int LoadPostDisplayMovie(HWND hWnd, CString strPath);                  // load GFxMoviePostDisplay (id 3)
     int FUN_1422b22b0();                                            // create the UI sound
     void ReloadMovies();                                           // reload the movies
     bool FUN_1422b2760();                                           // GFxMovieMain::FUN_1422f0450

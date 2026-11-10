@@ -147,7 +147,7 @@ __int64 ItemScrollSlot::GetItemUid()
 // @0x140d42940 (ITooltip::vfunc_0)
 int ItemScrollSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x20, 2);
@@ -163,7 +163,7 @@ int ItemScrollSlot::vfunc_0(void* p)
 // @0x140d42a60
 int ItemScrollSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);

@@ -138,7 +138,7 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
         MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)GetItemPreviewMgr())->GetPreviewItem();
         if (spItem.get() ? true : false) {
             if (((class Unk_IpPreview*)GetItemPreviewMgr())->GetArg() != 0) {
-                MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
+                MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->GetData()));
                 if (spData.get() != 0) {
                     if (spData->FUN_14053e260() != 0) {
                         if (spData->FUN_14053e2b0(0) == -1) bNoSlot = 1;
@@ -226,7 +226,7 @@ void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
     if (spOutfit.get() != 0) spView = spOutfit->GetAvatar();
     MS2Ptr<ASSlot> spSlot(new ASSlot(2));
     if (spSlot.get() != 0) {
-        void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
         spSlot->FUN_1409c3860(spItem.get(), pPlayer, 0xd01);
     }
     MS2Ptr<ASEquipIcon> spIcon = m_equip->EquipItem(0x81, spItem, MS2Ptr<AScript>(spSlot.operator ASSlot*()), MS2Ptr<Customize>(0));
@@ -242,7 +242,7 @@ void UIItemPreviewDialog::GetItemTooltip(const Scaleform::GFx::FunctionHandler::
     if (m_equip == 0) return;
     MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)GetItemPreviewMgr())->GetSourceItem();
     if (spItem == 0) return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0) return;
     ASTooltip tip(pPlayer, 2, 2);
     tip.FUN_1409e0d40(spItem.get());

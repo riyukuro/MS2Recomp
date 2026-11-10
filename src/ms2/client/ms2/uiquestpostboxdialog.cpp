@@ -42,7 +42,7 @@ int FUN_14074bc90(int);   // C3: was FUN_14074bc90
 unsigned short GetQuestLevel(int nQuestId);             // quest level
 CStringW GetQuestTitle(int, bool);       // quest title
 template <class A> CStringW BlockFormat(int nId, const A& a);
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 int CompareQuestKind(const void* pa, const void* pb);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ MS2_REPLACE_METHOD(0x140E7F450, UIQuestPostBoxDialog, vfunc_65, 37, 0x65811C24);
 void UIQuestPostBoxDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 MS2_REPLACE_METHOD(0x140E7F480, UIQuestPostBoxDialog, vfunc_67, 77, 0x335B0AE4);
 
@@ -80,7 +80,7 @@ void UIQuestPostBoxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     RefreshQuestList();
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
 }
 MS2_REPLACE_METHOD(0x140E7F4E0, UIQuestPostBoxDialog, OnLoadComplete, 87, 0x783BB0F8);
 

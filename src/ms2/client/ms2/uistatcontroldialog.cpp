@@ -35,11 +35,11 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_StatActor : public PCBase
 {
 };
-class Unk_StatPlayers { public: Unk_StatActor* FUN_141bd0cc0(); };
+class Unk_StatPlayers { public: Unk_StatActor* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -117,7 +117,7 @@ int UIStatControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() != 0)
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed() != 0)
     {
         vfunc_67();
         return 1;
@@ -138,7 +138,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             int nStat = data.PopUInt();
             float fValue = (float)data.PopDouble();
-            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor != 0)
             {
                 CString strCommand;
@@ -155,7 +155,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor == 0)
                 return 0;
             int nStat = data.PopUInt();
@@ -172,7 +172,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nStat = data.PopUInt();
-            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor != 0)
             {
                 CString strCommand;
@@ -187,7 +187,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onAllResetButton", szMethod) == 0)
     {
-        Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pActor != 0)
         {
             CString strCommand;
@@ -324,7 +324,7 @@ void UIStatControlDialog::FUN_14134f150()
 void UIStatControlDialog::AddStatRow(MS2Ptr<ASScrollingList> list, int nStat, int bFloat)
 {
     ASObj row(2);
-    Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pActor == 0)
         return;
     float fBase = (float)pActor->FUN_1416709d0(nStat);

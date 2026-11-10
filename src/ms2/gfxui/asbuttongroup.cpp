@@ -87,11 +87,11 @@ bool ASButtonGroup::HasButton(MS2Ptr<ASButton> spButton)
 }
 
 // @0x1422e8e50
-void ASButtonGroup::FUN_1422e8e50(const ASCallback& onClick, void* pUser)
+void ASButtonGroup::AddClickHandler(const ASCallback& onClick, void* pUser)
 {
     AddEventListener("buttonClick", onClick, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422E8E50, ASButtonGroup, FUN_1422e8e50, 113, 0x873FD8B5);
+MS2_REPLACE_METHOD(0x1422E8E50, ASButtonGroup, AddClickHandler, 113, 0x873FD8B5);
 
 // @0x1422e8ed0
 void ASButtonGroup::AddChangeHandler(const ASCallback& onChange, void* pUser)

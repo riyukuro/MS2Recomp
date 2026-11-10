@@ -415,7 +415,7 @@ void CGameOptionInputDefault::vfunc_12()
                     int bPad = FUN_140a58540()->GetPadKind() != 0 ? 1 : 0;
                     CStringW strPad = StringFormat<int>(L"{0}", bPad);
                     spBox->AddStringArg(strPad);
-                    spBox->FUN_141a01800(2);
+                    spBox->SetButtonPreset(2);
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CGameOptionInputDefault::FUN_1412523d0));
                     FUN_140d73c60(spBox);
                 }

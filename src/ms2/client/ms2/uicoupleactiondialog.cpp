@@ -199,7 +199,7 @@ MS2_REPLACE_METHOD(0x140BEC0C0, UICoupleActionDialog, vfunc_65, 116, 0x318F82FC)
 void UICoupleActionDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer != 0)
         ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->FUN_141769280();
     m_180.clear();
@@ -278,7 +278,7 @@ void UICoupleActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nEmotion);
     if (spData.IsNull())
         return;
-    ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
+    ASTooltip tooltip(WorldService::GetInstance()->GetLocalPlayer(), 0x10, 2);
     if (FUN_1409e1b80(&tooltip, nEmotion, 0) != 0) {
         ASObj stat(2);
         stat.SetIntMember("type", 1);
@@ -371,7 +371,7 @@ void UICoupleActionDialog::FUN_140becef0()
     m_180.clear();
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg == 0) return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
     pPlayer->GetSkillSystem()->GetValidEmotions(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
@@ -409,7 +409,7 @@ void UICoupleActionDialog::FUN_140bed1f0(int nEmotion)
         MS2_ASSERT_AT(0x209, "pWorldService" && 0);
         return;
     }
-    MyPC* pPlayer = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(pWorld->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Unk_WsC_GameObj* pActor = pWorld->FUN_141bd1530(m_178);

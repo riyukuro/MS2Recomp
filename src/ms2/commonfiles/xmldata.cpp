@@ -63,7 +63,7 @@ CStringA FUN_14016a600(const wchar_t* psz, int nLength);                // narro
 CStringW FUN_14016a730(const char* psz, int nLength);                   // widens a narrow string
 
 // The module loader at the tail of the file (its two helpers are in the next unit).
-bool FUN_14092edf0(HMODULE* ppModule);
+bool IsModuleLoaded(HMODULE* ppModule);
 bool FUN_14092d8f0(HMODULE* ppModule);
 
 // The exe calls its own, statically linked fprintf (0x140868660) instead of the DLL import the crt header declares.
@@ -167,7 +167,7 @@ CStringW CXmlData::FUN_14092c630() const
 // @0x14092ca70
 bool FUN_14092ca70(HMODULE* ppModule, LPCSTR pszDll)
 {
-    if (FUN_14092edf0(ppModule))
+    if (IsModuleLoaded(ppModule))
         return true;
 
     *ppModule = LoadLibraryA(pszDll);

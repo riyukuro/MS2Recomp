@@ -56,7 +56,7 @@ template <class T> T* FindDTDialog(int nId);          // the dialog of a ui id
 template <class T> T* FindCliDialog(int nId);         // gameeventcli.cpp
 int Parse_14021b830(const CStringA& value);                     // a game menu entry id by name (commonenum.cpp)
 int FUN_140718200(const CStringW& str);                         // _wtoi
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -247,9 +247,9 @@ MS2_REPLACE_METHOD(0x140CEBA50, GameEventManagerCli, Update, 205, 0xAE581E6D);
 // @0x140cebb30
 GameEvent* GameEventManagerCli::Create(CStringW strName)
 {
-    GameEvent* gameEvent = static_cast<GameEvent*>(FUN_1401f7f50(StringFormat(L"GameEvent{0}Cli", strName)));
+    GameEvent* gameEvent = static_cast<GameEvent*>(CreateClassObject(StringFormat(L"GameEvent{0}Cli", strName)));
     if (gameEvent == 0)
-        gameEvent = static_cast<GameEvent*>(FUN_1401f7f50(StringFormat(L"GameEvent{0}", strName)));
+        gameEvent = static_cast<GameEvent*>(CreateClassObject(StringFormat(L"GameEvent{0}", strName)));
     if (gameEvent == 0)
         return 0;
     gameEvent->SetName(strName);
@@ -301,7 +301,7 @@ void CGameMenuItem::Load(TiXmlElement* pElem)
         m_nFilterEventId = FUN_140718200(m_strFilterValue);
     for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("child")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("child")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
             continue;
         {
             MS2Ptr<CGameMenuItem> spChild(new CGameMenuItem());
@@ -1137,14 +1137,14 @@ int CGameMenuTable::LoadXml()
     }
     for (TiXmlElement* pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("menuSet")); pSet != 0; pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pSet))->NextSibling("menuSet")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pSet)))
             continue;
         {
             EGameMenuSet eSet = GAMEMENU_SET_GAME;
             XmlEnumName<EGameMenuSet, ParseGameMenuSet>(pSet, "type", eSet);
             for (TiXmlElement* pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pSet))->FirstChild("menu")); pMenu != 0; pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
             {
-                if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
+                if (!IsElementAvailable((struct Unk_XmlElement*)(pMenu)))
                     continue;
                 {
                     MS2Ptr<CGameMenuItem> spItem(new CGameMenuItem());

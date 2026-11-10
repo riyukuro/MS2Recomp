@@ -112,7 +112,7 @@ CStringW FUN_1409404f0(__int64);
 CStringW FUN_141b720b0(int, __int64);
 CStringW FUN_14093b970(int);
 CString Name_14021a6b0(int);
-int FUN_141276180(const CString& str, const CString& strArg);
+int PlaySystemSound(const CString& str, const CString& strArg);
 int FUN_1418dd0d0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -233,7 +233,7 @@ int UIRewardNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             CString strType = data.FUN_1422b8d30();
             if ((strType == "achieve"))
-                FUN_141276180(s_strTrophyHero, "");
+                PlaySystemSound(s_strTrophyHero, "");
         }
         return 1;
     } else if (_stricmp(szMethod, "onSkillLevelUp") == 0)
@@ -359,7 +359,7 @@ void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
 {
     if (FUN_14053f900(item->GetItemId()))
         return;
-    if ((item.get() ? true : false) && item->FUN_140527840()) {
+    if ((item.get() ? true : false) && item->GetData()) {
         int nGrade = item->GetRarity();
         unsigned long nCount = TSingleton<CItemDataTable>::GetInstance()->GetTextColor(static_cast<ItemGradeKey>(nGrade));
         CStringW strMsg = FormatStringId(0x687, nCount, item->FUN_140527b10());
@@ -368,7 +368,7 @@ void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
         RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
         RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(item->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->SetBoolMember("itemPiece", reinterpret_cast<CItemData*>(item->FUN_140527840())->IsPieceItem() == 1);
+        RN_OBJ(pObj)->SetBoolMember("itemPiece", reinterpret_cast<CItemData*>(item->GetData())->IsPieceItem() == 1);
         RN_OBJ(pObj)->SetMemberUInt("key", item->GetItemId());
         AppendReward(pObj);
     }
@@ -394,7 +394,7 @@ void UIRewardNotify::FUN_141abffa0(int nEmotionId)
 {
     MS2Ptr<SkillData> ref = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nEmotionId);
     if (ref.get()) {
-        if (!ref->FUN_1407e9d30())
+        if (!ref->IsEmotion())
             return;
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
@@ -436,7 +436,7 @@ void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
         }
     }
     if (bAny)
-        FUN_141276180(s_strPCSkillGet, "");
+        PlaySystemSound(s_strPCSkillGet, "");
 }
 
 // @0x141ac05d0
@@ -482,7 +482,7 @@ MS2_REPLACE_METHOD(0x141ac0990, UIRewardNotify, ShowMeratRedNotice, 287, 0x7A655
 // @0x141ac0ac0
 void UIRewardNotify::FUN_141ac0ac0(int nId)
 {
-    FUN_141276180(s_strPCTitleGet, "");
+    PlaySystemSound(s_strPCTitleGet, "");
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x689, FUN_141b720b0(nId, 0)));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
@@ -660,7 +660,7 @@ void UIRewardNotify::vfunc_41(const Scaleform::GFx::Value& root)
 MS2_REPLACE_METHOD(0x141ac2120, UIRewardNotify, vfunc_41, 99, 0x7C80D96D);
 
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // Value = the object's value
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -846,9 +846,9 @@ inline Scaleform::GFx::Value ASDialog::InvokeBind(const char* szMethod, CString 
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], strBind);
+    SetString(&args[0], strBind);
     FUN_1422bce00(&args[1], nSlot);
-    FUN_1422bce70(&args[2], strName);
+    SetString(&args[2], strName);
     FUN_1422bccb0(&args[3], nRarity);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -935,9 +935,9 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp(szMethod, "onSpinResult") == 0) {
         if (m_spins.GetCount() == 1)
-            FUN_141276180(s_strSpinSelect, "");
+            PlaySystemSound(s_strSpinSelect, "");
         else
-            FUN_141276180(s_strSpinMultiSelect, "");
+            PlaySystemSound(s_strSpinMultiSelect, "");
     } else if (_stricmp(szMethod, "onSpinComplete") == 0) {
         if (m_spinIndex >= (int)m_spins.GetCount())
             return 1;
@@ -986,7 +986,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     CString strName = pArgs->FUN_1422b8d30();

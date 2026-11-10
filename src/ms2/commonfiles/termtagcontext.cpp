@@ -51,13 +51,13 @@ bool TermTagContext::FUN_140866760()
 }
 
 // @0x140866780
-void TermTagContext::FUN_140866780()
+void TermTagContext::Register()
 {
     CGameRule::GetInstance()->AddTermTag(MS2Ptr<TermTagContext>(this));
 }
 
 // @0x1408667e0
-void TermTagContext::FUN_1408667e0()
+void TermTagContext::Unregister()
 {
     CGameRule::GetInstance()->RemoveTermTag(m_20);
 }
@@ -79,7 +79,7 @@ bool TermTagContext::FUN_140866880(const __time64_t* pTime)
 }
 
 // @0x140866900
-void TermTagContext::FUN_140866900(CInPacket& packet)
+void TermTagContext::Read(CInPacket& packet)
 {
     m_18 = packet.ReadInt32();
     m_20 = packet.ReadUnicodeString();

@@ -20,7 +20,7 @@ struct Unk_ReportData {
     Unk_ReportData();
     ~Unk_ReportData();
     void Reset();
-    void FUN_140201790(const Unk_ReportData& other);
+    void CopyFrom(const Unk_ReportData& other);
     int type; int reason;
     CStringW name; CStringW target; CStringW itemName;
     __int64 m_20; int m_28; int m_2c; CStringW content;

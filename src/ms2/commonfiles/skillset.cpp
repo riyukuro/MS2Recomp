@@ -28,7 +28,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
@@ -146,7 +146,7 @@ int CSkillSetTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("skillSet")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("skillSet")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CSkillSetPtr spSet(new CSkillSet);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", spSet->m_nId);

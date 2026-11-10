@@ -84,7 +84,7 @@ class Unk_NcActor { public: virtual void Unk_Slot0(); virtual void Unk_Slot1(); 
 class Unk_NcWorld : public WorldService
 {
 public:
-    Unk_NcPlayer* FUN_141bd0cc0();
+    Unk_NcPlayer* GetLocalPlayer();
     // FUN_141bc9e70: WorldService's own member
 };
 
@@ -94,14 +94,14 @@ void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGa
 int FUN_141276f80(Unk_CommandChat*);   // C3: the chat-command sender, the definer's signature
 CString FUN_1411c0aa0(const char* szText);                   // a text without arguments
 
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 MS2Ptr<CNpcData> FindNpcData(int nNpc);   // the npc row; ReadNpcAll discards it
 
 CStringW GetStringCommon(int nId);                        // string table text
 void ShowSystemNotice(const CStringW& strText, int a, int b);
 
 class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
 
 int FUN_140718200(const CStringW& str);          // the npc id of an id text
 CStringW FUN_1401aa6a0(int nNpc);
@@ -129,13 +129,13 @@ UINpcCreateDialog::UINpcCreateDialog()
     m_bFilesRead = false;
     m_bEntriesBuilt = false;
     FUN_1422dc3b0(1);
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_1419308c0(this);
 }
 
 // @0x141a6a590
 UINpcCreateDialog::~UINpcCreateDialog()
 {
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_141930950(this);
 }
 
 // @0x141a6a680
@@ -167,7 +167,7 @@ int UINpcCreateDialog::vfunc_13()
         if (m_30.get())
             m_30->Invoke("onTabKey");
         return 1;
-    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d840()) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->IsEscapePressed()) {
         vfunc_67();
         return 1;
     }
@@ -182,7 +182,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     ASData data;
     if (_stricmp("OnNpcCreate", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.PopInt();
@@ -199,7 +199,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     } else if (_stricmp("OnSummonPet", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.PopInt();
@@ -232,8 +232,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nNpc = data.PopInt();
             unsigned nField;
-            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) != 0) {
-                if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FindNpcField(nNpc, &nField) != 0) {
+                if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->GetFieldId() == nField) {
                     MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FindProxyObjectByKind(nNpc);
                     if (spObj.get() != 0) {
                         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
@@ -242,8 +242,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                         FUN_140710590(pkt);
                     }
                 } else {
-                    if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
-                        reinterpret_cast<MyPC*>(((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->SendFunctionCube();
+                    if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) != 0)
+                        reinterpret_cast<MyPC*>(((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())->SendFunctionCube();
                     Unk_CommandChat chat;
                     chat.kind = 0;
                     chat.message = (const char*)static_cast<const CString&>(Unk_SocketFormat("/MoveField {0}", nField));
@@ -370,7 +370,7 @@ void UINpcCreateDialog::BuildEntries()
     for (unsigned __int64 i = 0; i < m_files.size(); i++) {
         CStringW strId = m_files[i];
         unsigned nNpc = FUN_140718200(strId);
-        MS2Ptr<NpcDataCli> row = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpc);
+        MS2Ptr<NpcDataCli> row = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nNpc);
         if (row.IsNull())
             continue;
         CStringW strKind = GetNpcKindName(row->m_nClass, row->GetFriendly());

@@ -762,7 +762,7 @@ template<class T> inline void Unk_SortPair(T a, T b, T* pMin, T* pMax)
         *pMax = a;
     }
 }
-CString FUN_140db9aa0(NiColorA kColor);
+CString FormatColorA(NiColorA kColor);
 
 // Compositing manager of the customised (dyed) character textures.
 class CCustomizedTexInfo : public NiRefObject
@@ -800,13 +800,13 @@ void CalcAtlasUVRect(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned in
 void FinalizeAtlas(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* pShader);
 bool FUN_141052ff0(NiAVObject* pA, NiAVObject* pB);
 CString FUN_1410521a0(NiAVObject* pMesh);
-void FUN_1401d3700(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
+void ToLower(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
 
 // Lower-case copy of a string (0x14106d0b0).
 inline CString Unk_LowerCopy(const CString& str)
 {
     CString strLower(str);
-    FUN_1401d3700(strLower);
+    ToLower(strLower);
     return strLower;
 }
 
@@ -2253,11 +2253,11 @@ CString FUN_1410521a0(NiAVObject* pMesh)
                 CString astrColors[3];
                 NiColorExtraData* pColor = 0;
                 pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50c8));
-                astrColors[0] = FUN_140db9aa0(pColor->GetValue());
+                astrColors[0] = FormatColorA(pColor->GetValue());
                 pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d0));
-                astrColors[1] = FUN_140db9aa0(pColor->GetValue());
+                astrColors[1] = FormatColorA(pColor->GetValue());
                 pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d8));
-                astrColors[2] = FUN_140db9aa0(pColor->GetValue());
+                astrColors[2] = FormatColorA(pColor->GetValue());
                 CString strDecal;
                 strDecal.Format("%s;%s;%s;%s", (const char*)kDecalFile, (const char*)astrColors[0], (const char*)astrColors[1], (const char*)astrColors[2]);
                 strKey += Unk_Lower(strDecal);

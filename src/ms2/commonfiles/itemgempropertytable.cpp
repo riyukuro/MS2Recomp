@@ -42,7 +42,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
@@ -77,7 +77,7 @@ bool CItemGemPropertyTable::Load()
 }
 
 // @0x1405ac160
-MS2Ptr<CGemDataBase> CItemGemPropertyTable::FUN_1405ac160(int nGemId)
+MS2Ptr<CGemDataBase> CItemGemPropertyTable::GetGemData(int nGemId)
 {
     GetItemGemPropertyTable()->ReloadIfChanged();
     CheckInit();
@@ -209,7 +209,7 @@ CString CGemSwimData::GetDashAnimName()
 }
 
 // @0x1405ac9e0
-void CGemSwimData::FUN_1405ac9e0()
+void CGemSwimData::PreloadEffects()
 {
     if (!m_strIdleEffect.IsEmpty())
     {
@@ -322,7 +322,7 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     const CString& strId = "id";
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
         XmlGetAttr((class TiXmlElement*)(pNode), strId, reinterpret_cast<unsigned&>(nId));

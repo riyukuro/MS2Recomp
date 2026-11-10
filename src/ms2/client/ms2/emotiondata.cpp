@@ -32,11 +32,11 @@ class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // <dir>/<file> resource path
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetChildAttr(class TiXmlElement *, char const *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void FindFiles(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly);
-unsigned int FUN_1407181d0(const CString& s);                           // decimal string -> id
+unsigned int ParseUInt(const CString& s);                           // decimal string -> id
 extern int DAT_1439ed00c;                                               // file caches checked (hot reload)
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -72,7 +72,7 @@ bool CEmotionData::Load(TiXmlElement* pNode)
     XmlGetChildAttr((class TiXmlElement *)(pNode), "idleAnim", "name", m_anims[1]);
     if (m_strName.IsEmpty())
         return false;
-    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
         return false;
     CString strBore;
     XmlGetChildAttr((class TiXmlElement *)(pNode), "boreAnim", "name", strBore);
@@ -321,7 +321,7 @@ void CEmotionTable::LoadAll()
     {
         CString strName = PathFindFileNameA(files[i]);
         strName.Replace(".xml", "");
-        unsigned int nId = FUN_1407181d0(strName);
+        unsigned int nId = ParseUInt(strName);
         ReadEmotionGroup(nId);
     }
 }

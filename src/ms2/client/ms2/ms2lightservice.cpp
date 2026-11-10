@@ -180,7 +180,7 @@ MS2_REPLACE_METHOD(0x1414BFE10, MS2LightService, OnPreInit, 94, 0x4C922F5B);
 // @0x1414bfe80
 efd::AsyncResult MS2LightService::OnInit()
 {
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     return ecr::LightService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1414BFE80, MS2LightService, OnInit, 77, 0x9166F0A9);

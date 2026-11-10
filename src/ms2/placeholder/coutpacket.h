@@ -56,7 +56,7 @@ public:
     int  GetLength() const { return (int)m_nLength; }                          // @0x14020b9f0
     unsigned GetSequence() const { return m_nSequence; }                        // @0x14020ba00
     int  FUN_14020ba10() const { return m_n14; }                              // @0x14020ba10
-    unsigned short FUN_14020ba20() const { return *(unsigned short*)&m_aBuffer[0]; }   // @0x14020ba20 (packet type)
+    unsigned short GetType() const { return *(unsigned short*)&m_aBuffer[0]; }   // @0x14020ba20 (packet type)
     int  IsLoopback() const { return m_nFlag; }                            // @0x14020bc40
     void SetSequence(int n) { m_nSequence = n; }                            // @0x14020c070
     void FUN_14020c090(int n) { m_n14 = n; }                                  // @0x14020c090

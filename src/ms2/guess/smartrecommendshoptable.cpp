@@ -60,7 +60,7 @@ bool CSmartRecommendShopTable::s_bInit;
 #endif
 
 // @0x140815690
-int CSmartRecommendShopTable::FUN_140815690()
+int CSmartRecommendShopTable::Load()
 {
     m_spData.AssignRaw(new CRecommendTableCache);
     CString strPath = GetXmlPath("Table", "smartRecommendShop.xml");
@@ -71,7 +71,7 @@ int CSmartRecommendShopTable::FUN_140815690()
         SetInit(true);
     return m_bLoaded;
 }
-MS2_REPLACE_METHOD(0x140815690, CSmartRecommendShopTable, FUN_140815690, 329, 0xD02E9B63);
+MS2_REPLACE_METHOD(0x140815690, CSmartRecommendShopTable, Load, 329, 0xD02E9B63);
 
 // @0x1408157e0
 int CSmartRecommendShopTable::FUN_1408157e0(CString strPath)
@@ -81,7 +81,7 @@ int CSmartRecommendShopTable::FUN_1408157e0(CString strPath)
 MS2_REPLACE_METHOD(0x1408157E0, CSmartRecommendShopTable, FUN_1408157e0, 42, 0x1D9326F7);
 
 // @0x140815810
-void CSmartRecommendShopTable::FUN_140815810()
+void CSmartRecommendShopTable::ClearItems()
 {
     if (Unk_LockGuard guard = m_spData->m_lock)
     {
@@ -92,7 +92,7 @@ void CSmartRecommendShopTable::FUN_140815810()
         m_spData->m_items.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x140815810, CSmartRecommendShopTable, FUN_140815810, 114, 0x00B29241);
+MS2_REPLACE_METHOD(0x140815810, CSmartRecommendShopTable, ClearItems, 114, 0x00B29241);
 
 // @0x140815890
 MS2Ptr<CRecommendItem> CSmartRecommendShopTable::FUN_140815890(int nCode)

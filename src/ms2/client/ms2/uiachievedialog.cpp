@@ -69,14 +69,14 @@ class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szM
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 void* FUN_14025e7c0();                                          // the text hook object
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14116d840();
+    bool IsEscapePressed();
     bool IsDebugMode();
     bool WasKeyPressed(int nKey, bool bDebugOnly, int nLevel);
 };
@@ -92,13 +92,13 @@ CStringW BlockFormat(int nStringId);
 CStringW GetQuestName(int nId);
 CStringW TranslateEnumDungeonGroup(unsigned int nGroup);
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
-void FUN_14083d2b0(CStringW& str);
+void StripTags(CStringW& str);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);
 void FUN_141842290(CStringW& str);
 void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 void FUN_141275260(int nStringId, int nA, int nB);
-int FUN_141276180(const CString& strName, const CString& strArg);
+int PlaySystemSound(const CString& strName, const CString& strArg);
 void FUN_140d2cca0(unsigned nId, unsigned nRank);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* szDelim);
 void FUN_140710590(COutPacket& packet);
@@ -244,7 +244,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onReward") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+            void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
             if (pPlayer == 0)
                 return 0;
             if (((class PCBase*)pPlayer)->IsDead() != 0) {
@@ -256,7 +256,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             packet.WriteUInt8(3);
             packet.WriteInt32(nId);
             FUN_140710590(packet);
-            FUN_141276180(kTrophyRewardGet, "");
+            PlaySystemSound(kTrophyRewardGet, "");
             return 1;
         }
     }
@@ -426,7 +426,7 @@ int UIAchieveDialog::vfunc_13()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840()) {
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsEscapePressed()) {
         bool bHandled = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("closePopup").GetBool();
         if (bHandled)
             return 1;
@@ -459,8 +459,8 @@ void UIAchieveDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     int nItemId = pArgs->PopUInt();
-    int nRank = FUN_14053feb0(nItemId);
-    ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 0x20, 2);
+    int nRank = GetItemRank(nItemId);
+    ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer(), 0x20, 2);
     if (tip.FUN_1409e1770(nItemId, nRank) != 0)
         *pRetVal = tip.GetValue();
 }
@@ -533,7 +533,7 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         }
     }
     else if (_stricmp("getTooltipAchieve", strMethod) == 0) {
-        void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+        void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
         unsigned nId = pArgs->PopUInt();
         unsigned nGrade = pArgs->PopUInt();
         ASTooltip tip(pPlayer, 2, 2);
@@ -943,7 +943,7 @@ void UIAchieveDialog::FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve)
 // @0x1418ab7e0
 void UIAchieveDialog::FUN_1418ab7e0(ASObj& rRow, CAchieve* pAchieve)
 {
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     unsigned nItem = 0;
@@ -1027,7 +1027,7 @@ void UIAchieveDialog::FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve)
 // @0x1418abfa0
 void UIAchieveDialog::FUN_1418abfa0(ASObj& rRow, CAchieve* pAchieve)
 {
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     MS2Ptr<CAchieveData> spData = pAchieve->GetDataRef();
@@ -1281,9 +1281,9 @@ int UIAchieveDialog::FUN_1418ace00(CAchieve* pAchieve, const CStringW& strSearch
         CStringW strTitle = FUN_14093b970(pAchieve->GetId());
         CStringW strDesc = FUN_1418aabd0(pAchieve);
         CStringW strExtra = FUN_14093cdb0(pAchieve->GetId());
-        FUN_14083d2b0(strTitle);
-        FUN_14083d2b0(strDesc);
-        FUN_14083d2b0(strExtra);
+        StripTags(strTitle);
+        StripTags(strDesc);
+        StripTags(strExtra);
         if (FUN_14083fec0(strTitle, strSearch) == -1
             && FUN_14083fec0(strDesc, strSearch) == -1
             && FUN_14083fec0(strExtra, strSearch) == -1)

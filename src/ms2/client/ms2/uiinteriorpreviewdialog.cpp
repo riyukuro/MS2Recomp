@@ -135,7 +135,7 @@ void UIInteriorPreviewDialog::OnLoadComplete()
 // @0x140f4d010
 void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    Unk_IpActor* pActor = ((class Unk_IpActor*)((class WorldService*)(class Unk_IpWorld*)(reinterpret_cast<Unk_IpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_IpActor* pActor = ((class Unk_IpActor*)((class WorldService*)(class Unk_IpWorld*)(reinterpret_cast<Unk_IpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return;
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)
@@ -159,7 +159,7 @@ void UIInteriorPreviewDialog::SetData()
     if (pDialog != 0)
     {
         CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
-        UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
+        UGCMapPackageDataPtr spPackage = GetUGCMapPackageData(strPackage);
         if (spPackage == (CUGCMapPackageData*)0)
             return;
         ASArray arrItems(m_28);

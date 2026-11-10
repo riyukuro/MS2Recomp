@@ -88,7 +88,7 @@ void RemoveLapenshardSlotBag(const CString& strName)
     LapenshardSlotBag* pBag = FUN_140a70b70(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

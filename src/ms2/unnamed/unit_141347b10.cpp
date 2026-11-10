@@ -75,7 +75,7 @@ CNetworkService* GetNetworkService();
 template <class T> T* Unk_BreakDialog(int nId);   // C3: was FUN_140534780
 CStringW GetStringCommon(int nId);                                 // string table lookup
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 CStringW FUN_1418fee40(int nCurrency, __int64 nAmount, const CString& strArg, bool bAlt);
@@ -163,7 +163,7 @@ void ShopBanner::AddBanner(MS2Ptr<ShopBannerInfo> spInfo)
 MS2_REPLACE_METHOD(0x141347ed0, ShopBanner, AddBanner, 115, 0xDF5BF32C);
 
 // @0x141347f50
-MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdbPtr& spBanner, int nType)
+MS2Ptr<ShopBannerInfo> ShopBanner::AddBannerFromAd(const Unk_AdbPtr& spBanner, int nType)
 {
     MS2Ptr<ShopBannerInfo> spInfo(new ShopBannerInfo);
     if (spInfo.get())
@@ -173,7 +173,7 @@ MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdbPtr& spBanner, int
     }
     return spInfo;
 }
-MS2_REPLACE_METHOD(0x141347f50, ShopBanner, FUN_141347f50, 324, 0x8C051611);
+MS2_REPLACE_METHOD(0x141347f50, ShopBanner, AddBannerFromAd, 324, 0x8C051611);
 
 // @0x1413480a0
 MS2Ptr<ShopBannerInfo> ShopBanner::FindBanner(const CString& strName)
@@ -232,7 +232,7 @@ namespace efd { int Stricmp(const char* s1, const char* s2); }
 
 // @0x1413483c0
 // Is strCategory one of the comma separated entries of strList (case-insensitive)?
-int FUN_1413483c0(const CString& strCategory, const CString& strList)
+int IsCategoryInList(const CString& strCategory, const CString& strList)
 {
     int nPos = strList.Find(strCategory, 0);
     int nLen = strList.GetLength();
@@ -301,7 +301,7 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
             CAtlArray<CString>* pCategories = spProduct->GetCategories();
             for (size_t i = 0; i < pCategories->GetCount(); i++)
             {
-                bFound = bFound || FUN_1413483c0((*pCategories)[i], spTab->m_strCategory);
+                bFound = bFound || IsCategoryInList((*pCategories)[i], spTab->m_strCategory);
                 if (bFound)
                     break;
             }
@@ -378,9 +378,9 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
 // @0x1413490b0
 void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, int nLhsFlags, int nRhsFlags)
 {
-    if (spItem.IsNull() || spItem->FUN_140527840() == 0)
+    if (spItem.IsNull() || spItem->GetData() == 0)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     ASTooltip tipLhs(pPlayer, nLhsFlags, 2);
@@ -392,15 +392,15 @@ MS2_REPLACE(0x1413490b0, FUN_1413490b0, 332, 0xD664891F);
 // @0x141349210
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, ASTooltip* pLhs, ASTooltip* pRhs)
 {
-    if (spItem.IsNull() || spItem->FUN_140527840() == 0)
+    if (spItem.IsNull() || spItem->GetData() == 0)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     MS2Ptr<CItem> spEquipped(0);
     int bAlt = spItem->HasSkin() != 0;
     MS2Ptr<CEquipItem> spEquip(0);
-    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
+    if (reinterpret_cast<CItemData*>(spItem->GetData())->FUN_14053d510())
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40())
             spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->GetEquipment())->GetItemAt(4, bAlt);
@@ -413,7 +413,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
-    if (operator==(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
+    if (operator==(reinterpret_cast<CItemData*>(spItem->GetData())->function.name, L"ItemExchangeScroll"))
     {
         MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->GetItemId());
         if (spInfo.get())
@@ -465,7 +465,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 // ---- shop open / message boxes ----
 
 // @0x1413499b0
-int FUN_1413499b0(int nTab)
+int ToggleShopTab(int nTab)
 {
     if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
         return 0;
@@ -488,7 +488,7 @@ int FUN_1413499b0(int nTab)
         if (bOpen)
         {
             GetNetworkService()->SendSystemShop(nTab, 1);
-            FUN_141276180(s_strBuildOpenShop, "");
+            PlaySystemSound(s_strBuildOpenShop, "");
         }
         else
         {
@@ -526,7 +526,7 @@ void ShowItemMessageBox(MS2Ptr<CItem> spItem, CStringW strText, const CString& s
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_141349e10));
     if (!strUrl.IsEmpty())
         spBox->SetSound(strUrl);
-    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
     FUN_140d73c60(spBox);
 }
 MS2_REPLACE(0x141349ba0, ShowItemMessageBox, 616, 0xA11CBD25);
@@ -554,7 +554,7 @@ MS2_REPLACE(0x141349e30, GetBannerLinkKind, 184, 0xBCF869E9);
 // @0x141349ef0
 __int64 FUN_141349ef0(int nKind, int nItemId, unsigned int nAmount)
 {
-    int nCurrency = FUN_14134a170(nKind);
+    int nCurrency = GetCurrencyType(nKind);
     return GetCurrencyAmount(nCurrency, nAmount, nItemId);
 }
 MS2_REPLACE(0x141349ef0, FUN_141349ef0, 55, 0xB69B65E2);
@@ -562,7 +562,7 @@ MS2_REPLACE(0x141349ef0, FUN_141349ef0, 55, 0xB69B65E2);
 // @0x141349f30
 void FUN_141349f30(CStringW& strOut, int nKind, int nArg, unsigned int nAmount, const CString& strCurrency)
 {
-    int nCurrency = FUN_14134a170(nKind);
+    int nCurrency = GetCurrencyType(nKind);
     if (!strCurrency.IsEmpty())
         strOut = FUN_1418fee40(nCurrency, nAmount, strCurrency, false);
     else
@@ -571,12 +571,12 @@ void FUN_141349f30(CStringW& strOut, int nKind, int nArg, unsigned int nAmount, 
 MS2_REPLACE(0x141349f30, FUN_141349f30, 237, 0xD66D1824);
 
 // @0x14134a030
-bool FUN_14134a030(int nKind, int nItemId, unsigned int nAmount)
+bool CanPayCurrency(int nKind, int nItemId, unsigned int nAmount)
 {
-    int nCurrency = FUN_14134a170(nKind);
+    int nCurrency = GetCurrencyType(nKind);
     return HasEnoughCurrency(nCurrency, nAmount, nItemId);
 }
-MS2_REPLACE(0x14134a030, FUN_14134a030, 55, 0xDBE12B4E);
+MS2_REPLACE(0x14134a030, CanPayCurrency, 55, 0xDBE12B4E);
 
 // @0x14134a070
 CStringW GetCurrencyText(int nKind, int nArg, unsigned int nAmount)
@@ -593,40 +593,40 @@ MS2_REPLACE(0x14134a070, GetCurrencyText, 165, 0x55430BE5);
 // @0x14134a120
 void FUN_14134a120(int nKind, int nItemId, unsigned int nAmount)
 {
-    int nCurrency = FUN_14134a170(nKind);
+    int nCurrency = GetCurrencyType(nKind);
     ShowLackCurrencyMessage(nCurrency, nAmount, nItemId, 1);
 }
 MS2_REPLACE(0x14134a120, FUN_14134a120, 61, 0xEEEAD390);
 
 // @0x14134a170
-int FUN_14134a170(int nKind)
+int GetCurrencyType(int nKind)
 {
     return FUN_1403baee0(nKind);
 }
-MS2_REPLACE(0x14134a170, FUN_14134a170, 22, 0xFF2C17B2);
+MS2_REPLACE(0x14134a170, GetCurrencyType, 22, 0xFF2C17B2);
 
 // @0x14134a190
-__int64 FUN_14134a190(Unk_BSFee* pFee)
+__int64 GetFeeAmount(Unk_BSFee* pFee)
 {
     return FUN_141349ef0((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
-MS2_REPLACE(0x14134a190, FUN_14134a190, 54, 0xA554498C);
+MS2_REPLACE(0x14134a190, GetFeeAmount, 54, 0xA554498C);
 
 // @0x14134a1d0
 bool CanPayFee(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
-    return FUN_14134a030((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
+    return CanPayCurrency((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
 }
 MS2_REPLACE(0x14134a1d0, CanPayFee, 64, 0xD9B549FA);
 
 // @0x14134a220
-CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice)
+CStringW GetFeePriceText(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
     CStringW strText;
     FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
     return strText;
 }
-MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
+MS2_REPLACE(0x14134a220, GetFeePriceText, 172, 0x6ECB716B);
 
 // @0x14134a2e0
 void FUN_14134a2e0(Unk_BSFee* pFee)
@@ -674,7 +674,7 @@ void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pBut
     if (*pButton == 0)
         return;
     (*pButton)->vfunc_4(true);
-    (*pButton)->FUN_1422ce240(Unk_ClickDelegate(FUN_14134a5a0), 0);
+    (*pButton)->AddClickHandler(Unk_ClickDelegate(FUN_14134a5a0), 0);
 }
 MS2_REPLACE(0x14134a480, FUN_14134a480, 282, 0x814F7A18);
 

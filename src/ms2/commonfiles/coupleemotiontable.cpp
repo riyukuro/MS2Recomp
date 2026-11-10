@@ -30,7 +30,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);      // splits into a std::vector<CString>
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -124,7 +124,7 @@ int CCoupleEmotionTable::Load()
          pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("coupleEmotion")))
     {
         MS2Ptr<CCoupleEmotionData> spData(new CCoupleEmotionData);
-        spData->m_nId = FUN_140197390(pElem, "code", 0);
+        spData->m_nId = GetUIntAttr(pElem, "code", 0);
         {
             MS2Ptr<CCoupleEmotionData::AnimationData> spAni(new CCoupleEmotionData::AnimationData());
             CString str("");

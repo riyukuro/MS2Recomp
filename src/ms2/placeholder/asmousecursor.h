@@ -20,9 +20,9 @@ public:
     void FUN_1422cec40(int bShow);                                  // hide the system cursor / restore the cursor mode
     void SetCursorMode(int nMode);                                  // cursor mode: 2 = system cursor, 1 = the AS clip
     void FUN_1422cedb0();                                           // lock()
-    void FUN_1422cee00();                                           // unlock()
-    void FUN_1422cee50(Unk_MouseCursorType eType);                  // changeType(type)
-    void FUN_1422ceea0(const CStringW& strText);                    // setText(text)
+    void Unlock();                                           // unlock()
+    void ChangeType(Unk_MouseCursorType eType);                  // changeType(type)
+    void SetText(const CStringW& strText);                    // setText(text)
     int GetCursorType();                                            // getCursorType()
 
 private:

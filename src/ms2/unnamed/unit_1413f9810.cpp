@@ -238,13 +238,13 @@ void ResetEffectTransform(Unk_NHEffect* pEffect)
 MS2_REPLACE(0x1413F9BA0, ResetEffectTransform, 151, 0xA4EE9233);
 
 // @0x1413f9c40
-void FUN_1413f9c40(bool bFlag)
+void SetHardwareInstancing(bool bFlag)
 {
     efd::SmartPointer<Unk_HwService> spSvc(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
     if ((Unk_HwService*)spSvc != 0)
         ((class HardwareInstancingService*)(spSvc.operator->()))->FUN_1413d6ab0(bFlag);
 }
-MS2_REPLACE(0x1413F9C40, FUN_1413f9c40, 97, 0x864DB9EB);
+MS2_REPLACE(0x1413F9C40, SetHardwareInstancing, 97, 0x864DB9EB);
 
 
 // ---- forward declarations (functions defined further down) ----------------------------------------------------------------
@@ -531,7 +531,7 @@ MS2_REPLACE(0x1413FA9B0, FUN_1413fa9b0, 236, 0x1D84D70F);
 
 // Final consonant test: 0 = none (open syllable), 1 = has one, 2 = not a Hangul syllable or digit.
 // @0x1413faab0
-int FUN_1413faab0(wchar_t wc)
+int GetFinalConsonantType(wchar_t wc)
 {
     if (wc >= 0xac00 && wc <= 0xd7a3) {
         if ((wc - 0xac00) % 28 == 0) {
@@ -549,7 +549,7 @@ int FUN_1413faab0(wchar_t wc)
     }
     return 2;
 }
-MS2_REPLACE(0x1413FAAB0, FUN_1413faab0, 144, 0x76201C02);
+MS2_REPLACE(0x1413FAAB0, GetFinalConsonantType, 144, 0x76201C02);
 
 // Same with the rieul exception (final consonant 8).
 // @0x1413fab50
@@ -592,7 +592,7 @@ CStringW FUN_1413fac10(CStringW kText, CStringW kWord)
             return CStringW(L"");
         if (kWord.GetLength() == 0)
             return CStringW(L"");
-        int iType = FUN_1413faab0(kWord.GetAt(kWord.GetLength() - 1));
+        int iType = GetFinalConsonantType(kWord.GetAt(kWord.GetLength() - 1));
         CStringW kJosa((iType != 1) ? kParts[0] : kParts[1]);
         kResult.Delete(iFirst, (iSecond - iFirst) + 1);
         kResult.Insert(iFirst, (const wchar_t*)kJosa);

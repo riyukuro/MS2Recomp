@@ -152,7 +152,7 @@ void UITencentCashChargeDialog::OnLoadComplete()
     vfunc_43();
     GetChildInto<ASUIComponent>("m_renderTarget", m_spTarget);
     int nId = vfunc_88();
-    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_CashConsts*)GetClientConstants())->m_strUrl)->Get(), "", nId);
+    TSingleton<CWebBrowserService>::GetInstance()->OpenBrowser(m_nBrowserId, *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_CashConsts*)GetClientConstants())->m_strUrl)->Get(), "", nId);
     vfunc_87(&m_size);
     TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();

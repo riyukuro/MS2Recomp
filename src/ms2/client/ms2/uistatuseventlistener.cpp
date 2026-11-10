@@ -121,7 +121,7 @@ public:
     virtual void vfunc_12(void* p);                         // 12 (+0x60) DragSlotBag: for each slot, slot->vfunc_24(p)
 };
 class DragSlotBag;
-DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pData);
+DragSlotBag* GetDragSlotBag(NotifyContext::BindData* pData);
 
 // The search input ("m_inputSearch") and the movie root helper that binds it.
 class Unk_StInput : public ASDisplayObject
@@ -172,8 +172,8 @@ template <class A, class B> void Unk_InvNotice(int nStringId, int nA, int nB, co
 template <class A> void Unk_AkoMessage(int nStringId, int nA, int nB, const A& x);
 template <class A> CStringW BlockFormat(int nStringId, const A& a);
 void FUN_14151f200();
-int FUN_1412772f0(__int64 n, int a);
-int FUN_141276180(const CString& strKey, const CString& strValue);
+int GetNumberTextLength(__int64 n, int a);
+int PlaySystemSound(const CString& strKey, const CString& strValue);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 CStringW* FUN_140159a00(ATL::CAtlArray<CStringW>* p, size_t i);
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -256,7 +256,7 @@ struct Unk_StActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
 // @0x141b0ce20
 void UIStatusEventDispatcher::NotifyStatusChanged(int nEvent, int nValue)
 {
-    PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (nEvent == 0)
@@ -684,7 +684,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (box.get() != 0)
             {
                 __int64 nMoney = DAT_143ab2d80.Value4558();
-                int nMax = FUN_1412772f0(nMoney, 1);
+                int nMax = GetNumberTextLength(nMoney, 1);
                 box->SetInput(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
@@ -702,7 +702,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(7, 0x2aa, static_cast<IMessageListener*>(this), CStringW(L"withdraw"));
             if (box.get() != 0)
             {
-                int nMax = FUN_1412772f0(DAT_143ab2d80.Value45b0(), 1);
+                int nMax = GetNumberTextLength(DAT_143ab2d80.Value45b0(), 1);
                 box->SetInput(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
@@ -869,7 +869,7 @@ MS2_REPLACE_METHOD_VIA(0x141B107E0, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b10860
 void UIStoreDialog::vfunc_oa0_25(void* a1)
 {
-    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)));
+    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(GetDragSlotBag(Unk_NotifyContext::FindBinding(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_11(a1);
 }
@@ -878,7 +878,7 @@ MS2_REPLACE_METHOD_VIA(0x141B10860, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b108c0
 void UIStoreDialog::vfunc_oa0_26(void* a1)
 {
-    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)));
+    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(GetDragSlotBag(Unk_NotifyContext::FindBinding(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_12(a1);
 }
@@ -916,7 +916,7 @@ void UIStoreDialog::FUN_141b109a0()
         spEff->vfunc_3(1);
         spEff->vfunc_12(1);
     }
-    FUN_141276180(s_strExpandBankSlot, "");
+    PlaySystemSound(s_strExpandBankSlot, "");
 }
 MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 
@@ -1085,7 +1085,7 @@ int UIStoreDialog::FUN_141b11490()
 {
     if (DAT_143ab2d80.Id() != 0)
         return 0;
-    PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0 && pPlayer->IsDead() == 0)
         return 1;
     return 0;

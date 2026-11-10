@@ -14,7 +14,7 @@ class Unk_LaunchOptions
 {
 public:
     Unk_LaunchOptions();
-    void FUN_1406aef60(const CString& strArg, const CString& strValue);   // one "-option [value]" pair
+    void ParseOption(const CString& strArg, const CString& strValue);   // one "-option [value]" pair
     bool FUN_1406af020();
     bool FUN_1406af030();
     bool FUN_1406af040();
@@ -62,7 +62,7 @@ Unk_LaunchOptions* GetLaunchOptions()
 }
 
 // @0x1406aef60
-void Unk_LaunchOptions::FUN_1406aef60(const CString& strArg, const CString& strValue)
+void Unk_LaunchOptions::ParseOption(const CString& strArg, const CString& strValue)
 {
     if (strArg.CompareNoCase("-preloadNoThread") == 0)
         m_bPreloadNoThread = FUN_140718390(strValue);

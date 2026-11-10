@@ -38,7 +38,7 @@ public:
     // `buffer` is replaced by a slice of them (or cleared). `stateBefore` receives the state on entry.
     int FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer,int* stateBefore,int hasSequence);
     void DecryptPayload(int connectionState,unsigned* key);       // decrypts the payload in place
-    int FUN_14070fe80();                                           // opcode: seeks to 6 and reads a short
+    int GetOpcode();                                           // opcode: seeks to 6 and reads a short
     void Reset();                                          // reset (state 0, length 0, offset 0)
     void AppendData(const char* data,unsigned count);           // appends bytes to the payload
     void SetOffset(unsigned offset);                           // SetOffset (throws past the end)
@@ -59,4 +59,4 @@ MS2_CHECK_OFFSET(CInPacket,m_opcode,0x3c);
 inline CPtred* Unk_SocketRef<CInPacket>::Base(CInPacket* p) { CPtred* result; if(p==NULL) result=NULL; else result=reinterpret_cast<TPtredDummy<CInPacket>*>(reinterpret_cast<char*>(p)-0x18); return result; }
 inline TPtredDummy<CInPacket>* Unk_SocketRef<CInPacket>::New(void*) { return new TPtredDummy<CInPacket>(); }
 inline CInPacket* Unk_SocketRef<CInPacket>::Value(TPtredDummy<CInPacket>* p) { CInPacket* result; if(p==NULL) result=NULL; else result=&p->value; return result; }
-inline CInPacket* Unk_SocketRef<CInPacket>::Create(void*) { return Value(static_cast<TPtredDummy<CInPacket>*>(FUN_1401ba820(New(NULL)))); }
+inline CInPacket* Unk_SocketRef<CInPacket>::Create(void*) { return Value(static_cast<TPtredDummy<CInPacket>*>(InitRefCount(New(NULL)))); }

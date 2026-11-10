@@ -5,12 +5,12 @@
 #include "ms2/placeholder/cptred.h"
 class CInPacket;
 #include "ms2/placeholder/tptreddummy.h"
-CPtred* FUN_1401ba820(CPtred*);
+CPtred* InitRefCount(CPtred*);
 // MS2-FUNCTIONAL: equivalent intrusive ownership; explicit casts and allocation temporaries differ.
 template<class T> struct Unk_SocketRef {
     static __forceinline CPtred* Base(T* p) { return p; }
     static T* New(void*) { return new T; }
-    static T* Create(void* p) { return static_cast<T*>(FUN_1401ba820(New(p))); }
+    static T* Create(void* p) { return static_cast<T*>(InitRefCount(New(p))); }
 };
 // MS2-FUNCTIONAL: null-preserving conversion between the wrapper and its packet subobject.
 template<> struct Unk_SocketRef<CInPacket> {

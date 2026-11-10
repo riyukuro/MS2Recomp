@@ -58,7 +58,7 @@ public:
     int HasPortalMask(Unk_QmPortal* pPortal);
     int CheckPortal(Unk_QmPortal* pPortal);
 };
-int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
+int ParseQuestMask(const CString& strA, const CString& strB, QuestMask* pOut);
 const char* Unk_AssetUrnText(const efd::AssetID* pAsset);         // the AssetID's URN text
 
 // The content switch table.
@@ -167,7 +167,7 @@ int CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
     spEntity->GetPropertyValue(0xfb190620, reinterpret_cast<efd::Point3&>(m_pos44));
     CString strA(strModel.c_str());
     CString strB(strTheme.c_str());
-    FUN_140764310(strA, strB, &m_questMask);
+    ParseQuestMask(strA, strB, &m_questMask);
     efd::AssetID idImage;
     spEntity->GetPropertyValue(0x770e5fc6, idImage);
     m_strImage = Unk_AssetUrnText(&idImage);
@@ -392,7 +392,7 @@ CStringW CPortal::GetName()
     unsigned nName = FUN_14169d280();
     if (nName > 0)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nName);
-    unsigned nMapId = ((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
+    unsigned nMapId = ((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->GetFieldId();
     CStringW strName = ((CPortalTable*)(Unk_PortalTableHolder*)(reinterpret_cast<Unk_PortalTableHolder*>(TSingleton<CPortalTable>::GetInstance())))->GetName(nMapId, m_nId);
     if (!strName.IsEmpty())
         return strName;
@@ -481,7 +481,7 @@ void CPortal::FUN_14169d0e0()
         int nState = CheckQuestMask();
         SetShownAndGlow(nState, nState);
     }
-    if (((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->FUN_141bd3060() == 0x1e8673 && m_nId == 2)
+    if (((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->GetFieldId() == 0x1e8673 && m_nId == 2)
         SetShownAndGlow(1, 1);
 }
 

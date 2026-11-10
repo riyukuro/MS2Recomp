@@ -33,8 +33,8 @@ extern "C" double (__cdecl* __imp_floor)(double);            // the exe imports 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+unsigned GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
 __int64 GetServerTime();                                    // the server clock
 __int64 MakeTime(int year, int month, int day, int hour, int minute, int second);
 __int64 GetNextMonthStart(__int64 nTime);                   // midnight of the day
@@ -45,7 +45,7 @@ int IsMonthChanged(__int64 nTime);
 bool PaybackTable::s_bInit;
 #endif
 
-static bool FUN_14071bc90(const PaybackTable::LevelEntry& lhs, const PaybackTable::LevelEntry& rhs);
+static bool CompareLevel(const PaybackTable::LevelEntry& lhs, const PaybackTable::LevelEntry& rhs);
 
 // @0x14071af20
 PaybackTable::LevelEntry::LevelEntry()
@@ -81,18 +81,18 @@ bool PaybackTable::Load()
     m_levels.clear();
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("payback")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("payback")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         LevelEntry entry;
-        entry.m_nLevel = FUN_140197390(pNode, "adventure_level", 0);
-        entry.m_nWeight = FUN_140197390(pNode, "payback_percent", 0);
+        entry.m_nLevel = GetUIntAttr(pNode, "adventure_level", 0);
+        entry.m_nWeight = GetUIntAttr(pNode, "payback_percent", 0);
         if (entry.m_nLevel != 0)
         {
             m_levels.push_back(entry);
             m_nTotalWeight += entry.m_nWeight;
         }
     }
-    std::sort(m_levels.begin(), m_levels.end(), FUN_14071bc90);
+    std::sort(m_levels.begin(), m_levels.end(), CompareLevel);
     m_nStart = 0;
     if (*GetClientConstants()->PaybackStartDate.Get() != 0)
     {
@@ -274,7 +274,7 @@ __int64 PaybackTable::GetWeightedMerat(const LevelEntry* pEntry, __int64 nAmount
 }
 
 // @0x14071bc90
-static bool FUN_14071bc90(const PaybackTable::LevelEntry& lhs, const PaybackTable::LevelEntry& rhs)
+static bool CompareLevel(const PaybackTable::LevelEntry& lhs, const PaybackTable::LevelEntry& rhs)
 {
     return lhs.m_nLevel < rhs.m_nLevel;
 }

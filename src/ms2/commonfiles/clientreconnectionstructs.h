@@ -27,7 +27,7 @@ public:
     ReconnectionOptions(const ReconnectionOptions& other);      // 0x140208400
     // @0x14020a6c0
     // ~ReconnectionOptions() is the implicit destructor at 0x14020a6c0
-    ReconnectionOptions& FUN_140208460(const ReconnectionOptions& other);   // operator=
+    ReconnectionOptions& Assign(const ReconnectionOptions& other);   // operator=
     void Write(COutputStream& out) const;               // 11 x Encode4
     void Read(CInputStream& in);                       // 11 x Decode4
     Values m_values;
@@ -81,9 +81,9 @@ public:
     void SetCaptureEnabled(int enabled);
     int GetCaptureEnabled();
     void FUN_1402094b0(int value);
-    void FUN_140209510(COutPacket& packet, bool bControl);      // Capture
-    bool FUN_140209640(int type, bool bControl);                // IsControlPacket
-    COutPacketPtr FUN_14020aaa0(COutPacket& packet);            // Clone (inline COMDAT)
+    void CapturePacket(COutPacket& packet, bool bControl);      // Capture
+    bool IsControlPacket(int type, bool bControl);                // IsControlPacket
+    COutPacketPtr ClonePacket(COutPacket& packet);            // Clone (inline COMDAT)
 
     volatile int m_resending;                    // +0x18
     int m_value;                        // +0x1c

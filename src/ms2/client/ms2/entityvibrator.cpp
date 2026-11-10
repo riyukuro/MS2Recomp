@@ -247,7 +247,7 @@ int CEntityVibrator::Update()
         if (m_88 == 0) {
             m_88 = (nNow > (unsigned)(m_2c + m_90));
             if (m_88 != 0 && m_94 > 0) {
-                WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), false, 0.1f);
+                WorldService::GetInstance()->FadeEntity(m_entity.operator->()->GetEntityID(), false, 0.1f);
             }
         }
         if (m_80 == 0) {
@@ -257,7 +257,7 @@ int CEntityVibrator::Update()
             }
             if (m_80 != 0) {
                 if (m_94 > 0 || m_aa) {
-                    WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), true, 0.0f);
+                    WorldService::GetInstance()->FadeEntity(m_entity.operator->()->GetEntityID(), true, 0.0f);
                     m_aa = false;
                     if (m_ab) {
                         SetCachedBoolProperty((class Unk_CachedEntity*)(m_entity.operator->()), 0x9004569a, m_ab);
@@ -581,7 +581,7 @@ void CEntityVibrator::StartFall()
             ((CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(m_entity.operator egf::Entity*(), 5, 0, 1);
         }
     }
-    WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), false, 0.1f);
+    WorldService::GetInstance()->FadeEntity(m_entity.operator->()->GetEntityID(), false, 0.1f);
     if (m_ab) {
         SetCachedBoolProperty((class Unk_CachedEntity*)(m_entity.operator->()), 0x9004569a, m_ab);
     }

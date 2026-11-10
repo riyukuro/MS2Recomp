@@ -33,7 +33,7 @@ public:
 
     int GetFontId();                                                    // the attribute's +0x18 (font id), 0 without one
     bool FUN_140e0dc30();                                                   // stamp the attribute with the current time
-    __int64 FUN_140e0dca0();                                                // the attribute's time stamp
+    __int64 GetTimeStamp();                                                // the attribute's time stamp
 
 public:
     MS2_LAYOUT_FRIEND;

@@ -19,7 +19,7 @@ class Unk_LuaState : public CLua                                                
 };
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
                                                                         // lua calcKillCount(a1, a2, nDelta, nCount)
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // the CStringA -> CStringW conversion
 
@@ -64,19 +64,19 @@ int CKillCount::RegisterKill(unsigned short a1, unsigned short a2)
 // @0x14064c6e0
 double CKillCount::GetBonusExpRate()
 {
-    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountBonusExpRate(m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)GetLuaClient())))->CalcKillCountBonusExpRate(m_08);
 }
 
 // @0x14064c710
 unsigned int CKillCount::GetGrade()
 {
-    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCountGrade(m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)GetLuaClient())))->CalcKillCountGrade(m_08);
 }
 
 // @0x14064c740
 CStringW CKillCount::GetKillCountMessage()
 {
-    return FUN_14016a730(((class Unk_LuaState*)FUN_1401c0db0())->CalcKillCountMsg(m_08), 0);
+    return FUN_14016a730(((class Unk_LuaState*)GetLuaClient())->CalcKillCountMsg(m_08), 0);
 }
 
 // @0x14064c7d0
@@ -99,9 +99,9 @@ int CKillCount::GetLastKillTick()
 }
 
 // @0x14064c840
-int CKillCount::FUN_14064c840(int nTick)
+int CKillCount::IsComboAlive(int nTick)
 {
-    if (((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCount(0, 0, nTick - m_0c, 1) > 1)
+    if (((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)GetLuaClient())))->CalcKillCount(0, 0, nTick - m_0c, 1) > 1)
         return true;
     return false;
 }
@@ -109,7 +109,7 @@ int CKillCount::FUN_14064c840(int nTick)
 // @0x14064c8a0
 unsigned int CKillCount::CalcKillCount(unsigned short a1, unsigned short a2, int nDelta)
 {
-    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCount(a1, a2, nDelta, m_08);
+    return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)GetLuaClient())))->CalcKillCount(a1, a2, nDelta, m_08);
 }
 
 // @0x14064c930

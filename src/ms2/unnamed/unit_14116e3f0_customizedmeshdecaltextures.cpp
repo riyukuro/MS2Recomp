@@ -60,7 +60,7 @@ extern NiFixedString DAT_143ae5100;
 extern NiFixedString DAT_143ae5108;
 extern NiFixedString DAT_143ae5110;
 
-void FUN_14116f480(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int uiSize, const float* pfValues);
+void SetFloatsExtraData(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int uiSize, const float* pfValues);
 
 // Applies the skin decal: a private copy of the texturing property gets the decal parameters, the decal texture as shader map 1
 // and (bTint) the tint mask as shader map 2 with its three colours.
@@ -76,7 +76,7 @@ bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bT
     pMesh->RemoveProperty(8);
     pMesh->AttachProperty(pTexturing);
     float afParams[4] = { fA, fB, fC, fD };
-    FUN_14116f480(pMesh, DAT_143ae50f8, 4, afParams);
+    SetFloatsExtraData(pMesh, DAT_143ae50f8, 4, afParams);
     NiTexturePtr spDecal = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strTexture, 5);
     NiTexturingProperty::ShaderMap* pMap = NiNew NiTexturingProperty::ShaderMap(spDecal, 0,
         NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_TRILERP, 1);
@@ -171,7 +171,7 @@ MS2_REPLACE(0x14116E7F0, ComposeCustomizedTextures, 3207, 0xE73A253A);
 
 // Sets (or adds) the float array extra data kKey of the object.
 // @0x14116f480
-void FUN_14116f480(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int uiSize, const float* pfValues)
+void SetFloatsExtraData(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int uiSize, const float* pfValues)
 {
     NiFloatsExtraData* pData = NiDynamicCast(NiFloatsExtraData, pObject->GetExtraData(kKey));
     if (pData == 0)
@@ -184,7 +184,7 @@ void FUN_14116f480(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int
         pData->SetArray(uiSize, pfValues);
     }
 }
-MS2_REPLACE(0x14116F480, FUN_14116f480, 240, 0x8D7192A7);
+MS2_REPLACE(0x14116F480, SetFloatsExtraData, 240, 0x8D7192A7);
 
 // 0x14116f570 is NiSourceTexture::GetPlatformSpecificFilename (inline SDK COMDAT, emitted by ComposeCustomizedTextures).
 

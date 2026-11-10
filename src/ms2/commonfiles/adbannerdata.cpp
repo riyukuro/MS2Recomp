@@ -70,7 +70,7 @@ void Unk_AdbPtr::ReleaseImpl(void*)
 }
 
 // @0x14016e150
-void Unk_AdbArray::FUN_14016e150(const ATL::CAtlArray<Unk_AdbPtr>& src)
+void Unk_AdbArray::CopyFrom(const ATL::CAtlArray<Unk_AdbPtr>& src)
 {
     Copy(src);
 }
@@ -160,11 +160,11 @@ void CAdBannerManager::FUN_14016df70()
 // @0x14016dfa0
 void CAdBannerManager::SetBanners(const ATL::CAtlArray<Unk_AdbPtr>& src)
 {
-    m_banners.FUN_14016e150(src);
+    m_banners.CopyFrom(src);
 }
 
 // @0x14016dfd0
-void CAdBannerManager::FUN_14016dfd0(Unk_AbOut* pOut)
+void CAdBannerManager::WriteBanners(Unk_AbOut* pOut)
 {
     int nCount = (int)m_banners.GetCount();
     pOut->vfunc_2((unsigned short)nCount);
@@ -173,7 +173,7 @@ void CAdBannerManager::FUN_14016dfd0(Unk_AbOut* pOut)
 }
 
 // @0x14016e060
-void FUN_14016e060(CAdBannerManager& manager, CInputStream& stream)
+void ReadBanners(CAdBannerManager& manager, CInputStream& stream)
 {
     manager.FUN_14016df70();
     int nCount = reinterpret_cast<Unk_AbIn&>(stream).vfunc_2();

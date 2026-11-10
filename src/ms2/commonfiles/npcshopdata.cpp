@@ -147,7 +147,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // ---- callees of other units -----------------------------------------------------------------------------------------
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                            // the item table row (null: unknown id)
-bool FUN_14028f710(struct Unk_XmlElement* pElem);                        // element is enabled
+bool IsElementAvailable(struct Unk_XmlElement* pElem);                        // element is enabled
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // <dir>/<file>
 int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CMsTime& tOut);   // C3: was FUN_140873600
@@ -157,7 +157,7 @@ int XmlQuery(class TiXmlElement* pElem, const char* pszName, CString& strOut);  
 int FUN_14035bc20(TiXmlElement* pElem, const char* pszName, Unk_FameAlliance* pOut);
 int Unk_ReadRank(class Unk_XmlNode* pElem, const char* pszName, int* pOut);       // C3: was FUN_14015f500
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);              // pOut: std::vector<CString>*
-unsigned int FUN_1407181d0(const CString& str);   // C3: the definition's unsigned return (packetlogger.cpp)
+unsigned int ParseUInt(const CString& str);   // C3: the definition's unsigned return (packetlogger.cpp)
 void Unk_SplitW(CString& str, ATL::CAtlArray<CStringW>* pOut, const char* pszDelim);   // C3: was FUN_14015f080
 int Parse_14021a030(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
@@ -263,7 +263,7 @@ typedef ATL::CAtlArray<__int64> Unk_ShopLimitArray;
             else result = &static_cast<TPtredDummy<T>*>(p)->value;                                                    \
             return result;                                                                                            \
         }                                                                                                             \
-        static T* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }                                          \
+        static T* Create(void*) { return Value(InitRefCount(New(NULL))); }                                          \
     };                                                                                                                \
     MS2_SOCKETPTR_BOXED(T)
 MS2_NPCSHOP_BOX_REF(Unk_CouponItemArray)          // New 0x1406e8c20
@@ -333,7 +333,7 @@ void TShopPaymentAttr::Read(CInPacket& in)
 MS2_REPLACE_METHOD(0x1406DC2C0, TShopPaymentAttr, Read, 249, 0xFA616EDA);
 
 // @0x1406dc3c0
-void TShopPaymentAttr::FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType, const CString& strItem,
+void TShopPaymentAttr::ReadFromXml(TiXmlElement* pElem, const CString& strType, const CString& strItem,
                                      const CString& strIcon, const CString& strPrice)
 {
     if (!(pElem))
@@ -343,7 +343,7 @@ void TShopPaymentAttr::FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType
     XmlGetAttr((class TiXmlElement*)(pElem), strIcon, m_strIconTag);
     XmlGetAttr((class TiXmlElement*)(pElem), strPrice, reinterpret_cast<__int64&>(m_nAmount));
 }
-MS2_REPLACE_METHOD(0x1406DC3C0, TShopPaymentAttr, FUN_1406dc3c0, 226, 0xD6E6362F);
+MS2_REPLACE_METHOD(0x1406DC3C0, TShopPaymentAttr, ReadFromXml, 226, 0xD6E6362F);
 
 // @0x1406dc4b0
 const CString& TShopPaymentAttr::GetIconTag() const
@@ -642,13 +642,13 @@ bool CNpcShopBuyPeriod::IsVisible() const
 MS2_REPLACE_METHOD(0x1406DDC30, CNpcShopBuyPeriod, IsVisible, 18, 0x01A1D2ED);
 
 // @0x1406ddc50
-bool CNpcShopBuyPeriod::FUN_1406ddc50(const CMsTime& tmNow)
+bool CNpcShopBuyPeriod::IsVisibleNow(const CMsTime& tmNow)
 {
     if (IsVisible())
         return true;
     return FUN_1406ddc90(tmNow);
 }
-MS2_REPLACE_METHOD(0x1406DDC50, CNpcShopBuyPeriod, FUN_1406ddc50, 55, 0xFAEE57E9);
+MS2_REPLACE_METHOD(0x1406DDC50, CNpcShopBuyPeriod, IsVisibleNow, 55, 0xFAEE57E9);
 
 // @0x1406ddc90
 bool CNpcShopBuyPeriod::FUN_1406ddc90(const CMsTime& tmNow)
@@ -724,12 +724,12 @@ bool CNpcShopItem::operator!=(const CNpcShopItem& o) const
 MS2_REPLACE_METHOD(0x1406DDED0, CNpcShopItem, operator!=, 1104, 0x392C06FF);
 
 // @0x1406de350
-bool CNpcShopItem::FUN_1406de350()
+bool CNpcShopItem::IsVisibleNow()
 {
     if (m_spPeriod != 0)
     {
         CMsTime tmNow(GetServerTime());
-        if (!m_spPeriod->FUN_1406ddc50(tmNow))
+        if (!m_spPeriod->IsVisibleNow(tmNow))
             return false;
     }
     if (m_spLife != 0)
@@ -740,10 +740,10 @@ bool CNpcShopItem::FUN_1406de350()
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1406DE350, CNpcShopItem, FUN_1406de350, 186, 0x012367DB);
+MS2_REPLACE_METHOD(0x1406DE350, CNpcShopItem, IsVisibleNow, 186, 0x012367DB);
 
 // @0x1406de410
-bool CNpcShopItem::FUN_1406de410()
+bool CNpcShopItem::IsBuyableNow()
 {
     if (m_spPeriod != 0)
     {
@@ -759,7 +759,7 @@ bool CNpcShopItem::FUN_1406de410()
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1406DE410, CNpcShopItem, FUN_1406de410, 186, 0x9635E682);
+MS2_REPLACE_METHOD(0x1406DE410, CNpcShopItem, IsBuyableNow, 186, 0x9635E682);
 
 // ---- CNpcShopItemNew ----------------------------------------------------------------------------------------------
 
@@ -835,19 +835,19 @@ void CNpcShopItemNew::Read(CInPacket& in)
 }
 
 // @0x1406dea90
-bool CNpcShopItemNew::FUN_1406dea90()
+bool CNpcShopItemNew::IsVisibleNow()
 {
     if (m_spPeriod != 0)
     {
         CMsTime tmNow(GetServerTime());
-        return m_spPeriod->FUN_1406ddc50(tmNow);
+        return m_spPeriod->IsVisibleNow(tmNow);
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1406DEA90, CNpcShopItemNew, FUN_1406dea90, 88, 0x3DD873BE);
+MS2_REPLACE_METHOD(0x1406DEA90, CNpcShopItemNew, IsVisibleNow, 88, 0x3DD873BE);
 
 // @0x1406deaf0
-bool CNpcShopItemNew::FUN_1406deaf0()
+bool CNpcShopItemNew::IsBuyableNow()
 {
     if (m_spPeriod != 0)
     {
@@ -856,7 +856,7 @@ bool CNpcShopItemNew::FUN_1406deaf0()
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1406DEAF0, CNpcShopItemNew, FUN_1406deaf0, 88, 0x4005A99E);
+MS2_REPLACE_METHOD(0x1406DEAF0, CNpcShopItemNew, IsBuyableNow, 88, 0x4005A99E);
 
 // ---- CNpcShopData -------------------------------------------------------------------------------------------------
 
@@ -946,7 +946,7 @@ int CNpcShopData::FUN_1406df1d0()
 }
 MS2_REPLACE_METHOD(0x1406DF1D0, CNpcShopData, FUN_1406df1d0, 11, 0x30025ED0);
 
-void FUN_1406e35b0(const CString& strPath);
+void AddNpcShopCache(const CString& strPath);
 bool FUN_1406e5bc0(TiXmlElement* pElem);
 
 // Loads Table/Server/shop_meratGroup.xml into the merat groups (once, and only with the merat premium table).
@@ -959,7 +959,7 @@ int LoadShopMeratGroup()
         return 1;
     CString strPath;
     strPath = GetXmlPath("Table/Server", "shop_meratGroup.xml");
-    FUN_1406e35b0(strPath);
+    AddNpcShopCache(strPath);
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -1077,9 +1077,9 @@ int CompareShopTables()
 
 bool ParseDayTimeRanges(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out);
 bool ParseDays(const CStringW& str, std::set<int>& out);
-MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
+MS2SvrPtr<CNpcShopBuyPeriod> ReadBuyPeriod(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
                                                   const CString& strPath, CStringW& strError);
-MS2SvrPtr<CPtred> FUN_1406e3310(TiXmlElement* pElem);
+MS2SvrPtr<CPtred> ReadItemLife(TiXmlElement* pElem);
 
 // Reads the <shop> rows of a shop info table (shop_*_info.xml) into shops.
 // @0x1406e0390
@@ -1209,7 +1209,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 std::vector<CString> parts;
                 FUN_140275080(strPayment, &parts, ":");
                 if (parts.size() > 0)
-                    spItem->m_nPaymentItemId = FUN_1407181d0(parts[0]);
+                    spItem->m_nPaymentItemId = ParseUInt(parts[0]);
                 if (parts.size() > 1)
                     spItem->m_nPaymentItemSub = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(parts[1]);
             }
@@ -1265,14 +1265,14 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 }
             }
             CStringW strError;
-            MS2SvrPtr<CNpcShopBuyPeriod> spPeriod = FUN_1406e2fb0(pItem, spItem->m_nItemId, nShopId, strPath, strError);
+            MS2SvrPtr<CNpcShopBuyPeriod> spPeriod = ReadBuyPeriod(pItem, spItem->m_nItemId, nShopId, strPath, strError);
             spItem->m_spPeriod = spPeriod;
             if (!strError.IsEmpty())
             {
                 strErrors.Append(L"\r\n" + strError);
                 bFailed = 1;
             }
-            MS2SvrPtr<CPtred> spLife = FUN_1406e3310(pItem);
+            MS2SvrPtr<CPtred> spLife = ReadItemLife(pItem);
             if (spLife != 0)
                 spItem->m_spLife = spLife;
             spItem->m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pItem), "category", CString(""));
@@ -1345,7 +1345,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
             XmlValue(pItem, "frameType", (eItemFrameType&)spItem->m_nProductType);
             {
                 CStringW strError;
-                MS2SvrPtr<CNpcShopBuyPeriod> spPeriod = FUN_1406e2fb0(pItem, nItemId, nShopId, strPath, strError);
+                MS2SvrPtr<CNpcShopBuyPeriod> spPeriod = ReadBuyPeriod(pItem, nItemId, nShopId, strPath, strError);
                 spItem->m_spPeriod = spPeriod;
                 if (!strError.IsEmpty())
                 {
@@ -1410,7 +1410,7 @@ int AreItemListsEqual(const ATL::CAtlArray<MS2Ptr<CNpcShopItem> >& a, const ATL:
 
 // The NPC shop by id.
 // @0x1406e2550
-MS2Ptr<CNpcShopData> FUN_1406e2550(unsigned nShopId)
+MS2Ptr<CNpcShopData> FindNpcShop(unsigned nShopId)
 {
     if (Unk_LockGuard guard = s_npcShopLock)
     {
@@ -1576,7 +1576,7 @@ void FUN_1406e2ee0(int nGroupId, Unk_MeratItemArray& out)
 
 // The buy period of an <item> (null: the item has no period attributes).
 // @0x1406e2fb0
-MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
+MS2SvrPtr<CNpcShopBuyPeriod> ReadBuyPeriod(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
                                                   const CString& strPath, CStringW& strError)
 {
     if (pElem == 0)
@@ -1614,12 +1614,12 @@ MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(TiXmlElement* pElem, unsigned nItemId
 
 // The item life of an <item> (null: none or invalid).
 // @0x1406e3310
-MS2SvrPtr<CPtred> FUN_1406e3310(TiXmlElement* pElem)
+MS2SvrPtr<CPtred> ReadItemLife(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return MS2SvrPtr<CPtred>(0);
     MS2SvrPtr<CPtred> spLife(new NpcShopItemLife);
-    if (!static_cast<NpcShopItemLife*>(spLife.get())->FUN_14026ebc0(pElem))
+    if (!static_cast<NpcShopItemLife*>(spLife.get())->LoadFromXml(pElem))
         return MS2SvrPtr<CPtred>(0);
     if (!static_cast<NpcShopItemLife*>(spLife.get())->IsValid())
         return MS2SvrPtr<CPtred>(0);
@@ -1662,7 +1662,7 @@ bool FUN_1406e3460(bool bForce)
 
 // Records a loaded NPC shop table file (for the change check).
 // @0x1406e35b0
-void FUN_1406e35b0(const CString& strPath)
+void AddNpcShopCache(const CString& strPath)
 {
     MS2Ptr<CCacheData> spCache(new CCacheData);
     if (spCache.get() != 0)
@@ -1712,7 +1712,7 @@ bool FUN_1406e5ba0(int nPrice);
 int CBeautyShopItem::ValidatePrice(CString& strError)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(m_nItemId);
-    unsigned nShopPrice = (unsigned)FUN_1406e3bc0();
+    unsigned nShopPrice = (unsigned)GetPrice();
     if (!spItem)
     {
         strError = (const wchar_t*)StringFormat(L"CBeautyShopData::Read - error item id ({0})", m_nItemId);
@@ -1746,11 +1746,11 @@ int CBeautyShopItem::ValidatePrice(CString& strError)
 }
 
 // @0x1406e3bc0
-__int64 CBeautyShopItem::FUN_1406e3bc0()
+__int64 CBeautyShopItem::GetPrice()
 {
     return m_payment.GetAmount();
 }
-MS2_REPLACE_METHOD(0x1406E3BC0, CBeautyShopItem, FUN_1406e3bc0, 31, 0x069E603D);
+MS2_REPLACE_METHOD(0x1406E3BC0, CBeautyShopItem, GetPrice, 31, 0x069E603D);
 
 // @0x1406e3bf0
 ePaymentType CBeautyShopItem::GetPaymentType()
@@ -1841,7 +1841,7 @@ ATL::CAtlArray<MS2Ptr<CBeautyShopItem> >& CBeautyShopItemGroup::GetItems(int nGe
 }
 
 // @0x1406e3fe0
-unsigned CBeautyShopItemGroup::FUN_1406e3fe0(int nGender)
+unsigned CBeautyShopItemGroup::GetWeight(int nGender)
 {
     if (nGender < 0 || nGender >= 2)
     {
@@ -1850,7 +1850,7 @@ unsigned CBeautyShopItemGroup::FUN_1406e3fe0(int nGender)
     }
     return m_aWeight[nGender];
 }
-MS2_REPLACE_METHOD(0x1406E3FE0, CBeautyShopItemGroup, FUN_1406e3fe0, 84, 0x997D3341);
+MS2_REPLACE_METHOD(0x1406E3FE0, CBeautyShopItemGroup, GetWeight, 84, 0x997D3341);
 
 // @0x1406e4040
 __int64 CBeautyShopItemGroup::GetKey()
@@ -1885,13 +1885,13 @@ void CBeautyShopItemGroup::AddItem(MS2Ptr<CBeautyShopItem> spItem, int nGender)
     m_aWeight[nGender] += spItem->m_nWeight;
 }
 
-__int64 FUN_1406e4420(const CMsTime& tm);
+__int64 GetTimeKey(const CMsTime& tm);
 
 // @0x1406e4170
 MS2Ptr<CBeautyShopItemGroup> CBeautyShopItemGroups::GetCurrentGroup() const
 {
     CMsTime tmNow(GetServerTime());
-    __int64 nKey = FUN_1406e4420(tmNow);
+    __int64 nKey = GetTimeKey(tmNow);
     std::map<__int64, MS2Ptr<CBeautyShopItemGroup> >::const_iterator it = m_groups.upper_bound(nKey);
     if (it == m_groups.begin())
         return MS2Ptr<CBeautyShopItemGroup>(0);
@@ -1900,10 +1900,10 @@ MS2Ptr<CBeautyShopItemGroup> CBeautyShopItemGroups::GetCurrentGroup() const
 }
 
 // @0x1406e4260
-void CBeautyShopItemGroups::FUN_1406e4260(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out) const
+void CBeautyShopItemGroups::GetUpcomingGroups(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out) const
 {
     CMsTime tmNow(GetServerTime());
-    __int64 nKey = FUN_1406e4420(tmNow);
+    __int64 nKey = GetTimeKey(tmNow);
     std::map<__int64, MS2Ptr<CBeautyShopItemGroup> >::const_iterator it = m_groups.upper_bound(nKey);
     if (it == m_groups.begin())
         return;
@@ -1924,7 +1924,7 @@ bool CBeautyShopItemGroups::AddGroup(MS2Ptr<CBeautyShopItemGroup> spGroup)
 
 // yyyymmddhhmmss of a time (the item group keys).
 // @0x1406e4420
-__int64 FUN_1406e4420(const CMsTime& tm)
+__int64 GetTimeKey(const CMsTime& tm)
 {
     __int64 nYear = tm.GetYear();
     __int64 nMonth = tm.GetMonth();
@@ -2039,7 +2039,7 @@ Unk_BeautyGroupRef CBeautyShopData::GetShopItemGroup()
 void CBeautyShopData::GetShopItemGroupList(
     std::vector<MS2Ptr<CBeautyShopItemGroup> >& out)
 {
-    m_spGroups->FUN_1406e4260(out);
+    m_spGroups->GetUpcomingGroups(out);
     if (out.size() == 0)
     {
         static_cast<Unk_NpcShopLog*>(GetLogString())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
@@ -2079,7 +2079,7 @@ bool FUN_1406e4dd0()
 
 // The beauty shop by id.
 // @0x1406e4ef0
-MS2Ptr<CBeautyShopData> FUN_1406e4ef0(unsigned nShopId)
+MS2Ptr<CBeautyShopData> FindBeautyShop(unsigned nShopId)
 {
     if (Unk_LockGuard guard = s_beautyShopLock)
     {
@@ -2102,7 +2102,7 @@ bool FUN_1406e4fa0(TiXmlElement* pElem, unsigned nShopId, CBeautyShopItemGroup* 
     MS2Ptr<CBeautyShopItem> spItem(new CBeautyShopItem);
     XmlGetAttr((class TiXmlElement*)(pElem), "id", spItem->m_nItemId);
     TShopPaymentAttr& payment = spItem->m_payment;
-    payment.FUN_1406dc3c0(pElem, "paymentType", "paymentItemID", "paymentIconTag", "price");
+    payment.ReadFromXml(pElem, "paymentType", "paymentItemID", "paymentIconTag", "price");
     XmlGetAttr((class TiXmlElement*)(pElem), "weight", spItem->m_nWeight);
     XmlGetAttr((class TiXmlElement*)(pElem), "saleTag", reinterpret_cast<int&>(spItem->m_nSaleTag));
     XmlGetAttr((class TiXmlElement*)(pElem), "requireLevel", reinterpret_cast<unsigned short&>(spItem->m_nRequireLevel));
@@ -2256,7 +2256,7 @@ bool FUN_1406e5bc0(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return false;
-    return FUN_14028f710((struct Unk_XmlElement*)(pElem));
+    return IsElementAvailable((struct Unk_XmlElement*)(pElem));
 }
 
 // Parses a partTime list ("hh:mm:ss-hh:mm:ss,...").
@@ -2409,8 +2409,8 @@ MS2_REPLACE(0x1406e2d20, SetShopLimit, 431, 0x33D51D3C);
 MS2_REPLACE(0x1406e2ee0, FUN_1406e2ee0, 190, 0x15DF81BD);
 MS2_REPLACE(0x1406e3460, FUN_1406e3460, 323, 0x4ED278B7);
 MS2_REPLACE_METHOD(0x1406e3900, CBeautyShopItem, ValidatePrice, 682, 0x34FCDCE9);
-MS2_REPLACE_METHOD(0x1406e4260, CBeautyShopItemGroups, FUN_1406e4260, 232, 0xED5A6CB2);
-MS2_REPLACE(0x1406e4420, FUN_1406e4420, 207, 0xD8B8393F);
+MS2_REPLACE_METHOD(0x1406e4260, CBeautyShopItemGroups, GetUpcomingGroups, 232, 0xED5A6CB2);
+MS2_REPLACE(0x1406e4420, GetTimeKey, 207, 0xD8B8393F);
 MS2_REPLACE_METHOD(0x1406e45b0, CBeautyShopData, Read, 432, 0x08A4BE3E);
 MS2_REPLACE_METHOD(0x1406e4ce0, CBeautyShopData, GetShopItemGroupList, 172, 0xF6135C20);
 MS2_REPLACE(0x1406e4db0, FUN_1406e4db0, 11, 0x30025ED0);

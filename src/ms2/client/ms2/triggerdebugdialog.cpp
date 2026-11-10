@@ -215,7 +215,7 @@ void TriggerDebugDialog::Resize()
 int TriggerDebugDialog::LoadXml()
 {
     SetWindowText(m_strFile);
-    CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(m_strFile, 0, 0);
+    CFileSystem::BufferPtr spBuffer = GetFileSystem()->GetFileBuffer(m_strFile, 0, 0);
     if (spBuffer.IsNull())
         return 0;
     CStringW strXml = XmlWide((const char*)spBuffer->GetBuffer());

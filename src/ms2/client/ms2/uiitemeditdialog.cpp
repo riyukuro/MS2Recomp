@@ -155,7 +155,7 @@ public:
 class Unk_IEWorld
 {
 public:
-    Unk_IEPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
+    Unk_IEPlayer* GetLocalPlayer();              // the player (NULL outside the game)
 };
 
 // Misc singletons.
@@ -174,7 +174,7 @@ class Unk_IESound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 void FUN_14151f200();                           // no arguments
 void* FUN_1405a8e70(void* pHandle);
@@ -235,7 +235,7 @@ void UIItemEditDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     SetButtonsEnabled(0);
-    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc)
     {
         m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
@@ -256,7 +256,7 @@ int UIItemEditDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed())
     {
         RequestClose();
         return 1;
@@ -307,7 +307,7 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void UIItemEditDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    int nType = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    int nType = static_cast<CInPacket*>(p)->GetOpcode();
     if (nType != 0x31)
         return;
     m_1b0 = 0;
@@ -352,7 +352,7 @@ void UIItemEditDialog::vfunc_24(void* p)
 {
     if (p == 0)
         return;
-    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (reinterpret_cast<PCBase*>(pPc)->GetCurStateId() != 0xe)
@@ -451,7 +451,7 @@ bool UIItemEditDialog::FUN_1419bd710()
 // @0x1419bd7a0
 bool UIItemEditDialog::IsWornCostumeEditable()
 {
-    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     {
@@ -473,7 +473,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
     Unk_IEField* pField = reinterpret_cast<Unk_IEField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
-    ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001d);
     return true;
 }
 
@@ -502,7 +502,7 @@ void UIItemEditDialog::RequestClose()
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
-        spBox->FUN_141a01800(2);
+        spBox->SetButtonPreset(2);
         FUN_140d73c60(spBox);
     }
     else

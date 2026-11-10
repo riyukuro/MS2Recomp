@@ -125,10 +125,10 @@ class Unk_BuddyInput { public: virtual unsigned vfunc_0(); Unk_BdStream m_stream
 void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
 CString FUN_140719530(unsigned __int64 n);                  // number to string
 unsigned __int64 FUN_140718350(const CString& str);         // string -> id
-unsigned __int64 FUN_140718370(const CStringW& str);        // string -> id
+unsigned __int64 ParseUInt64W(const CStringW& str);        // string -> id
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& aOut, const wchar_t* szDelim);
 class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener* p); void FUN_141930950(UIEntityEventListener* p); };
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
 
 // A counted reference to a CProxyGameObject (the entity events hand it by value; the callee destroys it).
 typedef MS2Ptr<CProxyGameObject> Unk_BdProxyRef;  // groups4 A1: was a {vt, p} view; its ctor/dtor/get/->/IsNull rows are the real MS2Ptr<CProxyGameObject> members
@@ -206,7 +206,7 @@ public:
     bool IsFeatureEnabled(int);
 };
 class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
-class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool b); };   // C3: member view
+class UIWebBrowserBase { public: void Navigate(const CString& strUrl, bool b); };   // C3: member view
 
 // Message boxes and the home-visit/actor helpers.
 void FUN_1418fde20(__int64 nId0, __int64 nId1, int nValue, const CStringW& strArg, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -216,8 +216,8 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);
 void FUN_141275260(int nId, int a, int b);
 template <class A> void Unk_AkoMessage(int nStringId, int nA, int nB, const A& x);   // C3: the message box of a string id (actionkeyobject.cpp)
 void ShowSystemNotice(const CStringW& strMsg, int a, int b);
-int FUN_141276180(const CString& strSound, const CString& strExtra);
-int FUN_141276c80(const CStringW& str, bool bCheckSelf, CStringW& strOut);
+int PlaySystemSound(const CString& strSound, const CString& strExtra);
+int CheckName(const CStringW& str, bool bCheckSelf, CStringW& strOut);
 void FUN_14151f200();
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
@@ -308,7 +308,7 @@ void UICommunityDialog::vfunc_67()
     UIDialog::vfunc_67();
     UIUGCEventDispatcher::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIBuddyEventListener*>(this));
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
     m_19c = 0;
     m_198 = 0;
     m_194 = 0;
@@ -342,7 +342,7 @@ void UICommunityDialog::OnLoadComplete()
     InitData();
     UIUGCEventDispatcher::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->AddListener(static_cast<UIBuddyEventListener*>(this));
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
 }
 
 // @0x1418d3720
@@ -377,7 +377,7 @@ int UICommunityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             FUN_14025a680(strText, parts, L",");
             if (parts.GetCount() > 1)
             {
-                unsigned __int64 nId = FUN_140718370(parts.GetAt(1));
+                unsigned __int64 nId = ParseUInt64W(parts.GetAt(1));
                 if (nId > 0)
                     static_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("editMemoFail", nId);
                 return 1;
@@ -391,7 +391,7 @@ int UICommunityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void UICommunityDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (reinterpret_cast<CInPacket*>(p)->FUN_14070fe80() != 0x61)
+    if (reinterpret_cast<CInPacket*>(p)->GetOpcode() != 0x61)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
@@ -662,7 +662,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         if (pBrowser != 0)
         {
             CString strUrl = *reinterpret_cast<Common::Constants::Value<CString>*>(reinterpret_cast<char*>(((char*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))) + 0x8838)->Get();
-            reinterpret_cast<UIWebBrowserBase*>(pBrowser)->FUN_14135ec00(strUrl, true);
+            reinterpret_cast<UIWebBrowserBase*>(pBrowser)->Navigate(strUrl, true);
         }
         COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
         packet.WriteUInt8(5);
@@ -826,7 +826,7 @@ void UICommunityDialog::vfunc_buddy_9(__int64 nId)
     CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
     if (spBuddy.get() != 0)
     {
-        int bUpdate = (spBuddy->FUN_1401cc5d0() != 0 && m_190 == 2) || (spBuddy->FUN_1401cc5f0() != 0 && m_190 == 1)
+        int bUpdate = (spBuddy->FUN_1401cc5d0() != 0 && m_190 == 2) || (spBuddy->IsFriend() != 0 && m_190 == 1)
             || (spBuddy->FUN_1401cc5b0() != 0 && m_190 == 3);
         if (bUpdate != 0)
             UpdateBuddyRow(m_190, CBuddyManager::Ptr(spBuddy));
@@ -994,11 +994,11 @@ void UICommunityDialog::BuildBuddyList(int nTab)
                 {
                     bInclude = (nTab == 1);
                 }
-                else if (spBuddy->FUN_1401cc5f0() != 0)
+                else if (spBuddy->IsFriend() != 0)
                 {
                     if (spBuddy->IsOnline() != 0)
                         nOnline++;
-                    if (spBuddy->FUN_1401cc4d0() != 0)
+                    if (spBuddy->IsNew() != 0)
                         aCount[1]++;
                     bInclude = (nTab == 1);
                 }
@@ -1009,7 +1009,7 @@ void UICommunityDialog::BuildBuddyList(int nTab)
                 }
                 else if (spBuddy->FUN_1401cc5b0() != 0)
                 {
-                    if (spBuddy->FUN_1401cc4d0() != 0)
+                    if (spBuddy->IsNew() != 0)
                         aCount[3]++;
                     bInclude = (nTab == 3);
                 }
@@ -1146,7 +1146,7 @@ void UICommunityDialog::AddBuddyRow(int nTab, CBuddyManager::Ptr spBuddy)
     BuildBuddyRow(&row, CBuddyManager::Ptr(spBuddy), nTab);
     if (m_190 == 1)
     {
-        if (spBuddy->FUN_1401cc5f0() != 0 && spBuddy->IsOnline() != 0)
+        if (spBuddy->IsFriend() != 0 && spBuddy->IsOnline() != 0)
         {
             m_194++;
             m_19c = 1;
@@ -1174,7 +1174,7 @@ void UICommunityDialog::RemoveBuddyRow(__int64 nId)
         CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindById(nId);
         if (spBuddy.get() != 0)
         {
-            if (spBuddy->FUN_1401cc5f0() != 0 && spBuddy->IsOnline() != 0)
+            if (spBuddy->IsFriend() != 0 && spBuddy->IsOnline() != 0)
             {
                 m_194--;
                 m_19c = 1;
@@ -1220,7 +1220,7 @@ int UICommunityDialog::FUN_1418d76c0()
         for (size_t i = 0; i < nCount; i++)
         {
             CBuddyManager::Ptr spBuddy(buddies[i]);
-            if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5f0() != 0 && spBuddy->IsOnline() != 0)
+            if (spBuddy.get() != 0 && spBuddy->IsFriend() != 0 && spBuddy->IsOnline() != 0)
                 nOnline++;
         }
     }
@@ -1233,7 +1233,7 @@ void UICommunityDialog::FUN_1418d77f0(int nOnline, int nTotal)
     CStringW strText;
     if (m_190 == 0)
     {
-        int nMapId = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+        int nMapId = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->GetFieldId();
         strText = FormatStringId<CStringW, int>(0x60e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId), nTotal);
     }
     else if (m_190 == 2)
@@ -1303,7 +1303,7 @@ int BuildBuddyRow(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         int nLevel = spBuddy->GetLevel();
         CStringW strCharInfo = FUN_14028dee0<int, CStringW>(0x20, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spBuddy->GetJobCode()));
         pRow->SetWStringMember("charinfo", CStringW(strCharInfo));
-        pRow->SetIntMember("isNew", spBuddy->FUN_1401cc4f0());
+        pRow->SetIntMember("isNew", spBuddy->ConsumeIsNew());
         pRow->SetIntMember("recv", nTab == 2);
         if (nTab == 2)
         {
@@ -1311,7 +1311,7 @@ int BuildBuddyRow(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         }
         else if (nTab == 1)
         {
-            pRow->SetWStringMember("address", CAddressTable::FormatChecked(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->FUN_1401cc350()));
+            pRow->SetWStringMember("address", CAddressTable::FormatChecked(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->GetHomeName()));
             pRow->SetWStringMember("todaymemo", CStringW(*spBuddy->GetTodayMemo()));
         }
         else
@@ -1335,7 +1335,7 @@ int FUN_1418d8540(ASObj* pRow, MS2Ptr<CProxyGameObject> ref, int bNew)
         CString strId = FUN_140719530(nId);
         pRow->SetStringMember("buddysn", CString(strId));
         CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nId);
-        int bBuddy = (!spBuddy.operator!() && spBuddy->FUN_1401cc5f0() != 0) ? 1 : 0;
+        int bBuddy = (!spBuddy.operator!() && spBuddy->IsFriend() != 0) ? 1 : 0;
         pRow->SetIntMember("isBuddy", bBuddy);
         int bParty = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nId).get() != 0;
         pRow->SetIntMember("isParty", bParty);
@@ -1635,7 +1635,7 @@ void UICommunityQueryDialog::OnLoadComplete()
 void UICommunityQueryDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (reinterpret_cast<CInPacket*>(p)->FUN_14070fe80() == 0x61)
+    if (reinterpret_cast<CInPacket*>(p)->GetOpcode() == 0x61)
     {
         unsigned nPos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse response;
@@ -1651,7 +1651,7 @@ void UICommunityQueryDialog::vfunc_79(void* p)
             break;
         }
     }
-    else if (reinterpret_cast<CInPacket*>(p)->FUN_14070fe80() == 0x138)
+    else if (reinterpret_cast<CInPacket*>(p)->GetOpcode() == 0x138)
     {
         unsigned nPos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         int nResult = (&static_cast<Unk_BuddyInput*>(p)->m_stream)->vfunc_1();
@@ -1933,7 +1933,7 @@ void UICommunityQueryDialog::FUN_1418dbcb0(int nMode)
                 request.memo = strMemo;
                 GetBuddyManager()->SendBuddyRequest(request);
                 CString strExtra("");
-                FUN_141276180(s_strPcInviteSuccess, strExtra);
+                PlaySystemSound(s_strPcInviteSuccess, strExtra);
             }
             else
             {
@@ -2007,7 +2007,7 @@ int UICommunityQueryDialog::FUN_1418dc410(const CStringW& str)
     if (bRejected == 0)
     {
         CStringW strOut;
-        int nResult = FUN_141276c80(str, true, strOut);
+        int nResult = CheckName(str, true, strOut);
         if (nResult != 0)
         {
             int nMsg = nResult == 10 ? 0x616 : 0x614;

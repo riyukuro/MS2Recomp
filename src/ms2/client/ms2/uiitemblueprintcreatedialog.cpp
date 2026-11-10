@@ -73,7 +73,7 @@ void FUN_1418ffec0(unsigned int*, unsigned int);
 class Unk_BpAScript : public AScript {
 public:
 };
-void FUN_1422bce70(Scaleform::GFx::Value*, const char*);
+void SetString(Scaleform::GFx::Value*, const char*);
 void FUN_1422bcea0(Scaleform::GFx::Value*, const wchar_t*);
 using Unk_BpASObj = AScript;   // C3 type identity: Unk_BpASObj stood in for AScript
 CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);  // a money text (uicommon.cpp)
@@ -5205,7 +5205,7 @@ private: DelegateImplBase* p;
 // View of CMsgBoxData (uimessageboxdata.h, not included: this unit has its own Delegate specialization).
 class CMsgBoxData : public CPtred {
 public:
-    void FUN_141a01ee0(MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);   // item entry
+    void SetItemEntry(MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);   // item entry
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);                  // result callback
 };
 MS2Ptr<CMsgBoxData> CreateMessageBox(int, CStringW, void*, CStringW);
@@ -5264,9 +5264,9 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     BP_BIND(FUN_140bbe640, "m_addImage", m_addImage, 45);
     BP_BIND(FUN_140bbe640, "m_create", m_create, 46);
     BP_BIND(FUN_140bbe940, "m_inputName", m_input, 47);
-    if (m_addIcon.get()) m_addIcon->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddIconClick), 0);
-    if (m_addImage.get()) m_addImage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddImageClick), 0);
-    if (m_create.get()) m_create->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnCreateClick), 0);
+    if (m_addIcon.get()) m_addIcon->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddIconClick), 0);
+    if (m_addImage.get()) m_addImage->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddImageClick), 0);
+    if (m_create.get()) m_create->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnCreateClick), 0);
     if (m_input.get()) m_input->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
     Unk_BpASObj data(2);
     int minLength = *((class Unk_BpSettings*)GetClientConstants())->minLength.Get();
@@ -5277,7 +5277,7 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     MS2Ptr<CUGCDesignData> fee = TSingleton<CUGCDesignTable>::GetInstance()->GetData(35200000);
     if (fee == NULL) { vfunc_67(); return; }
     __int64 cost = fee->m_nPrice;
-    Unk_BpCurrency currency = (Unk_BpCurrency)fee->FUN_14089e200();
+    Unk_BpCurrency currency = (Unk_BpCurrency)fee->GetPriceType();
     if (static_cast<unsigned __int64>(m_itemId) > 0) cost = 0;
     m_fee = std::make_pair(currency, cost);
     data.SetWStringMember("createFee", FUN_1418fec00(currency, cost, false));
@@ -5318,7 +5318,7 @@ void UIItemBlueprintCreateDialog::OnItemEditComplete(Unk_BpItem* item) {
     if (message == NULL) return;
     FUN_1412750f0(reinterpret_cast<CItem*>(item), reinterpret_cast<CItem*>(item)->GetCount(), 0x2ba, 0x2b9);
     CStringW name = GetTrimmedName();
-    message->FUN_141a01ee0(m_item, name, 1, 0, -1, -1, 1);
+    message->SetItemEntry(m_item, name, 1, 0, -1, -1, 1);
     message->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));
     FUN_140d73c60(message);
 }
@@ -5456,7 +5456,7 @@ MS2_REPLACE_METHOD(0x140C37F90, UIItemBlueprintCreateDialog, FUN_140c37f90, 224,
 Scaleform::GFx::Value AScript::FUN_140c38f00(const char* method, CString kind, CStringW path) {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], kind);
+    SetString(&args[0], kind);
     FUN_1422bcea0(&args[1], path);
     return FUN_1422bb8f0(method, args);
 }

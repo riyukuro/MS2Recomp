@@ -41,13 +41,13 @@ int ASTextArea::GetPosition()
 MS2_REPLACE_METHOD(0x1422E4620, ASTextArea, GetPosition, 88, 0xEA75B308);
 
 // @0x1422e4680
-int ASTextArea::FUN_1422e4680()
+int ASTextArea::IsScrolledToEnd()
 {
     if (GetPosition() == GetTextField()->GetMaxScrollV())
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422E4680, ASTextArea, FUN_1422e4680, 148, 0x165DC057);
+MS2_REPLACE_METHOD(0x1422E4680, ASTextArea, IsScrolledToEnd, 148, 0x165DC057);
 
 // @0x1422e4720
 void ASTextArea::ScrollToEnd()

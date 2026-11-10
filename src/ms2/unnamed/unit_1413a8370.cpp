@@ -159,7 +159,7 @@ MS2_REPLACE_METHOD(0x1413A8650, CGuideConditionConstructable, GetTypeName, 61, 0
 // @0x1413a86a0
 int CGuideConditionConstructable::vfunc_3()
 {
-    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     return ApplyNot(((class MyPC*)(void*)(pPC))->FUN_141527f60());
@@ -247,7 +247,7 @@ MS2_REPLACE_METHOD(0x1413A89B0, CGuideConditionEquipItem, vfunc_2, 227, 0xCCAFD1
 // @0x1413a8aa0
 int CGuideConditionEquipItem::vfunc_3()
 {
-    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->GetEquipment())->GetItemAt(FUN_1405451c0(reinterpret_cast<CStringA &>(m_strSlotName)), m_nSlotType);
@@ -342,7 +342,7 @@ int CGuideConditionDesignItem::vfunc_3()
             continue;
         if (spItem->HasUgcId() != 0)
             continue;
-        if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->GetType() != m_nItemType)
+        if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->GetData())->GetType() != m_nItemType)
             continue;
         return ApplyNot(1);
     }
@@ -448,7 +448,7 @@ MS2_REPLACE_METHOD(0x1413A96C0, CGuideConditionCountItem, vfunc_2, 169, 0x72FECE
 // @0x1413a9770
 int CGuideConditionCountItem::vfunc_3()
 {
-    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     int nCount = g_143ab2a90.FUN_140a60c20(m_nItemType);
@@ -494,7 +494,7 @@ MS2_REPLACE_METHOD(0x1413A9960, CGuideConditionCountInDoorInstallItem, GetTypeNa
 // @0x1413a99b0
 int CGuideConditionCountInDoorInstallItem::vfunc_3()
 {
-    void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPC = WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     int nCount = FUN_1413a9ac0();

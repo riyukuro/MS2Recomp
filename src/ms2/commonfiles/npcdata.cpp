@@ -119,7 +119,7 @@ void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: 
 // C3 #12: was a local TiXml view
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement* pParent);          // first child element (commonutil.cpp)
 #define FUN_14028f8d0(p) ((TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(p)))
-bool FUN_14028d470(float a, float b);                                           // approx equal
+bool IsNearlyEqual(float a, float b);                                           // approx equal
 
 
 // @0x1406c8910
@@ -797,7 +797,7 @@ MS2_REPLACE_METHOD(0x1406CCE40, CNpcData, GetStringId, 66, 0x931AA26A);
 // @0x1406cce90
 bool CNpcData::IsStationary() const
 {
-    return (FUN_14028d470(m_fRunSpeed, 0) && FUN_14028d470(m_fWalkSpeed, 0)) ? 1 : 0;
+    return (IsNearlyEqual(m_fRunSpeed, 0) && IsNearlyEqual(m_fWalkSpeed, 0)) ? 1 : 0;
 }
 MS2_REPLACE_METHOD(0x1406CCE90, CNpcData, IsStationary, 93, 0x31FC3BCA);
 
@@ -980,11 +980,11 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
 class Unk_140166410* FUN_140166410();   // C3: was void*
 #define FUN_140166410() ((void*)FUN_140166410())
 float FUN_14028d2e0();
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 
 // The weight table of the black market's rarity roll, reused for the region spawn weights (0x143aac4c8).
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was CLua*
-#define FUN_1401c0db0() ((CLua*)FUN_1401c0db0())
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was CLua*
+#define GetLuaClient() ((CLua*)GetLuaClient())
 
 class Unk_NpcTableCli;   // the NpcDataTableCli singleton (0x1406d6e90 returns it)
 
@@ -1043,55 +1043,55 @@ MS2Ptr<CRegionSpawnProb> CRegionSpawnResult::Pick() const
 }
 
 // @0x1406cd330
-Unk_NpcTableCli* FUN_1406d6e90();
+Unk_NpcTableCli* GetNpcDataTableCli();
 MS2Ptr<CNpcData> FindNpcData(int nNpcId)
 {
     if (nNpcId == 0)
         return MS2Ptr<CNpcData>(0);
-    return reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpcId);
+    return reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nNpcId);
 }
 
 // @0x1406d6e90
-Unk_NpcTableCli* FUN_1406d6e90()
+Unk_NpcTableCli* GetNpcDataTableCli()
 {
     return reinterpret_cast<Unk_NpcTableCli*>(TSingleton<NpcDataTableCli>::s_instance);
 }
-MS2_REPLACE(0x1406D6E90, FUN_1406d6e90, 8, 0x5738B5AB);
+MS2_REPLACE(0x1406D6E90, GetNpcDataTableCli, 8, 0x5738B5AB);
 
 // @0x1406cd420
-CStringW FUN_1406cd420(int nNpcType)
+CStringW GetNpcKindName(int nNpcType)
 {
     if (nNpcType == 2)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_bank"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_bank"));
     }
     else if (nNpcType > 10 && nNpcType < 30)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_shop"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_shop"));
     }
     else if (nNpcType > 30 && nNpcType < 40)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_beautyshop"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_beautyshop"));
     }
     else if (nNpcType == 0x50)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_job"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_job"));
     }
     else if (nNpcType == 0x51)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_doctor"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_doctor"));
     }
     else if (nNpcType == 0x52)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_transfer"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_transfer"));
     }
     else if (nNpcType == 0x57)
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_enchant"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_enchant"));
     }
     else
     {
-        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_normal"));
+        return GetStringByKey(CStringW(L"s_gamedictionary_npc_type_normal"));
     }
 }
 
@@ -1185,7 +1185,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
         MS2Ptr<CRegionSpawnProb> pProb(new CRegionSpawnProb);
         pProb->m_pSpawn = pData;
         int nDiff = nMaxDifficulty - pData->m_nDifficulty;
-        pProb->m_fWeight = (float)FUN_1401c0db0()->CalcNpcSpawnWeight(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
+        pProb->m_fWeight = (float)GetLuaClient()->CalcNpcSpawnWeight(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
         nTotal += pProb->m_fWeight;
         pResult->m_aProb.Add(pProb);
     }

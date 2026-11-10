@@ -94,7 +94,7 @@ bool CCefMS2ClientApp::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, C
     CefRefPtr<CefProcessMessage> message)
 {
     if (message->GetName() == g_szCefMessageToken) {
-        CWebBrowserService::GetInstance()->FUN_141b78e70(message);
+        CWebBrowserService::GetInstance()->InvokeTokenCallback(message);
         return true;
     }
     return false;

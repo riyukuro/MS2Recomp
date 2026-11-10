@@ -36,7 +36,7 @@ int UniqueSwfIDCreator::FUN_1422f6ac0(CString& strId, const CString& strFile, in
     if (!strFile.IsEmpty()) {
         CString strName(strFile);
         strName.Replace(".swf", "");
-        if (FUN_1422f6fc0(strName) || bFixed != 0) {
+        if (IsFixedName(strName) || bFixed != 0) {
             strId = strName;
             if (bFixed != 0)
                 m_mapFixed.SetAt(strId, 1);
@@ -93,7 +93,7 @@ int UniqueSwfIDCreator::FUN_1422f6d50(CString& strId, CString strName, const CSt
 MS2_REPLACE_METHOD(0x1422F6D50, UniqueSwfIDCreator, FUN_1422f6d50, 356, 0xED9DF22C);
 
 // @0x1422f6ec0
-int UniqueSwfIDCreator::FUN_1422f6ec0(CString strId)
+int UniqueSwfIDCreator::RemoveQueuedId(CString strId)
 {
     for (POSITION pos = m_listIds.GetHeadPosition(); pos != NULL; m_listIds.GetNext(pos)) {
         CString str = m_listIds.GetAt(pos);
@@ -104,13 +104,13 @@ int UniqueSwfIDCreator::FUN_1422f6ec0(CString strId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422F6EC0, UniqueSwfIDCreator, FUN_1422f6ec0, 250, 0x5E402D9A);
+MS2_REPLACE_METHOD(0x1422F6EC0, UniqueSwfIDCreator, RemoveQueuedId, 250, 0x5E402D9A);
 
 // @0x1422f6fc0
-int UniqueSwfIDCreator::FUN_1422f6fc0(CString strName)
+int UniqueSwfIDCreator::IsFixedName(CString strName)
 {
     if (m_mapFixed.Lookup(strName) != NULL)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422F6FC0, UniqueSwfIDCreator, FUN_1422f6fc0, 96, 0xCD68A318);
+MS2_REPLACE_METHOD(0x1422F6FC0, UniqueSwfIDCreator, IsFixedName, 96, 0xCD68A318);

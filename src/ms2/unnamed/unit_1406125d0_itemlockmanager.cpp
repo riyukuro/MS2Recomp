@@ -47,14 +47,14 @@ void CItemLockManager::FUN_140612780()
 MS2_REPLACE_METHOD(0x140612780, CItemLockManager, FUN_140612780, 24, 0xEE473776);
 
 // @0x1406127a0
-MS2Ptr<CItem> CItemLockManager::FUN_1406127a0(int nSlot)
+MS2Ptr<CItem> CItemLockManager::GetLockedItem(int nSlot)
 {
     if (nSlot < 0 || nSlot >= (int)m_locked.GetCount())
         return MS2Ptr<CItem>(0);
     __int64 nItemUid = m_locked.GetAt(nSlot);
     return g_143ab2a90.FindItemByUid(nItemUid);
 }
-MS2_REPLACE_METHOD(0x1406127A0, CItemLockManager, FUN_1406127a0, 160, 0xB62C07D5);
+MS2_REPLACE_METHOD(0x1406127A0, CItemLockManager, GetLockedItem, 160, 0xB62C07D5);
 
 // @0x140612850
 void CItemLockManager::OnItemLockPacket(CInPacket& packet)
@@ -83,7 +83,7 @@ void CItemLockManager::OnItemLockPacket(CInPacket& packet)
         else if (nMode == 2)
         {
             __int64 nItemUid = packet.ReadInt64();
-            FUN_140612c60(nItemUid);
+            RemoveLockedItem(nItemUid);
             pDialog->BindItemBag();
             UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
             if (pInventory != 0)
@@ -98,7 +98,7 @@ void CItemLockManager::OnItemLockPacket(CInPacket& packet)
                 MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(nItemUid);
                 if (item.get() != 0)
                     item->ReadFromStream(packet);
-                FUN_140612c60(nItemUid);
+                RemoveLockedItem(nItemUid);
                 UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
                 if (pInventory != 0)
                     pInventory->RefreshItemSlot(item->GetItemUid());
@@ -121,7 +121,7 @@ void CItemLockManager::OnItemLockPacket(CInPacket& packet)
 MS2_REPLACE_METHOD(0x140612850, CItemLockManager, OnItemLockPacket, 1030, 0xAF0BFFC6);
 
 // @0x140612c60
-void CItemLockManager::FUN_140612c60(__int64 nItemUid)
+void CItemLockManager::RemoveLockedItem(__int64 nItemUid)
 {
     for (size_t i = 0; i < m_locked.GetCount(); i = i + 1)
     {
@@ -140,20 +140,20 @@ void CItemLockManager::FUN_140612c60(__int64 nItemUid)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140612C60, CItemLockManager, FUN_140612c60, 245, 0x781DF609);
+MS2_REPLACE_METHOD(0x140612C60, CItemLockManager, RemoveLockedItem, 245, 0x781DF609);
 
 // @0x140612d60
-int CItemLockManager::FUN_140612d60()
+int CItemLockManager::IsDialogOpen()
 {
     UIItemLockDialog* pDialog = Unk_LockDialog<UIItemLockDialog>(0x4f08);
     if (pDialog == 0)
         return 0;
     return pDialog->IsItemBagVisible();
 }
-MS2_REPLACE_METHOD(0x140612D60, CItemLockManager, FUN_140612d60, 51, 0x532E011C);
+MS2_REPLACE_METHOD(0x140612D60, CItemLockManager, IsDialogOpen, 51, 0x532E011C);
 
 // @0x140612da0
-int CItemLockManager::FUN_140612da0()
+int CItemLockManager::HasLockedItem()
 {
     for (size_t i = 0; i < m_locked.GetCount(); i = i + 1)
     {
@@ -163,7 +163,7 @@ int CItemLockManager::FUN_140612da0()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140612DA0, CItemLockManager, FUN_140612da0, 101, 0x68CEC8C8);
+MS2_REPLACE_METHOD(0x140612DA0, CItemLockManager, HasLockedItem, 101, 0x68CEC8C8);
 
 // @0x140612e10
 int CItemLockManager::SendRequestItemLockMode3()
@@ -248,7 +248,7 @@ int CItemLockManager::CanUseItem(CItem* pItem)
 MS2_REPLACE_METHOD(0x140613160, CItemLockManager, CanUseItem, 379, 0x5DE28A4C);
 
 // @0x1406132f0
-void CItemLockManager::FUN_1406132f0()
+void CItemLockManager::RequestUnlockMissingItems()
 {
     for (size_t i = 0; i < m_locked.GetCount(); i = i + 1)
     {
@@ -266,7 +266,7 @@ void CItemLockManager::FUN_1406132f0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1406132F0, CItemLockManager, FUN_1406132f0, 305, 0x72FF89B5);
+MS2_REPLACE_METHOD(0x1406132F0, CItemLockManager, RequestUnlockMissingItems, 305, 0x72FF89B5);
 
 // @0x140613430
 int CItemLockManager::CanAddItem(MS2Ptr<CItem> item)

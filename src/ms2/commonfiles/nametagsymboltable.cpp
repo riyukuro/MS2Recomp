@@ -62,7 +62,7 @@ void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();  MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id);   // 0x141bc9be0
+    void* GetLocalPlayer();  MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id);   // 0x141bc9be0
     static class WorldService* GetInstance();
 };
 class GameObject   // C3: member view for the former free stand-ins
@@ -111,8 +111,8 @@ bool CNametagSymbolTable::s_bInit;
 #endif
 
 static NametagConditionType FUN_1406c67a0(const CStringA& str);
-static CStringW FUN_1406c6990(const CStringW& strIcon, unsigned short nValue);
-static CStringW FUN_1406c6ab0(const CStringW& strIcon, unsigned short nValue);
+static CStringW GetAdventureLevelIcon(const CStringW& strIcon, unsigned short nValue);
+static CStringW GetSurvivalLevelIcon(const CStringW& strIcon, unsigned short nValue);
 
 // ---- CNametagSymbolTable ----
 
@@ -236,7 +236,7 @@ int CNametagSymbolTable::IsShown(unsigned short nId)
 unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
 {
     CheckInit();
-    Unk_NametagActor* pActor = ((class Unk_NametagActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_NametagActor* pActor = ((class Unk_NametagActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return 0;
     CNametagSymbolDataPtr spData(0);
@@ -292,9 +292,9 @@ CStringW CNametagSymbolTable::GetIconRanked(unsigned short nId, Unk_NametagActor
     switch (spData->m_eCondition)
     {
     case NAMETAG_CONDITION_ADVENTURE_LEVEL:
-        return FUN_1406c6990(strIcon, (unsigned short)pActor->vfunc_141());
+        return GetAdventureLevelIcon(strIcon, (unsigned short)pActor->vfunc_141());
     case NAMETAG_CONDITION_SURVIVAL_LEVEL:
-        return FUN_1406c6ab0(strIcon, reinterpret_cast<PC*>(pActor)->FUN_141663b50());
+        return GetSurvivalLevelIcon(strIcon, reinterpret_cast<PC*>(pActor)->FUN_141663b50());
     default:
         return strIcon;
     }
@@ -390,7 +390,7 @@ static NametagConditionType FUN_1406c67a0(const CStringA& str)
 
 // The adventure level icon: the icon name plus the highest level step reached.
 // @0x1406c6990
-static CStringW FUN_1406c6990(const CStringW& strIcon, unsigned short nValue)
+static CStringW GetAdventureLevelIcon(const CStringW& strIcon, unsigned short nValue)
 {
     unsigned short arrStep[5] = { 1000, 700, 500, 300, 100 };
     for (int i = 0; i < _countof(arrStep); ++i)
@@ -404,7 +404,7 @@ static CStringW FUN_1406c6990(const CStringW& strIcon, unsigned short nValue)
 
 // The survival level icon.
 // @0x1406c6ab0
-static CStringW FUN_1406c6ab0(const CStringW& strIcon, unsigned short nValue)
+static CStringW GetSurvivalLevelIcon(const CStringW& strIcon, unsigned short nValue)
 {
     unsigned short arrStep[7] = { 0x3c, 0x37, 0x2d, 0x23, 0x19, 0xf, 5 };
     for (int i = 0; i < _countof(arrStep); ++i)

@@ -110,7 +110,7 @@ CString ToCString(const char* psz, int n);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
-enum SAType { SAType_None = 0 }; SAType FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
+enum SAType { SAType_None = 0 }; SAType GetSATypeByName(const CString& strName);          // special option id by name (0: none)
 int GetStatValueType(int nNormal);
 int FUN_14081dd50(int nSpecial);
 class Unk_CommonLog;
@@ -140,7 +140,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);             // 
 bool FormatRandomOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
 bool FormatRandomSpecialOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
-bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
+bool IsRangeSet(const Unk_MergeRange* pRange);
 class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
 {
 public:
@@ -185,25 +185,25 @@ int CItemMergeOptionVariation::FUN_1405beaa0()
 }
 
 // @0x1405beac0
-int CItemMergeOptionVariation::FUN_1405beac0()
+int CItemMergeOptionVariation::GetMin()
 {
     return m_range.m_nMin;
 }
 
 // @0x1405beae0
-int CItemMergeOptionVariation::FUN_1405beae0()
+int CItemMergeOptionVariation::GetMax()
 {
     return m_range.m_nMax;
 }
 
 // @0x1405beb00
-float CItemMergeOptionVariation::FUN_1405beb00()
+float CItemMergeOptionVariation::GetMinFloat()
 {
     return (float)m_range.m_nMin / 1000.0f;
 }
 
 // @0x1405beb20
-float CItemMergeOptionVariation::FUN_1405beb20()
+float CItemMergeOptionVariation::GetMaxFloat()
 {
     return (float)m_range.m_nMax / 1000.0f;
 }
@@ -214,7 +214,7 @@ CItemMergeOptionProxy::CItemMergeOptionProxy() : m_nMeso(0)
 }
 
 // @0x1405bec30
-void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
+void CItemMergeOptionProxy::Write(COutputStream& stream)
 {
     stream.WriteInt64(m_nMeso);
     m_ingredients.Write(stream);
@@ -242,7 +242,7 @@ void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
 }
 
 // @0x1405bef60
-void CItemMergeOptionProxy::FUN_1405bef60(CInPacket& packet)
+void CItemMergeOptionProxy::Read(CInPacket& packet)
 {
     m_nMeso = packet.ReadInt64();
     m_ingredients.Read(packet);
@@ -310,7 +310,7 @@ bool CItemMergeOptionData::Load(TiXmlElement* pSlot)
         }
         else
         {
-            int nSpecial = FUN_14081d2f0(strName);
+            int nSpecial = GetSATypeByName(strName);
             spOption->m_nSpecial = nSpecial;
             nCategory = FUN_14081dd50(nSpecial);
         }
@@ -431,14 +431,14 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
 }
 
 // @0x1405c00e0
-CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId, int nMaterialId)
+CItemMergeOptionTable::DataPtr CItemMergeOptionTable::GetMergeData(int nItemId, int nMaterialId)
 {
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     MS2Ptr<CItemData> spMaterial = FUN_14053f870(nMaterialId);
     if (spItem == 0 || spMaterial == 0)
         return DataPtr(0);
-    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    DataPtr spData = FindMergeData(nItemId, nMaterialId);
     if (spData.IsNull())
         return DataPtr(0);
     int nPart = spItem->GetEquipSubtype();
@@ -528,14 +528,14 @@ int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag
 {
     if (!spValue)
         return 0;
-    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    DataPtr spData = FindMergeData(nItemId, nMaterialId);
     if (spData.IsNull())
         return 0;
     for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
         if (spData->m_aOptions[i]->m_nNormal == nOption)
         {
-            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
+            if (!IsRangeSet(&spData->m_aOptions[i]->m_kSecond.m_range))
                 continue;
             return ((class Unk_GameEventIntRange*)(struct Unk_MergeRange const*)(&spData->m_aOptions[i]->m_kSecond.m_range))->IsInRange(spValue->GetValue());
         }
@@ -548,14 +548,14 @@ int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag
 {
     if (!spValue)
         return 0;
-    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    DataPtr spData = FindMergeData(nItemId, nMaterialId);
     if (spData.IsNull())
         return 0;
     for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
         if (spData->m_aOptions[i]->m_nSpecial == nOption)
         {
-            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
+            if (!IsRangeSet(&spData->m_aOptions[i]->m_kSecond.m_range))
                 continue;
             return ((class Unk_GameEventIntRange*)(struct Unk_MergeRange const*)(&spData->m_aOptions[i]->m_kSecond.m_range))->IsInRange(spValue->GetValue());
         }
@@ -569,14 +569,14 @@ int CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag
 {
     if (!spValue)
         return 0;
-    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    DataPtr spData = FindMergeData(nItemId, nMaterialId);
     if (spData.IsNull())
         return 0;
     for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
         if (spData->m_aOptions[i]->m_nNormal == nOption)
         {
-            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
+            if (!IsRangeSet(&spData->m_aOptions[i]->m_kFirst.m_range))
                 continue;
             return spData->m_aOptions[i]->m_kFirst.m_range.m_nMax == spValue->GetValue();
         }
@@ -589,14 +589,14 @@ int CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag
 {
     if (!spValue)
         return 0;
-    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    DataPtr spData = FindMergeData(nItemId, nMaterialId);
     if (spData.IsNull())
         return 0;
     for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
         if (spData->m_aOptions[i]->m_nSpecial == nOption)
         {
-            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
+            if (!IsRangeSet(&spData->m_aOptions[i]->m_kFirst.m_range))
                 continue;
             return spData->m_aOptions[i]->m_kFirst.m_range.m_nMax == spValue->GetValue();
         }
@@ -651,7 +651,7 @@ CStringW CItemMergeOptionTable::GetMergeOptionDescription(MS2Ptr<CItem> spItem, 
             MS2Ptr<BaseOption> spValue = rSpecial.GetValueAt(pos);
             if (!spValue)
                 continue;
-            CStringW strLine = FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())) + strTag;
+            CStringW strLine = FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->GetData())) + strTag;
             CStringW strExtra;
             if (FUN_1405c0a70(spItem->GetItemId(), nMergeId, bSpecial, nStat, spValue))
             {
@@ -671,7 +671,7 @@ CStringW CItemMergeOptionTable::GetMergeOptionDescription(MS2Ptr<CItem> spItem, 
 }
 
 // @0x1405c1d20
-CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId, int nMaterialId)
+CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FindMergeData(int nItemId, int nMaterialId)
 {
     CheckInit();
     MS2Ptr<CItemData> spMaterial = FUN_14053f870(nMaterialId);
@@ -685,7 +685,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
             return DataPtr(nullptr);
         nPart = spItem->GetEquipSubtype();
     }
-    std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::pair<int, int>(spMaterial->FUN_14053de10(), nPart));
+    std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::pair<int, int>(spMaterial->GetMergeOptionId(), nPart));
     if (it != m_data.end())
         return it->second;
     return DataPtr(nullptr);
@@ -701,7 +701,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategor
 }
 
 // @0x1405c7ba0
-bool FUN_1405c7ba0(const Unk_MergeRange* pRange)
+bool IsRangeSet(const Unk_MergeRange* pRange)
 {
     if (pRange->m_nMin > pRange->m_nMax)
         return false;

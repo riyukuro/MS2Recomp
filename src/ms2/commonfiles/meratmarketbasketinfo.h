@@ -67,7 +67,7 @@ public:
     virtual __int64 GetSalePrice(const CDBPremiumProduct* pParent); // slot 7
     virtual __int64 GetPoint();                             // slot 8
 
-    int FUN_14069fe40();                                    // 0 no item, 1 stackable, 2 single
+    int GetItemKind();                                    // 0 no item, 1 stackable, 2 single
     int FUN_14069fee0();
     bool HasPointPrice();
     bool FUN_14069ff50();

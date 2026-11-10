@@ -116,10 +116,10 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         nType = 3;
     if (nType != 0)
     {
-        void* pPlayer = ((void*)((WorldService*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        void* pPlayer = ((void*)((WorldService*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPlayer == 0)
             return 0;
-        int bSalon = IsSalonMap(((class WorldService*)(class Unk_BlWorld*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd3060());
+        int bSalon = IsSalonMap(((class WorldService*)(class Unk_BlWorld*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->GetFieldId());
         int bFlag = FUN_1418fe060();
         if (bFlag == 0 && bSalon == 0)
         {

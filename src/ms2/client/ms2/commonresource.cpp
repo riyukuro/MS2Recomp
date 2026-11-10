@@ -40,8 +40,8 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);                       // the document's first child element
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc);                       // the document's first child element
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
 CString Name_14021a6b0(int n);                                           // int to string
 
@@ -294,9 +294,9 @@ bool CommonResource::LoadXml()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument*)(pRoot)); pNode != 0; pNode = (class TiXmlElement*)(((class TiXmlNode*)(pNode))->NextSiblingElement()))
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument*)(pRoot)); pNode != 0; pNode = (class TiXmlElement*)(((class TiXmlNode*)(pNode))->NextSiblingElement()))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CString strKey = FUN_140188f50(((class TiXmlElement*)(pNode))->Value(), 0);
         CString strValue = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("value"), 0);

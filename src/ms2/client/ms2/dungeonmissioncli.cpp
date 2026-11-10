@@ -90,7 +90,7 @@ MS2Ptr<DungeonMissionCli> DungeonMissionCli::Create(unsigned nId)
         return MS2Ptr<DungeonMissionCli>(0);
     }
     CStringW strClass = StringFormat(L"DungeonMission{0}", pData->m_type);
-    MS2Ptr<DungeonMissionCli> pCli(static_cast<DungeonMissionCli*>(FUN_1401f7f50(strClass)));
+    MS2Ptr<DungeonMissionCli> pCli(static_cast<DungeonMissionCli*>(CreateClassObject(strClass)));
     if (pCli == 0)
     {
         ((class Unk_CommonLog*)GetLogString())->Log(0, 0, 0x13, L"DungeonMissionCli NotFound Class");

@@ -38,7 +38,7 @@ extern int DAT_1439f86ac;                                           // nonzero: 
 CLogString* GetLogString();                                        // the log
 template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& rArg);   // C3: was FUN_1403a1280
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
-int FUN_1406516c0();                                                // client language (0 Korea, 1 jp, 2 en, 3 cn)
+int GetVoice();                                                // client language (0 Korea, 1 jp, 2 en, 3 cn)
 struct Unk_SoundCfg
 {
     char m_pad_00[0x78];
@@ -52,8 +52,8 @@ class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1422afe50();
-    void FUN_1422afe90();
+    void RecreateSound();
+    void ReleaseSound();
     class GFxVideo* GetVideo();
 };
 void* FUN_140aadf80();
@@ -416,7 +416,7 @@ int CSoundService::FUN_1417aea70()
     if (FUN_1417aec60() != 0)
     {
         const char* pszLanguage = "Korea";
-        switch (FUN_1406516c0())
+        switch (GetVoice())
         {
         case 1:
             pszLanguage = "jp";
@@ -750,7 +750,7 @@ void CSoundService::BuildTagTable()
         if (CheckFmodResult(nResult) == 0)
             return;
         CStringA strPrefix("");
-        switch (FUN_1406516c0())
+        switch (GetVoice())
         {
         case 1:
             strPrefix = "jp_";
@@ -806,7 +806,7 @@ void CSoundService::OpenVoiceStreams(CStringA strMediaPath)
     CStringA strDir(strMediaPath);
     std::vector<CStringA> aFiles;
     CStringA strFile("");
-    switch (FUN_1406516c0())
+    switch (GetVoice())
     {
     case 1:
         return;
@@ -938,13 +938,13 @@ efd::AsyncResult CSoundService::OnTick()
             {
                 ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177bf20();
                 FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70())));
-                ((class GFxManager*)(void*)(((void*)GetGFxManager())))->FUN_1422afe50();
+                ((class GFxManager*)(void*)(((void*)GetGFxManager())))->RecreateSound();
             }
             s_nReload = 0;
         }
         else if (s_nReload == 1)
         {
-            ((class GFxManager*)(void*)(((void*)GetGFxManager())))->FUN_1422afe90();
+            ((class GFxManager*)(void*)(((void*)GetGFxManager())))->ReleaseSound();
             FUN_1417af6e0();
             s_nReload = 2;
         }

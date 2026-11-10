@@ -57,11 +57,11 @@ inline GameObjectController* JpBody(PCBase* p) { return reinterpret_cast<GameObj
 // The actor's buffs.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyPressed(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
 class Unk_HsInfo : public CPtred { };
-int FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
+int PlaySystemSound(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
 
 
 // The hide-and-seek jump animation name (set up by the .text$di init, cleared when the actor hides) and the toggle of the
@@ -136,7 +136,7 @@ void StateJump::vfunc_4(StateData* pData)
         if (spInfo.get() ? true : false)
         {
             if (reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0() == 1)
-                FUN_141276180(s_strHideSeekJump, "");
+                PlaySystemSound(s_strHideSeekJump, "");
         }
     }
 }
@@ -222,7 +222,7 @@ void StateJump::vfunc_8(double fTime)
     m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x27;
-    if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
+    if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d41))
     {
         if (!IsJumpTimeElapsed())
             return;
@@ -293,12 +293,12 @@ void StateJump::vfunc_9(double fTime)
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->HasGuide2())
         {
-            if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
+            if (JpBody(m_pOwner)->IsRising() != 0)
                 nAnim = 0x3a;
             else
                 nAnim = 0x3b;
         }
-        else if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
+        else if (JpBody(m_pOwner)->IsRising() != 0)
         {
             bool bHas = true;
             efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2a));
@@ -376,7 +376,7 @@ int StateJump::FUN_1417d6620()
     {
         if (m_nOnGround == 0)
         {
-            if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
+            if (JpBody(m_pOwner)->IsRising() != 0)
                 return 0;
         }
         m_pSeat = reinterpret_cast<PC*>(pPC)->FUN_141659af0(0);

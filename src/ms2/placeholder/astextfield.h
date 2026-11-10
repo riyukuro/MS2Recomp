@@ -58,6 +58,6 @@ public:
     void FUN_1422c5c60(int nBegin, int nEnd, const CStringW& strText);  // replaceText
     void SetSelection(int nBegin, int nEnd);                           // setSelection(begin, end) (aslabel.cpp)
     CString AutoSizeToString(int nAutoSize);                               // the "autoSize" name ("none"/"center"/"left"/"right", else "")
-    void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // "focusOut" listener (uitradedialogex.cpp)
+    void AddFocusOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // "focusOut" listener (uitradedialogex.cpp)
 };
 MS2_CHECK_SIZE(ASTextField, 0x80);                                      // exe allocates 0x80 bytes

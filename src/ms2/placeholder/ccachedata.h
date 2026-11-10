@@ -20,7 +20,7 @@ public:
 
     CString* GetPath();           // address of the path string
     bool SetPath(CString strPath);    // records the loaded cache path and its file time, by value
-    int FUN_1401d17f0(CString strPath, FILETIME* pTime);    // reads the last-write time of the file
+    int GetFileWriteTime(CString strPath, FILETIME* pTime);    // reads the last-write time of the file
 
     friend unsigned char FUN_1401d1320(CCacheData*);    // file changed since load
 private:

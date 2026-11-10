@@ -160,7 +160,7 @@ int FUN_1418fc760(const char* szEvent, void* pArgs, int nArgs, void* a4);
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
 
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -170,9 +170,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, u
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     FUN_1422bce00(&args[1], a2);
-    FUN_1422bce70(&args[2], a3);
+    SetString(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -504,7 +504,7 @@ void UIManufactureStatus::vfunc_72()
             MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spItem->FUN_1409eedf0());
             if (spRecipe.get() != 0)
             {
-                CMsTime tReady(spItem->FUN_140694170());
+                CMsTime tReady(spItem->GetReadyTime());
                 CMsTime tNow(GetServerTime());
                 if (tReady > tNow)
                 {
@@ -649,7 +649,7 @@ void UIManufactureStatus::FUN_1412dc480()
                     CreateItemInfoSlot(strBind, spItemObj, nIndex, 0x415, 0x800);
                     m_178.Add(strBind);
                 }
-                CMsTime tReady(spItem->FUN_140694170());
+                CMsTime tReady(spItem->GetReadyTime());
                 CMsTime tNow(GetServerTime());
                 if (tReady > tNow)
                 {
@@ -846,7 +846,7 @@ void FUN_1409c4990_(ASObj* p);
 int LoadHomeLayout(CString strPath, int nMode, AScript* pTarget);
 int FUN_1412dfe70(const CString& strMode, AScript* pTarget);
 int LoadHomeLayouts(AScript* pTarget);
-void FUN_1401d3700(CString& s);                             // lower-cases in place
+void ToLower(CString& s);                             // lower-cases in place
 struct Unk_MdSingleton;
 CMeratMarketPremium* GetMeratMarketPremium();
 CString GetXmlPath(const CString& strDir, const CString& strFile);
@@ -1255,7 +1255,7 @@ int LoadHomeLayout(CString strPath, int nMode, AScript* pTarget)
 
 // The AS controls of the shop list.
 
-MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
+MS2Ptr<ASDataProvider> CreateDataProvider(int nMode, Scaleform::GFx::Value& v);
 
 
 
@@ -1309,10 +1309,10 @@ int FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int>
     {
         Scaleform::GFx::Value vItems;
         reinterpret_cast<const Scaleform::GFx::Value*>(pData)->GetMember("itemList", &vItems);
-        MS2Ptr<ASDataProvider> items = FUN_140ff6b60(nMode, vItems);
+        MS2Ptr<ASDataProvider> items = CreateDataProvider(nMode, vItems);
         Scaleform::GFx::Value vCategories;
         reinterpret_cast<const Scaleform::GFx::Value*>(pData)->GetMember("categoryList", &vCategories);
-        MS2Ptr<ASDataProvider> categories = FUN_140ff6b60(nMode, vCategories);
+        MS2Ptr<ASDataProvider> categories = CreateDataProvider(nMode, vCategories);
         TiXmlDeclaration decl("1.0", "utf-8", "");
         reinterpret_cast<TiXmlNode*>(pDoc)->InsertEndChild(decl);
         reinterpret_cast<TiXmlNode*>(pDoc)->InsertEndChild(TiXmlComment(FUN_1409a2360("\x20\xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad\x20\xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2\x20\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf\x20\xc1\xf7\xc1\xa2\x20\xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6\x20\xb8\xb6\xbc\xbc\xbf\xe4\x20", 0)));
@@ -1321,7 +1321,7 @@ int FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int>
             unsigned nCount = items->GetLength();
             for (unsigned i = 0; i < nCount; i++)
             {
-                AScript row = items->FUN_1422df140(i);
+                AScript row = items->GetItemAt(i);
                 TiXmlElement item("item");
                 int nSn = ToInt(reinterpret_cast<AScript*>(&row)->GetWString("sn"));
                 XmlSetAttr(&item, "sn", reinterpret_cast<AScript*>(&row)->GetWString("sn"));
@@ -1335,7 +1335,7 @@ int FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int>
             nCount = categories->GetLength();
             for (unsigned i = 0; i < nCount; i++)
             {
-                AScript row = categories->FUN_1422df140(i);
+                AScript row = categories->GetItemAt(i);
                 TiXmlElement category("category");
                 Scaleform::GFx::Value vId = row.GetMember("stringId");
                 int nStringId = i;
@@ -1555,7 +1555,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strMode = data.FUN_1422b8d30();
-            FUN_1401d3700(strMode);
+            ToLower(strMode);
             int nOld = m_180;
             if (strMode.Find("cash", 0) >= 0)
             {

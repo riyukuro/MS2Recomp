@@ -132,7 +132,7 @@ CStringW FUN_141b720b0(int nItemId, __int64 nUnused);               // item name
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_140719a00(__int64 nValue);
-unsigned int FUN_1407181d0(const CString& str);                           // number from a string
+unsigned int ParseUInt(const CString& str);                           // number from a string
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 void FUN_141842290(CStringW& str);                              // text post-processing (colour tags)
 
@@ -140,7 +140,7 @@ void FUN_141842290(CStringW& str);                              // text post-pro
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class PC   // C3: member view for the former free stand-ins
@@ -164,8 +164,8 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString GetXmlPath(const CString& strDir, const CString& strFile);
-int FUN_140197350(TiXmlElement* pNode, const char* pszName, int nDefault);
-unsigned FUN_140197390(TiXmlElement* pNode, const char* pszName, unsigned nDefault);
+int GetIntAttr(TiXmlElement* pNode, const char* pszName, int nDefault);
+unsigned GetUIntAttr(TiXmlElement* pNode, const char* pszName, unsigned nDefault);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -672,7 +672,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             case 11:
             {
                 {
-                    Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+                    Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
                     if (pPC == 0)
                         break;
                     {
@@ -681,8 +681,8 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                         if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
                         {
                             pNotify->FUN_141ac1580(L"./Data/Resource/Image/ETC/customizeshop_unlock.png",
-                                                   FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
-                            FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
+                                                   FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue))), 0);
+                            FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue))), 0x1c);
                         }
                         break;
                     }
@@ -705,7 +705,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
         }
         if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbc) && pGrade->m_reward.m_nType == 9)
         {
-            Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pPC == 0)
                 return;
             CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
@@ -713,8 +713,8 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
             {
                 pNotify->FUN_141ac1580(L"./Data/Resource/Image/ETC/customizeshop_unlock.png",
-                                       FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0);
-                FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue))), 0x1c);
+                                       FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue))), 0);
+                FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_beauty_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue))), 0x1c);
             }
         }
     }
@@ -827,7 +827,7 @@ void CAchieveUIData::LoadDesc()
     {
         TiXmlElement* pElem = (TiXmlElement*)aElem[i];
         MS2Ptr<CAchieveUIData> pUI(new CAchieveUIData);
-        int nId = FUN_140197350(pElem, "id", 0);
+        int nId = GetIntAttr(pElem, "id", 0);
         pUI->m_nId = nId;
         CStringW strDesc = FUN_1401bf530(pElem, "desc", CStringW(L""));
         CStringW strComplete = FUN_1401bf530(pElem, "complete", CStringW(L""));
@@ -866,8 +866,8 @@ void CAchieveUIData::LoadSpecialReward()
     for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("achieve")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("achieve")))
     {
         MS2Ptr<SpecialRewardDesc> pDesc(new SpecialRewardDesc);
-        unsigned nId = FUN_140197390(pElem, "id", 0);
-        int nGrade = FUN_140197350(pElem, "grade", 0);
+        unsigned nId = GetUIntAttr(pElem, "id", 0);
+        int nGrade = GetIntAttr(pElem, "grade", 0);
         pDesc->m_strSpecialDesc = FUN_1401bf530(pElem, "specialDesc", CStringW(L""));
         pDesc->m_strNotifyIcon = FUN_1401bf530(pElem, "specialNotifyIcon", CStringW(L""));
         pDesc->m_strNotifyString = FUN_1401bf530(pElem, "specialNotifyString", CStringW(L""));
@@ -1131,25 +1131,25 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             case 10:
             case 11:
             {
-                Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+                Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
                 if (pPC == 0)
                     break;
                 CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
                 CStringA strValue;
                 pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
-                return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
+                return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue)));
             }
             }
         }
         if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbc) && pGrade->m_reward.m_nType == 9)
         {
-            Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pPC == 0)
                 return CStringW(L"");
             CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
             CStringA strValue;
             pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
-            return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
+            return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ParseUInt(strValue)));
         }
     }
     return CStringW(L"");

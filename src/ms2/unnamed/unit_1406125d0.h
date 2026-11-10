@@ -78,16 +78,16 @@ public:
     virtual ~CItemLockManager();
     void SendRequestItemLockMode0();
     void FUN_140612780();
-    MS2Ptr<CItem> FUN_1406127a0(int nSlot);
+    MS2Ptr<CItem> GetLockedItem(int nSlot);
     void OnItemLockPacket(CInPacket& packet);                  // item lock packet (mode 1 lock, 2 unlock, 3 list, 4 result)
-    void FUN_140612c60(__int64 nItemUid);
-    int FUN_140612d60();                                    // dialog open state
-    int FUN_140612da0();                                   // any slot locked
+    void RemoveLockedItem(__int64 nItemUid);
+    int IsDialogOpen();                                    // dialog open state
+    int HasLockedItem();                                   // any slot locked
     int SendRequestItemLockMode3();
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
     int CanUseItem(CItem* pItem);
-    void FUN_1406132f0();
+    void RequestUnlockMissingItems();
     int CanAddItem(MS2Ptr<CItem> item);
     Unk_LockMode GetMode() const { return (Unk_LockMode)m_mode; }   // 0x140614b50
 

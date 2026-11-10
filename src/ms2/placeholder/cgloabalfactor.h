@@ -29,11 +29,11 @@ public:
     virtual ~CGloabalFactor();                              // 0x1404c1220
 
     bool Load();                                             // 0x1404c1290 resets both rate tables, then multicontrol.xml
-    bool FUN_1404c12f0();                                    // 0x1404c12f0 every experience rate 1.0
-    bool FUN_1404c1370();                                    // 0x1404c1370 every meso rate 1.0
+    bool ResetExpRates();                                    // 0x1404c12f0 every experience rate 1.0
+    bool ResetMesoRates();                                    // 0x1404c1370 every meso rate 1.0
     bool LoadMultiControl();                                   // 0x1404c1400 Table/multicontrol.xml
     float GetMesoRate(unsigned int nLevel, int nKind);    // 0x1404c1730 meso rate (1.0 outside 1..max level)
-    float FUN_1404c17a0(unsigned int nLevel, int nKind);    // 0x1404c17a0 experience rate
+    float GetExpRate(unsigned int nLevel, int nKind);    // 0x1404c17a0 experience rate
     float GetMultiControlFactor(int nType, int nGroupId);           // 0x1404c1810 multi control factor of a group (1.0: none)
     void ReadRates(CInPacket& packet);                  // 0x1404c18c0 reads both rate tables from the server
 

@@ -115,7 +115,7 @@ CString FUN_1407a50c0(unsigned int mask)
     return text;
 }
 // @0x1407a51a0
-CString FUN_1407a51a0(int command)
+CString GetServerTimeCommand(int command)
 {
     CString text;
     switch (command) {
@@ -1023,7 +1023,7 @@ void CSAdventureLevelMission::FUN_1407a90e0(CInputStream& in)
     }
 }
 // @0x1407a9420
-void CSAdventureLevelMission::FUN_1407a9420(unsigned id, const CAdventureLevelMissionData& src)
+void CSAdventureLevelMission::SetMission(unsigned id, const CAdventureLevelMissionData& src)
 {
     std::map<unsigned int, CAdventureLevelMissionData*>::iterator it = m_missions.find(id);
     if (it == m_missions.end()) {
@@ -1087,4 +1087,4 @@ MS2_REPLACE(0x1407A8820, FUN_1407a8820, 755, 0x74D5E0EF);
 MS2_REPLACE(0x1407A8B20, FUN_1407a8b20, 543, 0x29AA898F);
 MS2_REPLACE_METHOD(0x1407A8E00, CSAdventureLevelMission, FUN_1407a8e00, 723, 0x98772582);
 MS2_REPLACE_METHOD(0x1407A90E0, CSAdventureLevelMission, FUN_1407a90e0, 816, 0x3E12E9CC);
-MS2_REPLACE_METHOD(0x1407A9420, CSAdventureLevelMission, FUN_1407a9420, 386, 0x650C3EC3);
+MS2_REPLACE_METHOD(0x1407A9420, CSAdventureLevelMission, SetMission, 386, 0x650C3EC3);

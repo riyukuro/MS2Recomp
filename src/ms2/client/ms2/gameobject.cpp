@@ -719,7 +719,7 @@ void GameObject::vfunc_33(void* a, efd::Point3 kHit)
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(a)->m_nTarget);
             Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (nTarget)
-                pMode->FUN_1416c5b00(GO_CAMEVENT(a)->m_nTarget);
+                pMode->SetOpponentId(GO_CAMEVENT(a)->m_nTarget);
         }
     }
 }
@@ -736,7 +736,7 @@ void GameObject::vfunc_34(void* p)
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
             Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (nTarget)
-                pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
+                pMode->SetOpponentId(GO_CAMEVENT(p)->m_nTarget);
         }
     }
 }
@@ -753,7 +753,7 @@ void GameObject::vfunc_35(void* p)
             int nTarget = WorldService::GetInstance()->FUN_141bd19d0(GO_CAMEVENT(p)->m_nTarget);
             Unk_GoCamMode* pMode = static_cast<Unk_GoCamMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (nTarget)
-                pMode->FUN_1416c5b00(GO_CAMEVENT(p)->m_nTarget);
+                pMode->SetOpponentId(GO_CAMEVENT(p)->m_nTarget);
         }
     }
 }

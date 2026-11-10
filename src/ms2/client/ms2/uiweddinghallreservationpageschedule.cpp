@@ -55,7 +55,7 @@ struct Unk_SchedTarget
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
-    class WeddingProxy* FUN_140d295d0();
+    class WeddingProxy* GetWeddingProxy();
 };
 
 // The hall table: is the hour taken?
@@ -253,13 +253,13 @@ bool UIWeddingHallReservationPageSchedule::vfunc_12()
 // @0x140fe3c40 (refreshes the selectable hours, the day arrows and the date text)
 void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
 {
-    Unk_SchedTarget* pTarget = ((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0());
+    Unk_SchedTarget* pTarget = ((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->GetWeddingProxy());
     int nFrom = 0;
     int nTo = 0x18;
     if (pTarget->m_nKind == 1)
     {
         CMsTime tStart(GetServerTime());
-        CMsTime tEnd(((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0())->m_nTime);
+        CMsTime tEnd(((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->GetWeddingProxy())->m_nTime);
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
         if (!IsEarlierDay(CMsTime(tStart), CMsTime(pPage->m_date), 0))

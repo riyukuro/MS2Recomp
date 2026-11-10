@@ -46,7 +46,7 @@ class CFileSystem * GetFileSystem(void);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& arg);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement* pNode);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
+bool IsElementAvailable(struct Unk_XmlElement* pNode);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 class Unk_DcXmlNode; int GetLevelRangeAttr(Unk_DcXmlNode* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
 CString ToCString(const char* pszName, int nFlags);                // undecorated class name
@@ -180,7 +180,7 @@ void RewardPreviewInfo::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
     for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pElem))->FirstChild("item")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
-        if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
+        if (!IsElementAvailable(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
         MS2Ptr<RewardPreviewItem> spItem(new RewardPreviewItem);
         spItem->Load(pNode);

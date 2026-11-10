@@ -28,11 +28,11 @@ public:
     // UIStatusEventListener (+0x70) override: slot 20 (the status/exp changed), 0x140ba7630
     virtual void vfunc_oa0_20(int a1);
 
-    void FUN_140ba6cf0(__int64 nGain);                              // push the bar state ("setPoint") for a gain of nGain
+    void SetPoint(__int64 nGain);                              // push the bar state ("setPoint") for a gain of nGain
     __int64 GetCurrentExp();                                        // current exp
     __int64 GetExpPerLevel();                                        // exp of one level
     __int64 GetDisplayedExp();                                        // exp shown for the player's adventure level
-    void FUN_140ba7080(int nVisible);                               // show/hide the "m_point" clip
+    void SetPointVisible(int nVisible);                               // show/hide the "m_point" clip
     void FUN_140ba7130();                                           // show/hide the bar clip by the mount state
 };
 MS2_CHECK_SIZE(UIAdventureLevelExpBar, 0x78);

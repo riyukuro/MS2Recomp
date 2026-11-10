@@ -42,11 +42,11 @@ class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The player manager (singleton): the local player.
-class Unk_MoveFieldPlayers { public: MyPC* FUN_141bd0cc0(); };
+class Unk_MoveFieldPlayers { public: MyPC* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -88,7 +88,7 @@ int UIMoveFieldDialog::vfunc_13()
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d840()) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->IsEscapePressed()) {
         vfunc_67();
         return 1;
     }
@@ -104,7 +104,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 0;
     ASData data;
     if (_stricmp("OnMoveField", szMethod) == 0) {
-        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer == 0 || pPlayer->IsDead() != 0) {
             FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
             return 1;

@@ -21,9 +21,9 @@ extern Value DAT_143b0ae18;                                     // an undefined 
 void Unk_140657820();                                           // throws: a null delegate was called
 
 // Invoke argument setters (ascript.cpp's range).
-void FUN_1422bce70(Value* pValue, const char* sz);
+void SetString(Value* pValue, const char* sz);
 void SetValue(Value* pValue, Value v);
-void FUN_1422bcce0(Value* pValue, bool b);
+void SetBoolean(Value* pValue, bool b);
 void FUN_1422bcd70(Value* pValue, float f);
 void FUN_1422bce40(Value* pValue, const AScript& obj);
 
@@ -188,9 +188,9 @@ inline Value AScript::FUN_1422c3e40(const char* szMethod, CString a1, Value a2, 
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     SetValue(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -199,11 +199,11 @@ inline Value AScript::Invoke(const char* szMethod, CString a1, Value a2, bool a3
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     SetValue(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     FUN_1422bcd70(&args[3], a4);
-    FUN_1422bcce0(&args[4], a5);
+    SetBoolean(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -162,7 +162,7 @@ class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& entityID, co
 Unk_AnimSvc* GetAnimationService();
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 template <> inline ecr::SceneGraphService* egf::ScriptContext::GetSystemServiceAs<ecr::SceneGraphService>() const;   // 0x1410a68f0, defined below (COMDAT: stock bapiCoreRuntime has it too)
-CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
+CStringW GetItemNameText(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 CStringW GetStringCommon(int);
 void* FUN_14025e7c0();                       // singleton pointers: 64-bit, not int
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -371,7 +371,7 @@ int CGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PC
         for (int nSlot = 0; nSlot < 0x23; ++nSlot)
             SetStat(nPart, nSlot, pOwner->GetStat(nPart, nSlot));
     }
-    PCBase* pLocal = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pLocal = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pLocal != 0 && pLocal == pOwner)
         m_bLocal = true;
     return 1;
@@ -412,7 +412,7 @@ void CGuideObject::FUN_1410a12e0(PCBase* pOwner)
 // @0x1410a1310
 PCBase* CGuideObject::GetOwner()
 {
-    return reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
+    return reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(m_nOwnerId));
 }
 
 // The record the controller keeps: re-created every tick and handed to the network layer when it differs.
@@ -510,7 +510,7 @@ CConstructionGuideObject::CConstructionGuideObject()
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->RegisterState(0x24, new StateFloat(this));
     m_spItem.AssignRaw(new CubeItemInfo());
-    ((class CubeItemInfo*)(class CubeItemInfo*)(m_spItem.operator->()))->FUN_1408b3810();
+    ((class CubeItemInfo*)(class CubeItemInfo*)(m_spItem.operator->()))->Clear();
     vfunc_59(0x24, 0, 0, 0);
     m_fUnk110 = -20.0f;
     m_fUnk114 = 50.0f;
@@ -600,10 +600,10 @@ void CConstructionGuideObject::FUN_1410a2440()
     if (m_spLiftNode == (NiNode*)0)
         return;
     CubeItemInfo* pInfo = pSel->FUN_1410ad670();
-    if (m_spGuide.IsNull() || !((class CubeItemInfo*)(m_spItem.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(pInfo)))
+    if (m_spGuide.IsNull() || !((class CubeItemInfo*)(m_spItem.operator->()))->IsSameItem((class CubeItemInfo const*)(pInfo)))
     {
         FUN_1410a29c0();
-        m_spItem->FUN_1408b3700(pInfo);
+        m_spItem->CopyFrom(pInfo);
         if ((unsigned int)m_spItem->itemId > 0)
             FUN_1410a2a60(pSel);
         else if ((m_spBirdHead.get() ? true : false) && m_bLocal)
@@ -706,7 +706,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     }
     if ((m_spBirdHead.get() ? true : false) && m_bLocal)
     {
-        CStringW strName = FUN_141277910(spData);
+        CStringW strName = GetItemNameText(spData);
         m_spBirdHead->FUN_1418ce8f0(strName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_spItem->itemId));
         m_spBirdHead->Show();
     }
@@ -791,7 +791,7 @@ int CConstructionGuideObject::vfunc_10()
     if (!PCBase::vfunc_10())
         return 0;
     ((GameObjectController*)(void*)(m_unk_150))->SetCollisionGroup(4);
-    ((GameObjectController*)(void*)(m_unk_150))->FUN_14123fd30(8);
+    ((GameObjectController*)(void*)(m_unk_150))->SetGroups(8);
     return 1;
 }
 
@@ -1412,7 +1412,7 @@ int CSkillMagicControlGuide::IsOutOfRange(int nSkill)
     int nState = ((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->FUN_141bd19d0(nSkill);
     if (nState == 1)
         return 0;
-    PCBase* pLocal = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pLocal = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pLocal == 0)
         return 0;
     const NiPoint3& kLocalPos = pLocal->vfunc_18();

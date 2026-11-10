@@ -110,18 +110,18 @@ class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
 CNetworkService* GetNetworkService();
 
 class Unk_Hud* GetUIServerEventDispatcher();   // C3: was GetUIServerEventDispatcher
-void FUN_141274f50();
+void CloseAllDialogs();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
 int GetCurrentChannel();
 void* FindServerListDialog(int);   // C3: was FindServerListDialog
 void FUN_14151f200();
-void FUN_140dffb50(void*);   // C3: was FUN_140dffb50
+void ShowLeaveWarning(void*);   // C3: was ShowLeaveWarning
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 #include "ms2/placeholder/formatstringid.h"
-CStringW FUN_140cd7d20();                                               // the dungeon name
+CStringW GetDungeonName();                                               // the dungeon name
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -148,7 +148,7 @@ int UISystemMenuDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_141274f50();
+    CloseAllDialogs();
     ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->AddListener(static_cast<UIServerEventListener*>(this));
     return 1;
 }
@@ -167,20 +167,20 @@ void UISystemMenuDialog::OnLoadInit()
     UIObject::OnLoadInit();
     m_188 = GetChild<ASButton>("m_exitRoom");
     {
-        MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->GetFieldData();
         if (spField.get() != 0)
         {
             if (spField->FUN_1403751b0())
             {
                 if (spField->m_nMapType == 3)
                 {
-                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveHomeClick), 0);
+                    m_188->AddClickHandler(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveHomeClick), 0);
                     m_188->FUN_1422cdfb0(GetLeaveButtonText(spField->m_nMapType));
                     m_188->vfunc_3(1);
                 }
                 else if (FUN_1418fd280() == 0)
                 {
-                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveFieldClick), 0);
+                    m_188->AddClickHandler(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveFieldClick), 0);
                     m_188->FUN_1422cdfb0(GetLeaveButtonText(spField->m_nMapType));
                     m_188->vfunc_3(1);
                 }
@@ -277,7 +277,7 @@ void UISystemMenuDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (vfunc_55() != 0 || !m_30)
         return;
-    switch (static_cast<CInPacket*>(p)->FUN_14070fe80())
+    switch (static_cast<CInPacket*>(p)->GetOpcode())
     {
     case 0x10:
         if (!m_30)
@@ -325,12 +325,12 @@ void UISystemMenuDialog::Notify()
 // @0x141b13880
 void UISystemMenuDialog::OnLeaveFieldClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0)
         return;
     if (spField->m_nFieldID == 0x3a2c94b)
     {
-        FUN_140dffb50((void*)(static_cast<IMessageListener*>(this)));
+        ShowLeaveWarning((void*)(static_cast<IMessageListener*>(this)));
         return;
     }
     CStringW strText = GetLeaveBoxText(spField->m_nMapType);
@@ -353,13 +353,13 @@ void UISystemMenuDialog::OnLeaveHomeClick(const Scaleform::GFx::FunctionHandler:
 // @0x141b13b30
 void UISystemMenuDialog::LeaveHome()
 {
-    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
     {
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, BlockFormat(0x877), 0, CStringW(L""));
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
@@ -369,7 +369,7 @@ void UISystemMenuDialog::LeaveHome()
         {
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
@@ -384,7 +384,7 @@ void UISystemMenuDialog::LeaveHome()
         {
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
@@ -399,7 +399,7 @@ void UISystemMenuDialog::LeaveHome()
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strText), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
@@ -407,7 +407,7 @@ void UISystemMenuDialog::LeaveHome()
     else
     {
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, BlockFormat(0x877), 0, CStringW(L""));
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
         {
             if (nResult == 0)
@@ -432,7 +432,7 @@ void UISystemMenuDialog::SetRedCircle(bool b)
 // @0x141b14510
 bool UISystemMenuDialog::FUN_141b14510(int nResult, const CMsgBoxData&)
 {
-    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
+    MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -491,7 +491,7 @@ CStringW UISystemMenuDialog::GetLeaveButtonText(int nMapType)
         return GetStringCommon(0xab0);
     case 8:
     case 0xe:
-        return FormatStringId<CStringW>(0xab1, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab1, GetDungeonName());
     case 9:
         return GetStringCommon(0xab2);
     case 0xd:
@@ -511,7 +511,7 @@ CStringW UISystemMenuDialog::GetLeaveBoxText(int nMapType)
     switch (nMapType)
     {
     case 3:
-        return FormatStringId<CStringW>(0xab3, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab3, GetDungeonName());
     case 5:
     {
         int nRoom = DAT_143ab2884;
@@ -519,21 +519,21 @@ CStringW UISystemMenuDialog::GetLeaveBoxText(int nMapType)
         {
             DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoom);
             if (spRoom.get() != 0 && spRoom->m_defaultRevivalLimitCount > 0)
-                return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
+                return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), GetDungeonName());
         }
-        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_dungeon"), GetDungeonName());
     }
     case 7:
-        return FormatStringId<CStringW>(0xab7, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab7, GetDungeonName());
     case 8:
     case 0xe:
-        return FormatStringId<CStringW>(0xab8, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab8, GetDungeonName());
     case 9:
-        return FormatStringId<CStringW>(0xab9, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab9, GetDungeonName());
     case 0xd:
-        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_arcade"), GetDungeonName());
     default:
-        return FUN_14028dfa0<CStringW>(StringFormat<int>(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
+        return FUN_14028dfa0<CStringW>(StringFormat<int>(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), GetDungeonName());
     }
 }
 

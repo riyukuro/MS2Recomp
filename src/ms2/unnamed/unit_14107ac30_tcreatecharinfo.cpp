@@ -122,7 +122,7 @@ __declspec(noreturn) void FUN_140159b70(long hr);
 void SetSunDirection(const Vector3& kDir);
 void FUN_14107b2d0();
 //
-void FUN_14107cad0(NiFixedString* pName, void* pData, int n);
+void SetGlobalShaderConstant(NiFixedString* pName, void* pData, int n);
 bool FUN_14107cb00(NiFixedString* pName, void* pData, int n);
 
 // scene graph walker (0x30 bytes, unrecovered class; softparticlesmanager.cpp and ms2outlinepreprocessor.cpp declare
@@ -185,13 +185,13 @@ void DestroyMarkerMap() { reinterpret_cast<Unk_MarkerMap*>(s_marker)->Unk_Marker
 // @0x14107ac30
 TCreateCharInfo::TCreateCharInfo()
 {
-    FUN_14107ad90();
+    Reset();
 }
 
 // @0x14107acb0
 TCreateCharInfo::TCreateCharInfo(int nType, int nGender)
 {
-    FUN_14107ad90();
+    Reset();
     m_nType = nType;
     m_nGender = nGender;
 }
@@ -202,7 +202,7 @@ TCreateCharInfo::~TCreateCharInfo()
 }
 
 // @0x14107ad90
-void TCreateCharInfo::FUN_14107ad90()
+void TCreateCharInfo::Reset()
 {
     m_nType = 0;
     m_nGender = 0;
@@ -211,12 +211,12 @@ void TCreateCharInfo::FUN_14107ad90()
     m_n20 = 0;
     m_n34 = 1;
     m_b58 = false;
-    FUN_14107afa0();
+    SetDefaultEquip();
 }
 
 // @0x14107afa0
 // MS2-FUNCTIONAL: the frame is 16 bytes larger than the exe's (copy temporary layout)
-void TCreateCharInfo::FUN_14107afa0()
+void TCreateCharInfo::SetDefaultEquip()
 {
     for (int i = 0; i < 2; i++)
     {
@@ -238,7 +238,7 @@ void TCreateCharInfo::FUN_14107ae00()
     {
         if (spItem->FUN_140523c40(0x9a1d21, 1, 0))
         {
-            Unk_UserProxyItemData* pData = spItem->FUN_140527870();
+            Unk_UserProxyItemData* pData = spItem->GetProxy();
             if (pData != 0)
             {
                 for (int i = 0; i < 2; i++)
@@ -251,13 +251,13 @@ void TCreateCharInfo::FUN_14107ae00()
 }
 
 // @0x14107b010
-void FUN_14107b010()
+void RefreshSunDirection()
 {
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
         SetSunDirection(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250())));
     FUN_14107b2d0();
 }
-MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);
+MS2_REPLACE(0x14107b010, RefreshSunDirection, 57, 0x7150A5CF);
 
 // @0x14107b050
 // The rotated points reach NiPoint3's move assignment (0x14097faa0) through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
@@ -276,8 +276,8 @@ void SetSunDirection(const Vector3& kDir)
     reinterpret_cast<efd::Matrix3*>(&matRot)->MakeZRotation((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
     *reinterpret_cast<NiPoint3*>(&kRight) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight);
     *reinterpret_cast<NiPoint3*>(&kFlat) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat);
-    FUN_14107cad0(&DAT_143ae5388, &kRight, 1);
-    FUN_14107cad0(&DAT_143ae5390, &kFlat, 1);
+    SetGlobalShaderConstant(&DAT_143ae5388, &kRight, 1);
+    SetGlobalShaderConstant(&DAT_143ae5390, &kFlat, 1);
 }
 
 // @0x14107b2a0
@@ -290,7 +290,7 @@ void Unk_RimLight::FUN_14107b2a0(float fYaw, float fPitch)
 // @0x14107b2d0
 void FUN_14107b2d0()
 {
-    FUN_14107cad0(&DAT_143ae5398, &Unk_RimLight::s_sssColor, 1);
+    SetGlobalShaderConstant(&DAT_143ae5398, &Unk_RimLight::s_sssColor, 1);
     UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&(DAT_143ae53a0), &Unk_RimLight::s_fSSSPower, 1);
 }
 MS2_REPLACE(0x14107b2d0, FUN_14107b2d0, 59, 0x1F4B3C77);
@@ -355,7 +355,7 @@ int TCreateCharInfo::ApplyToPC(PC* pPC)
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
     }
-    if (pWorld->FUN_141bbb1e0(pPC, 0, 1) != 0)
+    if (pWorld->OnObjectCreated(pPC, 0, 1) != 0)
         return 1;
     return 0;
 }
@@ -391,7 +391,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
     }
-    if (pWorld->FUN_141bbb1e0(pPC, 0, 1) != 0)
+    if (pWorld->OnObjectCreated(pPC, 0, 1) != 0)
     {
         pPC->vfunc_139();
         if (!pState->m_240.IsEmpty())
@@ -455,7 +455,7 @@ bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pPC)
         {
             if (spItem->FUN_140523c40(0x9a1d21, 1, 0))
             {
-                Unk_UserProxyItemData* pData = spItem->FUN_140527870();
+                Unk_UserProxyItemData* pData = spItem->GetProxy();
                 if (pData != 0)
                 {
                     for (int i = 0; i < 2; i++)
@@ -505,10 +505,10 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
             MS2Ptr<CItem> spItem(new CItem);
             if (spItem->FUN_140523c40(nItemId, 1, 0))
             {
-                if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2f0())
+                if (reinterpret_cast<CItemData*>(spItem->GetData())->FUN_14053d2f0())
                     nSlot = 5;
                 else
-                    nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->GetFirstGroupType();
+                    nSlot = reinterpret_cast<CItemData*>(spItem->GetData())->GetModelOrEmpty()->GetFirstGroupType();
                 spItem->FUN_140526c10(nSlot);
                 spItem->SetItemUid(pPC->GenerateSerialId());
                 spItem->SetObjectId(m_nType);
@@ -521,7 +521,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
 }
 
 // @0x14107c5f0
-int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
+int CopyPCAppearance(int nSlot, PC* pSrc, PC* pDst)
 {
     int nId = nSlot;
     if (nId != 0)
@@ -540,7 +540,7 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
         pDst->FUN_1416591e0(0, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(0)));
         pDst->FUN_1416591e0(1, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(1)));
         reinterpret_cast<JobSystem*>(pDst->GetJobSystem())->SetJob(((class PC*)(class PC*)(pSrc))->GetJobGroupId(), ((class PC*)(class PC*)(pSrc))->GetSubJob(), (unsigned short)pSrc->vfunc_78());
-        if (WorldService::GetInstance()->FUN_141bbb1e0(pDst, 0, 1) != 0)
+        if (WorldService::GetInstance()->OnObjectCreated(pDst, 0, 1) != 0)
         {
             pDst->vfunc_139();
             return 1;
@@ -550,7 +550,7 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
 }
 
 // @0x14107c930
-NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
+NiObject* FindNodeByName(NiObject* pRoot, const CString* pName)
 {
     if (pRoot == 0)
         return 0;
@@ -585,11 +585,11 @@ NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
 }
 
 // @0x14107cad0
-void FUN_14107cad0(NiFixedString* pName, void* pData, int n)
+void SetGlobalShaderConstant(NiFixedString* pName, void* pData, int n)
 {
     FUN_14107cb00(pName, pData, n);
 }
-MS2_REPLACE(0x14107cad0, FUN_14107cad0, 44, 0x6803A96B);
+MS2_REPLACE(0x14107cad0, SetGlobalShaderConstant, 44, 0x6803A96B);
 
 // @0x14107cb00
 bool FUN_14107cb00(NiFixedString* pName, void* pData, int n)

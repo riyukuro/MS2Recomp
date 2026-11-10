@@ -702,7 +702,7 @@ void CFeatureTable::Clear()
 }
 
 // @0x14036f550
-CFeatureTable* CFeatureTable::FUN_14036f550()
+CFeatureTable* CFeatureTable::GetOrCreateInstance()
 {
     return s_instance != 0 ? GetInstance() : new CFeatureTable;
 }
@@ -723,7 +723,7 @@ CFeatureManager::CFeatureManager()
 {
     m_strLocale = s_strServerType;
     m_strLocale.MakeLower();
-    CFeatureTable::FUN_14036f550();
+    CFeatureTable::GetOrCreateInstance();
 }
 
 // @0x14036cbf0
@@ -906,7 +906,7 @@ bool CFeatureManager::IsLocaleInList(const CStringW& strList)
 }
 
 // @0x14036d8b0
-int CFeatureManager::FUN_14036d8b0()
+int CFeatureManager::GetLevel()
 {
     CheckInit();
     return m_nLevel;

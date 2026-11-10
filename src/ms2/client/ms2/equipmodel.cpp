@@ -93,7 +93,7 @@ extern ATL::CAtlList<CString> s_meshSuffixes; // equipment.cpp: side suffixes tr
 extern char DAT_142ec05ba;      // ""
 
 // ---- out-of-unit callees ----
-void FUN_1401d3700(CString& s);
+void ToLower(CString& s);
 // smart pointers (MS2Ptr<Owner> at +0x28, NiPointer at +0xf0 / +0x108 / the temporaries)
 void FUN_1405a85f0(void* sp);
 void* FUN_140884f30(void* dst, void* src);
@@ -107,7 +107,7 @@ class WorldService // C3: member view for the former free stand-ins
 public:
 static WorldService* GetInstance();
 class Unk_WsC_GameObj* FindObjectById(int);
-void* FUN_141bd0cc0();
+void* GetLocalPlayer();
 };
 class CEffectService // C3: member view for the former free stand-ins
 {
@@ -163,7 +163,7 @@ struct ItemModelHead* FUN_14053ec70();
 struct ItemModelHead   // C3: member view for the former free stand-ins
 {
 public:
-bool FUN_1405471b0();
+bool IsCapAttach();
 };
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
@@ -444,7 +444,7 @@ void CEquipModel::vfunc_17()
 void FUN_1411ffee0(CEquipModel* self, double fTime)
 {
     if (self->m_b110 != 0) {
-        void* p = ((void*)((class CItem*)(void*)(EQUIP(self->m_spOwner)->GetItem().operator->()))->FUN_140527870());
+        void* p = ((void*)((class CItem*)(void*)(EQUIP(self->m_spOwner)->GetItem().operator->()))->GetProxy());
         if (p == 0)
             return;
         if (((class CItemExtraData*)(void*)(p))->AdvanceCycle())
@@ -638,7 +638,7 @@ void* GetItemData(CEquipModel* self)
     CItem* p = self->GetItem().get();
     if (p == 0)
         return 0;
-    return ((void*)((class CItem*)(void*)(p))->FUN_140527840());
+    return ((void*)((class CItem*)(void*)(p))->GetData());
 }
 
 // @0x141200a40
@@ -720,7 +720,7 @@ void FUN_141200ca0(CEquipModel* self)
         self->vfunc_12();
     if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner)->operator CEquipItem*()) ? true : false) {
         if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData()) != 0) {
-            if (((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData())))->FUN_14053ec70()->FUN_1405471b0()) {
+            if (((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData())))->FUN_14053ec70()->IsCapAttach()) {
                 ((class CEquipItem*)(void*)(OWNER(self)))->AddTag(s_strWillUpdatePos);
                 ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dd280();
             }
@@ -756,7 +756,7 @@ void FUN_141200e30(CEquipModel* self, int bClear)
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->GetPartName(),
-                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->GetData())))->FUN_14053d2b0());
         ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411ea500(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
     }
     if (bClear != 0)
@@ -770,7 +770,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
 {
     CString kMesh;
     CString kKey(kName);
-    FUN_1401d3700(*(&kKey));
+    ToLower(*(&kKey));
     EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
         Unk_MeshWalker kWalk((NiAVObject*)(((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*())));
         void* pObj;
@@ -779,7 +779,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
             if (pMesh == 0)
                 continue;
             kMesh = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(pMesh))->GetName()))->operator const char*();
-            FUN_1401d3700(*(&kMesh));
+            ToLower(*(&kMesh));
             if ((*(&kMesh) == *(&kKey))) {
                 ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
             } else {
@@ -796,7 +796,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
         if (pMesh == 0)
             continue;
         kMesh = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(pMesh))->GetName()))->operator const char*();
-        FUN_1401d3700(*(&kMesh));
+        ToLower(*(&kMesh));
         if ((*(&kMesh) == *(&kKey))) {
             ((class NiAVObject*)(void*)(pMesh))->SetAppCulled(true);
         } else {
@@ -818,7 +818,7 @@ void FUN_1412014f0(CEquipModel* self, void* pPt)
     if (pInfo == 0)
         return;
     if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->GetItemData())))->FUN_14053cfd0() != 0) {
-        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
+        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->GetProxy());
         if (p != 0)
             *reinterpret_cast<efd::Point3*>(p->m_aPos + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
     }
@@ -835,7 +835,7 @@ void FUN_141201620(CEquipModel* self, void* pPt)
     if (pInfo == 0)
         return;
     if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->GetItemData())))->FUN_14053cfd0() != 0) {
-        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
+        Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->GetProxy());
         if (p != 0)
             *reinterpret_cast<efd::Point3*>(p->m_aPos78 + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
     }
@@ -1072,7 +1072,7 @@ int FUN_141202940(CEquipModel* self)
 {
     CItem* p = self->GetItem().get();
     if (p != 0) {
-        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
+        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->GetData())))->FUN_14053d510() != 0) {
             return ((class CItem*)(void*)(p))->FUN_140526c30();
         }
     }
@@ -1085,7 +1085,7 @@ CString CEquipModel::GetPartName()
 {
     CItem* p = GetItem().get();
     if (p != 0) {
-        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
+        if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->GetData())))->FUN_14053d510() != 0) {
             CString kName(((Unk_PartInfo*)m_unk_20)->m_strName);
             if (((class CItem*)(void*)(p))->FUN_140526c30() == 4) {
                 int nL = kName.Replace("_L_", "_R_");
@@ -1221,7 +1221,7 @@ int FUN_1412033e0(CEquipModel* self)
         return 1;
     if (((class CStateService*)TSingleton<CStateService>::GetInstance())->GetCurrentSceneId() == 0x6200018)
         return 1;
-    void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
+    void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->GetLocalPlayer();
     if (pLocal == 0)
         return 0;
     return EQUIP(self->m_spOwner)->GetItem()->GetCharacterId() == (unsigned)((GameObject*)pLocal)->GetObjectId();
@@ -1365,7 +1365,7 @@ void FUN_141203e60(CEquipModel* self)
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->GetPartName(),
-                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->GetData())))->FUN_14053d2b0());
     }
 }
 

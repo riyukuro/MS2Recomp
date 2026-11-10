@@ -31,7 +31,7 @@ public:
     unsigned m_nCount;       // +0x48
     Unk_PerfLogCallback* m_pCallback;   // +0x50
 
-    void FUN_1402e12c0(const char* pszFormat, ...);
+    void LogInterval(const char* pszFormat, ...);
     unsigned GetFirstTick();
     CString FUN_1402e14e0();
     unsigned GetElapsedSeconds();
@@ -60,7 +60,7 @@ inline void Unk_PerfLogInfo(CLogString* log, unsigned __int64 a, unsigned __int6
 }
 
 // @0x1402e12c0
-void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
+void Unk_PerfLog::LogInterval(const char* pszFormat, ...)
 {
     bool bEmpty = m_strMessage.IsEmpty();
     unsigned nNow = GetTickCountMs2();

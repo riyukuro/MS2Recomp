@@ -31,7 +31,7 @@ public:
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -95,7 +95,7 @@ int CItemRePackingScrollTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("rePackingScroll")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("rePackingScroll")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CItemRePackingScrollDataPtr spData(new CItemRePackingScrollData);
         if (spData == 0)
@@ -153,7 +153,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
     CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->GetStatus())->GetEnchant();
     if (pEnchant != 0 && !pEnchant->IsEnabled())
         return 10;
-    MS2Ptr<CItemData> pItemData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
+    MS2Ptr<CItemData> pItemData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->GetData()));
     if (pItemData == 0)
         return 2;
     if (!pItemData->property.rePackingScrollID.IsEmpty())
@@ -203,7 +203,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 1;
     if (((CItem*)pItem)->GetRemainingRePackingCount() == 0)
         return 10;
-    if (((CItem*)pItem)->FUN_140528ca0() == 1 || ((CItem*)pItem)->GetUnlockTime() > GetServerTime())
+    if (((CItem*)pItem)->GetLockState() == 1 || ((CItem*)pItem)->GetUnlockTime() > GetServerTime())
         return 0xb;
     return 0;
 }

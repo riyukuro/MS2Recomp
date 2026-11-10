@@ -31,7 +31,7 @@ struct Unk_WdUgcPaths
 class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
-bool FUN_140900f30(__int64 nTime);                                          // the time is at night (before 6 / after 17)
+bool IsNightTime(__int64 nTime);                                          // the time is at night (before 6 / after 17)
 CStringW FormatYearMonthDayHour(const CMsTime& kTime);                               // the date text
 CStringW FUN_1409404f0(__int64 nMerat);                                     // the price text
 
@@ -53,7 +53,7 @@ MS2_REPLACE(0x140FDAB30, GetPartnerProfileIconPath, 281, 0xC1D9E733);
 //
 void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, bool bPublic, ASObj* pData)
 {
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FindPackage(nPackageId);
     if (spPackage == 0)
         return;
@@ -69,7 +69,7 @@ void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, bool bPublic, ASO
     kBride.SetStringMember("iconPath", GetPartnerProfileIconPath(&pProxy->m_bride));
     pData->FUN_1409eb270("bride", kBride);
     pData->SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
-        WeddingTable::GetInstance()->FUN_140908d50(spPackage->m_nId, spHall->m_nId, FUN_140900f30(nTime))));
+        WeddingTable::GetInstance()->GetHallFieldId(spPackage->m_nId, spHall->m_nId, IsNightTime(nTime))));
     pData->SetWStringMember("date", FormatYearMonthDayHour(CMsTime(nTime)));
     pData->SetBoolMember("isPublic", bPublic);
     pData->SetWStringMember("price", FormatStringId(0x987, FUN_1409404f0(spHall->m_nMerat)));

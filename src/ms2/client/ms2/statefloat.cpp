@@ -26,7 +26,7 @@ public:
 
 float FUN_1410a7600(PCBase* p);                                           // 0x1410a7600 vertical velocity (PCBase +0xbf0)
 void FUN_1410a77e0(class CGuideObject*, float);   // C3: was FUN_1410a77e0
-bool FUN_14028d470(float a, float b);                                     // 0x14028d470 approx equal
+bool IsNearlyEqual(float a, float b);                                     // 0x14028d470 approx equal
 float FUN_14029d430(float fX, float fY);                                  // 0x14029d430 fmodf
 float FUN_14029d220(float fValue);                                        // 0x14029d220 fabsf
 
@@ -114,7 +114,7 @@ Vector3 StateFloat::FUN_1417c85d0(Vector3 kMove, double fTime)
     if (m_pOwner == 0)
         return kMove;
     float fVel = FUN_1410a7600(m_pOwner);
-    if (FUN_14028d470(fVel, 0))
+    if (IsNearlyEqual(fVel, 0))
         return kMove;
     int nBand = (int)((m_pOwner->vfunc_18().z - 200.0f) / 150.0f);
     if (m_nBand != nBand)

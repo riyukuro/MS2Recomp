@@ -32,7 +32,7 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_
 
 
 class ClassObject;
-ClassObject*FUN_1401f7f50(CStringW);                   // class factory: new object by registered name
+ClassObject*CreateClassObject(CStringW);                   // class factory: new object by registered name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // The "do not disturb" option block (+0x14: suppress every push).
@@ -76,7 +76,7 @@ void CSmartPushManager::CreatePushes()
     {
         const CSmartPushTable::DataPtr data(static_cast<const CSmartPushTable::DataPtr&>(rows[i]));
         CStringW strClass = StringFormat(L"CSmartPush{0}", data->m_strContent);
-        PushPtr push(reinterpret_cast<CSmartPush *>(FUN_1401f7f50(strClass)));
+        PushPtr push(reinterpret_cast<CSmartPush *>(CreateClassObject(strClass)));
         if (push)
         {
             push->m_nId = data->m_nId;

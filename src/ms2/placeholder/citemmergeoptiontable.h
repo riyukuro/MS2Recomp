@@ -25,7 +25,7 @@ public:
     virtual ~CItemMergeOptionTable();                       // 0x1405bfc10
 
     void LoadItemMergeOptionBase();                                   // loads the xml
-    DataPtr FUN_1405c00e0(int nItemId, int nMaterialId);   // the slot data of a merge pair, null when it cannot merge
+    DataPtr GetMergeData(int nItemId, int nMaterialId);   // the slot data of a merge pair, null when it cannot merge
     bool GetFirstNormalOption(int nCategory, int* pNormal);          // the first normal option of an item's slot
     bool GetFirstSpecialOption(int nCategory, int* pSpecial);         // the first special option of an item's slot
     CItemMergeOptionVariation* FUN_1405c0610(int nItemId, int nNormal);   // the whole-range variation of a normal option (null: none)
@@ -35,7 +35,7 @@ public:
     int FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
     int FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
     CStringW GetMergeOptionDescription(MS2Ptr<CItem> spItem, int nFlag);    // the description of an item's merge options
-    DataPtr FUN_1405c1d20(int nItemId, int nMaterialId);
+    DataPtr FindMergeData(int nItemId, int nMaterialId);
     DataPtr FUN_1405c1f40(int nCategory);
 
     static bool s_bInit;                                    // the "initialized" flag of CValidData

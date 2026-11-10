@@ -25,7 +25,7 @@ CharacterDecalData::CharacterDecalData()
 }
 
 // @0x1401e4090
-void CharacterDecalData::FUN_1401e4090(TiXmlElement* pElem)
+void CharacterDecalData::Read(TiXmlElement* pElem)
 {
     TiXmlElement* pDecal = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("decal"));
     if (pDecal != 0)

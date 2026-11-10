@@ -102,7 +102,7 @@ class Unk_UgcWearer;
 class Unk_UgcWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                                // the player
+    PCBase* GetLocalPlayer();                                // the player
 };
 struct Unk_WsC_TagPtr : Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > {};   // WorldService::FUN_141bd0420's result (worldservice_1.cpp)
 
@@ -195,7 +195,7 @@ CString FUN_141027a20(const CString& strPath);
 // ---- the item records the download requests read ----
 
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp)
-int FUN_14088dcf0(MS2Ptr<CItemData> spData);                // the UGC kind of an item record (1 equip, 2 cube, 7 mount, 9 blueprint)
+int GetUgcKind(MS2Ptr<CItemData> spData);                // the UGC kind of an item record (1 equip, 2 cube, 7 mount, 9 blueprint)
 CString GetDownloadFilePath(int nKind, CString strUrl);           // the local file of a downloaded UGC url
 
 // A cube item (cubeiteminfo.h; spelled here because that header has its own CUgcItemLook).
@@ -678,7 +678,7 @@ void CUgcManager::OpenBannerUpload(efd::SmartPointer<egf::Entity> spEntity)
         return;
     int nProperty = 0;
     spEntity->GetPropertyValue(0x819a96c0, nProperty);
-    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->GetFieldId();
     int nBannerId = nProperty;
     Unk_BannerPtr spBanner = CFieldBannerData::GetBanner(nBannerId);
     if (spBanner == NULL)
@@ -891,7 +891,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<UICharacterListDialog::CCharacterInfo> sp
     efd::Point3 kB;
     if (WorldService::GetInstance()->FUN_141bd0dd0(reinterpret_cast<Vector3*>(&kB), reinterpret_cast<Vector3*>(&kA)) == 0)
         return;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     NiAVObject* pUI = ((class PCBase*)(class PCBase*)(pPlayer))->FUN_141675150("Eff_UI");
@@ -939,7 +939,7 @@ void CUgcManager::FUN_141880c90(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<CUgcViewerProfile> spViewer(new CUgcViewerProfile());
@@ -1166,7 +1166,7 @@ int CUgcManager::FUN_141882020()
         return 0xd;
     if (spCtrl->m_spFile == 0)
         return 0xb;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0xc;
     int nResult = LockForUpload();
@@ -1401,7 +1401,7 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
             int nState = TSingleton<CStateService>::GetInstance()->GetCurrentSceneId();
             if (nState == 0x620000c)
             {
-                PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+                PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     SendUGCMode11(strPath);
@@ -1547,7 +1547,7 @@ void CUgcManager::FUN_141883860(CString strPath)
     MS2Ptr<CUgcUploadCtrl> spCtrl = GetCurrentUpload();
     if (spCtrl == 0)
         return;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     int nKind = spCtrl->m_nKind;
@@ -1600,7 +1600,7 @@ void CUgcManager::DownloadItemLook(MS2Ptr<CItem> spItem, egf::EntityID id)
 {
     if (spItem == 0)
         return;
-    int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
+    int nKind = GetUgcKind(MS2Ptr<CItemData>(((CItem*)spItem)->GetData()));
     CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
     if (pLook == 0)
         return;
@@ -1652,7 +1652,7 @@ void CUgcManager::FUN_141884300(MS2Ptr<CItem> spItem, int nObjectId)
 {
     if (spItem == 0)
         return;
-    int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
+    int nKind = GetUgcKind(MS2Ptr<CItemData>(((CItem*)spItem)->GetData()));
     if (nKind != 1)
         return;
     CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
@@ -1915,7 +1915,7 @@ void CUgcManager::FUN_141885880(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    int nKind = FUN_14088dcf0(MS2Ptr<CItemData>(((CItem*)spItem)->FUN_140527840()));
+    int nKind = GetUgcKind(MS2Ptr<CItemData>(((CItem*)spItem)->GetData()));
     if (nKind != 9)
         return;
     CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
@@ -1993,7 +1993,7 @@ int CUgcManager::DownloadItemIcon(CUgcItemLook* pLook, const int& nKind, const i
             param.m_upload.m_nType = 3;
             CUgcItemIconPC icon(spItem.get(), spItem.get() != 0 ? ((CItem*)spItem)->GetObjectId() : 0);
             if (pCallBack != 0)
-                icon.FUN_14088f960(*pCallBack);
+                icon.SetCallBack(*pCallBack);
             if (nObjectId != 0)
                 icon.m_nKind = nObjectId;
             PushDownload(&param, &icon);
@@ -2113,7 +2113,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
         return 0;
     if (pTexture == 0)
         return 0;
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(pItem->m_nObjectId));
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FindPCById(pItem->m_nObjectId));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CItemData> spData = FUN_14053f870(pItem->m_nItemId);
@@ -2213,10 +2213,10 @@ int CUgcManager::FUN_1418873c0(Cube* pCube)
         return 0;
     if (pCube->entity == 0)
         return 0;
-    MS2Ptr<CItemData> spData = FUN_14053f870(pCube->FUN_1408b4f20());
+    MS2Ptr<CItemData> spData = FUN_14053f870(pCube->GetItemId());
     if (spData == 0)
         return 0;
-    CUgcItemLook* pLook = pCube->FUN_1408b4f80();
+    CUgcItemLook* pLook = pCube->GetLook();
     if (pLook == 0)
         return 0;
     CString strPath = GetDownloadFilePath(2, pLook->m_strUrl);
@@ -2308,7 +2308,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
         {
             m_mapBanner.RemoveKey(nBannerId);
         }
-        efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
+        efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(nBannerId);
         if (spEntity != 0)
         {
             NiTexturePtr spTexture = GetObjectTexture(nBannerId);
@@ -2352,7 +2352,7 @@ int CUgcManager::FUN_1418881e0(int nBannerId, CString strPath, MS2Ptr<CUgcRegist
 {
     if (spBanner == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
@@ -2368,7 +2368,7 @@ MS2_REPLACE_METHOD(0x1418881e0, CUgcManager, FUN_1418881e0, 569, 0xBC422A61);
 // @0x141888420
 int CUgcManager::ApplyBannerTexture(int nBannerId, CString strPath)
 {
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexture* pTexture = LoadCachedTexture(FUN_14016a730(strPath, 0));
@@ -2389,7 +2389,7 @@ void CUgcManager::FUN_1418885b0(int nBannerId)
     {
         m_mapBanner.RemoveKey(nBannerId);
     }
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(nBannerId);
     if (spEntity != 0)
     {
         if (m_spDefaultTexture != 0)
@@ -2537,7 +2537,7 @@ MS2_REPLACE_METHOD(0x141888dc0, CUgcManager, IsReserveChanged, 15, 0x43A40A0D);
 // The AS rows of the 24 hours of a banner's day: reserved (by state), past, or free (selected when picked).
 void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<int, int>& selected, ASArray* pArray)
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     static int s_nCheckTime = GetClientConstants()->UgcBannerCheckTime.Read();
@@ -3258,7 +3258,7 @@ MS2Ptr<CUgcBannerRollingImage> CUgcManager::FindRollingImageByBanner(int nBanner
         for (unsigned int i = 0; i < nCount; i++)
         {
             MS2Ptr<CUgcBannerRollingImage>& spImage = m_rollingImages[i];
-            if (spImage->FUN_140897dd0(nBannerId) && spImage->m_n20 == 1)
+            if (spImage->HasBannerId(nBannerId) && spImage->m_n20 == 1)
                 return spImage;
         }
     }
@@ -3315,7 +3315,7 @@ MS2_REPLACE_METHOD(0x14188c5b0, CUgcManager, ApplyOrDownloadRollingBanner, 309, 
 void CUgcManager::FUN_14188c6f0()
 {
     CRBMap<unsigned int, Unk_BannerPtr> banners(10);
-    CFieldBannerData::GetBannersOfField(WorldService::GetInstance()->FUN_141bd3060(), banners);
+    CFieldBannerData::GetBannersOfField(WorldService::GetInstance()->GetFieldId(), banners);
     CRBMap<CString, std::vector<unsigned int> > urls(10);
     for (POSITION pos = banners.GetHeadPosition(); pos != 0; banners.GetNext(pos))
     {
@@ -3412,7 +3412,7 @@ void CUgcManager::ExtractBundledImagesOfType(int nType)
         CStringW strFileName = StringFormat(L"{0}{1}", szName, szExt);
         CStringW strExt(szExt);
         FUN_140841420(strExt);
-        CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(FUN_1401d4330(strFile, 0), 0, 0);
+        CFileSystem::BufferPtr spBuffer = GetFileSystem()->GetFileBuffer(FUN_1401d4330(strFile, 0), 0, 0);
         if (spBuffer.get())
         {
             CStringW strTarget = StringFormat(L"{0}\\{1}", strDir, strFileName);
@@ -3623,7 +3623,7 @@ void CUgcManager::OnCharacterProfileImage(CInPacket& packet)
     }
     else
     {
-        Unk_UgcWearer* pPlayer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
+        Unk_UgcWearer* pPlayer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FindPCById(nObjectId));
         if (pPlayer == 0)
             return;
         CString strPath = FUN_141028be0(((class PCBase*)(class PCBase*)(pPlayer))->FUN_141656a80(), strUrl, 0, "");
@@ -3644,10 +3644,10 @@ void CUgcManager::OnItemLookChanged(CInPacket& packet, int nType)
     proxy.Read(packet);
     CUgcItemLook look;
     look.Read(packet);
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FindPCById(nObjectId));
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != pWearer)
         return;
     __int64 itemUid = proxy.m_itemUid;
@@ -3678,10 +3678,10 @@ void CUgcManager::OnBlueprintLookChanged(CInPacket& packet)
     CUgcItemLook look;
     look.Read(packet);
     __int64 itemUid = proxy.m_n20;
-    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FUN_141bd1290(nObjectId));
+    Unk_UgcWearer* pWearer = reinterpret_cast<Unk_UgcWearer*>(WorldService::GetInstance()->FindPCById(nObjectId));
     if (pWearer == 0)
         return;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != pWearer)
         return;
     CItem* pItem = g_143ab2a90.FindItemByUid(itemUid).get();
@@ -3707,7 +3707,7 @@ void CUgcManager::FUN_14188eb30(CInPacket& packet)
         {
             MS2Ptr<CUgcBannerRollingImage> spImage(new CUgcBannerRollingImage);
             spImage->Read(packet);
-            spImage->FUN_140897740();
+            spImage->ParseIds();
             images.Add(spImage);
         }
     }

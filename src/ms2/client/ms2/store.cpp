@@ -404,7 +404,7 @@ int CStore::CanMerge()
         if (pItem == 0) {
             continue;
         }
-        pData.AssignRaw(((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840())));
+        pData.AssignRaw(((CItemData*)(static_cast<CItem*>(pItem)->GetData())));
         if (pData == 0) {
             continue;
         }
@@ -591,7 +591,7 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     if (!pItem) {
         return;
     }
-    if (((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840()))->FUN_14053cd10()) {
+    if (((CItemData*)(static_cast<CItem*>(pItem)->GetData()))->IsScoreItem()) {
         if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)GetInstrumentManager()))) == ((CItem*)pItem)->GetItemUid()) {
             ShowSystemNotice(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;

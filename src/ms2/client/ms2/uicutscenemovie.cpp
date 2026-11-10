@@ -88,7 +88,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     GetUISwfEntityManager()->AddToLayer(this, 2);
     ChromaSDK::GetChromaManager()->SetState(11);
     if (m_4c != 0) {
-        if (((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
+        if (((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())) {
             Play();
             return 1;
         } else {
@@ -112,7 +112,7 @@ int UICutSceneMovie::vfunc_53()
         m_30->Invoke("hide");
     SetSoundFade(false);
     FUN_14151f200();
-    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (p) {
         FUN_141901390(1, vfunc_48());
         if (m_bIntroStory)
@@ -188,7 +188,7 @@ int UICutSceneMovie::HasSceneVideo(int nScene)
 {
     if (!m_strScenePath.IsEmpty())
         return 1;
-    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->GetFieldId();
     CString strPath = TSingleton<CLoadingImageTable>::GetInstance()->GetMovieFile(nId, nScene);
     return strPath.GetLength() != 0;
 }
@@ -243,7 +243,7 @@ MS2_REPLACE_METHOD(0x14190F400, UICutSceneMovie, OnLoadInit, 253, 0x31B35ED8);
 // @0x14190f510
 int UICutSceneMovie::vfunc_13()
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible() &&
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible() &&
         FUN_14151f6e0()) {
         FUN_140d73bc0(0x88c, 1, static_cast<IMessageListener*>(this), L"");
         return 1;
@@ -336,7 +336,7 @@ void UICutSceneMovie::vfunc_11()
         return;
     if (!FUN_1419102c0())
         return;
-    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (p) {
         FUN_141901390(0, vfunc_48());
         if (m_bPlayPending) {
@@ -441,7 +441,7 @@ MS2_REPLACE_METHOD(0x1419102C0, UICutSceneMovie, FUN_1419102c0, 24, 0x7AC102E0);
 // @0x1419102e0
 void UICutSceneMovie::PlayDefaultScene()
 {
-    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->GetFieldId();
     int nScene = 0;
     Unk_1419e04b0* p = ((class Unk_1419e04b0*)FindUIObject(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
     if (p)
@@ -457,7 +457,7 @@ MS2_REPLACE_METHOD(0x1419102E0, UICutSceneMovie, PlayDefaultScene, 191, 0x4FB651
 // @0x1419103b0
 void UICutSceneMovie::PlayPendingScene()
 {
-    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
+    int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->GetFieldId();
     if (m_nSceneId == nId) {
         vfunc_52(m_strScenePath, 0.0f);
         m_strScenePath.Empty();

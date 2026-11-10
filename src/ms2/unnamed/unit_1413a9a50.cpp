@@ -51,7 +51,7 @@ int CGuideConditionCountInDoorInstallItem::FUN_1413a9ac0()
     {
         if (!items[i]->FUN_140528980())
             continue;
-        if ((items[i]->FUN_140527840()->install.space & 6) != 0)
+        if ((items[i]->GetData()->install.space & 6) != 0)
             nCount++;
     }
     return nCount;
@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x1413A9C70, CGuideConditionFieldId, vfunc_2, 195, 0x89E750BE
 // @0x1413a9d40
 int CGuideConditionFieldId::vfunc_3()
 {
-    unsigned nFieldId = WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nFieldId = WorldService::GetInstance()->GetFieldId();
     if (DAT_143ab2890 != 0)
         nFieldId = 0;
     if (m_nRangeBeg != 0 || m_nRangeEnd != 0)

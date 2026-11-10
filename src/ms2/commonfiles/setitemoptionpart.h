@@ -23,12 +23,12 @@ public:
     unsigned GetCount();                                       // 0x1407bc9b0 the part count
     ATL::CAtlArray<int>& GetEffectIds();                           // 0x1407bc9d0 the additional effect ids
     ATL::CAtlArray<unsigned short>& GetEffectLevels();                // 0x1407bc9f0 the additional effect levels
-    void FUN_1407bca10(StatKey nStat, MS2Ptr<BaseOption> spOption);         // 0x1407bca10
-    void FUN_1407bcac0(SpecialKey nStat, MS2Ptr<BaseOption> spOption);      // 0x1407bcac0
-    MS2Ptr<BaseOption> FUN_1407bcb70(StatKey nStat) const;                  // 0x1407bcb70
-    MS2Ptr<BaseOption> FUN_1407bcc30(SpecialKey nStat) const;               // 0x1407bcc30
-    void FUN_1407bccf0(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn);       // 0x1407bccf0
-    void FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn);    // 0x1407bcdb0
+    void AddStat(StatKey nStat, MS2Ptr<BaseOption> spOption);         // 0x1407bca10
+    void AddSpecial(SpecialKey nStat, MS2Ptr<BaseOption> spOption);      // 0x1407bcac0
+    MS2Ptr<BaseOption> GetStat(StatKey nStat) const;                  // 0x1407bcb70
+    MS2Ptr<BaseOption> GetSpecial(SpecialKey nStat) const;               // 0x1407bcc30
+    void ForEachStat(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn);       // 0x1407bccf0
+    void ForEachSpecial(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn);    // 0x1407bcdb0
     CStringA& GetAnimationPrefix();                                      // 0x1407bce70 animationPrefix
     CStringA& GetSetEffect();                                      // 0x1407bce90 setEffect
     CStringA& GetGroundAttribute();                                      // 0x1407bceb0 groundAttribute

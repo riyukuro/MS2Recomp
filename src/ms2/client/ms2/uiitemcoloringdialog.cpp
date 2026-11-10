@@ -136,7 +136,7 @@ public:
 class Unk_IcWorld
 {
 public:
-    Unk_IcPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
+    Unk_IcPlayer* GetLocalPlayer();              // the player (NULL outside the game)
 };
 
 class Unk_IcUIMgr
@@ -173,7 +173,7 @@ UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 extern Unk_Inventory g_143ab2a90;
 int FUN_14109a9e0();                            // rand
@@ -201,7 +201,7 @@ CStringW FUN_141b71990(unsigned n);
 CStringW FUN_141b71910(__int64 n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_140f024e0(ASData* pData, int* pA, int* pB);           // the two int arguments
 
@@ -224,7 +224,7 @@ struct Unk_ColorItems       // the view of ChangeColors in unit_1401f9eb0
     void FUN_140200950(COutputStream&);
     void AddItem(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
 };
-CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice);   // the price text
+CStringW GetFeePriceText(Unk_BSFee* pFee, const unsigned int* pPrice);   // the price text
 void FUN_14134a2e0(Unk_BSFee* pFee);                                       // "not enough" message
 __int64 FUN_141349ef0(int nFeeType, int a2, unsigned nPrice);              // the money left after paying
 void FUN_140f014f0(MS2Ptr<Customize> spCustomize);                         // leave the preview
@@ -277,7 +277,7 @@ void UIItemColoringDialog::vfunc_67()
     UIDialog::vfunc_67();
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     PlayDyePose();
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0)
         pPc->FUN_14166ed70(0x56057c6);
     m_198 = 0;
@@ -317,7 +317,7 @@ MS2_REPLACE_METHOD(0x1419ac580, UIItemColoringDialog, OnLoadInit, 245, 0xE6DA347
 void UIItemColoringDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
@@ -337,7 +337,7 @@ int UIItemColoringDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed()) {
         RequestClose();
         return 1;
     }
@@ -350,7 +350,7 @@ void UIItemColoringDialog::vfunc_15()
 {
     if (vfunc_55() != 0)
         return;
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -475,7 +475,7 @@ int UIItemColoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nItemId = ParseInt(data.FUN_1422b8d30());
             if (m_268.get() != 0) {
-                if (void* pMy = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
+                if (void* pMy = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())) {
                     MS2Ptr<CItem> spItem = AddCurrentItemToBasket(nItemId);
                     if (spItem.get() != 0)
                         RefreshBasketState();
@@ -488,7 +488,7 @@ int UIItemColoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nItemId = ParseInt(data.FUN_1422b8d30());
             if (m_268.get() != 0) {
-                if (void* pMy = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
+                if (void* pMy = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())) {
                     MS2Ptr<CItem> spItem = RemoveBasketItem(nItemId);
                     if (spItem.get() != 0)
                         RefreshBasketState();
@@ -545,7 +545,7 @@ void UIItemColoringDialog::OnGameEventChanged(NotifyObject* pNotify)
     if (pEvent != 0 && pEvent->m_eventName == "SaleBeautyShop") {
         SetFee((unsigned)GetTotalPrice());
         if (MS2Ptr<ASMovieClip> spPcBang = GetChild<ASMovieClip>("m_pcBang")) {
-            int nSale = ((class CGameRule*)GetGameRule())->FUN_140476cf0(GetSaleEventId(), FUN_1419b1a50());
+            int nSale = ((class CGameRule*)GetGameRule())->GetSaleIndex(GetSaleEventId(), FUN_1419b1a50());
             spPcBang->vfunc_4(nSale == 0);
         }
         UIBillDialog* pBill;
@@ -577,7 +577,7 @@ MS2_REPLACE_METHOD(0x1419addc0, UIItemColoringDialog, OnActiveMyCodiTabChanged, 
 // @0x1419adf80
 void UIItemColoringDialog::vfunc_24(void* p)
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if ((m_30.get() ? true : false) && vfunc_55() == 0) {
@@ -593,7 +593,7 @@ void UIItemColoringDialog::vfunc_24(void* p)
 // @0x1419ae170
 void UIItemColoringDialog::BuildItems()
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_278.RemoveAll();
@@ -635,7 +635,7 @@ MS2_REPLACE_METHOD(0x1419ae170, UIItemColoringDialog, BuildItems, 1558, 0xF5106C
 // @0x1419ae790
 void UIItemColoringDialog::PlayDyePose()
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -672,7 +672,7 @@ int UIItemColoringDialog::FUN_1419ae940()
     Unk_IcField* pField = reinterpret_cast<Unk_IcField*>(((WorldService*)(WorldService::GetInstance()))->FUN_141bd3620());
     if (pField != 0)
         pField->vfunc_149();
-    ((class GFxSceneService*)(CUserMail::GetGFxSceneService()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(CUserMail::GetGFxSceneService()))->SetSubScene(0x620001d);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419ae940, UIItemColoringDialog, FUN_1419ae940, 163, 0x937074BA);
@@ -683,7 +683,7 @@ void UIItemColoringDialog::RequestClose()
     if (IsSaveEnabled() != 0) {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::OnCloseConfirm));
-        spBox->FUN_141a01800(2);
+        spBox->SetButtonPreset(2);
         FUN_140d73c60(spBox);
     } else {
         FUN_1419ae940();
@@ -794,7 +794,7 @@ void UIItemColoringDialog::SetFee(unsigned nPrice)
         return;
     int nLevel = FUN_1419b1a50();
     int nEvent = GetSaleEventId();
-    int nResult = ((class CGameRule*)GetGameRule())->FUN_140476cf0(nEvent, nLevel);
+    int nResult = ((class CGameRule*)GetGameRule())->GetSaleIndex(nEvent, nLevel);
     bool bSale = nResult == 0;
     if (m_2a8.IsEmpty() != false) {
         CStringW strDefault = GetStringCommonByKey(L"s_beauty_fee_default");
@@ -805,11 +805,11 @@ void UIItemColoringDialog::SetFee(unsigned nPrice)
         Unk_BSFee* pFee = GetFee();
         if (bDiscount) {
             unsigned __int64 nValue = nSale;
-            CStringW strPrice = FUN_14134a220(pFee, reinterpret_cast<const unsigned*>(&nValue));
+            CStringW strPrice = GetFeePriceText(pFee, reinterpret_cast<const unsigned*>(&nValue));
             m_30->Invoke("setFee", FUN_1409eb450(nPrice), CStringW(strPrice), bSale, bDiscount);
         } else {
             unsigned __int64 nValue = nPrice;
-            CStringW strPrice = FUN_14134a220(pFee, reinterpret_cast<const unsigned*>(&nValue));
+            CStringW strPrice = GetFeePriceText(pFee, reinterpret_cast<const unsigned*>(&nValue));
             m_30->Invoke("setFee", CStringW(strPrice), FUN_1409eb450(nSale), bSale, bDiscount);
         }
     }
@@ -819,7 +819,7 @@ MS2_REPLACE_METHOD(0x1419af2f0, UIItemColoringDialog, SetFee, 1105, 0xDCBE6A3E);
 // @0x1419af750
 void UIItemColoringDialog::FUN_1419af750()
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0) {
         if (pPc->GetCurStateId() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
@@ -837,7 +837,7 @@ MS2_REPLACE_METHOD(0x1419af750, UIItemColoringDialog, FUN_1419af750, 222, 0x7478
 int UIItemColoringDialog::OnDyeApplied()
 {
     m_260 = false;
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0) {
         RefreshBasketState();
         FUN_1412761e0(m_30, 1);
@@ -878,7 +878,7 @@ int UIItemColoringDialog::FUN_1419af980()
         int nPaid = nCount - nCoupons;
         unsigned __int64 nPrice = (unsigned)(nPaid * GetSalePrice(GetPricePerItem()));
         CStringW strText;
-        CStringW strPrice = FUN_14134a220(pFee, reinterpret_cast<const unsigned*>(&nPrice));
+        CStringW strPrice = GetFeePriceText(pFee, reinterpret_cast<const unsigned*>(&nPrice));
         strText = FUN_14028dfa0(CStringW(L"s_beauty_msg_ask_coupon_and_merat_confirm"), nCount, GetCouponName(), nCoupons, strPrice);
         ShowMessageBoxWithCallback(CStringW(strText), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::OnPayConfirm));
         return 1;
@@ -896,7 +896,7 @@ void UIItemColoringDialog::FUN_1419afcd0(const Scaleform::GFx::FunctionHandler::
     CItem* pUser = static_cast<CItem*>(params.pUserData);
     if (pUser == 0)
         return;
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     CItem* pItem = pPc->FUN_141655b80(pUser->GetItemUid()).get();
@@ -921,7 +921,7 @@ int UIItemColoringDialog::FUN_1419afe30()
     if (m_1a0 != 3)
         return 0;
     vfunc_8(1);
-    int nSale = ((class CGameRule*)GetGameRule())->FUN_140476cf0(GetSaleEventId(), FUN_1419b1a50());
+    int nSale = ((class CGameRule*)GetGameRule())->GetSaleIndex(GetSaleEventId(), FUN_1419b1a50());
     bool bOption = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb6);
     ASObj obj(2);
     FUN_140f01540(obj, bOption);
@@ -965,7 +965,7 @@ MS2_REPLACE_METHOD(0x1419b00b0, UIItemColoringDialog, OnBeautyShopPacket, 514, 0
 // @0x1419b02c0
 void UIItemColoringDialog::PreviewItem(__int64 nUid, int nIndex)
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_268 == 0)
@@ -974,7 +974,7 @@ void UIItemColoringDialog::PreviewItem(__int64 nUid, int nIndex)
     MS2Ptr<CItem> spItem = m_268->GetEditItem();
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()));
     if (spData->FUN_14053d2f0()) {
         if (pPc->GetCurStateId() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
@@ -984,7 +984,7 @@ void UIItemColoringDialog::PreviewItem(__int64 nUid, int nIndex)
     }
     ASObj obj(2);
     if (FUN_140f32290(obj, spData, m_268, 3, 0xf, false) != 0) {
-        CItemExtraData* pExtra = ((class CItemExtraData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527870());
+        CItemExtraData* pExtra = ((class CItemExtraData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetProxy());
         if (pExtra != 0)
             m_254 = std::pair<unsigned, unsigned>((unsigned)pExtra->GetSlotPaletteId(0), pExtra->GetSlotColorId(0));
         m_30->Invoke("buildCurrentItem", Scaleform::GFx::Value(obj.GetValue()));
@@ -1035,7 +1035,7 @@ void UIItemColoringDialog::FUN_1419b0700()
         spChange->type = spItem->GetItemId();
         spChange->flag19 = UseFreeTry() > 0;
         spChange->value28 = spItem->GetItemUid();
-        spChange->extra = ((class CItemExtraData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527870());
+        spChange->extra = ((class CItemExtraData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetProxy());
         reinterpret_cast<Unk_ColorItems*>(&request)->AddItem(spChange);
         nCount++;
     }
@@ -1049,7 +1049,7 @@ MS2_REPLACE_METHOD(0x1419b0700, UIItemColoringDialog, FUN_1419b0700, 1022, 0xDA0
 // @0x1419b0b10
 int UIItemColoringDialog::BuildBillRows(ASArray* pRows, int* pTotal)
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (m_2a8.IsEmpty() != false)
@@ -1073,7 +1073,7 @@ int UIItemColoringDialog::BuildBillRows(ASArray* pRows, int* pTotal)
         obj.FUN_1409c0dc0("category", "$s_beauty_change_color");
         int nSum = nCount * nPrice;
         *pTotal += nSum;
-        obj.SetWStringMember("strPrice", FUN_14134a220(pFee, reinterpret_cast<const unsigned*>(&static_cast<const unsigned __int64&>((unsigned)nSum))));
+        obj.SetWStringMember("strPrice", GetFeePriceText(pFee, reinterpret_cast<const unsigned*>(&static_cast<const unsigned __int64&>((unsigned)nSum))));
         obj.SetWStringMember("detail", CStringW(strDetail));
         pRows->PushValue(Scaleform::GFx::Value(obj.GetValue()));
     }
@@ -1212,7 +1212,7 @@ MS2_REPLACE_METHOD(0x1419b19c0, UIItemColoringDialog, GetCouponName, 126, 0x454E
 // @0x1419b1a50
 int UIItemColoringDialog::FUN_1419b1a50()
 {
-    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     return pPc->FUN_141658f30();
@@ -1356,8 +1356,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, bool a2
     ASArgList args;
     args.resize(4);
     FUN_1422bcea0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[1], a2);
+    SetBoolean(&args[2], a3);
     SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }

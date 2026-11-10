@@ -120,8 +120,8 @@ unsigned FUN_140767ff0();                               // random number
 bool FUN_14053fc90(int nItemId);                        // the item is in the first remake stone class
 bool FUN_14053fd10(int nItemId);
 bool FUN_14053fd50(int nItemId);
-int FUN_14053feb0(int nItemId);                         // the fixed rank of an item (0: none)
-int FUN_1406516b0();                                    // the language / region id
+int GetItemRank(int nItemId);                         // the fixed rank of an item (0: none)
+int GetRegion();                                    // the language / region id
 float Floor(float f);                           // floorf
 extern "C" float(__cdecl* __imp_powf)(float, float);
 
@@ -213,7 +213,7 @@ void CItemOptionTable::CalcRemakeIngredients(int nItemId, int nLevel, int nRank,
     unsigned nSecond = 1;
     float fBase = 1.24f;
     unsigned nLv = nItemLevel;
-    int nRegion = FUN_1406516b0();
+    int nRegion = GetRegion();
     if (nRegion == 0)
         nLv = (std::min)(56u, nLv);
     else
@@ -299,7 +299,7 @@ void CItemOptionTable::CalcPetRemakeCost(int nLevel, int nRank, const CItemRemak
 int CItemOptionTable::GetRandomRank(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const
 {
     CheckInit();
-    int nFixed = FUN_14053feb0(nItemId);
+    int nFixed = GetItemRank(nItemId);
     if (nFixed != 0)
         return nFixed;
     std::pair<int, int> kKey(nGroup, nLevel);
@@ -437,7 +437,7 @@ bool CItemOptionTable::FUN_1405f59b0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
     MS2Ptr<ItemOptionRandom> spRandom = GetRandom(nRandomId);
     if (spRandom == 0)
         return false;
-    return spRandom->FUN_1405d4bb0(spTarget, pRandom);
+    return spRandom->RerollUntilChanged(spTarget, pRandom);
 }
 
 // @0x1405f5ba0
@@ -515,7 +515,7 @@ int CItemOptionTable::FUN_1405f6100(unsigned nStatId)
     auto it = m_variations.find(nStatId);
     if (it == m_variations.end())
         return 0;
-    return it->second->FUN_1405d3a40();
+    return it->second->PickStat();
 }
 
 // @0x1405f6190

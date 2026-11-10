@@ -105,7 +105,7 @@ CStringA FUN_140db99f0(const Unk_DbEfdPt3& kVec)
 }
 
 // @0x140db9aa0
-CStringA FUN_140db9aa0(NiColorA kColor)
+CStringA FormatColorA(NiColorA kColor)
 {
     CStringA kText;
     kText.Format("%f, %f, %f, %f", (double)kColor.r, (double)kColor.g, (double)kColor.b, (double)kColor.a);

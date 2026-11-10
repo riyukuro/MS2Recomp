@@ -96,7 +96,7 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 struct Unk_GsConnect;
 void FUN_1412609c0(Unk_GsConnect* pEntry, const CStringW& strValue);
 
-int FUN_1406c34c0();                                            // the Nexon platform is active
+int IsNexonPlatform();                                            // the Nexon platform is active
 extern CString g_strServerAddr;                                 // the login ip
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -166,7 +166,7 @@ int UIRegionListDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEnterPressed(false)) {
         m_30->Invoke("onEnterKey");
         return 1;
     }
@@ -217,7 +217,7 @@ void UIRegionListDialog::FUN_140e80620()
 // @0x140e80740
 void UIRegionListDialog::FUN_140e80740()
 {
-    if (FUN_1406c34c0() == 0)
+    if (IsNexonPlatform() == 0)
         return;
     g_strServerAddr = "";
     CStringW strEmpty(L"");
@@ -312,7 +312,7 @@ bool UIRegionListDialog::SelectRegion(CStringW strRegion)
 {
     Unk_RlPtr region = FindRegion(strRegion);
     if (region.get() != 0) {
-        if (FUN_1406c34c0() == 1)
+        if (IsNexonPlatform() == 1)
             g_strServerAddr = FUN_140e819e0(region->m_host);
         FUN_1412609c0((Unk_GsConnect*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd260(), region->m_id);
         return true;
@@ -352,7 +352,7 @@ void UIRegionListDialog::OnRegionSelected()
 // @0x140e81270
 void UIRegionListDialog::OnEndPopdown()
 {
-    if (FUN_1406c34c0() == 0) {
+    if (IsNexonPlatform() == 0) {
         CStringW strRegion = TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()->m_str00;
         FUN_140e812e0(strRegion);
     }
@@ -367,7 +367,7 @@ void UIRegionListDialog::FUN_140e812e0(const CStringW& strRegion)
         region = GetFirstRegion(0);
     if (region == 0)
         return;
-    if (FUN_1406c34c0() == 0)
+    if (IsNexonPlatform() == 0)
         FUN_1412609c0((Unk_GsConnect*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd260(), region->m_id);
 }
 

@@ -13,8 +13,8 @@
 #include "hook/ms2hook.h"
 
 Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);  // set a string Value (a COMDAT of ASArray's obj)
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);          // set a bool Value (a COMDAT of ASArray's obj)
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);  // set a string Value (a COMDAT of ASArray's obj)
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);          // set a bool Value (a COMDAT of ASArray's obj)
 
 // @0x1422e2080
 ASEvent::ASEvent(const CString& strType, bool bBubbles, bool bCancelable, int nMovieId)
@@ -25,9 +25,9 @@ ASEvent::ASEvent(const CString& strType, bool bBubbles, bool bCancelable, int nM
     if (pMovie) {
         ASArgList args;
         args.resize(3);
-        FUN_1422bce70(&args[0], strType);
-        FUN_1422bcce0(&args[1], bBubbles);
-        FUN_1422bcce0(&args[2], bCancelable);
+        SetString(&args[0], strType);
+        SetBoolean(&args[1], bBubbles);
+        SetBoolean(&args[2], bCancelable);
         pMovie->CreateObject(&m_value, "flash.events.Event", &args[0], (unsigned)reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size());
     }
 }
@@ -78,11 +78,11 @@ bool ASEvent::IsCancelable()
 MS2_REPLACE_METHOD(0x1422E2400, ASEvent, IsCancelable, 89, 0x78D18A51);
 
 // @0x1422e2460
-bool ASEvent::FUN_1422e2460()
+bool ASEvent::IsBubbles()
 {
     return GetMember("bubbles").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422E2460, ASEvent, FUN_1422e2460, 89, 0x3C076FA1);
+MS2_REPLACE_METHOD(0x1422E2460, ASEvent, IsBubbles, 89, 0x3C076FA1);
 
 // @0x1422e24c0
 bool ASEvent::IsDefaultPrevented()
@@ -174,18 +174,18 @@ int ASListEvent::GetRowIndex()
 MS2_REPLACE_METHOD(0x1422E28E0, ASListEvent, GetRowIndex, 88, 0x9B9A6B0F);
 
 // @0x1422e2940
-unsigned int ASListEvent::FUN_1422e2940()
+unsigned int ASListEvent::GetControllerIdx()
 {
     return GetMember("controllerIdx").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422E2940, ASListEvent, FUN_1422e2940, 88, 0xC2BC7FAC);
+MS2_REPLACE_METHOD(0x1422E2940, ASListEvent, GetControllerIdx, 88, 0xC2BC7FAC);
 
 // @0x1422e29a0
-unsigned int ASListEvent::FUN_1422e29a0()
+unsigned int ASListEvent::GetButtonIdx()
 {
     return GetMember("buttonIdx").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422E29A0, ASListEvent, FUN_1422e29a0, 88, 0x3115F9F3);
+MS2_REPLACE_METHOD(0x1422E29A0, ASListEvent, GetButtonIdx, 88, 0x3115F9F3);
 
 // @0x1422e2a00
 bool ASListEvent::IsKeyboard()

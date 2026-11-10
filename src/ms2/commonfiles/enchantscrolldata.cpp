@@ -41,7 +41,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -170,7 +170,7 @@ int CEnchantScrollRecipe::Read(TiXmlElement* pElem)
         return 0;
     if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_strFunction != L"EnchantScroll")
         return 0;
-    if (reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d2380() == 0)
+    if (reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).GetArgCount() == 0)
         return 0;
     m_nScrollId = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d1f60(0, 0);
     CEnchantScrollTable::ScrollPtr scroll = CEnchantScrollTable::GetInstance()->FindScroll(m_nScrollId);
@@ -249,7 +249,7 @@ int CEnchantScrollTable::LoadScrolls()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("scroll")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("scroll")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         ScrollPtr data(new CEnchantScrollData);
         int nId = 0;
@@ -276,7 +276,7 @@ int CEnchantScrollTable::LoadRecipes()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         RecipePtr data(new CEnchantScrollRecipe);
         if (data->Read(pNode) == 0)

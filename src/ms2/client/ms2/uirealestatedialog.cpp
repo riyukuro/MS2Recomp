@@ -51,7 +51,7 @@ static CString s_strStun = "stun";
 
 // ---- unit-local views of exe types ----
 
-class Unk_ReWorld { public: MyPC* FUN_141bd0cc0(); };                // the local player
+class Unk_ReWorld { public: MyPC* GetLocalPlayer(); };                // the local player
 
 // The user report record (ctor 0x140c74fc0, 0x118 bytes; the same view as uicommon.cpp).
 class CUserReportData : public CPtred
@@ -123,9 +123,9 @@ int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0b80(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0890(int nMapId, int nGroup, int* pnKind);
-Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners, int nMapId, int nBlockId);
+Unk_CubeOwnerPtr FindCubeOwner(Unk_CubeOwners& owners, int nMapId, int nBlockId);
 __int64 GetServerTime();                                            // the server time
-int FUN_1406516a0();                                                // client language
+int GetLanguage();                                                // client language
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 CStringW FUN_140719a00(long long n);                                // integer text
@@ -213,7 +213,7 @@ void UIRealEstateDialog::OnLoadInit()
 // @0x141ab2410
 int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 1;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -318,7 +318,7 @@ void UIRealEstateDialog::vfunc_ugc_5()
 // @0x141ab3250
 int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 1;
     if (CBanTextChecker* pFilter = ((class CommonString*)TSingleton<CommonString>::GetInstance())->GetChecker())
@@ -351,7 +351,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC != 0 && pPC->HasNoHome() == 0)
     {
         SetHomeName(pPC->GetHomeName());
@@ -393,7 +393,7 @@ void UIRealEstateDialog::SetContractEffect()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC != 0 && pPC->HasNoHome() == 0)
         SetExpireDate(&pPC->GetUGCMapInfo()->m_n30);
     if (m_30.get() != 0)
@@ -403,7 +403,7 @@ void UIRealEstateDialog::SetContractEffect()
 // @0x141ab38e0
 void UIRealEstateDialog::SendRequestCubeMode2()
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (pPC->HasNoHome() != 0)
@@ -517,7 +517,7 @@ void UIRealEstateDialog::SetExpireDate(const __int64* pnTime)
         return;
     if (*pnTime != 0)
     {
-        int nLang = FUN_1406516a0();
+        int nLang = GetLanguage();
         CMsTime tTime(*pnTime);
         int nDay = tTime.GetDay();
         int nMonth = tTime.GetMonth();
@@ -535,7 +535,7 @@ void UIRealEstateDialog::SetExpireDate(const __int64* pnTime)
 // @0x141ab42a0
 void UIRealEstateDialog::FUN_141ab42a0()
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
@@ -593,7 +593,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
                     nBlock = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c3000();
                 {
                     Unk_CubeOwners& rOwners = *reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410d3360();
-                    Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(rOwners, m_nGroup, nBlock);
+                    Unk_CubeOwnerPtr spOwner = FindCubeOwner(rOwners, m_nGroup, nBlock);
                     if (spOwner.get() != 0)
                     {
                         strOwner = spOwner->ownerName;

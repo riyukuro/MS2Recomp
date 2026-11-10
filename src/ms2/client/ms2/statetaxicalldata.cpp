@@ -45,7 +45,7 @@ CString FUN_1405a7e80(int n);                            // number -> text
 float FUN_140768090();                                   // random 0..1
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_14028d260(float f);                              // seconds -> ms  (C3: the definition's __int64 return, read as int)
-int FUN_141276180(const CString& strTarget, const CString& str);
+int PlaySystemSound(const CString& strTarget, const CString& str);
 int FUN_141b71c00(unsigned short n);
 
 // The strings and constants singletons.
@@ -143,7 +143,7 @@ void StateTaxiCallData::vfunc_1(Unk_StateDataArg* p)
 void StateTaxiCallData::vfunc_2(Unk_StateDataArg* p)
 {
     StateData::vfunc_2(p);
-    m_nTaxiId = FUN_1407181d0(p->m_str70);
+    m_nTaxiId = ParseUInt(p->m_str70);
 }
 
 // @0x1417fe0f0 ~StateTaxiCallData is implicit (no vftable store before the base dtor)
@@ -209,7 +209,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
                 pBar->StartCastingText(0, GetStringCommon(0x64b), nDuration, false, true, strLabel);
             }
             CString strEmpty("");
-            FUN_141276180(s_strTaxiCall, strEmpty);
+            PlaySystemSound(s_strTaxiCall, strEmpty);
         }
     }
 }

@@ -66,8 +66,8 @@ void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FU
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
 void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);   // C3: was FUN_1408740a0
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);        // int attribute with a default
-float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault);    // float attribute with a default
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);        // int attribute with a default
+float GetFloatAttr(TiXmlElement* pElem, const char* pszName, float fDefault);    // float attribute with a default
 float FUN_14028d280(unsigned uMilliseconds);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* pszSep);  // split into strings (achievedata.cpp; C3: was FUN_14015f0b0)
@@ -198,7 +198,7 @@ void Unk_SkillSensor::SaveElement(void* pParent, CString strName)
 {
     static Unk_SkillSensor kDefault;
     TiXmlElement elem(strName);
-    FUN_140800570(&elem);
+    SaveAttributes(&elem);
     if (m_nSensorStartDelay != kDefault.m_nSensorStartDelay)
         XmlSetAttr((class TiXmlElement*)(&elem), "sensorStartDelay", (unsigned long)m_nSensorStartDelay);
     if (m_nSensorSplashStartDelay != kDefault.m_nSensorSplashStartDelay)
@@ -307,8 +307,8 @@ int SkillActionSkill::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "dependOnCasterState", reinterpret_cast<int&>(m_nDependOnCasterState));
     XmlGetAttr((class TiXmlElement*)(pElem), "activeByIntervalTick", reinterpret_cast<int&>(m_nActiveByIntervalTick));
     XmlGetAttr((class TiXmlElement*)(pElem), "independent", reinterpret_cast<int&>(m_nIndependent));
-    m_nChain = FUN_140197350(pElem, "chain", m_nChain);
-    m_fChainDistance = FUN_1401973d0(pElem, "chainDistance", m_fChainDistance);
+    m_nChain = GetIntAttr(pElem, "chain", m_nChain);
+    m_fChainDistance = GetFloatAttr(pElem, "chainDistance", m_fChainDistance);
     return 1;
 }
 
@@ -407,7 +407,7 @@ void SkillGlideData::Load(TiXmlElement* pElem)
 }
 
 // @0x140802a40
-int SkillGlideData::FUN_140802a40(TiXmlElement* pElem)
+int SkillGlideData::LoadGlideProperty(TiXmlElement* pElem)
 {
     TiXmlElement* pGlide = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("glideProperty"));
     if (pGlide != 0)
@@ -449,7 +449,7 @@ bool Unk_SkillBlock170::IsDifferent(const Unk_SkillBlock170& o)
 }
 
 // @0x140802d50
-int Unk_SkillBlock170::FUN_140802d50(TiXmlElement* pElem)
+int Unk_SkillBlock170::LoadPush(TiXmlElement* pElem)
 {
     TiXmlElement* pPush = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
     if (pPush != 0)
@@ -756,7 +756,7 @@ SkillAttackData* SkillLevelData::GetAttack(int nMotion, int nAttack)
 }
 
 // @0x140803fb0
-SkillAttackData* SkillLevelData::FUN_140803fb0(int nMotion, CString strName)
+SkillAttackData* SkillLevelData::GetAttackByName(int nMotion, CString strName)
 {
     SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
@@ -786,7 +786,7 @@ Unk_RangeProperty* SkillLevelData::GetAttackRange(int nMotion, int nAttack)
 }
 
 // @0x140804120
-Unk_RangeShape* SkillLevelData::FUN_140804120()
+Unk_RangeShape* SkillLevelData::GetDetectShape()
 {
     if (m_detect.m_nType == 0)
         return 0;
@@ -794,7 +794,7 @@ Unk_RangeShape* SkillLevelData::FUN_140804120()
 }
 
 // @0x140804150
-float SkillLevelData::FUN_140804150(int nMotion, int nAttack)
+float SkillLevelData::GetDamageRate(int nMotion, int nAttack)
 {
     SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
@@ -807,7 +807,7 @@ float SkillLevelData::FUN_140804150(int nMotion, int nAttack)
 }
 
 // @0x1408041d0
-__int64 SkillLevelData::FUN_1408041d0(int nMotion, int nAttack)
+__int64 SkillLevelData::GetDamageValue(int nMotion, int nAttack)
 {
     SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
@@ -843,7 +843,7 @@ float SkillLevelData::GetAttackRangeValue(int nMotion, int nAttack)
 }
 
 // @0x140804310
-float SkillLevelData::FUN_140804310()
+float SkillLevelData::GetMaxRangeValue()
 {
     float fMax = 0;
     for (int nMotion = 0; nMotion < GetMotionCount(); nMotion++)
@@ -870,7 +870,7 @@ int SkillLevelData::FUN_1408043f0(int nMotion, int nAttack)
 }
 
 // @0x140804450
-bool SkillLevelData::FUN_140804450()
+bool SkillLevelData::HasSequenceName()
 {
     if (m_vMotion.empty())
         return false;
@@ -883,7 +883,7 @@ bool SkillLevelData::FUN_140804450()
 }
 
 // @0x140804500
-const CString& SkillLevelData::FUN_140804500(int nKind, int nMotion)
+const CString& SkillLevelData::GetMotionEffect(int nKind, int nMotion)
 {
     static CString s_strEmpty;
     SkillMotionData* pMotion = GetMotion(nMotion);
@@ -902,7 +902,7 @@ const CString& SkillLevelData::FUN_140804500(int nKind, int nMotion)
 }
 
 // @0x1408045f0
-int SkillLevelData::FUN_1408045f0(int nMotion, int nAttack)
+int SkillLevelData::GetMagicPathId(int nMotion, int nAttack)
 {
     SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
@@ -951,7 +951,7 @@ int SkillLevelData::Load(TiXmlElement* pElem)
     for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("motion")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("motion")))
     {
         MS2Ptr<SkillMotionData> spMotion(new SkillMotionData);
-        if (!spMotion->FUN_1408080d0(pChild))
+        if (!spMotion->LoadMotion(pChild))
             return 0;
         m_vMotion.push_back(spMotion);
     }
@@ -967,7 +967,7 @@ int SkillLevelData::Save(void* pParent)
         XmlSetAttr((class TiXmlElement*)(&elem), "value", m_strStringParam);
     {
         TiXmlElement detect("detectProperty");
-        m_detect.FUN_140800570(&detect);
+        m_detect.SaveAttributes(&detect);
         if (detect.HasAttributes())
             ((TiXmlNode*)(&elem))->InsertEndChild(*(const TiXmlNode*)&detect);
     }
@@ -992,7 +992,7 @@ __int64 SkillLevelData::GetMotionKey(unsigned __int64 nMotion)
     SkillMotionData* pMotion = m_vMotion[nMotion];
     if (pMotion != 0)
     {
-        __int64 nMotionKey = pMotion->FUN_140808040();
+        __int64 nMotionKey = pMotion->GetMoveKey();
         key.Combine(nMotionKey);
     }
     return key.m_nHash;
@@ -1121,14 +1121,14 @@ bool SkillMotionData::FUN_140808000()
 }
 
 // @0x140808040
-__int64 SkillMotionData::FUN_140808040()
+__int64 SkillMotionData::GetMoveKey()
 {
     __int64 nKey = (unsigned __int64)((float)(unsigned __int64)((__int64)m_eMoveType << 10) + m_fSequenceSpeed * 100.0f);
     return nKey;
 }
 
 // @0x1408080d0
-int SkillMotionData::FUN_1408080d0(TiXmlElement* pElem)
+int SkillMotionData::LoadMotion(TiXmlElement* pElem)
 {
     Load(pElem);
     for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("attack")))

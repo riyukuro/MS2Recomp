@@ -33,17 +33,17 @@ public:
     void FUN_140ad2070();                                   // forget the click vectors
     int SetEnabled(int bEnable);                         // switch the controller on / off (false when the option is missing)
     int HasMode();                                   // is the controller on
-    int FUN_140ad21f0();                                    // does the move vector differ from zero
+    int HasMove();                                    // does the move vector differ from zero
     int FUN_140ad2220();                                   // move vector y > 0
     int FUN_140ad2260();                                   // move vector y < 0
     Vector3 GetMove();                        // the move vector
     void ResetToIdle();                                   // reset and go idle
-    void FUN_140ad2300(const Vector3& pt);                 // spawn the click effect at pt
+    void SpawnClickEffect(const Vector3& pt);                 // spawn the click effect at pt
     void FUN_140ad23f0(int nX, int nY);                     // button released
     void FUN_140ad2660(int nX, int nY);                                // button pressed
     void OnMouseMove(int nX, int nY);                     // mouse moved while the button is held
     void FUN_140ad2830();                                   // interact ray from the player
-    int FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint);  // cursor kind under the mouse (and its hint string)
+    int GetCursorKind(int nX, int nY, CStringW* pStrHint);  // cursor kind under the mouse (and its hint string)
     void UpdateHover();                                   // hover update
     void FUN_140ad3040();                                   // movement progress check
     efd::Point3 FUN_140ad3260(Vector3 pt);      // direction towards pt in the map's plane
@@ -53,7 +53,7 @@ public:
     Vector3 FUN_140ad3a60(int nX, int nY);          // intersect the cursor ray with the player's plane
     Vector3 GetPlayerPosition();                        // position of the player (or what it rides)
     int FUN_140ad3d60();                                    // any of the three slots occupied
-    int FUN_140ad3dd0(int nX, int nY);                      // cursor inside the window
+    int IsCursorInWindow(int nX, int nY);                      // cursor inside the window
     bool IsEntityClickable(egf::Entity* pEntity);       // entity may be clicked
     bool FUN_140ad3fb0(const egf::EntityID& id);   // same, by entity id
     void SetClickPoint(const Vector3* pPoint);      // remember the clicked point

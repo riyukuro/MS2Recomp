@@ -28,7 +28,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 CString ToCString(const char* pszName, int nFlags);     // undecorated class name
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 
 // Reads an attribute that is converted by name; stores the value only on success.
@@ -69,7 +69,7 @@ int CJobConditionTable::LoadFile(const CString& strPath)
         return 0;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nNpcId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "npcID", reinterpret_cast<int&>(nNpcId));

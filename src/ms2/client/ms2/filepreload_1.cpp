@@ -327,7 +327,7 @@ public:
     int FUN_141bca2e0();
     static class WorldService* GetInstance();
 };
-void FUN_141b6de20();
+void InitThread();
 int FUN_141b6db40(unsigned __int64);
 // @0x14120f7c0
 CFilePreload::CFilePreload() : stopped(0),preloadIds(0),asynchronous(true),initialized(0),dataReady(1),phase(0),state(0),backgroundThread(0) {
@@ -518,7 +518,7 @@ class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 public:
     bool FUN_1406af0a0();
 };
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 class NpcDataTableCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -574,7 +574,7 @@ MS2_REPLACE_METHOD(0x141210e10, CFilePreload, PreloadDataStep1, 230, 0x9568662A)
 void CFilePreload::PreloadDataStep2(bool notify) {
     if(((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->FUN_1406af0a0()) {
         CStopWatch watch("PreloadDataStep2");
-        if(stopped==0 && DAT_1439f7068) ((class NpcDataTableCli*)(void*)(((void*)FUN_1406d6e90())))->LoadAll();
+        if(stopped==0 && DAT_1439f7068) ((class NpcDataTableCli*)(void*)(((void*)GetNpcDataTableCli())))->LoadAll();
         watch.vfunc_1("CNpcData::ReadAll");
         if(notify) NotifyProgress(0x100);
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/CH/Common"));
@@ -774,7 +774,7 @@ DWORD CThread::GetThreadId() const { return m_threadId; }
 // @0x141215aa0
 static unsigned __stdcall PreloadThreadEntry(void* context) {
     Unk_140659080* startup=static_cast<Unk_140659080*>(context);
-    FUN_141b6de20();
+    InitThread();
     try {
         SetThreadLocale(0x412);
         startup->owner->vfunc_1(startup->user,*startup);

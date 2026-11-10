@@ -177,7 +177,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CString&);
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };
 class Unk_GameClock : public CMainSystem { public: float FUN_141473210(); };
 CLogString* GetLogString();                                        // the logger
-void FUN_1401d3700(CString& str);
+void ToLower(CString& str);
 int FUN_140718170(const CString& str);                              // parses an int
 float FUN_140718450(const CString& str);                            // parses a float
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
@@ -187,7 +187,7 @@ CSoundService* GetSoundService();                                     // the sou
 // The application object: the sound switch byte and the session.
 int IsJobSoundDisabled(Unk_SoundFlag* pFlag);
 void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 // Effect manager (singleton 0x1403ed280): scene root.
 // Sound property / voice pitch table.
 // The 2-int pitch record (pitch, FMOD pitch units) of a voice event.
@@ -286,7 +286,7 @@ void CSoundEventEffectParam::vfunc_1(TiXmlElement* pNode)
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "event", m_strEvent);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "group", m_strGroup);
     if (!m_strGroup.IsEmpty())
-        FUN_1401d3700(m_strGroup);
+        ToLower(m_strGroup);
     XmlGetAttr((class TiXmlElement*)(pNode), "byJob", m_bByJob);
     XmlGetAttr((class TiXmlElement*)(pNode), "isSkipMusicConcert", m_bSkipMusicConcert);
     if (m_bByJob)
@@ -567,7 +567,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     }
     m_fVolume = pSound->m_fVolume;
     m_spSound->SetCallback(FUN_1417775b0, this);
-    if (FUN_14028d470(pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->GetOwnerJobCode()), 0.0f))
+    if (IsNearlyEqual(pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->GetOwnerJobCode()), 0.0f))
         vfunc_4();
     return true;
 }
@@ -1085,9 +1085,9 @@ void CSoundEventMgr::UpdateFades()
         {
             float fVolume = -1.0f;
             if (rFade.m_nMode == 2)
-                fVolume = (1.0f - rFade.m_timer.FUN_140868940()) * rFade.m_fVolume;
+                fVolume = (1.0f - rFade.m_timer.GetRatio()) * rFade.m_fVolume;
             else if (rFade.m_nMode == 1)
-                fVolume = rFade.m_timer.FUN_140868940() * rFade.m_fVolume;
+                fVolume = rFade.m_timer.GetRatio() * rFade.m_fVolume;
             if (fVolume >= 0.0f)
                 SetCategoryVolume(rFade.m_nCategory, fVolume);
             ++it;
@@ -1375,9 +1375,9 @@ FMOD_RESULT F_CALLBACK OnMusicCallback(FMOD_MUSIC_CALLBACKTYPE type, void* param
     case 0:
         if (pMgr != 0 && pMgr->GetMusicParameter(5, &fValue) != 0)
         {
-            if (FUN_14028d470(fValue, 10.0f))
+            if (IsNearlyEqual(fValue, 10.0f))
                 pMgr->SetMusicParameter(5, 0.0f, 0x80, 0);
-            else if (FUN_14028d470(fValue, 0.0f))
+            else if (IsNearlyEqual(fValue, 0.0f))
                 pMgr->SetMusicParameter(5, 10.0f, 0x80, 0);
         }
         break;

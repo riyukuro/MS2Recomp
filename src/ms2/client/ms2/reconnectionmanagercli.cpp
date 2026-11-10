@@ -74,7 +74,7 @@ bool CReconnectionManagerCli::ShouldReconnect(int error) {
 
 // @0x140aad050
 void CReconnectionManagerCli::SetOptions(const ReconnectionOptions* src) {
-    m_options.FUN_140208460(*src);
+    m_options.Assign(*src);
 }
 MS2_REPLACE_METHOD(0x140AAD050, CReconnectionManagerCli, SetOptions, 41, 0x9138FC0F);
 

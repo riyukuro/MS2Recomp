@@ -80,7 +80,7 @@ public:
     virtual void vfunc_25(const Scaleform::GFx::Value&);
 };
 template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString& strName);   // C3: was FUN_140ba4b70
-class WorldService { public: static WorldService* GetInstance(); void* FUN_141bd0cc0(); };   // C3: member view
+class WorldService { public: static WorldService* GetInstance(); void* GetLocalPlayer(); };   // C3: member view
 class ASTooltip : public AScript {
 public: ASTooltip(void*, int, int); virtual ~ASTooltip(); int FUN_1409e0d40(CItem*);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
@@ -92,7 +92,7 @@ CStringW GetItemDisplayName(unsigned);
 CStringW FUN_14183e9c0(CStringW, int);
 int FUN_1407181a0(const CStringW&);
 class CUserCommandCli { public: static void SendCommand(CStringW); };   // C3: member view
-int FUN_14053feb0(int);
+int GetItemRank(int);
 // C3: Unk_DropRef / Unk_DropEntry were the ItemDropResult view (itemdroptable.h): GetBoxItems fills a
 // vector<MS2Ptr<ItemDropResult>>; vfunc_0/1 = ItemAble::vfunc_o18_0/1, m_min/m_max = m_count/m_maxCount (+0x24/+0x28).
 // The MS2Ptr<ItemDropResult> Reference/ReleaseImpl/Release/~MS2Ptr COMDATs come from itemdroptable.h / itemdroptable.cpp.
@@ -187,8 +187,8 @@ void UIItemDropInfoDialog::OnLoadComplete() {
         if (m_count == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(47), __FUNCTION__));
     } while (0);
-    m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.operator ASButton*());
-    m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.operator ASButton*());
+    m_test->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.operator ASButton*());
+    m_drop->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.operator ASButton*());
     UpdateItemDisplay();
     FUN_140c3af70();
 }
@@ -214,7 +214,7 @@ void UIItemDropInfoDialog::vfunc_49(Scaleform::GFx::Value* result, ASData* args)
     if (index >= m_items.GetCount()) return;
     MS2Ptr<CItem> item(m_items.GetAt(index));
     if (item == NULL) return;
-    void* player = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* player = WorldService::GetInstance()->GetLocalPlayer();
     ASTooltip tooltip(player,0x20,2);
     if (tooltip.FUN_1409e0d40(item.get())) *result = tooltip.GetValue();
 }
@@ -237,7 +237,7 @@ MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, UpdateItemDisplay, 578, 0x
 void UIItemDropInfoDialog::FUN_140c3af70() {
     m_items.RemoveAll();
     if (m_list == NULL || m_item == NULL) return;
-    MS2Ptr<CItemData> data((CItemData*)m_item->FUN_140527840());
+    MS2Ptr<CItemData> data((CItemData*)m_item->GetData());
     if (data == NULL) return;
     if (m_box == 0) return;
     std::vector<MS2Ptr<ItemDropResult>> entries;
@@ -287,7 +287,7 @@ void UIItemDropInfoDialog::SetItemAndBox(int item, int box) {
     if (m_item.get() ? true : false) { if (m_item->GetItemId() == item) return; }
     m_box = box;
     m_item.AssignRaw(new CItem);
-    if (!m_item->FUN_14052b130(item,FUN_14053feb0(item),0)) vfunc_67();
+    if (!m_item->FUN_14052b130(item,GetItemRank(item),0)) vfunc_67();
     else if (FUN_141924630()) { UpdateItemDisplay(); FUN_140c3af70(); }
 }
 MS2_REPLACE_METHOD(0x140C3B7D0, UIItemDropInfoDialog, SetItemAndBox, 324, 0x271E3FA9);

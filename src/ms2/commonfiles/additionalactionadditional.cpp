@@ -375,7 +375,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 CLogString* GetLogString();                                                // the log singleton
 class Unk_AdditionalFlags : public StanceTable { };
 class StanceTable;
-bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
+bool IsElementFeatureEnabled(struct Unk_XmlElement*);   // C3: was IsElementFeatureEnabled
 int Parse_140219400(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 int Parse_140218c20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 SAType FindSpecialAbilityByName(const CString& str);
@@ -385,7 +385,7 @@ struct Unk_SATypeInfo { void* m_0; int m_bAllowAdditional; int m_c; void* m_10; 
 struct SpecialAbilityInfo;
 extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;   // skilltieroptionmanager.cpp (specialability.h's SAType clashes with ours)
 CString ToCString(const char* psz, int nCodePage);                     // multibyte copy
-bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
+bool IsNearlyEqual(float fValue, float fTolerance);                          // commonutil: nearly equal
 extern int DAT_1439f4840;                                                   // the default code page
 
 // @0x140188f50
@@ -713,7 +713,7 @@ bool AdditionalData::Load(TiXmlElement* pElem)
     XmlValue(pElem, "skillGroupType", m_eSkillGroupType);
     for (TiXmlElement* pLevel : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("level")))
     {
-        if (!FUN_14028f650((struct Unk_XmlElement*)(pLevel)))
+        if (!IsElementFeatureEnabled((struct Unk_XmlElement*)(pLevel)))
             continue;
         ReadLevel(pLevel);
     }
@@ -1904,7 +1904,7 @@ bool AdditionalLevelData::UIProperty::FUN_1401927c0(bool bFlag)
 // @0x140192900
 bool AdditionalLevelData::ShieldProperty::FUN_140192900()
 {
-    return m_nHpValue != 0 || !FUN_14028d470(m_fHpByTargetMaxHP, 0.0f);
+    return m_nHpValue != 0 || !IsNearlyEqual(m_fHpByTargetMaxHP, 0.0f);
 }
 
 // @0x140192950

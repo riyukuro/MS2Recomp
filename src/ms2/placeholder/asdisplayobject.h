@@ -157,14 +157,14 @@ public:
     ASInteractiveObject(const Scaleform::GFx::Value& v, int nMovieId);      // 0x1422de680 (asinteractiveobject.cpp)
     virtual ~ASInteractiveObject();                                         // 0 0x1422de6d0 (scalar deleting 0x1422dee80)
     // "focusIn" / "focusOut" / "rollOver" / "rollOut" listeners: add, remove (asinteractiveobject.cpp)
-    void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
-    void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
-    void FUN_1422de800(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
-    void FUN_1422de880(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
-    void FUN_1422de900(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);   // (asinteractiveobject.cpp: bCapture unused)
-    void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
-    void FUN_1422de9c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
-    void FUN_1422dea20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void AddFocusInListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void AddFocusOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void AddRollOverListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void AddRollOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void RemoveFocusInListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);   // (asinteractiveobject.cpp: bCapture unused)
+    void RemoveFocusOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void RemoveRollOverListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void RemoveRollOutListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
     void SetDoubleClickEnabled(int bEnabled);                                       // set "doubleClickEnabled" (asinteractiveobject.cpp)
     int IsDoubleClickEnabled();                                                    // "doubleClickEnabled"
     void SetMouseEnabled(bool bEnabled);                                      // set "mouseEnabled"
@@ -213,7 +213,7 @@ public:
     virtual ASStage* vfunc_5();                                 // 5 0x1422cff80 returns itself
     // Recovered with ?\asstage.cpp (src/ms2/gfxui/asstage.cpp, 0x1422cfcb0-0x1422cfff0).
     void SetFocus(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
-    MS2Ptr<ASInteractiveObject> FUN_1422cfe20();               // the focus: always NULL (the exe never reads it back)
+    MS2Ptr<ASInteractiveObject> GetFocus();               // the focus: always NULL (the exe never reads it back)
     void SetStageWidth(int nWidth);                             // set "stageWidth"
     void SetStageHeight(int nHeight);                            // set "stageHeight"
     int GetStageWidth();                                        // "stageWidth"
@@ -277,7 +277,7 @@ public:
 MS2_CHECK_SIZE(ASMovieClip, 0x80);                              // exe allocates 0x80 bytes (asequipicon 0x1409b93ed)
 
 // new ASDisplayObject(v, n) wrapped in an MS2Ptr (free function or static; 0x140d01be0).
-MS2Ptr<ASDisplayObject> FUN_140d01be0(int n, const Scaleform::GFx::Value& v);
+MS2Ptr<ASDisplayObject> CreateDisplayObject(int n, const Scaleform::GFx::Value& v);
 
 // ASLoader (RTTI .?AVASLoader@@, COL 0x1432d06b0, vftable 0x143115a90: only the dtor is overridden): an
 // ASDisplayObjectContainer over a "scaleform.ms2.loader.debugLoader" (an AS3 flash.display.Loader) that shows an external

@@ -134,7 +134,7 @@ CStringW FUN_14016a730(const char* sz, int n);                              // n
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void* IntToUserData(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
 
@@ -142,7 +142,7 @@ class CArcadeDataTable* GetArcadeDataTable();
 
 class CGameEventValueManager;
 
-class Unk_ArcWorld { public: MyPC* FUN_141bd0cc0(); };
+class Unk_ArcWorld { public: MyPC* GetLocalPlayer(); };
 bool FUN_1418fe060();                                                       // the map can be changed
 void FUN_141275260(int nNotice, int nA, int nB);                            // error notice
 extern int DAT_143ab2870;                                                   // the current field id
@@ -188,7 +188,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_140873420(void* pNode, const char* szName, CStringW* pstrValue);   // wide string attribute
 
 #include "ms2/placeholder/cwebbrowserservice.h"   // C3: CWebBrowserService::FUN_141b794e0
-void FUN_141b6de20();                                                   // worker thread start-up
+void InitThread();                                                   // worker thread start-up
 
 // A worker thread's log scope.
 class Unk_UtilLogScope
@@ -267,11 +267,11 @@ void UIArcadeMainDialog::OnLoadComplete()
         CString strName = StringFormat<int>("m_game{0}", nNo);
         m_buttons[i] = GetChild<ASButton>(strName);
         if (m_buttons[i].get() != 0)
-            m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), IntToUserData(i));
+            m_buttons[i]->AddClickHandler(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), IntToUserData(i));
     }
     m_enter = reinterpret_cast<AScript*>(m_rankView.operator->())->FUN_140acce30<ASButton>("m_enter");
     if (m_enter.get() != 0)
-        m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
+        m_enter->AddClickHandler(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
     GetArcadeDataTable()->GetMainDataList(games);
     m_games.clear();
@@ -292,7 +292,7 @@ void UIArcadeMainDialog::OnLoadComplete()
         m_games.push_back(spGame);
         m_buttons[nButton]->FUN_1422cdfb0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
         m_buttons[nButton]->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
-        FUN_140cff840((*m_buttons[nButton]).FUN_1422bb890(), "m_eventBand", spGame->m_bIsEventArcade);
+        SetChildVisible((*m_buttons[nButton]).FUN_1422bb890(), "m_eventBand", spGame->m_bIsEventArcade);
         if (spGame->m_nTargetField == 0)
             m_buttons[nButton]->SetEnabled(0);
         nButton++;
@@ -301,7 +301,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     {
         m_buttons[i]->FUN_1422cdfb0(GetStringCommonByKey(L"s_arcade_game_preparing"));
         m_buttons[i]->SetEnabled(0);
-        FUN_140cff840((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
+        SetChildVisible((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
     }
     int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
     if (nRegion != m_nRegion)
@@ -408,7 +408,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
         MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
         if (spGame == (CArcadeMainData*)0)
             return;
-        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer == 0)
             return;
         bool bMovable = FUN_1418fe060();
@@ -538,7 +538,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     MS2SvrPtr<CArcadeMainData> spGame = GetArcadeDataTable()->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
-    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (spPC == (MyPC*)0)
         return false;
     if (spPC->IsDead() == 1)
@@ -686,7 +686,7 @@ void UIArcadeMainDialog::FUN_140ef8380(RankingResults results)
 // @0x140ef85b0
 unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("UIArcadeMainDialog::OnRequestRanking"));
     UIArcadeMainDialog* pDialog = (UIArcadeMainDialog*)pArg;
     if (pDialog == 0)
@@ -719,7 +719,7 @@ unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
 // MS2-FUNCTIONAL: the ranking service handles are the placeholder views of gamerankingcli.h
 unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("UIArcadeMainDialog::OnRequestRankingFromInGameRanking"));
     UIArcadeMainDialog* pDialog = (UIArcadeMainDialog*)pArg;
     if (pDialog == 0)

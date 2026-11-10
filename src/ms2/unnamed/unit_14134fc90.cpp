@@ -43,14 +43,14 @@ public:
 class Unk_DemolishWorld
 {
 public:
-    Unk_DemolishPC* FUN_141bd0cc0();                            // the local player
+    Unk_DemolishPC* GetLocalPlayer();                            // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
+    MS2Ptr<CFieldDataCli> GetFieldData();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 // The housing manager (FUN_1409670e0).
@@ -115,7 +115,7 @@ int UIHouseDemolishDialog::vfunc_84()
 {
     if (vfunc_55() != 0)
         return 0;
-    Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->FUN_141659690() != 0)
@@ -225,10 +225,10 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         return;
     if ((*pnFlags & 1) != 0)
     {
-        Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_DemolishPC* pPC = ((Unk_DemolishPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0)
         {
-            MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+            MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
             if (spField ? true : false)
             {
                 if (spField->IsIndoor() == 0)

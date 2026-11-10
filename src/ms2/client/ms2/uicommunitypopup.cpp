@@ -179,7 +179,7 @@ MS2_REPLACE_METHOD(0x140BEA730, UICommunityPopup, FUN_140bea730, 549, 0xBC351929
 // @0x140bea960
 void UICommunityPopup::FUN_140bea960(const Scaleform::GFx::FunctionHandler::Params&) {
     UIWebBrowserPopup* browser = GetWebBrowserPopup(0x4f40);
-    if (browser) { browser->FUN_14135ec00(m_url,1); m_time = 0; }
+    if (browser) { browser->Navigate(m_url,1); m_time = 0; }
 }
 MS2_REPLACE_METHOD(0x140BEA960, UICommunityPopup, FUN_140bea960, 85, 0x10AE4226);
 MS2_EMIT_CRT_MEMMOVE_S();

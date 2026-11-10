@@ -9,7 +9,7 @@
 #include "ms2/placeholder/socketptr.h"   // Unk_SocketNew
 // Argument of the creating constructor: the exe tag Unk_SocketNew (ctor 0x1401b7b90; same shape as Unk_JobNewTag).
 typedef Unk_SocketNew MS2SvrNewTag;
-CPtred* FUN_1401ba820(CPtred* p);       // marks a freshly allocated object (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);       // marks a freshly allocated object (sets the count to 1)
 
 template <class T>
 class MS2SvrPtr
@@ -52,7 +52,7 @@ public:
 private:
     void Make() { Release(); m_p = Create(0); }
     static T* Allocate(void*) { return new T; }
-    static T* Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate(0))); }
+    static T* Create(void*) { return static_cast<T*>(InitRefCount(Allocate(0))); }
     void AddRef() const { if (m_p) AddRefImpl(0); }
     void AddRefImpl(void*) const { Reference(m_p); }
     static void Reference(T* p) { CPtred::AddRefPtred(p); }

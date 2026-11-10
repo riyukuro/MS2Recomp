@@ -69,7 +69,7 @@ Unk_GFxUIHal* FUN_1422cf060();                                      // the UI re
 void* FUN_1422cf0f0();                                              // the UI render context (the texture manager)
 int IsDeviceLostOrCaptureBlocked();                                                // 1 while the device is lost or screen capture is blocked
 CString GetLanguageCode();                                            // the locale code (localepath.cpp)
-int FUN_1406516a0();                                                // the service type (3: no window activation)
+int GetLanguage();                                                // the service type (3: no window activation)
 // The log call of a DWORD argument (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0; optimizer.cpp's name).
 template <class T> void Unk_OptLog(CLogString* log, int level, int category, const wchar_t* format, const T& first);
 
@@ -109,7 +109,7 @@ GFxManager::~GFxManager()
 }
 
 // @0x1422ad620
-int GFxManager::FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer)
+int GFxManager::Initialize(HWND hWnd, NiRenderer* pRenderer)
 {
     if (!m_mapMovies.IsEmpty())
         return 0;
@@ -130,29 +130,29 @@ int GFxManager::FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer)
         return 0;
     if (!CreateVideo(hWnd))
         return 0;
-    if (!FUN_1422b19d0(hWnd, m_strMain))
+    if (!LoadMainMovie(hWnd, m_strMain))
         return 0;
-    if (!FUN_1422b1bb0(hWnd, m_strTooltip))
+    if (!LoadTooltipMovie(hWnd, m_strTooltip))
         return 0;
-    if (!FUN_1422b1d70(hWnd, m_strMouseCursor))
+    if (!LoadMouseCursorMovie(hWnd, m_strMouseCursor))
         return 0;
-    if (!FUN_1422b1f30(hWnd, m_strHeadUpDisplay))
+    if (!LoadHeadUpDisplayMovie(hWnd, m_strHeadUpDisplay))
         return 0;
-    if (!FUN_1422b20f0(hWnd, m_strPostDisplay))
+    if (!LoadPostDisplayMovie(hWnd, m_strPostDisplay))
         return 0;
     if (!m_fnIme.IsNull() && !m_fnIme(hWnd))
         return 0;
     if (!FUN_1422b22b0())
         return 0;
     m_spNotifyContext = EE_NEW Unk_NotifyContext();
-    if (FUN_1406516a0() != 3) {
+    if (GetLanguage() != 3) {
         ShowWindow(hWnd, SW_SHOW);
         SetForegroundWindow(hWnd);
         SetFocus(hWnd);
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422AD620, GFxManager, FUN_1422ad620, 1361, 0xD8A71BE4);
+MS2_REPLACE_METHOD(0x1422AD620, GFxManager, Initialize, 1361, 0xD8A71BE4);
 
 // @0x1422adb80
 int GFxManager::ResizeMovies(unsigned int uiWidth, unsigned int uiHeight)
@@ -161,7 +161,7 @@ int GFxManager::ResizeMovies(unsigned int uiWidth, unsigned int uiHeight)
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie) {
-            FUN_1422b0790(spMovie->GetMovieId());
+            UpdateStageSize(spMovie->GetMovieId());
             spMovie->vfunc_7(uiWidth, uiHeight);
         }
     }
@@ -322,7 +322,7 @@ void GFxManager::OnDeviceLost()
 MS2_REPLACE_METHOD(0x1422AE590, GFxManager, OnDeviceLost, 244, 0xE8E71C44);
 
 // @0x1422ae690
-bool GFxManager::FUN_1422ae690()
+bool GFxManager::OnDeviceRestored()
 {
     m_lock.DoLock();
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
@@ -337,7 +337,7 @@ bool GFxManager::FUN_1422ae690()
     m_lock.Unlock();
     return m_spRenderer->vfunc_12();
 }
-MS2_REPLACE_METHOD(0x1422AE690, GFxManager, FUN_1422ae690, 299, 0xB04A0ECF);
+MS2_REPLACE_METHOD(0x1422AE690, GFxManager, OnDeviceRestored, 299, 0xB04A0ECF);
 
 // @0x1422ae7d0
 void GFxManager::FUN_1422ae7d0()
@@ -484,7 +484,7 @@ void GFxManager::SetPaused(int bPause)
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie)
-            spMovie->FUN_1422be080(bPause);
+            spMovie->SetPaused(bPause);
     }
     m_lock.Unlock();
     m_bPause = bPause;
@@ -675,13 +675,13 @@ void GFxManager::FUN_1422afc00()
 MS2_REPLACE_METHOD(0x1422AFC00, GFxManager, FUN_1422afc00, 220, 0xC6845CE6);
 
 // @0x1422afcf0
-Ni2DBuffer* GFxManager::FUN_1422afcf0()
+Ni2DBuffer* GFxManager::GetRenderBuffer()
 {
     if (m_spRenderer)
         return m_spRenderer->vfunc_14();
     return NULL;
 }
-MS2_REPLACE_METHOD(0x1422AFCF0, GFxManager, FUN_1422afcf0, 78, 0x700458B7);
+MS2_REPLACE_METHOD(0x1422AFCF0, GFxManager, GetRenderBuffer, 78, 0x700458B7);
 
 // @0x1422afd50
 void GFxManager::MuteSound(bool bMute)
@@ -706,19 +706,19 @@ void GFxManager::SetMasterVolume(float fVolume)
 MS2_REPLACE_METHOD(0x1422AFDD0, GFxManager, SetMasterVolume, 112, 0x3A9FCC25);
 
 // @0x1422afe50
-void GFxManager::FUN_1422afe50()
+void GFxManager::RecreateSound()
 {
     m_spSound = 0;
     FUN_1422b22b0();
 }
-MS2_REPLACE_METHOD(0x1422AFE50, GFxManager, FUN_1422afe50, 45, 0x30345DFC);
+MS2_REPLACE_METHOD(0x1422AFE50, GFxManager, RecreateSound, 45, 0x30345DFC);
 
 // @0x1422afe90
-void GFxManager::FUN_1422afe90()
+void GFxManager::ReleaseSound()
 {
     m_spSound = 0;
 }
-MS2_REPLACE_METHOD(0x1422AFE90, GFxManager, FUN_1422afe90, 35, 0x0DFA95BF);
+MS2_REPLACE_METHOD(0x1422AFE90, GFxManager, ReleaseSound, 35, 0x0DFA95BF);
 
 // @0x1422afec0
 float GFxManager::GetMovieScale(int nMovieId)
@@ -738,7 +738,7 @@ int GFxManager::FUN_1422aff10(float fScale)
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie) {
-            FUN_1422b0790(spMovie->GetMovieId());
+            UpdateStageSize(spMovie->GetMovieId());
             if (spMovie == FindMovie(4))
                 continue;
             if (spMovie->SetViewportScale(fScale))
@@ -903,14 +903,14 @@ void GFxManager::GetStageSize(int nMovieId, int* pnWidth, int* pnHeight)
 MS2_REPLACE_METHOD(0x1422B06E0, GFxManager, GetStageSize, 155, 0xEE517CC4);
 
 // @0x1422b0790
-void GFxManager::FUN_1422b0790(int nMovieId)
+void GFxManager::UpdateStageSize(int nMovieId)
 {
     if (ASStage* pStage = GetStage(nMovieId).get()) {
         m_anStageWidth[nMovieId] = pStage->GetStageWidth();
         m_anStageHeight[nMovieId] = pStage->GetStageHeight();
     }
 }
-MS2_REPLACE_METHOD(0x1422B0790, GFxManager, FUN_1422b0790, 159, 0x5A189BEC);
+MS2_REPLACE_METHOD(0x1422B0790, GFxManager, UpdateStageSize, 159, 0x5A189BEC);
 
 // @0x1422b0840
 void GFxManager::FUN_1422b0840(int nMovieId, int* pnWidth, int* pnHeight)
@@ -921,7 +921,7 @@ void GFxManager::FUN_1422b0840(int nMovieId, int* pnWidth, int* pnHeight)
 MS2_REPLACE_METHOD(0x1422B0840, GFxManager, FUN_1422b0840, 68, 0xEC177E14);
 
 // @0x1422b08f0
-void GFxManager::FUN_1422b08f0(const char* szFormat, ...)
+void GFxManager::Log(const char* szFormat, ...)
 {
     if (m_pfnLog) {
         CString strLine;
@@ -950,7 +950,7 @@ int GFxManager::FUN_1422b09d0(CString a, CString b, int n)
 MS2_REPLACE_METHOD(0x1422B09D0, GFxManager, FUN_1422b09d0, 147, 0x54032B72);
 
 // @0x1422b0a70
-int GFxManager::FUN_1422b0a70(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int GFxManager::HandleWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     int bHandled = 0;
     m_lock.DoLock();
@@ -967,7 +967,7 @@ int GFxManager::FUN_1422b0a70(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     m_lock.Unlock();
     return bHandled;
 }
-MS2_REPLACE_METHOD(0x1422B0A70, GFxManager, FUN_1422b0a70, 326, 0x07BA72B1);
+MS2_REPLACE_METHOD(0x1422B0A70, GFxManager, HandleWindowMessage, 326, 0x07BA72B1);
 
 // @0x1422b0bc0
 int GFxManager::FUN_1422b0bc0(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -997,7 +997,7 @@ CString GFxManager::GetIme()
 MS2_REPLACE_METHOD(0x1422B0D10, GFxManager, GetIme, 68, 0x6EDCBFF9);
 
 // @0x1422b0d60
-Ptr<File> GFxManager::FUN_1422b0d60(String strPath)
+Ptr<File> GFxManager::GetCachedFile(String strPath)
 {
     Ptr<File> spFile = 0;
     m_lockFiles.DoLock();
@@ -1005,32 +1005,32 @@ Ptr<File> GFxManager::FUN_1422b0d60(String strPath)
     m_lockFiles.Unlock();
     return spFile;
 }
-MS2_REPLACE_METHOD(0x1422B0D60, GFxManager, FUN_1422b0d60, 173, 0x7F2D5DA5);
+MS2_REPLACE_METHOD(0x1422B0D60, GFxManager, GetCachedFile, 173, 0x7F2D5DA5);
 
 // @0x1422b0e20
-void GFxManager::FUN_1422b0e20(String strPath, Ptr<File> spFile)
+void GFxManager::SetCachedFile(String strPath, Ptr<File> spFile)
 {
     m_lockFiles.DoLock();
     m_mapFiles.SetAt(strPath, spFile);
     m_lockFiles.Unlock();
 }
-MS2_REPLACE_METHOD(0x1422B0E20, GFxManager, FUN_1422b0e20, 122, 0xD95B8B01);
+MS2_REPLACE_METHOD(0x1422B0E20, GFxManager, SetCachedFile, 122, 0xD95B8B01);
 
 // @0x1422b0ea0
-void GFxManager::FUN_1422b0ea0(const CStringW& strText)
+void GFxManager::SetClipboardText(const CStringW& strText)
 {
     GFxMovieMain* pMain = dynamic_cast<GFxMovieMain*>(FindMovie(2));
     if (pMain)
         pMain->FUN_1422d8fd0(strText);
 }
-MS2_REPLACE_METHOD(0x1422B0EA0, GFxManager, FUN_1422b0ea0, 94, 0xD81324AC);
+MS2_REPLACE_METHOD(0x1422B0EA0, GFxManager, SetClipboardText, 94, 0xD81324AC);
 
 // @0x1422b0f10
 int GFxManager::CloseTooltips()
 {
     GFxMovieTooltip* pTooltip = dynamic_cast<GFxMovieTooltip*>(FindMovie(5));
     if (pTooltip)
-        return pTooltip->FUN_1422f1020();
+        return pTooltip->DestroyTooltips();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1422B0F10, GFxManager, CloseTooltips, 88, 0x5348B6FA);
@@ -1111,14 +1111,14 @@ int GFxManager::InitIME(HWND hWnd)
 MS2_REPLACE_METHOD(0x1422B1820, GFxManager, InitIME, 422, 0xF5C4BD6C);
 
 // @0x1422b19d0
-int GFxManager::FUN_1422b19d0(HWND hWnd, CString strPath)
+int GFxManager::LoadMainMovie(HWND hWnd, CString strPath)
 {
     m_lock.DoLock();
     GFxMovieMain* pMovie = EE_NEW GFxMovieMain;
     if (pMovie) {
         if (pMovie->vfunc_6(&m_loader, strPath, 0x10091)) {
             m_mapMovies.SetAt(2, pMovie);
-            pMovie->FUN_1422d8e80(hWnd);
+            pMovie->RegisterClipboardViewer(hWnd);
             pMovie->SetFormatCallback(m_pfnFormat);
             pMovie->SetCommonCallback(m_pfnCommon);
             return 1;
@@ -1127,10 +1127,10 @@ int GFxManager::FUN_1422b19d0(HWND hWnd, CString strPath)
     m_lock.Unlock();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B19D0, GFxManager, FUN_1422b19d0, 460, 0x6ED56842);
+MS2_REPLACE_METHOD(0x1422B19D0, GFxManager, LoadMainMovie, 460, 0x6ED56842);
 
 // @0x1422b1bb0
-int GFxManager::FUN_1422b1bb0(HWND hWnd, CString strPath)
+int GFxManager::LoadTooltipMovie(HWND hWnd, CString strPath)
 {
     m_lock.DoLock();
     GFxMovieTooltip* pMovie = EE_NEW GFxMovieTooltip;
@@ -1145,10 +1145,10 @@ int GFxManager::FUN_1422b1bb0(HWND hWnd, CString strPath)
     m_lock.Unlock();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B1BB0, GFxManager, FUN_1422b1bb0, 442, 0x8521465B);
+MS2_REPLACE_METHOD(0x1422B1BB0, GFxManager, LoadTooltipMovie, 442, 0x8521465B);
 
 // @0x1422b1d70
-int GFxManager::FUN_1422b1d70(HWND hWnd, CString strPath)
+int GFxManager::LoadMouseCursorMovie(HWND hWnd, CString strPath)
 {
     m_lock.DoLock();
     GFxMovieMouseCursor* pMovie = EE_NEW GFxMovieMouseCursor;
@@ -1163,10 +1163,10 @@ int GFxManager::FUN_1422b1d70(HWND hWnd, CString strPath)
     m_lock.Unlock();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B1D70, GFxManager, FUN_1422b1d70, 442, 0xB5818A9A);
+MS2_REPLACE_METHOD(0x1422B1D70, GFxManager, LoadMouseCursorMovie, 442, 0xB5818A9A);
 
 // @0x1422b1f30
-int GFxManager::FUN_1422b1f30(HWND hWnd, CString strPath)
+int GFxManager::LoadHeadUpDisplayMovie(HWND hWnd, CString strPath)
 {
     m_lock.DoLock();
     GFxMovieHeadUpDisplay* pMovie = EE_NEW GFxMovieHeadUpDisplay;
@@ -1181,10 +1181,10 @@ int GFxManager::FUN_1422b1f30(HWND hWnd, CString strPath)
     m_lock.Unlock();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B1F30, GFxManager, FUN_1422b1f30, 439, 0x622F11E6);
+MS2_REPLACE_METHOD(0x1422B1F30, GFxManager, LoadHeadUpDisplayMovie, 439, 0x622F11E6);
 
 // @0x1422b20f0
-int GFxManager::FUN_1422b20f0(HWND hWnd, CString strPath)
+int GFxManager::LoadPostDisplayMovie(HWND hWnd, CString strPath)
 {
     m_lock.DoLock();
     GFxMoviePostDisplay* pMovie = EE_NEW GFxMoviePostDisplay;
@@ -1199,7 +1199,7 @@ int GFxManager::FUN_1422b20f0(HWND hWnd, CString strPath)
     m_lock.Unlock();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B20F0, GFxManager, FUN_1422b20f0, 442, 0xC65B46FA);
+MS2_REPLACE_METHOD(0x1422B20F0, GFxManager, LoadPostDisplayMovie, 442, 0xC65B46FA);
 
 // @0x1422b22b0
 int GFxManager::FUN_1422b22b0()
@@ -1237,11 +1237,11 @@ void GFxManager::ReloadMovies()
         m_mapMovies.RemoveKey(6);
         m_mapMovies.RemoveKey(0);
         m_mapMovies.RemoveKey(3);
-        FUN_1422b19d0(m_hWnd, m_strMain);
-        FUN_1422b1bb0(m_hWnd, m_strTooltip);
-        FUN_1422b1d70(m_hWnd, m_strMouseCursor);
-        FUN_1422b1f30(m_hWnd, m_strHeadUpDisplay);
-        FUN_1422b20f0(m_hWnd, m_strPostDisplay);
+        LoadMainMovie(m_hWnd, m_strMain);
+        LoadTooltipMovie(m_hWnd, m_strTooltip);
+        LoadMouseCursorMovie(m_hWnd, m_strMouseCursor);
+        LoadHeadUpDisplayMovie(m_hWnd, m_strHeadUpDisplay);
+        LoadPostDisplayMovie(m_hWnd, m_strPostDisplay);
         m_lock.Unlock();
         m_1e8 = true;
     }

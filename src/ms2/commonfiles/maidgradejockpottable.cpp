@@ -57,7 +57,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 // The locale list test and the game rule block (the level limit slot at +0x5180).
 struct Unk_MaidLimitSlot { char m_pad[0x58]; };
@@ -72,7 +72,7 @@ template <class C> void XmlSplit(const CString& str, C& out, const char* pszDeli
 class Unk_MaidIngTable;
 
 
-unsigned FUN_1407181d0(const CString& strItem);                         // numeric item id of a text, or 0
+unsigned ParseUInt(const CString& strItem);                         // numeric item id of a text, or 0
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flags (symbols.tsv); local copies stay false
 bool CMaidGradeJockpotTable::s_bInit;
@@ -169,7 +169,7 @@ MS2_REPLACE_METHOD(0x140684C80, MaidIngredient, GetItemStringId, 14, 0xAAC7684B)
 // @0x140684ca0
 void MaidIngredient::SetItem(const CStringA& value)
 {
-    unsigned nId = FUN_1407181d0(value);
+    unsigned nId = ParseUInt(value);
     if (nId > 0)
         itemId = nId;
     else if (!value.IsEmpty())
@@ -213,7 +213,7 @@ int CMaidRecipeTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
@@ -310,7 +310,7 @@ int CMaidRecipeGroupTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);

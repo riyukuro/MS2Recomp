@@ -19,15 +19,15 @@ Scaleform::GFx::Movie* GetMovie(int nMovieId);   // the movie of a movie id (asc
 
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcd40(Scaleform::GFx::Value* pValue, unsigned long n);
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double d);
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);   class Unk_PiComp { public: Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1); };   // C3: Invoke(method, wide string), defined in tabcontentspetinfo
 
 // @0x1422bbb50
@@ -72,11 +72,11 @@ unsigned int ASArray::PushUInt(unsigned int n)
 MS2_REPLACE_METHOD(0x1422BBD40, ASArray, PushUInt, 97, 0xBC22DD0E);
 
 // @0x1422bbdb0
-unsigned int ASArray::FUN_1422bbdb0(unsigned long n)
+unsigned int ASArray::PushULong(unsigned long n)
 {
     return Invoke("push", n).GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422BBDB0, ASArray, FUN_1422bbdb0, 97, 0x3E20F0AB);
+MS2_REPLACE_METHOD(0x1422BBDB0, ASArray, PushULong, 97, 0x3E20F0AB);
 
 // @0x1422bbe20
 unsigned int ASArray::PushFloat(float f)
@@ -212,11 +212,11 @@ unsigned int ASArray::GetLength()
 MS2_REPLACE_METHOD(0x1422BC5D0, ASArray, GetLength, 88, 0x20D7E0A1);
 
 // @0x1422bc630
-void ASArray::FUN_1422bc630()
+void ASArray::ClearElements()
 {
     m_value.ClearElements();
 }
-MS2_REPLACE_METHOD(0x1422BC630, ASArray, FUN_1422bc630, 31, 0x4690E4EF);
+MS2_REPLACE_METHOD(0x1422BC630, ASArray, ClearElements, 31, 0x4690E4EF);
 
 // @0x1422bc660
 void ASArray::Splice(unsigned nIndex, int nCount)
@@ -286,11 +286,11 @@ void ASArray::GetDouble(unsigned nIndex, double& dOut)
 MS2_REPLACE_METHOD(0x1422BC9B0, ASArray, GetDouble, 99, 0x0C1851E6);
 
 // @0x1422bca20
-void ASArray::FUN_1422bca20(unsigned nIndex, CString& strOut)
+void ASArray::GetString(unsigned nIndex, CString& strOut)
 {
     strOut = GetElement(nIndex).GetString();
 }
-MS2_REPLACE_METHOD(0x1422BCA20, ASArray, FUN_1422bca20, 105, 0x891ED9C2);
+MS2_REPLACE_METHOD(0x1422BCA20, ASArray, GetString, 105, 0x891ED9C2);
 
 // @0x1422bca90
 void ASArray::GetWString(unsigned nIndex, CStringW& strOut)
@@ -305,7 +305,7 @@ inline Scaleform::GFx::Value ASArray::FUN_1422bcb00(const char* szMethod, int a1
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -324,18 +324,18 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n)
 MS2_REPLACE_OVERLOAD(0x1422BCCB0, void(Scaleform::GFx::Value*, int), FUN_1422bccb0, 32, 0xAA2F14F4);
 
 // @0x1422bcce0
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b)
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b)
 {
     pValue->SetBoolean(b);
 }
-MS2_REPLACE_OVERLOAD(0x1422BCCE0, void(Scaleform::GFx::Value*, bool), FUN_1422bcce0, 33, 0x173D63A6);
+MS2_REPLACE_OVERLOAD(0x1422BCCE0, void(Scaleform::GFx::Value*, bool), SetBoolean, 33, 0x173D63A6);
 
 // @0x1422bcd10
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n)
 {
     pValue->SetUInt(n);
 }
-MS2_REPLACE_OVERLOAD(0x1422BCD10, void(Scaleform::GFx::Value*, unsigned int), FUN_1422bcd10, 32, 0xE7E7D5F2);
+MS2_REPLACE_OVERLOAD(0x1422BCD10, void(Scaleform::GFx::Value*, unsigned int), SetUInt, 32, 0xE7E7D5F2);
 
 // @0x1422bcd40
 void FUN_1422bcd40(Scaleform::GFx::Value* pValue, unsigned long n)
@@ -380,11 +380,11 @@ void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj)
 MS2_REPLACE_OVERLOAD(0x1422BCE40, void(Scaleform::GFx::Value*, const AScript&), FUN_1422bce40, 42, 0xE1FF1C14);
 
 // @0x1422bce70
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz)
+void SetString(Scaleform::GFx::Value* pValue, const char* sz)
 {
     pValue->SetString(sz);
 }
-MS2_REPLACE_OVERLOAD(0x1422BCE70, void(Scaleform::GFx::Value*, const char*), FUN_1422bce70, 34, 0x22DC5B1A);
+MS2_REPLACE_OVERLOAD(0x1422BCE70, void(Scaleform::GFx::Value*, const char*), SetString, 34, 0x22DC5B1A);
 
 // @0x1422bcea0
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz)

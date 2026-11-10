@@ -326,11 +326,11 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 void ParseIntArray(CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);  // split into ints
 void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);    // split into ints
 int FUN_140274f40(CStringW& str);                                                // _wtoi
-void FUN_1401cdae0(ATL::CAtlArray<int>* arr, int seed);                            // shuffle by the seed
+void ShuffleWithSeed(ATL::CAtlArray<int>* arr, int seed);                            // shuffle by the seed
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }                           // index of the value or -1
 int FUN_1408731e0(TiXmlElement* pElem, const char* pszName, long& nOut);   // tinyxmlhelper int attribute, long overload
-TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
-CString FUN_140223380(int result);                    // rps result node name: draw / win / lose
+TiXmlElement * GetFirstChildElement(TiXmlDocument *);  // C3: the definition's signature
+CString GetResultName(int result);                    // rps result node name: draw / win / lose
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* rOut, const char* pszSep);  // split into strings
 CString CoupleDanceStepName(int step);
 // Enum name parsers (commonenum.cpp).
@@ -944,7 +944,7 @@ void QuestAdditionalRewardContext::Load(CStringW* pValue)
     } else {
         TiXmlDocument doc;
         TiXmlElement* pRoot;
-        if (GetFileSystem()->LoadXmlFromString(&doc, *pValue) != 0 && (pRoot = FUN_140345b40(&doc)) != NULL) {
+        if (GetFileSystem()->LoadXmlFromString(&doc, *pValue) != 0 && (pRoot = GetFirstChildElement(&doc)) != NULL) {
             XmlGetAttr((class TiXmlElement*)(pRoot), "exp", reinterpret_cast<unsigned int&>(m_rates[0]));
             XmlGetAttr((class TiXmlElement*)(pRoot), "meso", reinterpret_cast<unsigned int&>(m_rates[1]));
             XmlGetAttr((class TiXmlElement*)(pRoot), "guild_fund", reinterpret_cast<unsigned int&>(m_rates[2]));
@@ -1204,7 +1204,7 @@ bool RpsGameData::Load(TiXmlElement* pElem)
         MS2_ASSERT_AT(0x2d8, 0);
         return false;
     }
-    TiXmlElement* pRoot = FUN_140345b40((TiXmlDocument *)pElem);
+    TiXmlElement* pRoot = GetFirstChildElement((TiXmlDocument *)pElem);
     if (pRoot == NULL) {
         MS2_ASSERT_AT(0x2df, 0);
         return false;
@@ -1227,7 +1227,7 @@ bool RpsGameData::Load(TiXmlElement* pElem)
         MS2_ASSERT_AT(0x2f9, 0);
         return false;
     }
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
         CStringW strValue;
         XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
         m_play.m_messages.Add(strValue);
@@ -1238,7 +1238,7 @@ bool RpsGameData::Load(TiXmlElement* pElem)
         return false;
     }
     for (int i = 0; i < 3; i++) {
-        CString strName = FUN_140223380(i);
+        CString strName = GetResultName(i);
         TiXmlElement* pResult = ((class TiXmlElement*)((class Unk_XmlNode*)(pResults))->FirstChild(strName));
         if (pResult == NULL) {
             MS2_ASSERT_AT(0x313, 0);
@@ -1250,7 +1250,7 @@ bool RpsGameData::Load(TiXmlElement* pElem)
             MS2_ASSERT_AT(0x31c, 0);
             return false;
         }
-        for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pResultActions); pNode != NULL; pNode = pNode->NextSiblingElement()) {
+        for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pResultActions); pNode != NULL; pNode = pNode->NextSiblingElement()) {
             CStringW strValue;
             XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_actions.Add(strValue);
@@ -1260,7 +1260,7 @@ bool RpsGameData::Load(TiXmlElement* pElem)
             MS2_ASSERT_AT(0x32a, 0);
             return false;
         }
-        for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
+        for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pResultMessages); pNode != NULL; pNode = pNode->NextSiblingElement()) {
             CStringW strValue;
             XmlGetAttr((class TiXmlElement*)(pNode), "value", strValue);
             result.m_messages.Add(strValue);
@@ -1391,7 +1391,7 @@ bool CoupleDanceContext::LoadDance(TiXmlElement* pElem)
         MS2_ASSERT_AT(0x3ed, 0);
         return false;
     }
-    for (TiXmlElement* pDance = FUN_140345b40((TiXmlDocument *)pDances); pDance != NULL; pDance = pDance->NextSiblingElement()) {
+    for (TiXmlElement* pDance = GetFirstChildElement((TiXmlDocument *)pDances); pDance != NULL; pDance = pDance->NextSiblingElement()) {
         CStringW strAnim;
         XmlGetAttr((class TiXmlElement*)(pDance), "anim", strAnim);
         m_dances.push_back(strAnim);
@@ -1556,7 +1556,7 @@ MS2Ptr<CNpcShopGivePointContextBase> CNpcShopGivePointContextBase::Create(int ty
             TiXmlDocument doc;
             if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
                 return 0;
-            TiXmlElement* pRoot = FUN_140345b40(&doc);
+            TiXmlElement* pRoot = GetFirstChildElement(&doc);
             if (pRoot == NULL)
                 return 0;
             spContext->m_type = type;
@@ -2239,7 +2239,7 @@ bool BingoContext::LoadNumbers(CStringW strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return false;
     ATL::CAtlMap<unsigned, bool> used(17, 0.75f, 0.25f, 2.25f, 10);
@@ -2271,7 +2271,7 @@ bool BingoContext::LoadRewards(CStringW strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return false;
     for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward != NULL;
@@ -2321,7 +2321,7 @@ int BingoContext::CountLines(__int64 seed, ATL::CAtlArray<int>& checked)
     ATL::CAtlArray<int> board;
     for (int n = 1; n <= kBoardSize * kBoardSize; n++)
         board.Add(n);
-    FUN_1401cdae0(&board, (unsigned)seed);
+    ShuffleWithSeed(&board, (unsigned)seed);
     bool cells[kBoardSize][kBoardSize];
     for (size_t i = 0; i < board.GetCount(); i++) {
         if (Common::FindElement<int>(checked, board[i]) == -1) {
@@ -2459,7 +2459,7 @@ bool LimitedQuantityContext::LoadItems(CStringW strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return false;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return false;
     for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {

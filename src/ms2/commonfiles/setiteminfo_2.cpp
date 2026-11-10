@@ -261,7 +261,7 @@ void CSetItemManager::Refresh()
             MS2Ptr<SetItemOptionPart> spPart = parts[j];
             if (bActive)
             {
-                spPart->FUN_1407bccf0([this](const std::pair<SetItemOptionPart::StatKey, MS2Ptr<BaseOption> >& entry) {
+                spPart->ForEachStat([this](const std::pair<SetItemOptionPart::StatKey, MS2Ptr<BaseOption> >& entry) {
                     if (entry.second->HasValue())
                     {
                         MS2Ptr<BaseOption> spOption;
@@ -271,7 +271,7 @@ void CSetItemManager::Refresh()
                         m_options.SetAt(reinterpret_cast<const int&>(entry.first), spOption);
                     }
                 });
-                spPart->FUN_1407bcdb0([this](const std::pair<SetItemOptionPart::SpecialKey, MS2Ptr<BaseOption> >& entry) {
+                spPart->ForEachSpecial([this](const std::pair<SetItemOptionPart::SpecialKey, MS2Ptr<BaseOption> >& entry) {
                     if (entry.second->HasValue())
                         m_specials[(const SAType&)entry.first] += entry.second->GetValue();
                 });

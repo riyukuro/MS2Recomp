@@ -27,14 +27,14 @@ class Unk_ItemEquipData : public CItemData { };                 // CItem::FUN_14
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // localized text
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);   // date and time text
 CStringW FUN_14083bab0(CMsTime const &, CStringW);  // C3: the definition's signature
-CStringW FUN_140b8f230(int nDay);                               // the name of a week day
+CStringW GetDayOfWeekName(int nDay);                               // the name of a week day
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);   // message box
 __int64 GetServerTime();                                        // the server time
 bool IsStarPointEventActive();                                           // the star point event runs
-int FUN_14053feb0(int nItemId);                                 // the fixed rank of an item (0: none)
+int GetItemRank(int nItemId);                                 // the fixed rank of an item (0: none)
 __int64 FUN_141349ef0(int nKind, int nA, unsigned nB);          // the amount of a currency
-bool FUN_14134a030(int, int, unsigned int);   // C3: was FUN_14134a030
+bool CanPayCurrency(int, int, unsigned int);   // C3: was CanPayCurrency
 void FUN_14134a120(int, int, unsigned int);   // C3: was FUN_14134a120
 extern Unk_Inventory g_143ab2a90;                               // the player inventory
 
@@ -363,9 +363,9 @@ bool CNpcShopProductCli::CheckBuyPeriod(CStringW& strError)
                 {
                     int nDay = *it;
                     if (!strDays.IsEmpty())
-                        strDays.Append(StringFormat<CStringW>(L", {0}", FUN_140b8f230(nDay)));
+                        strDays.Append(StringFormat<CStringW>(L", {0}", GetDayOfWeekName(nDay)));
                     else
-                        strDays.Append(FUN_140b8f230(nDay));
+                        strDays.Append(GetDayOfWeekName(nDay));
                 }
                 if (m_c8->m_aPartTimes.IsEmpty() == true)
                 {
@@ -443,7 +443,7 @@ int CNpcShopProductCli::FUN_140db8210()
         {
             if ((spItem.get() ? true : false) && spItem->HasCubeTextureMesh() != 0 && spItem->GetSlotMax() == 1)
                 return g_143ab2a90.GetEmptySlotCount(0);
-            int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->IsStackable();
+            int bStackable = static_cast<Unk_ItemEquipData*>(spItem->GetData())->IsStackable();
             if (bStackable)
             {
                 bool bLimit = GetLimitCount() > 0;
@@ -472,7 +472,7 @@ int CNpcShopProductCli::GetMaxAffordableCount()
     {
     case 1:
     {
-        int nHave = g_143ab2a90.FUN_140a5f180(m_8c, FUN_14053feb0(m_8c));
+        int nHave = g_143ab2a90.FUN_140a5f180(m_8c, GetItemRank(m_8c));
         if (m_90 != 0)
             nHave = g_143ab2a90.FUN_140a5f7b0(m_90, 0);
         nResult = (int)(nHave / nPrice < FUN_140db8210() ? nHave / nPrice : FUN_140db8210());
@@ -492,7 +492,7 @@ int CNpcShopProductCli::GetMaxAffordableCount()
 int CNpcShopProductCli::FUN_140db8580(int nCount)
 {
     __int64 nTotal = FUN_140db8180() * nCount;
-    if (FUN_14134a030(m_88, m_8c, (int)nTotal) == 0)
+    if (CanPayCurrency(m_88, m_8c, (int)nTotal) == 0)
     {
         FUN_14134a120(m_88, m_8c, (int)nTotal);
         return 0;

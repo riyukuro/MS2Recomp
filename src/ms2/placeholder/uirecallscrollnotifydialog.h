@@ -37,7 +37,7 @@ public:
     bool IsActive();                                   // 0x14129c900 returns the byte at +0x20c
     void OpenNotify(int nSlot, __time64_t nTime, const CStringW& strName, int nField);   // open a popup
     void CloseNotify(int nSlot);                          // close a popup
-    void FUN_14129cb20();                                   // forget the three expiry times
+    void ClearTimes();                                   // forget the three expiry times
     CStringW FUN_14129cb50(ATL::CTimeSpan span);            // "mm:ss", red when under 11 seconds
     void SetActive(bool bActive);                       // 0x14129cc60 m_active, restack the bottom-centre dialogs
     // child lookup 0x140ba4b70 = UISwfEntity::GetChild<ASTileList> (OnLoadComplete)

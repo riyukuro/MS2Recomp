@@ -48,7 +48,7 @@ unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {
         return 100;
     }
     unsigned traffic = 0;
-    if (FUN_14087d630((unsigned)WorldService::GetInstance()->FUN_141bd3060()) != 0) {
+    if (FUN_14087d630((unsigned)WorldService::GetInstance()->GetFieldId()) != 0) {
         traffic += GetTraffic(3);
     } else {
         traffic += GetTraffic(4);
@@ -97,7 +97,7 @@ MS2_REPLACE_METHOD(0x14087D5F0, CTrafficOptimizer, GetTraffic, 57, 0xDAAB5227);
 
 // @0x14087d630
 int CTrafficOptimizer::FUN_14087d630(unsigned id) {
-    CFieldData* field = CFieldData::FUN_140374140(id).operator->();
+    CFieldData* field = CFieldData::FindField(id).operator->();
     if (field == 0) {
         return 0;
     }

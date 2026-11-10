@@ -18,8 +18,8 @@ public:
 
     bool FUN_14085f6e0(unsigned int nField);                // the field has a taxi (kind 1)
     bool FUN_14085f730(unsigned int nField);                // the field has a taxi stop (kind 1)
-    long long FUN_14085f780(int nFrom, int nTo, short sOption); // the fare between two stations (breadth first search, cached)
-    long long FUN_14085fc80(short sOption);                 // the base fare
+    long long GetTaxiFare(int nFrom, int nTo, short sOption); // the fare between two stations (breadth first search, cached)
+    long long GetAirTaxiFare(short sOption);                 // the base fare
 private:
     MS2_LAYOUT_FRIEND;
     std::map<std::pair<unsigned int, unsigned int>, int> m_mapRouteLength;  // +0x08 (lower station, higher station) -> hops

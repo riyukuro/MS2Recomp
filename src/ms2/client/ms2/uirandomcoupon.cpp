@@ -57,9 +57,9 @@ class Unk_RcUIManager { public: };
 class Unk_RcKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-int FUN_141276180(const CString& str, const CString& strArg);       // play a sound
+int PlaySystemSound(const CString& str, const CString& strArg);       // play a sound
 void FUN_141901470(int n, int nUiId);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,8 +69,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -147,7 +147,7 @@ int UIRandomCoupon::vfunc_13()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d840() || ((class Unk_RcKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
+    if (((class Unk_RcKeys*)FUN_14025e7c0())->IsEscapePressed() || ((class Unk_RcKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         if (m_bButtonShown)
             m_30->Invoke("playClose");
@@ -217,16 +217,16 @@ void UIRandomCoupon::PlayCouponSound()
     switch (m_nCoupon)
     {
     case 1:
-        FUN_141276180(s_strCoupon1, "");
+        PlaySystemSound(s_strCoupon1, "");
         break;
     case 2:
-        FUN_141276180(s_strCoupon2, "");
+        PlaySystemSound(s_strCoupon2, "");
         break;
     case 3:
-        FUN_141276180(s_strCoupon3, "");
+        PlaySystemSound(s_strCoupon3, "");
         break;
     default:
-        FUN_141276180(s_strCoupon1, "");
+        PlaySystemSound(s_strCoupon1, "");
         break;
     }
 }

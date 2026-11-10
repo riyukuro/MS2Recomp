@@ -55,7 +55,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -91,7 +91,7 @@ public:
 
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);
-int FUN_141276180(const CString& strSound, const CString& strArg);               // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);               // play a UI sound
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 void DestroyItemInfoSlot(const CString& strBindID);                   // release the item bound to the name
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
@@ -100,9 +100,9 @@ void FUN_140710590(COutPacket& packet);
 void ThrowOutOfRange();
 Unk_PtMember** FUN_141346670(Unk_PtVec* pVec, size_t nIndex);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x1413450d0
 UIPvPTeamResultDialog::UIPvPTeamResultDialog()
@@ -156,7 +156,7 @@ void UIPvPTeamResultDialog::ResetResult()
 // @0x141345310
 void UIPvPTeamResultDialog::SetMyTeam()
 {
-    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     bool bNoTeam = pPlayer->GetPvPInfo() == NULL;
@@ -242,13 +242,13 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
             strIcon = L"";
         if (m_nMyTeam == m_nWinTeam)
         {
-            FUN_141276180(s_strBattleFieldWin, "");
+            PlaySystemSound(s_strBattleFieldWin, "");
             ChromaSDK::GetChromaManager()->SetState(9);
             strReward = FUN_14028dfa0<CStringW, int>(L"s_team_pvp_winner_reward_one_type", strName, m_nCount);
         }
         else
         {
-            FUN_141276180(s_strMassiveFail, "");
+            PlaySystemSound(s_strMassiveFail, "");
             strReward = FUN_14028dfa0<CStringW, int>(L"s_team_pvp_loser_reward_one_type", strName, m_nCount);
         }
         static_cast<Unk_PtScript*>(m_30.operator->())->FUN_141346430("showLastResult", true, strIcon, L"", strReward, m_nWinTeam);
@@ -261,7 +261,7 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
 {
     if (pMember == 0)
         return false;
-    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     obj.SetIntMember("index", nIndex);
@@ -348,10 +348,10 @@ Scaleform::GFx::Value Unk_PtScript::FUN_141346320(const char* szMethod, bool a1,
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bcce0(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
-    FUN_1422bce70(&args[2], a3);
-    FUN_1422bce70(&args[3], a4);
+    SetBoolean(&args[0], a1);
+    SetString(&args[1], a2);
+    SetString(&args[2], a3);
+    SetString(&args[3], a4);
     FUN_1422bccb0(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -361,7 +361,7 @@ Scaleform::GFx::Value Unk_PtScript::FUN_141346430(const char* szMethod, bool a1,
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bcce0(&args[0], a1);
+    SetBoolean(&args[0], a1);
     FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bcea0(&args[3], (const wchar_t*)a4);

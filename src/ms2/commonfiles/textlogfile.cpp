@@ -50,7 +50,7 @@ CTextLogFile::~CTextLogFile()
 }
 
 // The time stamp text of a log line.
-CString FUN_1408673d0(const __time64_t* pTime);
+CString FormatTime(const __time64_t* pTime);
 
 // @0x140866c70
 void CTextLogFile::FUN_140866c70()
@@ -68,11 +68,11 @@ void CTextLogFile::FUN_140866c70()
     FILE* pFile = _wfopen(szPath, L"w");
     fprintf(pFile, s_pszHeadSection);
     for (std::list<std::pair<__time64_t, CString> >::iterator it = m_lines.begin(); it != m_lines.end(); ++it) {
-        fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), it->second.GetBuffer());
+        fprintf(pFile, "[%s] %s\r\n", FormatTime(&it->first).GetBuffer(), it->second.GetBuffer());
     }
     fprintf(pFile, s_pszBodySection);
     for (std::list<std::pair<__time64_t, CString> >::iterator it = m_tail.begin(); it != m_tail.end(); ++it) {
-        fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), it->second.GetBuffer());
+        fprintf(pFile, "[%s] %s\r\n", FormatTime(&it->first).GetBuffer(), it->second.GetBuffer());
     }
     fclose(pFile);
     ClearTail();
@@ -82,7 +82,7 @@ void CTextLogFile::FUN_140866c70()
 void CTextLogFile::AddLine(const char* pszLine)
 {
     if (m_nLimit != -1)
-        FUN_140867330(strlen(pszLine));
+        TrimTail(strlen(pszLine));
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_lines.push_back(std::make_pair(tNow, pszLine));
@@ -92,7 +92,7 @@ void CTextLogFile::AddLine(const char* pszLine)
 void CTextLogFile::AddTailLine(const char* pszLine)
 {
     if (m_nLimit != -1)
-        FUN_140867330(strlen(pszLine));
+        TrimTail(strlen(pszLine));
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_tail.push_back(std::make_pair(tNow, pszLine));
@@ -102,7 +102,7 @@ void CTextLogFile::AddTailLine(const char* pszLine)
 void CTextLogFile::FUN_1408670e0(const CString& strLine)
 {
     if (m_nLimit != -1)
-        FUN_140867330(strLine.GetLength());
+        TrimTail(strLine.GetLength());
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_lines.push_back(std::make_pair(tNow, strLine));
@@ -112,7 +112,7 @@ void CTextLogFile::FUN_1408670e0(const CString& strLine)
 void CTextLogFile::FUN_140867180(const CString& strLine)
 {
     if (m_nLimit != -1)
-        FUN_140867330(strLine.GetLength());
+        TrimTail(strLine.GetLength());
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_tail.push_back(std::make_pair(tNow, strLine));
@@ -140,7 +140,7 @@ const CStringW& CTextLogFile::GetName() const
 }
 
 // @0x140867330
-void CTextLogFile::FUN_140867330(__int64 nLen)
+void CTextLogFile::TrimTail(__int64 nLen)
 {
     m_nRemain = m_nRemain - (nLen + m_nLineExtra);
     while (m_nRemain < 0) {
@@ -150,7 +150,7 @@ void CTextLogFile::FUN_140867330(__int64 nLen)
 }
 
 // @0x1408673d0
-CString FUN_1408673d0(const __time64_t* pTime)
+CString FormatTime(const __time64_t* pTime)
 {
     CString strTime;
     char szText[1024];

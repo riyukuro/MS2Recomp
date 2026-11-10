@@ -44,7 +44,7 @@ extern int DAT_1439f4d98;                           // lifetime of the other boa
 class Unk_GrBanFlags { public: int FUN_1402c4c90(int nFlag); };             // blocked-action flag set
 struct Unk_GrConfig { char m_pad[8]; Unk_GrBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-void FUN_141b6de20();                                                       // thread start-up
+void InitThread();                                                       // thread start-up
 class Unk_UtilLogScope
 {
 public:
@@ -902,7 +902,7 @@ MS2_REPLACE_METHOD(0x140b2cd50, CGameRankingCli, DeliverPersonal, 251, 0xD6D4147
 // @0x140b2ce60
 unsigned int __cdecl CGameRankingCli::RequestWeb(void* pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("CGameRankingCli::RequestWeb"));
     MS2Ptr<CGameRankingParam> spParam(static_cast<CGameRankingParam*>(pParam));
     if (spParam == 0)
@@ -2791,14 +2791,14 @@ void CGameRankingParam::Copy(const CGameRankingParam* pParam)
 CGameRankingWebResult::CGameRankingWebResult()
 {
     m_result = 1;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
 }
 
 // @0x140b3df20
 CGameRankingWebResult::CGameRankingWebResult(int nResult)
 {
     m_result = nResult;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
 }
 
 // ---- helpers ----

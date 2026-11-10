@@ -27,8 +27,8 @@ __int64 GetServerTime();                                // the server time
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
-CStringW FUN_140298ea0(CStringW strKey);                // localized string
-CStringW FUN_1412757d0(__int64 n);                      // number text
+CStringW GetStringByKey(CStringW strKey);                // localized string
+CStringW GetNumberText(__int64 n);                      // number text
 CStringW FUN_1409404f0(__int64 n);                      // number text, grouped
 CStringW FUN_140719a80(unsigned __int64 n);                      // number text
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
@@ -55,7 +55,7 @@ typedef __int64 i64;
 
 // A notice box with the text of a key.
 #define MESO_NOTICE(key) \
-    { ShowMessageBoxWithCallback(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); }
+    { ShowMessageBoxWithCallback(GetStringByKey(CStringW(key)), 0, FUN_140b240b0()); }
 
 CStringW GetCurrencyIconHtml(int nCurrency);
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax);
@@ -114,14 +114,14 @@ void CMesoMarketProductCli::FillCommonRow(ASObj& row)
     __int64 nUnit = m_n28;
     if (m_n20 > nBase)
         nUnit = nUnit / (m_n20 / nBase);
-    CStringW strBase = FUN_1412757d0(nBase);
+    CStringW strBase = GetNumberText(nBase);
     row.SetWStringMember("marketSN", FUN_140719a80(m_n18));
     row.SetWStringMember("sellMeso", FUN_1409404f0(m_n20));
     row.SetWStringMember("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
                                                 GetCurrencyIconHtml(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6140)->Get()))));
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xf4))
     {
-        row.SetWStringMember("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
+        row.SetWStringMember("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), GetNumberText(m_n20)));
         row.SetWStringMember("buyMeratPerUnit", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
     }
 }
@@ -477,7 +477,7 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
         break;
     }
     case 0x11:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_mesoMarket_error_alreadySoldProduct")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_mesoMarket_error_alreadySoldProduct")), 1, 1);
         break;
     case 0x12:
     case 0x13:

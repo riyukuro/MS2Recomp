@@ -66,7 +66,7 @@ public:
     bool AddAllowedURL(const CStringA& strPattern);                 // 0x141b77fa0
     bool IsAllowedURL(const CStringA& strUrl);                      // 0x141b78090
     static bool MatchURL(const CStringA& strUrl, ATL::CAtlRegExp<>* pRegExp);   // 0x141b78140
-    void FUN_141b781e0(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk); // creates / shows a browser
+    void OpenBrowser(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk); // creates / shows a browser
     void CloseBrowser(int nIndex);                                 // closes a browser
     void QueueBrowserMessage(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message);  // queues a message
     BOOL FUN_141b78650();
@@ -84,7 +84,7 @@ public:
     void SendNewsNotification(bool bUnk, int nUnk);                        // sends packet 0x63
     void RequestTokenWithCallback(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback);  // the token callback
     void SendTokenToBrowser(int nIndex, const CStringA& strToken);       // sends a "token" process message
-    void FUN_141b78e70(CefRefPtr<CefProcessMessage> message);       // calls the token callback
+    void InvokeTokenCallback(CefRefPtr<CefProcessMessage> message);       // calls the token callback
     void ExpandUrlPrefix(CStringA& strOut, const char* pszUrl);       // expands the maview:/api:/search:/external: prefixes
     COffscreenWebBrowser* FindBrowser(int nIndex);                  // 0x141b796e0
     bool IsValidIndex(int nIndex);                                  // 0x141b79730

@@ -41,7 +41,7 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 class Unk_ResourceMgr* GetNifLoadingService();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
-CString FUN_141421740(const CString& strPath, int* pnFlag);            // the variant letter of a model path
+CString GetModelVariant(const CString& strPath, int* pnFlag);            // the variant letter of a model path
 CString FUN_1414218c0(const CString& strPath, const CString& strSuffix);   // model path with another variant letter
 CString FUN_141425220(const CString& strPath, int bDiffuse);
 CString FUN_1414253b0(const CString& strPath, int bDiffuse);
@@ -256,10 +256,10 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
         }
         else if (info->m_type == 0)
         {
-            MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(info->m_item->FUN_140527840()));
+            MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(info->m_item->GetData()));
             if (data->FUN_14053d070())
             {
-                CharacterDecalData* pDecal = data->GetModelOrEmpty()->FUN_14054b6b0();
+                CharacterDecalData* pDecal = data->GetModelOrEmpty()->GetDecalData();
                 if (pDecal != 0)
                     reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->GetTexture(CString(pDecal->GetTexture()), 5);
             }
@@ -275,7 +275,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
                     {
                         if (data->FUN_14053cfd0())
                         {
-                            CString strVariant = FUN_141421740(pPart->name0, 0);
+                            CString strVariant = GetModelVariant(pPart->name0, 0);
                             if ((strVariant == "A"))
                             {
                                 const CString& strC = FUN_1414218c0(pPart->name0, "C");
@@ -298,7 +298,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
                     }
                 }
             }
-            if (data->FUN_14053cc00())
+            if (data->IsGemItem())
                 RefreshItem(info);
             Complete(nId, info);
         }
@@ -405,8 +405,8 @@ void CItemLoader::RefreshItem(MS2Ptr<CItemLoadInfo> info)
     if (info == 0 || info->m_item == 0)
         return;
     MS2Ptr<CItem> item(info->m_item);
-    MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(item->FUN_140527840()));
-    if (data->FUN_14053cc00())
+    MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(item->GetData()));
+    if (data->IsGemItem())
     {
         if (item->GetGem() != 0)
         {

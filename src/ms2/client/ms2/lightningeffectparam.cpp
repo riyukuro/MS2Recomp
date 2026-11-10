@@ -63,7 +63,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 // 0x140a0af70 = CAtlArray<Point3>::operator[] const (beameffect.cpp); 0x14144dcb0 = the non-const one
 
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 class CMainSystem;
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
@@ -80,7 +80,7 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 // Elements of the target's point list (CAtlArray operator[] / GetCount instances of another obj).
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_1415672e0(NiAVObject*, bool);
+void PrepareLoadedNif(NiAVObject*, bool);
 
 
 // The effect target (CEffect::vfunc_3's second argument), the part this unit reads.
@@ -241,7 +241,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spMesh->GetMesh()->AttachProperty(pZBuffer);
 
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
+    PrepareLoadedNif(m_spMesh->GetMesh(), (bool)0);
     m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
 
     NiPointer<NiSortAdjustNode> spSort = new (efd::MemHint(efd::MemHint::NONE)) NiSortAdjustNode;
@@ -252,7 +252,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spRoot->AttachChild(spSort, false);
     spSort->AttachChild(m_spMesh->GetMesh(), false);
 
-    if (FUN_14028d470(pLightning->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pLightning->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

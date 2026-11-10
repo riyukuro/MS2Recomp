@@ -141,16 +141,16 @@ int FUN_140873420(TiXmlElement*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873a50
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x140177e10 for CAtlArray<unsigned> (xmlattr.h)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
-int FUN_140651920(CStringA);                                 // language code -> enum
+int GetLanguageId(CStringA);                                 // language code -> enum
 __int64 GetServerTime();                                            // server time
 __int64 GetCurrencyAmount(int nCurrency, __int64 nAmount, int nItemId); // random roll
 int FindStatByName(const CStringA& strName);                        // stat name -> id (-1 when none)
 unsigned int FUN_14081d260(CStringA const&);                         // special option name -> id
-CStringW FUN_140630e10(int nId);                                    // special option text
+CStringW GetSATypeName(int nId);                                    // special option text
 CStringW GetStatCommonText(unsigned nId);                           // stat text
 #include "ms2/commonfiles/item.h"   // C3: CItemStatus::GetEnchantLevel 0x140630d00 (was the FUN_140630d00 view)
 void FUN_140159b70(long hr);                                        // AtlThrow
@@ -185,9 +185,9 @@ typedef ATL::CRBMap<CStringA, CBlackMarketTable::TabPtr> Unk_BmTabIndex;
 typedef ATL::CRBMap<Unk_BmLanguage, Unk_BmNameMapPtr> Unk_BmNameTable;
 
 float GetBlackMarketCostRate();
-Unk_BmPriceMgr* FUN_1401c0db0();
+Unk_BmPriceMgr* GetLuaClient();
 void* GetGameRule();
-CBlackMarketTable* FUN_1401c06d0();
+CBlackMarketTable* GetOrCreateBlackMarketTable();
 CBlackMarketTable* GetBlackMarketTable();
 void FUN_1401bf440(CBlackMarketTable::TabList& rList, Unk_BmTabIndex* pIndex);
 CLocaleLanguage* GetLocaleLanguage();
@@ -214,13 +214,13 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
         float fRate = GetBlackMarketCostRate();
         return (long long)((float)nPrice * fRate);
     }
-    MS2Ptr<Unk_BmItemData> data(reinterpret_cast<Unk_BmItemData*>(pItem->FUN_140527840()));
+    MS2Ptr<Unk_BmItemData> data(reinterpret_cast<Unk_BmItemData*>(pItem->GetData()));
     if (data == 0)
         return 0;
     int nRarity = pItem->GetRarity();
     unsigned nGroup = data->m_nGroup;
     unsigned nEnchant = pItem->GetStatus()->GetEnchantLevel();
-    long long nResult = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcBlackMarketBuyFeeCost(nPrice, nRarity, nGroup, nEnchant);
+    long long nResult = reinterpret_cast<CLua*>(GetLuaClient())->CalcBlackMarketBuyFeeCost(nPrice, nRarity, nGroup, nEnchant);
     return nResult;
 }
 
@@ -237,25 +237,25 @@ float GetBlackMarketCostRate()
     int nRate = ((class CGameRule*)(void*)(GetGameRule()))->GetBlackMarketFeeDiscountRate();
     if (nRate >= 0)
         return (float)nRate / 10000.0f;
-    return FUN_1401c0db0()->CalcBlackMarketCostRate(1);
+    return GetLuaClient()->CalcBlackMarketCostRate(1);
 }
 
 // @0x1401bcdb0
 __int64 FUN_1401bcdb0(long long n)
 {
-    return FUN_1401c0db0()->CalcBlackMarketRegisterDeposit(n);
+    return GetLuaClient()->CalcBlackMarketRegisterDeposit(n);
 }
 
 // @0x1401bcde0
 __int64 GetBlackMarketRegisterDepositMax()
 {
-    return FUN_1401c0db0()->CalcBlackMarketRegisterDepositMax();
+    return GetLuaClient()->CalcBlackMarketRegisterDepositMax();
 }
 
 // @0x1401bce00
 int GetBlackMarketRegisterDepositPercent()
 {
-    return (int)FUN_1401c0db0()->CalcBlackMarketRegisterDepositPercent();
+    return (int)GetLuaClient()->CalcBlackMarketRegisterDepositPercent();
 }
 
 // @0x1401bce20
@@ -383,7 +383,7 @@ unsigned int FUN_1401bd340(int n)
 // @0x1401bd3a0
 unsigned int FUN_1401bd3a0()
 {
-    FUN_1401c06d0();
+    GetOrCreateBlackMarketTable();
     CBlackMarketTable::TabListPtr tabs = GetBlackMarketTable()->GetTabs();
     if ((tabs.get() ? true : false) && !tabs->IsEmpty())
     {
@@ -406,7 +406,7 @@ unsigned int LoadItemNames()
     for (size_t i = 0; i < languages.GetCount(); i++)
     {
         CString strLanguage(languages[i]);
-        Unk_BmLanguage nLanguage = (Unk_BmLanguage)(FUN_140651920(strLanguage));
+        Unk_BmLanguage nLanguage = (Unk_BmLanguage)(GetLanguageId(strLanguage));
         CString strPath;
         strPath.Format("%s%s/%s/%s", "./Data/Xml/", "String", (const char*)strLanguage, "itemName.xml");
         Unk_BmNameMapPtr names(0);
@@ -420,7 +420,7 @@ unsigned int LoadItemNames()
             return 0;
         for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("key")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pItem)))
                 continue;
             int nId;
             XmlGetAttr((class TiXmlElement*)(pItem), "id", nId);
@@ -1015,7 +1015,7 @@ void CBlackMarketUtil::CheckInit()
 }
 
 // @0x1401c06d0
-CBlackMarketTable* FUN_1401c06d0()
+CBlackMarketTable* GetOrCreateBlackMarketTable()
 {
     return TSingleton<CBlackMarketTable>::s_instance != 0 ? GetBlackMarketTable() : new CBlackMarketTable;
 }
@@ -1039,7 +1039,7 @@ CLocaleLanguage* GetLocaleLanguage()
 }
 
 // @0x1401c0db0
-Unk_BmPriceMgr* FUN_1401c0db0()
+Unk_BmPriceMgr* GetLuaClient()
 {
     return reinterpret_cast<Unk_BmPriceMgr*>(reinterpret_cast<Unk_SingletonObj*>(TSingleton<CLuaClient>::s_instance));
 }
@@ -1101,7 +1101,7 @@ void CBlackMarketTable::Load()
                             {
                                 nStat = FUN_14081d260(strName);
                                 stat->m_nKind = 1;
-                                strText = FUN_140630e10(nStat);
+                                strText = GetSATypeName(nStat);
                             }
                             else
                             {

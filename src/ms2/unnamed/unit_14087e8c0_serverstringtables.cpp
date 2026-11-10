@@ -35,7 +35,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 template <class T, class U>
 void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030; logger with two arguments
 CStringA FUN_14071ae20(const CStringA& strFile);                        // the full path of a table file
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);   // string attribute with default
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // narrows a string
 CString ToCString(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
@@ -71,7 +71,7 @@ bool CServerStringGroup::Load()
     CCacheData::SetPath(CStringA(strPath));
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         CStringW strId = FUN_1401bf530(pKey, "id", CStringW(L""));
         CStringW strName = FUN_1401bf530(pKey, "name", CStringW(L""));

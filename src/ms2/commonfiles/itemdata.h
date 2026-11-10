@@ -121,7 +121,7 @@ struct ModelPart                    // <asset> element, 0x158 bytes
     // implicit dtor (COMDAT 0x140540f60 in itemdata.cpp) and moves: no user-declared dtor
     int Load(TiXmlElement* pElem);        // XML read
     int FUN_140544a80(void* pParent);            // XML write (nothing)
-    int FUN_140544aa0(int nGender, int nWeapon) const;   // the part is worn by the gender / weapon
+    int IsWornBy(int nGender, int nWeapon) const;   // the part is worn by the gender / weapon
     CString name0;                  // +0x00 "name"
     CString name8;                  // +0x08 "selfnode"
     CString name10;                 // +0x10 "targetnode"
@@ -161,12 +161,12 @@ struct ModelGroup                   // 0x38 bytes (also the unit's third static,
     // implicit dtor (COMDAT 0x140540f30 in itemdata.cpp) and moves: no user-declared dtor
     void Load(TiXmlElement* pElem);       // XML read
     void FUN_140544f00(void* pParent);           // XML write (nothing)
-    const ModelFloatList* FUN_140544f20(size_t nIndex) const;   // the nIndex-th scale list (a static default when out of range)
+    const ModelFloatList* GetFloatList(size_t nIndex) const;   // the nIndex-th scale list (a static default when out of range)
     const ModelPart* GetPart(size_t nIndex) const;  // the nIndex-th part (a static default when out of range)
-    size_t FUN_140545090() const;       // number of scale lists
+    size_t GetFloatListCount() const;       // number of scale lists
     size_t GetPartCount() const;       // number of parts
-    float FUN_1405450f0(int nIndex) const;              // a random value of the nIndex-th scale list
-    void FUN_140545130(const CString& strName);     // renames every part
+    float GetRandomScale(int nIndex) const;              // a random value of the nIndex-th scale list
+    void SetPartName(const CString& strName);     // renames every part
     int GetType() const;     // type
     std::vector<ModelPart> parts;   // +0x00
     std::vector<ModelFloatList> floats; // +0x18
@@ -198,11 +198,11 @@ struct ItemModelHead                // <customize> block, 0x50 bytes at ItemMode
     bool FUN_140547150();           // rotation
     bool FUN_140547170();           // translation
     bool FUN_140547190();           // flag at +0x10
-    bool FUN_1405471b0();           // capAttach
+    bool IsCapAttach();           // capAttach
     bool FUN_1405471d0();           // any of three flags
     bool FUN_140547230();           // more than one default colour
     int FUN_140547250();            // +0x14
-    int FUN_140547270(int nIndex) const;    // the nIndex-th entry of the id list, -1 when out of range
+    int GetIdAt(int nIndex) const;    // the nIndex-th entry of the id list, -1 when out of range
     int FUN_1405472d0(int nIndex) const;    // the nIndex-th colour delay, 0 when out of range
     size_t GetIdCount();         // size of the id list
     MsTransform* GetCapTransform();   // the cap transform (may be null)
@@ -227,8 +227,8 @@ public:
     // Implicit virtual destructor: 0x140540e20 (no vftable store).
     static unsigned FUN_14054aec0(unsigned nId);    // nId / 100000
     void FUN_14054aee0(int n);      // m_nUnk28 = n
-    void FUN_14054af00(TiXmlElement* pElem);       // XML read
-    void FUN_14054b230(void* pParent);           // XML write (nothing)
+    void Load(TiXmlElement* pElem);       // XML read
+    void Save(void* pParent);           // XML write (nothing)
     void FUN_14054b250(const CString& strName);     // renames every part of every group
     std::vector<CString>* GetCuttingNames(int nGender);   // the <cutting> names of a gender
     const ModelGroup* GetGroup(size_t nIndex) const;       // the nIndex-th group (a static empty one when out of range)
@@ -245,7 +245,7 @@ public:
     bool FUN_14054b640();
     ItemModelHead* GetHead(); // &head
     ItemModelHead* FUN_14054b690(); // &head
-    CharacterDecalData* FUN_14054b6b0();            // the decal block (may be null)
+    CharacterDecalData* GetDecalData();            // the decal block (may be null)
     CStringW GetName();       // name
     int m_nUnk28;                   // +0x28
     std::vector<ModelGroup> groups; // +0x30

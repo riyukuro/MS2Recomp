@@ -111,17 +111,17 @@ void UINoticeDialog::OnLoadComplete()
     if (m_90->FUN_140bc71c0("m_mainWindow", m_mainWindow).get())
     {
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_showButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_showButton)).get())
-            reinterpret_cast<ASButton*>(m_showButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnShowButtonClick), 0);
+            reinterpret_cast<ASButton*>(m_showButton.operator->())->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnShowButtonClick), 0);
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_maviewButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_maviewButton)).get())
-            reinterpret_cast<ASButton*>(m_maviewButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnMaviewButtonClick), 0);
+            reinterpret_cast<ASButton*>(m_maviewButton.operator->())->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnMaviewButtonClick), 0);
         m_mainWindow->FUN_141009c70("m_renderTarget", m_renderTarget);
         m_mainWindow->FUN_141009c70("m_hitArea", m_hitArea);
     }
     if (m_hitArea.get())
     {
         m_hitArea->SetFocusable(1);
-        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOver), 0, 0);
-        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOut), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->AddFocusInListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOver), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->AddFocusOutListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOut), 0, 0);
         m_hitArea->SetFocused(0);
         vfunc_84(m_hitArea->GetFocused() != 0);
     }

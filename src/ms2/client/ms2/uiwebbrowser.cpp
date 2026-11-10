@@ -66,7 +66,7 @@ class Unk_WbBrowserMgr : public CWebBrowserService { public:                    
 };
 // C3: FUN_141927640 is WebGuideTable's (webguide.h), the web guide of a dialog
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
-class Unk_WbWorld { public: PCBase* FUN_141bd0cc0(); };
+class Unk_WbWorld { public: PCBase* GetLocalPlayer(); };
 class Unk_WbInt { public: int m_n; char m_pad_04[0x54]; };                  // one value of the client constants
 class Unk_WbBool { public: bool m_b; char m_pad_01[0x57]; };
 class Unk_WbConsts { public:
@@ -80,7 +80,7 @@ class Unk_WbConsts { public:
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int UserDataToInt(void* pUserData);                                         // the button kind stored with the click handler
 float Floor(float f);
-float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
+float ValueToFloat(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
 // @0x14011f460
 // (initializer of s_strMaviewClose)
@@ -143,17 +143,17 @@ void UIWebBrowser::OnLoadComplete()
     UIDialog::OnLoadComplete();
     SetBrowserSize(m_nWidth, m_nHeight);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnHome", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), 0);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnPrev", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnPrev)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnPrev)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)2);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnPrev)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)2);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnNext", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnNext)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnNext)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)1);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnNext)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)1);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnRefresh", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnRefresh)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnRefresh)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)3);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnRefresh)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)3);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnMinSize", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMinSize)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMinSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50890), 0);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMinSize)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::OnMinSizeClick), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnMaxSize", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)).get())
-        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
+        reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::OnMaxSizeClick), 0);
     UpdateSizeButtons();
     float fScale = TSingleton<CUIService>::GetInstance()->GetUIScale();
     unsigned nWidth = (unsigned)(m_nSmallSize / fScale);
@@ -226,11 +226,11 @@ void UIWebBrowser::SetStored(const CString& strUrl)
 }
 
 // @0x141b50490
-void UIWebBrowser::FUN_141b50490(const CString& strKey)
+void UIWebBrowser::NavigateToGuide(const CString& strKey)
 {
     MS2Ptr<WebGuide> spGuide = TSingleton<WebGuideTable>::GetInstance()->FUN_141927640(strKey);
     if (spGuide)
-        FUN_14135ec00(spGuide->m_strWebUrl, 1);
+        Navigate(spGuide->m_strWebUrl, 1);
 }
 
 // @0x141b50530
@@ -242,8 +242,8 @@ int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (nArgs != 2)
             return 0;
-        float fWidth = FUN_1422b93f0(pArgs[0]);
-        float fHeight = FUN_1422b93f0(pArgs[1]);
+        float fWidth = ValueToFloat(pArgs[0]);
+        float fHeight = ValueToFloat(pArgs[1]);
         m_nWidth = (unsigned)fWidth;
         m_nHeight = (unsigned)fHeight;
     }
@@ -254,7 +254,7 @@ int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 void UIWebBrowser::vfunc_84(bool bVisible)
 {
     UIWebBrowserBase::vfunc_84(bVisible);
-    PCBase* pActor = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pActor = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pActor != 0)
     {
         if (bVisible)
@@ -291,7 +291,7 @@ void UIWebBrowser::FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& 
 }
 
 // @0x141b50890
-void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
+void UIWebBrowser::OnMinSizeClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
     SetBrowserSize(m_nMinWidth, m_nMinHeight);
     UpdateSizeButtons();
@@ -300,7 +300,7 @@ void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
 }
 
 // @0x141b50910
-void UIWebBrowser::FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params&)
+void UIWebBrowser::OnMaxSizeClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
     SetBrowserSize(m_nMaxWidth, m_nMaxHeight);
     UpdateSizeButtons();

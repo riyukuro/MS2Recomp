@@ -21,7 +21,7 @@ class CByteBuffer;       // commonfiles/stream.h (ApplySyncBlock)
 class CInPacket;        // commonfiles/skilloverlapcompare.h (+0xd70)
 class CRandomTargetEffect;   // randomtargeteffect.h (+0xf28; MS2Ptr(int) 0x140aac100, dtor 0x140aac190)
 
-// +0xe18 (0x28): the hit-shake record (ctor 0x14108e1e0, dtor 0x14108e250). FUN_14108e2a0 arms it, FUN_14108e300(time,
+// +0xe18 (0x28): the hit-shake record (ctor 0x14108e1e0, dtor 0x14108e250). Start arms it, Update(time,
 // target) shakes the model while active.
 class CNpcVibrate : public CPtred
 {
@@ -29,8 +29,8 @@ public:
     CNpcVibrate();                                          // 0x14108e1e0
     virtual ~CNpcVibrate();                                 // 0x14108e250
     int IsActive();                                    // armed flag (+0x24)
-    void FUN_14108e2a0(float fStart, float fEnd, float fAmp); // +0x18/+0x1c/+0x20, armed
-    void FUN_14108e300(float fTime, efd::Point3& kPos, class CNpc* pOwner); // shakes kPos while armed (disarms at m_fEnd; owner unused)
+    void Start(float fStart, float fEnd, float fAmp); // +0x18/+0x1c/+0x20, armed
+    void Update(float fTime, efd::Point3& kPos, class CNpc* pOwner); // shakes kPos while armed (disarms at m_fEnd; owner unused)
     float m_fStart;                                         // +0x18
     float m_fEnd;                                           // +0x1c
     float m_fAmp;                                           // +0x20
@@ -122,23 +122,23 @@ public:
     PCBase* GetOwner();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
     int FUN_1410930a0();                                    // 0x1410930a0 (basecollision: a dead npc that still counts as a target)
     int GetNpcClass();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
-    void FUN_141095140();                                   // release the owner effect handle (+0xec4)
+    void ReleaseOwnerEffect();                                   // release the owner effect handle (+0xec4)
 
     // unit_14108e1e0 internals
     void FUN_141092c50(CInPacket& packet);                  // +0xf20 update (mode byte)
     void FUN_141092d40(CString strAnim);                    // bore animation debug trace
     int IsBoss();                                   // the row is a boss
-    int FUN_141093030();                                    // class 4 or 6
-    bool FUN_141093070();                                   // shown on the minimap
+    int IsClass4Or6();                                    // class 4 or 6
+    bool IsMinimap();                                   // shown on the minimap
     int IsKind2();                                    // kind 2
     int IsKind3();                                    // kind 3
     int IsShopKind();                                   // shop kind
     unsigned short FUN_141093510();                         // m_nDE8
     CStringA FUN_141093530();                               // the marker label (empty when inactive)
     int GetNpcType();                                    // npc type (0: no row)
-    int FUN_1410937b0();                                    // kind (0: no row)
+    int GetKind();                                    // kind (0: no row)
     MS2Ptr<CMaid> GetMaid();                          // the maid behind the npc (+0xe48 uid)
-    void FUN_141093910();                                   // flush the accumulated damage text (+0xe60)
+    void FlushDamageText();                                   // flush the accumulated damage text (+0xe60)
     void FUN_141095240(__int64 n);
     unsigned int GetQuestId();                           // quest state: quest id
     int GetQuestIcon();                                    // quest state: icon
@@ -153,14 +153,14 @@ public:
     void CloseTalkUi();                                   // close it
     bool IsInTalkRange();                                    // in talk range
     void SendInteractNpc();                                   // send packet 0x32 (talk)
-    void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
-    __int64 FUN_1410947c0();
+    void SetMaidUid(__int64 nUid);                       // m_nE48 (maid uid)
+    __int64 GetMaidUid();
     void FUN_141094dc0(__int64 n);                          // m_nE60 (accumulated damage)
     void FUN_141094df0(__int64 n);                          // m_nE60 += n
     __int64 FUN_141094e20();
     void SetDebugMode(bool b);                             // m_cEAC
-    void FUN_141094e60();                                   // portal quest visibility
-    void FUN_141094f90(CString strEffect);                  // set the owner effect (by value)
+    void UpdateQuestVisibility();                                   // portal quest visibility
+    void SetOwnerEffect(CString strEffect);                  // set the owner effect (by value)
     void SetOwnerEffectActor(int nActor);                         // set the owner effect's actor
     void AttachOwnerEffect();                                   // attach the owner effect
     void FUN_141095190(const CString& strKfm);              // m_strED8
@@ -172,15 +172,15 @@ public:
     void FUN_141097a30();                                   // follow the dead body's pose
     void FUN_141097b40(unsigned short nGroup);              // the dead body's collision group
     void FUN_141098fb0(int nKind);                          // dead (0) / damage (1) effect
-    void FUN_141099170(float fTime);                        // turn toward m_f934
-    void FUN_141099370(float fTime);                        // monologue timer
+    void TurnTowardTargetYaw(float fTime);                        // turn toward m_f934
+    void UpdateMonologue(float fTime);                        // monologue timer
     void ResetMonologueTimer();                                   // restart the monologue timer
     void BuildCollision();                                   // build the npc's collision
     void MakeDeadPhysXActor();                              // 0x141096f00
     void NxTerrainPhsyx();                                  // 0x141099640 the terrain-only body actor
     void FUN_1410947e0();                                   // the reward item model above the npc (+0xea8)
-    CStringW FUN_141093310();                               // display name from the npc table
-    CStringW FUN_141093980();                               // display name (maid title / maid row / npc name)
+    CStringW GetName();                               // display name from the npc table
+    CStringW GetTitle();                               // display name (maid title / maid row / npc name)
     void ApplySyncBlock(CByteBuffer& buf);                   // apply a sync block (scenestategame)
     void ReleaseDeadPhysXActor();
     void FUN_141099ab0();
@@ -219,7 +219,7 @@ public:
     int m_nEB8;                                             // +0xeb8
     int m_nOwnerId;                                         // +0xebc object id of the owner actor (0: none)
     int m_nEC0;                                             // +0xec0
-    int m_nEC4;                                             // +0xec4 effect handle (FUN_141095140)
+    int m_nEC4;                                             // +0xec4 effect handle (ReleaseOwnerEffect)
     CString m_strEC8;                                       // +0xec8
     CString m_strED0;                                       // +0xed0
     CString m_strED8;                                       // +0xed8

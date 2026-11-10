@@ -111,9 +111,9 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     void FUN_140204670(int);
     void FUN_140715230(int);
     void SetOffset(unsigned);
-    void FUN_140518490();
+    void Clear();
     unsigned GetLength() const;
-    unsigned char* FUN_140204eb0();
+    unsigned char* GetBuffer();
     const unsigned char* GetData() const;
     CByteBuffer& FUN_140714de0();
     void AppendRemainingTo(CByteBuffer&);

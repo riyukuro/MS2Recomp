@@ -121,7 +121,7 @@ int GemStoneSlot::vfunc_8(void* p)
     {
         SetSlotLock(&slot, bLocked);
     }
-    else if (!slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
+    else if (!slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->GetLocalPlayer(), m_nIconType))
     {
         return 0;
     }
@@ -202,7 +202,7 @@ void FUN_140cfe1b0(const CString& strName)
     GemStoneSlotBag* pBag = CastToGemStoneSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

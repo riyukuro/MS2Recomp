@@ -115,7 +115,7 @@ int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut)
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);
 enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(class TiXmlElement*, const char*, E&);       // job condition
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 unsigned FUN_140767ff0();                                                           // random
 CFileSystem* GetFileSystem();
 class CLogString* GetLogString();
@@ -123,7 +123,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString GetXmlPath(const CString& strDir, const CString& strFile);
 void FindFiles(CString strMask, CString strDir, ATL::CAtlArray<CString>& rOut, CString strExtra, bool bRecursive);
 CString FUN_14028d3c0(CString strPath);                                             // file name of a path
-void FUN_1401d3700(CString& str);                                                   // lower-case
+void ToLower(CString& str);                                                   // lower-case
 MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 CString ToCString(const char* pszName, int);
 
@@ -131,8 +131,8 @@ CString ToCString(const char* pszName, int);
 typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);
 
-void FUN_140857f20(CStringA path);
-void FUN_140858440(CStringA path);
+void LoadQuestTalks(CStringA path);
+void LoadNpcTalks(CStringA path);
 void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script);
 void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script);
 void FUN_1408559b0();
@@ -292,7 +292,7 @@ TalkArrayPtr GetNpcTalks(int nNpcId)
                 for (int k = 0; k < 2; k++)
                     s_pick[k].RemoveAll();
                 for (unsigned i = 0; i < paths.GetCount(); i++)
-                    FUN_140858440(paths[i]);
+                    LoadNpcTalks(paths[i]);
                 if (!s_npcTalks.Lookup(nNpcId, result))
                     return TalkArrayPtr(0);
             }
@@ -331,7 +331,7 @@ TalkArrayPtr GetNpcMonologues(int nNpcId)
                 for (int k = 0; k < 2; k++)
                     s_pick[k].RemoveAll();
                 for (unsigned i = 0; i < paths.GetCount(); i++)
-                    FUN_140858440(paths[i]);
+                    LoadNpcTalks(paths[i]);
                 if (!s_npcAlt.Lookup(nNpcId, result))
                     return TalkArrayPtr(0);
             }
@@ -399,7 +399,7 @@ TalkPtr FUN_140856af0(int nNpcId, int nTalkId)
 }
 
 // @0x140856c50
-TalkPtr FUN_140856c50(int nNpcId, int nKind)
+TalkPtr GetNpcPickTalk(int nNpcId, int nKind)
 {
     CheckValid();
     TalkPtr result(0);
@@ -427,7 +427,7 @@ TalkPtr FUN_140856c50(int nNpcId, int nKind)
                 for (int k = 0; k < 2; k++)
                     s_pick[k].RemoveAll();
                 for (unsigned i = 0; i < paths.GetCount(); i++)
-                    FUN_140858440(paths[i]);
+                    LoadNpcTalks(paths[i]);
                 if (!s_pick[nKind].Lookup(nNpcId, result))
                     return TalkPtr(0);
             }
@@ -510,7 +510,7 @@ TalkPtr FindQuestTalk(int nQuestId, int nTalkId)
             s_questFiles.RemoveAll();
             s_questTalks.RemoveAll();
             for (unsigned i = 0; i < paths.GetCount(); i++)
-                FUN_140857f20(paths[i]);
+                LoadQuestTalks(paths[i]);
             if (!s_questTalks.Lookup(nQuestId, talks))
                 return TalkPtr(0);
         }
@@ -546,7 +546,7 @@ TalkPtr FUN_140855ed0(int nQuestId, int nTier, int nJob)
             s_questFiles.RemoveAll();
             s_questTalks.RemoveAll();
             for (unsigned i = 0; i < paths.GetCount(); i++)
-                FUN_140857f20(paths[i]);
+                LoadQuestTalks(paths[i]);
             if (!s_questTalks.Lookup(nQuestId, talks))
                 return TalkPtr(0);
         }
@@ -616,7 +616,7 @@ void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 }
 
 // @0x140857f20
-void FUN_140857f20(CStringA path)
+void LoadQuestTalks(CStringA path)
 {
     TiXmlDocument doc;
     if (!GetFileSystem()->LoadXmlFile(&doc, path, 0, true, false))
@@ -668,7 +668,7 @@ void FUN_140857f20(CStringA path)
 }
 
 // @0x140858440
-void FUN_140858440(CStringA path)
+void LoadNpcTalks(CStringA path)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     TiXmlDocument doc;
@@ -717,7 +717,7 @@ void FUN_140858440(CStringA path)
             TalkArrayPtr monologues(Unk_GrNewTag(0));
             for (Unk_ScriptXmlNode* node = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(npc))->FirstChild("monologue")); node != 0; node = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(node))->NextSibling("monologue")))
             {
-                if (!FUN_14028f710((struct Unk_XmlElement*)(node)))
+                if (!IsElementAvailable((struct Unk_XmlElement*)(node)))
                     continue;
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
@@ -824,9 +824,9 @@ void LoadTalkScripts()
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
-            FUN_1401d3700(name);
+            ToLower(name);
             if (name.Find("questscript", 0) == 0)
-                FUN_140857f20(files[i]);
+                LoadQuestTalks(files[i]);
         }
     }
     {
@@ -835,9 +835,9 @@ void LoadTalkScripts()
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
-            FUN_1401d3700(name);
+            ToLower(name);
             if (name.Find("npcscript", 0) == 0)
-                FUN_140858440(files[i]);
+                LoadNpcTalks(files[i]);
         }
     }
     SetValid(true);
@@ -846,7 +846,7 @@ void LoadTalkScripts()
 
 // @0x140855df0
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
-int FUN_140855df0(unsigned nNpcId, TalkPtr script)
+int IsNpcPickTalk(unsigned nNpcId, TalkPtr script)
 {
     CheckValid();
     for (size_t i = 0; i < 2; i++)

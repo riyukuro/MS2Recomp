@@ -36,7 +36,7 @@ public:
     virtual bool vfunc_17();                                        // 17 0x1422e9c90 render device restored
     virtual int vfunc_18(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 18 0x1422e9d90
     virtual int vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 19 0x1422e9df0 sees every message
-    int FUN_1422e9e50();                                            // GFx allocator bytes in use (0 without allocator)
+    int GetSysAllocBytesInUse();                                            // GFx allocator bytes in use (0 without allocator)
     static bool OnRenderDeviceReset(bool bBeforeReset, void* pvData);     // NiDX9Renderer reset notification
     static bool FUN_1422ea1f0(void* pvData);                        // NiDX9Renderer lost device notification
     static void SetCaptureBlock(int nCaptureBlock);                   // s_nCaptureBlock =
@@ -76,11 +76,11 @@ public:
     int GetPrevSubSceneId();                                            // 0x1422b9de0 the previous sub-scene id
     int GetSubSceneId();                                            // 0x1422b9e00 the sub-scene id
     UISceneEntity* FUN_1422b9e20(int nSceneId);                     // 0x1422b9e20 the scene entity of an id (UISwfEntityManager)
-    UISceneEntity* FUN_1422b9e50();                                 // 0x1422b9e50 the sub-scene, else the scene
+    UISceneEntity* GetSubSceneOrScene();                                 // 0x1422b9e50 the sub-scene, else the scene
     UISceneEntity* GetScene();                                 // 0x1422b9e80 the scene
     int FUN_1422b9ea0();                                            // 0x1422b9ea0 the sub-scene is 0x6200041 or 0x620007f
-    int FUN_1422b9ef0(int nSceneId);                                // 0x1422b9ef0 switch the scene (0 if already there)
-    int FUN_1422b9fd0(int nSubSceneId);                             // 0x1422b9fd0 switch the sub-scene of the scene
+    int SetScene(int nSceneId);                                // 0x1422b9ef0 switch the scene (0 if already there)
+    int SetSubScene(int nSubSceneId);                             // 0x1422b9fd0 switch the sub-scene of the scene
     void FUN_1422ba0d0();                                           // 0x1422ba0d0..0x1422ba250: forward to the scene's
     void FUN_1422ba110();                                           //   UISceneEntity slots 52..58
     void FUN_1422ba150();

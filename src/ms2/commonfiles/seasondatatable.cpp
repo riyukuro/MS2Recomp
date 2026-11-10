@@ -113,7 +113,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);    // int attribute with default
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);    // int attribute with default
 CString FUN_140651390();                                                        // the language suffix of a text table
 CString FUN_14071ae20(const CString& strFile);                                  // path of a string table file
 __int64 GetServerTime();                                                       // the server time
@@ -621,7 +621,7 @@ int CSeasonDataTable::ReadNames()
         int nSeason;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nSeason));
         CStringW strText;
-        int nContents = FUN_140197350(pNode, "contentsid", 0);
+        int nContents = GetIntAttr(pNode, "contentsid", 0);
         XmlGetAttr((class TiXmlElement*)(pNode), "name", strText);
         SeasonRankType type = GetType(strKind);
         MS2Ptr<CSeasonData> spData = Find(type, nSeason);

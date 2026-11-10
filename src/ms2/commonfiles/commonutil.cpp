@@ -101,13 +101,13 @@ MS2_CHECK_SIZE(Unk_CommonVec2, 8);
 extern long g_lUniqueSeq;
 void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wchar_t* pszDelim);
 int FUN_140274f40(CStringW&);                     // _wtoi
-bool FUN_14028d470(float fValue, float fTolerance);
+bool IsNearlyEqual(float fValue, float fTolerance);
 float FUN_14029d220(float fValue);
 
 // Unrecovered helpers.
 CString FUN_140188f50(const char* psz, int n);                  // CString from a C string
 CString ToCString(const char* psz, int n);
-long FUN_140298fd0(long* plValue);                              // interlocked increment
+long Increment(long* plValue);                              // interlocked increment
 float FUN_140768090();                                          // random float in [0, 1]
 __int64 GetServerTime();                                        // current server time
 
@@ -169,13 +169,13 @@ bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 void FUN_140873420(Unk_XmlElement* pElem, const char* pszName, CStringW& strOut);
 
 struct Unk_XmlElementList;
-int FUN_1406516b0();
+int GetRegion();
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wide
 CString FUN_14016a600(const wchar_t* pwsz, int n);              // wide -> narrow
 int FUN_14029dd60(const char* pszText, const char* pszFormat, ...);                // sscanf
-void FUN_1401d3700(CString& strPath);
+void ToLower(CString& strPath);
 std::wstring FUN_140291f90(const std::wstring& strToken, int nWhich);
 
 bool FUN_140299100(const CAtlArray<CString>& arr);              // IsEmpty
@@ -188,7 +188,7 @@ tm* FUN_14028b820(const __time64_t* pTime)
 
 // Overflow-checked add (HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW) on wrap).
 // @0x14028b840
-HRESULT FUN_14028b840(int nA, unsigned uB, int* pnOut)
+HRESULT CheckedAdd(int nA, unsigned uB, int* pnOut)
 {
     if (nA + uB < uB)
         return 0x80070216;
@@ -565,7 +565,7 @@ void FUN_14028cf00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const C
 
 // Sums 1 << (n - 1) over a comma separated list of numbers (a bit mask from 1-based indices).
 // @0x14028d020
-int FUN_14028d020(const CStringW& strList)
+int MakeBitMask(const CStringW& strList)
 {
     int nMask = 0;
     std::vector<int> arrValues;
@@ -580,7 +580,7 @@ int FUN_14028d020(const CStringW& strList)
 __int64 GenerateUniqueId()
 {
     __int64 nId = 0;
-    int nSeq = FUN_140298fd0(&g_lUniqueSeq);
+    int nSeq = Increment(&g_lUniqueSeq);
     __int64 nTime = GetServerTime();
     nTime = nTime - 1000000000;
     CString strId;
@@ -636,7 +636,7 @@ float FUN_14028d2e0()
 // @0x14028d310
 BOOL FUN_14028d310(float fChance)
 {
-    if (FUN_14028d470(fChance, 0.0f))
+    if (IsNearlyEqual(fChance, 0.0f))
         return FALSE;
     else if (fChance == 1.0f)
         return TRUE;
@@ -666,7 +666,7 @@ CString FUN_14028d3c0(CString strPath)
 
 // Whether two floats are closer than 1e-6.
 // @0x14028d470
-bool FUN_14028d470(float fA, float fB)
+bool IsNearlyEqual(float fA, float fB)
 {
     if (FUN_14029d220(fA - fB) < 1e-06f)
         return true;
@@ -674,17 +674,17 @@ bool FUN_14028d470(float fA, float fB)
 }
 
 // @0x14028d4b0
-bool FUN_14028d4b0(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
+bool IsNearlyEqualVec3(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
 {
-    if (FUN_14028d470(pA->x, pB->x) && FUN_14028d470(pA->y, pB->y) && FUN_14028d470(pA->z, pB->z))
+    if (IsNearlyEqual(pA->x, pB->x) && IsNearlyEqual(pA->y, pB->y) && IsNearlyEqual(pA->z, pB->z))
         return true;
     return false;
 }
 
 // @0x14028d530
-bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB)
+bool IsNearlyEqualPoint3(const efd::Point3& kA, const efd::Point3& kB)
 {
-    if (FUN_14028d470(kA.x, kB.x) && FUN_14028d470(kA.y, kB.y) && FUN_14028d470(kA.z, kB.z))
+    if (IsNearlyEqual(kA.x, kB.x) && IsNearlyEqual(kA.y, kB.y) && IsNearlyEqual(kA.z, kB.z))
         return true;
     return false;
 }
@@ -726,7 +726,7 @@ void FUN_14028d6d0(const unsigned char* pData, int nLen, CString& strOut, int nC
 }
 
 // @0x14028d760
-bool FUN_14028d760(bool b)
+bool ToBool(bool b)
 {
     if (b)
         return true;
@@ -781,7 +781,7 @@ CString FUN_14028d990(const CString& strPath)
 // @0x14028da10
 unsigned char FUN_14028da10()
 {
-    int nType = FUN_1406516b0();
+    int nType = GetRegion();
     unsigned char ucResult = 0;
     if (nType == 3)
         ucResult = 4;
@@ -853,7 +853,7 @@ CString FUN_14028dd20(int nId, const fmt::ArgList& args)
 // @0x14028ddb0
 CString FUN_14028ddb0(const CString& strKey, const fmt::ArgList& args)
 {
-    return FUN_14016a600(FUN_140298ea0(FUN_14016a730(strKey, 0)), 0);
+    return FUN_14016a600(GetStringByKey(FUN_14016a730(strKey, 0)), 0);
 }
 
 // @0x14028de60
@@ -938,7 +938,7 @@ int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strTex
 }
 
 // @0x14028e440
-CString FUN_14028e440(const CMsTime& kTime, const CString& strFormat)
+CString FormatDateTime(const CMsTime& kTime, const CString& strFormat)
 {
     CString strResult;
     strResult.Format(strFormat, kTime.GetYear(), kTime.GetMonth(), kTime.GetDay(), kTime.GetHour(), kTime.GetMinute(),
@@ -975,7 +975,7 @@ bool FUN_14028e560(std::wstring& strText, int nWhich)
 // @0x14028e7c0
 void NormalizePath(CString& strPath)
 {
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     CString strHead = strPath.Left(4);
     if ((strHead == "data"))
         strPath = "./" + strPath;
@@ -1015,7 +1015,7 @@ IDistanceCalculator* CreateDistanceCalculator(int nType)
         return 0;
 }
 
-bool FUN_14028f650(Unk_XmlElement* pElem);
+bool IsElementFeatureEnabled(Unk_XmlElement* pElem);
 
 // Collects every sibling element of the given name that passes the feature filter.
 // @0x14028f5d0
@@ -1023,7 +1023,7 @@ void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Un
 {
     for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem != 0; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
-        if (!FUN_14028f650(pElem))
+        if (!IsElementFeatureEnabled(pElem))
             continue;
         arrOut.push_back(pElem);
     }
@@ -1031,7 +1031,7 @@ void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Un
 
 // True when the element's "feature" attribute is empty or enabled.
 // @0x14028f650
-bool FUN_14028f650(Unk_XmlElement* pElem)
+bool IsElementFeatureEnabled(Unk_XmlElement* pElem)
 {
     CStringW strFeature = FUN_1401bf530(reinterpret_cast<TiXmlElement*>(pElem), "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
@@ -1044,7 +1044,7 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 
 // True when the element's "locale" matches the current locale and its "feature" is enabled.
 // @0x14028f710
-bool FUN_14028f710(Unk_XmlElement* pElem)
+bool IsElementAvailable(Unk_XmlElement* pElem)
 {
     CString strLocale = Unk_ReadString((class Unk_XmlNode*)(pElem), "locale", CString(""));
     bool bMatch = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
@@ -1100,7 +1100,7 @@ void PostQuit()
 
 // Appends a timestamped line to .\\log\\<name>_<date>.txt (the per-name file name is cached in a local map).
 // @0x14028ea70
-void FUN_14028ea70(const char* pszName, const char* pszFormat, ...)
+void WriteLog(const char* pszName, const char* pszFormat, ...)
 {
     CRBMap<CString, CString, CStringElementTraits<CString> > mapFile(10);
     CString strName(pszName);
@@ -1165,7 +1165,7 @@ CStringW FUN_14028efb0(efd::Point3 kPoint)
     return strOut;
 }
 
-void FUN_1402928e0(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim);
+void ParseFloatList(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim);
 
 // Parses "x,y,z"; anything else gives the zero vector.
 // @0x14028f060
@@ -1187,7 +1187,7 @@ Unk_CommonVec3 FUN_14028f190(CStringW strText)
 {
     Unk_CommonVec3 vResult = reinterpret_cast<const Unk_CommonVec3&>(efd::Point3::ZERO);   // 0x143b01a60
     CAtlArray<float> arrParts;
-    FUN_1402928e0(strText, arrParts, L",");
+    ParseFloatList(strText, arrParts, L",");
     if (arrParts.GetCount() != 3)
         return vResult;
     vResult.x = arrParts[0];
@@ -1221,7 +1221,7 @@ void FUN_14028f460(void* pUnused, CString strUnused)
 }
 
 // @0x14028f490
-int FUN_14028f490(unsigned int nId, CString strError)
+int ShowAdditionalEffectError(unsigned int nId, CString strError)
 {
     CString strText;
     strText.Format("ADDITIONALEFFECT [%d] ERROR[%s]", nId, (const char*)strError);
@@ -1515,7 +1515,7 @@ __int64 FUN_1402916a0(__int64 nTime, int nMode)
 
 // Wraps a degree value into [0, 360).
 // @0x140291b70
-void FUN_140291b70(float* pfDegrees)
+void NormalizeDegrees(float* pfDegrees)
 {
     int nDegrees = (int)*pfDegrees;
     nDegrees = nDegrees % 360;
@@ -1527,9 +1527,9 @@ void FUN_140291b70(float* pfDegrees)
 // @0x140291bc0
 void FUN_140291bc0(Unk_CommonVec3* pVec)
 {
-    FUN_140291b70(&pVec->x);
-    FUN_140291b70(&pVec->y);
-    FUN_140291b70(&pVec->z);
+    NormalizeDegrees(&pVec->x);
+    NormalizeDegrees(&pVec->y);
+    NormalizeDegrees(&pVec->z);
 }
 
 // @0x140291c10
@@ -1566,9 +1566,9 @@ float FUN_140291d10(int nKind)
 
 // Rounds half away from zero.
 // @0x140291dc0
-int FUN_140291dc0(float fValue, float fBias)
+int RoundWithBias(float fValue, float fBias)
 {
-    if (FUN_14028d470(fValue, 0) == true)
+    if (IsNearlyEqual(fValue, 0) == true)
         return 0;
     if (fValue > 0.0f)
         fValue = fValue + fBias;
@@ -1577,12 +1577,12 @@ int FUN_140291dc0(float fValue, float fBias)
     return (int)fValue;
 }
 
-int FUN_140291dc0(float fValue, float fBias);
+int RoundWithBias(float fValue, float fBias);
 
 // @0x140291d90
 int RoundToInt(float fValue)
 {
-    return FUN_140291dc0(fValue, 0.5f);
+    return RoundWithBias(fValue, 0.5f);
 }
 
 // @0x140291e40
@@ -1597,13 +1597,13 @@ unsigned long FUN_140291e70(CString strAddr)
 }
 
 // @0x140291f00
-CString FUN_140291f00(int nId)
+CString GetStringById(int nId)
 {
     return CString(FUN_14028dc80(nId));
 }
 
 // @0x140291f40
-CString FUN_140291f40(int nId, const fmt::ArgList& args)
+CString FormatStringById(int nId, const fmt::ArgList& args)
 {
     return CString(FUN_14028dd20(nId, args));
 }
@@ -1666,20 +1666,20 @@ bool FUN_140292820(const std::string& strText, const char* pszText)
 
 // Wide text as a float.
 // @0x1402928b0
-float FUN_1402928b0(const CStringW& strText)
+float ParseFloat(const CStringW& strText)
 {
     return (float)_wtof((const wchar_t*)strText);
 }
 
 // Splits on the delimiter characters and appends each token as a float.
 // @0x1402928e0
-void FUN_1402928e0(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim)
+void ParseFloatList(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim)
 {
     int nStart = 0;
     CStringW strToken = strText.Tokenize(pszDelim, nStart);
     while (!strToken.IsEmpty())
     {
-        arrOut.Add(FUN_1402928b0(strToken));
+        arrOut.Add(ParseFloat(strToken));
         strToken = strText.Tokenize(pszDelim, nStart);
     }
 }
@@ -1752,7 +1752,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     int nIndex = 0;
     for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
-        if (!FUN_14028f710(pElem))
+        if (!IsElementAvailable(pElem))
             continue;
         ++nIndex;
         CStringW strKey;
@@ -1787,7 +1787,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     int nIndex = 0;
     for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
-        if (!FUN_14028f710(pElem))
+        if (!IsElementAvailable(pElem))
             continue;
         Unk_XmlElement* pSub = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild(pszSub));
         if (!pSub)
@@ -1833,7 +1833,7 @@ template<> CString* Common::Constants::Value<CString>::Get()
 }
 
 // @0x140298fd0
-long FUN_140298fd0(long* plValue)
+long Increment(long* plValue)
 {
     return InterlockedIncrement(plValue);
 }
@@ -1894,7 +1894,7 @@ struct Unk_BstrHolder
 {
     BSTR m_bstr;
     char* m_pszNarrow;
-    void FUN_14029b610();                                       // 0x14029b610
+    void Clear();                                       // 0x14029b610
     unsigned GetLength();                                   // 0x1402992b0
 };
 
@@ -1905,7 +1905,7 @@ struct Unk_BstrHolderRef
 };
 
 // @0x14029b610
-void Unk_BstrHolder::FUN_14029b610()
+void Unk_BstrHolder::Clear()
 {
     if (m_bstr)
     {
@@ -1955,7 +1955,7 @@ struct Unk_BindHostPtr
 // @0x140297a00
 void FUN_140297a00(void* p)
 {
-    static_cast<Unk_BstrHolder*>(p)->FUN_14029b610();
+    static_cast<Unk_BstrHolder*>(p)->Clear();
 }
 
 // Destroy-and-free helper of the bind host (flag bit 0 = free the block).
@@ -2058,7 +2058,7 @@ Unk_BstrBlock::Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
     const unsigned nLenA = pA->GetLength();
     const unsigned nLenB = pB->GetLength();
     int nNewLen;
-    if (FUN_14028b840(nLenA, nLenB, &nNewLen) < 0 || FUN_14028b890(nNewLen, 2, (unsigned*)&nNewLen) < 0)
+    if (CheckedAdd(nLenA, nLenB, &nNewLen) < 0 || FUN_14028b890(nNewLen, 2, (unsigned*)&nNewLen) < 0)
     {
         _com_issue_error(E_OUTOFMEMORY);
         return;
@@ -2119,7 +2119,7 @@ Unk_BindHostPtr& Unk_BindHostPtr::operator+=(const Unk_BindHostPtr& other)
 }
 
 // @0x1402982e0
-Unk_BindHostPtr FUN_1402982e0(const wchar_t* pszA, const Unk_BindHostPtr& b)
+Unk_BindHostPtr Concat(const wchar_t* pszA, const Unk_BindHostPtr& b)
 {
     Unk_BindHostPtr str(pszA);
     str += b;
@@ -2135,14 +2135,14 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
     int nIndex = 0;
     for (Unk_XmlElement* pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild(pszChild)); pElem; pElem = ((class Unk_XmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling(pszChild)))
     {
-        if (!FUN_14028f710(pElem))
+        if (!IsElementAvailable(pElem))
             continue;
         ++nIndex;
         CStringW strKey1;
         CStringW strKey2;
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr1, strKey1);
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr2, strKey2);
-        CStringW strKey = (const wchar_t*)GetWString((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
+        CStringW strKey = (const wchar_t*)GetWString((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)Concat(strKey1, "_")) + strKey2;
         if (mapByKey.find(strKey) != mapByKey.end())
         {
             Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->SelectFeatureElement(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
@@ -2211,25 +2211,25 @@ void FUN_14029b680(void** pp)
 }
 
 // @0x140298ea0
-__declspec(safebuffers) CStringW FUN_140298ea0(CStringW strKey)      // the exe has no /GS cookie here
+__declspec(safebuffers) CStringW GetStringByKey(CStringW strKey)      // the exe has no /GS cookie here
 {
     return FUN_14028dfa0(strKey, fmt::ArgList());
 }
 
 // @0x14029dce0
-void FUN_14029dce0(const char* pszBuf, const char* pszFormat, _locale_t pLocale, va_list args)
+void VSscanf(const char* pszBuf, const char* pszFormat, _locale_t pLocale, va_list args)
 {
     __stdio_common_vsscanf(*__local_stdio_scanf_options() | 1, pszBuf, (size_t)-1, pszFormat, pLocale, args);
 }
 
 MS2_REPLACE(0x14028B820, FUN_14028b820, 25, 0x5B243679);
-MS2_REPLACE(0x14028B840, FUN_14028b840, 60, 0x6C3E9287);
+MS2_REPLACE(0x14028B840, CheckedAdd, 60, 0x6C3E9287);
 MS2_REPLACE(0x14028B890, FUN_14028b890, 68, 0x51B88B44);
 MS2_REPLACE_IMPL(0x140298F40, ::ms2::hook::detail::MemberToVoid(static_cast<float* (Common::Constants::Value<float>::*)()>(&Common::Constants::Value<float>::Get)), "Common::Constants::Value<float>::Get", 53, 0xC651AF56);
 MS2_REPLACE_IMPL(0x140298F80, ::ms2::hook::detail::MemberToVoid(static_cast<CString* (Common::Constants::Value<CString>::*)()>(&Common::Constants::Value<CString>::Get)), "Common::Constants::Value<CString>::Get", 53, 0x8459A15E);
-MS2_REPLACE(0x140298FD0, FUN_140298fd0, 24, 0xE9DE9F2E);
+MS2_REPLACE(0x140298FD0, Increment, 24, 0xE9DE9F2E);
 MS2_REPLACE_METHOD(0x1402992B0, Unk_BstrHolder, GetLength, 57, 0x39A7E074);
-MS2_REPLACE_METHOD(0x14029B610, Unk_BstrHolder, FUN_14029b610, 100, 0x78F0708C);
+MS2_REPLACE_METHOD(0x14029B610, Unk_BstrHolder, Clear, 100, 0x78F0708C);
 MS2_REPLACE_METHOD(0x14029D4B0, Unk_BstrHolderRef, GetLength, 56, 0xD03F266E);
 MS2_REPLACE_METHOD(0x140298720, Unk_BindHost, AddRef, 26, 0xC507010C);
 MS2_REPLACE_METHOD(0x140299E30, Unk_BindHostPtr, AddRef, 38, 0x01C0B517);

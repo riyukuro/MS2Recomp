@@ -58,11 +58,11 @@ public:
     CWarFogEffect();                                            // 0x141b732c0
     virtual ~CWarFogEffect();                                   // 0x141b73360
 
-    void FUN_141b733c0();                                       // detach the ring mesh from its parent and drop it
+    void DetachMesh();                                       // detach the ring mesh from its parent and drop it
     void SetVisible(bool bVisible);                          // show/hide the ring
     void FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Point3& ptCenter);   // rebuild if needed, then refit
-    bool FUN_141b739e0(const Unk_WarFogParam* pParam);          // true when the ring has to be rebuilt
-    void FUN_141b73ab0(const Unk_WarFogParam* pParam);          // build the annulus mesh and attach it to the scene
+    bool NeedsRebuild(const Unk_WarFogParam* pParam);          // true when the ring has to be rebuilt
+    void BuildMesh(const Unk_WarFogParam* pParam);          // build the annulus mesh and attach it to the scene
 
     NiPointer<CMesh> m_spMesh;                                  // +0x18
     float m_fRadius;                                            // +0x20 (ctor -1)

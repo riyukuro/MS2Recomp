@@ -1488,7 +1488,7 @@ public:
     virtual void OnStart();                     // 0x1403c5480
     virtual void vfunc_6();                     // 0x1403c54f0
     GameEventTimeRunEvent();
-    int FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext);  // "quest" rows of m_68
+    int LoadQuests(MS2Ptr<TimeRunEventContext> spContext);  // "quest" rows of m_68
     int FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext);  // "reward" rows + "final" of m_70
     MS2Ptr<TimeRunEventContext> m_d0;
 };  // vftable 0x142d3fe78, ??_G 0x1403eb210, dtor 0x1403e6bd0

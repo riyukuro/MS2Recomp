@@ -113,11 +113,11 @@ class Unk_WsC_GameObj : public GameObject { };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
-    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
+    void* GetLocalPlayer();
+    void CollectObjects(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     static class WorldService* GetInstance();
 };
-void FUN_1401d3700(CString& kStr);                                      // lower-cases in place
+void ToLower(CString& kStr);                                      // lower-cases in place
 class MS2SceneGraphService { public: bool RemoveUnusedCacheAssetData(efd::utf8string physicalID); };   // C3: member view
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -235,13 +235,13 @@ void MS2AnimationService::ReloadFemaleKF()
 {
     s_nReloading = 1;
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
-    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
-    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    WorldService::GetInstance()->CollectObjects(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
+    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->GetGender() == 1)
     {
         NiFilename kFilename(pPlayer->GetModelPath());
         CString kName(kFilename.GetFilename());
-        FUN_1401d3700(kName);
+        ToLower(kName);
         if (kName.Find(":female", 0) != -1)
         {
             egf::EntityID kID = ((GameObject*)pPlayer)->GetEntityID();
@@ -278,13 +278,13 @@ void MS2AnimationService::ReloadMaleKF()
 {
     s_nReloading = 1;
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
-    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
-    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    WorldService::GetInstance()->CollectObjects(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
+    GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->GetGender() == 0)
     {
         NiFilename kFilename(pPlayer->GetModelPath());
         CString kName(kFilename.GetFilename());
-        FUN_1401d3700(kName);
+        ToLower(kName);
         if (kName.Find(":male", 0) != -1)
         {
             egf::EntityID kID = ((GameObject*)pPlayer)->GetEntityID();
@@ -333,7 +333,7 @@ void MS2AnimationService::UnCacheNpcAssets()
         if (it->second->m_isCached)
         {
             CString kPath(it->second->m_cacheHandle->m_filePath.c_str());
-            FUN_1401d3700(kPath);
+            ToLower(kPath);
             if (kPath.Find("npc", 0) != -1)
                 kHandles.push_back(it->second->m_cacheHandle);
         }

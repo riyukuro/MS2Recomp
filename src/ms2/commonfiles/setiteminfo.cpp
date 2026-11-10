@@ -22,7 +22,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 
 // The table log (CLogString) and its fmt wrappers, instantiated in other units.
 class CLogString* GetLogString();
@@ -45,7 +45,7 @@ bool SetItemInfo::Load(TiXmlElement* pNode)
     XmlTokenList(pNode, "itemIDs", m_items);
     for (TiXmlElement* pPart = pNode->FirstChildElement("part"); pPart != NULL; pPart = ((class TiXmlElement*)((class Unk_XmlNode*)(pPart))->NextSibling("part")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pPart)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pPart)))
             continue;
         MS2Ptr<SetItemOptionPart> spPart(new SetItemOptionPart);
         if (!spPart->Load(pPart))
@@ -110,11 +110,11 @@ void SetItemInfo::FUN_1407ad670(ATL::CAtlArray<unsigned>* pOut)
 }
 
 // @0x1407ad710
-std::vector<unsigned>& SetItemInfo::FUN_1407ad710()
+std::vector<unsigned>& SetItemInfo::GetItemIds()
 {
     return m_items;
 }
-MS2_REPLACE_METHOD(0x1407AD710, SetItemInfo, FUN_1407ad710, 15, 0x5731F599);
+MS2_REPLACE_METHOD(0x1407AD710, SetItemInfo, GetItemIds, 15, 0x5731F599);
 
 // @0x1407ad730
 int SetItemInfo::AddOptionPart(MS2Ptr<SetItemOptionPart> spPart)

@@ -84,7 +84,7 @@ template<> struct Unk_SocketRef<Unk_FieldSpawnMap> {
         else result = &static_cast<TPtredDummy<Unk_FieldSpawnMap>*>(p)->value;
         return result;
     }
-    static Unk_FieldSpawnMap* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_FieldSpawnMap* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_FieldSpawnMap)
 MS2_CHECK_SIZE(TPtredDummy<Unk_FieldSpawnMap>,0x48);

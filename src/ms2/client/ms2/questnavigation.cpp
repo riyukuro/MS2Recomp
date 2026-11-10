@@ -43,7 +43,7 @@ class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd3060();
+    int GetFieldId();
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
 };
@@ -59,7 +59,7 @@ class MS2Ptr<Unk_QnAccess>
 public:
     template <class T> static MS2Ptr<T>& Assign(MS2Ptr<T>& sp, const Unk_BmNewTag&) { Make(sp); return sp; }
     template <class T> static void Make(MS2Ptr<T>& sp) { sp.Release(); sp.m_p = Create<T>(0); }
-    template <class T> static T* Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate<T>(0))); }
+    template <class T> static T* Create(void*) { return static_cast<T*>(InitRefCount(Allocate<T>(0))); }
     template <class T> static T* Allocate(void*) { return new T; }
 };
 typedef MS2Ptr<Unk_QnAccess> Unk_QnPtrAccess;
@@ -88,7 +88,7 @@ template <class T> TPtredDummy<T>* MS2BoxPtr<T>::Owner(T* p)
     return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value));
 }
 template <class T> void MS2BoxPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-template <class T> T* MS2BoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+template <class T> T* MS2BoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 template <class T> void MS2BoxPtr<T>::AddRefImpl(void*) const { Ref(Owner(m_p)); }
 template <class T> void MS2BoxPtr<T>::ReleaseImpl(void*)
 {
@@ -293,7 +293,7 @@ void CQuestNavigationMap::CollectMapPath(short nFrom, short nTo, ATL::CAtlArray<
 // @0x140c915a0
 int CQuestNavigationMap::NearestMap(const ATL::CAtlArray<unsigned>& maps)
 {
-    unsigned nCurrent = ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd3060();
+    unsigned nCurrent = ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->GetFieldId();
     int nBest = 0x7fffffff;
     int nNearest = 0;
     for (size_t i = 0; i < maps.GetCount(); i++)
@@ -359,7 +359,7 @@ int CQuestNavigationMap::InitTraceTable()
                             else
                             {
                                 ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb1e0(spEntry->m_ids[i], maps);
+                                TSingleton<CFieldMetaTable>::GetInstance()->GetInteractFields(spEntry->m_ids[i], maps);
                                 spTarget->AddMaps(1, spEntry->m_ids[i], maps);
                             }
                         }
@@ -406,7 +406,7 @@ int CQuestNavigationMap::InitTraceTable()
                     {
                         ATL::CAtlArray<unsigned> maps;
                         if (!FindConditionMaps(spCond, maps))
-                            TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb1e0((int)spCond->m_code.m_ids[i], maps);
+                            TSingleton<CFieldMetaTable>::GetInstance()->GetInteractFields((int)spCond->m_code.m_ids[i], maps);
                         spTarget->AddMaps(1, (unsigned)spCond->m_code.m_ids[i], maps);
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
                         {

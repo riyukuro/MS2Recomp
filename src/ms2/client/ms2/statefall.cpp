@@ -76,7 +76,7 @@ public:
 };
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
-bool FUN_14028d470(float a, float b);                                      // approx equal
+bool IsNearlyEqual(float a, float b);                                      // approx equal
 
 // @0x1417c6e40
 StateFall::StateFall(PCBase* pOwner) : State(pOwner)
@@ -199,7 +199,7 @@ void StateFall::vfunc_9(double fTime)
         if (pPC != 0)
         {
             int nSide = 3;
-            if (FUN_14028d470(m_pOwner->FUN_14123c360().y, -1.0f))
+            if (IsNearlyEqual(m_pOwner->FUN_14123c360().y, -1.0f))
                 nSide = 2;
             egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(nSide);
             if (pEntity != 0)

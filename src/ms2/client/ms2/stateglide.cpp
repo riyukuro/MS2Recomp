@@ -57,7 +57,7 @@ public:
 #undef MS2_GL_SLOTS
     virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
-bool FUN_14028d470(float a, float b);                      // approximately equal
+bool IsNearlyEqual(float a, float b);                      // approximately equal
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 void ShowSystemNotice(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
 
@@ -315,9 +315,9 @@ extern "C" float (__cdecl* __imp_cosf)(float);   // cosf through the CRT import 
 // @0x1417c99f0
 float StateGlide::FUN_1417c99f0()
 {
-    if (FUN_14028d470(m_spRow->m_fVerticalVibrateAmplitude, 0))
+    if (IsNearlyEqual(m_spRow->m_fVerticalVibrateAmplitude, 0))
         return 0.0f;
-    if (FUN_14028d470(m_spRow->m_fVerticalVibrateFrequency, 0))
+    if (IsNearlyEqual(m_spRow->m_fVerticalVibrateFrequency, 0))
         return 0.0f;
     return m_spRow->m_fVerticalVibrateAmplitude * __imp_cosf((m_fTime * 3.1415927f * 2.0f) / m_spRow->m_fVerticalVibrateFrequency);
 }
@@ -353,7 +353,7 @@ efd::Point3 StateGlide::GetVerticalMove()
         return efd::Point3::ZERO;
     float fSway = FUN_1417c99f0();
     float fFall = m_spRow->m_fVerticalAccelerate * m_fTime;
-    if (!FUN_14028d470(m_spRow->m_fGlideVerticalAccelerateLimit, 0))
+    if (!IsNearlyEqual(m_spRow->m_fGlideVerticalAccelerateLimit, 0))
         fFall = fFall > m_spRow->m_fGlideVerticalAccelerateLimit ? m_spRow->m_fGlideVerticalAccelerateLimit : fFall;
     float fTotal = GetVerticalVelocity() + fFall;
     if (!m_bHeightErr)
@@ -372,7 +372,7 @@ efd::Point3 StateGlide::GetVerticalMove()
 efd::Point3 StateGlide::FUN_1417c9ee0()
 {
     float fForward = m_spRow->m_fHorizontalAccelerate * m_fTime;
-    if (!FUN_14028d470(m_spRow->m_fGlideHorizontalAccelerateLimit, 0))
+    if (!IsNearlyEqual(m_spRow->m_fGlideHorizontalAccelerateLimit, 0))
         fForward = fForward > m_spRow->m_fGlideHorizontalAccelerateLimit ? m_spRow->m_fGlideHorizontalAccelerateLimit : fForward;
     float fSpeed = GetHorizontalVelocity() + fForward;
     if (20.0f < fSpeed)

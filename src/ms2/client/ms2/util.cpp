@@ -154,17 +154,17 @@ public:
 class Unk_UtilColorData : public NiColorExtraData
 {
 public:
-    float FUN_141b72530() const;                                    // GetRed
-    float FUN_141b72470() const;                                    // GetGreen
-    float FUN_141b72460() const;                                    // GetBlue
+    float GetRed() const;                                    // GetRed
+    float GetGreen() const;                                    // GetGreen
+    float GetBlue() const;                                    // GetBlue
 };
 class Unk_UtilSequence : public NiControllerSequence
 {
 public:
     NiSequenceData* FUN_141b72540() const;                          // GetSequenceData
 };
-float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
-bool FUN_14028d470(float fA, float fB);                             // float equality
+float GetTextKeyTime(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
+bool IsNearlyEqual(float fA, float fB);                             // float equality
 
 // NiTransform layout: rotation, translation, scale.
 struct Unk_UtilTransform
@@ -232,14 +232,14 @@ int FUN_141b6db40(size_t nSize)
 }
 
 // @0x141b6de20
-void FUN_141b6de20()
+void InitThread()
 {
     AfxSetNewHandler(FUN_141b6fd90);
     if (TSingleton<CrashManagerCli>::GetInstance() != 0) {
         TSingleton<CrashManagerCli>::GetInstance()->SetCrashLogEntry(GetCurrentThreadId(), CStringA(""));
     }
 }
-MS2_REPLACE(0x141b6de20, FUN_141b6de20, 118, 0x4043FAA8);
+MS2_REPLACE(0x141b6de20, InitThread, 118, 0x4043FAA8);
 
 // @0x141b6dea0
 NiColor FUN_141b6dea0(unsigned uColor)
@@ -255,14 +255,14 @@ NiColor FUN_141b6dea0(unsigned uColor)
 MS2_REPLACE(0x141b6dea0, FUN_141b6dea0, 224, 0xF622B07E);
 
 // @0x141b6df90
-unsigned FUN_141b6df90(const Unk_UtilFloat3* pColor)
+unsigned Float3ToArgb(const Unk_UtilFloat3* pColor)
 {
     return MS2Color(pColor->x, pColor->y, pColor->z, 1.0f).operator unsigned();
 }
-MS2_REPLACE(0x141b6df90, FUN_141b6df90, 75, 0x28AAD3F2);
+MS2_REPLACE(0x141b6df90, Float3ToArgb, 75, 0x28AAD3F2);
 
 // @0x141b6dff0
-Unk_UtilFloat3 FUN_141b6dff0(const Unk_UtilFloat3* pVec)
+Unk_UtilFloat3 CopyFloat3(const Unk_UtilFloat3* pVec)
 {
     Unk_UtilFloat3 vCopy;
     vCopy.x = pVec->x;
@@ -270,7 +270,7 @@ Unk_UtilFloat3 FUN_141b6dff0(const Unk_UtilFloat3* pVec)
     vCopy.z = pVec->z;
     return vCopy;
 }
-MS2_REPLACE(0x141b6dff0, FUN_141b6dff0, 121, 0xB7A204A8);
+MS2_REPLACE(0x141b6dff0, CopyFloat3, 121, 0xB7A204A8);
 
 // @0x141b6e070
 Vector3 FUN_141b6e070(const Unk_UtilFloat3* pVec)
@@ -284,7 +284,7 @@ Vector3 FUN_141b6e070(const Unk_UtilFloat3* pVec)
 MS2_REPLACE(0x141b6e070, FUN_141b6e070, 105, 0xAE2F521A);
 
 // @0x141b6e0e0
-NxVec3 FUN_141b6e0e0(const efd::Point3& kVec)
+NxVec3 Point3ToNxVec3(const efd::Point3& kVec)
 {
     NxVec3 vCopy;
     vCopy.x = kVec.x;
@@ -292,7 +292,7 @@ NxVec3 FUN_141b6e0e0(const efd::Point3& kVec)
     vCopy.z = kVec.z;
     return vCopy;
 }
-MS2_REPLACE(0x141b6e0e0, FUN_141b6e0e0, 96, 0x9AD7DDE3);
+MS2_REPLACE(0x141b6e0e0, Point3ToNxVec3, 96, 0x9AD7DDE3);
 
 // @0x141b6e150
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec)
@@ -449,19 +449,19 @@ CStringA FUN_141b6eb40(const CStringA& kStartPath)
 MS2_REPLACE(0x141b6eb40, FUN_141b6eb40, 58, 0x7BE0BA74);
 
 // @0x141b6ec30
-CStringW FUN_141b6ec30(const CStringW& kPath)
+CStringW GetFileName(const CStringW& kPath)
 {
     wchar_t szFile[256] = { 0 };
     _wsplitpath_s((LPCWSTR)kPath, NULL, 0, NULL, 0, szFile, 256, NULL, 0);
     return CStringW(szFile);
 }
-MS2_REPLACE(0x141b6ec30, FUN_141b6ec30, 201, 0x1164ACCB);
+MS2_REPLACE(0x141b6ec30, GetFileName, 201, 0x1164ACCB);
 
 // @0x141b6eb80
 CStringA FUN_141b6eb80(const CStringA& kPath)
 {
     CStringW kWidePath = FUN_14016a730(kPath, 0);
-    return FUN_14016a600(FUN_141b6ec30(kWidePath), 0);
+    return FUN_14016a600(GetFileName(kWidePath), 0);
 }
 
 // @0x141b6ed00
@@ -633,9 +633,9 @@ int FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
             pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&kName)))));
         }
         if (pColor != NULL) {
-            float fR = ((Unk_UtilColorData*)pColor)->FUN_141b72530();
-            float fG = ((Unk_UtilColorData*)pColor)->FUN_141b72470();
-            float fB = ((Unk_UtilColorData*)pColor)->FUN_141b72460();
+            float fR = ((Unk_UtilColorData*)pColor)->GetRed();
+            float fG = ((Unk_UtilColorData*)pColor)->GetGreen();
+            float fB = ((Unk_UtilColorData*)pColor)->GetBlue();
             pOut->x = fR;
             pOut->y = fG;
             pOut->z = fB;
@@ -714,7 +714,7 @@ bool HasAnimation(const egf::EntityID& id, const efd::utf8string& kName)
 MS2_REPLACE(0x141b6fa90, HasAnimation, 73, 0x30A74C77);
 
 // @0x141b6fae0
-void FUN_141b6fae0(NiAVObject* pRoot, float fValue)
+void SetColorScale(NiAVObject* pRoot, float fValue)
 {
     Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     while (NiAVObject* pNode = kWalker.Next(true)) {
@@ -804,27 +804,27 @@ float FUN_141b6fee0(NiSequenceData* pSeqData, const NiFixedString& kKey, float f
     if (pSeqData == NULL)
         return -FLT_MAX;
     float fTime = pSeqData->GetKeyTimeAt(kKey);
-    if (FUN_14028d470(fTime, -FLT_MAX))
+    if (IsNearlyEqual(fTime, -FLT_MAX))
         return pSeqData->GetDuration() / fDivisor;
     return fTime / fDivisor;
 }
 MS2_REPLACE(0x141b6fee0, FUN_141b6fee0, 120, 0xDB3D7EC8);
 
 // @0x141b6ff60
-int FUN_141b6ff60(NiControllerSequence* pSeq, const NiFixedString& kKey)
+int HasTextKey(NiControllerSequence* pSeq, const NiFixedString& kKey)
 {
     if (pSeq == NULL)
         return 0;
-    return FUN_14028d470(FUN_141b72480(pSeq, kKey), -FLT_MAX) == 0 ? 1 : 0;
+    return IsNearlyEqual(GetTextKeyTime(pSeq, kKey), -FLT_MAX) == 0 ? 1 : 0;
 }
-MS2_REPLACE(0x141b6ff60, FUN_141b6ff60, 88, 0x49F663AD);
+MS2_REPLACE(0x141b6ff60, HasTextKey, 88, 0x49F663AD);
 
 // @0x141b6ffc0
 int FUN_141b6ffc0(NiSequenceData* pSeqData, const NiFixedString& kKey)
 {
     if (pSeqData == NULL)
         return 0;
-    return FUN_14028d470(pSeqData->GetKeyTimeAt(kKey), -FLT_MAX) == 0 ? 1 : 0;
+    return IsNearlyEqual(pSeqData->GetKeyTimeAt(kKey), -FLT_MAX) == 0 ? 1 : 0;
 }
 MS2_REPLACE(0x141b6ffc0, FUN_141b6ffc0, 88, 0x5FA463E7);
 
@@ -917,7 +917,7 @@ void FUN_141b70390()
 }
 
 // @0x141b70490
-void FUN_141b70490(const CStringA& kBase)
+void DeleteDirectoryTree(const CStringA& kBase)
 {
     int nMore = 1;
     CStringA kPath(kBase);
@@ -935,7 +935,7 @@ void FUN_141b70490(const CStringA& kBase)
                     char szSub[272];
                     sprintf(szSub, "%s%s%s/", szDrive, szDir, kFound.cFileName);
                     CStringA kSub(szSub);
-                    FUN_141b70490(kSub);
+                    DeleteDirectoryTree(kSub);
                     RemoveDirectoryA((LPCSTR)kSub);
                 }
             } else {
@@ -1053,7 +1053,7 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
     FUN_141047ac0(pObj, DAT_143ae5120, fValue);
     FUN_1410479a0(pObj, DAT_143ae5128, reinterpret_cast<const NiColor&>(kColor));
     if (DAT_143ae2b34 != 0) {
-        if (FUN_14028d470(fValue, 0.0f)) {
+        if (IsNearlyEqual(fValue, 0.0f)) {
             unsigned int nFlags = FUN_140d96630(pObj) & 0xfffffff7;
             FUN_1414d4c70(pObj, nFlags);
         } else
@@ -1086,13 +1086,13 @@ unsigned FUN_141b70ea0(const CStringA& kPath)
 MS2_REPLACE(0x141b70ea0, FUN_141b70ea0, 168, 0x8E07B1D5);
 
 // @0x141b70f50
-bool FUN_141b70f50(const CStringW& kLeft, const CStringW& kRight)
+bool IsEqualNoCase(const CStringW& kLeft, const CStringW& kRight)
 {
     if (kLeft.CompareNoCase((LPCWSTR)kRight) == 0)
         return true;
     return false;
 }
-MS2_REPLACE(0x141b70f50, FUN_141b70f50, 54, 0x9623C308);
+MS2_REPLACE(0x141b70f50, IsEqualNoCase, 54, 0x9623C308);
 
 
 // @0x141b70f90
@@ -1172,7 +1172,7 @@ void FUN_141b71250(int nValue)
 }
 
 // @0x141b712e0
-int FUN_141b712e0()
+int IsMouseCursorVisible()
 {
     if (reinterpret_cast<GFxManager*>(GetGFxManager()) == NULL)
         return 0;
@@ -1184,7 +1184,7 @@ int FUN_141b712e0()
 
 // ---- curve math ----
 float Pow(float fBase, float fExp);
-float FUN_141b72600(float fBase, float fExp);
+float PowF(float fBase, float fExp);
 float Log(float fValue);
 
 // @0x141b71390
@@ -1265,11 +1265,11 @@ int ParseInt(const char* psz)
 MS2_REPLACE(0x141b71a10, ParseInt, 37, 0xDC1CD1D0);
 
 // @0x141b71a40
-double FUN_141b71a40(int nValue)
+double IntToDouble(int nValue)
 {
     return (double)nValue;
 }
-MS2_REPLACE(0x141b71a40, FUN_141b71a40, 11, 0xFC13D90A);
+MS2_REPLACE(0x141b71a40, IntToDouble, 11, 0xFC13D90A);
 
 // @0x141b71a60
 // efd::Color::operator/(float) (0x141b723e0), then NiColor(const efd::Color&) (0x140a0a3a0) for the assignment
@@ -1277,7 +1277,7 @@ void NormalizeColor(NiColor* pColor)
 {
     if (pColor->r > 1.0f || pColor->g > 1.0f || pColor->b > 1.0f)
         *pColor = *pColor / 255.0f;
-    FUN_141b71a40(FUN_141b6df90(reinterpret_cast<const Unk_UtilFloat3*>(pColor)));
+    IntToDouble(Float3ToArgb(reinterpret_cast<const Unk_UtilFloat3*>(pColor)));
 }
 
 // ---- scene / skin helpers ----
@@ -1287,9 +1287,9 @@ extern NiFixedString DAT_143ae50f8;                                          // 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
 // @0x141b71b00
-NiObject* FUN_141b71b00()
+NiObject* GetPlayerSkin()
 {
-    Unk_UtilPlayer* pPlayer = ((class Unk_UtilPlayer*)((class WorldService*)(class Unk_UtilWorld*)(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_UtilPlayer* pPlayer = ((class Unk_UtilPlayer*)((class WorldService*)(class Unk_UtilWorld*)(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == NULL)
         return NULL;
     NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(class Unk_UtilPlayer*)(pPlayer))->GetEntity());
@@ -1299,12 +1299,12 @@ NiObject* FUN_141b71b00()
     }
     return NULL;
 }
-MS2_REPLACE(0x141b71b00, FUN_141b71b00, 160, 0x8C42B0E0);
+MS2_REPLACE(0x141b71b00, GetPlayerSkin, 160, 0x8C42B0E0);
 
 // @0x141b71bb0
 NiObject* GetPlayerSkinFloatsExtraData()
 {
-    NiObject* pSkin = FUN_141b71b00();
+    NiObject* pSkin = GetPlayerSkin();
     if (pSkin != NULL)
         return NiObject::DynamicCast(&NiFloatsExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)((NiObjectNET*)pSkin))->GetExtraData(DAT_143ae50f8))));
     return NULL;
@@ -1508,22 +1508,22 @@ Unk_UtilHolder* FUN_141b72360(const Unk_UtilObjRef& kRef)
 }
 
 // @0x141b72460
-float Unk_UtilColorData::FUN_141b72460() const
+float Unk_UtilColorData::GetBlue() const
 {
     return m_kColorA.b;
 }
-MS2_REPLACE_METHOD(0x141b72460, Unk_UtilColorData, FUN_141b72460, 16, 0x4C93A5B6);
+MS2_REPLACE_METHOD(0x141b72460, Unk_UtilColorData, GetBlue, 16, 0x4C93A5B6);
 
 // @0x141b72470
-float Unk_UtilColorData::FUN_141b72470() const
+float Unk_UtilColorData::GetGreen() const
 {
     return m_kColorA.g;
 }
-MS2_REPLACE_METHOD(0x141b72470, Unk_UtilColorData, FUN_141b72470, 16, 0x5463A882);
+MS2_REPLACE_METHOD(0x141b72470, Unk_UtilColorData, GetGreen, 16, 0x5463A882);
 
 
 // @0x141b72480
-float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey)
+float GetTextKeyTime(NiControllerSequence* pSeq, const NiFixedString& kKey)
 {
     if (!((efd::FixedString*)&static_cast<class NiFixedString const&>(kKey))->Exists()) {
         return -FLT_MAX;
@@ -1534,11 +1534,11 @@ float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey)
 }
 
 // @0x141b72530
-float Unk_UtilColorData::FUN_141b72530() const
+float Unk_UtilColorData::GetRed() const
 {
     return m_kColorA.r;
 }
-MS2_REPLACE_METHOD(0x141b72530, Unk_UtilColorData, FUN_141b72530, 16, 0x3C5A885E);
+MS2_REPLACE_METHOD(0x141b72530, Unk_UtilColorData, GetRed, 16, 0x3C5A885E);
 
 // @0x141b72540
 NiSequenceData* Unk_UtilSequence::FUN_141b72540() const
@@ -1550,7 +1550,7 @@ MS2_REPLACE_METHOD(0x141b72540, Unk_UtilSequence, FUN_141b72540, 31, 0x4931477F)
 // @0x141b72560
 float Pow(float fBase, float fExp)
 {
-    return FUN_141b72600(fBase, fExp);
+    return PowF(fBase, fExp);
 }
 MS2_REPLACE(0x141b72560, Pow, 38, 0x09A6CEAF);
 
@@ -1570,8 +1570,8 @@ MS2_REPLACE(0x141b725e0, Log, 27, 0x3F5FEE04);
 
 // @0x141b72600
 extern "C" float (__cdecl* __imp_powf)(float, float);
-float FUN_141b72600(float fBase, float fExp)
+float PowF(float fBase, float fExp)
 {
     return __imp_powf(fBase, fExp);
 }
-MS2_REPLACE(0x141b72600, FUN_141b72600, 39, 0xECCEDFB2);
+MS2_REPLACE(0x141b72600, PowF, 39, 0xECCEDFB2);

@@ -72,7 +72,7 @@ const NiRTTI* CMapMetaManager::GetRTTI() const { return &ms_RTTI; }
 
 // ---- ballistic arc solver (not part of CMapMetaManager; sits in this unit's range) ----
 float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
-bool FUN_14028d470(float a, float b);                                        // nearly equal
+bool IsNearlyEqual(float a, float b);                                        // nearly equal
 Vector3 GetHorizontalDirection(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // direction from -> to (dropitem.cpp)
 
 // The launch solution (Unk_ArcFlight, arccontroller.h) for a projectile of the given speed under gravity: the low-angle
@@ -81,7 +81,7 @@ Vector3 GetHorizontalDirection(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // 
 void Unk_ArcFlight::FUN_141479ed0(Vector3 origin, Vector3 target, float speed, float gravity)
 {
     float distance = GetPlanarDistance(target, origin);
-    if (FUN_14028d470(distance, 0.0f)) {
+    if (IsNearlyEqual(distance, 0.0f)) {
         m_speed = speed;
         return;
     }

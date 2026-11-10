@@ -37,7 +37,7 @@ public:
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
 };
 MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);
-void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
+void SetUInt(Scaleform::GFx::Value*, unsigned int);
 
 // @0x141931550
 UIEpProgress::UIEpProgress(Unk_PopupOwner* pOwner) : UIPopupEntity(pOwner)
@@ -167,9 +167,9 @@ Scaleform::GFx::Value Unk_EpEntity::FUN_141931d80(const char* szMethod, int a1, 
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
-    FUN_1422bcd10(&args[2], a3);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
+    SetUInt(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

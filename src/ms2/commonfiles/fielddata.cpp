@@ -317,7 +317,7 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>), FUN_140178670 (CAtlArray<unsigned>)
-bool FUN_14028d470(float,float);
+bool IsNearlyEqual(float,float);
 template <class T> T XmlConvert(const CString&);
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
@@ -365,7 +365,7 @@ CNpcSpawnData::CNpcSpawnData() : id(0), count(0), probability(0) {}
 
 // The spawn table and cache are mutable DLL-local state: these routines are not hooked.
 // @0x1403728d0
-TPtr<CFieldSpawnTag> FUN_1403728d0(int mapCode,int spawnId)
+TPtr<CFieldSpawnTag> GetOrCreateSpawnTag(int mapCode,int spawnId)
 {
     LoadMapSpawnTag();
     TPtr<CFieldSpawnTag> tag;
@@ -563,7 +563,7 @@ CFieldData::~CFieldData() {}
 
 #ifndef MS2_HOOK_DLL
 // @0x140373d30
-void CFieldData::FUN_140373d30() { s_fields.RemoveAll(); }
+void CFieldData::ClearFields() { s_fields.RemoveAll(); }
 #endif
 #ifndef MS2_HOOK_DLL
 // @0x140373d50
@@ -604,7 +604,7 @@ void CFieldData::GetAllFields(std::vector<MS2Ptr<CFieldData> >& out)
 }
 #ifndef MS2_HOOK_DLL
 // @0x140374140
-MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
+MS2Ptr<CFieldData> CFieldData::FindField(int id)
 {
     if (id==0) return MS2Ptr<CFieldData>(0);
     MS2Ptr<CFieldData> field;
@@ -619,7 +619,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
 }
 #endif
 // @0x140374270
-MS2Ptr<CFieldData> CFieldData::FUN_140374270(CString xblock)
+MS2Ptr<CFieldData> CFieldData::FindFieldByXBlock(CString xblock)
 {
     MS2Ptr<CFieldData> unused(nullptr);
     if (Unk_LockGuard guard=s_fieldLock) {} else {
@@ -636,14 +636,14 @@ bool CFieldData::FUN_1403743e0() { return FUN_1403744a0(m_nFieldID); }
 // @0x140374410
 bool CFieldData::FUN_140374410(int id)
 {
-    MS2Ptr<CFieldData> field = FUN_140374140(id);
+    MS2Ptr<CFieldData> field = FindField(id);
     if (field == NULL) return false;
     return field->m_nMapType == 3;
 }
 // @0x1403744a0
 bool CFieldData::FUN_1403744a0(int id)
 {
-    MS2Ptr<CFieldData> field = FUN_140374140(id);
+    MS2Ptr<CFieldData> field = FindField(id);
     if (field == NULL) return false;
     return field->m_nMapType == 9;
 }
@@ -716,7 +716,7 @@ bool CFieldData::vfunc_1(TiXmlElement* node)
             return false;
         }
         XmlGetAttr((class TiXmlElement*)(property), "setItemRestrainID", m_nSetItemRestrainId);
-        if (!FUN_14028d470(m_fCubeSkillIntervalTime,0.0f))
+        if (!IsNearlyEqual(m_fCubeSkillIntervalTime,0.0f))
             m_fCubeSkillIntervalTime=0.1f<m_fCubeSkillIntervalTime?m_fCubeSkillIntervalTime:0.1f;
         XmlQuery((class TiXmlElement*)(property), "bigDataCharacterSkillUseLog", m_bBigDataCharacterSkillUseLog);
     }
@@ -751,17 +751,17 @@ bool CFieldData::vfunc_1(TiXmlElement* node)
 MS2_REPLACE_METHOD(0x140374530, CFieldData, vfunc_1, 3016, 0xAF96DE19);
 
 // @0x140375100
-bool CFieldData::FUN_140375100() { if (IsIndoor()) return false; return true; }
-MS2_REPLACE_METHOD(0x140375100, CFieldData, FUN_140375100, 37, 0xB6E5E377);
+bool CFieldData::IsOutdoor() { if (IsIndoor()) return false; return true; }
+MS2_REPLACE_METHOD(0x140375100, CFieldData, IsOutdoor, 37, 0xB6E5E377);
 // @0x140375130
-bool CFieldData::IsIndoor() { if (FUN_140375170() || FUN_140375190()) return true; return false; }
+bool CFieldData::IsIndoor() { if (IsIndoorMask2() || IsIndoorMask4()) return true; return false; }
 MS2_REPLACE_METHOD(0x140375130, CFieldData, IsIndoor, 54, 0xA4C29A48);
 // @0x140375170
-bool CFieldData::FUN_140375170() { if (m_nIndoorMask == 2) return true; return false; }
-MS2_REPLACE_METHOD(0x140375170, CFieldData, FUN_140375170, 23, 0x3B124FEE);
+bool CFieldData::IsIndoorMask2() { if (m_nIndoorMask == 2) return true; return false; }
+MS2_REPLACE_METHOD(0x140375170, CFieldData, IsIndoorMask2, 23, 0x3B124FEE);
 // @0x140375190
-bool CFieldData::FUN_140375190() { if (m_nIndoorMask == 4) return true; return false; }
-MS2_REPLACE_METHOD(0x140375190, CFieldData, FUN_140375190, 23, 0x15ECF0DC);
+bool CFieldData::IsIndoorMask4() { if (m_nIndoorMask == 4) return true; return false; }
+MS2_REPLACE_METHOD(0x140375190, CFieldData, IsIndoorMask4, 23, 0x15ECF0DC);
 // @0x1403751b0
 bool CFieldData::FUN_1403751b0()
 {
@@ -796,20 +796,20 @@ MS2_REPLACE_METHOD(0x140375350, CFieldData, GetContinentCode, 14, 0x7A15C443);
 int CFieldData::GetRegionCode() { return m_nRegionCode; }
 MS2_REPLACE_METHOD(0x140375370, CFieldData, GetRegionCode, 14, 0x921EE467);
 // @0x140375390
-int CFieldData::FUN_140375390() { return m_nCashTaxiNotDeparture == 0 ? 1 : 0; }
-MS2_REPLACE_METHOD(0x140375390, CFieldData, FUN_140375390, 47, 0x04942BBE);
+int CFieldData::IsCashTaxiDepartureAllowed() { return m_nCashTaxiNotDeparture == 0 ? 1 : 0; }
+MS2_REPLACE_METHOD(0x140375390, CFieldData, IsCashTaxiDepartureAllowed, 47, 0x04942BBE);
 // @0x1403753d0
-int CFieldData::FUN_1403753d0() { return m_nCashTaxiNotDestination == 0 ? 1 : 0; }
-MS2_REPLACE_METHOD(0x1403753d0, CFieldData, FUN_1403753d0, 47, 0x79DD85BA);
+int CFieldData::IsCashTaxiDestinationAllowed() { return m_nCashTaxiNotDestination == 0 ? 1 : 0; }
+MS2_REPLACE_METHOD(0x1403753d0, CFieldData, IsCashTaxiDestinationAllowed, 47, 0x79DD85BA);
 // @0x140375410
-int CFieldData::FUN_140375410() { return m_nCashCallMedicProhibit == 0 ? 1 : 0; }
-MS2_REPLACE_METHOD(0x140375410, CFieldData, FUN_140375410, 47, 0x92EEDD36);
+int CFieldData::IsCashCallMedicAllowed() { return m_nCashCallMedicProhibit == 0 ? 1 : 0; }
+MS2_REPLACE_METHOD(0x140375410, CFieldData, IsCashCallMedicAllowed, 47, 0x92EEDD36);
 // @0x140375450
-int CFieldData::FUN_140375450() { return m_nCashCallMarketProhibit == 0 ? 1 : 0; }
-MS2_REPLACE_METHOD(0x140375450, CFieldData, FUN_140375450, 47, 0xDF869FD2);
+int CFieldData::IsCashCallMarketAllowed() { return m_nCashCallMarketProhibit == 0 ? 1 : 0; }
+MS2_REPLACE_METHOD(0x140375450, CFieldData, IsCashCallMarketAllowed, 47, 0xDF869FD2);
 // @0x140375490
-int CFieldData::FUN_140375490() { return m_nRecallOtherUserProhibit == 0 ? 1 : 0; }
-MS2_REPLACE_METHOD(0x140375490, CFieldData, FUN_140375490, 47, 0x4217D80E);
+int CFieldData::IsRecallOtherUserAllowed() { return m_nRecallOtherUserProhibit == 0 ? 1 : 0; }
+MS2_REPLACE_METHOD(0x140375490, CFieldData, IsRecallOtherUserAllowed, 47, 0x4217D80E);
 // @0x1403754d0
 int CFieldData::GetPkMode() { return m_nPkMode; }
 MS2_REPLACE_METHOD(0x1403754d0, CFieldData, GetPkMode, 17, 0xBA29CEEF);

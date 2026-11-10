@@ -113,7 +113,7 @@
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141277f50();                                                // the UI layer id
-int FUN_141276180(const CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
+int PlaySystemSound(const CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
 class CReservedWordTable;
 class UIUpperHpBar;
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
@@ -208,7 +208,7 @@ void UISystemText::vfunc_43()
         UISwfEntity* pUpper = reinterpret_cast<UISwfEntity*>(Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d));
         if (pUpper != 0)
         {
-            if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()))
+            if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->GetScript()))
                 nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->GetY() + (float)pUpperRoot->GetHeightCeil() + 10.0f);
         }
         pEntity->vfunc_2(1, 0, nTop);
@@ -256,7 +256,7 @@ void UISystemText::ShowMessage(const CStringW& strText, int nType, int nOption)
         {
             pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered), nOption);
             CString strNone("");
-            FUN_141276180(s_emergencyNotice, strNone);
+            PlaySystemSound(s_emergencyNotice, strNone);
         }
         else
         {

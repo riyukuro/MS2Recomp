@@ -98,7 +98,7 @@ int TradeSlot::vfunc_0(void* p)
 {
     bool bMine = IsMine();
     int nFlags = bMine ? 0x80 : 0x1000;
-    ASTooltip tip(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0(), nFlags, 2);
+    ASTooltip tip(TSingleton<WorldService>::GetInstance()->GetLocalPlayer(), nFlags, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         if (IsMine())
@@ -134,7 +134,7 @@ int TradeSlot::vfunc_8(void* p)
     if (m_spItem == 0)
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(m_spItem.get(), TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0(), 0x1c81f))
+    if (slot.FUN_1409c3860(m_spItem.get(), TSingleton<WorldService>::GetInstance()->GetLocalPlayer(), 0x1c81f))
     {
         if (!IsMine())
             slot.DisableDrag();
@@ -163,9 +163,9 @@ void TradeSlot::PlayItemSound(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() ? true : false)
     {
-        if (spItem.operator->()->FUN_140527840())
+        if (spItem.operator->()->GetData())
         {
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), reinterpret_cast<CItemData*>(spItem.operator->()->FUN_140527840())->GetMaterialSoundName(), CString(""), 0, (class NiTransform *)(0), 1.0f, 0);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), reinterpret_cast<CItemData*>(spItem.operator->()->GetData())->GetMaterialSoundName(), CString(""), 0, (class NiTransform *)(0), 1.0f, 0);
         }
     }
 }
@@ -229,7 +229,7 @@ void DestroyTradeSlotBag(const CString& strName)
     TradeSlotBag* pBag = GetTradeSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

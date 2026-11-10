@@ -73,11 +73,11 @@ extern Unk_Inventory g_143ab2a90;
 // The drop query is the 0x38-byte ItemDropContext (itemdroptable.h, ctor 0x1402e9180).
 
 class Unk_SibPlayer : public PC { };               // the local player
-class Unk_SibPlayers { public: Unk_SibPlayer* FUN_141bd0cc0(); };
+class Unk_SibPlayers { public: Unk_SibPlayer* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -87,7 +87,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412752d0(const CStringW& strMessage, int n);                  // pop a notice
-int FUN_141276180(const CString& strCommand, const CString& strArg);
+int PlaySystemSound(const CString& strCommand, const CString& strArg);
 CString GetFontName(unsigned nIndex);                                 // the index text
 CString FUN_14016a600(const wchar_t* psz, int n);                       // wide -> narrow
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs);               // unit_140d1ae30 @0x140d1d3f0
@@ -128,7 +128,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     {
         ASButton* ok = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_okButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_okButton)).get());
         if (ok != 0) {
-            m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a230), (void*)0);
+            m_okButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a230), (void*)0);
         }
     }
     {
@@ -144,18 +144,18 @@ void UISelectItemBoxDialog::OnLoadComplete()
     GetChildInto<ASTextField>("m_selectedCount", m_selectedCount);
     GetChildInto<ASTextField>("m_selectNotice", m_selectNotice);
     int nDropBoxId = 0;
-    if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->IsEmpty()) {
-        m_nSelectCount = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(0, 0);
-        nDropBoxId = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(1, 0);
+    if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_props))->IsEmpty()) {
+        m_nSelectCount = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_args)->FUN_1408d1fd0(0, 0);
+        nDropBoxId = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_args)->FUN_1408d1fd0(1, 0);
     } else {
         int nDefault = 0;
-        m_nSelectCount = reinterpret_cast<CXmlData*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props)->GetInt(L"selectCount", nDefault);
+        m_nSelectCount = reinterpret_cast<CXmlData*>(&reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_props)->GetInt(L"selectCount", nDefault);
         int nDefault2 = 0;
-        nDropBoxId = reinterpret_cast<CXmlData*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props)->GetInt(L"individualDropBoxId", nDefault2);
+        nDropBoxId = reinterpret_cast<CXmlData*>(&reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_props)->GetInt(L"individualDropBoxId", nDefault2);
     }
     if (nDropBoxId == 0 || m_nSelectCount == 0)
         return;
-    Unk_SibPlayer* pPlayer = ((Unk_SibPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_SibPlayer* pPlayer = ((Unk_SibPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     ItemDropContext params;
@@ -183,7 +183,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     m_selectItemList->Invoke("resetRenderer");
     m_selectItemList->vfunc_25(list.GetValue());
     m_selectItemList->vfunc_24(true);
-    int nNext = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(4, 1);
+    int nNext = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->GetData())->m_args)->FUN_1408d1fd0(4, 1);
     int nHave = g_143ab2a90.FUN_140a5f180(item->GetItemId(), 0);
     if (nNext == 1 && 1 < nHave)
         m_okButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_next"));
@@ -235,7 +235,7 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
     ((class CBigDataLogSystem*)TSingleton<CBigDataLogSystem>::GetInstance())->SendLog("select_item_box_function", FUN_14016a600(strIndices, 0));
     OpenItemBoxContents(static_cast<CItem*>(((void*)((MS2Ptr<CItem>*)&(item))->get())), CStringW(strIndices));
     vfunc_67();
-    FUN_141276180("select_confirm", "");
+    PlaySystemSound("select_confirm", "");
 }
 
 // @0x140f9a5f0

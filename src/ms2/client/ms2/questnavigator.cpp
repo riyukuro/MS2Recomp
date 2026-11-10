@@ -62,7 +62,7 @@ class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x14016
 
 class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 void* FUN_140764020();   // C3: was FUN_140764020
 class CEffectService   // C3: member view for the former free stand-ins
 {
@@ -128,7 +128,7 @@ CQuestNavigator::CQuestNavigator()
 {
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
 }
 
 // @0x140c99990
@@ -136,7 +136,7 @@ CQuestNavigator::~CQuestNavigator()
 {
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 
 // A quest was removed / completed: the navigation target is dropped when it was this quest.
@@ -214,7 +214,7 @@ void CQuestNavigator::RemoveNavigationEffect()
 // @0x140c99ee0
 void CQuestNavigator::FUN_140c99ee0()
 {
-    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return;
     if (m_10 != 0)
@@ -328,13 +328,13 @@ int CQuestNavigator::TraceQuestTarget(QuestNavigation::TraceResult* pResult)
         return 1;
     int nFailed = 1;
     int nTargetMap = spContext->m_18;
-    int nCurrentMap = WorldService::GetInstance()->FUN_141bd3060();
+    int nCurrentMap = WorldService::GetInstance()->GetFieldId();
     if (nTargetMap == nCurrentMap)
     {
         float fBest = FLT_MAX;
         float fDist = FLT_MAX;
         Vector3 pos = DAT_143b01a60;
-        if (WorldService::GetInstance()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FindNearestNpcById(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             if (static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).IsQuestComplete(pResult->m_18) != 0)
@@ -343,13 +343,13 @@ int CQuestNavigator::TraceQuestTarget(QuestNavigation::TraceResult* pResult)
                 pResult->m_1c = 1;
             reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
-        if (WorldService::GetInstance()->FUN_141bd4ed0(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FindNearestInteractObject(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 3;
             reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
-        if (WorldService::GetInstance()->FUN_141bd51a0(spContext->m_40, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
+        if (WorldService::GetInstance()->FindNearestLiftableObject(spContext->m_40, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
             pResult->m_1c = 5;
@@ -422,7 +422,7 @@ void CQuestNavigator::RebuildTraceContext()
     m_70.m_20.clear();
     m_70.m_30.clear();
     m_70.m_40.clear();
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     ATL::CAtlArray<MS2Ptr<CQuest> > aQuests;
     ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(aQuests, 1, 0xb, -1);
     for (size_t i = 0; i < aQuests.GetCount(); i++)
@@ -468,7 +468,7 @@ bool CQuestNavigator::CanShowBeam()
 {
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         return false;
-    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return false;
     if (pPC->IsRiding() != 0)
@@ -485,7 +485,7 @@ bool CQuestNavigator::CanShowBeam()
 // @0x140c9b0a0
 Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 {
-    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return DAT_143b01a60;
     auto ptPC = pPC->vfunc_18();
@@ -497,7 +497,7 @@ Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 // @0x140c9b150
 CStringW CQuestNavigator::GetDistanceText(const Vector3& pos)
 {
-    PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PCBase* pPC = (PCBase*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;

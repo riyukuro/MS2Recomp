@@ -111,7 +111,7 @@ public:
     virtual void vfunc_59(int a1, int a2, int a3, int a4);          // 59: switch to a microgame state
     int GetObjectId();                                            // the actor kind / team
 };
-class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
+class Unk_1403ed2d0 { public: Unk_141bd0cc0* GetLocalPlayer(); };
 bool FUN_140b883c0();
 bool IsWithinMicroGameDistance(Vector3 const&, Vector3 const&);   // C3: was FUN_140b88470
 bool FUN_140b884e0(Vector3&);   // C3: was FUN_140b884e0
@@ -137,7 +137,7 @@ class CMsgBoxData { public: struct Unk_MsgBoxTimer const & GetTimer(void) const;
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW BlockFormat(int nStringId);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 void FUN_141275260(int nStringId, int a, int b);
 void FUN_1412752d0(const CStringW& str, int n);
 
@@ -154,7 +154,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x10, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x17, 0);
@@ -215,7 +215,7 @@ bool OnRpsWaitingBoxResult(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x5f, 0);
@@ -248,7 +248,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x81, 0);
         return;
     }
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0x88, 0);
@@ -263,7 +263,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     if (((class GameObject*)(pPlayer))->GetObjectId() == ((class GameObject*)(pTarget))->GetObjectId())
     {
         // We cannot dance with ourselves.
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringByKey(L"s_microgame_couple_dance_close"), 1);
         box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
@@ -309,7 +309,7 @@ bool OnCoupleDanceWaitingBoxResult(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
     {
         MS2_ASSERT_AT(0xd0, 0);

@@ -264,7 +264,7 @@ void FUN_140710590(COutPacket& packet);                                 // send
 void FUN_14151f200();                                                   // close the message box
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
 int FUN_141637c40(CPartyMember* pMember);                               // the member state
-double FUN_1407184e0(const CStringW& str);                              // parse a number
+double ParseDoubleW(const CStringW& str);                              // parse a number
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 int FUN_141276f80(Unk_CommandChat* pChat);                            // post a chat record
@@ -344,8 +344,8 @@ void ASPartyVotePage::OnInit()
         if (m_votedText == 0)
             throw PD_SWF_ERROR(0x32);
     } while (0);
-    m_yesButton->FUN_1422ce240(PdParamsDelegate(this, &ASPartyVotePage::OnYesButtonClick), 0);
-    m_noButton->FUN_1422ce240(PdParamsDelegate(this, &ASPartyVotePage::OnNoButtonClick), 0);
+    m_yesButton->AddClickHandler(PdParamsDelegate(this, &ASPartyVotePage::OnYesButtonClick), 0);
+    m_noButton->AddClickHandler(PdParamsDelegate(this, &ASPartyVotePage::OnNoButtonClick), 0);
 }
 
 // @0x141a74760
@@ -495,12 +495,12 @@ int UIPartyDialog::GetCameraButtonPos(__int64 nCharId, float* pPos)
 // @0x141a75680
 int UIPartyDialog::FUN_141a75680(float* pPos)
 {
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     if (reinterpret_cast<PCBase*>(pMe)->IsDead() == 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0 || spField->m_nGlobalSplit == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CPartyMember>>& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
@@ -521,12 +521,12 @@ int UIPartyDialog::IsObserveModeAvailable()
 {
     if (m_30 == 0)
         return 0;
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     if (reinterpret_cast<PCBase*>(pMe)->IsDead() == 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0 || spField->m_nGlobalSplit == 0)
         return 0;
     Scaleform::GFx::Value ret = static_cast<Unk_PdScript*>(m_30.get())->Invoke("isCanObserveMode");
@@ -592,9 +592,9 @@ void UIPartyDialog::OnLoadComplete()
     } while (0);
     m_vote.AssignRaw(new ASPartyVotePage(GetChild<ASMovieClip>("m_partyVote")));
     m_vote->OnInit();
-    m_createClub->FUN_1422ce240(PdParamsDelegate(this, &UIPartyDialog::OnCreateClubClick), 0);
-    m_enterDungeon->FUN_1422ce240(PdParamsDelegate(this, &UIPartyDialog::OnEnterDungeonClick), 0);
-    m_giveUpDungeon->FUN_1422ce240(PdParamsDelegate(this, &UIPartyDialog::OnGiveUpDungeonClick), 0);
+    m_createClub->AddClickHandler(PdParamsDelegate(this, &UIPartyDialog::OnCreateClubClick), 0);
+    m_enterDungeon->AddClickHandler(PdParamsDelegate(this, &UIPartyDialog::OnEnterDungeonClick), 0);
+    m_giveUpDungeon->AddClickHandler(PdParamsDelegate(this, &UIPartyDialog::OnGiveUpDungeonClick), 0);
     RefreshAll();
     PacketHandlerManager::GetInstance()->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIPartyDialog::OnPartyPacket));
     PacketHandlerManager::GetInstance()->RegisterHandler(0x100, Delegate<void(CInPacket&)>(this, &UIPartyDialog::FUN_141a77a40));
@@ -655,7 +655,7 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
             PC* pTarget = static_cast<PC*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1530(nCharId)));
-            MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+            MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
             if (pMe != 0 && pTarget != 0)
                 pMe->StartObserving(pTarget);
         }
@@ -793,7 +793,7 @@ bool UIPartyDialog::SendDungeonReward(int nResult, const CMsgBoxData& box)
 // @0x141a77760
 void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
 {
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe != 0)
     {
         if (pMe->FUN_141656a80() == nCharId)
@@ -910,7 +910,7 @@ bool UIPartyDialog::FUN_141a77eb0()
         FUN_140d73bc0(0xb5d, 0, 0, CStringW(L""));
         return false;
     }
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return false;
     if (reinterpret_cast<PCBase*>(pMe)->IsDead() != 0)
@@ -938,12 +938,12 @@ bool UIPartyDialog::FUN_141a77eb0()
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return false;
     }
-    if (static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375490() == 0)
+    if (static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData()->IsRecallOtherUserAllowed() == 0)
     {
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return false;
     }
-    int nLimit = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->vfunc_2();
+    int nLimit = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData()->vfunc_2();
     if (nLimit > 0)
     {
         if (WorldService::GetInstance()->FUN_141bc2bc0() + (nCount + WorldService::GetInstance()->FUN_141bc2b30()) > nLimit)
@@ -963,7 +963,7 @@ bool UIPartyDialog::FUN_141a77eb0()
 // @0x141a783d0
 void UIPartyDialog::StartRecallState(__int64 nItemUid)
 {
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return;
     NiPoint3 kRot = pMe->vfunc_20();
@@ -1003,7 +1003,7 @@ int UIPartyDialog::FillMemberObject(ASObj& obj, CPartyMember* pMember, unsigned 
         obj.SetIntMember(s_hp, user.m_48);
         obj.SetIntMember(s_maxhp, user.m_44);
         obj.SetIntMember(s_oriMaxhp, user.m_44);
-        obj.SetIntMember(s_tombType, user.FUN_1408f1ce0());
+        obj.SetIntMember(s_tombType, user.GetTombType());
     }
     if (nFlags & 0x10)
         obj.SetIntMember(s_chief, pMember->leader);
@@ -1050,9 +1050,9 @@ int UIPartyDialog::FillMemberObject(ASObj& obj, CPartyMember* pMember, unsigned 
     if (nFlags & 0x100)
     {
         int nObserve = 0;
-        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(DAT_143ab2828);
-        MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData();
         if (pMe != 0 && spMine.get() != 0)
         {
             if (pMe->FUN_141656a80() == user.m_8)
@@ -1141,8 +1141,8 @@ void UIPartyDialog::UpdateDungeonName()
 // @0x141a796b0
 void UIPartyDialog::UpdateRecallButton()
 {
-    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (spField == 0 || spField->FUN_140375490() == 0)
+    MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData();
+    if (spField == 0 || spField->IsRecallOtherUserAllowed() == 0)
         m_recall->vfunc_3(0);
     else
         m_recall->vfunc_3(1);
@@ -1224,7 +1224,7 @@ int UIPartyDPSDialog::FillMeterRow(ASObj& obj, CPartyMember* pMember, unsigned i
     obj.FUN_1409c48f0("level", pUser->m_34);
     obj.FUN_140bd0d90("job", pUser->m_40);
     obj.SetWStringMember("name", pUser->GetName());
-    double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
+    double dMeter = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, pMember->FUN_141637bb0(), m_nMode);
@@ -1269,7 +1269,7 @@ void UIPartyDPSDialog::RebuildRanking()
     MS2Ptr<CPartyMember> spLast = m_members[m_members.size() - 1];
     if (spLast.get() != 0)
     {
-        double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
+        double dBottom = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
         static_cast<ASArray*>(m_30.operator->())->InvokeDouble("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
@@ -1283,7 +1283,7 @@ void UIPartyDPSDialog::RebuildRanking()
         }
         do
         {
-            PCBase* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+            PCBase* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
             if (pMe == 0)
                 break;
             if (pMe->FUN_141656a80() != spMember->user.m_8)
@@ -1398,8 +1398,8 @@ void UIPartyDPSDialog::vfunc_72()
 // @0x141a7c2a0
 bool FUN_141a7c2a0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 {
-    double dA = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(1, spA->FUN_141637bb0(), s_nPdSortMode));
-    double dB = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(1, spB->FUN_141637bb0(), s_nPdSortMode));
+    double dA = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(1, spA->FUN_141637bb0(), s_nPdSortMode));
+    double dB = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(1, spB->FUN_141637bb0(), s_nPdSortMode));
     if (s_nPdSortMode == 6)
         return dB > dA;
     else
@@ -1592,7 +1592,7 @@ void UIPopupEntity::vfunc_55()
     m_84 = 0;
     m_88 = 0;
     m_8c = 0;
-    m_98.FUN_140868820();
+    m_98.SetExpired();
     vfunc_8(0);
 }
 
@@ -1613,7 +1613,7 @@ int UIPopupEntity::vfunc_57(int nForce)
 {
     if (m_68 == 0)
         return 1;
-    if (static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0()) == 0)
+    if (static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer()) == 0)
         return 1;
     if (m_80 == 0 && m_98.IsRunning() == 0)
         return 1;
@@ -1705,7 +1705,7 @@ class Unk_PmInput;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* GetUISwfEntityManager();                                    // UISwfEntityManager
 class Unk_PmEntityEvents;
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
 class Unk_UpperEvents   // C3: member view for the former free stand-ins
 {
 public:
@@ -1875,7 +1875,7 @@ int UIPopUpMenu::vfunc_13()
 {
     if (UISwfEntity::vfunc_13() != 0)
         return 1;
-    if ((m_f0.get() ? true : false) && m_f0->GetVisible() && ((class CInputKeyHandler*)(class Unk_PmInput*)(((class Unk_PmInput*)FUN_14025e7c0())))->FUN_14116d840())
+    if ((m_f0.get() ? true : false) && m_f0->GetVisible() && ((class CInputKeyHandler*)(class Unk_PmInput*)(((class Unk_PmInput*)FUN_14025e7c0())))->IsEscapePressed())
     {
         ClosePopup();
         return 1;
@@ -2102,7 +2102,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
 void UIPopUpMenu::FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir)
 {
     ClosePopup();
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return;
     m_110 = nType;
@@ -2131,7 +2131,7 @@ void UIPopUpMenu::PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CParty
     Unk_UserProxy* pUser = &pMember->user;
     target.m_nLevel = (unsigned short)pUser->m_34;
     target.m_nCharId = pUser->m_8;
-    target.m_strImage = FUN_141028be0(pUser->m_8, pUser->FUN_1408f1a60(), 1, CString(""));
+    target.m_strImage = FUN_141028be0(pUser->m_8, pUser->GetImage(), 1, CString(""));
     target.m_strName = strName;
     target.m_b38 = 0 < pUser->m_48;
     target.m_bOnline = !pMember->IsOffline();
@@ -2212,7 +2212,7 @@ void UIPopUpMenu::PopUpMenuForBuddy(const Unk_PopupMenuInfo& info, __int64 nBudd
     target.m_b38 = true;
     target.m_bOnline = pBuddy->IsOnline();
     target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(pBuddy->FUN_1401cc330())->Sum();
-    target.m_n20 = pBuddy->FUN_1401cc290();
+    target.m_n20 = pBuddy->GetJobId();
     target.m_nJobCode = pBuddy->GetJobCode();
     int nOpenType = 2;
     if (Open(target, info.m_b, nOpenType) == 0)
@@ -2257,7 +2257,7 @@ void UIPopUpMenu::FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Pt
     if (spBanner == 0)
         return;
     ClosePopup();
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return;
     CStringW strName(spBanner->m_user.m_strName);
@@ -2343,7 +2343,7 @@ void UIPopUpMenu::ClosePopup()
         static_cast<Unk_PdScript*>((AScript*)m_f0.operator->())->Invoke("close");
     ResetState();
     GetUISwfEntityManager()->RemoveFromLayer(this, 0);
-    ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_141930950(this);
+    ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)GetEntityEventDispatcher())))->FUN_141930950(this);
     ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->RemoveListener(this);
 }
 
@@ -2457,7 +2457,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         return 0;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return 0;
-    if (!static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->m_bPopupMenu)
+    if (!static_cast<Unk_PdWorld*>(WorldService::GetInstance())->GetFieldData()->m_bPopupMenu)
         return 0;
     m_118.RemoveAll();
     FUN_141a83810(nFlags, nType, target);
@@ -2525,7 +2525,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         vfunc_8(1);
         vfunc_47(0);
         GetUISwfEntityManager()->AddToLayer(this, 0);
-        ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
+        ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)GetEntityEventDispatcher())))->FUN_1419308c0(this);
         ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->AddListener(this);
         m_f0 = Unk_ASCreate<ASScrollingList>(m_28, list);
         return 1;
@@ -2575,7 +2575,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
         vfunc_8(1);
         vfunc_47(0);
         GetUISwfEntityManager()->AddToLayer(this, 0);
-        ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
+        ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)GetEntityEventDispatcher())))->FUN_1419308c0(this);
         ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->AddListener(this);
         m_f0 = Unk_ASCreate<ASScrollingList>(m_28, list);
         return 1;
@@ -2687,7 +2687,7 @@ int UIPopUpMenu::FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strNa
 {
     if (strName.IsEmpty())
         return 0;
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     if ((nFlags & 2) != 0)
@@ -2726,7 +2726,7 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
     __int64 nCharId = target.m_nCharId;
     if (strName.IsEmpty())
         return 0;
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     int bOnline = target.m_bOnline;
@@ -2968,7 +2968,7 @@ void UIPopUpMenu::FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy)
     {
         AddPopupMenu((Unk_PmMenuId)0x12d);
     }
-    else if (pBuddy->FUN_1401cc5f0() == 0)
+    else if (pBuddy->IsFriend() == 0)
     {
         if (pBuddy->FUN_1401cc5b0() != 0 || pBuddy->FUN_1401cc660() != 0)
             return;
@@ -3116,7 +3116,7 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
 // @0x141a84d40
 void UIPopUpMenu::FUN_141a84d40()
 {
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return;
     if (pMe->FUN_141656a80() == m_a8)
@@ -3413,7 +3413,7 @@ void UIPopUpMenu::SendRequestPet()
 // @0x141a86b80
 void UIPopUpMenu::FUN_141a86b80()
 {
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return;
     pMe->SendRequestPet(((class PCBase*)(class PCBase*)(pMe))->FUN_1416769f0());
@@ -3642,7 +3642,7 @@ void OnRightMouseDown(float x, float y)
             Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick->GetPickResult()->GetAt(i));
             if (pHit == 0)
                 continue;
-            GameObject* pObject = WorldService::GetInstance()->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
+            GameObject* pObject = WorldService::GetInstance()->FindObjectByMesh(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
             if (pObject != 0)
             {
                 if (objects.end() != std::find(objects.begin(), objects.end(), pObject))
@@ -3762,7 +3762,7 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
 {
     if (((class GFxSceneService*)(class Unk_PpScene*)(GetGFxSceneService()))->GetSceneId() != 0x620000c)
         return false;
-    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMe == 0)
         return false;
     UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FindPopupMenu(0x4e39));
@@ -3794,7 +3794,7 @@ bool FUN_141a8ab90(GameObject* pObject, float x, float y)
         }
         else
         {
-            PCBase* pOwner = static_cast<PCBase*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(pPet->GetOwnerId())));
+            PCBase* pOwner = static_cast<PCBase*>(static_cast<GameObject*>(WorldService::GetInstance()->FindPCById(pPet->GetOwnerId())));
             if (pOwner == 0)
                 return false;
             Unk_PopupMenuInfo info(x, y, 1, 0x440, 0, CString(""), 0);
@@ -3852,7 +3852,7 @@ bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
             if (spMember.get() != 0)
                 info.m_infoB.m_28 = spMember->data.f00;   // the member's account id
         }
-        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMe != 0 && pMe->FUN_141656a80() != info.m_infoB.m_18)
         {
             pMenu->OpenFromPopupInfo(info);
@@ -3925,7 +3925,7 @@ bool FUN_141a8b910()
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return true;
-    MyPC* pMe = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
+    MyPC* pMe = static_cast<MyPC*>(pWorld->GetLocalPlayer());
     if (pMe == 0)
         return true;
     switch (pMe->GetCurStateId()) {

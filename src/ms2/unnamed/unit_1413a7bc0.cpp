@@ -29,12 +29,12 @@ class Unk_GcPC : public PC
 class Unk_GcWorld
 {
 public:
-    Unk_GcPC* FUN_141bd0cc0();                              // the local player
+    Unk_GcPC* GetLocalPlayer();                              // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -220,7 +220,7 @@ MS2_REPLACE_METHOD(0x1413A81D0, CGuideConditionDead, vfunc_2, 46, 0xBB3AB92C);
 // @0x1413a8210
 int CGuideConditionDead::vfunc_3()
 {
-    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     return ApplyNot(pPC->IsDead());
@@ -252,7 +252,7 @@ MS2_REPLACE_METHOD(0x1413A82D0, CGuideConditionConstructMode, GetTypeName, 61, 0
 // @0x1413a8320
 int CGuideConditionConstructMode::vfunc_3()
 {
-    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     return ApplyNot(pPC->IsCubeMode1());

@@ -95,14 +95,14 @@ GFxMovieEventHandler::~GFxMovieEventHandler()
 }
 
 // @0x1422d8e80
-int GFxMovieEventHandler::FUN_1422d8e80(void* hwnd)
+int GFxMovieEventHandler::RegisterClipboardViewer(void* hwnd)
 {
     m_88 = SetClipboardViewer((HWND)hwnd);
     if (m_88 == hwnd)
         m_88 = 0;
     return m_88 != 0;
 }
-MS2_REPLACE_METHOD(0x1422D8E80, GFxMovieEventHandler, FUN_1422d8e80, 114, 0xA9C1F361);
+MS2_REPLACE_METHOD(0x1422D8E80, GFxMovieEventHandler, RegisterClipboardViewer, 114, 0xA9C1F361);
 
 // @0x1422d8f00
 void GFxMovieEventHandler::SetClipboardText(CStringW strText)
@@ -114,12 +114,12 @@ void GFxMovieEventHandler::SetClipboardText(CStringW strText)
 MS2_REPLACE_METHOD(0x1422D8F00, GFxMovieEventHandler, SetClipboardText, 135, 0x496A8081);
 
 // @0x1422d8f90
-void GFxMovieEventHandler::FUN_1422d8f90(void* hwnd)
+void GFxMovieEventHandler::RemoveClipboardChain(void* hwnd)
 {
     if (m_88 == 0)
         ChangeClipboardChain((HWND)hwnd, (HWND)m_88);
 }
-MS2_REPLACE_METHOD(0x1422D8F90, GFxMovieEventHandler, FUN_1422d8f90, 57, 0x214238EB);
+MS2_REPLACE_METHOD(0x1422D8F90, GFxMovieEventHandler, RemoveClipboardChain, 57, 0x214238EB);
 
 // @0x1422d8fd0
 void GFxMovieEventHandler::FUN_1422d8fd0(const CStringW& strText)
@@ -140,7 +140,7 @@ int GFxMovieEventHandler::vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wP
     switch (msg)
     {
     case WM_DESTROY:
-        FUN_1422d8f90(hwnd);
+        RemoveClipboardChain(hwnd);
         break;
     case WM_SETFOCUS:
         vfunc_17(hwnd);
@@ -337,7 +337,7 @@ MS2_REPLACE_METHOD(0x1422D9EF0, GFxMovieEventHandler, vfunc_18, 80, 0xD4896A37);
 void GFxMovieEventHandler::vfunc_11()
 {
     GFxMovie::vfunc_11();
-    FUN_1422d8f90(m_88);
+    RemoveClipboardChain(m_88);
 }
 MS2_REPLACE_METHOD(0x1422D9F50, GFxMovieEventHandler, vfunc_11, 46, 0xF3006939);
 

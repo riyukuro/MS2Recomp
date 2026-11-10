@@ -100,12 +100,12 @@ class CIngredientContainer : public CPtred {
 public:
     CIngredientContainer(); virtual ~CIngredientContainer();
     size_t FUN_14026bee0(); bool IsEmpty(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
-    std::vector<MS2Ptr<CIngredientInfo> >* FUN_14026c230(); void FUN_14026c250(CIngredientContainer*);
+    std::vector<MS2Ptr<CIngredientInfo> >* FUN_14026c230(); void Merge(CIngredientContainer*);
     Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);
 class Unk_BreakRecipe : public CLua { };
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 void GetSocketUnlockCost(int,unsigned short,int,CIngredientContainer*);
 class CContentShutdown { public: enum Content {}; int Get(Content); };   // C3: member view
 class Unk_BreakFlags { public: void* p0; CContentShutdown flags; };
@@ -152,7 +152,7 @@ void ShowSystemNotice(const CStringW&,int,int);
 void FUN_141275260(int,int,int);
 void FUN_141275460(int,int,int,const fmt::ArgList&);
 void ShowMessageBox(CStringW,int,void*,CStringW);
-int FUN_141276180(const CString&,const CString&);
+int PlaySystemSound(const CString&,const CString&);
 // These are message-display wrappers over fmt; StringFormat is used for string-returning wrappers.
 template<class A,class B> inline void Unk_BreakMessage(int id,int a,int b,const A& x,const B& y) {
     const fmt::internal::ArgArray<2>::Type values={fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(x),fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(y)};
@@ -237,7 +237,7 @@ void ItemBreakCommon::FUN_140530b00(Items& items,unsigned count) { items.RemoveA
 MS2_REPLACE(0x140530B00, ItemBreakCommon::FUN_140530b00, 50, 0x7804D9FF);
 // Hook deferred: allocating BreakItem would expose DLL-local vftables.
 // @0x140530b40
-bool ItemBreakCommon::FUN_140530b40(Items& items,int index,__int64 id,int count) {
+bool ItemBreakCommon::SetItem(Items& items,int index,__int64 id,int count) {
     if(index<0 || index>=(int)items.GetCount()) return false; Ptr p=static_cast<const Items&>(items).GetAt(index); if(p.get()) p->FUN_140530720(id,count); else { Ptr next(new BreakItem(id,count)); items.SetAt(index,next); } return true;
 }
 // @0x140530c90
@@ -246,11 +246,11 @@ void FUN_140530c90(MS2Ptr<CItemData> item,int grade,int enhance,CIngredientConta
     if(TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x3a)) { int level=item->GetSkinType(); if(level) {
     unsigned short category=((Unk_BreakTemplate*)item.operator->())->category;
     __int64 value=item->GetSellPrice(grade);
-    ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,output);
+    ((class Unk_BreakRecipe*)GetLuaClient())->CalcMeratSkinItemBreakReward(category,grade,value,level,output);
     if(enhance>0) {
         CIngredientContainer extra; GetSocketUnlockCost(grade,category,level,&extra);
         if(!extra.IsEmpty()) {
-            int percent=((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakRefundPercent();
+            int percent=((class Unk_BreakRecipe*)GetLuaClient())->CalcMeratSkinItemBreakRefundPercent();
             for(size_t i=0;i<extra.FUN_14026bee0();++i) { MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(i); if(p==0) continue;
                 unsigned amount=(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100<1?1:(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100; if(percent==0) amount=0; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=amount*enhance;
             }
@@ -258,7 +258,7 @@ void FUN_140530c90(MS2Ptr<CItemData> item,int grade,int enhance,CIngredientConta
                 MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(j); if(p==0) continue;
                 if(reinterpret_cast<Unk_BreakIngredient*>((reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients)[i]).operator->())->id==reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->id) { reinterpret_cast<Unk_BreakIngredient*>((reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients)[i]).operator->())->count+=reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=0; }
             }
-            output.FUN_14026c250(&extra);
+            output.Merge(&extra);
         }
     }
     } }
@@ -266,7 +266,7 @@ void FUN_140530c90(MS2Ptr<CItemData> item,int grade,int enhance,CIngredientConta
 MS2_REPLACE(0x140530C90, FUN_140530c90, 1004, 0x6E41BE6D);
 // @0x140531090
 void FUN_140531090(Unk_BreakItemPtr item,CIngredientContainer& output) {
-    if(item==0 || ((Unk_BreakEnhance*)item->GetSocket())==0) return; FUN_140530c90(MS2Ptr<CItemData>(((CItemData*)item->FUN_140527840())),item->GetRarity(),((Unk_BreakEnhance*)item->GetSocket())->GetOpenSlotCount(),output);
+    if(item==0 || ((Unk_BreakEnhance*)item->GetSocket())==0) return; FUN_140530c90(MS2Ptr<CItemData>(((CItemData*)item->GetData())),item->GetRarity(),((Unk_BreakEnhance*)item->GetSocket())->GetOpenSlotCount(),output);
 }
 // @0x140531180
 CItemBreakManager::CItemBreakManager() : type(0) { pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); }
@@ -276,14 +276,14 @@ CItemBreakManager::~CItemBreakManager() {}
 int CItemBreakManager::CanBreakItem(ItemPtr item) {
     if(!item) return 0; if(item->FUN_140528e20()==true) return 0;
     if(FUN_140531510(item)==1) return 1;
-    if(!FUN_140531630(item)) return 0; if(!FUN_140633bf0(item)) return 0; if(!FUN_140531850(item)) return 0;
+    if(!FUN_140531630(item)) return 0; if(!FUN_140633bf0(item)) return 0; if(!HasBreakReward(item)) return 0;
     if(item->HasCubeTextureMesh()!=0) { if(TSingleton<CFeatureManager>::GetInstance()->IsRegionJP()) { if(((Unk_BreakEnhance*)item->GetSocket())!=0 && ((Unk_BreakEnhance*)item->GetSocket())->GetOpenSlotCount()>0) return 0; } }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140531270, CItemBreakManager, CanBreakItem, 653, 0xB1394540);
 // @0x140531510
 int CItemBreakManager::FUN_140531510(ItemPtr item) {
-    MS2Ptr<CItemData> data(((CItemData*)item->FUN_140527840())); if(data==0) return 0;
+    MS2Ptr<CItemData> data(((CItemData*)item->GetData())); if(data==0) return 0;
     if(item->FUN_140526190()==1) { if(((class Unk_BreakFlags*)FUN_14025e7b0())->flags.Get((CContentShutdown::Content)0x71)!=0) return 0; return 1; } return 0;
 }
 MS2_REPLACE_METHOD(0x140531510, CItemBreakManager, FUN_140531510, 269, 0x665F5D7D);
@@ -297,16 +297,16 @@ bool CItemBreakManager::FUN_1405316d0(ItemPtr item) {
 }
 MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x79429692);
 // @0x140531850
-bool CItemBreakManager::FUN_140531850(ItemPtr item) {
+bool CItemBreakManager::HasBreakReward(ItemPtr item) {
     if(item==0) return false; if(!item->HasSkin()) return true;
     MS2SvrPtr<CIngredientContainer> p=reinterpret_cast<CItemBreakIngredientTable*>(GetItemBreakIngredientTable())->GetBreakItem(item->GetItemId());
     if(p.get()) { const Unk_BreakIngredients& list=*reinterpret_cast<const Unk_BreakIngredients*>(p->FUN_14026c230()); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(list).empty()) return true; }
-    int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
+    int level=((CItemData*)item->GetData())->GetSkinType(); if(level) {
         unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->GetRarity(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
-        ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(result.ingredients).empty()) return true;
+        ((class Unk_BreakRecipe*)GetLuaClient())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(result.ingredients).empty()) return true;
     } return false;
 }
-MS2_REPLACE_METHOD(0x140531850, CItemBreakManager, FUN_140531850, 571, 0xE5EDB101);
+MS2_REPLACE_METHOD(0x140531850, CItemBreakManager, HasBreakReward, 571, 0xE5EDB101);
 // @0x140531aa0
 int CItemBreakManager::CanAddItem(ItemPtr item) { if(!CanBreakItem(item)) return 0; if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) return 0; return 1; }
 MS2_REPLACE_METHOD(0x140531AA0, CItemBreakManager, CanAddItem, 187, 0x4B7E2A6A);
@@ -376,7 +376,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
     if(mode==1) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=(&packet.input)->vfunc_2(); int count=(&packet.input)->vfunc_3();
         if(index<0 || index>=100) return;
-        ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,count); UpdateActiveDialogSlot(index); FUN_141276180(s_breakSound,""); }
+        ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item.get()) { ItemBreakCommon::SetItem(items,index,id,count); UpdateActiveDialogSlot(index); PlaySystemSound(s_breakSound,""); }
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->RefreshItemSlot(id);
     } else if(mode==2) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=ItemBreakCommon::FUN_140530a10(items,id);
@@ -400,9 +400,9 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); unsigned count=(&packet.input)->vfunc_3();
         for(unsigned i=0;i<count;++i) { int index=(&packet.input)->vfunc_2(); unsigned __int64 id=(&packet.input)->vfunc_4(); int amount=(&packet.input)->vfunc_3();
             if(index<0 || index>=100) return; ItemPtr item=g_143ab2a90.FindItemByUid(id);
-            if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,amount); UpdateActiveDialogSlot(index); } if(p) p->RefreshItemSlot(id);
+            if(item.get()) { ItemBreakCommon::SetItem(items,index,id,amount); UpdateActiveDialogSlot(index); } if(p) p->RefreshItemSlot(id);
         }
-        if(count!=0) FUN_141276180(s_breakSound,"");
+        if(count!=0) PlaySystemSound(s_breakSound,"");
     }
 }
 MS2_REPLACE_METHOD(0x1405322B0, CItemBreakManager, OnItemDismantlePacket, 2038, 0xDDEEFAB8);
@@ -435,7 +435,7 @@ int CItemBreakManager::TryAddItem(ItemPtr item,int arg) {
     if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) { ShowSystemNotice(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
     Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->GetSocket()); if(enhance && !enhance->CheckGemsBreakable()) { ShowMessageBox(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
     if(type==2) { if(!CanBreakItem(item)) { FUN_141275260(0x8f7,1,1); return 0; }
-        if(!((CItemData*)item->FUN_140527840())->FUN_14053cbc0() && !item->HasSkin()) { FUN_141275260(0x8f7,1,1); return 0; }
+        if(!((CItemData*)item->GetData())->FUN_14053cbc0() && !item->HasSkin()) { FUN_141275260(0x8f7,1,1); return 0; }
     } else if(!CanBreakItem(item)) { FUN_141275260(0x8f6,1,1); return 0; }
     AddItemWithConfirm(item,arg); return 1;
 }
@@ -467,7 +467,7 @@ void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
             CStringW warning=GetStringCommonByKey(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
             MS2Ptr<CMsgBoxData> box=CreateMessageBox(0x11,text,0,L"");
             if(box) { box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnConfirmMessageBoxResult));
-                box->SetItemUid(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
+                box->SetItemUid(item->GetItemUid()); box->SetItemEntry(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
                 box->Append(arg); box->Append(item->GetItemUid()); box->Append(((unsigned)item->GetCount())); FUN_140d73c60(box);
             }
         } else SendItemDismantleMode1(item->GetItemUid(),((unsigned)item->GetCount()),arg);

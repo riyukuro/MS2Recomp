@@ -31,7 +31,7 @@ class Unk_AltStringMgr* GetGFxManager();   // C3: the Unk_ExpUiScale (calls cast
 
 int FUN_1412755a0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);  // play a sound
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // 0x140513200 for T = unsigned int
 void FUN_1412751b0(const CStringW& strText, int nKind);             // chat/system message
 CStringW GetStringCommon(int nStringId);                              // string table text by id
@@ -91,7 +91,7 @@ void UIMassiveEvent::OnLoadComplete()
 // @0x1419f5920
 void UIMassiveEvent::vfunc_43()
 {
-    MS2Ptr<ASDisplayObject> spRoot = FUN_1422dba50();
+    MS2Ptr<ASDisplayObject> spRoot = GetDisplayObject();
     if (spRoot.get())
     {
         spRoot->vfunc_2(5, 0, 0);
@@ -150,11 +150,11 @@ void UIMassiveEvent::PlayCountSound()
     switch (m_nType)
     {
     case 1:
-        FUN_141276180(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
-        FUN_141276180("Count_NumEffect", "");
+        PlaySystemSound(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
+        PlaySystemSound("Count_NumEffect", "");
         break;
     case 2:
-        FUN_141276180("Count_NumEffect", "");
+        PlaySystemSound("Count_NumEffect", "");
         break;
     }
 }
@@ -311,15 +311,15 @@ void UIMassiveEvent::ShowMessage(int nSubType, CStringW& strText, int nDuration)
     switch (nSubType)
     {
     case 0:
-        FUN_141276180(s_strFail, "");
+        PlaySystemSound(s_strFail, "");
         break;
     case 1:
-        FUN_141276180(s_strFail, "");
+        PlaySystemSound(s_strFail, "");
         break;
     case 2:
-        FUN_141276180(s_strPcWin, "");
-        FUN_141276180(s_strSuccess, "");
-        FUN_141276180(s_strBattleWin, "");
+        PlaySystemSound(s_strPcWin, "");
+        PlaySystemSound(s_strSuccess, "");
+        PlaySystemSound(s_strBattleWin, "");
         ChromaSDK::GetChromaManager()->SetState(9);
         break;
     case 3:
@@ -327,7 +327,7 @@ void UIMassiveEvent::ShowMessage(int nSubType, CStringW& strText, int nDuration)
     case 4:
         break;
     case 5:
-        FUN_141276180(s_strBattleWin, "");
+        PlaySystemSound(s_strBattleWin, "");
         ChromaSDK::GetChromaManager()->SetState(9);
         break;
     case 6:

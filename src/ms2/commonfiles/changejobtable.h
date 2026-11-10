@@ -41,7 +41,7 @@ MS2_CHECK_OFFSET(ChangeJobData, m_skills1, 0x38);
 MS2_CHECK_OFFSET(ChangeJobData, m_skills2, 0x58);
 MS2_CHECK_OFFSET(ChangeJobData, m_bValid, 0x78);
 
-CPtred* FUN_1401ba820(CPtred* p);
+CPtred* InitRefCount(CPtred* p);
 // The CPtred box of a row: the smart pointer points at the value, 0x18 bytes behind the box.
 template<> struct Unk_SocketRef<ChangeJobData> {
     static CPtred* Base(ChangeJobData* p) {
@@ -57,7 +57,7 @@ template<> struct Unk_SocketRef<ChangeJobData> {
         else result = &static_cast<TPtredDummy<ChangeJobData>*>(p)->value;
         return result;
     }
-    static ChangeJobData* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static ChangeJobData* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(ChangeJobData)
 MS2_CHECK_SIZE(TPtredDummy<ChangeJobData>, 0x98);

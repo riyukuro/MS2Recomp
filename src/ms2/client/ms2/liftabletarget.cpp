@@ -98,7 +98,7 @@ int CLiftableTarget::vfunc_1(egf::EntityPtr ent)
 // @0x1414483e0
 void CLiftableTarget::FUN_1414483e0()
 {
-    Unk_LtActor* pActor = ((class Unk_LtActor*)((class WorldService*)(class Unk_LtPlayer*)(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_LtActor* pActor = ((class Unk_LtActor*)((class WorldService*)(class Unk_LtPlayer*)(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return;
     if (pActor->IsInCubeMode() == 0)

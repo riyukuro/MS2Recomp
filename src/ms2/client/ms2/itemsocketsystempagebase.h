@@ -38,7 +38,7 @@ public:
     void FUN_140f6d620(int enabled);
     int FUN_140f6d670();
     MS2Ptr<CItem> CreateItem(int itemId, int grade);
-    MS2Ptr<CItem> FUN_140f6ce00(int itemId, int grade, bool bindOwner, MS2Ptr<CItem> source);
+    MS2Ptr<CItem> CreateItemFromSource(int itemId, int grade, bool bindOwner, MS2Ptr<CItem> source);
     MS2Ptr<CItem> CreateGemStoneItem(MS2Ptr<TSocketGemStoneInfo> info, int grade, bool bindOwner);
     ItemInfoSlot* GetItemSlot(const CString& name);
     ItemInfoSlot* SetInfoSlotItem(const CString& name, MS2Ptr<CItem> item);
@@ -49,10 +49,10 @@ public:
     void FUN_140f6d450(const CString& name, CAtlArray<MS2Ptr<CItem>>& items, int icon, int flags);
     void FUN_140f6d4c0(const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<ItemSlotBag::CreateParam> param);
     void FUN_140f6d590(const CString& name, MS2Ptr<CItem> item, int icon, int flags);
-    bool FUN_140f6d9a0(int index, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
-    bool FUN_140f6db00(MS2Ptr<CItem> item, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
+    bool RemoveItemAt(int index, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
+    bool AddItemToBag(MS2Ptr<CItem> item, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control);
     void ClearListSelection(MS2Ptr<Unk_SocketPageBag> control);
-    void FUN_140f6dc70(const CString& name, CIngredientContainer& ingredients, ASObj& data, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
+    void BuildIngredientRows(const CString& name, CIngredientContainer& ingredients, ASObj& data, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
     void SetSlotNew(int index, bool isNew);
     void UpdateIngredientCounts(const CString& name, const CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
     int GetOwnedItemCount(MS2Ptr<CItem> item, MS2Ptr<CItem> excluded);

@@ -75,7 +75,7 @@ template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<const Unk_Gallery
 void* GetGameRule();
 template <> inline bool MS2Ptr<GalleryContext>::operator==(GalleryContext* p) const { return m_p == p; }   // 0x140c19220
 template <> inline MS2Ptr<GalleryContext>::operator GalleryContext*() const { return m_p; }        // 0x140c19260
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class Unk_GalleryQuestState
 {
 public:
@@ -136,7 +136,7 @@ MS2_REPLACE_METHOD(0x140C16740, UIGalleryEventDialog, GetTypeName, 61, 0x68C7FDA
 int UIGalleryEventDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65()) return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C16790, UIGalleryEventDialog, vfunc_65, 90, 0x84166C06);
@@ -145,7 +145,7 @@ MS2_REPLACE_METHOD(0x140C16790, UIGalleryEventDialog, vfunc_65, 90, 0x84166C06);
 void UIGalleryEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 MS2_REPLACE_METHOD(0x140C167F0, UIGalleryEventDialog, vfunc_67, 77, 0xD6C3B993);
 
@@ -182,7 +182,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         int id = args->PopUInt();
         int rank = args->PopUInt();
         do {
-        void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* actor = WorldService::GetInstance()->GetLocalPlayer();
         if (!actor) return;
         ASTooltip tip(actor, 32, 2);
         if (!tip.FUN_1409e1770(id, rank)) return;

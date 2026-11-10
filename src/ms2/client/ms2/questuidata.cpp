@@ -53,11 +53,11 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string data path of <file>
 CString GetLanguageCode();                                                // the locale code
 CString FUN_14028d3c0(CString strPath);                                 // the file name of a path
-void FUN_1401d3700(CString& str);                                       // lower case
+void ToLower(CString& str);                                       // lower case
 void FindFiles(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrFiles, CString strPrefix, bool bRecursive);
-bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);   // int attribute with default
+bool IsElementFeatureEnabled(struct Unk_XmlElement*);   // C3: was IsElementFeatureEnabled
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);   // int attribute with default
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void ParseIntArray(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
@@ -189,7 +189,7 @@ void FUN_1416e4590(CString strPath)
     spCache->SetPath(strPath);
     for (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest != 0; pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
     {
-        if (!FUN_14028f650((struct Unk_XmlElement*)(pQuest)))
+        if (!IsElementFeatureEnabled((struct Unk_XmlElement*)(pQuest)))
             continue;
         MS2Ptr<CQuestUIData> spData(new CQuestUIData);
         spData->m_nQuestId = atoi(Unk_ReadString((class Unk_XmlNode*)(pQuest), "questID", CString("")));
@@ -420,7 +420,7 @@ MS2Ptr<CQuestUIData> FUN_1416e5f60(int nQuestId)
 // @0x1416e6100
 int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
@@ -543,7 +543,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     MS2Ptr<CConditionCommonData> spCond = spData->m_conditions[nIndex];
     if (spCond->m_nType == 37 && strManual.GetLength() == 0)
         return str;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(m_nQuestId);
@@ -671,7 +671,7 @@ void LoadChapterDescriptions()
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         CString strName = FUN_14028d3c0(files[i]);
-        FUN_1401d3700(strName);
+        ToLower(strName);
         if (strName.Find("chapterdescription", 0) != -1)
             FUN_1416e7c00(files[i]);
     }
@@ -693,10 +693,10 @@ void FUN_1416e7c00(CString strPath)
     }
     for (TiXmlElement* pChapter = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("chapter")); pChapter != 0; pChapter = ((class TiXmlElement*)((class Unk_XmlNode*)(pChapter))->NextSibling("chapter")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pChapter)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pChapter)))
             continue;
         MS2Ptr<CChapterUIData> spChapter(new CChapterUIData);
-        spChapter->m_nId = FUN_140197350(pChapter, "id", 0);
+        spChapter->m_nId = GetIntAttr(pChapter, "id", 0);
         CStringW strName = FUN_1401bf530(pChapter, "name", CStringW(L""));
         CStringW strDesc = FUN_1401bf530(pChapter, "desc", CStringW(L""));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strName);

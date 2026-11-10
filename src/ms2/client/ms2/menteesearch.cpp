@@ -55,7 +55,7 @@ struct Unk_MenteeConfig { char m_pad[8]; Unk_MenteeBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751b0(const CStringW& strText, int nKind);                     // shows the text as a notice
-void FUN_141b6de20();                                                       // thread start-up
+void InitThread();                                                       // thread start-up
 class Unk_UtilLogScope
 {
 public:
@@ -124,14 +124,14 @@ void CMenteeSearchParam::FUN_140b6e170(const CMenteeSearchParam* pSrc)
 CMenteeSearchWebResult::CMenteeSearchWebResult()
 {
     m_nResult = 1;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
 }
 
 // @0x140b6e220
 CMenteeSearchWebResult::CMenteeSearchWebResult(int nResult)
 {
     m_nResult = nResult;
-    m_buffer.FUN_140518490();
+    m_buffer.Clear();
 }
 
 // ---- CMenteeSearchManager ----
@@ -302,7 +302,7 @@ void CMenteeSearchManager::SetResponse(MS2Ptr<MenteeSearch::ResponseMenteeList> 
 // @0x140b6ecc0
 UINT CMenteeSearchManager::RequestWeb(LPVOID pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("CMenteeSearchManager::RequestWeb"));
     MS2Ptr<CMenteeSearchParam> spParam(static_cast<CMenteeSearchParam*>(pParam));
     if (spParam == 0)

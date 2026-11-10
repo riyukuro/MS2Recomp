@@ -100,7 +100,7 @@ public:
     CStringW FormatTimestampedLine(const CStringW&);
     void InvokeCallbacks(ContextPtr);
     GroupPtr CreateGroup(CString);
-    void FUN_140654f70();
+    void FlushGroupQueues();
 private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<HANDLE> m_Handles;

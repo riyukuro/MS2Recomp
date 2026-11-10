@@ -75,7 +75,7 @@ class Unk_MachineId
 {
 public:
     Unk_MachineId();                                            // zero-inits the 16-byte id
-    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pSrc);
+    Unk_MachineId* Assign(const Unk_MachineId* pSrc);
     unsigned char m_data[16];
 };
 struct Unk_LoginRequest
@@ -92,7 +92,7 @@ struct Unk_LoginRequest
     CString m_strRegion;                                        // +0x38
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
-void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
+void WriteLoginA(struct Unk_LoginA*, class COutputStream*);   // C3: was WriteLoginA
 void* GetMachineIDManager();   // C3: was GetMachineIDManager
 
 // The packet handler table and the message boxes.
@@ -117,8 +117,8 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 // The scene manager and the web page opener.
 __int64 GetServerTime();                                        // the server time
 int FUN_1418fc810();
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -139,10 +139,10 @@ public:
 };
 class CNetworkService { public: int ConnectTo(CString strUrl, int n, int a, int b, int c); };
 class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
-int FUN_1406c34c0();                                            // the platform kind
+int IsNexonPlatform();                                            // the platform kind
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
-int FUN_1406516a0();
-int FUN_1406516b0();                                            // the language / region id
+int GetLanguage();
+int GetRegion();                                            // the language / region id
 CString GetRegionCode(int nRegion);
 CString FUN_140652030(int n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
@@ -215,7 +215,7 @@ void UILoginDialog::SendLoginRequest(CInPacket&)
         }
     }
     int nLoginType = 0;
-    if (FUN_1406c34c0() != 0)
+    if (IsNexonPlatform() != 0)
     {
         ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_20(nLoginType, 1);
     }
@@ -231,14 +231,14 @@ void UILoginDialog::SendLoginRequest(CInPacket&)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = nLoginType;
-        request.m_machineId.FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(((class CMachineIDManager*)GetMachineIDManager())->GetID()));
+        request.m_machineId.Assign(reinterpret_cast<const Unk_MachineId*>(((class CMachineIDManager*)GetMachineIDManager())->GetID()));
         request.m_n2c = ((class CMachineIDManager*)GetMachineIDManager())->GetValue();
         request.m_n30 = DAT_143ab2858;
-        request.m_strRegion = FUN_140652030(FUN_1406516a0());
+        request.m_strRegion = FUN_140652030(GetLanguage());
         if (reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = DAT_143ab29d8 + GetRegionCode(FUN_1406516b0());
+            request.m_strId = DAT_143ab29d8 + GetRegionCode(GetRegion());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-        FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
+        WriteLoginA((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
     ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_33(DAT_143ab2820);
@@ -270,7 +270,7 @@ void UILoginDialog::OnLoadComplete()
     bool bLocaledName = reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName;
     bLocaledName = true;
     reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bSaveId = bSaveId;
-    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, GetRegionCode(FUN_1406516b0()));
+    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, GetRegionCode(GetRegion()));
     if (!DAT_143af37a0.IsEmpty())
     {
         OnConnect();
@@ -290,7 +290,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             int nResult = pMsg->PopInt();
             if (nResult == 0)
             {
-                if (FUN_1406c34c0() == 1)
+                if (IsNexonPlatform() == 1)
                 {
                     ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_72();
                 }
@@ -396,7 +396,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UILoginDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4eef))) != 0 || FUN_1406516b0() == 1)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4eef))) != 0 || GetRegion() == 1)
     {
         MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
         if (spObj.get() != 0)
@@ -542,10 +542,10 @@ Scaleform::GFx::Value Unk_LoginRoot::FUN_1419e2c30(const char* szMethod, CString
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], (const char*)strId);
-    FUN_1422bcce0(&args[1], bSaveId);
-    FUN_1422bcce0(&args[2], bFlag);
-    FUN_1422bce70(&args[3], (const char*)strRegion);
+    SetString(&args[0], (const char*)strId);
+    SetBoolean(&args[1], bSaveId);
+    SetBoolean(&args[2], bFlag);
+    SetString(&args[3], (const char*)strRegion);
     return FUN_1422bb8f0(szMethod, args);
 }
 

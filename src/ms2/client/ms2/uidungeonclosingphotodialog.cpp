@@ -174,7 +174,7 @@ public:
 class Unk_ClosingWorld : public WorldService
 {
 public:
-    Unk_ClosingSelf* FUN_141bd0cc0();
+    Unk_ClosingSelf* GetLocalPlayer();
 };
 class Unk_ClosingUIMgr { public: void FUN_141adc530(int); };
 class Unk_ClosingClip : public ASUIComponent
@@ -187,14 +187,14 @@ public:
 };
 class ClonePC { public: void FUN_1410885b0(bool b); };   // clonepc.h brings a PC that clashes with this unit's PC view
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); };
-class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
+class UIMassiveEvent* FindMassiveEvent(int);   // C3: was FindMassiveEvent
 void SetChildText(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW GetStringCommon(int);
 void FUN_141275260(int, int, int);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140718170(const CString&);
 
@@ -222,7 +222,7 @@ void UIDungeonClosingPhotoDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_1b4 = 0;
-    if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
+    if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->GetFieldId() == m_1bc)
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef9)));
     m_1bc = 0;
 }
@@ -232,7 +232,7 @@ void UIDungeonClosingPhotoDialog::vfunc_72()
 {
     if (m_1b0 != 0 && m_1b0 < GetTickCountMs2()) {
         m_1b0 = 0;
-        if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060() == m_1bc)
+        if (reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->GetFieldId() == m_1bc)
             FUN_141924680();
     } else {
         if (m_1b4 == 0)
@@ -323,7 +323,7 @@ bool UIDungeonClosingPhotoDialog::vfunc_17()
 void UIDungeonClosingPhotoDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x61) {
+    if (static_cast<CInPacket*>(p)->GetOpcode() == 0x61) {
         unsigned pos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse r;
         reinterpret_cast<Unk_SPDB*>(&r)->ReadFrom(*reinterpret_cast<Unk_SPDReader*>(p));
@@ -419,21 +419,21 @@ void UIDungeonClosingPhotoDialog::OnClosingPhotoPacket(CInPacket& pkt)
             m_entries.push_back(entry);
         }
     }
-    m_1bc = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+    m_1bc = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->GetFieldId();
     unsigned flag = 0;
     switch (res) {
     case 1: {
-        UIMassiveEvent* dlg = FUN_140e01890(0x4e4c);
+        UIMassiveEvent* dlg = FindMassiveEvent(0x4e4c);
         if (dlg) {
             flag = 2000;
             ChromaSDK::GetChromaManager()->SetState(9);
             dlg->FUN_1419f6a70(5, GetStringCommonByKey(L"s_room_dungeon_clear"), 2000);
-            FUN_141276180(s_winSound, "");
+            PlaySystemSound(s_winSound, "");
         }
         break;
     }
     case 2: {
-        UIMassiveEvent* dlg = FUN_140e01890(0x4e4c);
+        UIMassiveEvent* dlg = FindMassiveEvent(0x4e4c);
         if (dlg) {
             flag = 2000;
             dlg->FUN_1419f6a70(7, GetStringCommonByKey(L"s_room_dungeon_fail"), 2000);
@@ -580,7 +580,7 @@ void UIDungeonClosingPhotoDialog::UpdateAddFriendButton(Unk_ClosingEntry* e)
 {
     if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
         if (MS2Ptr<ASButton> btn = info->FUN_140acce30<ASButton>("m_addFriend")) {
-            Unk_ClosingSelf* self = ((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_ClosingSelf* self = ((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             bool isSelf = self ? self->FUN_141656a80() == e->m_uid : false;
             bool buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid);
             bool show = !isSelf && !buddy;
@@ -602,7 +602,7 @@ void UIDungeonClosingPhotoDialog::OnAddFriend(int slot)
     if (!valid)
         return;
     Unk_ClosingEntry* e = &m_entries[idx];
-    if (((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->FUN_141656a80() == e->m_uid)
+    if (((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())->FUN_141656a80() == e->m_uid)
         return;
     if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid) == 1)
         return;

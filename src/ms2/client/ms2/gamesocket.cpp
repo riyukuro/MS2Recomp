@@ -25,7 +25,7 @@ template<> inline ATL::CAtlMap<HANDLE,CSimpleSocket*>::CPair* ATL::CAtlMap<HANDL
 }
 #pragma comment(lib,"ws2_32.lib")
 // The exe passes a null placement argument to New, not the Create argument.
-template<> inline CSocketThread* Unk_SocketRef<CSocketThread>::Create(void*) { return static_cast<CSocketThread*>(FUN_1401ba820(New(NULL))); }
+template<> inline CSocketThread* Unk_SocketRef<CSocketThread>::Create(void*) { return static_cast<CSocketThread*>(InitRefCount(New(NULL))); }
 // This unit uses the three-argument forwarding formatter at 0x1402bf9a0.
 template CString Unk_SocketFormat<CString,unsigned long>(const char*,const CString&,const unsigned long&);
 static CStringW s_forceLogin=L"forcelogin";
@@ -33,12 +33,12 @@ static CStringW s_gameExit=L"gameexit";
 static CString s_marketSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 class Unk_140659080 { public: void FUN_1401d42d0(); };
 extern long g_socketThreads;
-long FUN_140298fd0(long*);   // C3: was FUN_140298fd0
+long Increment(long*);   // C3: was Increment
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141269970
 inline long Unk_SocketDecrement(long* p) { return _InterlockedDecrement(p); }
 // @0x14126cd90
-inline void Unk_SocketThreadAddRef() { FUN_140298fd0(&g_socketThreads); }
+inline void Unk_SocketThreadAddRef() { Increment(&g_socketThreads); }
 // @0x14126ce60
 inline void Unk_SocketThreadRelease() { Unk_SocketDecrement(&g_socketThreads); }
 template<class T> T Unk_SocketMin(T a,T b) { return a<b?a:b; }
@@ -70,10 +70,10 @@ public:
     void QueueReceivedPacket(Unk_InPtr);   // 0x1415396b0
 };
 int Unk_RandomStep(int*);   // C3: was FUN_140768600
-void FUN_140710b90(COutPacket*,int,unsigned*);   // no return value (rax is left over)
+void EncryptPacket(COutPacket*,int,unsigned*);   // no return value (rax is left over)
 void FUN_140710870(COutPacket*,ATL::CAtlList<Unk_BufferPtr>*,unsigned,unsigned*,int);
-CPacketBuffer* FUN_1407138b0(unsigned,const Unk_SocketNew&);
-int FUN_1406516b0();
+CPacketBuffer* CreateBuffer(unsigned,const Unk_SocketNew&);
+int GetRegion();
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 void ShowMessageBox(CStringW,int,void*,CStringW);
 void FUN_140d73bc0(int,int,void*,CStringW);
@@ -189,7 +189,7 @@ void CGameSocket::vfunc_2(CSimpleSocket*,int error)
                 if(guard!=0) {} else {
                     m_state=Unk_SocketState::Connected;
                     if(m_receiveBuffer==NULL || m_receiveBuffer->GetSize()==m_received) {
-                        m_receiveBuffer=FUN_1407138b0(0x5b4,Unk_SocketNew(0)); m_received=0;
+                        m_receiveBuffer=CreateBuffer(0x5b4,Unk_SocketNew(0)); m_received=0;
                     }
                     int received=0;
                     int result=recv(m_socket,m_receiveBuffer.get()->GetData()+(unsigned)m_received,m_receiveBuffer->GetSize()-m_received,0);
@@ -283,7 +283,7 @@ void CGameSocket::SendPacket(COutPacket& packet)
         if(hold) return;
         m_out->PushPendingPacket(packet);
     } else if(defer) {
-        switch(((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020ba20()) {
+        switch(((class COutPacket*)(class COutPacket*)(&packet))->GetType()) {
         case 1: case 5: case 6: case 7: case 8: m_out->FUN_140208960(this,packet); break;
         default: m_out->PushPendingPacket(packet); break;
         }
@@ -315,7 +315,7 @@ void CGameSocket::ProcessPacket()
                         ++m_sequence; packet->SetSequence(m_sequence);
                         int result=((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_35(*packet);
                         if(result==3 || result==2) {
-                            int op=packet->FUN_14070fe80();
+                            int op=packet->GetOpcode();
                             if(op==1) { Unk_SPDC response; ((class Unk_SPDC&)(response)).ReadFrom(&static_cast<class CInputStream&>(*packet)); ((class CNetworkService*)(void*)(((void*)GetNetworkService())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)GetNetworkService())))->SetConnectionState(response.key); }
                             else if(op==7) m_sequence=packet->ReadInt32();
                             else if(op==8) { int sequence=packet->ReadInt32(); framing.sequence=packet->ReadInt32(); m_sequence=sequence; }
@@ -421,14 +421,14 @@ MS2_REPLACE_METHOD(0x1412673f0, CGameSocket, GetSequence, 17, 0x116875E2);
 // @0x141267410
 void CGameSocket::FUN_141267410(COutPacket& packet)
 {
-    unsigned op=((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020ba20();
+    unsigned op=((class COutPacket*)(class COutPacket*)(&packet))->GetType();
     try {
     {
         Unk_LockGuard guard(m_lock);
         if(guard!=0) {} else {
             (void)((!!(((class COutPacket*)(class COutPacket*)(&packet))->IsLoopback()==FALSE)) || (_wassert(L"oPacket.IsLoopback() == FALSE",_CRT_WIDE(MS2_THIS_FILE),496),0));
             ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_34(packet);
-            unsigned key=m_sendKey; FUN_140710b90(&packet,((class CNetworkService*)(void*)(((void*)GetNetworkService())))->GetConnectionState(),&key);
+            unsigned key=m_sendKey; EncryptPacket(&packet,((class CNetworkService*)(void*)(((void*)GetNetworkService())))->GetConnectionState(),&key);
             FUN_140710870(&packet,&m_sendQueue,0x9dd,&m_sendKey,0); Unk_RandomStep((int*)(&m_sendKey));
         }
     }
@@ -459,7 +459,7 @@ MS2_REPLACE(0x1412676a0, FUN_1412676a0, 118, 0x5BB614FD);
 void FUN_141267720() { CUIService::GetInstance()->HideLoadingProgress(); ShowMessageBox(BlockFormat<int>(527,0),0,0,s_forceLogin); }
 MS2_REPLACE(0x141267720, FUN_141267720, 137, 0xD9DF5AEA);
 // @0x1412677b0
-void FUN_1412677b0() { CUIService::GetInstance()->HideLoadingProgress(); int code=532; if(FUN_1406516b0()==3) code=3178; ShowMessageBox(BlockFormat<int>(code,0),0,0,s_gameExit); ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_58(code,0); }
+void FUN_1412677b0() { CUIService::GetInstance()->HideLoadingProgress(); int code=532; if(GetRegion()==3) code=3178; ShowMessageBox(BlockFormat<int>(code,0),0,0,s_gameExit); ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_58(code,0); }
 MS2_REPLACE(0x1412677b0, FUN_1412677b0, 198, 0xF4854A56);
 // Inline socket and packet helpers instantiated by the client entry points.
 // @0x141268620

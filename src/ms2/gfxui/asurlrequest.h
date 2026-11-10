@@ -18,4 +18,4 @@ public:
 MS2_CHECK_SIZE(ASURLRequest, 0x40);
 
 // "img://icon:<strName>", the URL of an icon image (0x1422e5b80; name invented, the exe has no name for it).
-CStringW FUN_1422e5b80(CStringW strName);
+CStringW GetIconUrl(CStringW strName);

@@ -32,12 +32,12 @@
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
-bool FUN_140930110(int nBuffId);
+bool IsUpperTargetId(int nBuffId);
 CStringW FUN_1401aa6a0(int nId);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strIcon);
 
 Scaleform::GFx::Movie* GetMovie(int nMovieId);
@@ -128,7 +128,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
 {
     if (m_nObjectId == 0)
         return;
-    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc != 0) {
         SetChildText(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
         Unk_NdJobCode nJob = (Unk_NdJobCode)pPc->GetSubJob();
@@ -138,7 +138,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         ((Unk_NdScript*)m_30.operator->())->Invoke("setLeftProfile", strProfile);
         UpdatePlayerHpBar();
     }
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nObjectId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nObjectId));
     if (pNpc != 0) {
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->GetNpcId()),
             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetNpcData()->GetRace()));
@@ -154,7 +154,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
             MS2Ptr<AdditionalCli> buff = list.GetAt(pos);
             if (buff == 0)
                 continue;
-            bool bFlag = FUN_140930110(buff->m_nCasterId);
+            bool bFlag = IsUpperTargetId(buff->m_nCasterId);
             if (!buff->GetLevelData()->m_ui.FUN_1401927c0(bFlag))
                 continue;
             AddBuffEffect(buff);
@@ -232,7 +232,7 @@ void UINpcDuelHPBarDialog::UpdatePlayerHpBar()
 {
     if (m_30 == 0)
         return;
-    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     __int64 nHp = pPc->FUN_141670a00(4);
@@ -247,7 +247,7 @@ void UINpcDuelHPBarDialog::UpdateNpcHpBar()
         return;
     if (m_nBarCount == 0)
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nObjectId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nObjectId));
     if (pNpc == 0)
         return;
     const __int64& nHp = pNpc->FUN_141670a00(4);
@@ -271,10 +271,10 @@ void UINpcDuelHPBarDialog::UpdateNpcHpBar()
     ((Unk_NdScript*)m_30.operator->())->FUN_140e6cfe0("setHpBarRight", nRest, nPerBar, nBar);
     nShown = nBar;
     if (nShown <= 1) {
-        FUN_140cff840(FUN_1422dbc00(), "m_rightBarCount", 0);
+        SetChildVisible(FUN_1422dbc00(), "m_rightBarCount", 0);
     } else {
         CStringW strCount = FUN_14028dfa0(L"s_npc_duelhpbar_dialog_barCount", nShown);
-        FUN_140cff840(FUN_1422dbc00(), "m_rightBarCount", 1);
+        SetChildVisible(FUN_1422dbc00(), "m_rightBarCount", 1);
         SetChildText(FUN_1422dbc00(), "m_rightBarCount", strCount);
     }
 }

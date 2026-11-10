@@ -31,7 +31,7 @@ void NotifyBinding::CreateBindingImpl(const Params& params)
     NotifyContext::BindData* pData = Unk_NotifyContext::FindBinding(szName);
     if (pData != NULL)
     {
-        pData->FUN_1422c8cb0(vData);
+        pData->SetData(vData);
         pData->SetTarget(vTarget);
         pData->PushBinding();
     }
@@ -46,12 +46,12 @@ void NotifyBinding::DeleteBindingImpl(const Params& params)
     NotifyContext::BindData* pData = Unk_NotifyContext::FindBinding(szName);
     if (pData != NULL)
     {
-        if (params.pArgs[2].IsNull() || vData == pData->FUN_1422c8d40())
+        if (params.pArgs[2].IsNull() || vData == pData->GetData())
         {
             Scaleform::GFx::Value vNull;
             vNull.SetNull();
             pData->ClearBinding();
-            pData->FUN_1422c8cb0(vNull);
+            pData->SetData(vNull);
             pData->SetTarget(vNull);
         }
     }

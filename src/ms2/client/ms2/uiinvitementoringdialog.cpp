@@ -425,7 +425,7 @@ void UIInviteMentoringDialog::InviteMentor(__int64 nMentor, const CStringW& strN
     Unk_MMNamePacket5 req;
     req.name = strName;
     req.id = nMentor;
-    reinterpret_cast<Unk_MentorNamePacket*>(&req)->FUN_14069a540(reinterpret_cast<Unk_MentorWriter&>(pkt));
+    reinterpret_cast<Unk_MentorNamePacket*>(&req)->Write(reinterpret_cast<Unk_MentorWriter&>(pkt));
     FUN_140710590(pkt);
     if (nMentor != 0)
     {

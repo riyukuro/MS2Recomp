@@ -32,7 +32,7 @@ extern char DAT_143ae95e2;              // collision, pc
 extern char DAT_143ae95e3;              // collision, npc
 
 // The npc map iterator and the npc size setters.
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 void FUN_140a7cbe0(void* p);
 // (FUN_140a7b9f0 was the protected CRBTree<UINT, SmartPointer<CNpc>>::Successor; the const GetNext calls it)
 class Unk_RpBody;
@@ -115,7 +115,7 @@ void OnCheckSkillRange(UIRangePreviewDialog* pDialog, ASData* pArgs)
 // @0x141346e40
 void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
-    FUN_140a7cbe0(((void*)FUN_1406d6e90()));
+    FUN_140a7cbe0(((void*)GetNpcDataTableCli()));
     void* pMap = WorldService::GetInstance()->GetNpcMap();
     for (POSITION pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; reinterpret_cast<const ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetNext(pos))
     {

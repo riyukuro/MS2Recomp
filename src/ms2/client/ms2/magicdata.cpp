@@ -575,7 +575,7 @@ struct Unk_MagicActor;
 class Unk_MagicWorld : public WorldService {
 public:
     // (FUN_141bc5bb0 = WorldService::FindRefObject)
-    Unk_MagicEntity* FUN_141bd0cc0();
+    Unk_MagicEntity* GetLocalPlayer();
     // (FUN_141bc3470 = WorldService::FUN_141bc3470, its m_3f0 value/key are these two pointers)   // register the cast record's value (callee releases both)
 };
 class Unk_MagicTime : public CMainSystem { public: }; // 0x1414732f0 the clock in ms; mode from tag + 0x30
@@ -618,7 +618,7 @@ struct Unk_MagicActor {};
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 #define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; the right axis
-bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);     // approximately equal
+bool IsNearlyEqualPoint3(const efd::Point3& kA, const efd::Point3& kB);     // approximately equal
 
 // The 0x34 byte NiTransform the effect system takes (rotate, translate, scale).
 // C3: was the Unk_MagicXform view; the effect system takes an NiTransform (<NiTransform.h>; implicit ctor 0x140a332d0).
@@ -633,7 +633,7 @@ struct Unk_MagicCullCfg;
 struct Unk_NullableFloat;
 const float* FUN_1410a71d0(Unk_NullableFloat* p);              // the cull distance (exe returns this+4)
 __int64 FUN_14028d260(float fMs);                                   // float -> int (rounds)
-bool FUN_14028d470(float a, float b);                               // approx equal
+bool IsNearlyEqual(float a, float b);                               // approx equal
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
 // (0x1410a7400 is ATL::CAtlArray<efd::Point3>::Add(const Point3&))
 // FUN_141467f60 (0x141467f60, defined below) takes both Vector3s by value, as the exe callers pass them
@@ -783,7 +783,7 @@ void CMagic::FUN_14145de80()
         }
     }
     if (m_nState == 2 || m_nState == 5) {
-        if (!FUN_14028d470(m_data.m_fLifeTime, 0) && (unsigned)((int)FUN_14028d260(m_data.m_fLifeTime) + m_nStateTick) <= nNow) {
+        if (!IsNearlyEqual(m_data.m_fLifeTime, 0) && (unsigned)((int)FUN_14028d260(m_data.m_fLifeTime) + m_nStateTick) <= nNow) {
             m_n52C = 1;
             m_nStateTick = nNow;
             m_nState = 3;
@@ -834,7 +834,7 @@ struct Unk_MagicItemData { char m_pad00[0x10c]; int m_nEffectId; }; // +0x10c ef
 class CItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_ItemEquipData* FUN_140527840();
+    class Unk_ItemEquipData* GetData();
 };
 
 // ---- callees of the beam and cancel logic (unit-local; names invented) ----
@@ -947,7 +947,7 @@ Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, c
 // @0x14145ec50
 void CMagic::FUN_14145ec50(unsigned nNow)
 {
-    if (FUN_14028d470(m_data.m_fVelocity, 0))
+    if (IsNearlyEqual(m_data.m_fVelocity, 0))
         return;
     if (FUN_141464490()) {
         FUN_1414607e0(nNow);
@@ -984,11 +984,11 @@ void CMagic::FUN_14145ec50(unsigned nNow)
         }
     }
     int nType = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
-    if ((nType == 1 || nType == 3) && !FUN_14028d470(m_fRemainTime, 0)) {
+    if ((nType == 1 || nType == 3) && !IsNearlyEqual(m_fRemainTime, 0)) {
         if (GetDistance2D((const efd::Point3&)m_ptCurrent, (const efd::Point3&)m_ptStart) >= m_data.m_fDistance) {
             m_fRemainTime = 0;
         } else {
-            if (!FUN_14028d470(m_data.m_fNonTargetMoveDistance, 0)) {
+            if (!IsNearlyEqual(m_data.m_fNonTargetMoveDistance, 0)) {
                 const Unk_MagicSkillRow* pRow = reinterpret_cast<const Unk_MagicSkillRow*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetAttackData());
                 if (pRow != NULL && !pRow->m_flag100.FUN_1407dfbb0() && GetTargetEntity() == NULL) {
                     if (m_data.m_fNonTargetMoveDistance <= GetDistance2D((const efd::Point3&)m_ptCurrent, (const efd::Point3&)m_ptStart))
@@ -1419,7 +1419,7 @@ void CMagic::FUN_1414609e0()
         reinterpret_cast<efd::Matrix3&>(matRot).MakeZRotation((fYaw + 3.1415927f) - (m_data.m_fDirRotZ * 3.1415927f) / 180.0f);
     } else {
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&matRot))->MakeIdentity();
-        if (!FUN_14028d470(m_data.m_fDirRotZ, 0))
+        if (!IsNearlyEqual(m_data.m_fDirRotZ, 0))
             reinterpret_cast<efd::Matrix3&>(matRot).MakeZRotation(-((m_data.m_fDirRotZ * 3.1415927f) / 180.0f));
     }
     m_ptB8 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(m_data.m_ptFireOffset)));
@@ -1460,7 +1460,7 @@ void CMagic::UpdateTargetPosition()
 {
     unsigned nNow = FUN_141467440();
     int bTrack = 1;
-    if (!FUN_14028d470(m_data.m_fTraceTargetDuration, 0) && m_nState >= 2
+    if (!IsNearlyEqual(m_data.m_fTraceTargetDuration, 0) && m_nState >= 2
         && (unsigned)((int)FUN_14028d260(m_data.m_fTraceTargetDuration) + m_nStateTick) < nNow)
         bTrack = 0;
     Unk_MagicEntity* pTarget = GetTargetEntity();
@@ -1503,12 +1503,12 @@ void CMagic::FUN_1414614d0()
     Unk_NiMatrix3 matRotation;
     ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&matRotation))->MakeIdentity();
     efd::Point3 ptAxis = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
-    if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143b01a60)))
+    if (IsNearlyEqualPoint3(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143b01a60)))
         reinterpret_cast<Vector3&>(ptAxis) = m_spSkill->m_ptDefaultDir;
     Vector3 ptRight = DAT_143b01a60;
-    if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))) {
+    if (IsNearlyEqualPoint3(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))) {
         ptRight = DAT_143a08cd8;
-    } else if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)))) {
+    } else if (IsNearlyEqualPoint3(reinterpret_cast<const efd::Point3&>(ptAxis), static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)))) {
         reinterpret_cast<efd::Point3&>(ptRight) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
     } else {
         reinterpret_cast<efd::Point3&>(ptRight) = reinterpret_cast<const efd::Point3&>(ptAxis).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
@@ -1564,7 +1564,7 @@ MS2_REPLACE_METHOD(0x141461720, CMagic, UpdateLookAtRotation, 852, 0x58FA7E4A);
 // @0x1414607e0
 void CMagic::FUN_1414607e0(unsigned nNow)
 {
-    Unk_MagicEntity* pOwner = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1290(m_spSkill->m_nOwnerId));
+    Unk_MagicEntity* pOwner = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindPCById(m_spSkill->m_nOwnerId));
     if (pOwner == NULL)
         return;
     efd::SmartPointer<CSkillMagicControlGuide> kLookup = WorldService::GetInstance()->FindRefObject(m_spSkill->m_nTagId);
@@ -1707,7 +1707,7 @@ void CMagic::PlayHitEffects(void* pHits, int nHits)
                 if (pPC != NULL && nEffect == 0) {
                     MS2Ptr<CEquipItem> kWeapon = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->FUN_1411e1860(5, 6, 0);
                     if (kWeapon.operator CEquipItem*() != NULL) {
-                        nEffect = ((struct Unk_MagicItemData*)(kWeapon->GetItem()->FUN_140527840()))->m_nEffectId;
+                        nEffect = ((struct Unk_MagicItemData*)(kWeapon->GetItem()->GetData()))->m_nEffectId;
                     }
                 }
             }
@@ -1885,7 +1885,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         FUN_141466da0(nNow, pRow);
         break;
     case 2:
-        if (!FUN_14028d470(m_fRemainTime, 0))
+        if (!IsNearlyEqual(m_fRemainTime, 0))
             return;
         break;
     }
@@ -2268,7 +2268,7 @@ bool CMagic::ShouldCullByDistance()
     int nRelation = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
     if (nRelation == 1)
         return false;
-    Unk_MagicEntity* pLocal = ((Unk_MagicEntity*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MagicEntity* pLocal = ((Unk_MagicEntity*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == NULL)
         return false;
     const Vector3& ptLocal = pLocal->vf18_GetPosition();
@@ -2579,7 +2579,7 @@ int CMagicModel::CanCancel(unsigned long long nTag)
         if (m_spMagic->m_nState == 1 && m_spMagic->m_data.m_nIgnoreCancelAtSpawnTime != 0)
             return 0;
         if (m_spMagic->m_nState == 0 || m_spMagic->m_nState == 1) {
-            if (FUN_14028d470(m_spMagic->m_data.m_fDelayTime, 0))
+            if (IsNearlyEqual(m_spMagic->m_data.m_fDelayTime, 0))
                 return 1;
         }
     }

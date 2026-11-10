@@ -222,7 +222,7 @@ efd::AsyncResult MS2SceneGraphService::OnInit()
         pkRenderer->AddResetNotificationFunc(FUN_1414f3690, this);
         pkRenderer->AddLostDeviceNotificationFunc(FUN_1414f36b0, this);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::LogStatsToCrashManager));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &MS2SceneGraphService::LogStatsToCrashManager));
     if (DAT_143ae2b30 != 0)
     {
         m_uiThreadCount = ((class COSInfo*)TSingleton<COSInfo>::GetInstance())->GetProcessorCount();

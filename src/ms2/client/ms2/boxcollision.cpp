@@ -28,7 +28,7 @@ extern "C" float (__cdecl* __imp_sinf)(float);
 #include "ms2/placeholder/cboxcollision.h"
 #include "hook/ms2hook.h"
 
-NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
+NxVec3 Point3ToNxVec3(const efd::Point3& v);                         // efd::Point3 -> NxVec3
 
 // @0x140ada4c0
 CBoxCollision::CBoxCollision() : m_ptBox(0.0f, 0.0f, 0.0f)
@@ -63,7 +63,7 @@ void CBoxCollision::vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale)
     NxVec3 kCenter;
     m_kBounds.getCenter(kCenter);
     kCenter.y = -kCenter.y;
-    kCenter += FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(m_ptDir));
+    kCenter += Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(m_ptDir));
     kCenter *= fScale;
     kCenter = kPose * kCenter;
     m_kBox.center = kCenter;
@@ -87,7 +87,7 @@ void CBoxCollision::vfunc_2(NiPoint3 ptPos, const NiMatrix3& kRot, float fScale)
     NxVec3 kCenter;
     m_kBounds.getCenter(kCenter);
     kCenter.y = -kCenter.y;
-    kCenter += FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(m_ptDir));
+    kCenter += Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(m_ptDir));
     kCenter *= fScale;
     kCenter = kPose * kCenter;
     m_kBox.center = kCenter;

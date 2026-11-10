@@ -41,14 +41,14 @@ static egf::EntityID s_dat_143abb130(0);                                        
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-unsigned int FUN_1407181d0(const CString& s);                       // the font id of a font name
+unsigned int ParseUInt(const CString& s);                       // the font id of a font name
 CString FUN_140719210(long n);                                      // number text
 __int64 GetServerTime();                                            // the current server time
 
 class GFxManager   // C3: member view (gfxmanager.h)
 {
 public:
-    void FUN_1422b0790(int nMovieId);
+    void UpdateStageSize(int nMovieId);
 };
 class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 
@@ -148,7 +148,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
             Scaleform::GFx::Value vThird(pArgs[2]);
             SetStage(CreateStage(m_18, vStage));
             SetMovieClipLoader(CreateMovieClipLoader(m_18, vLoader));
-            reinterpret_cast<GFxManager*>(GetGFxManager())->FUN_1422b0790(m_18);
+            reinterpret_cast<GFxManager*>(GetGFxManager())->UpdateStageSize(m_18);
         }
         m_128.AssignRaw(Unk_DmgFindUI<UIDamageText>(0x4e32));
         FUN_140b62270();
@@ -169,7 +169,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
                 ((Unk_DmgSwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_9(szEvent, vRoot, 0.0f);
             if (m_128.get())
             {
-                MS2Ptr<AScript> spRoot = m_128->FUN_1422dba00();
+                MS2Ptr<AScript> spRoot = m_128->GetScript();
                 if (spRoot.get() && szEvent != m_120)
                 {
                     MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(GetUISwfEntityManager()->GetUISwfEntity(szEvent).get()));
@@ -200,7 +200,7 @@ void GFxMovieDamage::vfunc_8(float fTime)
         {
             MS2Ptr<UIDamageFont> spFont = m_d8.GetValueAt(pos);
             if (spFont.get())
-                spFont->PreloadSwf(spFont->FUN_1422db750(), 1);
+                spFont->PreloadSwf(spFont->GetLayer(), 1);
             m_d8.RemoveAtPos(pos);
         }
     }
@@ -211,7 +211,7 @@ bool GFxMovieDamage::LoadDamageFont(const CString& strFont)
 {
     if (m_128 == 0 || !m_128->FUN_1422dc430())
         return false;
-    unsigned nId = FUN_1407181d0(strFont);
+    unsigned nId = ParseUInt(strFont);
     if (nId == 0)
         return false;
     MS2Ptr<UIDamageFont> spFont(0);
@@ -225,7 +225,7 @@ bool GFxMovieDamage::LoadDamageFont(const CString& strFont)
     MS2Ptr<TDamageFontAttr> spAttr(new TDamageFontAttr);
     spAttr->m_18 = nId;
     spFont.AssignRaw(new UIDamageFont(strFont, spAttr));
-    spFont->LoadSwf(spFont->FUN_1422db750(), 0, 0);
+    spFont->LoadSwf(spFont->GetLayer(), 0, 0);
     m_90.SetAt(nId, spFont);
     return true;
 }
@@ -233,7 +233,7 @@ bool GFxMovieDamage::LoadDamageFont(const CString& strFont)
 // @0x140b61b80
 bool GFxMovieDamage::FUN_140b61b80(const CString& strFont)
 {
-    unsigned nId = FUN_1407181d0(strFont);
+    unsigned nId = ParseUInt(strFont);
     if (nId == 0)
         return false;
     if (!m_90.IsEmpty() && m_90.Lookup(nId))
@@ -270,9 +270,9 @@ void GFxMovieDamage::UnloadExpiredFonts()
         for (POSITION pos = m_90.GetStartPosition(); pos; m_90.GetNext(pos))
         {
             MS2Ptr<UIDamageFont> spFont = m_90.GetValueAt(pos);
-            if (spFont == 0 || spFont->FUN_140e0dca0() == 0)
+            if (spFont == 0 || spFont->GetTimeStamp() == 0)
                 continue;
-            if (spFont->FUN_140e0dca0() + nLifeTime < nNow)
+            if (spFont->GetTimeStamp() + nLifeTime < nNow)
                 arrExpired.Add(spFont);
         }
         if (!arrExpired.IsEmpty())
@@ -294,7 +294,7 @@ void GFxMovieDamage::UnloadExpiredFonts()
 // @0x140b62010
 bool GFxMovieDamage::FUN_140b62010(const CString& strFont)
 {
-    unsigned nId = FUN_1407181d0(strFont);
+    unsigned nId = ParseUInt(strFont);
     if (nId == 0)
         return false;
     MS2Ptr<UIDamageFont> spFont(0);

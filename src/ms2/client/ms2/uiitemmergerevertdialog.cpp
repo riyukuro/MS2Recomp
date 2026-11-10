@@ -69,8 +69,8 @@ namespace NotifyContext { class BindData; }
 class MS2DragSlot;
 MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
-// The item price table (global of the lua state, FUN_1401c0db0).
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+// The item price table (global of the lua state, GetLuaClient).
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 
 // The item option text builder (TSingleton<CItemMergeOptionTable>::GetInstance).
 
@@ -80,14 +80,14 @@ void FUN_140d42630(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 
 void FUN_140710590(COutPacket&);                                    // send
-unsigned __int64 FUN_140718370(const CStringW& str);                         // the uid in the text
+unsigned __int64 ParseUInt64W(const CStringW& str);                         // the uid in the text
 class CItemStatus   // C3: member view for the former free stand-ins
 {
 public:
     bool HasGroup4Options();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-void FUN_14083d2b0(CStringW& str);
+void StripTags(CStringW& str);
 CStringW FUN_141b71910(__int64 nUid);                               // the uid as text
 void ShowSystemNotice(const CStringW& text, int nA, int nB);           // notice
 
@@ -146,7 +146,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
+            __int64 nUid = ParseUInt64W(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
             if (spItem.IsNull())
                 return 1;
@@ -197,8 +197,8 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     }
     CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->GetMergeOptionDescription(MS2Ptr<CItem>(pItem), 1);
     CStringW strText = StringFormat<CStringW, CStringW>(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
-    int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->GetEquipSubtype();
-    FUN_14083d2b0(strText);
+    int nType = reinterpret_cast<CItemData*>(pItem->GetData())->GetEquipSubtype();
+    StripTags(strText);
     ASObj obj(2);
     ((class AScript&)(obj)).SetIntMember("isReady", 0);
     obj.SetStringMember("binding", GetTypeName());
@@ -206,7 +206,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     ((class AScript&)(obj)).SetWStringMember("optionStr", CStringW(strText));
     obj.SetBoolMember("enabled", CheckItem(pItem) == 0);
     ((class AScript&)(obj)).SetWStringMember("itemGUID", FUN_141b71910(pItem->GetItemUid()));
-    obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->GetRarity(), nType));
+    obj.FUN_1409c1180("price", ((class CLua*)GetLuaClient())->CalcItemMergeRevertMeso(pItem->GetRarity(), nType));
     m_30->Invoke("setData", obj);
 }
 
@@ -278,9 +278,9 @@ int UIItemMergeRevertDialog::CheckItem(CItem* pItem)
 {
     if (pItem == 0)
         return 3;
-    if (pItem->FUN_140527840() == 0)
+    if (pItem->GetData() == 0)
         return 3;
-    if (reinterpret_cast<CItemData*>(pItem->FUN_140527840())->fusion.fusionable == 0)
+    if (reinterpret_cast<CItemData*>(pItem->GetData())->fusion.fusionable == 0)
         return 3;
     MS2Ptr<CItem> spBase = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spBase.IsNull())
@@ -289,12 +289,12 @@ int UIItemMergeRevertDialog::CheckItem(CItem* pItem)
         return 6;
     if (!((class CItemStatus*)(void*)(pItem->GetStatus()))->HasGroup4Options())
         return 7;
-    if (spBase->FUN_140527840() == 0)
+    if (spBase->GetData() == 0)
         return 5;
-    int nBaseOption = reinterpret_cast<CItemData*>(spBase->FUN_140527840())->function.parameter.FUN_1408d1f60(0, 0);
+    int nBaseOption = reinterpret_cast<CItemData*>(spBase->GetData())->function.parameter.FUN_1408d1f60(0, 0);
     if (nBaseOption == 0)
         return 5;
-    if (nBaseOption != reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053e410())
+    if (nBaseOption != reinterpret_cast<CItemData*>(pItem->GetData())->FUN_14053e410())
         return 8;
     return 0;
 }

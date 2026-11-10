@@ -899,7 +899,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
     m_strImage = (const char*)FUN_141028be0(m_nId, *src.FUN_1401cc530(), 1, "");
     m_strName = src.GetName();
     int nTime = src.GetLevel();
-    m_strInfo = FUN_14028dee0<int, CStringW>(0x20, reinterpret_cast<const int&>(nTime), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.FUN_1401cc290())));
+    m_strInfo = FUN_14028dee0<int, CStringW>(0x20, reinterpret_cast<const int&>(nTime), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.GetJobId())));
 }
 
 // @0x141483580
@@ -907,7 +907,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 {
     m_nKind = (reinterpret_cast<CPartyMember&>(src).IsOffline() == 0);
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).GetImage(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).GetName();
     m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
@@ -927,7 +927,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
 {
     m_nKind = reinterpret_cast<CGroupChatMember&>(src).FUN_14137b160();
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).GetImage(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).GetName();
     m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
@@ -1034,7 +1034,7 @@ CString FUN_1414842b0(int nKind, CStringW strName)
     Unk_ChatMemberPtr member = room->FindMemberByName(CStringW(strName));
     if (member == 0 != 0)
         return CString("");
-    return FUN_141028be0(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_nOwner, reinterpret_cast<Unk_UserProxy&>(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_name).FUN_1408f1a60(), 1, "");
+    return FUN_141028be0(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_nOwner, reinterpret_cast<Unk_UserProxy&>(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_name).GetImage(), 1, "");
 }
 
 // @0x141484720

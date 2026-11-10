@@ -46,10 +46,10 @@ public:
     void SelectCategory(int, int);
 };
 class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
-class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bFlag); };
+class UIWebBrowserBase { public: void Navigate(const CString& strUrl, bool bFlag); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x140f345b0
 UIDarkStreamResultDialog::UIDarkStreamResultDialog()
@@ -140,7 +140,7 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             void* pPage = ((void*)FindWebBrowser(0x4e6a));
             if (pPage == 0)
                 return 1;
-            ((class UIWebBrowserBase*)pPage)->FUN_14135ec00(m_strRankingUrl, true);
+            ((class UIWebBrowserBase*)pPage)->Navigate(m_strRankingUrl, true);
         }
         return 1;
     }
@@ -223,7 +223,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, int 
     FUN_1422bccb0(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
     FUN_1422bccb0(&args[4], a5);
-    FUN_1422bce70(&args[5], (const char*)a6);
+    SetString(&args[5], (const char*)a6);
     FUN_1422bce00(&args[6], a7);
     return FUN_1422bb8f0(szMethod, args);
 }

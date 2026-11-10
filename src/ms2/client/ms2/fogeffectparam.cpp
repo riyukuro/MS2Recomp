@@ -41,7 +41,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // split to uints
-bool FUN_14028d470(float a, float b);                                                   // nearly equal
+bool IsNearlyEqual(float a, float b);                                                   // nearly equal
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
 
@@ -108,7 +108,7 @@ CFogEffect* CFogEffect::CreateFromParam(void* pUnused, const CFogEffectParam* pP
         pEffect->m_fNear = pParam->m_fNear;
         pEffect->m_fFar = pParam->m_fFar;
         pEffect->m_dwColor = pParam->m_dwColor;
-        if (FUN_14028d470(pParam->m_fStartDelay, 0.0f))
+        if (IsNearlyEqual(pParam->m_fStartDelay, 0.0f))
             pEffect->vfunc_4();
         return pEffect;
     }
@@ -125,7 +125,7 @@ bool CFogEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     m_fNear = pFog->m_fNear;
     m_fFar = pFog->m_fFar;
     m_dwColor = pFog->m_dwColor;
-    if (FUN_14028d470(pFog->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pFog->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

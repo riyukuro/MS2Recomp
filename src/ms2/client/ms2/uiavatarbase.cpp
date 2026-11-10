@@ -1070,7 +1070,7 @@ bool UIAvatarPC::FUN_1418bb0f0(CItem* pItem, int nEffect)
 {
     if (m_spCustomize == 0 || pItem == 0)
         return false;
-    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->GetData()));
     if (spData == 0 || ((class CItemData*)(class CItemData*)(spData.operator->()))->GetType() != 0x19)
         return false;
     ATL::CAtlArray<MS2Ptr<CItemData> > kItems;
@@ -1147,10 +1147,10 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     for (size_t i = 0; i < kNewItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem(kNewItems[i]);
-        if (spItem == 0 || ((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()) == 0)
+        if (spItem == 0 || ((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()) == 0)
             continue;
         FUN_1418bafa0(spItem.get(), nEffect);
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()));
         if (((class CItemData*)(class CItemData*)(spData.operator->()))->FUN_14053d2b0())
         {
             spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)8, MS2Ptr<CItem>(spItem));
@@ -1254,9 +1254,9 @@ void UIAvatarPC::FUN_1418bc110(MS2Ptr<CItem> spItem)
 {
     if (IsLoaded() == 0)
         return;
-    if (spItem == 0 || !((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()))
+    if (spItem == 0 || !((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()))
         return;
-    if (!((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())))->FUN_14053cc00())
+    if (!((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData())))->IsGemItem())
         return;
     AvatarPC* pAvatar = GetAvatarPC();
     if (pAvatar)
@@ -1304,8 +1304,8 @@ void UIAvatarPC::FUN_1418bc380(CItem* pItem)
     if (m_spCustomize.get())
     {
         m_spCustomize->Unequip(pItem);
-        int nCustomizeId = FUN_141420a30(((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->GetModelOrEmpty()->GetGroup(0)->GetType(), pItem, (class AvatarPC*)(pPlayer));
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
+        int nCustomizeId = FUN_141420a30(((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->GetData())))->GetModelOrEmpty()->GetGroup(0)->GetType(), pItem, (class AvatarPC*)(pPlayer));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->GetData()));
         if (spData.get())
             m_spCustomize->ApplyItem(MS2Ptr<CItem>(pItem), nCustomizeId);
     }
@@ -1344,7 +1344,7 @@ void UIAvatarPC::FUN_1418bc630()
 // @0x1418bc740
 int UIAvatarPC::GetGender()
 {
-    PCBase* pPc = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
+    PCBase* pPc = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(m_nObjectId));
     if (pPc != 0)
         return ((class PC*)(class PCBase*)(pPc))->GetGender();
     return 3;
@@ -1713,7 +1713,7 @@ void UIAvatarCube::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarCube* pCube = CreateAvatarCube(m_pItemData);
     if (pCube)
     {
-        if (WorldService::GetInstance()->FUN_141bbb1e0(pCube, 0, 1))
+        if (WorldService::GetInstance()->OnObjectCreated(pCube, 0, 1))
         {
             m_nObjectId = pCube->GetObjectId();
             pCube->SetListener(this);
@@ -1833,7 +1833,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
         AvatarRidee* pRidee = CreateAvatarRideeFromItem(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
         if (pRidee)
         {
-            if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
+            if (WorldService::GetInstance()->OnObjectCreated(pRidee, 0, 1))
             {
                 m_nObjectId = pRidee->GetObjectId();
                 pRidee->SetListener(this);
@@ -1847,7 +1847,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
             AvatarRidee* pRidee = CreateAvatarRideeFromRow(m_spRow);
             if (pRidee)
             {
-                if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
+                if (WorldService::GetInstance()->OnObjectCreated(pRidee, 0, 1))
                 {
                     m_nObjectId = pRidee->GetObjectId();
                     pRidee->SetListener(this);
@@ -1986,7 +1986,7 @@ void UIAvatarPet::vfunc_1(IUIAvatarEventListener* pListener)
     AvatarPet* pPet = CreateAvatarPet(m_pItemData);
     if (pPet)
     {
-        if (WorldService::GetInstance()->FUN_141bbb1e0(pPet, 0, 1))
+        if (WorldService::GetInstance()->OnObjectCreated(pPet, 0, 1))
         {
             m_nObjectId = pPet->GetObjectId();
             pPet->SetListener(this);
@@ -2085,7 +2085,7 @@ public:
 };
 
 struct Unk_UabColor3 { float x; float y; float z; };
-unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
+unsigned int Float3ToArgb(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 MS2_REPLACE_METHOD(0x1418BEE00, UIAvatarPet, GetAvatarPet, 41, 0x51CA81FA);
 
 // @0x1418bee30
@@ -2112,13 +2112,13 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
             kColors.PushValue(Scaleform::GFx::Value(kObj.GetValue()));
         }
     }
-    PCBase* pPlayer = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer)
     {
         ASObj kObj(2);
-        unsigned long nColor0 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(0))));
+        unsigned long nColor0 = Float3ToArgb((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(0))));
         kObj.FUN_1409c4990("color0", nColor0);
-        kObj.FUN_1409c4990("color1", FUN_141b6df90((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(1)))));
+        kObj.FUN_1409c4990("color1", Float3ToArgb((struct Unk_UtilFloat3 const*)(((struct Unk_UabColor3 const*)&((class PC*)(class PCBase*)(pPlayer))->FUN_141659220(1)))));
         unsigned long nColor = nColor0;
         kObj.FUN_1409c4990("realColor", nColor);
         kObj.FUN_1409c4990("visibleColor", nColor);
@@ -2214,7 +2214,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
     if (spData == 0)
         return false;
     int nItemId = spData->GetItemId();
-    int nGroup = ((struct ItemFunction*)(void*)(&spData->function.name))->FUN_14054a460();
+    int nGroup = ((struct ItemFunction*)(void*)(&spData->function.name))->GetBoxId();
     if (nGroup == 0)
         return false;
     std::vector<ItemDropResult> kDrops;

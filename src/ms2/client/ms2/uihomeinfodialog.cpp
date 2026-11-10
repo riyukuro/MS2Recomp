@@ -183,7 +183,7 @@ CStringW GetStringCommon(int nId);
 CStringW FUN_1409404f0(__int64 n);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
-int FUN_1412772f0(__int64 nValue, int bGrouped);
+int GetNumberTextLength(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* GetHomeSaveSlotDialog(int nUiId);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -331,10 +331,10 @@ void UIHomeInfoDialog::UpdateCooldowns()
 {
     if (FUN_1418fd280() == 0)
         return;
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap.operator==(0))
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -540,7 +540,7 @@ CStringW UIHomeInfoDialog::FUN_1412c7090()
 CStringW UIHomeInfoDialog::GetAddressText()
 {
     CStringW strAddress = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return strAddress;
     if (((class MyPC*)(class Unk_HiPc*)(pPc))->FUN_141527ed0())
@@ -557,7 +557,7 @@ CStringW UIHomeInfoDialog::GetAddressText()
 // @0x1412c72d0
 int UIHomeInfoDialog::FUN_1412c72d0()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (FUN_1418fd2f0() != 0)
@@ -620,7 +620,7 @@ void UIHomeInfoDialog::OnNoticeModify()
 // @0x1412c7710
 void UIHomeInfoDialog::OnConstruct()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (pPc->IsInCubeMode() == 0)
@@ -632,7 +632,7 @@ void UIHomeInfoDialog::OnConstruct()
 // @0x1412c7770
 void UIHomeInfoDialog::OnBank()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (GetBankCooldownRemaining() > 0)
@@ -643,7 +643,7 @@ void UIHomeInfoDialog::OnBank()
 // @0x1412c77c0
 void UIHomeInfoDialog::OnDoctor()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (GetDoctorCooldownRemaining() > 0)
@@ -657,7 +657,7 @@ void UIHomeInfoDialog::OnBalance()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(8, 0xbb9, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        unsigned int nMax = FUN_1412772f0(DAT_143ab2d80.Value4558(), 1);
+        unsigned int nMax = GetNumberTextLength(DAT_143ab2d80.Value4558(), 1);
         {
             CStringW strText(L"");
             spBox->SetInput(1, strText, nMax, 0, 0);
@@ -679,7 +679,7 @@ void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 // @0x1412c7aa0
 bool UIHomeInfoDialog::FUN_1412c7aa0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -717,7 +717,7 @@ bool UIHomeInfoDialog::OnSaveSlotAction(int nSlot, const CMsgBoxData& data)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6e2, 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01800(2);
+            spBox->SetButtonPreset(2);
             spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
             spBox->SetAgreement(0);
             spBox->SetSize(0x1c0, 400);
@@ -732,7 +732,7 @@ bool UIHomeInfoDialog::OnSaveSlotAction(int nSlot, const CMsgBoxData& data)
 // @0x1412c7ef0
 bool UIHomeInfoDialog::FUN_1412c7ef0(int nResult, const CMsgBoxData& data)
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -747,7 +747,7 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
     {
         if (((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->IsFeatureEnabled(0xd4))
         {
-            Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }
@@ -793,7 +793,7 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
 // @0x1412c81d0
 unsigned int UIHomeInfoDialog::GetBankCooldownRemaining()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662830() == 0)
@@ -809,7 +809,7 @@ unsigned int UIHomeInfoDialog::GetBankCooldownRemaining()
 // @0x1412c8280
 unsigned int UIHomeInfoDialog::GetDoctorCooldownRemaining()
 {
-    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141662870() == 0)

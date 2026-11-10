@@ -203,7 +203,7 @@ class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
 
-#define Unk_ClPlayer() static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())   // the local player
+#define Unk_ClPlayer() static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer())   // the local player
 
 // ---- template glue first instantiated here ----
 
@@ -473,15 +473,15 @@ void UIClosetDialog::OnLoadComplete()
     do { m_30->FUN_140bc71c0("m_symbol", m_symbol); if (m_symbol == 0) throw CL_SWF_ERROR(102); } while (0);
 
     if (m_save.get() != 0)
-        m_save->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnSave), 0);
+        m_save->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnSave), 0);
     if (m_clear.get() != 0)
-        m_clear->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnClear), 0);
+        m_clear->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnClear), 0);
     if (m_putOn.get() != 0)
-        m_putOn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnPutOn), 0);
+        m_putOn->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnPutOn), 0);
     if (m_inputKey.get() != 0)
-        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputKey), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->AddFocusInListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputKey), 0, 0);
     if (m_tabAdd.get() != 0)
-        m_tabAdd->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnTabAdd), 0);
+        m_tabAdd->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnTabAdd), 0);
     if (m_tab.get() != 0)
     {
         m_tab->AddIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnTabChange), 0);
@@ -761,7 +761,7 @@ void UIClosetDialog::UpdateTabRow(MS2Ptr<ASButton> spButton, MS2Ptr<UICloset::CT
     ASObj obj(2);
     BuildTabRow(obj, spTab);
     m_tab->GetDataProvider()->SetElementIfInRange(nIndex, obj.GetValue());
-    m_tab->FUN_1422e4060(nIndex);
+    m_tab->UpdateRendererAt(nIndex);
 }
 
 // @0x140bdc960
@@ -871,9 +871,9 @@ void UIClosetDialog::PopulateItems(MS2Ptr<ItemCloset::TabInfo> spInfo)
             int nRarity = spSlot->m_28;
             spItem = CreateItem(nItemId, nRarity);
         }
-        if (spItem == 0 || spItem->FUN_140527840() == 0)
+        if (spItem == 0 || spItem->GetData() == 0)
             continue;
-        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        MS2Ptr<CItemData> spData(spItem->GetData());
         EquipSlotType eGroup = GetEquipSlotGroup(spSlot->m_24);
         int nGroup = FindGroup(eGroup);
         if (nGroup < 0 || nGroup >= nGroups)
@@ -1083,7 +1083,7 @@ void UIClosetDialog::OnInputKey(const Scaleform::GFx::FunctionHandler::Params& p
         return;
     if (m_inputKey.get() != 0)
     {
-        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->AddFocusOutListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0, 0);
         m_inputKey->FUN_1422cdfb0(L"");
         m_inputKey->vfunc_24(false);
     }
@@ -1110,7 +1110,7 @@ void UIClosetDialog::OnInputEnd(const Scaleform::GFx::FunctionHandler::Params& p
     if (m_30 == 0)
         return;
     if (m_inputKey.get() != 0)
-        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de960(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->RemoveFocusOutListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0);
     if (static_cast<bool>(m_pendingKey.get()) && !m_pendingKey->IsBusy())
         m_pendingKey->Clear();
 }
@@ -1581,10 +1581,10 @@ void UIClosetDialog::InvalidateItem(const __int64& nUid)
         return;
     m_changed.SetAt(nIndex, sp);
     MS2Ptr<CItem> spItem = sp->GetItem();
-    if (static_cast<bool>(spItem.get()) && spItem->FUN_140527840() != 0)
+    if (static_cast<bool>(spItem.get()) && spItem->GetData() != 0)
     {
         int nGroup = -1;
-        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        MS2Ptr<CItemData> spData(spItem->GetData());
         if (spData->FUN_14053d460())
             nGroup = FindGroup(static_cast<EquipSlotType>(4));
         else if (spData->FUN_14053d2b0())

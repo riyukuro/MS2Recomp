@@ -24,7 +24,7 @@
 #include "ms2/client/ms2/itemloadinfo.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-#include "ms2/client/ms2/fielddatacli.h"  // CFieldDataCli (WorldService::FUN_141bd30a0)
+#include "ms2/client/ms2/fielddatacli.h"  // CFieldDataCli (WorldService::GetFieldData)
 
 enum Unk_GemSlot { Unk_GemSlot_0 };
 static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                                      // 0x143ad5fb0
@@ -53,8 +53,8 @@ class WorldService   // C3: local view (worldservice.h redefines Unk_WsPtred298)
 {
 public:
     static WorldService* GetInstance();             // 0x1403ed2d0
-    void* FUN_141bd0cc0();                          // the local player's actor
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();          // the world's field record (m_298, viewed as Unk_WsPtred298)
+    void* GetLocalPlayer();                          // the local player's actor
+    MS2Ptr<CFieldDataCli> GetFieldData();          // the world's field record (m_298, viewed as Unk_WsPtred298)
 };
 bool IsValidGemType(int nGemType);                       // the gem type is valid
 unsigned __int64 GetGemTypeCount();                            // the count of the gem types
@@ -132,9 +132,9 @@ MS2Ptr<CItem> PCGemEquip::GetItemByGemType(int nGemType)
         return MS2Ptr<CItem>(0);
     int nIndex = FUN_141271290(nGemType);
     MS2Ptr<CItem> spItem = GetItemAt(nIndex);
-    if (spItem == 0 || spItem->FUN_140527840() == 0)
+    if (spItem == 0 || spItem->GetData() == 0)
         return MS2Ptr<CItem>(0);
-    if (spItem->FUN_140527840()->FUN_14053e900() != nGemType)
+    if (spItem->GetData()->FUN_14053e900() != nGemType)
         return MS2Ptr<CItem>(0);
     return spItem;
 }
@@ -374,7 +374,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
         return MS2Ptr<CItem>(0);
     if (m_pOwner->CanUseItem(spItem) == 0)
         return MS2Ptr<CItem>(0);
-    bool bOff = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_bFlag152 == false;
+    bool bOff = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->GetFieldData().operator->())->m_bFlag152 == false;
     if (bOff)
         return MS2Ptr<CItem>(0);
     spItem->GetGem()->vfunc_6(m_pOwner, spItem);
@@ -442,7 +442,7 @@ bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
 {
     if (spItem == 0)
         return false;
-    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pActor == 0)
         return false;
     if (pActor->IsDead() != 0)
@@ -460,7 +460,7 @@ bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         {
             spBox->Append<int>(nSlot);
             spBox->SetItemUid(spItem->GetItemUid());
-            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->SetButtonLabelIds(1143, 1144, 0);
             FUN_140d73c60(spBox);
             return true;
@@ -474,7 +474,7 @@ bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
     FUN_1401fd190((unsigned char*)&kReq, kPacket);
     FUN_140710590(kPacket);
     {
-        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        MS2Ptr<CItemData> spData(spItem->GetData());
         if (spData.get() != 0)
             TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
@@ -486,7 +486,7 @@ bool UnequipGem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pActor == 0)
         return false;
     if (pActor->IsDead() != 0)
@@ -501,7 +501,7 @@ bool UnequipGem(MS2Ptr<CItem> spItem)
     FUN_1401fd250((unsigned char*)&kReq, kPacket);
     FUN_140710590(kPacket);
     {
-        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        MS2Ptr<CItemData> spData(spItem->GetData());
         if (spData.get() != 0)
             TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }

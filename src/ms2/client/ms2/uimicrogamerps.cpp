@@ -850,11 +850,11 @@ MS2_CHECK_SIZE(Unk_1401d3200, 0xc7c8); // recovered prefix only
 // The state object of the local player (0x1403ed2d0 singleton -> 0x141bd0cc0).
 class Unk_14166ccb0 : public StateMicroGameRps { };
 class Unk_141bd0cc0 : public PCBase { };   // C3: FUN_14166ccb0 is PCBase's
-class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
+class Unk_1403ed2d0 { public: Unk_141bd0cc0* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -1005,7 +1005,7 @@ MS2_REPLACE_METHOD(0x140E66600, UIMicroGameRps, SendMicrogame, 154, 0xD9F68C75);
 // @0x140e666a0
 void UIMicroGameRps::OnRandChat()
 {
-    Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pState == NULL)
         return;
     if (pState->GetCurStateId() != 0x3c)
@@ -1021,7 +1021,7 @@ MS2_REPLACE_METHOD(0x140E666A0, UIMicroGameRps, OnRandChat, 94, 0x948CB5A7);
 // @0x140e66710
 int UIMicroGameRps::FUN_140e66710()
 {
-    Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pState)
         return 1;
     if (pState->GetCurStateId() != 0x3c)

@@ -90,7 +90,7 @@ namespace efd { class ServiceManager; class IBase; }
 class Unk_RefObj { public: virtual ~Unk_RefObj(); };
 
 // @0x1414a6110
-void FUN_1414a6110(Unk_RefObj** ppObj)
+void Release(Unk_RefObj** ppObj)
 {
     if (*ppObj != 0) {
         delete *ppObj;      // scalar deleting destructor (vftable slot 0), delete flag 1
@@ -107,7 +107,7 @@ struct Unk_ServiceManagerView {
 MS2_CHECK_OFFSET(Unk_ServiceManagerView, m_bFlag119, 0x119);
 
 // @0x1414a6180
-void FUN_1414a6180(efd::ServiceManager* pServiceManager)
+void ClearFlag119(efd::ServiceManager* pServiceManager)
 {
     ((Unk_ServiceManagerView*)pServiceManager)->m_bFlag119 = 0;
 }
@@ -123,12 +123,12 @@ class Unk_GFxManager
 public:
     char m_pad_00[0x138];
     Unk_GFxImageCallback m_callback138;   // +0x138
-    void FUN_1414a61c0(Unk_GFxImageCallback fnCallback);
+    void SetImageCallback(Unk_GFxImageCallback fnCallback);
 };
 MS2_CHECK_OFFSET(Unk_GFxManager, m_callback138, 0x138);
 
 // @0x1414a61c0
-void Unk_GFxManager::FUN_1414a61c0(Unk_GFxImageCallback fnCallback)
+void Unk_GFxManager::SetImageCallback(Unk_GFxImageCallback fnCallback)
 {
     m_callback138 = fnCallback;
 }

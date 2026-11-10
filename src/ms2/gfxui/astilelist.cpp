@@ -146,18 +146,18 @@ ASItemBag::~ASItemBag()
 }
 
 // @0x1422cf7e0
-void ASItemBag::FUN_1422cf7e0(int nIndex)
+void ASItemBag::Add(int nIndex)
 {
     Invoke("add", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422CF7E0, ASItemBag, FUN_1422cf7e0, 55, 0x7C2FB1E0);
+MS2_REPLACE_METHOD(0x1422CF7E0, ASItemBag, Add, 55, 0x7C2FB1E0);
 
 // @0x1422cf820
-void ASItemBag::FUN_1422cf820(int nIndex)
+void ASItemBag::Remove(int nIndex)
 {
     Invoke("remove", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422CF820, ASItemBag, FUN_1422cf820, 55, 0xDDD4538B);
+MS2_REPLACE_METHOD(0x1422CF820, ASItemBag, Remove, 55, 0xDDD4538B);
 
 // @0x1422cf860
 void ASItemBag::Update()

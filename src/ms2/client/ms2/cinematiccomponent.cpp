@@ -97,7 +97,7 @@ struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);
 class Unk_CinWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();                                      // local player
+    MyPC* GetLocalPlayer();                                      // local player
 };
 class UIJobChangeDialog : public UIObject { public: public:
     int IsHardJob();   // C3: was free IsHardJob
@@ -106,9 +106,9 @@ int FUN_14151f6e0();
 void FUN_14151f200();
 void FUN_14151f460(int);
 class PC { public: int GetJobGroupId(); __int64 GetAccountId(); int FUN_141661aa0(); };   // C3: unit-local view (fittingdollpc.h);                                       // level
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 extern __int64 DAT_143ab2898;
-class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
+class GFxSceneService { public: int SetSubScene(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
 // C3: the Unk_Service6100017 view was CubeMapInformationService (cubemapinformationservice_3.h)
 class Unk_CinSvc : public CubeMapInformationService { public: void vfunc_1(); };
@@ -136,7 +136,7 @@ __int64 FUN_140761c00(int, int);
 __int64 FUN_140761d20(int, int);
 int FUN_140761ea0(int, int);
 int FUN_140761c60(int, int);
-int FUN_14053feb0(int);
+int GetItemRank(int);
 
 // Strings, packets and misc.
 CStringW GetStringCommon(int nStringId);
@@ -147,7 +147,7 @@ CStringW GetQuestName(int nQuestId);
 int FUN_1416e6100(int nQuestId, int);
 void FUN_141275260(int, int, int);
 void AddTalkImage(const CString& key);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void FUN_140710590(COutPacket&);
 void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
 void WriteNpcId(unsigned char*, class COutputStream&);   // C3: was WriteNpcId
@@ -168,7 +168,7 @@ MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, 
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 
 // Talk scripts (FUN_140856c50(npc id, 0)). ctalkscript.h is a view: its page list is this array.
-Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int n);
+Unk_ScriptPtr<CTalkScript> GetNpcPickTalk(int nNpcId, int n);
 typedef ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> > Unk_CinContentArray;
 
 // ---- the icon entry and its array ----
@@ -296,7 +296,7 @@ void CCinematicComponent::vfunc_4(MS2Ptr<CCinematicContent> spContent) { m_spCon
 // @0x14107cf90
 void CCinematicComponent::vfunc_5(ASObj& obj)
 {
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc != 0) {
         CStringW name(m_spContent->m_name);
         int nNpcId = TSingleton<UITalkManager>::GetInstance()->GetTalkNpcId();
@@ -311,7 +311,7 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
             Unk_CinNpc* pNpc = (Unk_CinNpc*)TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
             if (pNpc != 0 && pNpc->vfunc_128() != 0) {
                 reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(name, pNpc);
-                text = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
+                text = reinterpret_cast<CNpc*>(pNpc)->GetName();
             } else {
                 text = FUN_1401aa6a0(nNpcId);
             }
@@ -439,9 +439,9 @@ int CNextCinematicComponent::vfunc_2(int nMsg)
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
     if (nMsg == 0x493e2) {
-        FUN_141276180(s_nextKey, "");
+        PlaySystemSound(s_nextKey, "");
         if (m_nReward != 0)
-            FUN_141276180(s_getItem, "");
+            PlaySystemSound(s_getItem, "");
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         return 1;
     }
@@ -469,7 +469,7 @@ int CCloseCinematicComponent::vfunc_2(int nMsg)
         return 1;
     if (nMsg == 0x493e2) {
         if (m_nReward != 0)
-            FUN_141276180(s_getItem, "");
+            PlaySystemSound(s_getItem, "");
         if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0)
             TSingleton<UITalkManager>::GetInstance()->ResetTalk();
         else
@@ -499,7 +499,7 @@ int CDistractorCinematicComponent::vfunc_2(int nMsg)
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
     if (nMsg == 0x493e2) {
-        FUN_141276180(s_nextKey, "");
+        PlaySystemSound(s_nextKey, "");
         m_pOwner->SelectOption();
     }
     else
@@ -576,7 +576,7 @@ bool CQuestAcceptCinematicComponent::OnMsgBoxResult(int nButton, const CMsgBoxDa
 // @0x14107ecc0
 void CQuestAcceptCinematicComponent::SendQuestAccept(int nQuestId, bool bRedirect)
 {
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc != 0) {
         COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
         pkt.Encode1(2);
@@ -664,7 +664,7 @@ int CQuestCompleteCinematicComponent::vfunc_3() { return 7; }
 void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return;
     MS2Ptr<CQuestData> spQuest = GetQuestData(m_spContent->m_questId);
@@ -704,7 +704,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
         CQuestData::QuestRewardItem special;
         special.m_itemId = 0x1c9c6dd;
         special.m_job = nSpecial;
-        special.m_count = FUN_14053feb0(0x1c9c6dd);
+        special.m_count = GetItemRank(0x1c9c6dd);
         items.Add(special);
     }
     FillRewardItems(items, reward);
@@ -849,7 +849,7 @@ struct Unk_CinNpcId
 void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return;
     Unk_CinNpc* pNpc = (Unk_CinNpc*)TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
@@ -860,7 +860,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
             int nFlags = TSingleton<UITalkManager>::GetInstance()->FUN_141082ec0();
             Unk_CinIconArray icons;
             if ((nFlags & 0x20) != 0) {
-                Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->GetNpcId(), 0);
+                Unk_ScriptPtr<CTalkScript> spScript = GetNpcPickTalk(((class CNpc*)(class Unk_CinNpc*)(pNpc))->GetNpcId(), 0);
                 if (bool(spScript.get() != 0)) {
                     if (reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents).GetCount() > 0) {
                         CScriptContent* pEntry = reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents)[0].operator->();
@@ -1018,7 +1018,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return 0;
     efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
@@ -1026,7 +1026,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
     if (nMsg == 0x493e2) {
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         int nOut = 0;
-        if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pc->FUN_141529620(), &nOut) == 0)
+        if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->GetFieldId(), pc->FUN_141529620(), &nOut) == 0)
             return 0;
         efd::SmartPointer<CubeMapInformationService> spSvc2(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->GetAccountId()) {
@@ -1070,19 +1070,19 @@ int CPaneltyResolveCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
         if (((PC*)pc)->FUN_141661aa0() != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)GetLuaClient())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->GetFieldData().operator->()))->GetShadowContinent());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
                 COutPacket pkt(static_cast<int>(SendOp::ResolvePenalty), 0);
                 pkt.Encode4(TSingleton<UITalkManager>::GetInstance()->GetNpcId());
                 FUN_140710590(pkt);
-                FUN_141276180(s_deadPanelty, "");
+                PlaySystemSound(s_deadPanelty, "");
             }
         } else {
             FUN_141275260(0x79, 1, 1);
@@ -1111,18 +1111,18 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
         if (((PC*)pc)->FUN_141661aa0() != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)GetLuaClient())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->GetFieldData().operator->()))->GetShadowContinent());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
                 COutPacket pkt(static_cast<int>(SendOp::RequestHomeDoctor), 0);
                 FUN_140710590(pkt);
-                FUN_141276180(s_deadPanelty, "");
+                PlaySystemSound(s_deadPanelty, "");
             }
         } else {
             FUN_141275260(0x79, 1, 1);
@@ -1150,11 +1150,11 @@ int CTakeBoatCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetSubScene(0x620001d);
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         COutPacket pkt(static_cast<int>(SendOp::TakeBoat), 0);
         pkt.Encode4(TSingleton<UITalkManager>::GetInstance()->GetNpcId());
@@ -1181,7 +1181,7 @@ int CSellUGCMapCinematicComponent::vfunc_2(int nMsg)
 {
     if (CCinematicComponent::vfunc_2(nMsg) != 0)
         return 1;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {

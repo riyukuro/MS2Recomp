@@ -61,13 +61,13 @@ class Unk_BanFlags { public: int FUN_1402c4c90(int n); };
 class Unk_14025e7b0 { public: char m_pad[8]; Unk_BanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_LocalPlayer : public PCBase { };
-class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
+class Unk_WorldSvc { public: Unk_LocalPlayer* GetLocalPlayer(); };
 CStringW GetStringCommonByKey(const CStringW& str);
 void ShowSystemNotice(const CStringW& str, int a, int b);
 extern Unk_Inventory g_143ab2a90;
 void FUN_141275260(int nId, int a, int b);
 Unk_140166410*FUN_140166410();
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: };
 class Unk_AvTextCfg { public: operator CString(); };
 class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_AvTextCfg m_6198; };
@@ -156,7 +156,7 @@ int UIBlackMarketDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer && pPlayer->IsDead() != 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -170,7 +170,7 @@ int UIBlackMarketDialog::vfunc_73()
 void UIBlackMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer && pPlayer->IsDead() != 0 && m_68 == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
@@ -183,7 +183,7 @@ void UIBlackMarketDialog::vfunc_72()
 void UIBlackMarketDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x98)
+    if (static_cast<CInPacket*>(p)->GetOpcode() == 0x98)
     {
         int nFirst = static_cast<CInPacket*>(p)->ReadUInt8();
         int c = nFirst;
@@ -225,13 +225,13 @@ void UIBlackMarketDialog::OnLoadComplete()
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (!reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0x15))
-        FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
+        SetChildVisible((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
     if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0xf4))
     {
         m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Common::Constants::Values<__int64>*>(&reinterpret_cast<Unk_Cfg*>(GetClientConstants())->m_6078)->FUN_140f20b90() == 1);
         m_30->FUN_140bbe640<ASButton>("m_mesoMarketDetailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton));
         if (m_spDetailButton.get())
-            reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::OnDetailButtonClick), 0);
+            reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->AddClickHandler(ParamsDelegate(this, &UIBlackMarketDialog::OnDetailButtonClick), 0);
     }
     for (size_t i = 0; i < m_pages.size(); i++)
     {
@@ -299,7 +299,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     if (strMethod.CompareNoCase("getRegisterItemTooltip") == 0)
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-        ASTooltip tip(((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
+        ASTooltip tip(((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 0x80, 2);
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
@@ -396,7 +396,7 @@ void UIBlackMarketDialog::FUN_1418d0c20(int nIndex)
     if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0xf4))
     {
         if (IsCurrentPage(m_spMesoRegister.get()) || IsCurrentPage(m_spMesoSearch.get()) || IsCurrentPage(m_spMesoSearchSingle.get()))
-            FUN_140cff840(FUN_1422dbc00(), "m_mesoMarketDetailButton", 1);
+            SetChildVisible(FUN_1422dbc00(), "m_mesoMarketDetailButton", 1);
     }
 }
 

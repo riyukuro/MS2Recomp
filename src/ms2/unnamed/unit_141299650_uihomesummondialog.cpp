@@ -95,7 +95,7 @@ MS2_REPLACE_METHOD(0x141299AB0, UIHomeSummonDialog, vfunc_26, 55, 0xB78B1840);
 // MS2-FUNCTIONAL: one byte (jmp distance) differs; else-branch jump layout
 int UIHomeSummonDialog::vfunc_13()
 {
-    if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d840() != 0)
+    if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->IsEscapePressed() != 0)
     {
         vfunc_67();
         return 1;

@@ -102,7 +102,7 @@ class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 
@@ -684,7 +684,7 @@ void UIMarketBillDialog::InitData()
                 MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
                 if (ref.get() ? true : false)
                 {
-                    if ((ref.operator->())->FUN_14053cd10())
+                    if ((ref.operator->())->IsScoreItem())
                         m_bBlueprint = true;
                 }
             }
@@ -894,7 +894,7 @@ void UIMarketBillDialog::OnClickGiftOk(const char* szMethod, ASData* pData)
         FUN_140d73bc0(0xa6d, 0, 0, L"");
         return;
     }
-    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer)
     {
         bool bSelf = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
@@ -1035,7 +1035,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
             return true;
         }
     }
-    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (!pPlayer)
         return false;
     if (pPlayer->HasNoHome() != 0)
@@ -1045,7 +1045,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6eb, 0, L"");
                 if (spBox.get())
                 {
-                    spBox->FUN_141a01800(2);
+                    spBox->SetButtonPreset(2);
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->SetSize(0x1c0, 400);
@@ -1062,7 +1062,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6ec, 0, L"");
                 if (spBox.get())
                 {
-                    spBox->FUN_141a01800(2);
+                    spBox->SetButtonPreset(2);
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->SetSize(0x1c0, 400);

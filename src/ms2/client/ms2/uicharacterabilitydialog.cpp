@@ -98,7 +98,7 @@ class Unk_CaUIManager { public: };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 UIGameMenuDialog* FindGameMenuDialog(int nId);
@@ -122,7 +122,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void ShowMessageBox(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
 
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -148,7 +148,7 @@ Scaleform::GFx::Value AScript::InvokeIntArray(const char* szMethod, int n, ASArr
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcd10(&args[0], n);
+    SetUInt(&args[0], n);
     FUN_1422bce40(&args[1], arr);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -158,7 +158,7 @@ Scaleform::GFx::Value AScript::InvokeIntString(const char* szMethod, int n, CStr
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcd10(&args[0], n);
+    SetUInt(&args[0], n);
     FUN_1422bcea0(&args[1], (const wchar_t*)str);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -242,7 +242,7 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
-    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->GetAbility(nId);
     if (ref == NULL)
         return;
     m_abilities.AddTail(nId);
@@ -266,7 +266,7 @@ int CCharacterAbilityManager::FUN_140f29e00()
 // @0x140f29e40
 unsigned CCharacterAbilityManager::FUN_140f29e40()
 {
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return 0;
     return FUN_1401e0790((unsigned short)pPc->vfunc_78(), m_nPoints);
@@ -291,7 +291,7 @@ int CCharacterAbilityManager::CanLearnAbility(MS2Ptr<CCharacterAbility> ref)
 {
     if (FUN_140f29e00() == 0)
         return 0;
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return 0;
     if (ref->m_nRequireLevel != (unsigned short)pPc->vfunc_78())
@@ -310,10 +310,10 @@ int CCharacterAbilityManager::FUN_140f2a0b0(int nId)
 // @0x140f2a100
 int CCharacterAbilityManager::FUN_140f2a100(int nId)
 {
-    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->GetAbility(nId);
     if (ref == NULL)
         return 1;
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return 1;
     if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
@@ -382,7 +382,7 @@ void UICharacterAbilityDialog::OnLoadComplete()
     BindCloseButton(CString("m_close"));
     m_bBuilt = 0;
     UpdateDisabledText();
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
@@ -400,7 +400,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return 0;
     if (_stricmp(szMethod, "onAddButton") == 0)
@@ -416,7 +416,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             int nId = data.PopUInt();
             if (GetCharacterAbilityManager()->FUN_140f2a0b0(nId))
                 return 1;
-            MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
+            MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->GetAbility(nId);
             if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
@@ -458,14 +458,14 @@ void UICharacterAbilityDialog::vfunc_15()
 void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     CString strKind = pArgs->FUN_1422b8d30();
     if (strKind == "ability")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
+        MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->GetAbility(nId);
         if (ref == NULL)
             return;
         MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(ref->m_nAdditionalEffectId, ref->m_nAdditionalEffectLevel);
@@ -477,7 +477,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     else if (strKind == "CategoryIcon")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<CCharacterAbilityCategory> cat = GetCharacterAbilityTable()->FUN_1401e0560(nId);
+        MS2Ptr<CCharacterAbilityCategory> cat = GetCharacterAbilityTable()->GetCategory(nId);
         if (cat == NULL)
             return;
         ASTooltip tip(*pRetVal, 2);

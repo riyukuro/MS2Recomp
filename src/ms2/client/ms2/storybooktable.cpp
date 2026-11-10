@@ -51,7 +51,7 @@ struct Unk_XmlElement;
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
-CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
+CString JoinResourcePath(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -133,7 +133,7 @@ void CStoryBookTable::Load()
                 if (arrPath.GetCount() != 2)
                     continue;
                 CString strDir = Unk_SocketFormat<CString>("StoryBook/{0}", arrPath[0]);
-                spPage->m_strImage = FUN_140cc2ad0(strDir, arrPath[1]);
+                spPage->m_strImage = JoinResourcePath(strDir, arrPath[1]);
             }
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spPage->m_strText);
             spData->m_pages.SetAt(nNumber, spPage);

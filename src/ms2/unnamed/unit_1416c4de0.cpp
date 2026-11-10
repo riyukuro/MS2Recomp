@@ -57,7 +57,7 @@ float FUN_140a38cd0(float f);                       // fabs
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
-bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);               // a == b (within epsilon)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -166,13 +166,13 @@ void CPVPCameraMode::vfunc_39(double fTime)
                 }
             }
         }
-        else if (!FUN_14028d470(fDist, 0.0f) && fDist <= 10.0f)
+        else if (!IsNearlyEqual(fDist, 0.0f) && fDist <= 10.0f)
         {
             m_fc = 1;
             m_100 = 0.0f;
             fBlend = 0.0f;
         }
-        if (FUN_14028d470(fDist, 0.0f))
+        if (IsNearlyEqual(fDist, 0.0f))
         {
             m_c0 = m_d8;
         }
@@ -231,11 +231,11 @@ float CPVPCameraMode::vfunc_27()
 MS2_REPLACE_METHOD(0x1416c5ae0, CPVPCameraMode, vfunc_27, 19, 0x6FC60411);
 
 // @0x1416c5b00
-void CPVPCameraMode::FUN_1416c5b00(int nTargetId)
+void CPVPCameraMode::SetOpponentId(int nTargetId)
 {
     m_108 = nTargetId;
 }
-MS2_REPLACE_METHOD(0x1416c5b00, CPVPCameraMode, FUN_1416c5b00, 25, 0x7D8CAC3E);
+MS2_REPLACE_METHOD(0x1416c5b00, CPVPCameraMode, SetOpponentId, 25, 0x7D8CAC3E);
 
 // @0x1416c5b20
 BOOL CPVPCameraMode::vfunc_31()

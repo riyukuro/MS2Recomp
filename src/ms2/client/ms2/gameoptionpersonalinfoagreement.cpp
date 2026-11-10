@@ -65,7 +65,7 @@ struct Unk_PiDialog
     char m_pad2c[4];
     MS2Ptr<AScript> m_root;
 };
-void FUN_1422bce70(Scaleform::GFx::Value* v, const char* s);
+void SetString(Scaleform::GFx::Value* v, const char* s);
 void FUN_1422bccb0(Scaleform::GFx::Value* v, int n);
 
 // AScript::Invoke(method, CString, int) (inline COMDAT; this in rcx, the return slot in rdx, the method name in r8).
@@ -73,7 +73,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nI
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], (const char*)name);
+    SetString(&args[0], (const char*)name);
     FUN_1422bccb0(&args[1], nIndex);
     return FUN_1422bb8f0(szMethod, args);
 }

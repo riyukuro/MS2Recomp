@@ -23,7 +23,7 @@ void* FUN_14025e7c0();                                          // the option se
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14116d840();
+    bool IsEscapePressed();
 };
 class MyPC   // C3: member view for the former free stand-ins
 {
@@ -66,9 +66,9 @@ MS2_REPLACE_METHOD(0x141A733E0, UIObserveDialog, OnLoadComplete, 226, 0xFD29FD68
 // @0x141a734d0
 int UIObserveDialog::vfunc_13()
 {
-    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840() != false)
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsEscapePressed() != false)
     {
-        void* pActor = ((void*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        void* pActor = ((void*)((WorldService*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pActor != 0)
             ((class MyPC*)(void*)(pActor))->StopObserving();
         return 1;

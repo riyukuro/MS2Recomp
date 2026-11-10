@@ -58,7 +58,7 @@ class Unk_CRSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 void FUN_141901470(int n, int nTypeId);
 void FUN_14151f200();
@@ -142,14 +142,14 @@ void UICardReverseGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001d);
 }
 
 // @0x140f26cd0
 void UICardReverseGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200022);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->SetSubScene(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(0x6200022);
     m_1c8.RemoveAll();
@@ -175,7 +175,7 @@ void UICardReverseGameDialog::vfunc_43()
 void UICardReverseGameDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0xda)
+    if (static_cast<CInPacket*>(p)->GetOpcode() == 0xda)
     {
         int nMode = static_cast<CInPacket*>(p)->ReadUInt8();
         if (nMode == 0)
@@ -385,7 +385,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 void UICardReverseGameDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     int nItemId = pArgs->PopUInt();

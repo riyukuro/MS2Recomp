@@ -93,7 +93,7 @@ class PC { public: struct Unk_PCEquipSet* GetEquipment(); };   // C3: the real m
 class Unk_CinWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();
+    MyPC* GetLocalPlayer();
 };
 
 // AS script views.
@@ -114,7 +114,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();
     void FUN_141416740(int nHave, int nCount);
 };
-class ItemInfoSlot* FUN_140f6e830(const CString& name);   // itemsocketsystempagesbase defines it
+class ItemInfoSlot* FindItemInfoSlot(const CString& name);   // itemsocketsystempagesbase defines it
 void DestroyItemInfoSlot(const CString& key);
 void CreateItemInfoSlot(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_141414e50(const CString& name);
@@ -122,10 +122,10 @@ void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids)
 
 // Strings / messages.
 CStringW GetStringCommonByKey(const CStringW& key);
-CStringW FUN_140298ea0(CStringW key);
+CStringW GetStringByKey(CStringW key);
 unsigned __int64 FUN_140718350(const CString& s);
 void ShowSystemNotice(const CStringW& text, int a, int b);
-int FUN_141276180(const CString& a, const CString& b);
+int PlaySystemSound(const CString& a, const CString& b);
 void FUN_14151f460(int v);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
@@ -164,7 +164,7 @@ MS2_CHECK_SIZE(Unk_RemakeStat, 0x20);
 int GetLockItemId(MS2Ptr<CItem> item);
 unsigned GetLockItemLevel(MS2Ptr<CItem> item);
 CStringW FUN_140619760(int a, unsigned b);
-CStringW FUN_140617e50(const CStringW& key, Unk_RemakeStat& stat, unsigned* pCount);
+CStringW FormatOptionText(const CStringW& key, Unk_RemakeStat& stat, unsigned* pCount);
 bool CanLockOptions(MS2Ptr<CItem> item);
 int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned rate);
 int GetDiscountedIngredientCount(int a, unsigned b);
@@ -186,7 +186,7 @@ void ShowMessageBox(CStringW text, int a, void* pListener, CStringW c);
 enum Unk_RemakeError : int {};
 CStringW GetIngredientCountText(unsigned a, unsigned b);
 CStringW FUN_1409404f0(__int64 v);
-int FUN_14053feb0(int);   // C3: was FUN_14053feb0
+int GetItemRank(int);   // C3: was GetItemRank
 extern __int64 DAT_143ab2898;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);
 MS2Ptr<CMsgBoxData> CreateMessageBox(int type, CStringW text, void* pListener, CStringW b);
@@ -218,8 +218,8 @@ UIItemRemakeOptionDialog::UIItemRemakeOptionDialog()
 UIItemRemakeOptionDialog::~UIItemRemakeOptionDialog()
 {
     m_enchantAni = 0;
-    FUN_1412a2ac0();
-    FUN_1412a0800();
+    ResetSelection();
+    ReleaseSlotKeys();
 }
 
 // @0x14129d220
@@ -272,7 +272,7 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     } else if (_stricmp("onClickRemake", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14129e950(&data);
+            OnClickRemake(&data);
         return 1;
     } else if (_stricmp("onEndRemakeAni", szMethod) == 0) {
         OnEndRemakeAni();
@@ -280,20 +280,20 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     } else if (_stricmp("onClickApply", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14129ed90(&data);
+            OnClickApply(&data);
         return 1;
     } else if (_stricmp("onClickForceRemake", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14129e190(&data);
+            OnClickForceRemake(&data);
     } else if (_stricmp("onClickCompareEnchant", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14129e530(&data);
+            OnClickCompareEnchant(&data);
     } else if (_stricmp("GetEnableLockOption", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14129f360(&data);
+            GetEnableLockOption(&data);
     }
     return 0;
 }
@@ -304,7 +304,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
     UIItemModifyDialogBase::vfunc_67();
     FUN_14151f460(1);
     FUN_141414e50(GetTypeName());
-    FUN_1412a0800();
+    ReleaseSlotKeys();
     m_remakeMode = 2;
     m_enchantAni = 0;
     SetState(0);
@@ -321,7 +321,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
 // @0x14129daa0
 void UIItemRemakeOptionDialog::vfunc_79(void* pPacket)
 {
-    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() != 200)
+    if (static_cast<CInPacket*>(pPacket)->GetOpcode() != 200)
         return;
     if (m_enchantAni == 0)
         return;
@@ -338,7 +338,7 @@ void UIItemRemakeOptionDialog::vfunc_79(void* pPacket)
     else if (kind == 8)
         FUN_1412a3460(static_cast<CInPacket*>(pPacket));
     else if (kind == 5)
-        FUN_1412a34f0(static_cast<CInPacket*>(pPacket));
+        OnRemakeError(static_cast<CInPacket*>(pPacket));
 }
 
 // @0x14129dbe0
@@ -346,7 +346,7 @@ int UIItemRemakeOptionDialog::vfunc_13()
 {
     if (m_enchantAni == 0)
         return 0;
-    if ((((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) && GetState() == 3)
+    if ((((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x493e2, 0, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed()) && GetState() == 3)
         return 1;
     return 0;
 }
@@ -375,12 +375,12 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
         MS2Ptr<CItem> item = items[i];
         if (item == 0)
             continue;
-        if (item.get()->FUN_140526470(m_remakeMode) != 0) {
+        if (item.get()->CanRemakeOption(m_remakeMode) != 0) {
             unsigned __int64 uid = items.GetAt(i)->GetItemUid();
             uids.Add(uid);
         }
     }
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc != 0) {
         ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
         reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->CollectShownItemsInLayer(equips, 0);
@@ -391,7 +391,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
             MS2Ptr<CItem> item = equip->GetItem();
             if (!item)
                 continue;
-            if (item.get()->FUN_140526470(m_remakeMode) != 0) {
+            if (item.get()->CanRemakeOption(m_remakeMode) != 0) {
                 unsigned __int64 uid = item->GetItemUid();
                 uids.Add(uid);
             }
@@ -406,7 +406,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
 
 
 // @0x14129e190
-void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
+void UIItemRemakeOptionDialog::OnClickForceRemake(ASData* pData)
 {
     if (DAT_143ab2914 < 0x32)
         return;
@@ -415,7 +415,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
     if (uid == 0)
         return;
     MS2Ptr<CItem> item = FindItemByUid(uid);
-    if (item == 0 || item->FUN_140527840() == 0) {
+    if (item == 0 || item->GetData() == 0) {
         CStringW str = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
         ShowSystemNotice(str, 1, 1);
         return;
@@ -428,7 +428,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
     Unk_RemakeLockOpt lockOpt;
     if (option >= 0) {
         if (m_optionCount <= 1) {
-            NOTICE(FUN_140298ea0(L"s_itemremake_notice_disable_lock_item_option_error_count"));
+            NOTICE(GetStringByKey(L"s_itemremake_notice_disable_lock_item_option_error_count"));
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
@@ -442,7 +442,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
 }
 
 // @0x14129e530
-void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
+void UIItemRemakeOptionDialog::OnClickCompareEnchant(ASData* pData)
 {
     if (DAT_143ab2914 < 0x32)
         return;
@@ -450,11 +450,11 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
     int option = pData->PopInt();
     CString valueText = pData->FUN_1422b8d30();
     valueText.Replace(",", "");
-    int value = FUN_1407181d0(valueText);
+    int value = ParseUInt(valueText);
     if (uid == 0)
         return;
     MS2Ptr<CItem> item = FindItemByUid(uid);
-    if (item == 0 || item->FUN_140527840() == 0) {
+    if (item == 0 || item->GetData() == 0) {
         CStringW str = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
         ShowSystemNotice(str, 1, 1);
         return;
@@ -470,7 +470,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
     Unk_RemakeLockOpt lockOpt;
     if (option >= 0) {
         if (m_optionCount <= 1) {
-            NOTICE(FUN_140298ea0(L"s_itemremake_notice_disable_lock_item_option_error_count"));
+            NOTICE(GetStringByKey(L"s_itemremake_notice_disable_lock_item_option_error_count"));
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
@@ -484,21 +484,21 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
 }
 
 // @0x14129e950
-void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
+void UIItemRemakeOptionDialog::OnClickRemake(ASData* pData)
 {
     unsigned __int64 uid = FUN_140718350(pData->FUN_1422b8d30());
     int option = pData->PopInt();
     if (option < 0) {
-        FUN_1412a1d40(uid, option, true);
+        StartRemake(uid, option, true);
         return;
     }
     MS2Ptr<CItem> item = FindItemByUid(uid);
-    if (item == 0 || item->FUN_140527840() == 0) {
+    if (item == 0 || item->GetData() == 0) {
         CStringW str = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
         ShowSystemNotice(str, 1, 1);
         return;
     }
-    if (!FUN_1412a0940(MS2Ptr<CItem>(item)))
+    if (!CanPayRemakePrice(MS2Ptr<CItem>(item)))
         return;
     int lockId = GetLockItemId(MS2Ptr<CItem>(item));
     if (lockId == 0) {
@@ -509,7 +509,7 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
     CStringW lockText = FUN_140619760(lockId, lockLevel);
     CStringW ask = FUN_14028dfa0<CStringW>(L"s_itemremake_ask_lock_item_option", lockText);
     MS2Ptr<CMsgBoxData> box = ShowYesNoMessageBox(
-        Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a2a50), CStringW(ask));
+        Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::OnLockOptionConfirm), CStringW(ask));
     if (box.get() != 0) {
         box->Append<__int64>(uid);
         box->Append<int>(option);
@@ -517,7 +517,7 @@ void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
 }
 
 // @0x14129ed90
-void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
+void UIItemRemakeOptionDialog::OnClickApply(ASData* pData)
 {
     if (m_enchantAni == 0)
         return;
@@ -546,15 +546,15 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
             FUN_140710590(pkt);
         }
         Unk_RemakeStat stat(m_remakeMode, picked, true);
-        CStringW finalText = FUN_140617e50(L"s_itemremake_final_random_option", stat, 0);
+        CStringW finalText = FormatOptionText(L"s_itemremake_final_random_option", stat, 0);
         ASObj obj(2);
         obj.SetWStringMember("remakeStatFinal", CStringW(finalText));
-        obj.SetStringMember("binding", FUN_1412a0720(picked.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_names198));
+        obj.SetStringMember("binding", BindItemToSlot(picked.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_names198));
         m_enchantAni->Invoke("selectComplete", obj.GetValue());
         FUN_1412a1650(MS2Ptr<CItem>(picked));
         FUN_14129dd50();
         vfunc_85(0x67);
-        FUN_141276180(s_successEffect, "");
+        PlaySystemSound(s_successEffect, "");
         if (!bApplied) {
             m_new = 0;
             m_cur = 0;
@@ -563,7 +563,7 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
 }
 
 // @0x14129f360
-void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
+void UIItemRemakeOptionDialog::GetEnableLockOption(ASData* pData)
 {
     if (m_enchantAni == 0 || m_cur == 0)
         return;
@@ -609,10 +609,10 @@ void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
         ShowSystemNotice(str, 1, 1);
         return;
     }
-    if (item.get()->FUN_140526470(m_remakeMode) == 0) {
+    if (item.get()->CanRemakeOption(m_remakeMode) == 0) {
         CStringW str = GetStringCommonByKey(L"s_itemremake_error_server_impossible");
         ShowSystemNotice(str, 1, 1);
-        FUN_1412a0800();
+        ReleaseSlotKeys();
         m_enchantAni->Invoke("initEnchantSlot");
         return;
     }
@@ -628,7 +628,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
     unsigned __int64 uid = pPacket->ReadInt64();
     CIngredientContainer ingredients;
     ingredients.Read(*pPacket);
-    FUN_1412a2ac0();
+    ResetSelection();
     SetState(2);
     MS2Ptr<CItem> item = FindItemByUid(uid);
     if (item == 0) {
@@ -637,14 +637,14 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         return;
     }
     {
-        if (item.get()->FUN_140526470(m_remakeMode) == 0) {
+        if (item.get()->CanRemakeOption(m_remakeMode) == 0) {
             CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_impossible");
             ShowSystemNotice(strMsg, 1, 1);
-            FUN_1412a0800();
+            ReleaseSlotKeys();
             m_enchantAni->Invoke("initEnchantSlot");
             return;
         }
-        FUN_1412a0800();
+        ReleaseSlotKeys();
         m_cur = item;
         ASObj obj(2);
         obj.SetWStringMember("itemName", item->FUN_140528160());
@@ -656,7 +656,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         CStringW strKey(L"s_itemremake_cur_random_option");
         unsigned optionCount = 0;
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(m_cur), true);
-        CStringW option = FUN_140617e50(strKey, stat, &optionCount);
+        CStringW option = FormatOptionText(strKey, stat, &optionCount);
         bool bEnableLock = CanLockOptions(MS2Ptr<CItem>(m_cur));
         m_optionCount = optionCount;
         CString guid = FUN_140719530(uid);
@@ -666,7 +666,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         obj.SetBoolMember("enableLock", bEnableLock);
         m_enchantAni->Invoke("playEnchant", obj.GetValue());
         vfunc_85(100);
-        FUN_141276180(s_itemChoice, "");
+        PlaySystemSound(s_itemChoice, "");
         if (MS2Ptr<ASMovieClip> info = m_enchantAni->FUN_1409b4560("remakeOptionInfo")) {
             bool bDebugMode = ((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode();
             int bDebug = bDebugMode ? 1 : 0;
@@ -674,14 +674,14 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
             if (m_debugBtnFillIngredientUnit.get() != 0) {
                 m_debugBtnFillIngredientUnit->vfunc_3(bDebug);
                 if (bDebug)
-                    m_debugBtnFillIngredientUnit->FUN_1422ce240(
+                    m_debugBtnFillIngredientUnit->AddClickHandler(
                         Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0550), (void*)0);
             }
             m_debugBtnFillIngredient = info->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
             if (m_debugBtnFillIngredient.get() != 0) {
                 m_debugBtnFillIngredient->vfunc_3(bDebug);
                 if (bDebug)
-                    m_debugBtnFillIngredient->FUN_1422ce240(
+                    m_debugBtnFillIngredient->AddClickHandler(
                         Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0460), (void*)0);
             }
         }
@@ -732,15 +732,15 @@ bool UIItemRemakeOptionDialog::FUN_1412a0650(int nResult, const CMsgBoxData& box
         bool bConfirm = box.FUN_141a02e10(2, 0);
         SendRemakeRequest(uid, option, bConfirm);
     } else {
-        FUN_1412a2ac0();
-        FUN_1412a0800();
+        ResetSelection();
+        ReleaseSlotKeys();
         m_enchantAni->Invoke("initEnchantSlot");
     }
     return true;
 }
 
 // @0x1412a0720
-CString UIItemRemakeOptionDialog::FUN_1412a0720(CItem* item, CString key, CAtlArray<CString>& names)
+CString UIItemRemakeOptionDialog::BindItemToSlot(CItem* item, CString key, CAtlArray<CString>& names)
 {
     DestroyItemInfoSlot(key);
     int nFlags = 0x2020;
@@ -750,7 +750,7 @@ CString UIItemRemakeOptionDialog::FUN_1412a0720(CItem* item, CString key, CAtlAr
 }
 
 // @0x1412a0800
-void UIItemRemakeOptionDialog::FUN_1412a0800()
+void UIItemRemakeOptionDialog::ReleaseSlotKeys()
 {
     size_t count = m_names198.GetCount();
     for (size_t i = 0; i < count; ++i)
@@ -765,23 +765,23 @@ void UIItemRemakeOptionDialog::FUN_1412a0800()
 // @0x1412a0900
 Unk_EnSlot* UIItemRemakeOptionDialog::FUN_1412a0900(const CString& name)
 {
-    Unk_EnSlot* slot = reinterpret_cast<Unk_EnSlot*>(FUN_140f6e830(name));
+    Unk_EnSlot* slot = reinterpret_cast<Unk_EnSlot*>(FindItemInfoSlot(name));
     if (slot != 0)
         return slot;
     return 0;
 }
 
 // @0x1412a0940
-bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
+bool UIItemRemakeOptionDialog::CanPayRemakePrice(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return false;
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc != 0)
         rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->GetAbilityRate((SAType)0xa9) * 10000.0f);
-    int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->FUN_140527840())), &discount, rate);
+    int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->GetData())), &discount, rate);
     __int64 fee = 0;
     size_t count = m_names1b8.GetCount();
     for (size_t i = 0; i < count; ++i) {
@@ -789,7 +789,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
         if (slot == 0)
             continue;
         MS2Ptr<CItem> slotItem = slot->vfunc_25();
-        if (slotItem == 0 || slotItem->FUN_140527840() == 0)
+        if (slotItem == 0 || slotItem->GetData() == 0)
             continue;
         int need = slotItem->GetCount();
         int price = bSale != 0 ? GetDiscountedIngredientCount(need, discount) : need;
@@ -816,18 +816,18 @@ void UIItemRemakeOptionDialog::FUN_1412a0cd0(ASObj& obj, MS2Ptr<CItem> item)
     if (item == 0)
         return;
     obj.SetStringMember("enchantItem",
-        FUN_1412a0720(item.get(), Unk_SocketFormat("{0}.selectedItem", GetTypeName()), m_names198));
+        BindItemToSlot(item.get(), Unk_SocketFormat("{0}.selectedItem", GetTypeName()), m_names198));
 }
 
 // @0x1412a0e30
 void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIngredientContainer* ingredients)
 {
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return;
-    MS2Ptr<CItemData> equipData(reinterpret_cast<CItemData*>(item->FUN_140527840()));
+    MS2Ptr<CItemData> equipData(reinterpret_cast<CItemData*>(item->GetData()));
     unsigned discount = 0;
     unsigned rate = 0;
-    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pc != 0)
         rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->GetAbilityRate((SAType)0xa9) * 10000.0f);
     __int64 fee = 0;
@@ -840,13 +840,13 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
         unsigned itemId = ref->GetItemId();
         int count = ref->m_c;
         int type = ref->m_b;
-        int rank = FUN_14053feb0(itemId);
+        int rank = GetItemRank(itemId);
         MS2Ptr<CItem> ingredient(new CItem());
         if (ingredient->InitWithCount(itemId, rank, 0, count) != 0) {
             int have = FUN_1412a1c80(MS2Ptr<CItem>(ingredient));
             CString bagKey = StringFormat("{0}.ingredient.{1}", GetTypeName(), i);
             ASObj entry(2);
-            entry.SetStringMember("binding", FUN_1412a0720(ingredient.get(), CString(bagKey), m_names1b8));
+            entry.SetStringMember("binding", BindItemToSlot(ingredient.get(), CString(bagKey), m_names1b8));
             entry.SetWStringMember("countText", GetIngredientCountText(have, count));
             list.PushObj(entry);
             if (type == 0x60 && count > have)
@@ -880,7 +880,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
         if (IsItemInInventory(item->GetItemUid()) != 0) {
             g_143ab2a90.ReplaceItem(item.get());
         } else {
-            MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pc != 0) {
                 MS2Ptr<CEquipItem> equip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->FindItemByUid(item->GetItemUid());
                 if (equip.get() != 0) {
@@ -894,7 +894,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
 }
 
 // @0x1412a1790
-void UIItemRemakeOptionDialog::FUN_1412a1790(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
+void UIItemRemakeOptionDialog::ShowRemakeResult(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
 {
     if (m_enchantAni == 0)
         return;
@@ -903,17 +903,17 @@ void UIItemRemakeOptionDialog::FUN_1412a1790(MS2Ptr<CItem> cur, MS2Ptr<CItem> ne
     int remakeCount = cur->GetRemakeCount();
     CStringW strCount = FUN_14028dfa0<int>(L"s_itemremake_remake_count", remakeCount);
     obj.SetWStringMember("remakeCount", strCount);
-    obj.SetStringMember("binding", FUN_1412a0720(cur.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_names198));
+    obj.SetStringMember("binding", BindItemToSlot(cur.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_names198));
     CStringW keyCur(L"s_itemremake_cur_random_option");
     CStringW keyNew(L"s_itemremake_new_random_option");
     Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(cur), true);
-    obj.SetWStringMember("remakeStat0", FUN_140617e50(keyCur, stat, 0));
+    obj.SetWStringMember("remakeStat0", FormatOptionText(keyCur, stat, 0));
     stat.m_item = next;
-    obj.SetWStringMember("remakeStat1", FUN_140617e50(keyNew, stat, 0));
+    obj.SetWStringMember("remakeStat1", FormatOptionText(keyNew, stat, 0));
     int nSelected = 0;
     obj.SetIntMember("selectedStatIndex", nSelected);
     m_enchantAni->Invoke("setEnchantResult", obj);
-    FUN_141276180(s_progress, "");
+    PlaySystemSound(s_progress, "");
 }
 
 // @0x1412a1c40
@@ -931,32 +931,32 @@ int UIItemRemakeOptionDialog::GetState()
 // @0x1412a1c80
 int UIItemRemakeOptionDialog::FUN_1412a1c80(MS2Ptr<CItem> item)
 {
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return 0;
     int have = 0;
-    int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->GetStringTag();
+    int itemId = reinterpret_cast<CItemData*>(item->GetData())->GetStringTag();
     if (itemId != 0)
         have = g_143ab2a90.FUN_140a5f7b0(itemId, 0);
     return have;
 }
 
 // @0x1412a1d40
-void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, bool bConfirm)
+void UIItemRemakeOptionDialog::StartRemake(unsigned __int64 uid, int nOption, bool bConfirm)
 {
     MS2Ptr<CItem> item = FindItemByUid(uid);
-    if (item == 0 || item->FUN_140527840() == 0) {
+    if (item == 0 || item->GetData() == 0) {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
         ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     unsigned mode = m_remakeMode;
-    if (item.get()->FUN_140526470(mode) == 0) {
+    if (item.get()->CanRemakeOption(mode) == 0) {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_impossible");
         ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     if (bConfirm) {
-        if (!FUN_1412a0940(MS2Ptr<CItem>(item)))
+        if (!CanPayRemakePrice(MS2Ptr<CItem>(item)))
             return;
     }
     CStringW highSa;
@@ -972,7 +972,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
         if (box.get() != 0) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0650));
             box->SetItemUid(item->GetItemUid());
-            box->FUN_141a01ee0(MS2Ptr<CItem>(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
+            box->SetItemEntry(MS2Ptr<CItem>(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<__int64>(uid);
             box->Append<int>(nOption);
@@ -988,19 +988,19 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
 void UIItemRemakeOptionDialog::SendRemakeRequest(unsigned __int64 uid, int nOption, bool bConfirm)
 {
     MS2Ptr<CItem> item = FindItemByUid(uid);
-    if (item == 0 || item->FUN_140527840() == 0) {
+    if (item == 0 || item->GetData() == 0) {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
         ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     unsigned mode = m_remakeMode;
-    if (item.get()->FUN_140526470(mode) == 0) {
+    if (item.get()->CanRemakeOption(mode) == 0) {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_impossible");
         ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     if (bConfirm) {
-        if (!FUN_1412a0940(MS2Ptr<CItem>(item)))
+        if (!CanPayRemakePrice(MS2Ptr<CItem>(item)))
             return;
     }
     CCItemRemakeOptionPacket::RemakeOption option;
@@ -1008,7 +1008,7 @@ void UIItemRemakeOptionDialog::SendRemakeRequest(unsigned __int64 uid, int nOpti
     Unk_RemakeLockOpt lockOpt;
     if (nOption >= 0) {
         if (m_optionCount <= 1) {
-            NOTICE(FUN_140298ea0(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
+            NOTICE(GetStringByKey(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
             return;
         }
         int lockId = GetLockItemId(MS2Ptr<CItem>(item));
@@ -1036,7 +1036,7 @@ void UIItemRemakeOptionDialog::SendRemakeRequest(unsigned __int64 uid, int nOpti
 }
 
 // @0x1412a2a50
-bool UIItemRemakeOptionDialog::FUN_1412a2a50(int nResult, const CMsgBoxData& box)
+bool UIItemRemakeOptionDialog::OnLockOptionConfirm(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0) {
         __int64 uid = box.FUN_141a02f10(0, 0);
@@ -1047,7 +1047,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a2a50(int nResult, const CMsgBoxData& box
 }
 
 // @0x1412a2ac0
-void UIItemRemakeOptionDialog::FUN_1412a2ac0()
+void UIItemRemakeOptionDialog::ResetSelection()
 {
     m_cur = 0;
     m_new = 0;
@@ -1057,7 +1057,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2ac0()
 }
 
 // @0x1412a2b40
-void UIItemRemakeOptionDialog::FUN_1412a2b40(unsigned nItemId)
+void UIItemRemakeOptionDialog::ShowPrevOptionItemNotExist(unsigned nItemId)
 {
     CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemremake_error_prev_option_item_not_exist"), name);
@@ -1075,19 +1075,19 @@ void UIItemRemakeOptionDialog::FUN_1412a2c50(CInPacket* pPacket)
     }
     unsigned __int64 nErrorItem = (unsigned)pPacket->ReadInt32();
     if (nResult == 2) {
-        FUN_1412a2b40((unsigned)nErrorItem);
+        ShowPrevOptionItemNotExist((unsigned)nErrorItem);
         SetState(1);
         return;
     }
     unsigned __int64 uid = pPacket->ReadInt64();
     MS2Ptr<CItem> item = FUN_1419be700(uid);
     if (item == 0) {
-        FUN_1412a2b40((unsigned)nErrorItem);
+        ShowPrevOptionItemNotExist((unsigned)nErrorItem);
         SetState(1);
         return;
     }
-    if (item.get()->FUN_140526470(2) == 0) {
-        CStringW strMsg = FUN_140298ea0(L"s_itemremake_error_server_impossible");
+    if (item.get()->CanRemakeOption(2) == 0) {
+        CStringW strMsg = GetStringByKey(L"s_itemremake_error_server_impossible");
         ShowSystemNotice(strMsg, 1, 1);
         SetState(1);
         return;
@@ -1103,7 +1103,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2c50(CInPacket* pPacket)
     apply.m_item = m_new;
     apply.vfunc_2(*pPacket);
     m_cur->SetRemakeCount(m_new->GetRemakeCount());
-    FUN_1412a1790(MS2Ptr<CItem>(m_cur), MS2Ptr<CItem>(m_new));
+    ShowRemakeResult(MS2Ptr<CItem>(m_cur), MS2Ptr<CItem>(m_new));
 }
 
 // @0x1412a30f0
@@ -1120,7 +1120,7 @@ void UIItemRemakeOptionDialog::FUN_1412a30f0(CInPacket* pPacket)
         ShowSystemNotice(str, 1, 1);
         return;
     }
-    FUN_1412a1790(MS2Ptr<CItem>(m_cur), MS2Ptr<CItem>(m_new));
+    ShowRemakeResult(MS2Ptr<CItem>(m_cur), MS2Ptr<CItem>(m_new));
 }
 
 // @0x1412a3330
@@ -1151,7 +1151,7 @@ void UIItemRemakeOptionDialog::FUN_1412a3460(CInPacket* pPacket)
 }
 
 // @0x1412a34f0
-void UIItemRemakeOptionDialog::FUN_1412a34f0(CInPacket* pPacket)
+void UIItemRemakeOptionDialog::OnRemakeError(CInPacket* pPacket)
 {
     unsigned bFlag = pPacket->ReadUInt8();
     int nCode = pPacket->ReadInt32();

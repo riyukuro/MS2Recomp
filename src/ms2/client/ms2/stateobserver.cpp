@@ -117,7 +117,7 @@ public:
 UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer* pPlayer);   // the actor's action key set (mouseinteract.cpp)
-void FUN_141274f50();
+void CloseAllDialogs();
 class Unk_SingletonObj;
 Unk_SingletonObj*FUN_140939a10();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -174,10 +174,10 @@ static unsigned __int64 FindNearestObservableId(std::set<unsigned __int64>& excl
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->GetFieldData();
     if (spMap.IsNull())
         return 0;
-    PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0cc0());
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     float fBest = FLT_MAX;
@@ -401,7 +401,7 @@ void StateObserver::FUN_140ac45e0()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    FUN_141274f50();
+    CloseAllDialogs();
     reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->SetEnabled(0);
     UIDamageEffect* pDamage = GetDamageEffect(0x4e3c);
     if (pDamage != 0)
@@ -539,7 +539,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
         ObserveOther();
         return;
     }
-    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->GetFieldData();
     if (spMap.IsNull())
         return;
     MS2Ptr<CProxyGameObject> spKiller = pWorld->FindProxyObjectByName(strKiller);

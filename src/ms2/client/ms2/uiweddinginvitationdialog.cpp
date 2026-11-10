@@ -75,7 +75,7 @@ class WeddingManager   // C3: member view for the former free stand-ins
 public:
     class WeddingHallTicket const& GetTicket();
 };
-bool FUN_140900f30(__int64 nTime);                              // the time is at night
+bool IsNightTime(__int64 nTime);                              // the time is at night
 CStringW FormatYearMonthDayHour(const CMsTime& kTime);                   // the date text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 __int64 GetWeddingInvitationMeso();                                        // the price of one invitation
@@ -167,7 +167,7 @@ void UIWeddingInvitationDialog::OnLoadComplete()
     obj.SetWStringMember("groom", CStringW(pTicket->m_strGroom));
     obj.SetWStringMember("bride", CStringW(pTicket->m_strBride));
     obj.SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
-        TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
+        TSingleton<WeddingTable>::GetInstance()->GetHallFieldId(pTicket->m_nPackageId, pTicket->m_nHallId, IsNightTime(pTicket->m_nTime))));
     obj.SetWStringMember("date", FormatYearMonthDayHour(CMsTime(pTicket->m_nTime)));
     m_30->Invoke("setData", obj);
 }
@@ -189,7 +189,7 @@ int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::G
             __int64 nTotal = nCount * GetWeddingInvitationMeso();
             unsigned __int64 nCountArg = m_guests.size();
             CStringW strMessage = FUN_14028dfa0(CStringW(L"s_wedding_invitation_send"), nCountArg, nTotal);
-            MS2Ptr<CMsgBoxData> box = ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingInvitationDialog::FUN_140fe60d0), CStringW(strMessage));
+            MS2Ptr<CMsgBoxData> box = ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingInvitationDialog::SendInvitation), CStringW(strMessage));
         }
         return 1;
     }
@@ -197,7 +197,7 @@ int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::G
 }
 
 // @0x140fe5f20
-void UIWeddingInvitationDialog::FUN_140fe5f20(const std::vector<GuestPtr>& guests)
+void UIWeddingInvitationDialog::SetGuests(const std::vector<GuestPtr>& guests)
 {
     if (m_30 == 0)
         return;
@@ -220,7 +220,7 @@ size_t UIWeddingInvitationDialog::GetGuestCount()
 }
 
 // @0x140fe60d0
-bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& box)
+bool UIWeddingInvitationDialog::SendInvitation(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;

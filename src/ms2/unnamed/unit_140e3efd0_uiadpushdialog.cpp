@@ -7,7 +7,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?GetKind@AdPushEntityBase@@QEAAHXZ 0x140e42540 ; unique
 // MS2-PIN: ?GetId@AdPushEntityBase@@QEAAHXZ 0x140e42560 ; unique
-// MS2-PIN: ?FUN_140e42580@AdPushEntityBase@@QEAA_NXZ 0x140e42580 ; unique
+// MS2-PIN: ?IsTick@AdPushEntityBase@@QEAA_NXZ 0x140e42580 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@1@0@Z 0x140e43bf0 ; unique
 // MS2-PIN: ??$?0VAdPushEntityLimitedBundle@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVAdPushEntityLimitedBundle@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140e43c80 ; unique
 // MS2-PIN: ??$?0VUIAdPushDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIAdPushDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140e43d50 ; unique
@@ -115,14 +115,14 @@ Unk_AltStringMgr* GetGFxManager();
 class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 template <class T> T* FindCliDialog(int id);   // gameeventcli.cpp
 int FUN_1422dc430(UIObject* p);
-Unk_140e45740* FUN_140e45740();
+Unk_140e45740* GetAlignWidgetManager();
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 void ClearFlags(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 __int64 GetServerTime();
 CStringA GetCharacterFolder();
 CStringA GetAccountFolder();
-CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
+CStringA JoinPath(const CStringA& strRoot, const CStringA& strFile);   // path join
 bool FUN_140e45240(const CStringW& s, const char* c);
 CStringA GetLimitedBundleName(MS2Ptr<CMeratMarketProduct> item);
 class ASWindow   // C3: member view for the former free stand-ins
@@ -173,7 +173,7 @@ class Unk_XmlNode   // C3: member view for the former free stand-ins
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-class TiXmlElement* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
+class TiXmlElement* GetFirstChildElement(class TiXmlDocument*);   // C3: was GetFirstChildElement
 // C3 #12: was a local TiXml view
 
 
@@ -255,7 +255,7 @@ void UIAdPushDialog::vfunc_72()
         POSITION cur = pos;
         m_entities.GetNext(pos);
         AdPushEntityBase* p = m_entities.GetValueAt(cur);
-        if (p && p->FUN_140e42580())
+        if (p && p->IsTick())
             p->vfunc_9();
     }
 }
@@ -289,7 +289,7 @@ int UIAdPushDialog::vfunc_4()
         if (pAccount)
         {
             CMsTime now(GetServerTime());
-            for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)FUN_140345b40((class TiXmlDocument*)(pAccount))); pNode;)
+            for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)GetFirstChildElement((class TiXmlDocument*)(pAccount))); pNode;)
             {
                 Unk_AdXmlNode* pCur = pNode;
                 pNode = ((class Unk_AdXmlNode*)((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement());
@@ -417,7 +417,7 @@ void UIAdPushDialog::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pHeight)
     if (m_limitedBundle == 0)
         return;
     {
-        MS2Ptr<ASDisplayObject> root = FUN_1422dba50();
+        MS2Ptr<ASDisplayObject> root = GetDisplayObject();
         if (root.get())
             root->vfunc_2(5, 0, 0);
     }
@@ -488,7 +488,7 @@ bool UIAdPushDialog::Refresh(unsigned nFlags)
     m_nFlags |= nFlags;
     if ((m_nFlags & 2) == 0)
     {
-        Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pActor && pActor->FUN_14123bea0() == 1)
             m_nFlags |= 2;
     }
@@ -550,7 +550,7 @@ void UIAdPushDialog::OnNotifyGameEventChanged(NotifyObject* pNotify)
         int type = pEvent->m_type;
         if (type == 0)
         {
-            Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->GetLocalPlayer());
             if (pActor && ((class CUserEventManager*)(void*)(TSingleton<CUserEventManager>::GetInstance()))->HasDTReward(reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
                 ShowOrRetry();
         }
@@ -638,7 +638,7 @@ Unk_AdXmlNode* UIAdPushDialog::FindByName(Unk_AdXmlNode* pRoot, const CStringA& 
 {
     if (!pRoot)
         return 0;
-    for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)FUN_140345b40((class TiXmlDocument*)(pRoot))); pNode; pNode = ((class Unk_AdXmlNode*)((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement()))
+    for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)GetFirstChildElement((class TiXmlDocument*)(pRoot))); pNode; pNode = ((class Unk_AdXmlNode*)((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement()))
     {
         if (strName.CompareNoCase(((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->Value()) == 0)
             return pNode;
@@ -649,14 +649,14 @@ Unk_AdXmlNode* UIAdPushDialog::FindByName(Unk_AdXmlNode* pRoot, const CStringA& 
 // @0x140e41520
 CStringA UIAdPushDialog::GetStatePath()
 {
-    return FUN_140cc2a00(GetCharacterFolder(), GetTypeName() + ".xml");
+    return JoinPath(GetCharacterFolder(), GetTypeName() + ".xml");
 }
 
 // @0x140e41610
 CStringA UIAdPushDialog::GetAccountStatePath()
 {
     CStringA strFile = StringFormat("{0}{1}", GetTypeName(), "Account.xml");
-    return FUN_140cc2a00(GetAccountFolder(), strFile);
+    return JoinPath(GetAccountFolder(), strFile);
 }
 
 // @0x140e416f0
@@ -715,8 +715,8 @@ bool UIAdPushDialog::LoadEntity(MS2Ptr<AdPushEntityBase> entity)
 // @0x140e41c60
 void UIAdPushDialog::ShowOrRetry()
 {
-    if (FUN_140e45740()->HasWidgetForEntity(this, 0))
-        FUN_140e45740()->RequestLayout(0);
+    if (GetAlignWidgetManager()->HasWidgetForEntity(this, 0))
+        GetAlignWidgetManager()->RequestLayout(0);
     else
         FUN_1418ffec0((unsigned int*)(&m_nShowState), 1);
 }
@@ -746,7 +746,7 @@ void UIAdPushDialog::FindDirtyPos(float* pX, float* pY)
         return;
     if (pObj->FUN_1422dc430() == 0)
         return;
-    MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(pObj->FUN_1422dba00().get()));
+    MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(pObj->GetScript().get()));
     if (clip == 0)
         return;
     if (m_limitedBundle == 0)
@@ -768,10 +768,10 @@ bool UIAdPushDialog::FindMinimizePos(float* pX, float* pY)
     UIObject* pObj = FindCliDialog<UIDTEventDialog>(0x4f01);
     if (pObj)
     {
-        bool bLoaded = (pObj->FUN_1422dc430() != 0 && (pObj->FUN_1422dba00().get() ? true : false)) ? 1 : 0;
+        bool bLoaded = (pObj->FUN_1422dc430() != 0 && (pObj->GetScript().get() ? true : false)) ? 1 : 0;
         if (bLoaded)
         {
-            MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(pObj->FUN_1422dba00())));
+            MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(pObj->GetScript())));
             if ((clip ? true : false) && clip->GetWidthCeil() > 10)
             {
                 double dX = 0.0;
@@ -786,7 +786,7 @@ bool UIAdPushDialog::FindMinimizePos(float* pX, float* pY)
         }
         else
         {
-            Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_AdActor* pActor = ((class Unk_AdActor*)((class WorldService*)(class Unk_AdPlayerMgr*)(reinterpret_cast<Unk_AdPlayerMgr*>(WorldService::GetInstance())))->GetLocalPlayer());
             if (pActor && ((class CUserEventManager*)(void*)(TSingleton<CUserEventManager>::GetInstance()))->HasDTReward(reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
                 ShowOrRetry();
         }
@@ -1140,7 +1140,7 @@ bool FUN_140e45240(const CStringW& s, const char* c)
 }
 
 // @0x140e45740
-Unk_140e45740* FUN_140e45740()
+Unk_140e45740* GetAlignWidgetManager()
 {
     return reinterpret_cast<Unk_140e45740*>(SingletonClass<UIAlignWidgetManager>::ms_pSingleton);   // 0x143ac5d88
 }

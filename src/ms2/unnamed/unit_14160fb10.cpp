@@ -109,7 +109,7 @@ extern int DAT_1439f8208;   extern int DAT_143ae2960;
 #define DAT_143a08cd8 (*(char*)&efd::Point3::UNIT_X)   // C3: was extern char DAT_143a08cd8
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset);
 void FUN_141610490();
-void FUN_1416105c0(CObjectShadow* self);
+void UpdateVisibility(CObjectShadow* self);
 void SetSortObject(void* obj, bool flag);
 void FUN_1416113a0(void* mat, const Unk_Colc& color);
 int FUN_140ae1c10();                                  // current quality level
@@ -126,9 +126,9 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
+    void CollectObjects(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     static class WorldService* GetInstance();
-    void FUN_141bd30f0(char);
+    void SetShadowEnabled(char);
 };
 class CEffectService
 {
@@ -202,7 +202,7 @@ void FUN_14160fe70(CObjectShadow* self, bool v)
 // @0x14160feb0   per-frame update: position/orient the shadow under the character, fade by distance, push LOD visibility to the owner's models
 void UpdateShadow(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
 {
-    FUN_1416105c0(self);
+    UpdateVisibility(self);
     if (self->m_bVisible != 0 && active != 0) {
         float one = 1.0f;
         float fade;
@@ -268,7 +268,7 @@ void UpdateShadow(CObjectShadow* self, int active, const void* pos, const void* 
 }
 
 // @0x141610410
-void FUN_141610410(int v)
+void SetFrameLimit(int v)
 {
     int before = FUN_140ae1c10();
     DAT_1439f8208 = v;
@@ -294,9 +294,9 @@ void FUN_141610490()
     level = FUN_140ae1c10();
     ((class MS2LightService*)(void*)(GetLightService()))->UpdateLightShadows();
     need = TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5);
-    WorldService::GetInstance()->FUN_141bd30f0(level >= need);
+    WorldService::GetInstance()->SetShadowEnabled(level >= need);
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(&list, 0);
+    WorldService::GetInstance()->CollectObjects(&list, 0);
     for (pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
         efd::SmartPointer<Unk_WsC_GameObj>& entry = list.GetAt(pos);
         Unk_ShadowIter* it = (Unk_ShadowIter*)entry.operator->();
@@ -308,7 +308,7 @@ void FUN_141610490()
 void SetShadowAlpha(float v) { DAT_1439f8204 = v; }
 
 // @0x1416105c0   decide shown/visible by LOD level and owner state
-void FUN_1416105c0(CObjectShadow* self)
+void UpdateVisibility(CObjectShadow* self)
 {
     bool shown = false;
     bool visible = false;

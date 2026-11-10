@@ -86,7 +86,7 @@ public:
     virtual unsigned int vfunc_141();                               // level
 #undef AL_V
 };
-class Unk_1403ed2d0 { public: Unk_ALPlayer* FUN_141bd0cc0(); };
+class Unk_1403ed2d0 { public: Unk_ALPlayer* GetLocalPlayer(); };
 
 // The status-listener registry (singleton 0x140aa6d40).
 class UIStatusEventDispatcher;
@@ -110,8 +110,8 @@ extern std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;   // 0x
 // The claimed level rewards.
 extern std::set<unsigned int> DAT_143ab3308;
 
-bool FUN_1401958d0(CAdventureLevelReward* p);    // empty record
-bool FUN_140195ae0(CAdventureLevelMission* p);   // empty record
+bool IsEmptyReward(CAdventureLevelReward* p);    // empty record
+bool IsEmptyMission(CAdventureLevelMission* p);   // empty record
 void FUN_140202290(unsigned char* payload, COutputStream& stream);
 void FUN_140202380(unsigned char* payload, COutputStream& stream);
 class CAdventureLevelTableHelper;
@@ -159,7 +159,7 @@ void FUN_140710590(COutPacket& packet);
 
 
 // ---- Value setters of the Invoke argument lists and the helpers of this unit ----
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                 // Value = f
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // Value = the object's value
 unsigned short FUN_140ba4b30(Unk_ALConstU16* p);
@@ -208,7 +208,7 @@ void UIAdventureLevelDialog::vfunc_67()
 void UIAdventureLevelDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     FillLevelGuide();
@@ -245,7 +245,7 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 void UIAdventureLevelDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     unsigned int nId = pArgs->PopUInt();
@@ -311,7 +311,7 @@ int UIAdventureLevelDialog::GetClaimableMissionCount()
             continue;
         const unsigned int* pId = &it->first;
         const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(*pId);
-        if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
+        if (IsEmptyMission(const_cast<CAdventureLevelMission*>(pMission)))
             continue;
         if ((unsigned int)it->second.m_nId < (unsigned int)pMission->m_nCount)
             continue;
@@ -342,7 +342,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     float fExp = (float)DAT_143ab2958;
@@ -355,7 +355,7 @@ void UIAdventureLevelDialog::FillAbilityList()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_abilityList");
@@ -398,7 +398,7 @@ void UIAdventureLevelDialog::FillMissionList()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_missionList");
@@ -409,7 +409,7 @@ void UIAdventureLevelDialog::FillMissionList()
     for (std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.begin(); it != DAT_143ab3318.end(); ++it) {
         const unsigned int* pId = &it->first;
         const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(*pId);
-        if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
+        if (IsEmptyMission(const_cast<CAdventureLevelMission*>(pMission)))
             continue;
         ASObj obj(2);
         obj.SetMemberUInt("id", it->first);
@@ -427,7 +427,7 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
 {
     if (m_30.IsNull())
         return 0;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return 0;
     CString strState("active");
@@ -447,11 +447,11 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
 int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
 {
     const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
+    if (IsEmptyReward(const_cast<CAdventureLevelReward*>(pReward)))
         return 0;
     if (pReward->m_nType != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
@@ -471,11 +471,11 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
 int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 {
     const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
+    if (IsEmptyReward(const_cast<CAdventureLevelReward*>(pReward)))
         return 0;
     if (pReward->m_nType != 2)
         return 0;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
@@ -500,11 +500,11 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
 {
     const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(nMissionId);
-    if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
+    if (IsEmptyMission(const_cast<CAdventureLevelMission*>(pMission)))
         return 0;
     if (pMission->m_nOne != 1)
         return 0;
-    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
@@ -525,7 +525,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
 void UIAdventureLevelDialog::ClaimLevelReward(unsigned int nLevel)
 {
     const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
+    if (IsEmptyReward(const_cast<CAdventureLevelReward*>(pReward)))
         return;
     if (pReward->m_nType == 2)
         return;
@@ -541,7 +541,7 @@ void UIAdventureLevelDialog::ClaimLevelReward(unsigned int nLevel)
 void UIAdventureLevelDialog::ClaimMissionReward(unsigned int nMissionId)
 {
     const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(nMissionId);
-    if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
+    if (IsEmptyMission(const_cast<CAdventureLevelMission*>(pMission)))
         return;
     std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.find(nMissionId);
     if (it == DAT_143ab3318.end())
@@ -583,7 +583,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcd10(&args[0], a1);
+    SetUInt(&args[0], a1);
     FUN_1422bcd70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

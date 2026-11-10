@@ -87,7 +87,7 @@ class CMsgBoxData : public CPtred
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> fn);
     void SetItemUid(__int64 n);
-    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
+    void SetItemEntry(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
     void SetButtonLabelIds(int nA, int nB, int nC);
 };
 
@@ -144,7 +144,7 @@ void UIItemPetStudyDialog::OnLoadComplete()
     m_spBox = g_143ab2a90.FindItemByUid(m_nOwner);
     if (m_spBox == 0)
         return;
-    if (m_spBox->FUN_140527840() == 0)
+    if (m_spBox->GetData() == 0)
         return;
     FUN_1412761e0(m_30, 1);
     ASObj obj(2);
@@ -163,7 +163,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onClickConfirm") == 0)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return 0;
         if (reinterpret_cast<CItemTransfer*>(m_spPet->GetTransfer())->HasBindingRule() != 0)
@@ -175,7 +175,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 if (box.get() != 0)
                 {
                     box->SetItemUid(m_spPet->GetItemUid());
-                    box->FUN_141a01ee0(m_spPet, m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
+                    box->SetItemEntry(m_spPet, m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return 1;
@@ -258,7 +258,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->GetData())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -312,7 +312,7 @@ void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
         if (FUN_140e55a40(spPet, 1) == 0)
             return;
         MS2Ptr<CItem> spBox = g_143ab2a90.FindItemByUid(m_nOwner);
-        if (spBox == 0 || spBox->FUN_140527840() == 0)
+        if (spBox == 0 || spBox->GetData() == 0)
             return;
         {
             ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spPet);

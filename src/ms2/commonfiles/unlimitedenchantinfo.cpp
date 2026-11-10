@@ -73,10 +73,10 @@ void UnlimitedEnchantInfo::SetLevel(int nLevel, bool bChanged)
 }
 
 // @0x1408bbd30
-void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
+void UnlimitedEnchantInfo::WriteToStream(COutputStream& out)
 {
     out.WriteInt32(m_nLevel);
-    // (the exe walks the maps through const_iterators: FUN_1408bbd30 is a const method in the original)
+    // (the exe walks the maps through const_iterators: WriteToStream is a const method in the original)
     unsigned nOptions = static_cast<const OptionMap&>(m_options).size();
     out.WriteInt32(nOptions);
     OptionMap::const_iterator it = static_cast<const OptionMap&>(m_options).begin();
@@ -98,7 +98,7 @@ void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
 }
 
 // @0x1408bbef0
-void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
+void UnlimitedEnchantInfo::ReadFromStream(CInputStream& in)
 {
     m_nLevel = in.ReadInt32();
     m_options.clear();

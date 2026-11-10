@@ -57,7 +57,7 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);                         // the full path of a table file
 CString ToCString(const char* psz, int n);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);   // string attribute with default
 
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
@@ -139,7 +139,7 @@ int CAddressTable::LoadTable()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("address")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("address")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_AddressPtr data(new CAddressData);
         data->m_nMapCode = atoi(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("mapcode"));

@@ -53,8 +53,8 @@ public:
     int LoadCharacterAbility();                                    // CharacterAbility.xml
     void GetCategories(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut);
     void GetAbilities(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut);
-    MS2Ptr<CCharacterAbilityCategory> FUN_1401e0560(int nId);
-    MS2Ptr<CCharacterAbility> FUN_1401e0670(int nId);
+    MS2Ptr<CCharacterAbilityCategory> GetCategory(int nId);
+    MS2Ptr<CCharacterAbility> GetAbility(int nId);
     static void CheckInit();                                // 0x1401e1690
     static void SetInit(bool b);                            // 0x1401e3b00
     static bool s_bInit;                                    // 0x143aac650

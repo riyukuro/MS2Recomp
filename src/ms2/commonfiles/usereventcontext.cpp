@@ -95,8 +95,8 @@ MS2_REPLACE_METHOD(0x1408D5A10, Unk_EventRewards, FUN_1408d5a10, 41, 0xFFC549D7)
 Unk_EventPtr<Unk_EventPayload> Unk_EventRewards::FUN_1408d5a40() const { return r38; }
 MS2_REPLACE_METHOD(0x1408D5A40, Unk_EventRewards, FUN_1408d5a40, 65, 0x6E529B43);
 // @0x1408d5ad0
-void Unk_EventCounters::FUN_1408d5ad0(__int64 n) { value=n; }
-MS2_REPLACE_METHOD(0x1408D5AD0, Unk_EventCounters, FUN_1408d5ad0, 25, 0x8BB2CE0B);
+void Unk_EventCounters::SetValue(__int64 n) { value=n; }
+MS2_REPLACE_METHOD(0x1408D5AD0, Unk_EventCounters, SetValue, 25, 0x8BB2CE0B);
 // @0x1408d5af0
 void Unk_EventRewards::FUN_1408d5af0(__int64 value) { n30=value; }
 MS2_REPLACE_METHOD(0x1408D5AF0, Unk_EventRewards, FUN_1408d5af0, 25, 0x3BC76AD3);

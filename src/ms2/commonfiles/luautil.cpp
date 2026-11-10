@@ -35,7 +35,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString ToCString(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 int ConvertPriceType(int nPriceType);                                      // the blueprint cost type -> the runtime enum
 
 // The ingredient's tag setter (an inline member of CIngredientInfo in the exe, first instantiated by itemgemstonedata.cpp).
@@ -216,7 +216,7 @@ void CLua::CLuaContext::Initialize()
         lua_setfield(m_pState, LUA_GLOBALSINDEX, "printWarn");
         lua_pushcclosure(m_pState, LuaPrintError, 0);
         lua_setfield(m_pState, LUA_GLOBALSINDEX, "printError");
-        ((class CLua*)FUN_1401c0db0())->LoadScripts(m_pState);
+        ((class CLua*)GetLuaClient())->LoadScripts(m_pState);
         SetLocale();
     }
     else
@@ -238,7 +238,7 @@ void CLua::CLuaContext::End() { lua_settop(m_pState, m_nTop); }
 // @0x140673040
 void CLua::CLuaContext::Error()
 {
-    ((class CLua*)FUN_1401c0db0())->m_bError = true;
+    ((class CLua*)GetLuaClient())->m_bError = true;
     CString strMessage;
     strMessage.Format("[Lua_Err] %s", (const char*)FUN_140188f50(lua_tolstring(m_pState, -1, 0), 0));
     MessageBoxA(0, strMessage, "Lua Error", 0);
@@ -352,7 +352,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         CString strName = ToCString(strPath, 0);
         void* pBuffer;
         unsigned __int64 nSize;
-        if (GetFileSystem()->FUN_1403972f0(strPath, &pBuffer, &nSize, 0) != 0)
+        if (GetFileSystem()->LoadFileData(strPath, &pBuffer, &nSize, 0) != 0)
         {
             if (luaL_loadbuffer(pLuaState, (const char*)pBuffer, (int)nSize, strName) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1)
             {
@@ -1676,7 +1676,7 @@ void LuaPrint(lua_State* pState, int nLevel)
     CStringW strText(L"Lua:");
     strText += strMessage;
     Unk_AdditionalLog(GetLogString(), nLevel, 0xd, strText);
-    if (((class CLua*)FUN_1401c0db0())->IsClient())
+    if (((class CLua*)GetLuaClient())->IsClient())
     {
     }
     else

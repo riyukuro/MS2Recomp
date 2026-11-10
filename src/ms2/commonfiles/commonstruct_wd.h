@@ -44,7 +44,7 @@ unsigned char FUN_1402874c0(void* tree, i64 a, i64 b);
 Unk_TIter* FUN_14027f720(Unk_TIter*); Unk_TIter* FUN_14027f600(Unk_TIter*); void FUN_14027f740(Unk_TIter*);
 __int64* FUN_140274b10(__int64* out, __int64 it, __int64 flag);
 __int64* FUN_140274d10(__int64* out, __int64 it, __int64 flag);
-__int64 FUN_14027be90(__int64 tree, __int64 out, __int64 where, __int64 piecewise, __int64 keytuple, __int64 valtuple);
+__int64 EmplaceHint(__int64 tree, __int64 out, __int64 where, __int64 piecewise, __int64 keytuple, __int64 valtuple);
 void* FUN_140162f80(void*);
 #ifdef MS2_HOOK_DLL
 char* FUN_140177620(char*, char*);
@@ -79,11 +79,11 @@ i64 FUN_1402890f0(Unk_BackoutD*); i64 FUN_140289110(Unk_BackoutE*);
 i64 FUN_14027b320(i64, i64, i64, i64, char, char);
 
 // ---- defined in this slice (declared for forward references) ----
-i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* where, i64 val, Unk_TNode* newnode);
-Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode);
+i64 InsertAt(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* where, i64 val, Unk_TNode* newnode);
+Unk_TIter* InsertHint(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode);
 Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 val, Unk_TNode* newnode);
 i64 FUN_14027a270(i64 p);
-Unk_TNode* FUN_14027a280(void* tree, i64 key);
+Unk_TNode* FindLowerBound(void* tree, i64 key);
 i64 FUN_14027a320(i64 first, i64 last, i64 dest, Unk_StlTag);
 void FUN_14027a390(i64 first, i64 last, i64 dest);
 i64 FUN_14027a3e0(i64 first, i64 last, i64 dest, Unk_StlTag);
@@ -94,10 +94,10 @@ char FUN_14027a5e0(i64*, i64*); char FUN_14027a610(i64*, i64*); char FUN_14027a6
 void FUN_14027a6a0(i64*, i64); void FUN_14027a6c0(i64*, i64); void FUN_14027a6e0(i64*, i64); void FUN_14027a700(i64*, i64); void FUN_14027a720(i64*, i64);
 i64 FUN_14027a8c0(i64 vec, i64 first, i64 last, i64 dest); void FUN_14027a900(void* vec, i64 first, i64 last, i64 dest);
 void FUN_14027a940(void* vec, i64 first, i64 last, i64 dest);
-void FUN_14027a740(i64 it, i64* p);
-Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key);
+void SeekTo(i64 it, i64* p);
+Unk_TIterBool* TryEmplace(void* tree, Unk_TIterBool* out, i64 key);
 i64 FUN_14027a980(i64); i64 FUN_14027a990(i64); i64 FUN_14027a9a0(i64); i64 FUN_14027a9b0(i64); i64 FUN_14027a9c0(i64);
-i64 FUN_14027a9d0(i64, i64, i64, i64); i64 FUN_14027aaa0(i64, i64, i64, i64); i64 FUN_14027ab70(i64, i64, i64, i64);
+i64 UninitializedCopy(i64, i64, i64, i64); i64 FUN_14027aaa0(i64, i64, i64, i64); i64 FUN_14027ab70(i64, i64, i64, i64);
 i64 FUN_14027ac40(i64, i64, i64, i64); i64 FUN_14027ad10(i64, i64, i64, i64); i64 FUN_14027b0b0(i64, i64, i64, i64);
 i64 FUN_14027ade0(i64, i64, i64, i64, char, char); i64 FUN_14027ae70(i64, i64, i64, i64, char, char);
 i64 FUN_14027af00(i64, i64, i64, i64, char, char); i64 FUN_14027af90(i64, i64, i64, i64, char, char);

@@ -27,7 +27,7 @@ extern "C" double (__cdecl* __imp_ceil)(double);              // the exe imports
 
 // The typed Value setters of the Invoke argument lists (COMDATs of ASArray's obj).
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 
 // @0x1422bf7c0
 ASDisplayObject::ASDisplayObject(const Scaleform::GFx::Value& v, int nMovieId)
@@ -631,6 +631,6 @@ inline Scaleform::GFx::Value AScript::FUN_1422c1870(const char* szMethod, float 
     args.resize(3);
     FUN_1422bcd70(&args[0], a1);
     FUN_1422bcd70(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }

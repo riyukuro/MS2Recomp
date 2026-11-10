@@ -111,7 +111,7 @@ MS2_QUEST_SOCKETPTR_IMPL(CQuestData::GroupPickData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationTarget)
 // The exe's Create ignores its argument and allocates through New(NULL) (the gamesocket CSocketThread form).
-template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::NavigationData>::Create(void*) { return static_cast<CQuestData::NavigationData*>(FUN_1401ba820(New(NULL))); }
+template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::NavigationData>::Create(void*) { return static_cast<CQuestData::NavigationData*>(InitRefCount(New(NULL))); }
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/commonfiles/filesystem.h"
@@ -197,7 +197,7 @@ public:
 };
 int FUN_140764480(MS2Ptr<CQuest> pQuest, int nState);
 
-bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
+bool IsElementFeatureEnabled(struct Unk_XmlElement*);   // C3: was IsElementFeatureEnabled
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 bool FUN_14074b090(CQuestData* pData);
@@ -210,7 +210,7 @@ class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
     float GetMesoRate(unsigned int, int);
-    float FUN_1404c17a0(unsigned int, int);
+    float GetExpRate(unsigned int, int);
 };
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0
@@ -302,7 +302,7 @@ int CQuestCommon::FUN_140744b90(int field)
     if (nWant != field)
     {
         unsigned nHave = 0;
-        if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(field, &nHave) == 0)
+        if (TSingleton<CFieldMetaTable>::GetInstance()->GetParentField(field, &nHave) == 0)
             return 0;
         if (nWant != (int)nHave)
             return 0;
@@ -313,7 +313,7 @@ int CQuestCommon::FUN_140744b90(int field)
 // @0x140744cd0
 int CQuestCommon::FUN_140744cd0(int field)
 {
-    MS2Ptr<CFieldData> data = CFieldData::FUN_140374140(field);
+    MS2Ptr<CFieldData> data = CFieldData::FindField(field);
     if (!data)
         return 0;
     return 1;
@@ -693,7 +693,7 @@ int CQuestManagerCommon::FUN_140746e60(int questId)
 MS2_REPLACE_METHOD(0x140746E60, CQuestManagerCommon, FUN_140746e60, 358, 0xB747E45D);
 
 // @0x140746fe0
-void FUN_140746fe0(CQuestManagerCommon* pMgr, int nSelector)
+void SetSelector(CQuestManagerCommon* pMgr, int nSelector)
 {
     pMgr->m_selector = nSelector;
 }
@@ -894,7 +894,7 @@ bool CQuestData::QuestRewardItem::operator!=(const QuestRewardItem& o) const
 // @0x140747fc0
 bool CQuestData::QuestRewardItem::LoadXml(TiXmlElement* pElem)
 {
-    if (!FUN_14028f650((struct Unk_XmlElement*)(pElem)))
+    if (!IsElementFeatureEnabled((struct Unk_XmlElement*)(pElem)))
         return false;
     XmlGetAttr((class TiXmlElement*)(pElem), "code", (unsigned&)m_itemId);
     Unk_ReadRank((class Unk_XmlNode*)(pElem), "rank", &m_count);
@@ -966,7 +966,7 @@ bool Unk_DcLevelRange::operator!=(const Unk_DcLevelRange& o) const
         return true;
     return false;
 }
-void Unk_DcLevelRange::FUN_14075bc80(unsigned short nLow, unsigned short nHigh)
+void Unk_DcLevelRange::SetRange(unsigned short nLow, unsigned short nHigh)
 {
     m_nLow = nLow;
     m_nHigh = nHigh;
@@ -1255,8 +1255,8 @@ int XmlQuery(class TiXmlElement*, char const*, CString&);    // C3: was FUN_1408
 int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 int FUN_14028e160(CString& str);
 int FUN_140718170(const CString& str);
-unsigned int FUN_1407181d0(const CString& str);
-int FUN_1407514d0(const CString& str);
+unsigned int ParseUInt(const CString& str);
+int ParseProperty(const CString& str);
 int FUN_140751e50(TiXmlElement* pElem, const char* pszName, int* pOut);
 int FUN_140751ee0(TiXmlElement* pElem, const char* pszName, int* pOut);
 int FUN_140751f70(TiXmlElement* pElem, const char* pszName, int* pOut);
@@ -1300,7 +1300,7 @@ bool CQuestData::Load(TiXmlElement* pElem)
         XmlTokenList(pBasic, "property", arrProperty);
         for (size_t i = 0; i < arrProperty.GetCount(); i++)
         {
-            int nProperty = FUN_1407514d0(arrProperty[i]);
+            int nProperty = ParseProperty(arrProperty[i]);
             if (nProperty < 4)
                 m_54.set(nProperty, true);
         }
@@ -1355,7 +1355,7 @@ bool CQuestData::Load(TiXmlElement* pElem)
         Unk_SplitA(const_cast<CStringA&>(strUnreqAchievement), (ATL::CAtlArray<CStringA>*)&(arrUnreqAchievement), ",");
         if (arrUnreqAchievement.GetCount() == 2)
         {
-            m_require.m_unreqAchievement = FUN_1407181d0(arrUnreqAchievement[0]);
+            m_require.m_unreqAchievement = ParseUInt(arrUnreqAchievement[0]);
             m_require.m_unreqAchievementGrade = FUN_140718170(arrUnreqAchievement[1]);
         }
         XmlSplit(strQuest, m_require.m_quest, ",");
@@ -1455,7 +1455,7 @@ bool CQuestData::Load(TiXmlElement* pElem)
         unsigned short nMaxLevel = 0;
         XmlGetAttr((class TiXmlElement*)(pGuide), "guideMinLevel", reinterpret_cast<unsigned short&>(nMinLevel));
         XmlGetAttr((class TiXmlElement*)(pGuide), "guideMaxLevel", reinterpret_cast<unsigned short&>(nMaxLevel));
-        m_338.m_levelRange.FUN_14075bc80(nMinLevel, nMaxLevel);
+        m_338.m_levelRange.SetRange(nMinLevel, nMaxLevel);
     }
     TiXmlElement* pEventMission = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("eventMission"));
     if (pEventMission)
@@ -1572,7 +1572,7 @@ int FUN_14074b0e0(CQuestData* pData, int nValue, int nKind)
 }
 
 // @0x14074b1c0
-int FUN_14074b1c0(CQuestData* pData, int nBit)
+int HasProperty(CQuestData* pData, int nBit)
 {
     return pData->m_54.test(nBit) != false;
 }
@@ -1809,14 +1809,14 @@ void QuestDataTable::LoadQuestData()
     }
     for (TiXmlElement* pNode : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")))
     {
-        if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementFeatureEnabled((struct Unk_XmlElement*)(pNode)))
             continue;
         MS2Ptr<CQuestData> spData(new CQuestData);
         if (!spData->Load(pNode))
             continue;
         m_quests.insert(std::make_pair(FUN_14074b030(spData.operator->()), spData));
     }
-    FUN_14074f160();
+    BuildIndexes();
     SetInit(true);
     FUN_1407503f0();
     BuildChapterFieldCodes();
@@ -2360,15 +2360,15 @@ void QuestDataTable::FUN_14074ee30()
         switch (FUN_14074b050(spData.operator->()))
         {
         case 0:
-            fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 5);
+            fExp = TSingleton<CGloabalFactor>::GetInstance()->GetExpRate(spData->m_level, 5);
             fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 0);
             break;
         case 1:
-            fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 6);
+            fExp = TSingleton<CGloabalFactor>::GetInstance()->GetExpRate(spData->m_level, 6);
             fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 1);
             break;
         case 3:
-            fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 7);
+            fExp = TSingleton<CGloabalFactor>::GetInstance()->GetExpRate(spData->m_level, 7);
             fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 2);
             break;
         }
@@ -2393,7 +2393,7 @@ public:
 };
 
 // @0x14074f160
-void QuestDataTable::FUN_14074f160()
+void QuestDataTable::BuildIndexes()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
     // Looks up (or creates) the quest id list under the key and appends the quest id to it.
@@ -2504,7 +2504,7 @@ void QuestDataTable::FUN_14074f160()
     SortQuestChains();
 #undef QUEST_ADD_ID
 }
-MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530);
+MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, BuildIndexes, 3448, 0xCBA25530);
 
 // @0x14074fee0
 void QuestDataTable::BuildChapterFieldCodes()
@@ -2520,9 +2520,9 @@ void QuestDataTable::BuildChapterFieldCodes()
             if (spData.IsNull())
                 continue;
             unsigned nFieldId;
-            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(spData->m_2e8, &nFieldId) != 0)
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FindNpcField(spData->m_2e8, &nFieldId) != 0)
             {
-                MS2Ptr<CFieldData> spField = CFieldData::FUN_140374140(nFieldId);
+                MS2Ptr<CFieldData> spField = CFieldData::FindField(nFieldId);
                 if (spField.IsNull())
                     continue;
                 m_98.SetAt(nChapter, spField->GetRegionCode());
@@ -2535,7 +2535,7 @@ MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, BuildChapterFieldCodes, 557, 0xD
 
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int FUN_140752030(TiXmlElement* pElem, const char* pszName, int* pOut);
 // Loads the quest table.
 // @0x140750120
@@ -2554,7 +2554,7 @@ void QuestDataTable::LoadQuestGroupTable()
     Unk_CriticalSectionLock guard(m_lock, 1);
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_SocketPtr<CQuestData::GroupPickData> spPick(new CQuestData::GroupPickData);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spPick->m_18));
@@ -2781,7 +2781,7 @@ int FUN_1407513c0(const CString& str)
 }
 
 // @0x140751440
-int FUN_140751440(const CString& str)
+int ParseScope(const CString& str)
 {
     if (!(str.GetLength() != 0))
     {
@@ -2795,10 +2795,10 @@ int FUN_140751440(const CString& str)
         return 2;
     return 0;
 }
-MS2_REPLACE(0x140751440, FUN_140751440, 119, 0xE563F2B7);
+MS2_REPLACE(0x140751440, ParseScope, 119, 0xE563F2B7);
 
 // @0x1407514d0
-int FUN_1407514d0(const CString& str)
+int ParseProperty(const CString& str)
 {
     if (str.CompareNoCase("special") == 0)
         return 0;
@@ -2937,7 +2937,7 @@ int FUN_140752030(TiXmlElement* pElem, const char* pszName, int* pOut)
     int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nResult != 0)
         return nResult;
-    *pOut = FUN_140751440(str);
+    *pOut = ParseScope(str);
     return nResult;
 }
 

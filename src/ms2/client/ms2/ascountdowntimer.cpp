@@ -10,7 +10,7 @@
 
 // ---- out-of-unit callees ----
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);  // play a sound
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);  // set an int member of a clip
 
 // The count-down clip (0x90 bytes: ASMovieClip plus the counter state).
@@ -92,11 +92,11 @@ void ASCountDownTimer::PlaySound()
     switch (m_nType)
     {
     case 1:
-        FUN_141276180(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
-        FUN_141276180("Count_NumEffect", "");
+        PlaySystemSound(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
+        PlaySystemSound("Count_NumEffect", "");
         break;
     case 2:
-        FUN_141276180("Count_NumEffect", "");
+        PlaySystemSound("Count_NumEffect", "");
         break;
     }
 }

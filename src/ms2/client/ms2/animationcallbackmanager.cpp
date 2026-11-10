@@ -84,7 +84,7 @@ extern int DAT_143ae2b30;                   // 1: actor-manager callbacks are ro
 
 // ---- exe functions outside this unit ----
 NiActorManager* FUN_1413f9b70(const egf::EntityID& kId);                            // AnimationService::GetActorManager
-bool FUN_14028d470(float fValue, float fCompare);                                   // float equality
+bool IsNearlyEqual(float fValue, float fCompare);                                   // float equality
 CLogString* GetLogString();
 
 template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
@@ -281,7 +281,7 @@ bool Unk_AnimTable::AddTextToItem(CString strName, CString strText)
         m_items.SetAt((const char*)strName, spItem);
     }
     spItem->m_texts.Add(strText);
-    if (FUN_14028d470(spItem->m_fHeight, 0.0f))
+    if (IsNearlyEqual(spItem->m_fHeight, 0.0f))
     {
         if (strText.Find("HeightFromGround_", 0) == 0)
         {
@@ -298,7 +298,7 @@ bool Unk_AnimTable::AddItemText(ItemPtr spItem, CString strText)
     if (spItem.IsNull())
         return false;
     spItem->m_texts.Add(strText);
-    if (FUN_14028d470(spItem->m_fHeight, 0.0f))
+    if (IsNearlyEqual(spItem->m_fHeight, 0.0f))
     {
         if (strText.Find("HeightFromGround_", 0) == 0)
         {

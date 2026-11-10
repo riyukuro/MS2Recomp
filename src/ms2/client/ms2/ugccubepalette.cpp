@@ -99,7 +99,7 @@ class PCBase;
 class Unk_CubeWorld : public WorldService
 {
 public:
-    PCBase* FUN_141bd0cc0();
+    PCBase* GetLocalPlayer();
 };
 class PC   // C3: member view
 {
@@ -167,7 +167,7 @@ bool UGCCube::IsLocked()                                                        
 {
     if (itemData == 0)
         return true;
-    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return true;
     if (0 < itemData->GetVipLevel())
@@ -317,7 +317,7 @@ bool UGCCube::FUN_140deff30()                                                   
 {
     if (itemData == 0)
         return false;
-    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return false;
     if (!(reinterpret_cast<PC*>(pPC)->FUN_141663080() > 0))
@@ -775,13 +775,13 @@ void UGCCubePalette::FUN_140df2250()                                            
 
 void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df23f0
 {
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0)
         return;
     Unk_CubeUsage usage;
     {
         ATL::CAtlArray<MS2Ptr<CItem> > items;
-        DAT_143ab2e20.FUN_1408fbc70(items);
+        DAT_143ab2e20.GetAllItems(items);
         for (size_t i = 0; i < items.GetCount(); ++i)
         {
             MS2Ptr<CItem> spItem = items[i];
@@ -841,7 +841,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
 
 void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df2bc0
 {
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField == 0)
         return;
     Unk_FieldIdListPtr spList;
@@ -877,7 +877,7 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
 
 bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const MS2Ptr<CItemData>& spData, Unk_CubePaletteFilter* pFilter)   // @0x140df3100
 {
-    if (spField->FUN_140375100())
+    if (spField->IsOutdoor())
     {
         if (!spData->install.FUN_140548d10())
             return true;

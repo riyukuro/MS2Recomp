@@ -54,7 +54,7 @@ public:
     int FUN_140635870();
     int CanRegisterMeratMarket();
     int CanTransferSocket();
-    bool FUN_140635940();
+    bool IsBound();
     bool FUN_140635980(const __int64*);
     bool IsBindingCompatible(const __int64*);
     void GetBindingInfo(__int64*, CStringW*);
@@ -98,7 +98,7 @@ public:
   CItem();
   virtual ~CItem();
   bool FUN_140523c40(int, int, int);
-  Unk_UserProxyItemData *FUN_140527870();
+  Unk_UserProxyItemData *GetProxy();
 
   // Packet serialization declarations appended by a4 (unit_1401f9eb0).
   void WriteToStream(COutputStream&);
@@ -114,7 +114,7 @@ public:
   int GetItemId();
   Unk_ItemEquipData* FUN_1405277b0();   // 0x1405277b0
   int GetIconCode();                  // 0x140527760
-  Unk_ItemEquipData* FUN_140527840();   // 0x140527840 the item's data record (equip flags; uiequipiconcontainer.cpp)
+  Unk_ItemEquipData* GetData();   // 0x140527840 the item's data record (equip flags; uiequipiconcontainer.cpp)
   // Inventory ordering accessors, a1 (inventory.cpp).
   int FUN_140525c60();
   __int64 FUN_140528910();
@@ -177,8 +177,8 @@ public:
   // Scalar accessors (item.cpp, w87): plain field getters/setters; names are by offset.
   int FUN_14052a020();
   void FUN_14052a040(int);
-  int FUN_14052a150();
-  void FUN_14052a130(int);
+  int GetVariant();
+  void SetVariant(int);
   void SetNew(int);
   unsigned char IsEvent();
   void SetEvent(unsigned char);
@@ -190,7 +190,7 @@ public:
   __int64 FUN_140526a90();
   void FUN_140526ab0(__int64);
   __int64 GetCharacterId();
-  void FUN_140526af0(__int64);
+  void SetCharacterId(__int64);
   int GetObjectId();
   int FUN_140526b90();
   void FUN_140526bf0(int);
@@ -203,8 +203,8 @@ public:
   void SetRemakeCount(int);
   int FUN_140527340();
   void FUN_140527320(int);
-  int FUN_140528ca0();
-  void FUN_140528c80(int);
+  int GetLockState();
+  void SetLockState(int);
   __int64 GetUnlockTime();
   void SetUnlockTime(__int64);
   int FUN_140529070();
@@ -221,12 +221,12 @@ public:
   int GetExtractionCount();
   void SetExtractionCount(int);
   int FUN_140529640();
-  void FUN_140529660(int);
+  void SetGachaId(int);
   unsigned char FUN_1405269f0();
-  void FUN_1405269d0(unsigned char);
+  void SetExcluded(unsigned char);
   int IsEquipped();
   // item.cpp (w101): name is the address; return types read from the callers' disassembly.
-  int FUN_140525980();
+  int IsCurrency();
   int FUN_140525a80();
   int FUN_140526190();
   int FUN_140526390();
@@ -236,7 +236,7 @@ public:
   CString GetCategory();
   CStringW GetCoupleName();
   int FUN_140529560();
-  CStringW FUN_140529de0();
+  CStringW GetGemName();
   CString GetEnchantNif();
   CString FUN_140529f60(int, int, int, unsigned);
   int FUN_14052a060();
@@ -245,13 +245,13 @@ public:
   unsigned char BindToCharacter(const __int64& nCharId, const CStringW& strName);   // bind to a character
   CStringW GetDisplayName();
   bool FUN_140528e80(int, __int64);
-  CStringW FUN_1405296c0();
-  CStringW FUN_140529890();
+  CStringW GetMusicTitle();
+  CStringW GetMusicWriter();
   CStringW FUN_140529aa0();
-  int FUN_14052afe0();
-  bool FUN_14052b760(MS2Ptr<CItem>);
-  int FUN_1405299a0();
-  CString FUN_140529cb0();
+  int GetItemKind();
+  bool CopyTransferFrom(MS2Ptr<CItem>);
+  int GetMusicDuration();
+  CString GetMusicIconPath();
   bool FUN_14052b670(MS2Ptr<CItem>);
   void FUN_14052b870(Unk_ItemSlot188);
   Unk_ItemSlot188 FUN_14052b8c0();
@@ -262,13 +262,13 @@ public:
   int IsStackable();
   int IsMeso();
   int IsMerat();
-  int FUN_140525950();
+  int IsToken();
   int FUN_1405259e0();
-  int FUN_140525a30();
+  int IsGem();
   int IsStoryBook();
   bool FUN_140527360();                  // w98
   int GetTransferCount();               // w98
-  void FUN_1405290b0();                  // w98
+  void UpdateItemLevel();                  // w98
   bool SetEnchantLevel(int, bool);
   bool SetPlusLevel(int, bool);
   int FUN_14052a170();                   // w98
@@ -280,7 +280,7 @@ public:
   int HasUgcId();
   int FUN_140525fc0();
   int FUN_140526160();
-  int FUN_140526470(unsigned);
+  int CanRemakeOption(unsigned);
   void FUN_140526640(unsigned);
   bool FUN_140526850();
   unsigned AddCount(int);
@@ -306,23 +306,23 @@ public:
   void FUN_140528b00(const CStringW&);
   CStringW* FUN_140528b40();
   void WriteItemBody(__int64);
-  CItemCustomMusicScore* FUN_140527960();
+  CItemCustomMusicScore* GetMusicScore();
   CItemCustomMusicScore* FUN_140527990();
   CItemSocket* GetSocket();
   CItemGem* GetGem();
   void FUN_140529210(unsigned, __int64);
   void SetCoupleInfo(const CItemCoupleInfo&);
   void SetCoupleName(const CStringW&);
-  __int64 FUN_1405293b0();
-  int FUN_1405294a0();   // the couple info's linked flag; the exe caller stores eax without widening
+  __int64 GetCoupleId();
+  int IsCoupleLinked();   // the couple info's linked flag; the exe caller stores eax without widening
   void FUN_140529500(const CStringW&);
   CStringW* FUN_140529540();
   void FUN_140529600();
   bool FUN_140529680(int);
   void SetName(CString);
-  void FUN_14052a210(unsigned);
+  void SetFlags(unsigned);
   void AddFlags(unsigned);
-  void FUN_14052a260(unsigned);
+  void RemoveFlags(unsigned);
   bool HasFlags(unsigned);
   bool FUN_14052a2d0();
   bool FUN_14052a330();

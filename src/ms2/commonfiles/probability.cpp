@@ -367,7 +367,7 @@ CString Ordinal(unsigned n)
 // @0x1407404c0
 CString Probability::StatName(ItemOptionValueRandom* pValue)
 {
-    return FUN_140188f50(pValue->FUN_1405d26c0().GetString(), 0);
+    return FUN_140188f50(pValue->GetName().GetString(), 0);
 }
 
 // @0x140740540

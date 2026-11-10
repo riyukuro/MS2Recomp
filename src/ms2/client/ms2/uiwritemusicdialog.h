@@ -72,19 +72,19 @@ public:
 
     MS2Ptr<CItem> GetItem();                                          // 0x140fef760 the score item
     bool BeginWriteWithItem(MS2Ptr<CItem> spItem);                               // 0x140fef7b0 write a blank score
-    bool FUN_140fef8f0(MS2Ptr<CItem> spItem);                               // 0x140fef8f0 view a written score
-    void FUN_140fefd00(MS2Ptr<CItem> spItem);                               // 0x140fefd00 the score was made (server answer)
+    bool ViewScore(MS2Ptr<CItem> spItem);                               // 0x140fef8f0 view a written score
+    void OnScoreMade(MS2Ptr<CItem> spItem);                               // 0x140fefd00 the score was made (server answer)
     void OnMakeScoreResult(int nResult);                                        // 0x140ff0090 the make request failed / ended
     void ShowScoreText(unsigned __int64 nItemUid, const CString& strMml);            // 0x140ff0260 the score text arrived
     void OnClickMake(ASData* pArgs);                                      // 0x140ff03b0 "onClickMake"
     void OnClickPlayGoFirstAndPause();                                                   // 0x140ff12a0 rewind and pause
-    void FUN_140ff12d0(ASData* pArgs);                                      // 0x140ff12d0 "onClickPlayStart"
+    void OnClickPlayStart(ASData* pArgs);                                      // 0x140ff12d0 "onClickPlayStart"
     void StopPlayback();                                                   // 0x140ff1a20 stop
     void PausePlayback();                                                   // 0x140ff1aa0 pause
     void FUN_140ff1b10(int nPage);                                          // 0x140ff1b10 rebuild the piano roll
     void OnClickSaveFile();                                                   // 0x140ff1e40 save to a file
     void OnClickLoadFile();                                                   // 0x140ff2060 load from a file (ask while dirty)
-    void FUN_140ff21a0(ASData* pArgs);                                      // 0x140ff21a0 the play bar moved
+    void OnChangeValuePlayBar(ASData* pArgs);                                      // 0x140ff21a0 the play bar moved
     void FormatPlayBarTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140ff23b0 the play bar tooltip
     void OpenScoreByUid(unsigned __int64 nItemUid);                                // 0x140ff2500 the score text (cache or request)
     void ImportMmlFile();                                                   // 0x140ff2600 the open file box
@@ -96,7 +96,7 @@ public:
     void SetMusicScoreDirty(bool bDirty);                                        // 0x140ff3450 set "m_dirtyMusicScore"
     int GetTotalLength();                                                    // 0x140ff34b0 "m_totalLength"
     void ResetPlayState();                                                   // 0x140ff3540 reset the play state
-    void FUN_140ff35a0();                                                   // 0x140ff35a0 m_bPlaying = false
+    void ClearPlaying();                                                   // 0x140ff35a0 m_bPlaying = false
     void SetPlayRange(int nOffset, int nLength);                           // 0x140ff35c0 the play window
     void FUN_140ff3610(int nTime);                                          // 0x140ff3610 the current time text / play bar
     void FUN_140ff38f0(int nLength);                                        // 0x140ff38f0 the total time text / play bar
@@ -108,7 +108,7 @@ public:
     void SetItem(MS2Ptr<CItem> spItem);                               // 0x140ff4500 m_spItem = spItem
     bool FUN_140ff4550();                                                   // 0x140ff4550 roll type 0 (per time)
     void FUN_140ff4610(std::map<int, CString>& tabs);                       // 0x140ff4610 parse the tabs into m_pages
-    void FUN_140ff4a80();                                                   // 0x140ff4a80 draw the piano roll page
+    void DrawPianoRollPage();                                                   // 0x140ff4a80 draw the piano roll page
     void FUN_140ff57e0();                                                   // 0x140ff57e0 lock the roll controls
     void FUN_140ff59a0();                                                   // 0x140ff59a0 unlock the roll controls
     CStringW GetNoteTooltip(int nPitch, int nTab, unsigned long nColor);     // 0x140ff5be0 the note tooltip

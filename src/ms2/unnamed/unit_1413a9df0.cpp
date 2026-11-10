@@ -33,7 +33,7 @@
 // MS2-PIN: ?GcFmtStr@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV12@@Z 0x1401e8510
 // MS2-PIN: ??0CMsTime@@QEAA@HHHHHH@Z 0x1406c47d0
 // MS2-PIN: ??0?$MS2Ptr@VASDisplayObject@@@@QEAA@H@Z 0x140d02f80
-// MS2-PIN: ?FUN_140d01be0@@YA?AV?$MS2Ptr@VASDisplayObject@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140d01be0
+// MS2-PIN: ?CreateDisplayObject@@YA?AV?$MS2Ptr@VASDisplayObject@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140d01be0
 // GcFmtId and GcFmtIntInt: the exe's copies are StringFormat<unsigned int> / <unsigned int, unsigned int> (make_type<unsigned
 // int>), so the int ids are formatted as unsigned.
 __declspec(noinline) CStringW GcFmtId(const wchar_t* f, const int& a) { return StringFormat(f, reinterpret_cast<const unsigned&>(a)); }
@@ -49,7 +49,7 @@ __declspec(noinline) CStringW GcFmtStr(const wchar_t* f, const CStringW& a) { re
 
 #include "ms2/unnamed/unit_1413a9df0.h"
 class CFieldData { public: int GetContinentCode(); };   // C3: member views
-class Cube { public: int FUN_1408b4f20(); };
+class Cube { public: int GetItemId(); };
 struct Unk_NullableInt { int* GetValue(); bool m_bSet; int m_nValue; };
 class CAchieveManager { public: int HasCompletedOfType(Unk_NullableInt nType); };
 class CKeyTable { public: int GetQuickSlotSkillId(unsigned nSlot); };
@@ -114,7 +114,7 @@ CStringW CGuideConditionContinentCode::GetTypeName()
 // @0x1413a9fc0
 int CGuideConditionContinentCode::vfunc_3()
 {
-    MS2Ptr<CFieldDataCli> info = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> info = WorldService::GetInstance()->GetFieldData();
     if (info.operator==(0))
         return 0;
     return ApplyNotBool(m_n20 == reinterpret_cast<CFieldData*>(info.operator->())->GetContinentCode());
@@ -431,7 +431,7 @@ void CGuideConditionMyPlayerLevel::vfunc_2(TiXmlElement* pElem)
 // @0x1413ab1d0
 int CGuideConditionMyPlayerLevel::vfunc_3()
 {
-    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     return ApplyNotBool(pPC->vfunc_78() >= m_n20);
@@ -539,7 +539,7 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
     if (pCube == 0)
         return ApplyNot(0);
     if (Unk_GcBoolHasValue(&m_attachable)) {
-        MS2Ptr<CItemData> item = FUN_14053f870(reinterpret_cast<Cube*>(pCube)->FUN_1408b4f20());
+        MS2Ptr<CItemData> item = FUN_14053f870(reinterpret_cast<Cube*>(pCube)->GetItemId());
         bool bAttach = reinterpret_cast<Unk_G9ItemRec*>(item.operator->())->m_nValue != 0;
         if (bAttach != m_attachable.GetValue())
             return ApplyNot(0);
@@ -619,7 +619,7 @@ void CGuideConditionInteractObject::vfunc_2(TiXmlElement* pElem)
 // @0x1413abec0
 int CGuideConditionInteractObject::vfunc_3()
 {
-    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     CInteractObject* pObj = WorldService::GetInstance()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).operator CInteractObject*();
@@ -739,7 +739,7 @@ CStringW CGuideConditionTitle::GetTypeName()
 // @0x1413ac6a0
 int CGuideConditionTitle::vfunc_3()
 {
-    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     return ApplyNotBool(reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount() > 0);
@@ -748,7 +748,7 @@ int CGuideConditionTitle::vfunc_3()
 // @0x1413ac700
 void CGuideConditionTitle::vfunc_5()
 {
-    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     size_t nCount = reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount();

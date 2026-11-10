@@ -37,14 +37,14 @@ void TermTagManagerCli::OnLoad(CInPacket& packet)
     size_t nRunning = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nFinished; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
-        spContext->FUN_140866900(packet);
+        spContext->Read(packet);
         m_finishedById.insert(std::make_pair(spContext->GetId(), spContext));
         m_finishedByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
     for (size_t i = 0; i < nRunning; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
-        spContext->FUN_140866900(packet);
-        spContext->FUN_140866780();
+        spContext->Read(packet);
+        spContext->Register();
         m_runningById.insert(std::make_pair(spContext->GetId(), spContext));
         m_runningByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
@@ -57,8 +57,8 @@ void TermTagManagerCli::OnStart(CInPacket& packet)
     size_t nCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
-        spContext->FUN_140866900(packet);
-        spContext->FUN_140866780();
+        spContext->Read(packet);
+        spContext->Register();
         m_runningById.insert(std::make_pair(spContext->GetId(), spContext));
         m_runningByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
@@ -71,8 +71,8 @@ void TermTagManagerCli::OnEnd(CInPacket& packet)
     size_t nCount = (unsigned)packet.ReadInt32();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
-        spContext->FUN_140866900(packet);
-        spContext->FUN_1408667e0();
+        spContext->Read(packet);
+        spContext->Unregister();
         m_runningById.erase(spContext->GetId());
         m_runningByName.erase(spContext->GetName());
         m_finishedById.insert(std::make_pair(spContext->GetId(), spContext));
@@ -85,7 +85,7 @@ MS2_REPLACE_METHOD(0x140AD65F0, TermTagManagerCli, OnEnd, 669, 0xF9E7EEFF);
 void TermTagManagerCli::Clear()
 {
     for (std::unordered_map<unsigned long, MS2Ptr<TermTagContext> >::iterator it = m_runningById.begin(); it != m_runningById.end(); ++it)
-        it->second->FUN_1408667e0();
+        it->second->Unregister();
     m_runningById.clear();
     m_finishedById.clear();
     m_runningByName.clear();

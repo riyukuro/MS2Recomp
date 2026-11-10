@@ -216,7 +216,7 @@ void CTarget2DCameraMode::vfunc_9()
         ptMove.y = -1.0f;
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.y = 1.0f;
-    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300009))

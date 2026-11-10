@@ -86,7 +86,7 @@ int CMasteryManager::GetTotalClaimableRewardLevels()
 // @0x140b6d140
 int CMasteryManager::CountClaimableRewardLevels(int nType)
 {
-    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     unsigned int nExp = pPlayer->GetMastery(nType);
@@ -110,7 +110,7 @@ int CMasteryManager::CountClaimableRewardLevels(int nType)
 // @0x140b6d250
 int CMasteryManager::HasRewards(int nType, int nLevel)
 {
-    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
@@ -138,7 +138,7 @@ int CMasteryManager::FUN_140b6d330(int nStep)
 // @0x140b6d470
 Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
 {
-    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_MmPlayer* pPlayer = ((class Unk_MmPlayer*)((class WorldService*)(class Unk_MmWorld*)(reinterpret_cast<Unk_MmWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return (Unk_MasteryResult)5;
     MS2Ptr<CMasteryReceipe> spRow = ((class Unk_MmTable*)FUN_1409670c0())->Find(nStep);

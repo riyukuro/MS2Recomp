@@ -36,8 +36,8 @@ struct Unk_FreeCamOption
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // copy of +0x298 (worldservice.h)
+    void* GetLocalPlayer();
+    MS2Ptr<CFieldDataCli> GetFieldData();   // copy of +0x298 (worldservice.h)
     static class WorldService* GetInstance();
 };
 
@@ -122,10 +122,10 @@ void CFreeCameraMode::vfunc_8(double fTime)
     {
         if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyReleased(0x22, true, 0))
         {
-            Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)WorldService::GetInstance()->FUN_141bd0cc0());
+            Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)WorldService::GetInstance()->GetLocalPlayer());
             if (pActor != 0)
             {
-                MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+                MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->GetFieldData();
                 if (reinterpret_cast<Unk_FreeCamOption*>(spOption.get()) != 0)
                 {
                     TiXmlDocument doc;

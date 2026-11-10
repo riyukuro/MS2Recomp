@@ -25,7 +25,7 @@ public:
     void SetExtra(const CStringW& str);
     void SetMsg(const CStringW& str);
     void SetCallback(Unk_MsgBoxCallback cb);
-    void FUN_141a01800(int n);
+    void SetButtonPreset(int n);
     void SetTitle(const CStringW& str);
     void SetCheckbox0(CStringW str, bool b);
     void SetAgreement(bool b);
@@ -47,7 +47,7 @@ class Unk_BitSet11
 {
 public:
     Unk_BitSet11();
-    Unk_BitRef FUN_140d75090(unsigned nPos);
+    Unk_BitRef GetBitRef(unsigned nPos);
     char m_bits[2];
 };
 
@@ -183,11 +183,11 @@ void ShowTermsMessageBox(void* p, int nBit, const CStringW& strA, const CStringW
     Unk_MsgBoxPtr box = CreateMessageBox(0x1b, CStringW(strB), p, CStringW(L"terms"));
     if (box.get() != 0)
     {
-        box->FUN_141a01800(1);
+        box->SetButtonPreset(1);
         box->SetTitle(strA);
         box->SetCheckbox0(GetStringCommon(0x9d0), 1);
         g_1439f5a0c = nBit;
-        box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+        box->SetAgreement(g_143ac2fb8.GetBitRef(nBit).FUN_140d750f0());
         FUN_140d73c60(box);
     }
 }
@@ -202,10 +202,10 @@ Unk_MsgBoxPtr ShowTermsMessageBoxWithCallback(int nBit, const CStringW& strA, co
         CStringW tag(L"terms");
         box->SetExtra(tag);
     }
-    box->FUN_141a01800(1);
+    box->SetButtonPreset(1);
     box->SetTitle(strA);
     box->SetCheckbox0(GetStringCommon(0x9d0), 1);
-    box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+    box->SetAgreement(g_143ac2fb8.GetBitRef(nBit).FUN_140d750f0());
     box->SetCallback(cb);
     FUN_140d73c60(box);
     return box;

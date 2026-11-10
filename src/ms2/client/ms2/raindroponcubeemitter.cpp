@@ -252,7 +252,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
 {
     m_fCooldown = fLifeSpan;
     Vector3 kPos = g_143b01a60;
-    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor)
         kPos = pActor->GetPosition();
     m_nCenterKey = FUN_1408a13d0(reinterpret_cast<const NiPoint3&>(kPos));
@@ -280,7 +280,7 @@ void RainDropOnCubeEmitter::MarkDirty()
 // @0x1416eca00
 void RainDropOnCubeEmitter::Refresh()
 {
-    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (!pActor)
         return;
 

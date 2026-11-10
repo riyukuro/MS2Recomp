@@ -33,7 +33,7 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 class Unk_PrWorld                                                   // the world service
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
 };
 
 // One row of the result (the ranking's row, see uipvprankingdialog.cpp).
@@ -172,7 +172,7 @@ void UIPvPResultDialog::SetLastResult(int nRank)
 // @0x1413440a0
 void UIPvPResultDialog::FUN_1413440a0()
 {
-    PC* pPC = reinterpret_cast<PC*>((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = reinterpret_cast<PC*>((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     bool bInPvP = pPC && ((CPvPInfo*)pPC->GetPvPInfo() ? true : false);
     if (bInPvP)
     {
@@ -186,7 +186,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* 
 {
     if (pEntry == 0)
         return false;
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return false;
     PCBase* pOther = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));

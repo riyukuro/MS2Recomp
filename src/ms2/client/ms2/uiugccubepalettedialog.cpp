@@ -464,7 +464,7 @@ Unk_CubeCtl* FUN_140acd9f0(RCubeList* p);
 // ---- items, strings, message boxes ----
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 int FUN_140885250(RItemMeta* p, int n);
 CStringW FUN_1409404f0(__int64 n);
 CStringW GetStringCommon(int nStringId);
@@ -505,11 +505,11 @@ public:
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14116d840();
+    bool IsEscapePressed();
     bool WasKeyPressed(int, bool, int);
     bool WasKeyReleased(int, bool, int);
     bool WasMouseButtonReleased(int, bool, int);
-    bool FUN_14116dd30(int, bool, int);
+    bool IsActionKeyPressed(int, bool, int);
 };
 int FUN_14151f6e0();
 int FUN_1418dd110();
@@ -525,7 +525,7 @@ public:
     int OpenPreview(MS2Ptr<CItem> sp, int n);
 };
 class UIHomeInfoDialog* GetHomeInfoDialog(int);   // C3: was GetHomeInfoDialog
-UIOxQuizDialog* FUN_140e01930(int nId);
+UIOxQuizDialog* FindOxQuizDialog(int nId);
 
 // ---- world / editor ----
 
@@ -787,7 +787,7 @@ int UIUGCCubePaletteDialog::vfunc_il1()
 {
     if (vfunc_55() != 0)    // the 0x1b8 slot of the UISwfEntity sub-object is vfunc_55 (closed)
         return 0;
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (((class PC*)(void*)(pPlayer))->FUN_141659690() != 0)
@@ -813,7 +813,7 @@ void UIUGCCubePaletteDialog::vfunc_67()
 void UIUGCCubePaletteDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
@@ -862,18 +862,18 @@ void UIUGCCubePaletteDialog::vfunc_15()
 // @0x140eea8a0
 int UIUGCCubePaletteDialog::vfunc_13()
 {
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (((class PC*)(void*)(pPlayer))->FUN_141659690() != 0)
     {
         // building mode: the quick-slot / rotate keys place the cube
-        if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116dd30(0x493e2, 0, 0) != 0)
+        if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->IsActionKeyPressed(0x493e2, 0, 0) != 0)
         {
             FUN_140ef37d0();
             return 1;
         }
-        else if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116dd30(0x49401, 0, 0) != 0)
+        else if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->IsActionKeyPressed(0x49401, 0, 0) != 0)
         {
             FUN_140ef37d0();
             return 1;
@@ -882,7 +882,7 @@ int UIUGCCubePaletteDialog::vfunc_13()
         for (unsigned int i = 0; i < nCount; i++)
         {
             int nKey = i + 0x7a121;
-            if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116dd30(nKey, 0, 0) != 0)
+            if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->IsActionKeyPressed(nKey, 0, 0) != 0)
             {
                 FUN_140ef37d0();
                 return 1;
@@ -952,12 +952,12 @@ int UIUGCCubePaletteDialog::vfunc_13()
         {
             if (((class GFxManager*)(class Unk_InputSvc*)(((Unk_InputSvc*)SingletonClass<GFxManager>::GetInstance())))->IsTextFieldFocused(m_28) == 0)
             {
-                if (((class CInputKeyHandler*)(class Unk_KeySvc*)(((class Unk_KeySvc*)FUN_14025e7c0())))->FUN_14116d840() != 0)
+                if (((class CInputKeyHandler*)(class Unk_KeySvc*)(((class Unk_KeySvc*)FUN_14025e7c0())))->IsEscapePressed() != 0)
                 {
                     ExitCraftMode();
                     return 1;
                 }
-                else if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116dd30(0x493ed, 0, 0) != 0)
+                else if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->IsActionKeyPressed(0x493ed, 0, 0) != 0)
                 {
                     if (FUN_14138c930(((void*)FUN_1409331e0()), 0x493ed) != 0)
                         return 0;
@@ -1010,7 +1010,7 @@ void UIUGCCubePaletteDialog::vfunc_39(void* p, float x, float y, float f)
 // @0x140eeb130 (UIItemEventListener slot 14: an item's uid / count changed)
 void UIUGCCubePaletteDialog::vfunc_14(void* pItem)
 {
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (((class PC*)(void*)(pPlayer))->IsInCubeMode() == 0)
@@ -1018,7 +1018,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItem)
     Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pHolder == 0)
         return;
-    if (reinterpret_cast<CItemData*>(((CItem*)pItem)->FUN_140527840())->HasMaidId() != 0)
+    if (reinterpret_cast<CItemData*>(((CItem*)pItem)->GetData())->HasMaidId() != 0)
     {
         FUN_140eefc50(2);
         return;
@@ -1076,7 +1076,7 @@ void UIUGCCubePaletteDialog::vfunc_16(void*)
 // @0x140eeb500
 void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)
@@ -1090,7 +1090,7 @@ void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
             return;
         int nItemId = spCube->GetItemId();
         __int64 nUid = spCube->GetInstanceId();
-        int nRank = FUN_14053feb0(nItemId);
+        int nRank = GetItemRank(nItemId);
         __int64 nCount = spInfo->count;
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nItemId, nRank, 0) != 0)
@@ -1206,7 +1206,7 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
                 return 0;
             int nItemId = spCube->GetItemId();
             __int64 nUid = spCube->GetInstanceId();
-            int nRank = FUN_14053feb0(nItemId);
+            int nRank = GetItemRank(nItemId);
             __int64 nCount = spInfo->count;
             MS2Ptr<CItem> spItem(new CItem);
             if (spItem->FUN_140523c40(nItemId, nRank, 0) != 0)
@@ -1236,7 +1236,7 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 // @0x140eec0b0
 void UIUGCCubePaletteDialog::SelectCubeByUid(unsigned __int64 uid)
 {
-    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (((class PC*)(void*)(pPlayer))->IsInCubeMode() == 0)
@@ -1247,7 +1247,7 @@ void UIUGCCubePaletteDialog::SelectCubeByUid(unsigned __int64 uid)
     Unk_CubeHolder* pHolder = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pPlayer))->GetActiveCubeCraft());
     if (pHolder == 0)
         return;
-    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->HasMaidId())
+    if (reinterpret_cast<CItemData*>(spItem->GetData())->HasMaidId())
     {
         RefreshCubeList(0);
         UGCCubePalette::CubePtr spCube = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->FindByInstanceId(uid);
@@ -1806,7 +1806,7 @@ void UIUGCCubePaletteDialog::OnDestroyCubeItem()
     {
         spBox->SetItemUid(spItem->GetItemUid());
         spBox->FUN_141a024a0(0);
-        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), spItem->GetRarity(), spItem->GetCount(), -1, -1, 1);
+        spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), spItem->GetRarity(), spItem->GetCount(), -1, -1, 1);
         spBox->SetButtonLabelIds(0x475, 0x476, 0);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCCubePaletteDialog::FUN_140eec330));
         FUN_140d73c60(spBox);
@@ -1840,7 +1840,7 @@ void UIUGCCubePaletteDialog::FUN_140eef670(int nRow)
         int nResult = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->FUN_1410b6060(nIndex);
         if (nResult == 3)
         {
-            if (WorldService::GetInstance()->FUN_141bd30a0()->IsIndoor())
+            if (WorldService::GetInstance()->GetFieldData()->IsIndoor())
                 FUN_141275260(0x6f7, 1, 1);
             else
                 FUN_141275260(0x6f6, 1, 1);
@@ -1928,7 +1928,7 @@ void UIUGCCubePaletteDialog::FUN_140eef7e0(int nCubeIndex)
         return;
     }
     __int64 nUid = spCube->GetInstanceId();
-    int nRank = FUN_14053feb0(nId);
+    int nRank = GetItemRank(nId);
     __int64 nCount = spCubeInfo->count;
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_140523c40(nId, nRank, 0))
@@ -1966,7 +1966,7 @@ UGCKeyMode1::UGCKeyMode1()
 // MS2-FUNCTIONAL: transliterated from the decompile
 void UGCKeyMode1::vfunc_1()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0)
@@ -1991,7 +1991,7 @@ void UGCKeyMode1::vfunc_1()
             NiObject* pObj = NiObject::DynamicCast(&NiMesh::ms_RTTI, pHit->GetAVObject());
             if (pObj == 0)
                 continue;
-            void* pOwner = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FUN_141bd1050(pHit->GetAVObject());
+            void* pOwner = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FindObjectByMesh(pHit->GetAVObject());
             if (pOwner != 0)
                 continue;
             Unk_CubeKind* pKind = reinterpret_cast<Unk_CubeKind*>(NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, static_cast<NiRenderObject*>(static_cast<NiMesh*>(pObj))->GetActiveMaterial()));
@@ -2030,7 +2030,7 @@ void UGCKeyMode1::vfunc_1()
 // @0x140ef21c0 (place / remove)
 void UGCKeyMode1::vfunc_5(void*, float, float)
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
@@ -2067,7 +2067,7 @@ UGCKeyMode2::UGCKeyMode2()
 // MS2-FUNCTIONAL: transliterated from the decompile
 void UGCKeyMode2::vfunc_1()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0)
@@ -2118,7 +2118,7 @@ void UGCKeyMode2::vfunc_1()
 // @0x140ef2810
 void UGCKeyMode2::vfunc_5(void*, float, float)
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
@@ -2218,7 +2218,7 @@ void UGCKeyController::vfunc_6(void* p, float x, float y, float f)
 // MS2-FUNCTIONAL: transliterated from the decompile
 void FUN_140ef2fb0()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2240,7 +2240,7 @@ void FUN_140ef2fb0()
     {
         unsigned int nCount = spCube->FUN_140defe70();
         unsigned int nMax = spCube->FUN_140defed0();
-        int nMapId = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FUN_141bd3060();
+        int nMapId = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->GetFieldId();
         int nStyle = FUN_1408a18d0((__int64)((class PCBase*)(pWorld))->FUN_141656a80());
         if (((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410c3600(1) != 0 || ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410c3600(3) != 0 || nCount > nMax ||
             ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410d55d0(nMapId, nStyle) != 0 || FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) != 0 ||
@@ -2272,9 +2272,9 @@ void FUN_140ef2fb0()
                         if (spItem->FUN_140523c40(spCube->GetItemId(), 1, 0))
                         {
                             spItem->SetUgcLook(spCube->GetInfo()->look.get());
-                            spBox->FUN_141a01800(1);
+                            spBox->SetButtonPreset(1);
                             spBox->SetItemUid(spItem->GetItemUid());
-                            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 1, 1, (int)nPrice, 1);
+                            spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 1, 1, (int)nPrice, 1);
                             spBox->SetCheckbox0Enabled(((class Unk_UserSvc*)FUN_140166410())->IsRegionJP() ? false : true);
                             spBox->SetCheckbox0(GetStringCommon(0x29f), 0);
                             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIUGCCubePaletteDialog::FUN_140eec410));
@@ -2297,7 +2297,7 @@ void FUN_140ef2fb0()
 void FUN_140ef37d0()
 {
     void* pEditor;
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2311,7 +2311,7 @@ void FUN_140ef37d0()
 // MS2-FUNCTIONAL: transliterated from the decompile
 void FUN_140ef3840()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (((class PCBase*)(pWorld))->IsDead() != 0)
@@ -2334,12 +2334,12 @@ void FUN_140ef3840()
         void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->GetOwnerId(spCube.get()->field50, spCube.get()->field54);
         if ((void*)((class PC*)pWorld)->GetAccountId() == pLayer)
         {
-            if (FUN_1408b5570(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
+            if (FUN_1408b5570(((class Cube*)(spCube.get(), spCube.get()))->GetItemId()) != 0)
             {
                 FUN_140d73bc0(0x46f, 1, static_cast<IMessageListener*>(pDlg), CStringW(L"remove"));
                 bShown = true;
             }
-            else if (FUN_1408b54c0(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
+            else if (FUN_1408b54c0(((class Cube*)(spCube.get(), spCube.get()))->GetItemId()) != 0)
             {
                 if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                 {
@@ -2354,12 +2354,12 @@ void FUN_140ef3840()
             }
             else
             {
-                if (FUN_1408b5aa0(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
+                if (FUN_1408b5aa0(((class Cube*)(spCube.get(), spCube.get()))->GetItemId()) != 0)
                 {
                     FUN_140d73bc0(0x472, 1, static_cast<IMessageListener*>(pDlg), CStringW(L"remove"));
                     bShown = true;
                 }
-                else if (FUN_1408b5820(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
+                else if (FUN_1408b5820(((class Cube*)(spCube.get(), spCube.get()))->GetItemId()) != 0)
                 {
                     if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                     {
@@ -2367,9 +2367,9 @@ void FUN_140ef3840()
                         bShown = true;
                     }
                 }
-                else if (FUN_1408b5b50(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
+                else if (FUN_1408b5b50(((class Cube*)(spCube.get(), spCube.get()))->GetItemId()) != 0)
                 {
-                    CStringW strMsg = FormatStringId<CStringW>(0x474, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class Cube*)(spCube.get()))->FUN_1408b4f20()));
+                    CStringW strMsg = FormatStringId<CStringW>(0x474, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class Cube*)(spCube.get()))->GetItemId()));
                     ((class CReservedWordTable*)TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(strMsg);
                     ShowMessageBox(CStringW(strMsg), 1, static_cast<IMessageListener*>(pDlg), CStringW(L"remove"));
                     bShown = true;
@@ -2384,7 +2384,7 @@ void FUN_140ef3840()
 // @0x140ef3f00
 void FUN_140ef3f00()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2397,7 +2397,7 @@ void FUN_140ef3f00()
 // @0x140ef3f70
 void FUN_140ef3f70()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2409,7 +2409,7 @@ void FUN_140ef3f70()
 // @0x140ef3fc0
 void FUN_140ef3fc0()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2427,7 +2427,7 @@ void ExitCraftMode()
     }
     else
     {
-        void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+        void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
         if (pWorld == 0)
             return;
         ((class MyPC*)(void*)(pWorld))->SendCraftModeOff();
@@ -2437,7 +2437,7 @@ void ExitCraftMode()
 // @0x140ef4070 (focus a palette row, pick that cube in the editor)
 void SelectCubeByItemId(int nIndex)
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2461,7 +2461,7 @@ void SelectCubeByItemId(int nIndex)
 // @0x140ef41b0 (same for the cube in a palette row)
 void RequestCubeByIndex(int nIndex)
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2487,12 +2487,12 @@ void RequestCubeByIndex(int nIndex)
 // @0x140ef4330 (switch between the palette and the other edit-mode dialogs)
 void FUN_140ef4330()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0 || ((class PC*)(void*)(pWorld))->FUN_141659690() != 0)
     {
-        if (UIOxQuizDialog* pParty = FUN_140e01930(0x4f7d))
+        if (UIOxQuizDialog* pParty = FindOxQuizDialog(0x4f7d))
             pParty->RefreshCoolTime(false);
         if (UIHomeMenuDialog* pHome = GetHomeMenuDialog(0x4f7c))
             pHome->Refresh(false);
@@ -2503,7 +2503,7 @@ void FUN_140ef4330()
     }
     else
     {
-        if (UIOxQuizDialog* pParty = FUN_140e01930(0x4f7d))
+        if (UIOxQuizDialog* pParty = FindOxQuizDialog(0x4f7d))
             pParty->RefreshCoolTime(true);
         if (UIHomeMenuDialog* pHome = GetHomeMenuDialog(0x4f7c))
             pHome->Refresh(true);
@@ -2521,7 +2521,7 @@ void FUN_140ef4330()
 // @0x140ef44f0
 void FUN_140ef44f0()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2562,7 +2562,7 @@ CStringW GetBuyCubeConfirmMessage()
 // @0x140ef4970 (in a UGC edit session)
 bool UGCKeyController::FUN_140ef4970()
 {
-    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->GetLocalPlayer();
     if (pWorld == 0)
         return false;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0)

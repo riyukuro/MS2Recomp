@@ -29,7 +29,7 @@
 class Unk_CcWorld : public WorldService
 {
 public:
-    MyPC* FUN_141bd0cc0();                                      // the local player
+    MyPC* GetLocalPlayer();                                      // the local player
 };
 void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice by id
 
@@ -64,7 +64,7 @@ CCashCallManager::~CCashCallManager()
 // @0x140b030b0
 int CCashCallManager::FUN_140b030b0(int nCallType)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->IsDead() != 0)
@@ -154,7 +154,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
 // @0x140b03590
 int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->IsDead() != 0)
@@ -172,7 +172,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         FUN_140d73bc0(0x96, 0, 0, CStringW(L""));
         return 0;
     }
-    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375410() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->GetFieldData()->IsCashCallMedicAllowed() == 0)
     {
         FUN_140d73bc0(0x94, 0, 0, CStringW(L""));
         return 0;
@@ -207,7 +207,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         FUN_140d73bc0(0x9c, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->IsDead() != 0)
@@ -220,7 +220,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         FUN_140d73bc0(0x9a, 0, 0, CStringW(L""));
         return 0;
     }
-    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375450() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->GetFieldData()->IsCashCallMarketAllowed() == 0)
     {
         FUN_140d73bc0(0x99, 0, 0, CStringW(L""));
         return 0;
@@ -255,7 +255,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;
     }
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->IsDead() != 0)
@@ -293,7 +293,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 // @0x140b040a0
 int CCashCallManager::CanRecall(int nCount)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (pPC->IsDead() != 0)
@@ -321,12 +321,12 @@ int CCashCallManager::CanRecall(int nCount)
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return 0;
     }
-    if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->FUN_140375490() == 0)
+    if (((class Unk_CcWorld*)WorldService::GetInstance())->GetFieldData()->IsRecallOtherUserAllowed() == 0)
     {
         FUN_140d73bc0(0xb58, 0, 0, CStringW(L""));
         return 0;
     }
-    int nLimit = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->vfunc_2();
+    int nLimit = ((class Unk_CcWorld*)WorldService::GetInstance())->GetFieldData()->vfunc_2();
     if (nLimit > 0)
     {
         if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2bc0() + (nCount + ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2b30()) > nLimit)
@@ -341,7 +341,7 @@ int CCashCallManager::CanRecall(int nCount)
 // @0x140b04430
 int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (CanRecall(nCount) == 0)

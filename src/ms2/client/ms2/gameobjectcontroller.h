@@ -34,12 +34,12 @@ public:
     ~GameObjectController();                                                        // 0x14123f460
 
     // Creates the capsule controller at kPos (game units, feet) for an actor fHeight tall with radius fRadius.
-    void FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius);   // raw entity: the exe builds the EntityActorData SmartPointer itself
-    void FUN_14123fa70(NxActor* pActor);                                            // give the shape a restitution-1 material
+    void CreateController(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius);   // raw entity: the exe builds the EntityActorData SmartPointer itself
+    void SetRestitutionMaterial(NxActor* pActor);                                            // give the shape a restitution-1 material
     void SetCollisionGroup(NxCollisionGroup nGroup);                                    // collision group of every shape
-    void FUN_14123fd30(unsigned int nGroups);                                       // the active groups (and groups mask)
-    efd::Point3 FUN_14123fd90();                                                    // feet position (game units)
-    void FUN_14123fe70(efd::Point3 kPos);                                           // place the feet at kPos
+    void SetGroups(unsigned int nGroups);                                       // the active groups (and groups mask)
+    efd::Point3 GetFeetPosition();                                                    // feet position (game units)
+    void SetFeetPosition(efd::Point3 kPos);                                           // place the feet at kPos
     void ReportSceneChanged();                                                           // NxController::reportSceneChanged
     void Move(efd::Point3 kDisp, unsigned int nExcludeGroups);             // move by kDisp (game units)
     void SetCapsuleSize(float fRadius, float fHeight);                               // resize the capsule
@@ -47,11 +47,11 @@ public:
     void SetKVelocity(efd::Point3 kVelocity);                                      // the horizontal velocity
     void StopJump();                                                           // stop jumping (land)
     int IsJumping();                                                            // jumping
-    int FUN_1412407a0();                                                            // still rising
+    int IsRising();                                                            // still rising
     efd::Point3 FUN_1412407f0(float fDelta, int bMove);                             // vertical step of this frame
     static float GetGravity(bool bDefault);                                      // gravity (scene z, else the default)
     void StartLift(float fDuration, float fPeak, float fBase);                  // start a lift (knock-up)
-    void FUN_141240d70();                                                           // end the lift
+    void EndLift();                                                           // end the lift
     int IsLift();                                                            // lifting
     int IsLiftFalling();                                                            // the lift is past its peak
     efd::Point3 GetHitNormal();                                                     // the last hit normal
@@ -59,10 +59,10 @@ public:
     NxU32 GetCollisionFlags();                                                          // collision flags of the last move
     int GetFallTime();                                                            // falling time (ms)
     GameObjectControllerHitReport* GetHitReport();                                 // the hit report
-    int FUN_141240f40();                                                            // standing on the ground
+    int IsOnGround();                                                            // standing on the ground
     void ResetFallTimer();                                                           // reset the fall timer
     efd::Point3 GetKVelocity();                                                    // the horizontal velocity
-    float FUN_141241000();                                                          // capsule radius (PhysX units)
+    float GetRadius();                                                          // capsule radius (PhysX units)
     void ClearCollisionFlags();                                                           // forget the collision flags
     float GetJumpApexTime();                                                          // jump apex time (0 unless jumping)
     bool IsCapsuleOverlapping(const efd::Point3& kPos, float fOffset);                            // would the capsule overlap at kPos

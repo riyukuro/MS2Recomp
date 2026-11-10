@@ -40,7 +40,7 @@ public:
     void SetHall(int nHall);                              // set the hall
     void SetTime(__int64 nTime);                          // set the time
     void SetNight(bool bNight);                            // set the night flag
-    void FUN_140fdc180();                                       // open the bill of the reservation
+    void OpenReservationBill();                                       // open the bill of the reservation
     void SendReservationChange();                                       // send the reservation change
     void SendReservationCancel();                                       // send the reservation cancel
     int GetHall();                                        // the hall
@@ -52,7 +52,7 @@ public:
     void RegisterPage(PagePtr spPage);                         // register a page under its name
     void FUN_140fdccd0(const std::vector<CString>& names);      // fill the tab strip
     void UpdateTabButtons();                                       // the left / right button labels of the tab
-    void FUN_140fdd2d0();                                       // "setTabEnable" of every tab
+    void UpdateTabEnable();                                       // "setTabEnable" of every tab
     PagePtr FindPage(const CString& strName);              // the page of a name (null: none)
 
 private:

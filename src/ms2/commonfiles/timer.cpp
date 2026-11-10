@@ -46,7 +46,7 @@ void Timer::Start(unsigned int ms)
 }
 
 // @0x1408687c0
-void Timer::FUN_1408687c0()
+void Timer::StartInfinite()
 {
     Start(0x3fffffff);
 }
@@ -59,7 +59,7 @@ void Timer::Reset()
 }
 
 // @0x140868820
-void Timer::FUN_140868820()
+void Timer::SetExpired()
 {
     m_nStart = (int)FUN_1408688e0() - m_nPeriod;
 }
@@ -88,20 +88,20 @@ __int64 Timer::FUN_1408688e0()
 }
 
 // @0x140868940
-float Timer::FUN_140868940()
+float Timer::GetRatio()
 {
     if (IsExpired() != 0)
         return 1.0f;
-    return (float)FUN_140868a70() / (float)GetPeriod();
+    return (float)GetElapsed() / (float)GetPeriod();
 }
 
 // @0x1408689a0
-float Timer::FUN_1408689a0()
+float Timer::GetEasedRatio()
 {
     float r;
     if (IsExpired() != 0)
         return 1.0f;
-    r = (float)FUN_140868a70() / (float)GetPeriod();
+    r = (float)GetElapsed() / (float)GetPeriod();
     r = r + r * 2.0f;
     if (1.0f < r)
         r = 1.0f;
@@ -115,7 +115,7 @@ int Timer::GetStart() const
 }
 
 // @0x140868a70
-int Timer::FUN_140868a70()
+int Timer::GetElapsed()
 {
     if (m_nPeriod == 0)
         return 0;
@@ -123,7 +123,7 @@ int Timer::FUN_140868a70()
 }
 
 // @0x140868ab0
-int Timer::FUN_140868ab0()
+int Timer::GetRemaining()
 {
     if (m_nPeriod == 0)
         return 0;
@@ -139,9 +139,9 @@ int Timer::GetPeriod() const
 }
 
 // @0x140868b20
-float Timer::FUN_140868b20()
+float Timer::GetRatioDelta()
 {
-    float cur = FUN_140868940();
+    float cur = GetRatio();
     float d = cur - m_fLastRatio;
     m_fLastRatio += d;
     return d;
@@ -160,7 +160,7 @@ int Timer::IsRunning()
 {
     if (m_nPeriod == 0)
         return false;
-    return FUN_140868a70() < GetPeriod();
+    return GetElapsed() < GetPeriod();
 }
 
 // @0x140868c00
@@ -168,7 +168,7 @@ int Timer::IsExpired()
 {
     if (m_nPeriod == 0)
         return false;
-    return FUN_140868a70() >= GetPeriod();
+    return GetElapsed() >= GetPeriod();
 }
 
 // @0x140868c60
@@ -245,7 +245,7 @@ bool TimeRange::IsInRange(const CMsTime& t) const
 }
 
 // @0x140868fd0
-bool TimeRange::FUN_140868fd0(const CMsTime& t, ATL::CTimeSpan before, ATL::CTimeSpan after) const
+bool TimeRange::IsInRangeWithMargin(const CMsTime& t, ATL::CTimeSpan before, ATL::CTimeSpan after) const
 {
     if ((m_start + before) <= t)
     {

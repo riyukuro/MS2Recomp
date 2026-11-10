@@ -87,12 +87,12 @@ void UIKeySettingSelectDialog::OnLoadComplete()
     int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)GetKeyTable())))->GetLocked() == 0;
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button1", reinterpret_cast<MS2Ptr<ASButton>&>(m_button1)))
     {
-        m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
+        m_button1->AddClickHandler(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
         m_button1->SetEnabled(bOn);
     }
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button2", reinterpret_cast<MS2Ptr<ASButton>&>(m_button2)))
     {
-        m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
+        m_button2->AddClickHandler(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
         m_button2->SetEnabled(bOn);
     }
 }

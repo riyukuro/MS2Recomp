@@ -68,7 +68,7 @@ extern NiFixedString DAT_143ae53c0;                          // "gfEnableShimmer
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 bool IsShimmer(NiRenderObject* pObject);
@@ -90,7 +90,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         return;
     Unk_ShSavedMap kSaved(37);
     NiVisibleArray kList;
-    Unk_ShActor* pActor = ((class Unk_ShActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_ShActor* pActor = ((class Unk_ShActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     efd::Point3 kPlayerPos = DAT_143b01a60;
     if (pActor != 0)
         kPlayerPos = static_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pActor->GetPosition()));

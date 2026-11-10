@@ -110,13 +110,13 @@ static void FUN_14092f0d0(Unk_NxPool* pPool)
 }
 
 // @0x14092e4b0
-static void FUN_14092e4b0(Unk_NxPool* pPool) noexcept { FUN_14092f0d0(pPool); }
+static void DestroyPool(Unk_NxPool* pPool) noexcept { FUN_14092f0d0(pPool); }
 
 // The pool's scalar deleting dtor.
 // @0x14092e630
 static Unk_NxPool* FUN_14092e630(Unk_NxPool* pPool, unsigned nFlags)
 {
-    FUN_14092e4b0(pPool);
+    DestroyPool(pPool);
     if (nFlags & 1)
         operator delete(pPool, 0x20);
     return pPool;
@@ -208,7 +208,7 @@ struct Unk_NxArray
 };
 
 // @0x14092f020
-static void FUN_14092f020(Unk_NxArray* pArray)
+static void ClearArray(Unk_NxArray* pArray)
 {
     if (pArray->m_pBlocks == NULL)
         return;
@@ -226,9 +226,9 @@ static void FUN_14092f020(Unk_NxArray* pArray)
 }
 
 // @0x14092e440
-static void FUN_14092e440(Unk_NxArray* pArray) noexcept
+static void DestroyArray(Unk_NxArray* pArray) noexcept
 {
-    FUN_14092f020(pArray);
+    ClearArray(pArray);
     if (pArray->m_bOwnPool) {
         FUN_14092e630(pArray->m_pPool, 0);
         GetMemoryAllocator(NULL)->Free(pArray->m_pPool);
@@ -238,7 +238,7 @@ static void FUN_14092e440(Unk_NxArray* pArray) noexcept
 // @0x14092e5f0
 static Unk_NxArray* FUN_14092e5f0(Unk_NxArray* pArray, unsigned nFlags)
 {
-    FUN_14092e440(pArray);
+    DestroyArray(pArray);
     if (nFlags & 1)
         operator delete(pArray, 0x28);
     return pArray;
@@ -282,7 +282,7 @@ static void FUN_14092ea50(Unk_NxObject* pObject)
 }
 
 // @0x14092e4e0
-static void FUN_14092e4e0(Unk_NxObject* pObject) noexcept
+static void DestroyObject(Unk_NxObject* pObject) noexcept
 {
     FUN_14092ea50(pObject);
     FUN_14092ee40(pObject->m_pPool, pObject->m_ppBuckets);
@@ -295,7 +295,7 @@ static void FUN_14092e4e0(Unk_NxObject* pObject) noexcept
 // @0x14092e670
 static Unk_NxObject* FUN_14092e670(Unk_NxObject* pObject, unsigned nFlags)
 {
-    FUN_14092e4e0(pObject);
+    DestroyObject(pObject);
     if (nFlags & 1)
         operator delete(pObject, 0x20);
     return pObject;
@@ -360,12 +360,12 @@ static void FUN_14092eb30(Unk_NxRaw* pValue)
 
 // The value dtor (Unk_NxNumber's dtor 0x140c772f0 calls it).
 // @0x14092e580
-void FUN_14092e580(void* p) noexcept { FUN_14092eb30((Unk_NxRaw*)p); }
+void DestroyValue(void* p) noexcept { FUN_14092eb30((Unk_NxRaw*)p); }
 
 // @0x14092e6b0
 static Unk_NxRaw* FUN_14092e6b0(Unk_NxRaw* pValue, unsigned nFlags)
 {
-    FUN_14092e580(pValue);
+    DestroyValue(pValue);
     if (nFlags & 1)
         operator delete(pValue, 0x38);
     return pValue;
@@ -373,7 +373,7 @@ static Unk_NxRaw* FUN_14092e6b0(Unk_NxRaw* pValue, unsigned nFlags)
 
 // Sets the kind, resetting the value first when it changes.
 // @0x14092ea10
-void FUN_14092ea10(void* p, int nKind)
+void SetKind(void* p, int nKind)
 {
     if (((Unk_NxRaw*)p)->m_nKind != nKind) {
         FUN_14092eb30((Unk_NxRaw*)p);
@@ -444,7 +444,7 @@ void Unk_NxString::Set(const char* psz, int nMode)
         FUN_14092eb30((Unk_NxRaw*)this);
         return;
     }
-    FUN_14092ea10((Unk_NxRaw*)this, 5);
+    SetKind((Unk_NxRaw*)this, 5);
     switch (nMode & 0xf) {
     case 1:
         FUN_14092e990((Unk_NxRaw*)this, psz, 0x40);
@@ -459,10 +459,10 @@ void Unk_NxString::Set(const char* psz, int nMode)
 }
 
 // @0x14092e560
-Unk_NxString::~Unk_NxString() { FUN_14092e580(this); }
+Unk_NxString::~Unk_NxString() { DestroyValue(this); }
 
 // @0x14092e3c0
-static Unk_NxString* FUN_14092e3c0(Unk_NxString* pString, const char* psz, int nMode)
+static Unk_NxString* InitString(Unk_NxString* pString, const char* psz, int nMode)
 {
     pString->m_nKind = 0;
     pString->m_nFlags = 0;
@@ -475,11 +475,11 @@ static Unk_NxString* FUN_14092e3c0(Unk_NxString* pString, const char* psz, int n
 // @0x14092e380
 Unk_NxString::Unk_NxString(const char* psz, int nMode)
 {
-    FUN_14092e3c0(this, psz, nMode);
+    InitString(this, psz, nMode);
 }
 
 // @0x14092ed50
-static const char* FUN_14092ed50() { return "NXA_20200917"; }
+static const char* GetClassVersion() { return "NXA_20200917"; }
 
 // @0x14092ed60
 static const char* FUN_14092ed60() { return "NXA_20200917"; }
@@ -531,7 +531,7 @@ typedef void (*PFN_NxaFinalizeModule)(bool);
 typedef bool (*PFN_NxaEnqueueLog)(int, const Unk_NxString*);
 
 // @0x14092edf0
-bool FUN_14092edf0(HMODULE* ppModule) { return *ppModule != NULL; }
+bool IsModuleLoaded(HMODULE* ppModule) { return *ppModule != NULL; }
 
 // Forgets the module and every export.
 // @0x14092e190
@@ -710,7 +710,7 @@ bool FUN_14092d8f0(HMODULE* ppModule)
 // @0x14092cbf0
 void Unk_NexonAnalytics::UnloadModule()
 {
-    if (!FUN_14092edf0((HMODULE*)this))
+    if (!IsModuleLoaded((HMODULE*)this))
         return;
     ((PFN_NxaFinalizeModule)s_pfn_finalizeModule)(true);
     if (!FreeLibrary(*(HMODULE*)this))
@@ -732,7 +732,7 @@ void Unk_NexonAnalytics::UnloadModule()
 // @0x14092ce80
 bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString& kVersion, const Unk_NxString* pHost)
 {
-    if (!FUN_14092edf0((HMODULE*)this))
+    if (!IsModuleLoaded((HMODULE*)this))
         return false;
     return ((PFN_NxaPresetString)s_pfn_presetNxLogVersion)(&kVersion)
         && ((PFN_NxaPresetString)s_pfn_presetLogServerAddress)(pHost);
@@ -742,10 +742,10 @@ bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString& kVersion, const Unk_N
 bool Unk_NexonAnalytics::InitializeClientModule(const Unk_NxEvent* pEvent, const Unk_NxString* pHost,
                                        const Unk_NxNumber* pService)
 {
-    if (!FUN_14092edf0((HMODULE*)this))
+    if (!IsModuleLoaded((HMODULE*)this))
         return false;
     {
-        Unk_NxString kClass(FUN_14092ed50(), 3);
+        Unk_NxString kClass(GetClassVersion(), 3);
         Unk_NxString kBase(FUN_14092ed60(), 3);
         ((PFN_NxaPresetBaseClassVersion)s_pfn_presetBaseClassVersion)(&kBase, &kClass);
     }
@@ -755,7 +755,7 @@ bool Unk_NexonAnalytics::InitializeClientModule(const Unk_NxEvent* pEvent, const
 // @0x14092d070
 void Unk_NexonAnalytics::FinalizeModule(bool bFlush)
 {
-    if (!FUN_14092edf0((HMODULE*)this))
+    if (!IsModuleLoaded((HMODULE*)this))
         return;
     ((PFN_NxaFinalizeModule)s_pfn_finalizeModule)(bFlush);
 }
@@ -763,7 +763,7 @@ void Unk_NexonAnalytics::FinalizeModule(bool bFlush)
 // @0x14092d150
 static bool FUN_14092d150(HMODULE* ppModule, int nCode, const Unk_NxString* pLog)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return ((PFN_NxaEnqueueLog)s_pfn_enqueueStageLog)(nCode, pLog);
 }
@@ -771,7 +771,7 @@ static bool FUN_14092d150(HMODULE* ppModule, int nCode, const Unk_NxString* pLog
 // @0x14092d1a0
 static bool FUN_14092d1a0(HMODULE* ppModule, int nCode, const Unk_NxString* pLog)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return ((PFN_NxaEnqueueLog)s_pfn_enqueueErrorLog)(nCode, pLog);
 }
@@ -796,7 +796,7 @@ bool Unk_NexonAnalytics::EnqueueErrorLog(int nCode, const CStringA& strLog)
 // @0x14092cb30
 bool LoadModule(HMODULE* ppModule, LPCWSTR pszPath)
 {
-    if (FUN_14092edf0(ppModule))
+    if (IsModuleLoaded(ppModule))
         return true;
     *ppModule = LoadLibraryW(pszPath);
     if (*ppModule == NULL) {
@@ -815,7 +815,7 @@ bool LoadModule(HMODULE* ppModule, LPCWSTR pszPath)
 // @0x14092cd10
 void PresetWorkingDirectory(HMODULE* ppModule, const Unk_NxString* pDir)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(const Unk_NxString*), presetWorkingDirectory)(pDir);
 }
@@ -823,7 +823,7 @@ void PresetWorkingDirectory(HMODULE* ppModule, const Unk_NxString* pDir)
 // @0x14092cd50
 bool PresetNxLogVersion(HMODULE* ppModule, const Unk_NxString* pVersion)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(PFN_NxaPresetString, presetNxLogVersion)(pVersion);
 }
@@ -831,7 +831,7 @@ bool PresetNxLogVersion(HMODULE* ppModule, const Unk_NxString* pVersion)
 // @0x14092cd90
 bool PresetConfigServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(PFN_NxaPresetString, presetConfigServerAddress)(pHost);
 }
@@ -839,7 +839,7 @@ bool PresetConfigServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 // @0x14092cdd0
 bool PresetLogServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(PFN_NxaPresetString, presetLogServerAddress)(pHost);
 }
@@ -847,7 +847,7 @@ bool PresetLogServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 // @0x14092ce10
 void PresetBackupFileLimit(HMODULE* ppModule, const Unk_NxNumber* pLimit)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(const Unk_NxNumber*), presetBackupFileLimit)(pLimit);
 }
@@ -855,7 +855,7 @@ void PresetBackupFileLimit(HMODULE* ppModule, const Unk_NxNumber* pLimit)
 // @0x14092ce50
 void PresetSystemInfoLogOff(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(), presetSystemInfoLogOff)();
 }
@@ -871,7 +871,7 @@ bool FUN_14092cef0(Unk_NexonAnalytics* pAnalytics, const Unk_NxEvent* pEvent, co
 // @0x14092d0b0
 bool UpdateUser(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*, const void*), updateUser)(p1, p2);
 }
@@ -879,7 +879,7 @@ bool UpdateUser(HMODULE* ppModule, const void* p1, const void* p2)
 // @0x14092d100
 bool SetUserExtraInfo(HMODULE* ppModule, const void* p1, const void* p2, const void* p3)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*, const void*, const void*), setUserExtraInfo)(p1, p2, p3);
 }
@@ -887,7 +887,7 @@ bool SetUserExtraInfo(HMODULE* ppModule, const void* p1, const void* p2, const v
 // @0x14092d310
 bool EnqueueLogOnlyOnce(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*, const void*), enqueueLogOnlyOnce)(p1, p2);
 }
@@ -895,7 +895,7 @@ bool EnqueueLogOnlyOnce(HMODULE* ppModule, const void* p1, const void* p2)
 // @0x14092d360
 bool EnqueueNxLog(HMODULE* ppModule, const void* p)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*), enqueueNxLog)(p);
 }
@@ -903,7 +903,7 @@ bool EnqueueNxLog(HMODULE* ppModule, const void* p)
 // @0x14092d3a0
 bool EnqueueLog(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*, const void*), enqueueLog)(p1, p2);
 }
@@ -911,7 +911,7 @@ bool EnqueueLog(HMODULE* ppModule, const void* p1, const void* p2)
 // @0x14092d3f0
 bool EnqueueJsonLog(HMODULE* ppModule, const void* p)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*), enqueueJsonLog)(p);
 }
@@ -919,7 +919,7 @@ bool EnqueueJsonLog(HMODULE* ppModule, const void* p)
 // @0x14092d430
 bool EnqueueDevLog(HMODULE* ppModule, int nLevel, const void* p)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(int, const void*), enqueueDevLog)(nLevel, p);
 }
@@ -927,7 +927,7 @@ bool EnqueueDevLog(HMODULE* ppModule, int nLevel, const void* p)
 // @0x14092d480
 bool EnqueueSystemInfoLog(HMODULE* ppModule, const void* p)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*), enqueueSystemInfoLog)(p);
 }
@@ -935,7 +935,7 @@ bool EnqueueSystemInfoLog(HMODULE* ppModule, const void* p)
 // @0x14092d4c0
 bool AssignInfoUser(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return false;
     return NXA_CALL(bool (*)(const void*, const void*), assignInfoUser)(p1, p2);
 }
@@ -943,7 +943,7 @@ bool AssignInfoUser(HMODULE* ppModule, const void* p1, const void* p2)
 // @0x14092d510
 const char* GetCommonFieldA(HMODULE* ppModule, const char* pszField)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const char* (*)(const char*), getCommonFieldA)(pszField);
 }
@@ -951,7 +951,7 @@ const char* GetCommonFieldA(HMODULE* ppModule, const char* pszField)
 // @0x14092d550
 const wchar_t* GetCommonFieldW(HMODULE* ppModule, const wchar_t* pszField)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const wchar_t* (*)(const wchar_t*), getCommonFieldW)(pszField);
 }
@@ -959,7 +959,7 @@ const wchar_t* GetCommonFieldW(HMODULE* ppModule, const wchar_t* pszField)
 // @0x14092d590
 const char* GetAccountNoA(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const char* (*)(), getAccountNoA)();
 }
@@ -967,7 +967,7 @@ const char* GetAccountNoA(HMODULE* ppModule)
 // @0x14092d5c0
 const wchar_t* GetAccountNoW(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const wchar_t* (*)(), getAccountNoW)();
 }
@@ -975,7 +975,7 @@ const wchar_t* GetAccountNoW(HMODULE* ppModule)
 // @0x14092d5f0
 const char* GetSessionIdA(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const char* (*)(), getSessionIdA)();
 }
@@ -983,7 +983,7 @@ const char* GetSessionIdA(HMODULE* ppModule)
 // @0x14092d620
 const wchar_t* GetSessionIdW(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const wchar_t* (*)(), getSessionIdW)();
 }
@@ -991,7 +991,7 @@ const wchar_t* GetSessionIdW(HMODULE* ppModule)
 // @0x14092d650
 const char* GetMachineIdA(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const char* (*)(), getMachineIdA)();
 }
@@ -999,7 +999,7 @@ const char* GetMachineIdA(HMODULE* ppModule)
 // @0x14092d680
 const wchar_t* GetMachineIdW(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return NULL;
     return NXA_CALL(const wchar_t* (*)(), getMachineIdW)();
 }
@@ -1008,7 +1008,7 @@ const wchar_t* GetMachineIdW(HMODULE* ppModule)
 // @0x14092d6b0
 int FUN_14092d6b0(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return 0x3e9;
     int nError;
     if (s_pfn_getLastError != NULL)
@@ -1021,7 +1021,7 @@ int FUN_14092d6b0(HMODULE* ppModule)
 // @0x14092d700
 void SetDevLogLevel(HMODULE* ppModule, int nLevel)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(int), setDevLogLevel)(nLevel);
 }
@@ -1029,7 +1029,7 @@ void SetDevLogLevel(HMODULE* ppModule, int nLevel)
 // @0x14092d740
 void SetActiveInputLog(HMODULE* ppModule, bool bActive)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(bool), setActiveInputLog)(bActive);
 }
@@ -1037,7 +1037,7 @@ void SetActiveInputLog(HMODULE* ppModule, bool bActive)
 // @0x14092d780
 void InputProc(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(HWND, UINT, WPARAM, LPARAM), inputProc)(hWnd, uMsg, wParam, lParam);
 }
@@ -1045,7 +1045,7 @@ void InputProc(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 // @0x14092d7d0
 void SetInputLogLevel(HMODULE* ppModule, unsigned short nLevel)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(unsigned short), setInputLogLevel)(nLevel);
 }
@@ -1053,7 +1053,7 @@ void SetInputLogLevel(HMODULE* ppModule, unsigned short nLevel)
 // @0x14092d810
 void EnqueueInputAction(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(const void*, const void*), enqueueInputAction)(p1, p2);
 }
@@ -1061,7 +1061,7 @@ void EnqueueInputAction(HMODULE* ppModule, const void* p1, const void* p2)
 // @0x14092d860
 void RegisterKeymapInfo(HMODULE* ppModule, const void* p1, int n1, int n2, const void* p2)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     NXA_CALL(void (*)(const void*, int, int, const void*), registerKeymapInfo)(p1, n1, n2, p2);
 }
@@ -1070,7 +1070,7 @@ void RegisterKeymapInfo(HMODULE* ppModule, const void* p1, int n1, int n2, const
 // @0x14092d8b0
 void FUN_14092d8b0(HMODULE* ppModule)
 {
-    if (!FUN_14092edf0(ppModule))
+    if (!IsModuleLoaded(ppModule))
         return;
     GetMemoryAllocator(NXA_CALL(nxa::MemoryAllocator* (*)(), getPoolAllocator)());
 }

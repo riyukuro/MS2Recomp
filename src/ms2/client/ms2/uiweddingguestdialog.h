@@ -70,7 +70,7 @@ public:
     virtual CString vfunc_6();                                              //  6 0x140fd7dd0 "PageGuild"
     virtual CStringW vfunc_7();                                             //  7 0x140fd7e20
 
-    MS2Ptr<CGuildMember> FUN_140fd80e0(const CStringW& strName);            // 0x140fd80e0 find a guild member by name
+    MS2Ptr<CGuildMember> FindGuildMember(const CStringW& strName);            // 0x140fd80e0 find a guild member by name
 };
 MS2_CHECK_SIZE(UIWeddingGuestPageGuild, 0x30);
 

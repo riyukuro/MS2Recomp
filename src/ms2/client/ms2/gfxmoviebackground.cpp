@@ -212,7 +212,7 @@ public:
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    class UISceneEntity* FUN_1422b9e50();
+    class UISceneEntity* GetSubSceneOrScene();
 };
 class ASUIComponent; template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (tabcontentspetevolution)
 
@@ -305,7 +305,7 @@ public:
     static class NiMaterial* CreateMaterial(class NiFixedString const&);
 };
 CString FUN_140188f50(const char* sz, int n);
-CString FUN_140cc2ad0(const CString& strPrefix, const CString& strName);
+CString JoinResourcePath(const CString& strPrefix, const CString& strName);
 CString ToCString(const char* psz, int nCodePage);
 
 // ---- display handle glue ----
@@ -438,13 +438,13 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
     else if (_stricmp("loadComplete", szEvent) == 0)
     {
         m_bLoaded = 1;
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene());
         if (pOwner != 0)
             pOwner->vfunc_60(m_spScript);
     }
     else if (_stricmp("dispatchEvent", szEvent) == 0)
     {
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene());
         if (pOwner != 0)
             pOwner->vfunc_61(m_spScript, pArgs, nArgs);
     }
@@ -502,7 +502,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
     }
     if (m_nPosFlag != 0)
     {
-        PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC != 0)
         {
             NiPoint3 kScreen;
@@ -944,7 +944,7 @@ CString GFxMovieBackground::GetBackgroundName()
     if (m_strBg.Find(".png", 0) != -1 || m_strBg.Find(".dds", 0) != -1)
     {
         CString strPrefix("BG");
-        return ToCString((const char*)FUN_140cc2ad0(strPrefix, FUN_140188f50((const char*)m_strBg, 0)), 0);
+        return ToCString((const char*)JoinResourcePath(strPrefix, FUN_140188f50((const char*)m_strBg, 0)), 0);
     }
     return m_strBg;
 }

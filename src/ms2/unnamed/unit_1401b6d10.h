@@ -97,7 +97,7 @@ template<> struct Unk_SocketRef<Unk_BannerList> {
         else result = &static_cast<TPtredDummy<Unk_BannerList>*>(p)->value;
         return result;
     }
-    static Unk_BannerList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_BannerList* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_BannerList)
 MS2_CHECK_SIZE(TPtredDummy<Unk_BannerList>, 0x38);

@@ -291,14 +291,14 @@ bool CItemOption::HasSameGroupOptions(int nGroup, CItemOption* pOther) const {
         MS2Ptr<BaseOption> spOther=pOther->GetStatOption(nGroup,nStat);
         if (spOther==0) return false;
         MS2Ptr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(pos);
-        if (!spOption->FUN_140266ee0(spOther)) return false;
+        if (!spOption->IsEqual(spOther)) return false;
     }
     for (POSITION pos=m_aSpecial[nGroup].GetStartPosition();pos;m_aSpecial[nGroup].GetNext(pos)) {
         Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(pos);
         MS2Ptr<BaseOption> spOther=pOther->GetSpecialOption(nGroup,eStat);
         if (spOther==0) return false;
         MS2Ptr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(pos);
-        if (!spOption->FUN_140266ee0(spOther)) return false;
+        if (!spOption->IsEqual(spOther)) return false;
     }
     return true;
 }

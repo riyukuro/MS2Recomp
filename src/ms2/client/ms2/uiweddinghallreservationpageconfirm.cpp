@@ -41,7 +41,7 @@ class UIWeddingHallReservationDialog   // C3: member view for the former free st
 {
 public:
     void SelectPreviousTab();
-    void FUN_140fdc180();
+    void OpenReservationBill();
     void SendReservationChange();
     int GetHall();
     int GetMode();
@@ -52,7 +52,7 @@ class WeddingTable;
 class WeddingTable   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_140909220(int, int);
+    __int64 GetHallPrice(int, int);
 };
 CStringW FUN_1409404f0(__int64 n);                                          // a number as text
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -94,8 +94,8 @@ bool UIWeddingHallReservationPageConfirm::vfunc_1()
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
     {
         Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
-        __int64 nOld = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
-        __int64 nNew = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall());
+        __int64 nOld = TSingleton<WeddingTable>::GetInstance()->GetHallPrice(pTicket->m_nHallId, pTicket->m_nSlot);
+        __int64 nNew = TSingleton<WeddingTable>::GetInstance()->GetHallPrice(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall());
         ((class AScript&)(kData)).SetWStringMember("price", FormatStringId<CStringW>(0x987, FUN_1409404f0(nNew - nOld)));
     }
     m_pScript->Invoke("setData", kData);
@@ -132,7 +132,7 @@ void UIWeddingHallReservationPageConfirm::vfunc_6()
         switch (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode())
         {
         case 0:
-            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc180();
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->OpenReservationBill();
             break;
         case 1:
             ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SendReservationChange();

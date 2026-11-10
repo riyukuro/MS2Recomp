@@ -45,7 +45,7 @@ unsigned char FUN_1401d1320(CCacheData* p);                             // file 
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string by key
 
 // The content switch table and the player level.
@@ -139,7 +139,7 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
@@ -181,7 +181,7 @@ int CCharacterAbilityTable::LoadCharacterAbility()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CStringW strLocale;
         XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
@@ -241,7 +241,7 @@ void CCharacterAbilityTable::GetAbilities(ATL::CAtlList<MS2Ptr<CCharacterAbility
 }
 
 // @0x1401e0560
-MS2Ptr<CCharacterAbilityCategory> CCharacterAbilityTable::FUN_1401e0560(int nId)
+MS2Ptr<CCharacterAbilityCategory> CCharacterAbilityTable::GetCategory(int nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
@@ -259,7 +259,7 @@ MS2Ptr<CCharacterAbilityCategory> CCharacterAbilityTable::FUN_1401e0560(int nId)
 }
 
 // @0x1401e0670
-MS2Ptr<CCharacterAbility> CCharacterAbilityTable::FUN_1401e0670(int nId)
+MS2Ptr<CCharacterAbility> CCharacterAbilityTable::GetAbility(int nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)

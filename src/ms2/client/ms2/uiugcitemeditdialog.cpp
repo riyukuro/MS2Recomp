@@ -190,7 +190,7 @@ int FUN_140d74f70(CStringW& strTag);                                // the "term
 // the exe binds the returned temp to the non-const CStringW& (an MSVC extension)
 inline int FUN_140d74f70(CStringW&& strTag) { return FUN_140d74f70(strTag); }
 #endif
-int FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);    // play a UI sound
 // FUN_140d86260 (the client platform) is declared in networkservice.h
 
 // ---- the ItemPreviewCommon obj ----
@@ -586,7 +586,7 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(nItemId);
         if (spDesign.get() != 0)
         {
-            ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
+            ASTooltip tip(WorldService::GetInstance()->GetLocalPlayer(), 0x20, 2);
             if (tip.FUN_1409e1770(nItemId, spDesign->m_nItemGrade) != 0)
                 *pRetVal = tip.GetValue();
         }
@@ -650,7 +650,7 @@ int UIUGCItemEditDialog::vfunc_o178_1(void* pAvatar)
         ShowAvatar(MS2Ptr<UIAvatarBase>(static_cast<UIAvatarBase*>(pAvatar)), true);
         if (m_spItem.get() ? true : false)
         {
-            if (((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840())->FUN_14053cbc0())
+            if (((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->GetData())->FUN_14053cbc0())
                 SetItem(m_spItem);
         }
     }
@@ -668,7 +668,7 @@ void UIUGCItemEditDialog::CreateAvatar(int nModel)
     m_avatars[nModel] = 0;
     if (nModel == 1)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return;
         MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(pPC, true));
@@ -681,7 +681,7 @@ void UIUGCItemEditDialog::CreateAvatar(int nModel)
     }
     else if (nModel == 0)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return;
         int nGender = pPC->GetGender();
@@ -695,7 +695,7 @@ void UIUGCItemEditDialog::CreateAvatar(int nModel)
     }
     else if (nModel == 2)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return;
         int nGender = pPC->GetGender();
@@ -710,7 +710,7 @@ void UIUGCItemEditDialog::CreateAvatar(int nModel)
     }
     else if (nModel == 3)
     {
-        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()) : 0);
+        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->GetData()) : 0);
         MS2Ptr<UIAvatarCube> spAvatar(new UIAvatarCube(spData));
         if (spAvatar.get() != 0)
         {
@@ -721,7 +721,7 @@ void UIUGCItemEditDialog::CreateAvatar(int nModel)
     }
     else if (nModel == 4)
     {
-        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()) : 0);
+        MS2Ptr<CItemData> spData(m_spItem.get() != 0 ? ((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->GetData()) : 0);
         MS2Ptr<UIAvatarRidee> spAvatar(new UIAvatarRidee(spData));
         if (spAvatar.get() != 0)
         {
@@ -789,7 +789,7 @@ void UIUGCItemEditDialog::SetAvatarAngle(MS2Ptr<UIAvatarBase> spAvatar, bool bUs
     float fAngle = 0;
     if (bUseItem && (m_spItem.get() != 0 ? true : false))
     {
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->GetData()));
         if (spData == 0)
             return;
         int nSlot = spData->GetModelOrEmpty()->GetFirstGroupType();
@@ -975,7 +975,7 @@ bool UIUGCItemEditDialog::FillEditItemEntry(ASObj& obj, MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
+    MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->GetData()));
     if (spData == 0)
         return false;
     int nItemId = spItem->GetItemId();
@@ -1010,7 +1010,7 @@ void UIUGCItemEditDialog::SetDesignPrice(ASObj& obj, MS2Ptr<CUGCDesignData> spDe
         obj.SetWStringMember("price", FUN_1409404f0(nPrice));
     else
         obj.SetStringMember("price", CString(""));
-    obj.SetWStringMember("salePrice", FUN_1418fec00(spDesign->FUN_14089e200(), nSalePrice, false));
+    obj.SetWStringMember("salePrice", FUN_1418fec00(spDesign->GetPriceType(), nSalePrice, false));
     obj.SetBoolMember("eventSale", m_bEventSale);
     SetSaleTag(obj, spDesign->m_nSaleTag, nSalePrice, nPrice);
 }
@@ -1033,7 +1033,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
     int nKind = m_spAvatar.get() != 0 ? m_spAvatar->GetKind() : 0;
     if (spItem.get() != 0)
     {
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem))->GetData()));
         int nModel = GetModelIndexForItem(spData, m_spAvatar);
         if (nModel != m_nModel)
         {
@@ -1136,13 +1136,13 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
         if (nVouchers < (unsigned int)nCount)
         {
             __int64 nRestPrice = GetDesignPrice(spDesign, nCount - nVouchers);
-            if (!FUN_1418ff110(spDesign->FUN_14089e200(), nRestPrice, true))
+            if (!FUN_1418ff110(spDesign->GetPriceType(), nRestPrice, true))
                 return false;
         }
     }
     else
     {
-        int nPriceType = spDesign->FUN_14089e200();
+        int nPriceType = spDesign->GetPriceType();
         if (!FUN_1418ff110(nPriceType, nTotal, true))
             return false;
     }
@@ -1264,7 +1264,7 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
     }
     obj.FUN_1409adbe0("dpCategory", Scaleform::GFx::Value(categories.GetValue()));
     obj.SetIntMember("dpCategorySelectedIndex", 0);
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     int nGender = 2;
     if (pPC != 0)
     {
@@ -1423,7 +1423,7 @@ void UIUGCItemEditDialog::FUN_141b41f90(MS2Ptr<CItemData> spData)
         return;
     if (spData == 0)
         return;
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (spData->FUN_14053cbc0())
@@ -1475,10 +1475,10 @@ void UIUGCItemEditDialog::AttachViewer(int nKind, MS2Ptr<UIAvatarBase> spAvatar,
     if (nKind == 1)
     {
         MS2Ptr<CUgcViewerEquip> spViewer(new CUgcViewerEquip);
-        spViewer->m_item.FUN_14088f2d0(&item);
+        spViewer->m_item.CopyItemFrom(&item);
         spViewer->m_item.m_nObjectId = spItem.get() != 0 ? spItem->GetObjectId() : 0;
         spViewer->m_item.m_nSlot = 0;
-        spViewer->m_icon.FUN_14088f8e0(&item);
+        spViewer->m_icon.CopyItemFrom(&item);
         spViewer->m_icon.m_n50 = spViewer->m_item.m_nObjectId;
         spViewer->m_icon.m_nObjectId = spViewer->m_item.m_nSlot;
         spUpload->m_spViewer = spViewer;
@@ -1487,10 +1487,10 @@ void UIUGCItemEditDialog::AttachViewer(int nKind, MS2Ptr<UIAvatarBase> spAvatar,
     else if (nKind == 2)
     {
         MS2Ptr<CUgcViewerCube> spViewer(new CUgcViewerCube);
-        spViewer->m_item.FUN_14088fbe0(&item);
+        spViewer->m_item.CopyItemFrom(&item);
         unsigned __int64 nEntity = 0;
         spViewer->m_item.m_entityId = nEntity;
-        spViewer->m_icon.FUN_14088f8e0(&item);
+        spViewer->m_icon.CopyItemFrom(&item);
         spViewer->m_icon.m_n50 = spItem.get() != 0 ? spItem->GetObjectId() : 0;
         spViewer->m_icon.m_nObjectId = 0;
         spUpload->m_spViewer = spViewer;
@@ -1500,10 +1500,10 @@ void UIUGCItemEditDialog::AttachViewer(int nKind, MS2Ptr<UIAvatarBase> spAvatar,
     else if (nKind == 7)
     {
         MS2Ptr<CUgcViewerRidee> spViewer(new CUgcViewerRidee);
-        spViewer->m_item.FUN_14088fe10(&item);
+        spViewer->m_item.CopyItemFrom(&item);
         unsigned __int64 nEntity = 0;
         spViewer->m_item.m_entityId = nEntity;
-        spViewer->m_icon.FUN_14088f8e0(&item);
+        spViewer->m_icon.CopyItemFrom(&item);
         spViewer->m_icon.m_n50 = spItem.get() != 0 ? spItem->GetObjectId() : 0;
         spViewer->m_icon.m_nObjectId = 0;
         spUpload->m_spViewer = spViewer;
@@ -1560,7 +1560,7 @@ int UIUGCItemEditDialog::GetModelIndexForItem(MS2Ptr<CItemData> spData, MS2Ptr<U
         return 2;
     if (spData->FUN_14053cbc0())
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return 2;
         bool bJob = true;
@@ -1774,7 +1774,7 @@ bool UIUGCItemEditDialog::OnClickMake(int nImage)
         ShowMessageBox(GetStringCommonByKey(L"s_ugc_itemedit_error_invalid_design"), 0, 0, CStringW(L""));
         return false;
     }
-    int nPriceType = spDesign->FUN_14089e200();
+    int nPriceType = spDesign->GetPriceType();
     __int64 nPrice = 0;
     if (m_spEditItem == 0)
     {
@@ -1820,7 +1820,7 @@ bool UIUGCItemEditDialog::OnClickMake(int nImage)
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::OnMesoPriceBox));
     }
     if (spBox.get() != 0)
-        spBox->FUN_140e01830(nPrice);
+        spBox->AppendInt64(nPrice);
     return true;
 }
 
@@ -1897,7 +1897,7 @@ void UIUGCItemEditDialog::OnChangeIndexDropDownCategory(ASData& args)
     int nGender = 0;
     if (bSortGender)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC != 0)
             nGender = pPC->GetGender() + 1;
     }
@@ -2006,7 +2006,7 @@ void UIUGCItemEditDialog::ShowRenameBox(MS2Ptr<CItem> spItem)
     if (spBox == 0)
         return;
     CStringW strName = GetItemName();
-    spBox->FUN_141a01ee0(m_spMadeItem, strName, 1, 0, -1, -1, 1);
+    spBox->SetItemEntry(m_spMadeItem, strName, 1, 0, -1, -1, 1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::OnRenameBox));
     FUN_140d73c60(spBox);
 }
@@ -2055,7 +2055,7 @@ bool UIUGCItemEditDialog::OnMesoPriceBox(int nResult, const CMsgBoxData& box)
             {
                 spBox->FUN_141a024a0(0);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b461b0));
-                spBox->FUN_140e01830(box.FUN_141a02ed0(0, 0));
+                spBox->AppendInt64(box.FUN_141a02ed0(0, 0));
                 FUN_140d73c60(spBox);
             }
         }
@@ -2065,7 +2065,7 @@ bool UIUGCItemEditDialog::OnMesoPriceBox(int nResult, const CMsgBoxData& box)
             __int64 nPrice = box.FUN_141a02ed0(0, 0);
             if (FUN_141b40300(nPrice, 0))
             {
-                FUN_141276180(s_strPCMakeUgcItem, "");
+                PlaySystemSound(s_strPCMakeUgcItem, "");
                 CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
             }
         }
@@ -2086,7 +2086,7 @@ bool UIUGCItemEditDialog::OnMeratPriceBox(int nResult, const CMsgBoxData& box)
             {
                 spBox->FUN_141a024a0(0);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b462a0));
-                spBox->FUN_140e01830(box.FUN_141a02ed0(0, 0));
+                spBox->AppendInt64(box.FUN_141a02ed0(0, 0));
                 int nTerms = FUN_140d74f70(box.FUN_141a02d50());
                 spBox->Append<int>(nTerms);
                 FUN_140d73c60(spBox);
@@ -2099,7 +2099,7 @@ bool UIUGCItemEditDialog::OnMeratPriceBox(int nResult, const CMsgBoxData& box)
             __int64 nPrice = box.FUN_141a02ed0(0, 0);
             if (FUN_141b40300(nPrice, nTerms))
             {
-                FUN_141276180(s_strPCMakeUgcItem, "");
+                PlaySystemSound(s_strPCMakeUgcItem, "");
                 CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
             }
         }
@@ -2136,7 +2136,7 @@ bool UIUGCItemEditDialog::FUN_141b461b0(int nResult, const CMsgBoxData& box)
     {
         {
             CString strEmpty("");
-            FUN_141276180(s_strPCMakeUgcItem, strEmpty);
+            PlaySystemSound(s_strPCMakeUgcItem, strEmpty);
         }
         CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
     }
@@ -2160,7 +2160,7 @@ bool UIUGCItemEditDialog::FUN_141b462a0(int nResult, const CMsgBoxData& box)
     {
         {
             CString strEmpty("");
-            FUN_141276180(s_strPCMakeUgcItem, strEmpty);
+            PlaySystemSound(s_strPCMakeUgcItem, strEmpty);
         }
         CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
     }
@@ -2301,7 +2301,7 @@ bool FUN_141b48710(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return false;
-    if (spData->FUN_14053ce40() || spData->FUN_14053cb40() || spData->FUN_14053cd50() || spData->IsRideItem())
+    if (spData->FUN_14053ce40() || spData->IsSkillItem() || spData->FUN_14053cd50() || spData->IsRideItem())
         return true;
     return false;
 }
@@ -2312,7 +2312,7 @@ bool FUN_141b487f0(MS2Ptr<CItemData> spData)
 {
     if (FUN_141b48710(spData))
         return false;
-    if (spData->FUN_14053cc00())
+    if (spData->IsGemItem())
     {
         int nKind = spData->FUN_14053e900();
         if (nKind == 5 || nKind == 8 || nKind == 6)
@@ -2340,7 +2340,7 @@ bool FUN_141b48950(MS2Ptr<CItem> spItem)
         return false;
     if (spItem->IsExpired() == true)
         return false;
-    return IsPreviewable(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())));
+    return IsPreviewable(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData())));
 }
 MS2_REPLACE_OVERLOAD(0x141B48950, bool(MS2Ptr<CItem>), FUN_141b48950, 187, 0x5E7FFF7D);
 
@@ -2360,7 +2360,7 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
     if (spData.get())
     {
         unsigned int nDataGender = spData->limit.genderLimit;
-        if (spData->limit.FUN_140545e40() == true)
+        if (spData->limit.HasJobLimit() == true)
         {
             if ((spFilter.get() ? true : false) && spFilter->FUN_140ebb780(nGender, nJob, spData))
                 nResult = nGender;
@@ -2486,7 +2486,7 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return MS2Ptr<CItemData>(0);
-    if (spItem->FUN_140525a30() == 0)
+    if (spItem->IsGem() == 0)
         return MS2Ptr<CItemData>(0);
     CItemGem* pGem = spItem->GetGem();
     if (pGem == 0)
@@ -2529,7 +2529,7 @@ MS2Ptr<CItemData> FindPreviewablePackageItem(const Unk_PackageItems& packages, b
             return spData;
         else if (spData->FUN_14053cd50())
             return spData;
-        else if (spData->FUN_14053cb40())
+        else if (spData->IsSkillItem())
             return spData;
         if (!bSkipAccessory && spData->IsPetItem())
             return spData;

@@ -30,7 +30,7 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
@@ -148,7 +148,7 @@ bool CStatusEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     }
     else
         m_nKind = 7;
-    if (FUN_14028d470(pStatus->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pStatus->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

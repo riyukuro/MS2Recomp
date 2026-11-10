@@ -104,7 +104,7 @@ class Unk_HmWorld;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 
@@ -356,7 +356,7 @@ void UIHomeMenuDialog::FUN_140c296e0(bool bCraft)
 // @0x140c29710
 void UIHomeMenuDialog::ToggleDesignMode()
 {
-    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     {
@@ -375,7 +375,7 @@ void UIHomeMenuDialog::ToggleDesignMode()
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 1);
                 reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
-                spBox->FUN_141a01800(1);
+                spBox->SetButtonPreset(1);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::OnLeaveDesignResult));
                 FUN_140d73c60(spBox);
             }
@@ -392,7 +392,7 @@ void UIHomeMenuDialog::ToggleBlueprintMode()
 {
     if (!FUN_141902580(1))
         return;
-    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3) != 0)
@@ -401,7 +401,7 @@ void UIHomeMenuDialog::ToggleBlueprintMode()
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 1);
             reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::OnLeaveDesignResult));
             FUN_140d73c60(spBox);
         }
@@ -421,7 +421,7 @@ void UIHomeMenuDialog::FUN_140c29b70()
 // @0x140c29b90
 void UIHomeMenuDialog::ToggleCraftMode()
 {
-    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     int nOwner = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640();
@@ -552,7 +552,7 @@ void UIHomeMenuDialog::OnHomeDemolish()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6e2, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a01800(2);
+        spBox->SetButtonPreset(2);
         ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetCheckbox0(GetStringCommon(0x9d1), 0);
         ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetAgreement(0);
         ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.operator->()))->SetSize(0x1c0, 400);
@@ -654,7 +654,7 @@ CString UIHomeMenuDialog::GetStateFrameName()
 // @0x140c2af70
 bool UIHomeMenuDialog::IsCraftMode()
 {
-    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     bool bCraft;
@@ -747,7 +747,7 @@ bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
 // @0x140c2b390
 bool UIHomeMenuDialog::OnLeaveDesignResult(int nResult, const CMsgBoxData& data)
 {
-    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     if (nResult == 0)
@@ -762,7 +762,7 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
     {
         if (((class CFeatureManager*)(class Unk_HmOptions*)(((class Unk_HmOptions*)FUN_140166410())))->IsFeatureEnabled(0xd4))
         {
-            Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pPc != 0)
                 pPc->FUN_14152f3c0();
         }

@@ -39,10 +39,10 @@ extern Scaleform::GFx::Value DAT_143b0ae18;                     // the undefined
 Scaleform::GFx::Movie*GetMovie(int);                              // the movie of a UI layer
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
-void FUN_1422bce70(Scaleform::GFx::Value*, const char*);        // Value::SetString
+void SetString(Scaleform::GFx::Value*, const char*);        // Value::SetString
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 float FUN_14028d280(unsigned);                                  // ms -> seconds
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
@@ -202,9 +202,9 @@ bool ASEffect::IsOwnerAlive()
         return false;
     if (m_buff->GetOwner() == 0)
         return false;
-    if (FUN_140930110(((class GameObject*)(void*)(m_buff->GetOwner()))->GetObjectId()) == 1)
+    if (IsUpperTargetId(((class GameObject*)(void*)(m_buff->GetOwner()))->GetObjectId()) == 1)
         return false;
-    if (FUN_140930110(m_buff->m_nCasterId) == 0)
+    if (IsUpperTargetId(m_buff->m_nCasterId) == 0)
         return false;
     return true;
 }
@@ -318,7 +318,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1)
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

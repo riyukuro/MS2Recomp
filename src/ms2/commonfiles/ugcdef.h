@@ -109,7 +109,7 @@ public:
     virtual void Clear();                                   // 0x14088f330
     virtual int CopyFrom(const IUgcProxy* pOther);          // 0x14088f370
 
-    int FUN_14088f2d0(const CUgcItemProxy* pOther);         // copies the item part only, clears the wearer
+    int CopyItemFrom(const CUgcItemProxy* pOther);         // copies the item part only, clears the wearer
 
     int m_nSlot;                                            // +0x48
     int m_nObjectId;                                        // +0x4c the wearer
@@ -149,8 +149,8 @@ public:
     virtual void Clear();                                   // 0x14088f9c0
     virtual int CopyFrom(const IUgcProxy* pOther);          // 0x14088fa20
 
-    int FUN_14088f8e0(const CUgcItemProxy* pOther);         // copies the item part only, clears the icon key
-    void FUN_14088f960(const UgcItemIcon::CallBackData& callBack);
+    int CopyItemFrom(const CUgcItemProxy* pOther);         // copies the item part only, clears the icon key
+    void SetCallBack(const UgcItemIcon::CallBackData& callBack);
 
     int m_nKind;                                            // +0x48
     int m_nObjectId;                                        // +0x4c
@@ -169,7 +169,7 @@ public:
     virtual void Clear();                                   // 0x14088fc40
     virtual int CopyFrom(const IUgcProxy* pOther);          // 0x14088fc80
 
-    int FUN_14088fbe0(const CUgcItemProxy* pOther);         // copies the item part only, clears the entity
+    int CopyItemFrom(const CUgcItemProxy* pOther);         // copies the item part only, clears the entity
 
     egf::EntityID m_entityId;                               // +0x48
 };
@@ -185,7 +185,7 @@ public:
     virtual void Clear();                                   // 0x14088fe70
     virtual int CopyFrom(const IUgcProxy* pOther);          // 0x14088feb0
 
-    int FUN_14088fe10(const CUgcItemProxy* pOther);         // copies the item part only, clears the entity
+    int CopyItemFrom(const CUgcItemProxy* pOther);         // copies the item part only, clears the entity
 
     egf::EntityID m_entityId;                               // +0x48
 };
@@ -257,7 +257,7 @@ public:
     virtual void Read(CInPacket& packet);                   // 0x1408909f0
 
     CUgcBannerReservePtr FUN_140890b50(unsigned __int64 nKey);     // the reservation of a key (empty when none)
-    __int64 FUN_140890bd0();                                // the total price of the reservations (hourly price)
+    __int64 GetTotalPrice();                                // the total price of the reservations (hourly price)
 
     CUgcBannerReserveMap m_reserves;                        // +0x20
 };
@@ -273,7 +273,7 @@ public:
     void Clear();                                           // 0x140890e80
     void Write(COutputStream& stream) const;                // 0x140890f30
     void Read(CInPacket& packet);                           // 0x140891020
-    int FUN_1408911f0(unsigned __int64 nTime);              // all reservations lie after `nTime`
+    int AreReservationsBefore(unsigned __int64 nTime);              // all reservations lie after `nTime`
 
     int m_nType;                                            // +0x18
     CUgcUserProxy m_user;                                   // +0x20
@@ -423,7 +423,7 @@ public:
     void SetFromMusicRecord(const void* pSource, __int64 nId);   // takes the music record of a CItem
     void Write(COutputStream& stream) const;                // 0x140893cc0
     void Read(CInputStream& stream);                        // 0x140893e10
-    CStringA FUN_140894060() const;                         // the title of the music book
+    CStringA GetIcon() const;                         // the title of the music book
 
     __int64 m_n18;                                          // +0x18
     int m_n20;                                              // +0x20
@@ -488,7 +488,7 @@ public:
     void SetStr210(CStringW str);                           // 0x140896120
     int FUN_1408961a0() const;                              // m_n88 is set and still in the future
     int IsWithinSalePeriod() const;                              // now is inside [m_n58, m_n68]
-    bool FUN_140896230(Unk_CommonOwner& owner);             // the content record of this kind belongs to `owner`
+    bool IsOwnedBy(Unk_CommonOwner& owner);             // the content record of this kind belongs to `owner`
     int IsMusicType() const;                              // m_n30 is a 4xx kind
     int FUN_140896350() const;                              // the item m_n2c is a CItemData::FUN_14053d900 one
     bool FUN_1408963f0(Unk_CommonOwner& owner);
@@ -610,13 +610,13 @@ public:
     CUgcBannerRollingImage();                               // 0x1408975c0
     virtual ~CUgcBannerRollingImage();                      // 0x140897680
 
-    int FUN_140897740();                                    // trims the id list and fills both field sets
+    int ParseIds();                                    // trims the id list and fills both field sets
     void Clear();                                           // 0x1408978a0
     void Write(COutputStream& stream) const;                // 0x140897940
     void Read(CInPacket& packet);                           // 0x140897a70
     int FUN_140897d70(__int64 nTime) const;                 // nTime is inside [m_n38, m_n40]
-    int FUN_140897dd0(unsigned nId) const;                      // the banner id is in the m_idSet
-    int FUN_140897e40(unsigned nField) const;                    // no field restriction, or nField is in the m_fieldSet
+    int HasBannerId(unsigned nId) const;                      // the banner id is in the m_idSet
+    int IsFieldAllowed(unsigned nField) const;                    // no field restriction, or nField is in the m_fieldSet
 
     __int64 m_n18;                                          // +0x18
     int m_n20;                                              // +0x20
@@ -639,7 +639,7 @@ public:
     TUgcGetCostInfo();                                      // 0x140897ed0
 
     void FUN_140897f30(__int64 nBase, int nPercent);        // base, base * percent / 100, 100 - percent
-    CString FUN_140897f90() const;                          // "[base->cost(left%)]"
+    CString ToString() const;                          // "[base->cost(left%)]"
 
     __int64 m_nBase;                                        // +0x18
     __int64 m_nCost;                                        // +0x20
@@ -685,7 +685,7 @@ public:
     explicit CUgcCharBookMark(MS2Ptr<Unk_CharBookMarkOwner> spOwner);       // 0x140896c50
     virtual ~CUgcCharBookMark();                            // 0x140896d00
 
-    void FUN_140896d90();                                   // clear the map and the list
+    void Clear();                                   // clear the map and the list
     // 0x140896dd0 adds an entry (list + map); declared below with its recovered type
     void FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> >& out);  // copy of the list
     // 0x140896e80, the entry of a key, is declared below with its recovered types
@@ -693,8 +693,8 @@ public:
     // The same exe functions typed with the recovered classes (Unk_CharBookMarkOwner = CUgcBookMark, Unk_MeratEquipEntry =
     // CMeratMarketProduct, Unk_MeratOid = Unk_MeratProductKey; client\ms2\meratmarketman.cpp calls these).
     explicit CUgcCharBookMark(MS2Ptr<CUgcBookMark> spOwner);                        // 0x140896c50
-    void FUN_140896dd0(MS2Ptr<CMeratMarketProduct> spProduct);                      // 0x140896dd0
-    MS2Ptr<CMeratMarketProduct> FUN_140896e80(const Unk_MeratProductKey& key);      // 0x140896e80
+    void AddProduct(MS2Ptr<CMeratMarketProduct> spProduct);                      // 0x140896dd0
+    MS2Ptr<CMeratMarketProduct> FindProduct(const Unk_MeratProductKey& key);      // 0x140896e80
 
     MS2Ptr<Unk_CharBookMarkOwner> m_spOwner;                // +0x18
     ATL::CRBMap<Unk_MeratProductKey, MS2Ptr<Unk_MeratEquipEntry> > m_map;        // +0x28

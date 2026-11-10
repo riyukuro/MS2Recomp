@@ -11,7 +11,7 @@
 
 int FUN_1407181a0(const CStringW& str);    // a wide string as an int
 int FUN_140718200(const CStringW& str);    // a wide string as an unsigned int (packetlogger.cpp)
-unsigned long FUN_1407182c0(const CStringW& str);   // a wide string as an unsigned long
+unsigned long ParseULongW(const CStringW& str);   // a wide string as an unsigned long
 
 class CXmlData : public CPtred
 {
@@ -55,7 +55,7 @@ public:
         CStringW strValue;
         if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strKey, strValue))
             return nDefault;
-        return FUN_1407182c0(strValue);
+        return ParseULongW(strValue);
     }
     bool GetBool(const CStringW& strKey, const bool& bDefault);   // value as a bool (unit_140d1ae30)
 private:

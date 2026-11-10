@@ -49,17 +49,17 @@ extern __int64 DAT_143ab2898;                                       // the own m
 extern char DAT_143ab2943;                                          // the own account state (7: verified)
 
 unsigned __int64 FUN_140718350(const CString& str);                 // a decimal string as a 64-bit number
-__int64 FUN_140718320(const CStringW& str);                         // _wtoi64
+__int64 ParseInt64W(const CStringW& str);                         // _wtoi64
 CStringW FUN_14083cf10(const CStringW& str);                        // a number text without its separators
 CStringW FormatPercent(int, bool);  // C3: the definition's signature
 CStringW FUN_1409404f0(__int64 n);                                  // a money amount as text
-CStringW FUN_1412757d0(__int64 n);                                  // a meso amount as text
+CStringW GetNumberText(__int64 n);                                  // a meso amount as text
 CStringW FUN_140763e10(int nPrice);                                 // a price as text
 CStringW FUN_140719630(int n);                                      // a number as text
 CStringW GetCurrencyIconHtml(int nCurrency);                              // the icon html of a currency
-CStringW FUN_140298ea0(CStringW strKey);                            // string table text of a key
-__int64 FUN_140930300();                                            // the own merat
-__int64 FUN_140930490();                                            // the own meso market tokens
+CStringW GetStringByKey(CStringW strKey);                            // string table text of a key
+__int64 GetOwnMerat();                                            // the own merat
+__int64 GetMesoMarketTokens();                                            // the own meso market tokens
 __int64 GetBlackMarketRegisterDepositMax();                                            // the black market fee base
 int GetBlackMarketRegisterDepositPercent();                                                // the black market fee rate
 int FUN_1401bcd30();                                                // default currency
@@ -67,8 +67,8 @@ void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW s
 void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's html text
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);  // a tooltip on the target
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);   // set a UInt
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);          // set a Boolean
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);   // set a UInt
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);          // set a Boolean
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // assign a value
 int UserDataToInt(void* p);                                         // delegate user data -> int
 void ShowBlockNotice(Unk_BlockPtr<Unk_BlockRecord> const &, int, unsigned __int64);  // C3: the definition's signature
@@ -98,9 +98,9 @@ void BlackMarketPageMesoSearch::OnInit()
     m_30->FUN_140bbe7c0("m_searchEnd", m_spSearchEnd);
     m_30->FUN_140bbe640("m_searchButton", m_spSearchButton);
     if (m_30->FUN_140bbe640("m_prevPage", m_spPrevPage))
-        m_spPrevPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnPageButtonClick), (void*)-1);
+        m_spPrevPage->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnPageButtonClick), (void*)-1);
     if (m_30->FUN_140bbe640("m_nextPage", m_spNextPage))
-        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnPageButtonClick), (void*)1);
+        m_spNextPage->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnPageButtonClick), (void*)1);
     if (m_spSearchBegin && m_spSearchEnd)
     {
         ASDataProvider list(2);
@@ -108,7 +108,7 @@ void BlackMarketPageMesoSearch::OnInit()
         for (unsigned int i = 0; i < nCount; i++)
         {
             __int64 nUnit = GetClientConstants()->MesoMarketProductUnit.FUN_140f20bb0(i);
-            CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMesoText"), FUN_1412757d0(nUnit));
+            CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMesoText"), GetNumberText(nUnit));
             ASObj row(2);
             ((class AScript&)(row)).SetWStringMember("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
@@ -124,7 +124,7 @@ void BlackMarketPageMesoSearch::OnInit()
         m_spSearchEnd->vfunc_24(true);
     }
     if (m_spSearchButton)
-        m_spSearchButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnSearchButtonClick), 0);
+        m_spSearchButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnSearchButtonClick), 0);
     PacketHandlerManager::GetInstance()->RegisterHandler(0x99, Delegate<void(CInPacket&)>(this, &BlackMarketPageMesoSearch::OnMesoPacket));
     UIStatusEventDispatcher::GetInstance()->FUN_141b0cd00(this);
     NotifySystem::GetInstance()->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &BlackMarketPageMesoSearch::vfunc_7));
@@ -330,7 +330,7 @@ void BlackMarketPageMesoSearch::UpdateMerat()
         return;
     if (m_58.CompareNoCase("m_mesoSearchPage") != 0)
         return;
-    CStringW strText = StringFormat(L"{0}  {1}", GetGFxManager()->Localize("$s_mesoMarket_myMerat"), FUN_1409404f0(FUN_140930300()));
+    CStringW strText = StringFormat(L"{0}  {1}", GetGFxManager()->Localize("$s_mesoMarket_myMerat"), FUN_1409404f0(GetOwnMerat()));
     m_20->Invoke("UpdateMerat", strText);
 }
 MS2_REPLACE_METHOD(0x140F1A420, BlackMarketPageMesoSearch, UpdateMerat, 371, 0x964E65C5);
@@ -342,7 +342,7 @@ void BlackMarketPageMesoSearch::UpdateMyToken()
         return;
     if (m_58.CompareNoCase("m_mesoSearchPageSingleRange") != 0)
         return;
-    SetChildHtmlText(m_20->GetValue(), "m_myToken", FUN_1409404f0(FUN_140930490()));
+    SetChildHtmlText(m_20->GetValue(), "m_myToken", FUN_1409404f0(GetMesoMarketTokens()));
 }
 MS2_REPLACE_METHOD(0x140F1A5A0, BlackMarketPageMesoSearch, UpdateMyToken, 227, 0xDE11AA7B);
 
@@ -352,7 +352,7 @@ void BlackMarketPageMesoSearch::FUN_140f1a690()
     if (m_30 == 0)
         return;
     Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
-    CStringW strBase = FUN_1412757d0(*GetClientConstants()->MesoMarketBasePrice.Get());
+    CStringW strBase = GetNumberText(*GetClientConstants()->MesoMarketBasePrice.Get());
     SetChildHtmlText(m_30->GetValue(), "m_explainText", FUN_14028dfa0(CStringW(L"s_mesoMarket_search_explain"), limits.m_n20, limits.m_n28));
     SetChildHtmlText(m_30->GetValue(), "m_marketPrice", FUN_14028dfa0(CStringW(L"s_mesoMarket_market_price"), strBase, limits.m_nBase));
 }
@@ -437,11 +437,11 @@ void BlackMarketPageMesoRegister::OnInit()
     if (m_30->FUN_140bbe940("m_buyMerat", m_spBuyMerat))
         m_spBuyMerat->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnBuyMeratChanged));
     if (m_30->FUN_140bbe640("m_register", m_spRegister))
-        m_spRegister->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnRegisterButtonClick), 0);
+        m_spRegister->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnRegisterButtonClick), 0);
     if (m_30->FUN_140bbe640("m_prevPage", m_spPrevPage))
-        m_spPrevPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnPageButtonClick), (void*)-1);
+        m_spPrevPage->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnPageButtonClick), (void*)-1);
     if (m_30->FUN_140bbe640("m_nextPage", m_spNextPage))
-        m_spNextPage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnPageButtonClick), (void*)1);
+        m_spNextPage->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::OnPageButtonClick), (void*)1);
     if (m_spMesoDropdown)
     {
         ASDataProvider list(2);
@@ -449,7 +449,7 @@ void BlackMarketPageMesoRegister::OnInit()
         for (unsigned int i = 0; i < nCount; i++)
         {
             __int64 nUnit = GetClientConstants()->MesoMarketProductUnit.FUN_140f20bb0(i);
-            CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMeso_dropdownItem"), FUN_1412757d0(nUnit));
+            CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMeso_dropdownItem"), GetNumberText(nUnit));
             ASObj row(2);
             ((class AScript&)(row)).SetWStringMember("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
@@ -461,7 +461,7 @@ void BlackMarketPageMesoRegister::OnInit()
     }
     PacketHandlerManager::GetInstance()->RegisterHandler(0x99, Delegate<void(CInPacket&)>(this, &BlackMarketPageMesoRegister::OnMesoPacket));
     UIStatusEventDispatcher::GetInstance()->FUN_141b0cd00(this);
-    CStringW strBase = FUN_1412757d0(*GetClientConstants()->MesoMarketBasePrice.Get());
+    CStringW strBase = GetNumberText(*GetClientConstants()->MesoMarketBasePrice.Get());
     SetChildHtmlText(m_30->GetValue(), "m_unitPriceTitle", FUN_14028dfa0(CStringW(L"s_mesoMarket_sale_per_price"), strBase));
     FUN_140f1cc00();
 }
@@ -556,7 +556,7 @@ void BlackMarketPageMesoRegister::OnRegisterButtonClick(const Scaleform::GFx::Fu
     m_spMesoDropdown->FUN_140f1fe00("meso", &nMeso);
     if (nMeso == 0)
     {
-        ShowMessageBoxWithCallback(FUN_140298ea0(L"s_mesoMarket_error_invalidSaleMoney"), 0, FUN_140b240b0());
+        ShowMessageBoxWithCallback(GetStringByKey(L"s_mesoMarket_error_invalidSaleMoney"), 0, FUN_140b240b0());
         return;
     }
     {
@@ -579,8 +579,8 @@ void BlackMarketPageMesoRegister::OnRegisterButtonClick(const Scaleform::GFx::Fu
                                      nFeeRate, nFeeBase, FormatPercent(FUN_1401bcd30(), 0), *GetClientConstants()->MailExpiryDays.Get(),
                                      limits.m_n24, fRateA, fRateB, limits.m_n1C, limits.m_n20);
     MS2Ptr<CMsgBoxData> spBox = ShowTermsMessageBoxWithCallback(7, strTitle, strText, Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::SendMesoMarketMode5));
-    spBox->FUN_140e01830(nMeso);
-    spBox->FUN_140e01830(GetTotalPrice());
+    spBox->AppendInt64(nMeso);
+    spBox->AppendInt64(GetTotalPrice());
 }
 MS2_REPLACE_METHOD(0x140F1C3B0, BlackMarketPageMesoRegister, OnRegisterButtonClick, 1353, 0x34ADC973);
 
@@ -597,7 +597,7 @@ void BlackMarketPageMesoRegister::OnBuyMeratChanged(const Scaleform::GFx::Functi
     if (m_spBuyMerat == 0)
         return;
     Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
-    __int64 nValue = FUN_140718320(FUN_14083cf10(m_spBuyMerat->GetText()));
+    __int64 nValue = ParseInt64W(FUN_14083cf10(m_spBuyMerat->GetText()));
     if (nValue > limits.m_nMax)
         m_spBuyMerat->SetTextW(FUN_140763e10(limits.m_nMax));
     UpdateTotalPrice();
@@ -759,7 +759,7 @@ void BlackMarketPageMesoRegister::FUN_140f1d730()
     float fRateA = limits.m_fRateA * 100.0f;
     float fRateB = limits.m_fRateB * 100.0f;
     int nCount = limits.m_n1C;
-    CStringW strBase = FUN_1412757d0(*GetClientConstants()->MesoMarketBasePrice.Get());
+    CStringW strBase = GetNumberText(*GetClientConstants()->MesoMarketBasePrice.Get());
     SetChildHtmlText(m_30->GetValue(), "m_saleRangeRate", FUN_14028dfa0(CStringW(L"s_mesoMarket_sale_range_rate"), fRateB));
     SetChildHtmlText(m_30->GetValue(), "m_marketPrice", FUN_14028dfa0(CStringW(L"s_mesoMarket_market_price"), strBase, limits.m_nBase));
     SetChildHtmlText(m_30->GetValue(), "m_noticeFee", FUN_14028dfa0(CStringW(L"s_mesoMarket_register_notice"), nDays, fRateA, nCount));
@@ -794,7 +794,7 @@ __int64 BlackMarketPageMesoRegister::GetBuyMeratValue()
 {
     if (m_spBuyMerat == 0)
         return 0;
-    return FUN_140718320(FUN_14083cf10(m_spBuyMerat->GetText()));
+    return ParseInt64W(FUN_14083cf10(m_spBuyMerat->GetText()));
 }
 MS2_REPLACE_METHOD(0x140F1DE00, BlackMarketPageMesoRegister, GetBuyMeratValue, 175, 0xE96C0C54);
 
@@ -837,7 +837,7 @@ MS2_REPLACE_METHOD(0x140F1DFA0, BlackMarketPageMesoRegister, MovePage, 236, 0x1E
 // @0x140f1fd70
 inline void ASDataProvider::FUN_140f1fd70(unsigned nIndex, const CString& strMember, __int64* pOut)
 {
-    AScript row = FUN_1422df140(nIndex);
+    AScript row = GetItemAt(nIndex);
     if (row.IsUndefinedOrNull())
         return;
     row.TryGetInt64(strMember, pOut);
@@ -862,8 +862,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetUInt(&args[0], a1);
+    SetBoolean(&args[1], a2);
     SetValue(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }

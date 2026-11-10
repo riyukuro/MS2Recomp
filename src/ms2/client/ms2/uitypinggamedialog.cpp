@@ -62,7 +62,7 @@
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int GetServerTick();   // C3: was GetServerTick
 int GetRandomRange(int, int);   // C3: was GetRandomRange
-int FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
+int PlaySystemSound(const CString& strSound, const CString& strOption);   // play a system sound
 void FUN_140710590(COutPacket& packet);                             // send
 
 // ---- statics (the .text$di part) -------------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ void UITypingGameDialog::GenerateSequence()
     }
     if (m_30.get() != 0)
         m_30->Invoke("setData", kSequence.GetValue());
-    FUN_141276180(s_strKeyPopUp, "");
+    PlaySystemSound(s_strKeyPopUp, "");
 }
 
 // @0x140ee5ba0
@@ -236,7 +236,7 @@ void UITypingGameDialog::FUN_140ee5c10()
     if (m_answer.size() <= m_nIndex)
     {
         CloseCountdown();
-        FUN_141276180(s_strSuccess, "");
+        PlaySystemSound(s_strSuccess, "");
         m_30->Invoke("successGame");
         m_bPlaying = false;
     }
@@ -245,7 +245,7 @@ void UITypingGameDialog::FUN_140ee5c10()
         if (m_timer.IsExpired() != 0)
         {
             CloseCountdown();
-            FUN_141276180(s_strFail, "");
+            PlaySystemSound(s_strFail, "");
             m_30->Invoke("failGameTimeout");
             m_bPlaying = false;
         }
@@ -272,7 +272,7 @@ void UITypingGameDialog::FUN_140ee5c10()
             }
             if (!bPressed)
                 return;
-            FUN_141276180(s_strKeyHit, "");
+            PlaySystemSound(s_strKeyHit, "");
             if (bHit)
             {
                 m_30->Invoke("successKeyInput", m_nIndex);
@@ -280,7 +280,7 @@ void UITypingGameDialog::FUN_140ee5c10()
             }
             else
             {
-                FUN_141276180(s_strFail, "");
+                PlaySystemSound(s_strFail, "");
                 CloseCountdown();
                 m_30->Invoke("failKeyInput", m_nIndex);
                 m_30->Invoke("failGame");

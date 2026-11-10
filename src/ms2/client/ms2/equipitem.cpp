@@ -265,7 +265,7 @@ MS2_REPLACE_METHOD(0x1411DC7A0, CEquipItem, GetItem, 65, 0xE76D92EE);
 // @0x1411dc7f0
 Unk_EquipItemData* CEquipItem::GetItemData()
 {
-    return static_cast<Unk_EquipItemData*>(m_spItem->FUN_140527840());
+    return static_cast<Unk_EquipItemData*>(m_spItem->GetData());
 }
 MS2_REPLACE_METHOD(0x1411DC7F0, CEquipItem, GetItemData, 39, 0x136456ED);
 
@@ -503,7 +503,7 @@ void CEquipItem::FUN_1411dd280()
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
         spModel->vfunc_17();
     }
-    if (static_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053d2f0())
+    if (static_cast<CItemData*>(m_spItem->GetData())->FUN_14053d2f0())
     {
         if (reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bEnchantEffect)
         {

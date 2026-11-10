@@ -63,7 +63,7 @@ class CMsgBoxData : public CPtred
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> fn);
     void SetItemUid(__int64 n);
-    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
+    void SetItemEntry(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void SetButtonLabelIds(int nA, int nB, int nC);
 };
 
@@ -124,10 +124,10 @@ void UIItemPetTrainingDialog::OnLoadComplete()
     m_spBox = g_143ab2a90.FindItemByUid(m_nOwner);
     if (m_spBox == 0)
         return;
-    if (m_spBox->FUN_140527840() == 0)
+    if (m_spBox->GetData() == 0)
         return;
     int nDefault = 0;
-    m_nOffsetExp = (unsigned)PT_ATTR(m_spBox->FUN_140527840())->GetInt(L"offsetExp", nDefault);
+    m_nOffsetExp = (unsigned)PT_ATTR(m_spBox->GetData())->GetInt(L"offsetExp", nDefault);
     if (m_nOffsetExp == 0)
         return;
     FUN_1412761e0(m_30, 1);
@@ -147,7 +147,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp(szMethod, "onClickConfirm") == 0)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC == 0)
             return 0;
         if (reinterpret_cast<CItemTransfer*>(m_spPet->GetTransfer())->HasBindingRule() != 0)
@@ -159,7 +159,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 if (box.get() != 0)
                 {
                     box->SetItemUid(m_spPet->GetItemUid());
-                    box->FUN_141a01ee0(MS2Ptr<CItem>(m_spPet), m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
+                    box->SetItemEntry(MS2Ptr<CItem>(m_spPet), m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return 1;
@@ -247,7 +247,7 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
             ShowSystemNotice(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
-    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->GetData())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
@@ -289,7 +289,7 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
         if (FUN_140e57ed0(spPet, 1) == 0)
             return;
         MS2Ptr<CItem> spBox = g_143ab2a90.FindItemByUid(m_nOwner);
-        if (spBox == 0 || spBox->FUN_140527840() == 0)
+        if (spBox == 0 || spBox->GetData() == 0)
             return;
         {
             ((class ItemScrollSlot*)(class ItemScrollSlot*)(&slot))->SetItem(spPet);

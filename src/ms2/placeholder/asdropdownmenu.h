@@ -35,7 +35,7 @@ public:
     void AddItemRow(const ASObj& row);                           // add a row
     void AddItemLabel(const CStringW& strLabel);                   // add a row { label: strLabel }
     void SelectItemByLabel(const CStringW& strLabel);                   // select the row labelled strLabel
-    CStringW FUN_1422dfe00();                                       // the selected row's "label" ("" if none)
+    CStringW GetSelectedLabel();                                       // the selected row's "label" ("" if none)
     void SelectByIntField(const CString& strField, int nValue);        // select the first row whose strField is nValue (*)
     void SelectByUIntField(const CString& strField, unsigned nValue);   // the same with an unsigned (*)
     void SelectByStringField(const CString& strField, const CStringW& strValue);   // select the first row whose strField is strValue

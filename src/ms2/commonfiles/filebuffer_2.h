@@ -31,7 +31,7 @@ public:
     void FUN_140392750(int nId, const CString& strLine);    // add a line to the second list
 
     // @0x140394b50
-    static CTextLogFile* FUN_140394b50(int nId)
+    static CTextLogFile* GetLogFile(int nId)
     {
         std::map<int, MS2Ptr<CTextLogFile> >::iterator it = ms_files.find(nId);
         if (it != ms_files.end())

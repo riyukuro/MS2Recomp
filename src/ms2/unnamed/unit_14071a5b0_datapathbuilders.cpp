@@ -11,7 +11,7 @@
 
 CStringA FUN_140188f50(const char* s, int n);
 CStringA GetXmlPath(const CStringA& dir, const CStringA& file);
-CStringA FUN_14071a520(const CStringA& s);
+CStringA GetPrecomputedTerrainPath(const CStringA& s);
 CStringA FUN_14071ae20(const CStringA& file);
 void FUN_14071a7e0(unsigned int id, unsigned int* hi, unsigned int* lo);
 
@@ -133,7 +133,7 @@ CStringA FUN_14071ae20(const CStringA& file)
 }
 
 // @0x14071ae90
-CStringW FUN_14071ae90(const CStringW& name)
+CStringW GetCustomMusicPath(const CStringW& name)
 {
     CStringW s;
     s.Format(L"%s/%s.ms2mml", L"./Custom/Music", (const wchar_t*)name);

@@ -62,8 +62,8 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 
@@ -140,13 +140,13 @@ int ChatEmoticonCachedData::LoadEmoticons()
     MS2_FOR_EACH(TiXmlElement* pNode, nodes)
     {
         ChatEmoticonDataPtr spEmoticon(new ChatEmoticonData);
-        spEmoticon->m_nId = FUN_140197390(pNode, "id", 0);
-        spEmoticon->m_nCategoryId = FUN_140197390(pNode, "category_id", 0);
-        spEmoticon->m_nGroupId = FUN_140197390(pNode, "group_id", 0);
+        spEmoticon->m_nId = GetUIntAttr(pNode, "id", 0);
+        spEmoticon->m_nCategoryId = GetUIntAttr(pNode, "category_id", 0);
+        spEmoticon->m_nGroupId = GetUIntAttr(pNode, "group_id", 0);
         spEmoticon->m_strImagePath = FUN_1401bf530(pNode, "image_path", CStringW(L""));
-        spEmoticon->m_nHeight = FUN_140197350(pNode, "height", 0);
-        spEmoticon->m_nWidth = FUN_140197350(pNode, "width", 0);
-        spEmoticon->m_nVSpace = FUN_140197350(pNode, "vspace", -3);
+        spEmoticon->m_nHeight = GetIntAttr(pNode, "height", 0);
+        spEmoticon->m_nWidth = GetIntAttr(pNode, "width", 0);
+        spEmoticon->m_nVSpace = GetIntAttr(pNode, "vspace", -3);
         m_emoticons[spEmoticon->m_nId] = spEmoticon;
         m_byGroup[spEmoticon->m_nGroupId].push_back(spEmoticon);
     }
@@ -177,7 +177,7 @@ int ChatEmoticonCachedData::LoadStrings()
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     MS2_FOR_EACH(TiXmlElement* pNode, nodes)
     {
-        unsigned int nId = FUN_140197390(pNode, "id", 0);
+        unsigned int nId = GetUIntAttr(pNode, "id", 0);
         if (m_emoticons.find(nId) == m_emoticons.end())
             continue;
         ChatEmoticonDataPtr spEmoticon = m_emoticons[nId];
@@ -219,7 +219,7 @@ int ChatEmoticonCachedData::LoadCategories()
     MS2_FOR_EACH(TiXmlElement* pNode, nodes)
     {
         ChatEmoticonCategoryDataPtr spCategory(new ChatEmoticonCategoryData);
-        spCategory->m_nId = FUN_140197390(pNode, "id", 0);
+        spCategory->m_nId = GetUIntAttr(pNode, "id", 0);
         spCategory->m_strIconPath = FUN_1401bf530(pNode, "icon_path", CStringW(L""));
         m_categories[spCategory->m_nId] = spCategory;
     }
@@ -313,7 +313,7 @@ int CChatEmoticonTable::Load()
 }
 
 // @0x1401e7120
-ChatEmoticonDataPtr CChatEmoticonTable::FUN_1401e7120(unsigned int nEmoticonId)
+ChatEmoticonDataPtr CChatEmoticonTable::GetEmoticon(unsigned int nEmoticonId)
 {
     CheckInit();
     ChatEmoticonCachedDataPtr spData = GetCachedData();
@@ -325,7 +325,7 @@ ChatEmoticonDataPtr CChatEmoticonTable::FUN_1401e7120(unsigned int nEmoticonId)
 }
 
 // @0x1401e7270
-ChatEmoticonCategoryDataPtr CChatEmoticonTable::FUN_1401e7270(int nCategoryId)
+ChatEmoticonCategoryDataPtr CChatEmoticonTable::GetCategory(int nCategoryId)
 {
     CheckInit();
     ChatEmoticonCachedDataPtr spData = GetCachedData();
@@ -337,7 +337,7 @@ ChatEmoticonCategoryDataPtr CChatEmoticonTable::FUN_1401e7270(int nCategoryId)
 }
 
 // @0x1401e73c0
-void CChatEmoticonTable::FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut)
+void CChatEmoticonTable::GetEmoticonsByGroup(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut)
 {
     ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
@@ -346,7 +346,7 @@ void CChatEmoticonTable::FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmot
         return;
     *pOut = spData->m_byGroup[nGroupId];
 }
-MS2_REPLACE_METHOD(0x1401E73C0, CChatEmoticonTable, FUN_1401e73c0, 249, 0xB08A99AE);
+MS2_REPLACE_METHOD(0x1401E73C0, CChatEmoticonTable, GetEmoticonsByGroup, 249, 0xB08A99AE);
 
 // @0x1401e74c0
 void CChatEmoticonTable::GetEmoticonsByCommand(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut)

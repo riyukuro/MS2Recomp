@@ -97,13 +97,13 @@ struct Unk_CigEquipSet : public Unk_PCEquipSet
 };
 class Unk_MyPCEquip : public PCGemEquip {};
 
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);   // show/hide a named child
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nVisible);   // show/hide a named child
 void* IntToUserData(int n);                                                // int -> delegate user data
 int UserDataToInt(void* p);                                                // delegate user data -> int
 CStringW FormatMonthDay(const CMsTime& time);                               // the date text of a time
 #include "ms2/placeholder/wcformat.h"
 bool SendPacketThrottled(COutPacket* packet, int key, int delay);                // send (rate limited)
-__int64 FUN_140718320(const CStringW& value);                              // _wtoi64
+__int64 ParseInt64W(const CStringW& value);                              // _wtoi64
 extern Unk_Inventory g_143ab2a90;
 
 // @0x140be9030
@@ -112,7 +112,7 @@ template <> inline __int64 GameEventVariable::GetValue<__int64>(const __int64& n
     CMsTime now(GetServerTime());
     if (m_time <= now)
         return nDefault;
-    return FUN_140718320(m_value);
+    return ParseInt64W(m_value);
 }
 
 // @0x140be6eb0
@@ -145,12 +145,12 @@ void UICollectItemGroupEventDialog::OnLoadComplete()
     {
         CString strName = StringFormat("m_eventButton{0}", i);
         m_eventButtons[i] = GetChild<ASButton>(strName);
-        m_eventButtons[i]->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnEventButton), IntToUserData(i));
+        m_eventButtons[i]->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnEventButton), IntToUserData(i));
     }
     m_conditionItem = GetChild<ASMovieClip>("m_conditionItem");
     m_rewardPanel = GetChild<ASMovieClip>("m_rewardPanel");
     m_recieveItemButton = GetChild<ASButton>("m_recieveItemButton");
-    m_recieveItemButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnReceive), 0);
+    m_recieveItemButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnReceive), 0);
     m_conditionItem->vfunc_4(false);
     RefreshEvents();
     SelectEvent(0);
@@ -246,7 +246,7 @@ void UICollectItemGroupEventDialog::Refresh()
             spSlotMovie->vfunc_15("checking");
         else
             spSlotMovie->vfunc_15("normal");
-        FUN_140cff840((*spSlotMovie).FUN_1422bb890(), "m_recivedMovie", bReceived);
+        SetChildVisible((*spSlotMovie).FUN_1422bb890(), "m_recivedMovie", bReceived);
         MS2Ptr<ASItemSlot> spSlot = static_cast<Unk_BingoClip*>(spSlotMovie.operator->())->GetItemSlot("m_slot");
         if (spSlot == 0)
             continue;
@@ -264,7 +264,7 @@ void UICollectItemGroupEventDialog::Refresh()
         m_rewardPanel->vfunc_15("checking");
     else
         m_rewardPanel->vfunc_15("normal");
-    FUN_140cff840((*m_rewardPanel).FUN_1422bb890(), "m_recivedMovie", bReceived);
+    SetChildVisible((*m_rewardPanel).FUN_1422bb890(), "m_recivedMovie", bReceived);
     bool bEnable = bComplete && !bReceived;
     MS2Ptr<ASMovieClip> spEffect = m_rewardPanel->FUN_1409b4560("m_effect");
     if (spEffect.get() != 0)
@@ -300,7 +300,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
         bool bWorn = false;
         if (nCount == 1)
         {
-            PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+            PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
             if (pPlayer != 0)
             {
                 if (reinterpret_cast<CEquipment*>(static_cast<Unk_CigEquipSet*>(pPlayer->GetEquipment()))->FUN_1411e0c30(nItemId) == 1 || pPlayer->GetGemEquip()->HasItemId(nItemId) == true)
@@ -344,7 +344,7 @@ void UICollectItemGroupEventDialog::HideItemPanels()
     for (int i = 2; i <= 5; ++i)
     {
         CString strName = StringFormat("item_panel{0}", i);
-        FUN_140cff840((*m_conditionItem).FUN_1422bb890(), strName, 0);
+        SetChildVisible((*m_conditionItem).FUN_1422bb890(), strName, 0);
     }
 }
 MS2_REPLACE_METHOD(0x140BE8900, UICollectItemGroupEventDialog, HideItemPanels, 208, 0xDAA951E0);

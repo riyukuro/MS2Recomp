@@ -39,7 +39,7 @@ public:
 class Unk_MMWorld
 {
 public:
-    Unk_MMPlayer* FUN_141bd0cc0();                          // the local player
+    Unk_MMPlayer* GetLocalPlayer();                          // the local player
 };
 class GFxSceneService { public: int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 
@@ -162,7 +162,7 @@ void CMentoringManager::Reset()
 // @0x140b71580
 unsigned CMentoringManager::FUN_140b71580()
 {
-    Unk_MMPlayer* pPlayer = ((Unk_MMPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MMPlayer* pPlayer = ((Unk_MMPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return pPlayer->FUN_14165ffe0();
@@ -310,8 +310,8 @@ void CMentoringManager::OnResult(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMResultPacket1 data;
-    reinterpret_cast<Unk_MentorResultPacket*>(&data)->FUN_14069a420(MMReader(packet));
-    Unk_MMPlayer* pPlayer = reinterpret_cast<Unk_MMPlayer*>(WorldService::GetInstance()->FUN_141bd1290(data.value));
+    reinterpret_cast<Unk_MentorResultPacket*>(&data)->ReadResult(MMReader(packet));
+    Unk_MMPlayer* pPlayer = reinterpret_cast<Unk_MMPlayer*>(WorldService::GetInstance()->FindPCById(data.value));
     if (pPlayer != 0)
         pPlayer->FUN_14165ffc0(data.result);
 }
@@ -348,7 +348,7 @@ void CMentoringManager::OnPairMode(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMPairPacket15 data;
-    reinterpret_cast<CMentorPairModePacket*>(&data)->FUN_14069ab50(MMReader(packet));
+    reinterpret_cast<CMentorPairModePacket*>(&data)->Read(MMReader(packet));
     for (unsigned i = 0; i < data.entries.GetCount(); i = i + 1)
     {
         const CMentorPairModePacket::CPairMode& entry = data.entries.GetAt(i);
@@ -377,7 +377,7 @@ void CMentoringManager::OnInviteMentee(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMNamePacket5 data;
-    reinterpret_cast<Unk_MentorNamePacket*>(&data)->FUN_14069a5a0(MMReader(packet));
+    reinterpret_cast<Unk_MentorNamePacket*>(&data)->Read(MMReader(packet));
     FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_invite_invite_mentee"), data.name), 0x10);
 }
 
@@ -457,7 +457,7 @@ void CMentoringManager::OnSetDate(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMValuePacket10 data;
-    reinterpret_cast<Unk_MentorValuePacket*>(&data)->FUN_14069a9c0(MMReader(packet));
+    reinterpret_cast<Unk_MentorValuePacket*>(&data)->Read(MMReader(packet));
     m_n18 = data.value;
     m_n20 = data.id;
 }
@@ -467,7 +467,7 @@ void CMentoringManager::OnSetCounts(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMTwoValuePacket11 data;
-    reinterpret_cast<Unk_MentorTwoValuePacket*>(&data)->FUN_14069aa90(MMReader(packet));
+    reinterpret_cast<Unk_MentorTwoValuePacket*>(&data)->Read(MMReader(packet));
     m_n8 = data.a;
     m_nC = data.b;
     m_n10 = data.id;
@@ -478,7 +478,7 @@ void CMentoringManager::OnMentorRequest(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MentorDetailPacket data;
-    data.FUN_14069a850(MMReader(packet));
+    data.Read(MMReader(packet));
     m_mentors.Add(data.mentor);
     Unk_MentorPtr<UIInviteMentoringDialog> spDialog(FUN_140b6f4c0(0x4f4c));
     if (spDialog.get() != 0)

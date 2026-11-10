@@ -57,7 +57,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 CString ToCString(const char* psz, int n);                           // undecorated class name
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -184,7 +184,7 @@ int CostumeSetTable::LoadXml()
     }
     for (TiXmlElement* pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("costumeSet")); pSet != 0; pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pSet))->NextSibling("costumeSet")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pSet)))
             continue;
         unsigned nSetId = 0;
         XmlGetAttr((class TiXmlElement*)(pSet), "id", nSetId);

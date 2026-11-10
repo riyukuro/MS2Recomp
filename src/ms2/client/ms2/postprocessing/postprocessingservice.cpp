@@ -1270,7 +1270,7 @@ class WorldService   // C3: unit-local view of the callback set
 {
 public:
     static WorldService* GetInstance();
-    void FUN_141bbae40(void* p);
+    void AddCallback(void* p);
 };
 // The keyboard state (FUN_14025e7c0()).
 void* FUN_14025e7c0();
@@ -1746,7 +1746,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     pFlatModelManager->RegisterBuiltinModelFactory("PlaneReflectionSetting", 0xddb91342, CreatePlaneReflectionSetting, 0);
     efd::MessageService* pkMessageService = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
     pkMessageService->Subscribe(this, DAT_143ae4c20, 0, false);
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
 
     if (FUN_1416a69a0())
         SetFloatTargetFormat(true);

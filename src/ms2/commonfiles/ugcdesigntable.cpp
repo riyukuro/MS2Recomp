@@ -61,7 +61,7 @@ bool CUGCDesignTable::s_bInit;
 
 
 
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -76,7 +76,7 @@ class Unk_1401d3200;
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the default market max price
 
 // Defined below (0x14089fef0): the s_bInit setter the loader calls.
-void FUN_14089fef0(bool bInit);
+void SetInitialized(bool bInit);
 
 // ---- CUGCDesignData ----
 
@@ -147,7 +147,7 @@ bool CUGCDesignTable::Reload()
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
              pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
                 continue;
             CStringW strLocale;
             XmlGetAttr((class TiXmlElement*)(pNode), "locale", strLocale);
@@ -164,7 +164,7 @@ bool CUGCDesignTable::Reload()
             spData->Parse(pNode, nDefaultMarketMaxPrice);
             m_map.SetAt(nItemID, spData);
         }
-        FUN_14089fef0(true);
+        SetInitialized(true);
     }
     return true;
 }
@@ -203,7 +203,7 @@ CUGCDesignDataPtr CUGCDesignTable::GetData(unsigned int nItemID)
 MS2_REPLACE_METHOD(0x14089E9F0, CUGCDesignTable, GetData, 228, 0x4D21A01F);
 
 // @0x14089fef0
-void FUN_14089fef0(bool bInit)
+void SetInitialized(bool bInit)
 {
     CUGCDesignTable::s_bInit = bInit;
 }

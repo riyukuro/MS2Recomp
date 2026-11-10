@@ -42,12 +42,12 @@ public:
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
-bool FUN_14028d470(float a, float b);                                       // approximately equal
+bool IsNearlyEqual(float a, float b);                                       // approximately equal
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern const int DAT_1439f4a10;                                             // the option slots per row (4)
 
@@ -147,7 +147,7 @@ bool UnlimitedEnchantTable::Load()
     std::map<int, RangeMap> ranges;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("option")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         int nSlot = 0;
         CString strGrade;
@@ -187,23 +187,23 @@ bool UnlimitedEnchantTable::Load()
             XmlValue(pNode, StringFormat<int>("option{0}", i), nOption);
             XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<int>("value{0}", i), reinterpret_cast<__int64&>(nValue));
             XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<int>("rate{0}", i), reinterpret_cast<float&>(fRate));
-            if (nOption != -1 && (!FUN_14028d470(fRate, 0) || nValue != 0))
+            if (nOption != -1 && (!IsNearlyEqual(fRate, 0) || nValue != 0))
             {
                 MS2Ptr<BaseOption> spOption(new BaseOption);
                 if (nValue != 0)
                     spOption->SetValue((int)nValue);
                 else
-                    spOption->FUN_140266e50(fRate);
+                    spOption->SetRate(fRate);
                 spInfo->m_stats.insert(std::make_pair(nOption, spOption));
             }
             Unk_SocketSpecialStat nSpecial = (Unk_SocketSpecialStat)0;
             float fSpecialRate = 0;
             XmlValue(pNode, StringFormat<int>("sa_option{0}", i), nSpecial);
             XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<int>("sa_rate{0}", i), reinterpret_cast<float&>(fSpecialRate));
-            if (nSpecial != 0 && !FUN_14028d470(fSpecialRate, 0))
+            if (nSpecial != 0 && !IsNearlyEqual(fSpecialRate, 0))
             {
                 MS2Ptr<BaseOption> spOption(new BaseOption);
-                spOption->FUN_140266e50(fSpecialRate);
+                spOption->SetRate(fSpecialRate);
                 spInfo->m_specials.insert(std::make_pair(nSpecial, spOption));
             }
         }

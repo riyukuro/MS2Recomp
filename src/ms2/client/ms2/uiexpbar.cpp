@@ -132,7 +132,7 @@ void UIExpBar::UpdateExp(const unsigned int& nFlags)
 // @0x1419322a0
 __int64 UIExpBar::GetCurrentExp()
 {
-    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a0;
@@ -142,7 +142,7 @@ __int64 UIExpBar::GetCurrentExp()
 // @0x1419322e0
 __int64 UIExpBar::GetNextLevelExp()
 {
-    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
 
@@ -152,7 +152,7 @@ __int64 UIExpBar::GetNextLevelExp()
 // @0x141932340
 __int64 UIExpBar::GetRestExp()
 {
-    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return DAT_143ab28a8;
@@ -169,7 +169,7 @@ void UIExpBar::SetPointVisible(int nVisible)
 void UIExpBar::FUN_141932430()
 {
     int nVisible = 1;
-    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     efd::SmartPointer<Ridee> spHolder(reinterpret_cast<Ridee*>(pPlayer->GetRidee()));
@@ -215,7 +215,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         strText = FormatStringId<CStringW, CStringW>(0x769, FUN_1409404f0(GetCurrentExp()), FUN_1409404f0(GetNextLevelExp()));
         if (0 < DAT_143ab28a8)
         {
-            Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
             if (pPlayer == 0)
                 return;
             unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();

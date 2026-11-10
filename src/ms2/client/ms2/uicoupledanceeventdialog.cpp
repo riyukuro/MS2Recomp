@@ -44,9 +44,9 @@ static CString s_strChartOrderNames[] = {"None", "Buy", "PriceLow", "PriceHigh",
 
 
 
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);               // Value = b
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);               // Value = b
 
-CString FUN_1407186a0(const CStringW& str);      // narrow copy of a wide string
+CString ToNarrowString(const CStringW& str);      // narrow copy of a wide string
 __int64 GetServerTime();                         // the current time source
 
 // @0x140bfe2c0
@@ -55,7 +55,7 @@ template <> inline CString GameEventVariable::GetValue<CString>(const CString& s
     CMsTime now(GetServerTime());
     if (m_time <= now)
         return strDefault;
-    return FUN_1407186a0(m_value);
+    return ToNarrowString(m_value);
 }
 
 // Local player (0x1403ed2d0 singleton -> 0x141bd0cc0): a large virtual class; only a few slots are used here.
@@ -159,7 +159,7 @@ public:
     virtual void vfunc_86();
     virtual MS2Ptr<Unk_PCBaseComp_ac8> vfunc_87();                      // 87
 };
-class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
+class Unk_1403ed2d0 { public: Unk_141bd0cc0* GetLocalPlayer(); };
 bool FUN_140b7f400(class MyPC*);
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);
 bool FUN_140b884e0(Vector3&);   // C3: was FUN_140b884e0
@@ -169,7 +169,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void ShowMessageBox(CStringW strMessage, int nType, void* pListener, CStringW strTag);
 CStringW GetStringCommonByKey(const CStringW& strKey);     // translate
-CStringW FUN_140298ea0(CStringW strKey);            // translate (by value)
+CStringW GetStringByKey(CStringW strKey);            // translate (by value)
 void FUN_1412752d0(const CStringW& str, int n);     // system notice
 void FUN_14151f200();
 
@@ -210,7 +210,7 @@ MS2_REPLACE_METHOD(0x140BFCC50, UICoupleDanceEventDialog, vfunc_72, 34, 0x3E6691
 // @0x140bfcc80
 void UICoupleDanceEventDialog::vfunc_67()
 {
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer) {
         if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() == 0x3b)
             pPlayer->vfunc_59(1, 0, 0, 0);
@@ -236,7 +236,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return 1;
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer) {
         MS2_ASSERT_AT(232, 0);
         return 0;
@@ -269,7 +269,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         if (reinterpret_cast<UIHudEntity::Entity*>(pParty.operator->())->FUN_140f48d40() == 0)
             return 0;
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringByKey(L"s_microgame_couple_dance_close"), 1);
         box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
@@ -292,7 +292,7 @@ MS2_REPLACE_METHOD(0x140BFCD30, UICoupleDanceEventDialog, vfunc_28, 1478, 0x6FA6
 // @0x140bfd300
 int UICoupleDanceEventDialog::vfunc_71()
 {
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer) {
         MS2_ASSERT_AT(310, 0);
         return 0;
@@ -422,7 +422,7 @@ void UICoupleDanceEventDialog::RefreshBannerButton()
         return;
     if (!FUN_141924630())
         return;
-    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
         return;
     MS2Ptr<Unk_PCBaseComp_ac8> pParty = pPlayer->vfunc_87();
@@ -483,6 +483,6 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool b)
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bcce0(&args[0], b);
+    SetBoolean(&args[0], b);
     return FUN_1422bb8f0(szMethod, args);
 }

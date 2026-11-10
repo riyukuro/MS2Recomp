@@ -17,7 +17,7 @@ class TGemStoneInEquip : public CPtred {
 public:
     TGemStoneInEquip(MS2Ptr<CItem> gem, MS2Ptr<CItem> equipment, int slot);   // 0x140f744f0
     // ~TGemStoneInEquip is implicit (0x140f7b4e0): the exe dtor stores no vftable
-    bool FUN_140f74590();               // 0x140f74590 incomplete: no gemstone, no equipment or no slot
+    bool IsIncomplete();               // 0x140f74590 incomplete: no gemstone, no equipment or no slot
     MS2Ptr<CItem> m_gem;                // +0x18
     MS2Ptr<CItem> m_equipment;          // +0x28
     int m_slot;                         // +0x38
@@ -51,17 +51,17 @@ public:
     void FUN_140f76970();
     void FUN_140f770b0();
     void FUN_140f77360(MS2Ptr<CItem>);
-    void FUN_140f77560(CCItemSocketSystemPacket::SelectItemResult*);
+    void OnSelectItemResult(CCItemSocketSystemPacket::SelectItemResult*);
     void FUN_140f77950(ASObj&);
     void FUN_140f78110(MS2Ptr<CItem>);
-    void FUN_140f78720(CInPacket*);
+    void OnSelectItemPacket(CInPacket*);
     void FUN_140f787a0(CInPacket*);
     void FUN_140f78f30(CInPacket*);
     void FUN_140f79210();
     void FUN_140f79430();
-    void FUN_140f79490();
-    void FUN_140f79540();
-    void FUN_140f79680(__int64);
+    void ClearSelectionIfMissing();
+    void SyncBagSelection();
+    void SetHighlightUid(__int64);
     void SendItemSocketSystemMode15(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140f798e0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140f799d0(const Scaleform::GFx::FunctionHandler::Params&);
@@ -69,10 +69,10 @@ public:
     void FUN_140f79c50(ItemInfoSlot&, ASTooltip&);
     bool FUN_140f79e10(MS2Ptr<TGemStoneInEquip>, MS2Ptr<CItem>, int*);
     MS2Ptr<CItem> FUN_140f7a0c0(int);
-    MS2Ptr<CItem> FUN_140f7a190(__int64, int*);
-    bool FUN_140f7a200(int, MS2Ptr<CItem>);
+    MS2Ptr<CItem> FindGemByUid(__int64, int*);
+    bool ReplaceGemAt(int, MS2Ptr<CItem>);
     MS2Ptr<TGemStoneInEquip> FUN_140f7a380(__int64);
-    void FUN_140f7a440(NotifyObject*);
+    void OnGameEventChanged(NotifyObject*);
 
     CString m_gemsName;                                         // +0x38
     CString m_selectedName;                                     // +0x40

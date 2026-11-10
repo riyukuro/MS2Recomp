@@ -106,7 +106,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
 {
     if (m_30.get() != 0)
     {
-        Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pActor != 0)
         {
             if (((unsigned int)((class PC*)(pActor))->FUN_141660030()) != 0)

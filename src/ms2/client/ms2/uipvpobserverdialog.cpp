@@ -43,7 +43,7 @@ class Unk_PoMe : public MyPC                                      // the local p
 class Unk_PoWorld                                               // the world service
 {
 public:
-    Unk_PoMe* FUN_141bd0cc0();                                      // the local player
+    Unk_PoMe* GetLocalPlayer();                                      // the local player
 };
 
 struct Unk_PoConfig
@@ -114,7 +114,7 @@ void UIPvPObserverDialog::vfunc_67()
         }
     }
     UIDialog::vfunc_67();
-    Unk_PoMe* pPC = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PoMe* pPC = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     pPC->StopObserving();
@@ -173,7 +173,7 @@ void UIPvPObserverDialog::vfunc_79(void* pData)
 // @0x141a916d0
 int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -259,7 +259,7 @@ void UIPvPObserverDialog::SetDuelMatchInfo(const Unk_PvPObsInfo& info)
 // @0x141a91b40
 void UIPvPObserverDialog::FUN_141a91b40()
 {
-    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     if (m_30.IsNull())

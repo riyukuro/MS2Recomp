@@ -108,7 +108,7 @@ void FUN_14028cf00(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, co
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszDelimiters);
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
-unsigned __int64 FUN_140718370(const CStringW& str);
+unsigned __int64 ParseUInt64W(const CStringW& str);
 bool FUN_14053f8c0(unsigned nUid);
 bool FUN_14053f940(unsigned nUid);
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
@@ -205,7 +205,7 @@ bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
 }
 
 // @0x140d2aa60
-bool FUN_140d2aa60(CStringW& strLink)
+bool HasChatLink(CStringW& strLink)
 {
     int nPos = strLink.Find(L"event:itemTooltip", 0);
     if (nPos > 0)
@@ -232,7 +232,7 @@ bool FUN_140d2ab10(CStringW& strLine)
         return false;
 
     int nSource = FUN_1407181a0(parts[0]);
-    unsigned __int64 nUid = FUN_140718370(parts[1]);
+    unsigned __int64 nUid = ParseUInt64W(parts[1]);
     int nKind = FUN_1407181a0(parts[2]);
     CStringW strArgs(parts[3]);
 
@@ -393,7 +393,7 @@ CStringW FUN_140d2bff0(MS2Ptr<CItem> spItem)
 
 // Cuts every pair of [begin ... end] out of the text into the list. true when at least one was found.
 // @0x140d2c080
-bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd)
+bool FindLinks(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd)
 {
     if (strText.IsEmpty())
         return false;
@@ -431,7 +431,7 @@ void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& arrLin
         return;
 
     ATL::CAtlList<CStringW> links(10);
-    if (FUN_140d2c080(CStringW(strHtml), links, CStringW(L"<A HREF="), CStringW(L"/A>")))
+    if (FindLinks(CStringW(strHtml), links, CStringW(L"<A HREF="), CStringW(L"/A>")))
     {
         BOOL bChanged = FALSE;
         for (POSITION pos = links.GetHeadPosition(); pos != NULL; links.GetNext(pos))
@@ -633,7 +633,7 @@ CStringW FUN_140d2d440(unsigned nId, int nGrade)
 
     CStringW strDate;
     CStringW strText;
-    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC != NULL)
     {
         int nKind = 2;
@@ -722,7 +722,7 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == NULL)
     {
-        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC != NULL)
         {
             spItem = pPC->FUN_141655b80(nUid);

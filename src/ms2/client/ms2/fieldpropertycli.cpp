@@ -70,7 +70,7 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     int SetGravity(float);
     void FUN_141bcabf0();
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     void SetMusicConcert(void* p, int n);
     Unk_WsC_TagPtr FUN_141bd0420(unsigned key);   // the entities of a model
     static class WorldService* GetInstance();
@@ -147,7 +147,7 @@ void FieldPropertyMusicConcertCli::vfunc_5() { WorldService::GetInstance()->SetM
 // @0x140b27700
 void FieldPropertyHideMyPCCli::vfunc_4()
 {
-    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->AddHideReason(1);
@@ -161,7 +161,7 @@ void FieldPropertyHideMyPCCli::vfunc_4()
 // @0x140b27790
 void FieldPropertyHideMyPCCli::vfunc_5()
 {
-    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->RemoveHideReason(1);
@@ -176,7 +176,7 @@ void FieldPropertyHideMyPCCli::vfunc_5()
 // @0x140b27820
 void FieldPropertyLockMyPCCli::vfunc_4()
 {
-    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->AddStateFlags(0x400);
@@ -184,7 +184,7 @@ void FieldPropertyLockMyPCCli::vfunc_4()
 // @0x140b27860
 void FieldPropertyLockMyPCCli::vfunc_5()
 {
-    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->RemoveStateFlags(0x400);

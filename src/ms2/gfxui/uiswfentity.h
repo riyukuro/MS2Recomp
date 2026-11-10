@@ -99,19 +99,19 @@ public:
 
     CString GetManagerKey();                                // m_20 (the manager key)
     int FUN_1422db730();                                    // m_28
-    int FUN_1422db750();                                    // m_2c
+    int GetLayer();                                    // m_2c
     int FUN_1422db770();                                    // m_44
     CString GetSwfFileName();                                // swf file name: "UI{vfunc_7()}.swf" ("Debug_UI..." if m_40)
-    CString FUN_1422db910(void* p);                         // resolve a path through the GFx file system
-    MS2Ptr<AScript> FUN_1422dba00();                        // m_30
-    MS2Ptr<ASDisplayObject> FUN_1422dba50();                // m_30 as ASDisplayObject
+    CString ResolvePath(void* p);                         // resolve a path through the GFx file system
+    MS2Ptr<AScript> GetScript();                        // m_30
+    MS2Ptr<ASDisplayObject> GetDisplayObject();                // m_30 as ASDisplayObject
     const Scaleform::GFx::Value& GetGFxValue();           // m_30's GFx value (an undefined Value when not loaded)
     const Scaleform::GFx::Value& FUN_1422dbc00();           // GetGFxValue()
     void PreloadSwf(int a1, int a2);                     // register with the manager without loading
-    void LoadSwf(int a1, int a2, int a3);             // load the swf: FUN_1422dbf80(GetSwfFileName(), ...)
-    void FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3);    // load strPath (m_2c = a1, m_44 = a2)
-    void FUN_1422dc080();                                   // vfunc_4(); FUN_1422dc0b0()
-    void FUN_1422dc0b0();                                   // unload (vfunc_26, manager, vfunc_27, m_30 = NULL)
+    void LoadSwf(int a1, int a2, int a3);             // load the swf: LoadSwfPath(GetSwfFileName(), ...)
+    void LoadSwfPath(const CString& strPath, int a1, int a2, int a3);    // load strPath (m_2c = a1, m_44 = a2)
+    void FUN_1422dc080();                                   // vfunc_4(); Unload()
+    void Unload();                                   // unload (vfunc_26, manager, vfunc_27, m_30 = NULL)
     void Reload();                                   // reload when FUN_1422dc310()
     void FUN_1422dc260(int n);
     void FUN_1422dc2b0(int n);                              // m_4c = n

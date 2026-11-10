@@ -135,7 +135,7 @@ void UIBootyPopup::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    void* pWorld = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pWorld = WorldService::GetInstance()->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (m_78 != 0)
@@ -159,7 +159,7 @@ MS2_REPLACE_METHOD(0x141031840, UIBootyPopup, vfunc_28, 67, 0x0A02777B);
 // @0x141031890
 void UIBootyPopup::UpdateScreenPosition()
 {
-    void* pWorld = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pWorld = WorldService::GetInstance()->GetLocalPlayer();
     if (pWorld == 0)
         return;
     if (m_7c != 0)

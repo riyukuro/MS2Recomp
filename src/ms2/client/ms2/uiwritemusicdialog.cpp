@@ -236,10 +236,10 @@ int FUN_140d74e80(CStringW& strTag);                                  // the ter
 void FUN_14151f200();
 void FUN_140d73cd0();                                                       // the keyboard writing guide
 void FUN_1401ffd60(unsigned char*);   // C3: was FUN_1401ffd60
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bVisible);    // show a child
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int bVisible);    // show a child
 
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a child's text
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);   // enable a child
+void SetChildEnabled(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);   // enable a child
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 std::string ToHexString(unsigned long nColor);                            // the color as hex text
 CStringW GetFullPath(const CStringW& strDir);                             // the full path
@@ -248,7 +248,7 @@ CStringW FUN_141b6e6f0(const CStringW& strDir, const wchar_t* szFilter, const CS
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* pszSep);   // split (C3: was FUN_14015f0b0)
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);                   // wide -> multibyte
 CStringW FUN_14016a730(const char* psz, int nCodePage);                    // multibyte -> wide
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);         // Value = psz
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);         // Value = psz
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);      // Value = psz
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // Value = v
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // Value = n
@@ -396,7 +396,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         bool bReadOnly = m_nMode == 2;
         obj.SetBoolMember("readOnly", bReadOnly);
         if (bReadOnly)
-            obj.SetWStringMember("title", m_spItem->FUN_1405296c0());
+            obj.SetWStringMember("title", m_spItem->GetMusicTitle());
         m_30->Invoke("initData", Scaleform::GFx::Value(obj.GetValue()));
         m_spTabs = m_30->FUN_140be23c0<ASButtonBar>("m_tabMusic");
         if (!m_strText.IsEmpty())
@@ -412,7 +412,7 @@ void UIWriteMusicDialog::OnLoadComplete()
             spRollType->AddItemLabel(GetStringCommonByKey(L"s_writemusic_playline_show_per_bar"));
             spRollType->SetSelectedIndex(0);
         }
-        FUN_140cff840(GetGFxValue(), "m_drumInfoText", 0);
+        SetChildVisible(GetGFxValue(), "m_drumInfoText", 0);
         FUN_140ff1b10(0);
     }
     ((class Unk_WmInstrumentMgr*)GetInstrumentManager())->AddFlags(1);
@@ -496,7 +496,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140ff12d0(&data);
+            OnClickPlayStart(&data);
         return 1;
     }
     else if (_stricmp("onClickPlayStop", szMethod) == 0)
@@ -538,7 +538,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             CStringW strNote = data.FUN_1422b8f40();
             if (!strNote.IsEmpty())
-                GetGFxManager()->FUN_1422b0ea0(strNote);
+                GetGFxManager()->SetClipboardText(strNote);
         }
         return 1;
     }
@@ -562,9 +562,9 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             if (spCategory == 0)
                 return 1;
             if (spCategory->IsPercussion())
-                FUN_140cff840(GetGFxValue(), "m_drumInfoText", 1);
+                SetChildVisible(GetGFxValue(), "m_drumInfoText", 1);
             else
-                FUN_140cff840(GetGFxValue(), "m_drumInfoText", 0);
+                SetChildVisible(GetGFxValue(), "m_drumInfoText", 0);
         }
         return 1;
     }
@@ -572,7 +572,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140ff21a0(&data);
+            OnChangeValuePlayBar(&data);
         return 1;
     }
     else if (_stricmp("onThumbBeginDragPlayBar", szMethod) == 0)
@@ -688,7 +688,7 @@ bool UIWriteMusicDialog::BeginWriteWithItem(MS2Ptr<CItem> spItem)
 }
 
 // @0x140fef8f0
-bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
+bool UIWriteMusicDialog::ViewScore(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return false;
@@ -730,7 +730,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
 }
 
 // @0x140fefd00
-void UIWriteMusicDialog::FUN_140fefd00(MS2Ptr<CItem> spItem)
+void UIWriteMusicDialog::OnScoreMade(MS2Ptr<CItem> spItem)
 {
     if (vfunc_55() != 0)
         return;
@@ -746,7 +746,7 @@ void UIWriteMusicDialog::FUN_140fefd00(MS2Ptr<CItem> spItem)
             if (spInvItem.get())
             {
                 CStringW strName = spInvItem->FUN_140527b10();
-                spBox->FUN_141a01ee0(m_spItem, strName, 1, 0, -1, -1, 1);
+                spBox->SetItemEntry(m_spItem, strName, 1, 0, -1, -1, 1);
                 FUN_140d73c60(spBox);
             }
         }
@@ -791,7 +791,7 @@ void UIWriteMusicDialog::ShowScoreText(unsigned __int64 nItemUid, const CString&
 }
 
 // The tab list of the AS score (an array of {content}).
-inline MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v);
+inline MS2Ptr<ASDataProvider> CreateDataProvider(int nMovieId, Scaleform::GFx::Value& v);
 
 // @0x140ff03b0
 void UIWriteMusicDialog::OnClickMake(ASData* pArgs)
@@ -825,7 +825,7 @@ void UIWriteMusicDialog::OnClickMake(ASData* pArgs)
         return;
     }
     Scaleform::GFx::Value tabs = pArgs->PopValue();
-    MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
+    MS2Ptr<ASDataProvider> spTabs = CreateDataProvider(m_28, tabs);
     CString strMml;
     if (!spTabs || spTabs->GetLength() == 0)
     {
@@ -879,7 +879,7 @@ void UIWriteMusicDialog::OnClickMake(ASData* pArgs)
     int nMax = 0;
     {
         // FUN_140527840 returns the item's CItemData (citem.h declares it as the incomplete Unk_ItemEquipData).
-        MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(static_cast<CItem*>(m_spItem)->FUN_140527840()));
+        MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(static_cast<CItem*>(m_spItem)->GetData()));
         if (spData)
         {
             MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(spData->GetItemId());
@@ -914,7 +914,7 @@ void UIWriteMusicDialog::OnClickPlayGoFirstAndPause()
 }
 
 // @0x140ff12d0
-void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
+void UIWriteMusicDialog::OnClickPlayStart(ASData* pArgs)
 {
     int nCategory = pArgs->PopInt();
     bool bInvalid = ((class CInstrumentDataTable*)GetInstrumentDataTable())->GetCategory(nCategory) == 0;
@@ -924,7 +924,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
         return;
     }
     Scaleform::GFx::Value tabs = pArgs->PopValue();
-    MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
+    MS2Ptr<ASDataProvider> spTabs = CreateDataProvider(m_28, tabs);
     if (!spTabs || spTabs->GetLength() == 0)
     {
         ShowMessageBox(CStringW(L"s_writemusic_error_play"), 0, 0, CStringW(L""));
@@ -996,7 +996,7 @@ void UIWriteMusicDialog::StopPlayback()
 void UIWriteMusicDialog::PausePlayback()
 {
     ((class Unk_WmInstrumentMgr*)GetInstrumentManager())->StopPreview();
-    FUN_140ff35a0();
+    ClearPlaying();
     if (m_30.get())
         m_30->Invoke("pausePlayMusic");
 }
@@ -1041,7 +1041,7 @@ void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
         if (m_nPage > (int)(m_pages.size() - 1))
             m_nPage = m_pages.size() - 1;
     }
-    FUN_140ff4a80();
+    DrawPianoRollPage();
 }
 
 // @0x140ff1e40
@@ -1083,7 +1083,7 @@ void UIWriteMusicDialog::OnClickLoadFile()
 }
 
 // @0x140ff21a0
-void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
+void UIWriteMusicDialog::OnChangeValuePlayBar(ASData* pArgs)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -1338,7 +1338,7 @@ void UIWriteMusicDialog::ResetPlayState()
 }
 
 // @0x140ff35a0
-void UIWriteMusicDialog::FUN_140ff35a0()
+void UIWriteMusicDialog::ClearPlaying()
 {
     m_bPlaying = 0;
 }
@@ -1410,7 +1410,7 @@ void UIWriteMusicDialog::UpdatePlayLine(unsigned nTime)
     if (m_nPage != nPage)
     {
         m_nPage = nPage;
-        FUN_140ff4a80();
+        DrawPianoRollPage();
     }
     int nPos = nTime % 12000;
     nPos /= 10;
@@ -1458,7 +1458,7 @@ bool UIWriteMusicDialog::FUN_140ff3e50(MS2Ptr<ASDataProvider> spTabs, CString& s
 // @0x140ff40b0
 int UIWriteMusicDialog::GetMaxNoteLength()
 {
-    if (!m_spItem || static_cast<CItem*>(m_spItem)->FUN_140527840() == 0)
+    if (!m_spItem || static_cast<CItem*>(m_spItem)->GetData() == 0)
         return 0;
     MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(static_cast<CItem*>(m_spItem)->GetItemId());
     if (spScore == 0)
@@ -1473,7 +1473,7 @@ void UIWriteMusicDialog::FUN_140ff41a0()
     int nInstrument = -1;
     if (m_spItem.get())
     {
-        strTitle = static_cast<CItem*>(m_spItem)->FUN_1405296c0();
+        strTitle = static_cast<CItem*>(m_spItem)->GetMusicTitle();
         nInstrument = static_cast<CItem*>(m_spItem)->FUN_140527990()->m_n1c;
     }
     CString& strText = m_strText;
@@ -1578,7 +1578,7 @@ void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 }
 
 // @0x140ff4a80
-void UIWriteMusicDialog::FUN_140ff4a80()
+void UIWriteMusicDialog::DrawPianoRollPage()
 {
     if (m_spPlayLine == 0)
         return;
@@ -1639,8 +1639,8 @@ void UIWriteMusicDialog::FUN_140ff4a80()
         }
     }
     SetChildText((*m_spPlayLine).FUN_1422bb890(), CString("m_pageText"), StringFormat(L"{0}", m_nPage + 1));
-    FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), m_nPage > 0);
-    FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), m_nPage < (int)(m_pages.size() - 1));
+    SetChildEnabled((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), m_nPage > 0);
+    SetChildEnabled((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), m_nPage < (int)(m_pages.size() - 1));
     const int nSteps = 6;
     for (int i = 1; i <= nSteps; i++)
     {
@@ -1665,29 +1665,29 @@ void UIWriteMusicDialog::FUN_140ff4a80()
 // @0x140ff57e0
 void UIWriteMusicDialog::FUN_140ff57e0()
 {
-    FUN_140cff950(GetGFxValue(), CString("m_rollType"), 0);
-    FUN_140cff950(GetGFxValue(), CString("m_autoRefreshCheck"), 0);
+    SetChildEnabled(GetGFxValue(), CString("m_rollType"), 0);
+    SetChildEnabled(GetGFxValue(), CString("m_autoRefreshCheck"), 0);
     if (m_spPlayLine == 0)
         return;
     if (FUN_140ff4550() == true)
     {
-        FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 0);
-        FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 0);
+        SetChildVisible((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 0);
+        SetChildVisible((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 0);
     }
 }
 
 // @0x140ff59a0
 void UIWriteMusicDialog::FUN_140ff59a0()
 {
-    FUN_140cff950(GetGFxValue(), CString("m_rollType"), 1);
-    FUN_140cff950(GetGFxValue(), CString("m_autoRefreshCheck"), 1);
+    SetChildEnabled(GetGFxValue(), CString("m_rollType"), 1);
+    SetChildEnabled(GetGFxValue(), CString("m_autoRefreshCheck"), 1);
     if (m_spPlayLine == 0)
         return;
     MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560("m_playingLine");
     if (spLine)
         spLine->SetXInt(0x23);
-    FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 1);
-    FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 1);
+    SetChildVisible((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 1);
+    SetChildVisible((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 1);
 }
 
 // @0x140ff5be0
@@ -1707,7 +1707,7 @@ CStringW UIWriteMusicDialog::GetNoteTooltip(int nPitch, int nTab, unsigned long 
 // ---- inline COMDATs of this unit ----
 
 // @0x140ff6b60
-inline MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v)
+inline MS2Ptr<ASDataProvider> CreateDataProvider(int nMovieId, Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASDataProvider> spTabs(new ASDataProvider(v, nMovieId));
     return spTabs;
@@ -1730,7 +1730,7 @@ inline Scaleform::GFx::Value Unk_WmScript::FUN_140ff70d0(const char* szMethod, C
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     SetValue(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);

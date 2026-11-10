@@ -59,7 +59,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString ToCString(const char* psz, int n);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -211,7 +211,7 @@ int CItemLapenshardTable::Load()
     const int nIngredients = 4;
     for (Unk_XmlNode* pNode = ((class Unk_XmlNode*)((pRoot))->FirstChild(strKey)); pNode != 0; pNode = ((class Unk_XmlNode*)((pNode))->NextSibling(strKey)))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nItemId;
         XmlGetAttr((class TiXmlElement*)(pNode), strItemId, nItemId);
@@ -260,7 +260,7 @@ int CItemLapenshardTable::Load()
                         std::vector<CString> tokens;   // C3: was Unk_StrVec
                         FUN_140275080(strValue, (void*)&tokens, ":");
                         if (tokens.size() > 0)
-                            nId = FUN_1407181d0(tokens[0]);
+                            nId = ParseUInt(tokens[0]);
                         if (tokens.size() > 1)
                             nTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tokens[1]);
                     }

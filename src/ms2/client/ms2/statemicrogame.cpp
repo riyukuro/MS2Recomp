@@ -129,7 +129,7 @@ class Unk_MgBuffMgr { public: };
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
-CStringW FUN_140298ea0(CStringW str);                    // 0x140298ea0 string-table lookup of a key
+CStringW GetStringByKey(CStringW str);                    // 0x140298ea0 string-table lookup of a key
 void FUN_141275260(int nStringId, int nA, int nB);       // 0x141275260 notice by string id
 int GetRandomRange(int, int);   // C3: was GetRandomRange
 extern Unk_Inventory g_143ab2a90;                        // the rps event's context table
@@ -455,7 +455,7 @@ void StateMicroGameRps::FUN_140b877c0()
     CStringW strText = spGame->m_play.m_messages.GetAt(nIndex);
     Unk_CommandChat chat;
     chat.kind = 0x17;
-    chat.message = FUN_140298ea0(strText);
+    chat.message = GetStringByKey(strText);
     FUN_141276f80(&chat);
 }
 
@@ -466,7 +466,7 @@ PCBase* StateMicroGameRps::GetRpsPC()
     if (pWorld == 0)
         return 0;
     if (m_spRps.get() != 0)
-        return reinterpret_cast<PCBase*>(pWorld->FUN_141bd1290(m_spRps->m_n18));
+        return reinterpret_cast<PCBase*>(pWorld->FindPCById(m_spRps->m_n18));
     return 0;
 }
 
@@ -563,7 +563,7 @@ bool StateMicroGameRps::FUN_140b87e00()
     CStringW strText = pResult->m_messages.GetAt(nMessage);
     Unk_CommandChat chat;
     chat.kind = 0x17;
-    chat.message = FUN_140298ea0(strText);
+    chat.message = GetStringByKey(strText);
     FUN_141276f80(&chat);
     switch (m_spRps->m_n20)
     {
@@ -876,7 +876,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
     Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(0);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
-        pMessage->ShowMessage(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+        pMessage->ShowMessage(GetStringByKey(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
@@ -934,7 +934,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
     Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(3);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
-        pMessage->ShowMessage(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+        pMessage->ShowMessage(GetStringByKey(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)spEvent->m_dances[nDance];
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
@@ -948,7 +948,7 @@ PCBase* StateMicroGameCoupleDance::GetDancePC()
     if (pWorld == 0)
         return 0;
     if (m_spDance.get() != 0)
-        return reinterpret_cast<PCBase*>(pWorld->FUN_141bd1290(m_spDance->m_n18));
+        return reinterpret_cast<PCBase*>(pWorld->FindPCById(m_spDance->m_n18));
     return 0;
 }
 
@@ -1073,7 +1073,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
     Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(1);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
-        pMessage->ShowStageMessage(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+        pMessage->ShowStageMessage(m_nStage + 1, GetStringByKey(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
@@ -1147,7 +1147,7 @@ void StateMicroGameCoupleDance::EndStage()
     Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
-        pMessage->ShowMessage(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+        pMessage->ShowMessage(GetStringByKey(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
@@ -1179,7 +1179,7 @@ void StateMicroGameCoupleDance::FinishDance()
     Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
-        pMessage->ShowMessage(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+        pMessage->ShowMessage(GetStringByKey(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;

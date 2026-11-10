@@ -229,17 +229,17 @@ void UIItemBillBoardDialog::OnLoadComplete()
         SetChildText((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_advertiser"));
         ASButton* pInstallButton = m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get();
         if (pInstallButton != 0)
-            m_installButton.operator->()->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), nullptr);
+            m_installButton.operator->()->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), nullptr);
     } else {
         m_advertiserMovie->vfunc_4(0);
         m_customerMovie->vfunc_4(1);
         SetChildText((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_customer"));
         ASButton* pHomeButton = m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get();
         if (pHomeButton != 0)
-            m_homeButton.operator->()->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), nullptr);
+            m_homeButton.operator->()->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), nullptr);
         ASButton* pRemoveButton = m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get();
         if (pRemoveButton != 0) {
-            m_removeButton.operator->()->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), nullptr);
+            m_removeButton.operator->()->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), nullptr);
             if (DAT_143ab2914 >= 0x32)
                 m_removeButton->vfunc_4(1);
             else
@@ -366,10 +366,10 @@ MS2_REPLACE_METHOD(0x140C32360, UIItemBillBoardDialog, FUN_140c32360, 131, 0x2C1
 // @0x140c323f0
 bool UIItemBillBoardDialog::CanInstallBillboard()
 {
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return false;
-    if (WorldService::GetInstance()->FUN_141bd30a0() == (CFieldDataCli*)0)
+    if (WorldService::GetInstance()->GetFieldData() == (CFieldDataCli*)0)
         return false;
     int nError = FUN_1409313b0();
     if (nError != 0) {
@@ -383,7 +383,7 @@ bool UIItemBillBoardDialog::CanInstallBillboard()
         return false;
     }
     if (FUN_140930b10() || !FUN_140930b70()
-        || reinterpret_cast<Unk_RxMapInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nKind == 1) {
+        || reinterpret_cast<Unk_RxMapInfo*>(WorldService::GetInstance()->GetFieldData().operator->())->m_nKind == 1) {
         ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }

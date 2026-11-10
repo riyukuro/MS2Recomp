@@ -37,10 +37,10 @@ public:
     int GetPetId();                                    // m_nPetId
     MS2Ptr<CPetData> GetRow();                     // copy of the row
     int FUN_140b10300();                                    // m_nF44
-    PCBase* FUN_140b10320();                                // the owner as a PC (null when it is not one)
+    PCBase* GetOwnerPC();                                // the owner as a PC (null when it is not one)
     PCBase* FUN_140b10360();                                // the owner (class 0x6200003 cast helper 0x1409613d0)
     CCPetInfoPacket::Info* GetInfo();                 // &m_info
-    void FUN_140b103c0(void* p);                            // m_info.FUN_1401ffd00(p)
+    void SetInfo(void* p);                            // m_info.FUN_1401ffd00(p)
     void FUN_140b10400();                                   // refresh the field object's drop / light state
     void UpdateTamingEffects();                                   // keep the two aura effects of the taming state alive
     void SetKind(int nId);                            // m_nTargetId; arm the taming bar when it is the local player's pet
@@ -54,10 +54,10 @@ public:
     int GetGradeFx();                                    // m_nGradeFx
     float FUN_140b11020();                                  // FUN_140291d10(m_nGradeFx)
     int FUN_140b11180();                                    // use a pet skill (returns 1: used)
-    void FUN_140b11320(float fTime);                        // accumulate the idle time, finish the owner's emote
+    void UpdateIdleTime(float fTime);                        // accumulate the idle time, finish the owner's emote
     void FUN_140b114e0(int nAnimId);                        // play a pet animation
     void PlayEffect(CString strEffect);                  // spawn an effect on the pet
-    int FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel);   // skill may be used
+    int CanUseSkill(int nSkillType, unsigned nSkillId, unsigned short nLevel);   // skill may be used
 
     int m_nPetId;                                           // +0xf40
     int m_nF44;                                             // +0xf44 = 1

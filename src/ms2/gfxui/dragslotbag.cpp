@@ -39,13 +39,13 @@ void DragSlotBag::vfunc_10(int nCount)
 MS2_REPLACE_METHOD(0x1422CC990, DragSlotBag, vfunc_10, 64, 0x9024D7ED);
 
 // @0x1422cc9e0
-void DragSlotBag::FUN_1422cc9e0()
+void DragSlotBag::ClearSlots()
 {
     for (SlotEntry slot : m_slots)
         Unk_NotifyContext::UnregisterBinding(slot.second);
     m_slots.clear();
 }
-MS2_REPLACE_METHOD(0x1422CC9E0, DragSlotBag, FUN_1422cc9e0, 165, 0xA833FB3F);
+MS2_REPLACE_METHOD(0x1422CC9E0, DragSlotBag, ClearSlots, 165, 0xA833FB3F);
 
 // @0x1422cca90
 void DragSlotBag::FUN_1422cca90()
@@ -72,12 +72,12 @@ MS2_REPLACE_METHOD(0x1422CCB50, DragSlotBag, AddSlot, 263, 0xA744F978);
 // @0x1422ccc60
 void DragSlotBag::RemoveSlot(int nIndex)
 {
-    FUN_1422cccc0(vfunc_15(nIndex), nIndex);
+    RemoveSlotEntry(vfunc_15(nIndex), nIndex);
 }
 MS2_REPLACE_METHOD(0x1422CCC60, DragSlotBag, RemoveSlot, 79, 0x08086750);
 
 // @0x1422cccc0
-void DragSlotBag::FUN_1422cccc0(CString strName, int nIndex)
+void DragSlotBag::RemoveSlotEntry(CString strName, int nIndex)
 {
     Unk_NotifyContext::UnregisterBinding(strName);
     m_slots.erase(nIndex);

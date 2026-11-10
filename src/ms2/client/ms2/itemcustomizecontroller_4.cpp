@@ -55,7 +55,7 @@ public:
     class NiCamera* GetCamera() const;
 };
 class CItemData { public: bool FUN_14053cfd0(); };   // C3: member view (itemdata.h)
-class CItem : public CPtred { public: class Unk_ItemEquipData* FUN_140527840(); };          // item -> item data (citem.h's return type)
+class CItem : public CPtred { public: class Unk_ItemEquipData* GetData(); };          // item -> item data (citem.h's return type)
 class GameObject { public: egf::Entity* GetEntity(); };   // C3: unit-local view
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
@@ -184,17 +184,17 @@ int CItemPickingHelper::PickTarget(CEquipModel* pTarget, const CString* pPart, N
     m_spMesh.FUN_141418a00(0);
     if (pTarget == 0)
         return 0;
-    bool bBad = pTarget->GetItem() == 0 || pTarget->GetItem()->FUN_140527840() == 0;
+    bool bBad = pTarget->GetItem() == 0 || pTarget->GetItem()->GetData() == 0;
     if (bBad)
         return 0;
-    void* pGame = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pGame = WorldService::GetInstance()->GetLocalPlayer();
     if (pGame == 0)
         return 0;
     NiAVObject* pMesh = pTarget->GetPartMesh(pPart);
     if (pMesh == 0)
         return 0;
     CAtlArray<NiRenderObject*> skins;
-    bool bSkin = reinterpret_cast<CItemData*>(pTarget->GetItem()->FUN_140527840())->FUN_14053cfd0();
+    bool bSkin = reinterpret_cast<CItemData*>(pTarget->GetItem()->GetData())->FUN_14053cfd0();
     if (bSkin)
     {
         void* pObject = GetOwnerObject(pTarget);

@@ -74,7 +74,7 @@ public:
     Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
     Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 
 // The actor: the pc / npc / pet views and their data handles.
 CubeSpawnObject* FUN_1418fc490(PCBase* pActor);                     // the actor as a pet (queries class id 0x6200080)
@@ -105,7 +105,7 @@ UICutSceneMovie* FindCutSceneMovie(int nUiId);
 void* FindGuideEvent(int nUiId);
 int FUN_141274ff0();
 int FUN_141275080();
-void FUN_141274f50();
+void CloseAllDialogs();
 void* FUN_140aadf80();
 int FUN_141b710a0(unsigned short wc);
 int FUN_14151f6e0();
@@ -403,7 +403,7 @@ UIChatBalloon::Entity* UIChatBalloon::GetEntity(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -427,8 +427,8 @@ UIChatBalloon::Entity* UIChatBalloon::GetEntity(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -537,7 +537,7 @@ int FUN_1418fcb70()
     {
         if (*reinterpret_cast<unsigned char*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0)
             return 0;
-        FUN_141274f50();
+        CloseAllDialogs();
     }
     else
     {

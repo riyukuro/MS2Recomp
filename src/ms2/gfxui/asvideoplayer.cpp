@@ -89,11 +89,11 @@ void ASVideoPlayer::Play(const CString& strPath)
 MS2_REPLACE_METHOD(0x1422E95B0, ASVideoPlayer, Play, 87, 0xAE7AB17C);
 
 // @0x1422e9610
-void ASVideoPlayer::FUN_1422e9610()
+void ASVideoPlayer::RePlay()
 {
     Invoke("rePlay");
 }
-MS2_REPLACE_METHOD(0x1422E9610, ASVideoPlayer, FUN_1422e9610, 46, 0x9E0E218C);
+MS2_REPLACE_METHOD(0x1422E9610, ASVideoPlayer, RePlay, 46, 0x9E0E218C);
 
 // @0x1422e9650
 void ASVideoPlayer::Stop()

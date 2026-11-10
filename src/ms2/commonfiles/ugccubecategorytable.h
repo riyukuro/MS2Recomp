@@ -26,7 +26,7 @@ typedef Unk_SocketNew Unk_CubeNewTag;
 
 
 
-CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 
 // 16-byte intrusive smart pointer (RTTI TPtr<T>; field 0 unused, field 1 the pointee) to a CPtred-derived object.
 // Members are defined below the class so that they stay out-of-line COMDATs like the exe's.
@@ -80,7 +80,7 @@ template <class T> void Unk_CubePtr<T>::AddRef() const { if (m_p) AddRefImpl(0);
 template <class T> void Unk_CubePtr<T>::Make() { Release(); m_p = Create(0); }
 template <class T> void Unk_CubePtr<T>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
 template <class T> T* Unk_CubePtr<T>::Allocate(void*) { return new T(); }
-template <class T> T* Unk_CubePtr<T>::Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate(0))); }
+template <class T> T* Unk_CubePtr<T>::Create(void*) { return static_cast<T*>(InitRefCount(Allocate(0))); }
 template <class T> void Unk_CubePtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
 template <class T> void Unk_CubePtr<T>::AddRefImpl(void*) const { Ref(m_p); }
 template <class T> void Unk_CubePtr<T>::ReleaseImpl(void*)
@@ -147,7 +147,7 @@ template <class T> TPtredDummy<T>* Unk_CubeBoxPtr<T>::Owner(T* p)
     return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value));
 }
 template <class T> void Unk_CubeBoxPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-template <class T> T* Unk_CubeBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+template <class T> T* Unk_CubeBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 template <class T> void Unk_CubeBoxPtr<T>::AddRefImpl(void*) const { Ref(Owner(m_p)); }
 template <class T> void Unk_CubeBoxPtr<T>::ReleaseImpl(void*)
 {

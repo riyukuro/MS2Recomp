@@ -55,22 +55,22 @@ MS2_CHECK_SIZE(Unk_LaunchBitset<4>, 1);
 int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);   // split
-class Unk_LaunchOptions { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
+class Unk_LaunchOptions { public: void ParseOption(const CString& strKey, const CString& strValue); };
 Unk_LaunchOptions* GetLaunchOptions();
-int FUN_1406c34c0();                                                            // the Nexon platform is on
+int IsNexonPlatform();                                                            // the Nexon platform is on
 class CFeatureManager { public: static void SetServerTypeName(CString strEnv); };   // C3: member view;                                             // "-env" / the default "Dev"
-void FUN_140651190(CString strLocale);                                          // "-locale"
+void SetRegionByCode(CString strLocale);                                          // "-locale"
 int FUN_140718170(const CString& strValue);                                         // a number or an enum name
 bool FUN_140718390(const CString& strValue);                                 // a bool
 class CFilePreload { public: static void FUN_141210ca0(bool bValue); };   // C3: member view;                                       // "-preloadAll"
 void SetLanguageByCode(CString strLanguage);                                        // "-language"
-void FUN_140650b50(CString strLanguage);                                        // "-language" / "-voice"
+void SetVoiceByCode(CString strLanguage);                                        // "-language" / "-voice"
 
 // ---- this unit's functions (called from other units) ----
 int FUN_1414b1230();                                                            // parse the command line: 0 = quit
 CString FUN_1414b1380(int nUnused);
 void FUN_1414b13f0(int nIndex, CString strArg);                                 // one argument
-bool FUN_1414b1580(CString strKey);                                             // is the option given
+bool HasOption(CString strKey);                                             // is the option given
 int FUN_1414b15f0(CString strArg);                                             // "/passport:"
 int FUN_1414b16b0(CString strArg);                                             // "/sid:"
 int FUN_1414b1770(CString strArg);                                              // "/arg:"
@@ -129,7 +129,7 @@ int FUN_1414b1230()
         if (FUN_1414b1c40(CString(__argv[1])) != 0)
             return 0;
     }
-    if (FUN_1406c34c0() == 0)
+    if (IsNexonPlatform() == 0)
     {
         FUN_1414b21d0();
         if (g_nArgc >= 2)
@@ -160,7 +160,7 @@ void FUN_1414b13f0(int nIndex, CString strArg)
         FUN_14028c3e0(strArg, tokens, ":", 2);
         if (tokens.GetCount() >= 2)
         {
-            reinterpret_cast<Unk_LaunchOptions*>(GetLaunchOptions())->FUN_1406aef60(tokens[0], tokens[1]);
+            reinterpret_cast<Unk_LaunchOptions*>(GetLaunchOptions())->ParseOption(tokens[0], tokens[1]);
             g_args.SetAt((const char*)tokens[0], tokens[1]);
         }
     }
@@ -179,7 +179,7 @@ void FUN_1414b13f0(int nIndex, CString strArg)
 }
 
 // @0x1414b1580
-bool FUN_1414b1580(CString strKey)
+bool HasOption(CString strKey)
 {
     CString strValue;
     return g_args.Lookup(strKey, strValue);
@@ -318,7 +318,7 @@ void FUN_1414b1f10()
     if (g_args.Lookup("-env", strValue))
         CFeatureManager::SetServerTypeName(CString(strValue));
     if (g_args.Lookup("-locale", strValue))
-        FUN_140651190(CString(strValue));
+        SetRegionByCode(CString(strValue));
     if (g_args.Lookup("-ip", strValue))
         g_strServerAddr = strValue;
     if (g_args.Lookup("-port", strValue))
@@ -334,11 +334,11 @@ void FUN_1414b1f10()
     if (g_args.Lookup("-language", strValue))
     {
         SetLanguageByCode(CString(strValue));
-        FUN_140650b50(CString(strValue));
+        SetVoiceByCode(CString(strValue));
         g_bLanguageSet = 1;
     }
     if (g_args.Lookup("-voice", strValue))
-        FUN_140650b50(CString(strValue));
+        SetVoiceByCode(CString(strValue));
 }
 
 // @0x1414b21d0

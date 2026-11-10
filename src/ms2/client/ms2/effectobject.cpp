@@ -31,7 +31,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_WsC_GameObj* FindObjectById(int);
-    class Unk_WsC_GameObj* FUN_141bd1290(int);
+    class Unk_WsC_GameObj* FindPCById(int);
     static class WorldService* GetInstance();
 };
 
@@ -105,7 +105,7 @@ CEffectObject::CEffectObject()
 // @0x140a537a0
 CEffectObject::~CEffectObject()
 {
-    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
+    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FindPCById(m_nOwnerId));
     if (pOwner)
         reinterpret_cast<PC*>(pOwner)->FUN_141663bb0(GetObjectId());
 }
@@ -129,7 +129,7 @@ int CEffectObject::Init(int nOwnerId, CString strModel, float fScale)
     SetScaleAC(fScale);
     SetModelPath("urn:gamebryo-animation:" + FUN_141b6ed00(strModel));
     SetObjectId(FindFreeObjectId());
-    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
+    PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FindPCById(m_nOwnerId));
     if (pOwner)
         reinterpret_cast<PC*>(pOwner)->FUN_141663b70(GetObjectId());
     return 1;
@@ -173,7 +173,7 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
 {
     if (vfunc_20() != kDir)
     {
-        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
+        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FindPCById(m_nOwnerId));
         if (pOwner && ((class PCBase*)(pOwner))->GetCurStateId() == 0x10)
         {
             StateSkill* pState = ((class StateSkill*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
@@ -203,7 +203,7 @@ void CEffectObject::vfunc_53(float f)
     GameObject::vfunc_53(f);
     if (m_nOwnerId != 0)
     {
-        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
+        PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FindPCById(m_nOwnerId));
         if (pOwner)
         {
             float fScale = 1.0f;

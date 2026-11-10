@@ -256,8 +256,8 @@ template <> bool MS2Ptr<CEmotionGroup>::operator==(CEmotionGroup* p) const;
 
 class Unk_CsoSpawnMgr* GetEmotionManager();   // C3: was GetEmotionManager
 
-// The stat formula service (FUN_1401c0db0; blackmarketitemoption / usermail use other slices of it).
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+// The stat formula service (GetLuaClient; blackmarketitemoption / usermail use other slices of it).
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 
 // An entity seen through its property getters.
 class Unk_PCBaseEntity : public egf::Entity
@@ -581,7 +581,7 @@ public:
 MS2_CHECK_SIZE(CSkillRecord, 0x1c0);
 CStringW BlockFormat(int nId);                                      // system string by id
 void ShowSystemNotice(const CStringW& strMsg, int a, int b);           // notice
-int FUN_141276180(const CString& strSound, const CString& strArg);  // play a ui sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);  // play a ui sound
 extern CString DAT_143ae32c8;                                       // the "denied" ui sound name
 
 class CLogString; template <class T, class U>
@@ -705,7 +705,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 CString FUN_140188f50(const char* psz, int nCodePage);              // multibyte copy (0 = default code page)
 void SetShadowCaster(NiAVObject* pNode, bool bShadow);
 
-void FUN_140291b70(float* pfAngle);                                 // wrap degrees into [0, 360)
+void NormalizeDegrees(float* pfAngle);                                 // wrap degrees into [0, 360)
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 void RefreshHpBar(int nActorId);                                   // hp bar
 void FUN_140e863f0(int nActorId);                                   // shield bar
@@ -731,7 +731,7 @@ public:
     efd::SmartPointer<NiAVObject> Load(CString strPath, bool bA, int nFlags, int nB, int nC);
 };
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+CString JoinPath(const CString& strRoot, const CString& strFile);   // path join
 void FUN_141b70cb0(class NiAVObject*, float, struct Unk_Colc const&, float);   // C3: was FUN_141b70cb0
 // Depth-first walker over a scene graph (0x38; util.cpp).
 class Unk_NodeQueue
@@ -763,7 +763,7 @@ class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene node of an entity
 void EulerToMatrix(const efd::Point3& kDir, NiMatrix3& kRot);      // facing angles -> rotation
 extern NiFixedString DAT_143ae5ce0[50];                             // "Hold_PointNN" dummy names (unit_1416bc380)
-bool FUN_14028d470(float fA, float fB);                             // float equality
+bool IsNearlyEqual(float fA, float fB);                             // float equality
 float GetDistance(Vector3 kA, Vector3 kB);                        // distance
 float FromPercent(float fValue);                                  // (commonutil.cpp)
 
@@ -912,9 +912,9 @@ int PCBase::vfunc_10()
     SetTargetYaw(vfunc_20().z);
     FUN_141671960(m_unk_180.m_z);
     m_unk_150 = (Unk_PCBaseBody*)new GameObjectController();
-    m_unk_150->FUN_14123f5b0(this, (egf::Entity*)m_unk_80, static_cast<const efd::Point3&>(vfunc_18()), m_unk_620.y, m_unk_620.x);
+    m_unk_150->CreateController(this, (egf::Entity*)m_unk_80, static_cast<const efd::Point3&>(vfunc_18()), m_unk_620.y, m_unk_620.x);
     FUN_14166d260();
-    m_unk_150->FUN_14123fd30(0x389);
+    m_unk_150->SetGroups(0x389);
     vfunc_109(1);
     m_spD10 = reinterpret_cast<const MS2Ptr<Unk_PCBaseFxSource>&>(static_cast<const MS2Ptr<CEmotionGroup>&>(reinterpret_cast<CEmotionTable*>(vfunc_70())->GetGroup(vfunc_69())));
     InitActionData();
@@ -1344,7 +1344,7 @@ MS2_REPLACE_METHOD(0x14166cf40, PCBase, vfunc_67, 730, 0x7C8F1331);
 void PCBase::FUN_14166d260()
 {
     if (Unk_PCBaseBody* pBody = GetPhysicsBody())
-        pBody->GameObjectController::FUN_14123fe70(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())));
+        pBody->GameObjectController::SetFeetPosition(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())));
 }
 MS2_REPLACE_METHOD(0x14166d260, PCBase, FUN_14166d260, 98, 0x6C91CBAE);
 
@@ -1377,7 +1377,7 @@ void PCBase::SetLookDirection(efd::Point3 kDir, int bTurn, int bResetTilt)
     float fX, fY, fZ;
     kRot.ToEulerAnglesXYZ(fX, fY, fZ);
     efd::Point3 kAngles(0, 0, fZ * 180.0f / 3.1415927f);
-    FUN_140291b70(&kAngles.z);
+    NormalizeDegrees(&kAngles.z);
     SetTargetYaw(kAngles.z);
     if (bResetTilt)
         vfunc_22(efd::Point3::ZERO);
@@ -1392,7 +1392,7 @@ void PCBase::TurnTowardTargetYaw(float fTime)
     NiPoint3 kRot = vfunc_20();
     if (kRot.z == m_f934)
         return;
-    FUN_140291b70(&m_f934);
+    NormalizeDegrees(&m_f934);
     if (kRot.z < m_f934) {
         if (m_f934 - kRot.z > 180.0f)
             kRot.z -= GetTurnSpeed() * fTime;
@@ -1574,7 +1574,7 @@ MS2_REPLACE_METHOD(0x14166f790, PCBase, GetEmotionAnimation, 336, 0x1E9BA79D);
 void PCBase::FUN_14166f940()
 {
     if (m_timer9e8.IsRunning() != 0) {
-        int nTime = m_timer9e8.FUN_140868a70();
+        int nTime = m_timer9e8.GetElapsed();
         bool bBusy = false;
         if (m_sp638.get() != 0 && ((CTextureAnimation*)(m_sp638).operator->())->Update(nTime))
             bBusy = true;
@@ -1775,7 +1775,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
         bPushed = true;
     }
     Unk_PCBaseEntity* pEntity = ((Unk_PCBaseEntity*)(((m_unk_150->GetHitReport())))->GetEntity());
-    if (m_unk_150->FUN_141240f40() && !m_unk_150->IsLift() && !m_unk_150->GetFallTime()
+    if (m_unk_150->IsOnGround() && !m_unk_150->IsLift() && !m_unk_150->GetFallTime()
         && !WorldService::GetInstance()->FUN_141bc9a80() && pEntity != 0 && *static_cast<efd::Point3*>(pMove) == efd::Point3::ZERO)
         bNoVelocity = 1;
     if (bNoVelocity == 0) {
@@ -1815,13 +1815,13 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
     m_posAE8 = kEntPos;
     m_unk_ae0 = kEntId;
 
-    m_posC28 = m_unk_150->FUN_14123fd90();
+    m_posC28 = m_unk_150->GetFeetPosition();
     if (*static_cast<efd::Point3*>(pMove) != efd::Point3::ZERO) {
         m_unk_150->Move(*static_cast<efd::Point3*>(pMove), nFlags);
         if (bPushed)
             vfunc_110();
     }
-    efd::Point3 kMoved = m_unk_150->FUN_14123fd90();
+    efd::Point3 kMoved = m_unk_150->GetFeetPosition();
     if (!Unk_IsFinite(kMoved)) {
         vfunc_19(m_posC28);
         *static_cast<efd::Point3*>(pMove) = efd::Point3::ZERO;
@@ -1837,7 +1837,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
     }
 
     // Slide off a blocking wall.
-    efd::Point3 kBodyPos = m_unk_150->FUN_14123fd90();
+    efd::Point3 kBodyPos = m_unk_150->GetFeetPosition();
     efd::Point3 kNormal;
     if (WorldService::GetInstance()->FUN_141bd36f0(reinterpret_cast<Vector3&>(kBodyPos), reinterpret_cast<Vector3*>(&kNormal)) == 0) {
         if (kNormal.z != 0.0f && static_cast<efd::Point3*>(pMove)->z < 0.0f)
@@ -1849,9 +1849,9 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
             kSlide.z *= kNormal.z;
             if (!Unk_IsFinite(kSlide))
                 kSlide = efd::Point3::ZERO;
-            efd::Point3 kPrev = m_unk_150->FUN_14123fd90();
+            efd::Point3 kPrev = m_unk_150->GetFeetPosition();
             m_unk_150->Move(kSlide, nFlags);
-            kBodyPos = m_unk_150->FUN_14123fd90();
+            kBodyPos = m_unk_150->GetFeetPosition();
             if (!Unk_IsFinite(kBodyPos)) {
                 vfunc_19(kPrev);
                 *static_cast<efd::Point3*>(pMove) = efd::Point3::ZERO;
@@ -2269,15 +2269,15 @@ void PCBase::vfunc_110()
 float PCBase::vfunc_96()
 {
     if (GetClassID() == 0x6200045)
-        return ((class CLua*)FUN_1401c0db0())->CalcRmsiR(FUN_141670a00(0x20));
-    return ((class CLua*)FUN_1401c0db0())->CalcMsiR(FUN_141670a00(0xe), GetMapType());
+        return ((class CLua*)GetLuaClient())->CalcRmsiR(FUN_141670a00(0x20));
+    return ((class CLua*)GetLuaClient())->CalcMsiR(FUN_141670a00(0xe), GetMapType());
 }
 MS2_REPLACE_METHOD(0x141671680, PCBase, vfunc_96, 142, 0x5A4E0AB6);
 
 // @0x1416718d0
 float PCBase::vfunc_98(float f)
 {
-    return ((class CLua*)FUN_1401c0db0())->CalcPcAsiR(FUN_141670a00(0xd), f);
+    return ((class CLua*)GetLuaClient())->CalcPcAsiR(FUN_141670a00(0xd), f);
 }
 MS2_REPLACE_METHOD(0x1416718d0, PCBase, vfunc_98, 67, 0x9F70B920);
 
@@ -2536,7 +2536,7 @@ int PCBase::FUN_141671a30()
         return spRidee->FUN_141671a30();
     if (GetPhysicsBody() == 0)
         return 0;
-    return GetPhysicsBody()->FUN_141240f40() != 0;
+    return GetPhysicsBody()->IsOnGround() != 0;
 }
 MS2_REPLACE_METHOD(0x141671a30, PCBase, FUN_141671a30, 220, 0x9D9E0C20);
 
@@ -2617,12 +2617,12 @@ void PCBase::vfunc_101(MS2Ptr<CSkillRecord> spSkill, int n, void* pRot)
         return;
     CCylinderCollision kCyl;
     kCyl.m_fRadius = spSkill->m_sp30->m_f164;
-    if (FUN_14028d470(kCyl.m_fRadius, 0.0f))
+    if (IsNearlyEqual(kCyl.m_fRadius, 0.0f))
         kCyl.m_fRadius = ((SkillLevelData*)(spSkill->m_sp40).operator->())->GetAttackRangeValue(spSkill->m_n8c, spSkill->m_n94);
     NiPoint3 kPos = vfunc_18();
     kCyl.m_fHeight = 150.0f;
     float fHeight = spSkill->m_sp30->m_f168;
-    if (!FUN_14028d470(fHeight, 0.0f)) {
+    if (!IsNearlyEqual(fHeight, 0.0f)) {
         kCyl.m_fHeight = fHeight;
         kPos.z -= fHeight * 0.5f;
     }
@@ -2848,10 +2848,10 @@ void PCBase::vfunc_111(void* p, int a, int b, efd::Point3 kPos)
     if (pDamage != 0)
         pDamage->FUN_141911e90(this, nValue, a, b, kPos);
     int nOwnerId = b;
-    Unk_PCBaseWorldActor* pTarget = ((Unk_PCBaseWorldActor*)WorldService::GetInstance()->FUN_141bd13a0(nOwnerId));
+    Unk_PCBaseWorldActor* pTarget = ((Unk_PCBaseWorldActor*)WorldService::GetInstance()->FindPetById(nOwnerId));
     if (pTarget != 0)
         nOwnerId = ((CNpc*)(Unk_PCBaseWorldActor*)(pTarget))->GetOwnerId();
-    PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->GetLocalPlayer());
     if (pLocal != 0) {
         if (nOwnerId == pLocal->GetObjectId()) {
             UIDPSDialog* pLog = PCBaseDialog<UIDPSDialog>(0x4e44);
@@ -2867,7 +2867,7 @@ MS2_REPLACE_METHOD(0x141674c60, PCBase, vfunc_111, 276, 0xDD2381FF);
 // @0x141674d80
 void PCBase::vfunc_112(void* p, int n)
 {
-    PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->GetLocalPlayer());
     if (pLocal != 0 && n == pLocal->GetObjectId()) {
         UIKillCount* pTargetUI = MyPCDialog<UIKillCount>(0x4e51);
         if (pTargetUI != 0)
@@ -3318,7 +3318,7 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
         for (int nStat = 0; nStat < 0x23; nStat++)
             m_spB10->SetStat(nKind, nStat, GetStat(nKind, nStat));
     }
-    WorldService::GetInstance()->FUN_141bbb1e0(m_spB10, 0, 1);
+    WorldService::GetInstance()->OnObjectCreated(m_spB10, 0, 1);
     if (GetClassID() == 0x6200004)
         ((CameraMgr*)(Unk_PCBaseCameraMgr*)(reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())))->SetTarget((Unk_CameraTargetEntity*)(PCBase*)(m_spB10), 0);
     if (vfunc_25() == 0) {
@@ -3461,7 +3461,7 @@ MS2_REPLACE_METHOD(0x141678290, PCBase, FUN_141678290, 72, 0xE8669FA0);
 unsigned int PCBase::GetSkillUseDisableMask()
 {
     unsigned int nMask = m_unk_748.FUN_140970bf0();
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.get() != 0)
         nMask |= spField->m_nSkillUseDisableMask;
     return nMask;
@@ -3471,7 +3471,7 @@ MS2_REPLACE_METHOD(0x141678680, PCBase, GetSkillUseDisableMask, 130, 0x482C383A)
 // @0x1416787a0
 int PCBase::GetMapType()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return 0;
     return spField->m_nMapType;
@@ -3481,7 +3481,7 @@ MS2_REPLACE_METHOD(0x1416787a0, PCBase, GetMapType, 116, 0xE689F429);
 // @0x141678820
 int PCBase::FUN_141678820()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return 0;
     if (spField->m_nCheckClimb == 0)
@@ -3702,7 +3702,7 @@ void PCBase::FUN_14166ef10(const CString& str, int nA, int nB, bool bC)
         FUN_141679f30();
         vfunc_72();
         m_str9e0 = str;
-        m_timer9e8.FUN_1408687c0();
+        m_timer9e8.StartInfinite();
         vfunc_71(spSet);
         if (reinterpret_cast<const MS2Ptr<CTextureAnimationData>&>(spSet->m_sp30).operator CTextureAnimationData*() != 0) {
             if (m_sp638 == 0)
@@ -3772,7 +3772,7 @@ GameObject* PCBase::FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arr
                     if (fBestDead < fDot)
                         bPick = 1;
                 }
-                else if (nMode == 3 && (fBestDead > fDot || FUN_14028d470(fBestDead, -1.0f)))
+                else if (nMode == 3 && (fBestDead > fDot || IsNearlyEqual(fBestDead, -1.0f)))
                     bPick = 1;
                 if (bPick)
                 {
@@ -3788,7 +3788,7 @@ GameObject* PCBase::FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arr
                     if (fBest < fDot)
                         bPick = 1;
                 }
-                else if (nMode == 3 && (fBest > fDot || FUN_14028d470(fBest, -1.0f)))
+                else if (nMode == 3 && (fBest > fDot || IsNearlyEqual(fBest, -1.0f)))
                     bPick = 1;
                 if (bPick)
                 {
@@ -3835,7 +3835,7 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
                     if (fBestDead < fDist)
                         bPick = 1;
                 }
-                else if (nMode == 1 && (fBestDead > fDist || FUN_14028d470(fBestDead, -1.0f)))
+                else if (nMode == 1 && (fBestDead > fDist || IsNearlyEqual(fBestDead, -1.0f)))
                     bPick = 1;
                 if (bPick)
                 {
@@ -3851,7 +3851,7 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
                     if (fBest < fDist)
                         bPick = 1;
                 }
-                else if (nMode == 1 && (fBest > fDist || FUN_14028d470(fBest, -1.0f)))
+                else if (nMode == 1 && (fBest > fDist || IsNearlyEqual(fBest, -1.0f)))
                     bPick = 1;
                 if (bPick)
                 {
@@ -4039,7 +4039,7 @@ int PCBase::FUN_141677f40(PCBase* pActor)
     efd::SmartPointer<Ridee> spRidee = ((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(pActor)));
     if (spRidee) {
         PCBase* pRider = spRidee->GetRider();
-        PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+        PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->GetLocalPlayer());
         MS2SvrPtr<CRideeData> spData = spRidee->GetData();
         if ((spData ? true : false) && pLocal != 0 && pRider != 0) {
             if (pLocal->GetObjectId() == pRider->GetObjectId() && spData->m_basic.m_nEnableSwim == 0) {
@@ -4098,7 +4098,7 @@ void PCBase::FUN_1416788d0()
             ShowSystemNotice(BlockFormat(0x5f), 1, 1);
             {
                 CString strArg("");
-                FUN_141276180(DAT_143ae32c8, strArg);
+                PlaySystemSound(DAT_143ae32c8, strArg);
             }
             m_timerC70.Start(1000);
         }
@@ -4117,7 +4117,7 @@ MS2_REPLACE_METHOD(0x1416788d0, PCBase, FUN_1416788d0, 504, 0xE79706B1);
 // @0x141674020
 void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
 {
-    if (FUN_14028d470(fScale, 0.0f))
+    if (IsNearlyEqual(fScale, 0.0f))
         return;
     if (m_unk_748.FUN_140970c10(spRecord->GetAttackData(), 1) != 0)
         return;
@@ -4126,7 +4126,7 @@ void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     Unk_PCBaseSkillLevel* pLevel = reinterpret_cast<Unk_PCBaseSkillLevel*>(spRecord->GetAttackData());
     if (pLevel == 0)
         return;
-    int nKind = ((SkillDamage*)(Unk_PCBaseSkillFlag*)&(pLevel->m_168))->GetPush(WorldService::GetInstance()->FUN_141bd3060());
+    int nKind = ((SkillDamage*)(Unk_PCBaseSkillFlag*)&(pLevel->m_168))->GetPush(WorldService::GetInstance()->GetFieldId());
     if (nKind == 0)
         return;
     if (m_pushControl.m_kDir != efd::Point3::ZERO && m_pushControl.m_nPriority >= pLevel->m_nPushPriority)
@@ -4170,7 +4170,7 @@ void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         fSpeed = FromPercent(spRecord->m_kPushDir.Length());
         spRecord->m_kPushDir.Unitize();
     }
-    if (FUN_14028d470(fSpeed, 0.0f))
+    if (IsNearlyEqual(fSpeed, 0.0f))
         return;
     m_pushControl.Reset();
     m_pushControl.m_kDir = spRecord->m_kPushDir;
@@ -4189,12 +4189,12 @@ void PCBase::vfunc_106(const efd::Point3& kMove, double dTime, int nFlags)
 {
     if (m_unk_150 != 0)
     {
-        efd::Point3 kOld = m_unk_150->FUN_14123fd90();
+        efd::Point3 kOld = m_unk_150->GetFeetPosition();
         if (!Unk_IsFinite(kMove))
             m_unk_150->Move(efd::Point3::ZERO, nFlags);
         else
             m_unk_150->Move(kMove, nFlags);
-        efd::Point3 kNew = m_unk_150->FUN_14123fd90();
+        efd::Point3 kNew = m_unk_150->GetFeetPosition();
         if (!Unk_IsFinite(kNew))
         {
             vfunc_19(kOld);
@@ -4250,7 +4250,7 @@ void PCBase::FUN_14166f380()
     if (m_sp638.get() != 0)
         ((CTextureAnimation*)(m_sp638).operator->())->Stop();
     m_timer9e8.Reset();
-    m_timer9e8.FUN_1408687c0();
+    m_timer9e8.StartInfinite();
     m_spD10 = reinterpret_cast<const MS2Ptr<Unk_PCBaseFxSource>&>(static_cast<const MS2Ptr<CEmotionGroup>&>(reinterpret_cast<CEmotionTable*>(vfunc_70())->GetGroup(vfunc_69())));
     if (m_spD10.get() != 0) {
         MS2Ptr<Unk_PCBaseFxSet> spSet = m_spD10->vfunc_2((void*)&m_str9e0);
@@ -4282,7 +4282,7 @@ void PCBase::FUN_141678ad0(CString strName, bool bOutline, float fScale, float f
     efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150("Eff_UI");
     if (spRoot == 0)
         return;
-    m_spC40 = reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->Load(FUN_140cc2a00("Model", strName), false, 5, 0, 0);
+    m_spC40 = reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->Load(JoinPath("Model", strName), false, 5, 0, 0);
     if (m_spC40 == 0)
         return;
     if (fScale != 1.0f)
@@ -4353,7 +4353,7 @@ void PCBase::SendFallDamage()
         return;
     if (FUN_141671a30() == 0)
         return;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.get() != 0 && spField->m_nFallDamage == 0)
         return;
     Unk_PCBaseState0d* pState;

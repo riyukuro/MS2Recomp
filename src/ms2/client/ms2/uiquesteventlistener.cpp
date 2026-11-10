@@ -105,7 +105,7 @@ int FUN_1422db730();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 void* FUN_140764020();   // C3: was FUN_140764020
 
 struct Unk_QgCfgInt { void* m_unknown; };
@@ -162,7 +162,7 @@ public:
     bool IsMatchSearching(int);
 };
 void FUN_1422bce40(Scaleform::GFx::Value* pOut, const AScript& a);
-void FUN_1422bce70(Scaleform::GFx::Value* pOut, const char* sz);
+void SetString(Scaleform::GFx::Value* pOut, const char* sz);
 extern __int64 DAT_143ab2828;                                               // the character id
 
 #ifndef MS2_HOOK_DLL
@@ -356,7 +356,7 @@ int UIQuestGuideDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::OnChangeMyLevel));
     ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
     return 1;
@@ -371,7 +371,7 @@ void UIQuestGuideDialog::vfunc_67()
         m_pageIndex.SetAt(DAT_143ab2828, nPage);
     }
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::OnChangeMyLevel));
     ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
 }
@@ -521,7 +521,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     } else if (_stricmp(szMethod, "onLinkFieldMission") == 0) {
         if (GetMyCharacter()->GetStage() == 0) {
             if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
-                pDialog->FUN_141b5c230();
+                pDialog->SetFieldMissionMode();
         }
     } else if (_stricmp(szMethod, "onFieldMissionToggle") == 0) {
         ASData data;
@@ -712,7 +712,7 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
     case 2: case 3: case 7: case 8: case 9: case 0x1e: {
         ATL::CAtlArray<MS2Ptr<CQuest>> quests;
         ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
-        int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+        int nMapId = WorldService::GetInstance()->GetFieldId();
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             MS2Ptr<CQuest> spQuest(quests[i]);
             if (!spQuest->GetTrackingState())
@@ -898,7 +898,7 @@ void UIQuestGuideDialog::SetQuestGotoButtons(ASObj& obj, CQuest* pQuest)
 {
     if (pQuest == NULL)
         return;
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     ASArray buttons(2);
     if (pQuest->FUN_1407441f0(nMapId))
         buttons.PushString("gotoNpc");
@@ -939,7 +939,7 @@ bool UIQuestGuideDialog::FUN_141aace20(int nQuestId)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return false;
-    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->GetFieldId();
     if (Unk_ArrayFind<unsigned>(spData->m_fields, nMapId) == -1)
         return false;
     return true;
@@ -1097,9 +1097,9 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
 {
     if (!m_30)
         return false;
-    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->GetFieldId();
     unsigned nParent = 0;
-    if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(nMapId, &nParent))
+    if (TSingleton<CFieldMetaTable>::GetInstance()->GetParentField(nMapId, &nParent))
         nMapId = nParent;
     ATL::CAtlArray<unsigned> quests;
     TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByMap(nMapId, quests);
@@ -1193,7 +1193,7 @@ int UIQuestGuideDialog::FUN_141aae6d0()
 {
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xd0))
         return 0;
-    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->GetLocalPlayer());
     if (!pActor)
         return 0;
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
@@ -1225,7 +1225,7 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return 0;
-    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->GetLocalPlayer());
     if (!pActor)
         return 0;
     obj.SetMemberUInt("id", nQuestId);
@@ -1272,7 +1272,7 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
     CStringW str;
     if (!nField)
         str = FUN_14028dfa0<unsigned>(CStringW(L"s_quest_desc_beginable_invalid_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
-    else if (nField == WorldService::GetInstance()->FUN_141bd3060())
+    else if (nField == WorldService::GetInstance()->GetFieldId())
         str = FUN_14028dfa0<unsigned>(CStringW(L"s_quest_desc_beginable_current_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
     else
         str = FUN_14028dfa0<unsigned, unsigned>(CStringW(L"s_quest_desc_beginable"), reinterpret_cast<const unsigned&>(nField), reinterpret_cast<const unsigned&>(spData->m_2e8));
@@ -1291,10 +1291,10 @@ void UIQuestGuideDialog::GetNavigation(const Scaleform::GFx::FunctionHandler::Pa
     ASData data;
     if (!data.SetArgsIfAny(params.pArgs, params.ArgCount))
         return;
-    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pActor == NULL)
         return;
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap.IsNull())
         return;
     QuestNavigation::TraceResult result;
@@ -1332,7 +1332,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const AScript& a1, c
     ASArgList args;
     args.resize(2);
     FUN_1422bce40(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -503,9 +503,9 @@ void CGameOptionCamera::vfunc_10()
     CBaseOption::vfunc_10();
     FUN_14125b6b0(TSingleton<CGameOption>::GetInstance()->GetCameraOption(), &m_state);
     int nApply = 1;
-    CFieldDataCli* pField = static_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd30a0();
+    CFieldDataCli* pField = static_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->GetFieldData();
     if (pField != 0)
-        nApply = static_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd30a0()->m_nApplyCameraOption;
+        nApply = static_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->GetFieldData()->m_nApplyCameraOption;
     if (nApply != 0)
     {
         float fScale = WorldService::GetInstance()->FUN_141bcfc50();
@@ -748,7 +748,7 @@ void CGameOptionCommunity::vfunc_10()
     CBaseOption::vfunc_10();
     if (TSingleton<CGameOption>::GetInstance()->FUN_14124ab20()->m_bDisableSingleRiding != m_stateA.m_bDisableSingleRiding)
     {
-        MyPC* pPlayer = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPlayer = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer != 0)
             pPlayer->SendRequestRideMode6(m_stateA.m_bDisableSingleRiding);
     }
@@ -1562,7 +1562,7 @@ class CCrashManager;
 class CLogString;
 CLogString* GetLogString();                                     // the log string table
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
-int FUN_1406c34c0();                                            // the platform kind
+int IsNexonPlatform();                                            // the platform kind
 extern char g_bLanguageSet;
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
@@ -1588,14 +1588,14 @@ public:
 private:
     char m_pad[0x90];
 };
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+CString JoinPath(const CString& strRoot, const CString& strFile);   // path join
 CString GetOptionFolder();                                        // the option folder
 CString GetAccountFolder();                                        // the account folder
 CString GetCharacterFolder();                                        // the character folder
 CString GetDefaultOptionFolder();                                        // the default option folder
-int FUN_1406518d0(short nLangId);
-void FUN_1406507a0(int nLanguage);
-void FUN_140650b30(int nVoice);
+int GetLanguageFromLangId(short nLangId);
+void SetLanguage(int nLanguage);
+void SetVoice(int nVoice);
 void FUN_140841420(CStringW& str);                              // MakeLower
 void FUN_14125fe20(Unk_SoundState* p);
 CString FUN_1409a23d0(const char* pszUtf8, int nCodePage);
@@ -1679,7 +1679,7 @@ CGameOption::CGameOption()
 {
     m_nBenchmark = -1;
     m_b464 = false;
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
     LoadLanguageOption();
     LoadGameOption();
 }
@@ -1695,23 +1695,23 @@ CString CGameOption::GetOptionFilePath(int nKind, bool bDefault)
     if (nKind == 0)
     {
         if (bDefault)
-            return FUN_140cc2a00(GetDefaultOptionFolder(), "DefaultGameOption.xml");
+            return JoinPath(GetDefaultOptionFolder(), "DefaultGameOption.xml");
         else
-            return FUN_140cc2a00(GetOptionFolder(), "GameOption.xml");
+            return JoinPath(GetOptionFolder(), "GameOption.xml");
     }
     else if (nKind == 1)
     {
         if (bDefault)
-            return FUN_140cc2a00(GetDefaultOptionFolder(), "DefaultAccountOption.xml");
+            return JoinPath(GetDefaultOptionFolder(), "DefaultAccountOption.xml");
         else
-            return FUN_140cc2a00(GetAccountFolder(), "AccountOption.xml");
+            return JoinPath(GetAccountFolder(), "AccountOption.xml");
     }
     else if (nKind == 2)
     {
         if (bDefault)
-            return FUN_140cc2a00(GetDefaultOptionFolder(), "DefaultCharacterOption.xml");
+            return JoinPath(GetDefaultOptionFolder(), "DefaultCharacterOption.xml");
         else
-            return FUN_140cc2a00(GetCharacterFolder(), "CharacterOption.xml");
+            return JoinPath(GetCharacterFolder(), "CharacterOption.xml");
     }
     return CString();
 }
@@ -1821,7 +1821,7 @@ int CGameOption::LoadCharacterOption()
 // @0x141242f60
 int CGameOption::LoadLanguageOption()
 {
-    if (FUN_1406c34c0() == 0 && (unsigned char)g_bLanguageSet != 0)
+    if (IsNexonPlatform() == 0 && (unsigned char)g_bLanguageSet != 0)
         return 1;
     int bRead = 0;
     int bDefaulted = 0;
@@ -1841,10 +1841,10 @@ int CGameOption::LoadLanguageOption()
     if (CFeatureManager::GetInstance()->IsRegionNA() && bDefaulted != 0)
     {
         LANGID nLang = GetUserDefaultUILanguage();
-        m_language.m_nLanguage = FUN_1406518d0((short)nLang);
+        m_language.m_nLanguage = GetLanguageFromLangId((short)nLang);
     }
-    FUN_1406507a0(m_language.m_nLanguage);
-    FUN_140650b30(m_language.m_nVoice);
+    SetLanguage(m_language.m_nLanguage);
+    SetVoice(m_language.m_nVoice);
     return 1;
 }
 

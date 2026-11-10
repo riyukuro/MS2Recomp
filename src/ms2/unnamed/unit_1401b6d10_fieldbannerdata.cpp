@@ -60,7 +60,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString ToCString(const char* psz, int n);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -186,7 +186,7 @@ int CFieldBannerData::LoadTable()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("banner")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("banner")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_BannerPtr banner(new CFieldBannerData);
         if (!banner->Load(pNode))
@@ -260,7 +260,7 @@ void CFieldBannerData::SetInit(bool b)
 }
 
 // @0x1401ba820
-CPtred* FUN_1401ba820(CPtred* p)
+CPtred* InitRefCount(CPtred* p)
 {
     p->m_nRef = 1;
     return p;

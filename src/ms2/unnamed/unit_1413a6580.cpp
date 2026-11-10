@@ -227,7 +227,7 @@ MS2_REPLACE_METHOD(0x1413A6D00, CGuideConditionPortalEnable, GetTypeName, 61, 0x
 // @0x1413a6d50
 int CGuideConditionPortalEnable::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;

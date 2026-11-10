@@ -120,9 +120,9 @@ MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (disp
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
-CStringW FUN_140298ea0(CStringW strKey);                        // string table text (the callee destroys the key)
+CStringW GetStringByKey(CStringW strKey);                        // string table text (the callee destroys the key)
 bool IsFirstUseRedMerat(int nKind);                                  // the first use is paid with red merat
-int FUN_1413499b0(int nTab);                                    // open the shop on a tab
+int ToggleShopTab(int nTab);                                    // open the shop on a tab
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                 // show it
 
@@ -135,7 +135,7 @@ void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b);
 
 // The script value setters of the Invoke helpers.
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // ---- the smart push lookup ----
 
@@ -176,7 +176,7 @@ inline Scaleform::GFx::Value AScript::FUN_140fa7540(const char* szMethod, CStrin
     FUN_1422bcea0(&args[0], a1);
     FUN_1422bcea0(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
-    FUN_1422bce70(&args[3], a4);
+    SetString(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -254,14 +254,14 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             {
                 if (nAction == 0)
                 {
-                    FUN_1413499b0(m_nMode);
+                    ToggleShopTab(m_nMode);
                 }
                 else if (nAction == 1)
                 {
                     if (CFishingManager::GetInstance()->GetAutoCount() > 0)
                     {
                         // an extension is running: offer to cancel it
-                        CStringW strText = FUN_140298ea0(CStringW(L"s_msg_autofishing_extend_cancel_desc"));
+                        CStringW strText = GetStringByKey(CStringW(L"s_msg_autofishing_extend_cancel_desc"));
                         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
                         if (spBox.get())
                         {
@@ -285,7 +285,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             buff.m_nId = spPush->m_data->m_nActionValue;
                             buff.m_nLevel = 1;
                             buff.m_strDesc = GetStringCommonByKey(L"s_msg_autofishing_extend_showcurrentduration_buff_desc");
-                            spBox->FUN_141a01800(1);
+                            spBox->SetButtonPreset(1);
                             spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa62d0));
                             spBox->FUN_141a029b0(buff);
                             spBox->FUN_141a024a0(0);
@@ -312,7 +312,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 if ((unsigned)CInstrumentManager::GetInstance()->GetVolume() > 0)
                 {
                     // an extension is running: offer to cancel it
-                    CStringW strText = FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel_desc"));
+                    CStringW strText = GetStringByKey(CStringW(L"s_msg_auto_play_instrument_extend_cancel_desc"));
                     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
                     if (spBox.get())
                     {
@@ -337,7 +337,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         buff.m_nId = spPush->m_data->m_nActionValue;
                         buff.m_nLevel = 1;
                         buff.m_strDesc = GetStringCommonByKey(L"s_msg_auto_play_instrument_extend_showcurrentduration_buff_desc");
-                        spBox->FUN_141a01800(1);
+                        spBox->SetButtonPreset(1);
                         spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa67a0));
                         spBox->FUN_141a029b0(buff);
                         spBox->FUN_141a024a0(0);
@@ -352,7 +352,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         }
                         Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", IsFirstUseRedMerat(4));
                         Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
-                        Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479a20());
+                        Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->GetAutoPlayInstrumentSale());
                         Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
                         FUN_140d73c60(spBox);
                     }
@@ -398,7 +398,7 @@ MS2_REPLACE_METHOD(0x140FA5BA0, UISystemShopDialog, SetMode, 25, 0x11D24FAE);
 // @0x140fa5bc0
 void UISystemShopDialog::FUN_140fa5bc0()
 {
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_nMode != 4)
@@ -439,7 +439,7 @@ bool UISystemShopDialog::FUN_140fa62d0(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return true;
     if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->HasEnabledWithEventBuffType(1) == 0)
@@ -469,7 +469,7 @@ MS2_REPLACE_METHOD(0x140FA64A0, UISystemShopDialog, FUN_140fa64a0, 51, 0x229A1FD
 // @0x140fa64e0
 void UISystemShopDialog::FUN_140fa64e0()
 {
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_nMode != 5)
@@ -497,7 +497,7 @@ bool UISystemShopDialog::FUN_140fa67a0(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPc == 0)
         return true;
     int nPos = 0;

@@ -285,7 +285,7 @@ public:
     virtual void vfunc_75(); virtual void vfunc_76();
     virtual CStringW GetName();     // 77 (+0x268)
 };
-class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
+class Unk_MentorWorldV { public: Unk_MentorActorV* GetLocalPlayer(); };
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160): start/end of the registration period.
 class Unk_RuMentoring : public CGameEventValueMentoring { };
 class Unk_RuManager { public: Unk_RuMentoring* GetMentoring(); };
@@ -331,7 +331,7 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onRegister") == 0)
     {
-        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pActor == 0) return 1;
         CMsTime tStart(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetBeginTime());
         CMsTime tEnd(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetEndTime());
@@ -381,7 +381,7 @@ bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& d
 // ============================================================================
 
 // The quest event manager: registers the listener that is told about quest changes.
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 // The quest record (a CPtred-like object; +0x358 the mission day, +0x360 the icon name).
 class Unk_MentorQuest
 {
@@ -468,7 +468,7 @@ int UIMentoringMissionPage::vfunc_1()
 {
     if (!UIMentoringPage::vfunc_1()) return 0;
     if (!m_script) return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     int nDay = -1;
     __int64 nStart = GetMissionStartTime();
     if (nStart != 0)
@@ -496,7 +496,7 @@ int UIMentoringMissionPage::vfunc_1()
 void UIMentoringMissionPage::vfunc_2()
 {
     UIMentoringPage::vfunc_2();
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
 }
 
 // @0x140c73790
@@ -532,7 +532,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
         MS2Ptr<CQuestData> spQuest = GetQuestData(nQuest);
         if (spQuest.get() != 0)
         {
-            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor == 0) return;
             ASTooltip tip(2);
             if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nQuest, 1))))
@@ -548,7 +548,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
         MS2Ptr<CQuestData> spQuest = GetQuestData(nQuest);
         if (spQuest.get() != 0)
         {
-            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pActor == 0) return;
             ASTooltip tip(2);
             if (tip.ApplyTextTooltip(FUN_140763e10(FUN_140761e40(nQuest, 1))))
@@ -639,7 +639,7 @@ void UIMentoringMissionPage::SetMissionData(ASObj& obj, Unk_MentorInstance* pIns
     if (pInst == 0) return;
     MS2Ptr<CQuestData> spQuest = (&pInst->m_progress)->vfunc_0();
     if (!spQuest) return;
-    Unk_MentorActorV* pUser = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MentorActorV* pUser = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pUser == 0) return;
     CString strIcon = reinterpret_cast<Unk_MentorQuest*>((&pInst->m_progress)->vfunc_0().operator->())->m_strIcon;
     CStringW strDesc = GetQuestSummary(((class CQuest*)(class Unk_MentorInstance*)(pInst))->GetQuestId(), 0);
@@ -728,8 +728,8 @@ UIMentoringPage::~UIMentoringPage() {}
 // @0x140c74b00
 int UIMentoringPage::vfunc_1()
 {
-    if (m_owner->FUN_1422dba00().IsNull()) return 0;
-    Scaleform::GFx::Value tab = m_owner->FUN_1422dba00()->GetMember("m_currentTab");
+    if (m_owner->GetScript().IsNull()) return 0;
+    Scaleform::GFx::Value tab = m_owner->GetScript()->GetMember("m_currentTab");
     if (tab.IsNull()) return 0;
     m_script = Unk_ASCreate<ASUIComponent>(m_owner->FUN_1422db730(), tab);
     return 1;

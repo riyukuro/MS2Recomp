@@ -21,7 +21,7 @@ public:
     Scaleform::GFx::Value GetTarget();                          // target
     Scaleform::GFx::Value GetCurrentTarget();                          // currentTarget
     bool IsCancelable();                                           // cancelable
-    bool FUN_1422e2460();                                           // bubbles
+    bool IsBubbles();                                           // bubbles
     bool IsDefaultPrevented();                                           // isDefaultPrevented()
     void PreventDefault();                                           // preventDefault()
     void StopImmediatePropagation();                                           // stopImmediatePropagation()
@@ -49,8 +49,8 @@ public:
     int GetIndex();                                            // index
     int GetColumnIndex();                                            // columnIndex
     int GetRowIndex();                                            // rowIndex
-    unsigned int FUN_1422e2940();                                   // controllerIdx
-    unsigned int FUN_1422e29a0();                                   // buttonIdx
+    unsigned int GetControllerIdx();                                   // controllerIdx
+    unsigned int GetButtonIdx();                                   // buttonIdx
     bool IsKeyboard();                                           // isKeyboard
 };
 MS2_CHECK_SIZE(ASListEvent, 0x40);

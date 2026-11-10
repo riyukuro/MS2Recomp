@@ -73,7 +73,7 @@ MS2_REPLACE_METHOD(0x141487ae0, CMorphingAnimation, vfunc_2, 51, 0x438D66E1);
 // @0x141487b20
 bool CMorphingAnimation::vfunc_3(int nTime)
 {
-    int nFrame = m_pData->FUN_141851c20(nTime);
+    int nFrame = m_pData->GetFrameIndex(nTime);
     if (nFrame != m_nFrame) {
         m_nFrame = nFrame;
         if ((unsigned int)m_nFrame >= m_pData->m_weights.GetCount())

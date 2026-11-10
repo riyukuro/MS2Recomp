@@ -13,7 +13,7 @@ class CUserTrigger : public CPtred
 public:
     CUserTrigger();                                                             // 0x1408f4e20
     virtual ~CUserTrigger();                                                    // 0x1408f4e70 (??_G 0x1408f4f40)
-    void FUN_1408f4eb0(__int64 n18, __int64 n20, __int64 n28, int n30, int n34, CString strName);   // 0x1408f4eb0 fill every member (the callee destroys strName)
+    void SetData(__int64 n18, __int64 n20, __int64 n28, int n30, int n34, CString strName);   // 0x1408f4eb0 fill every member (the callee destroys strName)
 
     __int64 m_n18;                                                              // +0x18
     __int64 m_n20;                                                              // +0x20

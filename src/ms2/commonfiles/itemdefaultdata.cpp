@@ -41,9 +41,9 @@ public:
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);  // banktable.cpp: slot name attribute
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                             // the item data of an id
 
@@ -95,7 +95,7 @@ void CItemDefaultData::Load()
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key"))) {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         int nJobCode = 0;
         XmlQuery((class TiXmlElement*)(pKey), "jobCode", reinterpret_cast<int&>(nJobCode));
@@ -111,7 +111,7 @@ void CItemDefaultData::Load()
             Unk_ItemDefaultKind eSlot = (Unk_ItemDefaultKind)0;
             ReadSlotAttr(pSlot, "name", (int*)&eSlot);
             for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlot))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
-                if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
+                if (!IsElementAvailable((struct Unk_XmlElement*)(pItem)))
                     continue;
                 bool bVisible = false;
                 XmlQuery((class TiXmlElement*)(pItem), "visible", bVisible);
@@ -123,7 +123,7 @@ void CItemDefaultData::Load()
                 XmlQuery((class TiXmlElement*)(pItem), "select", bSelect);
                 if (!bVisible && !bBase)
                     continue;
-                int nItemId = FUN_140197390(pItem, "id", 0);
+                int nItemId = GetUIntAttr(pItem, "id", 0);
                 MS2Ptr<CItemData> spItemData = FUN_14053f870(nItemId);
                 if (!spItemData)
                     continue;

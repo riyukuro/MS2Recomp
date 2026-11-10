@@ -208,7 +208,7 @@ BGTransparencyMgr::~BGTransparencyMgr() {}
 // @0x140a0cee0
 bool BGTransparencyMgr::Init()
 {
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
     m_map30.clear();
     m_map40.clear();
     m_timer.Start(300);
@@ -222,7 +222,7 @@ void BGTransparencyMgr::Shutdown()
 {
     m_spSceneGraph = 0;
     m_spService = 0;
-    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->RemoveCallback((IWorldServiceCallback*)this);
 }
 
 // @0x140a0d000
@@ -596,7 +596,7 @@ void BGTransparencyMgr::UpdateFadeOut()
         for (std::list<TransparencyStandardMaterial*>::iterator
             itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
         {
-            float fRatio = 1.0f - pElement->m_timer.FUN_140868940();
+            float fRatio = 1.0f - pElement->m_timer.GetRatio();
             (*itMat)->vfunc_4(efd::Clamp(fRatio, pElement->m_fAlpha, 1.0f));
         }
     }
@@ -632,7 +632,7 @@ void BGTransparencyMgr::UpdateFadeIn()
         for (std::list<TransparencyStandardMaterial*>::iterator
             itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
         {
-            float fRatio = pElement->m_timer.FUN_140868940();
+            float fRatio = pElement->m_timer.GetRatio();
             (*itMat)->vfunc_4(efd::Clamp(fRatio, pElement->m_fAlpha, 1.0f));
         }
         ++it;

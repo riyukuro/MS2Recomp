@@ -46,7 +46,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
+    MS2Ptr<CFieldDataCli> GetFieldData();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 
 // The string table (TSingleton<CStringTable>::GetInstance).
@@ -159,7 +159,7 @@ void UIEnterEventFieldDialog::vfunc_43()
                 else
                 {
                     int nX = 0;
-                    if (MS2Ptr<ASMovieClip> spClip = dynamic_cast<ASMovieClip*>((AScript*)pHud->FUN_1422dba00()))
+                    if (MS2Ptr<ASMovieClip> spClip = dynamic_cast<ASMovieClip*>((AScript*)pHud->GetScript()))
                     {
                         double dX = 0.0;
                         double dY = 0.0;
@@ -218,7 +218,7 @@ MS2_REPLACE_METHOD(0x140F403A0, UIEnterEventFieldDialog, OnNotifyGameStart, 38, 
 // MS2-FUNCTIONAL: branch/temporary layout differs from the exe
 void UIEnterEventFieldDialog::UpdateVisible()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return;
     int nShow = 1;

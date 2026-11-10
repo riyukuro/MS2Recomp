@@ -105,8 +105,8 @@ class WorldService   // C3: member view
 {
 public:
     static WorldService* GetInstance();
-    void* FUN_141bd0cc0();                              // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    void* GetLocalPlayer();                              // the local player
+    MS2Ptr<CFieldDataCli> GetFieldData();
     MS2Ptr<CInteractObject> FUN_141bc6510(Vector3 pos, int nId);
 };
 
@@ -131,8 +131,8 @@ MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
 
 class Unk_SoundSink* GetKeyTable();   // the key binds (C3: was void*)
 void* FUN_1413b1c60(const CStringA& strName);           // the dialog of a name
-void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
-void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
+void* GetChatEmoticonDialog(unsigned nUIId);                    // the chat emoticon dialog
+void* GetItemEnchantDialog(unsigned nUIId);                    // the enchant dialog
 int FUN_1413b1f30(TiXmlElement* pElem, const char* pszName, int& nOut);
 void* FindGuideEvent(int nUIId);                    // the dialog of a ui id
 CStringA StringFormat(const char* format);

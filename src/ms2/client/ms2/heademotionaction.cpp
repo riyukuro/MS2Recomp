@@ -99,7 +99,7 @@ void CHeadEmotionAction::vfunc_6(double f)
 {
     if (vfunc_4())
     {
-        PC* pPC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_n18));
+        PC* pPC = reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_n18));
         if (pPC != 0)
             ((class CBoneRotateManager*)(class Unk_PCD88*)(pPC->FUN_14165c2d0().operator->()))->StopLooking();
     }

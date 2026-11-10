@@ -111,7 +111,7 @@ class Unk_MrdPlayer
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 
@@ -124,7 +124,7 @@ extern Unk_CubeStock DAT_143ab2e50;
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_140633d50(MS2Ptr<CItem> spItem);           // the item can be traded
 struct Unk_MeratItemOwner; bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner);   // meratmarketbasketinfo.cpp
-void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax);
+void GetSellPriceRange(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax);
 __int64 GetMarketRegisterFee(int nItemId);
 __int64 FUN_141b71960(const char* sz);
 MS2Ptr<CItem> CreateProductItem(CMeratMarketProduct* pProduct);   // the item a product shows
@@ -152,14 +152,14 @@ class CMsgBoxData : public CPtred
 };
 MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> ShowTermsMessageBoxWithCallback(int nType, const CStringW& strTitle, const CStringW& strBody, Delegate<bool(int, const CMsgBoxData&)> cb);
-int FUN_141276180(const CString& strName, const CString& strValue);
+int PlaySystemSound(const CString& strName, const CString& strValue);
 void DestroyItemSlotBag(const CString& str);
 void CreateItemSlotBag(const CString& strOut, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGet)(void*, int), int a, int b);
 MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);
-int FUN_1406516a0();
+int GetLanguage();
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 class Unk_MrdUiMgr { public: };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
@@ -183,7 +183,7 @@ CStringW FUN_140ebd9d0(bool a, __int64 b);
 
 // The slot bag of the movie.
 class ItemSlotBag;
-ItemSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
+ItemSlotBag* GetItemSlotBag(NotifyContext::BindData* pBind);
 class ItemInfoSlot* CastToItemInfoSlot(NotifyContext::BindData* pBind);   // the slot as an ItemInfoSlot (TypeCast), else 0
 
 // Items of the dialog as the base UI knows them.
@@ -202,8 +202,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, b
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetString(&args[0], a1);
+    SetBoolean(&args[1], a2);
     SetValue(&args[2], a3);
     SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
@@ -288,7 +288,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         MS2Ptr<CItem> spItem = GetItemAt(nIndex);
         if (spItem == 0)
             return;
-        DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(FUN_140c54520(Unk_NotifyContext::FindBinding(m_strKey)));
+        DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(GetItemSlotBag(Unk_NotifyContext::FindBinding(m_strKey)));
         if (pBag != 0)
         {
             DragSlot* pSlot = reinterpret_cast<DragSlot*>(CastToItemInfoSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(nIndex)));
@@ -531,7 +531,7 @@ bool UIMeratMarketRegisterDialog::CanFindItem(__int64 nItemUid, MS2Ptr<CItem> sp
     MS2Ptr<CItem> spItem(0);
     if (spHint.get() != 0)
     {
-        if (((class CItemData*)((class CItem*)(class CItem*)(spHint.operator->()))->FUN_140527840())->IsInstallItem())
+        if (((class CItemData*)((class CItem*)(class CItem*)(spHint.operator->()))->GetData())->IsInstallItem())
         {
             spItem = DAT_143ab2e20.FindItemByUid(nItemUid);
             if (spItem == 0)
@@ -545,7 +545,7 @@ bool UIMeratMarketRegisterDialog::CanFindItem(__int64 nItemUid, MS2Ptr<CItem> sp
             spItem = g_143ab2a90.FindItemByUid(nItemUid);
             if (spItem == 0)
             {
-                PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+                PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPlayer))->GetEquipment())->FindItemByUid(nItemUid);
@@ -560,7 +560,7 @@ bool UIMeratMarketRegisterDialog::CanFindItem(__int64 nItemUid, MS2Ptr<CItem> sp
         spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem == 0)
         {
-            PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pPlayer != 0)
             {
                 MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPlayer))->GetEquipment())->FindItemByUid(nItemUid);
@@ -634,7 +634,7 @@ void UIMeratMarketRegisterDialog::CollectListableItems(ItemArray& arrItems)
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xa9))
         g_143ab2a90.FUN_140a61010(4, &owner.m_nAccount, arrCandidates);
     ATL::CAtlList<MS2Ptr<CEquipItem> > listEquip(10);
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPlayer))->GetEquipment())->CollectShownItemsInLayer(listEquip, 1);
     if (!listEquip.IsEmpty())
@@ -726,12 +726,12 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     ASSlot slot(2);
     CUgcMarketProduct* pUgc = &spProduct->m_ugc;
     int nGender = 2;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         nGender = ((class PC*)(class PCBase*)(pPlayer))->GetGender();
     slot.SetBoolMember("disable", spData->IsGenderAllowed(nGender) == 0);
     CStringW strWarning;
-    if (spData->FUN_14053cd10())
+    if (spData->IsScoreItem())
         strWarning = L"$s_meratmarket_text_register_notice_warning_music_score";
     slot.SetWStringMember("warningMsg", CStringW(strWarning));
     slot.SetWStringMember("productOID", spProduct->m_key.GetKeyString());
@@ -749,7 +749,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     slot.SetWStringMember("saleTags", pUgc->GetStr200Head());
     __int64 nMaxPrice = 0;
     __int64 nMinPrice = 0;
-    FUN_1406a5480(spData, &nMinPrice, &nMaxPrice);
+    GetSellPriceRange(spData, &nMinPrice, &nMaxPrice);
     slot.SetMemberUInt("minPrice", (unsigned int)nMinPrice);
     slot.SetMemberUInt("maxPrice", (unsigned int)nMaxPrice);
     slot.SetWStringMember("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
@@ -824,7 +824,7 @@ __int64 UIMeratMarketRegisterDialog::GetRegisterFee(bool bAddBase, MS2Ptr<CItem>
     {
         if (spItem.get() != 0 ? true : false)
         {
-            if (((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())->FUN_14053cd10() == false)
+            if (((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData())->IsScoreItem() == false)
             {
                 int nLevel = ((class Unk_MrdMarket*)GetMeratMarketMan())->GetRegisteredDesignCount();
                 nFee = GetMarketRegisterFee(nLevel);
@@ -1066,14 +1066,14 @@ void UIMeratMarketRegisterDialog::OnChangeSelectedIndex(ASData& data)
         obj.SetWStringMember("warningMsg", CStringW(strWarning));
         __int64 nMaxPrice = 0;
         __int64 nMinPrice = 0;
-        FUN_1406a5480(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(m_spSelected.operator->()))->FUN_140527840())), &nMinPrice, &nMaxPrice);
+        GetSellPriceRange(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(m_spSelected.operator->()))->GetData())), &nMinPrice, &nMaxPrice);
         obj.SetMemberUInt("minPrice", (int)nMinPrice);
         obj.SetMemberUInt("maxPrice", (int)nMaxPrice);
         obj.SetWStringMember("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
-        FUN_141276180(s_marketItemChoice, "");
+        PlaySystemSound(s_marketItemChoice, "");
         if (spOld)
         {
-            bChanged = ((class CItemData*)((class CItem*)(class CItem*)(spOld.operator->()))->FUN_140527840())->GetEquipSubtype() != ((class CItemData*)((class CItem*)(class CItem*)(m_spSelected.operator->()))->FUN_140527840())->GetEquipSubtype();
+            bChanged = ((class CItemData*)((class CItem*)(class CItem*)(spOld.operator->()))->GetData())->GetEquipSubtype() != ((class CItemData*)((class CItem*)(class CItem*)(m_spSelected.operator->()))->GetData())->GetEquipSubtype();
         }
         else
             bChanged = true;
@@ -1100,7 +1100,7 @@ void UIMeratMarketRegisterDialog::OnGetAlreadyRegistIndex(ASData& data)
 int UIMeratMarketRegisterDialog::GetTagInputLimit()
 {
     int nLimit = FUN_14025a620((class Unk_ConstVal*)(MrdTagLimitValue()));
-    int nLanguage = FUN_1406516a0();
+    int nLanguage = GetLanguage();
     if (nLanguage >= 0)
     {
         if (nLanguage > 7)

@@ -169,7 +169,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
         }
     }
     StopLoopEffects();
-    FUN_1416f7790();
+    PlayLateEffect();
     if (DAT_143ae95e1 || DAT_143ae95e0)
     {
         Unk_RsActor* pActor = reinterpret_cast<Unk_RsActor*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
@@ -221,7 +221,7 @@ void CRegionSkillObject::FadeOutEffects()
 }
 
 // @0x1416f6900
-void CRegionSkillObject::FUN_1416f6900()
+void CRegionSkillObject::PlayHitEffect()
 {
     Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->GetMotion(0));
     if (pAttr == 0)
@@ -252,7 +252,7 @@ void CRegionSkillObject::FUN_1416f6900()
 }
 
 // @0x1416f6b90
-void CRegionSkillObject::FUN_1416f6b90()
+void CRegionSkillObject::Reset()
 {
     for (POSITION pos = m_collisions.GetHeadPosition(); pos != 0; m_collisions.GetNext(pos))
     {
@@ -298,7 +298,7 @@ void CRegionSkillObject::StopLoopEffects()
 }
 
 // @0x1416f6ed0
-Vector3 CRegionSkillObject::FUN_1416f6ed0()
+Vector3 CRegionSkillObject::GetFirstPoint()
 {
     if (m_points.IsEmpty())
         return DAT_143b01a60;
@@ -306,7 +306,7 @@ Vector3 CRegionSkillObject::FUN_1416f6ed0()
 }
 
 // @0x1416f6f50
-void CRegionSkillObject::FUN_1416f6f50()
+void CRegionSkillObject::UpdateEffects()
 {
     if (m_spEffect.get() != 0)
     {
@@ -398,11 +398,11 @@ void CRegionSkillObject::FUN_1416f6f50()
             }
         }
     }
-    FUN_1416f7790();
+    PlayLateEffect();
 }
 
 // @0x1416f7790
-void CRegionSkillObject::FUN_1416f7790()
+void CRegionSkillObject::PlayLateEffect()
 {
     if (m_bLateDone != 0)
         return;

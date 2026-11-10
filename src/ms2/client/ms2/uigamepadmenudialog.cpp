@@ -246,7 +246,7 @@ int UIGamePadMenuDialog::vfunc_13()
             MoveCursor(0x94);
         else if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0x95, 0, 0))
             MoveCursor(0x95);
-        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
+        else if (((class Unk_14025e7c0*)FUN_14025e7c0())->IsActionKeyPressed(0x493e2, 0, 0))
             ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("menuClick");
         else
             return 0;

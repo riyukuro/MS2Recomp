@@ -16,7 +16,7 @@ class UIAvatarPC;
 struct ItemEntity;
 class DungeonRewardInfo {
 public: DungeonRewardInfo(); virtual ~DungeonRewardInfo(); void Clear(); void Read(CInPacket&);
- __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); unsigned GetReward(unsigned); bool HasRewards();
+ __int64 GetMeso(); __int64 GetExp(); unsigned GetReward(unsigned); bool HasRewards();
 private:
  void* m_8;
  void* m_10;

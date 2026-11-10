@@ -42,7 +42,7 @@ extern int DAT_1439f9284;                                       // the slot of t
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class PC   // C3: member view for the former free stand-ins
@@ -87,7 +87,7 @@ CGemTransparency* UIGemSettingDialog::GetTransparencyGem()
 {
     if (DAT_1439f9284 == -1)
         return 0;
-    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pActor == 0)
         return 0;
 #ifdef __clang__

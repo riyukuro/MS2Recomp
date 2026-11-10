@@ -29,7 +29,7 @@ public:
     int RequestSaleMarket(ItemFunctionArgs&);
     int ToggleStat(ItemFunctionArgs&);
     int FUN_141365720(ItemFunctionArgs&);
-    int FUN_141365750(ItemFunctionArgs&);
+    int ShowGuideState(ItemFunctionArgs&);
     int ChangeGuideEntityState(ItemFunctionArgs&);
     int ResetGuideClearState(ItemFunctionArgs&);
     int TestGuideCondition(ItemFunctionArgs&);
@@ -57,7 +57,7 @@ public:
     int ExportUgcMap(ItemFunctionArgs&);
     int GoIntoDesignHome(ItemFunctionArgs&);
     int OpenVip(ItemFunctionArgs&);
-    int FUN_141366a40(ItemFunctionArgs&);
+    int TakeInteriorGift(ItemFunctionArgs&);
     int TakeInteriorGradeGift(ItemFunctionArgs&);
     int SetUgcMapBackground(ItemFunctionArgs&);
     int SetNoticeSpeed(ItemFunctionArgs&);
@@ -66,11 +66,11 @@ public:
     int AddUgcMapPriv(ItemFunctionArgs&);
     int RemoveUgcMapPriv(ItemFunctionArgs&);
     int SellMyHome(ItemFunctionArgs&);
-    int FUN_141367030(ItemFunctionArgs&);
+    int EnableFeature(ItemFunctionArgs&);
     int EnableSkipFrame(ItemFunctionArgs&);
     int PlayFaceEmotion(ItemFunctionArgs&);
     int ReloadScript(ItemFunctionArgs&);
-    int FUN_141367240(ItemFunctionArgs&);
+    int SetClientItemTransferType(ItemFunctionArgs&);
     int SetNetStreamUrl(ItemFunctionArgs&);
     int ControlCutScene(ItemFunctionArgs&);
     int HideUi(ItemFunctionArgs&);
@@ -121,7 +121,7 @@ public:
     int SetPacketSendDelay(ItemFunctionArgs&);
     int SetPacketRecvDelay(ItemFunctionArgs&);
     int GetDamageMovieCount(ItemFunctionArgs&);
-    int FUN_14136c4b0(ItemFunctionArgs&);
+    int ToggleSkillSlotNotFind(ItemFunctionArgs&);
     int ResetOpenedUgcTerms(ItemFunctionArgs&);
     int LearnAllAbilities(ItemFunctionArgs&);
     int SkipLoadingUgcCube(ItemFunctionArgs&);
@@ -137,16 +137,16 @@ public:
     int MovePrevChannel(ItemFunctionArgs&);
     int MoveNextChannel(ItemFunctionArgs&);
     int ShowPopupText(ItemFunctionArgs&);
-    int FUN_14136d460(ItemFunctionArgs&);
+    int SetIgnoreSkillCoolTime(ItemFunctionArgs&);
     int FUN_14136d4c0(ItemFunctionArgs&);
-    int FUN_14136d4e0(ItemFunctionArgs&);
+    int CrashDump(ItemFunctionArgs&);
     int FUN_14136d520(ItemFunctionArgs&);
-    int FUN_14136d620(ItemFunctionArgs&);
-    int FUN_14136d6a0(ItemFunctionArgs&);
-    int FUN_14136d870(ItemFunctionArgs&);
-    int FUN_14136d970(ItemFunctionArgs&);
-    int FUN_14136d9c0(ItemFunctionArgs&);
-    int FUN_14136da20(ItemFunctionArgs&);
+    int SetPcBangLevel(ItemFunctionArgs&);
+    int OpenContract(ItemFunctionArgs&);
+    int SetTitle(ItemFunctionArgs&);
+    int SetQuestSeed(ItemFunctionArgs&);
+    int SetAutoInstallEquipment(ItemFunctionArgs&);
+    int ReloadSkill(ItemFunctionArgs&);
     int FUN_14136dab0(ItemFunctionArgs&);
 
     int ToggleUIDevMode(ItemFunctionArgs&);

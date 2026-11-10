@@ -61,7 +61,7 @@ class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 bool FUN_140930b40();
@@ -113,7 +113,7 @@ MS2_REPLACE_METHOD(0x140fc73a0, UIWeddingDialog, GetTypeName, 61, 0x559E2BBE);
 int UIWeddingDialog::vfunc_65()
 {
     bool bMarried = false;
-    int nState = WeddingManager::GetInstance()->FUN_140d295d0()->m_nState;
+    int nState = WeddingManager::GetInstance()->GetWeddingProxy()->m_nState;
     if (nState >= 2)
     {
         if (nState > 4)
@@ -143,10 +143,10 @@ void UIWeddingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140fc8470();
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (!pPC)
         return;
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     Unk_WeddingPartner* pPartner = pProxy->GetSelf(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80());
     bool bDivorce = false;
     int nState = pProxy->m_nState;
@@ -162,7 +162,7 @@ void UIWeddingDialog::OnLoadComplete()
     data.SetWStringMember("coupleName", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_dialog_couple_name"), pPC->vfunc_77(), pPartner->m_strName));
     data.SetWStringMember("anniversary", FUN_14028dfa0<CStringW>(CStringW(L"s_wedding_dialog_anniversary"), FormatYearMonthDayHour(CMsTime(WdProxyTime(pProxy, 0x30)))));
     data.SetWStringMember("counter", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_counter"), GetDayNumberDifference(WdProxyTime(pProxy, 0x30), GetServerTime())));
-    data.SetStringMember("profile", FUN_140fc88d0());
+    data.SetStringMember("profile", GetProfilePath());
     data.SetBoolMember("divorce", bDivorce);
     ASObj affinity(2);
     FUN_140fc86c0(affinity);
@@ -270,14 +270,14 @@ void UIWeddingDialog::SetOwnProfile()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    m_30->Invoke("setProfile", FUN_140fc88d0());
+    m_30->Invoke("setProfile", GetProfilePath());
 }
 MS2_REPLACE_METHOD(0x140fc7f30, UIWeddingDialog, SetOwnProfile, 153, 0xA5C3D4D3);
 
 // @0x140fc7fd0
 bool UIWeddingDialog::SendWedding(int nResult, const CMsgBoxData& box)
 {
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     Unk_WeddingPartner* pPartner = pProxy->GetSelf(DAT_143ab2828);
     if (nResult)
     {
@@ -301,11 +301,11 @@ void UIWeddingDialog::FUN_140fc81a0(CInPacket& packet)
 {
     if (FUN_140930b40())
         return;
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (!pPC)
         return;
     bool bMarried = false;
-    int nState = WeddingManager::GetInstance()->FUN_140d295d0()->m_nState;
+    int nState = WeddingManager::GetInstance()->GetWeddingProxy()->m_nState;
     if (nState >= 2)
     {
         if (nState > 4)
@@ -325,7 +325,7 @@ MS2_REPLACE_METHOD(0x140fc81a0, UIWeddingDialog, FUN_140fc81a0, 141, 0x2DF7C8D8)
 // @0x140fc8240
 void UIWeddingDialog::OnDivorce()
 {
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     Unk_WeddingPartner* pPartner = pProxy->GetSelf(DAT_143ab2828);
     if (pProxy->IsPartner(DAT_143ab2828) == true)
         return;
@@ -363,7 +363,7 @@ MS2_REPLACE_METHOD(0x140fc8470, UIWeddingDialog, FUN_140fc8470, 574, 0x2162AD8C)
 // @0x140fc86c0
 void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
 {
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     __int64 nExp = pProxy->GetExp();
     int nGrade = ((class WeddingTable*)(class WeddingTable*)(WeddingTable::GetInstance()))->GetGrade(nExp);
     __int64 nMin = ((class WeddingTable*)(class WeddingTable*)(WeddingTable::GetInstance()))->GetExpValue(nGrade);
@@ -381,9 +381,9 @@ void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
 MS2_REPLACE_METHOD(0x140fc86c0, UIWeddingDialog, FUN_140fc86c0, 522, 0xD56FAB4F);
 
 // @0x140fc88d0
-CString UIWeddingDialog::FUN_140fc88d0()
+CString UIWeddingDialog::GetProfilePath()
 {
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     CString strPath;
     if (pProxy->IsBride(DAT_143ab2828))
         strPath = WdProxyPath(pProxy, 0x120);
@@ -391,4 +391,4 @@ CString UIWeddingDialog::FUN_140fc88d0()
         strPath = WdProxyPath(pProxy, 0x118);
     return FUN_1410291d0(DAT_143ab2828, strPath);
 }
-MS2_REPLACE_METHOD(0x140fc88d0, UIWeddingDialog, FUN_140fc88d0, 191, 0xFBD4BDC6);
+MS2_REPLACE_METHOD(0x140fc88d0, UIWeddingDialog, GetProfilePath, 191, 0xFBD4BDC6);

@@ -122,7 +122,7 @@ public:
 #undef PP_V
     virtual CStringW vfunc_77();                                        // character name
 };
-class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
+class Unk_PetPlayerMgr { public: Unk_PetPlayer* GetLocalPlayer(); };
 
 // The equipment stats of the player (GetEquipment(pc)); stat 0xad is the pet remake discount rate.
 class Unk_PetEquipSet;
@@ -179,7 +179,7 @@ public:
 // The item of an uid in the inventory or the equipment.
 ItemPtr FUN_1419be700(unsigned __int64 uid);
 // CItem members the header declares with another signature.
-int FUN_14053feb0(int nItemId);                                         // the default rank of an item id
+int GetItemRank(int nItemId);                                         // the default rank of an item id
 // The CItem sub-objects: the binding state (CItemTransfer) and the status record (its option at +0x18).
 class Unk_ItemOwnerRef : public CItemTransfer {};
 // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
@@ -206,7 +206,7 @@ void CreateItemInfoSlot(const CString& strKey, ItemPtr item, int a, int b, int c
 
 // Strings.
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CStringW GetIngredientCountText(unsigned int, unsigned int);                           // "have/need"
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
@@ -462,9 +462,9 @@ void PetRemakeOptionBoard::vfunc_6(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
     CStringW strCurKey(L"s_pet_remake_cur_random_option");
     CStringW strNewKey(L"s_pet_remake_new_random_option");
     Unk_RemakeStat stat(2, ItemPtr(cur), true);
-    obj.SetWStringMember("remakeStat0", FUN_140617e50(strCurKey, stat, 0));
+    obj.SetWStringMember("remakeStat0", FormatOptionText(strCurKey, stat, 0));
     stat.m_item = next;
-    obj.SetWStringMember("remakeStat1", FUN_140617e50(strNewKey, stat, 0));
+    obj.SetWStringMember("remakeStat1", FormatOptionText(strNewKey, stat, 0));
     int nSelected = 0;
     obj.SetIntMember("selectedStatIndex", nSelected);
     board->Invoke("setRemakeResult", obj.GetValue());
@@ -542,7 +542,7 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     {
         ItemPtr ingredient = g_143ab2a90.FindItemByUid(m_pOwner->GetUidIngredient());
         if (ingredient.get() != 0)
-            nMaxLock = ingredient->FUN_140527840()->function.parameter.FUN_1408d1f60(0, 0);
+            nMaxLock = ingredient->GetData()->function.parameter.FUN_1408d1f60(0, 0);
     }
     CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
@@ -582,7 +582,7 @@ void PetRemakeOptionBoard::FUN_140b93460()
     ItemPtr ingredient = g_143ab2a90.FindItemByUid(m_pOwner->GetUidIngredient());
     if (ingredient == 0)
         return;
-    MS2Ptr<CItemData> data(ingredient->FUN_140527840());
+    MS2Ptr<CItemData> data(ingredient->GetData());
     if (data == 0)
         return;
     if (data->function.name != L"LockItemOptionPet")
@@ -601,12 +601,12 @@ void PetRemakeOptionBoard::FUN_140b93460()
 // @0x140b937c0
 int PetRemakeOptionBoard::FillIngredientList(ASObj& obj, MS2Ptr<CItem> item)
 {
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return 0;
     int nRemakeCount = item->GetRemakeCount();
     CItemRemakeOptionIngredient ingredient;
-    MS2Ptr<CItemData> data(item->FUN_140527840());
-    MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->FUN_140527840()->GetPetId());
+    MS2Ptr<CItemData> data(item->GetData());
+    MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->GetData()->GetPetId());
     if (pet == 0)
         return 0;
     ((class CItemOptionTable*)GetItemOptionTable())->CalcPetRemakeCost(nRemakeCount, item->GetRarity(), ingredient);
@@ -620,7 +620,7 @@ int PetRemakeOptionBoard::FillIngredientList(ASObj& obj, MS2Ptr<CItem> item)
     ASArray list(2);
     unsigned nDiscount = 0;
     unsigned nRate = 0;
-    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player != 0)
         nRate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->GetEquipment()))->GetAbilityRate((SAType)0xad) * 10000.0f);
     int nSale = FUN_140616c50(MS2Ptr<CItemData>(data), &nDiscount, nRate);
@@ -635,7 +635,7 @@ int PetRemakeOptionBoard::FillIngredientList(ASObj& obj, MS2Ptr<CItem> item)
         unsigned nItemId = ref->GetItemId();
         int nNeed = ref->m_c;
         int nType = ref->m_b;
-        int nRank = FUN_14053feb0(nItemId);
+        int nRank = GetItemRank(nItemId);
         CItem* pIngredient = new CItem();
         if (pIngredient->InitWithCount(nItemId, nRank, 0, nNeed) != 0)
         {
@@ -689,10 +689,10 @@ CString PetRemakeOptionBoard::BindItemToSlot(CItem* pItem, CString strKey, CAtlA
 // @0x140b94340
 int PetRemakeOptionBoard::FUN_140b94340(MS2Ptr<CItem> item)
 {
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return 0;
     int nHave = 0;
-    int nItemId = item->FUN_140527840()->GetStringTag();
+    int nItemId = item->GetData()->GetStringTag();
     if (nItemId != 0)
         nHave = g_143ab2a90.GetItemCountByTag(nItemId, 0);
     return nHave;
@@ -861,7 +861,7 @@ MS2_REPLACE_METHOD(0x140B94FA0, TabContentsPetRemakeOption, vfunc_8, 11, 0xA6B3D
 // @0x140b94fc0
 void TabContentsPetRemakeOption::vfunc_9(void* pPacket)
 {
-    if (((CInPacket*)pPacket)->FUN_14070fe80() != 200)
+    if (((CInPacket*)pPacket)->GetOpcode() != 200)
         return;
     if (m_ui == 0)
         return;
@@ -939,7 +939,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player == 0)
         return;
     if (reinterpret_cast<CContentShutdown&>(((class Unk_PetFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x4d)) != 0)
@@ -957,7 +957,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
                 if (box.get() != 0)
                 {
                     box->SetItemUid(pet->GetItemUid());
-                    box->FUN_141a01ee0(ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
+                    box->SetItemEntry(ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return;
@@ -995,7 +995,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
             Unk_RemakeStat stat(2, ItemPtr(pet), false);
             CStringW strLocked = GetLockedOptionText(stat, aLocked);
             CStringW strName = ingredient->FUN_140528160();
-            unsigned nMaxLock = ingredient->FUN_140527840()->function.parameter.FUN_1408d1f60(0, 0);
+            unsigned nMaxLock = ingredient->GetData()->function.parameter.FUN_1408d1f60(0, 0);
             size_t nLocked = aLocked.GetCount();
             CStringW strAsk = FUN_14028dfa0(CStringW(L"s_pet_remake_ask_lock_item_option"), nLocked, nMaxLock, strLocked,
                                             strName, nMaxLock);
@@ -1011,7 +1011,7 @@ void TabContentsPetRemakeOption::SendChangeAttributesMode7()
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player == 0)
         return;
     if (reinterpret_cast<CContentShutdown&>(((class Unk_PetFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x4d)) != 0)
@@ -1038,7 +1038,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
-    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player == 0)
         return;
     if (reinterpret_cast<CContentShutdown&>(((class Unk_PetFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x4d)) != 0)
@@ -1052,7 +1052,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
         SetState(4);
         CString strValue = pData->FUN_1422b8d30();
         strValue.Replace(",", "");
-        int nValue = FUN_1407181d0(strValue);
+        int nValue = ParseUInt(strValue);
         if (nValue == 0)
             nValue = 100000;
         CCItemRemakeOptionPacket::RemakeOptionDebug debug;
@@ -1072,7 +1072,7 @@ void TabContentsPetRemakeOption::SendRemakeRequest()
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
-    if (pet.operator->()->FUN_140526470(2) == 0)
+    if (pet.operator->()->CanRemakeOption(2) == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_pet_remake_error_server_impossible");
         ShowSystemNotice(strMsg, 1, 1);
@@ -1200,7 +1200,7 @@ void TabContentsPetRemakeOption::ApplyRemadeItem(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return;
-    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player == 0)
         return;
     ItemPtr held = g_143ab2a90.FindItemByUid(item->GetItemUid());
@@ -1248,10 +1248,10 @@ void TabContentsPetRemakeOption::RebuildPetCards()
         ItemPtr item = g_143ab2a90.FindItemByUid(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->GetData()->GetPetId());
         if (pet == 0)
             continue;
-        if (item.operator->()->FUN_140526470(2) == 0)
+        if (item.operator->()->CanRemakeOption(2) == 0)
             continue;
         m_petCards.Add(item->GetItemUid());
     }
@@ -1268,7 +1268,7 @@ void TabContentsPetRemakeOption::RebuildIngredients()
         ItemPtr item = g_143ab2a90.FindItemByUid(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<CItemData> data(item->FUN_140527840());
+        MS2Ptr<CItemData> data(item->GetData());
         if (data == 0)
             continue;
         __int64 uid = item->GetItemUid();
@@ -1310,7 +1310,7 @@ void TabContentsPetRemakeOption::FUN_140b97170(int nIndex)
     ItemPtr item = FUN_1419be700(uid);
     if (item == 0)
         return;
-    if (item.operator->()->FUN_140526470(2) == 0)
+    if (item.operator->()->CanRemakeOption(2) == 0)
         return;
     m_pet = item;
     m_nPetIndex = nIndex;
@@ -1347,7 +1347,7 @@ void TabContentsPetRemakeOption::OnGetEnableLockOption(ASData* pData)
     unsigned nMax = pData->PopUInt();
     if (nMax == 0)
     {
-        CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
+        CStringW strNotice = GetStringByKey(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strNotice);
         ShowMessageBox(strNotice, 0, 0, CStringW(L""));
     }
@@ -1356,7 +1356,7 @@ void TabContentsPetRemakeOption::OnGetEnableLockOption(ASData* pData)
         ItemPtr ingredient = g_143ab2a90.FindItemByUid(m_uidIngredient);
         if (ingredient == 0)
             return;
-        MS2Ptr<CItemData> data(ingredient->FUN_140527840());
+        MS2Ptr<CItemData> data(ingredient->GetData());
         if (data == 0)
             return;
         if (data->function.name != L"LockItemOptionPet")
@@ -1366,7 +1366,7 @@ void TabContentsPetRemakeOption::OnGetEnableLockOption(ASData* pData)
             ShowMessageBox(FUN_14028dfa0(CStringW(L"s_pet_remake_notice_lock_item_option_limit"),
                                         ingredient->FUN_140528160(), nLimit), 0, 0, CStringW(L""));
         else
-            ShowMessageBox(FUN_140298ea0(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0,
+            ShowMessageBox(GetStringByKey(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0,
                           CStringW(L""));
     }
 }
@@ -1470,9 +1470,9 @@ void TabContentsPetRemakeOption::OnRemakeResult(CInPacket* pPacket)
         SetState(1);
         return;
     }
-    if (item.operator->()->FUN_140526470(2) == 0)
+    if (item.operator->()->CanRemakeOption(2) == 0)
     {
-        CStringW strError = FUN_140298ea0(CStringW(L"s_itemremake_error_server_impossible"));
+        CStringW strError = GetStringByKey(CStringW(L"s_itemremake_error_server_impossible"));
         ShowSystemNotice(strError, 1, 1);
         SetState(1);
         return;
@@ -1592,7 +1592,7 @@ void TabContentsPetRemakeOption::OnRemakeError(CInPacket* pPacket)
 void TabContentsPetRemakeOption::FUN_140b988d0(unsigned __int64 uidIngredient)
 {
     m_pet->SetRemakeCount(m_petNext->GetRemakeCount());
-    m_pet->FUN_14052b760(ItemPtr(m_petNext));
+    m_pet->CopyTransferFrom(ItemPtr(m_petNext));
     ItemPtr ingredient = g_143ab2a90.FindItemByUid(uidIngredient);
     if (ingredient == 0)
     {

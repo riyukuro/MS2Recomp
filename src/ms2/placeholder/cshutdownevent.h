@@ -63,8 +63,8 @@ class CShutdownEventDropBox : public CPtred
 public:
     CShutdownEventDropBox();                                // 0x1407d00f0
     explicit CShutdownEventDropBox(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
-    bool FUN_1407d0150(unsigned long nBoxId);               // 0x1407d0150 shut a box down
-    void FUN_1407d01d0(unsigned long nBoxId);               // 0x1407d01d0 undo one shut down
+    bool AddShutdown(unsigned long nBoxId);               // 0x1407d0150 shut a box down
+    void RemoveShutdown(unsigned long nBoxId);               // 0x1407d01d0 undo one shut down
     bool IsShutdown(unsigned long nBoxId);                     // 0x1407d02e0
 private:
     MS2_LAYOUT_FRIEND;
@@ -83,8 +83,8 @@ class CShutdownEventInteractObject : public CPtred
 public:
     CShutdownEventInteractObject();                         // 0x1407d03c0
     explicit CShutdownEventInteractObject(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
-    bool FUN_1407d0420(unsigned nFieldId, int nObjectId);   // 0x1407d0420 shut an object down
-    void FUN_1407d04c0(unsigned nFieldId, int nObjectId);   // 0x1407d04c0 undo one shut down
+    bool AddShutdown(unsigned nFieldId, int nObjectId);   // 0x1407d0420 shut an object down
+    void RemoveShutdown(unsigned nFieldId, int nObjectId);   // 0x1407d04c0 undo one shut down
     bool IsShutdown(unsigned nFieldId, int nObjectId);   // 0x1407d05e0 is the object shut down
 private:
     MS2_LAYOUT_FRIEND;
@@ -99,8 +99,8 @@ class CShutdownEventFunctionItem : public CPtred
 public:
     CShutdownEventFunctionItem();                           // 0x1407d0bd0
     explicit CShutdownEventFunctionItem(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
-    bool FUN_1407d0c30(unsigned long nItemId);              // 0x1407d0c30 shut a function item down
-    void FUN_1407d0cb0(unsigned long nItemId);              // 0x1407d0cb0 undo one shut down
+    bool AddShutdown(unsigned long nItemId);              // 0x1407d0c30 shut a function item down
+    void RemoveShutdown(unsigned long nItemId);              // 0x1407d0cb0 undo one shut down
     bool IsShutdown(unsigned long nItemId);              // 0x1407d0dc0 is the item shut down
 private:
     MS2_LAYOUT_FRIEND;
@@ -185,10 +185,10 @@ class CShutdownEventValue : public CPtred
 {
 public:
     CShutdownEventValue();                                  // 0x1407d1080
-    void FUN_1407d10e0(unsigned long nId);                            // 0x1407d10e0 count one more shut down of the id
-    void FUN_1407d1160(unsigned long nId);                            // 0x1407d1160 undo one (drops the id at zero)
+    void AddShutdown(unsigned long nId);                            // 0x1407d10e0 count one more shut down of the id
+    void RemoveShutdown(unsigned long nId);                            // 0x1407d1160 undo one (drops the id at zero)
     bool IsShutdown(unsigned long nId);                            // 0x1407d1210 the id is shut down
-    bool FUN_1407d12b0();                                   // 0x1407d12b0 any id is shut down
+    bool HasShutdown();                                   // 0x1407d12b0 any id is shut down
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18

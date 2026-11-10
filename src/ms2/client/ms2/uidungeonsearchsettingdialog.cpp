@@ -123,7 +123,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     m_group->AddListIndexChangeHandler(ParamsDelegate(this, &UIDungeonSearchSettingDialog::OnGroupChanged), 0);
     m_checks.resize(m_rows.size(), 0);
     for (unsigned i = 0; i < m_rows.size(); ++i) {
-        m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
+        m_rows[i]->SetDataHandler(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
         if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]))
             m_checks[i]->AddSelectHandler(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11840), FUN_140bd09d0(i));
     }
@@ -220,7 +220,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
         MS2Ptr<ASCheckBox> check = m_checks[nRow];
         if (row == NULL || check == NULL)
             return;
-        void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return;
         unsigned nRoom = params.pArgs[0].GetUInt();

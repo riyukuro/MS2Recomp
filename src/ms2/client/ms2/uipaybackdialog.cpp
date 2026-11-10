@@ -117,7 +117,7 @@ void UIPaybackDialog::vfunc_67()
 void UIPaybackDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (!reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->IsAvailable(0))
@@ -146,7 +146,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
             return 1;
         }
-        void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer == 0)
             return 0;
         MS2Ptr<CMeratMarketProduct> spProduct = reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->GetFirstSellingProduct();

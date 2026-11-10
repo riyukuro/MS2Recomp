@@ -30,7 +30,7 @@ public:
     virtual void vfunc_24(bool bInvalidate);                        // 24 0x1422c80c0 validateNow (invalidate() first if set)
 #endif
     // Registers the click callback; pUser comes back in Params.
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // the user value lands in Params (homed as a qword by the callee)
+    void AddClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // the user value lands in Params (homed as a qword by the callee)
     void SetVerticalAlign(int nMode);                                  // the button mode (uidungeonroomdialog: 2)
     void SetSelected(int bSelected);                              // set "selected"
     bool IsSelected();                                           // "selected"
@@ -47,7 +47,7 @@ public:
     void SetToggle(int bToggle);                                // set "toggle"
     bool IsToggle();                                           // "toggle"
     // remove the "buttonClick" / "select" listener registered by FUN_1422ce240 / FUN_1422ce320
-    void FUN_1422ce2c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick);
+    void RemoveClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick);
     void RemoveSelectHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onSelect);
 };
 MS2_CHECK_SIZE(ASButton, 0x88);

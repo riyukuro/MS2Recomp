@@ -18,10 +18,10 @@ class DungeonRoomShutdownContext : public CPtred
 public:
     DungeonRoomShutdownContext();                           // 0x140343e50
     void LoadRoomIds(const CStringW& strXml);             // <dungeonRoom id=..> elements into the room id set (+0x18)
-    void FUN_140343fc0(const CStringW& strXml);             // <dungeonGroup type=..> elements into the group set (+0x28)
-    bool FUN_1403441a0();                                   // true if either set is non-empty
+    void LoadGroups(const CStringW& strXml);             // <dungeonGroup type=..> elements into the group set (+0x28)
+    bool HasEntries();                                   // true if either set is non-empty
     bool HasRoomId(unsigned nRoomId);                   // the room id is in the set
-    bool FUN_140344140(Unk_DungeonGroupType eGroup);        // the group is in the set
+    bool HasGroup(Unk_DungeonGroupType eGroup);        // the group is in the set
 
     std::set<unsigned> m_roomIds;                           // +0x18
     std::set<Unk_DungeonGroupType> m_groups;                // +0x28

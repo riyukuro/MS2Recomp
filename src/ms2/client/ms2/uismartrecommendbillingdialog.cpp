@@ -77,13 +77,13 @@ struct Unk_SrConstTable
 MS2_CHECK_OFFSET(Unk_SrConstTable, m_closeDelay, 0xce80);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 UIRewardNotify* FindRewardNotify(int uiType);                      // GetDialog<UIRewardNotify>
 CStringW FUN_1409404f0(__int64 nMeso);                          // the meso price text
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int a1, int a2, int a3);   // preview the item
 void DestroyItemInfoSlot(const CString& strKey);                      // drop the preview
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -146,7 +146,7 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
 {
 #define SRB_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (SRB_PKT->FUN_14070fe80() == 0xa0)
+    if (SRB_PKT->GetOpcode() == 0xa0)
     {
         unsigned nAccepted = SRB_PKT->ReadUInt8();
         if (nAccepted == 1)
@@ -254,8 +254,8 @@ Scaleform::GFx::Value ASDialog::FUN_14134d4d0(const char* szMethod, int nMode, C
 {
     ASArgList args;
     args.resize(5);
-    FUN_1422bcd10(&args[0], nMode);
-    FUN_1422bce70(&args[1], (const char*)strBagKey);
+    SetUInt(&args[0], nMode);
+    SetString(&args[1], (const char*)strBagKey);
     FUN_1422bcea0(&args[2], (const wchar_t*)strName);
     FUN_1422bcea0(&args[3], (const wchar_t*)strDesc);
     FUN_1422bcea0(&args[4], (const wchar_t*)strText);
@@ -395,7 +395,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 m_strBagKey = GetTypeName();
                 CreateItemInfoSlot(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strItemDescription, m_item->m_strBuyButtonText, m_item->m_nNpcImageType);
-                FUN_141276180(s_strOpenSound, "");
+                PlaySystemSound(s_strOpenSound, "");
                 m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->GetServerTick() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_SrConstTable*)GetClientConstants())->m_closeDelay)->Get();
                 if (m_item.get() != 0)
                 {
@@ -412,7 +412,7 @@ Scaleform::GFx::Value ASDialog::FUN_14134e200(const char* szMethod, CString strB
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bce70(&args[0], (const char*)strBagKey);
+    SetString(&args[0], (const char*)strBagKey);
     FUN_1422bcea0(&args[1], (const wchar_t*)strDesc);
     FUN_1422bcea0(&args[2], (const wchar_t*)strTitle);
     FUN_1422bccb0(&args[3], nTime);

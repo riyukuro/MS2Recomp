@@ -40,7 +40,7 @@ public:
     int m_nCategory;                        // +0x4c "category"
     int m_nDpOrder;                         // +0x50 "dpOrder"
 
-    int FUN_14089e200();                    // the price type of the row (uiugcitemeditdialog.cpp)
+    int GetPriceType();                    // the price type of the row (uiugcitemeditdialog.cpp)
 };
 MS2_CHECK_SIZE(CUGCDesignData, 0x58);
 MS2_CHECK_OFFSET(CUGCDesignData, m_nItemGrade, 0x1c);

@@ -77,7 +77,7 @@ class ASScrollingList : public ASCoreList
 public:
     ASScrollingList(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e1720
     virtual ~ASScrollingList();                                         // 0x1422e1770
-    void FUN_1422e17a0();                                               // show every entry (row count = entry count)
+    void ScrollToEnd();                                               // show every entry (row count = entry count)
     void SetScrollPosition(int nPosition);                                  // set "scrollPosition"
     int GetScrollPosition();                                                // "scrollPosition" (the first visible row)
     void AddListIndexChangeListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // add a "listIndexChange" listener
@@ -111,7 +111,7 @@ public:
     // implicit virtual dtor 0x1422e1fe0 (no vptr store: it only calls ~ASListItemRenderer; scalar deleting 0x1422e2000)
     // Registers the row's "set data" callback (the AS "fnSetData" member); pUser comes back in Params::pUserData.
     // onData by value: the callee destroys it.
-    void FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onData, void* pUser);
+    void SetDataHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onData, void* pUser);
 };
 MS2_CHECK_SIZE(ASItemRendererBase, 0x88);
 
@@ -128,7 +128,7 @@ public:
     void AddItemLabel(const CStringW& strLabel);                       // append an entry
     void ClearItems();                                               // remove every entry
     unsigned GetItemCount();                                           // the entry count (0 without a data provider)
-    CStringW FUN_1422dfe00();                                           // the selected row's "label"
+    CStringW GetSelectedLabel();                                           // the selected row's "label"
     void AddItemRow(const ASObj& row);                         // append a row object
     void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider" (asdropdownmenu.cpp)
     MS2Ptr<class ASDataProvider> GetDataProvider();                       // "dataProvider" (asdropdownmenu.cpp)

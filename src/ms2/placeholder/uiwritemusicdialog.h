@@ -13,7 +13,7 @@ class CItem;
 class UIWriteMusicDialog : public UIDialog
 {
 public:
-    void FUN_140fefd00(MS2Ptr<CItem> spScore);                      // the composed score item was updated
+    void OnScoreMade(MS2Ptr<CItem> spScore);                      // the composed score item was updated
     void ShowScoreText(unsigned __int64 nItemUid, const CString& strScore);   // 0x140ff0260: the score text of an item
     void OnMakeScoreResult(int nResult);                                // the compose result
 };

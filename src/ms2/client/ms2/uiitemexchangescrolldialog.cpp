@@ -101,7 +101,7 @@ void FUN_141415560(const CString& strKey, ItemInfoSlot::CreateParam* pParam);   
 void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem);  // create the drag slot
 void FUN_140b6c890(const CString& strName);                         // drop the drag slot
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
-int FUN_14053feb0(int);   // C3: was FUN_14053feb0
+int GetItemRank(int);   // C3: was GetItemRank
 int Clamp(int a, int b, int nMax);                          // clamp
 CStringW FUN_1409404f0(__int64 nMeso);                              // meso text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
@@ -206,7 +206,7 @@ void UIItemExchangeScrollDialog::vfunc_15()
 void UIItemExchangeScrollDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (((CInPacket*)p)->FUN_14070fe80() == 0x102)
+    if (((CInPacket*)p)->GetOpcode() == 0x102)
     {
         int nKind = ((CInPacket*)p)->ReadUInt8();
         if (nKind == 0)
@@ -321,7 +321,7 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
 void UIItemExchangeScrollDialog::WriteIngredientSlot(CIngredientInfo* pIng, CString strKey, ASObj& obj, unsigned char nFlags, int nMul)
 {
     MS2Ptr<CItem> spItem(new CItem());
-    if (spItem->FUN_14052b130(pIng->GetItemId(), FUN_14053feb0(pIng->GetItemId()), 0) == 0)
+    if (spItem->FUN_14052b130(pIng->GetItemId(), GetItemRank(pIng->GetItemId()), 0) == 0)
         return;
     ItemInfoSlot::CreateParam param;
     param.m_spItem = spItem;
@@ -604,7 +604,7 @@ void UIItemExchangeScrollDialog::FUN_140f53a70()
     CItem* pScroll = GetScrollItem();
     if (pScroll == 0)
         return;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(pScroll->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(pScroll->GetData()));
     if (spData == 0)
         return;
     if (spData->function.name != L"ItemExchangeScroll")
@@ -938,14 +938,14 @@ void UIItemExchangeScrollDialog::BindDebugButtons()
         if (m_spDebugAddMax.get() != 0)
         {
             m_spDebugAddMax->vfunc_4(bDebug);
-            m_spDebugAddMax->FUN_1422ce240(
+            m_spDebugAddMax->AddClickHandler(
                 Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemExchangeScrollDialog::FUN_140f55b90), 0);
         }
         m_spDebugAdd10 = spScroll->FUN_140acce30<ASButton>("m_debugAdd10");
         if (m_spDebugAdd10.get() != 0)
         {
             m_spDebugAdd10->vfunc_4(bDebug);
-            m_spDebugAdd10->FUN_1422ce240(
+            m_spDebugAdd10->AddClickHandler(
                 Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemExchangeScrollDialog::FUN_140f55c50), 0);
         }
     }

@@ -49,7 +49,7 @@ CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns 
 CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
 class Unk_1401a9d70 : public CStringTable { };
@@ -150,7 +150,7 @@ bool CArcadeDataTable::LoadReward()
         aReward[0] = new CArcadeRewardData;
         for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("reward")); pReward != 0; pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pReward)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pReward)))
                 continue;
             RewardPtr pData(new CArcadeRewardData);
             pData->m_nArcadeId = nId;

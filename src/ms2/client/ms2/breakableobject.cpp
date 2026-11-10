@@ -65,7 +65,7 @@ void SetNodeAlpha(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the mo
 void SetShadowCaster(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
 CString FUN_140188f50(const char* pszText, int nCodePage); // UTF-8 -> CString
-void FUN_1401d3700(CString& str);                                   // normalise an object name
+void ToLower(CString& str);                                   // normalise an object name
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 __int64 FUN_14028d260(float);  // C3: the definition's signature
 float FUN_14028d280(unsigned int nTicks);                           // milliseconds -> seconds
@@ -259,7 +259,7 @@ int CBreakableObject::vfunc_1(egf::Entity* pEntity, int nState)
     else
     {
         m_strName = FUN_140188f50(strId.c_str(), 0);
-        FUN_1401d3700(m_strName);
+        ToLower(m_strName);
     }
     SetState(nState, 0);
     return 1;

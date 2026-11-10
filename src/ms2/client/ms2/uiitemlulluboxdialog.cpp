@@ -91,14 +91,14 @@ class Unk_LulluBoxData : public CItemData
 {
 };
 class Unk_LulluBoxSelf : public PC { };
-class Unk_LulluBoxWorld { public: Unk_LulluBoxSelf* FUN_141bd0cc0(); };
+class Unk_LulluBoxWorld { public: Unk_LulluBoxSelf* GetLocalPlayer(); };
 class Unk_LulluBoxUIMgr { public: void FUN_141adc530(int); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;                  // the meso
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void DestroyItemSlotBag(const CString&);
 void DestroyItemInfoSlot(const CString&);
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
@@ -110,10 +110,10 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 void ShowMessageBox(CStringW, int, void*, CStringW);
 void ShowSystemNotice(const CStringW&, int, int);
-int FUN_1413499b0(int);   // C3: was FUN_1413499b0
-void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
+int ToggleShopTab(int);   // C3: was ToggleShopTab
+void SetChildVisible(const Scaleform::GFx::Value&, CString, int);
 void SetChildText(const Scaleform::GFx::Value&, CString, CStringW);
-void FUN_140d00c80(const Scaleform::GFx::Value&, CString, int);
+void SetChildHeight(const Scaleform::GFx::Value&, CString, int);
 int FUN_140bd09c0(void*);
 
 // @0x140e9a970
@@ -176,9 +176,9 @@ void UIItemLulluBoxDialog::OnLoadComplete()
     CString theme = LULLUBOX_ATTR(data)->GetString(L"boxTheme", "default");
     GetChildInto<ASTextField>("m_title", m_title);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_singleOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_singleOpen)).get())
-        m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)0);
+        m_singleOpen->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_multiOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_multiOpen)).get())
-        m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)1);
+        m_multiOpen->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)1);
     MS2Ptr<ASMovieClip> group = GetChild<ASMovieClip>("m_itemBoxGroup");
     if (group.get()) {
         group->vfunc_15(theme);
@@ -207,7 +207,7 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
 {
 #define LULLUBOX_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (LULLUBOX_PKT->FUN_14070fe80() == 0xf5) {
+    if (LULLUBOX_PKT->GetOpcode() == 0xf5) {
         if (m_30 == 0)
             return;
         m_sent = false;
@@ -230,15 +230,15 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
             }
             FUN_140e9dc30();
             m_itemBox->vfunc_13("result");
-            FUN_141276180(s_sndOpen, "");
+            PlaySystemSound(s_sndOpen, "");
             if (m_result.size() > 1)
-                FUN_141276180(s_snd10, "");
+                PlaySystemSound(s_snd10, "");
             MS2Ptr<ASMovieClip> fw = m_itemBox->FUN_1409b4560("m_fireworkEffect");
             if (fw.get()) {
                 fw->vfunc_4(hasSpecial);
                 if (hasSpecial) {
                     fw->vfunc_12(1);
-                    FUN_141276180(s_sndSpecial, "");
+                    PlaySystemSound(s_sndSpecial, "");
                 }
             }
         }
@@ -328,7 +328,7 @@ void UIItemLulluBoxDialog::OnOpenItemBreak(const Scaleform::GFx::FunctionHandler
 // @0x140e9c210
 void UIItemLulluBoxDialog::OnOpenStyleShop(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    FUN_1413499b0(9);
+    ToggleShopTab(9);
 }
 
 // @0x140e9c240
@@ -395,14 +395,14 @@ void UIItemLulluBoxDialog::InitSimpleBox()
     bool hasBreak = itemBreak && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_openItemBreak", reinterpret_cast<MS2Ptr<ASButton>&>(m_itemBreak)).get() ? true : false);
     if (hasBreak) {
         m_itemBreak->vfunc_4(true);
-        m_itemBreak->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenItemBreak), 0);
+        m_itemBreak->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenItemBreak), 0);
     }
     bool hasStyle = styleShop && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_openStyleShop", reinterpret_cast<MS2Ptr<ASButton>&>(m_styleShop)).get() ? true : false);
     if (hasStyle) {
         m_styleShop->vfunc_4(true);
-        m_styleShop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenStyleShop), 0);
+        m_styleShop->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenStyleShop), 0);
     }
-    FUN_140cff840(GetGFxValue(), "m_previewBagScroll", true);
+    SetChildVisible(GetGFxValue(), "m_previewBagScroll", true);
     if (LULLUBOX_ATTR(data)->HasKey(L"showWindowTitle")) {
         CStringW title = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowTitle", L"");
         SetChildText(GetGFxValue(), "m_showWindowTitle", GetStringCommonByKey(title));
@@ -442,11 +442,11 @@ void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
     float y2 = m_skipEffect->GetY() + (float)m_skipEffect->GetHeightCeil() + 10.0f;
     m_singleOpen->SetYFloat(y2);
     m_multiOpen->SetYFloat(y2);
-    FUN_140d00c80(GetGFxValue(), "m_boxBG", h + 0x10d);
+    SetChildHeight(GetGFxValue(), "m_boxBG", h + 0x10d);
     if (tall)
         bag->SetXFloat(bag->GetX() - 6.0f);
     if (rows > 2)
-        FUN_1422dba50()->SetYFloat(FUN_1422dba50()->GetY() - (float)(h - 0x8c));
+        GetDisplayObject()->SetYFloat(GetDisplayObject()->GetY() - (float)(h - 0x8c));
 }
 
 // @0x140e9d1e0
@@ -464,7 +464,7 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
 {
     if (m_30 == 0)
         return false;
-    Unk_LulluBoxSelf* self = ((Unk_LulluBoxSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_LulluBoxSelf* self = ((Unk_LulluBoxSelf*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (self == 0)
         return false;
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);

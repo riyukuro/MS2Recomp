@@ -62,9 +62,9 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
             Scaleform::GFx::Value vLoader(pArgs[1]);
             SetStage(CreateStage(m_18, vStage));
             SetMovieClipLoader(CreateMovieClipLoader(m_18, vLoader));
-            GetGFxManager()->FUN_1422b0790(m_18);
-            FUN_1422be140();
-            FUN_1422be2a0();
+            GetGFxManager()->UpdateStageSize(m_18);
+            RegisterFormatFunction();
+            InvokeCommonCallback();
         }
     }
     else

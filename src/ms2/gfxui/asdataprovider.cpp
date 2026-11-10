@@ -58,13 +58,13 @@ void ASDataProvider::Invalidate(unsigned int nIndex)
 }
 
 // @0x1422df120
-void ASDataProvider::FUN_1422df120()
+void ASDataProvider::Clear()
 {
     CleanUp();
 }
 
 // @0x1422df140
-AScript ASDataProvider::FUN_1422df140(unsigned nIndex)
+AScript ASDataProvider::GetItemAt(unsigned nIndex)
 {
     Value vItem = Invoke("requestItemAt", nIndex);
     return AScript(vItem, 2);
@@ -103,8 +103,8 @@ int ASDataProvider::DispatchEvent(const ASEvent& ev)
 
 MS2_REPLACE_METHOD(0x1422DF0A0, ASDataProvider, CleanUp, 46, 0x069C2862);
 MS2_REPLACE_METHOD(0x1422DF0E0, ASDataProvider, Invalidate, 55, 0xC931B1E6);
-MS2_REPLACE_METHOD(0x1422DF120, ASDataProvider, FUN_1422df120, 24, 0xF2B3A7E6);
-MS2_REPLACE_METHOD(0x1422DF140, ASDataProvider, FUN_1422df140, 116, 0x763C1F1C);
+MS2_REPLACE_METHOD(0x1422DF120, ASDataProvider, Clear, 24, 0xF2B3A7E6);
+MS2_REPLACE_METHOD(0x1422DF140, ASDataProvider, GetItemAt, 116, 0x763C1F1C);
 MS2_REPLACE_METHOD(0x1422DF1C0, ASDataProvider, AddEventListener, 269, 0xB7A43C7D);
 MS2_REPLACE_METHOD(0x1422DF2E0, ASDataProvider, RemoveEventListener, 205, 0x9E62B1BD);
 MS2_REPLACE_METHOD(0x1422DF3C0, ASDataProvider, HasEventListener, 144, 0x206A513A);

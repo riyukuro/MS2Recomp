@@ -37,7 +37,7 @@ void FUN_141275260(int, int, int);
 void FUN_141275460(int, int, int, const fmt::ArgList& args);
 void ShowSystemNotice(const CStringW& strText, int, int);
 void FUN_1412751b0(const CStringW& strText, int);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // The client constants block: a table of readable values; the exe reads one at +0x6aa8.
@@ -136,7 +136,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
         FUN_140a21930(packet);
     else if (cSub == 7)
     {
-        FUN_141276180(s_strBlackMarketSell, "");
+        PlaySystemSound(s_strBlackMarketSell, "");
         FUN_1412751b0(GetStringCommon(0x925), 0x12);
         SendBlackMarketMode1();
     }
@@ -373,7 +373,7 @@ void CBlackMarketMan::OnSearchResult(CInPacket& packet)
         MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
         sp->Read(&packet);
         sp->m_item->SetCountClamped(sp->GetRemain());
-        if (sp->m_item->FUN_140527840() != 0)
+        if (sp->m_item->GetData() != 0)
             AddSearchProduct(sp);
     }
     UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);

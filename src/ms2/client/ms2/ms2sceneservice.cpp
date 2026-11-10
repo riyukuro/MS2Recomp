@@ -64,7 +64,7 @@ MS2SceneService::~MS2SceneService()
 efd::AsyncResult MS2SceneService::OnInit()
 {
     (&m_clock)->Update(0);
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     return egfPhysX::SceneService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1415034C0, MS2SceneService, OnInit, 112, 0xBCB98835);

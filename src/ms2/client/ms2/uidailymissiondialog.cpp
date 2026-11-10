@@ -88,7 +88,7 @@ class Unk_DmUIMgr { public: void FUN_141adc530(int nUiId); };
 bool FUN_140930b40();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
@@ -137,7 +137,7 @@ int UIDailyMissionDialog::vfunc_65()
     }
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     m_1b0 = 0;
     return 1;
@@ -146,7 +146,7 @@ int UIDailyMissionDialog::vfunc_65()
 // @0x140bff7d0
 void UIDailyMissionDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     for (size_t i = 0; i < m_188.GetCount(); i++)
         DestroyItemInfoSlot(m_188[i]);
@@ -217,7 +217,7 @@ int UIDailyMissionDialog::vfunc_48() { return 0x4f53; }
 void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
@@ -310,7 +310,7 @@ int UIDailyMissionDialog::FUN_140bffff0()
 {
     if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x92))
         return 0;
-    Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     return pPlayer->vfunc_78() >= 1;
@@ -384,7 +384,7 @@ void UIDailyMissionDialog::RefreshLevelGuide()
                 m_30->Invoke("addLevelGuide", row);
         }
     }
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     int nCur = FUN_140c01f50();
@@ -405,7 +405,7 @@ void UIDailyMissionDialog::RefreshLevelGuide()
 // @0x140c009b0
 void UIDailyMissionDialog::RefreshGroupTabs()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (MS2Ptr<ASButtonBar> spTab = GetButtonBar("m_groupTab"))
@@ -477,7 +477,7 @@ void UIDailyMissionDialog::FillQuestRow(ASObj& rRow, CQuest* pQuest)
 {
     if (pQuest == 0)
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     CString strIcon = pQuest->GetData()->m_338.m_8;
@@ -501,7 +501,7 @@ int UIDailyMissionDialog::FillLevelGuideRow(ASObj& rRow, unsigned nQuestId)
         return 0;
     if (m_30.IsNull())
         return 0;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
@@ -536,7 +536,7 @@ void UIDailyMissionDialog::BindRewardItem(ASObj& rRow, unsigned nQuestId, int bN
     MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.IsNull())
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     CQuestData::QuestRewardItem* pReward = 0;
@@ -632,7 +632,7 @@ int UIDailyMissionDialog::FUN_140c01f50()
 // @0x140c020d0
 int UIDailyMissionDialog::FUN_140c020d0()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;

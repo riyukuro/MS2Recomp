@@ -16,7 +16,7 @@ MS2Ptr<CItemData> FUN_14053f870(int);
 #include "ms2/commonfiles/os.h"
 class COutputStream;
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value);  // C3: the definition's signature
-int FUN_14053feb0(int);  // C3: the definition's signature
+int GetItemRank(int);  // C3: the definition's signature
 enum { ItemRank_Unknown=0 };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -34,7 +34,7 @@ int ItemGift::ValidateItem(CString& error) {
 MS2_REPLACE_METHOD(0x1405B3930, ItemGift, ValidateItem, 363, 0x5ABDEF96);
 // @0x1405b3ab0
 int ItemGift::vfunc_o18_1() {
-    int itemRank=FUN_14053feb0(vfunc_o18_0());
+    int itemRank=GetItemRank(vfunc_o18_0());
     MS2_ASSERT_AT(32,itemRank != ItemRank_Unknown);
     return itemRank;
 }

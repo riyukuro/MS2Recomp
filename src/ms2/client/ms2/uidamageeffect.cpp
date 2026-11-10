@@ -106,7 +106,7 @@ void UIDamageEffect::FUN_141910700()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }
@@ -142,7 +142,7 @@ void UIDamageEffect::OnLoadComplete()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     m_30->Invoke("init", m_fLowHpPercent,
         reinterpret_cast<Unk_DmgCfgInfo*>(((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_0c);
-    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
 }

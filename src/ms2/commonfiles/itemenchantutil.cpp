@@ -7,7 +7,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_1406516b0();
+int GetRegion();
 
 // @0x1405942e0
 CItemEnchantUtil::CItemEnchantUtil()
@@ -41,7 +41,7 @@ int CItemEnchantUtil::GetEnchantRate(int nLevel)
 {
     if (nLevel < 1 || nLevel > 15)
         return 0;
-    if (FUN_1406516b0() == 0)
+    if (GetRegion() == 0)
         return m_rates20[nLevel];
     return m_rates8[nLevel];
 }

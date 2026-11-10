@@ -110,7 +110,7 @@ public:
 };
 
 // The thread profiler scope of a worker thread (client\ms2\util.cpp).
-void FUN_141b6de20();
+void InitThread();
 class Unk_UtilLogScope
 {
 public:
@@ -139,11 +139,11 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
+    class Unk_WsC_GameObj* FindPCById(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
-    void* FUN_141bd0cc0();                                  // the local player
+    void* GetLocalPlayer();                                  // the local player
     MS2Ptr<CInteractObject> FindProp(const CString& strName);
     MS2Ptr<CProxyGameObject> FindProxyObject(unsigned nObjectId);
 };
@@ -413,7 +413,7 @@ MS2_REPLACE_METHOD(0x14186f740, CUgcDownloadCtrl, OnProgress, 54, 0x4E22E45E);
 // @0x14186f780
 UINT CUgcDownloadCtrl::Downloading(LPVOID pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("CUgcDownloadCtrl::Downloading"));
     CUgcDownloadCtrl* pCtrl = static_cast<CUgcDownloadCtrl*>(pParam);
     CStringW strUrl = FUN_14016a730(pCtrl->GetUrl(), 0);
@@ -479,7 +479,7 @@ void CUgcDownloadEquip::ProcessResult()
             MS2Ptr<CUgcItemPC> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1290(sp->m_nObjectId));
+            Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FindPCById(sp->m_nObjectId));
             if (pPlayer == NULL)
                 continue;
             MS2Ptr<CEquipItem> spEquip = pPlayer->GetEquipByUid(sp->m_itemUid);
@@ -610,7 +610,7 @@ void CUgcDownloadItemIcon::ProcessResult()
 {
     if (m_nResult == 0)
     {
-        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == NULL)
             return;
         CString strUrl = FUN_1410272e0(m_strUrl);
@@ -764,7 +764,7 @@ void CUgcDownloadProfile::ProcessResult()
             }
             else
             {
-                Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+                Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
                 if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() != 0x620000d)
                 {
                     if (pMyPC == NULL)
@@ -1338,7 +1338,7 @@ void CUgcDownloadBlueprintIcon::ProcessResult()
 {
     if (m_nResult == 0)
     {
-        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == NULL)
             return;
         CString strUrl = FUN_1410272e0(m_strUrl);

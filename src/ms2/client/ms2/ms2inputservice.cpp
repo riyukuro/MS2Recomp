@@ -85,7 +85,7 @@ public:
 };
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_140298ea0(CStringW str);
+CStringW GetStringByKey(CStringW str);
 CStringW GetStringCommonByKey(const CStringW& str);
 
 
@@ -605,7 +605,7 @@ void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
             DetectGamePad();
             if (m_spGamePad == 0 && bNotify)
             {
-                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringByKey(L"s_gamepad_notice_search_gamepad"), 0, L"");
                 if (box)
                 {
                     box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::OnNoGamePadMsgBoxResult));
@@ -640,13 +640,13 @@ void MS2InputService::ToggleCursorMode()
         return;
     if (m_nCursorMode != 0)
     {
-        hud->FUN_1422cee50((Unk_MouseCursorType)10);
+        hud->ChangeType((Unk_MouseCursorType)10);
         hud->FUN_1422cedb0();
     }
     else
     {
-        hud->FUN_1422cee00();
-        hud->FUN_1422cee50((Unk_MouseCursorType)0);
+        hud->Unlock();
+        hud->ChangeType((Unk_MouseCursorType)0);
     }
 }
 MS2_REPLACE_METHOD(0x140D8BD00, MS2InputService, ToggleCursorMode, 210, 0x770EEEE7);

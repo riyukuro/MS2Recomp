@@ -66,8 +66,8 @@ public:
     // Non-virtual members called by the derived movies' "initializeClass" handlers (GFxMovieHeadUpDisplay/PostDisplay).
     void SetStage(MS2Ptr<ASStage> spStage);                    // 0x1422be510 m_20 = spStage (by value: the callee destroys it)
     void SetMovieClipLoader(MS2Ptr<ASMovieClipLoader> spLoader);         // 0x1422be5b0 m_40 = spLoader (by value)
-    void FUN_1422be140();                                           // 0x1422be140
-    void FUN_1422be2a0();                                           // 0x1422be2a0 (uses m_78)
+    void RegisterFormatFunction();                                           // 0x1422be140
+    void InvokeCommonCallback();                                           // 0x1422be2a0 (uses m_78)
     MS2Ptr<ASMovieClipLoader> GetMovieClipLoader();                      // 0x1422be4c0 returns m_40 (GFxMovieMain::vfunc_5)
     void FUN_1422be380(int n);                                      // 0x1422be380 m_10 = n (GFxMovieDamage ctor: 0)
     MS2_GFX_MOVIE* FUN_1422bd0f0();                                 // 0x1422bd0f0 the GFx::Movie (m_60) or null (gfxmoviedamage.cpp)
@@ -86,7 +86,7 @@ public:
     int GetViewportWidth();                                            // the viewport width
     int GetViewportHeight();                                            // the viewport height
     void GetViewportSize(int* pnWidth, int* pnHeight);                // both
-    void FUN_1422be080(int bPause);                                 // Movie::SetPause
+    void SetPaused(int bPause);                                 // Movie::SetPause
     void SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_70 = pfn
     void FUN_1422be100(const Scaleform::GFx::FunctionHandler::Params& params);         // calls m_70 (Common.m_getFormatFunction)
     void SetCommonCallback(void (*pfn)(AScript& kCommon, int nMovieId));                   // m_78 = pfn
@@ -134,7 +134,7 @@ public:
     GFxMovieEventHandler();                                         // 0x1422d8dc0
     virtual ~GFxMovieEventHandler();                                //  0 0x1422d8e20 (scalar deleting 0x1422db0b0)
     virtual void* vfunc_2() { return (void*)&ms_RTTI; }             //  2 0x1422db110 (COMDAT)
-    virtual void vfunc_11();                                        // 11 0x1422d9f50 GFxMovie::vfunc_11 + FUN_1422d8f90(this, m_88)
+    virtual void vfunc_11();                                        // 11 0x1422d9f50 GFxMovie::vfunc_11 + RemoveClipboardChain(this, m_88)
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422d9040 the WM_ switch
     virtual int vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 15 0x1422d9c30 IME pre-processing (1 = handled)
     virtual void vfunc_16();                                        // 16 0x1422d9db0
@@ -167,7 +167,7 @@ public:
 
     // The Win32 -> GFx input helpers (the Scaleform Platform_WinAPI.cpp AppImpl code). ?\gfxmovieeventhandler.cpp.
     void SetClipboardText(CStringW strText);                           // 0x1422d8f00 set the GFx text clipboard (by value)
-    void FUN_1422d8f90(void* hwnd);                                 // 0x1422d8f90 ChangeClipboardChain (WM_DESTROY)
+    void RemoveClipboardChain(void* hwnd);                                 // 0x1422d8f90 ChangeClipboardChain (WM_DESTROY)
     void FUN_1422d8fd0(const CStringW& strText);                    // 0x1422d8fd0 SetClipboardText(copy)
     static void SetImeEnabled(bool bEnable);                        // 0x1422d9020 ms_bImeEnabled = bEnable
     void ProcessKey(unsigned vkCode, bool bDown, bool bExtendedKey);   // 0x1422dab20 processKey: VK -> Key::Code, OnKey
@@ -176,7 +176,7 @@ public:
     Scaleform::KeyModifiers UpdateModifiers(bool bExtendedKey);       // 0x1422dad70 updateModifiers (also stored at +0x54)
 
     // m_88 = SetClipboardViewer(hwnd) (0 when it returns hwnd itself); true if a next viewer is set. GFxMovieMain::vfunc_17.
-    int FUN_1422d8e80(void* hwnd);                                  // 0x1422d8e80
+    int RegisterClipboardViewer(void* hwnd);                                  // 0x1422d8e80
 
     static bool ms_bImeEnabled;                                     // 0x143a290d0 (initially true; vfunc_15 IME pre-processing)
 

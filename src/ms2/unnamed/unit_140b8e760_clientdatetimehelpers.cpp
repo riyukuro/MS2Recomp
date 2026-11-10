@@ -29,22 +29,22 @@
 
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 #include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
-int FUN_1406516a0();                                                    // client language
-int FUN_1406516b0();                                                    // the language / region id
+int GetLanguage();                                                    // client language
+int GetRegion();                                                    // the language / region id
 int GetDigitGroupSize(int nLanguage);                                       // the digit-group size of a language
-__int64 FUN_140718320(const CStringW& str);                             // the number of a digit string
+__int64 ParseInt64W(const CStringW& str);                             // the number of a digit string
 CStringW FUN_1409404f0(__int64 nValue);                                 // a number with separators
 CStringW FUN_14083cb20(const CStringW& strNumber);                      // digits grouped with commas
 
-CStringW FUN_140b8ee70(int nDayOfWeek);
+CStringW GetShortDayOfWeekName(int nDayOfWeek);
 CStringW FUN_140b8f000(const CMsTime& time);
-CStringW FUN_140b8f230(int nDayOfWeek);
+CStringW GetDayOfWeekName(int nDayOfWeek);
 
 // The weekday name of a 0-based day (0 = Sunday).
 // @0x140b8e760
 CStringW FUN_140b8e760(int nDayOfWeek)
 {
-    return FUN_140b8f230(nDayOfWeek + 1);
+    return GetDayOfWeekName(nDayOfWeek + 1);
 }
 MS2_REPLACE(0x140B8E760, FUN_140b8e760, 60, 0x3F791677);
 
@@ -120,7 +120,7 @@ MS2_REPLACE(0x140B8ED80, FormatMonthDayHourMinuteSecond, 222, 0x34EC45CA);
 
 // The short weekday name of a 1-based day (1 = Sunday); empty for other values.
 // @0x140b8ee70
-CStringW FUN_140b8ee70(int nDayOfWeek)
+CStringW GetShortDayOfWeekName(int nDayOfWeek)
 {
     switch (nDayOfWeek) {
     case 1: return GetStringCommon(0x563);
@@ -133,40 +133,40 @@ CStringW FUN_140b8ee70(int nDayOfWeek)
     default: return L"";
     }
 }
-MS2_REPLACE(0x140B8EE70, FUN_140b8ee70, 356, 0x98D151BA);
+MS2_REPLACE(0x140B8EE70, GetShortDayOfWeekName, 356, 0x98D151BA);
 
 // The short weekday name of a time.
 // @0x140b8f000
 CStringW FUN_140b8f000(const CMsTime& time)
 {
-    return FUN_140b8ee70(time.GetDayOfWeek());
+    return GetShortDayOfWeekName(time.GetDayOfWeek());
 }
 MS2_REPLACE(0x140B8F000, FUN_140b8f000, 65, 0x1CDF6789);
 
 // The short weekday names of the set bits 1..7, joined with ", ".
 // @0x140b8f050
-CStringW FUN_140b8f050(Unk_PartyBits days)
+CStringW FormatShortDayOfWeekList(Unk_PartyBits days)
 {
-    if (days.FUN_140b91330())
+    if (days.IsNone())
         return L"";
     std::wstringstream ss;
     bool bFirst = true;
-    for (unsigned i = 1; i < days.FUN_140b91370(); ++i) {
+    for (unsigned i = 1; i < days.GetSize(); ++i) {
         if (days[i]) {
             if (bFirst)
                 bFirst = false;
             else
                 ss << L", ";
-            ss << (const wchar_t*)FUN_140b8ee70(i);
+            ss << (const wchar_t*)GetShortDayOfWeekName(i);
         }
     }
     return ss.str().c_str();
 }
-MS2_REPLACE(0x140B8F050, FUN_140b8f050, 463, 0x641DB190);
+MS2_REPLACE(0x140B8F050, FormatShortDayOfWeekList, 463, 0x641DB190);
 
 // The weekday name of a 1-based day (1 = Sunday); empty for other values.
 // @0x140b8f230
-CStringW FUN_140b8f230(int nDayOfWeek)
+CStringW GetDayOfWeekName(int nDayOfWeek)
 {
     CStringW str(L"");
     switch (nDayOfWeek) {
@@ -180,36 +180,36 @@ CStringW FUN_140b8f230(int nDayOfWeek)
     }
     return str;
 }
-MS2_REPLACE(0x140B8F230, FUN_140b8f230, 673, 0x654650BE);
+MS2_REPLACE(0x140B8F230, GetDayOfWeekName, 673, 0x654650BE);
 
 // The weekday name of a time.
 // @0x140b8f500
 CStringW FUN_140b8f500(const CMsTime& time)
 {
-    return FUN_140b8f230(time.GetDayOfWeek());
+    return GetDayOfWeekName(time.GetDayOfWeek());
 }
 MS2_REPLACE(0x140B8F500, FUN_140b8f500, 65, 0x5D0CDB01);
 
 // The weekday names of the set bits 1..7, joined with ", ".
 // @0x140b8f550
-CStringW FUN_140b8f550(Unk_PartyBits days)
+CStringW FormatDayOfWeekList(Unk_PartyBits days)
 {
-    if (days.FUN_140b91330())
+    if (days.IsNone())
         return L"";
     std::wstringstream ss;
     bool bFirst = true;
-    for (unsigned i = 1; i < days.FUN_140b91370(); ++i) {
+    for (unsigned i = 1; i < days.GetSize(); ++i) {
         if (days[i]) {
             if (bFirst)
                 bFirst = false;
             else
                 ss << L", ";
-            ss << (const wchar_t*)FUN_140b8f230(i);
+            ss << (const wchar_t*)GetDayOfWeekName(i);
         }
     }
     return ss.str().c_str();
 }
-MS2_REPLACE(0x140B8F550, FUN_140b8f550, 463, 0xEE2BF939);
+MS2_REPLACE(0x140B8F550, FormatDayOfWeekList, 463, 0xEE2BF939);
 
 // "x, y, z" with one decimal.
 // @0x140b8f730
@@ -225,7 +225,7 @@ MS2_REPLACE(0x140B8F730, FormatPosition, 94, 0x071B2F6A);
 // @0x140b8f7a0
 CStringW FUN_140b8f7a0(const CStringW& strNumber)
 {
-    int nGroup = GetDigitGroupSize(FUN_1406516a0());
+    int nGroup = GetDigitGroupSize(GetLanguage());
     int nLength = strNumber.GetLength();
     CStringW strRest(strNumber);
     if (nLength - nGroup <= 0)
@@ -241,9 +241,9 @@ CStringW FUN_140b8f7a0(const CStringW& strNumber)
     while (i < nCount) {
         __int64 nValue = 0;
         if (i == nCount - 1)
-            nValue = FUN_140718320(strRest);
+            nValue = ParseInt64W(strRest);
         else
-            nValue = FUN_140718320(strRest.Right(nGroup));
+            nValue = ParseInt64W(strRest.Right(nGroup));
         if (nValue != 0)
             nMask |= 1 << i;
         groups.SetAt(i, FUN_1409404f0(nValue));
@@ -289,7 +289,7 @@ MS2_REPLACE(0x140B8FC70, FormatHourMinute, 590, 0xCF168768);
 // @0x140b8fed0
 CStringW FUN_140b8fed0(int nId)
 {
-    if (FUN_1406516b0() == 2)
+    if (GetRegion() == 2)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3e, nId);
     return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
 }
@@ -297,7 +297,7 @@ MS2_REPLACE(0x140B8FED0, FUN_140b8fed0, 128, 0x5835A829);
 
 // Unk_PartyBits::any (bitset.inl; the word loop of a one-word set).
 // @0x140b912f0
-bool Unk_PartyBits::FUN_140b912f0()
+bool Unk_PartyBits::HasAny()
 {
     for (int i = 0; i >= 0; --i) {
         if (m_bits[i] != 0)
@@ -305,19 +305,19 @@ bool Unk_PartyBits::FUN_140b912f0()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140B912F0, Unk_PartyBits, FUN_140b912f0, 62, 0x251F4393);
+MS2_REPLACE_METHOD(0x140B912F0, Unk_PartyBits, HasAny, 62, 0x251F4393);
 
 // Unk_PartyBits::none.
 // @0x140b91330
-bool Unk_PartyBits::FUN_140b91330()
+bool Unk_PartyBits::IsNone()
 {
-    return !FUN_140b912f0();
+    return !HasAny();
 }
-MS2_REPLACE_METHOD(0x140B91330, Unk_PartyBits, FUN_140b91330, 54, 0x72A01054);
+MS2_REPLACE_METHOD(0x140B91330, Unk_PartyBits, IsNone, 54, 0x72A01054);
 
 // Unk_PartyBits::size.
 // @0x140b91370
-unsigned Unk_PartyBits::FUN_140b91370()
+unsigned Unk_PartyBits::GetSize()
 {
     return 8;
 }

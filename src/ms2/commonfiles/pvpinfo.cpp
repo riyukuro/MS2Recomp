@@ -45,31 +45,31 @@ bool CPvPInfo::HasPoint()
 }
 
 // @0x140743590
-bool CPvPInfo::FUN_140743590()
+bool CPvPInfo::IsMode1()
 {
     return m_nMode == 1;
 }
 
 // @0x1407435d0
-bool CPvPInfo::FUN_1407435d0()
+bool CPvPInfo::IsMode2()
 {
     return m_nMode == 2;
 }
 
 // @0x140743610
-bool CPvPInfo::FUN_140743610()
+bool CPvPInfo::IsMode3()
 {
     return m_nMode == 3;
 }
 
 // @0x140743650
-bool CPvPInfo::FUN_140743650()
+bool CPvPInfo::IsMode4()
 {
     return m_nMode == 4;
 }
 
 // @0x140743690
-bool CPvPInfo::FUN_140743690()
+bool CPvPInfo::IsMode10()
 {
     return m_nMode == 10;
 }

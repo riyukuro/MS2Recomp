@@ -6,7 +6,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/tptreddummy.h"
 
-CPtred* FUN_1401ba820(CPtred*);            // sets the count of a fresh box to 1
+CPtred* InitRefCount(CPtred*);            // sets the count of a fresh box to 1
 
 // The new-object tag of the value pointer (0x1401b7b90, returns its this, no code). s63 C3: one tag type, Unk_SocketNew
 // (socketptr.h), as Unk_TrgNewTag / Unk_BmNewTag / Unk_RankNewTag; the old name stays as a typedef.
@@ -66,7 +66,7 @@ private:
     static TPtredDummy<T>* Allocate(void*) { return new TPtredDummy<T>(); }
     static T* Value(TPtredDummy<T>* p) { return p == 0 ? 0 : &p->value; }
     static TPtredDummy<T>* Owner(T* p) { return p == 0 ? 0 : CONTAINING_RECORD(p, TPtredDummy<T>, value); }
-    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 
     void* m_00;
     T* m_p;

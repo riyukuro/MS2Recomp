@@ -131,7 +131,7 @@ void UIGuildFlagTooltip::ShowTooltip(const CString& strName)
             pEntity->vfunc_3(1);
             if (nImageType == 3)
             {
-                int nScore = reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetSeason()->FUN_1404c6110(nTrophy);
+                int nScore = reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetSeason()->GetRankForScore(nTrophy);
                 static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, nScore);
             }
             else if (nImageType == 4)

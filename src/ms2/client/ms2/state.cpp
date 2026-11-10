@@ -327,7 +327,7 @@ public:
     void* m_storage[14];
 };
 class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
-class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 FUN_141683900(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The animation service.
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);
@@ -540,7 +540,7 @@ void StateRideeController::vfunc_0()
     static_cast<View*>(static_cast<StateLocalController*>(this))->FUN_1417b7720();
     if (static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.IsEmpty())
         return;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
@@ -1092,7 +1092,7 @@ void StateClimb::vfunc_8(double fTime)
     if ((kFacing.y == -1.0f || kFacing.x == -1.0f) && kVel.y < 0.0f)
         kVel.y = 0.0f;
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
-    if (pBuff->FUN_141683100(0x493e1)) {
+    if (pBuff->IsActionKeyPressed(0x493e1)) {
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
         if (m_pOwner->FUN_1416749c0() && !pBuff->IsActionKeyDown(0x30d43) && !pBuff->IsActionKeyDown(0x30d44)
             && pBuff->IsActionKeyDown(0x30d41))
@@ -1540,7 +1540,7 @@ MS2_REPLACE_METHOD(0x1417be880, StateClimb, MoveRight, 258, 0x8A0801F8);
 // @0x1417be990
 int StateClimb::FUN_1417be990(double fTime)
 {
-    if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21f0() == 0)
+    if (TSingleton<CMouseController>::GetInstance()->HasMove() == 0)
         return 0;
     switch (m_n10) {
     case 0x57:
@@ -1839,7 +1839,7 @@ void StateDash::vfunc_3(double fTime)
             efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
         } else if (m_timerStop.IsExpired() == 0) {
-            m_pOwner->FUN_141671960(20.0f * (1.0f - m_timerStop.FUN_140868940()));
+            m_pOwner->FUN_141671960(20.0f * (1.0f - m_timerStop.GetRatio()));
             efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
         }

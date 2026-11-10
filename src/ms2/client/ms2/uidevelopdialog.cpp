@@ -64,7 +64,7 @@ struct Unk_DevObj : public efd::IBase
 };
 
 // The npc map iterator and the npc size setters.
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 void FUN_140a7cbe0(void* p);
 class Unk_DevBody;
 class GameObjectController   // C3: member view for the former free stand-ins
@@ -89,7 +89,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_ServiceManager* GetServiceManager();
 struct Unk_DvCell { char m_00; };                                       // the cell GetPropService reads
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
-void FUN_1413f9c40(bool b);
+void SetHardwareInstancing(bool b);
 class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
@@ -315,7 +315,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 // @0x141292d10
 void UIDevelopDialog::OnClickReloadNpcExtent()
 {
-    FUN_140a7cbe0(((void*)FUN_1406d6e90()));
+    FUN_140a7cbe0(((void*)GetNpcDataTableCli()));
     Unk_DevNpcMap* pMap = reinterpret_cast<Unk_DevNpcMap*>(WorldService::GetInstance()->GetNpcMap());
     for (POSITION pos = pMap->GetHeadPosition(); pos != 0; pMap->GetNext(pos))
     {
@@ -382,7 +382,7 @@ void UIDevelopDialog::OnCheckEnableEffect(bool bOn)
 void UIDevelopDialog::OnCheckShowInstancing(bool bOn)
 {
     m_bShowInstancing = bOn;
-    FUN_1413f9c40(m_bShowInstancing);
+    SetHardwareInstancing(m_bShowInstancing);
 }
 
 // @0x1412931c0
@@ -411,7 +411,7 @@ void UIDevelopDialog::OnCheckOneInstancing(bool bOn, int nIndex)
 void UIDevelopDialog::OnChangeSliderDropItemScale(float fScale)
 {
     Unk_DevList list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
+    WorldService::GetInstance()->CollectObjects(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.GetAt(pos));
@@ -429,7 +429,7 @@ void UIDevelopDialog::OnChangeSliderGameSpeed(float fSpeed)
 // @0x141293390
 void UIDevelopDialog::OnChangeSliderCharacterScale(float fScale)
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         ((class GameObject*)(void*)(pPlayer))->FUN_14123c330(fScale);
@@ -467,7 +467,7 @@ void UIDevelopDialog::OnClickApplyDropItemHeight(float fHeight)
     float fValue = fHeight;
     m_fDropItemHeight = fValue;
     Unk_DevList list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
+    WorldService::GetInstance()->CollectObjects(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
     }
@@ -479,7 +479,7 @@ void UIDevelopDialog::OnClickApplyDropItemPeriod(float fPeriod)
     float fValue = fPeriod;
     m_fDropItemPeriod = fValue;
     Unk_DevList list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
+    WorldService::GetInstance()->CollectObjects(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
     }

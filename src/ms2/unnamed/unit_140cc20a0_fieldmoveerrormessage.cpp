@@ -42,14 +42,14 @@ class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // ---- the int-argument formatter lambda and its closure ----
 
-void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue);
-void FUN_140cc2770(i64 ctx, i64 value, i64* pOut);
+void FormatIntArg(i64 ctx, i64* pOut, int* pValue);
+void FormatIntArgThunk(i64 ctx, i64 value, i64* pOut);
 i64 FUN_140cc27a0(int* pValue);
 i64 FUN_140cc27c0(int* pValue);
 
 // fmt::internal::MakeValue<int>: box the int (tag 1) and hand it to the formatter.
 // @0x140cc2650
-void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue)
+void FormatIntArg(i64 ctx, i64* pOut, int* pValue)
 {
     fmt::internal::Arg arg;
     fmt::internal::Value& arg_value = arg;
@@ -71,9 +71,9 @@ void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue)
 
 // The lambda thunk: vfunc(value, out) forwarding to MakeValue<int>.
 // @0x140cc2770
-void FUN_140cc2770(i64 ctx, i64 value, i64* pOut)
+void FormatIntArgThunk(i64 ctx, i64 value, i64* pOut)
 {
-    FUN_140cc2650(ctx, pOut, (int*)value);
+    FormatIntArg(ctx, pOut, (int*)value);
 }
 
 // Closure construction for the one-argument lambda: { captured int*, thunk }.
@@ -81,7 +81,7 @@ void FUN_140cc2770(i64 ctx, i64 value, i64* pOut)
 Unk_FmtArg* FUN_140cc2570(Unk_FmtArg* pOut, int* pValue)
 {
     pOut->m_value = pValue;
-    pOut->m_fn = (void*)&FUN_140cc2770;
+    pOut->m_fn = (void*)&FormatIntArgThunk;
     return pOut;
 }
 
@@ -122,7 +122,7 @@ CString FUN_140cc28f0(const CString& strA, const CString& strB)
 }
 
 // @0x140cc2a00
-CString FUN_140cc2a00(const CString& strA, const CString& strB)
+CString JoinPath(const CString& strA, const CString& strB)
 {
     CString str;
     str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir60, (LPCSTR)strA, (LPCSTR)strB);
@@ -130,7 +130,7 @@ CString FUN_140cc2a00(const CString& strA, const CString& strB)
 }
 
 // @0x140cc2ad0
-CString FUN_140cc2ad0(const CString& strA, const CString& strB)
+CString JoinResourcePath(const CString& strA, const CString& strB)
 {
     CString str;
     str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir68, (LPCSTR)strA, (LPCSTR)strB);

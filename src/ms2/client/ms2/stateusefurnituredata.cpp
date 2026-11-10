@@ -61,7 +61,7 @@ class CSkillRecord : public Unk_PCBaseComp_b18 {};
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include <egmAnimation/AnimationService.h>
 #include <efd/Matrix3.h>
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nId); bool FUN_141683100(int nId); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nId); bool IsActionKeyPressed(int nId); };   // C3: view of the real class (unit_141682f80)
 
 CFunctionCubeService* GetFunctionCubeService();
 
@@ -292,9 +292,9 @@ void StateUseFurniture::vfunc_8(double fTime)
         return;
     Unk_PCMove* pBuff = (Unk_PCMove*)pPC->FUN_14166d240();
     pPC->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
-    if (pBuff->FUN_141683100(0x30d41))
+    if (pBuff->IsActionKeyPressed(0x30d41))
         pPC->TryUseChairOrBed(1, 0);
-    else if (pBuff->FUN_141683100(0x30d42))
+    else if (pBuff->IsActionKeyPressed(0x30d42))
         pPC->TryUseChairOrBed(2, 0);
     else if (pPC->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
         pPC->vfunc_59(6, 0, 0x25, 0);

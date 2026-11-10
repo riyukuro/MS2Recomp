@@ -32,7 +32,7 @@ struct Unk_QhDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
-CStringW FUN_140298ea0(CStringW strKey);                        // localized string
+CStringW GetStringByKey(CStringW strKey);                        // localized string
 void FUN_1412751b0(const CStringW& strText, int nType);         // system notice
 void FUN_140dff970();                                           // finish confirmation message box
 
@@ -144,7 +144,7 @@ void SendQuestion(UIQuizHostDialog* pDialog, const CStringW& strQuestion)
 void OnFinishEvent(UIQuizHostDialog* pDialog)
 {
     if (pDialog->m_nRound < 2) {
-        CStringW strText = FUN_140298ea0(CStringW(L"s_ugcox_finish_fail_by_round"));
+        CStringW strText = GetStringByKey(CStringW(L"s_ugcox_finish_fail_by_round"));
         FUN_1412751b0(strText, 20);
     } else {
         FUN_140dff970();

@@ -561,7 +561,7 @@ void* Unk_WsSingletonDeletingDtor(TSingleton<WorldService>* pSingleton, unsigned
 // g_worldNullHandle is that egf::EntityID (ctor 0x1401cd100).
 extern egf::EntityID g_worldNullHandle;
 // @0x141bfe700
-unsigned __int64 Camera::FUN_141bfe700()
+unsigned __int64 Camera::GetEntityIDValue()
 {
     return m_10 != NULL ? m_10->GetEntityIDValue() : g_worldNullHandle.GetValue();
 }
@@ -616,7 +616,7 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     shower.GetAlpha();
     shower.GetEntityID();
     updater.FUN_141bfe6d0();
-    camera.FUN_141bfe750();
+    camera.GetEntityIDValue();
     manager.GetSequenceByName(name);
     sequence.GetLastScaledTime();
 }

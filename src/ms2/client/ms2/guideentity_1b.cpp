@@ -139,7 +139,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 
 UICutSceneMovie* FindCutSceneMovie(int nUIId);                         // the cut scene movie dialog
 class Unk_GmPane : public UISwfEntity { };
@@ -305,7 +305,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
     }
     for (TiXmlElement* pImport = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("import")); pImport != 0; pImport = ((class TiXmlElement*)((class Unk_XmlNode*)(pImport))->NextSibling("import")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pImport)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pImport)))
             continue;
         CStringA strName;
         XmlGetAttr((class TiXmlElement*)(pImport), "name", strName);

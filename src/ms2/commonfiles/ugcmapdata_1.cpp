@@ -72,7 +72,7 @@ public:
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 //
-class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
+class Unk_UgcWorld { public: PCBase* GetLocalPlayer(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
 class PCBase   // C3: member view for the former free stand-ins
@@ -110,10 +110,10 @@ int FUN_1408a02a0(CString text) {
 }
 MS2_REPLACE(0x1408a02a0, FUN_1408a02a0, 184, 0x75D22760);
 // @0x1408a0370
-int FUN_1408a0370(int x,int y,int z) { int result=(x&0xff)+((y&0xff)<<8)+((z&0xff)<<16); return result; }
-MS2_REPLACE(0x1408a0370, FUN_1408a0370, 67, 0xE97E08EA);
+int MakeCellKey(int x,int y,int z) { int result=(x&0xff)+((y&0xff)<<8)+((z&0xff)<<16); return result; }
+MS2_REPLACE(0x1408a0370, MakeCellKey, 67, 0xE97E08EA);
 // @0x1408a03c0
-int FUN_1408a03c0(Unk_Int3 p) { return FUN_1408a0370(p.x,p.y,p.z); }
+int FUN_1408a03c0(Unk_Int3 p) { return MakeCellKey(p.x,p.y,p.z); }
 MS2_REPLACE(0x1408a03c0, FUN_1408a03c0, 43, 0xFDC1CB50);
 // @0x1408a0400
 Unk_Int3 FUN_1408a0400(int packed) {
@@ -124,8 +124,8 @@ Unk_Int3 FUN_1408a0400(int packed) {
 MS2_REPLACE(0x1408a0400, FUN_1408a0400, 111, 0x0E4D8B28);
 // @0x1408a0480
 void FUN_1408a0480(Cube* cube) {
-    if(((class Cube*)(class Cube*)(cube))->FUN_1408b4f20()==0) return;
-    MS2Ptr<CItemData> item=FUN_14053f870(((class Cube*)(class Cube*)(cube))->FUN_1408b4f20());
+    if(((class Cube*)(class Cube*)(cube))->GetItemId()==0) return;
+    MS2Ptr<CItemData> item=FUN_14053f870(((class Cube*)(class Cube*)(cube))->GetItemId());
     if(item.get()!=0) {
         cube->field58=item->install.placeable;
         cube->field64=item->install.unchangeable;
@@ -148,7 +148,7 @@ void FUN_1408a0480(Cube* cube) {
 MS2_REPLACE(0x1408a0480, FUN_1408a0480, 534, 0xB42E0BC4);
 // @0x1408a06a0
 bool FUN_1408a06a0(int mapID,int group) {
-    Unk_UGCMapPtr p=FUN_1408ad3f0(mapID);
+    Unk_UGCMapPtr p=GetUGCMap(mapID);
     if(p==0) return false;
     if(p->groups.find(group)==p->groups.end()) return false;
     Unk_UGCGroup& info=p->groups[group];
@@ -161,15 +161,15 @@ bool FUN_1408a07b0(int mapID,int blockID,__int64 ownerID) {
 }
 MS2_REPLACE(0x1408a07b0, FUN_1408a07b0, 49, 0x301F651E);
 // @0x1408a07f0
-bool FUN_1408a07f0(unsigned mapID) {
-    MS2Ptr<CFieldData> p=CFieldData::FUN_140374140(mapID);
+bool IsMassiveEventField(unsigned mapID) {
+    MS2Ptr<CFieldData> p=CFieldData::FindField(mapID);
     if(p==0) return false;
     return p->m_nMassiveEventField==1;
 }
-MS2_REPLACE(0x1408a07f0, FUN_1408a07f0, 139, 0x6AAD10DC);
+MS2_REPLACE(0x1408a07f0, IsMassiveEventField, 139, 0x6AAD10DC);
 // @0x1408a0890
 int FUN_1408a0890(int mapID,int group,int* result) {
-    Unk_UGCMapPtr p=FUN_1408ad3f0(mapID);
+    Unk_UGCMapPtr p=GetUGCMap(mapID);
     if(p==0) return 0;
     if(p==0 || p->groups.find(group)==p->groups.end()) return 0;
     Unk_UGCGroup& info=p->groups[group];
@@ -181,7 +181,7 @@ MS2_REPLACE(0x1408a0890, FUN_1408a0890, 303, 0x384A4FFD);
 int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
     *price=0;
     int result=0;
-    Unk_UGCMapPtr p=FUN_1408ad3f0(mapID);
+    Unk_UGCMapPtr p=GetUGCMap(mapID);
     if(p.get()!=0) {
         if(p->groups.find(group)!=p->groups.end()) {
             result=1;
@@ -201,7 +201,7 @@ MS2_REPLACE(0x1408a09d0, FUN_1408a09d0, 417, 0xBB65AC27);
 int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
     *price=0;
     int result=0;
-    Unk_UGCMapPtr p=FUN_1408ad3f0(mapID);
+    Unk_UGCMapPtr p=GetUGCMap(mapID);
     if(p.get()!=0) {
         if(p->groups.find(group)!=p->groups.end()) {
             result=1;
@@ -220,7 +220,7 @@ MS2_REPLACE(0x1408a0b80, FUN_1408a0b80, 418, 0x255B7FA3);
 // @0x1408a0d30
 int FUN_1408a0d30(int group,Unk_UGCGroup& result,int mapID) {
     Unk_UGCMapPtr p(0);
-    if((unsigned)mapID>0) p=FUN_1408ad3f0(mapID);
+    if((unsigned)mapID>0) p=GetUGCMap(mapID);
     else return 0;
     if(p==0) return 0;
     if(p->groups.find(group)==p->groups.end()) return 0;
@@ -229,28 +229,28 @@ int FUN_1408a0d30(int group,Unk_UGCGroup& result,int mapID) {
 }
 MS2_REPLACE(0x1408a0d30, FUN_1408a0d30, 376, 0x7AAFE732);
 // @0x1408a0eb0
-void FUN_1408a0eb0(Unk_CubeOwners& owners,int mapID,int blockID) {
+void RemoveCubeOwner(Unk_CubeOwners& owners,int mapID,int blockID) {
     if(owners.find(mapID)==owners.end()) return;
     Unk_CubeOwnerMap& blocks=owners[mapID];
     if(blocks.find(blockID)==blocks.end()) return;
     blocks.erase(blockID);
     if(blocks.size()==0) owners.erase(mapID);
 }
-MS2_REPLACE(0x1408a0eb0, FUN_1408a0eb0, 227, 0x51696E03);
+MS2_REPLACE(0x1408a0eb0, RemoveCubeOwner, 227, 0x51696E03);
 // @0x1408a0fa0
-Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners,int mapID,int blockID) {
+Unk_CubeOwnerPtr FindCubeOwner(Unk_CubeOwners& owners,int mapID,int blockID) {
     if(owners.find(mapID)==owners.end()) return Unk_CubeOwnerPtr(0);
     Unk_CubeOwnerMap& blocks=owners[mapID];
     if(blocks.find(blockID)==blocks.end()) return Unk_CubeOwnerPtr(0);
     return blocks[blockID];
 }
-MS2_REPLACE(0x1408a0fa0, FUN_1408a0fa0, 302, 0xE574321C);
+MS2_REPLACE(0x1408a0fa0, FindCubeOwner, 302, 0xE574321C);
 // Not hooked: constructs CubeOwner with DLL-local RTTI.
-void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID);
+void SetCubeOwner(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID);
 #ifndef MS2_HOOK_DLL
 // @0x1408a10e0
-void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID) {
-    Unk_CubeOwnerPtr p=FUN_1408a0fa0(owners,mapID,blockID);
+void SetCubeOwner(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID) {
+    Unk_CubeOwnerPtr p=FindCubeOwner(owners,mapID,blockID);
     if(p==0) {
         p=new CubeOwner(mapID,blockID,ownerID,name);
         if(owners.find(mapID)==owners.end()) {
@@ -335,7 +335,7 @@ MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 int FUN_1408a18d0(__int64 charID) {
     efd::SmartPointer<CubeMapInformationService> service(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     int style=0;
-    PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if(player!=0) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;

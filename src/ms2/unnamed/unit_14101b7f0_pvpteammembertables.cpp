@@ -61,7 +61,7 @@ UIPvPTeamResultDialog* FUN_14101c850(int nClass);
 UIPvPTeamScoreDialog* FUN_14101c8f0(int nClass);
 
 // @0x14101b7f0
-void Unk_PvpEntryBlock::FUN_14101b7f0()
+void Unk_PvpEntryBlock::Clear()
 {
     m_a.Clear();
     m_b.Clear();
@@ -114,7 +114,7 @@ void Unk_PvpEntryBlock::OnMessage(int nMessage, CInPacket& packet)
             if (reinterpret_cast<Unk_PvInfoPtr&>(info).FUN_14101ec80(0))
                 return;
             info->ReadRecordFromPacket(packet);
-            FUN_14101c220(info->m_nPoint, nCharId, info->m_nWin,
+            AddOrUpdateEntry(info->m_nPoint, nCharId, info->m_nWin,
                           info->m_nLose, info->m_nKill);
             UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
             if (pResult != 0)
@@ -214,7 +214,7 @@ void Unk_PvpEntryBlock::GetTeamScores(int* pA, int* pB)
 }
 
 // @0x14101c220
-void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill)
+void Unk_PvpEntryBlock::AddOrUpdateEntry(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill)
 {
     Unk_PvpEntryTable* pTable = GetTeamTable(nTeam);
     if (pTable == 0)
@@ -232,7 +232,7 @@ void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int 
             nJob = reinterpret_cast<PC*>(pPlayer)->GetSubJob();
         }
         pItem = new Unk_PvpEntryItem(nCharId, strName, nJob, nKill, nWin, nLose);
-        pTable->FUN_14101eee0(pItem);
+        pTable->AddItem(pItem);
         bAdded = true;
     }
     else
@@ -352,7 +352,7 @@ void* Unk_PvpEntryItem::FUN_14101eea0(unsigned nFlags)
 }
 
 // @0x14101eee0
-void Unk_PvpEntryTable::FUN_14101eee0(Unk_PvpEntryItem* pItem)
+void Unk_PvpEntryTable::AddItem(Unk_PvpEntryItem* pItem)
 {
     m_items.push_back(pItem);
     m_targets.insert(std::make_pair(pItem->m_nCharId, pItem));

@@ -109,7 +109,7 @@ void UIGuildHouseUpgradeDialog::OnLoadComplete()
     if (FUN_140e3b6e0<ASTileList>("m_themeList", m_themeList).get())
         reinterpret_cast<ASCoreList*>(m_themeList.operator->())->AddListIndexChangeHandler(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
     if (FUN_140bc6d10<ASButton>("m_upgradeButton", m_upgradeButton).get())
-        ((class ASButton*)(m_upgradeButton))->FUN_1422ce240(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::OnUpgradeButtonClicked), 0);
+        ((class ASButton*)(m_upgradeButton))->AddClickHandler(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::OnUpgradeButtonClicked), 0);
     FUN_140e3a770();
     FUN_140e39da0();
 }
@@ -148,7 +148,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         m_upgradeButton->vfunc_4(bEnable);
         ((class ASButton*)(m_upgradeButton))->SetHtml(true);
         ((class ASButton*)(m_upgradeButton))->FUN_1422cdfb0(strLabel);
-        bool bOk = FUN_14028d780((unsigned char)TSingleton<CGuildManager>::GetInstance()->IsMaster(WorldService::GetInstance()->FUN_141bd0d30()));
+        bool bOk = FUN_14028d780((unsigned char)TSingleton<CGuildManager>::GetInstance()->IsMaster(WorldService::GetInstance()->GetMyPCName()));
         if (!bOk)
             ((class ASMovieClip*)(m_upgradeButton))->SetEnabled((int)(0));
     }

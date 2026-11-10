@@ -20,7 +20,7 @@ CStringW XmlWide(const char* sz);                             // a UTF-8 string 
 CString FUN_1409a23d0(const char* sz, int n);                       // a UTF-8 string as a CString
 CStringW Unk_ArcWide(const wchar_t* psz, int n);                  // a wide string as a CString
 void FUN_1422bccb0(Value* pValue, int n);                           // set an Int value
-void FUN_1422bce70(Value* pValue, const char* psz);                 // set a String value
+void SetString(Value* pValue, const char* psz);                 // set a String value
 
 // @0x1422c4c00
 ASTextField::ASTextField(const Value& v, int nMovieId)
@@ -362,7 +362,7 @@ Value AScript::FUN_1422c5e40(const char* szMethod, int a1, int a2, CString a3)
     args.resize(3);
     FUN_1422bccb0(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
-    FUN_1422bce70(&args[2], a3);
+    SetString(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

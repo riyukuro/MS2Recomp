@@ -30,8 +30,8 @@ CString FUN_14071ae20(const CString& strFile);                           // the 
 CString GetLanguageCode();                                                 // the locale folder name
 CString ToCString(const char* psz, int n);
 CString FUN_14028d3c0(CString strPath);                                  // the directory part of a path
-void FUN_1401d3700(CString& str);                                        // normalises the case
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+void ToLower(CString& str);                                        // normalises the case
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned __int64&);   // C3: was FUN_140873320
 
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
@@ -66,7 +66,7 @@ void CScriptTable::Load()
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         CString strDir = FUN_14028d3c0(files[i]);
-        FUN_1401d3700(strDir);
+        ToLower(strDir);
         if (strDir.Find("script", 0) == 0)
         {
             TiXmlDocument doc;
@@ -80,7 +80,7 @@ void CScriptTable::Load()
             }
             for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
             {
-                if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+                if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
                     continue;
                 unsigned __int64 nId = 0;
                 CStringW strName;

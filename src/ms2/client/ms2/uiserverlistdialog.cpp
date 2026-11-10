@@ -126,7 +126,7 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 void FUN_141bca1e0(void* pObj);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class NotifySystem { public: void Post(MS2Ptr<NotifyObject> spNotify); };   // the notify system (FUN_140939a10)
-int FUN_1406c34c0();                                            // the Nexon platform is active
+int IsNexonPlatform();                                            // the Nexon platform is active
 int GetCurrentChannel();
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 void ShowMessageBox(CStringW strText, int a, void* pListener, CStringW strTag);
@@ -150,7 +150,7 @@ void* FindServerListDialog(int);   // C3: was FindServerListDialog
 class Unk_MachineId   // C3: member view (unit_14067c020_machineidcodec); was the local Unk_LoginMachineId + free FUN_14067c020
 { public:
     Unk_MachineId();                                            // 0x14067c020, zero-inits the 16-byte id
-    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);
+    Unk_MachineId* Assign(const Unk_MachineId* pOther);
     unsigned char m_data[16];
 };
 struct Unk_LoginRequest
@@ -167,11 +167,11 @@ struct Unk_LoginRequest
     CString m_strRegion;                                        // +0x38
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
-void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
+void WriteLoginA(struct Unk_LoginA*, class COutputStream*);   // C3: was WriteLoginA
 void* GetMachineIDManager();   // C3: was GetMachineIDManager
 // C3: the Unk_MachineId member view moved up to the login request
-int FUN_1406516a0();
-int FUN_1406516b0();                                            // the language / region id
+int GetLanguage();
+int GetRegion();                                            // the language / region id
 CString GetRegionCode(int nRegion);
 CString FUN_140652030(int n);
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -215,7 +215,7 @@ struct Unk_SlEnterRequest
     __int64 m_nCharId;                                          // +0x00
     int m_nChannel;                                             // +0x08
 };
-void FUN_1401f9e60(struct Unk_LoginPing*, class COutputStream*);   // C3: was FUN_1401f9e60
+void WriteLoginPing(struct Unk_LoginPing*, class COutputStream*);   // C3: was WriteLoginPing
 class ASDialog : public ASDisplayObject { public: };
 
 // AScript with the "buildServerList" invoke shape (array, int, int, int, int).
@@ -287,7 +287,7 @@ CStringW UIServerListDialog::GetServer()
 void UIServerListDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    switch (static_cast<CInPacket*>(pPacket)->FUN_14070fe80())
+    switch (static_cast<CInPacket*>(pPacket)->GetOpcode())
     {
     case 9:
         SendLoginRequest(pPacket);
@@ -385,7 +385,7 @@ int UIServerListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             m_nChannel = std::max<int>(nMin, nChannel);
             return 1;
         } else {
-            if (FUN_1406c34c0() == 1)
+            if (IsNexonPlatform() == 1)
                 ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_72();
         }
     }
@@ -397,7 +397,7 @@ int UIServerListDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsEnterPressed(false))
     {
         m_30->Invoke("onEnterKey");
         return 1;
@@ -580,7 +580,7 @@ void UIServerListDialog::SendLoginRequest(void* pPacket)
     int nScene = TSingleton<CStateService>::GetInstance()->GetCurrentSceneId();
     if (nScene != 0x620000d)
         return;
-    if (FUN_1406c34c0() != 0) {
+    if (IsNexonPlatform() != 0) {
         ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_20(m_nChannel, 2);
     } else {
         Unk_LoginRequest request;
@@ -588,14 +588,14 @@ void UIServerListDialog::SendLoginRequest(void* pPacket)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = m_nChannel;
-        reinterpret_cast<Unk_MachineId*>(&request.m_machineId)->FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(GetMachineIDManager())->GetID()));
+        reinterpret_cast<Unk_MachineId*>(&request.m_machineId)->Assign(reinterpret_cast<const Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(GetMachineIDManager())->GetID()));
         request.m_n2c = reinterpret_cast<CMachineIDManager*>(GetMachineIDManager())->GetValue();
         request.m_n30 = DAT_143ab2858;
-        request.m_strRegion = FUN_140652030(FUN_1406516a0());
+        request.m_strRegion = FUN_140652030(GetLanguage());
         if (reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = DAT_143ab29d8 + GetRegionCode(FUN_1406516b0());
+            request.m_strId = DAT_143ab29d8 + GetRegionCode(GetRegion());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-        FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
+        WriteLoginA((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
 }
@@ -637,7 +637,7 @@ int UIServerListDialog::EnterGame(__int64 nCharId, __int64 n3)
     request.m_nChannel = nChannel;
     COutPacket packet(static_cast<int>(SendOp::CharacterManagement), 0);
     packet.WriteUInt8(0);
-    FUN_1401f9e60((struct Unk_LoginPing*)(&request), (class COutputStream*)(&packet));
+    WriteLoginPing((struct Unk_LoginPing*)(&request), (class COutputStream*)(&packet));
     FUN_140710590(packet);
     Unk_SlOptions* pOptions = reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260());
     if (pOptions != 0) {

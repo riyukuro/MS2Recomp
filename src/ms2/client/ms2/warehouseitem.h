@@ -37,7 +37,7 @@ public:
     void RemoveAll();                               // 0x1408fbac0
     int Add(CItem* pItem);                          // 0x1408fbaf0 0 ok, 0x11 the uid is already stored
     void Remove(__int64 nItemUid);                  // 0x1408fbc00
-    void FUN_1408fbc70(ATL::CAtlArray<MS2Ptr<CItem> >& out);                  // every item
+    void GetAllItems(ATL::CAtlArray<MS2Ptr<CItem> >& out);                  // every item
     void FUN_1408fbd30(void* pArg, ATL::CAtlArray<MS2Ptr<CItem> >& out);      // the matching, tradable items
     MS2Ptr<CItem> FindItemById(int nItemId);       // the first item with this item id
     MS2Ptr<CItem> FindItemByUid(__int64 nItemUid);  // the item with this uid (Lookup, null test of the result)

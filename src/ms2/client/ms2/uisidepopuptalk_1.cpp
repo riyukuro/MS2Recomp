@@ -41,9 +41,9 @@ struct Unk_SptNpcNotice
 
 int GetRandomRange(int nMax, int nMin);                      // a random number in [nMin, nMax)
 class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
-int FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
-__int64 FUN_140718320(const CStringW& str);                 // parse a number text
-unsigned __int64 FUN_140718370(const CStringW& str);        // parse an unsigned 64-bit number text
+int PlaySystemSound(const CString& strName, const CString& strGroup);   // play a system sound
+__int64 ParseInt64W(const CStringW& str);                 // parse a number text
+unsigned __int64 ParseUInt64W(const CStringW& str);        // parse an unsigned 64-bit number text
 
 // The dialog of a ui class id (or 0).
 template <class T> T* Unk_SptGetUI(int nId)
@@ -134,7 +134,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             CString strVoice = args.FUN_1422b8d30();
             if (strVoice.GetLength() != 0)
             {
-                PCBase* pPlayer = static_cast<PCBase*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(TSingleton<WorldService>::GetInstance()->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     unsigned nId = TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(strVoice, pPlayer->vfunc_18());
@@ -151,7 +151,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         {
             int nKind = args.PopInt();
             CString strSound = args.FUN_1422b8d30();
-            FUN_141276180(strSound, "");
+            PlaySystemSound(strSound, "");
         }
     }
     else if (_stricmp(szMethod, "onEnterFieldWar") == 0)
@@ -165,7 +165,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData args;
         if (args.SetArgsIfAny(pArgs, nArgs))
         {
-            unsigned __int64 nId = FUN_140718370(args.FUN_1422b8f40());
+            unsigned __int64 nId = ParseUInt64W(args.FUN_1422b8f40());
             if (nId == 0)
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f96);
             else
@@ -279,7 +279,7 @@ void UISidePopupTalk::vfunc_1(__int64 n, int a, int b)
 // @0x140e87ec0
 void UISidePopupTalk::OnNotifyFadeInComplete(NotifyObject* pNotify)
 {
-    MS2Ptr<SidePopupTalkParam> spParam = m_table.FindByMap(TSingleton<WorldService>::GetInstance()->FUN_141bd3060());
+    MS2Ptr<SidePopupTalkParam> spParam = m_table.FindByMap(TSingleton<WorldService>::GetInstance()->GetFieldId());
     if (spParam.get())
         ShowPopup(spParam);
 }
@@ -291,7 +291,7 @@ void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
     UIHeadUpDisplay::vfunc_45(pRetVal, strMethod, pArgs);
     if (strMethod == "getExpireDuration")
     {
-        __int64 nExpire = FUN_140718320(pArgs->FUN_1422b8f40());
+        __int64 nExpire = ParseInt64W(pArgs->FUN_1422b8f40());
         __int64 nNow = GetServerTime();
         pRetVal->SetInt((int)(nExpire - nNow));
     }

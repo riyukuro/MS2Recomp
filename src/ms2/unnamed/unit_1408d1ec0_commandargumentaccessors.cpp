@@ -7,7 +7,7 @@
 // (unsigned, int) name instead of an (int, int) and an (unsigned, int) one.
 // MS2-UNIT: unit_1408d1ec0
 // MS2-RANGE: 0x1408d1ec0-0x1408d2280 .text$mn
-// MS2-PIN: ?FUN_1408d1ec0@ItemFunctionArgs@@QEAA_NHPEAH@Z 0x1408d1ec0
+// MS2-PIN: ?TryGetValue@ItemFunctionArgs@@QEAA_NHPEAH@Z 0x1408d1ec0
 // MS2-PIN: ?GetValueOrDefault@ItemFunctionArgs@@QEAAHHH@Z 0x1408d1f10
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -26,7 +26,7 @@ struct ItemFunctionArgs
     ATL::CAtlArray<CStringW> words;                 // +0x08 the whitespace-split arguments
     ATL::CAtlMap<int, int> values;                  // +0x28 the int key/value table
 
-    bool FUN_1408d1ec0(int nKey, int* pnValue);                 // +0x1408d1ec0 lookup with an out value
+    bool TryGetValue(int nKey, int* pnValue);                 // +0x1408d1ec0 lookup with an out value
     int GetValueOrDefault(int nKey, int nDefault);                  // +0x1408d1f10 lookup with a default
     int FUN_1408d1f60(unsigned nIndex, int nDefault);           // word n as int (_wtoi)
     int FUN_1408d1fd0(unsigned nIndex, int nDefault);           // word n as int (_wtol)
@@ -40,7 +40,7 @@ MS2_CHECK_OFFSET(ItemFunctionArgs, words, 0x08);
 MS2_CHECK_OFFSET(ItemFunctionArgs, values, 0x28);
 
 // @0x1408d1ec0
-bool ItemFunctionArgs::FUN_1408d1ec0(int nKey, int* pnValue)
+bool ItemFunctionArgs::TryGetValue(int nKey, int* pnValue)
 {
     if (values.Lookup(nKey, *pnValue))
         return true;
@@ -51,7 +51,7 @@ bool ItemFunctionArgs::FUN_1408d1ec0(int nKey, int* pnValue)
 int ItemFunctionArgs::GetValueOrDefault(int nKey, int nDefault)
 {
     int nValue = 0;
-    if (FUN_1408d1ec0(nKey, &nValue))
+    if (TryGetValue(nKey, &nValue))
         return nValue;
     return nDefault;
 }

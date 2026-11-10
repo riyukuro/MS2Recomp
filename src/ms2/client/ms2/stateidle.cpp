@@ -65,7 +65,7 @@ public:
     void SetActor(int nActor);                           // 0x140a53190
     void* m_storage[14];
 };
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The player-side views of the actor (PC members seen through the PCBase pointer of FUN_1417b8370).
 class Unk_PCD88 : public CBoneRotateManager { };    // the target the player is bound to
@@ -241,7 +241,7 @@ void StateIdle::vfunc_8(double fTime)
     {
         vfunc_2(1);
     }
-    if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
+    if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d41))
     {
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
@@ -266,7 +266,7 @@ void StateIdle::vfunc_8(double fTime)
             }
         }
     }
-    else if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
+    else if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d42))
     {
         pPC->TryUseChairOrBed(2, 0);
     }

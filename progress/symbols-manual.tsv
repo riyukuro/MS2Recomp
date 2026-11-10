@@ -25,21 +25,13 @@
 ?FUN_140c9cff0@Unk_RewardMission@@QEAAIXZ	140c9cff0	func
 ?FUN_140c9eb50@Unk_RewardEntryList@@QEAAAEAVUnk_RewardEntryPtr@@_K@Z	140c9eb50	func
 ?FUN_140c9f760@Unk_RewardEntryList@@QEAA_KXZ	140c9f760	func
-?FUN_1422c0420@Unk_RewardClip@@QEAAXM@Z	1422c0420	func
-?FUN_1422c0e20@Unk_RewardClip@@QEAAXH@Z	1422c0e20	func
-?FUN_1422c10a0@Unk_RewardClip@@QEAAMXZ	1422c10a0	func
 ?FUN_140299dc0@Unk_BattleFile@@QEAAJPEBXKPEAK@Z	140299dc0	func
 ??0Unk_BattleBytes@@QEAA@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	1402923c0	func
 ??1Unk_BattleBytes@@QEAA@XZ	140297740	func
 ?FUN_140298f20@Unk_BattleBytes@@QEAAHXZ	140298f20	func
 ?FUN_140297d10@Unk_BattleBytes@@QEAAPEBXXZ	140297d10	func
-?FUN_141094f40@Unk_BattleNpc@@QEAAIXZ	141094f40	func
-?FUN_1410934c0@Unk_BattleNpc@@QEAAHXZ	1410934c0	func
 ?FUN_141bd1980@Unk_BattleWorld@@QEAA_JI@Z	141bd1980	func
-?FUN_141bd13a0@Unk_BattleWorld@@QEAAPEAVUnk_BattleNpc@@I@Z	141bd13a0	func
-?FUN_141bd1320@Unk_BattleWorld@@QEAAPEAVUnk_BattleNpc@@I@Z	141bd1320	func
 ?FUN_1401b8910@Values@Unk_BattleDamage@@QEBA_KXZ	1401b8910	func
-?FUN_14175ac30@Unk_BattleDamage@@QEAA_JXZ	14175ac30	func
 # a3 logstring: direct callees verified in work/decomp; needed by functional functions.
 ??0TiXmlDocument@@QEAA@XZ	140870b40	func
 ??1TiXmlDocument@@UEAA@XZ	140164670	func
@@ -48,7 +40,6 @@
 ??BUnk_140163940@@QEBAHXZ	140164a80	func
 ?FUN_1401d42d0@Unk_140659080@@QEAAXXZ	1401d42d0	func
 ?FUN_1401bf530@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAVTiXmlElement@@PEBDV12@@Z	1401bf530	func
-?FUN_1406513d0@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@Z	1406513d0	func
 ?format@?$BasicFormatter@_W@fmt@@QEAAPEB_WAEAPEB_WAEBUArg@internal@2@@Z	1402da110	func
 ??$FUN_140bbe640@VUnk_140acd6e0@@@AScript@@QEAA?AV?$MS2Ptr@VUnk_140acd6e0@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV1@@Z	140bbe640	func
 ??$FUN_140bfa760@VUnk_140bfc2e0@@@UIAttendGiftDialog@@QEAA?AV?$Unk_14102fe10@VUnk_140bfc2e0@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV1@H@Z	140bfa760	func
@@ -72,27 +63,14 @@
 ?FormatMonthDay@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBVUnk_AttendDate@@@Z	140b8e910	func
 ?FUN_140bc6d10@UIAttendGiftDialog@@QEAA?AV?$MS2Ptr@VUnk_140acd6e0@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV2@@Z	140bc6d10	func
 ?FUN_140bd09d0@@YAPEAXI@Z	140bd09d0	func
-?FUN_140ce35c0@Unk_140ce3510@@QEAA_NXZ	140ce35c0	func
-?FUN_140ce3690@Unk_140ce3510@@QEAAIXZ	140ce3690	func
-?FUN_140ce37a0@Unk_140ce3510@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140ce37a0	func
 ?FUN_140ce38c0@Unk_140ce3510@@QEAAIXZ	140ce38c0	func
 ?FUN_140ce3920@Unk_140ce3510@@QEAAIXZ	140ce3920	func
 ?FUN_140ce3980@Unk_140ce3510@@QEAAHXZ	140ce3980	func
 ?FUN_140ce3aa0@Unk_140ce3510@@QEAA?AVUnk_AttendDate@@XZ	140ce3aa0	func
 ?FUN_140d73c60@@YAXV?$MS2Ptr@VUnk_AttendMsgBox@@@@@Z	140d73c60	func
 ?FUN_140d73f20@@YA?AV?$MS2Ptr@VUnk_AttendMsgBox@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	140d73f20	func
-?FUN_140d9f530@Unk_140931510@@QEAA_NH@Z	140d9f530	func
 ?FUN_140f09c60@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@AEBHAEB_J@Z	140f09c60	func
-?FUN_141a01800@Unk_AttendMsgBox@@QEAAXH@Z	141a01800	func
-?FUN_141a024e0@Unk_AttendMsgBox@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	141a024e0	func
-?FUN_141a02670@Unk_AttendMsgBox@@QEAAXH@Z	141a02670	func
-?FUN_141a027c0@Unk_AttendMsgBox@@QEAAXAEBV?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@@Z	141a027c0	func
-?FUN_141bd0cc0@Unk_AttendAvatarMgr@@QEAAPEAXXZ	141bd0cc0	func
 ?FUN_1422bb890@AScript@@QEAAAEAVValue@GFx@Scaleform@@XZ	1422bb890	func
-?FUN_1422c1fe0@Unk_140acd6e0@@QEAAXI@Z	1422c1fe0	func
-?FUN_1422cdf20@Unk_140acd6e0@@QEAAX_N@Z	1422cdf20	func
-?FUN_1422ce090@Unk_140acd6e0@@QEAAXH@Z	1422ce090	func
-?FUN_1422ce240@Unk_140acd6e0@@QEAAXAEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAX@Z	1422ce240	func
 ?Release@?$Unk_14102fe10@VUnk_140bfc2e0@@@@AEAAXXZ	140bfc810	func
 ?g_attendItems@@3VUnk_AttendTable@@A	143ab2a90	data
 ?g_attendTable@@3VUnk_AttendTable@@A	143ab2fc0	data
@@ -116,7 +94,6 @@
 ?WriteString@COutPacket@@UEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	14020b090	func
 ?WriteUnicodeString@COutPacket@@UEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	14020b1e0	func
 ?WriteBytes@COutPacket@@UEAAXPEBXH@Z	14020aef0	func
-?FUN_1401c0db0@@YAPEAVUnk_MailService@@XZ	1401c0db0	func
 ??0CMailAttachItem@@QEAA@HV?$MS2Ptr@VCItem@@@@@Z	14068f630	func
 ??0CMailInfo@@QEAA@H@Z	14068ff50	func
 ??0CMailSendKeep@@QEAA@V?$MS2Ptr@VCItem@@@@@Z	14068fc30	func
@@ -124,7 +101,6 @@
 ??0Unk_MailAttachPtr@@QEAA@AEBV0@@Z	140692950	func
 ??0Unk_MailAttachPtr@@QEAA@H@Z	140692990	func
 ??4Unk_MailAttachPtr@@QEAAAEAV0@AEBV0@@Z	140692d40	func
-?FUN_140676020@Unk_MailService@@QEAA_J_J000000@Z	140676020	func
 ?FUN_14068fe20@CMailSendKeep@@QEAA_JH@Z	14068fe20	func
 ?SetId@CMailInfo@@QEAAX_J@Z	140690330	func
 ?GetId@CMailInfo@@QEAA_JXZ	140690350	func
@@ -274,7 +250,6 @@
 ??0ShaderMap@NiTexturingProperty@@QEAA@PEAXIIII@Z	140c8f5d0	func
 ?SetShaderMap@NiTexturingProperty@@QEAAXIPEAVShaderMap@1@@Z	141d20b10	func
 ?ms_RTTI@NiScreenFillingRenderViewImpl@@2VNiRTTI@@B	143afbbc0	data
-?FUN_1414736e0@Unk_SMApp@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1414736e0	func
 ?FUN_141552f90@Unk_SMMgr@@QEAA?AVUnk_PPSmartC@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z	141552f90	func
 ??1Unk_CommandUIRef@@QEAA@XZ	1403e5630	func
 ??1Unk_CommandItemPtr@@QEAA@XZ	1401b50d0	func
@@ -781,17 +756,14 @@ __imp_CrashReporter_RegisterLogFile	142cce1a8	data
 ?FUN_140ae1920@Unk_PhysPropPtr@@QEBAPEAVUnk_PhysPropObj@@XZ	140ae1920	func
 ?FUN_140d852c0@@YAXPEAD@Z	140d852c0	func
 ?FUN_140d86210@@YAXPEAD@Z	140d86210	func
-?FUN_1410c5420@@YAPEAVNxActor@@PEAVISystemService@efd@@VEntityID@egf@@@Z	1410c5420	func
 ?FUN_1411d14f0@@YAPEAVSceneService@egfPhysX@@PEAVServiceManager@efd@@@Z	1411d14f0	func
 ?FUN_14120a240@@YAPEAVPropService@ecrPhysX@@PEAVServiceManager@efd@@@Z	14120a240	func
-?FUN_141240e70@@YAPEAVNxActor@@PEAVUnk_PhysBody@@@Z	141240e70	func
 ?FUN_141293c40@@YAPEAVUnk_PhysXSceneHandle@@PEAVPropService@ecrPhysX@@AEBVutf8string@efd@@@Z	141293c40	func
 ?FUN_141489fd0@@YAPEAVNxUserAllocator@@PEAVUnk_PhysXApp@@@Z	141489fd0	func
 ?GetPhysXManager@@YAPEAVUnk_PhysXLockOwner@@XZ	1414a5890	func
 ?FUN_1414d7990@@YA?AVutf8string@efd@@AEBV12@@Z	1414d7990	func
 ?FUN_141503cc0@@YAPEAVNxScene@@PEAVSceneService@egfPhysX@@H@Z	141503cc0	func
 ?FUN_14163b4e0@Unk_PhysPropObj@@QEAA?AV?$SmartPointer@VEntity@egf@@@efd@@XZ	14163b4e0	func
-?FUN_14166d220@@YAPEAVUnk_PhysBody@@PEAVUnk_PhysRpgActor@@@Z	14166d220	func
 ?FUN_141bc8e00@@YAXPEAX@Z	141bc8e00	func
 ?FUN_141bd0f50@Unk_PhysWorldSvc@@QEAAPEAVUnk_PhysGameObj@@PEAX@Z	141bd0f50	func
 ??1Unk_PhysPropPtr@@QEAA@XZ	140ae16b0	func
@@ -2160,7 +2132,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0?$Unk_PayloadPtr@VNoticeCubeInfo@@@@QEAA@XZ	1408b6740	func
 ?get@?$Unk_PayloadPtr@VCubeOwner@@@@QEBAPEAVCubeOwner@@XZ	140965820	func
 ?get@?$MS2Ptr@VUnk_HsInfo@@@@QEBAPEAVUnk_HsInfo@@XZ	141371260	func
-?FUN_14047d320@Unk_1401c0d90@@QEAA?AV?$MS2Ptr@VTreeWateringContext@@@@XZ	14047d320	func
 ??1?$MS2Ptr@VTreeWateringContext@@@@QEAA@XZ	1403e5570	func
 ??8?$MS2Ptr@VTreeWateringContext@@@@QEBA_NPEAVTreeWateringContext@@@Z	1403e8610	func
 ??C?$MS2Ptr@VTreeWateringContext@@@@QEBAPEAVTreeWateringContext@@XZ	1403e8cf0	func
@@ -3086,8 +3057,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??C?$MS2Ptr@VUnk_GoSlider@@@@QEBAPEAVUnk_GoSlider@@XZ	140a584b0	func
 ?AddRef@?$MS2Ptr@VASRadioButton@@@@AEBAXXZ	140a46880	func
 ?AddRefImpl@?$MS2Ptr@VASRadioButton@@@@AEBAXPEAX@Z	140a468d0	func
-?FUN_1422ce5f0@Unk_GoSlider@@QEAAXM@Z	1422ce5f0	func
-?FUN_1422ce630@Unk_GoSlider@@QEAAMXZ	1422ce630	func
 ?Reference@?$MS2Ptr@VASRadioButton@@@@CAXPEAVASRadioButton@@@Z	140a468b0	func
 ?Reference@?$MS2Ptr@VUnk_GoSlider@@@@CAXPEAVUnk_GoSlider@@@Z	140a585f0	func
 ?Release@?$MS2Ptr@VUnk_GoSlider@@@@AEAAXXZ	140a586f0	func
@@ -3254,8 +3223,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1Unk_GemNode@@QEAA@XZ	1422c65c0	func
 ?FUN_14062ad80@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCItem@@@@@Z	14062ad80	func
 ?FUN_140bc7450@Unk_GemNode@@QEAA?AV?$MS2Ptr@VUnk_GemText@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140bc7450	func
-?FUN_140d01d30@Unk_GemClip@@QEAA?AV?$MS2Ptr@VUnk_GemText@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140d01d30	func
-?FUN_140d01d80@Unk_GemNode@@QEAA?AV?$MS2Ptr@VUnk_GemClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140d01d80	func
 ?GetMaidText@CManufactureManager@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAVUnk_MfNpc@@@Z	140d51400	func
 ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1@Z	140fac340	func
 ??1Unk_SmDgRef@@QEAA@XZ	14031c0f0	func
@@ -4201,7 +4168,6 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ?GetSize@LongFormatter@Scaleform@@UEBA_KXZ	1425b1540	func
 ?WaitForLoadFinish@LoadTaskData@MovieDataDef@GFx@Scaleform@@QEAAXXZ	1425d3c40	func
 ??0LoadStates@GFx@Scaleform@@QEAA@PEAVLoaderImpl@12@PEAVStateBag@12@PEAVMovieDefBindStates@12@@Z	142636ed0	func
-?FUN_141adcea0@Unk_CpUIService@@QEAA?AV?$MS2Ptr@VUIObject@@@@H@Z	141adcea0	func
 ??0CTraits@InstanceTraits@AS3@GFx@Scaleform@@QEAA@AEAVVM@234@AEBUClassInfo@234@@Z	1424d6750	func
 ??0Interface@InstanceTraits@AS3@GFx@Scaleform@@QEAA@AEAVVM@234@AEBUClassInfo@234@@Z	1423ed810	func
 ??0Object@fl@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	1423ee1c0	func
@@ -16417,10 +16383,7 @@ DAT_14313b9c8	14313b9c8	data
 ??0Unk_FcSoundReqL@@QEAA@XZ	140a52ef0	func
 ??1Unk_FcSoundReqL@@QEAA@XZ	1405a89e0	func
 ?CheckExceptions@Environment@AS2@GFx@Scaleform@@QEAAHPEAVActionBuffer@234@HPEAHPEAVValue@234@PEBV?$ArrayLH_POD@VWithStackEntry@AS2@GFx@Scaleform@@$0BED@UArrayDefaultPolicy@4@@4@H@Z	142933440	func
-?FUN_141683290@Unk_JpBuff@@QEAA?AVPoint3@efd@@XZ	141683290	func
 ??1Unk_FishLine@@QEAA@XZ	140cd7e40	func
-?FUN_141683290@Unk_CcBuffMgr@@QEAA?AVPoint3@efd@@XZ	141683290	func
-?FUN_141683290@Unk_MgBuffMgr@@QEAA?AVPoint3@efd@@XZ	141683290	func
 ?GetDetailValue@VMAbcFile@AS3@GFx@Scaleform@@QEAA?AVValue@234@AEBVValueDetail@Abc@234@@Z	142509240	func
 ??0Unk_FcVec3@@QEAA@AEBVPoint3@efd@@@Z	14027dcf0	func
 ?MakeInstance@Catch@fl@InstanceTraits@AS3@GFx@Scaleform@@QEAA?AV?$Pickable@VCatch@fl@Instances@AS3@GFx@Scaleform@@@6@AEAV123456@@Z	14241a5b0	func
@@ -16842,7 +16805,6 @@ FUN_142689aa0	142689aa0	func
 ?DCT_FsriInit@@YAXUcri_any@@ZZ	140066320	func
 ?DCT_Isse2Init@@YAXUcri_any@@ZZ	14006aa90	func
 ?FindQuestTalk@@YA?AV?$Unk_ScriptPtr@VCTalkScript@@@@HH@Z	1408564b0	func
-?FUN_14112cd90@@YAPEAUUnk_CMISStr@@PEAU1@0@Z	14112cd90	func
 ?vfunc_36@GameObject@@UEAAHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVPoint3@efd@@@Z	14123d0e0	func
 ?FUN_1424aa0f0@@YAXPEAX@Z	1424aa0f0	func
 ?FUN_1424f4000@@YAXPEAVMovieRoot@AS3@GFx@Scaleform@@PEAVMovieDefImpl@34@@Z	1424f4000	func
@@ -17085,7 +17047,6 @@ _should_initialize_environment	14274aee4	func
 ??$FUN_140accef0@VASButton@@@AScript@@QEAA?AV?$MS2Ptr@VASButton@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140accef0	func
 ??0Unk_PetButton@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422cdde0	func
 ??1Unk_PetButton@@UEAA@XZ	1422cde30	func
-?FUN_1422ce090@Unk_PetButton@@QEAAXH@Z	1422ce090	func
 ??$GetSystemServiceAs@VCubeMapInformationService@@@ServiceManager@efd@@QEBAPEAVCubeMapInformationService@@XZ	1401cd070	func
 ??$AddDependency@VMS2@@@IDependencyRegistrar@efd@@QEAA_NI@Z	1411ab740	func
 ??$Unk_ASCreate@VASItemRendererBase@@@@YA?AV?$MS2Ptr@VASItemRendererBase@@@@HAEBVValue@GFx@Scaleform@@@Z	140bc6120	func
@@ -17321,3 +17282,5 @@ FUN_1424df070	1424df070	func
 ?FUN_142591be0@GFx@Scaleform@@YAPEAXPEAX0MII@Z	142591be0	func
 ?AddOption@Unk_ItemOptionSimulator@@QEAAXHHV?$MS2Ptr@VCItemOption@@@@@Z	1419b9030	func
 ?IsActorGone@UIHudEntity@@QEAAHH@Z	140f49890	func
+?AppendString@@YAPEAUUnk_CMISStr@@PEAU1@0@Z	14112cd90	func
+?GetServerConfigPath@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@Z	1406513d0	func

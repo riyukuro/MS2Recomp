@@ -471,7 +471,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
 {
     if (pObject->vfunc_5() == 6)
     {
-        void* pPlayer = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        void* pPlayer = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->GetLocalPlayer();
         if (pPlayer == 0)
             return;
         if (m_aObjects.size() == 0)
@@ -584,7 +584,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     if (m_spNpc.get())
     {
         nNpc = m_spNpc->m_nNpc;
-        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_spNpc->m_nNpc));
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FindNpcById(m_spNpc->m_nNpc));
         if (pNpc)
         {
             MS2Ptr<CNpcData> spNpcData = MS2Ptr<CNpcData>(pNpc->GetNpcData());
@@ -630,7 +630,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
         return;
     if (m_spNpc.get())
     {
-        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_spNpc->m_nNpc));
+        Unk_SiNpc* pNpc = reinterpret_cast<Unk_SiNpc*>(WorldService::GetInstance()->FindNpcById(m_spNpc->m_nNpc));
         if (pNpc)
         {
             if (m_n48 != 0)

@@ -23,7 +23,7 @@ int FUN_1418fd280();                                    // the player is in the 
 int FUN_1418fd2f0();                                    // the OX quiz is running
 CStringW GetStringCommon(int nId);                        // a common string by id
 void FUN_140dff2b0();                                   // the OX quiz manager: request the promote
-void FUN_140dfeeb0();                                   // the OX quiz manager: request a new quiz
+void RequestNewQuiz();                                   // the OX quiz manager: request a new quiz
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -124,7 +124,7 @@ void UIOxQuizDialog::OnQuizPromote()
 // @0x140e6e8f0
 void UIOxQuizDialog::OnQuizCreate()
 {
-    FUN_140dfeeb0();
+    RequestNewQuiz();
 }
 
 // @0x140e6e910

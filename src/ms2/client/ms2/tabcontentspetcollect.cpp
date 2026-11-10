@@ -404,7 +404,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
-                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
+                if (TSingleton<CFieldMetaTable>::GetInstance()->GetParentField(*pField, &nOut) != 0)
                     nKey = nOut;
                 MS2Ptr<UIWorldMap::MapTile> spField = GetWorldMapManager()->FindMapTileByKey(nKey);
                 if (spField == 0)
@@ -430,7 +430,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 unsigned nOut = 0;
                 unsigned nKey = *pField;
-                if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
+                if (TSingleton<CFieldMetaTable>::GetInstance()->GetParentField(*pField, &nOut) != 0)
                     nKey = nOut;
                 MS2Ptr<UIWorldMap::MapTile> spField = GetWorldMapManager()->FindMapTileByKey(nKey);
                 if (spField == 0)

@@ -64,11 +64,11 @@ class Unk_ShieldWorld;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 struct Unk_ShieldCfgData { char m_pad[0xb]; bool m_b; char m_c; bool m_d; };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_ShieldUIMgr { public: };
 
 // @0x140e855f0
@@ -250,7 +250,7 @@ void UIShieldBar::Entity::FUN_140e86090()
 // @0x140e860f0
 int UIShieldBar::Entity::FUN_140e860f0()
 {
-    MyPC* pPlayer = ((class MyPC*)((class WorldService*)(class Unk_ShieldWorld*)(((class Unk_ShieldWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((class MyPC*)((class WorldService*)(class Unk_ShieldWorld*)(((class Unk_ShieldWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     PCBase* pActor = FUN_140f49330();
@@ -363,7 +363,7 @@ UIShieldBar::Entity* UIShieldBar::GetOrCreateEntity(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -387,8 +387,8 @@ UIShieldBar::Entity* UIShieldBar::GetOrCreateEntity(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())

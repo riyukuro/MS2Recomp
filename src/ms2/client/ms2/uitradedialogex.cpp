@@ -71,17 +71,17 @@ CStringW FUN_141275860(__int64 nMeso);                         // the meso numbe
 // Text helpers.
 CStringW FUN_1409404f0(__int64 nValue);                        // number with separators
 CStringW FUN_14083cf10(const CStringW& str);                   // the digits of a number text
-__int64 FUN_140718320(const CStringW& str);                    // parse a number text
+__int64 ParseInt64W(const CStringW& str);                    // parse a number text
 #include "ms2/placeholder/wcformat.h"
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
 void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);   // message box
-int FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
+int PlaySystemSound(const CString& strEvent, const CString& strArg);   // sound event
 
 // The local player.
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
@@ -215,7 +215,7 @@ void UITradeDialogEx::FUN_141b27580()
     m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->GetPartnerUid();
     m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->GetPartnerName();
     m_strTargetChar = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c70();
-    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     ASObj data(2);
@@ -360,12 +360,12 @@ void UITradeDialogEx::FUN_141b28290(int nSlotIndex, int bLock)
     {
         if (bLock)
         {
-            FUN_141276180(s_strTradeLock, "");
+            PlaySystemSound(s_strTradeLock, "");
             m_30->Invoke("latch", nSlotIndex);
         }
         else
         {
-            FUN_141276180(s_strTradeUnlock, "");
+            PlaySystemSound(s_strTradeUnlock, "");
             m_30->Invoke("unlatch", nSlotIndex);
         }
     }
@@ -403,7 +403,7 @@ void UITradeDialogEx::BindControls()
             __int64 nMax = GetMaxMesoOffer();
             int nMaxChars = FUN_1409404f0(nMax).GetLength();
             static_cast<ASTextField*>(m_spMyInputText.operator->())->SetMaxChars(nMaxChars);
-            reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::OnMesoInputFocusLost), 0, 0);
+            reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->AddFocusOutListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::OnMesoInputFocusLost), 0, 0);
         }
     }
     m_spTargetInput = m_30.operator->()->FUN_140bbe880<ASTextInput>("m_targetInputMeso");
@@ -467,7 +467,7 @@ void UITradeDialogEx::UpdateFee(__int64 nMeso, bool bMine)
     int bVip = 0;
     if (bMine == 0)
     {
-        PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
         if (pPlayer == 0)
             return;
         fReduce = reinterpret_cast<CEquipment*>(pPlayer->GetEquipment())->GetAbilityRate((SAType)0x40);
@@ -489,7 +489,7 @@ void UITradeDialogEx::OnMesoInputChanged(const Scaleform::GFx::FunctionHandler::
     Scaleform::GFx::Value target = evt.GetMember("target");
     ASTextInput input(target, m_28);
     CStringW strDigits = FUN_14083cf10(input.GetText());
-    __int64 nMeso = FUN_140718320(strDigits);
+    __int64 nMeso = ParseInt64W(strDigits);
     if (m_nMyMeso < nMeso)
     {
         nMeso = m_nMyMeso;
@@ -507,7 +507,7 @@ void UITradeDialogEx::OnMesoInputFocusLost(const Scaleform::GFx::FunctionHandler
     Scaleform::GFx::Value target = evt.GetMember("target");
     ASTextField text(target, m_28);
     CStringW strDigits = FUN_14083cf10(m_spMyInput->GetText());
-    __int64 nParsed = FUN_140718320(strDigits);
+    __int64 nParsed = ParseInt64W(strDigits);
     __int64 nMeso = nParsed;
     if (nMeso < 0)
         nMeso = 0;

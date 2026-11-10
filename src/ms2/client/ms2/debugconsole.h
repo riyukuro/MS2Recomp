@@ -24,7 +24,7 @@ public:
     void CloseConsole();                                           // close the console window
     bool IsConsoleOpen();                                           // the console window is open
     bool ToggleSoundDlg();                                           // toggle the CSoundDlg tool dialog; true when shown
-    void FUN_1411683e0(const char* szFormat, ...);                  // print one line (console and log file)
+    void Print(const char* szFormat, ...);                  // print one line (console and log file)
     void FUN_141168540();                                           // (empty)
     void SetTextColor(WORD wAttributes);                           // console text colour
     void SetFileLog(int bFileLog);                               // copy the lines into _DebugConsoleLog.txt

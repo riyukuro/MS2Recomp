@@ -109,7 +109,7 @@ MS2_REPLACE_METHOD(0x14031B900, DungeonRecord, IsSeasonRankRoom, 50, 0xA138B2DE)
 // @0x14031b940
 bool DungeonRecord::TestFlag(int nBit)
 {
-    return m_flags.FUN_1402e4ee0(nBit);
+    return m_flags.HasBit(nBit);
 }
 MS2_REPLACE_METHOD(0x14031B940, DungeonRecord, TestFlag, 39, 0x6B1143BA);
 

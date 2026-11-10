@@ -101,7 +101,7 @@ public:
     float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
-bool FUN_14028d470(float a, float b);                                       // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);                                       // a == b (within epsilon)
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId);           // statemanager.cpp: exact-class check (entry 0 only)
 
@@ -109,10 +109,10 @@ struct Unk_NtSymbolRec { char m_pad_00[0x18]; CStringW m_18; CStringW m_20; };
 class Unk_NtWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                            // the local player
+    PCBase* GetLocalPlayer();                            // the local player
 };
 class Unk_NtUIMgr { public: };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 
 // Per-actor components (PCBase members outside the header) and the smart pointers they hand out.
 struct Unk_NtNpcData
@@ -284,12 +284,12 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
         *pPos *= ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         pPos->y += vfunc_9();
         float fDist = FUN_140f48e20();
-        bool bNear = !(700.0f < fDist) || WorldService::GetInstance()->FUN_141bd30a0()->m_nGlobalNameTag != 0;
+        bool bNear = !(700.0f < fDist) || WorldService::GetInstance()->GetFieldData()->m_nGlobalNameTag != 0;
         if (bNear)
             m_38->SetAlpha(100.0f);
         else
             m_38->SetAlpha((m_54 - fDist) * 0.05f + 40.0f);
-        if (FUN_14028d470(reinterpret_cast<AdditionalCliList*>(pActor->FUN_1416749a0())->ComputeAlphaBlending(), 0.0f))
+        if (IsNearlyEqual(reinterpret_cast<AdditionalCliList*>(pActor->FUN_1416749a0())->ComputeAlphaBlending(), 0.0f))
             m_38->SetAlpha(0.0f);
         float fY = pPos->y;
         fY += FUN_1412762d0(vfunc_10());
@@ -310,7 +310,7 @@ int UINameTag::Entity::vfunc_8(int n)
     if (GetNameTagMode() == 0)
         return 1;
     {
-        PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer == 0)
             return 1;
     }
@@ -493,7 +493,7 @@ void UINameTag::Entity::FUN_141a5ff60()
                 }
             }
             bool bTeam = !bSymbol && ((CPvPInfo*)pPc->GetPvPInfo() ? true : false)
-                         && pPc->GetPvPInfo()->FUN_140743610();
+                         && pPc->GetPvPInfo()->IsMode3();
             if (bTeam)
             {
                 bool bRed = pPc->GetPvPInfo()->GetPoint() == 0xc9;
@@ -538,7 +538,7 @@ void UINameTag::Entity::FUN_141a5ff60()
         }
         else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
         {
-            strGuild = pNpc->FUN_141093980();
+            strGuild = pNpc->GetTitle();
         }
         obj.SetIntMember("visibleSymbol", m_7c);
         obj.SetIntMember("visibleName", m_78);
@@ -554,7 +554,7 @@ void UINameTag::Entity::FUN_141a5ff60()
 // @0x141a60920
 int UINameTag::Entity::FUN_141a60920()
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     PCBase* pActor = FUN_140f49330();
@@ -740,7 +740,7 @@ UINameTag::Entity* UINameTag::AcquireEntity(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -764,8 +764,8 @@ UINameTag::Entity* UINameTag::AcquireEntity(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())

@@ -213,7 +213,7 @@ void CCapRotationController::vfunc_6()
 // @0x140b00830
 int CCapRotationController::vfunc_29()
 {
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     CAtlArray<CString> aParts;
@@ -233,7 +233,7 @@ void CCapRotationController::vfunc_28()
     Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->GetItemData());
     if (pItem != 0)
     {
-        if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
+        if (pItem->FUN_14053ec70()->IsCapAttach() != 0)
         {
             m_aPartNames.RemoveAll();
             m_aPartNames.Add("CP");
@@ -260,7 +260,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Unk_EfdMatrix3 kRotZ;
@@ -279,7 +279,7 @@ void CCapRotationController::vfunc_31()
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     efd::Point2 kCursor = efd::Point2::ZERO;   // 0x143b02320
@@ -320,7 +320,7 @@ void CCapRotationController::vfunc_31()
 // @0x140b01310
 void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_spPart == (CEquipModel*)0)
@@ -332,13 +332,13 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
     if (pScene == 0)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
-        m_spEquipItem->GetItem()->FUN_140527870());
+        m_spEquipItem->GetItem()->GetProxy());
     if (pData == 0)
         return;
     Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->GetItemData());
     if (pItem == 0)
         return;
-    if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
+    if (pItem->FUN_14053ec70()->IsCapAttach() != 0)
     {
         if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0) != 0)
         {
@@ -388,7 +388,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
 void CCapRotationController::vfunc_33()
 {
     UpdateRotationMatrix();
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer != 0)
         reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->FUN_1411e5c10();
     if (m_pListener != 0)
@@ -405,7 +405,7 @@ void CCapRotationController::vfunc_34(const NiPoint3& kPos)
 // @0x140b019a0
 void CCapRotationController::vfunc_35()
 {
-    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     efd::Point2 kCursor = efd::Point2::ZERO;   // 0x143b02320
@@ -482,7 +482,7 @@ void CCapRotationController::ResetHighlight()
         return;
     CEquipModel* pPart = m_spEquipItem->FindModelByName(aParts.GetAt(0)).get();
     if (pPart != 0)
-        pPart->FUN_1411679d0(0.0f, 0.0f, 0);
+        pPart->SetHighlight(0.0f, 0.0f, 0);
 }
 
 // @0x140b020d0
@@ -502,7 +502,7 @@ Vector3 CCapRotationController::GetPartEuler()
         return DAT_143b01a60;
     if (reinterpret_cast<Unk_CapItem*>(spItem->GetItemData())->GetEquipSubtype() != 0xd)
         return DAT_143b01a60;
-    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
+    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->GetProxy());
     if (pData == 0)
         return DAT_143b01a60;
     return pData->m_aEuler[0];
@@ -516,7 +516,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
         return;
     if (reinterpret_cast<Unk_CapItem*>(spItem->GetItemData())->GetEquipSubtype() != 0xd)
         return;
-    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
+    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->GetProxy());
     if (pData == 0)
         return;
     Vector3 kCur = pData->m_aEuler[0];

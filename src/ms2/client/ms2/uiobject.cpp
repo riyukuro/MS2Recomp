@@ -50,8 +50,8 @@ CStringW FUN_140718650(const CString& str);                 // CString -> CStrin
 void FUN_1412751b0(const CStringW& strText, int nType);     // system message
 void ShowSystemNotice(const CStringW& strText, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
-int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
-unsigned int FUN_1407181d0(const CString& str);
+int PlaySystemSound(const CString& strSound, const CString& strArg);    // play a system sound
+unsigned int ParseUInt(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
 
@@ -77,8 +77,8 @@ MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 class Unk_1403ed2b0 { public: };
 
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
-int FUN_140651920(CString str);
-int FUN_1406516a0();
+int GetLanguageId(CString str);
+int GetLanguage();
 
 // The UI object of type nUIType, if it is a T (COMDAT template; name invented).
 template <class T>
@@ -124,19 +124,19 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         UIWebBrowserBase* p = (UIWebBrowserBase*)FindWebBrowser(0x4e6a);
         if (p == NULL)
             return;
-        p->FUN_14135ec00(strUrl, true);
+        p->Navigate(strUrl, true);
     } else if (strMethod == "externalWeb") {
         CString strUrl = pArgs->FUN_1422b8d30();
         FUN_1418fe1c0(strUrl);
     } else if (strMethod == "worldmap") {
-        int nMapId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nMapId = ParseUInt(pArgs->FUN_1422b8d30());
         UIWorldMapDialog* p = Unk_GetUI<UIWorldMapDialog>(0x4e42);
         if (p == NULL)
             return;
-        p->FUN_141b5bc70(nMapId);
+        p->SetPendingField(nMapId);
         p->FUN_141924680();
     } else if (strMethod == "quest") {
-        int nQuestId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nQuestId = ParseUInt(pArgs->FUN_1422b8d30());
         UIQuestDialog* p = GetDialog<UIQuestDialog>(0x4e3e);
         if (p == NULL)
             return;
@@ -147,14 +147,14 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         p->FocusQuest(nQuestId);
         p->FUN_141924680();
     } else if (strMethod == "itemdictionary") {
-        int nItemId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nItemId = ParseUInt(pArgs->FUN_1422b8d30());
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
         p->OpenTabWithSearch(3, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), 1);
         p->FUN_141924680();
     } else if (strMethod == "npcdictionary") {
-        int nNpcId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nNpcId = ParseUInt(pArgs->FUN_1422b8d30());
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
@@ -173,7 +173,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             return;
         p->OpenCollectTab(nGroupId);
     } else if (strMethod == "dungeon") {
-        int nDungeonId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nDungeonId = ParseUInt(pArgs->FUN_1422b8d30());
         UIDungeonRoomDialog* p = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
         if (p == NULL)
             return;
@@ -188,7 +188,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         *pRetVal = value;
     } else if (strMethod == "isEnableLanguage") {
         CString strLanguage = pArgs->FUN_1422b8d30();
-        bool bEnable = FUN_140651920(strLanguage) == FUN_1406516a0();
+        bool bEnable = GetLanguageId(strLanguage) == GetLanguage();
         Scaleform::GFx::Value value(bEnable);
         *pRetVal = value;
     }
@@ -257,7 +257,7 @@ MS2_REPLACE_METHOD(0x14131EDF0, UIObject, vfunc_49, 16, 0xB7F2802D);
 // @0x14131ee10
 void UIObject::vfunc_50(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    FUN_141276180(pArgs->FUN_1422b8d30(), "");
+    PlaySystemSound(pArgs->FUN_1422b8d30(), "");
 }
 MS2_REPLACE_METHOD(0x14131EE10, UIObject, vfunc_50, 121, 0x7B802993);
 
@@ -266,7 +266,7 @@ void UIObject::vfunc_42(GfxException* pException)
 {
     if (pException)
         MessageBoxA(NULL, pException->what(), "Exception", 0);
-    FUN_1422dc0b0();
+    Unload();
 }
 MS2_REPLACE_METHOD(0x14131EE90, UIObject, vfunc_42, 74, 0x59E38CB2);
 

@@ -46,7 +46,7 @@ public:
     virtual void vfunc_75(); virtual void vfunc_76();
     virtual CStringW GetName();     // 77 (+0x268)
 };
-class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
+class Unk_MentorWorldV { public: Unk_MentorActorV* GetLocalPlayer(); };
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160): start/end of the registration period.
 class Unk_RuMentoring : public CGameEventValueMentoring { };   // C3: viewed as in uimentoringmentorpage.cpp
 class Unk_RuManager { public: Unk_RuMentoring* GetMentoring(); };
@@ -124,7 +124,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
     if (_stricmp(szMethod, "onRegister") == 0)
     {
-        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pActor == 0) return 1;
         CMsTime tStart(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetBeginTime());
         CMsTime tEnd(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetEndTime());

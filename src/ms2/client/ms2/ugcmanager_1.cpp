@@ -918,7 +918,7 @@ Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget)
     CStringW strPath;
     try
     {
-        void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pMyPC = WorldService::GetInstance()->GetLocalPlayer();
         if (pMyPC == NULL)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
@@ -952,7 +952,7 @@ Unk_UgcFileResult SaveRenderTargetImage(NiRect<unsigned int> kRect, NiRenderTarg
     CString strPath = "";
     try
     {
-        void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pMyPC = WorldService::GetInstance()->GetLocalPlayer();
         if (pMyPC == NULL)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
@@ -984,7 +984,7 @@ Unk_UgcFileResult SaveTextureImage(NiTexture* pkTexture)
     CString strPath = "";
     try
     {
-        void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pMyPC = WorldService::GetInstance()->GetLocalPlayer();
         if (pMyPC == NULL)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
@@ -1016,7 +1016,7 @@ Unk_UgcFileResult SaveIconImage(CStringW strFile)
     CString strPath = "";
     try
     {
-        void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* pMyPC = WorldService::GetInstance()->GetLocalPlayer();
         if (pMyPC == NULL)
             throw Exception("mypc", 0xc);
         __time64_t tNow;

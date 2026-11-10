@@ -8,8 +8,8 @@ public:
   // @0x1408f26b0
   virtual ~UserPlayCommonInfoData() = default;
   void Reset();
-  void FUN_1408e97e0(COutputStream &);
-  void FUN_1408e9b40(CInputStream &);
+  void WriteToStream(COutputStream &);
+  void ReadFromStream(CInputStream &);
   int m_18;
   unsigned short m_1c;
   int m_20;

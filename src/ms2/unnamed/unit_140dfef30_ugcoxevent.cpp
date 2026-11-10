@@ -84,7 +84,7 @@ class Unk_OxArgs : public ItemFunctionArgs
 };
 
 class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
-CStringW FUN_140298ea0(CStringW strKey);                         // localized string
+CStringW GetStringByKey(CStringW strKey);                         // localized string
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_140710590(COutPacket& packet);
@@ -92,9 +92,9 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_140719630(int n);
 CStringW FUN_140719a00(__int64 n);
 CStringW FUN_1409404f0(__int64 n);
-__int64 FUN_140718320(const CStringW& str);
+__int64 ParseInt64W(const CStringW& str);
 #include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
-void FUN_142ca6130();                                            // the exe's atexit destructor of the marker
+void DestroyUIntStrMap();                                            // the exe's atexit destructor of the marker
 extern __int64 DAT_143ab2820;                                    // the own account id
 extern __int64 DAT_143ab2898;                                    // the money
 struct Unk_OxMarker {};
@@ -122,13 +122,13 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400d6d60
 static char s_marker[0x48];
-static Unk_OxMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca6130), Unk_OxMarker());
+static Unk_OxMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(DestroyUIntStrMap), Unk_OxMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142ca6130
-void FUN_142ca6130() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
+void DestroyUIntStrMap() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // forward declarations of this unit's handlers
@@ -142,25 +142,25 @@ void FUN_140e00f00(unsigned char nType, int nSub);
 void FUN_140e00fd0();
 void FUN_140e010c0(CInPacket& packet);
 void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int nMax, int nShareRate);
-void FUN_140e013e0(CStringW& strOut, const CStringW& strName);
+void FormatMoveHomeConfirm(CStringW& strOut, const CStringW& strName);
 void FUN_140dfef30(CInPacket& packet);
 bool FUN_140dff210(int nResult, const CMsgBoxData& box);
 bool FUN_140dff700(int nResult, const CMsgBoxData& box);
 bool FUN_140dff8d0(int nResult, const CMsgBoxData& box);
 bool FUN_140dffad0(int nResult, const CMsgBoxData& box);
 bool FUN_140dffdf0(int nResult, const CMsgBoxData& box);
-void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCooltime2);
+void UpdatePromoteState(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCooltime2);
 UIQuizOXCreateDialog* FUN_140e01b10(int nId);
-UIQuizHostDialog* FUN_140e01a70(int nId);
-UIPrizeMoneyDialog* FUN_140e019d0(int nId);
+UIQuizHostDialog* FindQuizHostDialog(int nId);
+UIPrizeMoneyDialog* FindPrizeMoneyDialog(int nId);
 UIQuizOXWelcomeDialog* FUN_140e01bb0(int nId);
-UIMassiveEvent* FUN_140e01890(int nId);
-UIOxQuizDialog* FUN_140e01930(int nId);
+UIMassiveEvent* FindMassiveEvent(int nId);
+UIOxQuizDialog* FindOxQuizDialog(int nId);
 
 // @0x140dfef30
 void FUN_140dfef30(CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
         return;
     CStringW strName = packet.ReadUnicodeString();
@@ -169,10 +169,10 @@ void FUN_140dfef30(CInPacket& packet)
     int nShareRate = packet.ReadInt32();
     CStringW strMsg;
     FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
-    CStringW strTitle = FUN_140298ea0(CStringW(L"s_ugcox_create_confirm"));
+    CStringW strTitle = GetStringByKey(CStringW(L"s_ugcox_create_confirm"));
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01800(1);
+    spBox->SetButtonPreset(1);
     spBox->SetTitle(strTitle);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff210));
     FUN_140d73c60(spBox);
@@ -197,12 +197,12 @@ void FUN_140dff2b0()
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_OxConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x3d)) == 1)
     {
-        CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
+        CStringW strMsg = GetStringByKey(CStringW(L"s_ugcox_create_fail_shutdown"));
         ShowSystemNotice(strMsg, 1, 1);
     }
     else
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC == 0)
             return;
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
@@ -218,10 +218,10 @@ void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax,
     CStringW strMsg;
     FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
     CStringW strTitle;
-    FUN_140e013e0(strTitle, strName);
+    FormatMoveHomeConfirm(strTitle, strName);
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01800(1);
+    spBox->SetButtonPreset(1);
     spBox->SetTitle(strTitle);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff8d0));
     spBox->Append<__int64>(nId);
@@ -276,7 +276,7 @@ void FUN_140dff600(CInPacket& packet)
 // @0x140dff700
 bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
         return true;
     if (nResult == 0)
@@ -289,7 +289,7 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
         box.FUN_140e01c50(2, nFee);
         if (DAT_143ab2898 < nFee)
         {
-            CStringW strMsg = FUN_140298ea0(L"s_ugcox_enter_fail_entry_fee_lack");
+            CStringW strMsg = GetStringByKey(L"s_ugcox_enter_fail_entry_fee_lack");
             ShowSystemNotice(strMsg, 1, 1);
             return true;
         }
@@ -301,7 +301,7 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 // @0x140dff8d0
 bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
         return true;
     if (nResult == 0)
@@ -317,10 +317,10 @@ bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
 // @0x140dff970
 void FUN_140dff970()
 {
-    CStringW strMsg = FUN_140298ea0(L"s_ugcox_finish_warning_host");
+    CStringW strMsg = GetStringByKey(L"s_ugcox_finish_warning_host");
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01800(1);
+    spBox->SetButtonPreset(1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dffad0));
     FUN_140d73c60(spBox);
 }
@@ -338,21 +338,21 @@ bool FUN_140dffad0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x140dffb50
-void FUN_140dffb50(void* pListener)
+void ShowLeaveWarning(void* pListener)
 {
     CStringW strMsg;
     if (s_bHost)
     {
-        strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_host");
+        strMsg = GetStringByKey(L"s_ugcox_leave_warning_host");
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
     }
     else
     {
-        strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_entry");
+        strMsg = GetStringByKey(L"s_ugcox_leave_warning_entry");
     }
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01800(1);
+    spBox->SetButtonPreset(1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dffdf0));
     spBox->SetListener(pListener);
     spBox->SetExtra(L"leaveInField");
@@ -450,7 +450,7 @@ void FUN_140e00250(CInPacket& packet)
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_OxConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x3d)) == 1)
     {
-        CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
+        CStringW strMsg = GetStringByKey(CStringW(L"s_ugcox_create_fail_shutdown"));
         ShowSystemNotice(strMsg, 1, 1);
     }
     else
@@ -482,7 +482,7 @@ void FUN_140e003b0(CInPacket& packet)
     CStringW strMsg = GetStringCommonByKey(L"s_ugcox_create_complete");
     strMsg.Replace(L"{eventFee}", (LPCWSTR)FUN_1409404f0(nFee));
     ShowSystemNotice(strMsg, 3, 1);
-    FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
+    UpdatePromoteState(nPromoted, nCooltime, nTotal, nCooltime2);
 }
 
 // Sub 1: the promote counters.
@@ -494,7 +494,7 @@ void FUN_140e005a0(CInPacket& packet)
     unsigned nCooltime = packet.ReadInt32();
     int nTotal = packet.ReadInt32();
     unsigned nCooltime2 = packet.ReadInt32();
-    FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
+    UpdatePromoteState(nPromoted, nCooltime, nTotal, nCooltime2);
 }
 
 // Sub 5: somebody created an event (move there, or the host entering).
@@ -510,7 +510,7 @@ void FUN_140e00690(CInPacket& packet)
     int nShareRate = packet.ReadInt32();
     if (nHostId == DAT_143ab2820)
     {
-        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pMyPC != 0)
             pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
         return;
@@ -519,12 +519,12 @@ void FUN_140e00690(CInPacket& packet)
     FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01800(1);
+    spBox->SetButtonPreset(1);
     spBox->SetTitle(GetStringCommonByKey(L"s_ugcox_move_eventmap_confirm"));
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff700));
     spBox->Append<unsigned>(nMapId);
     spBox->Append<unsigned>(nPortalId);
-    spBox->FUN_140e01830(nFee);
+    spBox->AppendInt64(nFee);
     FUN_140d73c60(spBox);
 }
 
@@ -537,20 +537,20 @@ void FUN_140e00b40(unsigned char nType, CInPacket& packet)
     int nRound = packet.ReadUInt8();
     __int64 nPrize1 = packet.ReadInt64();
     __int64 nPrize2 = packet.ReadInt64();
-    UIPrizeMoneyDialog* pPrize = FUN_140e019d0(0x4f46);
+    UIPrizeMoneyDialog* pPrize = FindPrizeMoneyDialog(0x4f46);
     if (pPrize != 0)
     {
         if (pPrize->FUN_141924630() == 0)
             pPrize->FUN_141924680();
         SetPrizeMoney(pPrize, nPrize1, nPrize2);
     }
-    UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
+    UIQuizHostDialog* pHost = FindQuizHostDialog(0x4f44);
     if (pHost != 0)
         SetRound(pHost, nRound);
     s_bHost = nHostId == DAT_143ab2820;
     if (!s_bHost)
     {
-        UIMassiveEvent* pEvent = FUN_140e01890(0x4e4c);
+        UIMassiveEvent* pEvent = FindMassiveEvent(0x4e4c);
         if (pEvent != 0)
             pEvent->SetStage(nRound, 10, 1, 0);
     }
@@ -593,7 +593,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
         {
             FUN_140e00fd0();
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f48);
-            UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
+            UIQuizHostDialog* pHost = FindQuizHostDialog(0x4f44);
             if (pHost != 0)
                 pHost->FUN_141924680();
         }
@@ -610,7 +610,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
         {
             FUN_140e00fd0();
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f48);
-            UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
+            UIQuizHostDialog* pHost = FindQuizHostDialog(0x4f44);
             if (pHost != 0)
                 pHost->FUN_141924680();
         }
@@ -679,7 +679,7 @@ void FUN_140e010c0(CInPacket& packet)
 {
     int nMode = packet.ReadUInt8();
     int nCount = packet.ReadUInt8();
-    UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
+    UIQuizHostDialog* pHost = FindQuizHostDialog(0x4f44);
     if (pHost != 0)
     {
         if (nMode == 1)
@@ -712,7 +712,7 @@ void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int 
 }
 
 // @0x140e013e0
-void FUN_140e013e0(CStringW& strOut, const CStringW& strName)
+void FormatMoveHomeConfirm(CStringW& strOut, const CStringW& strName)
 {
     {
         CStringW strKey(L"s_ugcox_move_home_confirm");
@@ -723,12 +723,12 @@ void FUN_140e013e0(CStringW& strOut, const CStringW& strName)
 
 // The promote button of the OX quiz dialog: tooltip and enabled state.
 // @0x140e01480
-void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCooltime2)
+void UpdatePromoteState(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCooltime2)
 {
     s_nPromoteCount = nPromoted;
     s_nPromoteTotal = nTotal;
     s_nPromoteCooltime = nCooltime2;
-    UIOxQuizDialog* pQuiz = FUN_140e01930(0x4f7d);
+    UIOxQuizDialog* pQuiz = FindOxQuizDialog(0x4f7d);
     if (pQuiz != 0)
     {
         if (MS2Ptr<ASButton> hButton = static_cast<UIDialog*>(pQuiz)->GetChild<ASButton>("m_quiz_promote"))
@@ -754,13 +754,13 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
 }
 
 // @0x140e01830
-void CMsgBoxData::FUN_140e01830(__int64 n)
+void CMsgBoxData::AppendInt64(__int64 n)
 {
     m_args.Add(FUN_140719a00(n));
 }
 
 // @0x140e01890
-UIMassiveEvent* FUN_140e01890(int nId)
+UIMassiveEvent* FindMassiveEvent(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -772,7 +772,7 @@ UIMassiveEvent* FUN_140e01890(int nId)
 }
 
 // @0x140e01930
-UIOxQuizDialog* FUN_140e01930(int nId)
+UIOxQuizDialog* FindOxQuizDialog(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -785,7 +785,7 @@ UIOxQuizDialog* FUN_140e01930(int nId)
 
 // The dialog finders: the UI manager's dialog of a UI type, cast to its class.
 // @0x140e019d0
-UIPrizeMoneyDialog* FUN_140e019d0(int nId)
+UIPrizeMoneyDialog* FindPrizeMoneyDialog(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -797,7 +797,7 @@ UIPrizeMoneyDialog* FUN_140e019d0(int nId)
 }
 
 // @0x140e01a70
-UIQuizHostDialog* FUN_140e01a70(int nId)
+UIQuizHostDialog* FindQuizHostDialog(int nId)
 {
     if (reinterpret_cast<Unk_OxUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -838,7 +838,7 @@ bool CMsgBoxData::FUN_140e01c50(unsigned int nIndex, __int64& nOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
-    nOut = FUN_140718320(m_args[nIndex]);
+    nOut = ParseInt64W(m_args[nIndex]);
     return true;
 }
 
@@ -885,9 +885,9 @@ void FUN_140dfee10(__int64 quizId, int first, int second)
 }
 
 // @0x140dfeeb0
-void FUN_140dfeeb0()
+void RequestNewQuiz()
 {
-    MyPC* player = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* player = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);

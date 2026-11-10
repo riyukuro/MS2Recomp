@@ -142,7 +142,7 @@ class UIMeratMarketDialog* FindMeratMarketDialog(int);   // C3: was FindMeratMar
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751b0(const CStringW& str, int nType);             // chat / system message
 void FUN_140851c40(TiXmlElement* pElem);
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);              // the document's first child element
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc);              // the document's first child element
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
@@ -329,7 +329,7 @@ void GameEventDTRewardCli::vfunc_6()
         pDlg->RemoveEvent(GetID());
         if (pDlg->FUN_141924630()) {
             unsigned short nLevel = 0;
-            Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+            Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->GetLocalPlayer();
             if (pPlayer)
                 nLevel = pPlayer->vfunc_78();
             if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward(nLevel) == 0)
@@ -806,7 +806,7 @@ void GameEventUpdateStringCli::OnStart()
             MS2_ASSERT_AT(0x271, FALSE);
             return;
         }
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == 0) {
             MS2_ASSERT_AT(0x278, FALSE);
             return;
@@ -863,7 +863,7 @@ void GameEventWorldmapIconCli::OnStart()
         MS2_ASSERT_AT(0x2c1, FALSE);
         return;
     }
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == 0) {
         MS2_ASSERT_AT(0x2c8, FALSE);
         return;
@@ -884,7 +884,7 @@ void GameEventWorldmapIconCli::vfunc_6()
         MS2_ASSERT_AT(0x2db, FALSE);
         return;
     }
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == 0) {
         MS2_ASSERT_AT(0x2e2, FALSE);
         return;
@@ -983,7 +983,7 @@ void GameEventRpsCli::OnStart()
         MS2_ASSERT_AT(0x33e, 0);
         return;
     }
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == 0) {
         MS2_ASSERT_AT(0x345, 0);
         return;
@@ -1003,7 +1003,7 @@ void GameEventRpsCli::vfunc_6()
     UIRpsEventDialog* pDlg = FindCliDialog<UIRpsEventDialog>(0x4f5f);
     if (pDlg && pDlg->FUN_141924630() != 0)
         pDlg->vfunc_67();
-    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     switch (pPlayer->GetCurStateId()) {
@@ -1050,7 +1050,7 @@ void GameEventCoupleDanceCli::vfunc_6()
         if (pDlg->FUN_141924630() != 0)
             pDlg->vfunc_67();
     }
-    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     switch (pPlayer->GetCurStateId()) {
@@ -1227,7 +1227,7 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, StringFormat(GetStringCommonByKey(m_d0->m_jumpingItemNotifyStringKey)), 0, L"");
         if (spBox == 0)
             return;
-        spBox->FUN_141a01800(3);
+        spBox->SetButtonPreset(3);
         if (m_d0->m_spJumpingItem.get()) {
             MS2Ptr<CMsgBoxDataItem> spData(new CMsgBoxDataItem());
             {
@@ -1246,7 +1246,7 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, StringFormat(GetStringCommonByKey(m_d0->m_jumpingCompleteStringKey)), 0, L"");
         if (spBox == 0)
             return;
-        spBox->FUN_141a01800(3);
+        spBox->SetButtonPreset(3);
         if (!m_d0->m_rewardItems.empty()) {
             MS2Ptr<CMsgBoxDataItem> spData(new CMsgBoxDataItem());
             {
@@ -1283,7 +1283,7 @@ void GameEventBurningLevelupCli::FUN_140ce7250(Unk_CliPkt& pkt)
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, StringFormat(GetStringCommonByKey(m_d0->m_jumpingItemNotifyStringKey)), 0, L"");
         if (spBox == 0)
             return;
-        spBox->FUN_141a01800(3);
+        spBox->SetButtonPreset(3);
         if (m_d0->m_spJumpingItem.get()) {
             MS2Ptr<CMsgBoxDataItem> spData(new CMsgBoxDataItem());
             {

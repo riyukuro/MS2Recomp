@@ -103,7 +103,7 @@ bool CDebugConsole::ToggleSoundDlg()
 MS2_REPLACE_METHOD(0x141168350, CDebugConsole, ToggleSoundDlg, 130, 0x64B89D35);
 
 // @0x1411683e0
-void CDebugConsole::FUN_1411683e0(const char* szFormat, ...)
+void CDebugConsole::Print(const char* szFormat, ...)
 {
     DWORD dwWritten = 0;
     vsprintf(ms_szLine, szFormat, (va_list)(&szFormat + 1));
@@ -153,7 +153,7 @@ void CDebugConsole::StopTimer(std::string strName, float fLimit)
     float fElapsed = ((float)kNow.QuadPart - (float)m_kTimers[strName].QuadPart) / (float)m_kFrequency.QuadPart;
     if (fElapsed > fLimit) {
         SetTextColor(FOREGROUND_RED);
-        FUN_1411683e0("%s [%f]", strName.c_str(), (double)fElapsed);
+        Print("%s [%f]", strName.c_str(), (double)fElapsed);
     }
 }
 MS2_REPLACE_METHOD(0x141168630, CDebugConsole, StopTimer, 213, 0x937C86E9);

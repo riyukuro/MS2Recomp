@@ -17,7 +17,7 @@ class CharacterDecalData : public CPtred
 public:
     CharacterDecalData();                           // 0x1401e4000
     virtual ~CharacterDecalData() = default;        // 0x1401e4e40 (implicit: no vptr store; pinned)
-    void FUN_1401e4090(TiXmlElement* pElem);       // XML read
+    void Read(TiXmlElement* pElem);       // XML read
     std::vector<MS2Ptr<ItemCustom> >* GetCustoms();      // &customs
     // Inline COMDAT 0x140d38880 (emitted by ?\itemloadinfo.cpp): the texture path.
     const CString& GetTexture() const { return unknown18; }

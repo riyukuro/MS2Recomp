@@ -48,7 +48,7 @@ struct Unk_EquipItemData : public CItemData {};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
+    class Unk_WsC_GameObj* FindPCById(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
 };
 
@@ -94,9 +94,9 @@ MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spCopy = spItem->Clone();
     if (spCopy.get()) {
-        int nVariant = spItem->FUN_14052a150();
+        int nVariant = spItem->GetVariant();
         if (nVariant >= 0)
-            spCopy->FUN_14052a130(nVariant);
+            spCopy->SetVariant(nVariant);
     }
     return spCopy;
 }
@@ -111,32 +111,32 @@ inline MS2Ptr<CItem> FUN_140cd4650(MS2Ptr<CItem> spItem)
 // @0x140cd4310 the appearance of two items is the same
 inline int FUN_140cd4310(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
-    if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
+    if (spA == 0 || spB == 0 || spA->GetProxy() == 0 || spB->GetProxy() == 0)
         return 0;
     if (spA->GetItemId() != spB->GetItemId())
         return 0;
-    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
-    CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()));
+    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->GetProxy()));
+    CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->GetProxy()));
     return pA->vfunc_1(pB);
 }
 
 // @0x140cd4460
 inline int FUN_140cd4460(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
-    if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
+    if (spA == 0 || spB == 0 || spA->GetProxy() == 0 || spB->GetProxy() == 0)
         return 0;
-    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
-    CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()));
+    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->GetProxy()));
+    CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->GetProxy()));
     return pA->vfunc_2(pB);
 }
 
 // @0x140cd4560 the colours of two items are the same
 inline int FUN_140cd4560(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
-    if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
+    if (spA == 0 || spB == 0 || spA->GetProxy() == 0 || spB->GetProxy() == 0)
         return 0;
-    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
-    return static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()))->HasSameKindAndRgb(pB);
+    CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->GetProxy()));
+    return static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->GetProxy()))->HasSameKindAndRgb(pB);
 }
 
 // @0x140cd3e30
@@ -213,8 +213,8 @@ inline bool MarkPreviewItem(MS2Ptr<CItem> spItem, bool bPreview)
     if (spItem == 0)
         return false;
     if (bPreview && FUN_141421690(spItem.get()) == 0) {
-        spItem->FUN_14052a130(FUN_140cd3e40());
-        spItem->FUN_14052a210(1);
+        spItem->SetVariant(FUN_140cd3e40());
+        spItem->SetFlags(1);
         spItem->ClearBinding();
     }
     return true;
@@ -352,7 +352,7 @@ void Customize::EditItems::Select(MS2Ptr<CEquipItem> spEquip)
     }
     if (((CEquipItem*)spEquip ? true : false) && (spEquip->GetItem() ? true : false)) {
         m_spItem = FUN_140cd4650(spEquip->GetItem());
-        m_spData.AssignRaw(static_cast<CItemData*>(m_spItem->FUN_140527840()));
+        m_spData.AssignRaw(static_cast<CItemData*>(m_spItem->GetData()));
         m_spController = FUN_1414131e0(spEquip, pPc, m_pListener);
     }
 }
@@ -488,7 +488,7 @@ MS2_REPLACE_METHOD(0x140CCBCC0, Customize::EditItems, GetColors, 199, 0x8E4E989E
 PC* Customize::EditItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCBD90, Customize::EditItems, GetPC, 50, 0x78C562D6);
@@ -575,8 +575,8 @@ void Customize::CloneItems::RestoreUid(__int64 nUid)
     }
     {
         MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
-        if ((((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false) && ((CItem*)spItem)->FUN_140527840()) {
-            if (((CItem*)spItem)->FUN_140527840()->IsAvatarColorItem()) {
+        if ((((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false) && ((CItem*)spItem)->GetData()) {
+            if (((CItem*)spItem)->GetData()->IsAvatarColorItem()) {
             } else {
                 pPc->vfunc_128(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 1);
             }
@@ -612,7 +612,7 @@ void Customize::CloneItems::RestoreSlot(Unk_InventoryEquipSlot eSlot)
         }
     }
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
-    bool bWorn = (spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false) && spEquip->GetItem()->FUN_140527840();
+    bool bWorn = (spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false) && spEquip->GetItem()->GetData();
     if (bWorn)
         pPc->vfunc_128(spEquip->GetItem().get(), 1);
 }
@@ -628,8 +628,8 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
     MS2Ptr<CItem> spOld(0);
     m_mapSlots.Lookup(eOrigSlot, spOld);
     bool bNewTwoSlot = false;
-    if ((spItem.get() ? true : false) && spItem->FUN_140527840()) {
-        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+    if ((spItem.get() ? true : false) && spItem->GetData()) {
+        MS2Ptr<CItemData> spData(spItem->GetData());
         bNewTwoSlot = spData->FUN_14053d2b0() || spData->FUN_14053d460();
     }
     Unk_InventoryEquipSlot ePairSlot = Unk_InventoryEquipSlotNone;
@@ -649,7 +649,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
     if (spOld.get())
         aItems.Add(spOld);
     bool bOldTwoSlot = false;
-    MS2Ptr<CItemData> spOldData(spOld.get() ? static_cast<CItemData*>(spOld->FUN_140527840()) : 0);
+    MS2Ptr<CItemData> spOldData(spOld.get() ? static_cast<CItemData*>(spOld->GetData()) : 0);
     if (spOldData.get() ? true : false) {
         if (spOldData->FUN_14053d2b0() || spOldData->FUN_14053d460())
             bOldTwoSlot = true;
@@ -663,10 +663,10 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
     size_t nCount = aItems.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<CItem> spCur = aItems[i];
-        if (spCur == 0 || spCur->FUN_140527840() == 0)
+        if (spCur == 0 || spCur->GetData() == 0)
             continue;
         bool bEquip = i == 0;
-        MS2Ptr<CItemData> spData(spCur->FUN_140527840());
+        MS2Ptr<CItemData> spData(spCur->GetData());
         Unk_InventoryEquipSlot eOther = Unk_InventoryEquipSlotNone;
         if (spData->FUN_14053d2b0())
             eOther = static_cast<Unk_InventoryEquipSlot>(eOrigSlot == 9 ? 8 : 9);
@@ -778,7 +778,7 @@ bool Customize::CloneItems::IsSameUid(__int64 nUid, unsigned* pnFlags)
     if (pPc == 0)
         return false;
     MS2Ptr<CItem> spCur = pPc->FUN_141655b80(nUid);
-    if ((((MS2Ptr<CItem>*)(void*)(&spCur))->get() ? true : false) && ((CItem*)spCur)->FUN_140527840()) {
+    if ((((MS2Ptr<CItem>*)(void*)(&spCur))->get() ? true : false) && ((CItem*)spCur)->GetData()) {
         for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
             MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
             if (spItem == 0)
@@ -1044,12 +1044,12 @@ MS2_REPLACE_METHOD(0x140CCEBC0, Customize::CloneItems, GetChangeFlags, 530, 0xEE
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::CloneItems::UpdateItem(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || ((CItem*)spItem)->FUN_140527870() == 0)
+    if (spItem == 0 || ((CItem*)spItem)->GetProxy() == 0)
         return;
     MS2Ptr<CItem> spClone(0);
-    if (m_mapItems.Lookup(((CItem*)spItem)->GetItemUid(), spClone) && (((MS2Ptr<CItem>*)(void*)(&spClone))->get() ? true : false) && ((CItem*)spClone)->FUN_140527870())
-        static_cast<CItemExtraData*>(static_cast<CPtred*>(spClone->FUN_140527870()))->vfunc_3(
-            static_cast<CItemExtraData*>(static_cast<CPtred*>(spItem->FUN_140527870())));
+    if (m_mapItems.Lookup(((CItem*)spItem)->GetItemUid(), spClone) && (((MS2Ptr<CItem>*)(void*)(&spClone))->get() ? true : false) && ((CItem*)spClone)->GetProxy())
+        static_cast<CItemExtraData*>(static_cast<CPtred*>(spClone->GetProxy()))->vfunc_3(
+            static_cast<CItemExtraData*>(static_cast<CPtred*>(spItem->GetProxy())));
 }
 
 // @0x140ccef20
@@ -1067,7 +1067,7 @@ MS2_REPLACE_METHOD(0x140CCEF20, Customize::CloneItems, SaveColors, 103, 0x637BC3
 PC* Customize::CloneItems::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CCEF90, Customize::CloneItems, GetPC, 50, 0xF183C92F);
@@ -1288,7 +1288,7 @@ void Customize::Equipment::Equip(CItem* pItem)
 {
     if (pItem == 0)
         return;
-    MS2Ptr<CItemData> spData(pItem->FUN_140527840());
+    MS2Ptr<CItemData> spData(pItem->GetData());
     if (spData == 0)
         return;
     PC* pPc = GetPC();
@@ -1412,7 +1412,7 @@ void Customize::Equipment::ResetEdit()
 PC* Customize::Equipment::GetPC()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD0AF0, Customize::Equipment, GetPC, 50, 0x900515B6);
@@ -1542,9 +1542,9 @@ MS2_REPLACE_METHOD(0x140CD1210, Customize::Equipment, SendRemovedMap, 169, 0xC67
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || spItem->FUN_140527840() == 0)
+    if (spItem == 0 || spItem->GetData() == 0)
         return;
-    if (!spItem->FUN_140527840()->FUN_14053cfd0())
+    if (!spItem->GetData()->FUN_14053cfd0())
         return;
     PC* pPc = GetPC();
     if (pPc == 0)
@@ -1555,9 +1555,9 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
     CItemData* pData = static_cast<CItemData*>(spCap->GetItemData());
     if (pData == 0)
         return;
-    if (!pData->FUN_14053ec70()->FUN_1405471b0())
+    if (!pData->FUN_14053ec70()->IsCapAttach())
         return;
-    CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->GetItem()->FUN_140527870()));
+    CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->GetItem()->GetProxy()));
     if (pExtra == 0)
         return;
     pExtra->m_aPt3[0] = DAT_143b01a60;
@@ -1667,11 +1667,11 @@ MS2_REPLACE_METHOD(0x140CD1BF0, Customize, UpdateEditItems, 142, 0x8CAD08D5);
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 bool Customize::EquipItem(CItem* pItem)
 {
-    if (m_spEquipment == 0 || pItem == 0 || pItem->FUN_140527840() == 0)
+    if (m_spEquipment == 0 || pItem == 0 || pItem->GetData() == 0)
         return false;
     PC* pPc = GetPlayer();
     if (pPc) {
-        if (!pItem->FUN_140527840()->IsGenderAllowed(pPc->GetGender()))
+        if (!pItem->GetData()->IsGenderAllowed(pPc->GetGender()))
             return false;
     }
     m_spEquipment->Equip(pItem);
@@ -2229,7 +2229,7 @@ MS2_REPLACE_METHOD(0x140CD3D40, Customize, vfunc_25, 161, 0x36B7DD73);
 PC* Customize::GetPlayer()
 {
     if (static_cast<unsigned>(m_nObjectId) > 0)
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD3DF0, Customize, GetPlayer, 50, 0x4666D5B3);

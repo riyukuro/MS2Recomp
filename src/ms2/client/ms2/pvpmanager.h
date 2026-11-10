@@ -112,7 +112,7 @@ public:
     std::map<unsigned __int64, Unk_PvpEntryItem*> m_targets;                     // +0x20 by character id
 
     Unk_PvpEntryItem* FUN_14101f010(unsigned __int64 nCharId);                   // the row of a character
-    void FUN_14101eee0(Unk_PvpEntryItem* pItem);                        // add a row
+    void AddItem(Unk_PvpEntryItem* pItem);                        // add a row
 };
 MS2_CHECK_SIZE(Unk_PvpEntryTable, 0x30);
 
@@ -122,7 +122,7 @@ public:
     Unk_PvpEntryBlock() {}                                              // 0x141281450
     ~Unk_PvpEntryBlock() {}                                             // 0x141281640
 
-    void FUN_14101b7f0();                                               // clear both tables
+    void Clear();                                               // clear both tables
     void FUN_14101c0b0(void* pArgument);                                // forward: mark a character offline
     void OnMessage(int nMessage, CInPacket& packet);                // OnMessage
     Unk_PvpEntryTable* GetTeamTable(int nTeam);                        // the table of a team (0xc9 / 0xca)
@@ -130,7 +130,7 @@ public:
     void GetTeamScores(int* pA, int* pB);                               // the two table values
     void SetTeamScores(int nA, int nB);                                 // set the two table values
     void SortTeamRows(int nTeam);                                      // sort the rows of a team
-    void FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill);   // add / update a row
+    void AddOrUpdateEntry(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill);   // add / update a row
 
     MS2_LAYOUT_FRIEND;
     Unk_PvpEntryTable m_a;

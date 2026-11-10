@@ -137,7 +137,7 @@ void FUN_141414e50(const CString& strName)
     ItemEnchantSlotBag* pBag = FUN_1414151d0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -317,7 +317,7 @@ int ItemInfoSlot::vfunc_0(void* p)
         return 0;
     if (m_spItem == 0 && m_strTip.GetLength() != 0)
     {
-        ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->FUN_141bd0cc0(), m_nFlags, 2);
+        ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->GetLocalPlayer(), m_nFlags, 2);
         if (tip.ApplyTextTooltip(m_strTip))
         {
             if (m_nTipArg != -1)
@@ -326,7 +326,7 @@ int ItemInfoSlot::vfunc_0(void* p)
             return 1;
         }
     }
-    ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->FUN_141bd0cc0(), m_nFlags, 2);
+    ASTooltip tip((Unk_TooltipOwner*)WorldService::GetInstance()->GetLocalPlayer(), m_nFlags, 2);
     int nResult = 0;
     if (!m_fnTip.IsNull())
     {
@@ -335,10 +335,10 @@ int ItemInfoSlot::vfunc_0(void* p)
     }
     else
     {
-        if ((m_spItem.get() ? true : false) && operator==(((class Unk_ItemDataX*)((class CItem*)(class CItem*)(m_spItem.operator->()))->FUN_140527840())->m_strClass, L"ItemExchangeScroll"))
+        if ((m_spItem.get() ? true : false) && operator==(((class Unk_ItemDataX*)((class CItem*)(class CItem*)(m_spItem.operator->()))->GetData())->m_strClass, L"ItemExchangeScroll"))
         {
             {
-                void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+                void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
                 if (pPlayer == 0)
                     return 0;
                 CExchangeItemInfoPtr spData = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(m_spItem->GetItemId());
@@ -400,7 +400,7 @@ int ItemInfoSlot::vfunc_8(void* p)
         }
         return 0;
     }
-    if (slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
+    if (slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->GetLocalPlayer(), m_nIconType))
     {
         if (!m_fnSlot.IsNull())
             m_fnSlot(*this, slot);

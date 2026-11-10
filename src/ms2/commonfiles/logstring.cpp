@@ -49,7 +49,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 CStringW FUN_1401bf530(TiXmlElement*,const char*,CStringW);
-CString FUN_1406513d0(CString);
+CString GetServerConfigPath(CString);
 CStringW FUN_14016a730(const char*,int);
 bool MakeLower(CStringW&);
 
@@ -146,7 +146,7 @@ unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
             }
             FlushFileBuffers(m_file);
         }
-        FUN_140654f70();
+        FlushGroupQueues();
         if(result==WAIT_OBJECT_0) break;
     }
     {
@@ -161,7 +161,7 @@ unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
             }
         }
     }
-    FUN_140654f70(); return 0;
+    FlushGroupQueues(); return 0;
 }
 MS2_REPLACE_METHOD(0x140652cd0, CLogString, vfunc_1, 1017, 0xB76246D7);
 
@@ -289,7 +289,7 @@ MS2_REPLACE_METHOD(0x140653e00, CLogString, CountLevel, 89, 0x4E51C3B9);
 bool CLogString::ReadLogPathFromSettings()
 {
     TiXmlDocument doc;
-    bool bFailed=!doc.LoadFile(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),TIXML_ENCODING_UNKNOWN) ? TRUE : FALSE;
+    bool bFailed=!doc.LoadFile(ATL::CA2AEX<128>(GetServerConfigPath("setting.xml")),TIXML_ENCODING_UNKNOWN) ? TRUE : FALSE;
     if(bFailed && !doc.LoadFile("setting.xml",TIXML_ENCODING_UNKNOWN)) return false;
     TiXmlElement* root=((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if(!root) return false;
@@ -442,7 +442,7 @@ CLogString::GroupPtr CLogString::CreateGroup(CString name)
     OpenGroupFile(group); m_groups.SetAt(name,group); return group;
 }
 // @0x140654f70
-void CLogString::FUN_140654f70()
+void CLogString::FlushGroupQueues()
 {
     Unk_CriticalSectionLock guard(m_groupLock,1);
     for(POSITION pos=m_groups.GetHeadPosition();pos;m_groups.GetNext(pos)) {
@@ -458,6 +458,6 @@ void CLogString::FUN_140654f70()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140654f70, CLogString, FUN_140654f70, 485, 0x80970B99);
+MS2_REPLACE_METHOD(0x140654f70, CLogString, FlushGroupQueues, 485, 0x80970B99);
 
 MS2_EMIT_CRT_MEMMOVE_S();

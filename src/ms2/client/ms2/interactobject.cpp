@@ -182,7 +182,7 @@ class Unk_IoWorld : public WorldService
 {
 };
 // 0x141bdb0f0 queues a ranking entry; worldservice_1.cpp defines it as a free function on the service.
-void FUN_141bdb0f0(WorldService* self, CStringA name, TPtrValue<CGameRankingData> value);
+void QueueRankEntry(WorldService* self, CStringA name, TPtrValue<CGameRankingData> value);
 class Unk_IoQuestEval
 {
 public:
@@ -209,7 +209,7 @@ public:
 class Unk_IoMapRules { public: unsigned char IsShutdown(unsigned nMapId, int nBanType); };
 class Unk_IoGameCtx { public: Unk_IoMapRules* FUN_1403f3230(); };
 void FUN_141275260(int, int, int);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_IoCfg { public: int FUN_1402c4c90(int n); };
 struct Unk_IoCfgHolder { char m_pad_00[8]; Unk_IoCfg m_cfg; };
@@ -219,7 +219,7 @@ class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // item inventory
 extern Unk_Inventory g_143ab2a90;
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 
 // condition helpers
 struct Unk_IoRefOwner;
@@ -235,7 +235,7 @@ egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 void FUN_1401cd100(egf::EntityID* pDst, int n);
 unsigned __int64 FUN_140affe40(Unk_Entity* e);
 CString FUN_141b70dd0(struct Unk_UtilNameSrc* e);
-void FUN_1401d3700(CString& s);
+void ToLower(CString& s);
 void SetEntityHighlight(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);    // util.cpp
 const char* FUN_1408ac310(efd::utf8string* p);
 const char* Unk_AssetUrnText(const efd::AssetID* pAsset);
@@ -273,11 +273,11 @@ ecr::SceneGraphService* GetSceneGraphService();
 // post effect / system sound / ui
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
-class CUserMail { public: static __int64 GetGFxSceneService(); };   // C3: the scene-service global (usermail.h clashes on FUN_141276180)
+class CUserMail { public: static __int64 GetGFxSceneService(); };   // C3: the scene-service global (usermail.h clashes on PlaySystemSound)
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 void* FindCutSceneCinematic(int);   // C3: was FindCutSceneCinematic
 CStringW GetStringCommon(int nStringId);
@@ -363,7 +363,7 @@ int CInteractObject::vfunc_1(Unk_Entity* pEntity, int nState)
     if (!m_spRow)
         return 0;
     m_strName = FUN_141b70dd0((Unk_UtilNameSrc*)pEntity);
-    FUN_1401d3700(m_strName);
+    ToLower(m_strName);
     if (m_strName.GetLength() == 0)
         return 0;
     vfunc_3(nState);
@@ -392,12 +392,12 @@ int CInteractObject::vfunc_4()
 {
     if (m_nState != 1)
         return 0;
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow == 0)
         return 0;
-    unsigned nMapId = (unsigned)WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nMapId = (unsigned)WorldService::GetInstance()->GetFieldId();
     if (TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()->IsShutdown(nMapId, m_spRow->m_nId) == 1)
     {
         FUN_141275260(0x2f7, 1, 1);
@@ -498,7 +498,7 @@ int CInteractObject::HasRequiredMastery()
 {
     if (!m_spRow)
         return 0;
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow->m_mastery.m_eType != 0)
@@ -520,7 +520,7 @@ int CInteractObject::CheckItemRequirement()
     {
         int nRarity = m_spRow->m_item.m_nRank;
         if (nRarity == 0)
-            nRarity = FUN_14053feb0(m_spRow->m_item.m_nCode);
+            nRarity = GetItemRank(m_spRow->m_item.m_nCode);
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e5c0(m_spRow->m_item.m_nCode, nRarity);
         if (!spItem)
             return 0;
@@ -544,7 +544,7 @@ int CInteractObject::FUN_1413fdfc0()
 // @0x1413fe040
 int CInteractObject::CheckHomePrivilege()
 {
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow == 0)
@@ -557,7 +557,7 @@ int CInteractObject::CheckHomePrivilege()
 // @0x1413fe120
 int CInteractObject::CheckArenaTeam()
 {
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow == 0)
@@ -574,7 +574,7 @@ int CInteractObject::CheckArenaTeam()
 // @0x1413fe220
 int CInteractObject::HasAnyRequiredItem()
 {
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow == 0)
@@ -657,7 +657,7 @@ void CInteractObject::vfunc_12()
         request.m_strName = m_spRow->m_effect.m_strSuccess;
         request.m_nObject = 1;
         request.m_p18 = &xf;
-        Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer != 0)
             request.SetActor(reinterpret_cast<GameObject*>(pPlayer)->GetObjectId());
         m_nParticle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&request));
@@ -964,15 +964,15 @@ CInteractTelescopeObject::~CInteractTelescopeObject()
 void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
 {
     CInteractObject::vfunc_2(pMsg);
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     m_ent.operator=(reinterpret_cast<MyPC*>(pPlayer)->FUN_141529900());
     if (m_ent.operator egf::Entity*() != 0)
     {
         m_bActive = 1;
-        FUN_141276180(s_strUseTelescope, "");
-        ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200041);
+        PlaySystemSound(s_strUseTelescope, "");
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->SetSubScene(0x6200041);
         CStringW strDesc;
         UICutSceneCinematic* pHelp = ((class UICutSceneCinematic*)FindCutSceneCinematic(0x4e52));
         if (pHelp != 0)
@@ -1012,8 +1012,8 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
 void CInteractTelescopeObject::OnCutSceneSkip(NotifyObject*)
 {
     ((class CTriggerService*)GetTriggerService())->FUN_141863460(0.0f);
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
-    MS2Ptr<CFieldDataCli> ref = WorldService::GetInstance()->FUN_141bd30a0();
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001d);
+    MS2Ptr<CFieldDataCli> ref = WorldService::GetInstance()->GetFieldData();
     if (reinterpret_cast<Unk_IoCutData*>(ref.get()) != 0)
     {
         TSingleton<ApplyEffect>::GetInstance()->SetFogRange(reinterpret_cast<Unk_IoCutData*>(ref.operator->())->m_b1fd, reinterpret_cast<Unk_IoCutData*>(ref.operator->())->m_n204, reinterpret_cast<Unk_IoCutData*>(ref.operator->())->m_n208,
@@ -1066,7 +1066,7 @@ void CInteractUIObject::vfunc_11()
         m_nDialogId = 0;
         return;
     }
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
     {
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)m_nDialogId);
@@ -1119,7 +1119,7 @@ int CInteractDisplayImage::vfunc_1(Unk_Entity* pEntity, int nState)
 }
 
 // ---- worker thread / url stand-ins ----
-void FUN_141b6de20();
+void InitThread();
 CStringW Unk_ArcWide(const wchar_t* sz, int n);              // 0x140efe330
 // The scoped log line of util.cpp ("<tag> begin" / "<tag> end").
 class Unk_UtilLogScope
@@ -1148,7 +1148,7 @@ enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING
 typedef TiXmlElement Unk_IoXmlElem;
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 CStringW FUN_1401bf530(class TiXmlElement* p, const char* pszName, CStringW strDefault);
-int FUN_140197350(class TiXmlElement*, char const*, int);   // C3: was FUN_140197350
+int GetIntAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140197350
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned __int64&);   // C3: was FUN_140873320
 // @0x1414038e0
 static unsigned __int64 FUN_1414038e0(Unk_IoXmlElem* p, const char* pszName, unsigned __int64 nDefault)
@@ -1192,9 +1192,9 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strMark = Unk_ReadString((class Unk_XmlNode*)(&elem), "mark", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strGuildName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
-        m_nGuildRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
-        m_nGuildTrophy = FUN_140197350((class TiXmlElement*)(&elem), "trophy", 0);
-        m_nGuildScore = FUN_140197350((class TiXmlElement*)(&elem), "score", 0);
+        m_nGuildRank = GetIntAttr((class TiXmlElement*)(&elem), "rank", 0);
+        m_nGuildTrophy = GetIntAttr((class TiXmlElement*)(&elem), "trophy", 0);
+        m_nGuildScore = GetIntAttr((class TiXmlElement*)(&elem), "score", 0);
         if (strMark.GetLength() < 1 || nSn < 1)
             return;
         CString strPath = FUN_141029590(nSn, strMark, GetName(), CString(""));
@@ -1210,8 +1210,8 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
-        m_nCharTrophy = FUN_140197350((class TiXmlElement*)(&elem), "trophy", 0);
-        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
+        m_nCharTrophy = GetIntAttr((class TiXmlElement*)(&elem), "trophy", 0);
+        m_nCharRank = GetIntAttr((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1225,8 +1225,8 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
-        m_nCharBuildPoint = FUN_140197350((class TiXmlElement*)(&elem), "build_point", 0);
-        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
+        m_nCharBuildPoint = GetIntAttr((class TiXmlElement*)(&elem), "build_point", 0);
+        m_nCharRank = GetIntAttr((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1240,8 +1240,8 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
-        m_nCharScore = FUN_140197350((class TiXmlElement*)(&elem), "score", 0);
-        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
+        m_nCharScore = GetIntAttr((class TiXmlElement*)(&elem), "score", 0);
+        m_nCharRank = GetIntAttr((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1304,7 +1304,7 @@ void CInteractDisplayImage::FUN_1414017b0(const CString& strFile)
 // @0x141401920
 UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("CInteractDisplayImage::GetURLFromIndirectURL"));
     CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
     if (pThis == 0)
@@ -1327,7 +1327,7 @@ UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
 // @0x141401c20
 UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString("CInteractDisplayImage::GetURLFromGameRanking"));
     CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
     if (pThis == 0)
@@ -1375,7 +1375,7 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
         }
     }
     if (spRank.get() != 0 && reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance()) != 0)
-        FUN_141bdb0f0(WorldService::GetInstance(), CString(strName), static_cast<const TPtrValue<CGameRankingData>&>(spRank));
+        QueueRankEntry(WorldService::GetInstance(), CString(strName), static_cast<const TPtrValue<CGameRankingData>&>(spRank));
     return 0;
 }
 
@@ -1454,7 +1454,7 @@ void CInteractGatheringObject::vfunc_2(Unk_InteractMsg* pMsg)
     int nCount = (&pMsg->m_stream)->ReadInt();
     vfunc_3(0);
     m_nRespawnTick = GetTickCountMs2() + m_spRow->m_nResetTime;
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         MS2Ptr<StateInteractData> spData(new StateInteractData);
@@ -1515,7 +1515,7 @@ int CInteractGatheringObject::vfunc_7()
         return 0;
     if (vfunc_15() != 0)
         return 0;
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spRow->m_gathering.m_nReceipeId != 0)
@@ -1747,7 +1747,7 @@ void CInteractWatchTowerObject::vfunc_11()
 {
     CInteractObject::vfunc_11();
     unsigned char bNear = 0;
-    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         float fDist = GetDistance2D(*(const efd::Point3*)&static_cast<const Vector3&>(pPlayer->GetPosition()), *(const efd::Point3*)&static_cast<const Vector3&>(GetPos()));

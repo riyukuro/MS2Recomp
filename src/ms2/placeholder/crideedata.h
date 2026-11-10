@@ -70,7 +70,7 @@ template<> struct Unk_SocketRef<RideeData::Rider> {
         else result = &static_cast<Unk_RiderBox*>(p)->value;
         return result;
     }
-    static RideeData::Rider* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static RideeData::Rider* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(RideeData::Rider)
 typedef Unk_SocketPtr<RideeData::Rider> Unk_RiderPtr;
@@ -210,11 +210,11 @@ public:
     CRideeData();                                           // 0x140784250
     virtual ~CRideeData();                                  // 0x140784320
 
-    bool FUN_140784390(const CRideeData& o);                // differs
-    CString FUN_140784880(int nLevel);                      // animation (kfm) name for the rider's level
-    CString FUN_140784920(int nLevel);                      // scene graph (nif) name (nLevel unused)
+    bool IsDifferent(const CRideeData& o);                // differs
+    CString GetKfmName(int nLevel);                      // animation (kfm) name for the rider's level
+    CString GetNifName(int nLevel);                      // scene graph (nif) name (nLevel unused)
     Unk_RiderPtr GetDefaultRider();                           // the default seat
-    Unk_RiderPtr FUN_1407849c0(int nIndex);                 // seat nIndex of the passengers
+    Unk_RiderPtr GetPassenger(int nIndex);                 // seat nIndex of the passengers
 
     RideeData::Basic m_basic;                               // +0x28
     RideeData::Collision m_collision;                       // +0x100

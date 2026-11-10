@@ -58,9 +58,9 @@ class CItemLockManager
 public:
     void SendRequestItemLockMode0();
     void FUN_140612780();
-    int FUN_140612da0();                                    // any slot locked
+    int HasLockedItem();                                    // any slot locked
     int SendRequestItemLockMode3();
-    void FUN_1406132f0();
+    void RequestUnlockMissingItems();
     Unk_LockMode GetMode() const;                           // the tab (0 lock, 1 unlock)
 };
 class CItemLockManager;
@@ -132,9 +132,9 @@ void UIItemLockDialog::BindItemBag()
 void UIItemLockDialog::UpdateLockButtons()
 {
     if (MS2Ptr<ASButton> spLock = GetChild<ASButton>("m_lock"))
-        spLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        spLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->HasLockedItem());
     if (MS2Ptr<ASButton> spUnLock = GetChild<ASButton>("m_unLock"))
-        spUnLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        spUnLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->HasLockedItem());
 }
 
 // @0x140f56f50
@@ -209,7 +209,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp(szMethod, "OnItemLock") == 0)
     {
-        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
+        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->HasLockedItem() != 0)
         {
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
@@ -228,7 +228,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp(szMethod, "OnItemUnLock") == 0)
     {
-        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
+        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->HasLockedItem() != 0)
         {
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
@@ -251,7 +251,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nTab = data.PopInt();
-            if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
+            if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->HasLockedItem() != 0)
             {
                 reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
                 BindItemBag();
@@ -312,7 +312,7 @@ void UIItemLockDialog::vfunc_43()
         float fX = 0.0f;
         float fY = 0.0f;
         {
-            if (ASDialog* pInvDlg = dynamic_cast<ASDialog*>((AScript*)pInv->FUN_1422dba00()))
+            if (ASDialog* pInvDlg = dynamic_cast<ASDialog*>((AScript*)pInv->GetScript()))
             {
                 fX = pInvDlg->GetX();
                 fY = pInvDlg->GetY();
@@ -336,7 +336,7 @@ void UIItemLockDialog::vfunc_15()
     {
     }
     else
-        reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_1406132f0();
+        reinterpret_cast<CItemLockManager*>(FUN_140535310())->RequestUnlockMissingItems();
 }
 
 // @0x140f57c60

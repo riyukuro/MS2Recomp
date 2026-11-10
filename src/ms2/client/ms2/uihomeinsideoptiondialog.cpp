@@ -80,7 +80,7 @@ public:
 };
 
 typedef Delegate<bool(int, const CMsgBoxData&)> HioAnswerDelegate;
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -176,7 +176,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("OnApply", szMethod) == 0)
     {
-        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringByKey(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
         if (box.get() != 0)
         {
             box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c27fd0));
@@ -189,7 +189,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         {
             if (spApply.operator->()->IsEnabled() != 0)
             {
-                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringByKey(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
                 if (box.get() != 0)
                 {
                     box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c28000));

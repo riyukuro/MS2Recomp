@@ -29,7 +29,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/itemdatatable.h"
 
-template<> EquipColorInfo* Unk_SocketRef<EquipColorInfo>::Create(void*) { return static_cast<EquipColorInfo*>(FUN_1401ba820(New(NULL))); }
+template<> EquipColorInfo* Unk_SocketRef<EquipColorInfo>::Create(void*) { return static_cast<EquipColorInfo*>(InitRefCount(New(NULL))); }
 
 // ---- out-of-unit callees ----
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -471,7 +471,7 @@ static float FUN_14059d120(CharacterDecalData* p) { return p->unknown24; }
 void CDecalExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    CharacterDecalData* pDecal = pData->GetModelOrEmpty()->FUN_14054b6b0();
+    CharacterDecalData* pDecal = pData->GetModelOrEmpty()->GetDecalData();
     if (pDecal != 0)
     {
         m_f58 = FUN_14059d110(pDecal);
@@ -489,7 +489,7 @@ void CDecalExtraData::vfunc_4(CItemData* pData)
             m_f64 = spCustom->unknown24.z;
         }
         if (pData->GetModelOrEmpty()->GetGroupCount() > 0)
-            m_f60 = pData->GetModelOrEmpty()->GetGroup(0)->FUN_1405450f0(0);
+            m_f60 = pData->GetModelOrEmpty()->GetGroup(0)->GetRandomScale(0);
     }
 }
 MS2_REPLACE_METHOD(0x14059A480, CDecalExtraData, vfunc_4, 408, 0x409B00C4);
@@ -610,7 +610,7 @@ void CHairExtraData::vfunc_4(CItemData* pData)
         }
     }
     for (int i = 0; i < 2; i++)
-        m_fScale[i] = pGroup->FUN_140544f20(i)->GetRandomValue();
+        m_fScale[i] = pGroup->GetFloatList(i)->GetRandomValue();
     ClampScales();
     m_bUseScale = 1;
     m_bUsePt2 = 1;
@@ -757,7 +757,7 @@ void CCapExtraData::vfunc_4(CItemData* pData)
             m_aPt3[i] = *(const Vector3*)&pPart->points[nIdx];
         }
     }
-    m_f58 = pGroup->FUN_140544f20(0)->GetRandomValue();
+    m_f58 = pGroup->GetFloatList(0)->GetRandomValue();
 }
 MS2_REPLACE_METHOD(0x14059B580, CCapExtraData, vfunc_4, 558, 0x209EDBB1);
 

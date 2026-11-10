@@ -69,7 +69,7 @@ struct Unk_PvpTimerItem
 class Unk_PvpWorld                                                  // the world service
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
 };
 
 class UIObject;
@@ -81,7 +81,7 @@ public:
 
 template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
 void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);  // post a notice
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a sound by name
 #include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142cab370();                                               // the exe's atexit destructor of the marker
 
@@ -182,7 +182,7 @@ void Unk_PvpTimer::OnMessage(int nMessage, CInPacket& packet)
         CStringW strName = packet.ReadUnicodeString();
         CStringW strText = FormatStringId<CStringW>(nStringId, strName);
         ShowSystemNotice(strText, 4, 1);
-        FUN_141276180(s_killSlayer, "");
+        PlaySystemSound(s_killSlayer, "");
     }
     else if (nMessage == 0x6a)
     {
@@ -239,7 +239,7 @@ Unk_PvpTimerItem* Unk_PvpTimer::FUN_141017fb0(int nRank)
 // @0x141018010
 void Unk_PvpTimer::FUN_141018010()
 {
-    PC* pPC = (PC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = (PC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (pPC->GetPvPInfo()->m_nMode == 2)

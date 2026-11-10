@@ -10,7 +10,7 @@
 #include "ms2/commonfiles/timeutil.h"
 
 // ---- callees in ?\adbannerdata.cpp and the shared glue ----
-int FUN_1406516a0();                                                // the current banner slot
+int GetLanguage();                                                // the current banner slot
 
 // @0x14096b300
 CAdBannerManagerCli::CAdBannerManagerCli()
@@ -30,7 +30,7 @@ void CAdBannerManagerCli::FUN_14096b390()
 // @0x14096b3a0
 void CAdBannerManagerCli::OnBannerList(CInPacket& packet)
 {
-    FUN_14016e060(*this, packet);
+    ReadBanners(*this, packet);
 }
 
 // @0x14096b3e0
@@ -38,7 +38,7 @@ Unk_AdbPtr CAdBannerManagerCli::FUN_14096b3e0(int nType)
 {
     ATL::CAtlArray<Unk_AdbPtr> own;
     ATL::CAtlArray<Unk_AdbPtr> any;
-    if (CollectActiveBanners((EAdBannerType)nType, own, FUN_1406516a0()) == 1)
+    if (CollectActiveBanners((EAdBannerType)nType, own, GetLanguage()) == 1)
         return own[0];
     if (CollectActiveBanners((EAdBannerType)nType, any, -1) == 1)
         return any[0];
@@ -48,7 +48,7 @@ Unk_AdbPtr CAdBannerManagerCli::FUN_14096b3e0(int nType)
 // @0x14096b540
 int CAdBannerManagerCli::FUN_14096b540(int nType, ATL::CAtlArray<Unk_AdbPtr>& out)
 {
-    CollectActiveBanners((EAdBannerType)nType, out, FUN_1406516a0());
+    CollectActiveBanners((EAdBannerType)nType, out, GetLanguage());
     CollectActiveBanners((EAdBannerType)nType, out, -1);
     if (out.IsEmpty())
         return 0;
@@ -60,7 +60,7 @@ Unk_AdbPtr CAdBannerManagerCli::FindBannerByName(int nType, const CStringW& strN
 {
     ATL::CAtlArray<Unk_AdbPtr> own;
     ATL::CAtlArray<Unk_AdbPtr> any;
-    CollectActiveBanners((EAdBannerType)nType, own, FUN_1406516a0());
+    CollectActiveBanners((EAdBannerType)nType, own, GetLanguage());
     CollectActiveBanners((EAdBannerType)nType, any, -1);
     for (unsigned i = 0; i < own.GetCount(); i++)
     {

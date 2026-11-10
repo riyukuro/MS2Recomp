@@ -27,7 +27,7 @@
 class Unk_SSGWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                                    // the local player actor
+    PCBase* GetLocalPlayer();                                    // the local player actor
 };
 CFunctionCubeService* GetFunctionCubeService();
 class Unk_CameraHousing;
@@ -71,7 +71,7 @@ struct Unk_AuConfig
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 CStringW GetStringCommonByKey(const CStringW& str);                    // the localized text of a string key
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 // The local player's vtable as the slots used here (vfunc_18 returns the position as the engine point type).
 class Unk_MomPlayer
 {
@@ -242,7 +242,7 @@ int UIMasteryObjectMark::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x140e5a600
 void UIMasteryObjectMark::FUN_140e5a600()
 {
-    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPC)
         return;
     POSITION pos = m_nodes.GetStartPosition();
@@ -301,7 +301,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
 // @0x140e5ac30
 void UIMasteryObjectMark::UpdateCubeMarks()
 {
-    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPC)
         return;
     if (((class CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0() != 0)
@@ -451,7 +451,7 @@ unsigned UIMasteryObjectMark::UpdateRecipeMarkTexts(int nReceipeId, EntityContex
             strType = L"farming";
             break;
         }
-        PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC)
         {
             int nLevel = ((class PC*)(class PCBase*)(pPC))->GetMastery(spReceipe->m_nType);
@@ -522,7 +522,7 @@ inline Scaleform::GFx::Value AScript::FUN_140e5bfe0(const char* szMethod, CStrin
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], (const char*)a1);
+    SetString(&args[0], (const char*)a1);
     FUN_1422bcd70(&args[1], a2);
     FUN_1422bcd70(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);

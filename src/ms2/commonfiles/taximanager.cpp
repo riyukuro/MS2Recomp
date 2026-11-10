@@ -95,7 +95,7 @@ public:
     int CalcTaxiCharge(int nHops, unsigned short sOption);    // 0x1406764e0
     int CalcAirTaxiCharge(unsigned short sOption);           // 0x1406766a0
 };
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 
 typedef Unk_TaxiPtr<_CTaxiPathInfo> Unk_TaxiNodePtr;
 typedef std::pair<unsigned int, unsigned int> Unk_TaxiKey;
@@ -111,14 +111,14 @@ CTaxiManager::~CTaxiManager() {}
 // @0x14085f6e0
 bool CTaxiManager::FUN_14085f6e0(unsigned int nField)
 {
-    return TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbc10(nField) == 1;
+    return TSingleton<CFieldMetaTable>::GetInstance()->HasTaxi(nField) == 1;
 }
 MS2_REPLACE_METHOD(0x14085f6e0, CTaxiManager, FUN_14085f6e0, 63, 0xE2BA897A);
 
 // @0x14085f730
 bool CTaxiManager::FUN_14085f730(unsigned int nField)
 {
-    return TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbc50(nField) == 1;
+    return TSingleton<CFieldMetaTable>::GetInstance()->GetTaxiHomePrivilege(nField) == 1;
 }
 MS2_REPLACE_METHOD(0x14085f730, CTaxiManager, FUN_14085f730, 63, 0x613ACC7A);
 
@@ -132,14 +132,14 @@ static Unk_TaxiKey MakeTaxiKey(unsigned int nA, unsigned int nB)
 MS2_REPLACE(0x14085fcb0, MakeTaxiKey, 85, 0xD0072D33);
 
 // @0x14085f780
-long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
+long long CTaxiManager::GetTaxiFare(int nFrom, int nTo, short sOption)
 {
     if (nFrom == nTo)
         return 0;
     Unk_TaxiKey kKey = MakeTaxiKey(nFrom, nTo);
     std::map<Unk_TaxiKey, int>::const_iterator itCached = m_mapRouteLength.find(kKey);
     if (itCached != m_mapRouteLength.end())
-        return ((class CLua*)FUN_1401c0db0())->CalcTaxiCharge(itCached->second, sOption);
+        return ((class CLua*)GetLuaClient())->CalcTaxiCharge(itCached->second, sOption);
 
     int nBest = -1;
     std::queue<Unk_TaxiNodePtr> aOpen;
@@ -181,13 +181,13 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
         }
     }
     m_mapRouteLength.insert(std::make_pair(kKey, nBest));
-    return ((class CLua*)FUN_1401c0db0())->CalcTaxiCharge(nBest, sOption);
+    return ((class CLua*)GetLuaClient())->CalcTaxiCharge(nBest, sOption);
 }
-MS2_REPLACE_METHOD(0x14085f780, CTaxiManager, FUN_14085f780, 1268, 0x27ADECB6);
+MS2_REPLACE_METHOD(0x14085f780, CTaxiManager, GetTaxiFare, 1268, 0x27ADECB6);
 
 // @0x14085fc80
-long long CTaxiManager::FUN_14085fc80(short sOption)
+long long CTaxiManager::GetAirTaxiFare(short sOption)
 {
-    return ((class CLua*)FUN_1401c0db0())->CalcAirTaxiCharge(sOption);
+    return ((class CLua*)GetLuaClient())->CalcAirTaxiCharge(sOption);
 }
-MS2_REPLACE_METHOD(0x14085fc80, CTaxiManager, FUN_14085fc80, 39, 0x03353DB4);
+MS2_REPLACE_METHOD(0x14085fc80, CTaxiManager, GetAirTaxiFare, 39, 0x03353DB4);

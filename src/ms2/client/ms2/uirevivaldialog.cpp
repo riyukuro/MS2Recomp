@@ -78,7 +78,7 @@ MS2_CHECK_OFFSET(Unk_RevConsts, m_cfe0, 0xcfe0);
 
 class Unk_BmPriceMgr;
 class Unk_140166410;
-Unk_BmPriceMgr* FUN_1401c0db0();
+Unk_BmPriceMgr* GetLuaClient();
 void* GetGameRule();
 Unk_140166410* FUN_140166410();
 template <typename A, typename B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
@@ -136,10 +136,10 @@ void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
 CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_140cd7d20();                                       // the dungeon name
+CStringW GetDungeonName();                                       // the dungeon name
 void FUN_141275260(int nId, int a, int b);                      // system message by string id
 void ShowSystemNotice(const CStringW& str, int a, int b);          // system message
-__int64 FUN_140632990(__int64 nValue, float fRate);
+__int64 ScaleValue(__int64 nValue, float fRate);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -226,7 +226,7 @@ bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
     int nCoupon = FUN_141abc9d0();
     if (nResult == 0)
     {
-        MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPc == 0)
             return false;
         if (pPc->IsDead() != 0)
@@ -320,12 +320,12 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 // @0x141abae20
 void UIRevivalDialog::SetDeathMessage()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     {
         CStringW strMsg;
-        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
         if (pPc->GetJobSystem()->GetJobGroupID() == 1 || ((reinterpret_cast<long long>(spField.get()) ? true : false) && spField->m_nDeathPenalty == 0))
         {
             strMsg = GetStringCommon(0x27c);
@@ -357,7 +357,7 @@ void UIRevivalDialog::SetDeathMessage()
         if (reinterpret_cast<long long>(spField.get()) ? true : false)
         {
             CFieldDataCli* pData = spField.operator->();
-            if (pData->m_nRevivalReturnId != WorldService::GetInstance()->FUN_141bd3060())
+            if (pData->m_nRevivalReturnId != WorldService::GetInstance()->GetFieldId())
             {
                 CFieldDataCli* pTo = spField.operator->();
                 CStringW strTo = FormatStringId<CStringW>(0x27d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pTo->m_nRevivalReturnId));
@@ -374,7 +374,7 @@ void UIRevivalDialog::SetDeathMessage()
 // @0x141abb420
 void UIRevivalDialog::UpdateButtons()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
@@ -394,10 +394,10 @@ void UIRevivalDialog::FUN_141abb600()
 {
     if (m_1b0 != 0)
     {
-        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
         if (spField == 0)
             return;
-        CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
+        CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), GetDungeonName());
         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strMsg, static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
         if (spBox.get() != 0)
         {
@@ -408,7 +408,7 @@ void UIRevivalDialog::FUN_141abb600()
     }
     else
     {
-        int nFieldId = WorldService::GetInstance()->FUN_141bd3060();
+        int nFieldId = WorldService::GetInstance()->GetFieldId();
         MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nFieldId);
         if (spField.IsNull() != 0)
             return;
@@ -417,7 +417,7 @@ void UIRevivalDialog::FUN_141abb600()
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FormatStringId<CStringW>(0x287, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nTo)), 1);
             spBox->SetCallback(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
-            spBox->FUN_141a01800(2);
+            spBox->SetButtonPreset(2);
             FUN_140d73c60(spBox);
         }
         else
@@ -432,10 +432,10 @@ void UIRevivalDialog::FUN_141abb600()
 // @0x141abbb20
 void UIRevivalDialog::FUN_141abbb20()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return;
     if (FUN_141abdab0(spField) == 0)
@@ -487,10 +487,10 @@ void UIRevivalDialog::FUN_141abbb20()
 // @0x141abc080
 void UIRevivalDialog::FUN_141abc080()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return;
     if (FUN_141abdab0(spField) == 0)
@@ -506,10 +506,10 @@ void UIRevivalDialog::FUN_141abc080()
     }
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
-        __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(), 0);
+        __int64 nCost = ((CLua*)GetLuaClient())->CalcRevivalMerat(pPc->vfunc_78(), 0);
         float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42)
             ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42);
-        nCost = FUN_140632990(nCost, 1.0f - fRate);
+        nCost = ScaleValue(nCost, 1.0f - fRate);
         nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
         {
@@ -550,7 +550,7 @@ bool UIRevivalDialog::FUN_141abc740()
 // @0x141abc770
 int UIRevivalDialog::FUN_141abc770()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.IsNull() != 0)
         return 0;
     return spField->GetShadowContinent();
@@ -559,7 +559,7 @@ int UIRevivalDialog::FUN_141abc770()
 // @0x141abc7f0
 int UIRevivalDialog::FUN_141abc7f0()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     int nResult = 0;
@@ -640,7 +640,7 @@ void UIRevivalDialog::FUN_141abcb90()
     }
     else
     {
-        if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()) != 0)
+        if (CFieldData::FUN_140374410(WorldService::GetInstance()->GetFieldId()) != 0)
         {
             m_1b4 = 2;
         }
@@ -679,14 +679,14 @@ void UIRevivalDialog::FUN_141abcc50()
 // @0x141abccb0
 void UIRevivalDialog::RefreshMeratButton()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
-    __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(),
+    __int64 nCost = ((CLua*)GetLuaClient())->CalcRevivalMerat(pPc->vfunc_78(),
         pPc->FUN_1416749a0()->GetOverlapCount(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_51d8)->Get(), 0));
     float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42)
         ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42);
-    nCost = FUN_140632990(nCost, 1.0f - fRate);
+    nCost = ScaleValue(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
     {
@@ -714,17 +714,17 @@ void UIRevivalDialog::RefreshMeratButton()
 // @0x141abd290
 void UIRevivalDialog::RefreshMesoButton()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     int nA = pPc->GetMesoRevivalRemainingCount();
     int nB = ((CGameRule*)GetGameRule())->FUN_140477d10(pPc->FUN_141658f30());
-    __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
+    __int64 nCost = ((CLua*)GetLuaClient())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
     float fRate = reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4)
         ? reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4);
-    nCost = FUN_140632990(nCost, 1.0f - fRate);
+    nCost = ScaleValue(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
-    if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()) != 0)
+    if (CFieldData::FUN_140374410(WorldService::GetInstance()->GetFieldId()) != 0)
         nCost = 0;
     SetDeathMessage();
     CStringW strLabel;
@@ -772,7 +772,7 @@ CStringW UIRevivalDialog::GetFirstButtonLabel()
 {
     m_1b0 = 0;
     CStringW strLabel = GetStringCommon(0x27e);
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return strLabel;
     int nRoom = DAT_143ab2884;
@@ -807,7 +807,7 @@ int UIRevivalDialog::FUN_141abdab0(MS2Ptr<CFieldDataCli> spField)
         FUN_141275260(0x282, 1, 1);
         return 0;
     }
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_1416749a0()->IsDisableRevivalHere() != 0)

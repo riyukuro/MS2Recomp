@@ -26,7 +26,7 @@
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
@@ -228,7 +228,7 @@ void* FUN_1414d3ff0(void* list) { return *(void**)((char*)list + 0x10); }
 // @0x1414d39a0
 void CollectOutlineTargets(OutlineMap& map)
 {
-    void* sc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* sc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (sc == 0) return;
     Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<GameObject*>(sc)->GetEntity()));
     while ((size_t)FUN_1414d3ff0(&wl) > 0) {

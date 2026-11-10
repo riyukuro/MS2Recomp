@@ -110,7 +110,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int v
 #include "ms2/placeholder/formatstringid.h"
 CStringW FUN_1418fec00(int, __int64, bool);   // a price as text
 bool FUN_1418ff110(int nPayType, __int64 nAmount, bool bFlag);    // the player can pay
-int FUN_141276180(const CString& strName, const CString& strArg);
+int PlaySystemSound(const CString& strName, const CString& strArg);
 CStringW FUN_141026920(int nKind);
 CStringW FUN_141028910(int nKind);
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);
@@ -744,7 +744,7 @@ void UIUGCBannerDialog::SelectThumbnail(int nIndex)
 // @0x141b365e0
 void UIUGCBannerDialog::FUN_141b365e0()
 {
-    CStringW strDate = m_1c0.FUN_14088e040();
+    CStringW strDate = m_1c0.GetDateText();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
         pDialog->Invoke("setDate", strDate);
@@ -859,8 +859,8 @@ void UIUGCCameraDialog::vfunc_72()
         else if (m_188 == 2)
         {
             m_188 = 0;
-            FUN_141276180(s_strProfileTakePhoto, "");
-            FUN_141276180(s_strPCTakePhoto, "");
+            PlaySystemSound(s_strProfileTakePhoto, "");
+            PlaySystemSound(s_strPCTakePhoto, "");
             SaveSnapshot(m_18c, m_190, m_194, m_198);
             UIUGCImageUploadDialog* pDialog = UgcFindDialog<UIUGCImageUploadDialog>(eUI_4e56);
             if (pDialog != 0)

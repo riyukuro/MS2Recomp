@@ -99,7 +99,7 @@ public:
     ObjectWeaponInfo();                                     // 0x1408b45b0
     virtual ~ObjectWeaponInfo();                            // 0x1408b4660
 
-    Unk_PayloadPtr<ObjectWeaponInfo> FUN_1408b46b0() const; // clone
+    Unk_PayloadPtr<ObjectWeaponInfo> Clone() const; // clone
 
     int m_n18;
     int m_n1c;

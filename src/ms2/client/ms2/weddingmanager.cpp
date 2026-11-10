@@ -134,9 +134,9 @@ __int64 GetServerTime();                                        // server time
 unsigned int GetWeddingInvitationMaxCount();   // C3: was GetWeddingInvitationMaxCount
 unsigned int GetWeddingProposeItemId();   // C3: was GetWeddingProposeItemId
 CStringW FUN_141b71910(__int64 n);                     // u64 -> text
-unsigned __int64 FUN_140718370(const CStringW& str);            // text -> u64
-CStringW FUN_140298ea0(CStringW key);                           // system string
-bool FUN_140900f30(__int64 nTime);                              // is night time
+unsigned __int64 ParseUInt64W(const CStringW& str);            // text -> u64
+CStringW GetStringByKey(CStringW key);                           // system string
+bool IsNightTime(__int64 nTime);                              // is night time
 CStringW FormatYearMonthDayHour(const CMsTime& time);                    // formatted date
 CStringW FUN_1409404f0(__int64 n);                              // formatted number
 class Unk_NametagActor   // C3: member view for the former free stand-ins
@@ -144,7 +144,7 @@ class Unk_NametagActor   // C3: member view for the former free stand-ins
 public:
     int GetGmGrade();
 };
-bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB);
+bool IsGenderPairAllowed(unsigned char nGenderA, unsigned char nGenderB);
 void AddMinutes(CMsTime& time, int minutes);                     // commonfiles/timeutil
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, CStringW& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, __int64& out);
@@ -257,7 +257,7 @@ void WeddingManager::OnProposeAccepted(CInPacket& packet)
 // @0x141b84920
 void WeddingManager::OnInvitationTicket(CInPacket& packet)
 {
-    if (WorldService::GetInstance()->FUN_141bd3060() != 62000000 && FUN_14092f660())
+    if (WorldService::GetInstance()->GetFieldId() != 62000000 && FUN_14092f660())
         return;
     WeddingHallTicket ticket;
     unsigned __int64 id = packet.ReadInt64();
@@ -635,7 +635,7 @@ void WeddingManager::OnReservationChangeRequest(CInPacket& packet)
 // @0x141b85aa0
 void WeddingManager::ShowStep()
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (user) {
         CStringW name = GetPartnerName();
         if (name.IsEmpty())
@@ -647,7 +647,7 @@ void WeddingManager::ShowStep()
                 CStringW blank(L"");
                 box->SetInput(2, blank, 0, 0, 0);
             }
-            box->SetCheckbox0(FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_confirm_checkbox")), 0);
+            box->SetCheckbox0(GetStringByKey(CStringW(L"s_wedding_enter_nickname_confirm_checkbox")), 0);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNicknameAnswer));
             FUN_140d73c60(box);
         }
@@ -657,7 +657,7 @@ void WeddingManager::ShowStep()
 // @0x141b85db0
 void WeddingManager::ShowLastStep()
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (user) {
         CStringW name = GetPartnerName();
         if (name.IsEmpty())
@@ -674,15 +674,15 @@ void WeddingManager::ShowLastStep()
 // @0x141b85fe0
 void WeddingManager::ShowStepResult(int result)
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (user) {
         CStringW message;
         switch (result) {
         case 1:
-            message = FUN_140298ea0(CStringW(L"s_wedding_mutual_agree_start_acting"));
+            message = GetStringByKey(CStringW(L"s_wedding_mutual_agree_start_acting"));
             break;
         case 2:
-            message = FUN_140298ea0(CStringW(L"s_wedding_mutual_agree_end_acting"));
+            message = GetStringByKey(CStringW(L"s_wedding_mutual_agree_end_acting"));
             break;
         default:
             return;
@@ -708,7 +708,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
         MS2Ptr<CMsgBoxData> box = CreateMessageBox(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
-            box->FUN_141a01800(4);
+            box->SetButtonPreset(4);
             box->FUN_141a024a0(0);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));
             box->AddStringArg(FUN_141b71910(((PCBase*)user)->FUN_141656a80()));
@@ -723,7 +723,7 @@ bool WeddingManager::OnProposeSentAnswer(int result, const CMsgBoxData& box)
     PlayEmotion(3);
     if (box.GetTimer().m_nButton != 0)
         return true;
-    unsigned __int64 id = FUN_140718370(box.FUN_141a02fd0(0, CStringW()));
+    unsigned __int64 id = ParseUInt64W(box.FUN_141a02fd0(0, CStringW()));
     COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
     packet.Encode1(5);
     packet.Encode8(id);
@@ -734,7 +734,7 @@ bool WeddingManager::OnProposeSentAnswer(int result, const CMsgBoxData& box)
 // @0x141b89bd0
 bool WeddingManager::OnProposeAnswer(int result, const CMsgBoxData& box)
 {
-    unsigned __int64 id = FUN_140718370(box.FUN_141a02fd0(0, CStringW()));
+    unsigned __int64 id = ParseUInt64W(box.FUN_141a02fd0(0, CStringW()));
     int answer = result == 0 ? 1 : 2;
     if (box.GetTimer().m_nButton != 0)
         answer = 6;
@@ -779,7 +779,7 @@ bool WeddingManager::OnReservationChangeAnswer(int result, const CMsgBoxData& bo
 // @0x141b89fd0
 bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return true;
     CStringW name = GetPartnerName();
@@ -795,7 +795,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
         FUN_140710590(packet);
         return true;
     }
-    CStringW message = FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_error"));
+    CStringW message = GetStringByKey(CStringW(L"s_wedding_enter_nickname_error"));
     {
         MS2Ptr<CMsgBoxData> retry = CreateMessageBox(0, message, (void*)0, CStringW(L""));
         if (retry.get()) {
@@ -820,7 +820,7 @@ bool WeddingManager::OnLastStepAnswer(int result, const CMsgBoxData& box)
 // @0x141b8a3e0
 bool WeddingManager::OnActingAnswer(int result, const CMsgBoxData& box)
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return false;
     COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
@@ -844,7 +844,7 @@ void WeddingManager::OnReservationRequest(CInPacket& packet)
     MS2Ptr<WeddingHallData> hall = package->FindHall(ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(ticket.m_nTime)));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(IsNightTime(ticket.m_nTime)));
     CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_reservation_request_messagebox"),
         m_proxy.m_groom.m_strName, m_proxy.m_bride.m_strName, hallName, date, hall->m_nMerat);
@@ -861,7 +861,7 @@ void WeddingManager::OnReserveOk(CInPacket& packet)
     MS2Ptr<WeddingHallData> hall = package->FindHall(m_ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(m_ticket.m_nTime)));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(IsNightTime(m_ticket.m_nTime)));
     CStringW date = FormatYearMonthDayHour(CMsTime(m_ticket.m_nTime));
     FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_wedding_hall_reserve_ok"), hallName, date, hall->m_nMerat), 0x14);
 }
@@ -878,7 +878,7 @@ void WeddingManager::OnMode14(CInPacket& packet)
     MS2Ptr<WeddingHallData> hall = package->FindHall(ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(ticket.m_nTime)));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(IsNightTime(ticket.m_nTime)));
     CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
     CStringW price = FormatStringId<CStringW>(0x987, FUN_1409404f0(cost));
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_reservation_change_request_messagebox"),
@@ -907,7 +907,7 @@ void WeddingManager::CollectTickets(std::map<unsigned __int64, WeddingHallTicket
 {
     std::map<unsigned __int64, WeddingHallTicket>::iterator it = m_tickets.begin();
     std::map<unsigned __int64, WeddingHallTicket>::iterator end = m_tickets.end();
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return;
     __int64 now = GetServerTime();
@@ -946,7 +946,7 @@ void WeddingManager::RefreshTickets()
         CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
         CMsTime start(ticket.m_nTime);
         AddMinutes(start, 15);
-        int fieldId = hall->GetFieldId(FUN_140900f30(ticket.m_nTime));
+        int fieldId = hall->GetFieldId(IsNightTime(ticket.m_nTime));
         param->m_str78 = StringFormat("{0}", start.Get());
         param->m_strUserValue = FUN_141b71910(id);
         param->m_extra.SetAt("groom", ticket.m_strGroom);
@@ -1039,17 +1039,17 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
     void* target = WorldService::GetInstance()->FUN_141bd1530(id);
     if (!target)
         return 0x22;
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return 0x12;
-    if (!FUN_1409005c0(((PC*)user)->GetGender(), ((PC*)target)->GetGender()))
+    if (!IsGenderPairAllowed(((PC*)user)->GetGender(), ((PC*)target)->GetGender()))
         return 0x15;
     if (g_143ab2a90.FUN_140a5f180(GetWeddingProposeItemId(), 0) == 0)
         return 0x1f;
     CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(id);
     if (buddy == 0)
         return 0x16;
-    if (buddy->FUN_1401cc5f0() == 0)
+    if (buddy->IsFriend() == 0)
         return 0x16;
     int error = m_proxy.CheckPropose();
     if (error != 0)
@@ -1079,7 +1079,7 @@ bool WeddingManager::CanVisit(int packageId, int hallId, __int64 id, unsigned ch
 // @0x141b8a580
 bool WeddingManager::IsPartnerOnline()
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return false;
     unsigned __int64 partnerId = m_proxy.GetSelf(((PCBase*)user)->FUN_141656a80())->m_nCharacterId;
@@ -1109,7 +1109,7 @@ void WeddingManager::ReadTicketMail(MS2Ptr<CMailInfo> mail, AScript* script)
                 XmlGetAttr((TiXmlElement*)node, "hall", ticket.m_nHallId);
                 XmlGetAttr((TiXmlElement*)node, "cancelMail", cancelMail);
                 CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3,
-                    TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId, FUN_140900f30(ticket.m_nTime)));
+                    TSingleton<WeddingTable>::GetInstance()->GetHallFieldId(ticket.m_nPackageId, ticket.m_nHallId, IsNightTime(ticket.m_nTime)));
                 CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
                 static_cast<ASObj*>(script)->SetWStringMember("groom", ticket.m_strGroom);
                 static_cast<ASObj*>(script)->SetWStringMember("bride", ticket.m_strBride);
@@ -1124,7 +1124,7 @@ void WeddingManager::ReadTicketMail(MS2Ptr<CMailInfo> mail, AScript* script)
 // @0x141b869f0
 void WeddingManager::PlayEmotion(int type)
 {
-    PCBase* user = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* user = reinterpret_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (user) {
         MS2Ptr<StateWeddingEmotionData> data(new StateWeddingEmotionData);
         switch (type) {
@@ -1154,7 +1154,7 @@ void WeddingManager::PlayEmotion(int type)
 // @0x141b86bd0
 void WeddingManager::OnMode27Accept(CInPacket& packet)
 {
-    PCBase* user = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* user = reinterpret_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (user) {
         MS2Ptr<StateWeddingEmotionData> data(new StateWeddingEmotionData);
         data->m_b18 = true;
@@ -1195,10 +1195,10 @@ void WeddingManager::FacePartner(PCBase* user)
 // @0x141b867e0
 bool WeddingManager::CanStartWedding(__int64 partnerId)
 {
-    void* user = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* user = WorldService::GetInstance()->GetLocalPlayer();
     if (!user)
         return false;
-    if (TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0()->m_n18 == partnerId) {
+    if (TSingleton<WeddingManager>::GetInstance()->GetWeddingProxy()->m_n18 == partnerId) {
         FUN_141275260(0xc00, 1, 0);
         return false;
     }
@@ -1211,7 +1211,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
     if ((field.operator CubeMapInformationService*() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410c35c0()) {
         allowed = 1;
     } else {
-        allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c;
+        allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->GetFieldData().operator->())->m_5c;
     }
     if (allowed == 0) {
         FUN_141275260(0xc01, 1, 0);

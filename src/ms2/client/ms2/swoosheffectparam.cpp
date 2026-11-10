@@ -130,11 +130,11 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140ad02f0(int nValue, int nLimit);                          // upper clamp
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 class CMainSystem;
 void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
-void FUN_1415672e0(NiAVObject* pObj, bool bFlag);
+void PrepareLoadedNif(NiAVObject* pObj, bool bFlag);
 // Time controller helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -463,10 +463,10 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spZBuffer);
     }
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
+    PrepareLoadedNif(m_spMesh->GetMesh(), (bool)0);
     spSeparate->AttachChild(m_spMesh->GetMesh(), false);
     m_spRoot->AttachChild(spSeparate, false);
-    if (FUN_14028d470(pSwoosh->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(pSwoosh->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }

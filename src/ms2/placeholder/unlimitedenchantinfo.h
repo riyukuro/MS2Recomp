@@ -24,8 +24,8 @@ public:
     int GetLevel();                                            // 0x1408bbc50 the level
     int IncrementLevel();                                            // 0x1408bbc70 level up
     void SetLevel(int nLevel, bool bChanged);                  // 0x1408bbcb0 set the level
-    void FUN_1408bbd30(COutputStream& out);                         // 0x1408bbd30 write
-    void FUN_1408bbef0(CInputStream& in);                           // 0x1408bbef0 read
+    void WriteToStream(COutputStream& out);                         // 0x1408bbd30 write
+    void ReadFromStream(CInputStream& in);                           // 0x1408bbef0 read
     void SetChanged(bool bChanged);                              // 0x1408bc1d0
     bool IsChanged();                                           // 0x1408bc1f0
     MS2Ptr<BaseOption> FindOption(unsigned nType);       // 0x1408bc210 the option of a stat type

@@ -27,7 +27,7 @@
 
 // GFx UI render helpers (gfxrenderhelpers.h; inline COMDATs of ?\asmousecursor.cpp). That header's manager getter
 // conflicts with gfxmanager.h, so the two helpers are declared here.
-NiDX9Renderer* FUN_1422cf0a0();
+NiDX9Renderer* GetDX9Renderer();
 LPDIRECT3DDEVICE9 GetD3DDevice();
 
 // Scaleform::Render::Renderer2D / D3D9::HAL (render_renderer2d.h, d3d9_hal.h) as this unit sees them; the placeholder keeps
@@ -87,7 +87,7 @@ MS2_REPLACE_METHOD(0x1422F4470, GFxRenderSingleThread, vfunc_2, 31, 0xFB0F0BA5);
 int GFxRenderSingleThread::vfunc_3()
 {
     D3DPRESENT_PARAMETERS kPresentParams;
-    memcpy(&kPresentParams, FUN_1422cf0a0()->GetPresentParams(), sizeof(kPresentParams));
+    memcpy(&kPresentParams, GetDX9Renderer()->GetPresentParams(), sizeof(kPresentParams));
 
     m_renderHAL = reinterpret_cast<Unk_GFxUIHal&>(*new Scaleform::Render::D3D9::HAL(0));
     m_spRenderer2D = reinterpret_cast<Unk_GFxUIRenderer2D&>(*new Scaleform::Render::Renderer2D(reinterpret_cast<Scaleform::Render::HAL*>(m_renderHAL.GetPtr())));
@@ -198,14 +198,14 @@ bool GFxRenderSingleThread::vfunc_12()
         if (!m_renderHAL->RestoreAfterReset())
         {
             GetGFxManager()->FUN_1422f58f0(0);
-            GetGFxManager()->FUN_1422b08f0("*** GFX :: !m_renderHAL->RestoreAfterReset()");
+            GetGFxManager()->Log("*** GFX :: !m_renderHAL->RestoreAfterReset()");
             throw 0xd;
         }
     }
     if (!CreateRenderTexture())
     {
         GetGFxManager()->FUN_1422f58f0(0);
-        GetGFxManager()->FUN_1422b08f0("*** GFX :: !CreateRenderTexture()");
+        GetGFxManager()->Log("*** GFX :: !CreateRenderTexture()");
         throw 0xd;
     }
     GetGFxManager()->FUN_1422f58f0(1);

@@ -82,7 +82,7 @@ CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // 
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
 CStringW GetStringCommon(int nStringId);                                       // UI string table (wide)
 CStringA FUN_14028dc80(int nStringId);                                       // UI string table (ANSI)
-void FUN_1401d3700(CStringA& s);                                              // lower-cases in place
+void ToLower(CStringA& s);                                              // lower-cases in place
 // MS2PNGReader (0xe0 bytes), allocated through efd::MemObject's operator new.
 struct MS2PNGReader : public efd::MemObject   // C3: unit-local view of ms2pngreader.cpp's reader
 {
@@ -193,7 +193,7 @@ public:
 };
 // (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-int FUN_141b91ab0();
+int IsDesktopLocked();
 // UI front end: slot 23 shows a message dialog.
 class Unk_RsUI
 {
@@ -360,7 +360,7 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
     NiShadowGenerator::ms_pfnStudioForceMaterialNeedsUpdate = (void (*)(NiShadowGenerator*))Unk_RsCollectFade;
     Unk_RsSetHookA(Unk_RsLockHook);
     Unk_RsSetHookB(Unk_RsUnlockHook);
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
     return result;
 }
 
@@ -638,7 +638,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
             }
             {
                 CStringA driver(pDX9Renderer->GetDriverName());
-                FUN_1401d3700(driver);
+                ToLower(driver);
                 if (driver == "mctu.dll") {
                     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("!!! mctu.dll !!!");
                 }
@@ -659,7 +659,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
 // @0x1414ed3a0
 efd::AsyncResult MS2RenderService::OnInit()
 {
-    if (FUN_141b91ab0() != 0) {
+    if (IsDesktopLocked() != 0) {
         return efd::AsyncResult_Pending;
     }
     if (m_pRendererDesc == 0) {
@@ -871,7 +871,7 @@ MS2_REPLACE_METHOD(0x1414EE750, MS2PickService, OnPreInit, 85, 0x1608DFF5);
 // @0x1414ee7b0
 efd::AsyncResult MS2PickService::OnInit()
 {
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     return ecr::PickService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1414EE7B0, MS2PickService, OnInit, 77, 0x1B2425B2);

@@ -94,7 +94,7 @@ public:
     NiAVObject* FUN_1411673f0(const CString* pName) const;      // 0x1411673f0 the scene node named pName
     NiAVObject* GetPartMesh(const CString* pPartName) const;  // 0x1411676d0 the model node of one attach part
     // highlight: fScale/fMode from CItemCustomizeController::vfunc_39, pNode = the picked mesh or NULL
-    void FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode);   // 0x1411679d0
+    void SetHighlight(float fScale, float fMode, NiAVObject* pNode);   // 0x1411679d0
 
 public:
     MS2_LAYOUT_FRIEND;

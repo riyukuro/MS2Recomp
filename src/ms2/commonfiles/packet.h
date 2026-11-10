@@ -10,24 +10,24 @@ CStringW FUN_14016a730(const char*, int);
 
 // Encoded size of a value (the argument is only used for strings).
 inline int FUN_14020abc0(const unsigned char&) { return 1; }                          // @0x14020abc0
-inline int FUN_14020abd0(const short&) { return 2; }                                  // @0x14020abd0
-inline int FUN_14020abe0(const int&) { return 4; }                                    // @0x14020abe0
-inline int FUN_14020abf0(const __int64&) { return 8; }                                // @0x14020abf0
-inline __int64 FUN_14020ac00(const CString& s) { return (__int64)s.GetLength() + 2; }              // @0x14020ac00
-inline __int64 FUN_14020ac20(const CStringW& s) { return (__int64)s.GetLength() * 2 + 2; }         // @0x14020ac20
+inline int GetInt16Size(const short&) { return 2; }                                  // @0x14020abd0
+inline int GetInt32Size(const int&) { return 4; }                                    // @0x14020abe0
+inline int GetInt64Size(const __int64&) { return 8; }                                // @0x14020abf0
+inline __int64 GetStringSize(const CString& s) { return (__int64)s.GetLength() + 2; }              // @0x14020ac00
+inline __int64 GetUnicodeStringSize(const CStringW& s) { return (__int64)s.GetLength() * 2 + 2; }         // @0x14020ac20
 // Store a value at dst and return its size.
 inline int FUN_14020ac40(unsigned char v, unsigned char* dst) { *dst = v; return FUN_14020abc0(v); }        // @0x14020ac40
-inline int FUN_14020ace0(short v, unsigned char* dst) { *(short*)dst = v; return FUN_14020abd0(v); }        // @0x14020ace0
-inline int FUN_14020ad80(int v, unsigned char* dst) { *(int*)dst = v; return FUN_14020abe0(v); }            // @0x14020ad80
-inline int FUN_14020ae20(__int64 v, unsigned char* dst) { *(__int64*)dst = v; return FUN_14020abf0(v); }    // @0x14020ae20
-inline int FUN_14020aec0(const void* data, unsigned count, unsigned char* dst) { memcpy(dst, data, count); return count; }  // @0x14020aec0
-inline int FUN_14020b020(const CString& s, unsigned char* dst)                                              // @0x14020b020
-{ *(unsigned short*)dst = (unsigned short)s.GetLength(); memcpy(dst + 2, (const char*)s, (size_t)s.GetLength()); return FUN_14020ac00(s); }
-inline int FUN_14020b170(const CStringW& s, unsigned char* dst)                                             // @0x14020b170
-{ *(unsigned short*)dst = (unsigned short)s.GetLength(); memcpy(dst + 2, (const wchar_t*)s, (size_t)s.GetLength() * 2); return FUN_14020ac20(s); }
-inline int FUN_14020b410(float v, unsigned char* dst) { *(float*)dst = v; int n = (int)(__int64)v; return FUN_14020abe0(n); }  // @0x14020b410
+inline int StoreInt16(short v, unsigned char* dst) { *(short*)dst = v; return GetInt16Size(v); }        // @0x14020ace0
+inline int StoreInt32(int v, unsigned char* dst) { *(int*)dst = v; return GetInt32Size(v); }            // @0x14020ad80
+inline int StoreInt64(__int64 v, unsigned char* dst) { *(__int64*)dst = v; return GetInt64Size(v); }    // @0x14020ae20
+inline int StoreBytes(const void* data, unsigned count, unsigned char* dst) { memcpy(dst, data, count); return count; }  // @0x14020aec0
+inline int StoreString(const CString& s, unsigned char* dst)                                              // @0x14020b020
+{ *(unsigned short*)dst = (unsigned short)s.GetLength(); memcpy(dst + 2, (const char*)s, (size_t)s.GetLength()); return GetStringSize(s); }
+inline int StoreUnicodeString(const CStringW& s, unsigned char* dst)                                             // @0x14020b170
+{ *(unsigned short*)dst = (unsigned short)s.GetLength(); memcpy(dst + 2, (const wchar_t*)s, (size_t)s.GetLength() * 2); return GetUnicodeStringSize(s); }
+inline int StoreFloat(float v, unsigned char* dst) { *(float*)dst = v; int n = (int)(__int64)v; return GetInt32Size(n); }  // @0x14020b410
 // Writes the three floats of a point through the virtual float encoder (slot 5).
-inline void FUN_14020af60(COutPacket* out, const Vector3* p)                                        // @0x14020af60
+inline void EncodeVector3(COutPacket* out, const Vector3* p)                                        // @0x14020af60
 { out->WriteFloat(p->x); out->WriteFloat(p->y); out->WriteFloat(p->z); }
 
 #define MS2_PKT_FILE L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\packet.h"
@@ -55,13 +55,13 @@ inline void COutPacket::AppendPayload(const COutPacket& src, int offset)
 // @0x14020ac70
 inline void COutPacket::WriteUInt8(unsigned char value) { EnsureBufferCapacity(FUN_14020abc0(value)); m_nLength += FUN_14020ac40(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020ad10
-inline void COutPacket::WriteInt16(short value) { EnsureBufferCapacity(FUN_14020abd0(value)); m_nLength += FUN_14020ace0(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt16(short value) { EnsureBufferCapacity(GetInt16Size(value)); m_nLength += StoreInt16(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020adb0
-inline void COutPacket::WriteInt32(int value) { EnsureBufferCapacity(FUN_14020abe0(value)); m_nLength += FUN_14020ad80(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt32(int value) { EnsureBufferCapacity(GetInt32Size(value)); m_nLength += StoreInt32(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020ae50
-inline void COutPacket::WriteInt64(__int64 value) { EnsureBufferCapacity(FUN_14020abf0(value)); m_nLength += FUN_14020ae20(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt64(__int64 value) { EnsureBufferCapacity(GetInt64Size(value)); m_nLength += StoreInt64(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020aef0
-inline void COutPacket::WriteBytes(const void* data, int count) { EnsureBufferCapacity(count); m_nLength += FUN_14020aec0(data, count, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteBytes(const void* data, int count) { EnsureBufferCapacity(count); m_nLength += StoreBytes(data, count, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020afc0
 inline void COutPacket::WriteUnicodeStringA(const CString& value) { CStringW text = FUN_14016a730(value, 0); WriteUnicodeString(text); }
 // @0x14020b090
@@ -69,19 +69,19 @@ inline void COutPacket::WriteString(const CString& value)
 {
     CString text = value;
     if (text.GetLength() > 0xffff) text = text.Left(0xffff);
-    EnsureBufferCapacity(FUN_14020ac00(text));
-    m_nLength += FUN_14020b020(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
+    EnsureBufferCapacity(GetStringSize(text));
+    m_nLength += StoreString(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b1e0
 inline void COutPacket::WriteUnicodeString(const CStringW& value)
 {
     CStringW text = value;
     if (text.GetLength() > 0xffff) text = text.Left(0xffff);
-    EnsureBufferCapacity(FUN_14020ac20(text));
-    m_nLength += FUN_14020b170(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
+    EnsureBufferCapacity(GetUnicodeStringSize(text));
+    m_nLength += StoreUnicodeString(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b2c0
-inline void COutPacket::WriteVector3(const Vector3& value) { FUN_14020af60(this, &value); }
+inline void COutPacket::WriteVector3(const Vector3& value) { EncodeVector3(this, &value); }
 // @0x14020b2f0
 inline void COutPacket::WriteVector3Short(const Vector3& value)
 {
@@ -97,8 +97,8 @@ inline void COutPacket::WriteVector3Short(const Vector3& value)
 inline void COutPacket::WriteFloat(float value)
 {
     int n = (int)(__int64)value;
-    EnsureBufferCapacity(FUN_14020abe0(n));
-    m_nLength += FUN_14020b410(value, (unsigned char*)&m_aBuffer[0] + m_nLength);
+    EnsureBufferCapacity(GetInt32Size(n));
+    m_nLength += StoreFloat(value, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b4d0
 inline void COutPacket::WriteShortX100(float value) { short n = (short)(value / 100.0f); WriteInt16(n); }

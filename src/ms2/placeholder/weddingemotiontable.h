@@ -32,7 +32,7 @@ public:
     WeddingEmotionTable();                                  // 0x140903170
     virtual ~WeddingEmotionTable();                         // 0x1409031e0
 
-    MS2Ptr<WeddingEmotionData> FUN_140903740(unsigned nCode);   // row by code (null when missing)
+    MS2Ptr<WeddingEmotionData> FindByCode(unsigned nCode);   // row by code (null when missing)
     int Load();                                             // 0x140903250 (ms2.cpp calls it as FUN_140903250)
 
     // @0x140904dc0

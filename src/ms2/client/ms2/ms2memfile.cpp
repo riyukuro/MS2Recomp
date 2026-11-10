@@ -34,7 +34,7 @@
 
 // ---- externs ----
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-void* FUN_141371b20();   // C3: was FUN_141371b20
+void* GetGFxLanguage();   // C3: was GetGFxLanguage
 CString FUN_14071ae20(const CString& strFile);              // the GFx UI's XML path of a file
 CString GetXmlDebugPath(const CString& strFile);              // the GFx debug XML path of a file
 CString GetXmlPath(const CString& strDir, const CString& strFile);
@@ -52,7 +52,7 @@ void* FUN_141508060();                                      // creates an MS2Sea
 // The file-change listener of the cache (cachedata.cpp's Unk_CacheListenerPtr is this TFunctor: the exe news a
 // ClassFunHandler<TFunctor<void, ParamList<CString, ParamList<_FILETIME>>>, CFileSystem*, ...> for it).
 typedef TFunctor<void, ParamList<CString, ParamList<FILETIME, EmptyParam> > > Unk_FileChangeFunctor;
-void FUN_1401d17b0(Unk_FileChangeFunctor kListener);        // registers the listener (cachedata.cpp)
+void SetFileChangeListener(Unk_FileChangeFunctor kListener);        // registers the listener (cachedata.cpp)
 
 // ---- MS2MemFile ----
 EE_ImplementDerivedBinaryStream(MS2MemFile, FUN_141627270, FUN_141627370)
@@ -62,7 +62,7 @@ MS2MemFile::MS2MemFile(const char* pszPath)
 {
     SetEndianSwap(false);
     m_uiPos = 0;
-    m_buffer = GetFileSystem()->FUN_140397bc0(pszPath, 0, 0);
+    m_buffer = GetFileSystem()->GetFileBuffer(pszPath, 0, 0);
     m_bGood = m_buffer.get() ? true : false;
 }
 
@@ -327,7 +327,7 @@ void FUN_141627390()
     NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
-    FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
+    SetFileChangeListener(Unk_FileChangeFunctor(GetFileSystem(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::MarkCharacterModelLoaded)));
     GFxFileOpener::SetOpenCallback(OpenGfxFile);
     NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
@@ -389,7 +389,7 @@ efd::File* FUN_141627960(const char* pcName, efd::File::OpenMode eMode, unsigned
 {
     if (eMode == efd::File::READ_ONLY && GetFileSystem() != 0)
     {
-        std::string strPath = GetFileSystem()->FUN_14039b810(std::string(pcName));
+        std::string strPath = GetFileSystem()->GetLocalePath(std::string(pcName));
         efd::File* pFile = efd::File::DefaultFileCreateFunc(strPath.c_str(), eMode, uiBufferSize, bFlushOnWrite);
         if (pFile != 0)
             return pFile;
@@ -523,7 +523,7 @@ Scaleform::File* OpenGfxFile(CString strPath)
     Scaleform::File* pFile = 0;
     char szExt[MAX_PATH];
     _splitpath(strPath, 0, 0, 0, szExt);
-    CFileSystem::BufferPtr buffer = GetFileSystem()->FUN_140397bc0(strPath, GetFileSystem()->HasAlternatePaths() ? 1 : 0, 1);
+    CFileSystem::BufferPtr buffer = GetFileSystem()->GetFileBuffer(strPath, GetFileSystem()->HasAlternatePaths() ? 1 : 0, 1);
     if (buffer.get() != 0)
         pFile = new ScaleformMemFile(strPath, buffer.get());
     return pFile;
@@ -542,7 +542,7 @@ CString FUN_141628470(CString strName, bool bDebug)
 // @0x141628610
 bool FUN_141628610(TiXmlDocument& doc)
 {
-    return ((class CGFxLanguage*)FUN_141371b20())->LoadKorFlash(&doc);
+    return ((class CGFxLanguage*)GetGFxLanguage())->LoadKorFlash(&doc);
 }
 
 // @0x141628640

@@ -131,7 +131,7 @@ public:
     class NxActor* GetActor();
 };
 int FUN_1409a8f90(const float* pf);
-bool FUN_14028d470(float f, float g);
+bool IsNearlyEqual(float f, float g);
 float FromPercent(float f);
 float FUN_140a38cd0(float f);
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
@@ -197,7 +197,7 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
     }
     float fMaxDist = pInfo->m_maxDist;
     float fScale = FUN_14168a210();
-    if (FUN_14028d470(fMaxDist, 0))
+    if (IsNearlyEqual(fMaxDist, 0))
         fMaxDist = FLT_MAX;
     else
         fMaxDist = fMaxDist * (1.0f / fScale);

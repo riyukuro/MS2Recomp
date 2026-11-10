@@ -133,8 +133,8 @@ void UIDebugPacketDialog::OnLoadInit()
     m_usePostClose = GetChild<ASButton>("m_usePostClose");
     BindDragBar("m_dragBar");
     BindCloseButton("m_close");
-    m_execute->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecute), 0);
-    m_executeRandom->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecuteRandom), 0);
+    m_execute->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecute), 0);
+    m_executeRandom->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecuteRandom), 0);
     m_usePacketCount->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnPacketCount), (void*)0);
     m_usePostClose->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnCloseFromPacket), (void*)0);
     m_movie->AddEventListener("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnDoubleClick), false, 0, 0, 0);

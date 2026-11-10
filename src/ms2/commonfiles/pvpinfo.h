@@ -17,11 +17,11 @@ public:
     virtual ~CPvPInfo();                                                //  0 0x1407434d0 (??_G 0x1407441b0)
 
     bool HasPoint();                                               // m_nPoint > 0
-    bool FUN_140743590();                                               // mode 1
-    bool FUN_1407435d0();                                               // mode 2
-    bool FUN_140743610();                                               // mode 3
-    bool FUN_140743650();                                               // mode 4
-    bool FUN_140743690();                                               // mode 10
+    bool IsMode1();                                               // mode 1
+    bool IsMode2();                                               // mode 2
+    bool IsMode3();                                               // mode 3
+    bool IsMode4();                                               // mode 4
+    bool IsMode10();                                               // mode 10
     bool IsOnePunchMode();                                               // mode 5 (one punch)
     int GetPoint();                                                // m_nPoint
     void Reset();                                               // reset

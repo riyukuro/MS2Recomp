@@ -21,7 +21,7 @@ class Unk_ScpSceneMgr;                      // the UI scene manager (FUN_1408e57
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ int UISceneGameCinematicPlay::vfunc_49(int n)
 // @0x140e84ea0
 void UISceneGameCinematicPlay::vfunc_54()
 {
-    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(((Unk_ScpSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(((Unk_ScpSceneMgr*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001d);
 }
 
 // @0x140e84ed0

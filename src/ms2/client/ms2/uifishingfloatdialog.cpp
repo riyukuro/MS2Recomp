@@ -76,7 +76,7 @@ class Unk_SoundMgr
 {
 public:
 };
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 MS2InputService* FUN_140a58540();
 class GameObject   // C3: member view for the former free stand-ins
 {
@@ -129,7 +129,7 @@ void UIFishingFloatDialog::OnLoadComplete()
         reinterpret_cast<Unk_PcComp*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }
     StartSound(0);
-    FUN_141276180(s_143aca6e8, "");
+    PlaySystemSound(s_143aca6e8, "");
     if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xc3))
     {
         if (GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
@@ -154,12 +154,12 @@ int UIFishingFloatDialog::vfunc_13()
         return 1;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x493e2, 0, 0))
     {
         m_30.operator->()->Invoke("onFishUp");
         return 1;
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyReleased(0x493e2, 0, 0))
     {
         m_30.operator->()->Invoke("onFishUpRelease");
         return 1;
@@ -176,7 +176,7 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         TSingleton<CFishingManager>::GetInstance()->SendFishingMode10();
         vfunc_67();
-        FUN_141276180(s_143aca738, "");
+        PlaySystemSound(s_143aca738, "");
         return 1;
     }
     else if (_stricmp(szMethod, "onFloatOut") == 0)
@@ -224,7 +224,7 @@ void UIFishingFloatDialog::StartSound(int nSound)
 {
     if (m_180[nSound])
         StopSound(nSound);
-    Unk_SoundMgr* pOwner = ((class Unk_SoundMgr*)((class WorldService*)(class Unk_SoundOwner*)(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_SoundMgr* pOwner = ((class Unk_SoundMgr*)((class WorldService*)(class Unk_SoundOwner*)(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pOwner == 0)
         return;
     NoticeMessage param;   // C3: was Unk_SoundParam

@@ -17,16 +17,16 @@
 // @0x140cd7ce0
 MS2Ptr<CFieldDataCli> FUN_140cd7ce0()
 {
-    return WorldService::GetInstance()->FUN_141bd30a0();
+    return WorldService::GetInstance()->GetFieldData();
 }
 MS2_REPLACE(0x140CD7CE0, FUN_140cd7ce0, 56, 0x82029F8F);
 
 // @0x140cd7d20
-CStringW FUN_140cd7d20()
+CStringW GetDungeonName()
 {
-    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, WorldService::GetInstance()->FUN_141bd3060());
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, WorldService::GetInstance()->GetFieldId());
 }
-MS2_REPLACE(0x140CD7D20, FUN_140cd7d20, 86, 0x9225298E);
+MS2_REPLACE(0x140CD7D20, GetDungeonName, 86, 0x9225298E);
 
 // The fishing line's ctor (Unk_FishLine of cubecraft_1.h).
 //

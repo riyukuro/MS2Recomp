@@ -28,7 +28,7 @@ class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
-    class WeddingProxy* FUN_140d295d0();
+    class WeddingProxy* GetWeddingProxy();
 };
 __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
@@ -71,7 +71,7 @@ void UIWeddingAffinityDialog::vfunc_67()
 void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    WeddingProxy* pWedding = TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pWedding = TSingleton<WeddingManager>::GetInstance()->GetWeddingProxy();
     __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->GetRewardExp(1, 0);
     int nDays = GetDayNumberDifference(pWedding->m_n30, GetServerTime());
     nExp = nExp * nDays;

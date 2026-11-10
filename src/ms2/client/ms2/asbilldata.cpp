@@ -539,7 +539,7 @@ bool ASBillData::SetOptionDropDown(CMeratMarketPremiumProduct* pProduct, int nOp
     if (mapSub.IsEmpty())
         return false;
     ASArray arrOptions(2);
-    bool bDay = pProduct->FUN_14069fe40() == 2;
+    bool bDay = pProduct->GetItemKind() == 2;
     CDBPremiumProduct* pBase = pProduct;
     int nSelected = 0;
     AddOptionRow(arrOptions, nCurrency, pProduct, bDay, pBase);

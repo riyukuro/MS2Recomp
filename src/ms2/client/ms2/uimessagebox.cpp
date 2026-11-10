@@ -185,7 +185,7 @@ void FUN_141901390(int bBlock, int nUiId);
 void FUN_1419013c0(int bBlock, int nUiId);
 int FUN_14151f8b0();
 int FUN_14151f9c0();
-int FUN_141276180(const CString& strEvent, const CString& strArg);   // play a UI sound
+int PlaySystemSound(const CString& strEvent, const CString& strArg);   // play a UI sound
 void FUN_1418fe1c0(const CString& strUrl);                            // open a web page
 
 // The message box queue (uimessageboxdata.cpp's callers).
@@ -203,7 +203,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);        // forma
 void ShowSystemNotice(const CStringW& strText, int nA, int nB);     // system message
 void FUN_141275260(int nId, int nA, int nB);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
-bool FUN_1407183f0(const CStringW& str);                        // "1", "o" or "t"
+bool ParseBoolW(const CStringW& str);                        // "1", "o" or "t"
 __time64_t GetServerTime();
 
 class Unk_MessageBoxSound { public: virtual void vfunc_0(); virtual void vfunc_1(int nUiId); };
@@ -342,7 +342,7 @@ public:
 class Unk_MessageBoxWorld
 {
 public:
-    Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
+    Unk_MessageBoxPC* GetLocalPlayer();                          // the local player
 };
 extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
@@ -439,14 +439,14 @@ int UIMessageBox::vfunc_13()
     if (m_data.IsNull() || m_30.IsNull())
         CloseAll(0);
     CString method = "";
-    if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d890(m_data->FUN_141a030b0()))
+    if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsEnterPressed(m_data->HasDefaultButton()))
     {
         if (m_data->FUN_141a03090())
             method = "onEnterKey";
         else
             return 1;
     }
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d840())
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsEscapePressed())
     {
         if (m_data->FUN_141a03100())
             method = "onEscapeKey";
@@ -455,19 +455,19 @@ int UIMessageBox::vfunc_13()
     }
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x79, 0, 0))
         method = "onUpKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d41, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsActionKeyPressed(0x30d41, 0, 0))
         method = "onUpKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7b, 0, 0))
         method = "onLeftKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d43, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsActionKeyPressed(0x30d43, 0, 0))
         method = "onLeftKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7e, 0, 0))
         method = "onDownKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d42, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsActionKeyPressed(0x30d42, 0, 0))
         method = "onDownKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7c, 0, 0))
         method = "onRightKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d44, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->IsActionKeyPressed(0x30d44, 0, 0))
         method = "onRightKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(15, 0, 0))
         method = "onTabKey";
@@ -509,7 +509,7 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 int nSec = data.PopInt();
-                m_data->FUN_141a03130(this, nSec);
+                m_data->OnChangeTime(this, nSec);
             }
         }
         return 1;
@@ -701,7 +701,7 @@ void SellItem(MS2Ptr<CItem> spItem, unsigned int nCount)
             MS2Ptr<CItem> spCopy = spItem->Clone();
             spCopy->SetCountClamped(nCount);
             spBox->SetItemUid(spItem->GetItemUid());
-            spBox->FUN_141a01ee0(spCopy, spCopy->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->SetItemEntry(spCopy, spCopy->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->SetButtonLabelIds(0x47e, 0x476, 0);
             FUN_140d73c60(spBox);
         }
@@ -726,7 +726,7 @@ void UIMessageBox::PlayMessageSound(MS2Ptr<CMsgBoxData> spData)
     {
         CString strSound = spData->GetSound();
         if (!strSound.IsEmpty())
-            FUN_141276180(strSound, "");
+            PlaySystemSound(strSound, "");
     }
 }
 MS2_REPLACE_METHOD(0x1419F8E10, UIMessageBox, PlayMessageSound, 163, 0xBFB98928);
@@ -766,7 +766,7 @@ void UIMessageBox::ResetAfterClose()
     {
         vfunc_8(0);
         GetUISwfEntityManager()->RemoveFromLayer(this, 4);
-        FUN_141276180(s_close, "");
+        PlaySystemSound(s_close, "");
     }
     if (m_data.get() ? true : false)
     {
@@ -1164,7 +1164,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (tokens[0] == s_143af3d98)
     {
-        bool bDontAsk = FUN_1407183f0(tokens[1]);
+        bool bDontAsk = ParseBoolW(tokens[1]);
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
@@ -1176,7 +1176,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (tokens[0] == s_143af3da0)
     {
-        bool bDontAsk = FUN_1407183f0(tokens[1]);
+        bool bDontAsk = ParseBoolW(tokens[1]);
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
@@ -1295,7 +1295,7 @@ int UIMessageBox::HandleLearnSkillButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1303,7 +1303,7 @@ int UIMessageBox::HandleLearnSkillButton(int nButton)
         __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
-            pPlayer->GetJobSystem()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->GetSkillId(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->GetSkillLevel());
+            pPlayer->GetJobSystem()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->GetData()))->GetSkillId(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->GetData()))->GetSkillLevel());
     }
     return 1;
 }
@@ -1353,7 +1353,7 @@ int UIMessageBox::HandleDestroyItemButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1386,10 +1386,10 @@ int UIMessageBox::HandleDestroyStoreItemButton(int nButton, CStringW strTag)
         return 0;
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 1;
-    bool bOk = FUN_1407183f0(tokens[1]);
+    bool bOk = ParseBoolW(tokens[1]);
     if (bOk == true && nButton == 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(m_data->GetItemUid());
@@ -1415,7 +1415,7 @@ MS2_REPLACE_METHOD(0x1419FBD40, UIMessageBox, HandleDestroyStoreItemButton, 1004
 // @0x1419fc140
 int UIMessageBox::HandleDestroyDollItemButton(int nButton, CStringW strTag)
 {
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 1;
     ATL::CAtlArray<CStringW> tokens;
@@ -1423,7 +1423,7 @@ int UIMessageBox::HandleDestroyDollItemButton(int nButton, CStringW strTag)
         return 0;
     if (m_data == 0)
         return 1;
-    bool bOk = FUN_1407183f0(tokens[1]);
+    bool bOk = ParseBoolW(tokens[1]);
     if (bOk == true && nButton == 0)
     {
         __int64 nSlot = 0;
@@ -1452,7 +1452,7 @@ int UIMessageBox::HandleLearnEmotionButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
         return 1;
     if (nButton == 0)
@@ -1548,8 +1548,8 @@ int UIMessageBox::FUN_1419fc810(int nButton)
                     if (spBox.get())
                     {
                         spBox->SetItemUid(spItem->GetItemUid());
-                        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-                        spBox->FUN_141a01800(2);
+                        spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+                        spBox->SetButtonPreset(2);
                         spBox->SetCheckbox0(GetStringCommon(0x29e), 0);
                         FUN_140d73c60(spBox);
                     }
@@ -1670,7 +1670,7 @@ int UIMessageBox::HandleSummonBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1690,7 +1690,7 @@ int UIMessageBox::HandleComposeBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1721,7 +1721,7 @@ int UIMessageBox::HandleEvolutionBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1752,7 +1752,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1779,7 +1779,7 @@ int UIMessageBox::HandleStudyBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1810,7 +1810,7 @@ int UIMessageBox::HandleRemakeOptionScrollBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1837,7 +1837,7 @@ int UIMessageBox::HandleUseBindItemSkillButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (nButton == 0)
@@ -1852,7 +1852,7 @@ int UIMessageBox::HandleUseBindItemSkillButton(int nButton)
         if (spLevel == 0)
             return 0;
         Unk_InventorySkillRequest request(nSkill, 1);
-        request.remap = spLevel->FUN_140804450();
+        request.remap = spLevel->HasSequenceName();
         request.item = spItem->GetItemUid();
         MS2Ptr<CSkillRecord> spRecord = pPlayer->GetSkillSystem()->CreateSkillRecord(request);
         if (spRecord == 0)
@@ -1960,7 +1960,7 @@ int UIMessageBox::HandleUseStoreOutButton(int nButton, int nCount)
             Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(nSlot));
             {
                 CString strEmpty("");
-                FUN_141276180(s_warning, strEmpty);
+                PlaySystemSound(s_warning, strEmpty);
             }
             return 1;
         }
@@ -2206,7 +2206,7 @@ int UIMessageBox::HandleOpenMassiveButton(int nButton, const CStringW& strName)
         CItem* pItem = g_143ab2a90.FindItemByUid(nUid);
         if (!pItem)
             return 0;
-        Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (!pPlayer)
             return 0;
         ATL::CAtlArray<MS2Ptr<CPortal> > portals;
@@ -2258,7 +2258,7 @@ int UIMessageBox::HandleBannerCloseButton(int nButton)
 {
     if (nButton != 0)
         return 1;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPlayer)
     {
         (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x8a9), 0));
@@ -2287,7 +2287,7 @@ int UIMessageBox::HandleCoupleEmotionButton(int nButton)
         FUN_140710590(packet);
         return 1;
     }
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (((class PCBase*)(class PC*)(pPlayer))->IsRiding())
     {
         MS2Ptr<RideOffActionCoupleEmotion> spAction(new RideOffActionCoupleEmotion(0));
@@ -2307,7 +2307,7 @@ int UIMessageBox::HandleRpsGameRequestButton(int nButton)
         return 1;
     CStringW strName = m_data->FUN_141a02fd0(0, CStringW());
     int bAccept = nButton == 0;
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxActor*>(WorldService::GetInstance()->FUN_141bd1420(strName));   // C3: WorldService (worldservice.h)
     if (!pPlayer || !pTarget)
     {
@@ -2357,7 +2357,7 @@ int UIMessageBox::HandleCoupleDanceRequestButton(int nButton)
     unsigned int nRound = m_data->FUN_141a02e90(0, 0);
     __int64 nId = 0;
     m_data->FUN_140b19130(1, nId);
-    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (!pPlayer || !pTarget)
     {
@@ -2430,7 +2430,7 @@ inline bool CMsgBoxData::FUN_141a00450(unsigned int nIndex, int& nOut) const
 }
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // @0x141a004c0
@@ -2448,7 +2448,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const char* a
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     return FUN_1422bb8f0(szMethod, args);
 }

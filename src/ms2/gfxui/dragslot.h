@@ -49,13 +49,13 @@ public:
     virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0 (p: Value*, the data to push)
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
     CString GetName();                        // 0x1422c89f0 a copy of m_strName
-    Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
+    Scaleform::GFx::Value& GetData();         // 0x1422c8d40 &m_value18 (the slot's AS data)
     void PushBinding();                           // 0x1422c8be0 push the slot to its AS binding (DragSlot::vfunc_10)
     void ClearBinding();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
-    void FUN_1422c8cb0(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
+    void SetData(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
     void SetTarget(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
     void FUN_1422c8a40();                           // 0x1422c8a40 mark m_arr58's names changed and m_strName pushed (NotifyContext)
-    int FUN_1422c8ac0(const CString& strName);      // 0x1422c8ac0 strName is in m_arr58
+    int ContainsName(const CString& strName);      // 0x1422c8ac0 strName is in m_arr58
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -144,11 +144,11 @@ public:
 
     // ?\dragslotbag.cpp (src/ms2/gfxui/dragslotbag.cpp). The m_slots walks are range-for loops (copying the pair): MSVC
     // compiles them to the map's _Unchecked_begin/_Unchecked_end (0x14140fe80/0x14140fed0), not begin()/end().
-    void FUN_1422cc9e0();                           // unbind every slot, then clear m_slots
+    void ClearSlots();                           // unbind every slot, then clear m_slots
     void FUN_1422cca90();                           // push every slot to its AS binding (BindData::PushBinding)
     void AddSlot(int nIndex);                 // create the slot of nIndex (vfunc_16), bind it, add it to m_slots
     void RemoveSlot(int nIndex);                 // remove the slot of nIndex
-    void FUN_1422cccc0(CString strName, int nIndex);   // unbind strName, erase nIndex from m_slots
+    void RemoveSlotEntry(CString strName, int nIndex);   // unbind strName, erase nIndex from m_slots
     size_t GetSlotCount();                         // m_slots.size()
     CString GetSlotName(int nIndex) const;        // the slot name of nIndex ("" if there is none)
     DragSlot* GetSlot(int nIndex);            // the slot of nIndex

@@ -21,11 +21,11 @@ public:
     CMsTime GetStartTime();                                // the start time
     CMsTime GetEndTime();                                // the end time
     bool FUN_140866760();                                   // the flag (m_48)
-    void FUN_140866780();                                   // register in CGameRule
-    void FUN_1408667e0();                                   // unregister from CGameRule
+    void Register();                                   // register in CGameRule
+    void Unregister();                                   // unregister from CGameRule
     bool IsActiveAt(const CMsTime& kTime);               // start <= time < end
     bool FUN_140866880(const __time64_t* pTime);            // the same for a raw time
-    void FUN_140866900(CInPacket& packet);                  // read from the packet
+    void Read(CInPacket& packet);                  // read from the packet
 
     int m_18;
     CStringW m_20;                                          // +0x20 name

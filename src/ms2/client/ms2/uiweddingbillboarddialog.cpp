@@ -71,8 +71,8 @@ class WeddingManager   // C3: member view for the former free stand-ins
 public:
     void SendInvitation(unsigned __int64);
 };
-unsigned __int64 FUN_140718370(const CStringW& text);                // text -> number
-bool FUN_140900f30(__int64 nTime);                              // the time is at night
+unsigned __int64 ParseUInt64W(const CStringW& text);                // text -> number
+bool IsNightTime(__int64 nTime);                              // the time is at night
 CStringW FormatYearMonthDayHour(const CMsTime& kTime);                   // the date text
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -170,7 +170,7 @@ int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            unsigned __int64 nSN = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nSN = ParseUInt64W(data.FUN_1422b8f40());
             TSingleton<WeddingManager>::GetInstance()->SendInvitation(nSN);
         }
     }
@@ -262,7 +262,7 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
         spPage->SetTextW(StringFormat<int>(L"{0}", m_nPage));
     bool bEmpty = true;
-    PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     CStringW strMyName = pPlayer->vfunc_77();
@@ -276,8 +276,8 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
             if (ticket.m_bPublic == 0 && ticket.m_strBride != strMyName &&
                 ticket.m_strGroom != strMyName)
                 continue;
-            unsigned int nHallText = WeddingTable::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId,
-                                                                                FUN_140900f30(ticket.m_nTime));
+            unsigned int nHallText = WeddingTable::GetInstance()->GetHallFieldId(ticket.m_nPackageId, ticket.m_nHallId,
+                                                                                IsNightTime(ticket.m_nTime));
             ASObj row(2);
             row.SetWStringMember("weddingSN", FUN_141b71910(nSN));
             row.SetWStringMember("date", FormatYearMonthDayHour(CMsTime(ticket.m_nTime)));

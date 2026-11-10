@@ -10,10 +10,10 @@ class UpperHpBarEntity {
 public:
  UpperHpBarEntity();~UpperHpBarEntity();
  void SetNameAndKind(const CString&,const int&);const CString& GetName();
- void FUN_141b4a840();void SetClip(MS2Ptr<ASUIComponent>);
- bool DestroyEntity(const int&);void AddBuff(MS2Ptr<AdditionalCli>);void FUN_141b4b0d0(MS2Ptr<AdditionalCli>);
- void FUN_141b4b240(PCBase*,const int&);void FUN_141b4b3f0();void FUN_141b4b500();
- void FUN_141b4b860();void FUN_141b4b950(bool);void FUN_141b4ba40(bool);void SetVisible(bool);
+ void Reset();void SetClip(MS2Ptr<ASUIComponent>);
+ bool DestroyEntity(const int&);void AddBuff(MS2Ptr<AdditionalCli>);void UpdateBuff(MS2Ptr<AdditionalCli>);
+ void RemoveBuff(PCBase*,const int&);void RemoveBuffDisplays();void UpdateHp();
+ void FUN_141b4b860();void FUN_141b4b950(bool);void SetHpTextVisible(bool);void SetVisible(bool);
  bool GetVisible();const int& GetKind();const int& GetId();
  MS2Ptr<ASUIComponent> GetClip();
  void SetId(const int&);void SetHp(const __int64&);
@@ -36,8 +36,8 @@ public:
  virtual int vfunc_28(const char*,const Scaleform::GFx::Value*,unsigned int);
  virtual int vfunc_48(){return 20029;}
  void FUN_141b4c4c0(const CString&,const int&);void FUN_141b4c510(PCBase*,int);
- void FUN_141b4ce20(bool);void FUN_141b4ceb0(bool);void AddBuff(MS2Ptr<AdditionalCli>);void FUN_141b4cfd0(MS2Ptr<AdditionalCli>);
- void FUN_141b4d060(PCBase*,int);void FUN_141b4d0a0();UpperHpBarEntity& FUN_141b4d170(void*);bool FUN_141b4d320(UpperHpBarEntity&);void HideAllEntities();
+ void FUN_141b4ce20(bool);void FUN_141b4ceb0(bool);void AddBuff(MS2Ptr<AdditionalCli>);void UpdateBuff(MS2Ptr<AdditionalCli>);
+ void RemoveBuff(PCBase*,int);void FUN_141b4d0a0();UpperHpBarEntity& GetEntity(void*);bool TryShowEntity(UpperHpBarEntity&);void HideAllEntities();
  bool FUN_141b4d630(UpperHpBarEntity&,int,int);CString FUN_141b4d690(void*);CStringW FUN_141b4d710(void*);bool IsNpc(void*);int FUN_141b4d8a0(void*);
  // @0x140976440
  UpperHpBarEntity* GetCurrentEntity(){return m_current;} // the shown entity (additionalcli.cpp)

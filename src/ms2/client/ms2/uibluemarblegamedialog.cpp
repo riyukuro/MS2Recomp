@@ -56,7 +56,7 @@ class Unk_BmSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 void FUN_141901470(int n, int nType);                               // UIObject::vfunc_47's helper (UI type 0x4f15)
 
@@ -71,7 +71,7 @@ extern Unk_Inventory g_143ab2a90;                                   // the playe
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
 CStringW Name_140218290(int n);                                     // number text
-CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
+CStringW GetStringByKey(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
@@ -169,7 +169,7 @@ void UIBlueMarbleGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada610(0x6200022);
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->SetSubScene(0x620001d);
 }
 
 // @0x140f217f0
@@ -186,10 +186,10 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
 {
 #define BM_PKT static_cast<CInPacket*>(p)   // the exe reads the packet through p, no named local
     UIDialog::vfunc_79(p);
-    if (BM_PKT->FUN_14070fe80() == 0xe5) {
+    if (BM_PKT->GetOpcode() == 0xe5) {
         int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
-            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200022);
+            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->SetSubScene(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ad9e50(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada6f0(0x6200022);
             FUN_141901470(0, 0x4f15);
@@ -341,7 +341,7 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
         } else if (nKind != 0) {
             CStringW strKind = Name_140218290(nKind);
             CStringW strAction = FUN_14028dfa0<int>(StringFormat<CStringW>(L"s_bluemarble_action_{0}", strKind), nArg);
-            CStringW strTooltip = FUN_140298ea0(StringFormat<CStringW>(L"s_bluemarble_action_tooltip_{0}", strKind));
+            CStringW strTooltip = GetStringByKey(StringFormat<CStringW>(L"s_bluemarble_action_tooltip_{0}", strKind));
             row.SetWStringMember("action", strKind);
             row.SetWStringMember("actionStr", strAction);
             row.SetWStringMember("tooltipStr", strTooltip);

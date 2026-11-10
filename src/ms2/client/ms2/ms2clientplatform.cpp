@@ -14,7 +14,7 @@ class CClientPlatformNexonKorea : public IClientPlatform { public: CClientPlatfo
 class CClientPlatformTencent : public IClientPlatform { public: CClientPlatformTencent(); virtual ~CClientPlatformTencent(); char m_pad_08[0x30]; };           // ctor 0x140c7cd70
 extern int DAT_143ab0248;                       // client country (0 Nexon Korea, 3 Tencent)
 extern IClientPlatform* DAT_143ac2fd8;          // the live platform (read by FUN_140d86260)
-int FUN_1406c34c0();                            // the Nexon platform enabled predicate
+int IsNexonPlatform();                            // the Nexon platform enabled predicate
 class CClientPlatformNexonKorea;
 IClientPlatform* FUN_140d86370();
 IClientPlatform* FUN_140d863f0();
@@ -39,7 +39,7 @@ bool CreateClientPlatform()
     }
     if (DAT_143ac2fd8 == 0 || !bResult)
         return false;
-    if (FUN_1406c34c0() != 0 && DAT_143ac2fd8->vfunc_17() == 0)
+    if (IsNexonPlatform() != 0 && DAT_143ac2fd8->vfunc_17() == 0)
         return false;
     return true;
 }

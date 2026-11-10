@@ -28,6 +28,6 @@ MS2_CHECK_OFFSET(CFileBuffer,m_ownership,0x18);
 MS2_CHECK_OFFSET(CFileBuffer,m_pBuffer,0x20);
 MS2_CHECK_OFFSET(CFileBuffer,m_nSize,0x28);
 MS2_CHECK_OFFSET(CFileBuffer,m_key,0x40);
-void FUN_14038bb30(const char*, const char*, std::list<CString>&);
+void ListFilesRecursive(const char*, const char*, std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
-std::string FUN_14038c1f0(const void*,size_t);
+std::string ComputeSha1Hex(const void*,size_t);

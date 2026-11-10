@@ -870,7 +870,7 @@ MS2_CHECK_OFFSET(Unk_CoupleEvent, m_data, 8);
 MS2_CHECK_SIZE(Unk_CoupleEvent, 0x10);
 int FUN_141277f40();
 int GetRandomRange(int, int);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
 
 // @0x140e63e60
@@ -998,7 +998,7 @@ void UIMicroGameCoupleDance::SendPlayArcade(int dance) {
         if (dance == m_dances[i]) { selected = (int)i; break; }
     }
     if (selected < 0 || selected >= (int)m_dances.size()) return;
-    FUN_141276180(s_clickSound, "");
+    PlaySystemSound(s_clickSound, "");
     int code = 0;
     if (selected == 0) code = 2;
     else if (selected == 1) code = 1;
@@ -1018,7 +1018,7 @@ void UIMicroGameCoupleDance::SendDanceSelection() {
         m_selected = m_dances[(unsigned)GetRandomRange((int)m_dances.size(),0)];
         m_30->Invoke("selectBtnByDanceIndex", m_selected);
     }
-    PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!state) return;
     if (state->GetCurStateId() != 0x45) return;
     StateMicroGameCoupleDance* dance = dynamic_cast<StateMicroGameCoupleDance*>(state->FUN_14166ccb0());
@@ -1036,7 +1036,7 @@ void UIMicroGameCoupleDance::FUN_140e64e70() {}
 MS2_REPLACE_METHOD(0x140E64E70, UIMicroGameCoupleDance, FUN_140e64e70, 6, 0xA9AF6E37);
 // @0x140e64e80
 int UIMicroGameCoupleDance::ShouldHide() {
-    PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!state) return 1;
     if (m_mode == 0 && state->GetCurStateId() != 0x45) return 1;
     return 0;

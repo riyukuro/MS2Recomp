@@ -71,7 +71,7 @@ void Crash::CDerived::vfunc_0()
 
 // @0x140ccaae0: the CRT's inline printf
 // MS2_EMIT: printf is inline in the UCRT header, the unit's copy sits here
-int FUN_140ccaae0(const char* pszFormat, ...)
+int Printf(const char* pszFormat, ...)
 {
     int nResult;
     va_list args;
@@ -109,7 +109,7 @@ void TriggerCrash(int nType)
     case 4:
     {
         const char* psz = 0;
-        FUN_140ccaae0(psz);
+        Printf(psz);
         break;
     }
     case 5:

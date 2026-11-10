@@ -1195,12 +1195,12 @@ int StateRide::vfunc_1()
 // The key / buff state of the owner (the input query object of the PC).
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nKey); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nKey); bool IsActionKeyPressed(int nKey); };   // C3: view of the real class (unit_141682f80)
 class Unk_AvPhysicsSvc* GetPhysXHelper();
 class CPhysXHelper { public: int GetGroundDistance(const efd::Point3& ptFrom, float* pDist, float fLen); };
 float FUN_1409f25a0(float f);
 float FUN_1409f2310(float f);
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 
 // @0x1417e0d30
 StateRope::StateRope(PCBase* pOwner) : State(pOwner)
@@ -1291,7 +1291,7 @@ void StateRope::vfunc_3(double fTime)
         kTop.y = 20.0f * FUN_1409f2310(m_fAngle) + m_pos54.y;
         kTop.z = m_pos54.z + 50.0f;
         efd::Point3 kDelta = kTop - m_pos48;
-        kDelta *= m_timer68.FUN_140868940();
+        kDelta *= m_timer68.GetRatio();
         efd::Point3 kTarget = m_pos48 + kDelta;
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
         if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->IsCapsuleOverlapping(kTarget, kExtent.y * 0.5f))
@@ -1317,7 +1317,7 @@ void StateRope::vfunc_3(double fTime)
         if (kInput.x < 0.0f)
         {
             m_fAngle = m_fAngle + 2.0f * (float)fTime;
-            if (FUN_14028d470(kInput.y, 0.0f))
+            if (IsNearlyEqual(kInput.y, 0.0f))
             {
                 m_n10 = 0x37;
                 m_timerA0.Reset();
@@ -1326,7 +1326,7 @@ void StateRope::vfunc_3(double fTime)
         else if (kInput.x > 0.0f)
         {
             m_fAngle = m_fAngle - 2.0f * (float)fTime;
-            if (FUN_14028d470(kInput.y, 0.0f))
+            if (IsNearlyEqual(kInput.y, 0.0f))
             {
                 m_n10 = 0x37;
                 m_timerA0.Reset();
@@ -1351,7 +1351,7 @@ void StateRope::vfunc_8(double fTime)
         else if (pKeys->IsActionKeyDown(0x30d42))
             kInput.y = -1.0f;
     }
-    if (pKeys->FUN_141683100(0x30d43) || pKeys->FUN_141683100(0x30d44))
+    if (pKeys->IsActionKeyPressed(0x30d43) || pKeys->IsActionKeyPressed(0x30d44))
         m_timerD8.Start(500);
     if (m_timerD8.IsExpired() != 0)
     {
@@ -1361,7 +1361,7 @@ void StateRope::vfunc_8(double fTime)
             kInput.x = 1.0f;
     }
     m_pOwner->vfunc_22(kInput);
-    if (pKeys->FUN_141683100(0x493e1))
+    if (pKeys->IsActionKeyPressed(0x493e1))
     {
         m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pKeys)->GetMoveDirection())));
         if (!pKeys->IsActionKeyDown(0x30d43) && !pKeys->IsActionKeyDown(0x30d44) && pKeys->IsActionKeyDown(0x30d41))
@@ -1446,7 +1446,7 @@ float StateRope::FUN_1417e1e60()
     }
     else if (m_n10 == 0x34)
     {
-        fStep = 150.0f * m_timerA0.FUN_140868b20();
+        fStep = 150.0f * m_timerA0.GetRatioDelta();
         egf::Entity* pNext = reinterpret_cast<PC*>(pPC)->FUN_141659b80(1, 0xc13e30c8, 150.0f);
         if (pNext == 0)
         {
@@ -1463,7 +1463,7 @@ float StateRope::FUN_1417e1e60()
     }
     else if (m_n10 == 0x35)
     {
-        fStep = 150.0f * m_timerA0.FUN_140868b20();
+        fStep = 150.0f * m_timerA0.GetRatioDelta();
         egf::Entity* pNext = reinterpret_cast<PC*>(pPC)->FUN_141659b80(2, 0xc13e30c8, 90.0f);
         if (pNext == 0)
         {
@@ -1643,7 +1643,7 @@ int CStateService::FUN_1417e2830(int nScene)
         nPrev = m_spCurrent->GetClassID();
     m_spCurrent = spNext;
     m_spCurrent->OnEnter(nPrev);
-    ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9ef0(nScene);
+    ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetScene(nScene);
     return 1;
 }
 
@@ -1679,7 +1679,7 @@ efd::SyncResult CStateService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 // @0x1417e30c0
 efd::AsyncResult CStateService::OnInit()
 {
-    if (WorldService::GetInstance()->FUN_141bcfb70() == 0)
+    if (WorldService::GetInstance()->IsServiceRunning() == 0)
         return efd::AsyncResult_Pending;
     bool bNone = FUN_1417e3620(GetGFxManager()->GetStage(2));
     if (bNone)

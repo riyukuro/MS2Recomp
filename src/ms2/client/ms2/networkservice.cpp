@@ -98,7 +98,7 @@ void WriteLoginEnter(Unk_LoginEnter* p, COutputStream* out);
 // the member calls through the operator-> gamesocket instantiates (0x1412691b0).
 void FUN_141543190(void*,int);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
- int FUN_1406516b0();
+ int GetRegion();
 extern int DAT_1439f4a84,DAT_1439f4a88;
 class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 struct Unk_NetworkHello {
@@ -196,7 +196,7 @@ virtual void vfunc_74();
 virtual void vfunc_75();
 virtual void vfunc_76();
 virtual CStringW vfunc_77(); };
-class Unk_NetworkWorld : public WorldService { public: Unk_NetworkPlayer* FUN_141bd0cc0();};
+class Unk_NetworkWorld : public WorldService { public: Unk_NetworkPlayer* GetLocalPlayer();};
 // (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 void FUN_140aada20(void*,CInPacket&);  // CReconnectionManagerCli::FUN_140aada20
 void FUN_140a84960(void*,CInPacket&);
@@ -279,7 +279,7 @@ class Unk_MachineId   // C3: member view for the former free stand-ins
 {
 public:
     Unk_MachineId();
-    class Unk_MachineId* FUN_14067c080(class Unk_MachineId const*);
+    class Unk_MachineId* Assign(class Unk_MachineId const*);
 };
 struct Unk_NetworkAuth {
     Unk_NetworkAuth():account(0),token1(0),token2(0) { reinterpret_cast<Unk_MachineId*>(machineId)->Unk_MachineId::Unk_MachineId(); }
@@ -372,7 +372,7 @@ extern "C" void* __RTDynamicCast(void*,long,void*,void*,int) noexcept(false);   
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/cstringtable.h"
 #include <list>
-void FUN_14038bb30(const char*,const char*,std::list<CString>&);
+void ListFilesRecursive(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90), was DAT_143ab2a90
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
@@ -491,21 +491,21 @@ int CNetworkService::GetSocketSequence() { return m_socket.GetSequence(); }
 BOOL CNetworkService::SendRetrieveFurnishingItem(CItem* item) {
     if(item==0) return false;
     if(!IsFutureTime(item->FUN_140528a90())) return false;
-    int type=reinterpret_cast<CItemData*>(((class CItem*)(class CItem*)(item))->FUN_140527840())->FUN_14053fd90();
+    int type=reinterpret_cast<CItemData*>(((class CItem*)(class CItem*)(item))->GetData())->FUN_14053fd90();
     int slot=g_143ab2a90.FUN_140a612b0(type,MS2Ptr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
-    if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(type));CString param("");FUN_141276180(s_warningBag,param); }
-    else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
+    if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(type));CString param("");PlaySystemSound(s_warningBag,param); }
+    else { { CString param("");PlaySystemSound(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
 }
 // @0x141538820
 void CNetworkService::SendRequestQuit() {
-    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if(player) ((MyPC*)player)->SendFunctionCube();
     COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(0); FUN_140710590(packet);
 }
 // @0x1415388a0
 void CNetworkService::SendRequestQuitAndDisconnect() {
-    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if(player) ((MyPC*)player)->SendFunctionCube();
     m_socket.SetDisconnect(1);
     COutPacket packet(static_cast<int>(SendOp::RequestQuit),0); packet.WriteUInt8(1); FUN_140710590(packet);
@@ -532,13 +532,13 @@ void CNetworkService::SendSystemShop(int first,int second) { COutPacket packet(s
 void CNetworkService::SendResponseVersion() {
     FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
     Unk_NetworkHello hello;
-    hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d8b0();hello.build=FUN_1406516b0();
+    hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->GetLevel();hello.build=GetRegion();
     COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);WriteLoginHello((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
 }
 // @0x141538d50
 bool CNetworkService::SendPatchFileList() {
     COutPacket packet(static_cast<int>(SendOp::Patch),0);packet.WriteUInt8(0);
-    std::list<CString> names;FUN_14038bb30("./DataPatch/","",names);packet.WriteInt32((int)names.size());
+    std::list<CString> names;ListFilesRecursive("./DataPatch/","",names);packet.WriteInt32((int)names.size());
     for(auto it=names.begin();it!=names.end();++it) {
         const CString& file=*it;
         COnlinePatchFileBuffer* info=FUN_14038bf20("./DataPatch/",file);
@@ -653,7 +653,7 @@ void CNetworkService::QueueReceivedPacket(Unk_InPtr packet) {
 }
 // @0x1415397d0
 void CNetworkService::DispatchPacket(CInPacket& packet) {
-    int opcode=packet.FUN_14070fe80();
+    int opcode=packet.GetOpcode();
     switch(opcode) {
     case static_cast<int>(RecvOp::RequestVersion): OnRequestVersion(packet); break;
     case static_cast<int>(RecvOp::DataPatch): OnDataPatch(packet); break;
@@ -726,7 +726,7 @@ void CNetworkService::SendPacket(COutPacket& input) {
         unsigned time=GetTickCountMs2();
         if(m_sendMin>=m_sendMax) time+=m_sendMin;
         else time+=GetRandomRange(m_sendMax-m_sendMin, m_sendMin);
-        COutPacket* packet=new COutPacket(input.FUN_14020ba20(),0);
+        COutPacket* packet=new COutPacket(input.GetType(),0);
         ((class COutPacket*)(class COutPacket*)(packet))->AppendPayload(input, 2);
         if(!m_sends.empty()&&m_sends.back().first>time) time=m_sends.back().first;
         m_sends.push(std::make_pair(time,packet));
@@ -784,7 +784,7 @@ void CNetworkService::OnTimeSyncResponse(CInPacket& input) {
         __int64 time=input.ReadInt64();
         UIUpperHudDialog* dialog=Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
         if(!dialog) break;
-        ((class UIUpperHudDialog*)(void*)(dialog))->FUN_141357640(GetServerTime(), time);
+        ((class UIUpperHudDialog*)(void*)(dialog))->SetVersionText(GetServerTime(), time);
     }
     }
 }
@@ -799,7 +799,7 @@ void CNetworkService::OnRequestClientTickSync(CInPacket& input) {
 void CNetworkService::OnSyncNumber(CInPacket& input) {
     unsigned char value=input.ReadUInt8();
     DAT_143ab2856=value;
-    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if(player) ((class StatePcGuideObjectController*)(void*)(((MyPC*)player)->GetStateController()))->ClearRecords();
 }
 // @0x14153a8a0
@@ -841,7 +841,7 @@ void CNetworkService::OnRequestVersion(CInPacket& input) {
             } else if(handshake.patch==2) {
             } else if(handshake.patch==0) ((class COnlinePatchManagerCli*)(void*)(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance())))->DeletePatchFiles("./DataPatch/");
             FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
-            Unk_NetworkHello hello;hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d8b0();hello.build=FUN_1406516b0();
+            Unk_NetworkHello hello;hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->GetLevel();hello.build=GetRegion();
             COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);WriteLoginHello((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
         } else {
             FUN_140d73bc0(0x214,0,0,s_forceLogin);FUN_140d86260()->vfunc_58(0x214,0);throw Exception(0);
@@ -861,7 +861,7 @@ void CNetworkService::OnRequestKey(CInPacket&) {
     int count=(int)DAT_143ab2a58.GetCount();
     if(count==0) {
         Unk_NetworkAuth auth;auth.account=DAT_143ab2820;auth.token1=DAT_143ab284c;auth.token2=DAT_143ab2850;
-        ((void*)((class Unk_MachineId*)(void*)(auth.machineId))->FUN_14067c080((class Unk_MachineId const*)(((void*)((class CMachineIDManager*)(void*)(GetMachineIDManager()))->GetID()))));
+        ((void*)((class Unk_MachineId*)(void*)(auth.machineId))->Assign((class Unk_MachineId const*)(((void*)((class CMachineIDManager*)(void*)(GetMachineIDManager()))->GetID()))));
         COutPacket packet(static_cast<int>(SendOp::ResponseKey),0);WriteLoginEnter((Unk_LoginEnter*)&auth,&packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
     } else {
         COutPacket packet(static_cast<int>(SendOp::RelocateWorld),0);packet.WriteUInt8(5);packet.WriteInt32(count);packet.WriteBytes(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
@@ -1103,7 +1103,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         if(*reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(((void*)&((class Unk_BuddyOptions*)(void*)(TSingleton<CGameOption>::GetInstance()))->GetSettings()))+10)!=0) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(3);FUN_140710590(packet);break;
         }
-        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if(!player) { MS2_ASSERT_AT(0x625,"pMyPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()==0x3a) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);break;
@@ -1132,7 +1132,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         CStringW text=FormatStringId<CStringW>(0xce6,target->vfunc_77());ShowSystemNotice(text,1,1);
     } break;
     case 2: {
-        unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if(!player) { MS2_ASSERT_AT(0x687,"pMyPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         FUN_140b84010(result);player->vfunc_59(1,0,0,0);
@@ -1140,7 +1140,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
     case 3: {
         int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));
         if(!target) { MS2_ASSERT_AT(0x696,"pTargetPC" && 0);return; }
-        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!player) { MS2_ASSERT_AT(0x699,"pMyPC" && 0);return; }
+        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());if(!player) { MS2_ASSERT_AT(0x699,"pMyPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x69f,"pStateCoupleState" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166cc80()!=0x93) break;
@@ -1149,7 +1149,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         FUN_141275260(0xce8,1,1);
     } break;
     case 4: {
-        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if(!player) { MS2_ASSERT_AT(0x6b3,"pMyPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166cc80()!=0x93) break;
@@ -1162,7 +1162,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
     case 5: {
         int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();
         Vector3 start=input.ReadVector3();Vector3 end=input.ReadVector3();int value=input.ReadInt32();
-        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!player) { MS2_ASSERT_AT(0x6d7,"pMyPC" && 0);return; }
+        Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());if(!player) { MS2_ASSERT_AT(0x6d7,"pMyPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         __int64 peer=((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_141656a80()!=first?first:second;Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(peer));
         if(!target) { MS2_ASSERT_AT(0x6df,"pPeerPC" && 0);return; }
@@ -1172,7 +1172,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         ((StateCoupleEmotion*)state)->SetStartPos(*(const efd::Point3*)&start);((StateCoupleEmotion*)state)->SetEndPos(*(const efd::Point3*)&end);((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->SetTick(value);((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166cc40(0x95);
     } break;
     case 6: {
-        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if(!player) { MS2_ASSERT_AT(0x6f7,"pMyPC" && 0);return; }
         Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));if(!target) { MS2_ASSERT_AT(0x6fa,"pPeerPC" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
@@ -1204,7 +1204,7 @@ void CNetworkService::OnBuddyBadge(CInPacket& input) {
 void CNetworkService::FUN_14153f8c0(CInPacket& input) {
     int kind=input.ReadUInt8();
     int id=input.ReadInt32();
-    Unk_NetworkPlayer* player=reinterpret_cast<Unk_NetworkPlayer*>(WorldService::GetInstance()->FUN_141bd1290(id));
+    Unk_NetworkPlayer* player=reinterpret_cast<Unk_NetworkPlayer*>(WorldService::GetInstance()->FindPCById(id));
     if(!player) return;
     switch(kind) {
     case 0: { int value=input.ReadInt32(); ((class PC*)(player))->FUN_141663a00(value); break; }
@@ -1214,7 +1214,7 @@ void CNetworkService::FUN_14153f8c0(CInPacket& input) {
     if(dialog) ((class UIMessengerBrowser*)(void*)(dialog))->FUN_141a23a70();
 }
 // @0x14153f9d0
-void CNetworkService::OnDynamicBanWords(CInPacket& input) { if(TSingleton<CDynamicBanWordManager>::GetInstance()!=0) ((class CDynamicBanWordManager*)(void*)(TSingleton<CDynamicBanWordManager>::GetInstance()))->FUN_14034a2c0(*(class Unk_BanReader*)&static_cast<class CInputStream&>(input)); }
+void CNetworkService::OnDynamicBanWords(CInPacket& input) { if(TSingleton<CDynamicBanWordManager>::GetInstance()!=0) ((class CDynamicBanWordManager*)(void*)(TSingleton<CDynamicBanWordManager>::GetInstance()))->Read(*(class Unk_BanReader*)&static_cast<class CInputStream&>(input)); }
 // @0x14153fa20
 void CNetworkService::OnSystemInfoRequest(CInPacket&) {
     CClientHardwareInfo info; info.Set(reinterpret_cast<Unk_NetworkClientInfo*>(TSingleton<CMainSystem>::GetInstance())->GetCpuInfoString());

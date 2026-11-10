@@ -55,12 +55,12 @@ class CSmartRecommendShopTable : public TSingleton<CSmartRecommendShopTable>,
 {
 public:
     // @0x1414960d0
-    CSmartRecommendShopTable() { FUN_140815690(); }
+    CSmartRecommendShopTable() { Load(); }
     // @0x141497570
     virtual ~CSmartRecommendShopTable() {}
-    int FUN_140815690();                                    // loads the table (unit_140815690); 1 when loaded
+    int Load();                                    // loads the table (unit_140815690); 1 when loaded
     int FUN_1408157e0(CString strPath);                     // always 1
-    void FUN_140815810();                                   // forget all rows
+    void ClearItems();                                   // forget all rows
     MS2Ptr<CRecommendItem> FUN_140815890(int nCode);        // the row of a code (reloads when the file changed)
     void FUN_140815a10(MS2Ptr<CRecommendItem> spItem);      // add a row
     int FUN_140815ac0(CString strPath);                     // parse the xml into the map

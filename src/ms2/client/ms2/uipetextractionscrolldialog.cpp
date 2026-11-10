@@ -65,10 +65,10 @@ UIPetExtractionScrollDialog::SlotBag* FUN_140e72d40(NotifyContext::BindData* p);
 template<class T> T* GetItemUseDialog(int nUiId);           // the open dialog with this UI id
 MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);     // the item slot behind a drag source
 class InvenSlot { public: __int64 GetItemUid(); };          // its item uid
-int FUN_14053feb0(int nItemId);                             // the rarity of an item id
+int GetItemRank(int nItemId);                             // the rarity of an item id
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an item id
 void* GetItemSocketTable();                                      // TSingleton<CItemSocketTable>::GetInstance
-CStringW FUN_140298ea0(CStringW strKey);                    // string table text
+CStringW GetStringByKey(CStringW strKey);                    // string table text
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 extern template CStringW StringFormat<unsigned __int64>(const wchar_t*, const unsigned __int64&);
 void ShowSystemNotice(const CStringW& text, int nA, int nB);   // notice
@@ -109,7 +109,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_14()
 // @0x140e70bd0
 int UIPetExtractionScrollDialog::Slot::vfunc_18(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     MS2DragSlot* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
@@ -125,7 +125,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_18(void* p)
 // @0x140e70c70 (ITooltip::vfunc_0)
 int UIPetExtractionScrollDialog::Slot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -142,7 +142,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_0(void* p)
 // @0x140e70d70
 int UIPetExtractionScrollDialog::Slot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -171,7 +171,7 @@ void FUN_140e70f20(const CString& strName)
     UIPetExtractionScrollDialog::SlotBag* pBag = FUN_140e72d40(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        pBag->FUN_1422cc9e0();
+        pBag->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -226,7 +226,7 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
     UIDialog::vfunc_79(pPacket);
     if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x6c))
         return;
-    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() != 0x108)
+    if (static_cast<CInPacket*>(pPacket)->GetOpcode() != 0x108)
         return;
     unsigned nResult = static_cast<CInPacket*>(pPacket)->ReadUInt8();
     switch (nResult)
@@ -257,13 +257,13 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
         break;
     }
     case 2:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_inventoryfull")), 1, 0);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_petextraction_inventoryfull")), 1, 0);
         break;
     case 3:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_petextraction_invalid")), 1, 0);
         break;
     default:
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_petextraction_invalid")), 1, 0);
         break;
     }
     vfunc_67();
@@ -331,7 +331,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         return;
     if (spPet->IsPetItem() == 0)                    // not a pet
         return;
-    int nPetId = spPet->FUN_140527840()->GetPetId();
+    int nPetId = spPet->GetData()->GetPetId();
     MS2Ptr<CPetData> spPetData = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
     if (spPetData.IsNull())
         return;
@@ -342,12 +342,12 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (spGemData.IsNull())
         return;
     MS2Ptr<CItem> spResult(new CItem);
-    if (!spResult->FUN_140523c40(nGemItemId, FUN_14053feb0(nGemItemId), 0))
+    if (!spResult->FUN_140523c40(nGemItemId, GetItemRank(nGemItemId), 0))
         return;
-    MS2Ptr<CItemData> spData(spResult->FUN_140527840());
+    MS2Ptr<CItemData> spData(spResult->GetData());
     if (spData.IsNull())
         return;
-    if (spResult->FUN_140525a30() == 0)                 // not a gem
+    if (spResult->IsGem() == 0)                 // not a gem
         return;
     CItemGem* pGem = spResult->GetGem();
     if (pGem == 0)
@@ -362,7 +362,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pSkin == 0)
         return;
     pSkin->m_nPetId = nPetId;
-    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(GetItemSocketTable())->GetMaxSocketCount(spData->property.socketDataId, spResult->GetRarity(), spResult->FUN_140527840());
+    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(GetItemSocketTable())->GetMaxSocketCount(spData->property.socketDataId, spResult->GetRarity(), spResult->GetData());
     CItemSocket* pSocket = spResult->GetSocket();
     if (pSocket != 0)
         pSocket->InitSlots(nSockets, 0);
@@ -413,7 +413,7 @@ void UIPetExtractionScrollDialog::OnOk()
     if (spItem == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(
-        1, FUN_140298ea0(CStringW(L"s_petextraction_conform")), 0, CStringW(L""));
+        1, GetStringByKey(CStringW(L"s_petextraction_conform")), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPetExtractionScrollDialog::OnConfirmUseScroll));

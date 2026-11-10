@@ -41,7 +41,7 @@ void* GetGameRule();   // C3: was GetGameRule
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14047b990(int);
+    void SetLobbyMap(int);
     void SetLoginNotice(bool, class CMsTime const&);
 };
 
@@ -90,10 +90,10 @@ void GameEventLobbyMap::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041c3a0
-void GameEventLobbyMap::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->FUN_14047b990(m_mapId); }
+void GameEventLobbyMap::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->SetLobbyMap(m_mapId); }
 
 // @0x14041c3d0
-void GameEventLobbyMap::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->FUN_14047b990(0); }
+void GameEventLobbyMap::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->SetLobbyMap(0); }
 
 // @0x14041c400
 GameEvent* CreateGameEventLoginNotice() { return new GameEventLoginNotice; }

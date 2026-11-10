@@ -49,7 +49,7 @@ extern unsigned DAT_143ab2830;                                      // WorldId
 extern __int64 DAT_143ab2828;                                       // CharacterSn
 std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight);   // 0x141851040 (textureutil.cpp)
 std::string CaptureClientAreaJpg();                                 // 0x141850df0
-void FUN_141b6de20();                                               // thread start-up (util.cpp)
+void InitThread();                                               // thread start-up (util.cpp)
 // util.cpp: logs the thread's entry/exit by name (ctor 0x141b721f0 takes the name by value, dtor 0x141b722b0).
 class Unk_UtilLogScope
 {
@@ -131,7 +131,7 @@ bool CImageHttpClient::UploadTemporaryKey(std::string strKey)
         if (BuildTemporaryKey(buffer, strKey))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->SetAdditionalDataToSend(buffer.FUN_140204eb0(), buffer.GetLength());
+            request->SetAdditionalDataToSend(buffer.GetBuffer(), buffer.GetLength());
             request->SetAdditionalRequestHeaders(MakeHeaders(buffer));
             SetRequest(request);
             m_pUploadThread = AfxBeginThread(ResponseServer, this);
@@ -152,7 +152,7 @@ bool CImageHttpClient::BeginImage()
         if (BuildImage(buffer))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->SetAdditionalDataToSend(buffer.FUN_140204eb0(), buffer.GetLength());
+            request->SetAdditionalDataToSend(buffer.GetBuffer(), buffer.GetLength());
             request->SetAdditionalRequestHeaders(MakeHeaders(buffer));
             SetRequest(request);
             m_pImageThread = AfxBeginThread(ResponseClient, this);
@@ -348,7 +348,7 @@ bool CImageHttpClient::IsRequestPending()
 // @0x140512880
 unsigned __cdecl CImageHttpClient::ResponseClient(void* pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString(__FUNCTION__));
     CImageHttpClient* pClient = static_cast<CImageHttpClient*>(pParam);
     if (pClient == 0)
@@ -359,7 +359,7 @@ unsigned __cdecl CImageHttpClient::ResponseClient(void* pParam)
 // @0x140512920
 unsigned __cdecl CImageHttpClient::ResponseServer(void* pParam)
 {
-    FUN_141b6de20();
+    InitThread();
     Unk_UtilLogScope scope(CString(__FUNCTION__));
     CImageHttpClient* pClient = static_cast<CImageHttpClient*>(pParam);
     if (pClient == 0)
@@ -371,7 +371,7 @@ unsigned __cdecl CImageHttpClient::ResponseServer(void* pParam)
 CByteBuffer::CByteBuffer()
 {
     m_aByteBuff.SetCount(0x100);
-    FUN_140518490();
+    Clear();
 }
 
 // @0x140517e50
@@ -380,7 +380,7 @@ CByteBuffer::~CByteBuffer()
 }
 
 // @0x140518490
-void CByteBuffer::FUN_140518490()
+void CByteBuffer::Clear()
 {
     m_uLength = 0;
     m_uOffset = 0;

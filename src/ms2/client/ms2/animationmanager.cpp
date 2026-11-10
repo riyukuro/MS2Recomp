@@ -70,7 +70,7 @@ NiActorManager* FUN_1413f9b70(const egf::EntityID& id);                 // actor
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // multibyte -> wide
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);               // wide -> multibyte
-CString FUN_140391100(const wchar_t* psz);
+CString WideToUtf8(const wchar_t* psz);
 CStringW XmlWide(const char* pszUtf8);                                  // utf8 -> wide
 
 // ---- unit-local views of exe objects ----
@@ -410,7 +410,7 @@ CString FUN_1409a1620(const char* psz, int nCodePage)
 {
     int cp = (nCodePage == 0) ? DAT_1439f4840 : nCodePage;
     CStringW str = FUN_14016a730(psz, cp);
-    return FUN_140391100((const wchar_t*)str);
+    return WideToUtf8((const wchar_t*)str);
 }
 
 CString FUN_1409a2360(const char* psz, int nCodePage)

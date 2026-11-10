@@ -35,7 +35,7 @@ CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CString ToCString(const char* pszName, int nFlags);                     // undecorated class name
 
@@ -163,7 +163,7 @@ bool CInstrumentDataTable::LoadInstruments()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("instrument")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("instrument")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         InstrumentPtr spInstrument(new CInstrumentData(pNode));
         m_instruments.SetAt(spInstrument->m_nId, spInstrument);
@@ -186,7 +186,7 @@ bool CInstrumentDataTable::LoadCategories()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CategoryPtr spCategory(new CInstrumentCategoryData(pNode));
         m_categories.SetAt(spCategory->m_nId, spCategory);

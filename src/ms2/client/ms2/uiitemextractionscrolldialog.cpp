@@ -79,7 +79,7 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-int FUN_14053feb0(int nItemId);                             // the rarity of an item id
+int GetItemRank(int nItemId);                             // the rarity of an item id
 void FUN_140710590(COutPacket&);                            // send
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
@@ -121,7 +121,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_14()
 // @0x140e49900
 int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     void* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
@@ -137,7 +137,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
 // @0x140e499a0 (ITooltip::vfunc_0)
 int UIItemExtractionScrollDialog::Slot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -153,7 +153,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_0(void* p)
 // @0x140e49aa0
 int UIItemExtractionScrollDialog::Slot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)
@@ -182,7 +182,7 @@ void UnregisterSlotBag(const CString& strName)
     UIItemExtractionScrollDialog::SlotBag* pBag = FUN_140e4b840(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -237,7 +237,7 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
     UIDialog::vfunc_79(pPacket);
     if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x8f))
         return;
-    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() == 0x107)
+    if (static_cast<CInPacket*>(pPacket)->GetOpcode() == 0x107)
     {
         int nResult = static_cast<CInPacket*>(pPacket)->ReadUInt8();
         if (nResult == 0)
@@ -251,7 +251,7 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
             MS2Ptr<CItem> spResult = g_143ab2a90.FindItemByUid(nUidResult);
             if (spResult == 0)
                 return;
-            Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->FUN_140527870());
+            Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->GetProxy());
             if (pProxy == 0)
                 return;
             CItemTransfer* pTransfer = reinterpret_cast<CItemTransfer*>(spResult->GetTransfer());
@@ -345,13 +345,13 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         return;
     }
     MS2Ptr<CItem> spScroll(new CItem);
-    if (!spScroll->FUN_140523c40(spRow->m_nResultItemId, FUN_14053feb0(spRow->m_nResultItemId), 0))
+    if (!spScroll->FUN_140523c40(spRow->m_nResultItemId, GetItemRank(spRow->m_nResultItemId), 0))
         return;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spScroll->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spScroll->GetData()));
     if (spData == 0)
         return;
-    if (spScroll->FUN_140527870() != 0)
-        spScroll->FUN_140527870()->vfunc_3(spItem->FUN_140527870());
+    if (spScroll->GetProxy() != 0)
+        spScroll->GetProxy()->vfunc_3(spItem->GetProxy());
     spScroll->FUN_14052b370();
     MS2Ptr<CItemTransfer> spTransfer(reinterpret_cast<CItemTransfer*>(spScroll->GetTransfer()));
     if (spTransfer.get() != 0)

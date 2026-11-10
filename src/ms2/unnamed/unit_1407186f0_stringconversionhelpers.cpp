@@ -135,7 +135,7 @@ std::vector<int> ParseIntList(const CString& s) {
     return v;
 }
 // @0x140719010
-std::vector<unsigned int> FUN_140719010(const CString& s) {
+std::vector<unsigned int> ParseUIntList(const CString& s) {
     std::vector<unsigned int> v;
     XmlSplitImpl<unsigned>(s, v, ",");
     return v;
@@ -248,7 +248,7 @@ void* FUN_14071a2e0(void* p) { *(__int64*)p = 0; return p; }
 // MS2-PIN: ?_Move_from@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x14071a3f0 ; sfb: vector<int>::_Move_from
 // MS2-PIN: ?_Swap_all@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAXAEAV12@@Z 0x14071a4d0 ; sfb: _Vector_alloc<int>::_Swap_all
 // @0x14071a520
-CString FUN_14071a520(const CStringA& name) {
+CString GetPrecomputedTerrainPath(const CStringA& name) {
     CString s;
     s.Format("%s/%s.tok", "./Data/Resource/PrecomputedTerrain", (const char*)name);
     return s;

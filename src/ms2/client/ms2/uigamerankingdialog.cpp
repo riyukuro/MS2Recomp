@@ -167,13 +167,13 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(void*, const char*, CString&);
 int FUN_140873420(void*, const char*, CStringW&);
 
 // Texts.
-CStringW FUN_140298ea0(CStringW);                                       // localized string by key
+CStringW GetStringByKey(CStringW);                                       // localized string by key
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1401aa6a0(int);
 CString FUN_140719530(unsigned __int64);
@@ -203,7 +203,7 @@ int FUN_140b3f460(int nType);
 void* GetGameRule();   // C3: was GetGameRule
 class PCBase;
 class PC { public: CStringW& GetGuildName(); };
-class Unk_RankPlayerMgr { public: PCBase* FUN_141bd0cc0(); };
+class Unk_RankPlayerMgr { public: PCBase* GetLocalPlayer(); };
 UISwfEntityManager* GetUISwfEntityManager();
 
 
@@ -507,7 +507,7 @@ void UIGameRankingDialog::LoadGameRankingCategory()
     {
         CStringW strFeature;
         XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_RankCatPtr spCategory((Unk_RankNewTag(0)));
         XmlGetAttr((class TiXmlElement*)(pNode), "categoryid", spCategory->m_nId);
@@ -538,7 +538,7 @@ void UIGameRankingDialog::SelectFirstCategory()
 }
 
 #define RANK_ADD_TAB(box, key) \
-    (box)->Add(CreateRankTab(FUN_140298ea0(CStringW(key)), CStringW(L""), 0))
+    (box)->Add(CreateRankTab(GetStringByKey(CStringW(key)), CStringW(L""), 0))
 
 #define RANK_BOSS_TABS(box) \
     RANK_ADD_TAB(box, L"s_gameranking_tab_boss_maximum_join"); \
@@ -1023,7 +1023,7 @@ Unk_RankTabsPtr UIGameRankingDialog::GetCategoryTabs(Unk_RankCatPtr spCategory)
         if (aSeasons.GetCount() == 0)
         {
             TSingleton<CSeasonDataTable>::GetInstance()->GetRecent((SeasonRankType)nKind, aSeasons);
-            CStringW strOff = FUN_140298ea0(CStringW(L"s_gameranking_tab_off_season"));
+            CStringW strOff = GetStringByKey(CStringW(L"s_gameranking_tab_off_season"));
             spTabs->Add(CreateRankTab(strOff, CStringW(L""), 0));
         }
     }
@@ -1143,25 +1143,25 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
         if (nRank != 0)
             obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
         else
-            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", GetStringByKey(CStringW(L"s_gameranking_tab_no_rank")));
         break;
     case 1:
     case 5:
         if (nRank != 0)
         {
-            PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPc != 0)
             {
                 CStringW strGuild(reinterpret_cast<PC*>(pPc)->GetGuildName());
                 if (strGuild.IsEmpty())
-                    obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+                    obj.SetWStringMember("rankText", GetStringByKey(CStringW(L"s_gameranking_tab_no_rank")));
                 else
                     obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_guild_rank"), strGuild, nRank));
             }
         }
         else
         {
-            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", GetStringByKey(CStringW(L"s_gameranking_tab_no_rank")));
         }
         break;
     case 0xe:
@@ -1172,7 +1172,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
                 int nValue = nRank;
                 if (nValue >= 0)
                 {
-                    obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
+                    obj.SetWStringMember("rankText", GetStringByKey(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
                 }
                 else
                 {
@@ -1184,7 +1184,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
         if (nRank != 0)
             obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
         else
-            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", GetStringByKey(CStringW(L"s_gameranking_tab_no_rank")));
     }
 }
 
@@ -1361,10 +1361,10 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
     switch (nType)
     {
     case 0xc:
-        strText = FUN_140298ea0(CStringW(L"s_gameranking_characterinfo"));
+        strText = GetStringByKey(CStringW(L"s_gameranking_characterinfo"));
         break;
     default:
-        strText = FUN_140298ea0(CStringW(L"s_gameranking_party_member"));
+        strText = GetStringByKey(CStringW(L"s_gameranking_party_member"));
         break;
     }
     for (int i = 0; i < 10; i++)

@@ -15,7 +15,7 @@
 #include "ms2/client/ms2/roomtimermanager.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 class Unk_CadScript : public AScript { public: template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&,MS2Ptr<T>&); };
-void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
+void SetChildVisible(const Scaleform::GFx::Value&,CString,int);
 class Unk_TimerPlayer {public:static void* Get(){return TSingleton<RoomTimerManager>::s_instance;}};
 int GetServerTick();   // C3: was GetServerTick
 // The leaf was recovered first, before implementing this base.
@@ -87,7 +87,7 @@ void UITimerGaugeDialog::UpdateLapEffects(){
  for(Laps::iterator it=m_laps.begin();it!=m_laps.end();it++) {
  Lap& lap=it->second;if(lap.first==0)continue;
  bool active=false;if(elapsed<lap.second&&lap.second-elapsed<30000)active=true;
- FUN_140cff840((*lap.first).FUN_1422bb890(),"m_activateEffect",active);
+ SetChildVisible((*lap.first).FUN_1422bb890(),"m_activateEffect",active);
  }
 }
 MS2_REPLACE_METHOD(0x140EDF2B0, UITimerGaugeDialog, UpdateLapEffects, 450, 0xF7B3D086);
@@ -102,7 +102,7 @@ void UITimerGaugeDialog::CreateLapIcons(){
  for(Laps::iterator it=m_laps.begin();it!=m_laps.end();it++) {
  Lap& lap=it->second;if(lap.first.get())continue;
  lap.first.AssignRaw(new ASMovieClip(symbol,2));reinterpret_cast<MS2Ptr<ASDialog>*>(&m_90)->operator->()->AddChild((*lap.first).FUN_1422bb890());
- FUN_140cff840((*lap.first).FUN_1422bb890(),"m_activateEffect",false);SetLapIconPosition(lap.first,lap.second);
+ SetChildVisible((*lap.first).FUN_1422bb890(),"m_activateEffect",false);SetLapIconPosition(lap.first,lap.second);
  }
 }
 MS2_REPLACE_METHOD(0x140EDF530, UITimerGaugeDialog, CreateLapIcons, 658, 0x4E9FAE33);

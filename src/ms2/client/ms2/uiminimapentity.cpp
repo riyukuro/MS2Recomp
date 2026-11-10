@@ -153,7 +153,7 @@ public:
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CNpcData> FindNpcData(int nNpcId);                         // the npc table row
 
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 
 CStringW FUN_1401aa6a0(int nNpcId);                                 // the npc name
 CStringW FUN_14183e930(const CStringW& strText, unsigned nColor);       // a coloured text
@@ -174,7 +174,7 @@ CString GetNpcMovieName(unsigned nKind);                                  // the
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // a string table text by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 template <class T> T* Unk_GaGetUI();   // C3: was FUN_141386800
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CString SelectStringByQuestKind(MS2Ptr<class CQuestData> spQuest, const CString& sEpic, const CString& sWorld, const CString& sRepeat, const CString& sEvent);
 MS2Ptr<class CQuestData> GetQuestData(int nQuestId);
 void FUN_140710590(COutPacket& packet);
@@ -189,21 +189,21 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                     // a 
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410; the index of a value or -1
 extern ATL::CAtlArray<unsigned int> DAT_143ab3078;                     // the taxi stops the player has found
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
 int InitNpcMovieNames();
 extern int g_bAppActive;                                           // input enabled
 class UIEnterEventFieldDialog;
 class UIDTEventDialog;
 template <class T> T* FindCliDialog(int id);   // gameeventcli.cpp
-class Unk_UpperEvents                                            // UIEntityEventDispatcher (FUN_140c607b0)
+class Unk_UpperEvents                                            // UIEntityEventDispatcher (GetEntityEventDispatcher)
 {
 public:
     void FUN_1419308c0(UIEntityEventListener* pListener);           // register
     void FUN_141930950(UIEntityEventListener* pListener);           // unregister
 };
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
-UIQuestEventDispatcher* FUN_140bfc4b0();
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class Unk_Hud* GetUIServerEventDispatcher();   // C3: was GetUIServerEventDispatcher
 class ASDialog : public ASUIComponent {};                             // the dialog root clip (UIDialog::m_90)
 
@@ -412,11 +412,11 @@ int UIMinimapEntity::FindPortalNpc(const int& nField, bool& bSpecial, CString& s
     if (nNpcId > 0)
         return nNpcId;
     ATL::CAtlList<unsigned int> npcs(10);
-    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060(), nField, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->GetGroupNpcs(((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId(), nField, npcs);
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         int nId = npcs.GetAt(pos);
-        if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fba40(nId, nField)) {
-            MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nId);
+        if (TSingleton<CFieldMetaTable>::GetInstance()->IsNpcInField(nId, nField)) {
+            MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nId);
             if (spNpc == 0)
                 continue;
             if (HasNpcMinimapInfo(spNpc) && nNpcId == 0) {
@@ -548,7 +548,7 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
     if (m_type == 3) {
         strText = m_text;
     } else if (m_type == 4) {
-        MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+        MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
         if (pPC)
             strText = FormatStringId<CStringW>(0x70f, pPC->GetHomeAddress());
     } else if (m_type == 6) {
@@ -642,7 +642,7 @@ CStringW UIMinimapEntity::GetFriendHomeTooltip(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0)
         return L"";
-    CStringW strHome = CAddressTable::FormatChecked(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->FUN_1401cc350());
+    CStringW strHome = CAddressTable::FormatChecked(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->GetHomeName());
     return FUN_14028dfa0(L"s_worldmap_tooltip_friendhome", strHome);
 }
 MS2_REPLACE_METHOD(0x141a32ba0, UIMinimapEntity, GetFriendHomeTooltip, 390, 0x45717DE1);
@@ -724,7 +724,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             pDialog->FUN_141a3b4d0(nQuest, nCharId);
             if (nCharId == reinterpret_cast<__int64>(spProxy->GetCharacterId())) {
                 CStringW strKey = StringFormat<unsigned int>(L"s_minimap_tooltip_quest_target_{0}", nQuest);
-                strText = FUN_140298ea0(strKey);
+                strText = GetStringByKey(strKey);
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
@@ -802,7 +802,7 @@ void UIMinimapEntityProxyPortal::BuildHousingText(MS2Ptr<CPortal> spPortal, CStr
 {
     if (spPortal == 0)
         return;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     CStringW strLabel;
@@ -852,7 +852,7 @@ void UIMinimapEntityProxyPortal::BuildFieldText(MS2Ptr<CPortal> spPortal, CStrin
 {
     if (spPortal == 0)
         return;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     const int& nField = spPortal->FUN_14169d280();
@@ -862,11 +862,11 @@ void UIMinimapEntityProxyPortal::BuildFieldText(MS2Ptr<CPortal> spPortal, CStrin
     ATL::CAtlList<unsigned int> quests(10);
     ((class CQuestManager*)FUN_140764020())->FUN_1416d16c0(nField, quests);
     ATL::CAtlList<unsigned int> npcs(10);
-    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb900(((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060(), nField, npcs);
+    TSingleton<CFieldMetaTable>::GetInstance()->GetGroupNpcs(((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId(), nField, npcs);
     ATL::CAtlList<unsigned int> visible(10);
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned int nId = npcs.GetAt(pos);
-        if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fba40(nId, nField)) {
+        if (TSingleton<CFieldMetaTable>::GetInstance()->IsNpcInField(nId, nField)) {
             MS2Ptr<CNpcData> spNpc = FindNpcData(nId);
             if (spNpc.get() != 0 && HasNpcMinimapInfo(static_cast<CNpcData*>(spNpc)))
                 visible.AddTail(nId);
@@ -878,7 +878,7 @@ void UIMinimapEntityProxyPortal::BuildFieldText(MS2Ptr<CPortal> spPortal, CStrin
         ((class CQuestManager*)FUN_140764020())->GetNpcQuestState(nSelected, &guide, 0);
         strLabel = guide.m_text;
     } else {
-        MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nSelected);
+        MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nSelected);
         if (spNpc.get() != 0) {
             bool bMultiRow = false;
             CStringW strAlign = visible.GetCount() > 1 ? s_strLeft : s_strCenter;
@@ -907,7 +907,7 @@ void UIMinimapEntityProxyPortal::BuildFieldText(MS2Ptr<CPortal> spPortal, CStrin
                 bInclude = nId != nSelected;
             if (!bInclude)
                 continue;
-            MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nId);
+            MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nId);
             if (spNpc == 0)
                 continue;
             CStringW strTip = GetNpcTooltip(static_cast<NpcDataCli*>(spNpc), s_strLeft, false);
@@ -946,7 +946,7 @@ void UIMinimapEntityMapObject::GetText(CStringW& strText, ASObj& data)
         return;
     efd::utf8string strTooltip;
     m_entity->GetPropertyValue(0x794e257e, strTooltip);
-    strText = FUN_140298ea0(FUN_14016a730(strTooltip.c_str(), 0));
+    strText = GetStringByKey(FUN_14016a730(strTooltip.c_str(), 0));
 }
 MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 263, 0xD0921D42);
 
@@ -960,10 +960,10 @@ UIMinimapEntityTaxi::UIMinimapEntityTaxi(const efd::Point3& kPos)
 // @0x141a34890
 void UIMinimapEntityTaxi::Initialize(const efd::Point3& kPos)
 {
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
-    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
     m_state = Unk_ArrayFind(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), nField) >= 0 ? "enabled" : "disabled";
     if (TSingleton<CTaxiManager>::GetInstance()->FUN_14085f730(nField)) {
         if (pPC->GetHomePrivilege()->FUN_14050da30() == 0)
@@ -1047,11 +1047,11 @@ void UIMinimapEntityPing::UpdatePing(unsigned __int64 nId, int nColor, const efd
     if (nColor == 0) {
         m_clip->Invoke("OnNotice");
         m_clip->SetPositionFloat(kPos.x, kPos.y);
-        FUN_141276180(s_strRedPingSound, "");
+        PlaySystemSound(s_strRedPingSound, "");
     } else if (nColor == 1) {
         m_clip->Invoke("OnAlert");
         m_clip->SetPositionFloat(kPos.x, kPos.y);
-        FUN_141276180(s_strBluePingSound, "");
+        PlaySystemSound(s_strBluePingSound, "");
     }
     m_guideName = strName;
     m_text = strName;
@@ -1111,8 +1111,8 @@ void UIMinimapDialog::OnLoadComplete()
     FUN_141923680(1);
     BuildUIData();
     BuildField();
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);
-    FUN_140bfc4b0()->AddListener(this);
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_1419308c0(this);
+    GetQuestEventDispatcher()->AddListener(this);
     TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->AddListener(this);
@@ -1138,8 +1138,8 @@ void UIMinimapDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
-    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);
-    FUN_140bfc4b0()->RemoveListener(this);
+    ((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_141930950(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(this);
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->RemoveListener(this);
     ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->RemoveListener(this);
@@ -1355,10 +1355,10 @@ int UIMinimapDialog::vfunc_13()
         return 0;
     if (m_1fa && g_bAppActive == 0) {
         OnTabKeyUp();
-    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49407, 0, 0)) {
+    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x49407, 0, 0)) {
         if (!reinterpret_cast<GFxManager*>(GetGFxManager())->IsTextFieldFocused(m_28))
             OnTabKeyDown();
-    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x49407, 0, 0)) {
+    } else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyReleased(0x49407, 0, 0)) {
         OnTabKeyUp();
     }
     return 0;
@@ -1381,7 +1381,7 @@ void UIMinimapDialog::vfunc_79(void* p)
     UIDialog::vfunc_79(p);
     if (vfunc_55() || m_30.IsNull())
         return;
-    switch (static_cast<CInPacket*>(p)->FUN_14070fe80()) {
+    switch (static_cast<CInPacket*>(p)->GetOpcode()) {
     case 0x10:
         if (m_30.IsNull())
             return;
@@ -1401,7 +1401,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (strTarget == "m_fieldname") {
         ASTooltip tooltip(1, 2);
         {
-            int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+            int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
             MS2Ptr<CFieldDataCli> spData = CFieldDataCli::Find(nField);
             if (!spData)
                 return;
@@ -1622,7 +1622,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
         return;
     int nField = spBuddy->FUN_1401cc3e0();
     if (static_cast<unsigned int>(nField) > 0) {
-        int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+        int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
         if (nCurrent == nField) {
             EntityPtr spEntity(0);
             if (m_buddies.Lookup(nId, spEntity))
@@ -1888,11 +1888,11 @@ MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 19, 0x7CB65D04);
 // @0x141a39e60
 void UIMinimapDialog::FUN_141a39e60()
 {
-    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
     if (!TSingleton<CTaxiManager>::GetInstance()->FUN_14085f730(nField))
         return;
     bool bDisabled = false;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0 || pPC->GetHomePrivilege()->FUN_14050da30() == 0)
         bDisabled = true;
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
@@ -1925,7 +1925,7 @@ void UIMinimapDialog::FUN_141a3a200()
     if (spTaxi == 0)
         return;
     bool bBest = false;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC != 0)
         bBest = FUN_141b71c00((unsigned short)pPC->vfunc_78()) == 1;
     spTaxi->m_text = bBest ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
@@ -1947,7 +1947,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4);
 };
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -1969,7 +1969,7 @@ inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46a60(const char* szMethod, S
     ASArgList args;
     args.resize(2);
     SetValue(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1979,7 +1979,7 @@ inline Scaleform::GFx::Value AScript::FUN_141a46b60(const char* szMethod, Scalef
     ASArgList args;
     args.resize(2);
     SetValue(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2014,7 +2014,7 @@ void UIMinimapDialog::UpdateReturn(bool bRemove)
         bool bShouldRemove = bRemove;
         if (!bRemove) {
             bShouldRemove = true;
-            MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+            MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
             if (pPC != 0) {
                 efd::Point3 kPos = efd::Point3::ZERO;
                 if (pPC->GetHomePosition(kPos)) {
@@ -2396,7 +2396,7 @@ void UIMinimapDialog::UpdatePlayerVisibility()
 {
     if (m_30 == 0)
         return;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     bool bVisible = true;
@@ -2520,7 +2520,7 @@ bool UIMinimapDialog::IsBossIcon(const CString& strIcon)
 // @0x141a45ce0
 bool UIMinimapDialog::IsPingAllowed()
 {
-    bool bAllow = WorldService::GetInstance()->FUN_141bd30a0()->m_bMinimapPing;
+    bool bAllow = WorldService::GetInstance()->GetFieldData()->m_bMinimapPing;
     if (bAllow)
         return true;
     return false;
@@ -2539,12 +2539,12 @@ CStringW UIMinimapDialog::GetQuestGuideText(const int& nId, int nKind)
 }
 MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, GetQuestGuideText, 151, 0xFEC1B993);
 
-void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
+void EncodeVector3(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 
 // @0x141a45020
 void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
 {
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     if (m_30 == 0)
@@ -2557,7 +2557,7 @@ void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
         COutPacket packet(static_cast<int>(SendOp::MinimapPing), 0);
         packet.Encode8(pPC->FUN_141656a80());
         packet.Encode1((unsigned char)nKind);
-        FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kPos));
+        EncodeVector3(&packet, reinterpret_cast<const Vector3*>(&kPos));
         FUN_140710590(packet);
     }
 }
@@ -2609,7 +2609,7 @@ bool UIMinimapDialog::IsProxyVisible(ProxyPtr spProxy)
     if (spProxy == 0)
         return false;
     if (spProxy->FUN_1416c2b70()) {
-        Unk_MmActor* pActor = reinterpret_cast<Unk_MmActor*>(WorldService::GetInstance()->FUN_141bd1320(spProxy->m_proxyId));
+        Unk_MmActor* pActor = reinterpret_cast<Unk_MmActor*>(WorldService::GetInstance()->FindNpcById(spProxy->m_proxyId));
         if (pActor != 0)
             return pActor->FUN_14123c660() == 0;
     }
@@ -2697,7 +2697,7 @@ MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, GetPlayerHeading, 425, 0x27EB49
 void UIMinimapDialog::BuildField()
 {
     RemoveField();
-    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nField);
     if (static_cast<bool>(spField.get())) {
         if (static_cast<bool>(spField->m_spMinimap.get())) {
@@ -2729,7 +2729,7 @@ MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, BuildTaxi, 475, 0x65BF49F1);
 // @0x141a3dda0
 void UIMinimapDialog::BuildReturn()
 {
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC != 0) {
         efd::Point3 kPos = efd::Point3::ZERO;
         if (pPC->GetHomePosition(kPos)) {
@@ -2747,7 +2747,7 @@ void UIMinimapDialog::BuildReturn()
 // @0x141a3e2d0
 void UIMinimapDialog::AddBuddyHome(MS2Ptr<CBuddy> spBuddy)
 {
-    if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
+    if (spBuddy == 0 || !spBuddy->IsFriend())
         return;
     Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
     if (spBuddy->FUN_1401cc400(&kPos)) {
@@ -2766,11 +2766,11 @@ void UIMinimapDialog::BuildBuddyHomes()
 {
     ATL::CAtlArray<MS2Ptr<CBuddy> > buddies;
     TSingleton<CBuddyManager>::GetInstance()->GetAllBuddies(buddies);
-    int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<CBuddy> spBuddy = buddies[i];
-        if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
+        if (spBuddy == 0 || !spBuddy->IsFriend())
             continue;
         int nField = spBuddy->FUN_1401cc3e0();
         if (static_cast<unsigned int>(nField) > 0) {
@@ -2862,7 +2862,7 @@ void UIMinimapDialog::BuildTriggers()
 }
 MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, BuildTriggers, 567, 0xD23B9533);
 
-void FUN_1401d3700(CString& str);                                    // normalises the symbol name
+void ToLower(CString& str);                                    // normalises the symbol name
 
 // @0x141a3f1c0
 void UIMinimapDialog::BuildMapObjects()
@@ -2880,7 +2880,7 @@ void UIMinimapDialog::BuildMapObjects()
             spObject->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
             spObject->GetPropertyValue(0x6814a50e, strIcon);
             CString strSymbol(strIcon.c_str());
-            FUN_1401d3700(strSymbol);
+            ToLower(strSymbol);
             EntityPtr spEntity = new UIMinimapEntityMapObject(nId, spObject);
             spEntity->m_icon = strSymbol;
             spEntity->m_layer = s_strLayerInteract;
@@ -2902,7 +2902,7 @@ void UIMinimapDialog::BuildEntities()
     if (m_30 == 0)
         return;
     RemoveAllEntities();
-    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+    int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
     ATL::CAtlArray<ProxyPtr> portals;
     ATL::CAtlMap<unsigned int, ProxyPtr>& proxies = *(ATL::CAtlMap<unsigned int, ProxyPtr>*)WorldService::GetInstance()->FUN_141bc9fb0();   // C3: WorldService (worldservice.h)
     for (POSITION pos = proxies.GetStartPosition(); pos != 0; proxies.GetNext(pos)) {
@@ -2979,7 +2979,7 @@ void UIMinimapDialog::RefreshLocalPlayer(EntityPtr spEntity)
 {
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     if (m_viewport == 0)
@@ -3125,15 +3125,15 @@ void UIMinimapDialog::RefreshOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
         spClip = spEntity->m_clip;
     }
     bool bVisible = true;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC != 0) {
-        int nPkMode = WorldService::GetInstance()->FUN_141bd30a0()->GetPkMode();
+        int nPkMode = WorldService::GetInstance()->GetFieldData()->GetPkMode();
         if (nPkMode != 0) {
             bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->GetCharacterId()) == 1 : false;
         } else {
             MS2Ptr<CPvPInfo> spPvP = pPC->GetPvPInfo();
             if (spPvP.get() != 0) {
-                if (spPvP->FUN_1407435d0() || spPvP->IsOnePunchMode()) {
+                if (spPvP->IsMode2() || spPvP->IsOnePunchMode()) {
                     __int64 nCharId = reinterpret_cast<__int64>(spProxy->GetCharacterId());
                     PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0) {
@@ -3154,7 +3154,7 @@ void UIMinimapDialog::RefreshOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
                             }
                         }
                     }
-                } else if (spPvP->FUN_140743610()) {
+                } else if (spPvP->IsMode3()) {
                     PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0) {
                         bVisible = pOther->GetPvPInfo()->GetPoint() == pPC->GetPvPInfo()->GetPoint();
@@ -3163,7 +3163,7 @@ void UIMinimapDialog::RefreshOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
                             spClip->vfunc_15(strTeam);
                         }
                     }
-                } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
+                } else if (spPvP->IsMode1() || spPvP->IsMode10()) {
                     PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0)
                         bVisible = pOther->FUN_141674bc0() == 0;
@@ -3194,7 +3194,7 @@ void UIMinimapDialog::UpdateOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     __int64 nId = reinterpret_cast<__int64>(spProxy->GetCharacterId());
@@ -3304,13 +3304,13 @@ void UIMinimapDialog::UpdatePortal(ProxyPtr spProxy, EntityPtr spEntity, bool bI
             return;
     }
     if (bInit) {
-        int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
+        int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldId();
         if (nDest == nField)
             return;
         spEntity->SetFromPortal(spPortal);
         spEntity->m_position = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(spPortal->GetPosition()));
     }
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
     if (!bHousing) {
@@ -3362,7 +3362,7 @@ void UIMinimapDialog::UpdateNamed(MS2Ptr<CInteractObject> spObject, EntityPtr sp
 // @0x141a44850
 bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool b)
 {
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return false;
     CString strIcon;
@@ -3408,7 +3408,7 @@ bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool 
 // @0x141a44c00
 bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3)
 {
-    MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
+    MyPC* pPC = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return false;
     CStringW strText;
@@ -3458,7 +3458,7 @@ void UIMinimapDialog::BuildUIData()
     if (m_30 == 0)
         return;
     bool bForceMinimize = true;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_spMinimap.get()))
         bForceMinimize = spField->m_nMinimapInvisible != 0 || spField->m_spMinimap->m_strImageName.IsEmpty();
     m_forceMinimize = bForceMinimize;

@@ -42,7 +42,7 @@ MinimapViewport::MinimapViewport()
 unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
 {
     ResetScale();
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_MvWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_MvWorld*>(WorldService::GetInstance())->GetFieldData();
     if (spField ? true : false)
     {
         if (spField->m_spMinimap ? true : false)

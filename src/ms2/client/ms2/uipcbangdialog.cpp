@@ -71,11 +71,11 @@ template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world service: the local player
+class Unk_PcBangWorld { public: PCBase* GetLocalPlayer(); };     // the world service: the local player
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 int GetServerTick();   // C3: was GetServerTick
@@ -90,7 +90,7 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
 template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
 void ShowSystemNotice(const CStringW& strText, int nA, int nB);    // system chat notice
-int FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strExtra);   // play a UI sound
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // pop a system message
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show the message box
@@ -98,7 +98,7 @@ void FUN_1409e2ed0(Scaleform::GFx::Value* pRetVal, ItemAble& item);   // the too
 void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned nItemId, unsigned nRank, unsigned nCount);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strLabel);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
 
 
@@ -158,7 +158,7 @@ void UIPcBangDialog::OnLoadInit()
         MS2Ptr<ASButton> spButton = spRow->FUN_140acce30<ASButton>("itemGetButton");
         if (spButton == 0)
             break;
-        spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickItemGet), (void*)(__int64)i);   // the row index, sign-extended
+        spButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickItemGet), (void*)(__int64)i);   // the row index, sign-extended
         m_getButtons.Add(spButton);
         m_rows.Add(spRow);
     }
@@ -189,7 +189,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     CString strType = pArgs->FUN_1422b8d30();
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if ((strType == "giftItem"))
@@ -203,7 +203,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         {
             spItem->SetCountClamped(spGift->m_count);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-            ASTooltip tip(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 4, 2);
+            ASTooltip tip(((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 4, 2);
             if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
                 *pRetVal = tip.GetValue();
         }
@@ -326,7 +326,7 @@ void UIPcBangDialog::OnPacketPlayed(CInPacket& packet)
     ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
     if (nIndex >= m_playBonus.GetCount())
         return;
-    FUN_141276180(Unk_SocketFormat<unsigned>(s_strGiftSound, nIndex), "");
+    PlaySystemSound(Unk_SocketFormat<unsigned>(s_strGiftSound, nIndex), "");
 }
 MS2_REPLACE_METHOD(0x1413244D0, UIPcBangDialog, OnPacketPlayed, 463, 0xC1B82850);
 
@@ -344,10 +344,10 @@ void UIPcBangDialog::OnPacketReward(CInPacket& packet)
         if (!spItem->FUN_140523c40(spGift->m_itemId, spGift->vfunc_o18_1(), 0))
             return;
         spItem->SetCountClamped(spGift->m_count);
-        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+        spBox->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
         spBox->SetButtonLabelIds(0x475, 0, 0);
         FUN_140d73c60(spBox);
-        FUN_141276180(s_strBuySound, "");
+        PlaySystemSound(s_strBuySound, "");
     }
 }
 MS2_REPLACE_METHOD(0x1413246B0, UIPcBangDialog, OnPacketReward, 909, 0xC06E72E2);
@@ -532,7 +532,7 @@ void UIPcBangDialog::UpdateProgress()
         else
             bEnable = false;
         m_getButtons[i]->vfunc_4(bEnable);
-        FUN_140cff840(row, "isGetItem", m_received[i]);
+        SetChildVisible(row, "isGetItem", m_received[i]);
     }
 }
 MS2_REPLACE_METHOD(0x141325670, UIPcBangDialog, UpdateProgress, 725, 0x612D0622);
@@ -596,7 +596,7 @@ void UIPcBangDialog::ResetInfo()
     m_nGrade = 0;
     m_nStartTime = 0;
     m_nPlayTime = 0;
-    m_received.FUN_140b91330();             // none(), result unused: the bonus bits are NOT cleared here
+    m_received.IsNone();             // none(), result unused: the bonus bits are NOT cleared here
     m_strBanner = "";
     m_nBuffId = 0;
     m_playBonus.RemoveAll();
@@ -649,7 +649,7 @@ struct Unk_PcBangGiftLevelLess
 // @0x141326040
 void UIPcBangDialog::RebuildGiftOrder()
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_bGiftOrderDirty == 0)

@@ -51,7 +51,7 @@ static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "C
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> RankClickDelegate;
 #include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
 class Unk_PCBaseBuffs : public AdditionalCliList {};
-class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
+class Unk_RankWorld { public: PCBase* GetLocalPlayer(); };          // the local player
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
 UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
 class UIWebBrowser* FindWebBrowser(int nUiId);                       // GetDialog
@@ -81,7 +81,7 @@ MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, 
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the message box
 void ShowSystemNotice(const CStringW& text, int nA, int nB);           // notice
 void FUN_14151f200();                                               // close the open modal box
-int FUN_1413499b0(int);   // C3: was FUN_1413499b0
+int ToggleShopTab(int);   // C3: was ToggleShopTab
 bool SendPacketThrottled(COutPacket* packet, int key, int delay);         // rate limited send
 bool FUN_14028d780(unsigned char b);
 int UserDataToInt(void* p);                                         // the click's user data
@@ -123,9 +123,9 @@ void UIRankPvPDialog::OnLoadComplete()
     m_shopButton = GetChild<ASButton>("m_shopButton");
     m_registerPage = GetChild<ASMovieClip>("m_registerPage");
     m_statisticsPage = GetChild<ASMovieClip>("m_statisticsPage");
-    m_registMenu->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), 0);
-    m_statisticsMenu->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), (void*)1);
-    m_shopButton->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95220), 0);
+    m_registMenu->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), 0);
+    m_statisticsMenu->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95090), (void*)1);
+    m_shopButton->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95220), 0);
     if (m_registerPage)
     {
         m_register = m_registerPage->FUN_140acce30<ASButton>("m_register");
@@ -139,10 +139,10 @@ void UIRankPvPDialog::OnLoadComplete()
         m_rating = m_registerPage->FUN_1409b4620("m_rating");
         m_rankMark = m_registerPage->FUN_1409b4560("m_rankMark");
         m_observeCheck->SetSelected(((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->GetEtc())->m_observer);
-        m_register->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
-        m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
-        m_showGrade->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
-        m_observeCheck->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95630), 0);
+        m_register->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
+        m_unregister->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
+        m_showGrade->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
+        m_observeCheck->AddClickHandler(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95630), 0);
         m_gaugeWidth = m_gauge->GetWidthCeil();
     }
     if (m_statisticsPage)
@@ -429,7 +429,7 @@ void UIRankPvPDialog::FUN_140f95220(const Scaleform::GFx::FunctionHandler::Param
 {
     if (m_30 == 0)
         return;
-    FUN_1413499b0(3);
+    ToggleShopTab(3);
 }
 MS2_REPLACE_METHOD(0x140F95220, UIRankPvPDialog, FUN_140f95220, 57, 0x6E32C22F);
 
@@ -491,7 +491,7 @@ void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Param
         UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FindWebBrowser(0x4e6a));
         if (pBrowser == 0)
             return;
-        pBrowser->FUN_14135ec00("maview:/Rank/PVP", true);
+        pBrowser->Navigate("maview:/Rank/PVP", true);
     }
 }
 MS2_REPLACE_METHOD(0x140F95550, UIRankPvPDialog, FUN_140f95550, 215, 0x466CFA9B);
@@ -518,7 +518,7 @@ bool UIRankPvPDialog::FUN_140f95750()
         ShowMessageBox(GetStringCommon(0x428), 0, 0, CStringW(L""));
         return false;
     }
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (pPlayer->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)

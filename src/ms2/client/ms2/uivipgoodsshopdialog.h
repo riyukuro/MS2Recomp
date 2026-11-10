@@ -47,12 +47,12 @@ public:
     virtual void vfunc_79(void* pPacket);                           // 79 0x140fba7a0 packet 0xeb: the bought goods (3), a buy result (4)
 
     void FUN_140fbb940(std::vector<MS2Ptr<CVIPGoods> >& rOut);      // 0x140fbb940 collect the goods that are on sale (and bought where limited)
-    int FUN_140fbbe00(int nPriceType);                              // 0x140fbbe00 the pay type of a price type
+    int GetPayType(int nPriceType);                              // 0x140fbbe00 the pay type of a price type
     void RefreshGoodsList();                                           // 0x140fbaca0 fill the goods list of the movie
     void OnClickBuyGoods(int nGoodsId);                               // 0x140fbbae0 "onClickBuyGoods": check the limit, open the bill
-    void FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods);                  // 0x140fbbe40 open the bill dialog for a goods row
+    void OpenBillDialog(MS2Ptr<CVIPGoods> spGoods);                  // 0x140fbbe40 open the bill dialog for a goods row
     bool SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x140fbcca0 the buy callback
-    bool FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam);   // 0x140fbce80 the bill tooltip callback
+    bool BuildBillTooltip(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam);   // 0x140fbce80 the bill tooltip callback
 
 private:
     MS2_LAYOUT_FRIEND;

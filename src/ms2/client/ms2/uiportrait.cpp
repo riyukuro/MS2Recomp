@@ -27,7 +27,7 @@ public:
 };
 
 class Unk_PortraitClock;
-void FUN_14107b010();                                           // refreshes the sun direction constants
+void RefreshSunDirection();                                           // refreshes the sun direction constants
 void SetSunDirection(efd::Point3 const&);   // C3: was FUN_14107b050
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene graph
 void SetUnlightable(NiAVObject* pNode);
@@ -79,7 +79,7 @@ MS2_REPLACE_METHOD(0x141A905F0, UIPortrait, vfunc_2, 483, 0xECD7ABD9);
 // @0x141a907e0
 void UIPortrait::vfunc_3()
 {
-    FUN_14107b010();
+    RefreshSunDirection();
 }
 MS2_REPLACE_METHOD(0x141A907E0, UIPortrait, vfunc_3, 19, 0x3D92B46E);
 

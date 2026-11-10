@@ -16,10 +16,10 @@ public:
     CubeItemInfo(int itemId, __int64 instanceId, __int64 count, CUgcItemLook* pLook);   // 0x1408b3520
     CubeItemInfo(CInPacket& packet);                                                     // 0x1408b3630 (reads the item)
     virtual ~CubeItemInfo();
-    void FUN_1408b3700(const CubeItemInfo*);                                             // copy
-    void FUN_1408b3810();                                                                // clear
+    void CopyFrom(const CubeItemInfo*);                                             // copy
+    void Clear();                                                                // clear
     int FUN_1408b3860() const;                                                           // valid (item + downloaded look)
-    int FUN_1408b38c0(const CubeItemInfo* pOther) const;                                 // same cube item
+    int IsSameItem(const CubeItemInfo* pOther) const;                                 // same cube item
     void FUN_1408b39c0(COutPacket& packet) const;                                        // write
     void FUN_1408b3aa0(CInPacket& packet);                                               // read
     void FUN_1408b3c30(COutputStream& stream) const;                                     // write

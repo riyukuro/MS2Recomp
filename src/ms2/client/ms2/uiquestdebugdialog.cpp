@@ -32,7 +32,7 @@
 #include <atlfile.h>
 
 // Unit-local declarations, pending recovery of the quest data and AS wrapper units.
-class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
+class UIQuestEventDispatcher* GetQuestEventDispatcher();   // C3: was GetQuestEventDispatcher
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 class Unk_QuestDebugAccess : public CInputKeyHandler {};
@@ -107,12 +107,12 @@ UIQuestDebugDialog::UIQuestDebugDialog()
     m_refresh = 0;
     m_40 = 1;
     FUN_1422dc3b0(1);
-    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->AddListener(this);
+    ((class UIQuestEventDispatcher*)GetQuestEventDispatcher())->AddListener(this);
 }
 // @0x141a92fd0
 UIQuestDebugDialog::~UIQuestDebugDialog()
 {
-    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->RemoveListener(this);
+    ((class UIQuestEventDispatcher*)GetQuestEventDispatcher())->RemoveListener(this);
 }
 // @0x141a930a0
 CString UIQuestDebugDialog::GetTypeName() { return "QuestDebugDialog"; }
@@ -171,7 +171,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             unsigned int id = data.PopUInt();
             MS2Ptr<CQuestData> quest = GetQuestData(id);
             if (quest.IsNull()) return 1;
-            void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
+            void* actor = WorldService::GetInstance()->GetLocalPlayer();
             if (!actor) return 1;
             if (MS2Ptr<ASTextArea> desc = GetChild<ASTextArea>("m_desc")) {
                 CStringW text;
@@ -413,7 +413,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
 {
     if (vfunc_55()) return;
     if ((ASScrollingList*)m_quests) m_quests->SetSelectedIndex(-1);
-    void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* actor = WorldService::GetInstance()->GetLocalPlayer();
     if (!actor) return;
     int minLevel = 0;
     if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchLevelMin")) minLevel = _wtoi(input->GetText());

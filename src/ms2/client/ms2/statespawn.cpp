@@ -25,7 +25,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 float GetAnimationDuration(const egf::EntityID& kKey, CString strAnim);           // 0x14099eb30 the animation length (the callee destroys the name)
-bool FUN_14028d470(float a, float b);                                      // approx equal
+bool IsNearlyEqual(float a, float b);                                      // approx equal
 
 // The mount's proxy handle (PCBase +0xd50, returned by value) and the entry it resolves to (the spawn effect path at +0x550).
 struct Unk_SpawnEntry
@@ -98,7 +98,7 @@ void StateSpawn::vfunc_3(double fTime)
     if (m_timer.IsRunning() != 0)
         return;
 
-    if (FUN_14028d470(m_fElapsed, 0))
+    if (IsNearlyEqual(m_fElapsed, 0))
     {
         m_pOwner->RemoveHideReason(10);
         if (m_spSpawn.get() != 0)

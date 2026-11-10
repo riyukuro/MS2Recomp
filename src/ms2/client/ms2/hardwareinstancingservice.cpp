@@ -557,7 +557,7 @@ MS2_REPLACE_METHOD(0x1413D4490, HardwareInstancingService, OnPreInit, 127, 0x5C2
 efd::AsyncResult HardwareInstancingService::OnInit()
 {
     GetMessageService()->Subscribe(this, s_catEntityChannel, 0, false);
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x1413D4520, HardwareInstancingService, OnInit, 119, 0x716913E8);

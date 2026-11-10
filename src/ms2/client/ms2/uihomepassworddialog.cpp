@@ -83,7 +83,7 @@ void UIHomePasswordDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.IsNull() != 0)
         return;
-    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor != 0)
     {
         Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->GetUGCMapInfo());
@@ -142,7 +142,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp("OnStop", szMethod) == 0)
     {
-        Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pActor != 0)
         {
             Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->GetUGCMapInfo());
@@ -198,7 +198,7 @@ void UIHomePasswordDialog::SetPassword(CString strPassword)
 // @0x1412c96d0
 void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int nUnused)
 {
-    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor != 0)
     {
         Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->GetUGCMapInfo());

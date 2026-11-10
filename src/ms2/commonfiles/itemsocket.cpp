@@ -19,8 +19,8 @@
 class Unk_ItemOwnerRef : public CItemTransfer {};
 __int64 GetServerTime();                        // the current server time
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_14053feb0(int nItemId);                 // the rank of an item
-bool FUN_140635b90(unsigned nFlags, unsigned nFlag);
+int GetItemRank(int nItemId);                 // the rank of an item
+bool HasFlags(unsigned nFlags, unsigned nFlag);
 template<class Map> void CopyEnchantMap(Map& to, const Map& from);   // itemoptiondata.cpp
 // The option table (CItemOptionTable; GetItemOptionTable returns the singleton).
 class CItemOptionTable { public: bool ApplyConstantOptions(class MS2Ptr<class CItemOption>, int, int); }; class Unk_140166430 : public CItemOptionTable {};
@@ -186,7 +186,7 @@ bool TSocketGemStoneInfo::SetLockFromItem(MS2Ptr<CItem> spGem)
     if (spGem == 0 || !spGem->FUN_140528e20())
         return false;
     __int64 nExpireTime = spGem->GetUnlockTime();
-    int nState = spGem->FUN_140528ca0();
+    int nState = spGem->GetLockState();
     return TrySetLock(nState, nExpireTime);
 }
 
@@ -707,9 +707,9 @@ int CItemSocket::IsGemTradeable(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocke
 {
     if (spInfo.get() != 0 && (spInfo->IsBound() || spInfo->IsLocked()))
         return false;
-    int nType = FUN_14053feb0(pGemData->GetItemId());
+    int nType = GetItemRank(pGemData->GetItemId());
     unsigned nFlags = CItemTransfer::ComputeRule(pGemData->limit.transferType, pGemData, nType);
-    if (!FUN_140635b90(nFlags, 4))
+    if (!HasFlags(nFlags, 4))
         return false;
     return true;
 }
@@ -747,9 +747,9 @@ int CItemSocket::FUN_1406224d0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocket
 {
     if (spInfo.get() != 0 && (spInfo->IsBound() || spInfo->IsLocked()))
         return false;
-    int nType = FUN_14053feb0(pGemData->GetItemId());
+    int nType = GetItemRank(pGemData->GetItemId());
     unsigned nFlags = CItemTransfer::ComputeRule(pGemData->limit.transferType, pGemData, nType);
-    if (!FUN_140635b90(nFlags, 4))
+    if (!HasFlags(nFlags, 4))
         return false;
     return true;
 }
@@ -921,7 +921,7 @@ void CItemSocket::RebuildStats()
         MS2Ptr<CItemOption> spOption(new CItemOption(nGemId));
         if (spOption == 0)
             continue;
-        int nRank = FUN_14053feb0(nGemId);
+        int nRank = GetItemRank(nGemId);
         GetItemOptionTable()->ApplyConstantOptions(spOption, nGemId, nRank);
         AccumulateStatOptions(spOption);
         AccumulateSpecialOptions(spOption);

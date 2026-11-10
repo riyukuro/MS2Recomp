@@ -178,7 +178,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nPage, in
 bool FUN_140930d70();                                     // the quick slots are synced to the server
 void FUN_141275260(int nNotice, int a, int b);            // a system notice by id
 void ShowSystemNotice(const CStringW& strText, int a, int b);   // a system notice
-int FUN_141276180(const CString& strSound, const CString& strArg);   // play a ui sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);   // play a ui sound
 CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text
 CStringW GetStringCommon(int nStringId);                    // string table text by id
 bool FUN_140614800(const Scaleform::GFx::Value& fn);
@@ -207,7 +207,7 @@ void AddCooldownKeys(ATL::CAtlArray<CString>* pArr, int nSkillId);
 CString FUN_140719190(int n);
 CString FUN_140719530(unsigned __int64 n);
 bool FUN_14028d780(unsigned char n);
-int FUN_14053feb0(int nItemId);
+int GetItemRank(int nItemId);
 void FUN_140d73bc0(int nNoticeId, int a, void* pListener, CStringW str);
 
 // AScript as the function object: invoke with an ASArgList.
@@ -221,10 +221,10 @@ public:
     Scaleform::GFx::Value FUN_141762190(bool bShow, int nCount);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned n);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value kValue);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 
 class Unk_SsDragMgr
 {
@@ -410,7 +410,7 @@ int SkillSlot::vfunc_13()
     }
     else
     {
-        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
         if (pPc != 0)
         {
             if (spItem->CanUseAtLevel((unsigned short)pPc->vfunc_78()) == 0)
@@ -427,7 +427,7 @@ int SkillSlot::vfunc_13()
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spSkill.IsNull())
             return 0;
-        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
         if (pPc == 0)
             return 0;
         if (static_cast<MyPC*>(pPc)->GetSkillSystem()->GetSkillSet() == 0)
@@ -435,7 +435,7 @@ int SkillSlot::vfunc_13()
             MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<Unk_SsSkillBook*>(reinterpret_cast<PC*>(pPc)->GetJobSystem())->vfunc_1(nSkillId);
             if (spLevel.IsNull())
                 return 0;
-            if (spLevel->FUN_140804450())
+            if (spLevel->HasSequenceName())
             {
                 ShowSystemNotice(GetStringCommonByKey(L"s_err_invalid_shortkey_code"), 1, 1);
                 return 0;
@@ -565,11 +565,11 @@ int SkillSlot::vfunc_18(void* p)
                 __int64 nItemUid = reinterpret_cast<InvenSlot*>(pInvSlot)->GetItemUid();
                 int nItemId = reinterpret_cast<InvenSlot*>(pInvSlot)->GetItemId();
                 MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
-                if (spItem.get() != 0 && spItem->FUN_140527840()->FUN_14053e460())
+                if (spItem.get() != 0 && spItem->GetData()->FUN_14053e460())
                 {
                     int bUsable = 1;
-                    nSkillId = FUN_141769320(MS2Ptr<CItemData>(spItem->FUN_140527840()));
-                    if (spItem->FUN_140527840()->IsRideItem())
+                    nSkillId = FUN_141769320(MS2Ptr<CItemData>(spItem->GetData()));
+                    if (spItem->GetData()->IsRideItem())
                     {
                         if (spItem->HasCubeTextureMesh() != 0 && spItem->HasUgcId() == 0)
                         {
@@ -581,7 +581,7 @@ int SkillSlot::vfunc_18(void* p)
                     {
                         nItemId = 0;
                         nItemUid = 0;
-                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
                         if (pPc != 0)
                         {
                             if (static_cast<MyPC*>(static_cast<PC*>(pPc))->FUN_14152f860(spItem->GetItemId()) == 0)
@@ -621,13 +621,13 @@ int SkillSlot::vfunc_18(void* p)
                             break;
                         if (((class CItemLapenshardTable*)GetLapenshardTable())->GetEquipMask(spItem->GetItemId()) != 1)
                             break;
-                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+                        Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
                         if (pPc == 0)
                             break;
                         if (static_cast<MyPC*>(static_cast<PC*>(pPc))->FUN_14152f860(spItem->GetItemId()) == 0)
                             break;
                         int nPage = ((class CKeyTable*)GetKeyTable())->FUN_140a700b0();
-                        int nSkillId = spItem->FUN_140527840()->GetSkillId();
+                        int nSkillId = spItem->GetData()->GetSkillId();
                         if (FUN_14092f690(nSkillId, 0, 0, nPage, GetIndex()) == 0)
                             break;
                         SetSkillId(nSkillId);
@@ -648,7 +648,7 @@ int SkillSlot::vfunc_20()
 {
     {
         CString strArg("");
-        FUN_141276180(s_strButtonClickB, strArg);
+        PlaySystemSound(s_strButtonClickB, strArg);
     }
     reinterpret_cast<Unk_SsDragMgr*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_3(this);
     return 1;
@@ -659,7 +659,7 @@ int SkillSlot::vfunc_21()
 {
     {
         CString strArg("");
-        FUN_141276180(s_strButtonClickA, strArg);
+        PlaySystemSound(s_strButtonClickA, strArg);
     }
     reinterpret_cast<Unk_SsDragMgr*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_4(this);
     return 1;
@@ -719,8 +719,8 @@ int SkillSlot::vfunc_0(void* p)
     int nSkillId = GetEffectiveSkillId();
     if (spItem.operator!() && m_nItemId != 0)
     {
-        int nRarity = FUN_14053feb0(m_nItemId);
-        ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())), 0x40, 2);
+        int nRarity = GetItemRank(m_nItemId);
+        ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())), 0x40, 2);
         if (tip.FUN_1409e1770(m_nItemId, nRarity) != 0)
         {
             if (IsFixed() == 0)
@@ -731,11 +731,11 @@ int SkillSlot::vfunc_0(void* p)
     }
     else
     {
-        if ((spItem.get() ? true : false) && spItem->FUN_140527840()->FUN_14053e460())
+        if ((spItem.get() ? true : false) && spItem->GetData()->FUN_14053e460())
         {
-            if (((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
+            if (((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) != 0)
             {
-                ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())), 0x40, 2);
+                ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())), 0x40, 2);
                 if (tip.FUN_1409e0d40(spItem.get()) != 0)
                 {
                     if (IsFixed() == 0)
@@ -766,7 +766,7 @@ int SkillSlot::vfunc_0(void* p)
                 }
                 else
                 {
-                    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+                    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
                     if (pPc != 0)
                     {
                         unsigned short nLevel = 1;
@@ -794,7 +794,7 @@ int SkillSlot::vfunc_8(void* p)
 {
     float fTotal = GetCooldownDuration();
     float fRemain = FUN_141760b90();
-    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc != 0 && m_nSkillId != 0)
     {
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(m_nSkillId);
@@ -1089,7 +1089,7 @@ CStringW SkillSlot::GetDisplayName()
             bItem = true;
         else
             bItem = false;
-        if (bItem && spItem->FUN_140527840()->FUN_14053e460())
+        if (bItem && spItem->GetData()->FUN_14053e460())
             str = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_nItemId);
         else
             str = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, m_nSkillId);
@@ -1146,7 +1146,7 @@ int SkillSlot::GetRechargeRemainingCount()
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill.get() != 0 && spSkill->GetRechargeMaxCount() > 0)
     {
-        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+        PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
         if (pPc == 0)
             return 0;
         return static_cast<MyPC*>(pPc)->GetSkillSystem()->GetRechargeRemainCount(spSkill.get());
@@ -1249,7 +1249,7 @@ __int64 SkillSlot::FUN_141760a10()
 // @0x141760a30
 float SkillSlot::GetCooldownDuration()
 {
-    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc == 0)
         return 0;
     int nSkillId = GetEffectiveSkillId();
@@ -1270,7 +1270,7 @@ float SkillSlot::GetCooldownDuration()
 // @0x141760b90
 float SkillSlot::FUN_141760b90()
 {
-    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc == 0)
         return 0;
     int nSkillId = GetEffectiveSkillId();
@@ -1282,7 +1282,7 @@ float SkillSlot::FUN_141760b90()
 // @0x141760c00
 int SkillSlot::IsDisabled()
 {
-    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc == 0)
         return 1;
     if (m_nItemId != 0)
@@ -1299,7 +1299,7 @@ int SkillSlot::IsDisabled()
             return 1;
         if (spItem->CanUseAtLevel((unsigned short)pPc->vfunc_78()) == 0)
             return 1;
-        if (!spItem->FUN_140527840()->FUN_14053e460())
+        if (!spItem->GetData()->FUN_14053e460())
             return 1;
         return 0;
     }
@@ -1322,7 +1322,7 @@ int SkillSlot::IsDisabled()
     {
         if (static_cast<MyPC*>(pPc)->GetSkillSystem()->GetSkillSet() == 0)
         {
-            if (spLevel->FUN_140804450())
+            if (spLevel->HasSequenceName())
                 return 1;
         }
     }
@@ -1331,7 +1331,7 @@ int SkillSlot::IsDisabled()
         MS2Ptr<CItem> spItem = vfunc_25();
         if (spItem.get() != 0)
         {
-            if (spItem->FUN_140527840()->IsRideItem())
+            if (spItem->GetData()->IsRideItem())
             {
                 if (!WorldService::GetInstance()->FUN_141bcb210())
                     return 1;
@@ -1340,9 +1340,9 @@ int SkillSlot::IsDisabled()
             }
             else
             {
-                if (spItem->FUN_140527840()->IsPetItem())
+                if (spItem->GetData()->IsPetItem())
                 {
-                    bool bNoField = WorldService::GetInstance()->FUN_141bd30a0()->m_nUsePet == 0;
+                    bool bNoField = WorldService::GetInstance()->GetFieldData()->m_nUsePet == 0;
                     if (bNoField)
                         return 1;
                     if ((int)GetItemCount(1) <= 0)
@@ -1382,7 +1382,7 @@ int SkillSlot::IsDisabled()
 // @0x141761530
 int SkillSlot::FUN_141761530(MS2Ptr<SkillData>* pOut)
 {
-    Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    Unk_SsPc* pPc = static_cast<Unk_SsPc*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc == 0)
         return 0;
     if (m_nSkillId == 0)
@@ -1448,7 +1448,7 @@ int SkillSlot::HasKeyBinding()
 // @0x141761a10
 int SkillSlot::IsInSkillSet()
 {
-    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPc == 0)
         return 0;
     MS2Ptr<CSkillSet> spSet = static_cast<MyPC*>(pPc)->GetSkillSystem()->GetSkillSet();
@@ -1513,8 +1513,8 @@ Scaleform::GFx::Value Unk_SsFn::FUN_141761eb0(unsigned nElement, CString strIcon
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bcd10(&args[0], nElement);
-    FUN_1422bce70(&args[1], (const char*)strIcon);
+    SetUInt(&args[0], nElement);
+    SetString(&args[1], (const char*)strIcon);
     FUN_1422bccb0(&args[2], nGray);
     FUN_1422bccb0(&args[3], nFlag);
     return FUN_1422bb9f0(args);
@@ -1525,7 +1525,7 @@ Scaleform::GFx::Value Unk_SsFn::FUN_141761fc0(CString strIcon, int nGray, int nF
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], (const char*)strIcon);
+    SetString(&args[0], (const char*)strIcon);
     FUN_1422bccb0(&args[1], nGray);
     FUN_1422bccb0(&args[2], nFlag);
     return FUN_1422bb9f0(args);
@@ -1545,7 +1545,7 @@ Scaleform::GFx::Value Unk_SsFn::FUN_141762190(bool bShow, int nCount)
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcce0(&args[0], bShow);
+    SetBoolean(&args[0], bShow);
     FUN_1422bccb0(&args[1], nCount);
     return FUN_1422bb9f0(args);
 }
@@ -1567,7 +1567,7 @@ void FUN_1417634a0(const CString& strName)
     SkillSlotBag* pBag = FUN_141763cb0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cc9e0();
+        reinterpret_cast<DragSlotBag*>(pBag)->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -1688,7 +1688,7 @@ extern float DAT_143aea120;                               // the equip stat 0x23
 int GetServerTick();   // C3: was GetServerTick
 __int64 FUN_14028d260(float fTime);                       // seconds to milliseconds (C3: the definition's __int64 return, read as int)
 float FUN_14028d280(unsigned uMilliseconds);              // milliseconds to seconds
-bool FUN_14028d470(float a, float b);                     // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);                     // a == b (within epsilon)
 class Unk_SsBody;
 class CPhysXHelper { public: int GetGroundDistance(const efd::Point3& pPos, float* pOut, float fRange); };
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
@@ -1929,7 +1929,7 @@ float CSkillSystem::FUN_141765fe0(int nSkillId, int bIgnoreCombo)
             if (bIgnoreCombo != 0 && 0.0f < rCool.m_fCombo)
                 break;
             float fRemain = rCool.GetRemain();
-            if (!FUN_14028d470(fRemain, 0))
+            if (!IsNearlyEqual(fRemain, 0))
                 return fRemain;
         } while (0);
     }
@@ -1944,7 +1944,7 @@ float CSkillSystem::FUN_141765fe0(int nSkillId, int bIgnoreCombo)
             if (nGroup == spSkill->m_nCooldownGroupID)
             {
                 float fRemain = rCool.GetRemain();
-                if (!FUN_14028d470(fRemain, 0))
+                if (!IsNearlyEqual(fRemain, 0))
                     return fRemain;
             }
         }
@@ -1967,7 +1967,7 @@ int CSkillSystem::FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int
             if (bIgnoreCombo != 0 && 0.0f < rCool.m_fCombo)
                 break;
             float fRemain = rCool.GetRemain();
-            if (!FUN_14028d470(fRemain, 0))
+            if (!IsNearlyEqual(fRemain, 0))
             {
                 *pRemain = fRemain;
                 *pTotal = rCool.GetTotal();
@@ -1987,7 +1987,7 @@ int CSkillSystem::FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int
             if (nGroup == spSkill->m_nCooldownGroupID)
             {
                 float fRemain = rCool.GetRemain();
-                if (!FUN_14028d470(fRemain, 0))
+                if (!IsNearlyEqual(fRemain, 0))
                 {
                     *pRemain = fRemain;
                     *pTotal = rCool.GetTotal();
@@ -2048,7 +2048,7 @@ int CSkillSystem::GetCastSkillId(SkillData* pData)
         if (pRideeBody != 0)
             pBody = pRideeBody;
     }
-    if ((pBody != 0 && reinterpret_cast<GameObjectController*>(pBody)->IsJumping() != 0 && reinterpret_cast<GameObjectController*>(pBody)->FUN_1412407a0() != 0) || m_pOwner->vfunc_99(0) != 0)
+    if ((pBody != 0 && reinterpret_cast<GameObjectController*>(pBody)->IsJumping() != 0 && reinterpret_cast<GameObjectController*>(pBody)->IsRising() != 0) || m_pOwner->vfunc_99(0) != 0)
         return pData->m_nJump;
     return pData->GetId();
 }
@@ -2070,7 +2070,7 @@ MS2Ptr<SkillLevelData> CSkillSystem::FUN_141764c80(int nSkillId)
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill == 0)
         return MS2Ptr<SkillLevelData>(nullptr);
-    if (spSkill->FUN_1407e9d30())
+    if (spSkill->IsEmotion())
     {
         MS2Ptr<stEmotion> spEmotion = FUN_14176ba90(nSkillId);
         if (spEmotion == 0)
@@ -2086,7 +2086,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
     if (!reinterpret_cast<Unk_SsSkillBook*>(reinterpret_cast<PC*>(m_pOwner)->GetJobSystem())->vfunc_2(kReq.m_nSkillId))
     {
         ShowSystemNotice(GetStringCommonByKey(L"s_err_not_learn_skill"), 1, 1);
-        FUN_141276180(DAT_143aea1b8, "");
+        PlaySystemSound(DAT_143aea1b8, "");
         return MS2Ptr<CSkillRecord>(nullptr);
     }
     __int64 nItemUid = ((CKeyTable*)GetKeyTable())->GetQuickSlotItemUidByKey(kReq.m_n34);
@@ -2130,7 +2130,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
             return MS2Ptr<CSkillRecord>(nullptr);
         kReq.m_nSkillId = nDefaultId;
         kReq.m_nLevel = spDefaultLevel->GetLevel();
-        kReq.m_b38 = spDefaultLevel->FUN_140804450();
+        kReq.m_b38 = spDefaultLevel->HasSequenceName();
         spRecord = CreateSkillRecord(kReq);
         if (spRecord.get() != 0)
             spRecord->m_nA8 = nOrigin;
@@ -2292,10 +2292,10 @@ void CSkillSystem::FUN_1417664e0(unsigned nStart, int nSkillId, float fCool, flo
         }
         fCool = (fCool - fFlat) - fCool * fRate < 0.0f ? 0.0f : (fCool - fFlat) - fCool * fRate;
     }
-    if (FUN_14028d470(0, fCool))
+    if (IsNearlyEqual(0, fCool))
         fExtra = fCombo;
     fCool = fCool + fExtra;
-    if (FUN_14028d470(fCool, 0))
+    if (IsNearlyEqual(fCool, 0))
         return;
     Unk_SkillCooltime kCool(nStart, fCool);
     kCool.m_nKey = spSkill->GetCooldownKey();
@@ -2342,7 +2342,7 @@ void CSkillSystem::Update(float fDelta)
 // @0x141766cc0
 void CSkillSystem::FUN_141766cc0(MS2Ptr<CSkillRecord> spRecord)
 {
-    if (!spRecord->m_spLevel->FUN_140804450())
+    if (!spRecord->m_spLevel->HasSequenceName())
     {
         m_fLastCastTime = (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
         m_nLastCastSkill = spRecord->GetSkillId();
@@ -2743,7 +2743,7 @@ void CSkillSystem::FUN_141768a50()
         if (nUses > 0)
         {
             unsigned nRechargeId = m_mapUses.GetKeyAt(pos);
-            if (FUN_14028d470(FUN_141765fe0(nRechargeId, 0), 0))
+            if (IsNearlyEqual(FUN_141765fe0(nRechargeId, 0), 0))
             {
                 MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<Unk_SsSkillBook*>(reinterpret_cast<PC*>(m_pOwner)->GetJobSystem())->vfunc_1(nRechargeId);
                 if (spLevel.get() != 0)
@@ -2913,30 +2913,30 @@ void CSkillSystem::FUN_141769440(int nError)
         break;
     case 6:
         FUN_141275260(0x47, 1, 0);
-        FUN_141276180(DAT_143aea1c0, "");
+        PlaySystemSound(DAT_143aea1c0, "");
         break;
     case 7:
         FUN_141275260(0x48, 1, 0);
-        FUN_141276180(DAT_143aea1c8, "");
+        PlaySystemSound(DAT_143aea1c8, "");
         break;
     case 14:
         FUN_141275260(0x59, 1, 0);
         break;
     case 15:
         FUN_141275260(0x53, 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 16:
         FUN_141275260(0x53, 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 17:
         ShowSystemNotice(BlockFormat(0x5f), 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 19:
         ShowSystemNotice(BlockFormat(0x61), 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 20:
         FUN_141275260(0x57, 1, 0);
@@ -2949,7 +2949,7 @@ void CSkillSystem::FUN_141769440(int nError)
         break;
     case 23:
         FUN_141275260(0x53, 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 24:
         FUN_141275260(0x59, 1, 0);
@@ -2968,27 +2968,27 @@ void CSkillSystem::FUN_141769440(int nError)
         break;
     case 27:
         FUN_141275260(0x53, 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 28:
         FUN_141275260(0x45d, 1, 0);
-        FUN_141276180(DAT_143aea1d8, "");
+        PlaySystemSound(DAT_143aea1d8, "");
         break;
     case 29:
         ShowSystemNotice(GetStringCommonByKey(L"s_err_cannot_use_here_pet_trap"), 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 30:
         FUN_141275260(0x59, 1, 0);
-        FUN_141276180(DAT_143aea1e0, "");
+        PlaySystemSound(DAT_143aea1e0, "");
         break;
     case 31:
         FUN_141275260(0x59, 1, 0);
-        FUN_141276180(DAT_143aea1e0, "");
+        PlaySystemSound(DAT_143aea1e0, "");
         break;
     case 32:
         ShowSystemNotice(GetStringCommonByKey(L"s_err_not_allow_pvpField"), 1, 0);
-        FUN_141276180(DAT_143aea1d0, "");
+        PlaySystemSound(DAT_143aea1d0, "");
         break;
     case 18:
         FUN_141275260(0x528, 1, 0);
@@ -3008,9 +3008,9 @@ void CSkillSystem::FUN_141769440(int nError)
 // @0x141769b70
 int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq)
 {
-    if ((unsigned)(unsigned char)pReq->m_b38 != spLevel->FUN_140804450())
+    if ((unsigned)(unsigned char)pReq->m_b38 != spLevel->HasSequenceName())
         return 1;
-    if (spLevel->FUN_140804450())
+    if (spLevel->HasSequenceName())
     {
         Unk_SsBody* pBody = reinterpret_cast<Unk_SsBody*>(m_pOwner->GetPhysicsBody());
         efd::SmartPointer<Ridee> spRidee(m_pOwner->GetRidee());
@@ -3023,7 +3023,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         int nFlag = 0;
         if (pBody != 0)
         {
-            nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping() && reinterpret_cast<GameObjectController*>(pBody)->FUN_1412407a0();
+            nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping() && reinterpret_cast<GameObjectController*>(pBody)->IsRising();
             static int s_nFlyCast = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)GetClientConstants())->m_kFlyCast));
             if (s_nFlyCast != 0)
                 nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping();
@@ -3110,7 +3110,7 @@ int CSkillSystem::FUN_14176a530(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
 {
     if (spLevel->m_nEp != 0)
     {
-        if (WorldService::GetInstance()->FUN_141bd30a0()->m_nUseEPSkill == 0)
+        if (WorldService::GetInstance()->GetFieldData()->m_nUseEPSkill == 0)
             return 3;
     }
     if (spLevel->m_nMeso > DAT_143ab2898)
@@ -3149,7 +3149,7 @@ int CSkillSystem::FUN_14176a530(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
 // @0x14176a8c0
 int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pReq)
 {
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap == 0)
         return 0xd;
     SkillCondition& rCond = pData->m_condition;
@@ -3160,7 +3160,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         {
             MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(pReq->m_n40);
             if (spItem.get() != 0)
-                nGlideId = spItem->FUN_140527840()->FUN_14053dde0();
+                nGlideId = spItem->GetData()->GetGlideItemId();
         }
         MS2Ptr<SkillGlideData> spGlide = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetGlideData(nGlideId);
         if (spGlide == 0)
@@ -3214,19 +3214,19 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
     }
     if (rCond.m_nOnlyShadowWorld != 0)
     {
-        bool bNotShadow = reinterpret_cast<CFieldData*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->GetShadowContinent() == 0;
+        bool bNotShadow = reinterpret_cast<CFieldData*>(WorldService::GetInstance()->GetFieldData().operator->())->GetShadowContinent() == 0;
         if (bNotShadow)
             return 0x15;
     }
     if (rCond.m_nOnlyFlyableMap != 0)
     {
-        bool bNotFly = WorldService::GetInstance()->FUN_141bd30a0()->m_nCheckFly == 0;
+        bool bNotFly = WorldService::GetInstance()->GetFieldData()->m_nCheckFly == 0;
         if (bNotFly)
             return 0x16;
     }
     if (!rCond.m_arrRequireMapCodes.IsEmpty())
     {
-        int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+        int nMapId = WorldService::GetInstance()->GetFieldId();
         int bFound = 0;
         for (unsigned i = 0; i < rCond.m_arrRequireMapCodes.GetCount(); i = i + 1)
         {
@@ -3264,7 +3264,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         return 0xb;
     if (m_pOwner->GetLapenshardSkillLevel(pData->GetId()) > 0)
     {
-        if (CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060()))
+        if (CFieldData::FUN_1403744a0(WorldService::GetInstance()->GetFieldId()))
             return 0x1b;
     }
     ATL::CAtlArray<Unk_SkillWeapon>& rWeapons = rCond.m_arrWeapon;
@@ -3331,7 +3331,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         CItem* pHeld = reinterpret_cast<CItem*>(reinterpret_cast<Unk_SsPc*>(m_pOwner)->GetHeldItem());
         if (pHeld == 0)
             return 0x21;
-        if (pHeld->FUN_140527840()->FUN_14053dc90() != (int)pData->GetId())
+        if (pHeld->GetData()->FUN_14053dc90() != (int)pData->GetId())
             return 0x21;
     }
     if (m_pOwner->IsDead() != 0)

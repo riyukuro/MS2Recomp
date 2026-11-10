@@ -1054,7 +1054,7 @@ void CameraMgr::FUN_140aeb1a0()
         for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); ++i)
         {
             Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick->GetPickResult()->GetAt(i));
-            Unk_CameraPickObject* pObject = ((class Unk_CameraPickObject*)((class WorldService*)(class Unk_GameContext*)(pContext))->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
+            Unk_CameraPickObject* pObject = ((class Unk_CameraPickObject*)((class WorldService*)(class Unk_GameContext*)(pContext))->FindObjectByMesh(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             pNpc = reinterpret_cast<GameObject*>(FUN_140a38a00(reinterpret_cast<Unk_BossObject*>(pObject)));
             if (pNpc)
                 break;
@@ -1132,7 +1132,7 @@ void CameraMgr::FUN_140aec8a0(bool bKeep)
             if (pMode)
                 pMode->vfunc_36(reinterpret_cast<Unk_CameraPreset*>((CMapCameraData*)m_spMapCameraData));
         }
-        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
         if (spField->m_nUseDummyTarget)
             FUN_140aeb730(reinterpret_cast<const efd::Point3&>(spField->m_vecDummyTargetPos));
     }
@@ -1180,7 +1180,7 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                     m_27c = false;
                     FUN_140aeb920();
                     FUN_140aed260();
-                    SetTarget(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 1);
+                    SetTarget(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->GetLocalPlayer()), 1);
                     WorldService::GetInstance()->FUN_141bdb5a0(0);
                     if (pTarget)
                         pTarget->FUN_14183cc80(0);
@@ -1735,7 +1735,7 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
             {
                 m_setups.clear();
                 m_290.clear();
-                LoadMapLocalTargetCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3060());
+                LoadMapLocalTargetCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->GetFieldId());
             }
             DWORD nId = pMode->FUN_140af7e10();
             std::vector<Unk_CameraSetup>& setups = m_setups[nId];
@@ -1829,7 +1829,7 @@ void CameraMgr::FUN_140aec4c0()
     {
         FUN_140aeb920();
         FUN_140aed260();
-        LoadMapCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd3060());
+        LoadMapCamera(((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->GetFieldId());
         egf::EntityID id = egf::EntityIDFactory::GetNextID();
         egf::EntityPtr spEntity = TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity((const char*)FUN_140af80c0(), id, true);
         if (reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*() != 0)
@@ -1859,7 +1859,7 @@ MS2_REPLACE_METHOD(0x140AEC4C0, CameraMgr, FUN_140aec4c0, 971, 0xEBD98476);
 // @0x140aebb30
 void CameraMgr::LoadMapCamera(unsigned int nMapId)
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField == 0)
         return;
     m_spMapCameraData.AssignRaw(new CMapCameraData());
@@ -2323,7 +2323,7 @@ void CameraMgr::FUN_140af1f70()
         {
             m_spMode->vfunc_11(m_effect.m_fFOV);
             FUN_140af1a90();
-            SetTarget(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 1);
+            SetTarget(((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->GetLocalPlayer()), 1);
         }
         else
         {

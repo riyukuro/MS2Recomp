@@ -11,7 +11,7 @@
 // MS2-PIN: ??_7NxSphereShapeDesc@@6B@ 0x142e3ddc0
 // MS2-PIN: ??0Unk_UbVec3@@QEAA@AEBVNiPoint3@@@Z 0x14027dcf0
 // MS2-PIN: ??0Unk_UbVec3@@QEAA@AEBVPoint3@efd@@@Z 0x14027dcf0
-// C3: the point writer is FUN_14020af60 (pointer form) everywhere
+// C3: the point writer is EncodeVector3 (pointer form) everywhere
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ugcballobject.cpp"
 #define NOMINMAX
 #include "ms2/placeholder/ms2stdafx.h"
@@ -30,12 +30,12 @@
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 extern __int64 DAT_143ab2828;                                       // my character id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
+void EncodeVector3(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 struct Unk_UtilFloat3;
 void FUN_140710590(COutPacket& packet);                             // send
 struct Unk_UbPoint { float x, y, z; };                         // plain three-float point (no ctor)
 struct Unk_PayloadPoint { Unk_PayloadPoint(); float values[3]; }; struct Unk_PayloadReader { template<class T> T ReadPoint(); };   // C3: unit_1401f9eb0's packet reader (ReadPoint 0x140204500); was Unk_UbPointReader
-NxVec3 FUN_141b6e0e0(const efd::Point3& kPt);               // Point3 -> NxVec3 (C3: was const Vector3&)
+NxVec3 Point3ToNxVec3(const efd::Point3& kPt);               // Point3 -> NxVec3 (C3: was const Vector3&)
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);          // NxVec3 -> Point3 (the definer's signature)
 struct Unk_UbBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion (NiPoint3(const efd::Point3&), 0x14027dcf0)
 {
@@ -108,7 +108,7 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
 {
     if (m_pActor == 0)
         return 1;
-    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return 1;
     reinterpret_cast<Unk_UbBoxView*>(m_spBox.operator->())->vfunc_3(static_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())), static_cast<const efd::Point3&>(NiPoint3::ZERO), 1.0f);
@@ -124,8 +124,8 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
         packet.Encode1(7);
         packet.Encode1(3);
         packet.Encode4(GetObjectId());
-        FUN_14020af60(&packet, &kForce);
-        FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kDir));
+        EncodeVector3(&packet, &kForce);
+        EncodeVector3(&packet, reinterpret_cast<const Vector3*>(&kDir));
         FUN_140710590(packet);
     }
     return 1;
@@ -259,9 +259,9 @@ void CUGCBallObject::vfunc_53(float f)
         packet.Encode1(7);
         packet.Encode1(2);
         packet.Encode4(GetObjectId());
-        FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kNiPos));
-        FUN_14020af60(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kLinVel))));
-        FUN_14020af60(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kAngVel))));
+        EncodeVector3(&packet, reinterpret_cast<const Vector3*>(&kNiPos));
+        EncodeVector3(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kLinVel))));
+        EncodeVector3(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kAngVel))));
         FUN_140710590(packet);
         m_nLastSend = nTick;
     }
@@ -275,9 +275,9 @@ void CUGCBallObject::FUN_140dee050(CInPacket* pPacket)
         return;
     if (m_pActor == 0)
         return;
-    NxVec3 kPos = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0()))) / 100.0f;
-    NxVec3 kVel = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
-    NxVec3 kAngVel = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
+    NxVec3 kPos = Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0()))) / 100.0f;
+    NxVec3 kVel = Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
+    NxVec3 kAngVel = Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
     ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     NxVec3 kGlobal = m_pActor->getGlobalPosition();
     m_vVel += kGlobal - kPos;
@@ -298,7 +298,7 @@ void CUGCBallObject::FUN_140dee220(CInPacket* pPacket)
     Vector3 kAt = pPacket->FUN_1407140d0();
     Vector3 kPos = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())) - (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAt) * m_fRadius)) / 100.0f));
     ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
-    m_pActor->addForceAtPos(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kForce)), FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kPos)), NX_FORCE, true);
+    m_pActor->addForceAtPos(Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(kForce)), Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(kPos)), NX_FORCE, true);
     ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
@@ -328,7 +328,7 @@ void FUN_140dee4a0(CInPacket& packet)
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
         if (!pBall->Init(nOwner, nObjectId, reinterpret_cast<Unk_UbPoint&>(kPos), fRadius))
             break;
-        if (!pWorld->FUN_141bbb1e0(pBall, 0, 1))
+        if (!pWorld->OnObjectCreated(pBall, 0, 1))
             break;
         break;
     }

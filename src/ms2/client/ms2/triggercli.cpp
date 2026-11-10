@@ -43,7 +43,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 // tinyxml writer / reader helpers (the same ones the other trigger units use)
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 int FUN_140873420(TiXmlElement* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
-void FUN_1401d3700(CString& s);
+void ToLower(CString& s);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);   // attribute or the default
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // path join
 
@@ -156,7 +156,7 @@ int TriggerCli::LoadFile(const CString& strPath)
     if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     CString strNorm(strPath);
-    FUN_1401d3700(strNorm);
+    ToLower(strNorm);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {

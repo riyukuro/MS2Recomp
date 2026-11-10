@@ -260,7 +260,7 @@ public:
     void FUN_1422d49f0();
     void FUN_1422d4b70(bool);
     void FUN_1422d4d10();
-    void FUN_1422d4a30(bool b);              // C3: the real member
+    void SetEnabled(bool b);              // C3: the real member
     void SetInputTakenCallback(int (*pfn)());        // C3: the real member
 };
 void FUN_140d73cd0();
@@ -316,7 +316,7 @@ class Unk_UisSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    class UISceneEntity* FUN_1422b9e50();
+    class UISceneEntity* GetSubSceneOrScene();
     int FUN_1422b9ea0();
     class UISceneEntity* GetScene();
     int GetSubSceneId();
@@ -487,7 +487,7 @@ void XmlSetAttr(TiXmlElement* pElem, const char* szName, int nValue);        // 
 
 
 CString GetCharacterFolder();                                                     // the user data folder
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);       // path join
+CString JoinPath(const CString& strRoot, const CString& strFile);       // path join
 void FUN_141b70290();
 
 // @0x141ad9350
@@ -503,7 +503,7 @@ MS2_REPLACE_METHOD(0x141ad9350, CUIService, ClearAllUI, 79, 0xD2BAAC08);
 // @0x141ad9650
 void CUIService::LoadBackgroundMovie()
 {
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->GetFieldData();
     if (spField == 0)
         return;
     if (spField->m_nFieldID == 1 && TSingleton<LoginBgBgmTable>::GetInstance() != 0)
@@ -579,7 +579,7 @@ void CUIService::CheckVersionFile()
 {
     {
         TiXmlDocument kDoc;
-        bool bLoaded = kDoc.LoadFile(FUN_140cc2a00(GetCharacterFolder(), "version.xml"), TIXML_ENCODING_UNKNOWN);
+        bool bLoaded = kDoc.LoadFile(JoinPath(GetCharacterFolder(), "version.xml"), TIXML_ENCODING_UNKNOWN);
         if (bLoaded)
         {
             TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&kDoc))->FirstChild("ms2"));
@@ -601,7 +601,7 @@ void CUIService::CheckVersionFile()
     TiXmlElement* pRoot = new TiXmlElement("ms2");
     XmlSetAttr(pRoot, "version", 0x15);
     ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&kDoc))->LinkEndChild((class TiXmlNode*)(pRoot)));
-    kDoc.SaveFile(FUN_140cc2a00(GetCharacterFolder(), "version.xml"));
+    kDoc.SaveFile(JoinPath(GetCharacterFolder(), "version.xml"));
 }
 MS2_REPLACE_METHOD(0x141ad93b0, CUIService, CheckVersionFile, 655, 0x104E5C39);
 
@@ -721,7 +721,7 @@ void CUIService::FUN_141ad9e50(int nScene)
         FUN_141adbd60(0);
         if (FUN_1412755a0() != 0)
             return;
-        PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->GetLocalPlayer());
         if (!pPlayer)
             return;
         m_listOpen.AddTail((eUIClassID)0x4e29);
@@ -1072,7 +1072,7 @@ void CUIService::FUN_141adbbb0()
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
         {
             bool bOn = ((class Unk_C2UiMgr*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1410af770();
-            PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pPlayer)
             {
                 if (Unk_UisSlot23* p = static_cast<Unk_UisSlot23*>(((void*)((class PC*)(class PCBase*)(pPlayer))->GetConstructionGuide())))
@@ -1215,7 +1215,7 @@ MS2_REPLACE_METHOD(0x141adbca0, CUIService, SetMoviesVisible, 35, 0x3F0A8ADB);
 void CUIService::FUN_141adbcd0(char b)
 {
     if (((void*)GetUISwfEntityManager()) != 0)
-        GetUISwfEntityManager()->FUN_1422d4a30(reinterpret_cast<bool&>(b));
+        GetUISwfEntityManager()->SetEnabled(reinterpret_cast<bool&>(b));
 }
 MS2_REPLACE_METHOD(0x141adbcd0, CUIService, FUN_141adbcd0, 46, 0x858157CF);
 
@@ -1286,7 +1286,7 @@ void CUIService::FUN_141adb810()
 {
     if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
     {
-        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
+        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene());
         if (pScene != 0)
         {
             if (pScene->vfunc_62() == 0)
@@ -1301,7 +1301,7 @@ MS2_REPLACE_METHOD(0x141adb810, CUIService, FUN_141adb810, 105, 0x5CD42794);
 // @0x141adb880
 void CUIService::FUN_141adb880()
 {
-    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
+    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene());
     if (pScene != 0)
     {
         if (pScene->vfunc_63() == 0)
@@ -1417,7 +1417,7 @@ int CUIService::GetValidMode()
     if (nMode != 0x3ed)
     {
         UIObject* pDlg = FindUIObject(nMode);
-        if (pDlg == 0 || pDlg->FUN_1422dba00() == 0)
+        if (pDlg == 0 || pDlg->GetScript() == 0)
             SetMode(0x3ed);
         nMode = GetMode();
     }
@@ -1485,7 +1485,7 @@ int CUIService::GetFieldNameId()
 {
     if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() != 0)
         return 0;
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->GetFieldData();
     if (!spField)
         return 0;
     return spField->m_nFieldName;
@@ -1678,7 +1678,7 @@ MS2_REPLACE_METHOD(0x141adc9e0, CUIService, FUN_141adc9e0, 123, 0xB9DBFA3E);
 // @0x141adca70
 void CUIService::RefreshTooltip()
 {
-    PCBase* pPC = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(GetMovie(2));
@@ -1858,7 +1858,7 @@ void* FUN_141aee920();
 int IsFlagSet(void* pDlg, int n);
 void FUN_141aee3b0(void* p, int n);
 bool FUN_1401d1320(void* pCache);
-class Unk_140e45740* FUN_140e45740();   // C3: the definition's return type
+class Unk_140e45740* GetAlignWidgetManager();   // C3: the definition's return type
 void ClearRenderClicks(void* p);
 }
 
@@ -1885,7 +1885,7 @@ efd::AsyncResult CUIService::OnInit()
     NiDX9Renderer* pEvt = (NiDX9Renderer*)NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     pEvt->AddResetNotificationFunc(&CUIService::OnDeviceReset, this);
     pEvt->AddLostDeviceNotificationFunc(&CUIService::OnDeviceLost, this);
-    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
     reinterpret_cast<CGameMenuTable*>(FUN_141aee920())->Init();
     return efd::AsyncResult_Complete;
 }
@@ -1938,8 +1938,8 @@ efd::AsyncResult CUIService::OnTick()
     FUN_141aec9c0();
     if (FUN_1401d1320(&m_cache))
     {
-        ((UIAlignWidgetManager*)FUN_140e45740())->LoadWidgets();
-        ((UIAlignWidgetManager*)FUN_140e45740())->RequestLayout(1);
+        ((UIAlignWidgetManager*)GetAlignWidgetManager())->LoadWidgets();
+        ((UIAlignWidgetManager*)GetAlignWidgetManager())->RequestLayout(1);
         m_cache.SetPath(m_strTable);
     }
     return efd::AsyncResult_Pending;
@@ -2771,7 +2771,7 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14116d7a0(unsigned int);
-    bool FUN_14116d840();
+    bool IsEscapePressed();
     bool IsKeyDown(int, bool, int);
     bool WasKeyPressed(int, bool, int);
 };
@@ -2790,12 +2790,12 @@ int FUN_141adda20()
         TSingleton<CUIService>::GetInstance()->RebuildSceneUI();
         return 1;
     }
-    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840() && ((class Unk_C2UiMgr*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1410af770() && nScene == 0x620001d)
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsEscapePressed() && ((class Unk_C2UiMgr*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1410af770() && nScene == 0x620001d)
     {
-        GetUISwfEntityManager()->FUN_1422d4a30(false);
+        GetUISwfEntityManager()->SetEnabled(false);
         return 1;
     }
-    if (nScene == 0x620001d && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840())
+    if (nScene == 0x620001d && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsEscapePressed())
         return FUN_1418fcb70();
     return 0;
 }
@@ -2941,9 +2941,9 @@ void CUIService::FUN_141aec9c0()
         if (pService->FUN_141adbe00(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())->m_fValue, 0) != 0)
             static_cast<Unk_UisSlot6*>(((void*)GetUISwfEntityManager()))->vfunc_6();
         if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetScene()))
-            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
-        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50()))
-            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
+            ((class UISwfEntity*)(void*)(pScene))->LoadSwfPath(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->GetLayer(), 0, 0);
+        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene()))
+            ((class UISwfEntity*)(void*)(pScene))->LoadSwfPath(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->GetLayer(), 0, 0);
         int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId();
         pService->FUN_141ada6f0(nScene);
         pService->FUN_141ad9e50(nScene);
@@ -3235,7 +3235,7 @@ void CUIService::FUN_141aec3e0()
         _splitpath(arrFiles[i], szDrive, szDir, szName, 0);
         CString strFile;
         strFile.Format("%s.xml", szName);
-        DeleteFileA(FUN_140cc2a00(FUN_140188f50(GetCharacterFolder(), 0), strFile));
+        DeleteFileA(JoinPath(FUN_140188f50(GetCharacterFolder(), 0), strFile));
     }
 }
 

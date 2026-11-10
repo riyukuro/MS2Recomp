@@ -76,7 +76,7 @@ void* FUN_140aadf80();                          // the platform service
 void FUN_1418fe1c0(const CStringA& strUrl);     // open an url in the external browser
 CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
-unsigned int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
+unsigned int ParseUInt(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
 int GetBannerLinkKind(const CStringA& strKind);     // banner link kind
 template <class T> T* FindDTDialog(int nId);                   // the dialog of a class id (<UIAttendGiftDialog> 0x140c053e0)
 UIMeratMarketDialog* FindMeratMarketDialog(int nUIClassID);            // the dialog of a class id
@@ -342,7 +342,7 @@ void COffscreenWebBrowser::SetLoginInfo(const char* pszToken, int nWindowType)
     m_nCharacterId = DAT_143ab2828;
     m_strToken = pszToken;
     m_nWindowType = nWindowType;
-    PC* pPlayer = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    PC* pPlayer = (PC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != NULL) {
         m_strCharacterName = pPlayer->vfunc_77();
         m_eJob = (Unk_JobCode)pPlayer->GetJobGroupId();
@@ -828,7 +828,7 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
             }
         } else if (strUI == "attend") {
             CStringA strDay(message->GetArgumentList()->GetString(1).c_str());
-            int nDay = FUN_1407181d0(strDay);
+            int nDay = ParseUInt(strDay);
             UIAttendGiftDialog* pDialog = FindDTDialog<UIAttendGiftDialog>(0x4eb8);
             if (pDialog != NULL) {
                 if (nDay != 0) {
@@ -846,11 +846,11 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
         std::string strUrl = message->GetArgumentList()->GetString(0).ToString();
         UIWebBrowser* pBrowser = FindWebBrowser(0x4e6a);
         if (pBrowser != NULL) {
-            pBrowser->FUN_14135ec00(strUrl.c_str(), true);
+            pBrowser->Navigate(strUrl.c_str(), true);
         }
     } else if (message->GetName() == g_szCefMessageMoveHome) {
         __int64 nOwner = message->GetArgumentList()->GetInt(0);
-        MyPC* pPlayer = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPlayer = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPlayer != NULL) {
             pPlayer->SendRequestMoveFieldMode2(0, 0, 0, nOwner, CStringW(L""));
         }

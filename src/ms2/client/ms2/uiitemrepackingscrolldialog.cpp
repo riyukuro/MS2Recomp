@@ -88,7 +88,7 @@ Unk_RpTable* GetItemRePackingScrollTable();
 class CItemRePackingScrollTable;
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
-unsigned __int64 FUN_140718370(const CStringW& value);
+unsigned __int64 ParseUInt64W(const CStringW& value);
 void FUN_140710590(COutPacket&);                                    // send
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_RpInvDlg* FUN_1405344f0 (calls cast back)
 
@@ -97,7 +97,7 @@ class CMsgBoxData : public CPtred
 public:
     void SetItemUid(__int64 n);
     void FUN_141a024a0(int n);
-    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
+    void SetItemEntry(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
     void SetButtonLabelIds(int nA, int nB, int nC);
 };
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW tag);
@@ -212,11 +212,11 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
     if (spScroll == 0)
         return;
-    if (static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
+    if (static_cast<CItem*>(spScroll)->GetData() == 0)
         return;
     if (MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title"))
         spTitle->SetTextW(static_cast<CItem*>(spScroll)->FUN_140527b10());
-    MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+    MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->GetData())));
     if (spRow == 0)
         return;
     CStringW strLevel;
@@ -264,7 +264,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            __int64 nTarget = FUN_140718370(data.FUN_1422b8f40());
+            __int64 nTarget = ParseUInt64W(data.FUN_1422b8f40());
             MS2Ptr<CItem> spTarget = g_143ab2a90.FindItemByUid(nTarget);
             if (spTarget == 0)
             {
@@ -272,7 +272,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
                 return 1;
             }
             MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
-            if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
+            if (spScroll == 0 || static_cast<CItem*>(spScroll)->GetData() == 0)
             {
                 FUN_140f62710(7);
                 return 1;
@@ -381,7 +381,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     {
         box->SetItemUid(nUid);
         box->FUN_141a024a0(0);
-        box->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
+        box->SetItemEntry(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
         box->SetButtonLabelIds(0x475, 0, 0);
         FUN_140d73c60(box);
     }
@@ -496,9 +496,9 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         if (spItem == 0)
             return;
         MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
-        if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
+        if (spScroll == 0 || static_cast<CItem*>(spScroll)->GetData() == 0)
             return;
-        MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+        MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->GetData())));
         int nError = CItemRePackingScrollTable::Check(spItem, spRow);
         if (nError != 0)
         {

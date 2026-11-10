@@ -280,7 +280,7 @@ int CSkillPointSimulator::CanLevelDown(unsigned nSkillId)
 // @0x140abd760
 int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nLevel)
 {
-    void* pPlayer = reinterpret_cast<WorldService*>(((void*)(WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<WorldService*>(((void*)(WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     JobDataPtr spJob = ((JobSystem*)(reinterpret_cast<PC*>(pPlayer)->GetJobSystem()))->GetJobData();

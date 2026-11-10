@@ -47,7 +47,7 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe objects ----
 
-int FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
+int PlaySystemSound(const CString& strName, const CString& strArg);       // play a system sound
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 template <class A> CStringW FormatStringId(int nStringId, const A& a);
@@ -124,7 +124,7 @@ void UIFishingBookDialog::OnLoadComplete()
     SetFisher();
     if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_bag"))
         spBag->SetSelectedIndex(0);
-    FUN_141276180(s_strBookOpen, "");
+    PlaySystemSound(s_strBookOpen, "");
 }
 
 // @0x140f41440
@@ -171,7 +171,7 @@ int UIFishingBookDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     CStringW strText;
@@ -217,7 +217,7 @@ void UIFishingBookDialog::RefreshCurrentTab()
 // @0x140f41a10
 void UIFishingBookDialog::SetFisher()
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     int nExp = pPC->GetMastery(1);
@@ -398,7 +398,7 @@ void UIFishingBookDialog::GetCurrentTabFishIds(FbIdArray& rIds)
 // @0x140f42ed0
 int UIFishingBookDialog::GetBestFisherTitleId()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (HasTitle("fisherChampion") != 0 || reinterpret_cast<CAchieveManager*>(GetAchieveManager())->IsCompleted(0x1607bb8) != 0)

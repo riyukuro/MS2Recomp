@@ -56,7 +56,7 @@ CBannedWordFilter::CBannedWordFilter(__int64 v,Unk_BanReader& input) : version(v
 void CBannedWordFilter::Write(Unk_BanWriter& out) const { FUN_140349b10(out); }
 MS2_REPLACE_METHOD(0x140349200, CBannedWordFilter, Write, 34, 0x6DE6000F);
 // @0x140349230
-int CBannedWordFilter::FUN_140349230(const CStringW& input,CStringW& result) {
+int CBannedWordFilter::FilterText(const CStringW& input,CStringW& result) {
     int start=0,offset=0,length=0; CStringW text(input); CStringW replacement; bool changed=false;
     while(filter.Find(text,start,true,&offset,&length,&replacement)) {
         if(replacement.IsEmpty()) return 2;
@@ -64,7 +64,7 @@ int CBannedWordFilter::FUN_140349230(const CStringW& input,CStringW& result) {
     }
     if(changed) { result=text; return 1; } return 0;
 }
-MS2_REPLACE_METHOD(0x140349230, CBannedWordFilter, FUN_140349230, 414, 0x86E27D89);
+MS2_REPLACE_METHOD(0x140349230, CBannedWordFilter, FilterText, 414, 0x86E27D89);
 // @0x1403493e0
 const CBannedWordFilter::Map& CBannedWordFilter::GetWords() const { return words; }
 MS2_REPLACE_METHOD(0x1403493E0, CBannedWordFilter, GetWords, 15, 0x5731F599);
@@ -129,10 +129,10 @@ MS2_REPLACE_METHOD(0x14034a120, CDynamicBanWordManager, GetNext, 136, 0x81959B88
 __int64 CDynamicBanWordManager::GetCurrentVersion() { Ptr value=GetCurrent(); if(value==0) return 0; return value->GetVersion(); }
 MS2_REPLACE_METHOD(0x14034A1B0, CDynamicBanWordManager, GetCurrentVersion, 122, 0xE65F8EE1);
 // @0x14034a230
-int CDynamicBanWordManager::FUN_14034a230(const CStringW& text,CStringW& result) { Ptr value=GetCurrent(); if(value==0) return 0; return value->FUN_140349230(text,result); }
-MS2_REPLACE_METHOD(0x14034A230, CDynamicBanWordManager, FUN_14034a230, 138, 0xEA94D0C4);
+int CDynamicBanWordManager::FilterText(const CStringW& text,CStringW& result) { Ptr value=GetCurrent(); if(value==0) return 0; return value->FilterText(text,result); }
+MS2_REPLACE_METHOD(0x14034A230, CDynamicBanWordManager, FilterText, 138, 0xEA94D0C4);
 // @0x14034a2c0
-void CDynamicBanWordManager::FUN_14034a2c0(Unk_BanReader& input) {
+void CDynamicBanWordManager::Read(Unk_BanReader& input) {
     int mode=input.vfunc_1(); __int64 version=input.vfunc_4();
     switch(mode) {
     case 0: { Ptr value(0); SetCurrent(value); } break;

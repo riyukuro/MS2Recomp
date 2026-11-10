@@ -46,12 +46,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 
 // ---- helpers of other units ----
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
-float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+float GetFloatAttr(TiXmlElement* pElem, const char* pszName, float fDefault);
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 void FUN_14028c2d0(CStringA, efd::Point3 *);  // C3: the definition's signature
-int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
+int ParseQuestMask(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
 CString GetXmlPath(const CString& strDir, const CString& strFile);  // data file path
 CString ToCString(const char* psz, int n);
 CLogString* GetLogString();
@@ -158,14 +158,14 @@ bool CInteractObjectData::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pGathering), "receipeID", reinterpret_cast<int&>(m_gathering.m_nReceipeId));
     if (TiXmlElement* pValidate = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("validate")))
     {
-        m_validate.m_nFieldId = FUN_140197350(pValidate, "fieldID", 0);
-        m_validate.m_fInteractionDistance = FUN_1401973d0(pValidate, "interactionDistance", 0);
+        m_validate.m_nFieldId = GetIntAttr(pValidate, "fieldID", 0);
+        m_validate.m_fInteractionDistance = GetFloatAttr(pValidate, "interactionDistance", 0);
     }
     if (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("quest")))
     {
         CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pQuest), "maskQuestID", CString(""));
         CString strStates = Unk_ReadString((class Unk_XmlNode*)(pQuest), "maskQuestState", CString(""));
-        FUN_140764310(strQuests, strStates, &m_maskUse);
+        ParseQuestMask(strQuests, strStates, &m_maskUse);
     }
     if (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("item")))
     {
@@ -335,19 +335,19 @@ bool CInteractObjectData::Load(TiXmlElement* pElem)
         {
             CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
             CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
-            FUN_140764310(strQuests, strStates, &m_effect.m_maskNormal);
+            ParseQuestMask(strQuests, strStates, &m_effect.m_maskNormal);
         }
         if (TiXmlElement* pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffect))->FirstChild("maskReactable")))
         {
             CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
             CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
-            FUN_140764310(strQuests, strStates, &m_effect.m_maskReactable);
+            ParseQuestMask(strQuests, strStates, &m_effect.m_maskReactable);
         }
         if (TiXmlElement* pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffect))->FirstChild("maskInteraction")))
         {
             CString strQuests = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestID", CString(""));
             CString strStates = Unk_ReadString((class Unk_XmlNode*)(pMask), "maskQuestState", CString(""));
-            FUN_140764310(strQuests, strStates, &m_effect.m_maskInteraction);
+            ParseQuestMask(strQuests, strStates, &m_effect.m_maskInteraction);
         }
     }
     if (TiXmlElement* pRoom = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("room")))
@@ -368,21 +368,21 @@ bool CInteractObjectData::Load(TiXmlElement* pElem)
     if (TiXmlElement* pUrl = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("displayURL")))
     {
         m_displayUrl.m_strIndirectUrl = Unk_ReadString((class Unk_XmlNode*)(pUrl), "indirectURL", CString(""));
-        m_displayUrl.m_nType = FUN_140197350(pUrl, "type", 0);
+        m_displayUrl.m_nType = GetIntAttr(pUrl, "type", 0);
     }
     if (TiXmlElement* pDisplay = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("display")))
     {
         m_display.m_strMinimapIcon = Unk_ReadString((class Unk_XmlNode*)(pDisplay), "minimapIcon", CString(""));
-        m_display.m_nNotice = FUN_140197350(pDisplay, "notice", 0);
+        m_display.m_nNotice = GetIntAttr(pDisplay, "notice", 0);
     }
     if (TiXmlElement* pArena = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("arena")))
-        m_arena.m_nCanInteractTeamId = FUN_140197350(pArena, "canInteractTeamId", 0);
+        m_arena.m_nCanInteractTeamId = GetIntAttr(pArena, "canInteractTeamId", 0);
     if (TiXmlElement* pPortal = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("portal")))
-        m_portal.m_nTargetPortalId = FUN_140197350(pPortal, "targetPortalId", 0);
+        m_portal.m_nTargetPortalId = GetIntAttr(pPortal, "targetPortalId", 0);
     if (TiXmlElement* pGuild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("guild")))
-        m_guild.m_nHousePosterId = FUN_140197350(pGuild, "housePosterId", 0);
+        m_guild.m_nHousePosterId = GetIntAttr(pGuild, "housePosterId", 0);
     if (TiXmlElement* pWeapon = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("weapon")))
-        m_weapon.m_nWeaponItemId = FUN_140197390(pWeapon, "weaponItemId", 0);
+        m_weapon.m_nWeaponItemId = GetUIntAttr(pWeapon, "weaponItemId", 0);
     if (TiXmlElement* pMastery = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("mastery")))
     {
         XmlValue(pMastery, "type", m_mastery.m_eType);
@@ -421,7 +421,7 @@ void CInteractObjectData::LoadAll()
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("interact")); pNode != 0;
              pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("interact")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
                 continue;
             MS2Ptr<CInteractObjectData> spData(new CInteractObjectData);
             spData->SetPath(CString(strPath));

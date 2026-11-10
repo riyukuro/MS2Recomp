@@ -56,12 +56,12 @@ class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 
 // listener registries
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class UIStatusEventDispatcher;
 
 // items bound to the slots of the rewards
@@ -104,7 +104,7 @@ int UILevelUpPackageDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -114,7 +114,7 @@ void UILevelUpPackageDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_188.GetCount(); i++)
         DestroyItemInfoSlot(m_188.GetAt(i));
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
@@ -123,7 +123,7 @@ void UILevelUpPackageDialog::vfunc_67()
 void UILevelUpPackageDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     FUN_140ea4d00();
@@ -181,7 +181,7 @@ void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
 int UILevelUpPackageDialog::HasOpenPackageQuest()
 {
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->GetLevelUpPackageIds(ids);
     if (ids.GetCount() == 0)
         return 0;
     BOOL bAllIdle = TRUE;
@@ -203,7 +203,7 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->GetLevelUpPackageIds(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = GetQuestData(ids[i]);
         if (spData == 0)
@@ -214,7 +214,7 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
             m_30->Invoke("addLevelGuide", obj);
         }
     }
-    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     LG_ROOT(m_30)->FUN_140ea5e70("setPC", pPlayer->vfunc_78());
@@ -227,7 +227,7 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
     unsigned nItemId = GetRewardItemId(nLevel);
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.get() != 0) {
-        unsigned nArgs = spItem->function.parameter.FUN_1408d2380();
+        unsigned nArgs = spItem->function.parameter.GetArgCount();
         if (nArgs < 1)
             return;
         int nBoxId = spItem->function.parameter.FUN_1408d1fd0(nArgs - 1, 0);
@@ -261,7 +261,7 @@ void UILevelUpPackageDialog::SendQuest(int nQuest)
     MS2Ptr<CQuestData> spData = spQuest->GetData();
     if (!spData)
         return;
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
@@ -303,7 +303,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     CQuestData::QuestRewardItem* pReward = 0;
@@ -331,11 +331,11 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
 // @0x140ea5b50
 unsigned UILevelUpPackageDialog::GetRewardItemId(unsigned short nLevel)
 {
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->GetLevelUpPackageIds(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = GetQuestData(ids[i]);
         unsigned short nQuestLevel = LgQuestLevel(spData.get());
@@ -353,11 +353,11 @@ unsigned UILevelUpPackageDialog::GetRewardItemId(unsigned short nLevel)
 // @0x140ea5d10
 unsigned short UILevelUpPackageDialog::FUN_140ea5d10()
 {
-    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    PCBase* pPlayer = (PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->GetLevelUpPackageIds(ids);
     unsigned short nPlayerLevel = pPlayer->vfunc_78();
     unsigned short nBest = 0;
     for (size_t i = 0; i < ids.GetCount(); i++) {

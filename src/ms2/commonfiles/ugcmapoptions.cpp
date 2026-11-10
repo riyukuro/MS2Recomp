@@ -63,20 +63,20 @@ CubeSalable::CubeSalable()
 // @0x1408b3450
 CubeItemInfo::CubeItemInfo()
 {
-    FUN_1408b3810();
+    Clear();
 }
 
 // @0x1408b34b0
 CubeItemInfo::CubeItemInfo(const CubeItemInfo& src)
 {
-    FUN_1408b3810();
-    FUN_1408b3700(&src);
+    Clear();
+    CopyFrom(&src);
 }
 
 // @0x1408b3520
 CubeItemInfo::CubeItemInfo(int nItemId, __int64 nInstanceId, __int64 nCount, CUgcItemLook* pLook)
 {
-    FUN_1408b3810();
+    Clear();
     itemId = nItemId;
     instanceId = nInstanceId;
     count = nCount;
@@ -96,13 +96,13 @@ CubeItemInfo::CubeItemInfo(CInPacket& packet)
 // @0x1408b36a0
 CubeItemInfo::~CubeItemInfo()
 {
-    FUN_1408b3810();
+    Clear();
 }
 
 // @0x1408b3700
-void CubeItemInfo::FUN_1408b3700(const CubeItemInfo* pSrc)
+void CubeItemInfo::CopyFrom(const CubeItemInfo* pSrc)
 {
-    FUN_1408b3810();
+    Clear();
     if (pSrc == 0)
         return;
     itemId = pSrc->itemId;
@@ -114,18 +114,18 @@ void CubeItemInfo::FUN_1408b3700(const CubeItemInfo* pSrc)
         look->CopyFrom(pSrc->look.get());
     }
 }
-MS2_REPLACE_METHOD(0x1408B3700, CubeItemInfo, FUN_1408b3700, 262, 0xD0A2557A);
+MS2_REPLACE_METHOD(0x1408B3700, CubeItemInfo, CopyFrom, 262, 0xD0A2557A);
 
 // Clear.
 // @0x1408b3810
-void CubeItemInfo::FUN_1408b3810()
+void CubeItemInfo::Clear()
 {
     itemId = 0;
     instanceId = 0;
     count = 0;
     look = 0;
 }
-MS2_REPLACE_METHOD(0x1408B3810, CubeItemInfo, FUN_1408b3810, 71, 0x7398FE4F);
+MS2_REPLACE_METHOD(0x1408B3810, CubeItemInfo, Clear, 71, 0x7398FE4F);
 
 // Valid: an item with a downloaded look.
 // @0x1408b3860
@@ -139,7 +139,7 @@ MS2_REPLACE_METHOD(0x1408B3860, CubeItemInfo, FUN_1408b3860, 80, 0x061950D6);
 
 // Same cube item: both invalid with the same item id, or both valid with the same item id and look id.
 // @0x1408b38c0
-int CubeItemInfo::FUN_1408b38c0(const CubeItemInfo* pOther) const
+int CubeItemInfo::IsSameItem(const CubeItemInfo* pOther) const
 {
     if (pOther == 0)
         return 0;
@@ -164,7 +164,7 @@ int CubeItemInfo::FUN_1408b38c0(const CubeItemInfo* pOther) const
         return 1;
     }
 }
-MS2_REPLACE_METHOD(0x1408B38C0, CubeItemInfo, FUN_1408b38c0, 235, 0xC8C20775);
+MS2_REPLACE_METHOD(0x1408B38C0, CubeItemInfo, IsSameItem, 235, 0xC8C20775);
 
 // @0x1408b39c0
 void CubeItemInfo::FUN_1408b39c0(COutPacket& packet) const
@@ -181,7 +181,7 @@ MS2_REPLACE_METHOD(0x1408B39C0, CubeItemInfo, FUN_1408b39c0, 206, 0x22D53FE2);
 // @0x1408b3aa0
 void CubeItemInfo::FUN_1408b3aa0(CInPacket& packet)
 {
-    FUN_1408b3810();
+    Clear();
     itemId = packet.ReadInt32();
     instanceId = packet.ReadInt64();
     count = packet.ReadInt64();
@@ -209,7 +209,7 @@ MS2_REPLACE_METHOD(0x1408B3C30, CubeItemInfo, FUN_1408b3c30, 206, 0x262C9B57);
 // @0x1408b3d10
 void CubeItemInfo::FUN_1408b3d10(CInputStream& stream)
 {
-    FUN_1408b3810();
+    Clear();
     itemId = stream.ReadInt32();
     instanceId = stream.ReadInt64();
     count = stream.ReadInt64();
@@ -264,7 +264,7 @@ void UserUGCMapInfo::FUN_1408b4020(int n18, int n1c, int n20, int n24, CStringW 
 MS2_REPLACE_METHOD(0x1408B4020, UserUGCMapInfo, FUN_1408b4020, 163, 0xE18692C1);
 
 // @0x1408b40d0
-void UserUGCMapInfo::FUN_1408b40d0(Unk_BmPtr<UserUGCMapInfo> spOther)
+void UserUGCMapInfo::CopyFrom(Unk_BmPtr<UserUGCMapInfo> spOther)
 {
     m_n18 = spOther->m_n18;
     m_n1c = spOther->m_n1c;
@@ -275,7 +275,7 @@ void UserUGCMapInfo::FUN_1408b40d0(Unk_BmPtr<UserUGCMapInfo> spOther)
     m_n38 = spOther->m_n38;
     m_n40 = spOther->m_n40;
 }
-MS2_REPLACE_METHOD(0x1408B40D0, UserUGCMapInfo, FUN_1408b40d0, 222, 0x94FC9250);
+MS2_REPLACE_METHOD(0x1408B40D0, UserUGCMapInfo, CopyFrom, 222, 0x94FC9250);
 
 // Encodes the house info packet (0x69, sub 0x14).
 // @0x1408b41c0
@@ -337,7 +337,7 @@ ObjectWeaponInfo::~ObjectWeaponInfo()
 }
 
 // @0x1408b46b0
-Unk_PayloadPtr<ObjectWeaponInfo> ObjectWeaponInfo::FUN_1408b46b0() const
+Unk_PayloadPtr<ObjectWeaponInfo> ObjectWeaponInfo::Clone() const
 {
     Unk_PayloadPtr<ObjectWeaponInfo> spCopy(new ObjectWeaponInfo);
     spCopy->m_n18 = m_n18;
@@ -350,7 +350,7 @@ Unk_PayloadPtr<ObjectWeaponInfo> ObjectWeaponInfo::FUN_1408b46b0() const
     spCopy->m_ids.Copy(m_ids);
     return spCopy;
 }
-MS2_REPLACE_METHOD(0x1408B46B0, ObjectWeaponInfo, FUN_1408b46b0, 401, 0x359BDB97);
+MS2_REPLACE_METHOD(0x1408B46B0, ObjectWeaponInfo, Clone, 401, 0x359BDB97);
 
 // ---- NoticeCubeInfo ------------------------------------------------------------------------------------------------
 
@@ -458,7 +458,7 @@ bool Cube::FUN_1408b4eb0(const CubeItemInfo* pInfo) const
     }
     else
     {
-        if (item->FUN_1408b38c0(pInfo) != 0)
+        if (item->IsSameItem(pInfo) != 0)
             return true;
         return false;
     }
@@ -466,29 +466,29 @@ bool Cube::FUN_1408b4eb0(const CubeItemInfo* pInfo) const
 MS2_REPLACE_METHOD(0x1408B4EB0, Cube, FUN_1408b4eb0, 104, 0x6EE89605);
 
 // @0x1408b4f20
-int Cube::FUN_1408b4f20()
+int Cube::GetItemId()
 {
     return item->itemId;
 }
-MS2_REPLACE_METHOD(0x1408B4F20, Cube, FUN_1408b4f20, 34, 0x2A0E4B7C);
+MS2_REPLACE_METHOD(0x1408B4F20, Cube, GetItemId, 34, 0x2A0E4B7C);
 
 // @0x1408b4f50
-__int64 Cube::FUN_1408b4f50() const
+__int64 Cube::GetInstanceId() const
 {
     return item->instanceId;
 }
-MS2_REPLACE_METHOD(0x1408B4F50, Cube, FUN_1408b4f50, 35, 0xD747657A);
+MS2_REPLACE_METHOD(0x1408B4F50, Cube, GetInstanceId, 35, 0xD747657A);
 
 // @0x1408b4f80
-CUgcItemLook* Cube::FUN_1408b4f80()
+CUgcItemLook* Cube::GetLook()
 {
     return item->look.get();
 }
-MS2_REPLACE_METHOD(0x1408B4F80, Cube, FUN_1408b4f80, 43, 0xA69DCEC9);
+MS2_REPLACE_METHOD(0x1408B4F80, Cube, GetLook, 43, 0xA69DCEC9);
 
 // The cube's entity was created: show the downloaded look image, or queue its download.
 // @0x1408b4fd0
-void Cube::FUN_1408b4fd0(egf::Entity* pEntity)
+void Cube::OnEntityCreated(egf::Entity* pEntity)
 {
     if (pEntity != entity)
         return;
@@ -505,7 +505,7 @@ void Cube::FUN_1408b4fd0(egf::Entity* pEntity)
     else
         TSingleton<CUgcManager>::GetInstance()->DownloadCubeLook(item.get(), entity->GetEntityID());
 }
-MS2_REPLACE_METHOD(0x1408B4FD0, Cube, FUN_1408b4fd0, 500, 0xE53038B6);
+MS2_REPLACE_METHOD(0x1408B4FD0, Cube, OnEntityCreated, 500, 0xE53038B6);
 
 // Applies the downloaded look image (0: not downloaded yet).
 // @0x1408b51d0
@@ -527,18 +527,18 @@ int Cube::FUN_1408b51d0()
 MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);
 
 // @0x1408b5370
-efd::Point3 Cube::FUN_1408b5370()
+efd::Point3 Cube::GetWorldPosition()
 {
     Vector3 kOffset;
     return FUN_1408a15b0((Unk_Int3&)position, reinterpret_cast<efd::Point3&>(kOffset));
 }
-MS2_REPLACE_METHOD(0x1408B5370, Cube, FUN_1408b5370, 82, 0xC52D8A9F);
+MS2_REPLACE_METHOD(0x1408B5370, Cube, GetWorldPosition, 82, 0xC52D8A9F);
 
 // ---- item id predicates --------------------------------------------------------------------------------------------
 
 // The housing item does not install as a blueprint.
 // @0x1408b53d0
-int FUN_1408b53d0(int nItemId)
+int IsDoNotInstallBlueprint(int nItemId)
 {
     if (nItemId == 0)
         return 0;
@@ -549,16 +549,16 @@ int FUN_1408b53d0(int nItemId)
         return 1;
     return 0;
 }
-MS2_REPLACE(0x1408B53D0, FUN_1408b53d0, 167, 0x267F2C3D);
+MS2_REPLACE(0x1408B53D0, IsDoNotInstallBlueprint, 167, 0x267F2C3D);
 
 // @0x1408b5480
-int FUN_1408b5480(unsigned nItemId)
+int IsHousingBuyable(unsigned nItemId)
 {
     if (((class CPriceTable*)GetPriceTable()) == 0)
         return 0;
     return ((class CPriceTable*)GetPriceTable())->IsHousingBuyable(nItemId);
 }
-MS2_REPLACE(0x1408B5480, FUN_1408b5480, 44, 0x938A7F09);
+MS2_REPLACE(0x1408B5480, IsHousingBuyable, 44, 0x938A7F09);
 
 // The item's install object switches with the fitting doll ui.
 // @0x1408b54c0
@@ -625,7 +625,7 @@ int FUN_1408b5770(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707dc0(spItem->install.objCode))
+    if (IsNurturingControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -723,7 +723,7 @@ int FUN_1408b5c00(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707a00(spItem->install.objCode))
+    if (IsForbiddenExceptOwner(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -738,7 +738,7 @@ int FUN_1408b5cb0(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707ac0(spItem->install.objCode))
+    if (IsPortalControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -753,7 +753,7 @@ int FUN_1408b5d60(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707b40(spItem->install.objCode))
+    if (IsNoticeControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -768,7 +768,7 @@ int FUN_1408b5e10(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707c60(spItem->install.objCode))
+    if (IsBreedingControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -783,7 +783,7 @@ int FUN_1408b5ec0(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return 0;
-    if (FUN_140707d10(spItem->install.objCode))
+    if (IsFarmingControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -798,7 +798,7 @@ int FUN_1408b5f70(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return 0;
-    if (FUN_140707e70(spItem->install.objCode))
+    if (IsInstallNpcControlType(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -822,7 +822,7 @@ MS2_REPLACE(0x1408B6020, FUN_1408b6020, 246, 0xDB54E2DE);
 
 // The housing item has a trophy.
 // @0x1408b6120
-int FUN_1408b6120(unsigned nItemId)
+int HasTrophy(unsigned nItemId)
 {
     MS2Ptr<ItemHousing> spHousing = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nItemId);
     if (spHousing == 0)
@@ -831,7 +831,7 @@ int FUN_1408b6120(unsigned nItemId)
         return 1;
     return 0;
 }
-MS2_REPLACE(0x1408B6120, FUN_1408b6120, 151, 0xD177F686);
+MS2_REPLACE(0x1408B6120, HasTrophy, 151, 0xD177F686);
 
 // The price table has no housing row for the item.
 // @0x1408b61c0

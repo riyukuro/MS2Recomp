@@ -21,7 +21,7 @@ MS2_CHECK_SIZE(ClassObject, 0x18);
 typedef ClassObject* (*ClassObjectCreateFn)();
 typedef ATL::CAtlMap<CStringW, ClassObjectCreateFn, ATL::CStringElementTraitsI<CStringW>> ClassObjectFactoryMap;
 ClassObjectFactoryMap* FUN_1401f7fe0();                     // the registry (function-local static)
-ClassObject* FUN_1401f7f50(CStringW strName);               // creates the registered class; NULL if unknown
+ClassObject* CreateClassObject(CStringW strName);               // creates the registered class; NULL if unknown
 
 // Registers a factory from a 1-byte static (dynamic initializer). Inline: its COMDAT is in the first unit that
 // registers (0x140316aa0, commonfiles\dungeonmissiondata.cpp; the GameEvent units bind it as Unk_GEFactoryRegistry).

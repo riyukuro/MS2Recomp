@@ -41,11 +41,11 @@ CWarFogEffect::CWarFogEffect() : m_spMesh(NULL)
 // @0x141b73360
 CWarFogEffect::~CWarFogEffect()
 {
-    FUN_141b733c0();
+    DetachMesh();
 }
 
 // @0x141b733c0
-void CWarFogEffect::FUN_141b733c0()
+void CWarFogEffect::DetachMesh()
 {
     if (m_spMesh == NULL)
         return;
@@ -61,7 +61,7 @@ void CWarFogEffect::FUN_141b733c0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141b733c0, CWarFogEffect, FUN_141b733c0, 213, 0xB5D547D5);
+MS2_REPLACE_METHOD(0x141b733c0, CWarFogEffect, DetachMesh, 213, 0xB5D547D5);
 
 // @0x141b734a0
 void CWarFogEffect::SetVisible(bool bVisible)
@@ -77,9 +77,9 @@ MS2_REPLACE_METHOD(0x141b734a0, CWarFogEffect, SetVisible, 137, 0xEF7188DD);
 // @0x141b73530
 void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Point3& ptCenter)
 {
-    if (FUN_141b739e0(pParam)) {
-        FUN_141b733c0();
-        FUN_141b73ab0(pParam);
+    if (NeedsRebuild(pParam)) {
+        DetachMesh();
+        BuildMesh(pParam);
     }
     if (m_spMesh == NULL)
         return;
@@ -116,7 +116,7 @@ void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Poin
 }
 
 // @0x141b739e0
-bool CWarFogEffect::FUN_141b739e0(const Unk_WarFogParam* pParam)
+bool CWarFogEffect::NeedsRebuild(const Unk_WarFogParam* pParam)
 {
     if (m_spMesh == NULL)
         return true;
@@ -130,10 +130,10 @@ bool CWarFogEffect::FUN_141b739e0(const Unk_WarFogParam* pParam)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x141b739e0, CWarFogEffect, FUN_141b739e0, 200, 0xC4235DE6);
+MS2_REPLACE_METHOD(0x141b739e0, CWarFogEffect, NeedsRebuild, 200, 0xC4235DE6);
 
 // @0x141b73ab0
-void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
+void CWarFogEffect::BuildMesh(const Unk_WarFogParam* pParam)
 {
     m_fRadius = pParam->FUN_1403812a0();
     m_bFlag2c = pParam->FUN_140381370();

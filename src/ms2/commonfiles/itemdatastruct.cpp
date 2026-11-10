@@ -418,7 +418,7 @@ int ModelPart::FUN_140544a80(void* pParent)
 }
 
 // @0x140544aa0
-int ModelPart::FUN_140544aa0(int nGender, int nWeapon) const
+int ModelPart::IsWornBy(int nGender, int nWeapon) const
 {
     if (gender != 2 && gender != nGender)
         return 0;
@@ -495,7 +495,7 @@ void ModelGroup::FUN_140544f00(void* pParent)
 }
 
 // @0x140544f20
-const ModelFloatList* ModelGroup::FUN_140544f20(size_t nIndex) const
+const ModelFloatList* ModelGroup::GetFloatList(size_t nIndex) const
 {
     static ModelFloatList s_empty;
     if (nIndex < floats.size())
@@ -513,7 +513,7 @@ const ModelPart* ModelGroup::GetPart(size_t nIndex) const
 }
 
 // @0x140545090
-size_t ModelGroup::FUN_140545090() const
+size_t ModelGroup::GetFloatListCount() const
 {
     return floats.size();
 }
@@ -525,13 +525,13 @@ size_t ModelGroup::GetPartCount() const
 }
 
 // @0x1405450f0
-float ModelGroup::FUN_1405450f0(int nIndex) const
+float ModelGroup::GetRandomScale(int nIndex) const
 {
-    return FUN_140544f20(nIndex)->GetRandomValue();
+    return GetFloatList(nIndex)->GetRandomValue();
 }
 
 // @0x140545130
-void ModelGroup::FUN_140545130(const CString& strName)
+void ModelGroup::SetPartName(const CString& strName)
 {
     for (unsigned i = 0; i < parts.size(); i++)
         parts[i].name0 = strName;
@@ -649,11 +649,11 @@ int ItemLimit::Save(void* pParent)
 // @0x140545a80
 bool ItemLimit::IsEqual(const ItemLimit* pOther)
 {
-    return !FUN_140545ad0(pOther);
+    return !IsNotEqual(pOther);
 }
 
 // @0x140545ad0
-bool ItemLimit::FUN_140545ad0(const ItemLimit* pOther)
+bool ItemLimit::IsNotEqual(const ItemLimit* pOther)
 {
     if (genderLimit != pOther->genderLimit)
         return true;
@@ -725,7 +725,7 @@ bool ItemLimit::IsJobRecommended(int nJob)
 }
 
 // @0x140545e40
-bool ItemLimit::FUN_140545e40()
+bool ItemLimit::HasJobLimit()
 {
     if (disableJobLimit.IsEmpty() && jobLimit.IsEmpty())
         return false;
@@ -841,7 +841,7 @@ int ItemPeriod::Save(void* pParent)
 }
 
 // @0x140546620
-bool ItemPeriod::FUN_140546620(const ItemPeriod* pOther)
+bool ItemPeriod::IsNotEqual(const ItemPeriod* pOther)
 {
     if (usePeriod != pOther->usePeriod)
         return true;
@@ -857,7 +857,7 @@ bool ItemPeriod::FUN_140546620(const ItemPeriod* pOther)
 }
 
 // @0x1405466d0
-int ItemPeriod::FUN_1405466d0()
+int ItemPeriod::HasLimitedLife()
 {
     return usePeriod > 0 || expiration.Get() > 0 || expirationType != ItemExpirationTypeNone || !termTag.IsEmpty();
 }
@@ -886,7 +886,7 @@ int ItemSkill::Save(void* pParent)
 }
 
 // @0x140546810
-bool ItemSkill::FUN_140546810(const ItemSkill* pOther)
+bool ItemSkill::IsNotEqual(const ItemSkill* pOther)
 {
     if (skillId != pOther->skillId)
         return true;
@@ -1022,7 +1022,7 @@ bool ItemModelHead::FUN_140547190()
 }
 
 // @0x1405471b0
-bool ItemModelHead::FUN_1405471b0()
+bool ItemModelHead::IsCapAttach()
 {
     return capAttach;
 }
@@ -1046,7 +1046,7 @@ int ItemModelHead::FUN_140547250()
 }
 
 // @0x140547270
-int ItemModelHead::FUN_140547270(int nIndex) const
+int ItemModelHead::GetIdAt(int nIndex) const
 {
     int nCount = (int)ids.size();
     if (nCount == 0 || nCount <= nIndex)
@@ -1083,7 +1083,7 @@ ItemMaterial::ItemMaterial()
 }
 
 // @0x1405473c0
-int ItemMaterial::FUN_1405473c0(TiXmlElement* pElem)
+int ItemMaterial::Load(TiXmlElement* pElem)
 {
     TiXmlElement* pMaterial = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("material"));
     if (pMaterial != 0)
@@ -1101,7 +1101,7 @@ int ItemMaterial::Save(void* pParent)
 }
 
 // @0x140547460
-bool ItemMaterial::FUN_140547460(const ItemMaterial* pOther)
+bool ItemMaterial::IsNotEqual(const ItemMaterial* pOther)
 {
     if (unknown0 != pOther->unknown0)
         return true;
@@ -1159,7 +1159,7 @@ void ItemProperty::Load(TiXmlElement* pElem)
 }
 
 // @0x1405479a0
-void ItemProperty::FUN_1405479a0(void* pElem)
+void ItemProperty::SaveAttributes(void* pElem)
 {
     if (slotMax != 1)
         XmlSetAttr((class TiXmlElement*)(pElem), "slotMax", slotMax);
@@ -1218,7 +1218,7 @@ void ItemProperty::FUN_1405479a0(void* pElem)
 }
 
 // @0x140547ec0
-bool ItemProperty::FUN_140547ec0(const ItemProperty* pOther)
+bool ItemProperty::IsNotEqual(const ItemProperty* pOther)
 {
     if (slotMax != pOther->slotMax)
         return true;
@@ -1370,11 +1370,11 @@ int ItemInstallData::Save(void* pParent)
 // @0x140548a50
 bool ItemInstallData::IsEqual(const ItemInstallData* pOther)
 {
-    return !FUN_140548aa0(pOther);
+    return !IsNotEqual(pOther);
 }
 
 // @0x140548aa0
-bool ItemInstallData::FUN_140548aa0(const ItemInstallData* pOther)
+bool ItemInstallData::IsNotEqual(const ItemInstallData* pOther)
 {
     if (placeable != pOther->placeable)
         return true;
@@ -1436,7 +1436,7 @@ bool ItemInstallData::FUN_140548d10()
 }
 
 // @0x140548d50
-bool ItemInstallData::FUN_140548d50()
+bool ItemInstallData::HasAllStackableFlags()
 {
     if ((stackable & 1) != 0 && (stackable & 2) != 0 && (stackable & 4) != 0)
         return true;
@@ -1489,7 +1489,7 @@ void ItemHousing::LoadElement(TiXmlElement* pElem, int nItemId)
 int ItemHousing::Save(void* pParent)
 {
     static ItemHousing s_default;
-    if (FUN_140549380(&s_default))
+    if (IsNotEqual(&s_default))
     {
         TiXmlElement elem("housing");
         if (filter != ItemHousingFilterDefault)
@@ -1512,7 +1512,7 @@ int ItemHousing::Save(void* pParent)
 }
 
 // @0x140549380
-bool ItemHousing::FUN_140549380(const ItemHousing* pOther)
+bool ItemHousing::IsNotEqual(const ItemHousing* pOther)
 {
     if (filter != pOther->filter)
         return true;
@@ -1646,7 +1646,7 @@ int ItemEffect::Save(void* pParent)
 }
 
 // @0x140549a40
-bool ItemEffect::FUN_140549a40(const ItemEffect* pOther)
+bool ItemEffect::IsNotEqual(const ItemEffect* pOther)
 {
     if (enchantShape != pOther->enchantShape)
         return true;
@@ -1684,7 +1684,7 @@ ItemAdditionalEffect::ItemAdditionalEffect()
 }
 
 // @0x140549c00
-int ItemAdditionalEffect::FUN_140549c00(TiXmlElement* pElem)
+int ItemAdditionalEffect::Load(TiXmlElement* pElem)
 {
     TiXmlElement* pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("AdditionalEffect"));
     if (pEffect != 0)
@@ -1705,7 +1705,7 @@ int ItemAdditionalEffect::Save(void* pParent)
 }
 
 // @0x140549d60
-bool ItemAdditionalEffect::FUN_140549d60(const ItemAdditionalEffect* pOther)
+bool ItemAdditionalEffect::IsNotEqual(const ItemAdditionalEffect* pOther)
 {
     if (!IsSameArray(ids, pOther->ids))
         return true;
@@ -1776,7 +1776,7 @@ int ItemFunction::Load(TiXmlElement* pElem)
 }
 
 // @0x14054a2b0
-bool ItemFunction::FUN_14054a2b0(const ItemFunction* pOther)
+bool ItemFunction::IsNotEqual(const ItemFunction* pOther)
 {
     if (name != pOther->name)
         return true;
@@ -1796,7 +1796,7 @@ int ItemFunction::FUN_14054a350()
 {
     if (name == L"ExpandInven")
     {
-        if (parameter.FUN_1408d2380() < 1)
+        if (parameter.GetArgCount() < 1)
             return 0;
         unsigned nSlots = parameter.FUN_1408d1fd0(0, 0);
         if (nSlots % 6 != 0)
@@ -1812,13 +1812,13 @@ bool ItemFunction::HasName()
 }
 
 // @0x14054a410
-bool ItemFunction::FUN_14054a410()
+bool ItemFunction::HasXmlValues()
 {
     return !xml.IsEmpty();
 }
 
 // @0x14054a460
-int ItemFunction::FUN_14054a460()
+int ItemFunction::GetBoxId()
 {
     if (name == L"OpenItemBox")
     {
@@ -1837,7 +1837,7 @@ int ItemFunction::FUN_14054a460()
     }
     else if (name == L"SelectItemBox")
     {
-        if (FUN_14054a410())
+        if (HasXmlValues())
             return xml.GetInt(L"individualDropBoxId", 0);
         else
             return parameter.FUN_1408d1fd0(1, 0);
@@ -1896,7 +1896,7 @@ int ItemMusicScore::LoadElement(TiXmlElement* pElem)
 int ItemMusicScore::Save(void* pParent)
 {
     static ItemMusicScore s_default;
-    if (FUN_14054abd0(&s_default))
+    if (IsNotEqual(&s_default))
     {
         TiXmlElement elem("MusicScore");
         if (playCount != 0)
@@ -1919,7 +1919,7 @@ int ItemMusicScore::Save(void* pParent)
 }
 
 // @0x14054abd0
-bool ItemMusicScore::FUN_14054abd0(const ItemMusicScore* pOther)
+bool ItemMusicScore::IsNotEqual(const ItemMusicScore* pOther)
 {
     if (playCount != pOther->playCount)
         return true;
@@ -1963,7 +1963,7 @@ int ItemMusicScore::GetPlayCount()
 }
 
 // @0x14054ad20
-CStringW ItemMusicScore::FUN_14054ad20()
+CStringW ItemMusicScore::GetRecommendCategoryName()
 {
     MS2Ptr<CInstrumentCategoryData> spInfo = TSingleton<CInstrumentDataTable>::GetInstance()->GetCategory(recommendCategoryId);
     if (spInfo == 0)
@@ -1997,7 +1997,7 @@ void ItemModelData::FUN_14054aee0(int n)
 }
 
 // @0x14054af00
-void ItemModelData::FUN_14054af00(TiXmlElement* pElem)
+void ItemModelData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "desc", name);
     TiXmlElement* pSlots = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("slots"));
@@ -2011,7 +2011,7 @@ void ItemModelData::FUN_14054af00(TiXmlElement* pElem)
             if (group.GetType() == 3)
             {
                 resource.AssignRaw(new CharacterDecalData);
-                resource->FUN_1401e4090(pSlot);
+                resource->Read(pSlot);
             }
         }
     }
@@ -2035,7 +2035,7 @@ void ItemModelData::FUN_14054af00(TiXmlElement* pElem)
 }
 
 // @0x14054b230
-void ItemModelData::FUN_14054b230(void* pParent)
+void ItemModelData::Save(void* pParent)
 {
 }
 
@@ -2043,7 +2043,7 @@ void ItemModelData::FUN_14054b230(void* pParent)
 void ItemModelData::FUN_14054b250(const CString& strName)
 {
     for (size_t i = 0; i < groups.size(); ++i)
-        groups[i].FUN_140545130(strName);
+        groups[i].SetPartName(strName);
 }
 
 // @0x14054b2c0
@@ -2117,7 +2117,7 @@ int ItemModelData::FUN_14054b580()
 // @0x14054b5b0
 int ItemModelData::FUN_14054b5b0(int nIndex)
 {
-    return head.FUN_140547270(nIndex);
+    return head.GetIdAt(nIndex);
 }
 
 // @0x14054b5e0
@@ -2151,7 +2151,7 @@ ItemModelHead* ItemModelData::FUN_14054b690()
 }
 
 // @0x14054b6b0
-CharacterDecalData* ItemModelData::FUN_14054b6b0()
+CharacterDecalData* ItemModelData::GetDecalData()
 {
     return resource.get();
 }

@@ -49,13 +49,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);    // <dir>/<file>
+CString JoinResourcePath(const CString& strDir, const CString& strFile);    // <dir>/<file>
 CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 __int64 GetServerTime();                                                 // the server time
 int GetRandomRange(int nMax, int nMin);                                   // random index
-unsigned int FUN_1407181d0(const CString& str);                                        // string to int
+unsigned int ParseUInt(const CString& str);                                        // string to int
 
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // splits into a std::vector<CString>
 
@@ -100,7 +100,7 @@ int CLoadingImageTable::LoadingImage::Load(TiXmlElement* pElem)
         if (strBg.Find(".dds", 0) == -1)
             strBg.AppendFormat(".dds");
         CString strDir("LoadingImage");
-        m_strFile = FUN_140cc2ad0(strDir, strBg);
+        m_strFile = JoinResourcePath(strDir, strBg);
     }
     return 1;
 }
@@ -173,7 +173,7 @@ int CLoadingImageTable::Load()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("image")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("image")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         ImagePtr spImage(new LoadingImage);
         if (spImage.get()->Load(pNode) != 0)
@@ -197,7 +197,7 @@ int CLoadingImageTable::Load()
                 FUN_140275080(tokens[i], &parts, ":");
                 if (parts.size() == 2)
                 {
-                    int nIndex = FUN_1407181d0(parts[0]);
+                    int nIndex = ParseUInt(parts[0]);
                     CString strFile(parts[1].Trim());
                     spMovie.get()->m_files.insert(std::make_pair(nIndex, strFile));
                 }

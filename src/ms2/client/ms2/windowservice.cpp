@@ -393,7 +393,7 @@ void CloseLoadingDialog()
 
 // True when another desktop is in front (the secure desktop / screen saver is active).
 // @0x141b91ab0
-int FUN_141b91ab0()
+int IsDesktopLocked()
 {
     HDESK hDesktop = OpenDesktopA("Default", 0, 0, 0x100);
     if (hDesktop != 0)

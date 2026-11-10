@@ -84,7 +84,7 @@ class WorldService   // C3: static member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
-    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
+    class Unk_WsC_GameObj* FindObjectByMesh(void* mesh);   // C3: was Unk_GameContext::FindObjectByMesh
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -333,7 +333,7 @@ void CRPGCameraMode::vfunc_30()
     for (unsigned int i = 0; i < pList->GetPickResult()->GetSize(); ++i)
     {
         Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList->GetPickResult()->GetAt(i));
-        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(pContext->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
+        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(pContext->FindObjectByMesh(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {

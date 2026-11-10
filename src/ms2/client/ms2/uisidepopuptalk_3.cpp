@@ -237,7 +237,7 @@ void CSidePopupTalkTable::Init()
         CStringA strType;
         XmlGetAttr((class TiXmlElement*)(pElem), "eventType", strType);
         CStringW strClass = StringFormat(L"CSidePopupCondition{0}", strType);
-        MS2Ptr<CSidePopupCondition> spCond(static_cast<CSidePopupCondition*>(FUN_1401f7f50(strClass)));
+        MS2Ptr<CSidePopupCondition> spCond(static_cast<CSidePopupCondition*>(CreateClassObject(strClass)));
         if (spCond.get())
         {
             spCond->vfunc_2(pElem);
@@ -268,7 +268,7 @@ MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::Find(eSidePopupEvent eKind, unsi
         MS2Ptr<PopupData> spData = it->second;
         if (spData->m_spCond->vfunc_3() == 0)
             return 0;
-        if (spData->m_nMapId != 0 && spData->m_nMapId != TSingleton<WorldService>::GetInstance()->FUN_141bd3060())
+        if (spData->m_nMapId != 0 && spData->m_nMapId != TSingleton<WorldService>::GetInstance()->GetFieldId())
             return 0;
         return spData->m_spParam;
     }

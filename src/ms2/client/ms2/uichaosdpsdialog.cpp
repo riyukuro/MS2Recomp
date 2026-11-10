@@ -61,7 +61,7 @@ class Unk_ChaosWorld;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -79,7 +79,7 @@ class Unk_ChaosAS : public AScript
 int FUN_141276f80(Unk_CommandChat* pChat);
 
 // Number parsing, localized strings and ASObj/Value setters of other units.
-double FUN_1407184e0(const CStringW& str);
+double ParseDoubleW(const CStringW& str);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double d);
@@ -119,7 +119,7 @@ int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned 
     obj.FUN_1409c48f0("level", user.m_34);
     ((ASObj*)(ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
     ((class AScript&)(obj)).SetWStringMember("name", user.GetName());
-    double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
+    double dMeter = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, pMember->FUN_141637bb0(), m_nMode);
@@ -164,7 +164,7 @@ void UIChaosDPSDialog::FUN_140e05950()
     MS2Ptr<CPartyMember> spLast = m_members[m_members.size() - 1];
     if (spLast.get() != 0)
     {
-        double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
+        double dBottom = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
         static_cast<ASArray*>(m_30.operator->())->InvokeDouble("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
@@ -178,7 +178,7 @@ void UIChaosDPSDialog::FUN_140e05950()
         }
         do
         {
-            PCBase* pMe = ((class PCBase*)((class WorldService*)(class Unk_ChaosWorld*)(((class Unk_ChaosWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            PCBase* pMe = ((class PCBase*)((class WorldService*)(class Unk_ChaosWorld*)(((class Unk_ChaosWorld*)WorldService::GetInstance())))->GetLocalPlayer());
             if (pMe == 0)
                 break;
             if (((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() != spMember->user.m_8)
@@ -294,8 +294,8 @@ void UIChaosDPSDialog::vfunc_72()
 // @0x140e066f0
 bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 {
-    double dA = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spA->FUN_141637bb0(), s_nSortMode));
-    double dB = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spB->FUN_141637bb0(), s_nSortMode));
+    double dA = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spA->FUN_141637bb0(), s_nSortMode));
+    double dB = ParseDoubleW(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spB->FUN_141637bb0(), s_nSortMode));
     if (s_nSortMode == 6)
         return dB > dA;
     else

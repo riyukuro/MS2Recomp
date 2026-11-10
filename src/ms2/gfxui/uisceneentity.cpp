@@ -75,7 +75,7 @@ int UISceneEntity::IsShown()
 MS2_REPLACE_METHOD(0x1422e7970, UISceneEntity, IsShown, 14, 0x81E2A10F);
 
 // @0x1422e7990
-int UISceneEntity::FUN_1422e7990(int nSceneId)
+int UISceneEntity::HasChildScene(int nSceneId)
 {
     if (m_78.IsEmpty())
         return 0;
@@ -87,12 +87,12 @@ int UISceneEntity::FUN_1422e7990(int nSceneId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422e7990, UISceneEntity, FUN_1422e7990, 170, 0xDE2075E7);
+MS2_REPLACE_METHOD(0x1422e7990, UISceneEntity, HasChildScene, 170, 0xDE2075E7);
 
 // @0x1422e7a40
 void UISceneEntity::SetSubSceneId(int nSceneId)
 {
-    reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->FUN_1422b9fd0(nSceneId);
+    reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->SetSubScene(nSceneId);
 }
 MS2_REPLACE_METHOD(0x1422e7a40, UISceneEntity, SetSubSceneId, 35, 0x8C34759F);
 
@@ -117,7 +117,7 @@ int UISceneEntity::vfunc_48(int nPrevSceneId)
     m_68 = nPrevSceneId;
     m_70 = 1;
     if (vfunc_47())
-        FUN_1422dbf80(GetSwfFileName(), m_2c, 0, 0);
+        LoadSwfPath(GetSwfFileName(), m_2c, 0, 0);
     return m_6c;
 }
 MS2_REPLACE_METHOD(0x1422e7b20, UISceneEntity, vfunc_48, 162, 0x9BCF70F6);

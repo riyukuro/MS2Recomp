@@ -106,9 +106,9 @@ public:
     virtual ~CChatEmoticonTable();          // 0x1401e6fe0
 
     int Load();                                                     // 0x1401e7040 builds and swaps in a new cached set
-    ChatEmoticonDataPtr FUN_1401e7120(unsigned int nEmoticonId);    // emoticon by id (null when missing)
-    ChatEmoticonCategoryDataPtr FUN_1401e7270(int nCategoryId);     // category by id (null when missing)
-    void FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut);   // copy of the emoticons of a group
+    ChatEmoticonDataPtr GetEmoticon(unsigned int nEmoticonId);    // emoticon by id (null when missing)
+    ChatEmoticonCategoryDataPtr GetCategory(int nCategoryId);     // category by id (null when missing)
+    void GetEmoticonsByGroup(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut);   // copy of the emoticons of a group
     void GetEmoticonsByCommand(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut);   // emoticons of a ":cmd:"
     int FUN_1401e75b0(unsigned int nGroupId);                       // the group has emoticons
     ChatEmoticonCachedDataPtr GetCachedData();                      // the current cached set (reloaded when a file changed)

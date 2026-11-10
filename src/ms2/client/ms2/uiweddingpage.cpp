@@ -61,7 +61,7 @@ extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
-CStringW FUN_140298ea0(CStringW strKey);                        // string table text
+CStringW GetStringByKey(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
 CStringW GetQuestSummary(int nQuestId, int n);                    // quest title
@@ -71,7 +71,7 @@ MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListene
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 void* FUN_140764020();   // C3: was FUN_140764020
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 
 
 // ---- statics of the unit's header (the quest sort name list, skill, stun, a condition object) ----
@@ -106,9 +106,9 @@ UIWeddingPage::~UIWeddingPage()
 // @0x140fe7440
 bool UIWeddingPage::vfunc_1()
 {
-    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_28->FUN_1422dba00()))->IsNull())
+    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_28->GetScript()))->IsNull())
         return false;
-    Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->GetMember("m_currentPage");
+    Scaleform::GFx::Value kPage = m_28->GetScript()->GetMember("m_currentPage");
     if (kPage.IsNull())
         return false;
     m_pScript = Unk_ASCreate<ASUIComponent>(m_28->FUN_1422db730(), kPage);
@@ -163,7 +163,7 @@ bool UIWeddingPageMessage::vfunc_1()
 {
     if (!UIWeddingPage::vfunc_1())
         return false;
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     bool bGroom = pProxy->IsGroom(DAT_143ab2828);
     if (MS2Ptr<ASTextInput> spMine = m_pScript.operator->()->FUN_140bbe880<ASTextInput>("m_myMessage"))
         spMine.operator->()->SetTextW(pProxy->GetMessageW(bGroom));
@@ -193,7 +193,7 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strMessage = data.FUN_1422b8f40();
-            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringByKey(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
@@ -355,7 +355,7 @@ bool UIWeddingPageMission::vfunc_1()
 {
     if (!UIWeddingPage::vfunc_1())
         return false;
-    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->AddListener(static_cast<UIQuestEventListener*>(this));
     UpdateQuestList();
     return true;
 }
@@ -365,7 +365,7 @@ void UIWeddingPageMission::vfunc_2()
 {
     UIWeddingPage::vfunc_2();
     m_binder.FUN_140d43990();
-    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->RemoveListener(static_cast<UIQuestEventListener*>(this));
 }
 
 // @0x140fe8ad0
@@ -400,7 +400,7 @@ bool UIWeddingPageMission::vfunc_3(const char* szMethod, const Scaleform::GFx::V
 void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIWeddingPage::vfunc_5(pRetVal, pArgs);
-    void* pScene = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pScene = WorldService::GetInstance()->GetLocalPlayer();
     if (pScene == 0)
         return;
     CStringW strName = pArgs->FUN_1422b8f40();

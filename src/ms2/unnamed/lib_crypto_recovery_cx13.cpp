@@ -52,7 +52,7 @@ static std::uint32_t Sha256RotateRight(std::uint32_t x, unsigned n)
 // big-endian words, expanded to 64 schedule words, then added to the 8-word state.
 // MS2-FUNCTIONAL: same 64-round compression transform; the exe unrolls and schedules the rounds differently.
 // @0x1423542a0
-void FUN_1423542a0(std::uint32_t state[8], const std::uint8_t* input, std::size_t byteCount)
+void Sha256Transform(std::uint32_t state[8], const std::uint8_t* input, std::size_t byteCount)
 {
     static const std::uint32_t roundConstant[64] = {
         0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,

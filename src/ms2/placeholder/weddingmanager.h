@@ -27,7 +27,7 @@ class WeddingManager : public TSingleton<WeddingManager>
 public:
     WeddingManager();                                       // 0x141b835d0
     virtual ~WeddingManager();                              // 0x141b836b0
-    WeddingProxy* FUN_140d295d0();                          // the own wedding record (+0x8)
+    WeddingProxy* GetWeddingProxy();                          // the own wedding record (+0x8)
 
     void OnPacket(CInPacket& packet);                       // 0x141b83750
     void OnProxy(CInPacket& packet);                        // 0x141b83a20 (mode 0x00)

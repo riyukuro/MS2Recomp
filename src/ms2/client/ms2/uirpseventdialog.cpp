@@ -190,7 +190,7 @@ void UIRpsEventDialog::vfunc_67() {
     UIDialog::vfunc_67();
     reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x708, Delegate<void(GameEventVariable*)>(this, &UIRpsEventDialog::OnGameEventVariableChanged));
     reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x709, Delegate<void(GameEventVariable*)>(this, &UIRpsEventDialog::OnGameEventVariableChanged));
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (avatar) {
         if (reinterpret_cast<PCBase*>(avatar)->GetCurStateId() == 0x3b) avatar->vfunc_59(1, 0, 0, 0);
     }
@@ -213,7 +213,7 @@ void UIRpsEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString& me
     if (method == "getTooltipItem") {
         int item = args->PopUInt();
         int rank = args->PopUInt();
-        Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
         if (avatar) {
             ASTooltip tooltip((void*)avatar, 0x20, 2);
             if (tooltip.FUN_1409e1770(item, rank)) *result = tooltip.GetValue();
@@ -224,7 +224,7 @@ MS2_REPLACE_METHOD(0x140e82920, UIRpsEventDialog, vfunc_45, 260, 0xB4209A71);
 // @0x140e82a30
 int UIRpsEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* args, unsigned int count) {
     if (UIDialog::vfunc_28(method, args, count)) return 1;
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!avatar) { MS2_ASSERT_AT(244, 0); return 0; }
     if (_stricmp("onOpenBanner", method) == 0) {
         if (!FUN_140b883c0()) { FUN_141275260(0xcfd, 1, 1); return 1; }
@@ -260,7 +260,7 @@ int UIRpsEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* 
 MS2_REPLACE_METHOD(0x140E82A30, UIRpsEventDialog, vfunc_28, 1021, 0x1C4478B1);
 // @0x140e82e40
 int UIRpsEventDialog::vfunc_71() {
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!avatar) { MS2_ASSERT_AT(321, 0); return 0; }
     MS2Ptr<Unk_PCBaseComp_ac8> banner = avatar->vfunc_87();
     if (banner == NULL) { MS2_ASSERT_AT(328, 0); return 0; }
@@ -309,7 +309,7 @@ int UIRpsEventDialog::GetCurrentPlayCount() {
 MS2_REPLACE_METHOD(0x140e832d0, UIRpsEventDialog, GetCurrentPlayCount, 147, 0x667F9F28);
 // @0x140e83370
 void UIRpsEventDialog::FUN_140e83370(MS2Ptr<RpsContext> event) {
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!avatar) { MS2_ASSERT_AT(167, 0); return; }
     if (m_30 == NULL) { MS2_ASSERT_AT(173, 0); return; }
     if (event == NULL) { MS2_ASSERT_AT(179, 0); return; }
@@ -350,7 +350,7 @@ MS2_REPLACE_METHOD(0x140e83370, UIRpsEventDialog, FUN_140e83370, 1715, 0x6169698
 void UIRpsEventDialog::FUN_140e83a30() {
     MS2Ptr<RpsContext> event = ((class CGameRule*)GetGameRule())->GetRps();
     if (event == NULL) return;
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!avatar) { MS2_ASSERT_AT(72, 0); return; }
     if (m_30 == NULL) { MS2_ASSERT_AT(78, 0); return; }
     if (event == NULL) { MS2_ASSERT_AT(84, 0); return; }
@@ -376,7 +376,7 @@ MS2_REPLACE_METHOD(0x140e83a30, UIRpsEventDialog, FUN_140e83a30, 1032, 0xFB5B37E
 void UIRpsEventDialog::RefreshBannerButton() {
     if (m_30 == NULL) return;
     if (!FUN_141924630()) return;
-    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_RpsAvatar* avatar = static_cast<Unk_RpsAvatar*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!avatar) return;
     MS2Ptr<Unk_PCBaseComp_ac8> banner = avatar->vfunc_87();
     if (banner == NULL) return;

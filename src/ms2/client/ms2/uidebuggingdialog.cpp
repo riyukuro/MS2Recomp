@@ -96,7 +96,7 @@ struct Unk_EmModelLoader { efd::utf8string GetCurrentSequenceName(const egf::Ent
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 float FromPercent(float fValue);                                       // table value of a speed
-bool FUN_14028d470(float fValue, float fZero);                           // fValue == nZero
+bool IsNearlyEqual(float fValue, float fZero);                           // fValue == nZero
 // The npc record handle accessors.
 struct Unk_DbgSpeedRec;
 
@@ -279,7 +279,7 @@ void UIDebuggingDialog::vfunc_72()
     int bClear = 1;
     if (m_nTargetId != 0)
     {
-        Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nTargetId));
+        Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgNpc*>(WorldService::GetInstance()->FindNpcById(m_nTargetId));
         if (pNpc != 0)
         {
             efd::utf8string kModel = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->GetCurrentSequenceName(pNpc->GetEntityID());
@@ -301,13 +301,13 @@ void UIDebuggingDialog::vfunc_72()
             if (spData.get() != 0)
             {
                 float fBase = spData->m_fRunSpeed;
-                if (FUN_14028d470(fBase, 0))
+                if (IsNearlyEqual(fBase, 0))
                 {
                     fBase = spData->m_fWalkSpeed;
-                    if (FUN_14028d470(fBase, 0))
+                    if (IsNearlyEqual(fBase, 0))
                     {
                         fBase = pNpc->vfunc_95();
-                        if (FUN_14028d470(fBase, 0))
+                        if (IsNearlyEqual(fBase, 0))
                             fBase = 1.1754944e-38f;
                     }
                 }

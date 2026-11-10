@@ -36,7 +36,7 @@
 
 // ---- unit-local placeholders ----
 
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 
 // MS2Ptr<NpcDataCli> members instantiated by earlier objs (the rest are this obj's COMDATs).
 template <> void MS2Ptr<NpcDataCli>::Reference(NpcDataCli* p);         // 0x1406d9f40
@@ -187,7 +187,7 @@ CubeSpawnObject::~CubeSpawnObject()
 // @0x140a4ed00
 int CubeSpawnObject::vfunc_124(int nNpcId, egf::EntityPtr ent, int nGaugeA, int nGaugeB, const CStringW& strOwner)
 {
-    m_spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpcId);
+    m_spNpc = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(nNpcId);
     if (m_spNpc == NULL)
         return 0;
     reinterpret_cast<egf::EntityPtr&>(m_entity) = reinterpret_cast<egf::EntityPtr&>(ent);

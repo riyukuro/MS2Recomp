@@ -63,7 +63,7 @@ class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x14016
 void FUN_140a43b20();
 void FUN_140a43d40();
 void FUN_140a43f00();
-LONG WINAPI FUN_140a43fa0(EXCEPTION_POINTERS* pException);
+LONG WINAPI OnUnhandledException(EXCEPTION_POINTERS* pException);
 #define SIGABRT_COMPAT 22
 
 // @0x140a435a0
@@ -78,7 +78,7 @@ void CrashManagerCli::FUN_140a435a0()
     __imp_CrashReporter_RegisterCallback_BeforeDump(FUN_140a43b20);
     m_nLogId = TSingleton<CFileLogger>::GetInstance()->OpenLog(L"MS2Log.txt");
     __imp_CrashReporter_RegisterCallback_AfterDump(FUN_140a43d40);
-    g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(FUN_140a43fa0);
+    g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(OnUnhandledException);
     g_dlgCrash.SetMessage(FUN_14016a600(GetStringCommon(0xc3d), 0));
     FUN_140a43f00();
 }
@@ -163,7 +163,7 @@ void FUN_140a43b20()
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionCN())
     {
         int nStart = 0;
-        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();
+        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->GetDumpPath();
         CStringW strName = strPath.Tokenize(L".", nStart);
         CStringW strExt = strPath.Tokenize(L".", nStart);
         int nIndex = 0;
@@ -181,7 +181,7 @@ void FUN_140a43b20()
     }
     else
     {
-        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();
+        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->GetDumpPath();
         CrashReporter_SetFullDumpPath(strPath.GetBuffer());
     }
 }
@@ -237,7 +237,7 @@ void FUN_140a43ea0(int)
 }
 
 // @0x140a43ed0
-void FUN_140a43ed0()
+void OnTerminate()
 {
     RaiseException(0xc0000005, 1, 0, 0);
 }
@@ -245,8 +245,8 @@ void FUN_140a43ed0()
 // @0x140a43f00
 void FUN_140a43f00()
 {
-    set_unexpected(FUN_140a43ed0);
-    set_terminate(FUN_140a43ed0);
+    set_unexpected(OnTerminate);
+    set_terminate(OnTerminate);
     _set_invalid_parameter_handler(FUN_140a43d70);
     _set_purecall_handler(FUN_140a43db0);
     _set_new_mode(1);
@@ -257,7 +257,7 @@ void FUN_140a43f00()
 }
 
 // @0x140a43fa0
-LONG WINAPI FUN_140a43fa0(EXCEPTION_POINTERS* pException)
+LONG WINAPI OnUnhandledException(EXCEPTION_POINTERS* pException)
 {
     DWORD dwCode = pException->ExceptionRecord->ExceptionCode;
     if (dwCode == 0x80000003)

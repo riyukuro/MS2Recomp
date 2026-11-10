@@ -174,8 +174,8 @@
 #include <NiAVObject.h>
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-bool FUN_14028d470(float a, float b);                               // nearly equal
-bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);   // the two end points coincide
+bool IsNearlyEqual(float a, float b);                               // nearly equal
+bool IsNearlyEqualPoint3(const efd::Point3& kA, const efd::Point3& kB);   // the two end points coincide
 void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pkOut1, efd::Point3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
@@ -183,7 +183,7 @@ class Unk_ResourceMgr;   // the loading service as GetNifLoadingService returns 
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_1415672e0(NiAVObject*, bool);
+void PrepareLoadedNif(NiAVObject*, bool);
 
 // The effect node (400 bytes) carries the effect-space point.
 class Unk_EffectNode : public NiNode
@@ -344,9 +344,9 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spZBuffer);
 
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
+    PrepareLoadedNif(m_spMesh->GetMesh(), (bool)0);
     m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
-    if (FUN_14028d470(m_spParam->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(m_spParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
 }
@@ -511,7 +511,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         return false;
     Vector3 kStart = (*m_pPoints)[0];
     Vector3 kEnd = (*m_pPoints)[nPoints - 1];
-    if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(kStart), reinterpret_cast<const efd::Point3&>(kEnd)))
+    if (IsNearlyEqualPoint3(reinterpret_cast<const efd::Point3&>(kStart), reinterpret_cast<const efd::Point3&>(kEnd)))
         return false;
     switch (spInfo->m_nType)
     {

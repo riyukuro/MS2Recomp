@@ -61,15 +61,15 @@ CString ToCString(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(TiXmlElement*, const char*, CStringW&);
-int FUN_140197350(TiXmlElement*, const char*, int nDefault);           // int attribute with default
-unsigned int FUN_140197390(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
-float FUN_1401973d0(TiXmlElement*, const char*, float fDefault);
+int GetIntAttr(TiXmlElement*, const char*, int nDefault);           // int attribute with default
+unsigned int GetUIntAttr(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
+float GetFloatAttr(TiXmlElement*, const char*, float fDefault);
 CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW strDefault);
 template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
 template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
+TiXmlElement * GetFirstChildElement(TiXmlDocument *);  // C3: the definition's signature
 int GetRandomRange(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -78,7 +78,7 @@ bool CReactorDataTable::s_bInit;
 #endif
 
 // @0x14076a1e0
-ReactorStateData::ConditionPtr FUN_14076a1e0(TiXmlElement* pNode)
+ReactorStateData::ConditionPtr LoadConditionItem(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return ReactorStateData::ConditionPtr(0);
@@ -87,9 +87,9 @@ ReactorStateData::ConditionPtr FUN_14076a1e0(TiXmlElement* pNode)
         return ReactorStateData::ConditionPtr(0);
     MS2Ptr<ReactorConditionItem> item(new ReactorConditionItem);
     item->m_nCode = nCode;
-    item->m_nRank = FUN_140197350(pNode, "rank", 1);
-    item->m_nConsume = FUN_140197350(pNode, "consume", 0);
-    item->m_nCheckCount = FUN_140197350(pNode, "checkCount", 0);
+    item->m_nRank = GetIntAttr(pNode, "rank", 1);
+    item->m_nConsume = GetIntAttr(pNode, "consume", 0);
+    item->m_nCheckCount = GetIntAttr(pNode, "checkCount", 0);
     return ReactorStateData::ConditionPtr(item.get());
 }
 
@@ -134,15 +134,15 @@ bool ReactorStateData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     ReadStateType(pNode, "type", &m_nType);
-    m_nNextTimeSec = FUN_140197350(pNode, "nextTimeSec", 0);
-    m_nExpireTimeSec = FUN_140197350(pNode, "expireTimeSec", 0);
+    m_nNextTimeSec = GetIntAttr(pNode, "nextTimeSec", 0);
+    m_nExpireTimeSec = GetIntAttr(pNode, "expireTimeSec", 0);
     m_strKfmName = Unk_ReadString((class Unk_XmlNode*)(pNode), "kfmName", CStringA(""));
     m_strStartAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "startAni", CStringA(""));
     m_strIdleAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "idleAni", CStringA(""));
     m_strActionStringKey = FUN_1401bf530(pNode, "actionStringKey", CStringW(L""));
     typedef ConditionPtr (*CondLoader)(TiXmlElement*);
     std::list<std::pair<CondLoader, CStringA> > loaders;
-    loaders.push_back(std::make_pair(FUN_14076a1e0, "condItem"));
+    loaders.push_back(std::make_pair(LoadConditionItem, "condItem"));
     std::list<std::pair<CondLoader, CStringA> >& rLoaders = loaders;
     std::list<std::pair<CondLoader, CStringA> >::const_iterator itEnd = rLoaders.end();
     for (std::list<std::pair<CondLoader, CStringA> >::const_iterator it = rLoaders.begin(); it != itEnd; ++it)
@@ -173,13 +173,13 @@ bool ReactorData::Load(TiXmlElement* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     XmlTokenList(pNode, "createAnimation", m_createAnims);
     XmlTokenList(pNode, "reactAnimation", m_reactAnims);
-    m_nReactTimeMSec = FUN_140197350(pNode, "reactTimeMSec", 15000);
-    m_fReactDistance = FUN_1401973d0(pNode, "reactDistance", 0);
+    m_nReactTimeMSec = GetIntAttr(pNode, "reactTimeMSec", 15000);
+    m_fReactDistance = GetFloatAttr(pNode, "reactDistance", 0);
     std::vector<int> stateIds;
     CStringA strStates = Unk_ReadString((class Unk_XmlNode*)(pNode), "reactorStateList", CStringA(""));
     XmlSplit(strStates, stateIds, ", []");
     m_strConnectedEffect = Unk_ReadString((class Unk_XmlNode*)(pNode), "connectedEffect", CStringA(""));
-    m_nGameEventId = FUN_140197390(pNode, "gameEventId", 0);
+    m_nGameEventId = GetUIntAttr(pNode, "gameEventId", 0);
     for (std::vector<int>::iterator it = stateIds.begin(); it != stateIds.end(); ++it)
     {
         int nStateId = *it;
@@ -203,7 +203,7 @@ bool ReactorData::Load(TiXmlElement* pNode)
             MS2_ASSERT_AT(0xff, 0);
             return false;
         }
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == 0)
         {
             MS2_ASSERT_AT(0x106, 0);
@@ -272,7 +272,7 @@ bool CReactorDataTable::LoadReactors()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactor")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("reactor")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         DataPtr data(new ReactorData);
         if (!data->Load(pNode))

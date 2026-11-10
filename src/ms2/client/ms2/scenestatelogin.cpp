@@ -22,8 +22,8 @@ class WorldService   // C3: unit-local view of the callback set
 {
 public:
     static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
-    void FUN_141bbae40(void* p);
-    void FUN_141bbae80(void* p);
+    void AddCallback(void* p);
+    void RemoveCallback(void* p);
     int LoadMap(int mapId, int arg2, int arg3);
 };
 void* GetMS2();
@@ -86,7 +86,7 @@ void CSceneStateLogin::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
     ((class MS2*)GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     DAT_1439f4a78 = -1;
     WorldService::GetInstance()->LoadMap(1, 1, 0);
@@ -96,7 +96,7 @@ void CSceneStateLogin::OnEnter(int nPrevState)
 void CSceneStateLogin::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->RemoveCallback((IWorldServiceCallback*)this);
 }
 
 // @0x14174c1d0
@@ -109,7 +109,7 @@ void CSceneStateLogin::OnUpdate(double fTime)
 void CSceneStateLogin::OnPacket(CInPacket& packet)
 {
     CSceneStateBase::OnPacket(packet);
-    switch (packet.FUN_14070fe80())
+    switch (packet.GetOpcode())
     {
     case static_cast<int>(RecvOp::Admin):
         OnAdmin(this, packet);

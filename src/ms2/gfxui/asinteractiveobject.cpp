@@ -26,60 +26,60 @@ ASInteractiveObject::~ASInteractiveObject()
 }
 
 // @0x1422de700
-void ASInteractiveObject::FUN_1422de700(const ASCallback& cb, bool bCapture, void* pUser)
+void ASInteractiveObject::AddFocusInListener(const ASCallback& cb, bool bCapture, void* pUser)
 {
     AddEventListener("focusIn", cb, bCapture, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DE700, ASInteractiveObject, FUN_1422de700, 121, 0x8AFFA4E0);
+MS2_REPLACE_METHOD(0x1422DE700, ASInteractiveObject, AddFocusInListener, 121, 0x8AFFA4E0);
 
 // @0x1422de780
-void ASInteractiveObject::FUN_1422de780(const ASCallback& cb, bool bCapture, void* pUser)
+void ASInteractiveObject::AddFocusOutListener(const ASCallback& cb, bool bCapture, void* pUser)
 {
     AddEventListener("focusOut", cb, bCapture, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DE780, ASInteractiveObject, FUN_1422de780, 121, 0xE95A519F);
+MS2_REPLACE_METHOD(0x1422DE780, ASInteractiveObject, AddFocusOutListener, 121, 0xE95A519F);
 
 // @0x1422de800
-void ASInteractiveObject::FUN_1422de800(const ASCallback& cb, bool bCapture, void* pUser)
+void ASInteractiveObject::AddRollOverListener(const ASCallback& cb, bool bCapture, void* pUser)
 {
     AddEventListener("rollOver", cb, bCapture, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DE800, ASInteractiveObject, FUN_1422de800, 121, 0x66E4CDCA);
+MS2_REPLACE_METHOD(0x1422DE800, ASInteractiveObject, AddRollOverListener, 121, 0x66E4CDCA);
 
 // @0x1422de880
-void ASInteractiveObject::FUN_1422de880(const ASCallback& cb, bool bCapture, void* pUser)
+void ASInteractiveObject::AddRollOutListener(const ASCallback& cb, bool bCapture, void* pUser)
 {
     AddEventListener("rollOut", cb, bCapture, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DE880, ASInteractiveObject, FUN_1422de880, 121, 0xD1EC524B);
+MS2_REPLACE_METHOD(0x1422DE880, ASInteractiveObject, AddRollOutListener, 121, 0xD1EC524B);
 
 // @0x1422de900
-void ASInteractiveObject::FUN_1422de900(const ASCallback& cb, bool bCapture)
+void ASInteractiveObject::RemoveFocusInListener(const ASCallback& cb, bool bCapture)
 {
     RemoveEventListener("focusIn", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DE900, ASInteractiveObject, FUN_1422de900, 87, 0x0C962461);
+MS2_REPLACE_METHOD(0x1422DE900, ASInteractiveObject, RemoveFocusInListener, 87, 0x0C962461);
 
 // @0x1422de960
-void ASInteractiveObject::FUN_1422de960(const ASCallback& cb, bool bCapture)
+void ASInteractiveObject::RemoveFocusOutListener(const ASCallback& cb, bool bCapture)
 {
     RemoveEventListener("focusOut", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DE960, ASInteractiveObject, FUN_1422de960, 87, 0xA11C4379);
+MS2_REPLACE_METHOD(0x1422DE960, ASInteractiveObject, RemoveFocusOutListener, 87, 0xA11C4379);
 
 // @0x1422de9c0
-void ASInteractiveObject::FUN_1422de9c0(const ASCallback& cb, bool bCapture)
+void ASInteractiveObject::RemoveRollOverListener(const ASCallback& cb, bool bCapture)
 {
     RemoveEventListener("rollOver", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DE9C0, ASInteractiveObject, FUN_1422de9c0, 87, 0xAC470DC2);
+MS2_REPLACE_METHOD(0x1422DE9C0, ASInteractiveObject, RemoveRollOverListener, 87, 0xAC470DC2);
 
 // @0x1422dea20
-void ASInteractiveObject::FUN_1422dea20(const ASCallback& cb, bool bCapture)
+void ASInteractiveObject::RemoveRollOutListener(const ASCallback& cb, bool bCapture)
 {
     RemoveEventListener("rollOut", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DEA20, ASInteractiveObject, FUN_1422dea20, 87, 0x45FD8B07);
+MS2_REPLACE_METHOD(0x1422DEA20, ASInteractiveObject, RemoveRollOutListener, 87, 0x45FD8B07);
 
 // @0x1422dea80
 void ASInteractiveObject::SetDoubleClickEnabled(int bEnabled)

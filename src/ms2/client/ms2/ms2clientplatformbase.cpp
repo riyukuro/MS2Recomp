@@ -41,8 +41,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143abf5
 static CStringA s_strReportSiren2("PremiumShop_ReportSiren");       // 0x143abf588
 
 // ---- out-of-unit types and functions ----
-void FUN_14092e580(void* p) noexcept;
-void FUN_14092ea10(void* p, int n);
+void DestroyValue(void* p) noexcept;
+void SetKind(void* p, int n);
 class CFeatureManager { public: bool FUN_14036d650(); };
 #include "ms2/commonfiles/meratproductkey.h"   // the report id is a merat product key (UIReportDialog::FUN_141ab9b80)
 Unk_NexonAnalytics* GetNexonAnalytics();
@@ -58,7 +58,7 @@ public:
     void FUN_141ab9c50(__int64 nTargetId, const CStringW& strText, int nA, int nB);
     void SetPetTarget(CStringW strA, CStringW strB);
 };
-int FUN_141276180(const CString& strTarget, const CString& strValue);
+int PlaySystemSound(const CString& strTarget, const CString& strValue);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T, class U> void Unk_SkillTableLog(class CLogString*, int, int, const wchar_t*, const T&, const U&);   // C3: was FUN_140ab1290 (skilldatatablecli)
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
@@ -66,7 +66,7 @@ void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: wa
 void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2);
 __int64 GetMeratBalance();
-__int64 FUN_140930390(unsigned int);   // C3: was FUN_140930390
+__int64 GetWalletAmountByMask(unsigned int);   // C3: was FUN_140930390
 __int64 GetRedMeratBalance();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
@@ -321,7 +321,7 @@ bool CClientPlatformBase::vfunc_40(__int64 nTime)
 // @0x140c75c30
 bool CClientPlatformBase::vfunc_39(__int64 nTime, int nKind)
 {
-    return FUN_140930390(nKind) - nTime >= 0;
+    return GetWalletAmountByMask(nKind) - nTime >= 0;
 }
 
 // @0x140c75c80
@@ -398,7 +398,7 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         return;
     }
     pDialog->FUN_141924680();
-    FUN_141276180(s_strReportSiren, "");
+    PlaySystemSound(s_strReportSiren, "");
 }
 
 // @0x140c76440
@@ -599,7 +599,7 @@ Unk_NexonAnalytics::~Unk_NexonAnalytics()
 // @0x140c772f0
 Unk_NxNumber::~Unk_NxNumber()
 {
-    FUN_14092e580(this);
+    DestroyValue(this);
 }
 
 // @0x140c77310
@@ -648,7 +648,7 @@ void Unk_NxNumber::Set(__int64 n)
 // @0x140c77850
 void Unk_NxNumber::Set(unsigned n)
 {
-    FUN_14092ea10(this, 3);
+    SetKind(this, 3);
     void* p = ::operator new(8, &m_n10);
     *(unsigned __int64*)p = n;
 }
@@ -656,7 +656,7 @@ void Unk_NxNumber::Set(unsigned n)
 // @0x140c778a0
 void Unk_NxNumber::SetStorage(__int64 n)
 {
-    FUN_14092ea10(this, 3);
+    SetKind(this, 3);
     void* p = ::operator new(8, &m_n10);
     *(__int64*)p = n;
 }

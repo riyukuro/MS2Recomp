@@ -28,11 +28,11 @@ ASScrollingList::~ASScrollingList()
 }
 
 // @0x1422e17a0
-void ASScrollingList::FUN_1422e17a0()
+void ASScrollingList::ScrollToEnd()
 {
     ScrollToIndex(GetItemCount() < 0 ? 0 : GetItemCount());
 }
-MS2_REPLACE_METHOD(0x1422E17A0, ASScrollingList, FUN_1422e17a0, 66, 0x49B7C3FB);
+MS2_REPLACE_METHOD(0x1422E17A0, ASScrollingList, ScrollToEnd, 66, 0x49B7C3FB);
 
 // @0x1422e17f0
 void ASScrollingList::SetScrollPosition(int nPosition)

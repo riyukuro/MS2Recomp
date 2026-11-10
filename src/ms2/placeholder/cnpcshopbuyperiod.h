@@ -32,7 +32,7 @@ public:
     bool IsInWindow(const CMsTime& tm) const;            // tm is inside the current window
     bool IsOutsidePeriod(const CMsTime& tm) const;            // tm is outside the configured dates
     bool IsVisible() const;                             // visible outside the period
-    bool FUN_1406ddc50(const CMsTime& tmNow);               // visible now
+    bool IsVisibleNow(const CMsTime& tmNow);               // visible now
     bool FUN_1406ddc90(const CMsTime& tmNow);               // tmNow is inside the period
 
     CMsTime m_tmWindowStart;                                // +0x18 the current buy window (FUN_1406dcf10)

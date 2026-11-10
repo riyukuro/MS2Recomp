@@ -205,10 +205,10 @@ CUGCMapData::CUGCMapData() { groups.clear(); }
 CUGCMapData::~CUGCMapData() {}
 
 // MS2-FUNCTIONAL: typed scoped cache lookup; /Od return-object placement differs.
-Unk_UGCMapPtr FUN_1408ad3f0(int mapId);
+Unk_UGCMapPtr GetUGCMap(int mapId);
 #ifndef MS2_HOOK_DLL
 // @0x1408ad3f0
-Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
+Unk_UGCMapPtr GetUGCMap(int mapId) {
     Unk_UGCMapPtr value(0);
     if(mapId==0) return Unk_UGCMapPtr(0);
     {

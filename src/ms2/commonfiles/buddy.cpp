@@ -89,8 +89,8 @@ MS2_REPLACE_METHOD(0x1401CC250, CBuddy, FUN_1401cc250, 15, 0x5AEB0F79);
 int CBuddy::GetMapId() { return m_9c; }
 MS2_REPLACE_METHOD(0x1401CC270, CBuddy, GetMapId, 17, 0x444DCEE7);
 // @0x1401cc290
-int CBuddy::FUN_1401cc290() { return m_a0; }
-MS2_REPLACE_METHOD(0x1401CC290, CBuddy, FUN_1401cc290, 17, 0xB518FD33);
+int CBuddy::GetJobId() { return m_a0; }
+MS2_REPLACE_METHOD(0x1401CC290, CBuddy, GetJobId, 17, 0xB518FD33);
 // @0x1401cc2b0
 int CBuddy::GetJobCode() {
     if (m_a4 == 0) return m_a0 * 10;
@@ -107,8 +107,8 @@ MS2_REPLACE_METHOD(0x1401CC310, CBuddy, GetChannel, 17, 0xEA51A84B);
 Unk_UserProxyColor* CBuddy::FUN_1401cc330() { return &m_ac; }
 MS2_REPLACE_METHOD(0x1401CC330, CBuddy, FUN_1401cc330, 17, 0x3090C907);
 // @0x1401cc350
-CStringW CBuddy::FUN_1401cc350() { return m_c8; }
-MS2_REPLACE_METHOD(0x1401CC350, CBuddy, FUN_1401cc350, 68, 0x92E42477);
+CStringW CBuddy::GetHomeName() { return m_c8; }
+MS2_REPLACE_METHOD(0x1401CC350, CBuddy, GetHomeName, 68, 0x92E42477);
 // @0x1401cc3a0
 int CBuddy::FUN_1401cc3a0() { return m_bc; }
 MS2_REPLACE_METHOD(0x1401CC3A0, CBuddy, FUN_1401cc3a0, 17, 0xEF627A07);
@@ -129,18 +129,18 @@ int CBuddy::FUN_1401cc400(Vector3* out) {
 }
 MS2_REPLACE_METHOD(0x1401CC400, CBuddy, FUN_1401cc400, 159, 0x9EAED7A0);
 // @0x1401cc4b0
-void CBuddy::FUN_1401cc4b0(int v) { m_d0 = v; }
-MS2_REPLACE_METHOD(0x1401CC4B0, CBuddy, FUN_1401cc4b0, 25, 0x09284B7F);
+void CBuddy::SetIsNew(int v) { m_d0 = v; }
+MS2_REPLACE_METHOD(0x1401CC4B0, CBuddy, SetIsNew, 25, 0x09284B7F);
 // @0x1401cc4d0
-int CBuddy::FUN_1401cc4d0() { return m_d0; }
-MS2_REPLACE_METHOD(0x1401CC4D0, CBuddy, FUN_1401cc4d0, 17, 0x9E46CF83);
+int CBuddy::IsNew() { return m_d0; }
+MS2_REPLACE_METHOD(0x1401CC4D0, CBuddy, IsNew, 17, 0x9E46CF83);
 // @0x1401cc4f0
-int CBuddy::FUN_1401cc4f0() {
+int CBuddy::ConsumeIsNew() {
     int v = m_d0;
     m_d0 = 0;
     return v;
 }
-MS2_REPLACE_METHOD(0x1401CC4F0, CBuddy, FUN_1401cc4f0, 46, 0xA54CC4C5);
+MS2_REPLACE_METHOD(0x1401CC4F0, CBuddy, ConsumeIsNew, 46, 0xA54CC4C5);
 // @0x1401cc530
 CStringA* CBuddy::FUN_1401cc530() { return &m_28; }
 MS2_REPLACE_METHOD(0x1401CC530, CBuddy, FUN_1401cc530, 15, 0x874435E1);
@@ -160,12 +160,12 @@ MS2_REPLACE_METHOD(0x1401CC5B0, CBuddy, FUN_1401cc5b0, 23, 0x758D9D8C);
 int CBuddy::FUN_1401cc5d0() { return f0; }
 MS2_REPLACE_METHOD(0x1401CC5D0, CBuddy, FUN_1401cc5d0, 20, 0xC2CC3355);
 // @0x1401cc5f0
-int CBuddy::FUN_1401cc5f0() {
+int CBuddy::IsFriend() {
     int r;
     if (f2 == 0 && f0 == 0 && f1 == 0) r = 1; else r = 0;
     return r;
 }
-MS2_REPLACE_METHOD(0x1401CC5F0, CBuddy, FUN_1401cc5f0, 92, 0x5BD7EE38);
+MS2_REPLACE_METHOD(0x1401CC5F0, CBuddy, IsFriend, 92, 0x5BD7EE38);
 // @0x1401cc660
 int CBuddy::FUN_1401cc660() { return f1; }
 MS2_REPLACE_METHOD(0x1401CC660, CBuddy, FUN_1401cc660, 22, 0xD4BC6A24);

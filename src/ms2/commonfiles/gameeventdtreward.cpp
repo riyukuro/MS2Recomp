@@ -26,7 +26,7 @@ using namespace CommonUserEvent;
 // Out-of-unit helpers.
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);   // split
 void FUN_140274fc0(CStringW& text, void* pOut, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
-bool FUN_1407183f0(const CStringW& value);
+bool ParseBoolW(const CStringW& value);
 int FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).
 // s63 C3: CUserEventManager::AddDTReward (0x1408d7cd0) takes MS2Ptr<DTRewardEventContext> by value; it was declared
@@ -107,7 +107,7 @@ void GameEventDTReward::BuildContext(const CStringW& rewards, const CStringW& le
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(const_cast<CStringW&>(levels), parts, L",");
     if (parts.GetCount() >= 1)
-        m_bShown = FUN_1407183f0(parts[0]);
+        m_bShown = ParseBoolW(parts[0]);
     if (parts.GetCount() >= 2) {
         unsigned short level = FUN_1407181a0(parts[1]);
         m_spContext->m_level = level;
@@ -115,8 +115,8 @@ void GameEventDTReward::BuildContext(const CStringW& rewards, const CStringW& le
     parts.RemoveAll();
     FUN_14025a680(const_cast<CStringW&>(flags), parts, L",");
     if (parts.GetCount() >= 1)
-        m_spContext->m_b32 = FUN_1407183f0(parts[0]);
-    m_spContext->m_b33 = FUN_1407183f0(last);
+        m_spContext->m_b32 = ParseBoolW(parts[0]);
+    m_spContext->m_b33 = ParseBoolW(last);
     if (!m_bShown)
         SetFlag(3);
 }

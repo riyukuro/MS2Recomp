@@ -157,7 +157,7 @@ static int FUN_140e853c0()
 {
     if (FUN_140e85580(((class Unk_SmPlayerState*)GetKeyTable())) == 0)
         return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->WasKeyPressed(0x75, 0, 0);
-    return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116dd30(0x493ef, false, 0);
+    return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->IsActionKeyPressed(0x493ef, false, 0);
 }
 
 // @0x140e85420

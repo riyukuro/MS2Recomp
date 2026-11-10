@@ -20,20 +20,20 @@ public:
     int vfunc_3(const char*, const Scaleform::GFx::Value*, int) override;   // 0x140c50e00
     void vfunc_5(CInPacket*) override;                  // 0x140c50d50
     void vfunc_7(MS2Ptr<AScript>) override;             // 0x140c50330
-    void FUN_140c51050();                               // the inventory and equipped items that can be a source
-    void FUN_140c51410();                               // the items the source can be transferred to
+    void RefreshSourceItems();                               // the inventory and equipped items that can be a source
+    void RefreshTargetItems();                               // the items the source can be transferred to
     void SelectSourceItem(MS2Ptr<CItem>);                  // a source slot was picked
     void SelectTargetItem(MS2Ptr<CItem>);                  // a target slot was picked
-    void FUN_140c51fa0();                               // the action button: ask the server to transfer
+    void RequestTransfer();                               // the action button: ask the server to transfer
     void FUN_140c527d0();                               // back to the start
     void FUN_140c52930();                               // clear everything
-    void FUN_140c52a80();
+    void ClearSelectedItems();
     void FUN_140c52ac0();
-    void FUN_140c52b20(ASObj&);                         // ingredient part of the select data
-    void FUN_140c52f10(MS2Ptr<CItem>, ASObj&, int);     // the socket rows of an item
+    void FillIngredientData(ASObj&);                         // ingredient part of the select data
+    void FillSocketRows(MS2Ptr<CItem>, ASObj&, int);     // the socket rows of an item
     void OnTransferResult(CInPacket*);                     // transfer result
     void FUN_140c53920(CInPacket* packet);
-    void FUN_140c53a70(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: transfer
+    void OnDebugTransfer(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: transfer
     void SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
     void FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>&);
     void SendItemSocketSystemMode12(Unk_SockUidPair&);               // send the transfer request

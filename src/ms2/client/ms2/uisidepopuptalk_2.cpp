@@ -78,15 +78,15 @@ MS2_REPLACE_METHOD(0x140E8BED0, UISelectSuperWorldChatDialog, vfunc_26, 106, 0xB
 void UISelectSuperWorldChatDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PC* pPlayer = static_cast<PC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
+    PC* pPlayer = static_cast<PC*>(TSingleton<WorldService>::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     BindCloseButton("m_close");
     FUN_140e8d030("m_selectItemList", m_list);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_okButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_okButton)).get())
-        m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c790), 0);
+        m_okButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c790), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_close", reinterpret_cast<MS2Ptr<ASButton>&>(m_closeButton)).get())
-        m_closeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c8e0), 0);
+        m_closeButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c8e0), 0);
     m_slotItems.RemoveAll();
     m_binder.FUN_140d43990();
 
@@ -197,7 +197,7 @@ void UISelectSuperWorldChatDialog::GetSuperWorldChatItems(ATL::CAtlArray<MS2Ptr<
         MS2Ptr<CItem> spItem = aItems[i];
         if (spItem == 0)
             continue;
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()));
         if (spData == 0)
             continue;
         if (spData->function.name != L"SuperWorldChat")
@@ -217,7 +217,7 @@ void UISelectSuperWorldChatDialog::GetWeddingChatItems(ATL::CAtlArray<MS2Ptr<CIt
         MS2Ptr<CItem> spItem = aItems[i];
         if (spItem == 0)
             continue;
-        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
+        MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->GetData()));
         if (spData == 0)
             continue;
         if (spData->function.name != L"WeddingChat")

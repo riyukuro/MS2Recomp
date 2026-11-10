@@ -18,8 +18,8 @@ public:
     void SetModifier1(bool b);                              // 0x14116d760
     void SetModifier2(bool b);                              // 0x14116d780
     bool FUN_14116d7a0(unsigned nMask);                      // 0x14116d7a0 bit mask of the modifier states in effect
-    bool FUN_14116d840();                                    // 0x14116d840
-    bool FUN_14116d890(bool bAlt);                           // 0x14116d890
+    bool IsEscapePressed();                                    // 0x14116d840
+    bool IsEnterPressed(bool bAlt);                           // 0x14116d890
     bool IsKeyDown(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d950 key held (group-aware)
     bool WasKeyPressed(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d9c0 key pressed this frame
     bool WasKeyReleased(int nKey, bool bDebugOnly, int nLevel);   // 0x14116da30 key released this frame
@@ -28,8 +28,8 @@ public:
     bool WasMouseButtonReleased(int nKey, bool bDebugOnly, int nLevel);   // 0x14116db80 mouse button released
     bool GetMouseDelta(int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel);   // 0x14116dbf0 mouse movement deltas
     bool IsActionKeyDown(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dcb0 key-binding table query
-    bool FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dd30
-    bool FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116ddb0
+    bool IsActionKeyPressed(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dd30
+    bool IsActionKeyReleased(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116ddb0
     bool InjectKeyPress(int nKey);                           // 0x14116de30 inject a key press (input enabled)
     bool InjectKeyRelease(int nKey);                           // 0x14116de70 inject a key release
 

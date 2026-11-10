@@ -50,7 +50,7 @@ class Unk_AptPlayer : public MyPC { };
 class Unk_AptWorld
 {
 public:
-    Unk_AptPlayer* FUN_141bd0cc0();                             // the local player
+    Unk_AptPlayer* GetLocalPlayer();                             // the local player
 };
 
 class Unk_AptUIMgr
@@ -68,7 +68,7 @@ int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apart
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
 CStringW GetStringCommon(int nStringId);                          // string table text
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 void FUN_140cffb90(const Scaleform::GFx::Value& root, CString strName, int bPlay);
 void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
@@ -118,11 +118,11 @@ void UIApartmentDialog::OnLoadComplete()
         m_door2 = GetChild<ASButton>("m_door5");
     }
     m_contract = GetChild<ASButton>("m_contractButton");
-    ((class ASButton*)(m_broker))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
-    ((class ASButton*)(m_door0))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
-    ((class ASButton*)(m_door1))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);
-    ((class ASButton*)(m_door2))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d40), 0);
-    ((class ASButton*)(m_contract))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
+    ((class ASButton*)(m_broker))->AddClickHandler(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
+    ((class ASButton*)(m_door0))->AddClickHandler(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
+    ((class ASButton*)(m_door1))->AddClickHandler(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);
+    ((class ASButton*)(m_door2))->AddClickHandler(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d40), 0);
+    ((class ASButton*)(m_contract))->AddClickHandler(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
     vfunc_47(0);
     FUN_1418b6580();
     TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
@@ -144,15 +144,15 @@ void UIApartmentDialog::vfunc_26()
 // @0x1418b63d0
 int UIApartmentDialog::vfunc_13()
 {
-    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed())
     {
         vfunc_67();
         return 1;
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x493e2, 0, 0))
     {
         if (m_nRoom != 0)
             FUN_1418b6990(m_nRoom);
@@ -192,14 +192,14 @@ void UIApartmentDialog::FUN_1418b6580()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     SetChildText(FUN_1422dbc00(), CString("m_title"), GetApartmentName());
-    FUN_140cff840(FUN_1422dbc00(), CString("m_contractButton"), m_nRoom == 0);
-    FUN_140cff840(FUN_1422dbc00(), CString("m_contractEffect"), 0);
-    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_normal"), m_group.FUN_1408ad2f0() == 0);
-    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_merat"), m_group.FUN_1408ad2f0());
+    SetChildVisible(FUN_1422dbc00(), CString("m_contractButton"), m_nRoom == 0);
+    SetChildVisible(FUN_1422dbc00(), CString("m_contractEffect"), 0);
+    SetChildVisible(FUN_1422dbc00(), CString("m_emblem_normal"), m_group.FUN_1408ad2f0() == 0);
+    SetChildVisible(FUN_1422dbc00(), CString("m_emblem_merat"), m_group.FUN_1408ad2f0());
 }
 
 // @0x1418b6840
@@ -208,7 +208,7 @@ void UIApartmentDialog::FUN_1418b6840(int nA, int nMapId, int nGroup)
     m_nA = nA;
     m_nMapId = nMapId;
     m_nGroup = nGroup;
-    FUN_1408a0d30(m_nGroup, m_group, WorldService::GetInstance()->FUN_141bd3060());
+    FUN_1408a0d30(m_nGroup, m_group, WorldService::GetInstance()->GetFieldId());
 }
 
 // @0x1418b68c0
@@ -216,14 +216,14 @@ void UIApartmentDialog::ShowContractEffect()
 {
     if (FUN_1422dc2d0() == 0)
         return;
-    FUN_140cff840(FUN_1422dbc00(), "m_contractEffect", 1);
+    SetChildVisible(FUN_1422dbc00(), "m_contractEffect", 1);
     FUN_140cffb90(FUN_1422dbc00(), "m_contractEffect", 1);
 }
 
 // @0x1418b6990
 void UIApartmentDialog::FUN_1418b6990(int nRoom)
 {
-    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_nMapId == 0)
@@ -289,14 +289,14 @@ void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Par
         return;
     UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDialog != 0)
-        pDialog->SetGroupAndMapId(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
+        pDialog->SetGroupAndMapId(m_nGroup, (int)(WorldService::GetInstance()->GetFieldId()));
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 
 // @0x1418b6de0
 CStringW UIApartmentDialog::GetApartmentName()
 {
-    unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    unsigned nMapId = WorldService::GetInstance()->GetFieldId();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, nMapId) != 0)
         return CAddressTable::GetText(nMapId);

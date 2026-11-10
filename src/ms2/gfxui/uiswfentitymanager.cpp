@@ -120,7 +120,7 @@ void UISwfEntityManager::FUN_1422d0fb0()
     {
         MS2Ptr<UISwfEntity> sp = m_listEntities.RemoveHead();
         if (sp)
-            UnloadSwf(sp->FUN_1422db730(), sp->GetManagerKey(), sp->FUN_1422db750());
+            UnloadSwf(sp->FUN_1422db730(), sp->GetManagerKey(), sp->GetLayer());
     }
     m_listEntities.RemoveAll();
     for (int i = 0; i < 5; i++)
@@ -170,7 +170,7 @@ CString UISwfEntityManager::LoadSwf(int nGroup, CString& strKey, const CString& 
         MS2Ptr<ASMovieClipLoader> spLoader = GetGFxManager()->GetMovieClipLoader(nGroup);
         if (spLoader.get())
         {
-            if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6fc0(strKey))
+            if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->IsFixedName(strKey))
             {
                 spLoader->PreloadSwfShow(strPath, strKey, a1);
             }
@@ -214,7 +214,7 @@ MS2_REPLACE_METHOD(0x1422D16C0, UISwfEntityManager, PreloadAndLoadSwf, 207, 0x42
 // @0x1422d17a0
 CString UISwfEntityManager::UnloadSwf(int nGroup, CString strKey, int n)
 {
-    int bFixed = SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6fc0(strKey);
+    int bFixed = SingletonClass<UniqueSwfIDCreator>::GetInstance()->IsFixedName(strKey);
     if (bFixed)
     {
         MS2Ptr<ASMovieClipLoader> spLoader = GetGFxManager()->GetMovieClipLoader(nGroup);
@@ -381,7 +381,7 @@ void UISwfEntityManager::UpdateEntities()
 MS2_REPLACE_METHOD(0x1422D2020, UISwfEntityManager, UpdateEntities, 390, 0xB27796F8);
 
 // @0x1422d21b0
-void UISwfEntityManager::FUN_1422d21b0()
+void UISwfEntityManager::ResetLayout()
 {
     POSITION pos = m_listEntities.GetHeadPosition();
     while (pos)
@@ -393,7 +393,7 @@ void UISwfEntityManager::FUN_1422d21b0()
             p->vfunc_19();
     }
 }
-MS2_REPLACE_METHOD(0x1422D21B0, UISwfEntityManager, FUN_1422d21b0, 146, 0xA6AFA4D9);
+MS2_REPLACE_METHOD(0x1422D21B0, UISwfEntityManager, ResetLayout, 146, 0xA6AFA4D9);
 
 // @0x1422d2250
 void UISwfEntityManager::FlushUnloading()
@@ -518,7 +518,7 @@ void UISwfEntityManager::vfunc_7(CString strKey, Scaleform::GFx::Value vRoot)
     if (sp)
     {
         sp->vfunc_41(vRoot);
-        if (sp->FUN_1422dba00().get())
+        if (sp->GetScript().get())
         {
             sp->FUN_1422dc2b0(1);
             sp->OnLoadInit();
@@ -544,7 +544,7 @@ void UISwfEntityManager::vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, fl
     {
         if (sp->FUN_1422dc410())
         {
-            UnloadSwf(sp->FUN_1422db730(), strKey, sp->FUN_1422db750());
+            UnloadSwf(sp->FUN_1422db730(), strKey, sp->GetLayer());
             GetUISwfEntityManager()->RemoveEntity(sp);
         }
         else
@@ -786,17 +786,17 @@ MS2_REPLACE_METHOD(0x1422D4980, UISwfEntityManager, GetTopEntity, 97, 0xFA6B2D4F
 // @0x1422d49f0
 void UISwfEntityManager::FUN_1422d49f0()
 {
-    FUN_1422d4a30(!m_0a);
+    SetEnabled(!m_0a);
 }
 MS2_REPLACE_METHOD(0x1422D49F0, UISwfEntityManager, FUN_1422d49f0, 54, 0x6E91C6F8);
 
 // @0x1422d4a30
-void UISwfEntityManager::FUN_1422d4a30(bool b)
+void UISwfEntityManager::SetEnabled(bool b)
 {
     m_0a = b;
     GetGFxManager()->FUN_1422aed30(m_0a);
 }
-MS2_REPLACE_METHOD(0x1422D4A30, UISwfEntityManager, FUN_1422d4a30, 53, 0x12F58206);
+MS2_REPLACE_METHOD(0x1422D4A30, UISwfEntityManager, SetEnabled, 53, 0x12F58206);
 
 // @0x1422d4a70
 int UISwfEntityManager::IsPendingUnload(POSITION pos)

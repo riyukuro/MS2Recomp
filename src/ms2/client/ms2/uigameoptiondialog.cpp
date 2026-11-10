@@ -92,8 +92,8 @@ MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, 
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
 
@@ -102,7 +102,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, i
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
@@ -114,8 +114,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, bool 
     ASArgList args;
     args.resize(3);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[1], a2);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -197,7 +197,7 @@ int UIGameOptionDialog::vfunc_13()
         if (sp.get() != 0 && sp->vfunc_8() != 0)
             return 1;
     }
-    if (((class CInputKeyHandler*)(class CInputKeyHandler*)(((class CInputKeyHandler*)FUN_14025e7c0())))->FUN_14116d840())
+    if (((class CInputKeyHandler*)(class CInputKeyHandler*)(((class CInputKeyHandler*)FUN_14025e7c0())))->IsEscapePressed())
     {
         OnCloseDialog();
         return 1;

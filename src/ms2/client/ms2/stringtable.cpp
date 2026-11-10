@@ -123,7 +123,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 class CTalkScript;
 Unk_ScriptPtr<CTalkScript> FindQuestTalk(int questId, int n);
 
-class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
+class UIMassiveEvent* FindMassiveEvent(int);   // C3: was FindMassiveEvent
 
 // The UI manager and the dialog getter (GetDialog<T> instantiations of this unit).
 
@@ -210,7 +210,7 @@ void CStoryQuest::Complete(CInPacket& packet)
 {
     if (m_data->m_2d0.m_id != -1)
     {
-        UIMassiveEvent* pDlg = FUN_140e01890(0x4e4c);
+        UIMassiveEvent* pDlg = FindMassiveEvent(0x4e4c);
         if (pDlg)
         {
             CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_complete_ui_effect"), GetChapterName(m_data->m_28));
@@ -261,7 +261,7 @@ void CStoryQuest::FUN_140d73960()
                 {
                     spBox->Append<unsigned>(FUN_14074b030(m_data.operator->()));
                     spBox->Append<int>(m_7c);
-                    spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
+                    spBox->SetTitle(WorldService::GetInstance()->GetMyPCName());
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
                     spBox->SetButtonLabels(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
                     FUN_140d73c60(spBox);
@@ -334,7 +334,7 @@ int CStoryQuest::FUN_14180fc80()
     int nMap = m_data->m_32c.m_4;
     if (nMap != 0)
     {
-        if (WorldService::GetInstance()->FUN_141bd3060() != nMap)
+        if (WorldService::GetInstance()->GetFieldId() != nMap)
             return 0;
         if (nMap == 62000000 && FUN_1418fd280() == 0)
             return 0;
@@ -371,7 +371,7 @@ CFieldQuest::~CFieldQuest() {}
 // @0x141810070
 int CFieldQuest::GetTrackingState()
 {
-    return FUN_140744b90(WorldService::GetInstance()->FUN_141bd3060());
+    return FUN_140744b90(WorldService::GetInstance()->GetFieldId());
 }
 
 // @0x1418100c0
@@ -415,7 +415,7 @@ void CAllianceQuest::DecodeStart(CInPacket& packet)
     UIAllianceQuestDialog* pDlg = GetAllianceQuestDialog(0x4f50);
     if (pDlg)
     {
-        if (pDlg->FUN_140bf94e0(GetQuestId()) != 0 && m_7c == 3)
+        if (pDlg->IsAcceptableQuest(GetQuestId()) != 0 && m_7c == 3)
             m_7c = 0;
     }
 }
@@ -430,7 +430,7 @@ void CAllianceQuest::Complete(CInPacket& packet)
     UIAllianceQuestDialog* pDlg = GetAllianceQuestDialog(0x4f50);
     if (pDlg)
     {
-        if (pDlg->FUN_140bf9530(GetQuestId()) != 0 && m_7c == 4)
+        if (pDlg->IsCompletableQuest(GetQuestId()) != 0 && m_7c == 4)
             m_7c = 0;
     }
 }
@@ -477,7 +477,7 @@ unsigned FUN_14021c7c0(const CString& str);                         // the id of
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(TiXmlElement*, const char*, CStringW&);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 class Unk_XmlElement;
 void FUN_14028fd90(Unk_XmlElement*, const char*, const char*, const char*, std::vector<Unk_XmlElement*>&);   // commonutil.cpp
 unsigned char FUN_1401d1320(CCacheData*);
@@ -612,7 +612,7 @@ BOOL CStringTable::Load()
     }
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         int nId = 0;
         CString strName;
@@ -804,7 +804,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         return FUN_141811980(4, nId);
     if (nId >= 0xaae61 && nId <= 0xaae63)
     {
-        Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPlayer != 0)
         {
             CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->GetSkillSystem())->GetCompactConfigName((__int64)nId);
@@ -918,7 +918,7 @@ CStringW CStringTable::GetRankName(int nRank)
 // @0x141813200
 CStringW CStringTable::FUN_141813200(__int64 nItemUid)
 {
-    Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return GetStringCommon(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
@@ -1057,7 +1057,7 @@ int CStringTable::LoadRaceNames(CachePtr spCache)
         }
         for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
                 continue;
             CString strId;
             CStringW strText;
@@ -1093,7 +1093,7 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         }
         for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
                 continue;
             int nId = 0;
             CStringW strText;
@@ -1125,7 +1125,7 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     }
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = ParseItemDesc(pKey);
         if (spDesc == 0)
@@ -1154,7 +1154,7 @@ int CStringTable::LoadDescFileWithTags(CString strFile, DescMap& rMap, CCacheDat
     }
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = FUN_141815650(pKey, rTags);
         if (spDesc == 0)
@@ -1303,7 +1303,7 @@ void CStringTable::LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         DescPtr spDesc = ParseItemDesc(pKey);
         if (spDesc == 0)
@@ -1320,7 +1320,7 @@ void CStringTable::LoadLevelDescEntries(LevelDescMap& rMap, TiXmlElement* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pKey)))
             continue;
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);

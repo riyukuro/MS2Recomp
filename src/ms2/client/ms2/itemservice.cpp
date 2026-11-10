@@ -75,7 +75,7 @@ int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   /
 typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
 
 // The registry of named bags (GFx bind data).
-ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
+ItemSlotBag* GetItemSlotBag(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
 ItemInfoSlot*CastToItemInfoSlot(NotifyContext::BindData*);                           // DragSlot -> ItemInfoSlot (TypeCast)
 class AvatarPC;
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);             // unit_141420a70.cpp
@@ -189,18 +189,18 @@ MS2Ptr<CEquipItem> CItemService::CreateEquipItem(CItem* pItem, PC* pPC, __int64 
     }
     bool bSecond = pItem->FUN_14052a170() == 2;
     int nWeapon = pPC->vfunc_133(pItem, bSecond);
-    bool bHair = reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetFirstGroupType() == 0xe ? true : false;
+    bool bHair = reinterpret_cast<CItemData *>(pItem->GetData())->GetModelOrEmpty()->GetFirstGroupType() == 0xe ? true : false;
     int nGender = pPC->GetGender();
-    if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
+    if (!reinterpret_cast<CItemData *>(pItem->GetData())->FUN_14053cae0(nGender, nWeapon))
         return spEquip;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->GetData()));
     for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); i++)
     {
         const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
         for (size_t j = 0; j < pGroup->GetPartCount(); j++)
         {
             const ModelPart* pPart = pGroup->GetPart(j);
-            if (!pPart->FUN_140544aa0(nGender, nWeapon))
+            if (!pPart->IsWornBy(nGender, nWeapon))
                 continue;
             CString strPath(pPart->name0);
             if (bHair)
@@ -309,16 +309,16 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
     bool bLayer2 = pItem->FUN_14052a170() == 2 ? 1 : 0;
     int nWeapon = pPC->vfunc_133(pItem, bLayer2);
     int nGender = pPC->GetGender();
-    if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
+    if (!reinterpret_cast<CItemData *>(pItem->GetData())->FUN_14053cae0(nGender, nWeapon))
         return 0;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->GetData()));
     for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); i++)
     {
         const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
         for (int j = 0; j < (int)pGroup->GetPartCount(); j++)
         {
             const ModelPart* pPart = pGroup->GetPart(j);
-            if (pPart->FUN_140544aa0(nGender, nWeapon) == 0)
+            if (pPart->IsWornBy(nGender, nWeapon) == 0)
                 continue;
             MS2Ptr<CEquipModel> spModel(0);
             if (pPart->isNif == 0)
@@ -334,9 +334,9 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
 void CItemService::CollectLinkedEquipItems(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList)
 {
     int nLayer = pItem->FUN_14052a170();
-    for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroupCount(); i++)
+    for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->GetData())->GetModelOrEmpty()->GetGroupCount(); i++)
     {
-        int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroup(i)->GetType(), pItem,
+        int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->GetData())->GetModelOrEmpty()->GetGroup(i)->GetType(), pItem,
             reinterpret_cast<AvatarPC*>(pPC));
         MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->GetEquipment())->GetItemAt(nSlot, nLayer);
         if (spItem.get() != 0)
@@ -444,10 +444,10 @@ void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<Item
 // @0x14141f970
 void DestroyItemSlotBag(const CString& strName)
 {
-    ItemSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FindBinding(strName));
+    ItemSlotBag* pBag = GetItemSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag != 0)
     {
-        pBag->FUN_1422cc9e0();
+        pBag->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -521,7 +521,7 @@ void ResizeItemSlotBag(ItemSlotBag* pBag, int nCount)
 {
     if (nCount == 0)
     {
-        pBag->FUN_1422cc9e0();
+        pBag->ClearSlots();
         return;
     }
     int nOld = (int)pBag->m_slots.size();
@@ -567,7 +567,7 @@ MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex)
 // @0x141420990
 int FUN_141420990(int nType, CItem* pItem, AvatarPC* pAvatar)
 {
-    if (pItem == 0 || reinterpret_cast<CItemData *>(pItem->FUN_140527840()) == 0 || pAvatar == 0)
+    if (pItem == 0 || reinterpret_cast<CItemData *>(pItem->GetData()) == 0 || pAvatar == 0)
         return 0;
     if (nType == 0)
         return 0;
@@ -576,7 +576,7 @@ int FUN_141420990(int nType, CItem* pItem, AvatarPC* pAvatar)
     {
         if (pItem->FUN_140526c30() == 0)
         {
-            int nSlot = FUN_141420b30(reinterpret_cast<CItemData *>(pItem->FUN_140527840()), pAvatar);
+            int nSlot = FUN_141420b30(reinterpret_cast<CItemData *>(pItem->GetData()), pAvatar);
             return nSlot;
         }
         else

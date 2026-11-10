@@ -45,7 +45,7 @@ public:
 namespace egf { class Entity; }
 class GameObject { public: egf::Entity* GetEntity(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-bool FUN_14028d470(float a, float b);                       // nearly equal
+bool IsNearlyEqual(float a, float b);                       // nearly equal
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +73,7 @@ void CToolCameraMode::vfunc_6(int n)
         if (pTarget)
         {
             m_84 = 1;
-            float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_154;
+            float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->GetFieldData().operator->())->m_154;
             Vector3 ptRot(90.0f, fRotation, -60.0f);
             vfunc_4(ptRot);
             vfunc_24(pTarget, 1);
@@ -213,7 +213,7 @@ void CToolCameraMode::vfunc_9()
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;
-        if (FUN_14028d470(m_78.x, 0.0f))
+        if (IsNearlyEqual(m_78.x, 0.0f))
         {
             if (nWheel > 0)
                 m_78.x = 15.0f;
@@ -236,11 +236,11 @@ void CToolCameraMode::vfunc_3(Vector3 pt)
         Vector3 ptOut;
         if (!((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd36f0(pt, &ptOut))
         {
-            if (!FUN_14028d470(ptOut.x, 0.0f))
+            if (!IsNearlyEqual(ptOut.x, 0.0f))
                 pt.x = ptCur.x;
-            if (!FUN_14028d470(ptOut.y, 0.0f))
+            if (!IsNearlyEqual(ptOut.y, 0.0f))
                 pt.y = ptCur.y;
-            if (!FUN_14028d470(ptOut.z, 0.0f))
+            if (!IsNearlyEqual(ptOut.z, 0.0f))
                 pt.z = ptCur.z;
         }
     }

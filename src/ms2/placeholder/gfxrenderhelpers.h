@@ -33,9 +33,9 @@ public:
 } }
 
 // The helpers (defined in asmousecursor.cpp; in the exe they are inline COMDATs of that obj's tail).
-Unk_GFxUIRenderer2D* FUN_1422cf080();                               // the UI's Renderer2D
+Unk_GFxUIRenderer2D* GetRenderer2D();                               // the UI's Renderer2D
 Unk_GFxUIHal* FUN_1422cf060();                                      // the UI renderer's HAL (gfxmoviebackground.cpp)
-NiDX9Renderer* FUN_1422cf0a0();                                     // the Gamebryo renderer as an NiDX9Renderer
+NiDX9Renderer* GetDX9Renderer();                                     // the Gamebryo renderer as an NiDX9Renderer
 LPDIRECT3DDEVICE9 GetD3DDevice();                                  // its D3D device (ugcmanager_1.cpp)
 void* FUN_1422cf0f0();                                              // the UI render context (asyncimageloader.cpp)
 int IsDeviceLostOrCaptureBlocked();                                                // 1 while the device is lost or screen capture is blocked

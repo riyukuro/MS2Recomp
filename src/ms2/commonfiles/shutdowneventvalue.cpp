@@ -107,14 +107,14 @@ CShutdownEventValue::CShutdownEventValue()
 }
 
 // @0x1407d10e0
-void CShutdownEventValue::FUN_1407d10e0(unsigned long nId)
+void CShutdownEventValue::AddShutdown(unsigned long nId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     ++m_ids[nId];
 }
 
 // @0x1407d1160
-void CShutdownEventValue::FUN_1407d1160(unsigned long nId)
+void CShutdownEventValue::RemoveShutdown(unsigned long nId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     --m_ids[nId];
@@ -132,7 +132,7 @@ bool CShutdownEventValue::IsShutdown(unsigned long nId)
 }
 
 // @0x1407d12b0
-bool CShutdownEventValue::FUN_1407d12b0()
+bool CShutdownEventValue::HasShutdown()
 {
     return !m_ids.empty();
 }
@@ -360,7 +360,7 @@ CShutdownEventUGCUpload::CShutdownEventUGCUpload()
 }
 
 // @0x1407d1ef0 the shut down UGC upload kinds of an event
-bool FUN_1407d1ef0(CShutdownEventUGCUpload* pUpload, unsigned nEventId, const Unk_ShutdownUGCUploadInfo& info)
+bool AddEvent(CShutdownEventUGCUpload* pUpload, unsigned nEventId, const Unk_ShutdownUGCUploadInfo& info)
 {
     Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
     pUpload->m_events[nEventId] = info;

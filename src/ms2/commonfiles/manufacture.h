@@ -12,9 +12,9 @@ public:
     CManufacture(__int64 a, __int64 b, int c, __int64 d, int e, int f);   // 0x140693ee0
     virtual ~CManufacture();                                //  0 0x140693f70 (??_G 0x1406941b0)
 
-    __int64 FUN_140694170();                                // FUN_1406941f0() + FUN_140694200()
+    __int64 GetReadyTime();                                // FUN_1406941f0() + GetDuration()
     __int64 FUN_1406941f0();                                // m_30
-    int FUN_140694200();                                    // m_38
+    int GetDuration();                                    // m_38
 
     int FUN_1409eedf0() { return m_28; }                    // inline COMDAT 0x1409eedf0 (astooltip.cpp): the recipe id
     __int64 FUN_140d52020() { return m_20; }                // inline COMDAT 0x140d52020 (manufacturemanager.cpp): the record id

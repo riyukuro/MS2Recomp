@@ -35,7 +35,7 @@ CMorphingAnimationData::CMorphingAnimationData()
 }
 
 // @0x141851c20
-int CMorphingAnimationData::FUN_141851c20(int nTime)
+int CMorphingAnimationData::GetFrameIndex(int nTime)
 {
     int nCount = (int)m_frameTimes.GetCount();
     int nLoopBase;
@@ -76,7 +76,7 @@ int CMorphingAnimationData::FUN_141851c20(int nTime)
     }
     return nFrame;
 }
-MS2_REPLACE_METHOD(0x141851C20, CMorphingAnimationData, FUN_141851c20, 386, 0xD67399D0);
+MS2_REPLACE_METHOD(0x141851C20, CMorphingAnimationData, GetFrameIndex, 386, 0xD67399D0);
 
 // @0x141851db0
 void CMorphingAnimationData::LoadFromXml(TiXmlElement* pElem)

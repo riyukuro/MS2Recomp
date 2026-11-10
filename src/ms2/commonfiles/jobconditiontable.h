@@ -16,7 +16,7 @@ typedef Unk_SocketNew Unk_JobNewTag;
 
 
 
-CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 
 // 16-byte intrusive smart pointer (RTTI TPtr<T>; field 0 unused, field 1 the pointee) to a CPtred-derived object.
 // Members are defined below the class so that they stay out-of-line COMDATs like the exe's.
@@ -66,7 +66,7 @@ template <class T> void Unk_JobPtr<T>::AddRef() const { if (m_p) AddRefImpl(0); 
 template <class T> void Unk_JobPtr<T>::Make() { Release(); m_p = Create(0); }
 template <class T> void Unk_JobPtr<T>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
 template <class T> T* Unk_JobPtr<T>::Allocate(void*) { return new T(); }
-template <class T> T* Unk_JobPtr<T>::Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate(0))); }
+template <class T> T* Unk_JobPtr<T>::Create(void*) { return static_cast<T*>(InitRefCount(Allocate(0))); }
 template <class T> void Unk_JobPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
 template <class T> void Unk_JobPtr<T>::AddRefImpl(void*) const { Ref(m_p); }
 template <class T> void Unk_JobPtr<T>::ReleaseImpl(void*)

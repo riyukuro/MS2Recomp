@@ -12,7 +12,7 @@
 template <> inline bool MS2Ptr<AScript>::operator==(AScript* p) const;
 
 int FUN_141277f50();
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
 void FUN_1422bcd40(Scaleform::GFx::Value* pValue, unsigned long n);    // Value = n (UInt)
 
 // @0x140ba2180
@@ -152,7 +152,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bcd10(&args[0], a1);
+    SetUInt(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

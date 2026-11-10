@@ -33,7 +33,7 @@ float FUN_14059d930(float f);                       // fabs
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
-bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);               // a == b (within epsilon)
 int LoadTestCamerValue();                           // reloads the camera xml (returns 0 on failure)
 float FUN_140ae8910(CString key);                   // float value of the camera xml key
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -223,7 +223,7 @@ void CTargetLookCenterCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_54;
         if (m_bc && g_143aef240 != 0.0f)
             m_50 = g_143aef240;
-        m_b4 = WorldService::GetInstance()->FUN_141bd4120();
+        m_b4 = WorldService::GetInstance()->GetPlayerHeight();
         m_68 = m_48;
         m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
         m_78 = pTarget->vfunc_17();
@@ -318,13 +318,13 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
                 }
             }
         }
-        else if (!FUN_14028d470(fDist, 0.0f) && fDist <= 10.0f)
+        else if (!IsNearlyEqual(fDist, 0.0f) && fDist <= 10.0f)
         {
             m_fc = 1;
             m_100 = 0.0f;
             fBlend = 0.0f;
         }
-        if (FUN_14028d470(fDist, 0.0f))
+        if (IsNearlyEqual(fDist, 0.0f))
         {
             m_c0 = m_d8;
         }

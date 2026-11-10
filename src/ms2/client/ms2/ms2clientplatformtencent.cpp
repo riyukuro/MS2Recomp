@@ -42,7 +42,7 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);  // 0x143abf6d
 extern bool DAT_143ab2947;
 extern bool DAT_143ab2966;
 bool SendPacketThrottled(COutPacket* pPacket, int nKind, int nParam);
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -65,11 +65,11 @@ void SetReportData(UITencentUserReportDialog* pDialog, const Unk_ReportData* pDa
 
 class Unk_TcValueApi : public AdditionalCliList { };
 class Unk_TcObject { public: Unk_TcValueApi* FUN_1416749a0(); };
-class Unk_TcContext { public: Unk_TcObject* FUN_141bd0cc0(); };
+class Unk_TcContext { public: Unk_TcObject* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -143,7 +143,7 @@ int CClientPlatformTencent::vfunc_35(void*) { return 3; }
 // @0x140c7d040
 int CClientPlatformTencent::vfunc_36()
 {
-    Unk_TcObject* pPlayer = ((Unk_TcObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_TcObject* pPlayer = ((Unk_TcObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer) {
         return ((class Unk_TcValueApi *)((class PCBase*)(pPlayer))->FUN_1416749a0())->HasEnabledWithId(0x2fac971);
     } else {
@@ -174,11 +174,11 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->ShowMeratNotice(nDelta);
-            FUN_141276180("Merat_Get", "");
+            PlaySystemSound("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
             FUN_1412751b0(FormatStringId<CStringW>(0x2c7, strDelta), 6);
         } else if (nDelta < 0) {
-            FUN_141276180("Merat_Use", "");
+            PlaySystemSound("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FormatStringId<CStringW>(0x2d9, strDelta), 6);
             if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xba))
@@ -196,11 +196,11 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->ShowMeratRedNotice(nDelta);
-            FUN_141276180("Merat_Get", "");
+            PlaySystemSound("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
             FUN_1412751b0(FormatStringId<CStringW>(0x2c8, strDelta), 6);
         } else if (nDelta < 0) {
-            FUN_141276180("Merat_Use", "");
+            PlaySystemSound("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FormatStringId<CStringW>(0x2da, strDelta), 6);
             if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xba))
@@ -320,7 +320,7 @@ void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
         data.guildNumber = spReport->GetField58();
         SetReportData(pDialog, &data);
         pDialog->FUN_141924680();
-        FUN_141276180(s_strReportSiren, "");
+        PlaySystemSound(s_strReportSiren, "");
     }
 }
 

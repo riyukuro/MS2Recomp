@@ -38,7 +38,7 @@ int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate); 
 int GetDiscountedIngredientCount(int nCount, unsigned nDiscount);          // the discounted ingredient count
 unsigned GetOptionCount(unsigned nMode, MS2Ptr<CItem> item); // the number of options of an item
 CStringW FUN_140619760(int nItemId, unsigned nLevel);       // the lock item's name
-CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount);   // the option text under strKey
+CStringW FormatOptionText(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount);   // the option text under strKey
 CStringW GetOptionText(Unk_RemakeStat& stat, unsigned* pCount);                     // the option text
 CStringW GetLockedOptionText(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked);   // the locked options' text
 

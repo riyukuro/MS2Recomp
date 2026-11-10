@@ -52,7 +52,7 @@ public:
     CBannedWordFilter(__int64,const Words&); CBannedWordFilter(__int64,Unk_BanReader&);
     virtual ~CBannedWordFilter() = default;
     void Write(Unk_BanWriter&) const;
-    int FUN_140349230(const CStringW&,CStringW&);
+    int FilterText(const CStringW&,CStringW&);
     const Map& GetWords() const; __int64 GetVersion() const;
     static void DiffFilter(const Unk_BanPtr<CBannedWordFilter>&,const Unk_BanPtr<CBannedWordFilter>&,Changes&);
     static Unk_BanPtr<CBannedWordFilter> ApplyChanges(__int64,const Unk_BanPtr<CBannedWordFilter>&,const Changes&);
@@ -65,7 +65,7 @@ public:
     typedef Unk_BanPtr<CBannedWordFilter> Ptr;
     CDynamicBanWordManager(); virtual ~CDynamicBanWordManager() = default;
     void SetCurrent(const Ptr&); Ptr GetCurrent(); void SetNext(const Ptr&); Ptr GetNext();
-    __int64 GetCurrentVersion(); int FUN_14034a230(const CStringW&,CStringW&); void FUN_14034a2c0(Unk_BanReader&);
+    __int64 GetCurrentVersion(); int FilterText(const CStringW&,CStringW&); void Read(Unk_BanReader&);
     CLockCriticalSection lock; Ptr current,next;
 };
 MS2_CHECK_SIZE(CDynamicBanWordManager,0x58);

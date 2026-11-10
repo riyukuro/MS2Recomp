@@ -99,7 +99,7 @@ MS2_REPLACE_METHOD(0x1412D14A0, UIItemEnchantSimulateDialog, vfunc_28, 1261, 0x3
 void UIItemEnchantSimulateDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x97)
+    if (static_cast<CInPacket*>(p)->GetOpcode() == 0x97)
     {
         unsigned char nKind = static_cast<CInPacket*>(p)->ReadUInt8();
         if (nKind == 0xd) {

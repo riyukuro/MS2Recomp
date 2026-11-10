@@ -42,7 +42,7 @@ extern char DAT_142f6301c[];                        // "," the field separator o
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CLogString* GetLogString();
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
-int FUN_1406516b0();                                // the server kind
+int GetRegion();                                // the server kind
 CString FUN_140188f50(const char* psz, int n);
 CString ToCString(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -316,7 +316,7 @@ MS2Ptr<CSoapResult> CSoapClient::UploadUgcFile(MS2Ptr<CUgcUploadCtrl> spCtrl, in
     CString strText("");
     int nTry = 0;
     int nMax = 3;
-    if (FUN_1406516b0() == 3)
+    if (GetRegion() == 3)
         nMax = 1;
     while (1)
     {

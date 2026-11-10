@@ -49,7 +49,7 @@ CString UITutorialSkipDialog::GetTypeName()
 void UITutorialSkipDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return;
     FUN_141923680(1);
@@ -64,7 +64,7 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_TsActor* pActor = ((Unk_TsActor*)((WorldService*)(reinterpret_cast<Unk_TsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pActor == 0)
         return 1;
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)

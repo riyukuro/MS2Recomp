@@ -61,7 +61,7 @@ CString GetXmlPath(const CString& strDir, const CString& strFile);       // Tabl
 class CLogString* GetLogString();   // C3: was CLogString::GetInstance
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 // C3 #12: was a local TiXml view
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -69,9 +69,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int Parse_14021af40(const CStringA& value);                                          // the string as a number
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-int FUN_140197350(TiXmlElement *, char const *, int);  // C3: the definition's signature
-unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+int GetIntAttr(TiXmlElement *, char const *, int);  // C3: the definition's signature
+unsigned GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CExpTable::s_bInit;
@@ -240,7 +240,7 @@ bool CExpTable::LoadNextExp()
     }
     for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
         reinterpret_cast<TiXmlElement*>(pExp)->Attribute("level", &nLevel);
@@ -277,7 +277,7 @@ bool CExpTable::LoadCommonExp()
     }
     for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pExp)))
             continue;
         int nTableId = 0;
         int nType = -1;
@@ -307,7 +307,7 @@ bool CExpTable::LoadPetExp()
     }
     for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
         reinterpret_cast<TiXmlElement*>(pExp)->Attribute("level", &nLevel);
@@ -345,15 +345,15 @@ bool CExpTable::LoadPetEvolution()
     }
     for (TiXmlElement* pEvo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("petEvolution")); pEvo != 0; pEvo = ((class TiXmlElement*)((class Unk_XmlNode*)(pEvo))->NextSibling("petEvolution")))
     {
-        if (FUN_14028f710((struct Unk_XmlElement*)(pEvo)) == 0)
+        if (IsElementAvailable((struct Unk_XmlElement*)(pEvo)) == 0)
             continue;
-        unsigned short nItemLevel = FUN_140197350(pEvo, "requireItemLevel", 0);
+        unsigned short nItemLevel = GetIntAttr(pEvo, "requireItemLevel", 0);
         Unk_BmBoxPtr<Unk_PetGradeArray> spGrades((Unk_BmNewTag(0)));
         spGrades->Add(0);
-        spGrades->Add(FUN_140197390(pEvo, "Grade1", 0));
-        spGrades->Add(FUN_140197390(pEvo, "Grade2", 0));
-        spGrades->Add(FUN_140197390(pEvo, "Grade3", 0));
-        spGrades->Add(FUN_140197390(pEvo, "Grade4", 0));
+        spGrades->Add(GetUIntAttr(pEvo, "Grade1", 0));
+        spGrades->Add(GetUIntAttr(pEvo, "Grade2", 0));
+        spGrades->Add(GetUIntAttr(pEvo, "Grade3", 0));
+        spGrades->Add(GetUIntAttr(pEvo, "Grade4", 0));
         spGrades->Add(0);
         m_petEvolution.SetAt(nItemLevel, spGrades);
     }
@@ -390,9 +390,9 @@ bool CExpTable::ReadExpTable(const CString& strFile)
         }
         for (TiXmlElement* pBase = ((class TiXmlElement*)((class Unk_XmlNode*)(pTable))->FirstChild("base")); pBase != 0; pBase = ((class TiXmlElement*)((class Unk_XmlNode*)(pBase))->NextSibling("base")))
         {
-            if (FUN_14028f710((struct Unk_XmlElement*)(pBase)) == 0)
+            if (IsElementAvailable((struct Unk_XmlElement*)(pBase)) == 0)
                 continue;
-            int nLevel = FUN_140197350(pBase, "level", 0);
+            int nLevel = GetIntAttr(pBase, "level", 0);
             __int64 nExp = Unk_ExpGetInt64(pBase, "exp", 0);
             curve.SetValue((unsigned short)nLevel, nExp);
         }
@@ -473,7 +473,7 @@ __int64 CExpTable::GetPetExp(unsigned short nLevel, int nRow, unsigned short nAr
         return 0x7fffffffffffffffLL;
     if (nLevel > 0x32)
         return 0x7fffffffffffffffLL;
-    return ((class CLua*)FUN_1401c0db0())->CalcPetExp(m_petExp[nRow][nLevel], nArg);
+    return ((class CLua*)GetLuaClient())->CalcPetExp(m_petExp[nRow][nLevel], nArg);
 }
 
 // @0x1403539d0

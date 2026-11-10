@@ -142,21 +142,21 @@ class ASDialog : public ASDisplayObject {};
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void ShowSystemNotice(const CStringW&, int, int);
-void FUN_1401cdae0(ATL::CAtlArray<int>*, int);
+void ShuffleWithSeed(ATL::CAtlArray<int>*, int);
 extern Unk_Inventory g_143ab2a90;
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 // Client globals: the account's bingo event record (singleton 0x140302b00 -> member +0xd78).
 class Unk_BingoMgr;
 class CGameEventValueManager;
-int FUN_14053feb0(int);
+int GetItemRank(int);
 CStringW StringFormat(const wchar_t*);
 
 void ParseIntArray(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 __int64 GetServerTime();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool IsEarlierDay(CMsTime, CMsTime, int);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 
 // ---- the scalar / index codecs of the delegate user data (the exe keeps the index in the data pointer) ----
 // @0x140bb9630
@@ -314,7 +314,7 @@ void UIBingoEventDialog::OnLoadComplete()
         MS2Ptr<ASButton> receive = reinterpret_cast<AScript*>(list.operator->())->FUN_140acce30<ASButton>("m_receiveButton");
         if (receive.IsNull())
             continue;
-        reinterpret_cast<ASButton*>(receive.operator->())->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), IntToUserData(i));
+        reinterpret_cast<ASButton*>(receive.operator->())->AddClickHandler(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), IntToUserData(i));
         m_receive.SetAt(i, receive);
         Unk_BingoSlots slots(Unk_BingoNewTag(0));
         for (unsigned long long j = 0; j < 2; j++)
@@ -370,14 +370,14 @@ void UIBingoEventDialog::OnLoadComplete()
     if (m_free.m_slot.get() != 0)
     {
         int id = ref->m_freeItemId;
-        BINGO_SLOT(m_free.m_slot)->SetItem(id, FUN_14053feb0(id), 1);
+        BINGO_SLOT(m_free.m_slot)->SetItem(id, GetItemRank(id), 1);
         BINGO_SLOT(m_free.m_slot)->FUN_1409ba6d0();
     }
     m_cash.m_slot = GetChild<ASItemSlot>("m_cashItemSlot");
     if (m_cash.m_slot.get() != 0)
     {
         int id = ref->m_cashItemId;
-        BINGO_SLOT(m_cash.m_slot)->SetItem(id, FUN_14053feb0(id), 1);
+        BINGO_SLOT(m_cash.m_slot)->SetItem(id, GetItemRank(id), 1);
         BINGO_SLOT(m_cash.m_slot)->FUN_1409ba6d0();
     }
     m_free.FUN_140bb7fd0();
@@ -399,7 +399,7 @@ void UIBingoEventDialog::OnLoadComplete()
 // @0x140baf3a0
 void UIBingoEventDialog::vfunc_79(void* pData)
 {
-    if (((CInPacket*)pData)->FUN_14070fe80() != 0xf7)
+    if (((CInPacket*)pData)->GetOpcode() != 0xf7)
         return;
     unsigned char cmd = ((CInPacket*)pData)->ReadUInt8();
     if (cmd == 0x14)
@@ -583,7 +583,7 @@ void UIBingoEventDialog::vfunc_72()
     if (m_steps.empty())
     {
         FUN_140bb3bd0();
-        FUN_141276180(s_sndLineComplete, "");
+        PlaySystemSound(s_sndLineComplete, "");
         if ((size_t)GetCompletedLineCount() == 12)
             PlayFireworkEffect();
     }
@@ -613,7 +613,7 @@ void UIBingoEventDialog::OnClickCell(const Scaleform::GFx::FunctionHandler::Para
         int nItemId = ref->m_freeItemId;
         Unk_InventoryItemKey key;
         key.m_id = nItemId;
-        key.m_rarity = FUN_14053feb0(nItemId);
+        key.m_rarity = GetItemRank(nItemId);
         int nCount = g_143ab2a90.GetItemCountByFilter(&key.m_id);
         if (nCount <= 0)
             return;
@@ -632,7 +632,7 @@ void UIBingoEventDialog::OnClickCell(const Scaleform::GFx::FunctionHandler::Para
         int nItemId = ref->m_cashItemId;
         Unk_InventoryItemKey key;
         key.m_id = nItemId;
-        key.m_rarity = FUN_14053feb0(nItemId);
+        key.m_rarity = GetItemRank(nItemId);
         int nCount = g_143ab2a90.GetItemCountByFilter(&key.m_id);
         if (nCount <= 0)
             return;
@@ -752,7 +752,7 @@ void UIBingoEventDialog::FUN_140bb1580()
     m_board.SetCount(25, -1);
     for (int i = 0; i < (size_t)25; i++)
         m_board.SetAt(i, i + 1);
-    FUN_1401cdae0(&m_board, m_stage);
+    ShuffleWithSeed(&m_board, m_stage);
     for (unsigned i = 0; i < m_board.GetCount(); i++)
     {
         int nValue = m_board[i];
@@ -805,10 +805,10 @@ void UIBingoEventDialog::UpdateItemCounts()
     int nCashId = ref->m_cashItemId;
     Unk_InventoryItemKey freeKey;
     freeKey.m_id = nFreeId;
-    freeKey.m_rarity = FUN_14053feb0(nFreeId);
+    freeKey.m_rarity = GetItemRank(nFreeId);
     Unk_InventoryItemKey cashKey;
     cashKey.m_id = nCashId;
-    cashKey.m_rarity = FUN_14053feb0(nCashId);
+    cashKey.m_rarity = GetItemRank(nCashId);
     int nFree = g_143ab2a90.GetItemCountByFilter(&freeKey.m_id);
     int nCash = g_143ab2a90.GetItemCountByFilter(&cashKey.m_id);
     if (m_free.m_text.get() != 0)
@@ -1158,7 +1158,7 @@ void UIBingoEventDialog::PlayFireworkEffect()
         return;
     firework->vfunc_4(true);
     firework->vfunc_12(0);
-    FUN_141276180(s_sndSuccess, "");
+    PlaySystemSound(s_sndSuccess, "");
 }
 
 // @0x140bb4150

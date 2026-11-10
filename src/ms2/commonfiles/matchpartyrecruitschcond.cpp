@@ -165,7 +165,7 @@ int GetBandMax(const CMatchPartyRecruitSchCond* pThis)
 }
 
 // @0x140694970  GetLimit
-int FUN_140694970(const CMatchPartyRecruitSchCond* pThis)
+int GetBlockMax(const CMatchPartyRecruitSchCond* pThis)
 {
     if (pThis->page == 0)
         return -1;

@@ -18,7 +18,7 @@
 class AvatarPC;
 class Unk_AvPlayers;
 
-class Unk_AvPlayers { public: AvatarPC* FUN_141bd0cc0(); };
+class Unk_AvPlayers { public: AvatarPC* GetLocalPlayer(); };
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
 
@@ -38,7 +38,7 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar)
 {
     if (pAvatar == 0)
     {
-        pAvatar = ((AvatarPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        pAvatar = ((AvatarPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pAvatar == 0)
             return MS2Ptr<CEquipItem>(0);
     }
@@ -50,22 +50,22 @@ int CanSwapEquippedItems(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<P
 {
     if (spFirst == 0)
         return 0;
-    if (!reinterpret_cast<CItemData*>(spFirst->FUN_140527840())->FUN_14053d510())
+    if (!reinterpret_cast<CItemData*>(spFirst->GetData())->FUN_14053d510())
         return 0;
     MS2Ptr<CItem> spHead = spPc->GetEquipItemSet1(static_cast<Unk_InventoryEquipSlot>(4));
     MS2Ptr<CItem> spBody = spPc->GetEquipItemSet1(static_cast<Unk_InventoryEquipSlot>(5));
     if ((spHead.get() ? true : false) && (spBody.get() ? true : false))
     {
-        if (!reinterpret_cast<CItemData*>(spHead->FUN_140527840())->FUN_14053d510())
+        if (!reinterpret_cast<CItemData*>(spHead->GetData())->FUN_14053d510())
             return 0;
-        if (!reinterpret_cast<CItemData*>(spBody->FUN_140527840())->FUN_14053d510())
+        if (!reinterpret_cast<CItemData*>(spBody->GetData())->FUN_14053d510())
             return 0;
-        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->FUN_140527840())->FUN_14053d510())
+        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->GetData())->FUN_14053d510())
             return 0;
     }
     else if (!spHead && !spBody)
     {
-        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->FUN_140527840())->FUN_14053d510())
+        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->GetData())->FUN_14053d510())
             return 0;
     }
     else
@@ -79,9 +79,9 @@ int CanSwapEquippedItems(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<P
 // @0x141421690
 int FUN_141421690(CItem* pItem)
 {
-    if (pItem != 0 && pItem->FUN_140527840() != 0)
+    if (pItem != 0 && pItem->GetData() != 0)
     {
-        CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
+        CItemData* pData = reinterpret_cast<CItemData*>(pItem->GetData());
         return pData->IsAvatarColorItem() || pData->FUN_14053d0c0() || pData->FUN_14053cfd0() || pData->FUN_14053d020()
             || pData->FUN_14053cf40();
     }

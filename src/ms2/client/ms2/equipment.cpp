@@ -180,7 +180,7 @@ float FromPercent(float f);                       // f / 100
 __int64 FUN_14028d260(float fSeconds);              // seconds -> ms (C3: the exe's __int64 return, read as int)
 #define FUN_14028d260(x) ((int)FUN_14028d260(x))
 int FUN_141421690(CItem* pItem);                    // the item kind
-bool FUN_14028d470(float a, float b);               // a == b (epsilon)
+bool IsNearlyEqual(float a, float b);               // a == b (epsilon)
 CString Name_14021c050(int nSlot);                  // the slot name
 std::set<NiAVObjectPtr>* GetRoots(CEquipModel* pModel);      // the model's root nodes
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);    // the entity's scene graph
@@ -191,7 +191,7 @@ bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bF
 NiColor FUN_141b6dea0(unsigned nColor);             // a colour value
 CString FUN_1414253b0(const CString& strPath, int bDiffuse);   // the face model path of a variant (the exe passes it by reference)
 CString FUN_141425220(const CString& strPath, int bDiffuse);  // the ear model path of a variant
-CString FUN_141421740(const CString& strPath, int* pnFlag);   // the variant letter of a model path
+CString GetModelVariant(const CString& strPath, int* pnFlag);   // the variant letter of a model path
 CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix);   // the hair model path of a variant
 int FUN_1405451c0(CString& strName);              // the slot of a slot name
 void FUN_141049240(NiAVObject* pRoot, ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aSource,
@@ -216,7 +216,7 @@ struct Unk_EqApp
     Unk_EqSvcHolder m_spServiceManager;                 // +0x08
 };
 int FUN_141424d00(MS2Ptr<CEquipItem> spHair, NiPoint3* pOrigin, NiPoint3* pDir, NiPick* pPick, int* pnResult);   // pick the hair
-void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
+void SetMorphWeight(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
 // The item's status (CItemStatus) as the update sums it: the PvP option value returns int.
 class Unk_EqPC : public PC
 {
@@ -1009,7 +1009,7 @@ void CEquipment::RequestItemLoad(MS2Ptr<CItem> spItem)
 // @0x1411e3960
 void CEquipment::FUN_1411e3960(MS2Ptr<CItem> spItem, int nFlag)
 {
-    if (spItem->FUN_140527840()->GetItemPreset() == 0)
+    if (spItem->GetData()->GetItemPreset() == 0)
         return;
     FUN_1411eeda0();
     MS2Ptr<CEquipItem> spEquip(0);
@@ -1024,7 +1024,7 @@ void CEquipment::FUN_1411e3960(MS2Ptr<CItem> spItem, int nFlag)
 // @0x1411e3b10
 void CEquipment::FUN_1411e3b10(MS2Ptr<CItem> spItem, int nFlag)
 {
-    if (spItem->FUN_140527840()->GetItemPreset() == 0)
+    if (spItem->GetData()->GetItemPreset() == 0)
         return;
     CItemLoader::GetInstance()->Request(m_pPC->GetObjectId(), spItem, nFlag);
 }
@@ -1293,7 +1293,7 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
         else
             AddVIPTag(spItem);
     }
-    for (size_t i = 0; i < spData->FUN_140527840()->GetModelOrEmpty()->GetGroupCount(); i++) {
+    for (size_t i = 0; i < spData->GetData()->GetModelOrEmpty()->GetGroupCount(); i++) {
         unsigned nSlot = spData->GetEquipSlot(i);
         int bCovered = 0;
         for (int j = 5; j >= 0; j--) {
@@ -1319,7 +1319,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
     MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
-    Unk_ItemEquipData* pData = spData->FUN_140527840();
+    Unk_ItemEquipData* pData = spData->GetData();
     if (pData == NULL)
         return;
     if (!spData->FUN_140528980()) {
@@ -1352,7 +1352,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
                 if (j >= nLayer) {
                     break;
                 } else {
-                    if (spWorn->GetItem()->FUN_140527840()->FUN_14053d2b0()) {
+                    if (spWorn->GetItem()->GetData()->FUN_14053d2b0()) {
                         if (FUN_1411e5280(j)) {
                             spWorn->RemoveTag(s_tagLower);
                             spWorn->FUN_1411dd280();
@@ -1377,9 +1377,9 @@ void CEquipment::UpdateLayerExpiredTag(MS2Ptr<CEquipItem> spItem)
     if (m_pPC == 0 || spItem == 0)
         return;
     MS2Ptr<CItem> spData = spItem->GetItem();
-    if (spData == 0 || spData->FUN_140527840() == NULL)
+    if (spData == 0 || spData->GetData() == NULL)
         return;
-    if (spData->FUN_14052a150() == 2) {
+    if (spData->GetVariant() == 2) {
         if (IsLayerActive())
             RemoveItemTag(spItem, s_tagLayerExpired);
         else
@@ -1500,7 +1500,7 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
     MS2Ptr<CItem> spData = spItem->GetItem();
     if (!spData)
         return;
-    Unk_ItemEquipData* pData = spData->FUN_140527840();
+    Unk_ItemEquipData* pData = spData->GetData();
     if (pData == NULL)
         return;
     if (pData->GetEquipSubtype() == 0xe || pData->GetEquipSubtype() == 0xf || pData->GetEquipSubtype() == 0x16 ||
@@ -1543,7 +1543,7 @@ void CEquipment::ApplyMantleScale()
     if (models.IsEmpty())
         return;
     float fScale = static_cast<ModelPart*>(FUN_141200ab0(models[0].operator->()))->mantlescale;
-    if (FUN_14028d470(fScale, 1.0f))
+    if (IsNearlyEqual(fScale, 1.0f))
         return;
     for (unsigned i = 0; i < models.GetCount(); i++) {
         models[i]->vfunc_22(fScale);
@@ -1730,8 +1730,8 @@ void CEquipment::ApplySkinDecal()
         return;
     if (!spItem->GetItemData()->FUN_14053d070())
         return;
-    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->GetItem()->FUN_140527870());
-    CharacterDecalData* pDecal = spItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
+    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->GetItem()->GetProxy());
+    CharacterDecalData* pDecal = spItem->GetItemData()->GetModelOrEmpty()->GetDecalData();
     if (pRecord->m_f60 != 0.0f) {
         FUN_14116e3f0(pMesh, pRecord->m_f58, pRecord->m_f5c, pRecord->m_f64, pRecord->m_f60,
             spItem->GetItemData()->FUN_14053ec70()->FUN_140547190(), pDecal->GetTexture(),
@@ -2034,7 +2034,7 @@ void CEquipment::FUN_1411ea8c0()
 {
     if (m_spLayerInfo == 0)
         return;
-    PCBase* pMyPC = ((class PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pMyPC = ((class PCBase*)WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC != NULL && m_pPC != 0 && m_pPC->GetObjectId() == pMyPC->GetObjectId())
         NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->IsActive())));
 }
@@ -2139,13 +2139,13 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
     MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
-    Unk_ItemEquipData* pData = spData->FUN_140527840();
+    Unk_ItemEquipData* pData = spData->GetData();
     if (pData == NULL)
         return;
     int nLayer = spData->FUN_14052a170();
     for (size_t i = 0; i < pData->GetModelOrEmpty()->GetGroupCount(); i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420a30(spData->FUN_140527840()->GetModelOrEmpty()->GetGroup(i)->GetType(), spData.get(), (class AvatarPC*)(m_pPC));
+        int nSlot = FUN_141420a30(spData->GetData()->GetModelOrEmpty()->GetGroup(i)->GetType(), spData.get(), (class AvatarPC*)(m_pPC));
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
@@ -2163,7 +2163,7 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
     MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
-    MS2Ptr<CItemData> spItemData(spData->FUN_140527840());
+    MS2Ptr<CItemData> spItemData(spData->GetData());
     if (spItemData == 0)
         return;
     int nLayer = spData->FUN_14052a170();
@@ -2347,7 +2347,7 @@ int CEquipment::FUN_1411eb3c0()
         ATL::CAtlArray<MS2Ptr<CEquipModel> > models;
         spCap->GetModels(models);
         if (!models.IsEmpty())
-            strName = FUN_141421740(static_cast<ModelPart*>(FUN_141200ab0(models[0].operator->()))->name0, NULL);
+            strName = GetModelVariant(static_cast<ModelPart*>(FUN_141200ab0(models[0].operator->()))->name0, NULL);
     }
     return FUN_1411eb550(strName);
 }
@@ -2369,7 +2369,7 @@ int CEquipment::FUN_1411eb550(CString strName)
         return 0;
     if (models[0]->vfunc_9() == 0)
         return 0;
-    CString strDefault = FUN_141421740(names[0], NULL);
+    CString strDefault = GetModelVariant(names[0], NULL);
     if (strName.IsEmpty())
         strName = strDefault;
     MS2Ptr<CEquipItem> spItem = FUN_1411e1860(1, 6, 0);
@@ -2443,7 +2443,7 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, NiPoint3 kPos, NiPoint3 kRot
         return;
     if (spItem->GetItemData()->GetEquipSubtype() != 0xd)
         return;
-    Unk_UserProxyItemData* pProxy = spItem->GetItem()->FUN_140527870();
+    Unk_UserProxyItemData* pProxy = spItem->GetItem()->GetProxy();
     if (pProxy == NULL)
         return;
     NiPoint3 kOldPos = static_cast<Unk_EquipModelCalls*>(pModel)->GetPosition();
@@ -2794,7 +2794,7 @@ void CEquipment::FUN_1411e5c10()
     spCap->GetModels(capModels);
     if (capModels.IsEmpty())
         return;
-    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spCap->GetItem()->FUN_140527870());
+    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spCap->GetItem()->GetProxy());
     if (pRecord == NULL)
         return;
     MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
@@ -2808,7 +2808,7 @@ void CEquipment::FUN_1411e5c10()
     if (hairModels.IsEmpty())
         return;
     float fScale = static_cast<ModelPart*>(FUN_141200ab0(hairModels[0].operator->()))->capscale;
-    if (!pCapData->FUN_14053ec70()->FUN_1405471b0()) {
+    if (!pCapData->FUN_14053ec70()->IsCapAttach()) {
         FUN_1411ef2e0(capModels[0].get(), pRecord->m_kCapPos[0], pRecord->m_kCapRot[0]);
         for (size_t i = 0; i < capModels.GetCount(); i++) {
             capModels[i]->vfunc_22(fScale);
@@ -2817,7 +2817,7 @@ void CEquipment::FUN_1411e5c10()
             std::set<NiAVObjectPtr>::iterator itEnd = rRoots.end();
             for (std::set<NiAVObjectPtr>::iterator it = rRoots.begin(); it != itEnd; ++it) {
                 NiAVObjectPtr spRoot = *it;
-                FUN_141167840(spRoot, "Editable Mesh", pRecord->m_f58);
+                SetMorphWeight(spRoot, "Editable Mesh", pRecord->m_f58);
             }
         }
     } else {
@@ -2852,7 +2852,7 @@ void CEquipment::FUN_1411e5c10()
             }
         }
         for (size_t i = 0; i < capModels.GetCount(); i++) {
-            if (pCapData->FUN_14053ec70()->FUN_1405471b0()) {
+            if (pCapData->FUN_14053ec70()->IsCapAttach()) {
                 int nResult = 0;
                 std::set<NiAVObjectPtr>* pRoots = GetRoots(capModels[i].operator->());
                 const std::set<NiAVObjectPtr>& rRoots = *pRoots;
@@ -2911,7 +2911,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
     int bStats = 0;
     int bGems = 0;
     int bExpired = 0;
-    int bPvp = CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060());
+    int bPvp = CFieldData::FUN_1403744a0(WorldService::GetInstance()->GetFieldId());
     if (m_50 != 0) {
         m_skillStats.RemoveAll();
         m_effectStats.RemoveAll();
@@ -2958,7 +2958,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
                     FUN_1411e4b30(spItem);
                 m_48 = 1;
                 bGems = 1;
-                if (spCItem->FUN_140527840()->FUN_14053cbc0())
+                if (spCItem->GetData()->FUN_14053cbc0())
                     bStats = 1;
             }
             if (i == 2) {
@@ -2980,7 +2980,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
                 if (bChanged) {
                     m_48 = 1;
                     bGems = 1;
-                    if (spCItem->FUN_140527840()->FUN_14053cbc0())
+                    if (spCItem->GetData()->FUN_14053cbc0())
                         bStats = 1;
                 }
             } else if (m_54 != 0 && m_pPC->CanUseItem(spCItem.get()) != 0) {
@@ -2992,14 +2992,14 @@ void CEquipment::FUN_1411e76c0(double fTime)
                     if (m_pPC->FUN_1416749a0()->IsItemSlotDisabled(spCItem->FUN_140527a20()))
                         bApply = false;
                     if (bApply == true) {
-                        CItemData* pData = spCItem->FUN_140527840();
+                        CItemData* pData = spCItem->GetData();
                         if (pData->FUN_14053d2b0() && nSlot == 9)
                             continue;
                         if (pData->FUN_14053d460() && nSlot == 4)
                             continue;
                         for (unsigned k = 0; k < 0x23; k++) {
                             if (bPvp)
-                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->FUN_14062fea0(k);
+                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->GetTotalStatValue(k);
                             else
                                 m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->GetStatValue(k, 3, 5);
                         }

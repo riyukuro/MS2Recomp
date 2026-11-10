@@ -74,11 +74,11 @@ UIRewardNotify* FindRewardNotify(int);
 // ASObj members used here only (the shared header lacks them).
 class Unk_SnowmanDisplay { public: virtual void vfunc_0(); virtual void vfunc_1(int, int, int, int, int); };
 
-int FUN_140d01040(CString&);
+int GetAlignFromName(CString&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-class TiXmlElement* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
+class TiXmlElement* GetFirstChildElement(class TiXmlDocument*);   // C3: was GetFirstChildElement
 
 // @0x140e943b0
 UISnowmanEventDialog::UISnowmanEventDialog()
@@ -148,7 +148,7 @@ void UISnowmanEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString
     if ((method == "getTooltipItem")) {
         int id = args->PopUInt();
         int rank = args->PopUInt();
-        void* owner = WorldService::GetInstance()->FUN_141bd0cc0();
+        void* owner = WorldService::GetInstance()->GetLocalPlayer();
         if (owner) {
             ASTooltip tooltip(owner, 0x20, 2);
             if (tooltip.FUN_1409e1770(id, rank))
@@ -218,7 +218,7 @@ void UISnowmanEventDialog::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pH
 {
     if (FUN_1422dc430() == 0)
         return;
-    MS2Ptr<ASDisplayObject> pRoot = FUN_1422dba50();
+    MS2Ptr<ASDisplayObject> pRoot = GetDisplayObject();
     if (pRoot.get()) {
         GetDialogSize(pWidth, pHeight);
         reinterpret_cast<Unk_SnowmanDisplay*>(pRoot.operator->())->vfunc_1(a1, a2, a3, *pWidth, *pHeight);
@@ -516,19 +516,19 @@ void UISnowmanEventDialog::FUN_140e96a90(const CStringW& path)
         MS2_ASSERT_AT(160, FALSE);
         return;
     }
-    void* root = ((void*)FUN_140345b40((class TiXmlDocument*)(&doc)));
+    void* root = ((void*)GetFirstChildElement((class TiXmlDocument*)(&doc)));
     if (!root) {
         MS2_ASSERT_AT(167, FALSE);
         return;
     }
-    void* node = ((void*)FUN_140345b40((class TiXmlDocument*)(root)));
+    void* node = ((void*)GetFirstChildElement((class TiXmlDocument*)(root)));
     if (!node) {
         MS2_ASSERT_AT(174, FALSE);
         return;
     }
     CString align;
     XmlGetAttr((class TiXmlElement*)(node), "align", *(&align));
-    m_alignment = FUN_140d01040(align);
+    m_alignment = GetAlignFromName(align);
     XmlGetAttr((class TiXmlElement*)(node), "offsetX", *(int*)(&m_offsetX));
     XmlGetAttr((class TiXmlElement*)(node), "offsetY", *(int*)(&m_offsetY));
     m_60 = 1;

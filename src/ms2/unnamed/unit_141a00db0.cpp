@@ -109,11 +109,11 @@ void CMsgBoxData::SetItemUid(__int64 n)
 MS2_REPLACE_METHOD(0x141A01600, CMsgBoxData, SetItemUid, 25, 0x3BC76AD3);
 
 // @0x141a01620
-void CMsgBoxData::FUN_141a01620(int n)
+void CMsgBoxData::SetInventorySlot(int n)
 {
     m_24 = n;
 }
-MS2_REPLACE_METHOD(0x141A01620, CMsgBoxData, FUN_141a01620, 22, 0x5ED7A56F);
+MS2_REPLACE_METHOD(0x141A01620, CMsgBoxData, SetInventorySlot, 22, 0x5ED7A56F);
 
 // @0x141a01640
 void CMsgBoxData::SetAlign(int nAlign)
@@ -149,7 +149,7 @@ MS2_REPLACE_METHOD(0x141A01700, CMsgBoxData, SetButtonLabelIds, 247, 0xF5BEBE7F)
 
 // @0x141a01800
 // The button label presets (OK/Cancel, Yes/No, OK, ...).
-void CMsgBoxData::FUN_141a01800(int n)
+void CMsgBoxData::SetButtonPreset(int n)
 {
     switch (n)
     {
@@ -180,7 +180,7 @@ void CMsgBoxData::FUN_141a01800(int n)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x141A01800, CMsgBoxData, FUN_141a01800, 941, 0x281846E7);
+MS2_REPLACE_METHOD(0x141A01800, CMsgBoxData, SetButtonPreset, 941, 0x281846E7);
 
 // @0x141a01bc0
 void CMsgBoxData::FUN_141a01bc0(int nSound)
@@ -239,7 +239,7 @@ void CMsgBoxData::SetItem(MS2Ptr<CMsgBoxDataItem> spItem)
 MS2_REPLACE_METHOD(0x141A01E60, CMsgBoxData, SetItem, 119, 0xB6F56F2A);
 
 // @0x141a01ee0
-void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nColorMode, int nCount, int nMax,
+void CMsgBoxData::SetItemEntry(MS2Ptr<CItem> spItem, const CStringW& strName, int nColorMode, int nCount, int nMax,
                                 int nPrice, int nUnitCount)
 {
     if (spItem.get() != NULL)
@@ -256,7 +256,7 @@ void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, i
         m_spItem->m_nUnitCount = nUnitCount;
     }
 }
-MS2_REPLACE_METHOD(0x141A01EE0, CMsgBoxData, FUN_141a01ee0, 454, 0x3868D69C);
+MS2_REPLACE_METHOD(0x141A01EE0, CMsgBoxData, SetItemEntry, 454, 0x3868D69C);
 
 // @0x141a020b0
 void CMsgBoxData::SetItemById(int nItemId, int nRarity, int n)
@@ -264,7 +264,7 @@ void CMsgBoxData::SetItemById(int nItemId, int nRarity, int n)
     MS2Ptr<CItem> spItem(new CItem);
     spItem->FUN_140523c40(nItemId, nRarity, 0);
     spItem->SetCountClamped(n);
-    FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, n, -1, -1, 1);
+    SetItemEntry(spItem, spItem->FUN_140527b10(), 1, n, -1, -1, 1);
 }
 MS2_REPLACE_METHOD(0x141A020B0, CMsgBoxData, SetItemById, 352, 0x59C6C9F8);
 
@@ -279,13 +279,13 @@ void CMsgBoxData::SetSecondItem(MS2Ptr<CMsgBoxDataItem> spItem)
 MS2_REPLACE_METHOD(0x141A02220, CMsgBoxData, SetSecondItem, 119, 0x62468448);
 
 // @0x141a022a0
-void CMsgBoxData::FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode)
+void CMsgBoxData::SetCharacterInfo(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode)
 {
     m_strCharName = strName;
     m_strCharDetail = FUN_14028dee0<int, CStringW>(0xaa0, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     m_strProfile = FUN_14016a730(FUN_141028be0(nCharId, strCode, 1, ""), 0);
 }
-MS2_REPLACE_METHOD(0x141A022A0, CMsgBoxData, FUN_141a022a0, 431, 0x6722233A);
+MS2_REPLACE_METHOD(0x141A022A0, CMsgBoxData, SetCharacterInfo, 431, 0x6722233A);
 
 // @0x141a02460
 void CMsgBoxData::FUN_141a02460(int)
@@ -439,13 +439,13 @@ void CMsgBoxData::FUN_141a02a70(CStringW strTitle, CString strUrl)
 MS2_REPLACE_METHOD(0x141A02A70, CMsgBoxData, FUN_141a02a70, 132, 0x95F33E05);
 
 // @0x141a02b00
-void CMsgBoxData::FUN_141a02b00(const CStringW& strDefault, ATL::CAtlList<CStringW>& list)
+void CMsgBoxData::SetChoices(const CStringW& strDefault, ATL::CAtlList<CStringW>& list)
 {
     m_choices.m_strDefault = strDefault;
     for (POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos))
         m_choices.m_list.AddTail(list.GetAt(pos));
 }
-MS2_REPLACE_METHOD(0x141A02B00, CMsgBoxData, FUN_141a02b00, 126, 0xC35A3BBB);
+MS2_REPLACE_METHOD(0x141A02B00, CMsgBoxData, SetChoices, 126, 0xC35A3BBB);
 
 // @0x141a02b90
 CStringW CMsgBoxData::FUN_141a02b90() const
@@ -490,11 +490,11 @@ int CMsgBoxData::FUN_141a02c60() const
 MS2_REPLACE_METHOD(0x141A02C60, CMsgBoxData, FUN_141a02c60, 14, 0xBA6447E3);
 
 // @0x141a02c80
-int CMsgBoxData::FUN_141a02c80() const
+int CMsgBoxData::GetInventorySlot() const
 {
     return m_24;
 }
-MS2_REPLACE_METHOD(0x141A02C80, CMsgBoxData, FUN_141a02c80, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x141A02C80, CMsgBoxData, GetInventorySlot, 14, 0xBA6447E3);
 
 // @0x141a02ca0
 int CMsgBoxData::GetId() const
@@ -518,11 +518,11 @@ const CStringW& CMsgBoxData::GetExtra() const
 MS2_REPLACE_METHOD(0x141A02CE0, CMsgBoxData, GetExtra, 15, 0x27BBF311);
 
 // @0x141a02d00
-CStringW CMsgBoxData::FUN_141a02d00() const
+CStringW CMsgBoxData::GetDefaultChoice() const
 {
     return m_choices.m_strDefault;
 }
-MS2_REPLACE_METHOD(0x141A02D00, CMsgBoxData, FUN_141a02d00, 68, 0xF41C05E3);
+MS2_REPLACE_METHOD(0x141A02D00, CMsgBoxData, GetDefaultChoice, 68, 0xF41C05E3);
 
 // @0x141a02d50
 CStringW CMsgBoxData::FUN_141a02d50() const
@@ -623,7 +623,7 @@ bool CMsgBoxData::FUN_141a03090() const
 MS2_REPLACE_METHOD(0x141A03090, CMsgBoxData, FUN_141a03090, 18, 0x8056E3C5);
 
 // @0x141a030b0
-bool CMsgBoxData::FUN_141a030b0() const
+bool CMsgBoxData::HasDefaultButton() const
 {
     switch (m_nType)
     {
@@ -636,7 +636,7 @@ bool CMsgBoxData::FUN_141a030b0() const
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x141A030B0, CMsgBoxData, FUN_141a030b0, 63, 0x375D54B6);
+MS2_REPLACE_METHOD(0x141A030B0, CMsgBoxData, HasDefaultButton, 63, 0x375D54B6);
 
 // @0x141a03100
 bool CMsgBoxData::FUN_141a03100() const
@@ -648,23 +648,23 @@ bool CMsgBoxData::FUN_141a03100() const
 MS2_REPLACE_METHOD(0x141A03100, CMsgBoxData, FUN_141a03100, 28, 0x0ADD16BD);
 
 // @0x141a03130
-void CMsgBoxData::FUN_141a03130(UIMessageBox* pBox, int nSec)
+void CMsgBoxData::OnChangeTime(UIMessageBox* pBox, int nSec)
 {
-    bool bShown = pBox != NULL && (pBox->FUN_1422dba00().get() ? true : false);
+    bool bShown = pBox != NULL && (pBox->GetScript().get() ? true : false);
     if (bShown && (m_nFlags & 4) != 0 && m_timer.m_nShowFormat != 0)
     {
         m_timer.m_nArmed = nSec;
         CStringW strTail(L"\n");
         strTail += StringFormat<int>(m_timer.m_strFormat, nSec);
-        pBox->FUN_1422dba00()->Invoke("onProcessFunction", "updateMsg", m_strMsg + strTail);
+        pBox->GetScript()->Invoke("onProcessFunction", "updateMsg", m_strMsg + strTail);
     }
 }
-MS2_REPLACE_METHOD(0x141A03130, CMsgBoxData, FUN_141a03130, 588, 0x51A7E58A);
+MS2_REPLACE_METHOD(0x141A03130, CMsgBoxData, OnChangeTime, 588, 0x51A7E58A);
 
 // @0x141a03390
 void CMsgBoxData::OnPopupTimerComplete(UIMessageBox* pBox)
 {
-    bool bShown = pBox != NULL && (pBox->FUN_1422dba00().get() ? true : false);
+    bool bShown = pBox != NULL && (pBox->GetScript().get() ? true : false);
     if (bShown && (m_nFlags & 4) != 0)
         m_timer.m_nButton = 1;
 }

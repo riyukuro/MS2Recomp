@@ -62,7 +62,7 @@ UILoadingProgress::UILoadingProgress()
 {
     m_2c = 0x29;
     m_28 = FUN_141277f50();
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
 }
 
 // @0x1419df960
@@ -70,7 +70,7 @@ UILoadingProgress::~UILoadingProgress()
 {
     if (WorldService::GetInstance() != 0)
     {
-        WorldService::GetInstance()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
+        WorldService::GetInstance()->RemoveCallback(static_cast<IWorldServiceCallback*>(this));
     }
 }
 
@@ -87,7 +87,7 @@ void UILoadingProgress::StartProgress(int nMap)
     m_74 = nMap;
     ((CInputKeyHandler*)FUN_14025e7c0())->SetModifier1(1);
     int bShowGuide = 0;
-    Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer != 0)
     {
         bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
@@ -157,7 +157,7 @@ MS2_REPLACE_METHOD(0x1419E0050, UILoadingProgress, SetMoveChannelMessage, 216, 0
 // @0x1419e0130
 void UILoadingProgress::vfunc_2()
 {
-    LoadSwf(FUN_1422db750(), 0, 0);
+    LoadSwf(GetLayer(), 0, 0);
 }
 
 // @0x1419e0160
@@ -249,7 +249,7 @@ int UILoadingProgress::GetTargetMapId()
     {
         return m_74;
     }
-    return WorldService::GetInstance()->FUN_141bd3060();
+    return WorldService::GetInstance()->GetFieldId();
 }
 
 // @0x1419e0550

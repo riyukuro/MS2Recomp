@@ -76,7 +76,7 @@ typedef Unk_TList<Unk_CameraListEntryPtr> Unk_CameraList;
 
 int LoadTestCamerValue();                               // reloads the camera xml (returns 0 on failure)
 namespace ecr { class RenderSurface; } ecr::RenderSurface* GetActiveRenderSurface();
-bool FUN_14028d470(float a, float b);                   // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);                   // a == b (within epsilon)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,7 +156,7 @@ void CCameraMode::vfunc_10()
 // @0x140afd790
 void CCameraMode::vfunc_11(float f)
 {
-    if (!FUN_14028d470(m_setting.m_0, f))
+    if (!IsNearlyEqual(m_setting.m_0, f))
     {
         m_setting.m_0 = f;
         m_pOwner->FUN_140947940(f);

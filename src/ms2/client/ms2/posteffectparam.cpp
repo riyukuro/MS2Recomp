@@ -16,7 +16,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 
 // Game clock (commonfiles singleton 0x14086d260, mainsystem.cpp 0x141473280: current time in seconds).
 
-bool FUN_14028d470(float a, float b);                   // nearly equal
+bool IsNearlyEqual(float a, float b);                   // nearly equal
 float FUN_141b6fe40(float t, int nInterpolator);        // 1 linear, 2 log, 3 exp
 
 // Post-process effect manager (?\applyeffect.cpp, singleton 0x1409a8b00).
@@ -247,7 +247,7 @@ void CScreenEffectBase::vfunc_1()
     m_dStartTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     m_bStopped = 0;
     m_bStarted = 1;
-    if (m_bUseFade && !FUN_14028d470(m_fFadeStart, 0))
+    if (m_bUseFade && !IsNearlyEqual(m_fFadeStart, 0))
         m_nState = 3;
     SetState(m_nState, 0);
 }
@@ -269,7 +269,7 @@ bool CScreenEffectBase::vfunc_2()
                 vfunc_4();
                 return false;
             }
-            else if (FUN_14028d470(m_fDuration, 0))
+            else if (IsNearlyEqual(m_fDuration, 0))
                 bHold = true;
             else if (!m_bLoop)
                 m_bEnding = 1;
@@ -361,7 +361,7 @@ MS2_REPLACE_METHOD(0x140dbdab0, CScreenEffectBase, vfunc_6, 63, 0xF0453B88);
 void CScreenEffectBase::SetState(int nState, float fAlpha)
 {
     fAlpha = efd::Clamp(fAlpha, 0.0f, 1.0f);
-    if (nState != m_nState || !FUN_14028d470(m_fAlpha, fAlpha))
+    if (nState != m_nState || !IsNearlyEqual(m_fAlpha, fAlpha))
     {
         vfunc_7(nState, fAlpha);
         m_nState = nState;

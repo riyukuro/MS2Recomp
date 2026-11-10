@@ -313,7 +313,7 @@ public:
 // COMDATs like the exe's (0x14040f040..0x140418e80).
 #include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
 typedef Unk_SocketNew Unk_BingoNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
-CPtred* FUN_1401ba820(CPtred* p);                               // marks a freshly allocated box (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);                               // marks a freshly allocated box (sets the count to 1)
 template <class T>
 class Unk_GEBoxPtr
 {
@@ -371,7 +371,7 @@ template <class T> TPtredDummy<T>* Unk_GEBoxPtr<T>::Owner(T* p)
     return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value));
 }
 template <class T> void Unk_GEBoxPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-template <class T> T* Unk_GEBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+template <class T> T* Unk_GEBoxPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 template <class T> void Unk_GEBoxPtr<T>::AddRefImpl(void*) const { Ref(Owner(m_p)); }
 template <class T> void Unk_GEBoxPtr<T>::ReleaseImpl(void*)
 {

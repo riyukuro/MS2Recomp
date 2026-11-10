@@ -19,9 +19,9 @@
 #include "ms2/placeholder/citemdata.h"
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (callee destroys)
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);           // Value = string
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);           // Value = string
 CString FUN_140719210(long n);
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -88,7 +88,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::EquipItem(int nSlot, MS2Ptr<CItem> pIt
                 pOther = 0;
             }
         }
-        if ((bool)pItem.get() && ((CItem*)pItem)->FUN_140527840() && ((CItem*)pItem)->FUN_140527840()->FUN_14053d510())
+        if ((bool)pItem.get() && ((CItem*)pItem)->GetData() && ((CItem*)pItem)->GetData()->FUN_14053d510())
             m_70 = nSlot;
     }
     return pIcon;
@@ -203,7 +203,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcd10(&args[0], a1);
+    SetUInt(&args[0], a1);
     SetValue(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -215,7 +215,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
     ASArgList args;
     args.resize(3);
     SetValue(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     SetValue(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }

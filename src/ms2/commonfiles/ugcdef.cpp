@@ -406,7 +406,7 @@ CUgcItemPC::~CUgcItemPC()
 }
 
 // @0x14088f2d0
-int CUgcItemPC::FUN_14088f2d0(const CUgcItemProxy* pOther)
+int CUgcItemPC::CopyItemFrom(const CUgcItemProxy* pOther)
 {
     if (pOther == 0)
         return 0;
@@ -468,7 +468,7 @@ void UgcItemIcon::CallBackData::FUN_14088f500(int nKind, const CMeratMarketSchCo
     if (pCond != 0)
     {
         m_spCond.AssignRaw(new CMeratMarketSchCond);
-        m_spCond->FUN_1406a3720(pCond);
+        m_spCond->CopyFrom(pCond);
     }
     m_30 = n30;
     m_38 = n38;
@@ -482,7 +482,7 @@ void UgcItemIcon::CallBackData::FUN_14088f5e0(const CallBackData* pOther)
     if (pOther->m_spCond.get() != 0)
     {
         m_spCond.AssignRaw(new CMeratMarketSchCond);
-        m_spCond->FUN_1406a3720(pOther->m_spCond.get());
+        m_spCond->CopyFrom(pOther->m_spCond.get());
     }
     m_30 = pOther->m_30;
     m_38 = pOther->m_38;
@@ -514,7 +514,7 @@ CUgcItemIconPC::CUgcItemIconPC(CItem* pItem, int n50)
 CUgcItemIconPC::CUgcItemIconPC(const UgcItemIcon::CallBackData& callBack)
     : CUgcItemProxy((CItem*)0)
 {
-    FUN_14088f960(callBack);
+    SetCallBack(callBack);
 }
 
 // @0x14088f8a0
@@ -523,7 +523,7 @@ CUgcItemIconPC::~CUgcItemIconPC()
 }
 
 // @0x14088f8e0
-int CUgcItemIconPC::FUN_14088f8e0(const CUgcItemProxy* pOther)
+int CUgcItemIconPC::CopyItemFrom(const CUgcItemProxy* pOther)
 {
     if (pOther == 0)
         return 0;
@@ -537,7 +537,7 @@ int CUgcItemIconPC::FUN_14088f8e0(const CUgcItemProxy* pOther)
 }
 
 // @0x14088f960
-void CUgcItemIconPC::FUN_14088f960(const UgcItemIcon::CallBackData& callBack)
+void CUgcItemIconPC::SetCallBack(const UgcItemIcon::CallBackData& callBack)
 {
     m_nObjectId = 0;
     m_n50 = 0;
@@ -590,7 +590,7 @@ CUgcItemCube::~CUgcItemCube()
 }
 
 // @0x14088fbe0
-int CUgcItemCube::FUN_14088fbe0(const CUgcItemProxy* pOther)
+int CUgcItemCube::CopyItemFrom(const CUgcItemProxy* pOther)
 {
     if (pOther == 0)
         return 0;
@@ -641,7 +641,7 @@ CUgcItemRidee::~CUgcItemRidee()
 }
 
 // @0x14088fe10
-int CUgcItemRidee::FUN_14088fe10(const CUgcItemProxy* pOther)
+int CUgcItemRidee::CopyItemFrom(const CUgcItemProxy* pOther)
 {
     if (pOther == 0)
         return 0;
@@ -887,7 +887,7 @@ CUgcBannerReservePtr CUgcBannerPost::FUN_140890b50(unsigned __int64 nKey)
 }
 
 // @0x140890bd0
-__int64 CUgcBannerPost::FUN_140890bd0()
+__int64 CUgcBannerPost::GetTotalPrice()
 {
     Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_nBannerId);
     if (banner == 0)
@@ -964,7 +964,7 @@ void CUgcRegistBanner::Read(CInPacket& packet)
 }
 
 // @0x1408911f0
-int CUgcRegistBanner::FUN_1408911f0(unsigned __int64 nTime)
+int CUgcRegistBanner::AreReservationsBefore(unsigned __int64 nTime)
 {
     Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_post.m_nBannerId);
     if (banner.get() != 0 && banner->m_nAd == 0)
@@ -1740,7 +1740,7 @@ void CUgcItemMusicNote::Read(CInputStream& stream)
 }
 
 // @0x140894060
-CStringA CUgcItemMusicNote::FUN_140894060() const
+CStringA CUgcItemMusicNote::GetIcon() const
 {
     CInstrumentDataTable::CategoryPtr spInfo = reinterpret_cast<CInstrumentDataTable*>(GetInstrumentDataTable())->GetCategory(m_n24);
     if ((CInstrumentCategoryData*)spInfo != 0)
@@ -2169,7 +2169,7 @@ int CUgcMarketProduct::IsWithinSalePeriod() const
 }
 
 // @0x140896230
-bool CUgcMarketProduct::FUN_140896230(Unk_CommonOwner& owner)
+bool CUgcMarketProduct::IsOwnedBy(Unk_CommonOwner& owner)
 {
     if (owner.id == 0)
         return false;
@@ -2212,7 +2212,7 @@ int CUgcMarketProduct::FUN_140896350() const
 // @0x1408963f0
 bool CUgcMarketProduct::FUN_1408963f0(Unk_CommonOwner& owner)
 {
-    return !FUN_140896230(owner) && FUN_1406a5800();
+    return !IsOwnedBy(owner) && FUN_1406a5800();
 }
 
 // @0x140896450
@@ -2434,7 +2434,7 @@ CUgcBannerRollingImage::~CUgcBannerRollingImage()
 }
 
 // @0x140897740
-int CUgcBannerRollingImage::FUN_140897740()
+int CUgcBannerRollingImage::ParseIds()
 {
     m_strIds.Trim();
     ATL::CAtlArray<unsigned> ids;
@@ -2507,7 +2507,7 @@ int CUgcBannerRollingImage::FUN_140897d70(__int64 nTime) const
 }
 
 // @0x140897dd0
-int CUgcBannerRollingImage::FUN_140897dd0(unsigned nId) const
+int CUgcBannerRollingImage::HasBannerId(unsigned nId) const
 {
     if (m_idSet.find(nId) != m_idSet.end())
         return 1;
@@ -2515,7 +2515,7 @@ int CUgcBannerRollingImage::FUN_140897dd0(unsigned nId) const
 }
 
 // @0x140897e40
-int CUgcBannerRollingImage::FUN_140897e40(unsigned nField) const
+int CUgcBannerRollingImage::IsFieldAllowed(unsigned nField) const
 {
     if (m_fieldSet.empty())
         return 1;
@@ -2553,7 +2553,7 @@ template<> CString StringFormat<__int64, __int64, int>(const char* format, const
 }
 
 // @0x140897f90
-CString TUgcGetCostInfo::FUN_140897f90() const
+CString TUgcGetCostInfo::ToString() const
 {
     return StringFormat("[{0}->{1}({2}%%)]", m_nBase, m_nCost, m_nLeft);
 }
@@ -2657,14 +2657,14 @@ void CUgcGetCostTable::Read(CInPacket& packet)
 class CUGCDesignData
 {
 public:
-    int FUN_14089e200();                // 0x14089e200
+    int GetPriceType();                // 0x14089e200
 
     char m_pad[0x24];
     int m_nPriceType;                   // +0x24
 };
 
 // @0x14089e200
-int CUGCDesignData::FUN_14089e200()
+int CUGCDesignData::GetPriceType()
 {
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d710(0x62))
     {
@@ -2729,25 +2729,25 @@ CUgcCharBookMark::CUgcCharBookMark(MS2Ptr<CUgcBookMark> spOwner)
     : m_map(10)
 {
     m_spOwner = reinterpret_cast<MS2Ptr<Unk_CharBookMarkOwner>&>(spOwner);
-    FUN_140896d90();
+    Clear();
 }
 
 // @0x140896d00
 CUgcCharBookMark::~CUgcCharBookMark()
 {
     m_spOwner = 0;
-    FUN_140896d90();
+    Clear();
 }
 
 // @0x140896d90
-void CUgcCharBookMark::FUN_140896d90()
+void CUgcCharBookMark::Clear()
 {
     m_map.RemoveAll();
     m_list.RemoveAll();
 }
 
 // @0x140896dd0
-void CUgcCharBookMark::FUN_140896dd0(MS2Ptr<CMeratMarketProduct> spProduct)
+void CUgcCharBookMark::AddProduct(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct).get() != 0)
     {
@@ -2763,7 +2763,7 @@ void CUgcCharBookMark::FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> 
 }
 
 // @0x140896e80
-MS2Ptr<CMeratMarketProduct> CUgcCharBookMark::FUN_140896e80(const Unk_MeratProductKey& key)
+MS2Ptr<CMeratMarketProduct> CUgcCharBookMark::FindProduct(const Unk_MeratProductKey& key)
 {
     MS2Ptr<CMeratMarketProduct> spEntry(0);
     m_map.Lookup(key, reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spEntry));

@@ -52,7 +52,7 @@ public:
     void Write(COutputStream& out);
     void Read(CInPacket* packet);
     void ReadShop(unsigned id,CInPacket* packet);
-    void FUN_1404d9060(unsigned id,CInPacket* packet);
+    void ReadShopProduct(unsigned id,CInPacket* packet);
     std::map<unsigned,MS2Ptr<CGuildNpcShop>> shops;
 };
 MS2_CHECK_SIZE(CGuildNpcShopMgr,0x28);

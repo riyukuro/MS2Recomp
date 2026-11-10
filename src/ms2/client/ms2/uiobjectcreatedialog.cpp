@@ -89,13 +89,13 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     void GetInteractObjects(void* pOut);   // every interact object of the field (copied into *pOut)
     static class WorldService* GetInstance();
 };
 
-unsigned int FUN_1407181d0(const CString& str);                                     // text to number
-void FUN_14020af60(COutPacket* pPacket, const Vector3* pt);                 // encode a point
+unsigned int ParseUInt(const CString& str);                                     // text to number
+void EncodeVector3(COutPacket* pPacket, const Vector3* pt);                 // encode a point
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -144,7 +144,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPlayer == 0)
                 return 0;
             int nKind = data.PopInt();
@@ -152,7 +152,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             CString str2 = data.FUN_1422b8d30();
             CString str3 = data.FUN_1422b8d30();
             CString str4 = data.FUN_1422b8d30();
-            int nCount = FUN_1407181d0(data.FUN_1422b8d30());
+            int nCount = ParseUInt(data.FUN_1422b8d30());
             COutPacket packet(static_cast<int>(SendOp::InteractObject), 0);
             packet.Encode1(9);
             packet.Encode4(nKind);
@@ -161,8 +161,8 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             packet.WriteUnicodeStringA(str3);
             packet.WriteUnicodeStringA(str4);
             packet.Encode4(nCount);
-            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
-            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_20())));
+            EncodeVector3(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
+            EncodeVector3(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_20())));
             FUN_140710590(packet);
         }
         return 1;

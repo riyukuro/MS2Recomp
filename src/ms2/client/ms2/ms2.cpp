@@ -399,7 +399,7 @@
 #include "ms2/placeholder/worldmapmanager.h"
 #include "ms2/unnamed/unit_1406125d0.h"
 #include "ms2/unnamed/unit_140ad1860.h"
-class Unk_PerfLog { public: void FUN_1402e12c0(const char* pszFormat, ...); };   // C3: unit_1402e12c0's interval logger = CGameApp::m_profiler (Unk_StepProfiler, same 0x58 layout)
+class Unk_PerfLog { public: void LogInterval(const char* pszFormat, ...); };   // C3: unit_1402e12c0's interval logger = CGameApp::m_profiler (Unk_StepProfiler, same 0x58 layout)
 // The create-or-get step InitInstance runs for every manager singleton: the live instance if one exists, else a new
 // one (its ctor registers it). One COMDAT per T (0x141498d90-0x14149fc10, sorted by T); the name is invented.
 template <class T>
@@ -412,7 +412,7 @@ public:
 // The single-instance marker: a named auto-reset event "<base>_<n>" for the first n that does not exist yet. The index
 // numbers the log file ("MapleStory2_<n>.log"). Name invented (inline in the exe; dtor also folded into engine code).
 void Close(HANDLE* pEvent);                             // Close: CloseHandle, index 0
-int FUN_1414a56b0(char* pEvent);                                // the index
+int GetIndex(char* pEvent);                                // the index
 
 class Unk_InstanceEvent
 {
@@ -444,14 +444,14 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 CNetworkService* GetNetworkService();
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-int FUN_1414a5910(char* pOptimizer);   // C3: the frame time limit (COptimizer)
+int GetFrameTimeLimit(char* pOptimizer);   // C3: the frame time limit (COptimizer)
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 // TSingleton<CLogString> declares no GetInstance: its live-instance getter is GetLogString (0x140166440).
 template <>
 inline CLogString* Unk_SingletonCreator<CLogString>::CreateInstance() { return TSingleton<CLogString>::s_instance ? GetLogString() : new CLogString; }
 class Unk_Ms2PhysXHelper;
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
-void FUN_1414a2a10();                                           // TSingleton delete of GetPhysXHelper()
+void DestroyPhysXHelper();                                           // TSingleton delete of GetPhysXHelper()
 void DestroyCrashManagerCli();                                           // TSingleton delete of CrashManagerCli::GetInstance()
 void TriggerCrash(int n);                                      // crash on purpose (the /crash command)
 class Unk_Ms2PrecacheOption;
@@ -476,28 +476,28 @@ extern "C" unsigned char __identifier("?DAT_143afc898@@3DA");
 extern char DAT_143afc8d0, DAT_143afc8e8, DAT_143afc900, DAT_143afcb90, DAT_143afcba8, DAT_143b08a3c;
 extern int DAT_143ab0248;                                       // the service locale
 CString FUN_14028dc80(int nId);                                 // a string table text
-int FUN_1414a5a40(CStringW sPath);                              // _wmkdir
+int MakeDirectory(CStringW sPath);                              // _wmkdir
 // Clears a ServiceManager flag (+0x119) before the shutdown request: an MS2 engine addition missing from the SDK
 // headers (the exe calls it through SmartPointer::operator->).
-void FUN_1414a6180(efd::ServiceManager* pServiceManager);
+void ClearFlag119(efd::ServiceManager* pServiceManager);
 efd::utf8string MakeWindowTitle();
 namespace Scaleform { namespace Render { class Image; class TextureManager; } }
 typedef TFunctor<Scaleform::Render::Image*, ParamList<const GFxImageLoader::Protocol&,
     ParamList<Scaleform::Render::TextureManager*, EmptyParam>>> Unk_GFxImageCallback;
 // The callback's copy assignment (0x141497aa0) and its Clone helper (0x141492f20) are first instantiated here; the
-// setter that uses them (Unk_GFxManager::FUN_1414a61c0) lives in unit_1414a6010.
+// setter that uses them (Unk_GFxManager::SetImageCallback) lives in unit_1414a6010.
 template Unk_GFxImageCallback& Unk_GFxImageCallback::operator=(const Unk_GFxImageCallback&);
 // The Scaleform UI manager singleton (no RTTI; DAT_143aaccf8).
 class Unk_GFxManager
 {
 public:
-    void FUN_1414a61c0(Unk_GFxImageCallback fnCallback);        // the image creator callback (+0x138)
+    void SetImageCallback(Unk_GFxImageCallback fnCallback);        // the image creator callback (+0x138)
 };
 class Unk_AltStringMgr* GetGFxManager();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 class GFxManager { public: void FUN_1422af0b0(int bArchive, int bRelease); };   // loads ./Data/Resource/gfx/fontconfig.txt
 Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtocol,
     Scaleform::Render::TextureManager* pTextureManager);       // ?\asyncimageloader.cpp
-int FUN_1406516b0();                                            // the service locale: 1 jp, 2 en, 3 cn, else kr
+int GetRegion();                                            // the service locale: 1 jp, 2 en, 3 cn, else kr
 CString FUN_140652330(int nLocale);                             // the locale's UI font name
 void SetKFMCacheFactory(efd::IBase* (*pfnFactory)());                // the KFM cache factory of egmAnimation
 efd::IBase* CreateKFMCache();                                    // creates an MS2KFMCache
@@ -739,7 +739,7 @@ void MS2::MessageLoop()
             }
         } else {
             Tick();
-            int nFrameTime = FUN_1414a5910((char*)GetOptimizer());
+            int nFrameTime = GetFrameTimeLimit((char*)GetOptimizer());
             if (nFrameTime) {
                 DWORD dwNow = GetTickCountMs2();
                 int nElapsed = dwNow - m_uiLastTickTime;
@@ -786,7 +786,7 @@ TiXmlElement* DocRootElement(TiXmlDocument* pDoc);             // the root eleme
 
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 CString FUN_1409a2360(const char* psz, int n);                  // text conversion
-void FUN_141b70490(const CStringA& strDir);                     // deletes a directory tree
+void DeleteDirectoryTree(const CStringA& strDir);                     // deletes a directory tree
 
 // @0x14148a9a0
 void MS2::PrepareShaderCache()
@@ -844,7 +844,7 @@ void MS2::PrepareShaderCache()
     }
     if (nVersion != 8)
     {
-        FUN_141b70490(strCurrent);
+        DeleteDirectoryTree(strCurrent);
         CreateDirectoryA(strCurrent, NULL);
         ATL::CAtlArray<CString> kSources;
         // the exe calls the file search through the CFileSystem instance and ignores the pointer (a static member)
@@ -878,7 +878,7 @@ void MS2::Shutdown()
     if (CrashManagerCli::GetInstance())
         CrashManagerCli::GetInstance()->FUN_1401ce420();
     if (m_spServiceManager) {
-        FUN_1414a6180(m_spServiceManager.operator->());   // the exe calls it as a member, through operator->
+        ClearFlag119(m_spServiceManager.operator->());   // the exe calls it as a member, through operator->
         m_spServiceManager->Shutdown(false);
         int nState = m_spServiceManager->GetCurrentState();
         while (nState != efd::ServiceManager::kSysServState_Complete) {
@@ -886,7 +886,7 @@ void MS2::Shutdown()
             nState = m_spServiceManager->GetCurrentState();
         }
         if (((class Unk_Ms2PhysXHelper*)GetPhysXHelper()))
-            FUN_1414a2a10();
+            DestroyPhysXHelper();
         m_spServiceManager = 0;
     }
     if (m_pPhysXManager) {
@@ -938,7 +938,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spRapidIteration);
 
     efd::utf8string strUrn("urn:kr");
-    switch (FUN_1406516b0()) {
+    switch (GetRegion()) {
     case 1:
         strUrn = "urn:jp";
         break;
@@ -1069,7 +1069,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
 
     int n = 0;
     reinterpret_cast<GFxManager*>(GetGFxManager())->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
-    reinterpret_cast<Unk_GFxManager*>(GetGFxManager())->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
+    reinterpret_cast<Unk_GFxManager*>(GetGFxManager())->SetImageCallback(Unk_GFxImageCallback(FUN_140a59830));
     RegisterUIScenes();
     efd::SmartPointer<DecoEditService> spDecoEdit = EE_NEW DecoEditService;
     m_spServiceManager->RegisterSystemService(spDecoEdit, 0x6100014);
@@ -1084,7 +1084,7 @@ efd::Logger* MS2::CreateLogger()
 {
     efd::SmartPointer<efd::Logger> spLogger = EE_NEW efd::Logger;
     efd::LoggerSingleton::Initialize(spLogger);
-    efd::utf8string strLogFile(efd::Formatted, "%s_%d.log", "MapleStory2", FUN_1414a56b0((char*)&s_instanceEvent));
+    efd::utf8string strLogFile(efd::Formatted, "%s_%d.log", "MapleStory2", GetIndex((char*)&s_instanceEvent));
     m_strLogFile = strLogFile;
     efd::FileDestination::FileOption eOption = efd::FileDestination::kFileOverwrite;
     eOption = efd::FileDestination::kFileAppend;
@@ -1226,11 +1226,11 @@ extern Unk_Inventory g_143ab2a90;                               // 0x143ab2a90 (
 void FUN_14092f2c0(int n);
 int FUN_1414b1230();                                            // the single-instance / mutex check
 bool CreateClientPlatform();                                           // the client platform init
-int FUN_1406c34c0();
+int IsNexonPlatform();
 int FUN_1406c34b0();
 int FUN_141b6fcf0(const CStringW& strText, const CStringW& strCaption, unsigned nType);   // error message box (wide)
 int FUN_141b6fc50(const CStringA& strText, const CStringA& strCaption, unsigned nType);   // error message box
-void FUN_141b6de20();                                           // the out-of-memory handler
+void InitThread();                                           // the out-of-memory handler
 int FUN_141b6db40(size_t nSize);
 CString FUN_14028dbd0();                                        // the machine id text
 CStringW FUN_140719630(int n);                                  // int -> CStringW
@@ -1244,7 +1244,7 @@ public:
     void ClearDungeonState();
 };
 void FUN_1401ae2f0(AttendGiftDataTable* p);
-class CBlackMarketTable* FUN_1401c06d0();   // C3: was FUN_1401c06d0
+class CBlackMarketTable* GetOrCreateBlackMarketTable();   // C3: was GetOrCreateBlackMarketTable
 void RegisterConditionTypes();
 class CDynamicActionData   // C3: member view for the former free stand-ins
 {
@@ -1265,9 +1265,9 @@ int LoadItemOptionSkillTier();   // C3: was FUN_14080bc00
 int FUN_14081c880();   // C3: was FUN_14081c880
 bool FUN_1408273f0(void*);   // C3: was FUN_1408273f0
 int LoadStats();   // C3: was FUN_14082e4b0
-void FUN_140837660();
+void InitCosts();
 void LoadSystemMailContent();
-void FUN_1408b9c90();
+void ClearCache();
 class CUserConditionEventData   // C3: member view for the former free stand-ins
 {
 public:
@@ -1293,13 +1293,13 @@ void DestroyApplyEffect();
 void DestroyAttendGiftDataTable();
 void DestroyBGTransparencyMgr();
 void DestroyBlindManager();
-void FUN_1414a00c0();
-void FUN_1414a0120();
-void FUN_1414a0180();
-void FUN_1414a01e0();
-void FUN_1414a0240();
-void FUN_1414a02a0();
-void FUN_1414a0300();
+void DestroyAchieveManager();
+void DestroyAdBannerManagerCli();
+void DestroyAdventureLevelTable();
+void DestroyAdventureLevelTableHelper();
+void DestroyArcadeDataTable();
+void DestroyAsyncImageLoader();
+void DestroyAutoFindTaxiStation();
 void DestroyBankTable();
 void DestroyBattleRecordManager();
 void DestroyBigDataLogSystem();
@@ -1366,96 +1366,96 @@ void DestroyItemRePackingScrollTable();
 void DestroyItemRemakeScrollTable();
 void DestroyItemSocketScrollTable();
 void DestroyItemSocketTable();
-void FUN_1414a1c30();
-void FUN_1414a1c90();
-void FUN_1414a1cf0();
-void FUN_1414a1d50();
-void FUN_1414a1db0();
-void FUN_1414a1e10();
-void FUN_1414a1e70();
-void FUN_1414a1ed0();
-void FUN_1414a1f30();
-void FUN_1414a1f90();
-void FUN_1414a1ff0();
-void FUN_1414a2050();
-void FUN_1414a20b0();
-void FUN_1414a2110();
-void FUN_1414a2170();
-void FUN_1414a21d0();
-void FUN_1414a2230();
-void FUN_1414a2290();
-void FUN_1414a22f0();
-void FUN_1414a2350();
-void FUN_1414a23b0();
-void FUN_1414a2410();
-void FUN_1414a2470();
-void FUN_1414a24d0();
-void FUN_1414a2530();
-void FUN_1414a2590();
-void FUN_1414a25f0();
-void FUN_1414a2650();
-void FUN_1414a26b0();
-void FUN_1414a2710();
-void FUN_1414a2770();
-void FUN_1414a27d0();
-void FUN_1414a2830();
-void FUN_1414a2890();
-void FUN_1414a28f0();
-void FUN_1414a2950();
-void FUN_1414a29b0();
-void FUN_1414a2a70();
-void FUN_1414a2ad0();
-void FUN_1414a2b30();
-void FUN_1414a2b90();
-void FUN_1414a2bf0();
-void FUN_1414a2c50();
-void FUN_1414a2cb0();
-void FUN_1414a2d10();
-void FUN_1414a2d70();
-void FUN_1414a2dd0();
-void FUN_1414a2e30();
-void FUN_1414a2e90();
-void FUN_1414a2ef0();
-void FUN_1414a2f50();
-void FUN_1414a2fb0();
-void FUN_1414a3010();
-void FUN_1414a3070();
-void FUN_1414a30d0();
-void FUN_1414a3130();
-void FUN_1414a3190();
-void FUN_1414a31f0();
-void FUN_1414a3250();
-void FUN_1414a32b0();
-void FUN_1414a3310();
-void FUN_1414a3370();
-void FUN_1414a33d0();
-void FUN_1414a3430();
-void FUN_1414a3490();
-void FUN_1414a34f0();
-void FUN_1414a3550();
-void FUN_1414a35b0();
-void FUN_1414a3610();
-void FUN_1414a3670();
-void FUN_1414a36d0();
-void FUN_1414a3730();
-void FUN_1414a3790();
-void FUN_1414a37f0();
-void FUN_1414a3850();
-void FUN_1414a38b0();
-void FUN_1414a3910();
-void FUN_1414a3970();
-void FUN_1414a39d0();
-void FUN_1414a3a30();
-void FUN_1414a3a90();
-void FUN_1414a3af0();
-void FUN_1414a3b50();
-void FUN_1414a3bb0();
+void DestroyJobConditionTable();
+void DestroyKeyTable();
+void DestroyLearningQuestTable();
+void DestroyLoadingDescriptionTable();
+void DestroyLoadingImageTable();
+void DestroyLocaleLanguage();
+void DestroyLogString();
+void DestroyLuaClient();
+void DestroyMachineIDManager();
+void DestroyMaidDescTable();
+void DestroyMaidExpTable();
+void DestroyMaidInfoTable();
+void DestroyMaidManufactureMsgTable();
+void DestroyMaidRecipeGroupTable();
+void DestroyMaidRecipeTable();
+void DestroyManufactureManager();
+void DestroyMasteryInteriorTable();
+void DestroyMasteryManager();
+void DestroyMasteryTable();
+void DestroyMenteeSearchManager();
+void DestroyMentoringManager();
+void DestroyMeratMarketMan();
+void DestroyMeratMarketPremium();
+void DestroyMesoMarketMan();
+void DestroyMicroGameManagerCli();
+void DestroyMouseController();
+void DestroyNPSMan();
+void DestroyNametagSymbolTable();
+void DestroyNiStreamLoadThread();
+void DestroyOSInfo();
+void DestroyOnlinePatchManagerCli();
+void DestroyOptimizer();
+void DestroyPCEffectDummy();
+void DestroyPVPManager();
+void DestroyPartyManager();
+void DestroyPetDataTable();
+void DestroyPetManager();
+void DestroyPopupProfileImageMan();
+void DestroyPortalTable();
+void DestroyPriceTable();
+void DestroyQuestManager();
+void DestroyQuestMaskTable();
+void DestroyQuestNavigationMap();
+void DestroyQuestNavigator();
+void DestroyQuestTable();
+void DestroyRankViewer();
+void DestroyRankingArenaDataTable();
+void DestroyReactorDataTable();
+void DestroyReconnectionManagerCli();
+void DestroyReservedWordTable();
+void DestroyRewardPreviewTable();
+void DestroyScriptTable();
+void DestroySeasonDataTable();
+void DestroyServerListTable();
+void DestroyServerString();
+void DestroyShopCategoryTable();
+void DestroyShopEventManager();
+void DestroySkillCompactControlTable();
+void DestroySkillSetTable();
+void DestroySmartPushManager();
+void DestroySmartPushTable();
+void DestroySmartRecommendShopTable();
+void DestroyCSoapClient();
+void DestroyCSoundDataTable();
+void DestroyCSoundEventMgr();
+void DestroyCSpecialDungeonDataTable();
+void DestroyCSpecialEffectFunctionManager();
+void DestroyCStoryBookTable();
+void DestroyCStringTable();
+void DestroyCTailEffectDataTable();
+void DestroyCTaxiManager();
+void DestroyCTitleTable();
+void DestroyCTradeManagerEx();
+void DestroyCTrafficOptimizer();
+void DestroyCUGCDesignTable();
+void DestroyCUGCMapSetItemTable();
+void DestroyCUgcDownloadDown();
+void DestroyCUgcDownloadLoad();
+void DestroyCUgcGetCostTable();
+void DestroyCUgcManager();
+void DestroyCUserCommandCli();
+void DestroyCUserEventManager();
+void DestroyCUserMaidManager();
+void DestroyCVIPTable();
 void DestroyCameraMgr();
 void DestroyClientLogManager();
 void DestroyCommonEffectDummy();
 void DestroyCommonResource();
 void DestroyCommonString();
-void FUN_1414a3df0();
+void DestroyConstants();
 void DestroyCooltimeManager();
 void DestroyCostumeSetTable();
 void DestroyCubeHolderManager();
@@ -1609,16 +1609,16 @@ BOOL CGameApp::InitInstance()
         return FALSE;
     if (!CreateClientPlatform())
     {
-        if (FUN_1406c34c0() != 0)
+        if (IsNexonPlatform() != 0)
             FUN_141b6fcf0(g_143ac2fe0, L"", 0);
         else
             FUN_141b6fcf0(kErrors.Get((ERawString)1), L"", 0);
         return FALSE;
     }
-    FUN_141b6de20();
-    DAT_143b023c0 = FUN_141b6de20;
+    InitThread();
+    DAT_143b023c0 = InitThread;
     DAT_143b023c8 = FUN_141b6db40;
-    DAT_143b15f88 = FUN_141b6de20;
+    DAT_143b15f88 = InitThread;
     DAT_143b15f90 = FUN_141b6db40;
     AfxEnableControlContainer();
     Unk_SingletonCreator<CLogString>::CreateInstance();
@@ -1634,7 +1634,7 @@ BOOL CGameApp::InitInstance()
     if (!GetLogString()->Start(0, THREAD_PRIORITY_LOWEST, 0, 0, 0))
         throw Exception(CString("LogString thread failed"));
     Unk_SingletonCreator<ClientLogManager>::CreateInstance();
-    reinterpret_cast<Unk_PerfLog&>(m_profiler).FUN_1402e12c0("StartUp");
+    reinterpret_cast<Unk_PerfLog&>(m_profiler).LogInterval("StartUp");
     SetThreadLocale(0x412);
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)
@@ -1674,7 +1674,7 @@ BOOL CGameApp::InitInstance()
     TSingleton<CrashManagerCli>::GetInstance()->AddLogLine(strMachine);
     Unk_SingletonCreator<CNPSMan>::CreateInstance();
     MS2::SetWorkingDirectory(false);
-    if (FUN_1406c34c0() == 1)
+    if (IsNexonPlatform() == 1)
     {
         GetClientPlatform()->vfunc_14();
         GetClientPlatform()->vfunc_67();
@@ -1737,7 +1737,7 @@ BOOL CGameApp::InitInstance()
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403981d0())
     {
         Unk_SingletonCreator<CIgnoreFile>::CreateInstance();
-        if (FUN_1406516b0() == 3)
+        if (GetRegion() == 3)
             TSingleton<CIgnoreFile>::GetInstance()->Load(std::string("./data/xmldebug/ignorepackfile_cn.xml"),
                 GetArchiveMode(TSingleton<CFileSystem>::GetInstance()));
         else
@@ -1885,7 +1885,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CGuildXmlData>::CreateInstance();
     TSingleton<CGuildXmlData>::GetInstance()->LoadAll();
     Unk_SingletonCreator<CClubDataTable>::CreateInstance();
-    TSingleton<CClubDataTable>::GetInstance()->FUN_1402113c0();
+    TSingleton<CClubDataTable>::GetInstance()->Load();
     Unk_SingletonCreator<CSpecialDungeonDataTable>::CreateInstance();
     FUN_1408273f0((void*)(TSingleton<CSpecialDungeonDataTable>::GetInstance()));
     Unk_SingletonCreator<CArcadeDataTable>::CreateInstance();
@@ -1907,7 +1907,7 @@ BOOL CGameApp::InitInstance()
         return FALSE;
     }
     Unk_SingletonCreator<CContentShutdownManager>::CreateInstance();
-    FUN_1401c06d0();
+    GetOrCreateBlackMarketTable();
     Unk_SingletonCreator<UITalkManager>::CreateInstance();
     Unk_SingletonCreator<CGroupChatManager>::CreateInstance();
     Unk_SingletonCreator<CGuildManager>::CreateInstance();
@@ -2043,7 +2043,7 @@ BOOL CGameApp::InitInstance()
     ((class CItemGemPropertyTable*)(class CItemGemPropertyTable*)(Unk_SingletonCreator<CItemGemPropertyTable>::CreateInstance()))->Load();
     LoadItemOptionSkillTier();
     ((class CItemMergeOptionTable*)(class CItemMergeOptionTable*)(Unk_SingletonCreator<CItemMergeOptionTable>::CreateInstance()))->LoadItemMergeOptionBase();
-    FUN_140837660();
+    InitCosts();
     Unk_SingletonCreator<CostumeSetTable>::CreateInstance();
     ((class RewardContentsTable*)(class RewardContentsTable*)(Unk_SingletonCreator<RewardContentsTable>::CreateInstance()))->Load();
     TSingleton<CSeasonDataTable>::GetInstance()->Load();
@@ -2098,134 +2098,134 @@ BOOL CGameApp::InitInstance()
     if (TSingleton<CAsyncImageLoader>::GetInstance())
         TSingleton<CAsyncImageLoader>::GetInstance()->Shutdown();
     FUN_14149fec0();
-    FUN_1414a3430();
-    FUN_1414a2590();
+    DestroyCSoundDataTable();
+    DestroyMouseController();
     DestroyItemEnchantTransformTable();
     DestroyFameTable();
-    FUN_1414a38b0();
+    DestroyCUGCMapSetItemTable();
     DestroyRewardContentsTable();
     DestroyCostumeSetTable();
     DestroyItemMergeOptionTable();
     DestroyStateEffectMgr();
     DestroyItemGemPropertyTable();
-    FUN_1414a29b0();
-    FUN_1414a2950();
+    DestroyPetManager();
+    DestroyPetDataTable();
     DestroyChapterBookTable();
-    FUN_1414a3730();
-    FUN_1414a2bf0();
+    DestroyCTitleTable();
+    DestroyQuestMaskTable();
     DestroyWebGuideTable();
     DestroyEnchantScrollTable();
-    FUN_1414a0300();
+    DestroyAutoFindTaxiStation();
     DestroyOnceCallbackTimer();
     DestroyUgcHomeOptionData();
     DestroyBattleRecordManager();
-    FUN_1414a2e90();
-    FUN_1414a1e10();
+    DestroyReconnectionManagerCli();
+    DestroyLocaleLanguage();
     DestroyUGCCubeCategoryTable();
-    FUN_1414a3850();
-    FUN_1414a3bb0();
-    FUN_1414a1db0();
+    DestroyCUGCDesignTable();
+    DestroyCVIPTable();
+    DestroyLoadingImageTable();
     DestroyFieldMissionTable();
-    FUN_1414a3250();
-    FUN_1414a2650();
+    DestroySkillSetTable();
+    DestroyNametagSymbolTable();
     DestroyCharacterAbilityManager();
     DestroyCharacterAbilityTable();
-    FUN_1414a3550();
+    DestroyCSpecialEffectFunctionManager();
     DestroyStringManager();
-    FUN_1414a31f0();
+    DestroySkillCompactControlTable();
     DestroyInstrumentDataTable();
     DestroyInstrumentManager();
     DestroyFishingManager();
     DestroyFishingTable();
-    FUN_1414a3a90();
+    DestroyCUserCommandCli();
     DestroyGameEventValueManager();
     DestroyGameRule();
     DestroyItemPreviewMgr();
     DestroyExpTable();
-    FUN_1414a22f0();
-    FUN_1414a2230();
-    FUN_1414a2290();
+    DestroyMasteryTable();
+    DestroyMasteryInteriorTable();
+    DestroyMasteryManager();
     DestroyJobTable();
     DestroyGPUManager();
-    FUN_1414a36d0();
+    DestroyCTaxiManager();
     DestroyBGTransparencyMgr();
     DestroyFilePreload();
     if (TSingleton<CDirWatcher>::GetInstance())
-        TSingleton<CDirWatcher>::GetInstance()->FUN_1401d1cd0();
+        TSingleton<CDirWatcher>::GetInstance()->Stop();
     SetImageConverter(0);
     DestroyDynamicBanWordManager();
     DestroyItemBreakIngredientTable();
     DestroyPCActionDataTable();
     DestroyAttendGiftDataTable();
-    CFieldData::FUN_140373d30();
-    FUN_1408b9c90();
-    FUN_1414a3670();
-    FUN_1414a2e30();
-    FUN_1414a2530();
+    CFieldData::ClearFields();
+    ClearCache();
+    DestroyCTailEffectDataTable();
+    DestroyReactorDataTable();
+    DestroyMicroGameManagerCli();
     DestroyMentoringDataTable();
-    FUN_1414a3010();
-    FUN_1414a23b0();
+    DestroySeasonDataTable();
+    DestroyMentoringManager();
     DestroyGameRankingCli();
-    FUN_1414a2350();
+    DestroyMenteeSearchManager();
     DestroyBigDataLogSystem();
     DestroyCubeHolderManager();
-    FUN_1414a3a30();
-    FUN_1414a39d0();
-    FUN_1414a2410();
-    FUN_1414a24d0();
+    DestroyCUgcManager();
+    DestroyCUgcGetCostTable();
+    DestroyMeratMarketMan();
+    DestroyMesoMarketMan();
     DestroyBlackMarketMan();
     DestroyCashMarketMan();
-    FUN_1414a2d70();
+    DestroyRankViewer();
     DestroyExpTable();
-    FUN_1414a28f0();
+    DestroyPartyManager();
     DestroyBuddyManager();
     DestroyHomeBlockManager();
-    FUN_1414a2a70();
+    DestroyPopupProfileImageMan();
     DestroyBlockManager();
-    FUN_1414a3790();
-    FUN_1414a1c30();
+    DestroyCTradeManagerEx();
+    DestroyJobConditionTable();
     DestroyWorldMapManager();
     DestroyGuideManager();
-    FUN_1414a0120();
+    DestroyAdBannerManagerCli();
     DestroyGameEventManagerCli();
     DestroyTermTagManagerCli();
-    FUN_1414a3af0();
-    FUN_1414a3190();
+    DestroyCUserEventManager();
+    DestroyShopEventManager();
     DestroyFieldMaidManager();
-    FUN_1414a3b50();
-    FUN_1414a2890();
-    FUN_1414a21d0();
-    FUN_1414a3610();
+    DestroyCUserMaidManager();
+    DestroyPVPManager();
+    DestroyManufactureManager();
+    DestroyCStringTable();
     DestroySkillDataTableCli();
     DestroyStanceTable();
-    FUN_1414a1c90();
-    FUN_1414a30d0();
+    DestroyKeyTable();
+    DestroyServerString();
     DestroyCommonString();
     DestroyApplyEffect();
     DestroyGameOption();
-    FUN_1414a26b0();
+    DestroyNiStreamLoadThread();
     DestroyGraphicOptionTable();
-    FUN_1414a3130();
-    FUN_1414a3070();
-    FUN_1414a2b30();
+    DestroyShopCategoryTable();
+    DestroyServerListTable();
+    DestroyPriceTable();
     DestroyNpcDataTableCli();
     DestroyItemDataTable();
     DestroySetItemTable();
     DestroyItemEnchantUtil();
     DestroyItemDropTable();
     DestroyBankTable();
-    FUN_1414a1ed0();
-    FUN_1414a3df0();
+    DestroyLuaClient();
+    DestroyConstants();
     DestroyFileSystem();
     DestroyGuildManager();
     DestroyClubClientManager();
     DestroyGroupChatManager();
     DestroyBlackMarketTable();
-    FUN_1414a2c50();
-    FUN_1414a2cb0();
-    FUN_1414a2b90();
+    DestroyQuestNavigationMap();
+    DestroyQuestNavigator();
+    DestroyQuestManager();
     DestroyQuestDataTable();
-    FUN_1414a2fb0();
+    DestroyScriptTable();
     DestroyGameEventUserValueManager();
     DestroyPacketHandlerManager();
     DestroyNotifySystem();
@@ -2240,44 +2240,44 @@ BOOL CGameApp::InitInstance()
     DestroyUIWorldShareInfoEventDispatcher();
     DestroyUIBottomCenterAlignManager();
     DestroyCommonEffectDummy();
-    FUN_1414a2830();
+    DestroyPCEffectDummy();
     DestroyCameraMgr();
     DestroyEffectDataManager();
     DestroyEffectSkipMgr();
     DestroySoundPropertyMgr();
-    FUN_1414a3490();
+    DestroyCSoundEventMgr();
     DestroyItemOptionTable();
-    FUN_1414a0240();
-    FUN_1414a34f0();
+    DestroyArcadeDataTable();
+    DestroyCSpecialDungeonDataTable();
     DestroyGuildXmlData();
     DestroyClubDataTable();
-    FUN_1414a2f50();
+    DestroyRewardPreviewTable();
     DestroyGameDictionaryManager();
     DestroyUITalkManager();
-    FUN_1414a2ef0();
+    DestroyReservedWordTable();
     DestroyFishingManager();
     DestroyFieldMetaTable();
-    FUN_1414a2d10();
+    DestroyQuestTable();
     DestroyContinentRegionTable();
     DestroyDirWatcher();
     DestroyItemLoader();
-    FUN_1414a33d0();
-    FUN_1414a3910();
-    FUN_1414a3970();
-    FUN_1414a02a0();
-    FUN_1414a2470();
-    FUN_1414a00c0();
+    DestroyCSoapClient();
+    DestroyCUgcDownloadDown();
+    DestroyCUgcDownloadLoad();
+    DestroyAsyncImageLoader();
+    DestroyMeratMarketPremium();
+    DestroyAchieveManager();
     ClearAddressTable();
-    FUN_1414a1d50();
+    DestroyLoadingDescriptionTable();
     DestroyItemBreakManager();
     DestroyItemEnchantLimitTable();
-    FUN_1414a3370();
-    FUN_1414a1ff0();
-    FUN_1414a2050();
-    FUN_1414a1f90();
-    FUN_1414a20b0();
-    FUN_1414a2170();
-    FUN_1414a2110();
+    DestroySmartRecommendShopTable();
+    DestroyMaidExpTable();
+    DestroyMaidInfoTable();
+    DestroyMaidDescTable();
+    DestroyMaidManufactureMsgTable();
+    DestroyMaidRecipeTable();
+    DestroyMaidRecipeGroupTable();
     DestroyCashCallManager();
     DestroyContentShutdownManager();
     DestroyCommonResource();
@@ -2290,7 +2290,7 @@ BOOL CGameApp::InitInstance()
     DestroyCoupleEmotionTable();
     DestroyWeddingEmotionTable();
     DestroyLoginBgBgmTable();
-    FUN_1414a2ad0();
+    DestroyPortalTable();
     DestroyItemGachaBoxTable();
     DestroyIgnoreFile();
     NiStaticDataManager::Shutdown(true);
@@ -2304,28 +2304,28 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_70();
     if (GetLogString())
         GetLogString()->StopThread();
-    FUN_1414a1e70();
+    DestroyLogString();
     DestroyPaybackTable();
     DestroyPaybackManagerClient();
     DestroyWeddingTable();
     DestroyWeddingManager();
-    FUN_1414a1f30();
-    FUN_1414a2710();
-    FUN_1414a27d0();
-    FUN_1414a35b0();
+    DestroyMachineIDManager();
+    DestroyOSInfo();
+    DestroyOptimizer();
+    DestroyCStoryBookTable();
     DestroyBlindManager();
     DestroyDungeonRoomTable();
     DestroyDungeonMissionDataTable();
     DestroyUIDungeonCategoryTable();
-    FUN_1414a2dd0();
+    DestroyRankingArenaDataTable();
     DestroyIndividualArenaDataTable();
     DestroyGFxLanguage();
     DestroyFeatureManager();
-    FUN_1414a3310();
-    FUN_1414a32b0();
+    DestroySmartPushTable();
+    DestroySmartPushManager();
     DestroyItemRePackingScrollTable();
     DestroyItemRemakeScrollTable();
-    FUN_1414a37f0();
+    DestroyCTrafficOptimizer();
     DestroyItemGemStoneUpgradeTable();
     DestroyItemSocketScrollTable();
     DestroyItemSocketTable();
@@ -2333,16 +2333,16 @@ BOOL CGameApp::InitInstance()
     DestroyItemLapenshardTable();
     DestroyItemExtractionTable();
     DestroyItemExchangeScrollTable();
-    FUN_1414a1cf0();
-    FUN_1414a0180();
-    FUN_1414a01e0();
+    DestroyLearningQuestTable();
+    DestroyAdventureLevelTable();
+    DestroyAdventureLevelTableHelper();
     DestroyCooltimeManager();
     DestroyFieldWarDataTable();
     DestroyChatEmoticonTable();
     DestroyClientPlatform();
-    FUN_1414a2770();
+    DestroyOnlinePatchManagerCli();
     DestroyRecodeMgr();
-    FUN_1414a25f0();
+    DestroyNPSMan();
     return FALSE;
 }
 // @0x141491d00
@@ -2362,7 +2362,7 @@ EngineLog::EngineLog()
 {
     s_strEngineLogFile = "MS2Log.txt";
     if (!efd::File::DefaultDirectoryExistsFunc("ms2log"))
-        FUN_1414a5a40(CStringW(L"ms2log"));
+        MakeDirectory(CStringW(L"ms2log"));
     Unk_CriticalSectionLock lock(&s_engineLogLock, 1);
     if (s_pEngineLogFile == 0) {
         CString strName;
@@ -2454,7 +2454,7 @@ efd::utf8string MakeWindowTitle()
     strPid.Format(" [PID:%u]", GetCurrentProcessId());
     CString strVersion;
     efd::utf8string strTitle(FUN_14028dc80(0xc3b));
-    CString strServer = Unk_SocketFormat(" - S:{0}, {1}", CFeatureManager::GetInstance()->FUN_14036d8b0(), CFeatureManager::GetInstance()->GetLocaleName());
+    CString strServer = Unk_SocketFormat(" - S:{0}, {1}", CFeatureManager::GetInstance()->GetLevel(), CFeatureManager::GetInstance()->GetLocaleName());
     strTitle += " (x64)";
     strVersion.Format(" (Ver.%X)", 0x9dd);
     if (DAT_143ab0248 == 1 || DAT_143ab0248 == 2 || DAT_143ab0248 == 3)

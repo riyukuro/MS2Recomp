@@ -137,7 +137,7 @@ void UISkillPreviewDialog::FUN_140e93e70(int skill, unsigned short level)
     if (!m_avatar->IsLoaded()) return;
     MS2Ptr<SkillData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(skill);
     if (data.IsNull()) { MS2_ASSERT_AT(162, 0); return; }
-    if (data->FUN_1407e9d30()) m_avatar->FUN_1418bce80(skill);
+    if (data->IsEmotion()) m_avatar->FUN_1418bce80(skill);
     else m_avatar->FUN_1418bcf60(skill, level);
     m_skill = 0;
     m_level = 0;
@@ -150,7 +150,7 @@ void UISkillPreviewDialog::CreateAvatar()
     if (m_avatar.get()) return;
     WorldService* player = WorldService::GetInstance();
     if (!player) { MS2_ASSERT_AT(188, 0); return; }
-    PC* actor = reinterpret_cast<PC*>(player->FUN_141bd0cc0());
+    PC* actor = reinterpret_cast<PC*>(player->GetLocalPlayer());
     if (!actor) { MS2_ASSERT_AT(195, 0); return; }
     m_avatar.AssignRaw(new UIAvatarPC(actor, true));
     m_avatar->vfunc_1(this);

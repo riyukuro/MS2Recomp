@@ -46,11 +46,11 @@ public:
     void Read(Unk_EnchantRead& rIn);
     void CopyFrom(const BaseOption* pSource);      // copy
     void FUN_140266dd0(const BaseOption* pSource);      // add
-    float FUN_140266e10() const;
+    float GetRate() const;
     int GetValue() const;
-    void FUN_140266e50(float fValue);
+    void SetRate(float fValue);
     void SetValue(int nValue);
-    bool FUN_140266ee0(const BaseOption* pOther) const;
+    bool IsEqual(const BaseOption* pOther) const;
 
     int m_nValue;                                       // +0x18
     int m_nIndex;                                       // +0x1c
@@ -218,7 +218,7 @@ void BaseOption::FUN_140266dd0(const BaseOption* pSource)
 }
 
 // @0x140266e10
-float BaseOption::FUN_140266e10() const
+float BaseOption::GetRate() const
 {
     return (float)m_nValue / 1000.0f;
 }
@@ -230,7 +230,7 @@ int BaseOption::GetValue() const
 }
 
 // @0x140266e50
-void BaseOption::FUN_140266e50(float fValue)
+void BaseOption::SetRate(float fValue)
 {
     m_nValue = (int)Floor(fValue * 1000.0f);
 }
@@ -242,7 +242,7 @@ void BaseOption::SetValue(int nValue)
 }
 
 // @0x140266ee0
-bool BaseOption::FUN_140266ee0(const BaseOption* pOther) const
+bool BaseOption::IsEqual(const BaseOption* pOther) const
 {
     if (m_nValue != pOther->m_nValue)
         return false;

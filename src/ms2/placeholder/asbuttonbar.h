@@ -51,7 +51,7 @@ public:
     void RemoveItemByLabel(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
     void FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew); // 0x1422e3c70 relabel a button
     int FUN_1422e3ee0(const CString& strField, Scaleform::GFx::Value& vOut);   // a field of the selected entry (0: none / null)
-    void FUN_1422e4060(int nIndex);                                     // refresh an entry's button from the data provider
+    void UpdateRendererAt(int nIndex);                                     // refresh an entry's button from the data provider
     void AddIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);  // add "clikIndexChange"
     void RemoveIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);               // remove "clikIndexChange"
     void AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu, void* pUser);    // add "listIndexChange"

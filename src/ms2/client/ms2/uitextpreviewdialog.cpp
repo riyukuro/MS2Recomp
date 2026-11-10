@@ -43,7 +43,7 @@ class CItemDataTable;
 Scaleform::GFx::Movie* GetMovie(int nMovieId);             // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, unsigned int
     ASArgList args;
     args.resize(4);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[1], a2);
     FUN_1422bcea0(&args[2], (const wchar_t*)a3);
     FUN_1422bcea0(&args[3], (const wchar_t*)a4);
     return FUN_1422bb8f0(szMethod, args);

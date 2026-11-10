@@ -214,7 +214,7 @@ template <class T> T* Unk_MmGetDialogOf()
     return dynamic_cast<T*>(spObject.get());
 }
 
-bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
+bool IsShopTab(int nSort);                                  // a valid market sort kind
 void FUN_1418ffec0(unsigned int* pFlags, unsigned int nBit);                      // set a flag bit
 __int64 GetServerTime();                                        // the server time
 extern int DAT_143ab0248;                                       // the service region
@@ -239,13 +239,13 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
+    MS2Ptr<CFieldDataCli> GetFieldData();                      // the current field
     static class WorldService* GetInstance();
 };
 
 CStringW FUN_1409404f0(__int64 nValue);                         // a number with digit groups
-int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);    // play a system sound
 bool IsLevelAllowed(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bShowError);  // the level fits the product
 
 CStringW GetStringCommon(int nKey);                               // a common string by id
@@ -398,7 +398,7 @@ void CMeratMarketMan::OnMeretMarket(CInPacket& packet)
 // @0x140d542c0
 void CMeratMarketMan::SendMeretMarketMode101(int nTab, int nSort)
 {
-    if (nTab == 5 || !FUN_1406a5040(nSort))
+    if (nTab == 5 || !IsShopTab(nSort))
         return;
     COutPacket packet(static_cast<int>(SendOp::MeretMarket), 0);
     packet.WriteUInt8(0x65);
@@ -990,7 +990,7 @@ int CMeratMarketMan::ShowSettlementResult()
             spBox->SetSound(s_marketCalculate);
             FUN_140d73c60(spBox);
             CString strArg("");
-            FUN_141276180(s_ugcEndSale, strArg);
+            PlaySystemSound(s_ugcEndSale, strArg);
         }
         m_ne0 = 0;
     }
@@ -1068,12 +1068,12 @@ void CMeratMarketMan::ReadBookMarkProducts(__int64 nId, CInPacket& packet)
     MS2Ptr<CUgcCharBookMark> spMark = FindBookMark(nId);
     if (spMark == 0)
         return;
-    spMark->FUN_140896d90();
+    spMark->Clear();
     int nCount = packet.ReadInt32();
     if (Unk_LockGuard lock = m_lock) {} else {
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
-            spMark->FUN_140896dd0(spProduct);
+            spMark->AddProduct(spProduct);
         }
     }
 }
@@ -1114,7 +1114,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d57150(Unk_MeratProductKey k
     } else {
         MS2Ptr<CUgcCharBookMark> spMark = FindBookMark(nBookMarkId);
         if (spMark.get() != 0)
-            spProduct = spMark->FUN_140896e80(Unk_MeratProductKey(key));
+            spProduct = spMark->FindProduct(Unk_MeratProductKey(key));
     }
     return spProduct;
 }
@@ -1184,7 +1184,7 @@ bool CMeratMarketMan::GetVisiblePremiumProducts(unsigned int nCategory, int nTab
             if (spList == 0 || spList->empty() == true)
                 return false;
             unsigned short nLevel = 0;
-            PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             if (pPlayer != 0)
                 nLevel = (unsigned short)pPlayer->vfunc_78();
             for (std::list<MS2Ptr<CMeratMarketProduct> >::iterator itProduct = spList->begin(); itProduct != spList->end(); ++itProduct) {
@@ -2279,7 +2279,7 @@ void CMeratMarketMan::OnProductRegistered(CInPacket& packet)
         if (pRegister != 0)
             pRegister->FUN_141318aa0(spProduct);
         CString strArg("");
-        FUN_141276180(s_designUpload, strArg);
+        PlaySystemSound(s_designUpload, strArg);
     }
 }
 
@@ -2811,7 +2811,7 @@ void CMeratMarketMan::OnErrorReply(CInPacket& packet)
     case 0x89: {
         FUN_141275260(0x43, 1, 1);
         CString strArg("");
-        FUN_141276180(s_warningBag, strArg);
+        PlaySystemSound(s_warningBag, strArg);
     }
         break;
     case 0x88:
@@ -2968,7 +2968,7 @@ bool CMeratMarketMan::PushAdProducts(unsigned int nCategory, int nTab)
 {
     if (nCategory == 0 || nTab == 0)
         return false;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     bool bMinimized = false;
     if ((spField.get() ? true : false) && spField->HasLimitContent(0x80) != 0)
         bMinimized = true;
@@ -2990,7 +2990,7 @@ bool CMeratMarketMan::PushAdProducts(unsigned int nCategory, int nTab)
 // @0x140d5ba70
 bool CMeratMarketMan::FUN_140d5ba70()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     bool bMinimized = false;
     if ((spField.get() ? true : false) && spField->HasLimitContent(0x80) != 0)
         bMinimized = true;

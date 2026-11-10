@@ -72,13 +72,13 @@ UISceneEntity* GFxSceneService::FUN_1422b9e20(int nSceneId)
 MS2_REPLACE_METHOD(0x1422B9E20, GFxSceneService, FUN_1422b9e20, 35, 0xAE615F19);
 
 // @0x1422b9e50
-UISceneEntity* GFxSceneService::FUN_1422b9e50()
+UISceneEntity* GFxSceneService::GetSubSceneOrScene()
 {
     if (m_pSubScene == NULL)
         return m_pScene;
     return m_pSubScene;
 }
-MS2_REPLACE_METHOD(0x1422B9E50, GFxSceneService, FUN_1422b9e50, 38, 0x08895A49);
+MS2_REPLACE_METHOD(0x1422B9E50, GFxSceneService, GetSubSceneOrScene, 38, 0x08895A49);
 
 // @0x1422b9e80
 UISceneEntity* GFxSceneService::GetScene()
@@ -101,7 +101,7 @@ int GFxSceneService::FUN_1422b9ea0()
 MS2_REPLACE_METHOD(0x1422B9EA0, GFxSceneService, FUN_1422b9ea0, 59, 0x728E7F5C);
 
 // @0x1422b9ef0
-int GFxSceneService::FUN_1422b9ef0(int nSceneId)
+int GFxSceneService::SetScene(int nSceneId)
 {
     if (nSceneId != 0 && nSceneId == m_nSceneId)
         return 0;
@@ -109,7 +109,7 @@ int GFxSceneService::FUN_1422b9ef0(int nSceneId)
     UISceneEntity* pPrev = FUN_1422b9e20(m_nPrevSceneId);
     if (pPrev != NULL)
     {
-        FUN_1422b9fd0(0);
+        SetSubScene(0);
         pPrev->vfunc_49(nSceneId);
     }
     m_nSceneId = nSceneId;
@@ -119,10 +119,10 @@ int GFxSceneService::FUN_1422b9ef0(int nSceneId)
         pNext->vfunc_48(m_nPrevSceneId);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422B9EF0, GFxSceneService, FUN_1422b9ef0, 213, 0x56705A53);
+MS2_REPLACE_METHOD(0x1422B9EF0, GFxSceneService, SetScene, 213, 0x56705A53);
 
 // @0x1422b9fd0
-int GFxSceneService::FUN_1422b9fd0(int nSubSceneId)
+int GFxSceneService::SetSubScene(int nSubSceneId)
 {
     if (nSubSceneId != 0 && nSubSceneId == m_nSubSceneId)
         return 0;
@@ -141,7 +141,7 @@ int GFxSceneService::FUN_1422b9fd0(int nSubSceneId)
         pNext->vfunc_48(m_nPrevSubSceneId);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422B9FD0, GFxSceneService, FUN_1422b9fd0, 246, 0x2C38FE01);
+MS2_REPLACE_METHOD(0x1422B9FD0, GFxSceneService, SetSubScene, 246, 0x2C38FE01);
 
 // @0x1422ba0d0
 void GFxSceneService::FUN_1422ba0d0()

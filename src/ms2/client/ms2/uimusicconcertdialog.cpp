@@ -52,7 +52,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 bool SendPacketThrottled(COutPacket* packet, int key, int delay);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x140e694a0
 UIMusicConcertDialog::UIMusicConcertDialog()
@@ -109,10 +109,10 @@ void UIMusicConcertDialog::OnLoadComplete()
         m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
-        m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::OnActionButtonClick), IntToUserData(i));
+        m_buttons[i]->AddClickHandler(McClickDelegate(this, &UIMusicConcertDialog::OnActionButtonClick), IntToUserData(i));
     }
     m_foldButton = GetChild<ASButton>("m_foldButton");
-    m_foldButton->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::OnFoldButtonClick), 0);
+    m_foldButton->AddClickHandler(McClickDelegate(this, &UIMusicConcertDialog::OnFoldButtonClick), 0);
     m_topText = GetChild<ASTextField>("m_topText");
     {
         CStringW strKey(L"s_music_concert_can_play");
@@ -205,7 +205,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
 {
     if (m_topText == 0)
         return;
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     CStringW strAction = GetStringCommonByKey(L"s_music_concert_can_play");
@@ -249,7 +249,7 @@ void UIMusicConcertDialog::FUN_140e6a5d0(int nIndex, const CString& strIcon, con
 // @0x140e6a780
 void UIMusicConcertDialog::FUN_140e6a780()
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     unsigned nStart = WorldService::GetInstance()->FUN_141bcaf60();
@@ -284,7 +284,7 @@ void UIMusicConcertDialog::FUN_140e6a9d0()
 // @0x140e6ab10
 void UIMusicConcertDialog::SendPlayInstrumentMode13()
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
@@ -312,7 +312,7 @@ void UIMusicConcertDialog::FUN_140e6ab90()
 // @0x140e6ac80
 void UIMusicConcertDialog::SendPlayInstrumentMode14()
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
@@ -323,7 +323,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode14()
 // @0x140e6ad00
 void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (pPC->FUN_141675ed0() == 1)
@@ -376,7 +376,7 @@ Scaleform::GFx::Value AScript::FUN_140e6b140(const char* szMethod, int a1, CStri
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

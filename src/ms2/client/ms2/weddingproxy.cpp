@@ -485,7 +485,7 @@ bool FUN_140900580(bool bFlag)
     return true;
 }
 // @0x1409005c0
-bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB)
+bool IsGenderPairAllowed(unsigned char nGenderA, unsigned char nGenderB)
 {
     if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x105) != false && nGenderA == nGenderB)
         return false;
@@ -726,7 +726,7 @@ unsigned int GetWeddingInvitationMaxCount()
     return *TSingleton<Client::Constants>::GetInstance()->WeddingInvitationMaxCount.Get();
 }
 // @0x140900f30
-bool FUN_140900f30(__int64 nTime)
+bool IsNightTime(__int64 nTime)
 {
     int nHour;
     const int nStart = 6;

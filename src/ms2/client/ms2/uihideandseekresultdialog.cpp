@@ -41,7 +41,7 @@ class Unk_HsPC : public PC
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void DestroyItemInfoSlot(const CString& strName);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
@@ -122,7 +122,7 @@ void UIHideAndSeekResultDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_140c1eb20();
     CString strArg("");
-    FUN_141276180(s_strResultSound, strArg);
+    PlaySystemSound(s_strResultSound, strArg);
 }
 MS2_REPLACE_METHOD(0x140C1E900, UIHideAndSeekResultDialog, OnLoadComplete, 91, 0xEA20896F);
 
@@ -181,7 +181,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
             continue;
         if (reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0() == 0)
             continue;
-        bool bMine = (static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0()) == spActor.get());
+        bool bMine = (static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer()) == spActor.get());
         if (bMine)
             FUN_140c1eec0(objMine, spInfo);
         FUN_140c1f120(rows, spInfo, static_cast<PC*>(spActor.get()), bMine);

@@ -312,7 +312,7 @@ CStringW CGuideConditionRealEstateExpireDays::GetTypeName()
 // @0x1413ad570
 int CGuideConditionRealEstateExpireDays::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->GetUGCMapInfo());
@@ -378,7 +378,7 @@ void CGuideConditionJobCode::vfunc_2(TiXmlElement* pElem)
 // @0x1413ad8d0
 int CGuideConditionJobCode::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     return ApplyNotBool(reinterpret_cast<PC*>(pPlayer)->GetJobGroupId() == m_n20);
@@ -412,7 +412,7 @@ void CGuideConditionSubJobCode::vfunc_2(TiXmlElement* pElem)
 // @0x1413ada50
 int CGuideConditionSubJobCode::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     for (size_t i = 0; i < m_subJobCodes.GetCount(); ++i) {
@@ -445,7 +445,7 @@ void CGuideConditionBattleState::vfunc_2(TiXmlElement* pElem)
 // @0x1413adbf0
 int CGuideConditionBattleState::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     return ApplyNot(pPlayer->vfunc_65());
@@ -472,7 +472,7 @@ CStringW CGuideConditionSummonPet::GetTypeName()
 // @0x1413add10
 int CGuideConditionSummonPet::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     return ApplyNotBool(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416769f0() != 0);
@@ -550,7 +550,7 @@ CStringW CGuideConditionSelectItemEnchant::GetTypeName()
 // @0x1413ae170
 int CGuideConditionSelectItemEnchant::vfunc_3()
 {
-    void* pDlg = FUN_1413b1bc0(0x4e92);
+    void* pDlg = GetItemEnchantDialog(0x4e92);
     if (pDlg)
         return ApplyNotBool(reinterpret_cast<UIItemEnchantDialog*>(pDlg)->GetSelectedUid() != 0);
     return 0;
@@ -655,7 +655,7 @@ CStringW CGuideConditionPlayingInstrument::GetTypeName()
 // @0x1413ae6b0
 int CGuideConditionPlayingInstrument::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->GetCurStateId() != 0x2f)
@@ -779,7 +779,7 @@ int CGuideConditionButtonSelected::vfunc_3()
     if (pDlg->vfunc_55() != 0)
         return 0;
     if (m_children.GetCount() != 0) {
-        MS2Ptr<ASDisplayObject> root = reinterpret_cast<UISwfEntity*>(pDlg)->FUN_1422dba50();
+        MS2Ptr<ASDisplayObject> root = reinterpret_cast<UISwfEntity*>(pDlg)->GetDisplayObject();
         if (root.get()) {
             for (size_t i = 0; i < m_children.GetCount(); ++i) {
                 BOOL bLast = i == m_children.GetCount() - 1;
@@ -845,7 +845,7 @@ CGuideConditionContract::CGuideConditionContract()
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionContract::vfunc_3()
 {
-    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pPlayer)
         return 0;
     Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->GetUGCMapInfo());
@@ -990,7 +990,7 @@ void CGuideConditionChatEmoticon::vfunc_2(TiXmlElement* pElem)
 // @0x1413afc50
 int CGuideConditionChatEmoticon::vfunc_3()
 {
-    void* pDlg = FUN_1413b1b20(0x4f80);
+    void* pDlg = GetChatEmoticonDialog(0x4f80);
     if (pDlg)
         return ApplyNotBool(Unk_GcNoPoint((char*)(pDlg)));
     return 0;

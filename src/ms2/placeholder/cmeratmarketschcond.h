@@ -22,7 +22,7 @@ public:
 
     void Clear();                                               // 0x1406a35e0
     void Set(const CStringW& str);                              // 0x1406a36a0 a text search
-    void FUN_1406a3720(const CMeratMarketSchCond* pOther);      // reset, then copy `pOther` (when not NULL)
+    void CopyFrom(const CMeratMarketSchCond* pOther);      // reset, then copy `pOther` (when not NULL)
     void Write(COutputStream* pStream);                         // 0x1406a3760
     void Read(CInPacket& packet);                               // 0x1406a3880
     void WriteBrief(COutputStream* pStream);                    // 0x1406a3b00

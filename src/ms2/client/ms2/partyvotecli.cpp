@@ -70,10 +70,10 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 GetServerTime();                                           // server time
 CStringW FormatMinutesSeconds(const ATL::CTimeSpan& span);                // "mm:ss" text
 CStringW GetStringCommon(int nId);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void ShowSystemNotice(const CStringW& str, int a, int b);
-int FUN_141276180(const CString& a, const CString& b);
+int PlaySystemSound(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
 
 #include "ms2/placeholder/wcformat.h"  // FUN_14028dfa0 and its wrappers
@@ -251,14 +251,14 @@ void PartyVoteReadyCli::vfunc_2()
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
         reinterpret_cast<UIPartyDialog*>(pDialog)->SetDeadline(0);
-    FUN_1412751b0(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 2);
+    FUN_1412751b0(GetStringByKey(CStringW(L"s_party_vote_ready_message")), 2);
     {
         CString strEmpty("");
-        FUN_141276180(s_strReadyPopup, strEmpty);
+        PlaySystemSound(s_strReadyPopup, strEmpty);
     }
     if (!HasVoted())
     {
-        Unk_MsgBoxPtr box = CreateMessageBoxWithCallback(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
+        Unk_MsgBoxPtr box = CreateMessageBoxWithCallback(GetStringByKey(CStringW(L"s_party_vote_ready_message")), 1,
                                           Unk_MsgBoxCallback(this, &PartyVoteReadyCli::OnMessageBoxResult));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02460(1);
@@ -271,7 +271,7 @@ void PartyVoteReadyCli::vfunc_2()
 // @0x140a89f70
 void PartyVoteReadyCli::vfunc_3()
 {
-    ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_vote_ready_message_end")), 1, 1);
+    ShowSystemNotice(GetStringByKey(CStringW(L"s_party_vote_ready_message_end")), 1, 1);
     TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)

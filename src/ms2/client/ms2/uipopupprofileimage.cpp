@@ -48,7 +48,7 @@ public:
 };
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_PopupUIMgr { public: };
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 UIPopupProfileImage* GetPopupProfileImage(int nUiId);
@@ -226,7 +226,7 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::GetEntity(int nActorId)
         {
             if (m_78.IsEmpty())
             {
-                bool bFlag = FUN_140930110(nActorId);
+                bool bFlag = IsUpperTargetId(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -250,8 +250,8 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::GetEntity(int nActorId)
                     int nOld = pEntity->FUN_140f48d20();
                     if (nActorId != nOld)
                     {
-                        bool bNew = FUN_140930110(nActorId);
-                        if (FUN_140930110(nOld) || bNew)
+                        bool bNew = IsUpperTargetId(nActorId);
+                        if (IsUpperTargetId(nOld) || bNew)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())

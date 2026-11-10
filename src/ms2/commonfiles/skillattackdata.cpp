@@ -31,7 +31,7 @@ void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was 
 void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
 efd::Point3 FUN_14028f060(CString str);                                    // "x, y, z" -> point
 CString FUN_14028ef00(efd::Point3 kPoint);                                 // point -> "x, y, z"
-bool FUN_14028d470(float a, float b);                                      // nearly equal
+bool IsNearlyEqual(float a, float b);                                      // nearly equal
 class CFieldData   // C3: member view for the former free stand-ins
 {
 public:
@@ -372,7 +372,7 @@ void SkillDamage::Save(void* pParent)
 // @0x1407e0ee0
 int SkillDamage::RollPush() const
 {
-    if (FUN_14028d470(m_fPushProb, 0.0f))
+    if (IsNearlyEqual(m_fPushProb, 0.0f))
         return 0;
     if ((float)rand() / 32767.0f > m_fPushProb)
         return 0;

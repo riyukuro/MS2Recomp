@@ -36,7 +36,7 @@ class PCBase   // C3: member view for the former free stand-ins
 public:
     int IsDead();
 };
-bool FUN_14028d470(float a, float b);                       // nearly equal
+bool IsNearlyEqual(float a, float b);                       // nearly equal
 void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
 void SetNodeAlpha(NiAVObject* pNode, float fAlpha, bool bFlag);  // apply an alpha to the node tree
 void FUN_140a01250(efd::Point3 kAngles, efd::Point3* pForward, efd::Point3* pRight);   // euler angles -> axes
@@ -116,7 +116,7 @@ Unk_TeInfo* FUN_140ad0320(void*)
 // @0x140ad0e80
 static Unk_TeInfo* FUN_140ad0e80(void*)
 {
-    return static_cast<Unk_TeInfo*>(FUN_1401ba820(FUN_140ad0320(0)));
+    return static_cast<Unk_TeInfo*>(InitRefCount(FUN_140ad0320(0)));
 }
 
 struct Unk_TePtrAccess
@@ -371,7 +371,7 @@ void CTailEffectObject::FUN_140acfeb0()
 // @0x140acffc0
 void CTailEffectObject::SetAlpha(float fAlpha)
 {
-    if (FUN_14028d470(m_fAlpha, fAlpha))
+    if (IsNearlyEqual(m_fAlpha, fAlpha))
         return;
     m_fAlpha = fAlpha;
     std::list<MS2Ptr<TailEffectInfo> >& rList = m_listInfo;

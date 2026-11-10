@@ -60,9 +60,9 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Game · ms2 | 176,747 | 176,600 (99.9%) | 142 (0.1%) | 100.0% |
 | Runtime & middleware | 24,765 | 24,009 (96.9%) | 639 (2.6%) | 99.5% |
 | Gamebryo engine | 16,881 | 16,841 (99.8%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 13,110 | 13,098 (99.9%) | 11 (0.1%) | 100.0% |
+| Game framework · egf | 13,113 | 13,101 (99.9%) | 11 (0.1%) | 100.0% |
 | Libraries | 6,731 | 6,372 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,068 | 13,064 (100.0%) | 4 (0.0%) | 100.0% |
+| Foundation | 13,065 | 13,061 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
 | **Total** | **252,084** | 250,764 (99.5%) | 846 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
@@ -84,11 +84,13 @@ Link aliases: 5 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp`
 
 Since the last publish:
 
-- Placeholder names: 4,997 more game functions that were still called `FUN_<address>` now have descriptive names,
-  from three naming waves. Two independent naming passes had to agree on each name, and a full rebuild checked the
-  result: no function changed state and no exact match was lost.
-- 42 of the 45 small identity functions that the matcher had paired with hook-DLL helper names are now bound to the
-  standard-library names their callers use; 3 are left. The no-exe build's link order names no hook helper.
+- Placeholder names: 1,439 more game functions that were still called `FUN_<address>` now have descriptive names,
+  from one more naming wave. Two independent naming passes had to agree on each name, and a full rebuild checked the
+  result: no function changed state and no exact match was lost. One proposed name was taken back because it clashed
+  with Lua binding helpers in the engine code.
+- A step back, not yet fixed: 10 small identity functions are now paired with hook-DLL helper names, against 3 at
+  the last publish. The 7 new ones came with this round's names and are still to be bound to the standard-library
+  names their callers use. The no-exe build's link order names no hook helper.
 - The default build was checked again from a clean checkout with the stock `linux` preset and no options (3,734
   steps, no unresolved symbol), and the result ran into the game field. See [`BUILDING.md`](BUILDING.md).
 - No new bugs that the byte-match checks can't see were fixed in this round.
@@ -138,10 +140,13 @@ effects come from reading the code.
   [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`. Windows: the Visual Studio 2017 Build Tools
   (v141 toolset); component IDs and setup in [`CONTRIBUTING.md`](CONTRIBUTING.md#windows-native-no-wsl-no-wine).
   `tools/check_toolchain.py` verifies either install against our hashes
-- For byte-matching the CRI movie decoder and the GFx Video add-on, two older compilers: cl 15.00 (VS2008 SP1,
-  `tools/fetch-vc9.sh`) and cl 17.00 (VS2012 Update 4, `tools/fetch-vs2012.sh`). The exe links those libraries prebuilt
-  with them; the rest of Scaleform uses MSVC 14.16 like the game. The per-directory table is in the submodule's
-  [`README.md`](https://github.com/riyukuro/GFx418-Recomp#compilers-by-section). clang-cl builds these units without them
+- The older compilers some of the exe's prebuilt libraries were built with: cl 15.00 (VS2008 SP1,
+  `tools/fetch-vc9.sh`) for the CRI movie decoder, cl 17.00 (VS2012 Update 4, `tools/fetch-vs2012.sh`) for the GFx
+  Video add-on, and the MSVC 14.14 and 14.15 toolsets for some engine libraries. On Linux the full executable needs
+  all of them; on Windows each is optional and MSVC 14.16 builds those objects instead (see
+  [`BUILDING.md`](BUILDING.md#prerequisites)). The rest of Scaleform uses MSVC 14.16 like the game. The per-directory
+  table is in the submodule's [`README.md`](https://github.com/riyukuro/GFx418-Recomp#compilers-by-section). clang-cl
+  builds these units without them
 - clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
   and with `engine-patches-v2525/` into `engine/gamebryo-v2525/` (the full-executable configure does the second one;

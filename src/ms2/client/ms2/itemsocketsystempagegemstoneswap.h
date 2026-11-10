@@ -23,7 +23,7 @@ public:
     void FUN_140c48c70(CInPacket*);                     // operation 9: a gemstone was put into the target
     void SendItemSocketSystemMode8(CInPacket*);                     // operation 0xb: a gemstone was taken off the source
     bool FUN_140c48df0(int, const CMsgBoxData&);        // the swap confirm box answer: take the source gemstones off
-    void FUN_140c49000(ItemInfoSlot&, ASSlot&);         // bag slot callback
+    void UpdateItemSlot(ItemInfoSlot&, ASSlot&);         // bag slot callback
     void FUN_140c49110();                               // clear everything
     void SelectSourceItem(int);                            // a source slot was picked
     void SelectTargetItem(int);                            // a target slot was picked

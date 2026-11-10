@@ -42,7 +42,7 @@ int CHomePrivilege::FUN_14050d550(int nNpcId)
     if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->GetUGCMapInfo());
-        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->GetFieldId())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -67,7 +67,7 @@ int CHomePrivilege::FUN_14050d6f0(int nPortalId)
     if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->GetUGCMapInfo());
-        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->GetFieldId())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -92,7 +92,7 @@ int CHomePrivilege::FUN_14050d890(int nInteractId)
     if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->GetUGCMapInfo());
-        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->GetFieldId())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)
@@ -117,7 +117,7 @@ int CHomePrivilege::FUN_14050da30()
     if (m_pOwner->HasNoHome() == 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(m_pOwner->GetUGCMapInfo());
-        if (spHouse->m_n20 != WorldService::GetInstance()->FUN_141bd3060())
+        if (spHouse->m_n20 != WorldService::GetInstance()->GetFieldId())
             return 0;
         Unk_UGCGroup group;
         if (FUN_1408a0d30(spHouse->m_n24, group, spHouse->m_n20) != 0)

@@ -25,7 +25,7 @@ public:
     bool SetSelectedButtonByIndex(int nIndex, bool bForce);                    // setSelectedButtonByIndex
     bool HasButton(MS2Ptr<ASButton> spButton);                  // hasButton
     // the "buttonClick" / "change" callbacks; pUser comes back in Params::pUserData (uimeratmarketdialog.cpp)
-    void FUN_1422e8e50(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
+    void AddClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
     void AddChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
     // ButtonGroup.getGroup(strName, scope): the CLIK button group of that name in the scope's movie (null without a movie)
     static MS2Ptr<ASButtonGroup> FUN_1422e8f50(const CStringW& strName, AScript* pScope);

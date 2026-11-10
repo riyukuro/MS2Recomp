@@ -57,20 +57,20 @@ class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 class Unk_PgtrItemData : public CItemData { };       // the icon name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
-CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
+CStringW GetStringByKey(CStringW strKey);                            // the string table text
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a UI sound
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x1413405b0
 Unk_PgtrGuild::Unk_PgtrGuild()
@@ -171,7 +171,7 @@ void UIPvPGuildTeamResultDialog::SetGuildBattleResult(CInPacket* pIn)
     m_guildB.FUN_141340650(pIn);
     int nCount = pIn->ReadInt32();
     m_nMode = 0;
-    m_strTitle = FUN_140298ea0(L"s_PvpGuildResult_title_pvp");
+    m_strTitle = GetStringByKey(L"s_PvpGuildResult_title_pvp");
     __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId();
     m_guildA.m_strResult = L"win";
     m_guildB.m_strResult = L"lose";
@@ -205,7 +205,7 @@ void UIPvPGuildTeamResultDialog::SetVsGameResult(CInPacket* pIn)
     m_guildA.FUN_141340810(pIn);
     m_guildB.FUN_141340810(pIn);
     m_nMode = 1;
-    m_strTitle = FUN_140298ea0(L"s_PvpGuildResult_title_vsGame");
+    m_strTitle = GetStringByKey(L"s_PvpGuildResult_title_vsGame");
     m_bSwap = true;
     m_nRewardItem = 0;
     m_bSound = false;
@@ -284,17 +284,17 @@ void UIPvPGuildTeamResultDialog::PlayResultSounds()
         return;
     if (m_bOwnA)
     {
-        FUN_141276180(s_strMassiveSuccess, "");
-        FUN_141276180(s_strBattleFieldWin, "");
+        PlaySystemSound(s_strMassiveSuccess, "");
+        PlaySystemSound(s_strBattleFieldWin, "");
         ChromaSDK::GetChromaManager()->SetState(9);
-        FUN_141276180("system_notice_GuildBattleGuide06", "");
+        PlaySystemSound("system_notice_GuildBattleGuide06", "");
     }
     else
     {
-        FUN_141276180(s_strMassiveFail, "");
-        FUN_141276180("system_notice_GuildBattleGuide07", "");
+        PlaySystemSound(s_strMassiveFail, "");
+        PlaySystemSound("system_notice_GuildBattleGuide07", "");
     }
-    FUN_141276180(s_strGuildBattleReward, "");
+    PlaySystemSound(s_strGuildBattleReward, "");
 }
 #endif
 
@@ -365,6 +365,6 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
     ASArgList args;
     args.resize(2);
     FUN_1422bcea0(&args[0], (const wchar_t*)a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

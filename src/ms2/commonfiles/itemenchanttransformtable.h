@@ -52,7 +52,7 @@ public:
 
     int Init();                                    // loads the xml (CValidData init)
     int LoadItemEnchantTransform();                                    // parses the xml into the maps
-    static int FUN_140592110(MS2Ptr<CItem> spItem);        // the item can be transformed
+    static int CanTransform(MS2Ptr<CItem> spItem);        // the item can be transformed
     CEnchantTransformDataPtr FindByKey(const CString& strKey);   // the row of a key (reloads when the xml changed)
     CEnchantTransformDataPtr Find(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);
     CEnchantTransformDataPtr FindByItem(MS2Ptr<CItem> spItem);   // the row of an item

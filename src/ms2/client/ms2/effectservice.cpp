@@ -202,9 +202,9 @@ int FUN_1408733e0(TiXmlElement* pNode, const char* pszName, CString& strOut);
 
 // String / path helpers (commonfiles).
 CString GetXmlPath(const CString& strDir, const CString& strFile);  // path combine
-void FUN_1401d3700(CString& strPath);                                   // normalize (lower case)
+void ToLower(CString& strPath);                                   // normalize (lower case)
 
-bool FUN_14028d470(float a, float b);                   // nearly equal
+bool IsNearlyEqual(float a, float b);                   // nearly equal
 
 // Game log (commonfiles singleton 0x140166440).
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -301,12 +301,12 @@ CEffectPtr CreateEffect(CEffectParam* pParam, Unk_EffectTarget* pTarget)
     case kEffectSoundEvent:
     {
         float fDistance = static_cast<CSoundEventEffectParam*>(pParam)->m_fViewDistance;
-        if (!FUN_14028d470(fDistance, 0) && (pTarget->m_nKind == 5 || pTarget->m_nKind == 6))
+        if (!IsNearlyEqual(fDistance, 0) && (pTarget->m_nKind == 5 || pTarget->m_nKind == 6))
             kCheck.m_fViewDistance = fDistance;
         GameObject* pOwner = reinterpret_cast<NoticeMessage*>(pTarget)->GetOwner();
         if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200044))
         {
-            Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+            Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
             pTarget->m_spObject = FUN_141b6ef70(pPlayer->GetEntityID());
         }
         break;
@@ -556,7 +556,7 @@ EffectDataManager::~EffectDataManager()
 CEffectDataPtr EffectDataManager::GetEffectData(CString strPath)
 {
     CEffectDataPtr spData;
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     strPath.Replace("\\", "/");
     if (Unk_LockGuard guard = m_lock)
     {
@@ -666,7 +666,7 @@ MS2_REPLACE_METHOD(0x1411a0290, CEffectParam, vfunc_1, 309, 0x17F2709B);
 // @0x1411a03d0
 bool CEffectParam::vfunc_2()
 {
-    if (!m_b30 && FUN_14028d470(m_fDuration, 0))
+    if (!m_b30 && IsNearlyEqual(m_fDuration, 0))
     {
         switch (m_nType)
         {
@@ -1334,7 +1334,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
             return 0;
     }
     float fScale = nKind == 3 ? static_cast<Client::Constants*>(GetClientConstants())->VolumeOtherPc.Read() : 1.0f;
-    FUN_1401d3700(strCategory);
+    ToLower(strCategory);
     MS2Ptr<CSoundEventEffectParam> spParam = CreateSoundEventEffectParam(strName, strCategory, fScale * fVolume, strExtra);
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_pXform = pXform;
@@ -1396,7 +1396,7 @@ unsigned CEffectService::PlaySystemSound(const CString& strName, const CString& 
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0) {
         nGender = pPlayer->GetGender();
         nJob = pPlayer->GetJobGroupId();
@@ -1421,7 +1421,7 @@ unsigned CEffectService::PlayTriggerVoice(const CString& strName)
 {
     int nGender = 0;
     int nJob = 1;
-    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_EsPlayer* pPlayer = ((Unk_EsPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0) {
         nGender = pPlayer->GetGender();
         nJob = pPlayer->GetJobGroupId();
@@ -2286,8 +2286,8 @@ efd::AsyncResult CEffectService::OnInit()
     m_spF8 = 0;
     m_spRain = 0;
     m_nAreaEffect = 0;
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CEffectService::WriteCrashLog));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &CEffectService::WriteCrashLog));
     return efd::AsyncResult_Complete;
 }
 

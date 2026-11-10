@@ -86,7 +86,7 @@ public:
 
 // The movie of a ui layer and its object factory.
 Scaleform::GFx::Movie* GetMovie(int nMovieId);
-void FUN_1401d3700(CString& str);
+void ToLower(CString& str);
 extern const char DAT_142ed3718[];                                      // the open file filter of the xml dialog
 
 // ---- ref-counted pointer to the trigger window (CPtred behind CDialog) ----------------------------------------------------
@@ -284,7 +284,7 @@ void UIDialogCenterDialog::vfunc_26()
 void UIDialogCenterDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    int nOp = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    int nOp = static_cast<CInPacket*>(p)->GetOpcode();
     if (nOp == 0x87)
     {
         int nKind = static_cast<CInPacket*>(p)->ReadUInt8();
@@ -391,11 +391,11 @@ void UIDialogCenterDialog::OnTriggerDebug(const Scaleform::GFx::FunctionHandler:
     CString strFile = FUN_1412965f0(CString("./Data/Xml/Trigger/"), DAT_142ed3718);
     if (strFile.IsEmpty())
         return;
-    FUN_1401d3700(strFile);
+    ToLower(strFile);
     char szDir[MAX_PATH] = { 0 };
     GetCurrentDirectoryA(MAX_PATH, szDir);
     CString strDir(szDir);
-    FUN_1401d3700(strDir);
+    ToLower(strDir);
     strDir.Replace("\\", "/");
     CString strPath(strFile);
     strPath.Replace("\\", "/");
@@ -458,7 +458,7 @@ void UIDialogCenterDialog::AddDialogButton(int nRow, int nColumn, CString strKey
     if (spBtn.get() != 0)
     {
         reinterpret_cast<ASObj*>(spBtn.operator->())->SetMemberUInt("dialogID", nDialogId);
-        spBtn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::OnDialogButtonClick), 0);
+        spBtn->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::OnDialogButtonClick), 0);
     }
 }
 
@@ -468,5 +468,5 @@ void UIDialogCenterDialog::AddCallbackButton(int nRow, int nColumn, CString strK
     CStringW strLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize(strKey);
     MS2Ptr<ASButton> spBtn = CreateGridButton(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
-        spBtn->FUN_1422ce240(cb, 0);
+        spBtn->AddClickHandler(cb, 0);
 }

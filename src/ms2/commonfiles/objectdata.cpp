@@ -404,7 +404,7 @@ int HasFunctionCube(int nId)
 }
 
 // @0x140707260
-int FUN_140707260(int nId)
+int UsesKfm(int nId)
 {
     if (nId == 0)
         return 0;
@@ -453,7 +453,7 @@ int FUN_1407073a0(int nId)
 }
 
 // @0x140707460
-int FUN_140707460(int nId)
+int IsSkillControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -592,7 +592,7 @@ int FUN_140707920(int nId)
 }
 
 // @0x140707a00
-int FUN_140707a00(int nId)
+int IsForbiddenExceptOwner(int nId)
 {
     if (nId == 0)
         return 0;
@@ -611,7 +611,7 @@ int FUN_140707a00(int nId)
 }
 
 // @0x140707ac0
-int FUN_140707ac0(int nId)
+int IsPortalControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -624,7 +624,7 @@ int FUN_140707ac0(int nId)
 }
 
 // @0x140707b40
-int FUN_140707b40(int nId)
+int IsNoticeControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -637,7 +637,7 @@ int FUN_140707b40(int nId)
 }
 
 // @0x140707bc0
-int FUN_140707bc0(int nId)
+int HasConfigurableCube(int nId)
 {
     if (nId == 0)
         return 0;
@@ -654,7 +654,7 @@ int FUN_140707bc0(int nId)
 }
 
 // @0x140707c60
-int FUN_140707c60(int nId)
+int IsBreedingControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -672,7 +672,7 @@ int FUN_140707c60(int nId)
 }
 
 // @0x140707d10
-int FUN_140707d10(int nId)
+int IsFarmingControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -690,7 +690,7 @@ int FUN_140707d10(int nId)
 }
 
 // @0x140707dc0
-int FUN_140707dc0(int nId)
+int IsNurturingControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -708,7 +708,7 @@ int FUN_140707dc0(int nId)
 }
 
 // @0x140707e70
-int FUN_140707e70(int nId)
+int IsInstallNpcControlType(int nId)
 {
     if (nId == 0)
         return 0;
@@ -823,10 +823,10 @@ CObjectData::Spawner::Spawner()
 MS2_REPLACE_METHOD(0x140704BD0, CObjectData::Nurturing, operator=, 527, 0x51C01FF1);
 MS2_REPLACE(0x140704EC0, GetObjectData, 8980, 0x4441568F);
 MS2_REPLACE(0x1407071E0, HasFunctionCube, 115, 0x9A2DF719);
-MS2_REPLACE(0x140707260, FUN_140707260, 115, 0x18689035);
+MS2_REPLACE(0x140707260, UsesKfm, 115, 0x18689035);
 MS2_REPLACE(0x1407072E0, FUN_1407072e0, 174, 0xC0FE9B3C);
 MS2_REPLACE(0x1407073A0, FUN_1407073a0, 174, 0xA4CD1EF6);
-MS2_REPLACE(0x140707460, FUN_140707460, 131, 0x415FBB0C);
+MS2_REPLACE(0x140707460, IsSkillControlType, 131, 0x415FBB0C);
 MS2_REPLACE(0x1407074F0, FUN_1407074f0, 155, 0x6BAC4142);
 MS2_REPLACE(0x1407075A0, FUN_1407075a0, 174, 0x4ECF54E2);
 MS2_REPLACE(0x140707660, FUN_140707660, 155, 0xCE468427);
@@ -834,14 +834,14 @@ MS2_REPLACE(0x140707710, IsTriggerControlEnabled, 155, 0xAB229F07);
 MS2_REPLACE(0x1407077C0, HasStateChangePermission, 155, 0x4B81F463);
 MS2_REPLACE(0x140707870, FUN_140707870, 155, 0xC4B3D53C);
 MS2_REPLACE(0x140707920, FUN_140707920, 210, 0x4FDA165B);
-MS2_REPLACE(0x140707A00, FUN_140707a00, 182, 0x503F0140);
-MS2_REPLACE(0x140707AC0, FUN_140707ac0, 115, 0x73234A76);
-MS2_REPLACE(0x140707B40, FUN_140707b40, 115, 0x6EA7692F);
-MS2_REPLACE(0x140707BC0, FUN_140707bc0, 142, 0xF64C398E);
-MS2_REPLACE(0x140707C60, FUN_140707c60, 155, 0x217BA0B3);
-MS2_REPLACE(0x140707D10, FUN_140707d10, 155, 0x3DA52A8A);
-MS2_REPLACE(0x140707DC0, FUN_140707dc0, 155, 0x765EB799);
-MS2_REPLACE(0x140707E70, FUN_140707e70, 155, 0xB43B85B3);
+MS2_REPLACE(0x140707A00, IsForbiddenExceptOwner, 182, 0x503F0140);
+MS2_REPLACE(0x140707AC0, IsPortalControlType, 115, 0x73234A76);
+MS2_REPLACE(0x140707B40, IsNoticeControlType, 115, 0x6EA7692F);
+MS2_REPLACE(0x140707BC0, HasConfigurableCube, 142, 0xF64C398E);
+MS2_REPLACE(0x140707C60, IsBreedingControlType, 155, 0x217BA0B3);
+MS2_REPLACE(0x140707D10, IsFarmingControlType, 155, 0x3DA52A8A);
+MS2_REPLACE(0x140707DC0, IsNurturingControlType, 155, 0x765EB799);
+MS2_REPLACE(0x140707E70, IsInstallNpcControlType, 155, 0xB43B85B3);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

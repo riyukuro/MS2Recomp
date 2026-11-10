@@ -140,7 +140,7 @@ void CIngredientInfo::FUN_14026b410(CInPacket& in) {
     m_c = in.ReadInt32();
 }
 // @0x14026b4b0
-unsigned CIngredientInfo::FUN_14026b4b0() {
+unsigned CIngredientInfo::GetTagItemId() {
     if (m_b != 0 && TSingleton<CItemDataTable>::GetInstance() != 0) {
         return TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)m_b);
     }
@@ -149,7 +149,7 @@ unsigned CIngredientInfo::FUN_14026b4b0() {
 // @0x14026b500
 unsigned CIngredientInfo::GetItemId() {
     if (m_a != 0) return m_a;
-    return FUN_14026b4b0();
+    return GetTagItemId();
 }
 // @0x14026b540
 int* FUN_14026b540(int* out, int value) { *out = value; return out; }
@@ -198,10 +198,10 @@ void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
     {
         std::vector<CString> sub;   // C3: was Unk_StrVec
         FUN_140275080(parts[0], &sub, ":");
-        if (sub.size() > 0) ref->m_a = FUN_1407181d0(sub[0]);
+        if (sub.size() > 0) ref->m_a = ParseUInt(sub[0]);
         if (sub.size() > 1) ref->m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(sub[1]);
     }
-    ref->m_c = FUN_1407181d0(parts[2]);
+    ref->m_c = ParseUInt(parts[2]);
     if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
 }
 // @0x14026bbf0
@@ -266,7 +266,7 @@ void CIngredientContainer::Read(CInPacket& in) {
 // @0x14026c230
 Unk_IngVec* CIngredientContainer::FUN_14026c230() { return &m_items; }
 // @0x14026c250
-void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
+void CIngredientContainer::Merge(CIngredientContainer* other) {
     if (other->IsEmpty()) return;
     Unk_IngVec pending;
     size_t count = other->FUN_14026bee0();
@@ -297,7 +297,7 @@ Unk_IngRef CIngredientContainer::FindIngredient(unsigned key) {
     return Unk_IngRef(0);
 }
 // @0x14026c550
-bool Unk_IngHolder::FUN_14026c550(Unk_IngHolder* other) {
+bool Unk_IngHolder::IsDifferentFrom(Unk_IngHolder* other) {
     if (reinterpret_cast<MS2Ptr<CIngredientContainer>&>(m_container).operator CIngredientContainer*()->IsDifferentFrom(reinterpret_cast<MS2Ptr<CIngredientContainer>&>(other->m_container).operator CIngredientContainer*())) return true;
     return false;
 }
@@ -355,7 +355,7 @@ void DungeonRewardInfo::Read(CInPacket& in) {
     }
 }
 // @0x14026cbf0
-__int64 DungeonRewardInfo::FUN_14026cbf0() {
+__int64 DungeonRewardInfo::GetExp() {
     int key = 2;
     MapII::const_iterator found = static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).find(key);
     //
@@ -371,7 +371,7 @@ unsigned DungeonRewardInfo::FUN_14026cc70() {
     return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026ccf0
-__int64 DungeonRewardInfo::FUN_14026ccf0() {
+__int64 DungeonRewardInfo::GetMeso() {
     int key = 1;
     MapII::const_iterator found = static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).find(key);
     //
@@ -459,7 +459,7 @@ MS2SvrPtr<CPtred> NpcShopItemLife::Clone() {
     return ref;
 }
 // @0x14026ebc0
-bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
+bool NpcShopItemLife::LoadFromXml(void* xml) {
     FUN_1402767f0(xml, "itemLifeType", (unsigned*)&m_type);
     if (m_type == 0) return 0;
     switch (m_type) {
@@ -519,10 +519,10 @@ void NpcShopItemLife::Read(CInPacket& in) {
     }
 }
 // @0x14026f000
-bool NpcShopItemLife::FUN_14026f000() { return m_onlyVisible == false; }
+bool NpcShopItemLife::IsNotOnlyVisible() { return m_onlyVisible == false; }
 // @0x14026f040
 bool NpcShopItemLife::IsVisible(const CMsTime& now) {
-    if (FUN_14026f000()) return true;
+    if (IsNotOnlyVisible()) return true;
     return IsNotExpired(now);
 }
 // @0x14026f080
@@ -549,7 +549,7 @@ bool NpcShopItemLife::IsValid() {
     return true;
 }
 // @0x14026f170
-__int64 NpcShopItemLife::FUN_14026f170() {
+__int64 NpcShopItemLife::GetExpireTime() {
     switch (m_type) {
     case 1:
         return GetServerTime() + (unsigned)(m_value * 60);
@@ -571,7 +571,7 @@ __int64 NpcShopItemLife::FUN_14026f170() {
 // @0x14026f220
 ItemDropItemLife::ItemDropItemLife() : m_type(0), m_value(0), m_time() {}
 // @0x14026f290
-bool ItemDropItemLife::FUN_14026f290(void* xml) {
+bool ItemDropItemLife::LoadFromXml(void* xml) {
     FUN_1402767f0(xml, "itemLifeType", (unsigned*)&m_type);
     if (m_type == 0) return 0;
     switch (m_type) {
@@ -602,7 +602,7 @@ bool ItemDropItemLife::FUN_14026f290(void* xml) {
     return 1;
 }
 // @0x14026f520
-__int64 ItemDropItemLife::FUN_14026f520() {
+__int64 ItemDropItemLife::GetExpireTime() {
     switch (m_type) {
     case 1:
         return GetServerTime() + (unsigned)(m_value * 60);
@@ -751,7 +751,7 @@ Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
     //
 
     for (; reinterpret_cast<LHist::const_iterator&>(it) != static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()); ++*reinterpret_cast<LHist::iterator*>(&it)) {
-        if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_38 < best->m_38) best.FUN_14027eab0(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
+        if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_38 < best->m_38) best.Assign(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
     }
     return best;
 }
@@ -761,7 +761,7 @@ Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
 ChangeableProductInfo::ChangeableProductInfo()
     : m_18(4), m_1c(1), m_20(0), m_24(0), m_28((__time64_t)0), m_38((__time64_t)0), m_48((__time64_t)0), m_58(false), m_5c(0x3c) {}
 // @0x140270230
-void ChangeableProductInfo::FUN_140270230(Unk_ProdRef other) {
+void ChangeableProductInfo::CopyFrom(Unk_ProdRef other) {
     m_18 = other->m_18;
     m_1c = other->m_1c;
     m_20 = other->m_20;
@@ -772,7 +772,7 @@ void ChangeableProductInfo::FUN_140270230(Unk_ProdRef other) {
     m_58 = other->m_58;
 }
 // @0x140270330
-bool ChangeableProductInfo::FUN_140270330(const CMsTime& now) {
+bool ChangeableProductInfo::IsExpired(const CMsTime& now) {
     if (m_18 != 2) return false;
     if (m_58 == false) return false;
     if (m_38.Get() < now.Get()) return true;
@@ -801,9 +801,9 @@ bool ChangeableProductInfo::FUN_140270450(const CMsTime& now) {
 
 // ---- HomeBlockInfo --------------------------------------------------------------------------------------------
 // @0x1402704b0
-HomeBlockInfo::HomeBlockInfo() { FUN_140270530(); }
+HomeBlockInfo::HomeBlockInfo() { Reset(); }
 // @0x140270530
-void HomeBlockInfo::FUN_140270530() {
+void HomeBlockInfo::Reset() {
     m_18 = 0; m_20 = 0; m_28 = 0;
     m_30.Empty();
     m_38 = 0; m_3c = 0; m_40 = 0;

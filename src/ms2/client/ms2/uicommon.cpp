@@ -336,7 +336,7 @@ int OnRecommend()
         ShowMessageBox(BlockFormat(0x6df), 0, 0, CStringW(L""));
         return 0;
     }
-    if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()))
+    if (CFieldData::FUN_140374410(WorldService::GetInstance()->GetFieldId()))
     {
         __int64 nOwner = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180();
         if (nOwner != 0 && nOwner != DAT_143ab2820)
@@ -372,7 +372,7 @@ MS2_REPLACE(0x1418fd2c0, FUN_1418fd2c0, 36, 0x67A6D87B);
 // @0x1418fd2f0
 int FUN_1418fd2f0()
 {
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     if (CFieldData::FUN_140374410(nMapId))
         return 1;
     return 0;
@@ -383,7 +383,7 @@ MS2_REPLACE(0x1418fd2f0, FUN_1418fd2f0, 51, 0x4EE65DC8);
 // Can the player act on the plot of nOwner? Posts the reason when not.
 int FUN_1418fd330(__int64 nOwner)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nOwner)
@@ -401,7 +401,7 @@ int FUN_1418fd330(__int64 nOwner)
     }
     else
     {
-        nValue = reinterpret_cast<Unk_UcMapData*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nField5c;
+        nValue = reinterpret_cast<Unk_UcMapData*>(WorldService::GetInstance()->GetFieldData().operator->())->m_nField5c;
     }
     if (nValue == 0)
     {
@@ -426,7 +426,7 @@ MS2_REPLACE(0x1418fd330, FUN_1418fd330, 500, 0xE1CB9F60);
 // The four identical probes below: the local player is not the character nCharId.
 int IsOtherCharacter(__int64 nCharId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nCharId)
@@ -438,7 +438,7 @@ MS2_REPLACE(0x1418fd530, IsOtherCharacter, 70, 0xC984AEB5);
 // @0x1418fd580
 int FUN_1418fd580(__int64 nCharId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nCharId)
@@ -450,7 +450,7 @@ MS2_REPLACE(0x1418fd580, FUN_1418fd580, 70, 0x042D0E08);
 // @0x1418fd5d0
 int FUN_1418fd5d0(__int64 nCharId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nCharId)
@@ -462,7 +462,7 @@ MS2_REPLACE(0x1418fd5d0, FUN_1418fd5d0, 70, 0x10C770C8);
 // @0x1418fd620
 int FUN_1418fd620(__int64 nCharId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nCharId)
@@ -474,7 +474,7 @@ MS2_REPLACE(0x1418fd620, FUN_1418fd620, 70, 0xF1D01F18);
 // @0x1418fd670
 int FUN_1418fd670(__int64 nCharId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nCharId)
@@ -486,7 +486,7 @@ MS2_REPLACE(0x1418fd670, FUN_1418fd670, 70, 0x3B4566E8);
 // @0x1418fd6c0
 int FUN_1418fd6c0(__int64 nId)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     pPC->SendRequestMoveFieldMode2(0, 0, 0, nId, CStringW(L""));
@@ -538,7 +538,7 @@ struct Unk_UcProxyRef                                               // counted r
 // Send the actor message for the character nId of the given kind (7 buddy, 3 guild, 2 party, 0xe club, others proxies).
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (nType == 7)
@@ -651,7 +651,7 @@ void SendWeddingInvitation(__int64 nKey)
 {
     if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x104))
         return;
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (reinterpret_cast<Unk_UcSlotMgr*>(TSingleton<WeddingManager>::GetInstance()) == 0)
@@ -665,10 +665,10 @@ MS2_REPLACE(0x1418fdfd0, SendWeddingInvitation, 126, 0x943A0D11);
 // @0x1418fe060
 bool FUN_1418fe060()
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return false;
-    int nMapId = WorldService::GetInstance()->FUN_141bd3060();
+    int nMapId = WorldService::GetInstance()->GetFieldId();
     if (DAT_1439f4a7c == 0)
     {
         if (CFieldData::FUN_140374410(nMapId) && ((class MyPC*)(class MyPC*)(pPC))->HasNoHome() == 0)
@@ -689,7 +689,7 @@ MS2_REPLACE(0x1418fe060, FUN_1418fe060, 185, 0x0004E9AD);
 // @0x1418fe120
 bool FUN_1418fe120()
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return false;
     if (pPC->FUN_14152e950() == 0)
@@ -717,7 +717,7 @@ void FUN_1418fe220(const CString& strUrl)
         return;
     void* pBrowser = ((void*)FindWebBrowser(0x4e6a));
     if (pBrowser != 0)
-        ((UIWebBrowserBase*)pBrowser)->FUN_14135ec00(strUrl, true);
+        ((UIWebBrowserBase*)pBrowser)->Navigate(strUrl, true);
 }
 MS2_REPLACE(0x1418fe220, FUN_1418fe220, 75, 0xC9CFD09F);
 
@@ -1184,7 +1184,7 @@ int FUN_1418ffba0(MS2Ptr<CItemData> item)
 {
     if (item.operator==(0) != 0)
         return 0;
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (reinterpret_cast<Unk_UcItemData*>(item.operator->())->m_strType != L"UGCMapPackage")
@@ -1196,7 +1196,7 @@ int FUN_1418ffba0(MS2Ptr<CItemData> item)
     if (FUN_1408a0d30(1, sal, pInfo->m_nField1c) != 0)
     {
         CString strPackage = FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_UcItemData*>(item.operator->())->m_args.FUN_1408d21c0(0, L""), 0);
-        UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
+        UGCMapPackageDataPtr spPackage = GetUGCMapPackageData(strPackage);
         if ((CUGCMapPackageData*)spPackage != 0 && spPackage->m_strIndoorSizeType != sal.indoorSizeType)
         {
             return 1;
@@ -1269,7 +1269,7 @@ MS2_CHECK_OFFSET(Unk_UcCfg, m_d358, 0xd358);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    class UISceneEntity* FUN_1422b9e50();
+    class UISceneEntity* GetSubSceneOrScene();
     int GetSubSceneId();
 };
 int IsModalDialogShown();
@@ -1382,7 +1382,7 @@ bool FUN_141900a90(UIDialog* pDlg)
     {
         nLayer = 0x19;
     }
-    if (pDlg->FUN_141924630() != 0 && pDlg->FUN_1422db750() == nLayer)
+    if (pDlg->FUN_141924630() != 0 && pDlg->GetLayer() == nLayer)
     {
         pDlg->SetTopMostLayer();
         return true;
@@ -1603,7 +1603,7 @@ void UICommon::CMyPCKeyInputController::FUN_141901070(int nRelease, int nLayer)
 {
     if (FUN_141901170(nRelease, nLayer, &m_move) == 0)
         return;
-    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     int nBlock = FUN_141900ed0(nRelease, &m_nMove, 1);
     if (pPC != 0)
     {
@@ -1922,7 +1922,7 @@ CStringW GetIngredientCountTextWithOverflow(unsigned nCur, unsigned nMax)
 }
 MS2_REPLACE(0x141902320, GetIngredientCountTextWithOverflow, 512, 0x649BF932);
 
-// The scene object behind the current stage (FUN_1422b9e50 picks the primary or the fallback member).
+// The scene object behind the current stage (GetSubSceneOrScene picks the primary or the fallback member).
 class Unk_UcSceneObj
 {
 public:
@@ -1940,7 +1940,7 @@ public:
 // @0x141902530
 bool FUN_141902530(int nButton, const CMsgBoxData& box)
 {
-    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
+    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneOrScene());
     if (pScene != 0)
         pScene->vfunc_64();
     return true;
@@ -2063,7 +2063,7 @@ MS2_REPLACE(0x141902a50, FUN_141902a50, 97, 0x8262FEB4);
 // The cube position of the player equals the home plot of the target (kind 7 buddy, 3 guild, else a proxy).
 int FUN_141902ac0(__int64 nId, int nType)
 {
-    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     int nX = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3140();

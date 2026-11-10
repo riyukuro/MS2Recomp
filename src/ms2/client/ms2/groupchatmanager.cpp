@@ -419,7 +419,7 @@ void CGroupChatManager::DumpChats() {
 MS2_REPLACE_METHOD(0x14137E1C0, CGroupChatManager, DumpChats, 577, 0x0018B9BA);
 // @0x14137e410
 CStringW CGroupChatManager::GetLocalPlayerName() {
-    Unk_ChatPlayer* player = static_cast<Unk_ChatPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_ChatPlayer* player = static_cast<Unk_ChatPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (player == 0)
         return CStringW(L"");
     return player->vfunc_77();
@@ -563,7 +563,7 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
             return;
         }
     }
-    int nRestricted = ((CFieldData*)(void*)WorldService::GetInstance()->FUN_141bd30a0().operator->())->HasLimitContent(0x100);
+    int nRestricted = ((CFieldData*)(void*)WorldService::GetInstance()->GetFieldData().operator->())->HasLimitContent(0x100);
     if (nRestricted != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
@@ -757,7 +757,7 @@ void CGroupChatManager::OnPacketMemberPicture(CInPacket* packet) {
     Unk_ChatMemberPtr member = chat->FindMemberByName(name);
     if (member == 0)
         return;
-    member->m_proxy.FUN_1408f0850(FUN_14016a600(picture, 0));
+    member->m_proxy.SetImage(FUN_14016a600(picture, 0));
     CString cached = FUN_141028be0(member->m_proxy.m_8, FUN_14016a600(picture, 0), 0, CString(""));
     if (!cached.IsEmpty()) {
         reinterpret_cast<Unk_ChatPictureSink*>(TSingleton<UIUGCEventDispatcher>::GetInstance())->vfunc_1(member->m_proxy.m_8, FUN_14016a600(picture, 0));

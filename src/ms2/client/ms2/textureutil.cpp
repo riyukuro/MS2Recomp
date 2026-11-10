@@ -49,7 +49,7 @@ class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    class Ni2DBuffer* FUN_1422afcf0();
+    class Ni2DBuffer* GetRenderBuffer();
 };
 // The exe's RGBA32 (symbols.tsv maps ?RGBA32@NiPixelFormat to a different static).
 extern const NiPixelFormat DAT_1439fb040;                                  // MS2Renderer::ms_RTTI
@@ -69,7 +69,7 @@ void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
 void FUN_14151f200();                                       // close the current message box
 void ShowMessageBox(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
-int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
+int MakeDirectory(CStringW kPath);                          // create a directory (-1 on failure)
 std::string FUN_14083fa60(const unsigned char* pcData, unsigned int uiLength);   // encode a byte string
 
 // A thread-local storage slot (the TLS index lives in the object).
@@ -547,7 +547,7 @@ Ni2DBuffer* GetScreenshotBuffer(int nTarget)
 {
     if (nTarget != 0)
     {
-        return ((class GFxManager*)(class Unk_14025e7a0*)(((class Unk_14025e7a0*)GetGFxManager())))->FUN_1422afcf0();
+        return ((class GFxManager*)(class Unk_14025e7a0*)(((class Unk_14025e7a0*)GetGFxManager())))->GetRenderBuffer();
     }
     else
     {
@@ -1007,12 +1007,12 @@ int EnsureScreenshotDirectory(CStringW* pkDirectory)
     }
 
     CStringW kBase = StringFormat(L"{0}\\maplestory2", awcBuffer);
-    if (!IsDirectory(CStringW(kBase)) && FUN_1414a5a40(CStringW(kBase)) == -1)
+    if (!IsDirectory(CStringW(kBase)) && MakeDirectory(CStringW(kBase)) == -1)
     {
         return -5;
     }
     *pkDirectory = StringFormat<CStringW>(L"{0}\\screenshot", kBase);
-    if (!IsDirectory(CStringW(*pkDirectory)) && FUN_1414a5a40(CStringW(*pkDirectory)) == -1)
+    if (!IsDirectory(CStringW(*pkDirectory)) && MakeDirectory(CStringW(*pkDirectory)) == -1)
     {
         return -6;
     }

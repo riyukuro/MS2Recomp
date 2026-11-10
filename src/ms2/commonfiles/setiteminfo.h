@@ -25,7 +25,7 @@ public:
     bool IsDisableTooltip();                    // 0x1407ad620 isDisableTooltip (+0x81)
     size_t GetItemCount() const;                // 0x1407ad640 the number of pieces
     void FUN_1407ad670(ATL::CAtlArray<unsigned>* pOut);     // appends the piece item ids to an array
-    std::vector<unsigned>& FUN_1407ad710();     // the item ids of the set pieces (+0x20)
+    std::vector<unsigned>& GetItemIds();     // the item ids of the set pieces (+0x20)
     int AddOptionPart(MS2Ptr<SetItemOptionPart> spPart);    // 0x1407ad730 false for a zero or duplicated part count
     MS2Ptr<SetItemOptionPart> GetOptionPart(unsigned nCount);                               // 0x1407ad880
     void GetOptionParts(unsigned nCount, ATL::CAtlArray<MS2Ptr<SetItemOptionPart> >& parts);  // 0x1407ad900 parts 1..n

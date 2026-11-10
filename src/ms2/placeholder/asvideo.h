@@ -14,7 +14,7 @@ public:
     void SetDeblocking(int nDeblocking);                            // set "deblocking"
     int GetDeblocking();                                            // "deblocking" (a bool as an int)
     void SetSmoothing(int bSmoothing);                             // set "smoothing"
-    int FUN_1422f7610();                                            // "smoothing" (a bool as an int)
+    int GetSmoothing();                                            // "smoothing" (a bool as an int)
     int GetVideoHeight();                                            // "videoHeight"
     int GetVideoWidth();                                            // "videoWidth"
     void Clear();                                           // "clear"()

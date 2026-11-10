@@ -57,7 +57,7 @@ public:
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
 template <class A> CStringW FormatStringId(int nId, const A& a);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CStringW GetStringCommon(int nId);
 CStringW BlockFormat(int nId);
 void FUN_1412751b0(const CStringW& strText, int nColor);                    // add a chat message
@@ -136,7 +136,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     CStringW strB;
     CStringW strA;
     CStringW strNum = FUN_1409404f0(nAmount);
-    unsigned nLevel = ((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
+    unsigned nLevel = ((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->GetFieldId();
     switch (nType)
     {
     case 0xea62:
@@ -183,11 +183,11 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         break;
     }
     if (bAdditional)
-        strA += FUN_140298ea0(L"s_msg_take_event_additional");
+        strA += GetStringByKey(L"s_msg_take_event_additional");
     GetGameRule();
     if (FUN_140475e80(nType) != 0)
     {
-        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPC != 0)
         {
             if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)GetClientConstants()) + 0x5910)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
@@ -195,7 +195,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         }
     }
     if (nRest != 0)
-        strA += FUN_140298ea0(L"s_msg_take_rest_exp");
+        strA += GetStringByKey(L"s_msg_take_rest_exp");
     UIRewardNotify* pNotify;
     if (bNotify != 0 && (pNotify = FindRewardNotify(0x4e5d)) != 0)
         pNotify->FUN_141abf230(nAmount, 0);
@@ -208,7 +208,7 @@ void FUN_1413610f0(__int64 nAmount)
 {
     CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_take_adventure_level_exp", FUN_1409404f0(nAmount));
     if (((class CGameRule*)(void*)(GetGameRule()))->GetAdventureLevelBonusExpRate() != 0)
-        strText += FUN_140298ea0(L"s_msg_take_event_additional");
+        strText += GetStringByKey(L"s_msg_take_event_additional");
     FUN_1412751b0(strText, 8);
 }
 
@@ -230,7 +230,7 @@ void FUN_1413612c0(__int64 nAmount, int nType)
     {
         CStringW strNum = FUN_1409404f0(nAmount);
         CStringW strText = FormatStringId<CStringW>(0x2c3, strNum);
-        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPC != 0)
         {
             if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)GetClientConstants()) + 0x5968)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))

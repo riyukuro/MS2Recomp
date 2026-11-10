@@ -22,7 +22,7 @@ CUserTrigger::~CUserTrigger()
 }
 
 // @0x1408f4eb0
-void CUserTrigger::FUN_1408f4eb0(__int64 n18, __int64 n20, __int64 n28, int n30, int n34, CString strName)
+void CUserTrigger::SetData(__int64 n18, __int64 n20, __int64 n28, int n30, int n34, CString strName)
 {
     m_n18 = n18;
     m_n20 = n20;
@@ -31,7 +31,7 @@ void CUserTrigger::FUN_1408f4eb0(__int64 n18, __int64 n20, __int64 n28, int n30,
     m_n34 = n34;
     m_strName = strName;
 }
-MS2_REPLACE_METHOD(0x1408F4EB0, CUserTrigger, FUN_1408f4eb0, 139, 0xBA7F14C0);
+MS2_REPLACE_METHOD(0x1408F4EB0, CUserTrigger, SetData, 139, 0xBA7F14C0);
 
 // @0x1408f4f80
 MS2_EMIT_CRT_MEMMOVE_S();

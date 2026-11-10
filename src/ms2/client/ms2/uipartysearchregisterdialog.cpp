@@ -169,8 +169,8 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
 
         m_1b0->ClearItems();
         m_1b0->SetMenuRowCount((unsigned int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size());
-        m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRegisterClicked), 0);
-        m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRemoveClicked), 0);
+        m_1e0->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRegisterClicked), 0);
+        m_1f0->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRemoveClicked), 0);
         for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size(); ++i)
         {
             m_1b0->AddItemLabel(FUN_140719630(((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770[i]));

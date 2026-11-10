@@ -26,7 +26,7 @@ class MyPC;
 // ---- callees outside this unit ----
 
 // The wedding-emotion table singleton (0x143ab26c8) and its row lookup, both owned by ?\weddingemotiontable.cpp.
-class WeddingEmotionTable { public: class MS2Ptr<class WeddingEmotionData> FUN_140903740(unsigned int); }; class Unk_SingletonObj : public WeddingEmotionTable {
+class WeddingEmotionTable { public: class MS2Ptr<class WeddingEmotionData> FindByCode(unsigned int); }; class Unk_SingletonObj : public WeddingEmotionTable {
 public:
 
 };
@@ -129,7 +129,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     m_n50 = GetTickCountMs2();
     if (m_spData.get()->m_b18 != 0)
     {
-        m_spEmotion = GetWeddingEmotionTable()->FUN_140903740(m_spData.get()->m_n28);
+        m_spEmotion = GetWeddingEmotionTable()->FindByCode(m_spData.get()->m_n28);
         if (m_spEmotion != 0)
         {
             if (m_spEmotion->m_names.size() != 0)

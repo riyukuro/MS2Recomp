@@ -30,7 +30,7 @@ public:
     bool SendRequestCubeMode65(int nResult, const CMsgBoxData& data);                           // blueprint: load confirmed
     bool SendRequestCubeMode64(int nResult, const CMsgBoxData& data);                           // blueprint: overwrite confirmed
     void FUN_140fab520(int nSlot);                                                      // ask for a name to save the slot
-    void FUN_140fab8c0(int nSlot);                                                      // ask to load the slot
+    void AskLoadSlot(int nSlot);                                                      // ask to load the slot
     void FUN_140fabae0(int nSlot);                                                      // blueprint: ask for a name to save the slot
     void FUN_140fabe80(int nSlot);                                                      // blueprint: ask to load the slot
 

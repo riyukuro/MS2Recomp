@@ -118,7 +118,7 @@ int UIAdditionalControlDialog::vfunc_13()
             m_30->Invoke("onTabKey");
         return 1;
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) {
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed()) {
         vfunc_67();
         return 1;
     }

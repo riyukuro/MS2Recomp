@@ -26,12 +26,12 @@
 class Unk_140e45740 : public UIAlignWidgetManager     // UI focus/modal manager? (0x1422e6bf0 / 0x1422e6d00 live in the GFx UI library)
 {
 };
-Unk_140e45740* FUN_140e45740();
+Unk_140e45740* GetAlignWidgetManager();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Delegate<CString(CString, bool)> UISwfEntity::s_swfNameDelegate;   // 0x143b0d2f0
-static CString s_strNoPath = "";                                    // 0x143b0d300 FUN_1422db910's failure result
+static CString s_strNoPath = "";                                    // 0x143b0d300 ResolvePath's failure result
 static CString s_strNoKey = "";                                     // 0x143b0d2f8 m_20 while not registered
 
 // @0x1422db480
@@ -83,11 +83,11 @@ int UISwfEntity::FUN_1422db730()
 MS2_REPLACE_METHOD(0x1422DB730, UISwfEntity, FUN_1422db730, 14, 0xD26D6807);
 
 // @0x1422db750
-int UISwfEntity::FUN_1422db750()
+int UISwfEntity::GetLayer()
 {
     return m_2c;
 }
-MS2_REPLACE_METHOD(0x1422DB750, UISwfEntity, FUN_1422db750, 14, 0x6A78E4AB);
+MS2_REPLACE_METHOD(0x1422DB750, UISwfEntity, GetLayer, 14, 0x6A78E4AB);
 
 // @0x1422db770
 int UISwfEntity::FUN_1422db770()
@@ -112,28 +112,28 @@ CString UISwfEntity::GetSwfFileName()
 // the static is never set, so a replacement would ignore the installed delegate (see docs/RECOVERY.md section 9).
 
 // @0x1422db910
-CString UISwfEntity::FUN_1422db910(void* p)
+CString UISwfEntity::ResolvePath(void* p)
 {
     CString strPath;
     if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6d50(strPath, GetManagerKey(), *static_cast<const CString*>(p)))
         return strPath;
     return s_strNoPath;
 }
-MS2_REPLACE_METHOD(0x1422DB910, UISwfEntity, FUN_1422db910, 219, 0x83201F53);
+MS2_REPLACE_METHOD(0x1422DB910, UISwfEntity, ResolvePath, 219, 0x83201F53);
 
 // @0x1422dba00
-MS2Ptr<AScript> UISwfEntity::FUN_1422dba00()
+MS2Ptr<AScript> UISwfEntity::GetScript()
 {
     return m_30;
 }
-MS2_REPLACE_METHOD(0x1422DBA00, UISwfEntity, FUN_1422dba00, 65, 0xEFC795F8);
+MS2_REPLACE_METHOD(0x1422DBA00, UISwfEntity, GetScript, 65, 0xEFC795F8);
 
 // @0x1422dba50
-MS2Ptr<ASDisplayObject> UISwfEntity::FUN_1422dba50()
+MS2Ptr<ASDisplayObject> UISwfEntity::GetDisplayObject()
 {
     return MS2Ptr<ASDisplayObject>(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
 }
-MS2_REPLACE_METHOD(0x1422DBA50, UISwfEntity, FUN_1422dba50, 105, 0xC95E781A);
+MS2_REPLACE_METHOD(0x1422DBA50, UISwfEntity, GetDisplayObject, 105, 0xC95E781A);
 
 // @0x1422dbac0
 int UISwfEntity::vfunc_4()
@@ -214,12 +214,12 @@ MS2_REPLACE_METHOD(0x1422DBD70, UISwfEntity, PreloadSwf, 383, 0x70BEFCBE);
 // @0x1422dbf00
 void UISwfEntity::LoadSwf(int a1, int a2, int a3)
 {
-    FUN_1422dbf80(GetSwfFileName(), a1, a2, a3);
+    LoadSwfPath(GetSwfFileName(), a1, a2, a3);
 }
 MS2_REPLACE_METHOD(0x1422DBF00, UISwfEntity, LoadSwf, 112, 0x1885C4E6);
 
 // @0x1422dbf80
-void UISwfEntity::FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3)
+void UISwfEntity::LoadSwfPath(const CString& strPath, int a1, int a2, int a3)
 {
     if (GetUISwfEntityManager() && m_20 == s_strNoKey && !strPath.IsEmpty()) {
         m_44 = a2;
@@ -227,18 +227,18 @@ void UISwfEntity::FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3)
         GetUISwfEntityManager()->LoadSwf(m_28, m_20, strPath, a1, a2, a3, this);
     }
 }
-MS2_REPLACE_METHOD(0x1422DBF80, UISwfEntity, FUN_1422dbf80, 243, 0x45190D1E);
+MS2_REPLACE_METHOD(0x1422DBF80, UISwfEntity, LoadSwfPath, 243, 0x45190D1E);
 
 // @0x1422dc080
 void UISwfEntity::FUN_1422dc080()
 {
     vfunc_4();
-    FUN_1422dc0b0();
+    Unload();
 }
 MS2_REPLACE_METHOD(0x1422DC080, UISwfEntity, FUN_1422dc080, 40, 0xB0410145);
 
 // @0x1422dc0b0
-void UISwfEntity::FUN_1422dc0b0()
+void UISwfEntity::Unload()
 {
     vfunc_26();
     if (GetUISwfEntityManager())
@@ -248,7 +248,7 @@ void UISwfEntity::FUN_1422dc0b0()
     m_4c = 0;
     m_54 = 0;
 }
-MS2_REPLACE_METHOD(0x1422DC0B0, UISwfEntity, FUN_1422dc0b0, 294, 0x77CAFA8D);
+MS2_REPLACE_METHOD(0x1422DC0B0, UISwfEntity, Unload, 294, 0x77CAFA8D);
 
 // @0x1422dc1e0
 void UISwfEntity::Reload()
@@ -346,8 +346,8 @@ MS2_REPLACE_METHOD(0x1422DC430, UISwfEntity, FUN_1422dc430, 14, 0x5A3CA153);
 // @0x1422dc450
 void UISwfEntity::FUN_1422dc450()
 {
-    if (FUN_140e45740()->HasWidgetForEntity(this, 0))
-        FUN_140e45740()->RequestLayout(0);
+    if (GetAlignWidgetManager()->HasWidgetForEntity(this, 0))
+        GetAlignWidgetManager()->RequestLayout(0);
     else
         vfunc_43();
     if (m_30.get())
@@ -418,8 +418,8 @@ MS2_REPLACE_METHOD(0x1422DC550, UISwfEntity, vfunc_18, 40, 0x17E87EC1);
 void UISwfEntity::vfunc_19()
 {
     m_60 = 1;
-    if (FUN_140e45740()->HasWidgetForEntity(this, 1))
-        FUN_140e45740()->RequestLayout(1);
+    if (GetAlignWidgetManager()->HasWidgetForEntity(this, 1))
+        GetAlignWidgetManager()->RequestLayout(1);
     else
         vfunc_43();
     if (m_30.get())
@@ -567,7 +567,7 @@ MS2_REPLACE_METHOD(0x1422DC8B0, UISwfEntity, vfunc_40, 6, 0xA9AF6E37);
 // @0x1422dc8c0
 void UISwfEntity::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140d01be0(m_28, root);
+    m_30 = CreateDisplayObject(m_28, root);
 }
 MS2_REPLACE_METHOD(0x1422DC8C0, UISwfEntity, vfunc_41, 99, 0xB253EB49);
 
@@ -586,7 +586,7 @@ MS2_REPLACE_METHOD(0x1422DC950, UISwfEntity, vfunc_43, 6, 0xA9AF6E37);
 // @0x1422dc960
 void UISwfEntity::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pHeight)
 {
-    MS2Ptr<ASDisplayObject> pRoot = FUN_1422dba50();
+    MS2Ptr<ASDisplayObject> pRoot = GetDisplayObject();
     if (pRoot.get()) {
         pRoot->vfunc_2(a1, a2, a3);
         *pWidth = pRoot->GetWidthCeil();

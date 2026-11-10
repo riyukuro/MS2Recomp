@@ -80,7 +80,7 @@ private:
 MS2_CHECK_SIZE(CObjectShadow, 0x58);
 void SetEnabled(CObjectShadow* self, bool v);   // unit_14160fb10
 void FUN_14160fe50(CObjectShadow* self, bool v);
-void FUN_1416105c0(CObjectShadow* self);
+void UpdateVisibility(CObjectShadow* self);
 
 // The shadow quality settings (?\gameoption.cpp keeps the full view).
 
@@ -92,7 +92,7 @@ class Unk_DropGuideMgr : public CGuideManager
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_141275260(int nSound, int a, int b);
-int FUN_141276180(const CString& strKey, const CString& strArg);   // system notice
+int PlaySystemSound(const CString& strKey, const CString& strArg);   // system notice
 void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center notice
 
 // The ui dialogs a pickup notifies.
@@ -112,7 +112,7 @@ void FUN_141545250(egf::EntityID kId, int b);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_14053f8c0(unsigned nItemId);                               // the item id is meso
 bool FUN_14053f900(unsigned nItemId);                               // the item id is a special item
-void FUN_1401d3700(CString& str);
+void ToLower(CString& str);
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
@@ -241,7 +241,7 @@ int CDropItem::InitDrop(int nObjectId, int nItemId, int nAmount, int nRarity, in
     m_spItem.AssignRaw(new CItem());
     if (!m_spItem->FUN_140523c40(nItemId, nRarity, 0))
         return 0;
-    Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1320(m_nOwnerObjId);
+    Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FindNpcById(m_nOwnerObjId);
     if (pOwner)
         m_nNpcType = static_cast<CNpc*>(static_cast<GameObject*>(pOwner))->GetNpcData()->GetId();
     m_str88 = "DropItemNIF";
@@ -354,7 +354,7 @@ void CDropItem::vfunc_32(bool bForce)
     if (m_spShadow)
     {
         FUN_14160fe50(m_spShadow.operator->(), FUN_140f4a450() < 200000.0f);
-        FUN_1416105c0(m_spShadow.operator->());
+        UpdateVisibility(m_spShadow.operator->());
         bool bMoved = m_spShadow->FUN_14109a720();
         bool bDirty = m_spShadow->IsDirty();
         if (bMoved || bForce || bDirty)
@@ -401,10 +401,10 @@ void CDropItem::SetIconTexture(NiAVObject* pRoot)
                         if (m_spItem->HasUgcId())
                         {
                             if (_access(strPath, 0) != 0)
-                                strPath = reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->GetIconPath();
+                                strPath = reinterpret_cast<CItemData*>(m_spItem->GetData())->GetIconPath();
                         }
                     }
-                    FUN_1401d3700(strPath);
+                    ToLower(strPath);
                     if (!strPath.IsEmpty())
                     {
                         ((NiTexturingProperty::Map*)(void*)(pMap))->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(strPath), 5));
@@ -432,7 +432,7 @@ void CDropItem::SetState(int nState)
         float fDropSpeed = 100.0f;
         float fDropBase = 50.0f;
         unsigned nDropRange = 100;
-        if (WorldService::GetInstance()->FUN_141bd3060() == 0x4c4b404 || WorldService::GetInstance()->FUN_141bd3060() == 0x4c4b407)
+        if (WorldService::GetInstance()->GetFieldId() == 0x4c4b404 || WorldService::GetInstance()->GetFieldId() == 0x4c4b407)
         {
             fDropHeight = Client::Constants::GetInstance()->moneyTreeDropHeight.Read();
             fDropBase = Client::Constants::GetInstance()->moneyTreeDropBase.Read();
@@ -488,8 +488,8 @@ void CDropItem::SetState(int nState)
         kBase.z += 85.0f;
         Unk_Random kRand(GetObjectId(), GetObjectId() + 0x7fff, GetObjectId() * 0x7fff);
         NiPoint3 kTargetPos;
-        Unk_WsC_GameObj* pSource = WorldService::GetInstance()->FUN_141bd1290(m_nOwnerObjId);
-        Unk_WsC_GameObj* pNpcObj = WorldService::GetInstance()->FUN_141bd1320(m_nOwnerObjId);
+        Unk_WsC_GameObj* pSource = WorldService::GetInstance()->FindPCById(m_nOwnerObjId);
+        Unk_WsC_GameObj* pNpcObj = WorldService::GetInstance()->FindNpcById(m_nOwnerObjId);
         if (m_n28c != 0)
         {
             kTargetPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())))) + reinterpret_cast<const efd::Point3&>(DAT_143a08d08)))));
@@ -683,7 +683,7 @@ void CDropItem::SetState(int nState)
                     pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
             }
         }
-        else if (reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->GetType() == 3)
+        else if (reinterpret_cast<CItemData*>(m_spItem->GetData())->GetType() == 3)
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FindObjectById(m_n188);
             if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : 0, 0x6200004))
@@ -761,7 +761,7 @@ int CDropItem::IsPetItem()
 // @0x141190030
 int CDropItem::IsOwnedByLocalPlayer()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer)
     {
         unsigned __int64 nUid = static_cast<PCBase*>(pPlayer)->FUN_141656a80();
@@ -886,7 +886,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
 // @0x1411905a0
 int CDropItem::IsPickupAllowedForLocalPlayer()
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     int bAllowed = 0;
@@ -951,7 +951,7 @@ void CDropItem::FUN_141190900(int nPickerId)
 {
     if (FUN_1411900d0())
         return;
-    if (m_spItem->FUN_140525980() || FUN_14053f900(m_spItem->GetItemId()))
+    if (m_spItem->IsCurrency() || FUN_14053f900(m_spItem->GetItemId()))
     {
         SendRequestItemPickup(nPickerId);
         return;
@@ -978,7 +978,7 @@ void CDropItem::FUN_141190900(int nPickerId)
     if (!CanStackIntoInventory())
     {
         FUN_141275260(0x43, 1, 1);
-        FUN_141276180(s_strWarningBag, "");
+        PlaySystemSound(s_strWarningBag, "");
         FUN_1411911a0();
     }
     SendRequestItemPickup(nPickerId);
@@ -1007,7 +1007,7 @@ void CDropItem::OnPickedUp(int nPickerId)
                 {
                     if (m_spItem->IsMeso() == 0)
                     {
-                        if (m_spItem->FUN_140525950() == 0 && FUN_14118fee0() == 0)
+                        if (m_spItem->IsToken() == 0 && FUN_14118fee0() == 0)
                         {
                             UIRewardNotify* pBag = ((class UIRewardNotify*)FindRewardNotify(0x4e5d));
                             if (pBag)
@@ -1191,7 +1191,7 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
 {
     if (m_spItem.get() ? true : false)
     {
-        if (m_spItem->FUN_140527840())
+        if (m_spItem->GetData())
         {
             m_fElapsed += (float)fTime;
             if (0.0f < m_spEffect->bouncePeriod)

@@ -49,7 +49,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 NiImageConverter* GetImageConverter();                          // the calling thread's NiImageConverter
 CString ToCString(const char* sz, int n);               // the normalized asset path
 CString FUN_1409a2360(const char* sz, int n);               // a copy of the string
-unsigned int FUN_1407181d0(const CString& str);             // atoi of the string (the emoticon id)
+unsigned int ParseUInt(const CString& str);             // atoi of the string (the emoticon id)
 
 // The texture cache of the loading service (singleton 0x140a0afd0).
 class CNifLoadingService   // C3: member view (nifeffectparam.h)
@@ -360,8 +360,8 @@ Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtoco
     {
     case 5:
         {
-            int nId = FUN_1407181d0(kProtocol.m_strPath);
-            ChatEmoticonDataPtr spData = CChatEmoticonTable::GetInstance()->FUN_1401e7120(nId);
+            int nId = ParseUInt(kProtocol.m_strPath);
+            ChatEmoticonDataPtr spData = CChatEmoticonTable::GetInstance()->GetEmoticon(nId);
             if (!spData)
                 break;
             strFile = spData->m_strImagePath;

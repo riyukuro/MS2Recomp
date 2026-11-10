@@ -15,7 +15,7 @@
 
 using Scaleform::GFx::Value;
 
-DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pData);      // efd::DynamicCast<DragSlotBag>
+DragSlotBag* GetDragSlotBag(NotifyContext::BindData* pData);      // efd::DynamicCast<DragSlotBag>
 
 // @0x142301ff0
 NotifyDragSlot::NotifyDragSlot(Unk_NotifyContext* pContext)
@@ -154,7 +154,7 @@ void NotifyDragSlot::GetBagSlotBindings(const Params& params)
     if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
-    efd::SmartPointer<DragSlotBag> spBag = FUN_140c544d0(m_spContext->FindBinding(strName));
+    efd::SmartPointer<DragSlotBag> spBag = GetDragSlotBag(m_spContext->FindBinding(strName));
     if (spBag)
         spBag->GetBagSlotBindings(params);
 }

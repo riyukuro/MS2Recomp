@@ -190,7 +190,7 @@ CString FUN_14028d1f0(const char* psz);                                 // CStri
 CString FUN_140188f50(const char* psz, int nCodePage);
 CString ToCString(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
 CString GetXmlPath(const CString& strDir, const CString& strFile);  // Table/<file>
-void FUN_1401d3700(CString& str);                                       // lower-cases in place
+void ToLower(CString& str);                                       // lower-cases in place
 #ifdef MS2_HOOK_DLL
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
 #else
@@ -200,7 +200,7 @@ inline CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArr, unsigned __int64 i)
 #endif
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
-class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
+class Unk_SpWorld { public: GameObject* GetLocalPlayer(); };
 int IsJobSoundDisabled(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
 
 int FUN_141793500(CString strEvent);
@@ -613,7 +613,7 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
                     voice.m_bOnlyCasterMyPC = strcmp(pszCaster, "true") == 0;
                 voice.m_strGroup = ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("group");
                 if (!voice.m_strGroup.IsEmpty())
-                    FUN_1401d3700(voice.m_strGroup);
+                    ToLower(voice.m_strGroup);
                 int nJob = 0;
                 int nGender = 0;
                 XmlGetAttr((class TiXmlElement*)(pElem), "job", reinterpret_cast<int&>(nJob));
@@ -666,7 +666,7 @@ int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventV
     {
         int nGender = reinterpret_cast<PC*>(pActor)->GetGender();
         int nJob = reinterpret_cast<PC*>(pActor)->GetJobGroupId();
-        int bCaster = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pActor ? 1 : 0;
+        int bCaster = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) == pActor ? 1 : 0;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];
         return 1;
     }

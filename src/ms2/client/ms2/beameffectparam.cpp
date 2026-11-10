@@ -35,7 +35,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (point attribute)
-float FUN_1401973d0(TiXmlElement* pNode, const char* pszName, float fDefault);
+float GetFloatAttr(TiXmlElement* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
 template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
@@ -163,8 +163,8 @@ bool BeamDirectionCurveInfo::vfunc_1(TiXmlElement* pNode)
         return false;
     if (!BeamInfo::vfunc_1(pNode))
         return false;
-    m_fDirectionRate = FUN_1401973d0(pNode, "directionRate", 0.5f);
-    m_fLengthRate = FUN_1401973d0(pNode, "lengthRate", 0.5f);
+    m_fDirectionRate = GetFloatAttr(pNode, "directionRate", 0.5f);
+    m_fLengthRate = GetFloatAttr(pNode, "lengthRate", 0.5f);
     return true;
 }
 MS2_REPLACE_METHOD(0x140A0C800, BeamDirectionCurveInfo, vfunc_1, 129, 0x7B02794D);

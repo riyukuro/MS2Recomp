@@ -44,9 +44,9 @@ MS2_CHECK_SIZE(Unk_Random, 0x40);
 MS2_CHECK_OFFSET(Unk_Random, m_lock, 0x10);
 
 // The shuffle helpers, defined further down (the manager's Init reaches them before their definitions).
-void FUN_1401cdae0(ATL::CAtlArray<int>* pValues, int nSeed);    // 0x1401cdae0 seeded shuffle
+void ShuffleWithSeed(ATL::CAtlArray<int>* pValues, int nSeed);    // 0x1401cdae0 seeded shuffle
 void SwapBytes(BYTE* pLeft, BYTE* pRight);                  // 0x1401cdb50 byte swap
-void FUN_1401cdbb0(int* pLeft, int* pRight);                    // 0x1401cdbb0 int swap
+void SwapInts(int* pLeft, int* pRight);                    // 0x1401cdbb0 int swap
 
 // ---- CXORCrypter: XOR with a 2-byte key, alternating key bytes. Encrypt == Decrypt. ----
 
@@ -133,7 +133,7 @@ void CTableCrypter::Init()
     ATL::CAtlArray<int> kValues;
     for (int i = 0; i <= 0xff; ++i)
         kValues.Add(i);
-    FUN_1401cdae0(&kValues, 0x6148c9);
+    ShuffleWithSeed(&kValues, 0x6148c9);
 
     for (int i = 0; i <= 0xff; ++i)
     {
@@ -195,22 +195,22 @@ BOOL CRearrangeCrypter::Decrypt(BYTE* pBuffer, UINT nSize, unsigned* /*pKey*/)
 
 // Fisher-Yates: walk the array from the back and swap each element with a random one below or at it.
 // @0x1401cda40
-void FUN_1401cda40(ATL::CAtlArray<int>* pValues, Unk_Random* pRandom)
+void ShuffleValues(ATL::CAtlArray<int>* pValues, Unk_Random* pRandom)
 {
     int nCount = (int)pValues->GetCount();
     for (int i = nCount - 1; i >= 1; --i)
     {
         int j = pRandom->FUN_1407684c0() % (i + 1);
         if (i != j)
-            FUN_1401cdbb0(&(*pValues)[i], &(*pValues)[j]);
+            SwapInts(&(*pValues)[i], &(*pValues)[j]);
     }
 }
 
 // @0x1401cdae0
-void FUN_1401cdae0(ATL::CAtlArray<int>* pValues, int nSeed)
+void ShuffleWithSeed(ATL::CAtlArray<int>* pValues, int nSeed)
 {
     Unk_Random kRandom(nSeed);
-    FUN_1401cda40(pValues, &kRandom);
+    ShuffleValues(pValues, &kRandom);
 }
 
 // ---- the swap helpers (the exe's std::forward<unsigned char&> / std::forward<int&> and their Swap<>) ----
@@ -236,7 +236,7 @@ void SwapBytes(BYTE* pLeft, BYTE* pRight)
 }
 
 // @0x1401cdbb0
-void FUN_1401cdbb0(int* pLeft, int* pRight)
+void SwapInts(int* pLeft, int* pRight)
 {
     int nTemp = *FUN_1401cdb40(pLeft);
     *FUN_1401cdb40(pLeft) = *FUN_1401cdb40(pRight);
@@ -275,7 +275,7 @@ CBufferCryptManager::~CBufferCryptManager()
 // void; packet.cpp's int return is that caller's spelling of a value it ignores (free functions do not mangle the
 // return type, so the two agree at link time).
 // @0x1401cddd0
-void FUN_1401cddd0(CBufferCryptManager* pManager, unsigned char* pData, int nLength, int nConnectionState,
+void EncryptBuffer(CBufferCryptManager* pManager, unsigned char* pData, int nLength, int nConnectionState,
                    unsigned* pKey)
 {
     for (; nConnectionState != 0; nConnectionState = (int)((unsigned int)nConnectionState / 10))
@@ -312,12 +312,12 @@ MS2_REPLACE_METHOD(0x1401cd840, CTableCrypter, Decrypt, 99, 0x8BEE29AF);
 MS2_REPLACE_METHOD(0x1401cd910, CRearrangeCrypter, Init, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x1401cd920, CRearrangeCrypter, Encrypt, 126, 0x566F6F41);
 MS2_REPLACE_METHOD(0x1401cd9b0, CRearrangeCrypter, Decrypt, 131, 0x8AE4685C);
-MS2_REPLACE(0x1401cda40, FUN_1401cda40, 157, 0x50CC8F22);
-MS2_REPLACE(0x1401cdae0, FUN_1401cdae0, 74, 0xDC3759AD);
+MS2_REPLACE(0x1401cda40, ShuffleValues, 157, 0x50CC8F22);
+MS2_REPLACE(0x1401cdae0, ShuffleWithSeed, 74, 0xDC3759AD);
 MS2_REPLACE(0x1401cdb30, FUN_1401cdb30, 11, 0x3BE09B6E);
 MS2_REPLACE(0x1401cdb40, FUN_1401cdb40, 11, 0x3BE09B6E);
 MS2_REPLACE(0x1401cdb50, SwapBytes, 88, 0x671D7725);
-MS2_REPLACE(0x1401cdbb0, FUN_1401cdbb0, 85, 0x157B6DDC);
-MS2_REPLACE(0x1401cddd0, FUN_1401cddd0, 128, 0x7B198022);
+MS2_REPLACE(0x1401cdbb0, SwapInts, 85, 0x157B6DDC);
+MS2_REPLACE(0x1401cddd0, EncryptBuffer, 128, 0x7B198022);
 MS2_REPLACE(0x1401cde60, FUN_1401cde60, 213, 0xDCD4A622);
 

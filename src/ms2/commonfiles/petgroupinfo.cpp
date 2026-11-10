@@ -24,7 +24,7 @@ public:
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 
 // @0x140721000
 PetGroupInfo::PetGroupInfo()
@@ -40,7 +40,7 @@ PetGroupInfo::~PetGroupInfo()
 // @0x140721070
 bool PetGroupInfo::Load(TiXmlElement* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
         return false;
     XmlGetAttr((class TiXmlElement*)(pNode), "groupId", reinterpret_cast<int&>(m_nGroupId));
     return true;

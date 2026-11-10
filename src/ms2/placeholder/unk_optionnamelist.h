@@ -21,7 +21,7 @@ template<> struct Unk_SocketRef<Unk_OptionNameList> {
         else result = &static_cast<TPtredDummy<Unk_OptionNameList>*>(p)->value;
         return result;
     }
-    static Unk_OptionNameList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_OptionNameList* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_OptionNameList)
 typedef Unk_SocketPtr<Unk_OptionNameList> Unk_OptionNameListPtr;

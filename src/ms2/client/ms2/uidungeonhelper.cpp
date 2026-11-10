@@ -84,17 +84,17 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 // The reward list of a reward id (meso, exp and the items); same layout as uidungeoncategory.cpp's.
 void* GetRewardContentsTable();   // C3: was GetRewardContentsTable
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
-void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDisable);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nValue);
+void SetChildHitTestDisable(const Scaleform::GFx::Value& root, CString strName, bool bDisable);
 void SetButtonText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void SetTextAutoSize(const Scaleform::GFx::Value& root, int n);
 void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 CStringW FUN_1409404f0(__int64);
 MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
@@ -112,7 +112,7 @@ public:
 void* GetGameRule();   // C3: was GetGameRule
 CStringW TranslateEnumDungeonGroup(unsigned nDungeonKind);
 CStringW BlockFormat(int nStringId);
-CStringW FUN_140b8f230(int n);
+CStringW GetDayOfWeekName(int n);
 
 // @0x140e12730
 ASWeeklyRewardItemSlot::ASWeeklyRewardItemSlot(const Scaleform::GFx::Value& v, int nMovieId)
@@ -136,10 +136,10 @@ void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
         return;
     MS2Ptr<CItem> item(new CItem());
     if (item->FUN_14052b130(m_itemId, m_rarity, 0)) {
-        ASTooltip tooltip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 32, 2);
+        ASTooltip tooltip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer(), 32, 2);
         if (tooltip.FUN_1409e0d40(item.get())) {
             if (m_nMeso > 0 || m_nExp > 0) {
-                CStringW text = FUN_140298ea0(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
+                CStringW text = GetStringByKey(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
                 if (m_nMeso > 0)
                     text += StringFormat<CStringW>(L"\n{0}", FUN_14028dfa0(CStringW(L"s_dungeonSearch_united_reward_tooltip_meso"), FUN_1409404f0(m_nMeso)));
                 if (m_nExp > 0)
@@ -195,8 +195,8 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
         MS2Ptr<ASWeeklyRewardItemSlot> slot = item->FUN_140e159f0<ASWeeklyRewardItemSlot>("m_slot");
         if (slot == NULL)
             return false;
-        FUN_140d01670((*item).FUN_1422bb890(), "m_check", true);
-        FUN_140cff840((*item).FUN_1422bb890(), "m_bg", entry->m_uiShowBg);
+        SetChildHitTestDisable((*item).FUN_1422bb890(), "m_check", true);
+        SetChildVisible((*item).FUN_1422bb890(), "m_bg", entry->m_uiShowBg);
         SetButtonText((*item).FUN_1422bb890(), "m_rewardCount", FUN_14028dfa0(L"s_dungeonSearch_united_reward_count", entry->m_rewardCount));
         m_root->AddChild(Scaleform::GFx::Value((*item).FUN_1422bb890()));
         m_slots.push_back(slot);
@@ -220,7 +220,7 @@ MS2_REPLACE_METHOD(0x140E12E40, UIDungeonSearchUnitedReward, Init, 3377, 0x93D91
 // @0x140e13c00
 void UIDungeonSearchUnitedReward::FUN_140e13c00()
 {
-    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pActor == NULL)
         return;
     unsigned nWeekly = 0;
@@ -259,8 +259,8 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         const bool bReached = nWeekly >= entry->m_rewardCount ? 1 : 0;
         if (bReached)
             nGauge = entry->m_uiPosX;
-        FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_point", bReached);
-        FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_check", bReached);
+        SetChildVisible(m_points[i]->FUN_1422bb890(), "m_point", bReached);
+        SetChildVisible(m_points[i]->FUN_1422bb890(), "m_check", bReached);
     }
     ((class ASDisplayObject*)(class ASMovieClip*)(m_gauge.get()))->SetWidthUInt((std::max)(1u, nGauge));
 }
@@ -275,7 +275,7 @@ void UIDungeonSearchUnitedReward::FUN_140e142f0()
     ((class ASDisplayObject*)(class ASTextField*)(m_daily.get()))->MoveY(nOffset);
     ((class ASDisplayObject*)(class ASTextField*)(m_weekly.get()))->MoveY(nOffset);
     m_resetButton->vfunc_4(true);
-    m_resetButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchUnitedReward::FUN_140e14400), 0);
+    m_resetButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchUnitedReward::FUN_140e14400), 0);
 }
 MS2_REPLACE_METHOD(0x140E142F0, UIDungeonSearchUnitedReward, FUN_140e142f0, 266, 0x0A294BCA);
 
@@ -430,7 +430,7 @@ CStringW GetRewardCooldownTooltip(int nRoomId)
         return BlockFormat(0x9b1);
     case 1:
     {
-        CStringW strDay = FUN_140b8f230(pRoom->GetCooldownValue());
+        CStringW strDay = GetDayOfWeekName(pRoom->GetCooldownValue());
         return FormatStringId(0x9b2, strDay);
     }
     }

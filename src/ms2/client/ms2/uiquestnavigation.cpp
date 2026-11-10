@@ -54,7 +54,7 @@ class Unk_SSGWorld : public WorldService
 {
 public:
     MS2Ptr<Unk_SSGNamedObj> FUN_141bc5a20(CString strName);     // a named field object
-    MyPC* FUN_141bd0cc0();                                      // the local player actor
+    MyPC* GetLocalPlayer();                                      // the local player actor
 };
 // C3: 0x140e7c990 is TSingleton<CQuestNavigator>::GetInstance's body; it returns CQuestNavigator*
 //
@@ -83,7 +83,7 @@ struct Unk_AuConfig
 };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 // GameObject's vtable as far as slot 18 (0x90): in the exe vfunc_18 returns the position in a Vector3 (pcbase.h and gameobject.h
@@ -222,7 +222,7 @@ void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
 // @0x140e78c40
 Vector3 PcHudNavigationEntity::vfunc_7()
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPC)
         return DAT_143b01a60;
     return reinterpret_cast<Unk_QnPosView*>(pPC)->vfunc_18();
@@ -263,13 +263,13 @@ int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->GetFieldId())
         return 0;
     if (pResult->m_40->m_20.find(m_34) == pResult->m_40->m_20.end())
         return 0;
     if (pResult->m_1c == 2)
         return 0;
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FindNpcById(m_30));
     if (!pNpc)
         return 0;
     if (pNpc->IsDead())
@@ -282,7 +282,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_20.find(m_34) == pContext->m_20.end())
         return 0;
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FindNpcById(m_30));
     if (!pNpc)
         return 0;
     if (pNpc->IsDead())
@@ -293,7 +293,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79010
 Vector3 NpcNavigationEntity::vfunc_7()
 {
-    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
+    Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FindNpcById(m_30));
     if (pNpc)
     {
         NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
@@ -338,7 +338,7 @@ int InteractNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->GetFieldId())
         return 0;
     if (pResult->m_40->m_30.find(m_30) == pResult->m_40->m_30.end())
         return 0;
@@ -404,7 +404,7 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bd3060())
+    if (pResult->m_40->m_18 != reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->GetFieldId())
         return 0;
     if (pResult->m_40->m_40.find(m_30) == pResult->m_40->m_40.end())
         return 0;
@@ -723,7 +723,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, c
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     FUN_1422bce40(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

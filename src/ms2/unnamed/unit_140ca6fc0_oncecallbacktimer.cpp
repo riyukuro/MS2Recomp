@@ -34,7 +34,7 @@ OnceCallbackTimer::~OnceCallbackTimer()
 }
 
 // @0x140ca70d0
-void OnceCallbackTimer::FUN_140ca70d0()
+void OnceCallbackTimer::BindClock()
 {
     m_pClock = ((efd::ServiceManager*)GetServiceManager())->GetClock(0xe001001b);
 }

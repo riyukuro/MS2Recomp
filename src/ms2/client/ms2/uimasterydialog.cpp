@@ -114,12 +114,12 @@ class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEvent
 class Unk_MWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();
+    MyPC* GetLocalPlayer();
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -132,9 +132,9 @@ class UICastingBar* GetCastingBar(int);   // C3: was GetCastingBar
 
 // The AS value setters / getters used by the Invoke helpers of this unit.
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 
@@ -170,7 +170,7 @@ public:
 };
 
 // MyPC accessors.
-int FUN_14053feb0(int nItemId);                             // default rank of an item
+int GetItemRank(int nItemId);                             // default rank of an item
 CStringW GetIngredientCountText(unsigned nHave, unsigned nNeed);               // "have/need" count text
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/client/ms2/skillrecord.h"
@@ -276,12 +276,12 @@ public:
     unsigned int CalcGatheringReceipeRewardItemCount(unsigned int a, unsigned int b, unsigned int c);
     unsigned int CalcCraftReceipeRequireItemCount(unsigned int a, unsigned int b, unsigned int c);
 };
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 #include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 int FUN_1406198a0(int n, float f);
-__int64 FUN_1404820b0(unsigned n, float f);
+__int64 ScaleByRate(unsigned n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 int FUN_140930e10();
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140c43630
 class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerBrowser
@@ -448,10 +448,10 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     CStringW strName = pArgs->FUN_1422b8f40();
     if (strName == "housingSlot") {
         int nId = pArgs->PopUInt();
-        int nRank = FUN_14053feb0(nId);
+        int nRank = GetItemRank(nId);
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nId, nRank, 0)) {
-            ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 8, 2);
+            ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 8, 2);
             if (tip.FUN_1409e0d40(spItem.get())) {
                 tip.SetTooltipAlign(7);
                 *pRetVal = tip.GetValue();
@@ -464,7 +464,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             if (pEntry) {
                 MS2Ptr<CItem> spItem(new CItem);
                 if (spItem->FUN_140523c40(pEntry->m_itemId, pEntry->vfunc_o18_1(), 0)) {
-                    ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x800, 2);
+                    ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()), 0x800, 2);
                     if (tip.FUN_1409e0d40(spItem.get())) {
                         tip.SetTooltipAlign(7);
                         *pRetVal = tip.GetValue();
@@ -719,7 +719,7 @@ void UIMasteryDialog::FUN_140eb05b0(int nType, bool bKeep)
 // @0x140eb0610
 void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     int nOld = GetCachedTypeValue(nType);
@@ -762,7 +762,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 // @0x140eb0bf0
 void UIMasteryDialog::AddLevelGuide(int nType, int nIndex)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     if (MS2Ptr<ASUIComponent> spLevel = GetChild<ASUIComponent>("m_levelControl")) {
@@ -777,7 +777,7 @@ void UIMasteryDialog::AddLevelGuide(int nType, int nIndex)
 // @0x140eb0da0
 void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     unsigned int nMastery = reinterpret_cast<PC*>(pPc)->GetMastery(nType);
@@ -845,7 +845,7 @@ void UIMasteryDialog::UpdateRecipePage(int nId, bool bKeep)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     if (bKeep) {
@@ -894,7 +894,7 @@ void UIMasteryDialog::UpdateRecipePage(int nId, bool bKeep)
                 if (nHave < nNeed)
                     bEnough = 0;
                 int nItem = ref->GetItemId();
-                int nItemRank = FUN_14053feb0(nItem);
+                int nItemRank = GetItemRank(nItem);
                 int nCount = ref->m_c;
                 CStringW strCnt = GetIngredientCountText(nHave, nNeed);
                 ASObj req(2);
@@ -931,7 +931,7 @@ void UIMasteryDialog::FUN_140eb2460()
 // @0x140eb24a0
 void UIMasteryDialog::FUN_140eb24a0()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     if (MS2Ptr<ASUIComponent> spLevel = GetChild<ASUIComponent>("m_levelControl")) {
@@ -969,7 +969,7 @@ void UIMasteryDialog::FUN_140eb24a0()
             reinterpret_cast<Unk_MArray&>(rows).PushObj(row);
         }
         reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
-        CStringW strGrade = StringFormat(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
+        CStringW strGrade = StringFormat(L"{0} {1}", GetStringByKey(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
         if (DAT_143ab291c == GetMasteryInteriorTable()->GetMaxGrade()) {
             reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
         } else {
@@ -983,7 +983,7 @@ void UIMasteryDialog::FUN_140eb24a0()
 // @0x140eb2d10
 void UIMasteryDialog::UpdateHousingList()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     if (m_30.IsNull())
@@ -1017,7 +1017,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     if (m_30.IsNull())
         return;
     FUN_140eb0540();
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     UGCCubeCategoryTable::InteriorPtr spHouse = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetInterior(nId);
@@ -1117,7 +1117,7 @@ void UIMasteryDialog::UpdateMagicScrollPage(int nId)
     if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
         return;
     FUN_140eb0540();
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     MS2Ptr<CEnchantScrollRecipe> spRec = TSingleton<CEnchantScrollTable>::GetInstance()->FindRecipe(nId);
@@ -1144,7 +1144,7 @@ void UIMasteryDialog::UpdateMagicScrollPage(int nId)
         if (nHave < nNeed)
             bEnough = 0;
         CStringW strCnt = GetIngredientCountText(nHave, nNeed);
-        int nRank = FUN_14053feb0(ref->m_a);
+        int nRank = GetItemRank(ref->m_a);
         ASObj req(2);
         req.SetStringMember("binding", m_require.BindNewItem(ref->m_a, nRank, ref->m_c));
         req.SetWStringMember("itemCnt", CStringW(strCnt));
@@ -1382,7 +1382,7 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
             Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
             ItemEntity ent;
             ent.m_itemId = ref->GetItemId();
-            ent.SetRank(FUN_14053feb0(ent.m_itemId));
+            ent.SetRank(GetItemRank(ent.m_itemId));
             ent.m_count = CalcIngredientCount(spRec->m_nType, spRec->m_nRequireMastery, ref->m_c);
             ingredients.Add(ent);
         }
@@ -1390,7 +1390,7 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_craft_messagebox_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
+            spBox->SetItemEntry(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->SetRequiredItems(ingredients);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRecipeCraftCountInput));
@@ -1428,14 +1428,14 @@ void UIMasteryDialog::CraftMagicScroll(int nId)
             ItemEntity ent;
             ent.m_itemId = ref->m_a;
             ent.m_count = ref->m_c;
-            ent.SetRank(FUN_14053feb0(ref->m_a));
+            ent.SetRank(GetItemRank(ref->m_a));
             ingredients.Add(ent);
         }
         if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x23, GetStringCommonByKey(L"s_magicscroll_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_magicscroll_craft_messagebox_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_magicscroll_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
+            spBox->SetItemEntry(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->SetRequiredItems(ingredients);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnMagicScrollCraftConfirm));
@@ -1485,7 +1485,7 @@ void UIMasteryDialog::FUN_140eb6660(void* pArg)
 // @0x140eb6870
 int UIMasteryDialog::GetDefaultWeaponSlot()
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return 0;
     MS2Ptr<JobData> spJob = TSingleton<JobTable>::GetInstance()->GetJobData(reinterpret_cast<PC*>(pPc)->GetJobGroupId());
@@ -1497,7 +1497,7 @@ int UIMasteryDialog::GetDefaultWeaponSlot()
 // @0x140eb6920
 void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return;
     unsigned int nNeed = FUN_1409670c0()->Value(nType, nIndex);
@@ -1574,7 +1574,7 @@ int UIMasteryDialog::GetMaxCraftCount(int nKind, int nId)
             if (ref->m_b != 0) {
                 nHave = g_143ab2a90.FUN_140a5f7b0(ref->m_b, 0);
             } else {
-                int nRank = FUN_14053feb0(ref->m_a);
+                int nRank = GetItemRank(ref->m_a);
                 nHave = g_143ab2a90.FUN_140a5f180(ref->m_a, nRank);
             }
             int nNeed = ref->m_c;
@@ -1627,10 +1627,10 @@ int UIMasteryDialog::CalcAdjustedItemCount(int nType, unsigned int nNeedMastery,
 {
     int nCount = 0;
     if (FUN_1409670c0()->IsProductionType(nType))
-        nCount = ((class CLua*)FUN_1401c0db0())->CalcGatheringReceipeRewardItemCount(pEntry->m_count, nNeedMastery, GetMyMastery(nType));
+        nCount = ((class CLua*)GetLuaClient())->CalcGatheringReceipeRewardItemCount(pEntry->m_count, nNeedMastery, GetMyMastery(nType));
     else
         nCount = pEntry->m_count;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return nCount;
     float fStat = 0;
@@ -1657,7 +1657,7 @@ int UIMasteryDialog::CalcAdjustedItemCount(int nType, unsigned int nNeedMastery,
 unsigned int UIMasteryDialog::CalcIngredientCount(int nType, int nNeedMastery, unsigned int nCount)
 {
     if (FUN_1409670c0()->IsOther(nType)) {
-        return ((class CLua*)FUN_1401c0db0())->CalcCraftReceipeRequireItemCount(nCount, nNeedMastery, GetMyMastery(nType));
+        return ((class CLua*)GetLuaClient())->CalcCraftReceipeRequireItemCount(nCount, nNeedMastery, GetMyMastery(nType));
     }
     return nCount;
 }
@@ -1665,7 +1665,7 @@ unsigned int UIMasteryDialog::CalcIngredientCount(int nType, int nNeedMastery, u
 // @0x140eb7bb0
 unsigned int UIMasteryDialog::GetMyMastery(int nType)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return 0;
     return reinterpret_cast<PC*>(pPc)->GetMastery(nType);
@@ -1730,7 +1730,7 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<CMasteryReceipe> spRec)
 {
     if (spRec == 0)
         return 0;
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return 0;
     int nValue = FUN_1409670c0()->Factor(spRec->m_nId, reinterpret_cast<PC*>(pPc)->GetMastery(spRec->m_nType));
@@ -1749,7 +1749,7 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<CMasteryReceipe> spRec)
         fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x4a);
         break;
     }
-    nValue = (int)FUN_1404820b0(nValue, 1.0f + fBonus);
+    nValue = (int)ScaleByRate(nValue, 1.0f + fBonus);
     return nValue;
 }
 
@@ -1785,7 +1785,7 @@ int UIMasteryDialog::GetSelectedMagicScrollGrade()
 // @0x140eb8550
 int UIMasteryDialog::HasRequiredLevel(MS2Ptr<CMasteryReceipe> spRec)
 {
-    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return 0;
     if (spRec->m_nLevel != 0)
@@ -2038,8 +2038,8 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9f50(const char* szMethod, unsign
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
@@ -2051,7 +2051,7 @@ Scaleform::GFx::Value AScript::FUN_140eba060(const char* szMethod, const AScript
     ASArgList args;
     args.resize(2);
     FUN_1422bce40(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2082,7 +2082,7 @@ Scaleform::GFx::Value Unk_MInvoker::FUN_140eba2c0(const char* szMethod, int a1, 
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetBoolean(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2092,7 +2092,7 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba380(const char* szMethod, unsign
     ASArgList args;
     args.resize(4);
     FUN_1422bcdd0(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);

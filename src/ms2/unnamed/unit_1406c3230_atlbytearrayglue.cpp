@@ -85,7 +85,7 @@ void FUN_1406c34a0(void*) {}
 int FUN_1406c34b0() { return 0; }
 
 // @0x1406c34c0
-int FUN_1406c34c0()
+int IsNexonPlatform()
 {
     if (FUN_1406c34b0() == 0) return 0;
     return 1;

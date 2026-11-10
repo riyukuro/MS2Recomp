@@ -49,14 +49,14 @@ CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
        // npc name (member: this=rcx, hidden return=rdx)
 bool FUN_14147ad10(Vector3 const&, Vector3 const&, Vector3 const&, float);   // C3: was FUN_14147ad10
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 #define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
 
 struct Unk_NpcTree;
 class Unk_MiWorld
 {
 public:
-    Unk_MiPlayer* FUN_141bd0cc0();                          // the local player
+    Unk_MiPlayer* GetLocalPlayer();                          // the local player
 
 };
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
@@ -226,7 +226,7 @@ int CMouseInteract::vfunc_3()
 // @0x140a79030
 int CMouseInteract::vfunc_4()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     ((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->ActivateCurrentAction();
@@ -250,12 +250,12 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
     if (pNpc != 0) {
         *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18()));
         if (pNpc->vfunc_117() != 0) {
-            pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
+            pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->GetName());
         } else {
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class PCBase*)(pNpc))->GetNpcId());
             if (strName.GetLength() == 0)
                 strName = GetStringCommon(0x62d);
-            pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
+            pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<CNpc*>(pNpc)->GetName());
         }
         return true;
     }
@@ -279,7 +279,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79400
 int CMouseInteractNpc::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -306,7 +306,7 @@ void CMouseInteractNpc::vfunc_5()
 // @0x140a79580
 PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     int bTalk = 1;
@@ -374,7 +374,7 @@ int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a79cd0
 int CMouseInteractPortal::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0x13)
@@ -454,7 +454,7 @@ int CMouseInteractObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a3d0
 int CMouseInteractObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -485,7 +485,7 @@ MS2Ptr<CInteractObject> CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin
         if (comp.IsNull())
             continue;
         float fSize = *(float*)(reinterpret_cast<char*>(comp.operator->()) + 0x90);
-        if (FUN_14028d470(fSize, 0.0f))
+        if (IsNearlyEqual(fSize, 0.0f))
             continue;
         Unk_NiPoint3 vCenter(hit->GetPos());
         vCenter.z += fSize * 0.5;
@@ -517,7 +517,7 @@ int CMouseInteractDynamicModel::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7a880
 int CMouseInteractDynamicModel::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != m_nAction)
@@ -613,7 +613,7 @@ int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
         return false;
     if (((class UITalkCinematic*)(class UITalkCinematic*)(pUi))->GetLoaded() == 0)
         return false;
-    PCBase* pPlayer = reinterpret_cast<PCBase*>(((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+    PCBase* pPlayer = reinterpret_cast<PCBase*>(((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
     if (pPlayer == 0)
         return false;
     *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18()));
@@ -638,7 +638,7 @@ int CMouseInteractWeaponObject::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         pRay->strCursor = GetStringCommon(0x63c);
-        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->FUN_1408b5370();
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->GetWorldPosition();
         return true;
     }
     return false;
@@ -649,7 +649,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         m_qwObjectId = hit->field18;
-        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->FUN_1408b5370();
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->GetWorldPosition();
         return true;
     }
     return false;
@@ -657,7 +657,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
 // @0x140a7af50
 int CMouseInteractWeaponObject::vfunc_3()
 {
-    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MiPlayer* pPlayer = ((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (((class Unk_ActionKeyManager*)(struct Unk_MiActionState*)(Unk_PlayerActionState(pPlayer)))->GetCur() != 0xd)
@@ -685,7 +685,7 @@ MS2Ptr<Cube> CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, con
             continue;
         if (hit->field50 != 0)
             continue;
-        efd::Point3 vPos = hit->FUN_1408b5370();
+        efd::Point3 vPos = hit->GetWorldPosition();
         float fSize = 150.0f;
         Unk_NiPoint3 vCenter(reinterpret_cast<const Vector3&>(vPos));
         vCenter.z += fSize * 0.5;

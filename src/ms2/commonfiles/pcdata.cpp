@@ -50,7 +50,7 @@ CPCData::CPCData()
 }
 
 // @0x14071e570
-void CPCData::FUN_14071e570(COutputStream& out)
+void CPCData::Write(COutputStream& out)
 {
     out.WriteInt64(m_n18);
     out.WriteInt64(m_n20);
@@ -98,7 +98,7 @@ void CPCData::FUN_14071e570(COutputStream& out)
 }
 
 // @0x14071ec80
-void CPCData::FUN_14071ec80(CInputStream& in)
+void CPCData::Read(CInputStream& in)
 {
     m_n18 = in.ReadInt64();
     m_n20 = in.ReadInt64();
@@ -186,32 +186,32 @@ void CPCDataPack::Read(CInputStream& in)
     int nSize = 0;
     nSize = in.ReadInt32();
     m_bufRecord.FUN_140204670(nSize);
-    in.ReadBytes(m_bufRecord.FUN_140204eb0(), nSize);
+    in.ReadBytes(m_bufRecord.GetBuffer(), nSize);
     nSize = in.ReadInt32();
     m_bufItems.FUN_140204670(nSize);
-    in.ReadBytes(m_bufItems.FUN_140204eb0(), nSize);
+    in.ReadBytes(m_bufItems.GetBuffer(), nSize);
     nSize = in.ReadInt32();
     m_bufExtra.FUN_140204670(nSize);
-    in.ReadBytes(m_bufExtra.FUN_140204eb0(), nSize);
+    in.ReadBytes(m_bufExtra.GetBuffer(), nSize);
 }
 
 // @0x14071f8a0
-void CPCDataPack::FUN_14071f8a0(CPCData* pData)
+void CPCDataPack::ReadRecord(CPCData* pData)
 {
     CByteBuffer buf;
     m_bufRecord.AppendRemainingTo(buf);
     buf.SetOffset(0);
-    pData->FUN_14071ec80(buf);
+    pData->Read(buf);
 }
 
 // @0x14071f920
-void CPCDataPack::FUN_14071f920(CPCData* pData)
+void CPCDataPack::WriteRecord(CPCData* pData)
 {
-    pData->FUN_14071e570(m_bufRecord);
+    pData->Write(m_bufRecord);
 }
 
 // @0x14071f950
-void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra, const CMsTime& tmBegin, const CMsTime& tmEnd,
+void CPCDataPack::WriteItems(const ItemArray& aEquip, const ItemArray& aExtra, const CMsTime& tmBegin, const CMsTime& tmEnd,
                                 const ItemArray& aMore)
 {
     int nEquip = (int)aEquip.GetCount();
@@ -256,7 +256,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
 }
 
 // @0x140720030
-void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTimed, CMsTime& tmBegin, CMsTime& tmEnd,
+void CPCDataPack::ReadItems(ItemArray& aEquip, ItemArray& aExtra, bool& bTimed, CMsTime& tmBegin, CMsTime& tmEnd,
                                 ItemArray& aMore)
 {
     unsigned nEquip = m_bufItems.ReadUInt8();
@@ -292,7 +292,7 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         spItem->ReadFromStream(static_cast<CInputStream&>(m_bufItems));
         spItem->SetItemUid(nUid);
         spItem->SetObjectId(0);
-        spItem->FUN_14052a130(2);
+        spItem->SetVariant(2);
         aMore.Add(spItem);
     }
     unsigned nExtra = m_bufExtra.ReadUInt8();

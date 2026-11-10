@@ -82,7 +82,7 @@ void CWarehouseItemTable::Remove(__int64 nItemUid)
 }
 
 // @0x1408fbc70
-void CWarehouseItemTable::FUN_1408fbc70(ATL::CAtlArray<MS2Ptr<CItem> >& out)
+void CWarehouseItemTable::GetAllItems(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 {
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {

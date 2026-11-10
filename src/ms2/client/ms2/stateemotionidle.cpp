@@ -98,7 +98,7 @@ public:
 // Buff container of an actor.
 // The knock-back direction (a POD with a declared ctor, so the return temp is not a /GS buffer).
 struct Unk_SeiPoint { float x, y, z; Unk_SeiPoint(); };
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // Config constants singleton (FUN_1401d3200): the idle delay at +0xa00 and the idle-emotion chance at +0x29c8.
 class Unk_IdleDelay { public: char m_c; };
@@ -156,7 +156,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1320(int);
+    class Unk_WsC_GameObj* FindNpcById(int);
     static class WorldService* GetInstance();
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
@@ -274,11 +274,11 @@ void StateEmotion::vfunc_8(double fTime)
     {
         pPC->vfunc_59(2, 0, 0, 0);
     }
-    else if (pBuff->FUN_141683100(0x30d41))
+    else if (pBuff->IsActionKeyPressed(0x30d41))
     {
         pPC->TryUseChairOrBed(1, 0);
     }
-    else if (pBuff->FUN_141683100(0x30d42))
+    else if (pBuff->IsActionKeyPressed(0x30d42))
     {
         pPC->TryUseChairOrBed(2, 0);
     }
@@ -512,7 +512,7 @@ void StateTriggerFollowNpc::vfunc_4(StateData* pData)
     else
     {
         m_nAnim = 0;
-        PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(m_spData2->m_nNpc));
+        PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FindNpcById(m_spData2->m_nNpc));
         if (pNpc == 0)
             m_pOwner->vfunc_59(1, 0, 0, 0);
     }
@@ -526,7 +526,7 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
     void* pRidee = ((void*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner)));
     if (pRidee)
         pActor = ((class Ridee*)(void*)(pRidee))->GetRider();
-    PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(m_spData2->m_nNpc));
+    PCBase* pNpc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FindNpcById(m_spData2->m_nNpc));
     if (pNpc == 0)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -727,7 +727,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
         return;
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
-    if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
+    if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d41))
     {
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
@@ -752,7 +752,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
             }
         }
     }
-    else if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
+    else if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d42))
     {
         pPC->TryUseChairOrBed(2, 0);
     }

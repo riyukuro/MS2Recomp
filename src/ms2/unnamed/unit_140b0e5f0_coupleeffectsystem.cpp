@@ -84,7 +84,7 @@ CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int n
 // @0x140b0e730
 CoupleEffectSystem::~CoupleEffectSystem()
 {
-    FUN_140b0f3a0(1);
+    SetEffectMode(1);
 }
 
 // @0x140b0e7a0
@@ -117,21 +117,21 @@ void CoupleEffectSystem::Update(float fDelta)
                 {
                     float fMove = GetDistance(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_140b0f160()))));
                     if (fMove > 50.0f && m_nEffectId != 0)
-                        FUN_140b0f3a0(1);
+                        SetEffectMode(1);
                 }
             }
             else
             {
                 m_bInRange = 1;
                 if (m_nEffectId == 0)
-                    FUN_140b0f3a0(0);
+                    SetEffectMode(0);
             }
         }
         else
         {
             m_bInRange = 0;
             if (m_nEffectId != 0)
-                FUN_140b0f3a0(1);
+                SetEffectMode(1);
         }
     }
 }
@@ -147,7 +147,7 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
     {
         COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
         packet.COutPacket::WriteUInt8(2);
-        packet.COutPacket::WriteInt64(FUN_140b0ec80());
+        packet.COutPacket::WriteInt64(GetCharacterId());
         packet.COutPacket::WriteInt64(nValue);
         FUN_140710590(packet);
     }
@@ -159,7 +159,7 @@ void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0 || ((class GameObject*)(class PCBase*)(pPartner))->GetObjectId() == nObjectId)
     {
-        FUN_140b0f3a0(1);
+        SetEffectMode(1);
         m_bActive = 0;
     }
 }
@@ -177,7 +177,7 @@ CStringW CoupleEffectSystem::GetName() const
 }
 
 // @0x140b0ec80
-__int64 CoupleEffectSystem::FUN_140b0ec80()
+__int64 CoupleEffectSystem::GetCharacterId()
 {
     if (m_pOwner == 0)
         return 0;
@@ -194,7 +194,7 @@ void CoupleEffectSystem::FUN_140b0ecd0()
     {
         m_bInRange = 0;
         m_bActive = 1;
-        FUN_140b0f260();
+        SendStartRequest();
     }
 }
 
@@ -232,7 +232,7 @@ void CoupleEffectSystem::RemoveEffect()
 // @0x140b0ef20
 bool CoupleEffectSystem::FUN_140b0ef20()
 {
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (reinterpret_cast<void*>(spMap.get()) != 0)
     {
         if (spMap->HasLimitContent(0x400) != 0)
@@ -247,7 +247,7 @@ CString CoupleEffectSystem::GetEffectName()
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return "";
-    MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nGemId).get()));
+    MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(GetItemGemPropertyTable()->GetGemData(m_nGemId).get()));
     if (spEffect == 0)
         return "";
     return spEffect->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->GetGender(), reinterpret_cast<PC*>(pPartner)->GetGender());
@@ -271,7 +271,7 @@ NiPoint3 CoupleEffectSystem::FUN_140b0f160()
 }
 
 // @0x140b0f260
-void CoupleEffectSystem::FUN_140b0f260()
+void CoupleEffectSystem::SendStartRequest()
 {
     if (m_bRequested != 0)
         return;
@@ -293,7 +293,7 @@ void CoupleEffectSystem::FUN_140b0f260()
 }
 
 // @0x140b0f3a0
-void CoupleEffectSystem::FUN_140b0f3a0(int nMode)
+void CoupleEffectSystem::SetEffectMode(int nMode)
 {
     if (m_bLinked != 0)
     {
@@ -304,7 +304,7 @@ void CoupleEffectSystem::FUN_140b0f3a0(int nMode)
     }
     COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
     packet.COutPacket::WriteUInt8((unsigned char)nMode);
-    packet.COutPacket::WriteInt64(FUN_140b0ec80());
+    packet.COutPacket::WriteInt64(GetCharacterId());
     FUN_140710590(packet);
 }
 

@@ -49,7 +49,7 @@ public:
     void Reset();                            // reset
     void Write(COutputStream& out);          // write
     void Read(CInPacket& in);               // read
-    void FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
+    void ReadFromXml(TiXmlElement* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
                        const CString& strPrice);     // read the four attributes (names given by the caller)
     const CString& GetIconTag() const;            // icon tag
     unsigned GetItemId() const;                  // payment item id
@@ -71,8 +71,8 @@ class CNpcShopItem : public CPtred
 public:
     CNpcShopItem();                                  // 0x1406ddd10
     bool operator!=(const CNpcShopItem& o) const;    // 0x1406dded0
-    bool FUN_1406de350();                            // visible now (period and item life)
-    bool FUN_1406de410();                            // buyable now
+    bool IsVisibleNow();                            // visible now (period and item life)
+    bool IsBuyableNow();                            // buyable now
 
     unsigned m_nSn;                                  // +0x18 sn
     unsigned m_nItemId;                              // +0x1c id
@@ -183,7 +183,7 @@ public:
     void Write(COutputStream& out);
     void Read(CInPacket& in);
     int ValidatePrice(CString& strError);            // validate the price against the item
-    __int64 FUN_1406e3bc0();                         // price
+    __int64 GetPrice();                         // price
     ePaymentType GetPaymentType();                    // payment type
     unsigned GetPaymentItemId();                        // payment item id
 
@@ -227,7 +227,7 @@ class CBeautyShopItemGroup : public CPtred
 public:
     CBeautyShopItemGroup(__int64 nKey, const CString& strName, unsigned nValue);  // 0x1406e3e40
     ATL::CAtlArray<MS2Ptr<CBeautyShopItem> >& GetItems(int nGender);
-    unsigned FUN_1406e3fe0(int nGender);             // the gender's weight sum
+    unsigned GetWeight(int nGender);             // the gender's weight sum
     __int64 GetKey();                         // key (start time yyyymmddhhmmss)
     const CString& GetName();
     unsigned GetValue();
@@ -247,7 +247,7 @@ class CBeautyShopItemGroups : public CPtred
 public:
     CBeautyShopItemGroups() {}                       // 0x1406eea20
     MS2Ptr<CBeautyShopItemGroup> GetCurrentGroup() const;      // the group on sale now
-    void FUN_1406e4260(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out) const;  // the groups from now on
+    void GetUpcomingGroups(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out) const;  // the groups from now on
     bool AddGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // add (false: the key exists)
 
     std::map<__int64, MS2Ptr<CBeautyShopItemGroup> > m_groups;    // +0x18

@@ -68,7 +68,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController2;
 class Unk_PgtWorld                                                  // the world service
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
     // FUN_141bc9d60 (the proxy of a visible character by name, the popup menu target): WorldService's own member
 };
 
@@ -95,7 +95,7 @@ class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
 class Unk_RewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int nType, CStringW strText, int nTime); };
-class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
+class UIMassiveEvent* FindMassiveEvent(int);   // C3: was FindMassiveEvent
 
 class Unk_PopupMenuInfo
 {
@@ -118,10 +118,10 @@ Unk_PopupMenu* FindPopupMenu(int nUiId);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
 CStringW GetStringCommon(int nStringId);
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a UI sound
 int GetServerTick();   // C3: was GetServerTick
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
-bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names are equal
+bool IsEqualNoCase(const CStringW& a, const CStringW& b);           // the names are equal
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
@@ -173,7 +173,7 @@ MS2_REPLACE_METHOD(0x1413398D0, UIPvPGuildTeamDialog, vfunc_65, 37, 0x4ECE15AC);
 void UIPvPGuildTeamDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     pPC->StopObserving();
@@ -230,7 +230,7 @@ MS2_REPLACE_METHOD(0x141339C50, UIPvPGuildTeamDialog, vfunc_26, 157, 0x09D09D57)
 void UIPvPGuildTeamDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (((CInPacket*)pData)->FUN_14070fe80() != 0x9a)
+    if (((CInPacket*)pData)->GetOpcode() != 0x9a)
         return;
     int nType = (unsigned char)((CInPacket*)pData)->ReadUInt8();
     if (nType == 's') {
@@ -253,23 +253,23 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
     else if (nType == 't') {
         __int64 nWinner = ((CInPacket*)pData)->ReadInt64();
         if (nWinner == 0) {
-            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FindMassiveEvent(0x4e4c));
             if (pDlg != 0)
                 ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
         else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId()) {
-            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FindMassiveEvent(0x4e4c));
             if (pDlg != 0) {
                 ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
-                FUN_141276180(s_strWinGame, "");
-                FUN_141276180(s_strSemiWin, "");
+                PlaySystemSound(s_strWinGame, "");
+                PlaySystemSound(s_strSemiWin, "");
             }
         }
         else {
-            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
+            Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FindMassiveEvent(0x4e4c));
             if (pDlg != 0) {
                 ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(0, GetStringCommon(0x3fe), 4000);
-                FUN_141276180(s_strSemiLose, "");
+                PlaySystemSound(s_strSemiLose, "");
             }
         }
         StopObserving();
@@ -330,7 +330,7 @@ void UIPvPGuildTeamDialog::ShowRound(const Unk_PvPGuildRoundInfo& info)
         int nLeft = 0;
         int nRight = 0;
         __int64 nMyCharId = 0;
-        efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (spPC.data() != 0)
             nMyCharId = ((class PCBase*)(class PCBase*)(spPC.operator->()))->FUN_141656a80();
         bool bPlaying = false;
@@ -418,7 +418,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strName = data.FUN_1422b8f40();
-            if (FUN_141b70f50(strName, m_strObserved))
+            if (IsEqualNoCase(strName, m_strObserved))
                 StopObserving();
             else
                 ObservePlayer(strName);
@@ -503,7 +503,7 @@ void UIPvPGuildTeamDialog::FillPlayerSlot(MS2Ptr<ASUIComponent> spSlot, PCBase* 
     __int64 nMaxHp = pPC->FUN_141670a30(4);
     spSlot->Invoke("showCharInfo", strName, FUN_140719630(nLevel), nHp, nMaxHp);
     int bObserved = 0;
-    if (FUN_141b70f50(strName, m_strObserved))
+    if (IsEqualNoCase(strName, m_strObserved))
         bObserved = 1;
     MS2Ptr<ASButton> spButton = spSlot->FUN_140acce30<ASButton>("m_observeButton");
     if (spButton == 0)
@@ -521,7 +521,7 @@ MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FillPlayerSlot, 710, 0x4FB
 // @0x14133bd80
 void UIPvPGuildTeamDialog::ObservePlayer(CStringW strName)
 {
-    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (spPC == 0)
         return;
     m_strObserved = strName;
@@ -538,7 +538,7 @@ MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, ObservePlayer, 304, 0x8BA0
 // @0x14133bec0
 void UIPvPGuildTeamDialog::StopObserving()
 {
-    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (spPC == 0)
         return;
     m_strObserved = "";

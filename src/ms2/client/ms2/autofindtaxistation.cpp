@@ -89,7 +89,7 @@ typedef Unk_TaxiPtr<Unk_TaxiEntList> Unk_TaxiListPtr;
 struct Unk_WsC_TagPtr : Unk_TaxiListPtr {};
 class Unk_TaxiPlayer;
 // C3: the Unk_TaxiCtx view of WorldService is gone (FUN_141bd0420
-//   and FUN_141bd0cc0 are WorldService's own members)
+//   and GetLocalPlayer are WorldService's own members)
 //
 //
 struct Unk_TaxiInfo { char m_pad[0xb8]; int m_nValue; };
@@ -106,8 +106,8 @@ class OnceCallbackTimer;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
+    MS2Ptr<CFieldDataCli> GetFieldData();
     Unk_WsC_TagPtr FUN_141bd0420(unsigned hash);   // the entities of a model
     static class WorldService* GetInstance();
 };
@@ -126,7 +126,7 @@ public:
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14116d840();
+    bool IsEscapePressed();
 };
 void* FUN_14025e7c0();
 void FUN_140710590(COutPacket& p);                      // send
@@ -202,7 +202,7 @@ CAutoFindTaxiStation::~CAutoFindTaxiStation()
 // @0x1409f1240
 void CAutoFindTaxiStation::StartAutoFind()
 {
-    bool bNone = reinterpret_cast<Unk_TaxiInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nValue == 0;
+    bool bNone = reinterpret_cast<Unk_TaxiInfo*>(WorldService::GetInstance()->GetFieldData().operator->())->m_nValue == 0;
     if (bNone)
         return;
     Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x85359406);
@@ -221,7 +221,7 @@ void CAutoFindTaxiStation::StartAutoFind()
     {
         m_nActive = 1;
         reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add(1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
-        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (player != 0)
             ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
     }
@@ -234,7 +234,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
         return;
     {
         // The loop holds each list entry in a smart pointer.
-        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
         {
             if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
@@ -330,7 +330,7 @@ void CAutoFindTaxiStation::Reset()
 {
     if (m_nActive == 0)
         return;
-    Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (player != 0)
         ((class PCBase*)(class Unk_TaxiPlayer*)(player))->RemoveStateFlags(0x100);
     m_nActive = 0;
@@ -369,7 +369,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
     {
         if (m_nActive != 0)
         {
-            if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840())
+            if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsEscapePressed())
             {
                 if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0 && Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
                 {

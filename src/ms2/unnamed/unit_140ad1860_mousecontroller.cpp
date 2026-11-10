@@ -153,7 +153,7 @@ public:
 class Unk_McWorld : public WorldService
 {
 public:
-    Unk_McPc* FUN_141bd0cc0();                                  // the local player
+    Unk_McPc* GetLocalPlayer();                                  // the local player
 };
 
 // Counted pointer to the attachment: AddRef in the ctor, Release in the dtor.
@@ -229,7 +229,7 @@ MS2_CHECK_OFFSET(Unk_McPickHit, m_pt, 0x10);
 
 
 // Math helpers.
-bool FUN_14028d470(float a, float b);                           // approx equal
+bool IsNearlyEqual(float a, float b);                           // approx equal
 float GetDistance(Vector3 a, Vector3 b);      // distance
 // C3: FUN_1420834e0 is efd::operator*(const Point3&, const Matrix3&) (called directly)
 
@@ -344,7 +344,7 @@ void CMouseController::OnMouseMessage(int nMsg, int nX, int nY)
     }
     if (nMsg == 0x202 && m_nIgnoreRelease != 0)
         return;
-    if (FUN_140ad3dd0(nX, nY) == 0)
+    if (IsCursorInWindow(nX, nY) == 0)
         return;
     switch (nMsg)
     {
@@ -430,11 +430,11 @@ int CMouseController::HasMode()
 MS2_REPLACE_METHOD(0x140AD21B0, CMouseController, HasMode, 44, 0x126CFED4);
 
 // @0x140ad21f0
-int CMouseController::FUN_140ad21f0()
+int CMouseController::HasMove()
 {
     return reinterpret_cast<const efd::Point3&>(m_vMove) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
 }
-MS2_REPLACE_METHOD(0x140AD21F0, CMouseController, FUN_140ad21f0, 41, 0xF33D26B7);
+MS2_REPLACE_METHOD(0x140AD21F0, CMouseController, HasMove, 41, 0xF33D26B7);
 
 // @0x140ad2220
 int CMouseController::FUN_140ad2220()
@@ -466,7 +466,7 @@ void CMouseController::ResetToIdle()
 MS2_REPLACE_METHOD(0x140AD22D0, CMouseController, ResetToIdle, 36, 0x7D4F70F3);
 
 // @0x140ad2300
-void CMouseController::FUN_140ad2300(const Vector3& pt)
+void CMouseController::SpawnClickEffect(const Vector3& pt)
 {
     Unk_McXform xf;
     reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
@@ -480,13 +480,13 @@ void CMouseController::FUN_140ad2300(const Vector3& pt)
     ((Unk_McRequest&)(request)).m_nOwnerId = 0;
     TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_McRequest&)(request))));
 }
-MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A);
+MS2_REPLACE_METHOD(0x140AD2300, CMouseController, SpawnClickEffect, 226, 0x8DCAE37A);
 
 // @0x140ad23f0
 void CMouseController::FUN_140ad23f0(int nX, int nY)
 {
     m_nMode = 2;
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
@@ -512,7 +512,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
     }
     SetClickPoint(&pt);
     m_fLastDist = 0;
-    FUN_140ad2300(pt);
+    SpawnClickEffect(pt);
     switch (nAction)
     {
     case 8:
@@ -539,7 +539,7 @@ MS2_REPLACE_METHOD(0x140AD23F0, CMouseController, FUN_140ad23f0, 609, 0x030EFF74
 // @0x140ad2660
 void CMouseController::FUN_140ad2660(int nX, int nY)
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
@@ -580,7 +580,7 @@ MS2_REPLACE_METHOD(0x140AD26D0, CMouseController, OnMouseMove, 346, 0x463D5B7F);
 // @0x140ad2830
 void CMouseController::FUN_140ad2830()
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bdb5e0() != 0)
@@ -633,7 +633,7 @@ void CMouseController::FUN_140ad2830()
 MS2_REPLACE_METHOD(0x140AD2830, CMouseController, FUN_140ad2830, 636, 0x99999D1E);
 
 // @0x140ad2ac0
-int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
+int CMouseController::GetCursorKind(int nX, int nY, CStringW* pStrHint)
 {
     if (m_nMode == 0)
         return 0;
@@ -641,7 +641,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
     Vector3 vDir;
     if (!TSingleton<CameraMgr>::GetInstance()->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     Vector3 vPos = pPc->vfunc_18();
@@ -662,7 +662,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140AD2AC0, CMouseController, FUN_140ad2ac0, 690, 0x84CA9624);
+MS2_REPLACE_METHOD(0x140AD2AC0, CMouseController, GetCursorKind, 690, 0x84CA9624);
 
 // @0x140ad2d80
 void CMouseController::UpdateHover()
@@ -672,14 +672,14 @@ void CMouseController::UpdateHover()
     if (m_tmPick.Check(100) != 0)
     {
         float fX, fY;
-        if (reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
+        if (reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->GetCursorClientPos(&fX, &fY) != 0 && IsCursorInWindow((int)fX, (int)fY) != 0)
         {
             CStringW strHint;
             int nKind = 0;
             if (GetGFxManager()->FUN_1422aeed0(2) == 0)
             {
-                if (((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
-                    nKind = FUN_140ad2ac0((int)fX, (int)fY, &strHint);
+                if (((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) != 0)
+                    nKind = GetCursorKind((int)fX, (int)fY, &strHint);
             }
             MS2Ptr<ASMouseCursor> spCursor = GetGFxManager()->GetMouseCursor(6);
             if (spCursor.operator ASMouseCursor*() != 0)
@@ -691,14 +691,14 @@ void CMouseController::UpdateHover()
                     if (nKind != 0)
                         nWanted = 0xb;
                     if (nCurrent != nWanted)
-                        spCursor.operator->()->FUN_1422cee50((Unk_MouseCursorType)nWanted);
+                        spCursor.operator->()->ChangeType((Unk_MouseCursorType)nWanted);
                     if (strHint.GetLength() != 0)
-                        spCursor.operator->()->FUN_1422ceea0(strHint);
+                        spCursor.operator->()->SetText(strHint);
                 }
             }
         }
     }
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0)
     {
         if (m_spCurrent.get() != 0 ? true : false)
@@ -718,7 +718,7 @@ MS2_REPLACE_METHOD(0x140AD2D80, CMouseController, UpdateHover, 686, 0xB16D7996);
 // @0x140ad3040
 void CMouseController::FUN_140ad3040()
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (m_nMode != 1)
@@ -762,10 +762,10 @@ MS2_REPLACE_METHOD(0x140AD3040, CMouseController, FUN_140ad3040, 524, 0xF761C44F
 // @0x140ad3260
 efd::Point3 CMouseController::FUN_140ad3260(Vector3 pt)
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return efd::Point3::ZERO;   // DAT_143b01a60
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap.IsNull())
         return efd::Point3::ZERO;   // DAT_143b01a60
     Vector3 v = (pt - GetPlayerPosition());
@@ -780,11 +780,11 @@ MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87
 // @0x140ad3400
 Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     efd::Point3 vFacing = ((GameObject*)pPc)->GetForwardDirection();
     Vector3 vPos = GetPlayerPosition();
     Vector3 v = DAT_143b01a60;
-    if (FUN_14028d470(vFacing.x, 1.0f))
+    if (IsNearlyEqual(vFacing.x, 1.0f))
     {
         v = DAT_143b01a60;
         v.x = pt.y - vPos.y;
@@ -837,7 +837,7 @@ Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
         return DAT_143b01a60;
     if (spPick->GetPickResult() == 0)
         return DAT_143b01a60;
-    int bSpecialMap = IsSpecialPickMap(reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd3060());
+    int bSpecialMap = IsSpecialPickMap(reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->GetFieldId());
     NiPoint3 vUnused(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));                 // built and never read in the exe
     for (unsigned i = 0; i < spPick->GetPickResult()->GetSize(); i++)
     {
@@ -873,7 +873,7 @@ MS2_REPLACE_METHOD(0x140AD3740, CMouseController, FUN_140ad3740, 794, 0xD0619D77
 // @0x140ad3a60
 Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return DAT_143b01a60;
     NiPoint3 vOrigin;   // NiPoint3 locals: the exe calls NiPoint3() 0x1405522f0, not efd::Point3()
@@ -900,7 +900,7 @@ MS2_REPLACE_METHOD(0x140AD3A60, CMouseController, FUN_140ad3a60, 514, 0x7514812C
 // @0x140ad3c70
 Vector3 CMouseController::GetPlayerPosition()
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return DAT_143b01a60;
     Unk_McAttachPtr spAttach(reinterpret_cast<Unk_McAttach*>(reinterpret_cast<PC*>(pPc)->GetGuide(1)));
@@ -913,7 +913,7 @@ MS2_REPLACE_METHOD(0x140AD3C70, CMouseController, GetPlayerPosition, 231, 0x6697
 // @0x140ad3d60
 int CMouseController::FUN_140ad3d60()
 {
-    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     for (unsigned long long i = 0; i < 3; i++)
@@ -926,7 +926,7 @@ int CMouseController::FUN_140ad3d60()
 MS2_REPLACE_METHOD(0x140AD3D60, CMouseController, FUN_140ad3d60, 105, 0x8AC838E7);
 
 // @0x140ad3dd0
-int CMouseController::FUN_140ad3dd0(int nX, int nY)
+int CMouseController::IsCursorInWindow(int nX, int nY)
 {
     if (nX < 0)
         return 0;
@@ -941,7 +941,7 @@ int CMouseController::FUN_140ad3dd0(int nX, int nY)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x140AD3DD0, CMouseController, FUN_140ad3dd0, 156, 0x1F80C246);
+MS2_REPLACE_METHOD(0x140AD3DD0, CMouseController, IsCursorInWindow, 156, 0x1F80C246);
 
 // @0x140ad3e80
 bool CMouseController::IsEntityClickable(egf::Entity* pEntity)

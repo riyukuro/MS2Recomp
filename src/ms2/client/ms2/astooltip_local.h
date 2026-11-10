@@ -21,7 +21,7 @@ bool FormatRandomOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex,
 #include "ms2/commonfiles/itemdroptable.h"       // ItemDropResult (ASObj::FUN_1409c5bd0)
 CStringW GetItemDisplayName(unsigned nItemId);              // the item name (itemugcmesh.cpp)
 CStringW FUN_1409eb450(int n);                    // part 6: CStringW(int)
-bool FUN_1403ba4c0(const int& nItemId);           // the item id is a currency (gameentitycommon.cpp)
+bool IsCurrencyItem(const int& nItemId);           // the item id is a currency (gameentitycommon.cpp)
 #include "ms2/commonfiles/maid.h"
 #include "ms2/commonfiles/maidgradejockpottable.h"     // CMaidRecipeTable
 #include "ms2/placeholder/cusermaidmanager.h"
@@ -58,7 +58,7 @@ class WorldService;
 
 
 
-CStringW FUN_1406319f0(int nId, unsigned short nLevel);   // the additional-effect text (itemsocketsystemutil.cpp)
+CStringW GetBuffName(int nId, unsigned short nLevel);   // the additional-effect text (itemsocketsystemutil.cpp)
 CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
 extern const int DAT_142dbac18[4];                // the item model classes that make a set piece gender-bound (1, 2, 3, 18)
@@ -69,8 +69,8 @@ CStringW FormatRatePercent(float fRate);              // part 5: a rate option v
 bool IsStatKindOne(int nStat);                    // the stat is shown as an integer (stat.cpp)
 bool FUN_14081dc50(int nSpecial);                 // the special stat is shown as an integer (specialability.cpp)
 CStringW GetStatCommonText(unsigned nStat);                // GetStatCommonText (stat.cpp)
-CStringW FUN_140630e10(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
-void FUN_14083d2b0(CStringW& str);                // trims the trailing line break (unit_14083bab0.cpp)
+CStringW GetSATypeName(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
+void StripTags(CStringW& str);                // trims the trailing line break (unit_14083bab0.cpp)
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/commonfiles/itemsocketsystemutil.h"
@@ -89,7 +89,7 @@ unsigned FUN_14081d260(const CStringA& strName);       // special option name ->
 const CString& GetStatName(unsigned nStat);          // the xml name of a stat (stat.cpp)
 const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
 int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
-__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+__int64 ScaleValue(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
 CStringW GetEnchantStatText(int nStat, MS2Ptr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
 int FUN_14072fd00(int nUnused);                   // the pet option count (unit_14072f7f0.cpp)
@@ -130,9 +130,9 @@ bool CanTradeItem(MS2Ptr<CItem> spItem);                             // the item
 CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);  // a money text (uicommon.cpp)
 CStringW GetGemstoneOptionText(int nGemId);                                   // the gemstone option text (itemsocketsystemutil.cpp)
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> spGem);            // the gemstone state text (itemsocketsystemutil.cpp)
-CStringW FUN_140627390(unsigned nGemId);                              // the gemstone name (itemsocketsystemutil.cpp)
-CStringW FUN_1406319f0(int nId, unsigned short nLevel);               // the additional-effect text (itemsocketsystemutil.cpp)
-CStringW FUN_140630e10(int nSpecial);                                 // the special stat name (itemsocketsystemutil.cpp)
+CStringW GetGemStoneName(unsigned nGemId);                              // the gemstone name (itemsocketsystemutil.cpp)
+CStringW GetBuffName(int nId, unsigned short nLevel);               // the additional-effect text (itemsocketsystemutil.cpp)
+CStringW GetSATypeName(int nSpecial);                                 // the special stat name (itemsocketsystemutil.cpp)
 CStringW GetStatCommonText(unsigned nStat);                                    // GetStatCommonText (stat.cpp)
 bool IsStatKindTwo(int nStat);                                        // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                                     // the special stat is shown as a rate (specialability.cpp)
@@ -257,7 +257,7 @@ class Unk_AltStringMgr* GetGFxManager();
 bool IsStatKindTwo(int nStat);                              // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)
 CStringW GetStatCommonText(unsigned nStat);                          // GetStatCommonText (stat.cpp)
-CStringW FUN_140630e10(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
+CStringW GetSATypeName(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
 CStringW FormatInt(int n);                              // part 5: an int option value text
 CStringW FormatRatePercent(float fRate);                        // part 5: a rate option value text
 #include "ms2/commonfiles/ugccubecategorytable.h"
@@ -292,7 +292,7 @@ Unk_SocketPtr<Unk_TooltipBeautyItems> FUN_1406e5af0(unsigned nShopId);    // the
 // C3: ItemFunctionArgs (citemdata.h) replaces the local member view
 // CItemData::FUN_14053c940 / FUN_14053d660 return an int at the call sites (citemdata.h declares them bool).
 struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
-int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+int GetItemRank(int nItemId);                                       // the default rank of an item (itemdata.cpp)
 void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, unsigned long& nSize, unsigned long& nColor1, unsigned long& nColor2);   // the super chat item look (texttohtml.cpp)
 extern unsigned long s_color6;                                   // texttohtml.cpp s_colors: the super chat colour
 extern unsigned long s_color18;                                   // texttohtml.cpp s_colors: the super chat second colour
@@ -365,7 +365,7 @@ struct Unk_EquipItemData : public CItemData {};                       // CEquipI
 
 
 CStringW FUN_1409404f0(__int64 nValue);                               // a number with separators (achievemanager.cpp)
-CStringW FUN_141277910(MS2Ptr<CItemData> spData);                     // the item name text (unit_141274d10.cpp)
+CStringW GetItemNameText(MS2Ptr<CItemData> spData);                     // the item name text (unit_141274d10.cpp)
 CStringW FUN_1406285d0(unsigned nMask);                               // the gemstone upgrade text (itemsocketsystemutil.cpp)
 
 // part 5 helpers (signatures from the call sites in this part)
@@ -440,7 +440,7 @@ const int& GetAtOrDefault(const CAtlArray<int>& arr, int nIndex, const int& nDef
 bool FUN_1409e7080(const ATL::CAtlArray<unsigned long>& ids, const ATL::CAtlArray<int>& grades, CStringW& strOut);   // the unmet trophy requirements
 class Unk_140166410* FUN_140166410();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 #include "ms2/commonfiles/commonstruct_wa.h"                 // Unk_IngVec (FUN_1409e7460)
-int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+int GetItemRank(int nItemId);                                       // the default rank of an item (itemdata.cpp)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                    // the item data of an id
 
 
@@ -464,7 +464,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest);   // th
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/cpetdatatable.h"
 int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
-__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+__int64 ScaleValue(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
 CStringW GetOptionKindLabel(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
 CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem);     // the option text of an item (as tabcontentspetinfo.cpp; the callee destroys spItem)

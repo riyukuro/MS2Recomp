@@ -39,7 +39,7 @@ class Unk_ItemOwnerRef : public CItemTransfer {};       // CItem::FUN_140527930'
 class UILapenshardSystemDialog : public UIDialog
 {
 public:
-    void FUN_140c62490(int nSlot);                      // select a slot, notify 10
+    void SelectSlot(int nSlot);                      // select a slot, notify 10
     void FUN_140c624d0();                               // notify 11
 };
 int FUN_140c62520();                                    // the window may be used (not in battle / disabled field)
@@ -126,7 +126,7 @@ int LapenshardSlot::vfunc_17()
 // @0x140a6ea50
 int LapenshardSlot::vfunc_18(void* p)
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
     LapenshardSlot* pFromSlot = FUN_140a6fef0(static_cast<DragSlot*>(p));
@@ -166,7 +166,7 @@ int LapenshardSlot::vfunc_18(void* p)
 // @0x140a6ee30
 int LapenshardSlot::vfunc_14()
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -202,7 +202,7 @@ int LapenshardSlot::vfunc_14()
         if (pPc->FUN_14152f860(spItem->GetItemId()) == 0)
             return 0;
         int nPage = ((class CKeyTable*)GetKeyTable())->FUN_140a700b0();
-        FUN_14092fac0(spItem->FUN_140527840()->GetSkillId(), 0, 0, nPage);
+        FUN_14092fac0(spItem->GetData()->GetSkillId(), 0, 0, nPage);
     }
     PlayItemSoundByUid(spItem->GetItemUid());
     return 1;
@@ -215,7 +215,7 @@ int LapenshardSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            spItem->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
@@ -223,7 +223,7 @@ int LapenshardSlot::vfunc_20()
             return 1;
         UILapenshardSystemDialog* pDialog = FUN_140a6ff40(0x4f6d);
         if (pDialog != 0)
-            pDialog->FUN_140c62490(nKind);
+            pDialog->SelectSlot(nKind);
     }
     return 1;
 }
@@ -235,7 +235,7 @@ int LapenshardSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            spItem->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     if (GetSlot() == 0)
     {
         int nKind = FUN_140a6f880();
@@ -265,7 +265,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
 {
     if (GetSlot() != 0)
     {
-        MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+        MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
         if (pPc == 0)
             return MS2Ptr<CItem>(0);
         int nItemId = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)GetSlot());
@@ -316,7 +316,7 @@ void LapenshardSlot::SendLapenshard(int nSlot, __int64 nItemUid)
 // @0x140a6f9e0 (ITooltip::vfunc_0)
 int LapenshardSlot::vfunc_0(void* p)
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -325,7 +325,7 @@ int LapenshardSlot::vfunc_0(void* p)
     int nFlags = 0x20;
     int nGrade = spItem->GetRarity();
     if (m_nSlot != 0)
-        spItem->FUN_140526bf0(spItem->FUN_140527840()->GetRank());
+        spItem->FUN_140526bf0(spItem->GetData()->GetRank());
     int nResult = 0;
     ASTooltip tip(pPc, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem))
@@ -341,7 +341,7 @@ int LapenshardSlot::vfunc_0(void* p)
 // @0x140a6fc00
 int LapenshardSlot::vfunc_8(void* p)
 {
-    MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
+    MyPC* pPc = (MyPC*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();

@@ -47,13 +47,13 @@ public:
     virtual void vfunc_72();                                         // 72 0x140fb5ec0
 
     void FUN_140fb6310(CInPacket* pPacket);                          // 0x140fb6310 preview result: target, result, ingredients
-    void FUN_140fb6b00(CInPacket* pPacket);                          // 0x140fb6b00 enchant result
+    void OnEnchantResult(CInPacket* pPacket);                          // 0x140fb6b00 enchant result
     void FUN_140fb6c30(Unk_UnlimitedEnchantError eError);                                  // 0x140fb6c30 show the error text of a check
-    void FUN_140fb6ed0();                                            // 0x140fb6ed0 collect the items and fill the bag
+    void FillItemBag();                                            // 0x140fb6ed0 collect the items and fill the bag
     void SendLimitBreakMode0(unsigned __int64 nUid);                       // 0x140fb7450 ask for the preview
     void SendLimitBreakMode1(unsigned __int64 nUid);                       // 0x140fb7570 ask for the enchant
     void FUN_140fb7690(__int64 nUid);                                // 0x140fb7690 refresh the bag, select the item
-    Unk_UnlimitedEnchantError FUN_140fb7870(MS2Ptr<CItem> spItem);                         // 0x140fb7870 check an item (0 ok)
+    Unk_UnlimitedEnchantError CheckItem(MS2Ptr<CItem> spItem);                         // 0x140fb7870 check an item (0 ok)
 
 private:
     MS2_LAYOUT_FRIEND;

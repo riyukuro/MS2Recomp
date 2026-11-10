@@ -20,7 +20,7 @@
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text by key
 CStringW GetStringCommon(int nStringId);                         // string table text by id
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 void ShowSystemNotice(const CStringW&, int, int);                 // show a notice
 class Unk_LockUIManager;
 
@@ -314,7 +314,7 @@ void Unk_MyPCHousingSvc::ShowBuildNotice(int nMessage)
         CString strKey;
         if (GetMessageSoundKey(nMessage, strKey) == 1) {
             CString strNone("");
-            FUN_141276180(strKey, strNone);
+            PlaySystemSound(strKey, strNone);
         }
         CStringW strText = reinterpret_cast<CubeMapInformationService*>(this)->GetMessageText(nMessage);
         if (!strText.IsEmpty()) {

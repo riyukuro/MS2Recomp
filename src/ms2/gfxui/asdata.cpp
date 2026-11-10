@@ -358,56 +358,56 @@ bool ASData::IsEmpty()
 MS2_REPLACE_METHOD(0x1422B9330, ASData, IsEmpty, 31, 0xB32D2D98);
 
 // @0x1422b9360
-int ASData::FUN_1422b9360()
+int ASData::GetArgCount()
 {
     return (int)m_args.GetCount();
 }
-MS2_REPLACE_METHOD(0x1422B9360, ASData, FUN_1422b9360, 31, 0x0FDF48C6);
+MS2_REPLACE_METHOD(0x1422B9360, ASData, GetArgCount, 31, 0x0FDF48C6);
 
 // @0x1422b9390
-int FUN_1422b9390(const Scaleform::GFx::Value& v)
+int ValueToInt(const Scaleform::GFx::Value& v)
 {
     return v.GetInt();
 }
-MS2_REPLACE(0x1422B9390, FUN_1422b9390, 24, 0x28F9630A);
+MS2_REPLACE(0x1422B9390, ValueToInt, 24, 0x28F9630A);
 
 // @0x1422b93b0
-unsigned int FUN_1422b93b0(const Scaleform::GFx::Value& v)
+unsigned int ValueToUInt(const Scaleform::GFx::Value& v)
 {
     return v.GetUInt();
 }
-MS2_REPLACE(0x1422B93B0, FUN_1422b93b0, 24, 0xC44D9159);
+MS2_REPLACE(0x1422B93B0, ValueToUInt, 24, 0xC44D9159);
 
 // @0x1422b93d0
-bool FUN_1422b93d0(const Scaleform::GFx::Value& v)
+bool ValueToBool(const Scaleform::GFx::Value& v)
 {
     return v.GetBool();
 }
-MS2_REPLACE(0x1422B93D0, FUN_1422b93d0, 24, 0x602B071A);
+MS2_REPLACE(0x1422B93D0, ValueToBool, 24, 0x602B071A);
 
 // @0x1422b93f0
-float FUN_1422b93f0(const Scaleform::GFx::Value& v)
+float ValueToFloat(const Scaleform::GFx::Value& v)
 {
     return (float)v.GetNumber();
 }
-MS2_REPLACE(0x1422B93F0, FUN_1422b93f0, 28, 0x83643697);
+MS2_REPLACE(0x1422B93F0, ValueToFloat, 28, 0x83643697);
 
 // @0x1422b9420
-double FUN_1422b9420(const Scaleform::GFx::Value& v)
+double ValueToDouble(const Scaleform::GFx::Value& v)
 {
     return v.GetNumber();
 }
-MS2_REPLACE(0x1422B9420, FUN_1422b9420, 24, 0xBB825C40);
+MS2_REPLACE(0x1422B9420, ValueToDouble, 24, 0xBB825C40);
 
 // @0x1422b9440
-CString FUN_1422b9440(const Scaleform::GFx::Value& v)
+CString ValueToString(const Scaleform::GFx::Value& v)
 {
     return FUN_1409a23d0(v.GetString(), 0);
 }
-MS2_REPLACE(0x1422B9440, FUN_1422b9440, 69, 0xE66ABB60);
+MS2_REPLACE(0x1422B9440, ValueToString, 69, 0xE66ABB60);
 
 // @0x1422b9490
-CStringW FUN_1422b9490(const Scaleform::GFx::Value& v)
+CStringW ValueToStringW(const Scaleform::GFx::Value& v)
 {
     if (v.IsString())
         return XmlWide(v.GetString());
@@ -415,14 +415,14 @@ CStringW FUN_1422b9490(const Scaleform::GFx::Value& v)
         return CStringW(v.GetStringW());
     return CStringW(L"");
 }
-MS2_REPLACE(0x1422B9490, FUN_1422b9490, 178, 0xCC118658);
+MS2_REPLACE(0x1422B9490, ValueToStringW, 178, 0xCC118658);
 
 // @0x1422b9550
-__int64 FUN_1422b9550(const Scaleform::GFx::Value& v)
+__int64 ValueToInt64(const Scaleform::GFx::Value& v)
 {
     return (__int64)v.GetNumber();
 }
-MS2_REPLACE(0x1422B9550, FUN_1422b9550, 29, 0xFE531800);
+MS2_REPLACE(0x1422B9550, ValueToInt64, 29, 0xFE531800);
 
 // @0x1422b9580
 int ASData::AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst)

@@ -63,7 +63,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                   // the scene 
 class Unk_VwWorld
 {
 public:
-    GameObject* FUN_141bd0cc0();                            // the local player
+    GameObject* GetLocalPlayer();                            // the local player
 };
 class PCBase* FUN_140b120b0(class GameObject*);   // C3: was FUN_140b120b0
 
@@ -87,7 +87,7 @@ struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
-    class WeddingProxy* FUN_140d295d0();
+    class WeddingProxy* GetWeddingProxy();
 };
 
 
@@ -238,7 +238,7 @@ CUgcViewerEquip::~CUgcViewerEquip()
 // @0x14189ee30
 int CUgcViewerEquip::vfunc_2()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindPCById(GetObjectId()))));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
@@ -278,7 +278,7 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189f260
 void CUgcViewerEquip::vfunc_4()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindPCById(GetObjectId()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
@@ -293,16 +293,16 @@ void CUgcViewerEquip::vfunc_4()
 // @0x14189f360
 void CUgcViewerEquip::vfunc_5()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindPCById(GetObjectId()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->GetItem();
-    if (spItem == 0 || spItem->FUN_140527840() == 0)
+    if (spItem == 0 || spItem->GetData() == 0)
         return;
-    m_strMesh = spItem->FUN_140527840()->cubeTextureName.mesh;
+    m_strMesh = spItem->GetData()->cubeTextureName.mesh;
 }
 
 // @0x14189f490
@@ -542,10 +542,10 @@ CUgcViewerBanner::~CUgcViewerBanner()
 // @0x1418a02f0
 void CUgcViewerBanner::vfunc_1()
 {
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
@@ -578,7 +578,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(m_post.m_nBannerId);
     if (spEntity == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -595,7 +595,7 @@ void CUgcViewerBanner::vfunc_4()
 {
     int nBannerId = m_post.m_nBannerId;
     NiTexturePtr spTexture;
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     MS2Ptr<CUgcRegistBanner> spRegist = TSingleton<CUgcManager>::GetInstance()->GetRegistBanner(nBannerId);
@@ -624,7 +624,7 @@ void CUgcViewerBanner::vfunc_5()
 {
     if (m_nLoaded == 1)
         return;
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(spEntity.data()));
@@ -695,7 +695,7 @@ void CUgcViewerBanner::FUN_1418a0f90(int nBannerId)
 // @0x1418a1000
 void CUgcViewerBanner::FUN_1418a1000()
 {
-    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->GetBannerEntity(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     NiTexturePtr spTexture = m_spImage;
@@ -724,7 +724,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -803,10 +803,10 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
-    if (((struct Unk_VwSummary*)((class WeddingManager*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance())))->FUN_140d295d0())->m_nState != 2)
+    if (((struct Unk_VwSummary*)((class WeddingManager*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance())))->GetWeddingProxy())->m_nState != 2)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -885,7 +885,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetGuildId() == 0)
@@ -973,7 +973,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetGuildId() == 0)

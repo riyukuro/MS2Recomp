@@ -138,7 +138,7 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
+    class Unk_WsC_GameObj* FindPCById(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
 };
 #include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
@@ -458,7 +458,7 @@ ClonePC::ClonePC(PC* pSource)
 void ClonePC::vfunc_12()
 {
     PC::vfunc_12();
-    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
+    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nSourceId));
     if (m_pSourcePC)
         m_pSourcePC->FUN_1416630e0(GetObjectId());
     if (m_spD88.get() != 0)
@@ -473,7 +473,7 @@ MS2_REPLACE_METHOD(0x1410875f0, ClonePC, vfunc_12, 176, 0xB0E12472);
 void ClonePC::vfunc_14()
 {
     PC::vfunc_14();
-    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
+    m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nSourceId));
     if (m_pSourcePC)
         m_pSourcePC->FUN_141663120(GetObjectId());
     m_pSourcePC = 0;

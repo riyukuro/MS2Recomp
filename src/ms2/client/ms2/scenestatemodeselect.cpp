@@ -18,8 +18,8 @@ class WorldService   // C3: unit-local view of the callback set
 {
 public:
     static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
-    void FUN_141bbae40(void* p);
-    void FUN_141bbae80(void* p);
+    void AddCallback(void* p);
+    void RemoveCallback(void* p);
     int LoadMap(int mapId, int arg2, int arg3);
 };
 void* GetMS2();
@@ -58,7 +58,7 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
-    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->AddCallback((IWorldServiceCallback*)this);
     static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     WorldService::GetInstance()->LoadMap(0x3e9, 1, 0);
 }
@@ -67,7 +67,7 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
 void CSceneStateModeSelect::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->RemoveCallback((IWorldServiceCallback*)this);
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f6e);
 }
 

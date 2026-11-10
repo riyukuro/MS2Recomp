@@ -43,13 +43,13 @@ class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840'
 class Unk_FdWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                                // the local player
+    PCBase* GetLocalPlayer();                                // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    class Unk_WsC_GameObj* FindPCById(int id);   // C3: the real member (0x141bd1290, an object by id)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, the actor of an entity id)
     static class WorldService* GetInstance();
 };
@@ -91,7 +91,7 @@ public:
 // The feature switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
+class MyPC* GetMyPC(class Unk_QueryObj*);   // C3: was GetMyPC
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
 MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
@@ -178,7 +178,7 @@ int FittingDollSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121d330, FittingDollSlot, vfunc_20, 360, 0x8C0A70F5);
@@ -190,7 +190,7 @@ int FittingDollSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121d4a0, FittingDollSlot, vfunc_21, 360, 0x889F2550);
@@ -205,7 +205,7 @@ int FittingDollSlot::vfunc_0(void* p)
     if (pItem == 0)
         return 0;
     int nFlags = 0x100;
-    if (((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pPlayer)
+    if (((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) == pPlayer)
         nFlags = 0x200;
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(pItem) != 0)
@@ -228,7 +228,7 @@ int FittingDollSlot::vfunc_8(void* p)
     FittingDollPC* pDoll = GetDoll();
     if (pDoll == 0)
         return 0;
-    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == 0)
         return 0;
     CItem* pItem = vfunc_25().get();
@@ -252,9 +252,9 @@ int FittingDollSlot::vfunc_8(void* p)
             else if (nLock == 3)
                 slot.SetItemConditionLock(1);
         }
-        if (m_nSlot == 4 && pItem->FUN_140527840()->FUN_14053d460() != false)
+        if (m_nSlot == 4 && pItem->GetData()->FUN_14053d460() != false)
             slot.SetGrayColor(1);
-        else if (m_nSlot == 9 && pItem->FUN_140527840()->FUN_14053d2b0() != false)
+        else if (m_nSlot == 9 && pItem->GetData()->FUN_14053d2b0() != false)
             slot.SetGrayColor(1);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
@@ -292,14 +292,14 @@ MS2_REPLACE_METHOD(0x14121dc90, FittingDollSlot, vfunc_9, 177, 0x60A25617);
 // @0x14121dd50
 FittingDollPC* FittingDollSlot::GetDoll()
 {
-    return ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_nDollId)))));
+    return ((class FittingDollPC*)GetMyPC((class Unk_QueryObj*)(reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_nDollId)))));
 }
 MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, GetDoll, 47, 0x50AAF435);
 
 // @0x14121dd90
 PC* FittingDollSlot::GetPC()
 {
-    return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nPcId));
+    return reinterpret_cast<PC*>(WorldService::GetInstance()->FindPCById(m_nPcId));
 }
 MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, GetPC, 38, 0xA1936EAD);
 
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, GetPC, 38, 0xA1936EAD);
 // Destroy the doll item of the slot: a confirm box when the item has a reason to keep (or the packet at once).
 int FittingDollSlot::DestroyDollItem()
 {
-    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pLocal == 0)
         return 0;
     FittingDollPC* pDoll = GetDoll();
@@ -353,8 +353,8 @@ int FittingDollSlot::DestroyDollItem()
                 if (spBox.get() != 0)
                 {
                     spBox->SetItemUid(((CItem*)spItem)->GetItemUid());
-                    spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->GetCount(), -1, -1, 1);
-                    spBox->FUN_141a01800(1);
+                    spBox->SetItemEntry(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->GetCount(), -1, -1, 1);
+                    spBox->SetButtonPreset(1);
                     spBox->SetCheckboxMust(1);
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     FUN_140d73c60(spBox);

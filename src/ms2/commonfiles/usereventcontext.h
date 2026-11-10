@@ -129,7 +129,7 @@ MS2_CHECK_OFFSET(Unk_EventReward40, r40, 0x40);
 
 class Unk_EventCounters {
 public:
-    void FUN_1408d5ad0(__int64);
+    void SetValue(__int64);
     void* p0; void* p8; void* p10; void* p18; void* p20; __int64 value;
 };
 MS2_CHECK_OFFSET(Unk_EventCounters, value, 0x28);

@@ -11,7 +11,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-bool FUN_14028d470(float a, float b);   // approximately equal
+bool IsNearlyEqual(float a, float b);   // approximately equal
 
 // @0x1400c0150
 const NiRTTI CArcController::ms_RTTI("CArcController", 0);
@@ -34,7 +34,7 @@ bool CArcController::FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float 
     m_position = DAT_143b01a60;
     m_elapsed = 0;
     float fDistance = GetPlanarDistance(from, to);
-    if (FUN_14028d470(fDistance, 0.0f))
+    if (IsNearlyEqual(fDistance, 0.0f))
         return false;
     m_arc.FUN_141479ed0(from, to, speed, gravityScale * 100.0f);
     return true;

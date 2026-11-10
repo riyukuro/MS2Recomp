@@ -74,8 +74,8 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
-    MS2Ptr<class CFieldDataCli> FUN_141bd30a0();   // the field data (copy of +0x298)
-    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
+    MS2Ptr<class CFieldDataCli> GetFieldData();   // the field data (copy of +0x298)
+    class Unk_WsC_GameObj* FindObjectByMesh(void* mesh);   // C3: was Unk_GameContext::FindObjectByMesh
 };
 
 class Unk_PickEntry;
@@ -91,7 +91,7 @@ float FUN_140ae8910(CString key);
 int LoadTestCamerValue();                                // reloads the camera xml (returns 0 on failure)
 
 float FUN_14059d930(float f);                       // fabs
-bool FUN_14028d470(float a, float b);               // nearly equal
+bool IsNearlyEqual(float a, float b);               // nearly equal
 void ShowSystemNotice(const CStringW& str, int a, int b);     // chat/debug log line
 #include "ms2/ms2format.h"
 template <class T> class TSingleton;
@@ -172,7 +172,7 @@ void CToolSmoothCameraMode::vfunc_9()
                 m_50 = efd::Clamp(m_50 + (float)nWheel, m_58, m_54);
             }
         }
-        else if (FUN_14028d470(m_130.x, 0.0f))
+        else if (IsNearlyEqual(m_130.x, 0.0f))
         {
             if (nWheel > 0)
                 m_130.x = 300.0f;
@@ -267,7 +267,7 @@ void CToolSmoothCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
-        float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_154;
+        float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->GetFieldData().operator->())->m_154;
         Vector3 ptRot(90.0f, fRotation, -60.0f);
         vfunc_4(ptRot);
         vfunc_24(pTarget, 1);
@@ -350,7 +350,7 @@ void CToolSmoothCameraMode::vfunc_30()
     for (unsigned int i = 0; i < pList->GetPickResult()->GetSize(); ++i)
     {
         Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList->GetPickResult()->GetAt(i));
-        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(reinterpret_cast<WorldService*>(pContext)->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
+        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(reinterpret_cast<WorldService*>(pContext)->FindObjectByMesh(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {

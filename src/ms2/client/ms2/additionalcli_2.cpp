@@ -99,7 +99,7 @@ public:
 class UILapenshardShieldBar : public UIHeadUpDisplay, public UIEntityEventListener
 {
 public:
-    void FUN_140c5f8f0(MS2Ptr<AdditionalCli> sp);           // show the shield record
+    void SetBuff(MS2Ptr<AdditionalCli> sp);           // show the shield record
 };
 // The skill table (SkillDataTableCli).
 class Unk_AclSkillTable : public SkillDataTable
@@ -116,10 +116,10 @@ class Unk_AclSkillTable : public SkillDataTable
 
 
 
-bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
+bool IsUpperTargetId(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FindMainPlayerInfo(int nClass);                // 0x140931900 the main player info dialog
-bool FUN_14028d470(float a, float b);                       // 0x14028d470 nearly equal
-__int64 FUN_140632990(__int64 nValue, float fRate);         // 0x140632990 scale and round
+bool IsNearlyEqual(float a, float b);                       // 0x14028d470 nearly equal
+__int64 ScaleValue(__int64 nValue, float fRate);         // 0x140632990 scale and round
 float FUN_140768090();                                      // 0x140768090 random [0, 1)
 int FUN_14081d8a0(int nType);                               // 0x14081d8a0 the stat option applies to skills
 int FUN_14081d8e0(int nType);                               // 0x14081d8e0 the stat option applies to effects
@@ -228,7 +228,7 @@ int AdditionalCliList::Add(MS2Ptr<AdditionalCli> sp)
             {
                 UILapenshardShieldBar* pShield = Unk_AcFindUI<UILapenshardShieldBar>((eUIClassID)0x4f73);
                 if (pShield)
-                    pShield->FUN_140c5f8f0(m_spShield);
+                    pShield->SetBuff(m_spShield);
             }
         }
     }
@@ -495,10 +495,10 @@ float AdditionalCliList::GetAlpha()
 float AdditionalCliList::ComputeAlphaBlending()
 {
     float fAlpha = m_motion.m_fAlphaBlending;
-    if (!FUN_14028d470(m_motion.m_fAlphaBlending, 1.0f))
+    if (!IsNearlyEqual(m_motion.m_fAlphaBlending, 1.0f))
     {
         PC* pPC = efd::DynamicCast<PC>(m_pOwner);
-        PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
         if (pPC && pLocal && pPC != pLocal)
         {
             if (IsHidden())
@@ -510,7 +510,7 @@ float AdditionalCliList::ComputeAlphaBlending()
             }
         }
     }
-    if (FUN_14028d470(0.0f, fAlpha))
+    if (IsNearlyEqual(0.0f, fAlpha))
         m_pOwner->vfunc_31(false);
     else
         m_pOwner->vfunc_31(true);
@@ -631,7 +631,7 @@ int AdditionalCliList::FUN_140970c10(SkillAttackData* pAttack, int nPush)
     if (pAttack->m_damage.m_nSuperArmorBreak)
         return 0;
     unsigned nArmor = GetSuperArmor();
-    int nFieldId = WorldService::GetInstance()->FUN_141bd3060();
+    int nFieldId = WorldService::GetInstance()->GetFieldId();
     SkillPushType ePush = pAttack->m_damage.GetPush(nFieldId);
     switch (nArmor)
     {
@@ -642,7 +642,7 @@ int AdditionalCliList::FUN_140970c10(SkillAttackData* pAttack, int nPush)
             return 0;
         return 1;
     case 2:
-        if (ePush && !FUN_14028d470(pAttack->m_damage.m_fPushUpDistance, 0.0f))
+        if (ePush && !IsNearlyEqual(pAttack->m_damage.m_fPushUpDistance, 0.0f))
             return 0;
         if (pAttack->m_eGrabTargetType == 1)
             return 0;
@@ -702,7 +702,7 @@ __int64 AdditionalCliList::ApplyConsumeRate(int nType, __int64 nValue)
         fRate = m_consume.m_fHpRate;
     else if (nType == 7)
         fRate = m_consume.m_fSpRate;
-    return FUN_140632990(nValue + nFlat, 1.0f + fRate);
+    return ScaleValue(nValue + nFlat, 1.0f + fRate);
 }
 
 // @0x140970fb0
@@ -736,7 +736,7 @@ void AdditionalCliList::DecodeListPacket(CInPacket& packet)
 void AdditionalCliList::ApplyAlphaBlending()
 {
     float fAlpha = ComputeAlphaBlending();
-    if (!FUN_14028d470(fAlpha, 1.0f))
+    if (!IsNearlyEqual(fAlpha, 1.0f))
         m_pOwner->vfunc_42(fAlpha, true);
 }
 
@@ -1011,7 +1011,7 @@ int AdditionalCliList::FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField
         return 0;
     if (!eField)
         return 1;
-    int bField = CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060());
+    int bField = CFieldData::FUN_1403744a0(WorldService::GetInstance()->GetFieldId());
     return (eField == 2) == bField;
 }
 
@@ -1026,7 +1026,7 @@ void AdditionalCliList::FUN_140972770()
     if (fAlpha != m_fAlpha)
     {
         m_fAlpha = fAlpha;
-        if (FUN_14028d470(m_fAlpha, 0.0f))
+        if (IsNearlyEqual(m_fAlpha, 0.0f))
             m_pOwner->AddHideReason(3);
         else
         {
@@ -1066,7 +1066,7 @@ void AdditionalCliList::FUN_140972a00()
             continue;
         if (sp->m_bSuspended)
             continue;
-        if (!FUN_14028d470(sp->GetLevelData()->m_motion.m_fAlphaBlending, 1.0f))
+        if (!IsNearlyEqual(sp->GetLevelData()->m_motion.m_fAlphaBlending, 1.0f))
             m_motion.m_fAlphaBlending = sp->GetLevelData()->m_motion.m_fAlphaBlending;
         if (sp->GetLevelData()->m_motion.m_nHide)
             m_motion.m_nHide = 1;
@@ -1195,9 +1195,9 @@ bool AdditionalCliList::FUN_140973680(MS2Ptr<AdditionalCli> sp)
         return false;
     if (PC* pPC = efd::DynamicCast<PC>(m_pOwner))
     {
-        if (WorldService::GetInstance()->FUN_141bd30a0()->GetPkMode())
+        if (WorldService::GetInstance()->GetFieldData()->GetPkMode())
             return true;
-        if (WorldService::GetInstance()->FUN_141bd30a0()->m_nMapType == 3)
+        if (WorldService::GetInstance()->GetFieldData()->m_nMapType == 3)
             return true;
         if (reinterpret_cast<CPvPInfo*>(pPC->GetPvPInfo().operator->())->HasPoint())
             return true;
@@ -1221,7 +1221,7 @@ MyPC* AdditionalCliList::GetOwnerMyPC()
 // @0x140973950
 void AdditionalCliList::AddBuffUI(MS2Ptr<AdditionalCli> sp)
 {
-    bool bMe = FUN_140930110(sp->m_nCasterId);
+    bool bMe = IsUpperTargetId(sp->m_nCasterId);
     if (sp->GetLevelData()->m_ui.FUN_1401927c0(bMe))
     {
         if (IsOwnerMyPC())
@@ -1267,7 +1267,7 @@ void AdditionalCliList::RemoveBuffUI(MS2Ptr<AdditionalCli> sp)
     {
         UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
         if (pBar)
-            pBar->FUN_141b4d060(m_pOwner, sp->GetKey());
+            pBar->RemoveBuff(m_pOwner, sp->GetKey());
         UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
         if (pDuel)
             pDuel->RemoveBuffEffect(sp->GetKey());
@@ -1291,7 +1291,7 @@ void AdditionalCliList::OnPCBangEffectAdded(MS2Ptr<AdditionalCli> sp)
 {
     if (!IsOwnerMyPC())
         return;
-    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (sp->GetId() == *GetClientConstants()->PCBangAdditionalEffectID.Get())
     {
         pLocal->ClearPCBangFlags();
@@ -1310,7 +1310,7 @@ void AdditionalCliList::OnPCBangEffectRemoved(MS2Ptr<AdditionalCli> sp)
 {
     if (!IsOwnerMyPC())
         return;
-    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (sp->GetId() == *GetClientConstants()->PCBangAdditionalEffectID.Get())
         pLocal->ClearPCBangFlags();
 }
@@ -1320,7 +1320,7 @@ void AdditionalCliList::FUN_140974130(MS2Ptr<AdditionalCli> sp)
 {
     if (!IsOwnerMyPC())
         return;
-    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (!pLocal)
         return;
     if (sp->GetLevelData()->m_nEventBuffType == 3)

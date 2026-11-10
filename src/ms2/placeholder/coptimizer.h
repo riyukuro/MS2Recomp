@@ -23,7 +23,7 @@ public:
     COptimizer();
     virtual ~COptimizer();
     int GetPreloadMode() const;
-    int FUN_1414a5910() const;                              // the frame time limit (m_nFrameDelay; 0 = unlimited)
+    int GetFrameTimeLimit() const;                              // the frame time limit (m_nFrameDelay; 0 = unlimited)
     int FUN_1414a5a30();                                    // a static option (0x143ae2b48): MS2KFMCache on
     int FUN_1409f7ea0();                                    // item loader thread enabled (InitInstance)
     int IsModelCullingOn() { return ms_nModelCulling; }     // 0x1414c98a0 (COMDAT, also optimizer.cpp)

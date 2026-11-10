@@ -25,17 +25,17 @@ public:
     void vfunc_3(void*, bool) override;                 // 0x140f7e690 (the item listener's item removed)
     void FUN_140f7e8d0();                               // the items that can be unlocked
     void FUN_140f7ec20();                               // the items that can be ingredient equipment
-    void FUN_140f7ef70(MS2Ptr<CItem>);                  // a source slot was picked
-    void FUN_140f7f210(MS2Ptr<CItem>);                  // all sockets are open: just show the item
-    void FUN_140f7f420(MS2Ptr<CItem>);                  // an ingredient equipment slot was picked
-    void FUN_140f7fa20(MS2Ptr<CItem>);                  // the ingredient equipment was confirmed
+    void SelectSourceItem(MS2Ptr<CItem>);                  // a source slot was picked
+    void SetSelectedItem(MS2Ptr<CItem>);                  // all sockets are open: just show the item
+    void SelectIngredientEquip(MS2Ptr<CItem>);                  // an ingredient equipment slot was picked
+    void ConfirmIngredientEquip(MS2Ptr<CItem>);                  // the ingredient equipment was confirmed
     void FUN_140f7ff50(const CStringW&, __int64*, std::vector<MS2Ptr<CItem> >&);   // ask before unlocking
-    void FUN_140f80160();                               // the action button: unlock
+    void RequestUnlock();                               // the action button: unlock
     void FUN_140f80d70();                               // back to the start
     void FUN_140f80f30();                               // clear everything
     void ClearIngredients();
     void FUN_140f81100(ASObj&);                         // ingredient part of the select data
-    void FUN_140f81a40(ASObj&, int);                    // the socket rows of the item
+    void FillSocketRows(ASObj&, int);                    // the socket rows of the item
     void OnSelectItemResult(CInPacket*);                     // select item result
     void OnUnlockResult(CInPacket*);                     // unlock result
     void FUN_140f826b0(CInPacket* packet);              // refresh the ingredient prices (packet unused)
@@ -47,8 +47,8 @@ public:
     void FUN_140f82e10(const Scaleform::GFx::FunctionHandler::Params&);   // ingredient list change
     void FUN_140f82ed0(CAtlArray<MS2Ptr<CItem>>&);
     void SendItemSocketSystemMode0(Unk_SockUidList&);               // send the unlock request
-    void FUN_140f82f90();
-    void FUN_140f83060(__int64);
+    void ClearSourceSelection();
+    void SetHighlightUid(__int64);
     void UpdateIngredientEquipCount();
     void FUN_140f832f0();
     bool FUN_140f83440(int, const CMsgBoxData&);        // unlock ingredient in gemstone? answer

@@ -51,14 +51,14 @@ public:
     char m_pad[0x68];
     Unk_PnContentArray m_contents;                              // +0x68
 };
-class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
+class Unk_PnWorld { public: void* GetLocalPlayer(); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PnUIMgr { public: };
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 Unk_ScriptPtr<CTalkScript> FindQuestTalk(int nQuestId, int n);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 class Unk_PnRoot : public AScript {};
 class Unk_PnActor { public: void vfunc_4(int, int, int); };
@@ -75,7 +75,7 @@ UIPopupNpcTalkDialog::UIPopupNpcTalkDialog()
     m_180 = 0;
     m_188 = 0;
     m_184 = 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
 }
@@ -83,7 +83,7 @@ UIPopupNpcTalkDialog::UIPopupNpcTalkDialog()
 // @0x140e76770
 UIPopupNpcTalkDialog::~UIPopupNpcTalkDialog()
 {
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e771b0));
 }
@@ -189,7 +189,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
         return 0;
     if (vfunc_56() != 0)
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed())
     {
         if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184) == 0)
         {
@@ -199,7 +199,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
         }
         vfunc_69();
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x493e2, 0, 0))
     {
         m_180++;
         int nState = ShowCurrentLine();
@@ -230,7 +230,7 @@ int UIPopupNpcTalkDialog::vfunc_13()
 void UIPopupNpcTalkDialog::FUN_140e770a0(NotifyObject*)
 {
     ATL::CAtlArray<unsigned> quests;
-    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d360(((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), quests);
+    TSingleton<QuestDataTable>::GetInstance()->FUN_14074d360(((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->GetFieldId(), quests);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         unsigned nQuest = quests[i];
@@ -331,7 +331,7 @@ int UIPopupNpcTalkDialog::FUN_140e77b80(int nQuest)
     MS2Ptr<CQuestData> spQuest = GetQuestData(nQuest);
     if (spQuest.IsNull())
         return 0;
-    unsigned nMap = ((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
+    unsigned nMap = ((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->GetFieldId();
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spQuest->m_fields), reinterpret_cast<const int&>(nMap)) == -1)
         return 0;
     return 1;

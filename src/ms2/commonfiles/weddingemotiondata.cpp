@@ -34,7 +34,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const T1& first,
                    const T2& second);
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 
@@ -85,7 +85,7 @@ int WeddingEmotionTable::Load()
          pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("weddingEmotion")))
     {
         MS2Ptr<WeddingEmotionData> spData(new WeddingEmotionData);
-        unsigned nCode = FUN_140197390(pNode, "code", 0);
+        unsigned nCode = GetUIntAttr(pNode, "code", 0);
         if (nCode == 0)
             continue;
         if (codes.find(nCode) != codes.end())
@@ -107,7 +107,7 @@ int WeddingEmotionTable::Load()
 }
 
 // @0x140903740
-MS2Ptr<WeddingEmotionData> WeddingEmotionTable::FUN_140903740(unsigned nCode)
+MS2Ptr<WeddingEmotionData> WeddingEmotionTable::FindByCode(unsigned nCode)
 {
     std::map<unsigned, MS2Ptr<WeddingEmotionData> >::const_iterator it = m_map.find(nCode);
     if (it == m_map.end())

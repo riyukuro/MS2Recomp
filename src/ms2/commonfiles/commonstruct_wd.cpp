@@ -29,7 +29,7 @@ typedef std::vector<Unk_RemakeLockOpt> VRemake;
 
 // @0x140278a30
 // std::_Tree<map<int,int>>::_Insert_at(bool addleft, _Nodeptr where, _Valty&& val, _Nodeptr newnode)
-i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* where, i64 val, Unk_TNode* newnode)
+i64 InsertAt(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* where, i64 val, Unk_TNode* newnode)
 {
     Unk_TVal* h = (Unk_TVal*)&reinterpret_cast<TreeII*>(tree)->_Get_data();
     if ((u64)(reinterpret_cast<TreeII*>(tree)->max_size() - 1) <= h->size) {
@@ -98,12 +98,12 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
 #define WD_KEY(n) (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(n)))
 #define WD_KFN() (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Kfn(*(const TreeII::value_type*)val))
 #define WD_LT(l, r) reinterpret_cast<TreeII*>(tree)->_Getcomp()(l, r)
-#define WD_INSERT_AT(left, n) FUN_140278a30(tree, out, left, (n), FUN_14027c160(val), newnode)
+#define WD_INSERT_AT(left, n) InsertAt(tree, out, left, (n), FUN_14027c160(val), newnode)
 #define WD_PREV(it) ((Unk_TIter*)&--*reinterpret_cast<MapII::const_iterator*>(&(it)))
 #define WD_CIT(it) (*reinterpret_cast<MapII::const_iterator*>(&(it)))
 // @0x140278d90
 // std::_Tree<map<int,int>>::_Insert_hint(const_iterator where, _Valty&& val, _Nodeptr newnode) (VS2017 15.8 shape: _Multi branch kept, try/catch(...) frees newnode)
-Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode)
+Unk_TIter* InsertHint(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode)
 {
     Unk_TIter next;
     FUN_14027cff0(&next);
@@ -200,7 +200,7 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
         if (TreeII::_Multi) {
             bool yes = true;
             Unk_TIter t;
-            FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
+            FUN_140274d10((__int64*)out, InsertAt(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
             return out;
         } else {
             Unk_TIter where;
@@ -210,14 +210,14 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
             else if (reinterpret_cast<MapII::const_iterator&>(where) == reinterpret_cast<TreeII*>(tree)->begin()) {
                 bool yes = true;
                 Unk_TIter t;
-                FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, true, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
+                FUN_140274d10((__int64*)out, InsertAt(tree, &t, true, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
                 return out;
             } else
                 --*reinterpret_cast<MapII::iterator*>(&where);
             if (WD_LT(WD_KEY(where.node), WD_KFN())) {
                 bool yes = true;
                 Unk_TIter t;
-                FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
+                FUN_140274d10((__int64*)out, InsertAt(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
                 return out;
             } else {
                 static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Destroy_if_node(reinterpret_cast<NodeII>(newnode));
@@ -320,7 +320,7 @@ template void VIng::_Insert_range<PIng*>(VIng::const_iterator, PIng*, PIng*, std
 i64 FUN_14027a270(i64 p) { return p; }
 // @0x14027a280
 // std::_Tree<map<int,int>>::_Lbound(const int& key)
-Unk_TNode* FUN_14027a280(void* tree, i64 key)
+Unk_TNode* FindLowerBound(void* tree, i64 key)
 {
     Unk_TNode* where = FUN_140287ee0(tree)->head;
     Unk_TNode* trynode = where->parent;
@@ -409,10 +409,10 @@ void FUN_14027a700(i64* p, i64 v) { *p = v; }
 // @0x14027a720
 void FUN_14027a720(i64* p, i64 v) { *p = v; }
 // @0x14027a740
-void FUN_14027a740(i64 it, i64* p) { reinterpret_cast<std::vector<ItemOptionValueRandom*>::const_iterator*>(it)->_Seek_to((ItemOptionValueRandom* const*)(*p)); }
+void SeekTo(i64 it, i64* p) { reinterpret_cast<std::vector<ItemOptionValueRandom*>::const_iterator*>(it)->_Seek_to((ItemOptionValueRandom* const*)(*p)); }
 // @0x14027a770
 // std::map<int,int>::try_emplace(const int& key, ...)  [Ghidra's 0x147 is exact]
-Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
+Unk_TIterBool* TryEmplace(void* tree, Unk_TIterBool* out, i64 key)
 {
     MapII::iterator lb = reinterpret_cast<TreeII*>(tree)->lower_bound(*(const int*)key);
     //
@@ -427,7 +427,7 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
         ins = true;
         Unk_TNode* hint = (Unk_TNode*)lb._Ptr;
         void* vt = (void*)&static_cast<const std::tuple<>&>(std::forward_as_tuple());   // the sret temp is pad's slot
-        FUN_140274d10((__int64*)out, FUN_14027be90((__int64)tree, (__int64)&res, (__int64)hint, (__int64)&std::piecewise_construct,
+        FUN_140274d10((__int64*)out, EmplaceHint((__int64)tree, (__int64)&res, (__int64)hint, (__int64)&std::piecewise_construct,
                                          FUN_14027c240((__int64)&tup, FUN_14027c1f0(key)), (__int64)vt), (__int64)&ins);
         return out;
     } else {
@@ -437,7 +437,7 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     }
 }
 // @0x14027a8c0
-i64 FUN_14027a8c0(i64 vec, i64 first, i64 last, i64 dest) { return FUN_14027a9d0(first, last, dest, (i64)&reinterpret_cast<VRemake*>(vec)->_Getal()); }
+i64 FUN_14027a8c0(i64 vec, i64 first, i64 last, i64 dest) { return UninitializedCopy(first, last, dest, (i64)&reinterpret_cast<VRemake*>(vec)->_Getal()); }
 
 // @0x14027a900
 void FUN_14027a900(void* vec, i64 first, i64 last, i64 dest) { FUN_14027ac40(first, last, dest, (i64)&reinterpret_cast<VIng*>(vec)->_Getal()); }
@@ -462,7 +462,7 @@ i64 FUN_14027a9c0(i64 p) { return p; }
 
 // @0x14027a9d0
 // std::_Uninitialized_copy(first, last, dest, al)
-i64 FUN_14027a9d0(i64 first, i64 last, i64 dest, i64 al)
+i64 UninitializedCopy(i64 first, i64 last, i64 dest, i64 al)
 {
     i64 f = FUN_140278710(first);
     i64 l = FUN_140278710(last);

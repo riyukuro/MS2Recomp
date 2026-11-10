@@ -74,8 +74,8 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class WorldService   // C3: view (worldservice.h adds egf::kENTITY_INVALID's dynamic initializer)
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1320(int id);   // C3: the real member (0x141bd1320, an object by id)
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    class Unk_WsC_GameObj* FindNpcById(int id);   // C3: the real member (0x141bd1320, an object by id)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -117,7 +117,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-int FUN_14053feb0(int nItemId);                                 // default rarity of an item
+int GetItemRank(int nItemId);                                 // default rarity of an item
     // the experience of one affinity grade
 void* GetGameRule();
 __int64 GetServerTime();                                        // the server time
@@ -125,7 +125,7 @@ __int64 GetServerTime();                                        // the server ti
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 class Unk_140166410* FUN_140166410();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
@@ -166,10 +166,10 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
 
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // @0x1412e7f30
@@ -182,7 +182,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, CStri
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bcea0(&args[3], a4);
     FUN_1422bccb0(&args[4], a5);
-    FUN_1422bcce0(&args[5], a6);
+    SetBoolean(&args[5], a6);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -203,7 +203,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned __in
     ASArgList args;
     args.resize(3);
     FUN_1422bce00(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -414,12 +414,12 @@ void UIManufactureDialog::vfunc_72()
     MS2Ptr<Unk_UmMfItem> spItem(0);
     if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spItem)) == 0)
         return;
-    CMsTime tReady(reinterpret_cast<CManufacture*>(spItem.operator->())->FUN_140694170());
+    CMsTime tReady(reinterpret_cast<CManufacture*>(spItem.operator->())->GetReadyTime());
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan span = tReady - tNow;
     if (tReady > tNow)
     {
-        int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
+        int nLeft = ((class CLua*)GetLuaClient())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
         int nCurrency = 3;
         if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
             nCurrency = 10;
@@ -452,7 +452,7 @@ void UIManufactureDialog::SetTitle()
 {
     if (m_30.IsNull())
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -484,7 +484,7 @@ void UIManufactureDialog::FillRecipeList(int bSelect)
 {
     if (m_30.IsNull())
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -573,10 +573,10 @@ void UIManufactureDialog::UpdateProgress()
                 CreateItemInfoSlot(m_strProgressKey, spItem, 0, 0x415, 0x800);
                 m_30->FUN_140c38f00("bindProgress", CString(m_strProgressKey), CStringW(strName));
             }
-            CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_140694170());
+            CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->GetReadyTime());
             CMsTime tNow(GetServerTime());
             ATL::CTimeSpan span = tReady - tNow;
-            int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
+            int nLeft = ((class CLua*)GetLuaClient())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
             int nCurrency = 3;
             if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
                 nCurrency = 10;
@@ -600,10 +600,10 @@ void UIManufactureDialog::SelectItem()
 {
     if (m_30.IsNull())
         return;
-    Unk_UmPC* pPlayer = ((Unk_UmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_UmPC* pPlayer = ((Unk_UmPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -654,7 +654,7 @@ void UIManufactureDialog::SelectItem()
             MS2Ptr<CItemData> spData = FUN_14053f870(nIngItem);
             if (spData == 0)
                 continue;
-            int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->field04 : FUN_14053feb0(nIngItem);
+            int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->field04 : GetItemRank(nIngItem);
             unsigned nNeeded = ((CGameRule*)GetGameRule())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3f), spIngredient->count);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
@@ -715,7 +715,7 @@ void UIManufactureDialog::FUN_1412e5c90()
 {
     if (m_30.IsNull())
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -731,7 +731,7 @@ void UIManufactureDialog::FUN_1412e5c90()
 // @0x1412e5dd0
 void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -754,7 +754,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 // @0x1412e5f70
 void UIManufactureDialog::FUN_1412e5f70(int nRow)
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -777,7 +777,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
 // @0x1412e6110
 void UIManufactureDialog::OnCraftResult(int nResult)
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -797,7 +797,7 @@ void UIManufactureDialog::OnCraftResult(int nResult)
 // @0x1412e6250
 void UIManufactureDialog::OnRecieve()
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -820,10 +820,10 @@ void UIManufactureDialog::OnRecieveByMerat()
     MS2Ptr<Unk_UmMfItem> spMf(0);
     if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spMf)) == 0)
         return;
-    CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_140694170());
+    CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->GetReadyTime());
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan span = tReady - tNow;
-    __int64 nCost = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
+    __int64 nCost = ((class CLua*)GetLuaClient())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
     {
         if (!((Unk_UmWallet*)((void*)GetClientPlatform()))->vfunc_41(nCost) && !((Unk_UmWallet*)((void*)GetClientPlatform()))->vfunc_40(nCost))
@@ -840,7 +840,7 @@ void UIManufactureDialog::OnRecieveByMerat()
             return;
         }
     }
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -860,7 +860,7 @@ void UIManufactureDialog::OnRecieveByMerat()
 // @0x1412e66f0
 void UIManufactureDialog::OnRecieveJackpot()
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -880,7 +880,7 @@ void UIManufactureDialog::OnRecieveJackpot()
 // @0x1412e6850
 void UIManufactureDialog::OnReceiveResult(int nResult)
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -900,7 +900,7 @@ void UIManufactureDialog::OnReceiveResult(int nResult)
 // @0x1412e69a0
 void UIManufactureDialog::FUN_1412e69a0()
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -920,7 +920,7 @@ void UIManufactureDialog::FUN_1412e69a0()
 // @0x1412e6af0
 void UIManufactureDialog::OnCancelResult(int nResult)
 {
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
@@ -942,7 +942,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
 {
     if (m_30.IsNull())
         return;
-    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = pNpc->GetMaid();

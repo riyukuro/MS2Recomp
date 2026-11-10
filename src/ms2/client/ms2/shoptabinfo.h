@@ -86,7 +86,7 @@ public:
     virtual ~ShopBanner();                                          // 0x1413147c0
 
     void AddBanner(MS2Ptr<ShopBannerInfo> spInfo);                                  // add (keyed by its name)
-    MS2Ptr<ShopBannerInfo> FUN_141347f50(const Unk_AdbPtr& spBanner, int nType);   // add one from an ad banner
+    MS2Ptr<ShopBannerInfo> AddBannerFromAd(const Unk_AdbPtr& spBanner, int nType);   // add one from an ad banner
     MS2Ptr<ShopBannerInfo> FindBanner(const CString& strName);                       // find by name
     void OpenBannerLink(const CString& strUrl);                                          // open a banner link
     void WriteBanners(ASArray& arr);                                                   // write all banners
@@ -101,7 +101,7 @@ typedef ATL::CAtlArray<MS2Ptr<ShopTabInfo> > Unk_ShopTabArray;
 
 // Tab list builders.
 int FindTabIndex(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInfo> spTab);   // index of the tab, -1
-int FUN_1413483c0(const CString& strCategory, const CString& strList);                       // category in a "a,b,c" list
+int IsCategoryInList(const CString& strCategory, const CString& strList);                       // category in a "a,b,c" list
 void BuildShopTabs(int nShop, Unk_ShopTabArray& arr);
 void BuildShopTabsForProducts(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products);
 void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2Ptr<CNpcShopProductBase> spProduct,
@@ -113,15 +113,15 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
 void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, int nLhsFlags, int nRhsFlags);
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, ASTooltip* pLhs, ASTooltip* pRhs);
 
-int FUN_1413499b0(int nTab);                                                    // open the shop on a tab
+int ToggleShopTab(int nTab);                                                    // open the shop on a tab
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int nStringId, const CString& strUrl); // item message box
 void ShowItemMessageBox(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl);
 int GetBannerLinkKind(const CString& strKind);                                      // banner link kind (link=1 .. searchBySN=5)
 
-// Currency helpers (nKind: the shop currency kind, mapped by FUN_14134a170).
+// Currency helpers (nKind: the shop currency kind, mapped by GetCurrencyType).
 __int64 FUN_141349ef0(int nKind, int nItemId, unsigned int nAmount);
 void FUN_141349f30(CStringW& strOut, int nKind, int nArg, unsigned int nAmount, const CString& strCurrency);
-bool FUN_14134a030(int nKind, int nItemId, unsigned int nAmount);
+bool CanPayCurrency(int nKind, int nItemId, unsigned int nAmount);
 CStringW GetCurrencyText(int nKind, int nArg, unsigned int nAmount);
 void FUN_14134a120(int nKind, int nItemId, unsigned int nAmount);
-int FUN_14134a170(int nKind);
+int GetCurrencyType(int nKind);

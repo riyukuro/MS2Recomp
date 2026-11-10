@@ -24,7 +24,7 @@ public:
     virtual BOOL vfunc_31();                                        // reads the PVP_* camera settings
     virtual void vfunc_39(double fTime);                            // smooth the pose towards m_d8
 
-    void FUN_1416c5b00(int nTargetId);                              // select the opponent
+    void SetOpponentId(int nTargetId);                              // select the opponent
     efd::Point3 GetFramingCenter();                                // framing centre (midpoint with the opponent)
 
     int m_108;                                                      // +0x108 opponent object id

@@ -47,15 +47,15 @@ class Unk_PCBaseComp_ac8 : public CPtred {};
 class Unk_FdWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                                // the local player
+    PCBase* GetLocalPlayer();                                // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
-    int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // C3: the real member, register a created object
+    class Unk_WsC_GameObj* FindPCById(int id);   // C3: the real member (0x141bd1290, an object by id)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
+    int OnObjectCreated(GameObject* obj, int bFullInit, unsigned cameraArg);   // C3: the real member, register a created object
     static class WorldService* GetInstance();
 };
 
@@ -164,17 +164,17 @@ FittingDollPC* GetOrCreateDoll(int nType, int nSourceId, int nItemId)
     if (nType == 1)
     {
         nObjectId = 0xf;
-        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0xf));
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(0xf));
     }
     else if (nType == 0)
     {
         nObjectId = 0x10;
-        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0x10));
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(0x10));
     }
     else if (nType == 2)
     {
         nObjectId = 0x11;
-        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(0x11));
+        pObject = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(0x11));
     }
     if (pObject == 0 && nObjectId != 0)
     {
@@ -190,7 +190,7 @@ FittingDollPC* GetOrCreateDoll(int nType, int nSourceId, int nItemId)
             return 0;
         ((FittingDollPC*)pObject)->type = nType;
         ((FittingDollPC*)pObject)->index = nSourceId;
-        if (WorldService::GetInstance()->FUN_141bbb1e0(pObject, 0, 1) == 0)
+        if (WorldService::GetInstance()->OnObjectCreated(pObject, 0, 1) == 0)
             return 0;
     }
     return (FittingDollPC*)pObject;
@@ -473,7 +473,7 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
 {
     if (pItem == 0)
         return 0xc;
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0xb;
     if (pPlayer->IsDead() != 0)

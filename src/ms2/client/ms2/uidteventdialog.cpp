@@ -118,7 +118,7 @@ public:
 
 // A sound / effect player (singleton 0x140e45740).
 class Unk_DTSound : public UIAlignWidgetManager { };
-class Unk_140e45740* FUN_140e45740();   // C3: was FUN_140e45740
+class Unk_140e45740* GetAlignWidgetManager();   // C3: was GetAlignWidgetManager
 
 class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 
@@ -261,7 +261,7 @@ void UIDTEventDialog::vfunc_43()
                 m_60 = 1;
             else {
                 int nRemain = 0;
-                if (MS2Ptr<ASMovieClip> movie = dynamic_cast<ASMovieClip*>((AScript*)pOwner->FUN_1422dba00())) {
+                if (MS2Ptr<ASMovieClip> movie = dynamic_cast<ASMovieClip*>((AScript*)pOwner->GetScript())) {
                     double fValue = 0.0;
                     double fExtra = 0.0;
                     if (reinterpret_cast<Unk_DTMovie*>(movie.operator->())->LocalToGlobal(&fValue, &fExtra))
@@ -371,7 +371,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     obj.SetIntMember("gaugeRate", nGauge);
     obj.SetIntMember("vibrate", bVibrate);
     m_30->Invoke("addItem", obj.GetValue());
-    ((class Unk_DTSound*)FUN_140e45740())->RequestLayout(0);
+    ((class Unk_DTSound*)GetAlignWidgetManager())->RequestLayout(0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F36620, UIDTEventDialog, vfunc_84, 2429, 0x4EA48E5D);
@@ -499,7 +499,7 @@ MS2_REPLACE_METHOD(0x140F37870, UIDTEventDialog, vfunc_87, 2268, 0x641A42AF);
 void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     unsigned int nID = pArgs->PopUInt();
@@ -527,7 +527,7 @@ void UIDTEventDialog::CreateRewardItem(MS2Ptr<CommonUserEvent::DTRewardEventCont
     Unk_DTPtr<Unk_DTReward> pReward(new RewardItem);
     if (pReward == NULL)
         return;
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     if (pPlayer->vfunc_78() < pCtx->m_level) {
@@ -558,7 +558,7 @@ MS2_REPLACE_METHOD(0x140F38630, UIDTEventDialog, RemoveEvent, 272, 0x3FB9C696);
 // @0x140f38750
 void UIDTEventDialog::ActivateWaitingContexts()
 {
-    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == NULL)
         return;
     POSITION pos = m_ctx.GetStartPosition();

@@ -67,7 +67,7 @@ struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The item a state is told about in its slots 29/30.
 class Unk_StateArg29 : public CItem { };
@@ -199,11 +199,11 @@ void StateSwim::vfunc_8(double fTime)
                 m_n10 = 0x85;
             else
                 m_n10 = 0x84;
-            if (pBuff->FUN_141683100(0x30d41))
+            if (pBuff->IsActionKeyPressed(0x30d41))
             {
                 pPC->TryUseChairOrBed(1, 0);
             }
-            else if (pBuff->FUN_141683100(0x30d42))
+            else if (pBuff->IsActionKeyPressed(0x30d42))
             {
                 pPC->TryUseChairOrBed(2, 0);
             }

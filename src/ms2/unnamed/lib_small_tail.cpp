@@ -28,7 +28,7 @@ enum { BT_NONXML = 0, BT_MALFORM = 1, BT_LEAD2 = 5, BT_LEAD3 = 6, BT_LEAD4 = 7, 
        BT_LSQB = 20, BT_S = 21, BT_NMSTRT = 22, BT_HEX = 24, BT_MINUS = 27, BT_CR = 9, BT_LF = 10, BT_PERCNT = 30 };
 
 // @0x1423c55a0  expat normal_scanComment: ptr is past "<!-"; returns XML_TOK_COMMENT (13) after "-->"
-__declspec(noinline) int FUN_1423c55a0(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
+__declspec(noinline) int ScanComment(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
 {
     if (ptr == end)
         return -1;
@@ -102,7 +102,7 @@ __declspec(noinline) int FUN_1423c55a0(const ExpatNormalEncoding* enc, const cha
 }
 
 // @0x1423c5740  expat normal_scanDecl
-int FUN_1423c5740(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
+int ScanDecl(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
 {
     if (ptr == end)
         return -1;
@@ -112,7 +112,7 @@ int FUN_1423c5740(const ExpatNormalEncoding* enc, const char* ptr, const char* e
         *nextTokPtr = ptr + 1;
         return 33;
     case BT_MINUS:
-        return FUN_1423c55a0(enc, ptr + 1, end, nextTokPtr);
+        return ScanComment(enc, ptr + 1, end, nextTokPtr);
     case BT_NMSTRT:
     case BT_HEX:
         ++ptr;
@@ -166,7 +166,7 @@ static __declspec(noinline) int FUN_142703ce0(unsigned long long c)
 }
 
 // @0x142703c80  all four bytes of a 32-bit tag pass the name-character test
-int FUN_142703c80(unsigned long long tag)
+int IsValidTag(unsigned long long tag)
 {
     return FUN_142703ce0(tag >> 24) && FUN_142703ce0((unsigned char)(tag >> 16)) && FUN_142703ce0((unsigned char)(tag >> 8)) &&
            FUN_142703ce0((unsigned char)tag);
@@ -265,7 +265,7 @@ static __forceinline void JpegIdctRow(const float* wsptr, unsigned char* outptr,
 // MS2-FUNCTIONAL: same AA&N arithmetic and output as jidctflt.c; in pass 2 the exe loads the eight workspace values into
 // registers and biases the workspace pointer differently, where ours folds some loads into memory operands
 // @0x142702350
-void FUN_142702350(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short* coef_block, unsigned char** output_buf, unsigned int output_col)
+void JpegIdctFloat(JpegDecompressLite* cinfo, JpegComponentLite* compptr, short* coef_block, unsigned char** output_buf, unsigned int output_col)
 {
     float workspace[64];
     const unsigned char* range_limit = cinfo->sample_range_limit + 128;

@@ -45,7 +45,7 @@ template<> struct Unk_SocketRef<Unk_ClubCliMap>
             result = &static_cast<TPtredDummy<Unk_ClubCliMap>*>(p)->value;
         return result;
     }
-    static Unk_ClubCliMap* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
+    static Unk_ClubCliMap* Create(void*) { return Value(InitRefCount(New(NULL))); }
 };
 MS2_SOCKETPTR_BOXED(Unk_ClubCliMap)
 MS2_CHECK_SIZE(TPtredDummy<Unk_ClubCliMap>, 0x48);

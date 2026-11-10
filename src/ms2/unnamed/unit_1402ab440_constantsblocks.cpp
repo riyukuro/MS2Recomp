@@ -468,7 +468,7 @@ bool Constants::Lookup(const CString& key, unsigned short* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        *out = FUN_140718110(s);
+        *out = ParseUInt16(s);
         return true;
     }
     return false;
@@ -501,7 +501,7 @@ bool Constants::Lookup(const CString& key, unsigned int* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        *out = FUN_1407181d0(s);
+        *out = ParseUInt(s);
         return true;
     }
     return false;
@@ -523,7 +523,7 @@ bool Constants::Lookup(const CString& key, unsigned long* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        *out = FUN_140718290(s);
+        *out = ParseULong(s);
         return true;
     }
     return false;

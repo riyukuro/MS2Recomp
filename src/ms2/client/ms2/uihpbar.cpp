@@ -30,7 +30,7 @@ public:
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(const CString& strLabel);     // 15 gotoAndPlay(label)
 };
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
 class Unk_HpClip : public ASGameEntity
@@ -62,7 +62,7 @@ public:
 float FUN_1412762d0(const NiPoint3& pt);
 extern template CString StringFormat<int>(const char*, const int&);
 float Ceil(float f);                                               // ceilf
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_HpNpc : public PCBase
 {
 public:
@@ -199,7 +199,7 @@ int UIHpBar::Entity::vfunc_8(int n)
     Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(pActor));
     if (pPc != 0)
     {
-        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
         Ridee* pHolder = reinterpret_cast<Ridee*>(pActor->GetRidee());
@@ -291,12 +291,12 @@ void UIHpBar::Entity::FUN_141992230(__int64 nCur, __int64 nMax)
             FUN_141992140(1);
             if (nCur == nMax)
             {
-                m_68.FUN_140868820();
+                m_68.SetExpired();
                 m_64 = 2000;
             }
             else
             {
-                m_68.FUN_140868820();
+                m_68.SetExpired();
                 m_64 = 0;
             }
         }
@@ -312,7 +312,7 @@ void UIHpBar::Entity::FUN_1419923b0()
 // @0x1419923f0
 int UIHpBar::Entity::FUN_1419923f0()
 {
-    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pLocal == 0)
         return 0;
     Unk_HpActor* pActor = (Unk_HpActor*)FUN_140f49330();
@@ -361,7 +361,7 @@ int UIHpBar::Entity::FUN_141992580()
     int nOld = m_b4;
     if (pActor != 0)
     {
-        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pLocal != 0)
         {
             if (pLocal->GetObjectId() == pActor->GetObjectId())
@@ -490,7 +490,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
         return 0;
     if (pPc->IsDead() == 0)
         return 1;
-    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pLocal != 0 && pLocal->vfunc_122(pPc) != 0)
         return 1;
     if (pPc->IsRevivalBlocked() != 0 || pPc->FUN_14165ca20() == 0)
@@ -774,7 +774,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -798,8 +798,8 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -828,7 +828,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -852,8 +852,8 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -882,7 +882,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
     {
         if (m_78.IsEmpty())
         {
-            bool bFlag = FUN_140930110(nActorId);
+            bool bFlag = IsUpperTargetId(nActorId);
             bFlag = false;
             Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -906,8 +906,8 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
                 int nOld = pEntity->FUN_140f48d20();
                 if (nActorId != nOld)
                 {
-                    bool bNew = FUN_140930110(nActorId);
-                    if (FUN_140930110(nOld) || bNew)
+                    bool bNew = IsUpperTargetId(nActorId);
+                    if (IsUpperTargetId(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -953,8 +953,8 @@ Scaleform::GFx::Value Unk_HpClip::FUN_141994b30(const char* szMethod, unsigned i
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
     FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }

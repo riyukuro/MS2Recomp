@@ -105,7 +105,7 @@ class WorldService   // C3: member view
 {
 public:
     static WorldService* GetInstance();
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
 };
 // The stat point manager at player+0x1120 is held in an MS2Ptr<CStatPointManager> (copy ctor 0x140c24920, dtor
 // 0x140c24a50, operator-> 0x140c24af0, AddRef 0x140c25e00, AddRefImpl 0x140c25e50, Reference 0x140c25e30, Release
@@ -544,7 +544,7 @@ void UIHighlightGameMenu::vfunc_5(void* pItem, int nCount)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
-        if (nCount == 0 || pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
+        if (nCount == 0 || pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetData())))->FUN_14053d840()) {} else
             m_bitsGem.SetBit(0, true);
     }
 }
@@ -554,7 +554,7 @@ void UIHighlightGameMenu::vfunc_2(void* pItem)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
-        if (pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
+        if (pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetData())))->FUN_14053d840()) {} else
             m_bitsGem.SetBit(0, true);
     }
 }
@@ -596,7 +596,7 @@ void UIHighlightGameMenu::UpdateMenu()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0xe558)->Get())
@@ -625,7 +625,7 @@ void UIHighlightGameMenu::UpdateMenu()
 // @0x140c231b0
 int UIHighlightGameMenu::HasBetterEquipmentInBag()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > bag;
@@ -639,7 +639,7 @@ int UIHighlightGameMenu::HasBetterEquipmentInBag()
             continue;
         if (g_143ab2a90.GetItemUseError(item.get()) != 0)
             continue;
-        MS2Ptr<CItemData> rec((CItemData*)item->FUN_140527840());
+        MS2Ptr<CItemData> rec((CItemData*)item->GetData());
         if (!rec)
             continue;
         if (rec->limit.IsJobRecommended(((PC*)pPc)->GetJobGroupId()) == 0)
@@ -656,7 +656,7 @@ int UIHighlightGameMenu::HasBetterEquipmentInBag()
 // @0x140c234d0
 int UIHighlightGameMenu::FUN_140c234d0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return false;
     int nMax = TSingleton<JobTable>::GetInstance()->GetJobRank(((PC*)pPc)->GetSubJob());
@@ -666,7 +666,7 @@ int UIHighlightGameMenu::FUN_140c234d0()
             continue;
         if (i == 1)
         {
-            unsigned nNeed = ((CLua*)FUN_1401c0db0())->CalcAvailableSkillPoint(pPc->vfunc_78());
+            unsigned nNeed = ((CLua*)GetLuaClient())->CalcAvailableSkillPoint(pPc->vfunc_78());
             unsigned nUsed = ((JobSystem*)((PC*)pPc)->GetJobSystem())->GetUsedPoint(i);
             if (nUsed >= nNeed)
                 continue;
@@ -679,7 +679,7 @@ int UIHighlightGameMenu::FUN_140c234d0()
 // @0x140c235d0
 int UIHighlightGameMenu::FUN_140c235d0()
 {
-    if ((unsigned)g_143ab2ee0.FUN_1408e3520() > 0)
+    if ((unsigned)g_143ab2ee0.GetUnreadAlarm() > 0)
         return true;
     if (g_143ab2ee0.FUN_1408e48b0() != 0)
     {
@@ -698,7 +698,7 @@ int UIHighlightGameMenu::FUN_140c235d0()
 // @0x140c236f0
 int UIHighlightGameMenu::FUN_140c236f0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return false;
     bool bPoint = (unsigned)((MyPC*)pPc)->GetStatPointManager()->GetRemaining() > 0;
@@ -710,7 +710,7 @@ int UIHighlightGameMenu::FUN_140c236f0()
 // @0x140c237a0
 int UIHighlightGameMenu::FUN_140c237a0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return false;
     m_nScrollItem = 0;
@@ -731,7 +731,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
     }
     if (scroll == 0)
         return false;
-    MS2Ptr<CItemData> rec((CItemData*)scroll->FUN_140527840());
+    MS2Ptr<CItemData> rec((CItemData*)scroll->GetData());
     if (!rec)
         return false;
     if (rec->function.name != L"EnchantScroll")
@@ -755,7 +755,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
     for (unsigned __int64 j = 0; j < items.GetCount(); ++j)
     {
         MS2Ptr<CItem> it = items[j];
-        MS2Ptr<CItemData> data((CItemData*)it->FUN_140527840());
+        MS2Ptr<CItemData> data((CItemData*)it->GetData());
         if (!data)
             continue;
         if (it->GetRequiredLevel() < 0x32)
@@ -765,7 +765,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
         int nId = data->GetEquipSubtype();
         if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(ench->m_slots), nId) == -1)
             continue;
-        if (TSingleton<CItemEnchantLimitTable>::GetInstance()->FUN_14058df90(it.get()) == 0)
+        if (TSingleton<CItemEnchantLimitTable>::GetInstance()->CanEnchant(it.get()) == 0)
             continue;
         int nGrade = it->GetEnchantLevel();
         if (nGrade >= ench->m_nGrade)
@@ -788,7 +788,7 @@ int UIHighlightGameMenu::HasUsableGemStone()
         if (!bSocket)
             return false;
     }
-    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return false;
     m_bitsGem.SetBit(0, false);
@@ -818,7 +818,7 @@ int UIHighlightGameMenu::HasUsableGemStone()
             for (unsigned __int64 k = 0; k < gems.GetCount(); ++k)
             {
                 MS2Ptr<CItem> g = gems[k];
-                if (g == 0 || g->FUN_140527840() == 0 || ((CItemData*)g->FUN_140527840())->FUN_14053d840() == 0)
+                if (g == 0 || g->GetData() == 0 || ((CItemData*)g->GetData())->FUN_14053d840() == 0)
                     continue;
                 MS2Ptr<CItemGemStoneData> rec = TSingleton<CItemGemStoneUpgradeTable>::GetInstance()->FindData(g->GetItemId());
                 if (rec == 0)

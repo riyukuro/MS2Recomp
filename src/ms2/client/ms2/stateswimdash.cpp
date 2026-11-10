@@ -49,7 +49,7 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The input / skill tables of the dash check.
 void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
@@ -140,11 +140,11 @@ void StateSwimDash::vfunc_8(double fTime)
         Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
         Vector3 kDir = pBuff->FUN_141683900();
         reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
-        if (pBuff->FUN_141683100(0x30d41))
+        if (pBuff->IsActionKeyPressed(0x30d41))
         {
             pPC->TryUseChairOrBed(1, 0);
         }
-        else if (pBuff->FUN_141683100(0x30d42))
+        else if (pBuff->IsActionKeyPressed(0x30d42))
         {
             pPC->TryUseChairOrBed(2, 0);
         }

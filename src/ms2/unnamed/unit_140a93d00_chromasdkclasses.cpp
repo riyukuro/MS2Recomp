@@ -2606,7 +2606,7 @@ bool ChromaManagerDummy::Initialize()
 {
     if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xd5))
     {
-        if (CGameOption::GetInstance()->FUN_140aaaa90()->m_bDisable)
+        if (CGameOption::GetInstance()->GetChroma()->m_bDisable)
             return false;
         HMODULE hModule = LoadLibraryA("RzChromaSDK64.dll");
         if (hModule != NULL)
@@ -2628,7 +2628,7 @@ bool ChromaManagerDummy::Initialize()
 } // namespace ChromaSDK
 
 // @0x140aaaa90
-Unk_GoChroma* CGameOption::FUN_140aaaa90()
+Unk_GoChroma* CGameOption::GetChroma()
 {
     return &m_chroma;
 }

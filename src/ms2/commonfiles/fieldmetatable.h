@@ -25,7 +25,7 @@ typedef Unk_SocketNew Unk_FieldNewTag;
 
 
 
-CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated box (sets the count to 1)
+CPtred* InitRefCount(CPtred* p);                           // marks a freshly allocated box (sets the count to 1)
 
 // 16-byte intrusive smart pointer of a boxed value (field 0 unused, field 1 the value). Same shape as the plain
 // MS2Ptr<T> but the CPtred header sits 0x18 bytes before the pointee. Members are defined out of the class (below) so
@@ -90,7 +90,7 @@ template <class T> TPtredDummy<T>* Unk_FieldPtr<T>::Owner(T* p)
     return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value));
 }
 template <class T> void Unk_FieldPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-template <class T> T* Unk_FieldPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+template <class T> T* Unk_FieldPtr<T>::Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
 template <class T> void Unk_FieldPtr<T>::AddRefImpl(void*) const { Ref(Owner(m_p)); }
 template <class T> void Unk_FieldPtr<T>::ReleaseImpl(void*)
 {
@@ -166,34 +166,34 @@ public:
 
     void GetPetFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // pet fields
     void GetLiftableFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // liftable fields
-    void FUN_1406fb1e0(int nId, ATL::CAtlArray<unsigned int>& out);                 // interact object fields
+    void GetInteractFields(int nId, ATL::CAtlArray<unsigned int>& out);                 // interact object fields
     void GetNpcFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);
     void GetNpcMapSearchFields(unsigned int nId, Unk_FieldIdList& out);
     void FUN_1406fb520(unsigned int nId, Unk_FieldIdList& out);
     void FUN_1406fb610(unsigned int nFieldId, Unk_FieldIdList& out);
-    int FUN_1406fb700(unsigned int nId, unsigned int* pOut);
+    int FindNpcField(unsigned int nId, unsigned int* pOut);
     void FUN_1406fb810(unsigned int nFieldId, Unk_FieldIdList& out);
-    void FUN_1406fb900(unsigned int nFieldId, unsigned int nGroupId, Unk_FieldIdList& out);
-    int FUN_1406fba40(unsigned int nId, int nField);
+    void GetGroupNpcs(unsigned int nFieldId, unsigned int nGroupId, Unk_FieldIdList& out);
+    int IsNpcInField(unsigned int nId, int nField);
     bool FUN_1406fbb50(unsigned int nNpc, unsigned int nField);
-    int FUN_1406fbc10(unsigned int nField);
-    unsigned int FUN_1406fbc50(unsigned int nField);
+    int HasTaxi(unsigned int nField);
+    unsigned int GetTaxiHomePrivilege(unsigned int nField);
     Unk_FieldIdListPtr GetPortalTargets(unsigned int nField);
     void FUN_1406fbdf0(Unk_FieldIdListPtr pFrom, Unk_FieldIdListPtr pTo);
-    int FUN_1406fc110(unsigned int nKey, unsigned int* pValue);
+    int GetParentField(unsigned int nKey, unsigned int* pValue);
     int FUN_1406fc160(unsigned int nKey, Unk_FieldIdListPtr& pList);
     void FUN_1406fc1b0(std::set<unsigned int>& seen, unsigned int nField);
     void FUN_1406fc2f0(unsigned int nField, Unk_FieldIdList& out);
-    Unk_FieldIdListPtr FUN_1406fc3c0(unsigned int nField);
-    Unk_FieldIdListMap& FUN_1406fc450();
+    Unk_FieldIdListPtr GetPortalType8Targets(unsigned int nField);
+    Unk_FieldIdListMap& GetPortalType8Map();
     Unk_FieldIdListMap& GetPortalTargets() { return m_portalTargets; }   // inline (COMDAT 0x140c955c0, questnavigation.cpp)
     Unk_FieldIdListMap& FUN_141b69360() { return m_fieldNpcs; }       // inline (COMDAT 0x141b69360, uiworldmapdialog.cpp)
-    void FUN_1406fc480(int nFieldId, int nNpcId, const CMsTime& t);
-    void FUN_1406fc590(int nFieldId);
+    void SetSpawnNpcGuarantee(int nFieldId, int nNpcId, const CMsTime& t);
+    void RemoveSpawnNpcGuarantee(int nFieldId);
     int FUN_1406fc620(int nNpcId, CMsTime& out);
     int FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out);
     int HasPortalTarget(unsigned int nField, unsigned int nId);
-    int FUN_1406fc870(unsigned nFieldId);
+    int IsFieldEnabled(unsigned nFieldId);
     bool ParseTimeString(CString str, __int64* pTime);
     void LoadFieldMetaData();                                   // Load
 

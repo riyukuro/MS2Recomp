@@ -28,7 +28,7 @@ class TiXmlElement;   // C3 #12: was a local TiXml element view; a declaration i
 #include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
 typedef Unk_SocketNew Unk_TrgNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
 
-CPtred* FUN_1401ba820(CPtred*);
+CPtred* InitRefCount(CPtred*);
 
 // Intrusive smart pointer to the value of a TPtredDummy<T> (the real name is probably TPtr<T>; same shape as Unk_PktPtr
 // of commonfiles/clientreconnectionstructs.h plus assignment): 16 bytes, field 0 unused, field 1 the value.
@@ -49,7 +49,7 @@ private:
     static T* Value(TPtredDummy<T>* p) { return p == NULL ? NULL : &p->value; }
     static TPtredDummy<T>* Owner(T* p) { return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value)); }
     static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
     void AddRefImpl(void*) const { Ref(Owner(m_p)); }
     void ReleaseImpl(void*) {
         CPtred* owner = Owner(m_p);

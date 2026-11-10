@@ -119,7 +119,7 @@ public:
 };
 class Unk_1409331e0;
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-int FUN_141276180(const CString& strSound, const CString& strArg);   // play a system sound
+int PlaySystemSound(const CString& strSound, const CString& strArg);   // play a system sound
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_140166440 { public: };
@@ -189,7 +189,7 @@ void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool)
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
 CString GetCharacterFolder();                                            // the UI settings directory
-CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);    // path join
+CString JoinPath(const CString& strRoot, const CString& strPath);    // path join
 
 #define UIDIALOG_INL_ASSERT_0()                                                                                   \
     (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\uiswfentity.inl", 23), 0))
@@ -271,7 +271,7 @@ int UIDialog::vfunc_4()
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return m_e8.SaveFile(FUN_140cc2a00(GetCharacterFolder(), GetTypeName() + ".xml"));
+    return m_e8.SaveFile(JoinPath(GetCharacterFolder(), GetTypeName() + ".xml"));
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 
@@ -282,7 +282,7 @@ int UIDialog::vfunc_5()
         return 0;
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     vfunc_83();
-    if (m_e8.LoadFile(FUN_140cc2a00(GetCharacterFolder(), GetTypeName() + ".xml"), TIXML_ENCODING_UNKNOWN)) {
+    if (m_e8.LoadFile(JoinPath(GetCharacterFolder(), GetTypeName() + ".xml"), TIXML_ENCODING_UNKNOWN)) {
         void* pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
         if (!pNode)
             return 0;
@@ -380,7 +380,7 @@ void UIDialog::FUN_141924190()
     if (((class Unk_1409331e0*)FUN_1409331e0()))
         ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
     if (!vfunc_56() && m_8c)
-        FUN_141276180(m_d0, "");
+        PlaySystemSound(m_d0, "");
     if (m_164) {
         POSITION pos = s_openDialogs.Find((Unk_UIType)vfunc_48());
         if (pos)
@@ -444,7 +444,7 @@ MS2_REPLACE_METHOD(0x141924630, UIDialog, FUN_141924630, 59, 0x1ABB11BB);
 // @0x141924680
 void UIDialog::FUN_141924680()
 {
-    if (vfunc_58() && !WorldService::GetInstance()->FUN_141bd0cc0())
+    if (vfunc_58() && !WorldService::GetInstance()->GetLocalPlayer())
         return;
     ClosePopupMenu();
     if (vfunc_65())
@@ -585,7 +585,7 @@ int UIDialog::vfunc_65()
     if (((class Unk_1409331e0*)FUN_1409331e0()))
         ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
     if (m_58 && !vfunc_56() && m_8c)
-        FUN_141276180(m_c8, "");
+        PlaySystemSound(m_c8, "");
     if (m_164)
         s_openDialogs.AddHead((Unk_UIType)vfunc_48());
     return 1;
@@ -845,7 +845,7 @@ int UIDialog::vfunc_13()
         return 0;
     if (vfunc_56())
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && !vfunc_64() && !IsFlagSet(1)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed() && !vfunc_64() && !IsFlagSet(1)) {
         vfunc_69();
         return 1;
     }
@@ -896,7 +896,7 @@ int UIDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
             m_c0 = 2;
             if (((class Unk_1409331e0*)FUN_1409331e0()))
                 ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
-            FUN_1422dc0b0();
+            Unload();
         }
         return 1;
     }
@@ -1018,7 +1018,7 @@ void UIDialog::BindWebGuideButton(MS2Ptr<AScript> spRoot, CString strName, int n
         return;
     }
     spButton->vfunc_4(true);
-    spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925e10),
+    spButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925e10),
                             IntToUserData(n));
     MS2Ptr<ASUIComponent> spComponent(spButton.get());
     m_a8.push_back(spComponent);
@@ -1032,7 +1032,7 @@ void UIDialog::FUN_1419264e0(CString strName, const Delegate<void(const Scalefor
     MS2Ptr<ASButton> spButton = GetChild<ASButton>(strName);
     if (spButton == 0)
         return;
-    spButton->FUN_1422ce240(cb, 0);
+    spButton->AddClickHandler(cb, 0);
     MS2Ptr<ASUIComponent> spComponent(spButton.get());
     m_a8.push_back(spComponent);
 }

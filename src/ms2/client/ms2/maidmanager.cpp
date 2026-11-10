@@ -168,7 +168,7 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
             if (pDlg != 0)
                 ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->UpdateProperty();
         }
-        PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(nActorId));
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FindNpcById(nActorId));
         if (pPC != 0)
         {
             MS2Ptr<Unk_PCBaseComp_a78> spComp = pPC->vfunc_82();

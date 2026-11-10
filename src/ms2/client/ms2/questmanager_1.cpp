@@ -39,7 +39,7 @@ __int64 GetServerTime();
 bool FUN_140930b70();
 bool FUN_1409312f0();
 extern int DAT_143ab2880;
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 CStringW GetQuestName(int);
 void ShowSystemNotice(const CStringW&, int, int);
 
@@ -48,7 +48,7 @@ class WorldService   // C3: static member view for the former free stand-ins
 public:
     static class WorldService* GetInstance();
 public:
-    void* FUN_141bd0cc0();   // C3: was free FUN_141bd0cc0
+    void* GetLocalPlayer();   // C3: was free GetLocalPlayer
 };
 class PC   // C3: member view for the former free stand-ins
 {
@@ -69,7 +69,7 @@ public:
 
 CStringW GetQuestSummary(int, int);
 CStringW GetQuestConditionText(int, int);
-void FUN_14083d2b0(CStringW&);
+void StripTags(CStringW&);
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 extern const wchar_t DAT_142f5515c[];
 UIMainPlayerInfo* FindMainPlayerInfo(int);
@@ -169,7 +169,7 @@ MS2_REPLACE_METHOD(0x1416C66F0, CQuest, IsConditionComplete, 231, 0xDACD67C9);
 int CQuest::CheckUserFind(PCBase* actor)
 {
     if (!actor) return 0;
-    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (!mine) return 0;
     ConditionUserFindContext context;
     context.m_job = ((class PC*)(class PCBase*)(actor))->GetJobGroupId();
@@ -281,7 +281,7 @@ void CQuest::ShowProgress(int index)
         text = GetQuestConditionText(GetQuestId(), index);
         break;
     }
-    FUN_14083d2b0(text);
+    StripTags(text);
     UIMainPlayerInfo* dialog = FindMainPlayerInfo(0x4e5f);
     if (dialog) {
         ATL::CAtlArray<CStringW> lines;
@@ -296,13 +296,13 @@ void CQuest::PlayAcceptSound()
 {
     CString name(m_data->m_2d0.m_accept);
     if (name.GetLength() == 0) name = s_accept;
-    FUN_141276180(name, "");
+    PlaySystemSound(name, "");
 }
 MS2_REPLACE_METHOD(0x1416C7130, CQuest, PlayAcceptSound, 152, 0x076016A7);
 // @0x1416c71d0
 void CQuest::PlayProgressSound()
 {
-    FUN_141276180(IsComplete() ? s_complete : s_progress, "");
+    PlaySystemSound(IsComplete() ? s_complete : s_progress, "");
 }
 MS2_REPLACE_METHOD(0x1416C71D0, CQuest, PlayProgressSound, 143, 0x9CA37571);
 // @0x1416c7270
@@ -310,14 +310,14 @@ void CQuest::PlayRewardSound()
 {
     CString name(m_data->m_2d0.m_reward);
     if (name.GetLength() == 0) name = s_reward;
-    FUN_141276180(name, "");
+    PlaySystemSound(name, "");
 }
 MS2_REPLACE_METHOD(0x1416C7270, CQuest, PlayRewardSound, 152, 0x1390298C);
 
 // @0x1416c7310
 void CQuest::ShowRewards(int reward)
 {
-    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (!mine) return;
     if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return;
     int id = GetQuestId();
@@ -357,7 +357,7 @@ void CQuest::ShowRewards(int reward)
             dialog->FUN_141abf450(money, extra);
         }
         if (reward != 0) {
-            PCBase* actor = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            PCBase* actor = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
             if (actor) {
                 for (size_t i = 0; i < m_data->m_complete.m_choiceRewards.GetCount(); ++i) {
                     CQuestData::QuestRewardItem* item = &m_data->m_complete.m_choiceRewards[i];

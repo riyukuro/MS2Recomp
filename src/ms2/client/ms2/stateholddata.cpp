@@ -56,7 +56,7 @@ public:
     GameObjectControllerHitReport* GetHitReport();
     void ClearCollisionFlags();                                                // start falling
 };
-class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyPressed(int nKey); };   // C3: view of the real class (unit_141682f80)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_HoldConsts                                                     // the game's constants table
 {
@@ -115,7 +115,7 @@ void StateHoldData::vfunc_1(Unk_StateDataArg* p)
     StateSkillData::vfunc_1(p);
     p->m_n90 = m_nTargetId;
     p->m_str98 = m_strTargetName;
-    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nTargetId));
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(m_nTargetId));
     if (pTarget != 0)
     {
         if (pTarget->GetRidee() != 0)
@@ -220,7 +220,7 @@ void StateHold::vfunc_3(double fTime)
             if (spData == 0)
                 return;
             int nSeat = pTarget->FUN_141676790(m_pOwner->GetObjectId());
-            Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
+            Unk_RiderPtr spModel = spData->GetPassenger(nSeat);
             if (spModel == 0)
                 return;
             nAttached = 1;
@@ -254,7 +254,7 @@ void StateHold::vfunc_8(double fTime)
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kZero = efd::Point3::ZERO;
     m_pOwner->vfunc_22(kZero);
-    if (pBuff->FUN_141683100(0x493e1))
+    if (pBuff->IsActionKeyPressed(0x493e1))
     {
         MyPC* pPC = FUN_1417b84b0();
         if (pPC == 0)
@@ -312,7 +312,7 @@ void StateHold::vfunc_9(double fTime)
             return;
         {
             int nSeat = pPlayer->FUN_141676790(m_pOwner->GetObjectId());
-            Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
+            Unk_RiderPtr spModel = spData->GetPassenger(nSeat);
             if (spModel == 0)
                 return;
             {
@@ -400,7 +400,7 @@ void StateHold::FUN_1417ccd50()
 {
     m_bRiding = false;
     StateHoldData* pData = m_spHold.get();
-    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(pData->m_nTargetId));
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(pData->m_nTargetId));
     if (pTarget != 0)
     {
         if (pTarget->GetRidee() != 0)
@@ -419,7 +419,7 @@ void StateHold::FUN_1417cce10()
     if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xae))
         return;
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    if (!pBuff->FUN_141683100(0x49401))
+    if (!pBuff->IsActionKeyPressed(0x49401))
         return;
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
@@ -448,7 +448,7 @@ void StateHold::FUN_1417cce10()
 // @0x1417cd060
 bool StateHold::FUN_1417cd060()
 {
-    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_spHold.get()->m_nTargetId));
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindPCById(m_spHold.get()->m_nTargetId));
     if (pTarget != 0 && pTarget->GetRidee() != 0)
         return true;
     return false;

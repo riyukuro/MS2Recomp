@@ -43,7 +43,7 @@ void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* fo
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+unsigned int GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x1401782a0 for std::vector<unsigned> (xmlattr.h)
 __int64 GetServerTime();                                                  // server time
 int GetRandomRange(int, int);  // C3: the definition's signature
@@ -133,7 +133,7 @@ bool LoginBgBgmTable::Load()
             for (unsigned n = 0; n < nIds - nParams; n++)
                 bgmParams.push_back(5);
         }
-        unsigned nPriority = FUN_140197390(nodes[i], "priority", 0);
+        unsigned nPriority = GetUIntAttr(nodes[i], "priority", 0);
         LoginBgBgmDataPtr spData(new LoginBgBgmData);
         spData->m_strBgDay = strBgDay;
         spData->m_nPriority = nPriority;

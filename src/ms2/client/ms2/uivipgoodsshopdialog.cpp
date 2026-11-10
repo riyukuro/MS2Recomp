@@ -81,11 +81,11 @@ template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&)
 struct Unk_VgConstUInt;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-CVIPTable* FUN_140fb9980();                                     // CVIPTable::GetInstance
+CVIPTable* GetVIPTable();                                     // CVIPTable::GetInstance
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 __int64 GetServerTime();                                        // the server time
@@ -176,7 +176,7 @@ void UIVIPGoodsShopDialog::vfunc_72()
 void UIVIPGoodsShopDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
@@ -206,21 +206,21 @@ int UIVIPGoodsShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
     if (operator==(strType, "bonusItem")) {
         unsigned nGoodsId = pArgs->PopUInt();
         unsigned nIndex = pArgs->PopUInt() - 1;
-        MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
+        MS2Ptr<CVIPGoods> spGoods = GetVIPTable()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[nIndex], spGoods->m_bonusItemRanks[nIndex], 0) != 0) {
             spItem->SetCountClamped(spGoods->m_bonusItemCounts[nIndex]);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-            ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
+            ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()), 4, 2);
             if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
                 if (spGoods->m_bonusItemPeriods[nIndex] > 0)
                     ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem.operator->()))->GetItemId(), spGoods->m_bonusItemPeriods[nIndex]);
@@ -229,7 +229,7 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         }
     }
     else if (operator==(strType, "effectIcon")) {
-        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        MS2Ptr<AdditionalLevelData> effect = GetVIPTable()->GetFirstEffect();
         if (effect == 0)
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -237,7 +237,7 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     }
     else if (operator==(strType, "buyLimit")) {
         unsigned nGoodsId = pArgs->PopUInt();
-        MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
+        MS2Ptr<CVIPGoods> spGoods = GetVIPTable()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
         if (spGoods->HasBuyLimit() == 0)
@@ -275,7 +275,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
 {
 #define VIPGOODS_PKT static_cast<CInPacket*>(pPacket)
     UIDialog::vfunc_79(pPacket);
-    if (VIPGOODS_PKT->FUN_14070fe80() != 0xeb)
+    if (VIPGOODS_PKT->GetOpcode() != 0xeb)
         return;
     int nMode = VIPGOODS_PKT->ReadUInt8();
     if (nMode == 3) {
@@ -291,7 +291,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
     }
     else if (nMode == 4) {
         int nGoodsId = VIPGOODS_PKT->ReadInt32();
-        MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
+        MS2Ptr<CVIPGoods> spGoods = GetVIPTable()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
         CStringW strMsg = StringFormat<CStringW, CStringW>(GetStringCommon(0x9f6), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
@@ -310,7 +310,7 @@ void UIVIPGoodsShopDialog::RefreshGoodsList()
 {
     if (!m_30)
         return;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_goodsList");
@@ -389,7 +389,7 @@ void UIVIPGoodsShopDialog::RefreshGoodsList()
 void UIVIPGoodsShopDialog::FUN_140fbb940(std::vector<MS2Ptr<CVIPGoods> >& rOut)
 {
     ATL::CAtlArray<MS2Ptr<CVIPGoods> > list;
-    FUN_140fb9980()->GetGoodsList(list);
+    GetVIPTable()->GetGoodsList(list);
     for (unsigned i = 0; i < list.GetCount(); i++) {
         MS2Ptr<CVIPGoods> spGoods = list[i];
         if (spGoods == 0)
@@ -412,10 +412,10 @@ void UIVIPGoodsShopDialog::FUN_140fbb940(std::vector<MS2Ptr<CVIPGoods> >& rOut)
 // @0x140fbbae0
 void UIVIPGoodsShopDialog::OnClickBuyGoods(int nGoodsId)
 {
-    MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
+    MS2Ptr<CVIPGoods> spGoods = GetVIPTable()->GetGoods(nGoodsId);
     if (spGoods == 0)
         return;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (((class PC*)(class PCBase*)(pPlayer))->IsVip() != 0) {
@@ -433,11 +433,11 @@ void UIVIPGoodsShopDialog::OnClickBuyGoods(int nGoodsId)
             return;
         }
     }
-    FUN_140fbbe40(spGoods);
+    OpenBillDialog(spGoods);
 }
 
 // @0x140fbbe00
-int UIVIPGoodsShopDialog::FUN_140fbbe00(int nPriceType)
+int UIVIPGoodsShopDialog::GetPayType(int nPriceType)
 {
     switch (nPriceType)
     {
@@ -451,9 +451,9 @@ int UIVIPGoodsShopDialog::FUN_140fbbe00(int nPriceType)
 }
 
 // @0x140fbbe40
-void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
+void UIVIPGoodsShopDialog::OpenBillDialog(MS2Ptr<CVIPGoods> spGoods)
 {
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (spGoods == 0)
@@ -461,17 +461,17 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
     MS2Ptr<TVIPGoodsBillDataParam> spParam(new TVIPGoodsBillDataParam());
     if (spParam == 0)
         return;
-    int nPayType = FUN_140fbbe00(spGoods->m_nPriceType);
+    int nPayType = GetPayType(spGoods->m_nPriceType);
     spParam->m_nDialogId = vfunc_48();
     spParam->m_strMovie = GetTypeName();
     spParam->m_nCurrency = nPayType;
     spParam->m_nType = 3;
     spParam->m_nGoodsId = spGoods->m_nId;
     spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UIVIPGoodsShopDialog::SendPremiumClubMode4);
-    spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIVIPGoodsShopDialog::FUN_140fbce80);
+    spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIVIPGoodsShopDialog::BuildBillTooltip);
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     {
-        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        MS2Ptr<AdditionalLevelData> effect = GetVIPTable()->GetFirstEffect();
         if (effect == 0)
             return;
         MS2Ptr<ASSlot> spSlot(new ASSlot(2));
@@ -541,9 +541,9 @@ bool UIVIPGoodsShopDialog::SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spP
 }
 
 // @0x140fbce80
-bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam)
+bool UIVIPGoodsShopDialog::BuildBillTooltip(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam)
 {
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (m_30 == 0)
@@ -554,7 +554,7 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
     if (spVip == 0)
         return false;
     unsigned nGoodsId = spVip->m_nGoodsId;
-    MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
+    MS2Ptr<CVIPGoods> spGoods = GetVIPTable()->GetGoods(nGoodsId);
     if (spGoods == 0)
         return false;
     Scaleform::GFx::Value v = rData.PopValue();
@@ -563,7 +563,7 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
         return false;
     unsigned nIndex = rData.PopUInt();
     if (nIndex == 0) {
-        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        MS2Ptr<AdditionalLevelData> effect = GetVIPTable()->GetFirstEffect();
         if (effect == 0)
             return false;
         ASTooltip tip(*pRetVal, 2);
@@ -578,7 +578,7 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
             return false;
         spItem->SetCountClamped(spGoods->m_bonusItemCounts[nItem]);
         MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
-        ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
+        ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()), 4, 2);
         if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
             if (spGoods->m_bonusItemPeriods[nItem] > 0)
                 ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem.operator->()))->GetItemId(), spGoods->m_bonusItemPeriods[nItem]);

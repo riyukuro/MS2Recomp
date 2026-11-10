@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UIUnlimitedEnchantDialog (class name "UnlimitedEnchantDialog",
 // UI type 0x4f97, 0x1d8 bytes): see uiunlimitedenchantdialog.h. The swf calls "OnSelect" / "OnRetry" (ask the server for a
 // preview of the item, packet 0xbc sub 0) and "OnEnchant" (packet 0xbc sub 1); the answers arrive through the
-// FUN_140fb6310 (preview) and FUN_140fb6b00 (result) members.
+// FUN_140fb6310 (preview) and OnEnchantResult (result) members.
 // MS2-UNIT: ?\uiunlimitedenchantdialog.cpp
 // MS2-RANGE: 0x1400e2230-0x1400e2540 .text$di
 // MS2-RANGE: 0x140fb5ca0-0x140fb7dc0 .text$mn
@@ -58,11 +58,11 @@ class ASDialog : public ASDisplayObject {};
 UITalkCinematic* FindTalkCinematic(int nId);
 
 
-class Unk_UeWorld { public: MyPC* FUN_141bd0cc0(); };
+class Unk_UeWorld { public: MyPC* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -77,12 +77,12 @@ public:
 };
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);              // the inventory item with this uid
-int FUN_14053feb0(int);   // C3: was FUN_14053feb0
+int GetItemRank(int);   // C3: was GetItemRank
 MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void DestroyItemSlotBag(const CString& strBag);                       // drop an item bag
 void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
 void FUN_140710590(COutPacket& packet);                          // send
-unsigned __int64 FUN_140718370(const CStringW& str);             // text -> uid
+unsigned __int64 ParseUInt64W(const CStringW& str);             // text -> uid
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -156,7 +156,7 @@ void UIUnlimitedEnchantDialog::vfunc_72()
 void UIUnlimitedEnchantDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140fb6ed0();
+    FillItemBag();
 }
 
 // @0x140fb5f10
@@ -169,7 +169,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nUid = ParseUInt64W(data.FUN_1422b8f40());
             SendLimitBreakMode1(nUid);
             return 1;
         }
@@ -179,7 +179,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nUid = ParseUInt64W(data.FUN_1422b8f40());
             SendLimitBreakMode0(nUid);
             return 1;
         }
@@ -189,7 +189,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nUid = ParseUInt64W(data.FUN_1422b8f40());
             SendLimitBreakMode0(nUid);
             return 1;
         }
@@ -252,7 +252,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 const int& nIngredientId = ref->GetItemId();
                 const int& nCount = +ref->m_c;
                 int nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
-                int nIngredientRank = FUN_14053feb0(nIngredientId);
+                int nIngredientRank = GetItemRank(nIngredientId);
                 CItem* pIngredient = new CItem();   // raw and never released, as in the exe
                 if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
                 {
@@ -273,7 +273,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
 
 // The server's answer to the enchant: read the new item, refresh the bag.
 // @0x140fb6b00
-void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
+void UIUnlimitedEnchantDialog::OnEnchantResult(CInPacket* pPacket)
 {
     unsigned __int64 nUid = pPacket->ReadInt64();
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
@@ -286,7 +286,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
         ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->AddFlags(7);
     FUN_140fb7690(nUid);
 }
-MS2_REPLACE_METHOD(0x140FB6B00, UIUnlimitedEnchantDialog, FUN_140fb6b00, 289, 0xA0816445);
+MS2_REPLACE_METHOD(0x140FB6B00, UIUnlimitedEnchantDialog, OnEnchantResult, 289, 0xA0816445);
 
 // @0x140fb6c30
 void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
@@ -313,9 +313,9 @@ void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
 
 // Collects the enchantable items of the inventory and the equipment and hands them to the item bag.
 // @0x140fb6ed0
-void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
+void UIUnlimitedEnchantDialog::FillItemBag()
 {
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     {
@@ -327,7 +327,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             MS2Ptr<CItem> spItem = FUN_1419be700(uids[i]);
             if (spItem == 0)
                 continue;
-            if (FUN_140fb7870(MS2Ptr<CItem>(spItem)) != 0)
+            if (CheckItem(MS2Ptr<CItem>(spItem)) != 0)
                 continue;
             m_items.Add(spItem);
         }
@@ -341,7 +341,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (!spItem)
                 continue;
-            if (FUN_140fb7870(MS2Ptr<CItem>(spItem)) != 0)
+            if (CheckItem(MS2Ptr<CItem>(spItem)) != 0)
                 continue;
             m_items.Add(spItem);
         }
@@ -365,7 +365,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode0(unsigned __int64 nUid)
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
         return;
-    Unk_UnlimitedEnchantError nError = FUN_140fb7870(MS2Ptr<CItem>(spItem));
+    Unk_UnlimitedEnchantError nError = CheckItem(MS2Ptr<CItem>(spItem));
     if (nError != 0)
     {
         FUN_140fb6c30(nError);
@@ -385,7 +385,7 @@ void UIUnlimitedEnchantDialog::SendLimitBreakMode1(unsigned __int64 nUid)
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
         return;
-    Unk_UnlimitedEnchantError nError = FUN_140fb7870(MS2Ptr<CItem>(spItem));
+    Unk_UnlimitedEnchantError nError = CheckItem(MS2Ptr<CItem>(spItem));
     if (nError != 0)
     {
         FUN_140fb6c30(nError);
@@ -423,9 +423,9 @@ void UIUnlimitedEnchantDialog::FUN_140fb7690(__int64 nUid)
 
 // Why the item cannot be enchanted: 1 not an enchantable item, 5 already at the unlimited grade, 0 fine.
 // @0x140fb7870
-Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> spItem)
+Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::CheckItem(MS2Ptr<CItem> spItem)
 {
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->GetData()));
     if (spData == 0)
         return UNLIMITED_ENCHANT_INVALID_ITEM;
     if (spData->GetUnlimitedEnchantMaxGrade() == 0)

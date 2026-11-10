@@ -65,7 +65,7 @@ public:
 CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 class CLogString* GetLogString();   // 0x140166440
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
@@ -164,7 +164,7 @@ int FUN_140764760(const CStringA& strStart, const CStringA& strEnd, Unk_Z16i* pR
 
 // @0x140764310
 // "a,b|a,b" / "c,d|c,d" -> one range per pair, appended to the mask.
-int FUN_140764310(const CStringA& strStarts, const CStringA& strEnds, QuestMask* pMask)
+int ParseQuestMask(const CStringA& strStarts, const CStringA& strEnds, QuestMask* pMask)
 {
     ATL::CAtlArray<CStringA> aStarts;
     ATL::CAtlArray<CStringA> aEnds;
@@ -243,7 +243,7 @@ int CQuestMaskTable::HasNpcMask(void* pNpc)
 int CQuestMaskTable::HasNpcMaskHere(int nKey)
 {
     {
-        Unk_QmMaskPtr spMask = GetNpcMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), nKey);
+        Unk_QmMaskPtr spMask = GetNpcMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->GetFieldId(), nKey);
         if (spMask.get() != 0)
             return 1;
     }
@@ -258,7 +258,7 @@ int CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
     if (pPortal->m_mask.IsSatisfied())
         return 1;
     {
-        Unk_QmMaskPtr spMask = GetPortalMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pPortal->m_nKey);
+        Unk_QmMaskPtr spMask = GetPortalMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->GetFieldId(), pPortal->m_nKey);
         if (spMask.get() != 0)
             return 1;
     }
@@ -268,7 +268,7 @@ int CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
 // @0x140764e00
 int CQuestMaskTable::CheckNpcHere(int nKey)
 {
-    return CheckNpc(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), nKey);
+    return CheckNpc(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->GetFieldId(), nKey);
 }
 
 // @0x140764e40
@@ -303,7 +303,7 @@ int CQuestMaskTable::CheckPortal(Unk_QmPortal* pPortal)
             return 1;
     }
     {
-        Unk_QmMaskPtr spMask = GetPortalMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pPortal->m_nKey);
+        Unk_QmMaskPtr spMask = GetPortalMask(((class WorldService*)(void*)(reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())))->GetFieldId(), pPortal->m_nKey);
         if (spMask.get() != 0)
         {
             if ((&((Unk_QmPlayerState*)FUN_140764020())->m_checker)->IsSatisfied(spMask.operator->()) != 0)
@@ -350,7 +350,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
                     XmlGetAttr((class TiXmlElement*)(pKey), "enableInMask", *(int*)(&spMask->m_nEnable));
                     for (TiXmlElement* pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->FirstChild("mask")); pMask != 0; pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pMask))->NextSibling("mask")))
                     {
-                        if (!FUN_14028f710((struct Unk_XmlElement*)(pMask)))
+                        if (!IsElementAvailable((struct Unk_XmlElement*)(pMask)))
                             continue;
                         {
                             Unk_QuestMaskRange range;
@@ -540,7 +540,7 @@ class CQuestData;
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);
 int GetFamePoints(Unk_FameAlliance nAlliance);
-CStringW FUN_140298ea0(CStringW str);
+CStringW GetStringByKey(CStringW str);
 CString Name_14021a6b0(int n);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140719630(int n);
@@ -570,7 +570,7 @@ CStringW FUN_140762ee0(int nAlliance, int nPoint);
 // @0x140762f50
 CStringW FUN_140762f50(int nAlliance, int nGrade)
 {
-    return FUN_140298ea0(StringFormat(L"s_fame_grade_{0}", nGrade));
+    return GetStringByKey(StringFormat(L"s_fame_grade_{0}", nGrade));
 }
 
 CStringW FUN_140762ee0(int nAlliance, int nPoint)
@@ -646,13 +646,13 @@ public:
 class Unk_QmWorld
 {
 public:
-    Unk_QmPlayer* FUN_141bd0cc0();                              // the local player (NULL outside the field)
+    Unk_QmPlayer* GetLocalPlayer();                              // the local player (NULL outside the field)
 };
 void* GetExpTable();   // C3: was GetExpTable
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 MS2Ptr<CQuestData> GetQuestData(int nQuestId);                 // the quest table row (NULL when unknown)
-bool FUN_14028d470(float a, float b);                           // a == b within epsilon
-__int64 FUN_140632990(__int64 nValue, float fAdd);              // the Lua bonus added to an exp value
+bool IsNearlyEqual(float a, float b);                           // a == b within epsilon
+__int64 ScaleValue(__int64 nValue, float fAdd);              // the Lua bonus added to an exp value
 void FUN_1402929a0(const CStringW& str, std::vector<int>& out, const wchar_t* pszSep);    // split into ids; C3: the definer's signature (commonutil.cpp)
 CStringW GetStringCommon(int nStringId);                          // a common string by id
 CStringW GetQuestName(int nQuestId);                           // the quest's localized name
@@ -843,7 +843,7 @@ Unk_QuestRewardCalc::Unk_QuestRewardCalc()
     m_guildNpcLevel = 0;
     m_value = 0;
     m_bonus = 0;
-    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
         m_level = pPlayer->vfunc_78();
     m_guildNpcLevel = TSingleton<CGuildManager>::GetInstance()->GetNpcLevel(6);
@@ -880,7 +880,7 @@ void FUN_1407622b0(int nQuestId, Unk_QuestRewardCalc& calc)
         calc.m_bonus = 0;
     }
     float fFactor = TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(CGloabalFactor::MULTI_QUEST_REWARD_MESO, FUN_14074b050(spData.operator->()));
-    if (!FUN_14028d470(1.0f, fFactor))
+    if (!IsNearlyEqual(1.0f, fFactor))
         calc.m_value = (__int64)((float)calc.m_value * fFactor);
 }
 MS2_REPLACE(0x1407622b0, FUN_1407622b0, 581, 0xA351B070);
@@ -908,9 +908,9 @@ void FUN_140762500(int nQuestId, Unk_QuestRewardCalc& calc)
     if (spData->m_50 != 5)
     {
         int nExtra = calc.m_enabled ? spData->m_complete.m_rewardExpExtra : 0;
-        float fAdd = ((class CLua*)FUN_1401c0db0())->CalcQuestRewardExpFactorRateByRank(FUN_14074b050(spData.operator->()), spData->m_50, nExtra, spData->m_4c);
-        if (!FUN_14028d470(fAdd, 0))
-            nExp = FUN_140632990(nExp, fAdd);
+        float fAdd = ((class CLua*)GetLuaClient())->CalcQuestRewardExpFactorRateByRank(FUN_14074b050(spData.operator->()), spData->m_50, nExtra, spData->m_4c);
+        if (!IsNearlyEqual(fAdd, 0))
+            nExp = ScaleValue(nExp, fAdd);
     }
     calc.m_value = nExp;
     calc.m_bonus = 0;
@@ -1023,7 +1023,7 @@ void FUN_140762c80(int nQuestId, Unk_QuestRewardCalc& calc)
     Unk_FameAlliance nAlliance = spData->m_4c;
     int nPoint = GetFamePoint(&calc, nAlliance);
     int nGrade = FameTable()->GetGradeByPoint(nAlliance, nPoint);
-    calc.m_value = ((class CLua*)FUN_1401c0db0())->CalcQuestRewardFamePoint(nKind, nGrade, pReward->m_useMainFamePoint, spData->m_4c);
+    calc.m_value = ((class CLua*)GetLuaClient())->CalcQuestRewardFamePoint(nKind, nGrade, pReward->m_useMainFamePoint, spData->m_4c);
     calc.m_bonus = 0;
 }
 MS2_REPLACE(0x140762c80, FUN_140762c80, 331, 0xDADB60B6);
@@ -1057,7 +1057,7 @@ MS2_REPLACE(0x140762fc0, GetFamePointProgress, 529, 0x18535EF7);
 // an in-progress quest whose conditions are all met counts as completable.
 void FUN_140763210(int nQuestId, int nState, CStringW& strDesc, CStringW& strFormat)
 {
-    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_QmPlayer* pPlayer = ((Unk_QmPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);

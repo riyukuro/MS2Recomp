@@ -178,7 +178,7 @@ MS2_REPLACE_METHOD(0x1413A6F30, CGuideConditionPosition, vfunc_2, 412, 0x3540621
 // @0x1413a70e0
 int CGuideConditionPosition::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     Vector3 pos = pPC->vfunc_18();
@@ -227,7 +227,7 @@ MS2_REPLACE_METHOD(0x1413A7400, CGuideConditionState, GetTypeName, 61, 0xCF29058
 // @0x1413a7450
 int CGuideConditionState::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     return ApplyNot(((class PCBase*)(class Unk_GcPC*)(pPC))->GetCurStateId() == m_n20);
@@ -252,7 +252,7 @@ MS2_REPLACE_METHOD(0x1413A7520, CGuideConditionInteractable, GetTypeName, 61, 0x
 // @0x1413a7570
 int CGuideConditionInteractable::vfunc_3()
 {
-    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->GetLocalPlayer();
     if (pPC == 0)
         return 0;
     CInteractObject* pObject = ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc6090(pPC->vfunc_18(), 1);

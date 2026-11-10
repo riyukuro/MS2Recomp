@@ -233,7 +233,7 @@ void Unk_WsTail6(WorldService* w)
 void Unk_WsTail6Getters(PC& pc, CInteractObject& obj, CInteractObjectData& def, CInteractWebObject& web,
     Unk_WsProxyMgr& proxies)
 {
-    pc.FUN_141c04f70();
+    pc.IsFaded();
     obj.IsSpawned();
     def.IsTelescope();
     def.IsUIObject();
@@ -251,7 +251,7 @@ class Unk_WsB_Marker;
 
 // The asset id's URN (msg->m_assetID of the AssetLoadResponse handlers).
 // @0x141c002e0
-const void* FUN_141c002e0(const void* assetID)
+const void* GetAssetURN(const void* assetID)
 {
     struct Holder { efd::AssetID m_assetID; };
     return &static_cast<const Holder*>(assetID)->m_assetID.GetURN();
@@ -266,7 +266,7 @@ template bool ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV11> >::Lookup(__int64, MS2P
 // MS2-FUNCTIONAL: Lookup(key) of the m_4b0 map plus an MS2Ptr<CPtred> assignment; the exe calls Find and the value
 // type's operator= directly
 // @0x141c07210
-bool FUN_141c07210(void* map, CString& key, MS2Ptr<Unk_WsB_Marker>& out)
+bool FindMarker(void* map, CString& key, MS2Ptr<Unk_WsB_Marker>& out)
 {
     ATL::CRBMap<CString, Unk_WsV4b0>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->Lookup(key);
     if (!p)

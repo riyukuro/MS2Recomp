@@ -88,10 +88,10 @@ class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 int FUN_1405451c0(CStringA&);                 // the item group index of a group name
 const CString& GetStatName(unsigned nStat);                 // the xml name of a stat (stat.cpp)
 CStringW GetStatCommonText(unsigned nStat);                 // GetStatCommonText (stat.cpp)
-CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
+CStringW GetSATypeName(int nSpecial);                       // text of a special ability
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetUInt(Scaleform::GFx::Value*, unsigned int);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_140710590(COutPacket& packet);                     // send
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,7 +294,7 @@ static void SetStatOption(ASObj& obj, int nStat)
 // @0x1412d44d0
 static void FUN_1412d44d0(ASObj& obj, int nSpecial)
 {
-    obj.SetWStringMember("label", FUN_140630e10(nSpecial));
+    obj.SetWStringMember("label", GetSATypeName(nSpecial));
     obj.FUN_1409c0dc0("type", "specialAbility");
     obj.FUN_1412d4900("index", nSpecial);
 }
@@ -324,13 +324,13 @@ void UIItemOptionCreateDialog::UpdateRandomOptionTable()
         random->ForEachValue([this, &table](ItemOptionValueRandom* pValue) {
             ASObj column(2);
             ASObj label(2);
-            if (pValue->FUN_1405d2790() == 0) {
+            if (pValue->IsSpecial() == 0) {
                 SetStatOption(label, pValue->GetStat());
                 std::pair<int, int> range = ((class CItemOptionTable*)GetItemOptionTable())->GetRandomOptionRange(m_nItemId, m_nRank, pValue->GetStat());
                 column.SetIntMember("minV", range.first);
                 column.SetIntMember("maxV", range.second);
                 column.SetIntMember("value", range.second);
-            } else if (pValue->FUN_1405d2790() == 1) {
+            } else if (pValue->IsSpecial() == 1) {
                 FUN_1412d44d0(label, pValue->GetSpecial());
                 std::pair<int, int> range = ((class CItemOptionTable*)GetItemOptionTable())->GetRandomSpecialOptionRange(m_nItemId, m_nRank, pValue->GetSpecial());
                 column.SetIntMember("minV", range.first);
@@ -358,9 +358,9 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
         constant->ForEachValue([this, &result](ItemOptionValue* pValue) {
             ASObj row(2);
             row.FUN_1412d4860("kinds", 0);
-            if (pValue->FUN_1405ce470() == 0) {
+            if (pValue->IsSpecial() == 0) {
                 SetStatOption(row, pValue->GetStat());
-            } else if (pValue->FUN_1405ce470() == 1) {
+            } else if (pValue->IsSpecial() == 1) {
                 FUN_1412d44d0(row, pValue->GetSpecial());
             }
             int nValue = pValue->vfunc_1(m_nItemId, m_nRank);
@@ -418,7 +418,7 @@ void UIItemOptionCreateDialog::UpdateItemList(const CString& strGroup, const CSt
                 if (item->GetType() == 3)
                     list->AddItem(row);
             } else if (strGroup == "SKILL") {
-                if (item->FUN_14053cb40())
+                if (item->IsSkillItem())
                     list->AddItem(row);
             } else if (strGroup == "INSTALL") {
                 if (item->IsInstallItem())
@@ -447,9 +447,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
-    FUN_1422bce70(&args[2], a3);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
+    SetString(&args[2], a3);
     FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }

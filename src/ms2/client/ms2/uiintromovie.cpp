@@ -48,9 +48,9 @@ class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CLogString* GetLogString();
 CString GetXmlPath(const CString& strDir, const CString& strFile);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
-void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
+void ParseFloatList(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
 int GetNextSceneId();
 __int64 GetServerTime();
 
@@ -129,7 +129,7 @@ MS2_REPLACE_METHOD(0x141995410, UIIntroMovie, vfunc_23, 47, 0xF2665358);
 int UIIntroMovie::vfunc_13()
 {
     if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000b) return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840()) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed()) {
         FUN_141995cd0();
         return 1;
     }
@@ -213,7 +213,7 @@ void UIIntroMovie::LoadIntroMovie()
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("introMovie")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("introMovie"))) {
         CStringW strFeature;
         XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode))) continue;
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode))) continue;
         CMsTime start;
         CMsTime end;
         XmlGetAttr((class TiXmlElement*)(pNode), "startDate", start);
@@ -226,7 +226,7 @@ void UIIntroMovie::LoadIntroMovie()
             CStringW strSeek;
             XmlGetAttr((class TiXmlElement*)(pNode), "seekTime", strSeek);
             ATL::CAtlArray<float> seekTimes;
-            FUN_1402928e0(strSeek, seekTimes, L",");
+            ParseFloatList(strSeek, seekTimes, L",");
             XmlGetAttr((class TiXmlElement*)(pNode), "endTime", reinterpret_cast<float&>(spInfo->m_fEndTime));
             for (size_t i = 0; i < seekTimes.GetCount(); ++i) spInfo->m_seekTimes.AddTail(seekTimes[i]);
             m_78.AddTail(spInfo);

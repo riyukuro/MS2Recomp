@@ -157,7 +157,7 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     {
         if (nIndex >= spPreview->m_skills.GetCount())
             return;
-        ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tip(WorldService::GetInstance()->GetLocalPlayer(), 0x10, 2);
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
         {
             tip.SetEnablePuton(L"");

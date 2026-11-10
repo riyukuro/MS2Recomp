@@ -15,7 +15,7 @@
 // ---- out-of-unit callees and the slider values (statics defined elsewhere) ----
                 // the application time
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                        // the actor's scene graph
-void FUN_141b6fae0(NiAVObject* pRoot, float fValue);                // set the colour scale of a scene graph
+void SetColorScale(NiAVObject* pRoot, float fValue);                // set the colour scale of a scene graph
 extern float g_1439f7024, g_1439f7028, g_1439f702c, g_1439f7030, g_1439f7034;
 
 // @0x14109b6b0
@@ -107,7 +107,7 @@ void CColorBoostManager::UpdateBoosts(const egf::EntityID& kId)
     }
     if (fScale != m_fScale)
     {
-        FUN_141b6fae0(FUN_141b6ef70(kId), fScale);
+        SetColorScale(FUN_141b6ef70(kId), fScale);
         m_fScale = fScale;
     }
 }

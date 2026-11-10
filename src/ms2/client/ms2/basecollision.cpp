@@ -71,7 +71,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 
 struct Unk_UtilFloat3;
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
-NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
+NxVec3 Point3ToNxVec3(const efd::Point3& v);                         // efd::Point3 -> NxVec3
 float FUN_14059d930(float f);                                       // fabsf
 float GetPlanarDistance(Vector3 kA, Vector3 kB);   // C3: the definer's signature (0x140966ea0), planar distance
 
@@ -591,10 +591,10 @@ int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 
             kRingCenter.z = 0.0f;
             NiPoint3 kAxis(kBoxCenter - kRingCenter);
             kAxis.Unitize();
-            NxVec3 kInner = FUN_141b6e0e0(kRingCenter + kAxis * pRing->m_fInnerRadius);
-            NxVec3 kOuter = FUN_141b6e0e0(kRingCenter + kAxis * pRing->m_fOuterRadius);
+            NxVec3 kInner = Point3ToNxVec3(kRingCenter + kAxis * pRing->m_fInnerRadius);
+            NxVec3 kOuter = Point3ToNxVec3(kRingCenter + kAxis * pRing->m_fOuterRadius);
             NxSegment kSegment(kInner, kOuter);
-            float fDistSq = NxGetUtilLib()->NxSegmentOBBSqrDist(kSegment, FUN_141b6e0e0(kBoxCenter),
+            float fDistSq = NxGetUtilLib()->NxSegmentOBBSqrDist(kSegment, Point3ToNxVec3(kBoxCenter),
                                                                 pTargetBox->m_kBox.GetExtents(), pTargetBox->m_kBox.GetRot(),
                                                                 NULL, NULL);
             float fLimit = std::min(150.0f, pRing->m_fOuterRadius - pRing->m_fInnerRadius);
@@ -725,10 +725,10 @@ int CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                 kRingCenter.z = 0.0f;
                 NiPoint3 kAxis(kBoxCenter - kRingCenter);
                 kAxis.Unitize();
-                NxVec3 kInner = FUN_141b6e0e0(kRingCenter + kAxis * pRing->m_fInnerRadius);
-                NxVec3 kOuter = FUN_141b6e0e0(kRingCenter + kAxis * pRing->m_fOuterRadius);
+                NxVec3 kInner = Point3ToNxVec3(kRingCenter + kAxis * pRing->m_fInnerRadius);
+                NxVec3 kOuter = Point3ToNxVec3(kRingCenter + kAxis * pRing->m_fOuterRadius);
                 NxSegment kSegment(kInner, kOuter);
-                float fDistSq = NxGetUtilLib()->NxSegmentOBBSqrDist(kSegment, FUN_141b6e0e0(kBoxCenter),
+                float fDistSq = NxGetUtilLib()->NxSegmentOBBSqrDist(kSegment, Point3ToNxVec3(kBoxCenter),
                                                                     pBox->m_kBox.GetExtents(),
                                                                     pBox->m_kBox.GetRot(), NULL, NULL);
                 float fLimit = std::min(150.0f, pRing->m_fOuterRadius - pRing->m_fInnerRadius);

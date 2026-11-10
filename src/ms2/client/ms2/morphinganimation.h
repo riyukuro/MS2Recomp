@@ -20,7 +20,7 @@ public:
     virtual ~CMorphingAnimationData() = default;        // 0x141851f00, ??_G 0x141851f50
 
     // Index of the frame that time nTime (ms) falls in: walks m_frameTimes, wrapping into the loop from m_nLoopStart.
-    int FUN_141851c20(int nTime);                       // 0x141851c20
+    int GetFrameIndex(int nTime);                       // 0x141851c20
     void LoadFromXml(TiXmlElement* pElem);           // 0x141851db0 reads <target>/<weight> elements
 
     CString m_strNodeName;                              // +0x18 name of the model node that carries the morph controller

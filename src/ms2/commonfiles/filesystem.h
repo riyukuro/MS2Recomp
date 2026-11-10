@@ -64,10 +64,10 @@ public:
     CFileSystem();
     virtual ~CFileSystem();
     int FUN_140396770(unsigned char mode, int archiveMode);
-    int FUN_140396d00(const char* directory);
-    int FUN_1403972f0(const char* path, void** data, unsigned __int64* size, std::string* actualPath);
+    int ReloadPatchArchives(const char* directory);
+    int LoadFileData(const char* path, void** data, unsigned __int64* size, std::string* actualPath);
     int LoadXmlFile(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly);
-    BufferPtr FUN_140397bc0(const char* path, int cacheMode, int flag);
+    BufferPtr GetFileBuffer(const char* path, int cacheMode, int flag);
     bool FUN_140398190();
     bool HasAlternatePaths();
     bool FUN_1403981d0();
@@ -92,7 +92,7 @@ public:
     void ClearCache();
     void PurgeExpiredCache();
     void SetUseAlternatePaths(int enabled);
-    std::string FUN_14039b810(std::string path);
+    std::string GetLocalePath(std::string path);
     std::string FUN_14039bb50(std::string path);
     bool FUN_14039bf70();
     void TrimSpaces(std::string& path);
@@ -110,7 +110,7 @@ public:
     int FUN_14039faf0(std::string path);
     int FUN_1403a0320(const char* path, void** data, unsigned __int64* size, std::string* actualPath);
     void FUN_14039ee50();
-    bool FUN_1403ab490(const std::string& path, const std::string& prefix);
+    bool HasPathPrefix(const std::string& path, const std::string& prefix);
 
     CLockCriticalSection cacheLock;
     Cache cache;

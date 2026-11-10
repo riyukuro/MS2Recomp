@@ -21,13 +21,13 @@ public:
 
 // Unrecovered helpers (same ones the other xml table loaders use).
 // C3: was class Unk_140165cf0 (TiXmlElement; NextSiblingElement() = TiXmlNode::NextSiblingElement, 0x1403f0510)
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);                     // integer attribute
-int FUN_1406516b0();                                                      // current language id
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);                     // integer attribute
+int GetRegion();                                                      // current language id
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
 CString ToCString(const char* psz, int nFlags);                       // path conversion
 void XmlSetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
@@ -110,14 +110,14 @@ void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873c
 // @0x14081b310
 TiXmlElement* DocRootElement(TiXmlDocument* pDoc)
 {
-    return FUN_140345b40(pDoc);
+    return GetFirstChildElement(pDoc);
 }
 
 // @0x1408179d0
 CSoundDataTable::CSoundDataTable()
 {
     int nLanguage = 0;
-    int nId = FUN_1406516b0();
+    int nId = GetRegion();
     switch (nId)
     {
     case 0: nLanguage = 0; break;
@@ -320,11 +320,11 @@ int CSoundDataTable::ParseSection(TiXmlElement* pRoot, const char* pszTag, int n
     TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszTag));
     if (pSection == 0)
         return 0;
-    for (TiXmlElement* pElem = FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pSection)); pElem != 0; pElem = pElem->NextSiblingElement())
+    for (TiXmlElement* pElem = GetFirstChildElement(reinterpret_cast<TiXmlDocument*>(pSection)); pElem != 0; pElem = pElem->NextSiblingElement())
     {
         CString strId;
         strId = Unk_ReadString((class Unk_XmlNode*)(pElem), "id", CString(""));
-        int nLengthMs = FUN_140197350(pElem, "lengthms", 0);
+        int nLengthMs = GetIntAttr(pElem, "lengthms", 0);
         CSoundDataEntry* pEntry = &map[strId];
         pEntry->nType = nType;
         pEntry->strName = strId;

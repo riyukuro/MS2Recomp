@@ -60,11 +60,11 @@ template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMa
 //
 
 class Unk_HoUnused;                                                 // element of an unused local array
-class Unk_HoWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
+class Unk_HoWorld { public: MyPC* GetLocalPlayer(); };               // the local player
 
 // The house open type (compared as a byte: a scoped enum over unsigned char, as MyPC's house setting).
 enum class Unk_HomeOpenType : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
-CStringW FUN_140298ea0(CStringW strKey);                            // string table by key
+CStringW GetStringByKey(CStringW strKey);                            // string table by key
 CString FUN_140223190(int nRow);                                   // the name of a permission row
 int FUN_1418fd280();
 void ShowSystemNotice(const CStringW& str, int a, int b);
@@ -114,7 +114,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("onApply", szMethod) == 0)
     {
-        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"onApply"));
+        ShowMessageBox(GetStringByKey(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"onApply"));
     }
     else if (_stricmp("onConfirm", szMethod) == 0)
     {
@@ -123,7 +123,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             unsigned char bConfirm = data.PopBool();
             if (bConfirm == 1)
-                ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
+                ShowMessageBox(GetStringByKey(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
             else
                 vfunc_67();
         }
@@ -159,11 +159,11 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("onKickUser", szMethod) == 0)
     {
-        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_etc_kickuser")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnKickUser"));
+        ShowMessageBox(GetStringByKey(CStringW(L"s_home_option_msg_etc_kickuser")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnKickUser"));
     }
     else if (_stricmp("OnReset", szMethod) == 0)
     {
-        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_init")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnReset"));
+        ShowMessageBox(GetStringByKey(CStringW(L"s_home_option_init")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnReset"));
     }
     return 1;
 }
@@ -201,7 +201,7 @@ MS2_REPLACE_METHOD(0x140FA9570, UIHomeOptionDialog, OnMessage, 549, 0xC6230034);
 void UIHomeOptionDialog::FUN_140fa97a0()
 {
     ASObj obj(2);
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC != 0)
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->GetUGCMapInfo());
@@ -234,7 +234,7 @@ void UIHomeOptionDialog::SetHomeOpenType(unsigned char nOpenType, CStringW strPa
 {
     if (static_cast<Unk_HomeOpenType>(nOpenType) != Unk_HomeOpenType::Kind1)
         strPassword = L"";
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC != 0)
         pPC->SendHouseSetting((Unk_MyPCHouseSetting)nOpenType, CStringW(strPassword), 1);
 }
@@ -279,7 +279,7 @@ void UIHomeOptionDialog::SendRequestCubeMode49()
     packet.WriteUInt8(0x31);
     FUN_140710590(packet);
     if (FUN_1418fd280() == 1)
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_home_option_msg_kick_user")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_home_option_msg_kick_user")), 1, 1);
 }
 MS2_REPLACE_METHOD(0x140FA9BD0, UIHomeOptionDialog, SendRequestCubeMode49, 187, 0x29C0712D);
 

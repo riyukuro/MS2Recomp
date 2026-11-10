@@ -159,7 +159,7 @@ bool CWebBrowserService::MatchURL(const CStringA& strUrl, ATL::CAtlRegExp<>* pRe
 MS2_REPLACE(0x141B78140, CWebBrowserService::MatchURL, 150, 0xB64F4F8B);
 
 // @0x141b781e0
-void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk)
+void CWebBrowserService::OpenBrowser(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk)
 {
     if (!IsValidIndex(nIndex)) {
         return;
@@ -396,7 +396,7 @@ void CWebBrowserService::SendTokenToBrowser(int nIndex, const CStringA& strToken
 MS2_REPLACE_METHOD(0x141B78CF0, CWebBrowserService, SendTokenToBrowser, 372, 0x4E1DE1B4);
 
 // @0x141b78e70
-void CWebBrowserService::FUN_141b78e70(CefRefPtr<CefProcessMessage> message)
+void CWebBrowserService::InvokeTokenCallback(CefRefPtr<CefProcessMessage> message)
 {
     if (Unk_LockGuard guard = m_tokenLock) {
     } else {

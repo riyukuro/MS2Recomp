@@ -165,7 +165,7 @@ struct Unk_SkillBlock170
 {
     Unk_SkillBlock170();                                    // 0x140802cd0
     bool IsDifferent(const Unk_SkillBlock170& o);         // is different
-    int FUN_140802d50(TiXmlElement* pElem);
+    int LoadPush(TiXmlElement* pElem);
     int FUN_140802dd0(void* pParent);
     float m_fUp;                                            // +0x00 "up"
     float m_fBack;                                          // +0x04 "back"
@@ -195,7 +195,7 @@ class SkillMotionData : public CPtred
 public:
     SkillMotionData();                                      // 0x1408073a0
     bool IsDifferent(const SkillMotionData& o);           // is different
-    int FUN_1408080d0(TiXmlElement* pElem);                // reads a <motion>
+    int LoadMotion(TiXmlElement* pElem);                // reads a <motion>
     void Load(TiXmlElement* pElem);               // reads its attributes
     int Save(void* pParent);                       // writes a <motion>
     SkillAttackData* GetAttack(int nAttack);            // one attack (0 if out of range)
@@ -203,7 +203,7 @@ public:
     SkillAttackData* FUN_140807f20(const CString& strPoint);    // one attack with a pause by its point
     int GetAttackCount();                                    // the attack count
     bool FUN_140808000();                                   // whether the move type is 3
-    __int64 FUN_140808040();                                // key bits of the movement
+    __int64 GetMoveKey();                                // key bits of the movement
 
     CString m_strSequenceName;                              // +0x18 "sequenceName"
     float m_fSequenceSpeed;                                 // +0x20
@@ -260,20 +260,20 @@ public:
     SkillMotionData* FindMotionBySequenceName(CString strSequence);    // one motion by its sequence name
     SkillMotionData* GetMotion(int nMotion);            // one motion (0 if out of range)
     SkillAttackData* GetAttack(int nMotion, int nAttack);   // one attack of a motion (0 if out of range)
-    SkillAttackData* FUN_140803fb0(int nMotion, CString strName);   // one attack of a motion by name
+    SkillAttackData* GetAttackByName(int nMotion, CString strName);   // one attack of a motion by name
     SkillAttackData* FUN_140804030(const CString& strPoint) const; // one attack with a pause, by point
     Unk_RangeProperty* GetAttackRange(int nMotion, int nAttack);   // the range of an attack
-    Unk_RangeShape* FUN_140804120();                        // the detect shape (0 without one)
-    float FUN_140804150(int nMotion, int nAttack);          // the damage rate of an attack
-    __int64 FUN_1408041d0(int nMotion, int nAttack);        // the damage value of an attack
+    Unk_RangeShape* GetDetectShape();                        // the detect shape (0 without one)
+    float GetDamageRate(int nMotion, int nAttack);          // the damage rate of an attack
+    __int64 GetDamageValue(int nMotion, int nAttack);        // the damage value of an attack
     int GetStanceDamageRate();                                    // the stance damage rate
     int GetMotionCount();                                    // the motion count
     float GetAttackRangeValue(int nMotion, int nAttack);          // the range value of an attack
-    float FUN_140804310();                                  // the largest range value
+    float GetMaxRangeValue();                                  // the largest range value
     int FUN_1408043f0(int nMotion, int nAttack);            // whether the attack exists
-    bool FUN_140804450();                                   // whether a motion has a sequence name
-    const CString& FUN_140804500(int nKind, int nMotion);   // an effect of a motion (kind 2/3/4)
-    int FUN_1408045f0(int nMotion, int nAttack);            // the magic path id of an attack
+    bool HasSequenceName();                                   // whether a motion has a sequence name
+    const CString& GetMotionEffect(int nKind, int nMotion);   // an effect of a motion (kind 2/3/4)
+    int GetMagicPathId(int nMotion, int nAttack);            // the magic path id of an attack
     float GetCooldown();                                  // the cooldown
     int Load(TiXmlElement* pElem);                // reads a <level>
     int Save(void* pParent);                       // writes a <level>
@@ -304,7 +304,7 @@ public:
     SkillGlideData();                                       // 0x1408024f0
     bool IsDifferent(const SkillGlideData& o);            // is different
     void Load(TiXmlElement* pElem);               // reads a <glide>
-    int FUN_140802a40(TiXmlElement* pElem);                // reads the <glideProperty> of a skill
+    int LoadGlideProperty(TiXmlElement* pElem);                // reads the <glideProperty> of a skill
     int FUN_140802a90(void* pParent);
     int GetId();                                    // the id
     CStringW* FUN_140802ad0();
@@ -356,10 +356,10 @@ public:
     int GetParam1();                                        // 0x1407e9c90
     CString GetParamStr();                                  // 0x1407e9cb0
     Unk_SkillSensor* GetSensor();                           // 0x1407e9d00
-    bool FUN_1407e9d30();
+    bool IsEmotion();
     bool FUN_1407e9d70();
     bool FUN_1407e9de0();
-    bool FUN_1407e9e20();
+    bool IsUnrideOnUse();
     bool FUN_1407e9ea0();
     bool FUN_1407e9ef0();
     bool FUN_1407e9f30();                                   // checked before handing out level 1 of an unowned skill
@@ -444,7 +444,7 @@ public:
     void LoadSkillFile(CString strPath);                    // 0x1407ee530
     void AddSkill(MS2Ptr<SkillData> spSkill);               // 0x1407ee730
     void IndexSensors(MS2Ptr<SkillData> spSkill);           // 0x1407ee9f0
-    void FUN_1407eec60(MS2Ptr<SkillData> spSkill);
+    void MarkFinishSkill(MS2Ptr<SkillData> spSkill);
     void FindSkillFiles(std::vector<CString>& out);         // 0x1407eece0
     void FindAdditionalFiles(std::vector<CString>& out);    // 0x1407eedb0
     bool Reload();                                          // 0x1407eee80 reloads the changed files

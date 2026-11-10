@@ -86,8 +86,8 @@ void GFxMovieTooltip::vfunc_4(void* pMovie, const char* szEvent, const Scaleform
         if (nArgs > 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[0]);
-            FUN_1422be140();
-            FUN_1422be2a0();
+            RegisterFormatFunction();
+            InvokeCommonCallback();
             m_90 = Unk_ASCreate<ASUIComponent>(m_18, vRoot);
         }
     }
@@ -140,7 +140,7 @@ int GFxMovieTooltip::vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam,
 MS2_REPLACE_METHOD(0x1422F0EA0, GFxMovieTooltip, vfunc_14, 371, 0x9DB9DEC6);
 
 // @0x1422f1020
-int GFxMovieTooltip::FUN_1422f1020()
+int GFxMovieTooltip::DestroyTooltips()
 {
     if (m_a0.IsEmpty())
         return 0;
@@ -154,7 +154,7 @@ int GFxMovieTooltip::FUN_1422f1020()
     m_a0.RemoveAll();
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422F1020, GFxMovieTooltip, FUN_1422f1020, 293, 0x6731A213);
+MS2_REPLACE_METHOD(0x1422F1020, GFxMovieTooltip, DestroyTooltips, 293, 0x6731A213);
 
 // @0x1422f1150
 void GFxMovieTooltip::CreateTooltip(const Scaleform::GFx::Value& vId, const Scaleform::GFx::Value& vA, const Scaleform::GFx::Value& vB)

@@ -75,7 +75,7 @@ public:
     static CStringW FormatChecked(int, int, int, CStringW);
 };
 
-class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
+class Unk_NpcTableCli* GetNpcDataTableCli();   // C3: was GetNpcDataTableCli
 class Unk_Svc764020 { };
 void* FUN_140764020();   // C3: was FUN_140764020
 //class CQuestManager   // C3: member view for the former free stand-ins
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, GetPortraitPath, 66, 0x998DDC8
 CStringW CProxyGameObject::GetTodayMemo()
 {
     if (IsSelf() != 0) {
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetName();
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer())->GetName();
     }
     return m_60;
 }
@@ -317,13 +317,13 @@ MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, GetTodayMemo, 133, 0x325768ED)
 CStringW CProxyGameObject::FUN_1416c2600()
 {
     if (IsSelf() != 0) {
-        return reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetHomeAddress();
+        return reinterpret_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer())->GetHomeAddress();
     } else {
         {
             MS2Ptr<CBuddy> h = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(m_40);
             if (((void*)h.get()) != 0) {
                 m_b4 = h.operator->()->FUN_1401cc3e0();
-                m_c0 = h.operator->()->FUN_1401cc350();
+                m_c0 = h.operator->()->GetHomeName();
                 m_b8 = h.operator->()->FUN_1401cc3a0();
                 m_bc = h.operator->()->FUN_1401cc3c0();
             }
@@ -364,7 +364,7 @@ MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, GetTally, 54, 0x83FAF988);
 int CProxyGameObject::SetTemplateId(int nTemplateId)
 {
     m_78 = nTemplateId;
-    m_28 = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
+    m_28 = reinterpret_cast<NpcDataTableCli*>(GetNpcDataTableCli())->Find(m_78);
     m_dc = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nTemplateId);
     m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
     UpdateQuestState();

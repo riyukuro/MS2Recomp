@@ -24,7 +24,7 @@
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 int GetServerTick();   // C3: was GetServerTick
 
-bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
+bool IsNearlyEqual(float fValue, float fTolerance);         // commonutil: nearly equal
 float FromPercent(float fPercent);                        // commonutil: percent to rate
 
 // A field object (FieldObject / Actor / PCBase; only the casts and the members below are used).
@@ -203,19 +203,19 @@ SkillMotionData* CSkillRecord::GetMotionData()
 // @0x1417598a0
 const CString& CSkillRecord::FUN_1417598a0()
 {
-    return m_spLevel->FUN_140804500(2, m_nMotion);
+    return m_spLevel->GetMotionEffect(2, m_nMotion);
 }
 
 // @0x1417598e0
 const CString& CSkillRecord::FUN_1417598e0()
 {
-    return m_spLevel->FUN_140804500(3, m_nMotion);
+    return m_spLevel->GetMotionEffect(3, m_nMotion);
 }
 
 // @0x141759920
 const CString& CSkillRecord::FUN_141759920()
 {
-    return m_spLevel->FUN_140804500(4, m_nMotion);
+    return m_spLevel->GetMotionEffect(4, m_nMotion);
 }
 
 // @0x141759960
@@ -278,8 +278,8 @@ float CSkillRecord::FUN_141759b60(double dDelta)
     if (pMotion == 0)
         return 0;
     float fResult = 0;
-    float fRate = FUN_14028d470(pMotion->m_fB8, 0) ? pMotion->m_fAC : pMotion->m_fB8;
-    fRate = FUN_14028d470(m_fCooldown, 0) ? fRate : m_fCooldown;
+    float fRate = IsNearlyEqual(pMotion->m_fB8, 0) ? pMotion->m_fAC : pMotion->m_fB8;
+    fRate = IsNearlyEqual(m_fCooldown, 0) ? fRate : m_fCooldown;
     fRate = FromPercent(fRate);
     if (m_fDuration > 0 && m_fElapsed < m_fDuration) {
         float fStep = (float)dDelta;
@@ -375,7 +375,7 @@ SkillAttackData* CSkillRecord::GetAttackDataAt(int nAttack)
 // @0x14175a0a0
 SkillAttackData* CSkillRecord::GetAttackDataByName(CString strName)
 {
-    return m_spLevel->FUN_140803fb0(m_nMotion, strName);
+    return m_spLevel->GetAttackByName(m_nMotion, strName);
 }
 
 // @0x14175a130
@@ -399,7 +399,7 @@ float CSkillRecord::GetBrokenForce()
 // @0x14175a1b0
 float CSkillRecord::GetRemainingDuration()
 {
-    if (FUN_14028d470(m_fDuration, 0))
+    if (IsNearlyEqual(m_fDuration, 0))
         return 0;
     if (m_fDuration <= m_fElapsed)
         return 0;
@@ -595,7 +595,7 @@ int CDamageRecord::GetAttackMaterial()
                 return nMaterial;
             MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->FUN_1411e1860(5, 6, 0);
             if (spWeapon.get() != 0)
-                nMaterial = spWeapon->GetItem()->FUN_140527840()->m_nAttackMaterial;
+                nMaterial = spWeapon->GetItem()->GetData()->m_nAttackMaterial;
         }
     }
     return nMaterial;

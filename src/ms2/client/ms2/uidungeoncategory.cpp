@@ -70,7 +70,7 @@ public:
 void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 enum Unk_DungeonGroupType : int; template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut); template <> int XmlValueByName(TiXmlElement*, const char*, Unk_DungeonGroupType&);   // 0x140179060, the enum attribute (specialization in additionalactionadditional.cpp)
-bool FUN_14028f710(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
+bool IsElementAvailable(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
 CString GetXmlPath(const CString& strDir, const CString& strFile);
 CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
@@ -107,7 +107,7 @@ public:
     virtual unsigned short vfunc_78();                          // level
 };
 class MyPC { public: int FUN_14152ea50(); };   // C3: unit-local view (mypc.h needs CHomePrivilege)
-class Unk_DcPlayerMgr { public: Unk_DcPlayer* FUN_141bd0cc0(); };
+class Unk_DcPlayerMgr { public: Unk_DcPlayer* GetLocalPlayer(); };
 
 // The party / matching state (party leader's level and job while in a party).
 class Unk_DcParty : public CPartyManager
@@ -216,7 +216,7 @@ int GetLevelRangeAttr(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange
         XmlSplit(str, values, "-");
         if (values.GetCount() != 2)
             return 2;
-        range.FUN_14075bc80(values[0], values[1]);
+        range.SetRange(values[0], values[1]);
     }
     return nResult;
 }
@@ -241,7 +241,7 @@ void UIDungeonCategoryTable::Load()
             continue;
         for (Unk_DcXmlNode* pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pTab))->FirstChild("dungeonSubTab")); pSub != 0;
              pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->NextSibling("dungeonSubTab"))) {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pSub)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pSub)))
                 continue;
             MS2Ptr<UIDungeonCategory> pCategory(new UIDungeonCategory);
             GetLevelRangeAttr(pSub, "level", pCategory->m_range);
@@ -356,7 +356,7 @@ void UIDungeonControlCenter::OnLoadComplete()
     reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnPartyMatchPacket));
     reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnDungeonRewardPacket));
     FUN_1419260d0("m_webGuideButton", 0);
-    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
         m_nSubTab = UIDungeonCategoryTable::GetInstance()->FUN_140c09030(0, pPlayer->vfunc_78());
     UpdateWeeklyReward();
@@ -457,7 +457,7 @@ MS2_REPLACE_METHOD(0x140C0BA70, UIDungeonControlCenter, SetBookmarks, 43, 0x24B1
 // @0x140c0bab0
 void UIDungeonControlCenter::UpdateWeeklyReward()
 {
-    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     ASObj obj(2);
@@ -792,7 +792,7 @@ MS2_REPLACE_METHOD(0x140C0D620, UIDungeonControlCenter, FUN_140c0d620, 473, 0x77
 void UIDungeonControlCenter::GetRecommendedRooms(RoomVec& out)
 {
     out.clear();
-    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     unsigned short nLevel = 0;
@@ -831,7 +831,7 @@ MS2_REPLACE_METHOD(0x140C0D800, UIDungeonControlCenter, GetRecommendedRooms, 677
 void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
 {
     out.clear();
-    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     unsigned short nLevel = 0;

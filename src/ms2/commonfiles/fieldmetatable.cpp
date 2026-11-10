@@ -253,7 +253,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         int nIndoor = 0;
         XmlGetAttr((class TiXmlElement*)(pPortal), "indoor", nIndoor);
         XmlGetAttr((class TiXmlElement*)(pPortal), "field", reinterpret_cast<unsigned&>(nField));
-        if (FUN_1406fc870(nField) == 0)
+        if (IsFieldEnabled(nField) == 0)
             continue;
         Unk_FieldIdListPtr pTargets;
         pTargets = Unk_FieldNewTag(0);
@@ -265,7 +265,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         for (TiXmlElement* pTo = pPortal->FirstChildElement("portal"); pTo != 0; pTo = ((class TiXmlElement*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
         {
             XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nTarget);
-            if (FUN_1406fc870(nTarget) == 0)
+            if (IsFieldEnabled(nTarget) == 0)
                 continue;
             pTargets.get()->AddTail(nTarget);
             int nPortalType = 0;
@@ -298,7 +298,7 @@ void CFieldMetaTable::LoadFieldMetaData()
             int nPortalIndoor = 0;
             XmlGetAttr((class TiXmlElement*)(pTo), "portalIndoor", nPortalIndoor);
             XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nIndoorTarget);
-            if (FUN_1406fc870(nIndoorTarget) == 0)
+            if (IsFieldEnabled(nIndoorTarget) == 0)
                 continue;
             if (nPortalIndoor != 0)
             {
@@ -412,7 +412,7 @@ void CFieldMetaTable::GetLiftableFields(unsigned nId, ATL::CAtlArray<unsigned>& 
 }
 
 // @0x1406fb1e0
-void CFieldMetaTable::FUN_1406fb1e0(int nId, ATL::CAtlArray<unsigned>& out)
+void CFieldMetaTable::GetInteractFields(int nId, ATL::CAtlArray<unsigned>& out)
 {
     Unk_FieldIdListPtr pFields(0);
     if (m_interact.Lookup(nId, pFields))
@@ -458,7 +458,7 @@ void CFieldMetaTable::GetNpcMapSearchFields(unsigned nId, Unk_FieldIdList& out)
                 continue;
             if (!FUN_1406fbb50(nId, nField))
                 continue;
-            MS2Ptr<CFieldData> field = CFieldData::FUN_140374140(nField);
+            MS2Ptr<CFieldData> field = CFieldData::FindField(nField);
             if (field.IsNull())
                 continue;
             if (!field->m_bMapSearch)
@@ -502,7 +502,7 @@ void CFieldMetaTable::FUN_1406fb610(unsigned nFieldId, Unk_FieldIdList& out)
 }
 
 // @0x1406fb700
-int CFieldMetaTable::FUN_1406fb700(unsigned nId, unsigned* pOut)
+int CFieldMetaTable::FindNpcField(unsigned nId, unsigned* pOut)
 {
     CheckInit();
     Unk_FieldIdListPtr pFields(0);
@@ -537,9 +537,9 @@ void CFieldMetaTable::FUN_1406fb810(unsigned nFieldId, Unk_FieldIdList& out)
 }
 
 // @0x1406fb900
-void CFieldMetaTable::FUN_1406fb900(unsigned nFieldId, unsigned nGroupId, Unk_FieldIdList& out)
+void CFieldMetaTable::GetGroupNpcs(unsigned nFieldId, unsigned nGroupId, Unk_FieldIdList& out)
 {
-    MS2Ptr<CFieldData> field = CFieldData::FUN_140374140(nFieldId);
+    MS2Ptr<CFieldData> field = CFieldData::FindField(nFieldId);
     if (field.IsNull())
         return;
     if (field->IsIndoor())
@@ -559,7 +559,7 @@ void CFieldMetaTable::FUN_1406fb900(unsigned nFieldId, unsigned nGroupId, Unk_Fi
 }
 
 // @0x1406fba40
-int CFieldMetaTable::FUN_1406fba40(unsigned nId, int nField)
+int CFieldMetaTable::IsNpcInField(unsigned nId, int nField)
 {
     CheckInit();
     Unk_FieldIdListPtr pFields;
@@ -587,14 +587,14 @@ bool CFieldMetaTable::FUN_1406fbb50(unsigned nNpc, unsigned nField)
 }
 
 // @0x1406fbc10
-int CFieldMetaTable::FUN_1406fbc10(unsigned nField)
+int CFieldMetaTable::HasTaxi(unsigned nField)
 {
     Unk_FieldTaxi taxi;
     return m_taxi.Lookup(nField, taxi);
 }
 
 // @0x1406fbc50
-unsigned CFieldMetaTable::FUN_1406fbc50(unsigned nField)
+unsigned CFieldMetaTable::GetTaxiHomePrivilege(unsigned nField)
 {
     Unk_FieldTaxi taxi;
     if (m_taxi.Lookup(nField, taxi))
@@ -651,7 +651,7 @@ void CFieldMetaTable::FUN_1406fbdf0(Unk_FieldIdListPtr pFrom, Unk_FieldIdListPtr
 }
 
 // @0x1406fc110
-int CFieldMetaTable::FUN_1406fc110(unsigned nKey, unsigned* pValue)
+int CFieldMetaTable::GetParentField(unsigned nKey, unsigned* pValue)
 {
     CheckInit();
     if (m_reverse.Lookup(nKey, *pValue))
@@ -699,7 +699,7 @@ void CFieldMetaTable::FUN_1406fc2f0(unsigned nField, Unk_FieldIdList& out)
 }
 
 // @0x1406fc3c0
-Unk_FieldIdListPtr CFieldMetaTable::FUN_1406fc3c0(unsigned nField)
+Unk_FieldIdListPtr CFieldMetaTable::GetPortalType8Targets(unsigned nField)
 {
     CheckInit();
     Unk_FieldIdListPtr pTargets(0);
@@ -708,14 +708,14 @@ Unk_FieldIdListPtr CFieldMetaTable::FUN_1406fc3c0(unsigned nField)
 }
 
 // @0x1406fc450
-Unk_FieldIdListMap& CFieldMetaTable::FUN_1406fc450()
+Unk_FieldIdListMap& CFieldMetaTable::GetPortalType8Map()
 {
     CheckInit();
     return m_portalType8;
 }
 
 // @0x1406fc480
-void CFieldMetaTable::FUN_1406fc480(int nFieldId, int nNpcId, const CMsTime& t)
+void CFieldMetaTable::SetSpawnNpcGuarantee(int nFieldId, int nNpcId, const CMsTime& t)
 {
     MS2Ptr<CSpawnNpcGuaranteeInfo> info;
     if (!m_guarantee.Lookup(nFieldId, info))
@@ -729,7 +729,7 @@ void CFieldMetaTable::FUN_1406fc480(int nFieldId, int nNpcId, const CMsTime& t)
 }
 
 // @0x1406fc590
-void CFieldMetaTable::FUN_1406fc590(int nFieldId)
+void CFieldMetaTable::RemoveSpawnNpcGuarantee(int nFieldId)
 {
     MS2Ptr<CSpawnNpcGuaranteeInfo> info;
     if (!m_guarantee.Lookup(nFieldId, info))
@@ -777,7 +777,7 @@ int CFieldMetaTable::HasPortalTarget(unsigned nField, unsigned nId)
 }
 
 // @0x1406fc870
-int CFieldMetaTable::FUN_1406fc870(unsigned nFieldId)
+int CFieldMetaTable::IsFieldEnabled(unsigned nFieldId)
 {
     return CFieldFeatureChecker::IsEnabled(nFieldId);
 }

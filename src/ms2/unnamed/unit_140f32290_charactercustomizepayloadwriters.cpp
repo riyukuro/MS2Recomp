@@ -89,7 +89,7 @@ void FUN_140f327a0(MS2Ptr<CItemData> spData, int nPalette, ASObj& obj, int n);
 void FUN_140f328a0(MS2Ptr<Customize> spCustomize, ASObj& obj, int n);
 void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASObj& obj, unsigned* pnFlags);
 void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2);
-void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2);
+void GetItemColors(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2);
 void FUN_140f33950(ASArray& arr, int* pnIndex, int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPalette,
                    ColorArrayPtr spColors, bool bBuild);
 void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPalette, ASObj& obj, int nFlags);
@@ -125,7 +125,7 @@ MS2_REPLACE(0x140F32290, FUN_140f32290, 592, 0xD7B14785);
 
 // A list row of an item: name, id, icon, movie.
 // @0x140f324f0
-void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
+void WriteItemInfo(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
 {
     if (spData == 0)
         return;
@@ -143,7 +143,7 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
     else
         obj.FUN_1409c0dc0("itemmovie", "");
 }
-MS2_REPLACE(0x140F324F0, FUN_140f324f0, 681, 0xAFB2C614);
+MS2_REPLACE(0x140F324F0, WriteItemInfo, 681, 0xAFB2C614);
 
 // @0x140f327a0
 void FUN_140f327a0(MS2Ptr<CItemData> spData, int nPalette, ASObj& obj, int n)
@@ -165,13 +165,13 @@ void FUN_140f328a0(MS2Ptr<Customize> spCustomize, ASObj& obj, int n)
     MS2Ptr<CItem> spItem = static_cast<Unk_CustomizeView*>(spCustomize.get())->GetEditItem();
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->GetData()));
     if (spData == 0)
         return;
     int nPalette = spData->FUN_14053e260();
     int nColor1 = 0;
     int nColor2 = 0;
-    FUN_140f337a0(MS2Ptr<CItem>(spItem), &nColor1, &nColor2);
+    GetItemColors(MS2Ptr<CItem>(spItem), &nColor1, &nColor2);
     FUN_140f33d80(nColor1, nColor2, MS2Ptr<CItemData>(spData), nPalette, obj, n);
 }
 MS2_REPLACE(0x140F328A0, FUN_140f328a0, 455, 0x566F2A2D);
@@ -234,7 +234,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         int nSelected = part->vfunc_17();
         if (spData->FUN_14053d070())
         {
-            CharacterDecalData* pDecal = spData->GetModelOrEmpty()->FUN_14054b6b0();
+            CharacterDecalData* pDecal = spData->GetModelOrEmpty()->GetDecalData();
             if (pDecal != 0)
                 pList = pDecal->GetCustoms();
         }
@@ -322,7 +322,7 @@ MS2_REPLACE(0x140F33400, FUN_140f33400, 349, 0x8BD542F8);
 // @0x140f33570
 void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
 {
-    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     if (spData == 0)
@@ -348,14 +348,14 @@ void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
 MS2_REPLACE(0x140F33570, FUN_140f33570, 542, 0xAC452C00);
 
 // @0x140f337a0
-void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
+void GetItemColors(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
 {
-    void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPc = WorldService::GetInstance()->GetLocalPlayer();
     if (pPc == 0)
         return;
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->GetData()));
     if (spData == 0)
         return;
     if (spData->IsAvatarColorItem())
@@ -369,7 +369,7 @@ void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
         FUN_141424760(MS2Ptr<CItem>(spItem), (unsigned int*)(pnColor2), 2, (struct Unk_UgcPlayer*)(pPc));
     }
 }
-MS2_REPLACE(0x140F337A0, FUN_140f337a0, 422, 0x0424A80D);
+MS2_REPLACE(0x140F337A0, GetItemColors, 422, 0x0424A80D);
 
 // The colour page of one palette: a row per colour (when building) and the index of the selected one.
 // @0x140f33950

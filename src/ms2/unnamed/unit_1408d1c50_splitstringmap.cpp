@@ -18,7 +18,7 @@ class Unk_SplitStr
 public:
     // C3: the 0x1408d1c50 ctor is ItemFunctionArgs's (citemdata.h), defined below
     void FUN_1408d1d80(CStringW strName, CStringW strDelims);                   // sets the name and splits it
-    void FUN_1408d1e80(int nKey, int nValue);                                   // map insert
+    void SetValue(int nKey, int nValue);                                   // map insert
 
     CStringW m_strName;             // +0x00
     ATL::CAtlArray<CStringW> m_parts;   // +0x08
@@ -47,8 +47,8 @@ void ItemFunctionArgs::FUN_1408d1e00(CStringW strName, CStringW strDelims)    //
 }
 
 // @0x1408d1e80
-void Unk_SplitStr::FUN_1408d1e80(int nKey, int nValue)
+void Unk_SplitStr::SetValue(int nKey, int nValue)
 {
     m_map.SetAt(nKey, nValue);
 }
-MS2_REPLACE_METHOD(0x1408D1E80, Unk_SplitStr, FUN_1408d1e80, 49, 0x1F2F4EBD);
+MS2_REPLACE_METHOD(0x1408D1E80, Unk_SplitStr, SetValue, 49, 0x1F2F4EBD);

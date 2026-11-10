@@ -156,7 +156,7 @@ public:
 // (0x1406943b0 is CMatchPartyRecruitSchCond's constructor, cmatchpartyrecruit.h)
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned __int64 FUN_140718350(const CString& str);                     // string -> id
-unsigned __int64 FUN_140718370(const CStringW& str);
+unsigned __int64 ParseUInt64W(const CStringW& str);
 CStringW FUN_140719a80(unsigned __int64 n);
 CStringW GetStringCommon(int nId);                                        // string table
 void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
@@ -166,7 +166,7 @@ bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_141275460(int nId, int a, int b, const fmt::ArgList& args);
 void FUN_141275260(int nId, int a, int b);
 extern __int64 DAT_143ab2828;                                           // the local character id
@@ -212,7 +212,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Valu
     args.resize(3);
     SetValue(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -346,7 +346,7 @@ void UIPartySearchDialog::vfunc_79(void* pEvent)
     UIDialog::vfunc_79(pEvent);
     if (!m_30)
         return;
-    if (reinterpret_cast<CInPacket*>(pEvent)->FUN_14070fe80() == 0x53)
+    if (reinterpret_cast<CInPacket*>(pEvent)->GetOpcode() == 0x53)
     {
         int bRepeat = static_cast<Unk_PsdKeyEvent*>(pEvent)->vfunc_1();
         if (bRepeat == 0)
@@ -437,7 +437,7 @@ int UIPartySearchDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             ATL::CAtlArray<CStringW> parts;
             FUN_14028cb70(strTag, parts, L",", 2);
-            __int64 nId = FUN_140718370(parts[1]);
+            __int64 nId = ParseUInt64W(parts[1]);
             MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FindRecruit(nId);
             if (recruit.get())
             {
@@ -561,7 +561,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     if (strName == pPlayer->vfunc_77())
@@ -591,7 +591,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             MS2Ptr<CMatchPartyRecruit> recruit = TSingleton<CPartyManager>::GetInstance()->FindRecruit(nId);
             if (recruit.get())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     if (recruit->created == ((class PCBase*)(class PCBase*)(pPlayer))->FUN_141656a80())
@@ -624,7 +624,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
             {
-                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+                PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
                 if (pPlayer != 0)
                 {
                     if (pPlayer->vfunc_77() == strName)
@@ -790,7 +790,7 @@ void UIPartySearchDialog::InitSearchCondition()
 // @0x140f8e790
 void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAccount, __int64 nChar, CStringW* pName, int nFlag)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         if (((class PCBase*)(class PCBase*)(static_cast<PCBase*>(pPlayer)))->FUN_141656a80() == nChar)
@@ -826,7 +826,7 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
 // @0x140f8eab0
 void UIPartySearchDialog::OnClickRegisterMemeberSearch()
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (((class MyPC*)(class PCBase*)(pPlayer))->IsInParty() && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
@@ -845,7 +845,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
 // @0x140f8ec40
 void UIPartySearchDialog::OnClickRegisterMemeberSearchModify()
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (((class MyPC*)(class PCBase*)(pPlayer))->IsInParty() && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())

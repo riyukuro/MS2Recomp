@@ -317,7 +317,7 @@ void CPonyTailController::vfunc_5()
 {
     if (m_spEquipItem.get())
     {
-        if (Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870())
+        if (Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->GetItem())->GetProxy())
             ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pData))->SetPick(m_nValue);
     }
 }
@@ -327,7 +327,7 @@ void CPonyTailController::vfunc_6()
 {
     ReadValues();
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_bBusy != 0)
@@ -380,15 +380,15 @@ float CPonyTailController::vfunc_20()
 // @0x141692440
 const Unk_CustomizeRange* CPonyTailController::vfunc_23()
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         MS2Ptr<CEquipModel> spFirst = m_kFirst.m_spModel;
         if (spFirst.get())
-            return (const Unk_CustomizeRange*)((ModelGroup*)FUN_141200a90((class CEquipModel*)(spFirst.operator->())))->FUN_140544f20(0);
+            return (const Unk_CustomizeRange*)((ModelGroup*)FUN_141200a90((class CEquipModel*)(spFirst.operator->())))->GetFloatList(0);
         MS2Ptr<CEquipModel> spSecond = m_kSecond.m_spModel;
         if (spSecond.get())
-            return (const Unk_CustomizeRange*)((ModelGroup*)FUN_141200a90((class CEquipModel*)(spSecond.operator->())))->FUN_140544f20(0);
+            return (const Unk_CustomizeRange*)((ModelGroup*)FUN_141200a90((class CEquipModel*)(spSecond.operator->())))->GetFloatList(0);
     }
     return CItemCustomizeController::vfunc_23();
 }
@@ -410,7 +410,7 @@ int CPonyTailController::vfunc_17()
 // @0x1416925e0
 void CPonyTailController::vfunc_14(float fValue)
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_bBusy != 0)
@@ -444,7 +444,7 @@ void CPonyTailController::vfunc_9(int nIndex)
     FUN_1416955b0(0, 1, &CPonyTailController::GetPresetTransform, nIndex);
     m_nValue = nIndex;
     Unk_UserProxyItemData* pData;
-    Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
+    Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->GetProxy();
     if (pData)
         ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pData))->SetPick(nIndex);
 }
@@ -452,7 +452,7 @@ void CPonyTailController::vfunc_9(int nIndex)
 // @0x1416929b0
 int CPonyTailController::vfunc_29()
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     CEquipModel* pFirst = 0;
@@ -532,7 +532,7 @@ Vector3 CPonyTailController::MirrorPoint(const Vector3& kOrigin, const Vector3& 
 void CPonyTailController::vfunc_30(const NiPoint3& kPos)
 {
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         pPlayer->FUN_14123d7a0(CString("TailController"), 1);
     NiActorManager* pActor = 0;
@@ -581,7 +581,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
 // @0x141693210
 void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (pPlayer->FUN_14166dc50() != "Equip_Change_Idle_A")
@@ -705,7 +705,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
 // @0x141694380
 void CPonyTailController::vfunc_33()
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer != 0)
         pPlayer->FUN_14123d7a0(CString("TailController"), 0);
     MS2Ptr<CEquipModel> spFirst = m_kFirst.m_spModel;
@@ -718,7 +718,7 @@ void CPonyTailController::vfunc_33()
     if (m_spEquipItem.get())
     {
         Unk_UserProxyItemData* pData;
-        Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
+        Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->GetProxy();
         if (pData)
         {
             m_nValue = -1;
@@ -730,7 +730,7 @@ void CPonyTailController::vfunc_33()
 // @0x141694650
 void CPonyTailController::FUN_141694650()
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_spEquipItem == (CEquipItem*)0)
@@ -776,7 +776,7 @@ void CPonyTailController::FUN_141694650()
         GetLocalTransform((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);
     }
     Unk_UserProxyItemData* pData;
-    Unk_UserProxyItemData* pCopy = pData = m_spEquipItem->GetItem()->FUN_140527870();
+    Unk_UserProxyItemData* pCopy = pData = m_spEquipItem->GetItem()->GetProxy();
     if (pData)
         m_nValue = ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pData))->GetPick();
 }
@@ -784,7 +784,7 @@ void CPonyTailController::FUN_141694650()
 // @0x141694ea0
 void CPonyTailController::FUN_141694ea0(CEquipModel** ppFirst, CEquipModel** ppSecond)
 {
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     CEquipModel* pA = 0;
@@ -907,7 +907,7 @@ void CPonyTailController::ApplyPartPose(Unk_PonyPart* pPart, int nMode, int nInd
                                         int bSecond)
 {
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
-    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     NiActorManager* pActor = pSvc->GetActorManager(pPlayer->GetEntityID());
     if (pActor == 0)
         return;

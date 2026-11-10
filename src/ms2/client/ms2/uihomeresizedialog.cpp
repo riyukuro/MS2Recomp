@@ -142,7 +142,7 @@ void UIHomeResizeDialog::OnShrinkArea()
             CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
-                spBox->FUN_141a01800(1);
+                spBox->SetButtonPreset(1);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
                 FUN_140d73c60(spBox);
             }
@@ -167,7 +167,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
             CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
-                spBox->FUN_141a01800(1);
+                spBox->SetButtonPreset(1);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
                 FUN_140d73c60(spBox);
             }
@@ -191,7 +191,7 @@ void UIHomeResizeDialog::OnExtensionArea()
         strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_messagebox"), nArea, spNext->m_nArea, strPrice);
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode37));
         FUN_140d73c60(spBox);
     }
@@ -210,7 +210,7 @@ void UIHomeResizeDialog::OnExtensionHeight()
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_height_messagebox"), nHeight, spNext->m_nHeight, strPrice);
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
-        spBox->FUN_141a01800(1);
+        spBox->SetButtonPreset(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode44));
         FUN_140d73c60(spBox);
     }
@@ -263,7 +263,7 @@ bool UIHomeResizeDialog::SendRequestCubeMode44(int nResult, const CMsgBoxData& d
 // @0x140c2cf50
 void UIHomeResizeDialog::vfunc_84()
 {
-    Unk_HrPc* pPc = ((class Unk_HrPc*)((class WorldService*)(class Unk_HrWorld*)(reinterpret_cast<Unk_HrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_HrPc* pPc = ((class Unk_HrPc*)((class WorldService*)(class Unk_HrWorld*)(reinterpret_cast<Unk_HrWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);

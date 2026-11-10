@@ -26,9 +26,9 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140fb07d0
     virtual int vfunc_48() { return 0x4f1f; }                   // 48 0x140fb4410
 
-    void FUN_140fb0290(CInPacket& packet);                      // 0x140fb0290 read the portal from the packet
+    void ReadPortal(CInPacket& packet);                      // 0x140fb0290 read the portal from the packet
     void OnApply();                                       // 0x140fb0a70 OnApply: check the name and send
-    bool FUN_140fb0da0(CStringW& strName);                      // 0x140fb0da0 name -> string table id, then its text
+    bool ConvertNameToStringId(CStringW& strName);                      // 0x140fb0da0 name -> string table id, then its text
     void FUN_140fb0e30();                                       // 0x140fb0e30 fill the drop down: names from the packet
     void FUN_140fb1040();                                       // 0x140fb1040 fill the drop down: remembered UGC maps
     void FUN_140fb15a0();                                       // 0x140fb15a0 fill the drop down: friends

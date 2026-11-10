@@ -133,7 +133,7 @@ void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
 
 
-CStringW FUN_1422e5b80(CStringW str);
+CStringW GetIconUrl(CStringW str);
 
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 class Unk_AsEx : public AScript
@@ -200,7 +200,7 @@ void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned 
 }
 
 // @0x140cff840
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible)
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int nVisible)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -212,7 +212,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisi
 }
 
 // @0x140cff950
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned int n)
+void SetChildEnabled(const Scaleform::GFx::Value& root, CString strName, unsigned int n)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -402,7 +402,7 @@ void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Va
 }
 
 // @0x140d00b80
-void FUN_140d00b80(const Scaleform::GFx::Value& root, CString strName, int n)
+void SetChildWidth(const Scaleform::GFx::Value& root, CString strName, int n)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -414,7 +414,7 @@ void FUN_140d00b80(const Scaleform::GFx::Value& root, CString strName, int n)
 }
 
 // @0x140d00c80
-void FUN_140d00c80(const Scaleform::GFx::Value& root, CString strName, int n)
+void SetChildHeight(const Scaleform::GFx::Value& root, CString strName, int n)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -450,7 +450,7 @@ int GetChildTextWidth(const Scaleform::GFx::Value& root, CString strName)
 }
 
 // @0x140d00fb0
-void FUN_140d00fb0(Vector3 kWorld, efd::Point2* pScreen)
+void WorldToScreen(Vector3 kWorld, efd::Point2* pScreen)
 {
     NiPoint3 kPos;
     if (CameraMgr::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(kWorld), kPos))
@@ -486,7 +486,7 @@ static CString s_strTopRight("topRight");
 static egf::EntityID s_hGfx(0);
 
 // @0x140d01040
-int FUN_140d01040(CString& strAlign)
+int GetAlignFromName(CString& strAlign)
 {
     if (strAlign.CompareNoCase(s_strTopLeft) == 0)
         return 5;
@@ -517,17 +517,17 @@ void FUN_140d011c0(MS2Ptr<ASLoader> spImage, CStringW strUrl, bool bFlag)
     if (spImage == 0)
         return;
     spImage.operator->()->UnloadAndStop(bFlag);
-    spImage.operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2)));
+    spImage.operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(GetIconUrl(CStringW(strUrl)), 2)));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"
 
-Unk_TextFieldExPtr FUN_140d01530(int nMovieId);
+Unk_TextFieldExPtr GetTextFieldEx(int nMovieId);
 
 // @0x140d01340
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId)
 {
-    Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
+    Unk_TextFieldExPtr sp = GetTextFieldEx(nMovieId);
     if (sp.get() != 0)
         reinterpret_cast<ASTextFieldEx*>(sp.operator->())->SetVerticalAlign(target, nParam);
 }
@@ -535,7 +535,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMo
 // @0x140d013b0
 void SetTextAutoSize(const Scaleform::GFx::Value& target, int nMovieId)
 {
-    Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
+    Unk_TextFieldExPtr sp = GetTextFieldEx(nMovieId);
     if (sp.get() != 0)
         reinterpret_cast<ASTextFieldEx*>(sp.operator->())->SetTextAutoSize(target, DAT_143b0d350);
 }
@@ -553,7 +553,7 @@ void SetChildTextAutoSize(const Scaleform::GFx::Value& root, CString strName, in
 }
 
 // @0x140d01530
-Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
+Unk_TextFieldExPtr GetTextFieldEx(int nMovieId)
 {
     GFxMovie* pMovie = GetGFxManager()->FindMovie(nMovieId);
     if (pMovie != 0)
@@ -561,10 +561,10 @@ Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
     return Unk_TextFieldExPtr(0);
 }
 
-void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable);
+void SetHitTestDisable(const Scaleform::GFx::Value& target, bool bDisable);
 
 // @0x140d01670
-void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDisable)
+void SetChildHitTestDisable(const Scaleform::GFx::Value& root, CString strName, bool bDisable)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -572,11 +572,11 @@ void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDis
     MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
-    FUN_140d01780((*spClip).FUN_1422bb890(), bDisable);
+    SetHitTestDisable((*spClip).FUN_1422bb890(), bDisable);
 }
 
 // @0x140d01780
-void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
+void SetHitTestDisable(const Scaleform::GFx::Value& target, bool bDisable)
 {
     GFxMovie* pMovie = GetGFxManager()->FindMovie(2);
     if (pMovie != 0)
@@ -593,7 +593,7 @@ void FUN_140d01960(CString strKey)
 {
     UIWebBrowser* pBrowser = FindWebBrowser(0x4e6a);
     if (pBrowser != 0)
-        pBrowser->FUN_141b50490(strKey);
+        pBrowser->NavigateToGuide(strKey);
 }
 
 // @0x140d019b0
@@ -610,7 +610,7 @@ MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName)
 }
 
 // @0x140d01be0
-MS2Ptr<ASDisplayObject> FUN_140d01be0(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASDisplayObject> CreateDisplayObject(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASDisplayObject> sp(new ASDisplayObject(v, nMovieId));
     return sp;
@@ -688,7 +688,7 @@ MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, ASButton, Unk_ASCreate<ASButton>)
 // @0x140d02140
 MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, CreateCheckBox)
 // @0x140d02410
-MS2_FINDER_DEEP(140d02410, FUN_140d02410, ASDisplayObject, FUN_140d01be0)
+MS2_FINDER_DEEP(140d02410, FUN_140d02410, ASDisplayObject, CreateDisplayObject)
 // @0x140d026e0
 MS2_FINDER_DEEP(140d026e0, FUN_140d026e0, ASDisplayObjectContainer, CreateDisplayObjectContainer)
 // @0x140d029b0

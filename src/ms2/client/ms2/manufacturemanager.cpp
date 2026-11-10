@@ -131,16 +131,16 @@ extern __int64 DAT_143ab2820;                                   // own account i
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 void*GetGameRule();
 //
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_14053feb0(int nItemId);                                 // default rarity of an item
+int GetItemRank(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
-int FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
+int PlaySystemSound(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
 #include "ms2/placeholder/blockformat.h"
 void ReadManufacture(class CManufacture&, class CByteBuffer&);   // C3: was ReadManufacture
@@ -291,7 +291,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
 // @0x140d509b0
 int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* pnResult)
 {
-    Unk_MfPC* pPC = ((class Unk_MfPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_MfPC* pPC = ((class Unk_MfPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     {
@@ -307,7 +307,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
                 if (spItem == 0)
                     continue;
-                int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : FUN_14053feb0(nItemId);
+                int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : GetItemRank(nItemId);
                 unsigned nOwned = 0;
                 if (reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId() == 0)
                     nOwned = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
@@ -363,7 +363,7 @@ int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
         *pnResult = 7;
         return 0;
     }
-    if (spItem->FUN_140694170() > GetServerTime())
+    if (spItem->GetReadyTime() > GetServerTime())
     {
         *pnResult = 0xd;
         return 0;
@@ -476,20 +476,20 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = spMsg->selectItem;
         break;
     case 1:
-        FUN_141276180(s_strMaidRequest, "");
+        PlaySystemSound(s_strMaidRequest, "");
         strText = spMsg->craftRequest;
         break;
     case 2:
-        FUN_141276180(s_strMaidReceive, "");
+        PlaySystemSound(s_strMaidReceive, "");
         strText = spMsg->receiveItem;
         break;
     case 3:
-        FUN_141276180(s_strMaidReceiveJackpot, "");
-        FUN_141276180(s_strMaidFirework, "");
+        PlaySystemSound(s_strMaidReceiveJackpot, "");
+        PlaySystemSound(s_strMaidFirework, "");
         strText = spMsg->receiveJackpot;
         break;
     case 4:
-        FUN_141276180(s_strMaidCancel, "");
+        PlaySystemSound(s_strMaidCancel, "");
         strText = spMsg->craftCancel;
         break;
     case 8:

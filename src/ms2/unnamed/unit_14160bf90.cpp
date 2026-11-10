@@ -12,7 +12,7 @@
 class Unk_ArcMover
 {
 public:
-    void FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle);     // advance and sample
+    void Advance(float fDelta, Vector3* pPos, float* pAngle);     // advance and sample
     bool IsMoving() const;                                                 // moving
     CString GetName() const;                                              // the moving animation name
 
@@ -35,7 +35,7 @@ float LengthSquared(const Vector3& v)
 MS2_REPLACE(0x14160C230, LengthSquared, 72, 0x8F023533);
 
 // @0x14160bf90
-void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
+void Unk_ArcMover::Advance(float fDelta, Vector3* pPos, float* pAngle)
 {
     m_fElapsed = m_fElapsed + fDelta;
     if (!(m_fElapsed < m_fDuration))

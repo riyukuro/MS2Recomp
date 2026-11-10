@@ -67,7 +67,7 @@ public:
     virtual void vfunc_7(int a1);                                   //  7 0x140c5ec20
     virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c5ec70 returns 0
 
-    void FUN_140c5ee50(MS2Ptr<ASUIComponent> ui);                   // 0x140c5ee50 attach the page's movie (by value: the callee destroys it)
+    void SetUI(MS2Ptr<ASUIComponent> ui);                   // 0x140c5ee50 attach the page's movie (by value: the callee destroys it)
 
     MS2Ptr<ASUIComponent> m_ui;                                     // +0x18 the page's movie
 };
@@ -101,7 +101,7 @@ public:
     virtual void vfunc_4();                                         //  4 0x140c5d900
     virtual void vfunc_5(int nEvent);                               //  5 0x140c5d950
 
-    void FUN_140c5d9c0(int bOn);                                    // 0x140c5d9c0 play / stop the equip effect of the matching slot
+    void SetEquipEffect(int bOn);                                    // 0x140c5d9c0 play / stop the equip effect of the matching slot
 
     CString m_strBag;                                               // +0x28 the slot bag's registry name
     UILapenshardEquipTab* m_pTab;                                   // +0x30
@@ -212,11 +212,11 @@ public:
     MS2Ptr<class CItemLapenshardData> FUN_140c65d60();                     // the table record of the source item
     void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
-    void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
+    void BindSlotItem(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
     void FUN_140c65540(CString& strBag, MS2Ptr<class CItemLapenshardData> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, LapenshardKindArray& kinds, ASObj& out);
     void UpdateSourceAndResultSlots();
-    void FUN_140c65e00();
-    void FUN_140c65ef0();
+    void UpdateSuccessProb();
+    void UpdateIngredientCount();
     void UpdateIngredientData();
     void FUN_140c671d0();
     void ShowUpgradeResult(bool bSuccess);
@@ -248,7 +248,7 @@ public:
     virtual void vfunc_9(CInPacket& packet);                        //  9 0x140c68870
     virtual void vfunc_10(void* a1, bool b);                        // 10 0x140c68a30 (empty)
 
-    void FUN_140c68a50();                                           // reset the page state
+    void ResetState();                                           // reset the page state
     void SendLapenshardMode4();                                           // tell the server the ingredients changed
     void SendLapenshardMode3(MS2Ptr<CItem> spItem);                       // pick the source item
     MS2Ptr<CItem> GetSource();                                  // the source item
@@ -261,8 +261,8 @@ public:
     int GetIngredientCount(unsigned __int64 nUid);                       // the number of one ingredient
     void SendLapenshardMode5();                                           // request the upgrade
     int CanRequestUpgrade();                                            // the upgrade can be requested
-    void FUN_140c69620();
-    int FUN_140c69650();
+    void UpdateSaleRate();
+    int GetSaleRate();
 
     LapenshardPanelList m_panels;                                   // +0x18
     int m_nState;                                                   // +0x48
@@ -315,10 +315,10 @@ public:
     virtual void vfunc_3(void* pItem, bool b);
 
     MS2Ptr<LapenshardSystemTabContents> GetPage();           // the page shown (a copy)
-    void FUN_140c623c0(int nEvent);                                 // notify the shown page
-    void FUN_140c62490(int nSlot);                                  // select a slot, notify 10
+    void NotifyPage(int nEvent);                                 // notify the shown page
+    void SelectSlot(int nSlot);                                  // select a slot, notify 10
     void FUN_140c624d0();                                           // notify 11
-    int FUN_140c62500() const { return m_nSlot; }                   // the selected equip slot
+    int GetSlot() const { return m_nSlot; }                   // the selected equip slot
     void OnLeaveTab();                                           // the shown page: close
     void ShowTabPage(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
 
@@ -367,12 +367,12 @@ public:
     virtual void vfunc_43();                                        // 43 0x140c5f2a0
     virtual int vfunc_48() { return 0x4f73; }                       // 48 0x140c607c0
 
-    void FUN_140c5f8f0(MS2Ptr<AdditionalCli> spBuff);                  // show a buff (by value: the callee destroys it)
+    void SetBuff(MS2Ptr<AdditionalCli> spBuff);                  // show a buff (by value: the callee destroys it)
     MS2Ptr<AdditionalCli> GetBuff();                          // the shown buff
     CStringW FUN_140c5f9e0();                                       // "mm:ss" left
-    void FUN_140c5faf0();                                           // play "end"
+    void PlayEnd();                                           // play "end"
     int IsEnded();                                            // the buff ended
-    void FUN_140c5fbd0();                                           // bind the skill slot and play "open"
+    void OpenShieldBar();                                           // bind the skill slot and play "open"
 
     MS2Ptr<AdditionalCli> m_spBuff;                                 // +0x78
     int m_nPending;                                                 // +0x88 the buff changed, "open" is due

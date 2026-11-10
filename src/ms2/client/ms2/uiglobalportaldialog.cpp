@@ -30,7 +30,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> GpClickDe
 class Unk_GpButton : public ASButton
 {
 public:
-    void FUN_1422ce240(const GpClickDelegate& onClick, int nFlags);     // click callback
+    void AddClickHandler(const GpClickDelegate& onClick, int nFlags);     // click callback
 };
 
 class ASDialog : public ASDisplayObject
@@ -45,13 +45,13 @@ void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CStr
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
 void ShowSystemNotice(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
-int FUN_141276180(const CString& strName, const CString& strArg);      // play a system sound
+int PlaySystemSound(const CString& strName, const CString& strArg);      // play a system sound
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int GetRandomRange(int, int);   // C3: was GetRandomRange
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
@@ -102,13 +102,13 @@ void UIGlobalPortalDialog::OnLoadComplete()
     BindCloseButton("m_closeButton");
     Unk_GpButton* pButton1 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_enterButton1", reinterpret_cast<MS2Ptr<ASButton>&>(m_enterButton1)).get());
     if (pButton1)
-        ((class ASButton*)(m_enterButton1))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(0));
+        ((class ASButton*)(m_enterButton1))->AddClickHandler(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(0));
     Unk_GpButton* pButton2 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_enterButton2", reinterpret_cast<MS2Ptr<ASButton>&>(m_enterButton2)).get());
     if (pButton2)
-        ((class ASButton*)(m_enterButton2))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(1));
+        ((class ASButton*)(m_enterButton2))->AddClickHandler(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(1));
     Unk_GpButton* pButton3 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_enterButton3", reinterpret_cast<MS2Ptr<ASButton>&>(m_enterButton3)).get());
     if (pButton3)
-        ((class ASButton*)(m_enterButton3))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(2));
+        ((class ASButton*)(m_enterButton3))->AddClickHandler(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(2));
     FUN_1412c2980();
 }
 
@@ -141,7 +141,7 @@ void UIGlobalPortalDialog::vfunc_72()
         return;
     if (GetTickCountMs2() < m_nRetryTime)
         return;
-    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     unsigned short nLimit = *reinterpret_cast<unsigned short*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)GetClientConstants()) + 0xe150)->Get());
@@ -204,7 +204,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
         if (!m_strSound.IsEmpty())
         {
             CString strArg("");
-            FUN_141276180(FUN_14016a600(m_strSound, 0), strArg);
+            PlaySystemSound(FUN_14016a600(m_strSound, 0), strArg);
         }
     }
 }

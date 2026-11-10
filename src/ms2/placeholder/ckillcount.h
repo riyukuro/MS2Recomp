@@ -20,7 +20,7 @@ public:
     void Reset();                                           // 0x14064c7d0 reset the combo
     int GetCount();                                            // the combo count
     int GetLastKillTick();                                            // 0x14064c820 the tick of the last kill
-    int FUN_14064c840(int nTick);                                   // nonzero while the combo is still alive at nTick
+    int IsComboAlive(int nTick);                                   // nonzero while the combo is still alive at nTick
     unsigned int CalcKillCount(unsigned short a1, unsigned short a2, int nDelta);   // 0x14064c8a0 lua calcKillCount
 
 private:

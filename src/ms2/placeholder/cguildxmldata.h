@@ -141,7 +141,7 @@ public:
     float GetQuestRewardFactor(unsigned short,int); int GetContribution(int);
     MS2Ptr<GuildProperty> GetProperty(int);
     MS2Ptr<GuildSkill> GetSkill(int,int);
-    void FUN_1404d7630(std::vector<int>&); void GetPersonalSkillIds(std::vector<int>&);
+    void GetGuildSkillIds(std::vector<int>&); void GetPersonalSkillIds(std::vector<int>&);
     MS2Ptr<GuildEvent> GetEvent(int); void GetEventIds(std::vector<int>&);
     MS2Ptr<GuildHouse> GetHouse(int,int); void GetHouseKeys(std::vector<std::pair<int,int>>&);
     MS2Ptr<GuildNpc> GetNpc(Unk_GuildNpcKind,int);

@@ -44,11 +44,11 @@ void ASVideo::SetSmoothing(int bSmoothing)
 MS2_REPLACE_METHOD(0x1422F75E0, ASVideo, SetSmoothing, 40, 0xAEB91D5F);
 
 // @0x1422f7610
-int ASVideo::FUN_1422f7610()
+int ASVideo::GetSmoothing()
 {
     return GetMember("smoothing").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422F7610, ASVideo, FUN_1422f7610, 91, 0xFE65B6FE);
+MS2_REPLACE_METHOD(0x1422F7610, ASVideo, GetSmoothing, 91, 0xFE65B6FE);
 
 // @0x1422f7680
 int ASVideo::GetVideoHeight()

@@ -513,7 +513,7 @@ public:
     unsigned __int64 GetValue38();                                   // 0x140a53440: the target's attach object
 };
 void SetScale(struct Unk_HoldTarget*, float);   // C3: was CBirdMovement::SetScale (equipmodel.cpp)
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 class Unk_ServiceManager* GetServiceManager();   // C3: was efd::ServiceManager*
 #define GetServiceManager() ((efd::ServiceManager*)GetServiceManager())
 
@@ -529,7 +529,7 @@ void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler a
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bbb1e0(class GameObject*, int, unsigned int);
+    int OnObjectCreated(class GameObject*, int, unsigned int);
     void FUN_141bbb7f0(class GameObject*, int);
     static class WorldService* GetInstance();
 };
@@ -689,7 +689,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 
         m_spEffectObject->Init(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor(), m_spParam->m_strEffectObjectKfm, m_spParam->m_fScale);
 
-        ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb1e0((CEffectObject*)m_spEffectObject, 0, 1);
+        ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->OnObjectCreated((CEffectObject*)m_spEffectObject, 0, 1);
     }
 
     if (m_spParam->m_strLerpType.CompareNoCase("bird") == 0)
@@ -736,7 +736,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         return false;
 
     AddNifPath((EffectNode*)(spRoot), m_spParam->m_strFilePath);
-    if (FUN_14028d470(m_fDuration, 0.0f))
+    if (IsNearlyEqual(m_fDuration, 0.0f))
     {
         if (m_spParam->m_bBipedLoop)
             return false;
@@ -798,7 +798,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         FUN_14154cf20(static_cast<NiAVObject*>(kLoaded.operator NiNode*()));
     }
 
-    if (FUN_14028d470(m_spParam->m_fStartDelay, 0.0f))
+    if (IsNearlyEqual(m_spParam->m_fStartDelay, 0.0f))
         vfunc_4();
     FUN_141567a10((class NiAVObject*)(m_spRoot.operator NiNode*()));
     SetShadowCaster((class NiAVObject*)(m_spRoot.operator NiNode*()), m_spParam->m_bUseShadow);
@@ -813,7 +813,7 @@ bool CNifEffect::vfunc_9()
     if (fNow > m_fFadeStart)
     {
         float fScale = 0.0f;
-        if (FUN_14028d470(m_fFadeTime, 0.0f))
+        if (IsNearlyEqual(m_fFadeTime, 0.0f))
             fScale = 0.0f;
         else
             fScale = ((m_fFadeStart + m_fFadeTime) - fNow) / m_fFadeTime;
@@ -855,7 +855,7 @@ bool CNifEffect::vfunc_9()
         return false;
     if ((int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0() != m_nLodLevel)
     {
-        if (FUN_14028d470(m_fDuration, 0.0f))
+        if (IsNearlyEqual(m_fDuration, 0.0f))
             FUN_14154cf20(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()));
     }
     return true;
@@ -1531,7 +1531,7 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
     std::string strDir;
     void* pBuf;
     unsigned __int64 nSize;
-    if (GetFileSystem()->FUN_1403972f0(strPath, &pBuf, &nSize, &strDir))
+    if (GetFileSystem()->LoadFileData(strPath, &pBuf, &nSize, &strDir))
     {
         GetSearchPath(pStream)->SetReferencePath(strDir.c_str());
         if (!pStream->Load(static_cast<char*>(pBuf), (int)nSize))
@@ -1601,9 +1601,9 @@ class GFxService* GetGFxService();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422e9e50();
+    int GetSysAllocBytesInUse();
 };
-void FUN_1414a26b0();
+void DestroyNiStreamLoadThread();
 typedef efd::SmartPointer<NiTexture> NiTexturePtr;
 void SetRendererData(NiSourceTexture* pTexture, NiTexture::RendererData* pData);    // SetRendererData (+0x40)
 void FindFiles(CString strPattern, CString strDirectory, ATL::CAtlArray<CString>& aOut, CString strExclude, bool bLocalOnly);
@@ -1720,7 +1720,7 @@ MS2_REPLACE_METHOD(0x141554CE0, CNifLoadingService, LowerLifetime, 52, 0xD933971
 // @0x141554d20
 void CNifLoadingService::ResetLifetime()
 {
-    if (FUN_14028d470((float)m_dConfigLifetime, 0.0f) == 0)
+    if (IsNearlyEqual((float)m_dConfigLifetime, 0.0f) == 0)
         m_dLifetime = m_dConfigLifetime;
     else
         m_dLifetime = 120.0;
@@ -1731,7 +1731,7 @@ MS2_REPLACE_METHOD(0x141554D20, CNifLoadingService, ResetLifetime, 91, 0xD97A29F
 void CNifLoadingService::SetLifetime(double dSeconds)
 {
     m_dConfigLifetime = dSeconds;
-    if (!FUN_14028d470((float)dSeconds, 0.0f))
+    if (!IsNearlyEqual((float)dSeconds, 0.0f))
         m_dLifetime = dSeconds;
 }
 MS2_REPLACE_METHOD(0x141554D90, CNifLoadingService, SetLifetime, 79, 0xCC07C8F2);
@@ -1746,12 +1746,12 @@ bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
         {
             DAT_143ae1f20 = 0;
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->GetSysAllocBytesInUse() / 0x100000);
         }
         else
         {
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *beforeReset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->GetSysAllocBytesInUse() / 0x100000);
         }
     }
     return true;
@@ -1762,7 +1762,7 @@ bool CNifLoadingService::OnDeviceLost(void* pRenderer)
 {
     DAT_143ae1f20 = 1;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Lost Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-        ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->FUN_1422e9e50() / 0x100000);
+        ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)GetGFxService())))->GetSysAllocBytesInUse() / 0x100000);
     return true;
 }
 
@@ -1788,7 +1788,7 @@ efd::AsyncResult CNifLoadingService::OnInit()
         ((NiDX9Renderer*)pNotifier)->AddResetNotificationFunc((NiDX9Renderer::RESETNOTIFYFUNC)OnDeviceReset, this);
         ((NiDX9Renderer*)pNotifier)->AddLostDeviceNotificationFunc(OnDeviceLost, this);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CNifLoadingService::LogCounts));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddCallback(TFunctor<void, EmptyParam>(this, &CNifLoadingService::LogCounts));
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141555D60, CNifLoadingService, OnInit, 241, 0xD84583A3);
@@ -1816,7 +1816,7 @@ efd::AsyncResult CNifLoadingService::OnShutdown()
     if (TSingleton<CNiStreamLoadThread>::GetInstance() != 0)
     {
         TSingleton<CNiStreamLoadThread>::GetInstance()->Stop();
-        FUN_1414a26b0();
+        DestroyNiStreamLoadThread();
     }
     ClearTextureCache();
     ClearNifCache();
@@ -2205,7 +2205,7 @@ extern const char DAT_142f2d1e8[];   // "node"
 extern NiFixedString DAT_143ae5178;                                          // the weight key
 TiXmlElement* DocRootElement(TiXmlDocument* pDoc);                 // root element
 void FUN_141047ac0(class NiObjectNET*, class NiFixedString const&, float);   // C3: was FUN_141047ac0
-void FUN_1415672e0(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
+void PrepareLoadedNif(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 
 // @0x141556810
@@ -2335,7 +2335,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
         delete pStream;
         return 0;
     }
-    FUN_1415672e0((spEntry->m_spData).operator NiAVObject*(), bFlag);
+    PrepareLoadedNif((spEntry->m_spData).operator NiAVObject*(), bFlag);
     for (unsigned i = 1; i < GetTopObjectCount(pStream); ++i)
     {
         NiAVObjectPtr spExtra = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast(&NiPhysXProp::ms_RTTI, (class NiObject const*)(FUN_14155d900(pStream, i)))));

@@ -252,7 +252,7 @@ void SetValue(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value v);            
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item table row
@@ -444,7 +444,7 @@ void ASItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_14052b130(m_itemId, m_rarity, 0) != 0)
     {
-        ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 0x20, 2);
+        ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer(), 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()) != 0)
         {
             if (m_bPreview)
@@ -527,7 +527,7 @@ void ASAdditionalEffectSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
     MS2Ptr<AdditionalLevelData> spEffect = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_nId, m_nLevel);
     if (spEffect == 0)
         return;
-    ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 1, 2);
+    ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer(), 1, 2);
     if (tip.FUN_1409e2750(spEffect.get(), 5, 0) != 0)
         **ppOut = tip.GetValue();
 }
@@ -811,7 +811,7 @@ void ASSlot::SetItemSeal(int n)
 // @0x1409c1f40
 void ASSlot::FUN_1409c1f40(CItem* pItem)
 {
-    int nLock = pItem->FUN_140528ca0();
+    int nLock = pItem->GetLockState();
     __int64 tUnlock = pItem->GetUnlockTime();
     if (nLock == 0 && tUnlock > GetServerTime())
     {
@@ -872,7 +872,7 @@ void ASSlot::SetItemCountValue(unsigned n)
 // @0x1409c2200
 void ASSlot::SetItemCountFromItem(CItem* pItem)
 {
-    SetWStringMember(s_strItemCount, pItem->FUN_140527840()->IsStackable() ? StringFormat(L"{0}", (unsigned)pItem->GetCount()) : CStringW(L""));
+    SetWStringMember(s_strItemCount, pItem->GetData()->IsStackable() ? StringFormat(L"{0}", (unsigned)pItem->GetCount()) : CStringW(L""));
 }
 
 // @0x1409c2360
@@ -1033,25 +1033,25 @@ void ASSlot::FUN_1409c2af0(CItem* pItem, void* pPlayer)
 {
     if (pItem->IsLapenshard() != 0)
         return;
-    if (pItem->FUN_140527840()->GetSkillId() == 0)
+    if (pItem->GetData()->GetSkillId() == 0)
         return;
     Unk_SlotPc* pPc = (Unk_SlotPc*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)pPlayer);
     if (pPc == NULL)
         return;
     ((class Unk_SlotSkillBook*)((class PC*)(class Unk_SlotPc*)(pPc))->GetJobSystem());
-    MS2Ptr<SkillData> spRow(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(pItem->FUN_140527840()->GetSkillId()))));   // moved through a reference to the temporary (2-slot chain, move ctor 0x1407f4f80)
+    MS2Ptr<SkillData> spRow(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(pItem->GetData()->GetSkillId()))));   // moved through a reference to the temporary (2-slot chain, move ctor 0x1407f4f80)
     if (spRow.IsNull())
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->IsRiding() != 0)
         spLevel = spRow->GetLevelData(1);
     else
-        spLevel = ((class Unk_SlotSkillBook*)((class PC*)(class Unk_SlotPc*)(pPc))->GetJobSystem())->vfunc_1(pItem->FUN_140527840()->GetSkillId());
+        spLevel = ((class Unk_SlotSkillBook*)((class PC*)(class Unk_SlotPc*)(pPc))->GetJobSystem())->vfunc_1(pItem->GetData()->GetSkillId());
     if (spLevel.IsNull())
         return;
     if (((Unk_SlotSkillRow*)spRow.operator->())->m_bCooldown == 0)
         return;
-    SetRemainTime(((Unk_SlotSkillCooldowns*)((MyPC*)(Unk_SlotPc*)(pPc))->GetSkillSystem())->FUN_141765fe0(pItem->FUN_140527840()->GetSkillId(), 0));
+    SetRemainTime(((Unk_SlotSkillCooldowns*)((MyPC*)(Unk_SlotPc*)(pPc))->GetSkillSystem())->FUN_141765fe0(pItem->GetData()->GetSkillId(), 0));
     SetTotalTime(((SkillLevelData*)(spLevel).operator->())->GetCooldown());
     SetCooldownStrings();
 }
@@ -1135,7 +1135,7 @@ void ASSlot::SetItemSeasonFromItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+    MS2Ptr<CItemData> spData(spItem->GetData());
     if (spData == 0)
         return;
     SetItemSeason(spData);
@@ -1216,7 +1216,7 @@ void ASSlot::FUN_1409c34e0(CItem* pItem)
                 SetItemSeal(1);
                 break;
             }
-            int nPetId = pItem->FUN_140527840()->GetPetId();
+            int nPetId = pItem->GetData()->GetPetId();
             MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
             if (spPet.IsNull())
             {
@@ -1263,7 +1263,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
 {
     if (pItem == NULL)
         return 0;
-    MS2Ptr<CItemData> spData(pItem->FUN_140527840());
+    MS2Ptr<CItemData> spData(pItem->GetData());
     if (spData.IsNull())
         return 0;
     if (nFlags & 1)
@@ -1285,7 +1285,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         SetItemCash(spData->IsCashItem());
         SetItemSkin(spData->HasSkinType());
         SetItemPcBang(spData->IsPCBangItem());
-        SetItemVIP(spData->FUN_14053d1f0());
+        SetItemVIP(spData->IsVipItem());
         SetItemWedding(spData->HasWeddingLimit());
         SetIconPathString(pItem->GetIconPath());
         SetUgcTag(pItem->GetUgcTag());
@@ -1309,7 +1309,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         if (pPc != NULL)
         {
             BOOL bEquipped = FALSE;
-            if (pItem->FUN_140527840()->FUN_14053cbc0())
+            if (pItem->GetData()->FUN_14053cbc0())
             {
                 MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->GetEquipByUid(pItem->GetItemUid());
                 if (spEquip.get() != NULL)
@@ -1337,7 +1337,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         if (pPlayer != NULL)
         {
             Unk_SlotPc* pPc = (Unk_SlotPc*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)pPlayer);
-            if (pPc != NULL && pItem->FUN_140527840()->FUN_14053c8b0())
+            if (pPc != NULL && pItem->GetData()->FUN_14053c8b0())
             {
                 int nUsable = GetItemUsableState(pItem);
                 if (nUsable == 1)
@@ -1351,8 +1351,8 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     }
     if (nFlags & 8)
     {
-        if (pItem->FUN_140527840()->FUN_14053ec70()->FUN_140547190())
-            SetItemColor(((CItemExtraData*)(Unk_UserProxyItemData*)(pItem->FUN_140527870()))->GetCurrentRgbComponent(0));
+        if (pItem->GetData()->FUN_14053ec70()->FUN_140547190())
+            SetItemColor(((CItemExtraData*)(Unk_UserProxyItemData*)(pItem->GetProxy()))->GetCurrentRgbComponent(0));
     }
     if (nFlags & 0x10)
         SetItemCountFromItem(pItem);
@@ -1407,7 +1407,7 @@ int ASSlot::SetEquipItem(CItem* pItem, void* pPc, int nSlot, int nFlags)
 // @0x1409c4360
 int ASSlot::FUN_1409c4360(Unk_SlotSkillInfo* pSkill, unsigned nFlags)
 {
-    Unk_SlotPc* pPc = static_cast<Unk_SlotPc*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_SlotPc* pPc = static_cast<Unk_SlotPc*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc == NULL)
         return 0;
     MS2Ptr<SkillData> spRow = ((SkillDataTable*)TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(((JobSkill*)(Unk_SlotSkillInfo*)(pSkill))->GetID());
@@ -1445,7 +1445,7 @@ int ASSlot::SetItemById(int nItemId, int nRarity, int nCount)
     SetItemCash(spData->IsCashItem());
     SetItemSkin(spData->HasSkinType());
     SetItemPcBang(spData->IsPCBangItem());
-    SetItemVIP(spData->FUN_14053d1f0());
+    SetItemVIP(spData->IsVipItem());
     SetItemWedding(spData->HasWeddingLimit());
     SetIconPathString(spData->GetIconPath());
     SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
@@ -1640,11 +1640,11 @@ MS2_CHECK_OFFSET(Unk_MeratPremium, m_tSaleStart, 0x178);
 MS2_CHECK_OFFSET(Unk_MeratPremium, m_nRandomSaleId, 0x1ac);
 MS2_CHECK_OFFSET(Unk_MeratPremium, m_nSoldCount, 0x1cc);
 
-// The blueprint look of a UGC listing (FUN_140894060 gives its icon).
+// The blueprint look of a UGC listing (GetIcon gives its icon).
 class CUgcItemMusicNote   // C3: member view (def in ugcdef)
 {
 public:
-    CStringA FUN_140894060() const;
+    CStringA GetIcon() const;
 };
 class Unk_MeratUgcTemplate
 {
@@ -1988,7 +1988,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
 {
     if (spEntry.IsNull())
         return false;
-    void* pPc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPc == NULL)
         return false;
     if (!ASMeratMarketProductBase::vfunc_1(spEntry, pOpt))
@@ -2078,7 +2078,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         if (((CUgcMarketProduct*)(Unk_MeratUgc*)&(ugc))->IsMusicType() != 0)
         {
             Unk_MeratUgcTemplate& tpl = ugc.m_template;
-            strIcon = ((const CUgcItemMusicNote*)(Unk_MeratUgcTemplate*)&(tpl))->FUN_140894060();
+            strIcon = ((const CUgcItemMusicNote*)(Unk_MeratUgcTemplate*)&(tpl))->GetIcon();
         }
         else
             strIcon = ugc.m_look.GetLocalPath();
@@ -2629,7 +2629,7 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
     if (spEntry == 0)
         return;
     Unk_MeratPremium& premium = spEntry->m_premium;
-    void* pPc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     SetIntMember("sn", premium.m_nSn);
     SetIntMember("itemGrade", premium.m_nItemGrade);
     MS2Ptr<Unk_MeratFilter> spFilter(0);

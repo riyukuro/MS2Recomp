@@ -34,8 +34,8 @@ ASURLRequest::~ASURLRequest()
 }
 
 // @0x1422e5b80
-CStringW FUN_1422e5b80(CStringW strName)
+CStringW GetIconUrl(CStringW strName)
 {
     return StringFormat(L"img://icon:{0}", strName);
 }
-MS2_REPLACE(0x1422E5B80, FUN_1422e5b80, 85, 0xFFE8A799);
+MS2_REPLACE(0x1422E5B80, GetIconUrl, 85, 0xFFE8A799);

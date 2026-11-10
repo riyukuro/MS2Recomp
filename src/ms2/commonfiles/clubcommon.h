@@ -33,14 +33,14 @@ public:
     CString GetPicture();                        // picture (under m_lock)
     void SetPicture(CString strPicture);         // set the picture (under m_lock)
     void Reset();                           // reset all fields
-    void FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture);   // reset, then set these
+    void SetInfo(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture);   // reset, then set these
     void WriteMapId(COutputStream& out);         // write the map id
-    void FUN_14020d690(COutputStream& out);         // write name, job code, job, level, picture
+    void WriteShort(COutputStream& out);         // write name, job code, job, level, picture
     void FUN_14020d610(COutputStream& out);         // write the whole snapshot (thunk of Write)
     void Write(COutputStream& out);         // write the whole snapshot
     void Read(CInputStream* in);           // read the whole snapshot
     void FUN_14020de80(COutputStream& out);         // write the short form
-    void FUN_14020df70(CInputStream* in);           // read the short form
+    void ReadShort(CInputStream* in);           // read the short form
     void SetFromUserProxy(Unk_UserProxy* p);           // fill from a user proxy (0x1408f19e0 / 0x1408f1a60 accessors)
     void FUN_14020d770(CInPacket& packet);          // read the short form from a packet
     void ReadMapId(CInPacket& packet);          // read from a packet (clubcli.cpp)
@@ -88,9 +88,9 @@ public:
     void Read(CInputStream* in);           // read
     int FUN_14020eca0(Club::SaveMember* pSave);    // fill the save record when the dirty flag is set, then clear it
     void SetDirty(int nDirty);                 // set m_f4
-    int FUN_14020edd0();                            // m_f4
+    int GetDirty();                            // m_f4
     Unk_IntTriple* GetTrophy();               // &m_info.m_trophy
-    void FUN_14020ee10();                           // m_info.m_trophy.FUN_140267c10()
+    void SumTrophy();                           // m_info.m_trophy.FUN_140267c10()
     __int64 m_18;                                   // +0x18
     CClubMemberProxy m_info;                        // +0x20 (character id at +0x40 is compared with the club leader)
     int m_c8;                                       // +0xc8
@@ -293,7 +293,7 @@ public:
     typedef ATL::CRBMap<unsigned, BuffPtr, Unk_BuffKeyTraits> BuffMap;
     CClubDataTable();                               // 0x1402112f0
     virtual ~CClubDataTable();                      // 0x140211360
-    int FUN_1402113c0();                            // load (thunk of LoadClubBuff)
+    int Load();                            // load (thunk of LoadClubBuff)
     int LoadClubBuff();                            // load Table/clubBuff.xml
     BuffPtr FindBuffById(unsigned nId);            // buff by id
     BuffPtr FindBuffByEffect(int nEffectId, int nEffectLevel);   // buff by effect id and level

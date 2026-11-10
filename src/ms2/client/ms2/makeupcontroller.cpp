@@ -71,7 +71,7 @@ public:
 // The local player.
 namespace egf { class Entity; }
 struct Unk_MakeupPlayer : public GameObject { };
-struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
+struct Unk_MakeupWorld { Unk_MakeupPlayer* GetLocalPlayer(); };
 #include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 //
 //
@@ -201,7 +201,7 @@ float CMakeupController::vfunc_18()
 // @0x141476740
 const Unk_CustomizeRange* CMakeupController::vfunc_23()
 {
-    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->GetItemData()->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(0));
+    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->GetItemData()->GetModelOrEmpty()->GetGroup(0)->GetFloatList(0));
 }
 
 // @0x141476790
@@ -298,7 +298,7 @@ void CMakeupController::vfunc_9(int nIndex)
 {
     if (nIndex >= 0)
     {
-        CharacterDecalData* pOwner = m_spEquipItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = m_spEquipItem->GetItemData()->GetModelOrEmpty()->GetDecalData();
         if (pOwner != 0)
         {
             std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->GetCustoms();
@@ -383,7 +383,7 @@ void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
         float fScale = fNow = vfunc_21();
         ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(3, fScale);
         Unk_MakeupProxyData* pData;
-        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
+        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->GetProxy());   // pCopy unused (the exe keeps it)
         if (pData != 0)
             pData->m_fScale = fScale;
         if (m_pListener != 0)
@@ -402,7 +402,7 @@ void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
         {
             ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(2, fRadians);
             Unk_MakeupProxyData* pData;
-            Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
+            Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->GetProxy());   // pCopy unused (the exe keeps it)
             if (pData != 0)
                 pData->m_fAngle = fRadians;
             if (m_pListener != 0)
@@ -421,7 +421,7 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
         ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(0, fX);
         ((class NiFloatsExtraData*)(class NiFloatsExtraData*)(pExtra))->SetValue(1, fY);
         Unk_MakeupProxyData* pData;
-        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());   // pCopy unused (the exe keeps it)
+        Unk_MakeupProxyData* pCopy = pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->GetProxy());   // pCopy unused (the exe keeps it)
         if (pData != 0)
         {
             pData->m_fX = fX;
@@ -468,7 +468,7 @@ void CMakeupController::vfunc_36()
 // @0x141477730
 void CMakeupController::SetPreviewApply(bool bOn)
 {
-    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
         ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())))->SetMeshOptimize(bOn);
 }
@@ -483,7 +483,7 @@ void CMakeupController::SaveToProxy()
         if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
         {
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
-            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());
+            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->GetProxy());
             FUN_141477d40(pData, pExtra);
             ((class CItemExtraData*)(struct Unk_MakeupProxyData*)(pData))->SetPick(m_nPresetIndex);
         }
@@ -499,7 +499,7 @@ void CMakeupController::LoadFromProxy()
         bool bFace = ((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527a20() == 3;
         if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
         {
-            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->FUN_140527870());
+            Unk_MakeupProxyData* pData = ((struct Unk_MakeupProxyData*)((class CItem*)(class CItem*)((CItem*)m_spEquipItem->GetItem()))->GetProxy());
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
             FUN_141477cb0(pExtra, pData);
             if (pData != 0)
@@ -527,7 +527,7 @@ void CMakeupController::UpdateScaleAnimation()
 void CMakeupController::FindFaceMesh()
 {
     m_spFaceMesh.FUN_141418a00(0);
-    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer != 0)
     {
         SetPreviewApply(false);
@@ -569,7 +569,7 @@ int GetPresetCount(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem.get() != 0)
     {
-        CharacterDecalData* pOwner = spItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = spItem->GetItemData()->GetModelOrEmpty()->GetDecalData();
         if (pOwner != 0)
         {
             return (int)pOwner->GetCustoms()->size();

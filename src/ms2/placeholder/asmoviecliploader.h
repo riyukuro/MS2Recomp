@@ -24,7 +24,7 @@ public:
     void RemovePreloadSwf();                                           // removePreloadSwf
     void ReportAll();                                           // reportAll
     void ReportMemoryLeak();                                           // reportMemoryLeak
-    void FUN_1422d0650();                                           // reportForceGarbargeCollect (sic)
+    void ReportForceGarbageCollect();                                           // reportForceGarbargeCollect (sic)
     void Shutdown();                                           // shutdown
 
     // Invoke helpers (inline COMDATs of this unit; probably AScript's variadic Invoke template, declared here because

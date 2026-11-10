@@ -41,7 +41,7 @@ CSystemInfo::~CSystemInfo() {}
 
 // The hardware id inside the working object.
 // @0x1423b1080
-void* FUN_1423b1080(CSystemInfo* pLocal)
+void* GetIdBuffer(CSystemInfo* pLocal)
 {
     return pLocal->m_data + 0x10;
 }
@@ -224,7 +224,7 @@ static unsigned int s_pcBangCode;                // 0x143b103c8: the code found,
 // The EnumThreadWindows callback: a window of a known program whose title has the program's text ends the search with
 // its code; so does a window titled with "게토" of a process named agent*.
 // @0x1423ae840
-BOOL CALLBACK FUN_1423ae840(HWND hWnd, LPARAM lParam)
+BOOL CALLBACK FindPcBangWindow(HWND hWnd, LPARAM lParam)
 {
     Unk_PcBangTable* pTable = reinterpret_cast<Unk_PcBangTable*>(lParam);
     unsigned char text[0x200];
@@ -319,7 +319,7 @@ unsigned int GetPcBangCode(CSystemInfo* pLocal)
             if (processName == NULL)
                 continue;
             s_pcBangCode = 0;
-            EnumThreadWindows(thread.th32ThreadID, FUN_1423ae840, reinterpret_cast<LPARAM>(&table));
+            EnumThreadWindows(thread.th32ThreadID, FindPcBangWindow, reinterpret_cast<LPARAM>(&table));
             if (s_pcBangCode != 0)
                 return s_pcBangCode;
         } while (Thread32Next(hThreads, &thread));

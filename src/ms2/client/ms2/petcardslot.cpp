@@ -62,7 +62,7 @@ PetCardSlot::~PetCardSlot()
 // @0x140b770b0 (ITooltip::vfunc_0)
 int PetCardSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
@@ -81,7 +81,7 @@ int PetCardSlot::vfunc_0(void* p)
 // @0x140b771f0
 int PetCardSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
@@ -132,7 +132,7 @@ void FUN_140b77500(const CString& strName)
     PetCardSlotBag* pBag = AsPetCardSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
@@ -183,7 +183,7 @@ PetConsumeSlot::~PetConsumeSlot()
 // @0x140b778b0 (ITooltip::vfunc_0)
 int PetConsumeSlot::vfunc_0(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
@@ -202,7 +202,7 @@ int PetConsumeSlot::vfunc_0(void* p)
 // @0x140b779f0
 int PetConsumeSlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
@@ -241,7 +241,7 @@ int PetConsumeSlot::IsUnavailable()
         return 1;
     if (((CItem*)spItem)->FUN_140528c60() != 0)
         return 1;
-    if (((CItem*)spItem)->FUN_140528ca0() == 1)
+    if (((CItem*)spItem)->GetLockState() == 1)
         return 1;
     if (reinterpret_cast<CPetManager*>(GetPetManager())->GetSummonUid() == (__int64)m_nItemUid)
         return 1;
@@ -268,7 +268,7 @@ void FUN_140b77e50(const CString& strName)
     PetConsumeSlotBag* pBag = AsPetConsumeSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

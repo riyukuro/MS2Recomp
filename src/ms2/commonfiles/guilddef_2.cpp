@@ -211,7 +211,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class TiXmlElement;
 // MS2-FUNCTIONAL: equivalent source; container spellings and /Od temporary placement remain under recovery.
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -240,7 +240,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+TiXmlElement * GetFirstChildElement(TiXmlDocument *);  // C3: the definition's signature
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 
 
@@ -332,7 +332,7 @@ MS2_REPLACE_METHOD(0x1404d4680, CGuildPVPSeasonHistoryData, FUN_1404d4680, 484, 
 CGuildXmlData::GuildProperty::GuildProperty():f18(0),f1c(0),f20(0),f28(0),f30(0),f34(0),f38(0),f3c(0),f40(0),f44(0),f48(0),f4c(0),f50(0),f54(0),f58(0),f5c(0),f60(0),f64(0),f68(0){}
 // @0x1404d4990
 bool CGuildXmlData::GuildProperty::FUN_1404d4990(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node))) return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node))) return false;
     XmlGetAttr((class TiXmlElement*)(node), "level", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "accumExp", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "capacity", *(int*)(&f20));
@@ -359,7 +359,7 @@ MS2_REPLACE_METHOD(0x1404d4990, CGuildXmlData::GuildProperty, FUN_1404d4990, 596
 CGuildXmlData::GuildSkill::GuildSkill():f18(0),f1c(0),f20(0),f24(0),f28(0),f2c(0),f30(0),f34(0),f38(0),f3c(0){}
 // @0x1404d4cb0
 bool CGuildXmlData::GuildSkill::FUN_1404d4cb0(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node)))return false;
         XmlGetAttr((class TiXmlElement*)(node), "id", *(int*)(&f18));
         XmlGetAttr((class TiXmlElement*)(node), "level", *(int*)(&f1c));
         XmlGetAttr((class TiXmlElement*)(node), "requireLevel", *(int*)(&f20));
@@ -389,7 +389,7 @@ MS2_REPLACE_METHOD(0x1404d4e80, CGuildXmlData::GuildSkill, FUN_1404d4e80, 40, 0x
 CGuildXmlData::GuildEvent::GuildEvent():f18(0),f1c(0){}
 // @0x1404d4f10
 bool CGuildXmlData::GuildEvent::FUN_1404d4f10(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node)))return false;
     XmlGetAttr((class TiXmlElement*)(node), "id", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "mapCode", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "imagePath", f20);
@@ -400,7 +400,7 @@ MS2_REPLACE_METHOD(0x1404d4f10, CGuildXmlData::GuildEvent, FUN_1404d4f10, 129, 0
 CGuildXmlData::GuildHouse::GuildHouse():f18(0),f1c(0),f20(0),f24(0),f28(0),f2c(0),f30(0),f50(0){}
 // @0x1404d5070
 bool CGuildXmlData::GuildHouse::FUN_1404d5070(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node))) return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node))) return false;
     XmlGetAttr((class TiXmlElement*)(node), "level", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "theme", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "fieldID", *(unsigned int*)(&f50));
@@ -419,7 +419,7 @@ MS2_REPLACE_METHOD(0x1404d5070, CGuildXmlData::GuildHouse, FUN_1404d5070, 364, 0
 CGuildXmlData::GuildNpc::GuildNpc():f18(Unk_GuildNpcKind_None),f1c(0),f20(0),f28(0),f2c(0),f30(0){}
 // @0x1404d5270
 bool CGuildXmlData::GuildNpc::FUN_1404d5270(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node)))return false;
     FUN_1404daa40(node,"type",&f18);
     XmlGetAttr((class TiXmlElement*)(node), "level", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeCost", *(__int64*)(&f20));
@@ -433,7 +433,7 @@ MS2_REPLACE_METHOD(0x1404d5270, CGuildXmlData::GuildNpc, FUN_1404d5270, 219, 0xD
 CGuildXmlData::GuildRaid::GuildRaid():f18(0),f1c(0),f20(1.0f),f24(1.0f){}
 // @0x1404d53d0
 bool CGuildXmlData::GuildRaid::FUN_1404d53d0(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node)))return false;
     XmlGetAttr((class TiXmlElement*)(node), "dungeonRoomID", *(unsigned int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "clearRaidPoint", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "clearGuildFund", *(float*)(&f20));
@@ -445,7 +445,7 @@ MS2_REPLACE_METHOD(0x1404d53d0, CGuildXmlData::GuildRaid, FUN_1404d53d0, 158, 0x
 CGuildXmlData::GuildRaidReward::GuildRaidReward():f18(0),f20(0){}
 // @0x1404d54e0
 bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
-    if(!FUN_14028f710((struct Unk_XmlElement*)(node)))return false;
+    if(!IsElementAvailable((struct Unk_XmlElement*)(node)))return false;
     XmlGetAttr((class TiXmlElement*)(node), "raidPoint", *(int*)(&f18));
     XmlGetAttr((class TiXmlElement*)(node), "guildFund", *(__int64*)(&f20));
     CStringW path;
@@ -455,9 +455,9 @@ bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
         if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFromString(&doc,path)){
             Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;
         }
-        void* root=FUN_140345b40(&doc);
+        void* root=GetFirstChildElement(&doc);
         if(!root){Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;}
-        for(void* child=FUN_140345b40((TiXmlDocument *)root);child;child=((void*)((class TiXmlElement*)(void const*)(child))->NextSiblingElement())){
+        for(void* child=GetFirstChildElement((TiXmlDocument *)root);child;child=((void*)((class TiXmlElement*)(void const*)(child))->NextSiblingElement())){
             ItemEntity item;int rank=1;
             XmlGetAttr((class TiXmlElement*)(child), "id", *(unsigned int*)(&item.m_itemId));
             Unk_ReadRank((class Unk_XmlNode*)(child), "rank", &rank);
@@ -683,7 +683,7 @@ MS2Ptr<CGuildXmlData::GuildSkill> CGuildXmlData::GetSkill(int id,int level){
 }
 MS2_REPLACE_METHOD(0x1404d74e0, CGuildXmlData, GetSkill, 325, 0x79DB9B95);
 // @0x1404d7630
-void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
+void CGuildXmlData::GetGuildSkillIds(std::vector<int>& out){
     Unk_GuildXmlDataCheckInit_3460();
     out.reserve(skill.size());
     for(auto i=skill.begin(),e=skill.end();i!=e;++i){
@@ -692,7 +692,7 @@ void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
         out.push_back(i->first);
     }
 }
-MS2_REPLACE_METHOD(0x1404d7630, CGuildXmlData, FUN_1404d7630, 240, 0x7C76FF84);
+MS2_REPLACE_METHOD(0x1404d7630, CGuildXmlData, GetGuildSkillIds, 240, 0x7C76FF84);
 // @0x1404d7730
 void CGuildXmlData::GetPersonalSkillIds(std::vector<int>& out){
     Unk_GuildXmlDataCheckInit_3460();
@@ -935,7 +935,7 @@ void CGuildNpcShopMgr::ReadShop(unsigned id,CInPacket* packet){
     if(ref!=0) ref->Read(packet);
 }
 // @0x1404d9060
-void CGuildNpcShopMgr::FUN_1404d9060(unsigned id,CInPacket* packet){
+void CGuildNpcShopMgr::ReadShopProduct(unsigned id,CInPacket* packet){
     MS2Ptr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0){
         MS2Ptr<CNpcShopProductProxy> product(new CNpcShopProductProxy);

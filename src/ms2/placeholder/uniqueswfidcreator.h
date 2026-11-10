@@ -28,8 +28,8 @@ public:
     int RemoveId(CString strId);                                       // drop an id from m_list10 (0 if the list has others but not it)
     // "<name>.<ext>_<n>_" with a per-key counter; the id is also queued (m_listIds). "" (returns 0) for an empty ext.
     int FUN_1422f6d50(CString& strId, CString strName, const CString& strExt);
-    int FUN_1422f6ec0(CString strId);                                       // drop a queued id (1 if found)
-    int FUN_1422f6fc0(CString strName);                                     // the name was recorded as fixed
+    int RemoveQueuedId(CString strId);                                       // drop a queued id (1 if found)
+    int IsFixedName(CString strName);                                     // the name was recorded as fixed
 
 private:
     MS2_LAYOUT_FRIEND;

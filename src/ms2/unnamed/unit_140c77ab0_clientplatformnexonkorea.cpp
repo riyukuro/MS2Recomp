@@ -97,7 +97,7 @@ class Unk_MachineId   // unit_14067c020's name
 {
 public:
     Unk_MachineId();                                            // 0x14067c020
-    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);
+    Unk_MachineId* Assign(const Unk_MachineId* pOther);
     unsigned char m_data[16];
 };
 MS2_CHECK_SIZE(Unk_MachineId, 0x10);
@@ -117,7 +117,7 @@ struct Unk_NxLoginRequest
 };
 MS2_CHECK_SIZE(Unk_NxLoginRequest, 0x38);
 
-void FUN_1401f9370(struct Unk_LoginB* p, COutputStream* pOut);   // classobject.cpp: encodes the request
+void WriteLoginB(struct Unk_LoginB* p, COutputStream* pOut);   // classobject.cpp: encodes the request
 
 // ---- CClientPlatformNexonKorea ----
 // @0x140c77ab0
@@ -344,11 +344,11 @@ void CClientPlatformNexonKorea::vfunc_20(int a1, int a2)
     CString strPassport = CNXMan::GetInstance()->GetPassportString();
     TSingleton<CNPSMan>::GetInstance()->FUN_140db9070(strPassport);
 #endif
-    request.m_id.FUN_14067c080((const Unk_MachineId*)TSingleton<CMachineIDManager>::GetInstance()->GetID());
+    request.m_id.Assign((const Unk_MachineId*)TSingleton<CMachineIDManager>::GetInstance()->GetID());
     request.m_n30 = TSingleton<CMachineIDManager>::GetInstance()->GetValue();
     request.m_n34 = DAT_143ab2858;
     COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-    FUN_1401f9370((struct Unk_LoginB*)&request, &packet);
+    WriteLoginB((struct Unk_LoginB*)&request, &packet);
     FUN_140710590(packet);
 }
 

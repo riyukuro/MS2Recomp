@@ -85,7 +85,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the box
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 #include "ms2/placeholder/formatstringid.h"
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -134,7 +134,7 @@ void OnMicrogamePacket(void* pThis, CInPacket& packet)
 // @0x140b73d60
 bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x58, 0);
@@ -397,7 +397,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
 // @0x140b751b0
 bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
 {
-    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x197, 0);
@@ -509,7 +509,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (pTarget == 0)
                 break;
             pMyPC->vfunc_59(0x45, new StateMicroGameCoupleDanceData(pTarget->GetObjectId()), 0xa9, 0);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_waiting"), 0);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringByKey(L"s_microgame_couple_dance_waiting"), 0);
             if (spBox == 0)
             {
                 MS2_ASSERT_AT(0x21c, 0);

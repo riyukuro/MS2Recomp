@@ -304,17 +304,17 @@ template decltype(auto) VIng::emplace_back<PIng>(PIng&&);   // vector<MS2Ptr<CIn
 //
 
 // _Tree::emplace_hint(where, piecewise_construct, tuple<K&&>, tuple<>)
-i64 FUN_140277000(i64, i64, i64, i64); struct Unk_TIter; struct Unk_TNode; Unk_TIter* FUN_140278d90(void*, Unk_TIter*, Unk_TIter, i64, Unk_TNode*);
+i64 FUN_140277000(i64, i64, i64, i64); struct Unk_TIter; struct Unk_TNode; Unk_TIter* InsertHint(void*, Unk_TIter*, Unk_TIter, i64, Unk_TNode*);
 // @0x14027be90
-i64 FUN_14027be90(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64 valtuple)
+i64 EmplaceHint(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64 valtuple)
 {
     i64 node = FUN_140277000(tree, (i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)piecewise), FUN_14027c230(keytuple), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)valtuple)));
-    reinterpret_cast<void (*)(i64, i64, i64, i64, i64)>(&FUN_140278d90)(tree, out, where, node + 0x1c, node);
+    reinterpret_cast<void (*)(i64, i64, i64, i64, i64)>(&InsertHint)(tree, out, where, node + 0x1c, node);
     return out;
 }
 
 // std::find_if over a vector<Unk_IngRef> with a by-value predicate argument
-/* FUN_1402769a0 = std::_Adl_verify_range, FUN_140278760 = std::_Get_unwrapped */ void FUN_14027a740(i64, i64*);
+/* FUN_1402769a0 = std::_Adl_verify_range, FUN_140278760 = std::_Get_unwrapped */ void SeekTo(i64, i64*);
 // @0x14027bf30
 VIng::iterator FUN_14027bf30(VIng::iterator first, VIng::iterator last, int key)
 {
@@ -328,7 +328,7 @@ VIng::iterator FUN_14027bf30(VIng::iterator first, VIng::iterator last, int key)
         if (reinterpret_cast<bool (*)(int*, PIng)>(&FUN_14026b560)(&key, *(PIng*)f))
             break;
     }
-    FUN_14027a740((i64)&first, &f);
+    SeekTo((i64)&first, &f);
     return first;
     //
 }
@@ -439,9 +439,9 @@ i64 FUN_14027c420(i64 it, i64 n) { FUN_14027b5a0(&it, n); return it; }
 i64 FUN_14027c450(i64 it, i64 n) { FUN_14027b5d0(&it, n); return it; }
 // @0x14027c480
 template LHist::iterator std::next<LHist::iterator>(LHist::iterator, __int64);
-struct Unk_TIterBool; Unk_TIterBool* FUN_14027a770(void*, Unk_TIterBool*, i64);
+struct Unk_TIterBool; Unk_TIterBool* TryEmplace(void*, Unk_TIterBool*, i64);
 // @0x14027c4c0
-i64 FUN_14027c4c0(i64 a, i64 b, i64 c) { reinterpret_cast<void (*)(i64, i64, i64)>(&FUN_14027a770)(a, b, c); return b; }
+i64 FUN_14027c4c0(i64 a, i64 b, i64 c) { reinterpret_cast<void (*)(i64, i64, i64)>(&TryEmplace)(a, b, c); return b; }
 // @0x14027c500
 u64 FUN_14027c500(i64) { return 13; }
 
@@ -819,9 +819,9 @@ template VIng::~vector();
 
 // a list/map header (std::list<Unk_HistRef> / std::map<unsigned,int>): _Tidy = clear + free the sentinel node
 // @0x14027e1b0
-void FUN_14027e1b0(Unk_HistList* t) noexcept { reinterpret_cast<LHist*>(t)->_Freeheadnode((NodeHist*)*(i64*)&reinterpret_cast<LHist*>(t)->_Myhead()); }
+void FreeHeadNode(Unk_HistList* t) noexcept { reinterpret_cast<LHist*>(t)->_Freeheadnode((NodeHist*)*(i64*)&reinterpret_cast<LHist*>(t)->_Myhead()); }
 // @0x14027e1e0
-void FUN_14027e1e0(Unk_HistList* t) { FUN_14027e1b0(t); }
+void FUN_14027e1e0(Unk_HistList* t) { FreeHeadNode(t); }
 // @0x14027e3a0
 Unk_HistList::~Unk_HistList() { reinterpret_cast<LHist*>(this)->_Tidy(); FUN_14027e1e0(this); }
 // @0x14027e230
@@ -854,7 +854,7 @@ template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(const MS2Ptr<CItemO
 // @0x14027ea80
 template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(int);   // C3: was FUN_14027ea80 calling FUN_140288ed0
 // @0x14027eab0
-Unk_HistRef& Unk_HistRef::FUN_14027eab0(Unk_HistRef& o) { reinterpret_cast<const MS2Ptr<CPtred>*>(&o)->AddRef(); reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(this)->Release(); m_p = o.m_p; return *this; }   // was the free FUN_14027eab0(Unk_Ref16*, Unk_Ref16*)
+Unk_HistRef& Unk_HistRef::Assign(Unk_HistRef& o) { reinterpret_cast<const MS2Ptr<CPtred>*>(&o)->AddRef(); reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(this)->Release(); m_p = o.m_p; return *this; }   // was the free Assign(Unk_Ref16*, Unk_Ref16*)
 // @0x14027eaf0
 template PLog& PLog::operator=(const PLog&);
 // operator=(T*): swap with a temporary

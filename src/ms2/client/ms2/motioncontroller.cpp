@@ -40,7 +40,7 @@ public:
 //
 //
 //
-bool FUN_14028d470(float a, float b);                               // nearly equal
+bool IsNearlyEqual(float a, float b);                               // nearly equal
 __int64 FUN_14028d260(float f);                                     // float -> fixed
 float GetBezierLength(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
 efd::Point3 GetBezierPoint(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
@@ -126,7 +126,7 @@ bool CMotionController::vfunc_5(double fTime)
         fTiltSpeed = pTilt->m_fSpeed;
         fTiltAngle = pTilt->m_fAngle;
     }
-    if (FUN_14028d470(fTiltSpeed, 0) && FUN_14028d470(m_pData->m_fSpeedScale, 0))
+    if (IsNearlyEqual(fTiltSpeed, 0) && IsNearlyEqual(m_pData->m_fSpeedScale, 0))
     {
         kDir = m_pData->m_kStart;
     }
@@ -224,7 +224,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
         kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kRot)));
     }
     m_kDir = kRot;
-    if (!FUN_14028d470(m_pData->m_fSpeedScale, 0))
+    if (!IsNearlyEqual(m_pData->m_fSpeedScale, 0))
         fSpeed = m_pData->m_fSpeedScale;
     m_kEndPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())))) + reinterpret_cast<const efd::Point3&>(m_kDir) * fSpeed));
     m_fCtrlHeight = fCtrlHeight;
@@ -303,7 +303,7 @@ bool CLinearMotionController::vfunc_5(double fTime)
         || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsLift() != 0) ? 1 : 0;
     if (bBlocked)
         return false;
-    if (FUN_14028d470(m_fSpeed, 0))
+    if (IsNearlyEqual(m_fSpeed, 0))
     {
         m_kMove = DAT_143b01a60;
         return false;
@@ -382,7 +382,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsLift() != 0) ? true : false;
     if (bBlocked)
         return false;
-    if (FUN_14028d470(m_fSpeed, 0))
+    if (IsNearlyEqual(m_fSpeed, 0))
     {
         m_kMove = DAT_143b01a60;
         return false;

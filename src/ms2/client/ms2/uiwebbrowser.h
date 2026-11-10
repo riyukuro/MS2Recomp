@@ -31,11 +31,11 @@ public:
 
     void OnGameStart(NotifyObject* pNotify);                  // 0x141b50420 "NotifyGameStart": forget the stored page
     void SetStored(const CString& strUrl);                  // 0x141b50450 browser callback: remember the page
-    void FUN_141b50490(const CString& strKey);                  // 0x141b50490 navigate to the page stored under a key
+    void NavigateToGuide(const CString& strKey);                  // 0x141b50490 navigate to the page stored under a key
     void SetBrowserSize(int nWidth, int nHeight);                // 0x141b507b0 "setBrowserSize"
     void FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50830 navigation button
-    void FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50890 "min size" button
-    void FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50910 "max size" button
+    void OnMinSizeClick(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50890 "min size" button
+    void OnMaxSizeClick(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50910 "max size" button
     void UpdateSizeButtons();                                       // 0x141b509b0 show the min / max size button that applies
 
 protected:

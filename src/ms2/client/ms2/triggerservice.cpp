@@ -293,7 +293,7 @@ efd::AsyncResult CTriggerService::OnInit()
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
 
     pMessages->Subscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0, false);
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141861110, CTriggerService, OnInit, 725, 0xB3706D6C);
@@ -399,10 +399,10 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bd42f0(pEvent);
         break;
     case 0x11:
-        WorldService::GetInstance()->FUN_141bd4490(pEvent);
+        WorldService::GetInstance()->AddEffect(pEvent);
         break;
     case 0x12:
-        WorldService::GetInstance()->FUN_141bd4670(pEvent);
+        WorldService::GetInstance()->RemoveEffect(pEvent);
         break;
     case 0x13:
         OnSidePopupTalk(pEvent);
@@ -1014,7 +1014,7 @@ void CTriggerService::AddGuideTrigger(CInPacket* pEvent)
 // @0x141863e50
 void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     int nCount = pEvent->ReadInt32();
@@ -1034,7 +1034,7 @@ void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 // @0x141864010
 void CTriggerService::FUN_141864010(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     int nFlag = pEvent->ReadUInt8();
@@ -1072,7 +1072,7 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
 // @0x1418642e0
 void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Vector3 pt = pEvent->ReadVector3Short();
@@ -1085,7 +1085,7 @@ void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
 // @0x1418643c0
 void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
 {
-    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPlayer = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     Vector3 pt = pEvent->ReadVector3Short();

@@ -114,7 +114,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
         static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
         GetNetworkService()->SendResponseVersion();
     } else if (type == 2) {
-        GetFileSystem()->FUN_140396d00("./DataPatch/");
+        GetFileSystem()->ReloadPatchArchives("./DataPatch/");
         static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
         GetNetworkService()->SendResponseVersion();
     } else if (type == 3) {
@@ -151,7 +151,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
                 if (static_cast<COnlinePatchManagerCli*>(pManager)->m_files.size() > 0) {
                     static_cast<COnlinePatchManagerCli*>(pManager)->RequestNextFile();
                 } else {
-                    GetFileSystem()->FUN_140396d00("./DataPatch/");
+                    GetFileSystem()->ReloadPatchArchives("./DataPatch/");
                     static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
                     GetNetworkService()->SendResponseVersion();
                 }
@@ -168,7 +168,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
 void COnlinePatchManagerCli::DeletePatchFiles(const char* pszDirectory)
 {
     std::list<CString> files;
-    FUN_14038bb30("./DataPatch/", "", files);
+    ListFilesRecursive("./DataPatch/", "", files);
     for (std::list<CString>::iterator it = files.begin(); it != files.end(); ++it) {
         CString strPath(pszDirectory);
         strPath.Append(*it);

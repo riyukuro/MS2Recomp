@@ -81,7 +81,7 @@ void UIScreenMask::vfunc_43()
 // @0x141ad09e0
 CString UIScreenMask::GetBgMask()
 {
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.get() != 0)
         return spField->m_strBgMask;
     return "";

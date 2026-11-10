@@ -117,7 +117,7 @@ UIUGCPortalDialog::~UIUGCPortalDialog()
 }
 
 // @0x140fb0290
-void UIUGCPortalDialog::FUN_140fb0290(CInPacket& packet)
+void UIUGCPortalDialog::ReadPortal(CInPacket& packet)
 {
     m_178 = packet.ReadInt32();
     m_180 = packet.ReadUnicodeString();
@@ -196,7 +196,7 @@ int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x140fb1930
 static void FUN_140fb1930(ASDataProvider* pArray, unsigned int nIndex, const CString& strName, CStringW& strOut)
 {
-    AScript item = pArray->FUN_1422df140(nIndex);
+    AScript item = pArray->GetItemAt(nIndex);
     if (item.IsUndefinedOrNull())
         return;
     item.TryGetWString(strName, strOut);
@@ -249,7 +249,7 @@ void UIUGCPortalDialog::OnApply()
 }
 
 // @0x140fb0da0
-bool UIUGCPortalDialog::FUN_140fb0da0(CStringW& strName)
+bool UIUGCPortalDialog::ConvertNameToStringId(CStringW& strName)
 {
     int nId = CStringTable::GetInstance()->FindIdByName(3, strName);
     if (nId < 0)
@@ -355,7 +355,7 @@ void UIUGCPortalDialog::FUN_140fb15a0()
     CBuddyManager::GetInstance()->GetAllBuddies(buddies);
     for (size_t i = 0; i < buddies.GetCount(); i++)
     {
-        if (buddies[i].get()->FUN_1401cc5f0() == 0)
+        if (buddies[i].get()->IsFriend() == 0)
             continue;
         CStringW strId = StringFormat(L"{0}", (unsigned __int64)buddies[i].get()->FUN_1401cc250());
         ASObj item(2);

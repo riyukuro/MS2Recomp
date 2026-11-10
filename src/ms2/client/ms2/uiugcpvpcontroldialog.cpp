@@ -81,7 +81,7 @@ MS2_REPLACE_METHOD(0x140FB54F0, UIUGCPVPControlDialog, OnLoadComplete, 331, 0xB3
 
 // The "start" panel arrives: the host's six option flags.
 // @0x140fb5650
-void FUN_140fb5650(UIUGCPVPControlDialog* pDialog, CInPacket* pPacket)
+void ReadPvpControl(UIUGCPVPControlDialog* pDialog, CInPacket* pPacket)
 {
     pDialog->FUN_141924680();
     pDialog->m_b178 = pPacket->ReadUInt8();
@@ -91,7 +91,7 @@ void FUN_140fb5650(UIUGCPVPControlDialog* pDialog, CInPacket* pPacket)
     pDialog->m_b17c = pPacket->ReadUInt8();
     pDialog->m_b17d = pPacket->ReadUInt8();
 }
-MS2_REPLACE(0x140FB5650, FUN_140fb5650, 299, 0x336A81DA);
+MS2_REPLACE(0x140FB5650, ReadPvpControl, 299, 0x336A81DA);
 
 // @0x140fb5790
 int UIUGCPVPControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)

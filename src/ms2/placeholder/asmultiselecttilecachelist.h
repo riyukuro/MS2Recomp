@@ -33,8 +33,8 @@ class ASItemBag : public ASTileCacheList
 public:
     ASItemBag(const Scaleform::GFx::Value& v, int nMovieId);           // 0x1422cf760
     virtual ~ASItemBag();                                               // 0 0x1422cf7b0 (scalar deleting 0x1422cfbb0)
-    void FUN_1422cf7e0(int nIndex);                                     // add(index)
-    void FUN_1422cf820(int nIndex);                                     // remove(index)
+    void Add(int nIndex);                                     // add(index)
+    void Remove(int nIndex);                                     // remove(index)
     void Update();                                               // update()
 };
 MS2_CHECK_SIZE(ASItemBag, 0x88);

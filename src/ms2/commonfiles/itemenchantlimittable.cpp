@@ -128,7 +128,7 @@ CString Unk_EnchantStatSet::FUN_14058d9f0()
         MS2Ptr<BaseOption> spOption = m_stats.GetValueAt(pos);
         if (str.GetLength() != 0)
             str += ",";
-        str += Unk_SocketFormat("{0}", spOption->FUN_140266e10());
+        str += Unk_SocketFormat("{0}", spOption->GetRate());
     }
     return str;
 }
@@ -178,16 +178,16 @@ int CItemEnchantLimitTable::Load()
 }
 
 // The item may start an enchant: the item level inside the band of its slot and the grade below the limit.
-#define ITEM_DATA(p) reinterpret_cast<CItemData*>((p)->FUN_140527840())
-#define ITEM_DATA_BYTE(p, off) (*(reinterpret_cast<const unsigned char*>((p)->FUN_140527840()) + (off)))
+#define ITEM_DATA(p) reinterpret_cast<CItemData*>((p)->GetData())
+#define ITEM_DATA_BYTE(p, off) (*(reinterpret_cast<const unsigned char*>((p)->GetData()) + (off)))
 
 // @0x14058df90
-int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
+int CItemEnchantLimitTable::CanEnchant(CItem* pItem)
 {
     CheckInit();
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527840() == 0)
+    if (pItem->GetData() == 0)
         return 0;
     if (ITEM_DATA(pItem)->GetType() != 1)
         return 0;
@@ -220,7 +220,7 @@ int CItemEnchantLimitTable::FUN_14058e230(CItem* pItem)
     CheckInit();
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527840() == 0)
+    if (pItem->GetData() == 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
@@ -240,7 +240,7 @@ unsigned CItemEnchantLimitTable::IsMaxGrade(CItem* pItem)
     CheckInit();
     if (pItem == 0)
         return 0;
-    if (pItem->FUN_140527840() == 0)
+    if (pItem->GetData() == 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
@@ -255,7 +255,7 @@ bool CItemEnchantLimitTable::HasLimit(CItemData* pData)
 }
 
 // @0x14058e500
-int CItemEnchantLimitTable::FUN_14058e500(unsigned nItemId, int nGrade)
+int CItemEnchantLimitTable::CanEnchantToGrade(unsigned nItemId, int nGrade)
 {
     CheckInit();
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);

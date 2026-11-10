@@ -65,7 +65,7 @@ class NiMaterialProperty   // C3: member view for the former free stand-ins
 public:
     float GetAlpha() const;
 };
-bool FUN_14028d470(float a, float b);                   // approx equal                                   // material has alpha test?
+bool IsNearlyEqual(float a, float b);                   // approx equal                                   // material has alpha test?
 
 // @0x141753550
 ShadowCullingProcess::ShadowCullingProcess() : NiTerrainCullingProcess(0, 0) {}
@@ -151,7 +151,7 @@ bool FUN_141753a00(NiAVObject* o)
 {
     NiProperty* p = ((class NiAVObject*)(class NiAVObject*)(o))->GetProperty(3);
     if (p != 0) {
-        if (FUN_14028d470(((class NiMaterialProperty*)(class NiProperty*)(p))->GetAlpha(), 1.0f)) return true;
+        if (IsNearlyEqual(((class NiMaterialProperty*)(class NiProperty*)(p))->GetAlpha(), 1.0f)) return true;
     }
     return false;
 }

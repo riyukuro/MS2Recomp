@@ -65,7 +65,7 @@ class NiActorManager;
 namespace egf { class EntityID; }
 namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
 egmAnimation::AnimationService* FUN_141b6f910();
-NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName);             // child node by name
+NiObject* FindNodeByName(NiObject* pRoot, const CString* pName);             // child node by name
 class MyPC;
 
 class WorldService;
@@ -75,7 +75,7 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -449,7 +449,7 @@ NiAVObject* CTextureAnimation::FindTargetNode(const CString& strName)
         return 0;
     if (_stricmp((const char*)strName, "Scene Root") == 0)
         return (NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot));
-    NiObject* pNode = FUN_14107c930(pRoot, &strName);
+    NiObject* pNode = FindNodeByName(pRoot, &strName);
     if (pNode != 0)
         return (NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
     return 0;
@@ -560,7 +560,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, int 
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcce0(&args[0], a1);
+    SetBoolean(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

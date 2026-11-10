@@ -109,7 +109,7 @@ bool GFxService::vfunc_17()
     }
     if (GFxManager::GetInstance())
     {
-        if (!GFxManager::GetInstance()->FUN_1422ae690())
+        if (!GFxManager::GetInstance()->OnDeviceRestored())
             return false;
     }
     if (UISwfEntityManager::GetInstance())
@@ -126,7 +126,7 @@ MS2_REPLACE_METHOD(0x1422E9C90, GFxService, vfunc_17, 250, 0xCD8D17D3);
 int GFxService::vfunc_18(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (GFxManager::GetInstance())
-        return GFxManager::GetInstance()->FUN_1422b0a70(hWnd, uMsg, wParam, lParam);
+        return GFxManager::GetInstance()->HandleWindowMessage(hWnd, uMsg, wParam, lParam);
     return 0;
 }
 MS2_REPLACE_METHOD(0x1422E9D90, GFxService, vfunc_18, 81, 0xFDD3A342);
@@ -141,13 +141,13 @@ int GFxService::vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 MS2_REPLACE_METHOD(0x1422E9DF0, GFxService, vfunc_19, 81, 0x819939CB);
 
 // @0x1422e9e50
-int GFxService::FUN_1422e9e50()
+int GFxService::GetSysAllocBytesInUse()
 {
     if (m_pSysAlloc)
         return FUN_14151e740();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422E9E50, GFxService, FUN_1422e9e50, 35, 0x1F721578);
+MS2_REPLACE_METHOD(0x1422E9E50, GFxService, GetSysAllocBytesInUse, 35, 0x1F721578);
 
 // @0x1422e9e80
 efd::SyncResult GFxService::OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar)
@@ -172,7 +172,7 @@ efd::AsyncResult GFxService::OnInit()
     if (pRenderService)
     {
         HWND hWnd = pRenderService->GetActiveRenderSurface()->GetWindowRef();
-        if (!GFxManager::GetInstance()->FUN_1422ad620(hWnd, NiRenderer::GetRenderer()))
+        if (!GFxManager::GetInstance()->Initialize(hWnd, NiRenderer::GetRenderer()))
         {
             MessageBoxA(NULL, "Scaleform Initialize Failed", "Scaleform Initialize Failed", MB_OK);
             return efd::AsyncResult_Failure;

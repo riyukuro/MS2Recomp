@@ -80,7 +80,7 @@ namespace egmAnimation { class ActorAddedMessage; class ActorRemovedMessage; }
 namespace ecr { class SceneGraphAddedMessage; class SceneGraphRemovedMessage; }
 #include "animationcallbackmanager.h"   // CGlobalKeyTextCallback
 class GameObject;                                       // gameobject.h (forward decl for the worldservice_mem_*.inc members)
-class Unk_WsE_FieldObject;                               // worldservice_mem_E.inc (FUN_141bc1720 parameter; defined in the E part)
+class Unk_WsE_FieldObject;                               // worldservice_mem_E.inc (RegisterPortal parameter; defined in the E part)
 // Polymorphic helper owned by pointer (deleted in OnShutdown through the vtable slot 1 = scalar deleting dtor; slot 0 unknown).
 class Unk_WsDeletable { public: virtual void Unk_Slot0(); virtual ~Unk_WsDeletable(); };
 class TextureLayerManager;                              // NiObject subclass (0x20 bytes, ctor 0x141bf48f0 COMDAT)
@@ -193,15 +193,15 @@ struct Unk_WsV848 { void* p0; void* p1; };
 struct Unk_WsV930 { void* p0; void* p1; };
 struct Unk_WsV980 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
 struct Unk_WsV990 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
-// m_980 / m_990 values as FUN_141bd86e0 / FUN_141bd87a0 return them (by value); the ctors are exe COMDATs pinned in
+// m_980 / m_990 values as FindEntityShower / FindEntityHider return them (by value); the ctors are exe COMDATs pinned in
 // worldservice_1.cpp, the dtors are defined there inline over the release COMDATs.
-// (the m_980 value FUN_141bd86e0 returns is efd::SmartPointer<CEntityShower>)
+// (the m_980 value FindEntityShower returns is efd::SmartPointer<CEntityShower>)
 //
 //
 //
 //
 //
-// (the m_990 value FUN_141bd87a0 returns is efd::SmartPointer<CEntityHider>)
+// (the m_990 value FindEntityHider returns is efd::SmartPointer<CEntityHider>)
 //
 //
 //
@@ -233,7 +233,7 @@ struct Unk_WsVad0 { void* p0; void* p1; };
 class Unk_WsPtred : public CPtred {};
 class CPortal;                                           // m_350 value (FindPortalByDestMap)
 class NiPoint3;                                          // FUN_141bc2c90 position (by value)
-class CFieldDataCli;                                     // m_298 value (FUN_141bd30a0, fielddatacli.h)
+class CFieldDataCli;                                     // m_298 value (GetFieldData, fielddatacli.h)
 class UgcBannerObject; class Unk_GoField;               // m_708 value (ugcbannerobject.h); m_2f8 value (CCameraTargetBounding)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
 {
@@ -277,8 +277,8 @@ public:
     static WorldService* GetInstance() { return TSingleton<WorldService>::s_instance; }
 
     // ---- non-virtual methods (Ghidra names; rename freely when proven, the hook binds by VA) ----
-    void FUN_141bbae40(void* p);                        // m_048.insert(p)
-    void FUN_141bbae80(void* p);                        // m_048.erase(p) if present
+    void AddCallback(void* p);                        // m_048.insert(p)
+    void RemoveCallback(void* p);                        // m_048.erase(p) if present
     int FUN_141bc32b0();                                // return m_398
     unsigned FUN_141bc1640();                           // m_148 COMDAT 0x141bfe6b0
     void FUN_141bc1670();                               // m_118 COMDAT 0x141bfe6c0
@@ -303,12 +303,12 @@ public:
     void FUN_141bd5ea0(void* pActor);                   // (unrecovered, #1)
     // message handlers (EE_HANDLER statics in the .di, see worldservice_1.cpp); Category by value (callee destroys)
     void FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);        // EE_HANDLER_WRAP id 8253
-    void FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);        // EE_HANDLER_WRAP id 8254
-    void FUN_141bbfa50(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);        // EE_HANDLER_WRAP id 8196
-    void FUN_141bbfb50(const egmAnimation::ActorAddedMessage* pMsg, efd::Category targetChannel);
+    void OnEntityRemoved(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);        // EE_HANDLER_WRAP id 8254
+    void OnEntityChanged(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);        // EE_HANDLER_WRAP id 8196
+    void OnActorAdded(const egmAnimation::ActorAddedMessage* pMsg, efd::Category targetChannel);
     void FUN_141bbfe30(const ecr::SceneGraphAddedMessage* pMsg, efd::Category targetChannel);
     void FUN_141bc0290(const ecr::SceneGraphRemovedMessage* pMsg, efd::Category targetChannel);
-    void FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category targetChannel);      // EE_HANDLER_WRAP id 12299
+    void OnPhysXProp(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category targetChannel);      // EE_HANDLER_WRAP id 12299
     void FUN_141bc0a70(const egf::EntityLoadResult* pMsg, efd::Category targetChannel);
     void FUN_141bbf9f0(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
     void OnActorRemoved(const egmAnimation::ActorRemovedMessage* pMsg, efd::Category targetChannel);
@@ -326,7 +326,7 @@ public:
     void SetIdleInterval(int interval);                   // m_a70 = interval
     void FUN_141bca1e0();                               // m_2b8 = 1 ...
     void FUN_141bca240();
-    void* FUN_141bd0cc0();                              // the local player: m_2d8's pointee, a MyPC (cast with static_cast<PC*>; fittingdollpc.h has PC with slots to 146)
+    void* GetLocalPlayer();                              // the local player: m_2d8's pointee, a MyPC (cast with static_cast<PC*>; fittingdollpc.h has PC with slots to 146)
     void OnGameStart();                               // (unrecovered, #1)
     void NotifyChangeServer();                               // (unrecovered, #1)
     void FUN_141bca390(unsigned key);                   // m_1a8.RemoveKey
@@ -337,14 +337,14 @@ public:
     void FUN_141bc6a20(int n);                          // each m_678 value: vfunc 3(n), FUN_141bc6af0
     void FUN_141bc6af0(Unk_WsP16& sp);                  // (unrecovered, #1)
     void FUN_141bca6d0(void* pMsg);                     // dispatch on pMsg+8 vfunc 1 (0/1/2)
-    void FUN_141bca770(class Unk_WsB_Packet* pMsg);     // read the field properties of the message
+    void ReadFieldProperties(class Unk_WsB_Packet* pMsg);     // read the field properties of the message
     void AddFieldProperty(void* pMsg);                     // (unrecovered, #1)
     void RemoveFieldProperty(void* pMsg);                     // (unrecovered, #1)
     int FUN_141bcfbd0();                                // m_state == 4 && m_2b4 != 0
     // per-part member declaration files (ws4 workers; folded into this header when the unit is finished)
     // ---- helper A (0x141bbaf00 .. 0x141bc3fff) ----
     int CreateObjectEntity(GameObject* obj, egf::EntityID id, bool bNewlyAdded);   // register a created object's entity
-    int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
+    int OnObjectCreated(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // OnObjectDestroyed: unregister from the object maps
     void FUN_141bbbc60(egf::EntityID id, int bImmediate);                        // destroy the object registered under entity id
     void FUN_141bbbcf0(unsigned objId, int bImmediate);                          // destroy the object registered under object id
@@ -361,9 +361,9 @@ public:
     void RemoveFieldObject(int id);                                                        // unregister field object id (entity lists, m_838, m_350, proxy)
     int FUN_141bc2bc0();                                                               // number of m_930 objects with a target
     int FUN_141bc2f40();                                                               // any field object of type 6?
-    void FUN_141bc3000(int id, int enabled);                                           // set the field object's enabled property
-    void FUN_141bc30a0(int id, int visible);                                           // set the field object's visible property
-    void FUN_141bc3140(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
+    void SetFieldObjectEnabled(int id, int enabled);                                           // set the field object's enabled property
+    void SetFieldObjectVisible(int id, int visible);                                           // set the field object's visible property
+    void SetFieldObjectFlags(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
     void FUN_141bc31d0(int id, Vector3 pos, Vector3 scale);            // set the field object's position / scale
     int AddRegionSkillObject(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
     void* GetRegionSkillObject(int id);                                                       // m_3a0 lookup, or null
@@ -373,14 +373,14 @@ public:
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0
     void AddMarker(MS2Ptr<class Unk_WsB_Marker> marker); // 0x141bc4b10
-    void FUN_141bc4bf0(CString name); // 0x141bc4bf0
+    void DestroyMarkerByName(CString name); // 0x141bc4bf0
     MS2Ptr<class Unk_WsB_Marker> FindNearestMarker(const Vector3& pos, float maxDist, int type); // 0x141bc4ca0
     MS2Ptr<class Unk_WsB_Marker> FindMarkerByName(CString name); // 0x141bc4e70
     MS2Ptr<class Unk_WsB_Marker> FindMarkerByEntity(egf::Entity* entity); // 0x141bc4f10
     void UpdateAmbientLight(float dt); // 0x141bc4fc0
     void UpdateDirectionalLight(float dt); // 0x141bc51d0
     void FUN_141bc5420(class Unk_WsB_Packet* pkt); // 0x141bc5420
-    void FUN_141bc5830(CString name); // 0x141bc5830
+    void DestroyLiftByName(CString name); // 0x141bc5830
     MS2Ptr<class Unk_WsB_Lift> FindLiftByName(CString name); // 0x141bc5a20
     void AddRefObject(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5ab0
     void RemoveRefObject(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5b30
@@ -404,9 +404,9 @@ public:
     int FUN_141bc7aa0(int id, std::set<unsigned __int64>& out);  // 0x141bc7aa0 (returns !out.empty() as an int)
     bool FUN_141bc7b20(const unsigned __int64& key); // 0x141bc7b20 (merge3: is `key` present in m_1d8; was mis-recovered as erase(iterator))
     void FUN_141bc7b80(int force); // 0x141bc7b80
-    void FUN_141bc7d40(egf::EntityID key); // 0x141bc7d40
+    void StartCombatBgm(egf::EntityID key); // 0x141bc7d40
     void AddCombatBgmTracker(egf::EntityID key); // 0x141bc7ec0
-    void FUN_141bc7f10(egf::EntityID key); // 0x141bc7f10 (by value at both exe sites)
+    void RemoveCombatBgmTracker(egf::EntityID key); // 0x141bc7f10 (by value at both exe sites)
     void FUN_141bc7fe0(egf::EntityID key); // 0x141bc7fe0
     int FUN_141bc80c0(int channel); // 0x141bc80c0
     void FUN_141bc8e00(); // 0x141bc8e00
@@ -416,7 +416,7 @@ public:
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
     void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
-    int  FUN_141bc9830(int* id, CString& name, float maxDist, int unused); // 0x141bc9830 (PC::FUN_14165c1b0 passes 0; the body never reads it)
+    int  FindNearestActor(int* id, CString& name, float maxDist, int unused); // 0x141bc9830 (PC::FUN_14165c1b0 passes 0; the body never reads it)
     void AddProxyObject(MS2Ptr<class CProxyGameObject> obj); // 0x141bc9aa0
     void RemoveProxyObject(unsigned id); // 0x141bc9b30
     MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id); // 0x141bc9be0
@@ -436,13 +436,13 @@ public:
     bool FUN_141bcb210(); // 0x141bcb210
     bool FUN_141bc8420(class Unk_WsB_Actor* actor, float dt, int* lifted, Vector3* velocity); // 0x141bc8420
     void FUN_141bc7100(class Unk_WsB_SceneObj* root); // 0x141bc7100
-    void FUN_141bc7490(egf::Entity* entity, NiNode* root); // 0x141bc7490
+    void ApplyDecalTextures(egf::Entity* entity, NiNode* root); // 0x141bc7490
     // ---- helper C (0x141bcb300-0x141bd2fff) ----
     void FUN_141bcd960();                               // 0xa5 timer helper: walk m_9d0 (requests), retire done ones
     void FUN_141bcf800(CString name);                   // callbacks vfunc_2(m_284, name)
     void FUN_141bcf8d0();                               // m_2b0 = 1; callbacks vfunc_4(m_288); retry m_258
     void FUN_141bcf9c0();                               // FUN_141bc5e20(this, 6)
-    int FUN_141bcfb70();                                // service running && m_040 == 0
+    int IsServiceRunning();                                // service running && m_040 == 0
     int FUN_141bcfc10();                                // m_prevState == 4 && m_state == 6
     float FUN_141bcfc50();                              // scale from the local player
     int GetState();                                // return m_state
@@ -450,21 +450,21 @@ public:
     int FUN_141bcfff0(int id, struct Unk_WsC_NpcAnim* out);
     egf::Entity* FUN_141bd0220(Vector3 pos, float maxDist);
     struct Unk_WsC_TagPtr FUN_141bd0420(unsigned key);
-    egf::Entity* FUN_141bd04d0(unsigned key);
-    egf::Entity* FUN_141bd0560(unsigned key, unsigned prop, float x, float y);
+    egf::Entity* GetBannerEntity(unsigned key);
+    egf::Entity* PickTaggedEntity(unsigned key, unsigned prop, float x, float y);
     egf::Entity* FUN_141bd08f0(unsigned key, unsigned prop, float x, float y, __int64 filter);
     void SetMyPC(void* pPlayer);                  // m_2d8 = pPlayer
-    CStringW FUN_141bd0d30();                           // m_2d8's name or ""
+    CStringW GetMyPCName();                           // m_2d8's name or ""
     int FUN_141bd0dd0(Vector3* pos, Vector3* dir);
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* p);
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // the game object of an entity (by value: callers copy the id)
     class Unk_WsC_GameObj* FindObjectByKey(unsigned __int64 key);
-    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);
+    class Unk_WsC_GameObj* FindObjectByMesh(void* mesh);
     class Unk_WsC_GameObj* FindObjectById(int id);
     class Unk_WsC_GameObj* FUN_141bd1200(int id);
-    class Unk_WsC_GameObj* FUN_141bd1290(int id);
-    class Unk_WsC_GameObj* FUN_141bd1320(int id);
-    class Unk_WsC_GameObj* FUN_141bd13a0(int id);
+    class Unk_WsC_GameObj* FindPCById(int id);
+    class Unk_WsC_GameObj* FindNpcById(int id);
+    class Unk_WsC_GameObj* FindPetById(int id);
     class Unk_WsC_GameObj* FUN_141bd1420(CStringW name);
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);
     class Unk_WsC_GameObj* FUN_141bd1640(__int64 id);
@@ -474,25 +474,25 @@ public:
     int FUN_141bd19d0(int id);
     int GetObjectKind(class Unk_WsC_GameObj* obj);
     class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj* self);
-    class Unk_WsC_GameObj* FUN_141bd1d10(int a, int b);
-    void FUN_141bd1ed0(std::list<class Unk_WsC_GameObj*>* outA, std::list<class Unk_WsC_GameObj*>* outB, int skipOwned, int a, int b);
+    class Unk_WsC_GameObj* FindNearestDropItem(int a, int b);
+    void CollectDropItems(std::list<class Unk_WsC_GameObj*>* outA, std::list<class Unk_WsC_GameObj*>* outB, int skipOwned, int a, int b);
     void FUN_141bd2030(std::list<class Unk_WsC_GameObj*>* out);
-    class Unk_WsC_GameObj* FUN_141bd2170(int type, float range, int useFront, int addBonus);
-    class Unk_WsC_GameObj* FUN_141bd2690(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead);
-    class Unk_WsC_GameObj* FUN_141bd28d0(const Vector3& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
+    class Unk_WsC_GameObj* FindNearestNpc(int type, float range, int useFront, int addBonus);
+    class Unk_WsC_GameObj* FindNearestPlayer(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead);
+    class Unk_WsC_GameObj* FindRandomPlayer(const Vector3& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
     class Unk_WsC_GameObj* FindPetByKind(Vector3 pos, int id);   // pos unused; by value (exe caller 0x14176b47a copies 12 bytes)
     efd::SmartPointer<egf::Entity> FindEntityByName(CString name);
-    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
+    void CollectObjects(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     void FUN_141bd2ea0(void* ctx, ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int a, int b, int (*filter)(void*, class Unk_WsC_GameObj*, int, int));
     void FUN_141bd2fa0();
     CString FUN_141bd2ff0();
     void FUN_141bcda90();                                           // field-load: scan tagged entities into the object maps, then notify services
     // ---- helper D (0x141bd3000-0x141bdbfff) ----
     int GetFieldKind();                                // return m_28c
-    int FUN_141bd3060();                                // return m_284
+    int GetFieldId();                                // return m_284
     CStringW* FUN_141bd3080();                          // &m_290
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();              // copy of m_298
-    void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
+    MS2Ptr<CFieldDataCli> GetFieldData();              // copy of m_298
+    void SetShadowEnabled(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
     MS2Ptr<Unk_GoField> FUN_141bd3210(Vector3 pt);        // field object containing pt, else the nearest (m_2f8)
     MS2Ptr<Unk_GoField> FindFieldById(unsigned __int64 key);      // m_2f8 lookup
     TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
@@ -505,7 +505,7 @@ public:
     void FUN_141bd3860();                               // m_978 = 1
     void FUN_141bd3880();                               // each m_350 value: FUN_14169d0e0
     void FUN_141bd3920();                               // each m_540 / m_570 value: FUN_1414483e0
-    void FUN_141bd3a40();                               // each m_510 value: FUN_141447de0
+    void UpdateLiftConditions();                               // each m_510 value: FUN_141447de0
     void FUN_141bd3ae0();                               // each m_148 / m_930 value
     void FUN_141bd3cb0(bool b);                         // m_914 = b
     bool FUN_141bd3cd0();                               // return m_914
@@ -517,18 +517,18 @@ public:
     int FUN_141bd3e00();                                // player camera has the default 1100/45/30 values
     void FUN_141bd3ec0(int id, char b);                 // each m_148 object with this id: set its flag
     unsigned FUN_141bd3fe0(int id);                     // key of the m_148 entry whose object has this id
-    float FUN_141bd4120();                              // player height offset + constant
+    float GetPlayerHeight();                              // player height offset + constant
     void FUN_141bd41d0();                               // each m_118 object: FUN_1411e6e70(sub-object)
     void FUN_141bd4260();                               // each m_118 object: FUN_1411ea320(sub-object)
     void FUN_141bd42f0(void* pMsg);                     // effect message: read effects into m_848 and apply
-    void FUN_141bd4490(void* pMsg);                     // effect message: add one effect
-    void FUN_141bd4670(void* pMsg);                     // effect message: remove one effect
+    void AddEffect(void* pMsg);                     // effect message: add one effect
+    void RemoveEffect(void* pMsg);                     // effect message: remove one effect
     int FUN_141bd4700(const std::set<unsigned __int64>& ids, Vector3* pOutPos, float* pOutDist);   // nearest m_118 actor in ids
-    int FUN_141bd49d0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_148/m_930 object in ids
-    int FUN_141bd4ed0(const std::set<int>& ids, Vector3* pOutPos, float* pOutDist);                // nearest m_678 object in ids
-    int FUN_141bd51a0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_510 object in ids
+    int FindNearestNpcById(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_148/m_930 object in ids
+    int FindNearestInteractObject(const std::set<int>& ids, Vector3* pOutPos, float* pOutDist);                // nearest m_678 object in ids
+    int FindNearestLiftableObject(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_510 object in ids
     void FUN_141bd5460();                               // each m_208 value: FUN_141b948b0(list) (RemoveAll)
-    void FUN_141bd5500(unsigned modelId, efd::SmartPointer<egf::Entity> spEntity);   // drop the entity from m_208[modelId]'s list
+    void RemoveEntityFromModelList(unsigned modelId, efd::SmartPointer<egf::Entity> spEntity);   // drop the entity from m_208[modelId]'s list
     void FUN_141bd5650();                               // player->m_250 notification (1)
     void DispatchPendingNotifications();                               // deliver pending notifications (m_2b0/m_2ac) to the m_048 listeners
     void FUN_141bd6170(int n1, int n2);                 // process n1 entities of m_088 and n2 of m_098
@@ -536,10 +536,10 @@ public:
     void FUN_141bd6520();                               // rebuild m_088 from the flat model 0xe4fc9d5d entities
     void FUN_141bd6690();                               // retune m_0b4 and drain the backlog
     void FUN_141bd6810(char flag);                      // update the sight-range war fog and every npc's visibility
-    void FUN_141bd6c40(void* npc, Vector3* center, class FieldPropertySightRange* range, float sight, char flag);   // fade one npc by distance
+    void UpdateNpcVisibility(void* npc, Vector3* center, class FieldPropertySightRange* range, float sight, char flag);   // fade one npc by distance
     bool IsOutsideSightRange(Vector3* pt);            // player is outside the sight range of pt
     void FUN_141bd7350(bool enable);                    // set m_a98 and refresh the sight range
-    void FUN_141bd7390();                               // refresh zone-based fading of the player and the m_118 objects
+    void UpdateZoneFading();                               // refresh zone-based fading of the player and the m_118 objects
     void FUN_141bd7bf0();                               // request the preload of the resource id DAT_143ab2870
     void FUN_141bd7c60(int resourceId);                 // remember a loaded resource id
     void FUN_141bd7d10();                               // notify the m_048 listeners (slot 7)
@@ -548,37 +548,37 @@ public:
     void FUN_141bd8680(int v);                          // m_8f8 = v
     int FUN_141bd86a0();                                // m_8f4
     int FUN_141bd86c0();                                // m_8f8
-    efd::SmartPointer<class CEntityShower> FUN_141bd86e0(egf::EntityID id);             // m_980 lookup
-    efd::SmartPointer<class CEntityHider> FUN_141bd87a0(egf::EntityID id);             // m_990 lookup
+    efd::SmartPointer<class CEntityShower> FindEntityShower(egf::EntityID id);             // m_980 lookup
+    efd::SmartPointer<class CEntityHider> FindEntityHider(egf::EntityID id);             // m_990 lookup
     bool FUN_141bd8860(void* pNpc);                     // move a pending npc from m_990 to m_980
     bool FUN_141bd8ae0(void* pNpc);                     // move a pending npc from m_980 to m_990
-    bool FUN_141bd8e30(egf::EntityID entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by value: every exe caller copies it)
-    void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
+    bool FadeEntity(egf::EntityID entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by value: every exe caller copies it)
+    void StartTimeScale(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
     void ShowDebugTooltip(MS2Ptr<class CInteractObject> spObj); // show a debug tooltip over an interactive object (releases spObj)
-    void FUN_141bd97a0(unsigned __int64 id);            // remove the debug tooltip of id
+    void RemoveDebugTooltip(unsigned __int64 id);            // remove the debug tooltip of id
     int FUN_141bd9870();                                // per-class table value of the local player
     int FUN_141bd98d0();                                // m_2c0
     int GetFieldChannelGroupId();                                // class index of the local player
     void FUN_141bd9950(const CString& s);               // m_a60 = s
     void FUN_141bd9990(const CString& s);               // m_a68 = s
-    int FUN_141bd99d0(int id);                          // count the m_678 kind-6 objects linked to record id
+    int CountGatheringObjects(int id);                          // count the m_678 kind-6 objects linked to record id
     Unk_WsOptional<float>* GetSightRange();             // &m_a90
     void FUN_141bd9c20(struct Unk_WsD_Msg* msg);        // dispatch on the message kind
     void FUN_141bd9ca0(struct Unk_WsD_Msg* msg);        // kind 0: list of (id, flag)
     void FUN_141bd9da0(struct Unk_WsD_Msg* msg);        // kind 1: single (id, flag)
     void FUN_141bd9e60(float a, float b, float c, int skipId);   // notify the objects of m_118 / m_148
     void FUN_141bda050(float alpha, int skipId);        // fade every m_118 / m_148 object except skipId
-    void FUN_141bda290(const std::vector<unsigned>* ids);   // strip effects from the entities of m_ac0[ids] and hide them
+    void HideEntities(const std::vector<unsigned>* ids);   // strip effects from the entities of m_ac0[ids] and hide them
     void FUN_141bda460();                               // m_ac0.clear()
     void FUN_141bda490(unsigned key, void* pOutList);   // copy the m_208[key] list into *pOutList
-    void FUN_141bda580();                               // rebuild m_708 from the ugc banner objects
-    MS2Ptr<UgcBannerObject> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
+    void RebuildUgcBanners();                               // rebuild m_708 from the ugc banner objects
+    MS2Ptr<UgcBannerObject> FindUgcBanner(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
     void ExpireTimedEntities();                               // expire the timed entries of m_ab0
-    void FUN_141bda9c0(int v);                          // m_890 operation
-    int FUN_141bda9f0();                                // m_890 operation: the enabled count
+    void SetProxyVisible(int v);                          // m_890 operation
+    int GetEnabledProxyCount();                                // m_890 operation: the enabled count
     void FUN_141bdaa20();                               // m_890 operation
-    efd::SmartPointer<egf::Entity> FUN_141bdaa50(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
+    efd::SmartPointer<egf::Entity> FindProxyEntity(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
     void ShowNodeViewerDialog();                               // show the node viewer dialog
     void ShowResearchAndDevelopmentDialog();                               // show the research and development dialog
     void SetResearchDialogStatus(CStringA text);                  // append a line to that dialog
@@ -592,7 +592,7 @@ public:
     void FUN_141bdb7a0();                               // show the m_ad0 tooltips
     void FUN_141bdb030(CStringA name, CStringW text);   // queue a (name, text) entry in m_a00
     void WriteCrashLog();                               // per-frame callback registered by OnInit (helper D owns the body)
-    int FUN_141bc1720(MS2Ptr<class CPortal> obj);           // register a field object (CPortal) (returns 0/1); defined in worldservice_1.cpp
+    int RegisterPortal(MS2Ptr<class CPortal> obj);           // register a field object (CPortal) (returns 0/1); defined in worldservice_1.cpp
     void FUN_141bc3560();                               // periodic tag-range enter pass (m_3f0/m_420/m_468/m_4b0/m_5e8/m_738/m_118)
 
     int FUN_141bbc580(int resetFlag, int mapId);        // state change into state 6 (field teardown); returns 0 when done, 1 if nothing to do

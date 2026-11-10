@@ -239,7 +239,7 @@ void PacketHandlerManager::Dispatch(unsigned nOpcode, CInPacket& iPacket)
     std::vector<Delegate<void(CInPacket&)> >& list = m_handlers[nOpcode];
     for (unsigned i = 0; i < list.size(); ++i)
     {
-        iPacket.FUN_14070fe80();
+        iPacket.GetOpcode();
         list[i](iPacket);
     }
 }

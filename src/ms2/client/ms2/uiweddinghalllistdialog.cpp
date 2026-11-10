@@ -36,9 +36,9 @@ template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const
 
 // The own character: its wedding hall tickets and the "enter the wedding" request.
 
-unsigned __int64 FUN_140718370(const CStringW& str);                // string to unsigned __int64
+unsigned __int64 ParseUInt64W(const CStringW& str);                // string to unsigned __int64
 __int64 GetServerTime();                                            // the current time
-bool FUN_140900f30(__int64 nTime);                                  // the time is at night
+bool IsNightTime(__int64 nTime);                                  // the time is at night
 CStringW FUN_141b71910(__int64 n);                         // the number as text
 
 // @0x140fd8df0
@@ -103,7 +103,7 @@ int UIWeddingHallListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     if (_stricmp(szMethod, "onEnter") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            unsigned __int64 nWeddingSn = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nWeddingSn = ParseUInt64W(data.FUN_1422b8f40());
             TSingleton<WeddingManager>::GetInstance()->SendInvitation(nWeddingSn);
             return 1;
         }
@@ -146,7 +146,7 @@ void UIWeddingHallListDialog::UpdateHallLists()
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
         ((class AScript&)(row)).SetWStringMember("name", strName);
-        ((class AScript&)(row)).SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->GetFieldId(FUN_140900f30(ticket.m_nTime)))));
+        ((class AScript&)(row)).SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->GetFieldId(IsNightTime(ticket.m_nTime)))));
         ((class AScript&)(row)).SetWStringMember("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
             pOpenList->AddItem(row);

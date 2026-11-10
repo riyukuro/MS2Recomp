@@ -21,8 +21,8 @@ public:
     void Reset();                                   // reset
     void Write(COutputStream& out);                 // write the record
     void Read(CInPacket& in);                      // read the record from a packet
-    bool FUN_1406dea90();                                   // visible now (no period: always)
-    bool FUN_1406deaf0();                                   // buyable now (no period: always)
+    bool IsVisibleNow();                                   // visible now (no period: always)
+    bool IsBuyableNow();                                   // buyable now (no period: always)
 
     unsigned m_nItemId;                                     // +0x18 id
     bool m_bFlag;                                           // +0x1c premiumItem

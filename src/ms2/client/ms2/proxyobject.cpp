@@ -41,7 +41,7 @@ class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bbb1e0(class GameObject*, int, unsigned int);
+    int OnObjectCreated(class GameObject*, int, unsigned int);
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // unregister an object
@@ -191,7 +191,7 @@ efd::SmartPointer<CProxyObject> Unk_ProxyMgr::CreateProxy(efd::AssetID asset, ef
 {
     efd::SmartPointer<CProxyObject> spProxy(EE_NEW CProxyObject());
     if (spProxy->FUN_1416c2e70(asset, kPos, kRot, fRadius) != 0
-        && ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bbb1e0(spProxy, 0, 1) != 0)
+        && ((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->OnObjectCreated(spProxy, 0, 1) != 0)
         return spProxy;
     return efd::SmartPointer<CProxyObject>(0);
 }

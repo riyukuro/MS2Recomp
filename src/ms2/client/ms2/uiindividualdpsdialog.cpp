@@ -80,7 +80,7 @@ void UIIndividualDPSDialog::UpdateMeterText()
 {
     if (m_30.IsNull())
         return;
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     {
@@ -102,7 +102,7 @@ void UIIndividualDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_tick.Init();
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     {
@@ -153,7 +153,7 @@ void UIIndividualDPSDialog::vfunc_72()
             return;
         if (!m_tick.Check(100))
             return;
-        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+        PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
         if (pPC == 0)
             return;
         UpdateMeterText();

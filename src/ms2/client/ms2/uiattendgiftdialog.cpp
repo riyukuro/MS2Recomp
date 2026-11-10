@@ -160,7 +160,7 @@ class Unk_AttendUIMgr { public:
     virtual void vfunc_43(int,int,int);
 };
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
-class CMsgBoxData { public: bool IsCheckbox0Checked(); template<class T> void Append(T); __int64 FUN_141a02f10(int,__int64) const; void FUN_141a01800(int n);
+class CMsgBoxData { public: bool IsCheckbox0Checked(); template<class T> void Append(T); __int64 FUN_141a02f10(int,__int64) const; void SetButtonPreset(int n);
     void SetCheckbox0(CStringW,bool); void SetCheckbox0Enabled(bool); void SetCallback(Delegate<bool(int,const CMsgBoxData&)>); };
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -174,7 +174,7 @@ class Unk_AttendCursor : public ItemPreviewMgr { };
 class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 MS2Ptr<CItem> CreateItem(int,int);
 void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
-void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
+void SetChildVisible(const Scaleform::GFx::Value&,CString,int);
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned);
 void FUN_1418fe220(const CString&);
@@ -406,14 +406,14 @@ void UIAttendGiftDialog::OnLoadComplete()
     for(unsigned int i=0;i<3;i++) {
         MS2Ptr<ASButton> button;
         if(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>(StringFormat("m_eventButton{0}",i),button).get()) {
-            button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::SelectEventByIndex),FUN_140bd09d0(i));
+            button->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::SelectEventByIndex),FUN_140bd09d0(i));
             m_buttons.Add(button);
         }
     }
-    m_detail->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cea0),0);
+    m_detail->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cea0),0);
     m_pay->SetHtml(true);
-    m_pay->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cf30),0);
-    m_usePoint->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102d4b0),0);
+    m_pay->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cf30),0);
+    m_usePoint->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102d4b0),0);
     bool nDefault=false;
     if(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(100,nDefault)) {
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
@@ -456,7 +456,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
             CStringW text=FUN_14028dfa0(strKey,*(const unsigned*)&remain,m_selected->GetPayCost());
             MS2Ptr<CMsgBoxData> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
-                box->FUN_141a01800(1);
+                box->SetButtonPreset(1);
                 box->SetCheckbox0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
                 box->SetCheckbox0Enabled(couponUid!=0);
                 box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
@@ -540,7 +540,7 @@ void UIAttendGiftDialog::UpdateGiftList()
                     MS2Ptr<CItem> item(new CItem);
                     ItemAble* it3=&static_cast<ItemAble&>(*reward.operator->());
                     if(item->FUN_14052b130(id,it3->vfunc_o18_1(),0)) {
-                        ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(),8,2);
+                        ASTooltip tip(WorldService::GetInstance()->GetLocalPlayer(),8,2);
                         if(tip.FUN_1409e0d40(item.get())) {
                             tip.SetTooltipAlign(1);
                             slot.FUN_1409adbe0("tooltip",tip.GetValue());
@@ -586,11 +586,11 @@ MS2_REPLACE_METHOD(0x14102E490, UIAttendGiftDialog, UpdatePayButton, 517, 0x9A57
 void UIAttendGiftDialog::UpdateUsePointButton()
 {
     if(m_usePoint==NULL) return;
-    FUN_140cff840(GetGFxValue(),"m_footerText",1);
+    SetChildVisible(GetGFxValue(),"m_footerText",1);
     m_usePoint->vfunc_4(false);
     if(m_selected==NULL) return;
     if(m_selected->FUN_140ce3a80()==0) {
-    FUN_140cff840(GetGFxValue(),"m_footerText",0);
+    SetChildVisible(GetGFxValue(),"m_footerText",0);
     int nDefault=0;
     int points=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69,m_selected->GetID(),nDefault);
     m_usePoint->vfunc_4(true);

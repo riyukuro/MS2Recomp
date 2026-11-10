@@ -67,7 +67,7 @@ class Unk_LgPlayer;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 // the local player: only the level (slot 78, +0x270) is used
@@ -76,7 +76,7 @@ struct Unk_LgActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
                // the job of the player
 
 // listener registries
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 
 // items bound to the slots of the rewards
 void DestroyItemInfoSlot(const CString& strBindID);
@@ -120,7 +120,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
@@ -167,7 +167,7 @@ int UILevelUpGuideDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -175,7 +175,7 @@ int UILevelUpGuideDialog::vfunc_65()
 // @0x140f84610
 void UILevelUpGuideDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
         DestroyItemInfoSlot(m_1a8.GetAt(i));
@@ -192,7 +192,7 @@ void UILevelUpGuideDialog::vfunc_67()
 void UILevelUpGuideDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     unsigned short nLevel = Unk_LgActorLevel(pPlayer);
@@ -357,15 +357,15 @@ void UILevelUpGuideDialog::OpenLinkedDialog(int nId)
             return;
         if (spRow->m_kind == 0 || spRow->m_kind == 2) {
             if (spRow->m_code != 0)
-                pDialog->FUN_141b5bc70(spRow->m_code);
+                pDialog->SetPendingField(spRow->m_code);
             CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x24, spRow->m_id);
             if (strText.GetLength() != 0)
                 pDialog->SetPendingSearch(strText);
         }
         else {
             unsigned nField;
-            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(spRow->m_code, &nField))
-                pDialog->FUN_141b5bc70(nField);
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FindNpcField(spRow->m_code, &nField))
+                pDialog->SetPendingField(nField);
         }
         pDialog->FUN_141924680();
     }
@@ -387,7 +387,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     MS2Ptr<CQuestData> spData = spQuest->GetData();
     if (!spData)
         return;
-    PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pSelf == 0)
         return;
     if (spData->m_338.m_value == 1 && pSelf->GetJobGroupId() == 1) {
@@ -418,7 +418,7 @@ void UILevelUpGuideDialog::LoadRecommendContents()
         return;
     }
     for (void* node = ((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("contents")); node; node = ((void*)((class Unk_XmlNode*)(void*)(node))->NextSibling("contents"))) {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(node)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(node)))
             continue;
         MS2Ptr<RecommendContnets> spRow(new RecommendContnets);
         XmlGetAttr((class TiXmlElement*)(node), "id", spRow->m_id);
@@ -455,7 +455,7 @@ void UILevelUpGuideDialog::FUN_140f85f90()
                 m_30->Invoke("addLevelGuide", row);
         }
     }
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     static_cast<Unk_LgRoot*>(m_30.operator->())->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
@@ -522,7 +522,7 @@ void UILevelUpGuideDialog::UpdateContentsList()
 // @0x140f869f0
 void UILevelUpGuideDialog::FUN_140f869f0()
 {
-    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (MS2Ptr<ASDialog> spEvent = FUN_140f880c0("m_eventDialog")) {
@@ -594,7 +594,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
-    PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pSelf == 0)
         return;
     CQuestData::QuestRewardItem* pItem = 0;

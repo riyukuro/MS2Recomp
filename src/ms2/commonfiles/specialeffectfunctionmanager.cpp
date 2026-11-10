@@ -13,7 +13,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-float FUN_140718480(const CStringW& strValue);     // packetlogger.cpp
+float ParseFloatW(const CStringW& strValue);     // packetlogger.cpp
 
 // @0x140827580
 bool CSpecialEffectFunction::vfunc_1(CSpecialEffectCtx*)
@@ -68,5 +68,5 @@ float CXmlData::GetFloat(const CStringW& strName, float* pfDefault)
     CStringW strValue;
     if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strName, strValue))
         return *pfDefault;
-    return FUN_140718480(strValue);
+    return ParseFloatW(strValue);
 }

@@ -62,7 +62,7 @@ public:
     bool IsInParty();
 };
 class CGuildManager;
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Common::Constants::Value<int> m_frameLimit; };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -83,11 +83,11 @@ class GFxService* GetGFxService();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422e9e50();
+    int GetSysAllocBytesInUse();
 };
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString GetOptionFolder();
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
+CString JoinPath(const CString& strRoot, const CString& strFile);
 class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -259,7 +259,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
         strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(), 0));
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddLogLine(strText);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)GetGFxService())))->FUN_1422e9e50() / 0x100000);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)GetGFxService())))->GetSysAllocBytesInUse() / 0x100000);
     const char* pszMultiScene;
     if (DAT_143ae2b30 != 0)
     {
@@ -337,7 +337,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
 float COptimizer::ApplyFrameLimitFromOptions()
 {
     m_fFrameLimit = (float)*((class Unk_OptOptions*)GetClientConstants())->m_frameLimit.Get();
-    if (FUN_14028d470(m_fFrameLimit, 0))
+    if (IsNearlyEqual(m_fFrameLimit, 0))
     {
         m_nFrameDelay = 0;
     }
@@ -359,7 +359,7 @@ void COptimizer::ClearFrameLimit()
 void COptimizer::SetFrameLimit(float fLimit)
 {
     m_fFrameLimit = fLimit;
-    if (FUN_14028d470(m_fFrameLimit, 0))
+    if (IsNearlyEqual(m_fFrameLimit, 0))
     {
         m_nFrameDelay = 0;
     }
@@ -378,7 +378,7 @@ void COptimizer::LoadOptimization()
         bool bLoaded;
         {
             CString strFile("Optimization.xml");
-            bLoaded = doc.LoadFile(FUN_140cc2a00(GetOptionFolder(), strFile), TIXML_ENCODING_UNKNOWN);
+            bLoaded = doc.LoadFile(JoinPath(GetOptionFolder(), strFile), TIXML_ENCODING_UNKNOWN);
         }
         if (bLoaded)
         {
@@ -658,7 +658,7 @@ void COptimizer::UpdateSelectedPlayers(bool bForce)
         if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
             std::map<unsigned __int64, PCBase*> preferred;
-            PCBase* pLocal = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+            PCBase* pLocal = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
             if (pLocal != 0)
             {
                 if ((preloadMode & 2) != 0 && ((class MyPC*)(class PCBase*)(pLocal))->IsInParty())

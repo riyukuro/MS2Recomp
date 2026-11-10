@@ -9,7 +9,7 @@ class COutPacket;
 
 // TPtredDummy<T>: CPtred followed by the owned value (the smart pointer below points at the value).
 #include "ms2/placeholder/tptreddummy.h"
-CPtred* FUN_1401ba820(CPtred*);
+CPtred* InitRefCount(CPtred*);
 
 #include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
 typedef Unk_SocketNew Unk_PktNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
@@ -34,7 +34,7 @@ private:
     static T* Value(TPtredDummy<T>* p) { return p == NULL ? NULL : &p->value; }
     static TPtredDummy<T>* Owner(T* p) { return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value)); }
     static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
-    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
+    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(InitRefCount(Allocate(0)))); }
     void AddRefImpl(void*) const { Ref(Owner(m_p)); }
     void ReleaseImpl(void*) {
         CPtred* owner = Owner(m_p);

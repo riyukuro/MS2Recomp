@@ -254,7 +254,7 @@ int AiDebugDialog::LoadXml()
 {
     CString strPath = Unk_SocketFormat("{0}/{1}", "./Data/Xml/AI/", m_strFile);
     SetWindowText(strPath);
-    CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(strPath, 0, 0);
+    CFileSystem::BufferPtr spBuffer = GetFileSystem()->GetFileBuffer(strPath, 0, 0);
     if (spBuffer.IsNull())
         return 0;
     CStringW strXml = XmlWide((const char*)spBuffer->GetBuffer());

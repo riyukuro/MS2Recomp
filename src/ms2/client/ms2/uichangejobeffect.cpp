@@ -27,7 +27,7 @@
 
 
 class Unk_CjPC : public PC { };                  // job code
-class Unk_CjWorld { public: Unk_CjPC* FUN_141bd0cc0(); };         // the local player
+class Unk_CjWorld { public: Unk_CjPC* GetLocalPlayer(); };         // the local player
 
 
 // FUN_140bd0bb0 is a free function, so it reaches the dialog's AS pointer (UISwfEntity::m_30 at +0x30) through this
@@ -78,7 +78,7 @@ void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
 {
     if ((*(const MS2Ptr<AScript>*)(&((Unk_CjAS*)pEffect)->m_30) == 0))
         return;
-    Unk_CjPC* pPc = ((Unk_CjPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_CjPC* pPc = ((Unk_CjPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     int nJob = pPc->GetSubJob();

@@ -79,7 +79,7 @@ public:
     CString GetIdleAnimName();                                        // 0x1405ac8f0 "SwimIdle_<kf>"
     CString GetRunAnimName();                                        // 0x1405ac940 "SwimRun_<kf>"
     CString GetDashAnimName();                                        // 0x1405ac990 "SwimDash_<kf>"
-    void FUN_1405ac9e0();                                           // 0x1405ac9e0 preloads the effects
+    void PreloadEffects();                                           // 0x1405ac9e0 preloads the effects
 
     CString m_strIdleEffect;                                        // +0x20 "idleEffect"
     CString m_strRunEffect;                                         // +0x28 "runEffect"

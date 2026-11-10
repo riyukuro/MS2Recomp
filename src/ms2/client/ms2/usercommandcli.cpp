@@ -134,7 +134,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
+bool IsElementAvailable(Unk_XmlElement *);  // C3: the definition's signature
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
@@ -155,11 +155,11 @@ class CTriggerService { public: void QueueCameraSteps(const ATL::CAtlArray<int>&
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
-    void* FUN_141bd0cc0();
-    class Unk_WsC_GameObj* FUN_141bd1320(int);
+    void CollectObjects(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
+    void* GetLocalPlayer();
+    class Unk_WsC_GameObj* FindNpcById(int);
     int GetObjectKind(class Unk_WsC_GameObj*);
-    int FUN_141bd3060();
+    int GetFieldId();
     void FUN_141bd3c00(bool);
     void FUN_141bd3ec0(int, char);
     unsigned int FUN_141bd3fe0(int);
@@ -214,7 +214,7 @@ public:
     void Reload();
 };
 template <> class TSingleton<CommonString> { public: static CommonString* GetInstance(); };   // 0x14025e7d0, as in commonstringtable.h
- void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
+ void FUN_1409c51f0(); void* GetGFxLanguage(); void FUN_141815db0(void*);
 void* FindGuideEvent(int); void* FindSmartRecommendNotifyDialog(int);void FUN_141adc530(void*,int);
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class CNifLoadingService   // C3: member view for the former free stand-ins
@@ -269,7 +269,7 @@ class CGFxLanguage;
 class CScriptTable;
 extern int g_physXItem;   // 0x143ad8968 (DAT_143ad8968 is mapped to 0x143acce38)
 class PCBase { public: void FUN_14166ef10(const CString&,int,int,bool); };   // C3: member view
-void* FUN_141371b30();class CScriptTable   // C3: member view for the former free stand-ins
+void* GetScriptTable();class CScriptTable   // C3: member view for the former free stand-ins
 {
 public:
     void Reload();
@@ -420,7 +420,7 @@ enum Unk_CommandKeyCode : int {}; // custom-formatted fmt argument (make_type ==
 void FUN_140841420(CStringW&);
 int FUN_14083fec0(CStringW,CStringW);
 // @0x141371ac0
-inline void* FUN_141371ac0(void* p) { return (char*)p+0x160; }
+inline void* GetFishRecord(void* p) { return (char*)p+0x160; }
 int FUN_141274b10(Unk_ExpActor *);  // C3: the definition's signature
 __int64 FUN_140967000(void*);
 void* FUN_140a01110(void*,__int64);
@@ -468,7 +468,7 @@ class CNpc   // C3: member view for the former free stand-ins
 public:
     void SetDebugMode(bool);
 };
-UIMassiveEvent * FUN_140e01890(int);  // C3: the definition's signature
+UIMassiveEvent * FindMassiveEvent(int);  // C3: the definition's signature
 class UIMassiveEvent { public: void ShowStepMessage(CStringW,int,int,int); };   // C3: member view
 class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
 class CClubClientManager   // C3: member view for the former free stand-ins
@@ -558,8 +558,8 @@ public:
     void SetSkipLoadingUgcCube(bool);
 };
 UIWebBrowser * FindWebBrowser(int);  // C3: the definition's signature
-CString FUN_140391100(const wchar_t*);
-class UIWebBrowserBase { public: void FUN_14135ec00(const CString&,bool); };   // C3: member view
+CString WideToUtf8(const wchar_t*);
+class UIWebBrowserBase { public: void Navigate(const CString&,bool); };   // C3: member view
 class CGuildManager { public: bool FUN_1413b71c0(CStringW); };   // C3: member view
 void* FindGuildDialog(int);
 CStringW BlockFormat(int);
@@ -575,7 +575,7 @@ public:
     void SendPartyMode46();
     void SendPartyMode1(CStringW);
 };
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 bool FUN_14092f660();
 int GetCurrentChannel();
 class CStateService   // C3: member view for the former free stand-ins
@@ -638,7 +638,7 @@ public:
 };
 CStringW FUN_141b720b0(int,__int64);
 void* FUN_140764020();
-void FUN_140746fe0(CQuestManagerCommon *, int);  // C3: the definition's signature
+void SetSelector(CQuestManagerCommon *, int);  // C3: the definition's signature
 extern Unk_Inventory g_143ab2a90;
 class SkillDataTableCli   // C3: member view for the former free stand-ins
 {
@@ -738,7 +738,7 @@ bool CUserCommandCli::Load() {
         return false;
     }
     for(void* node=((void*)((class Unk_XmlNode*)(void*)(root))->FirstChild("chatCommand"));node;node=((void*)((class Unk_XmlNode*)(void*)(node))->NextSibling("chatCommand"))) {
-        if(!FUN_14028f710((Unk_XmlElement *)node)) continue;
+        if(!IsElementAvailable((Unk_XmlElement *)node)) continue;
         MS2Ptr<TUserCommandInfo> info(new TUserCommandInfo);
         if(info==0) continue;
         XmlGetAttr((class TiXmlElement*)(node), "id", info->stringId);
@@ -790,7 +790,7 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"SaleMarket",&CUserCommandCli::RequestSaleMarket);
     Register(L"Stat",&CUserCommandCli::ToggleStat);
     Register(L"GuideDebug",&CUserCommandCli::FUN_141365720);
-    Register(L"GuideShowState",&CUserCommandCli::FUN_141365750);
+    Register(L"GuideShowState",&CUserCommandCli::ShowGuideState);
     Register(L"GuideChangeState",&CUserCommandCli::ChangeGuideEntityState);
     Register(L"GuideResetClear",&CUserCommandCli::ResetGuideClearState);
     Register(L"GuideTestCondition",&CUserCommandCli::TestGuideCondition);
@@ -834,7 +834,7 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"ShowNode",&CUserCommandCli::ShowNode);
     Register(L"CountUI",&CUserCommandCli::CountUi);
     Register(L"ClubCmd",&CUserCommandCli::ClubCommand);
-    Register(L"TakeInteriorGift",&CUserCommandCli::FUN_141366a40);
+    Register(L"TakeInteriorGift",&CUserCommandCli::TakeInteriorGift);
     Register(L"TakeInteriorGradeGift",&CUserCommandCli::TakeInteriorGradeGift);
     Register(L"SetUGCMapBackground",&CUserCommandCli::SetUgcMapBackground);
     Register(L"SetEventBoardTextSpeed",&CUserCommandCli::SetNoticeSpeed);
@@ -843,11 +843,11 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"AddUGCMapPriv",&CUserCommandCli::AddUgcMapPriv);
     Register(L"RemoveUGCMapPriv",&CUserCommandCli::RemoveUgcMapPriv);
     Register(L"SellMyHome",&CUserCommandCli::SellMyHome);
-    Register(L"EnableFeature",&CUserCommandCli::FUN_141367030);
+    Register(L"EnableFeature",&CUserCommandCli::EnableFeature);
     Register(L"EnableSkipFrame",&CUserCommandCli::EnableSkipFrame);
     Register(L"FaceEmotion",&CUserCommandCli::PlayFaceEmotion);
     Register(L"ReloadScript",&CUserCommandCli::ReloadScript);
-    Register(L"SetClientItemTransferType",&CUserCommandCli::FUN_141367240);
+    Register(L"SetClientItemTransferType",&CUserCommandCli::SetClientItemTransferType);
     Register(L"PacketSendDelay",&CUserCommandCli::SetPacketSendDelay);
     Register(L"PacketRecvDelay",&CUserCommandCli::SetPacketRecvDelay);
     Register(L"DungeonVoiceChatEnter",&CUserCommandCli::EnterDungeonVoiceChat);
@@ -874,7 +874,7 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"EnableFog",&CUserCommandCli::SetFieldFogEnabled);
     Register(L"EnableEffectLimit",&CUserCommandCli::EnableEffectLimit);
     Register(L"GetDamageMovieCount",&CUserCommandCli::GetDamageMovieCount);
-    Register(L"SkillNotFind",&CUserCommandCli::FUN_14136c4b0);
+    Register(L"SkillNotFind",&CUserCommandCli::ToggleSkillSlotNotFind);
     Register(L"ResetOpendUgcTerms",&CUserCommandCli::ResetOpenedUgcTerms);
     Register(L"FishingCastingBarMode",&CUserCommandCli::SetFishingCastingBarMode);
     Register(L"LearnAllAbility",&CUserCommandCli::LearnAllAbilities);
@@ -891,16 +891,16 @@ void CUserCommandCli::RegisterDebug() {
 }
 // @0x141364f70
 void CUserCommandCli::RegisterInternalCommands() {
-    RegisterInternal(L"IgnoreSkillCoolTime",&CUserCommandCli::FUN_14136d460);
+    RegisterInternal(L"IgnoreSkillCoolTime",&CUserCommandCli::SetIgnoreSkillCoolTime);
     RegisterInternal(L"HandleRandomRegionSpawn",&CUserCommandCli::FUN_14136d4c0);
-    RegisterInternal(L"CrashDump",&CUserCommandCli::FUN_14136d4e0);
+    RegisterInternal(L"CrashDump",&CUserCommandCli::CrashDump);
     RegisterInternal(L"DumpPath",&CUserCommandCli::FUN_14136d520);
-    RegisterInternal(L"SetPCBang",&CUserCommandCli::FUN_14136d620);
-    RegisterInternal(L"Contract",&CUserCommandCli::FUN_14136d6a0);
-    RegisterInternal(L"title",&CUserCommandCli::FUN_14136d870);
-    RegisterInternal(L"SetQuestSeed",&CUserCommandCli::FUN_14136d970);
-    RegisterInternal(L"AutoInstallEquipMent",&CUserCommandCli::FUN_14136d9c0);
-    RegisterInternal(L"ReloadSkill",&CUserCommandCli::FUN_14136da20);
+    RegisterInternal(L"SetPCBang",&CUserCommandCli::SetPcBangLevel);
+    RegisterInternal(L"Contract",&CUserCommandCli::OpenContract);
+    RegisterInternal(L"title",&CUserCommandCli::SetTitle);
+    RegisterInternal(L"SetQuestSeed",&CUserCommandCli::SetQuestSeed);
+    RegisterInternal(L"AutoInstallEquipMent",&CUserCommandCli::SetAutoInstallEquipment);
+    RegisterInternal(L"ReloadSkill",&CUserCommandCli::ReloadSkill);
     RegisterInternal(L"DisableDirectoryWatching",&CUserCommandCli::FUN_14136dab0);
 }
 // @0x141365270
@@ -918,7 +918,7 @@ int CUserCommandCli::SetLocalCamera(ItemFunctionArgs& args) {
     bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
     void* player=((void*)WorldService::GetInstance());
     if(!player) return 0;
-    void* actor=((class WorldService*)(void*)(player))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(player))->GetLocalPlayer();
     if(!actor) return 0;
     if(TSingleton<CameraMgr>::GetInstance()) ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aecbb0(id, ((class GameObject*)(void*)(actor))->GetObjectId(), enabled);
     return 1;
@@ -963,7 +963,7 @@ int CUserCommandCli::ToggleStat(ItemFunctionArgs&) {
 // @0x141365720
 int CUserCommandCli::FUN_141365720(ItemFunctionArgs&) { FUN_14138d460(((void*)FUN_1409331e0())); return 1; }
 // @0x141365750
-int CUserCommandCli::FUN_141365750(ItemFunctionArgs& args) { FUN_14138d160(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0)); return 1; }
+int CUserCommandCli::ShowGuideState(ItemFunctionArgs& args) { FUN_14138d160(((void*)FUN_1409331e0()),args.FUN_1408d1f60(0,0)); return 1; }
 // @0x1413657a0
 int CUserCommandCli::ChangeGuideEntityState(ItemFunctionArgs& args) { ((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->ChangeEntityState(args.FUN_1408d1f60(0,0)); return 1; }
 // @0x1413657f0
@@ -1006,7 +1006,7 @@ int CUserCommandCli::ShowBgmState(ItemFunctionArgs&) {
 }
 // @0x141365cd0
 int CUserCommandCli::ReloadStrings(ItemFunctionArgs&) {
-    ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload(); FUN_1409c51f0(); FUN_141815db0(FUN_141371b20());
+    ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload(); FUN_1409c51f0(); FUN_141815db0(GetGFxLanguage());
     { CStringW text(L"Success Reload String"); FUN_1412751b0(text,20); } return 1;
 }
 // @0x141365d50
@@ -1058,14 +1058,14 @@ int CUserCommandCli::AddDevEffect(ItemFunctionArgs& args) {
 int CUserCommandCli::RemoveDevEffect(ItemFunctionArgs&) { ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a8dc0(); return 1; }
 // @0x1413662a0
 int CUserCommandCli::SetHomePassword(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()==0) return 0;
+    if(args.GetArgCount()==0) return 0;
     int mode=args.FUN_1408d1f60(0,0);
     if(mode<0||mode>1) return 0;
-    if(mode==1&&args.FUN_1408d2380()<2) return 0;
+    if(mode==1&&args.GetArgCount()<2) return 0;
     CStringW name=args.FUN_1408d21c0(1,L"");
     int flag=0;
-    if(args.FUN_1408d2380()>2) flag=args.FUN_1408d1f60(2,0);
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    if(args.GetArgCount()>2) flag=args.FUN_1408d1f60(2,0);
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(actor) {
         Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->GetUGCMapInfo());
         if(ref.get()) {
@@ -1077,24 +1077,24 @@ int CUserCommandCli::SetHomePassword(ItemFunctionArgs& args) {
 }
 // @0x141366470
 int CUserCommandCli::CommendHome(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=0) return 0;
+    if(args.GetArgCount()!=0) return 0;
     if(DAT_143ab0248==2&&DAT_143ab2914<59) return 0;
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x19); FUN_140710590(packet); return 1;
 }
 // @0x141366500
 int CUserCommandCli::GoIntoHome(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=4) return 0;
+    if(args.GetArgCount()!=4) return 0;
     int first=args.FUN_1408d1f60(0,0),second=args.FUN_1408d1f60(1,0),third=args.FUN_1408d1f60(2,0);
     __int64 fourth=args.FUN_1408d2040(3,0);
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode2(first,second,third,fourth,CStringW(L""));
     return 1;
 }
 // @0x141366600
 int CUserCommandCli::SetHomeNotice(ItemFunctionArgs& args) {
     CStringW name=L"";
-    if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    if(args.GetArgCount()>0) name=args.FUN_1408d21c0(0,L"");
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(actor) {
         Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->GetUGCMapInfo());
         if(ref.get()) {
@@ -1106,31 +1106,31 @@ int CUserCommandCli::SetHomeNotice(ItemFunctionArgs& args) {
 // @0x141366770
 int CUserCommandCli::ExportUgcMap(ItemFunctionArgs& args) {
     CString name="";
-    if(args.FUN_1408d2380()>0) name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
-    else name.Format("%08d",((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060());
+    if(args.GetArgCount()>0) name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
+    else name.Format("%08d",((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetFieldId());
     int result=((CubeMapInformationService*)GetCubeMapInformationService())->ExportUGCMap(name);
     if(result) FUN_1412751b0(StringFormat(L"UGCMap exported to Data/Xml/ExportedUGCMap/{0}.xml",name),20);
     else FUN_1412751b0(StringFormat(L"UGCMap export failed",name),20);
     return result;
 }
 // @0x1413669a0
-int CUserCommandCli::GoIntoDesignHome(ItemFunctionArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
+int CUserCommandCli::GoIntoDesignHome(ItemFunctionArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
 // @0x1413669f0
 int CUserCommandCli::OpenVip(ItemFunctionArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x4a)) return 1; TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
 // @0x141366a40
-int CUserCommandCli::FUN_141366a40(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=0) return 0;
+int CUserCommandCli::TakeInteriorGift(ItemFunctionArgs& args) {
+    if(args.GetArgCount()!=0) return 0;
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x28); FUN_140710590(packet); return 1;
 }
 // @0x141366ac0
 int CUserCommandCli::TakeInteriorGradeGift(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=1) return 0;
+    if(args.GetArgCount()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x29); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
 // @0x141366b60
 int CUserCommandCli::SetUgcMapBackground(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=1) return 0;
+    if(args.GetArgCount()!=1) return 0;
     int flag=args.FUN_1408d1f60(0,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x33); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
@@ -1140,26 +1140,26 @@ int CUserCommandCli::SetNoticeSpeed(ItemFunctionArgs& args) { void* dialog=Unk_G
 int CUserCommandCli::SetEventBoardText(ItemFunctionArgs& args) { void* dialog=Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNotice(args.GetText()); return 1; }
 // @0x141366cd0
 int CUserCommandCli::SetUgcMapBalance(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=2) return 0;
+    if(args.GetArgCount()!=2) return 0;
     __int64 a=args.FUN_1408d2040(0,0),b=args.FUN_1408d2040(1,0);
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x38); packet.WriteInt64(a); packet.WriteInt64(b); FUN_140710590(packet); return 1;
 }
 // @0x141366da0
 int CUserCommandCli::AddUgcMapPriv(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=1) return 0;
+    if(args.GetArgCount()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x39); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366eb0
 int CUserCommandCli::RemoveUgcMapPriv(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=1) return 0;
+    if(args.GetArgCount()!=1) return 0;
     CStringW name=args.FUN_1408d21c0(0,L"");
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x3a); packet.WriteUnicodeStringA(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366fc0
 int CUserCommandCli::SellMyHome(ItemFunctionArgs&) { COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(6); FUN_140710590(packet); return 1; }
 // @0x141367030
-int CUserCommandCli::FUN_141367030(ItemFunctionArgs&) { return 1; } // Original command intentionally does nothing.
+int CUserCommandCli::EnableFeature(ItemFunctionArgs&) { return 1; } // Original command intentionally does nothing.
 // @0x141367050
 int CUserCommandCli::EnableSkipFrame(ItemFunctionArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<52) return 0;
@@ -1169,18 +1169,18 @@ int CUserCommandCli::EnableSkipFrame(ItemFunctionArgs& args) {
 }
 // @0x1413670c0
 int CUserCommandCli::PlayFaceEmotion(ItemFunctionArgs& args) {
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(actor) ((PCBase*)actor)->FUN_14166ef10(FUN_14016a600(args.FUN_1408d21c0(0,L""),0),1,0,false);
     return 1;
 }
 // @0x1413671c0
 int CUserCommandCli::ReloadScript(ItemFunctionArgs&) {
-    if(FUN_141371b30()) { ((class CScriptTable*)(void*)(FUN_141371b30()))->Reload(); FUN_1412751b0(StringFormat(L"Script reloaded"),20); }
+    if(GetScriptTable()) { ((class CScriptTable*)(void*)(GetScriptTable()))->Reload(); FUN_1412751b0(StringFormat(L"Script reloaded"),20); }
     return 1;
 }
 // @0x141367240
-int CUserCommandCli::FUN_141367240(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()!=2) { FUN_1412751b0(StringFormat(L"Error! Usage: [cmd] [itemId] [transferType]"),20); return 0; }
+int CUserCommandCli::SetClientItemTransferType(ItemFunctionArgs& args) {
+    if(args.GetArgCount()!=2) { FUN_1412751b0(StringFormat(L"Error! Usage: [cmd] [itemId] [transferType]"),20); return 0; }
     int id=args.FUN_1408d1f60(0,0),kind=args.FUN_1408d1f60(1,0);
     MS2Ptr<CItemData> item=FUN_14053f870(id);
     if(item.IsNull()) { FUN_1412751b0(StringFormat(L"Wrong itemID! {0}",id),20); return 0; }
@@ -1224,7 +1224,7 @@ int CUserCommandCli::HideUi(ItemFunctionArgs& args) {
 // @0x141367840
 int CUserCommandCli::HideMe(ItemFunctionArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<51) return 0;
-    Unk_CommandActor* actor=static_cast<Unk_CommandActor*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_CommandActor* actor=static_cast<Unk_CommandActor*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if(!actor) return 0;
     int flag=args.FUN_1408d1fd0(0,0);
     if(flag==0) actor->vfunc_23(0); else actor->vfunc_23(1);
@@ -1336,14 +1336,14 @@ int CUserCommandCli::FUN_141368000(ItemFunctionArgs& args) {
 }
 // @0x1413686b0
 int CUserCommandCli::RecordFishing(ItemFunctionArgs&) {
-    void* fishing=FUN_141371ac0(((void*)TSingleton<CFishingManager>::GetInstance()));
+    void* fishing=GetFishRecord(((void*)TSingleton<CFishingManager>::GetInstance()));
     ((struct Unk_FishRecord*)(void*)(fishing))->Reset();
     { CStringW text(L"FishRecord"); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x141368730
 int CUserCommandCli::ShowFishRecordReport(ItemFunctionArgs&) {
-    void* fishing=FUN_141371ac0(((void*)TSingleton<CFishingManager>::GetInstance()));
+    void* fishing=GetFishRecord(((void*)TSingleton<CFishingManager>::GetInstance()));
     CString report=((Unk_FishRecord*)fishing)->WriteRecordFile();
     FUN_1412751b0(StringFormat(L"FishReport >> {0}",report),20);
     return 1;
@@ -1351,7 +1351,7 @@ int CUserCommandCli::ShowFishRecordReport(ItemFunctionArgs&) {
 // @0x1413687d0
 int CUserCommandCli::ShowEffectAfterimage(ItemFunctionArgs&) {
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(&list,reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b10));
+    WorldService::GetInstance()->CollectObjects(&list,reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b10));
     for(POSITION pos=list.GetHeadPosition(); pos!=0; list.GetNext(pos)) {
         void* entry=list.GetAt(pos).operator Unk_WsC_GameObj*();
         NoticeMessage request;
@@ -1476,7 +1476,7 @@ int CUserCommandCli::FindNpcGameOid(ItemFunctionArgs& args) {
 // @0x1413693d0
 int CUserCommandCli::SetNpcDebugMode(ItemFunctionArgs& args) {
     unsigned oid=args.FUN_1408d1fd0(0,0);
-    void* npc=((void*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(oid));
+    void* npc=((void*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FindNpcById(oid));
     if(npc!=0) {
         ((class CNpc*)(void*)(npc))->SetDebugMode(args.FUN_1408d2140(1,true));
         bool mode=args.FUN_1408d2140(1,true);
@@ -1510,7 +1510,7 @@ int CUserCommandCli::ShowNode(ItemFunctionArgs&) {
 }
 // @0x141369650
 int CUserCommandCli::CountUi(ItemFunctionArgs& args) {
-    void* dialog=FUN_140e01890(0x4e4c);
+    void* dialog=FindMassiveEvent(0x4e4c);
     if(dialog!=0) {
         ((UIMassiveEvent*)(void*)dialog)->ShowStepMessage(args.FUN_1408d21c0(0,L""),args.FUN_1408d1f60(1,0),args.FUN_1408d1f60(2,0),args.FUN_1408d1f60(3,0));
     }
@@ -1604,7 +1604,7 @@ int CUserCommandCli::TraceQuest(ItemFunctionArgs&) {
 }
 // @0x14136a4c0
 int CUserCommandCli::CompleteQuest(ItemFunctionArgs& args) {
-    if (args.FUN_1408d2380() != 1) {
+    if (args.GetArgCount() != 1) {
         {
             CStringW usage(L"/CompleteQuest [QuestID]");
             FUN_1412751b0(usage,20);
@@ -1628,11 +1628,11 @@ int CUserCommandCli::CompleteEpicChapter(ItemFunctionArgs& args) {
     int trace = 0;
     int id = 0;
     int valid = 0;
-    if (args.FUN_1408d2380() == 1) {
+    if (args.GetArgCount() == 1) {
         CStringW s = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s);
         valid = 1;
-    } else if (args.FUN_1408d2380() == 2) {
+    } else if (args.GetArgCount() == 2) {
         static CStringW s_trace(L"-trace");
         CStringW s0 = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s0);
@@ -1681,11 +1681,11 @@ int CUserCommandCli::CompleteEpicQuest(ItemFunctionArgs& args) {
     int trace = 0;
     int id = 0;
     int valid = 0;
-    if (args.FUN_1408d2380() == 1) {
+    if (args.GetArgCount() == 1) {
         CStringW s = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s);
         valid = 1;
-    } else if (args.FUN_1408d2380() == 2) {
+    } else if (args.GetArgCount() == 2) {
         static CStringW s_trace(L"-trace");
         CStringW s0 = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s0);
@@ -1730,7 +1730,7 @@ int CUserCommandCli::CompleteEpicQuest(ItemFunctionArgs& args) {
 #endif
 // @0x14136b290
 int CUserCommandCli::SetEpicChapterStatus(ItemFunctionArgs& args) {
-    if (args.FUN_1408d2380() != 2) {
+    if (args.GetArgCount() != 2) {
         {
             CStringW usage(L"/SetEpicChapterStatus [ChapterID] [Status]");
             FUN_1412751b0(usage,20);
@@ -1771,7 +1771,7 @@ int CUserCommandCli::SetEpicChapterStatus(ItemFunctionArgs& args) {
 }
 // @0x14136b6d0
 int CUserCommandCli::SetEpicQuestStatus(ItemFunctionArgs& args) {
-    if (args.FUN_1408d2380() != 2) {
+    if (args.GetArgCount() != 2) {
         {
             CStringW usage(L"/SetEpicQuestStatus [QuestID] [Status]");
             FUN_1412751b0(usage,20);
@@ -1853,7 +1853,7 @@ int CUserCommandCli::SetPosition(ItemFunctionArgs& args) {
     pos.x=args.FUN_1408d2280(0,0);
     pos.y=args.FUN_1408d2280(1,0);
     pos.z=args.FUN_1408d2280(2,0);
-    Unk_CommandActor* actor=(Unk_CommandActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    Unk_CommandActor* actor=(Unk_CommandActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(actor==0) return 0;
     actor->vfunc_19(pos);
     return 1;
@@ -1903,7 +1903,7 @@ int CUserCommandCli::ShowMyPcNodes(ItemFunctionArgs& args) {
     bool value=args.FUN_1408d2140(0,false);
     void* player=((void*)WorldService::GetInstance());
     if(player==0) return 0;
-    void* actor=((class WorldService*)(void*)(player))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(player))->GetLocalPlayer();
     if(actor==0) return 0;
     ((class CEquipment*)(void*)(((PC*)actor)->GetEquipment()))->FUN_1411eac40(value);
     return 1;
@@ -1940,7 +1940,7 @@ int CUserCommandCli::GetDamageMovieCount(ItemFunctionArgs&) {
     return 1;
 }
 // @0x14136c4b0
-int CUserCommandCli::FUN_14136c4b0(ItemFunctionArgs&) {
+int CUserCommandCli::ToggleSkillSlotNotFind(ItemFunctionArgs&) {
     DAT_143ae9750=DAT_143ae9750==false;
     FUN_1412751b0(StringFormat(L"toggle SkillSlotNotFind {0}",DAT_143ae9750),20);
     return 1;
@@ -1975,7 +1975,7 @@ int CUserCommandCli::SearchMaview(ItemFunctionArgs& args) {
     CStringW url=StringFormat(L"maview:/Main/Search?tk={0}",args.GetText());
     void* browser=FindWebBrowser(0x4e6a);
     if(!browser) return 0;
-    ((UIWebBrowserBase*)browser)->FUN_14135ec00(FUN_140391100(url),true);
+    ((UIWebBrowserBase*)browser)->Navigate(WideToUtf8(url),true);
     return 1;
 }
 // @0x14136c7f0
@@ -1996,18 +1996,18 @@ int CUserCommandCli::ConfirmLeaveGuild(ItemFunctionArgs&) {
 }
 // @0x14136c940
 int CUserCommandCli::InviteToPartyByName(ItemFunctionArgs& args) {
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(!actor) return 1;
     MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->GetHideAndSeekInfo();
     if((bool)spInfo.get() && ((HideAndSeek::Info*)spInfo.operator->())->FUN_14050a6a0()) return 1;
-    if(args.FUN_1408d2380()==1) {
+    if(args.GetArgCount()==1) {
         ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode1(args.FUN_1408d21c0(0,L""));
     }
     return 1;
 }
 // @0x14136ca90
 int CUserCommandCli::LeaveParty(ItemFunctionArgs&) {
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(!actor) return 1;
     MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->GetHideAndSeekInfo();
     if((bool)spInfo.get() && ((HideAndSeek::Info*)spInfo.operator->())->FUN_14050a6a0()) return 1;
@@ -2019,13 +2019,13 @@ int CUserCommandCli::StartPartyReadyCheck(ItemFunctionArgs&) {
     if(((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader()) {
         ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode46();
     } else {
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_err_can_use_only_chief")),1,1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_party_err_can_use_only_chief")),1,1);
     }
     return 1;
 }
 // @0x14136cc10
 int CUserCommandCli::InviteHome(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()==1) {
+    if(args.GetArgCount()==1) {
         COutPacket packet(static_cast<int>(SendOp::RequestHome),0);
         packet.WriteUInt8(1);
         packet.WriteUnicodeString(args.FUN_1408d21c0(0,L""));
@@ -2057,7 +2057,7 @@ int CUserCommandCli::ShowHelp(ItemFunctionArgs&) {
 }
 // @0x14136d0a0
 int CUserCommandCli::SendSuperWorldChat(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()>0) {
+    if(args.GetArgCount()>0) {
         int value=args.FUN_1408d1fd0(0,0);
         COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
         packet.WriteUInt8(0);
@@ -2104,8 +2104,8 @@ int CUserCommandCli::ShowPopupText(ItemFunctionArgs& args) {
     return 1;
 }
 // @0x14136d460
-int CUserCommandCli::FUN_14136d460(ItemFunctionArgs& args) {
-    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+int CUserCommandCli::SetIgnoreSkillCoolTime(ItemFunctionArgs& args) {
+    void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if(!actor) return 0;
     MyPC::FUN_141530910(args.FUN_1408d20b0(0,0));
     return 1;
@@ -2113,14 +2113,14 @@ int CUserCommandCli::FUN_14136d460(ItemFunctionArgs& args) {
 // @0x14136d4c0
 int CUserCommandCli::FUN_14136d4c0(ItemFunctionArgs&) { return 1; }
 // @0x14136d4e0
-int CUserCommandCli::FUN_14136d4e0(ItemFunctionArgs& args) {
+int CUserCommandCli::CrashDump(ItemFunctionArgs& args) {
     int v=args.FUN_1408d1f60(0,0);
     TriggerCrash(v);
     return 1;
 }
 // @0x14136d520
 int CUserCommandCli::FUN_14136d520(ItemFunctionArgs&) {
-    CString path=((CCrashManager*)TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce8d0();
+    CString path=((CCrashManager*)TSingleton<CrashManagerCli>::GetInstance())->GetBuildString();
     FUN_1412751b0(FUN_14016a730(path,0),20);
     FUN_14083d890(FUN_14016a730(path,0));
     {
@@ -2130,15 +2130,15 @@ int CUserCommandCli::FUN_14136d520(ItemFunctionArgs&) {
     return 1;
 }
 // @0x14136d620
-int CUserCommandCli::FUN_14136d620(ItemFunctionArgs& args) {
+int CUserCommandCli::SetPcBangLevel(ItemFunctionArgs& args) {
     unsigned char level=(unsigned char)args.FUN_1408d1f60(0,0);
     CStringW message=StringFormat(L"Success Command. pcBangLevel={0}",level);
     FUN_1412751b0(message,20);
     return 1;
 }
 // @0x14136d6a0
-int CUserCommandCli::FUN_14136d6a0(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()==2) {
+int CUserCommandCli::OpenContract(ItemFunctionArgs& args) {
+    if(args.GetArgCount()==2) {
         unsigned field=args.FUN_1408d1fd0(0,0);
         int group=args.FUN_1408d1f60(1,0);
         Unk_UGCGroup salable;
@@ -2156,8 +2156,8 @@ int CUserCommandCli::FUN_14136d6a0(ItemFunctionArgs& args) {
     return 1;
 }
 // @0x14136d870
-int CUserCommandCli::FUN_14136d870(ItemFunctionArgs& args) {
-    if(args.FUN_1408d2380()==1) {
+int CUserCommandCli::SetTitle(ItemFunctionArgs& args) {
+    if(args.GetArgCount()==1) {
         unsigned id=args.FUN_1408d1fd0(0,0);
         CStringW title=FUN_141b720b0(id,0);
         if(title.GetLength()!=0) {
@@ -2169,19 +2169,19 @@ int CUserCommandCli::FUN_14136d870(ItemFunctionArgs& args) {
     return 1;
 }
 // @0x14136d970
-int CUserCommandCli::FUN_14136d970(ItemFunctionArgs& args) {
+int CUserCommandCli::SetQuestSeed(ItemFunctionArgs& args) {
     int seed=args.FUN_1408d1fd0(0,0);
-    FUN_140746fe0((CQuestManagerCommon *)((char*)FUN_140764020()+0x10),seed);
+    SetSelector((CQuestManagerCommon *)((char*)FUN_140764020()+0x10),seed);
     return 1;
 }
 // @0x14136d9c0
-int CUserCommandCli::FUN_14136d9c0(ItemFunctionArgs& args) {
+int CUserCommandCli::SetAutoInstallEquipment(ItemFunctionArgs& args) {
     int v=args.FUN_1408d20b0(0,0)!=0;
     g_143ab2a90.SetAutoEquipEnabled(v);
     return 1;
 }
 // @0x14136da20
-int CUserCommandCli::FUN_14136da20(ItemFunctionArgs&) {
+int CUserCommandCli::ReloadSkill(ItemFunctionArgs&) {
     { CStringW text(L"Start Client ReloadSKill"); FUN_1412751b0(text,20); }
     ((class SkillDataTableCli*)(void*)(((void*)TSingleton<SkillDataTableCli>::GetInstance())))->ReloadFiles();
     { CStringW text(L"Complete Client ReloadSKill"); FUN_1412751b0(text,20); }
@@ -2272,7 +2272,7 @@ TUserCommandInfo::TUserCommandInfo() : chatType(27),stringId(0) {}
 // @0x141371280
 UIObject* Unk_CommandUIRef::FUN_141371280() { return object; }
 // @0x141371b20
-void* FUN_141371b20() { return TSingleton<CGFxLanguage>::s_instance; }
+void* GetGFxLanguage() { return TSingleton<CGFxLanguage>::s_instance; }
 // @0x141371b30
-void* FUN_141371b30() { return TSingleton<CScriptTable>::s_instance; }
+void* GetScriptTable() { return TSingleton<CScriptTable>::s_instance; }
 MS2_EMIT_CRT_MEMMOVE_S();

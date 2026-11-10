@@ -229,10 +229,10 @@ typedef MS2SvrPtr<CObjectData> CObjectDataPtr;
 // Per-id queries over the row cache (names invented from the compared fields).
 CObjectDataPtr GetObjectData(unsigned nId);     // the row of an id; loads Data/Xml/Object/<id>.xml when it is not cached
 int HasFunctionCube(int nId);                     // has a function cube
-int FUN_140707260(int nId);                     // function cube uses a kfm
+int UsesKfm(int nId);                     // function cube uses a kfm
 int FUN_1407072e0(int nId);                     // switch with the fitting doll ui
 int FUN_1407073a0(int nId);                     // switch with the item fusion ui
-int FUN_140707460(int nId);                     // skill control type
+int IsSkillControlType(int nId);                     // skill control type
 int FUN_1407074f0(int nId);                     // bank ui
 int FUN_1407075a0(int nId);                     // spawn npc or install npc
 int FUN_140707660(int nId);                     // trigger tool ui
@@ -240,11 +240,11 @@ int IsTriggerControlEnabled(int nId);                     // trigger control ena
 int HasStateChangePermission(int nId);                     // state change permission 1
 int FUN_140707870(int nId);                     // password ui
 int FUN_140707920(int nId);                     // forbids jump, climb, skill or instrument
-int FUN_140707a00(int nId);                     // forbidden for non owners
-int FUN_140707ac0(int nId);                     // portal control type
-int FUN_140707b40(int nId);                     // notice control type
-int FUN_140707bc0(int nId);                     // has a configurable cube
-int FUN_140707c60(int nId);                     // breeding control type
-int FUN_140707d10(int nId);                     // farming control type
-int FUN_140707dc0(int nId);                     // nurturing control type
-int FUN_140707e70(int nId);                     // install npc control type
+int IsForbiddenExceptOwner(int nId);                     // forbidden for non owners
+int IsPortalControlType(int nId);                     // portal control type
+int IsNoticeControlType(int nId);                     // notice control type
+int HasConfigurableCube(int nId);                     // has a configurable cube
+int IsBreedingControlType(int nId);                     // breeding control type
+int IsFarmingControlType(int nId);                     // farming control type
+int IsNurturingControlType(int nId);                     // nurturing control type
+int IsInstallNpcControlType(int nId);                     // install npc control type

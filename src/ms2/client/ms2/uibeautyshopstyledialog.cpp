@@ -193,7 +193,7 @@ class Unk_BSItemData : public CItemData
 {
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool b);
+void WriteItemInfo(ASObj& obj, MS2Ptr<CItemData> spData, bool b);
 
 // The achieve manager.
 class CAchieve : public CPtred {};
@@ -249,7 +249,7 @@ public:
 class Unk_BSWorld
 {
 public:
-    Unk_BSPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
+    Unk_BSPlayer* GetLocalPlayer();              // the player (NULL outside the game)
 };
 
 class Unk_BSUIMgr
@@ -319,7 +319,7 @@ public:
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1422b9fd0(int);
+    int SetSubScene(int);
 };
 
 // Message boxes and strings.
@@ -338,11 +338,11 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);   // enable the root's input
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int ParseInt(const char* sz);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bVisible);
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
+void SetChildVisible(const Scaleform::GFx::Value& root, CString strName, int bVisible);
+void SetChildEnabled(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The shop payment row (npcshopdata.h; that header's CBeautyShopDataCli clashes with this unit's view).
@@ -357,7 +357,7 @@ public:
 };
 
 // The fee helpers (beautyshop fee rows).
-CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned* pPrice);   // the price text
+CStringW GetFeePriceText(Unk_BSFee* pFee, const unsigned* pPrice);   // the price text
 bool CanPayFee(Unk_BSFee* pFee, const unsigned* pPrice);       // the player can pay
 void FUN_14134a2e0(Unk_BSFee* pFee);                                       // "not enough" message
 void FUN_14134a120(int, int, unsigned int);   // C3: was FUN_14134a120
@@ -404,7 +404,7 @@ CStringW GetItemName(int nItemId)
 // @0x140f01140
 int GetPlayerLevel()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     return ((class PC*)(class PCBase*)(pPc))->FUN_141658f30();
@@ -464,7 +464,7 @@ bool SendBeautyMode17(__int64 nItemUid)
 // @0x140f01350
 void PlayHairApplyEffect()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (pPc->GetCurStateId() != 0xe)
@@ -480,7 +480,7 @@ void PlayHairApplyEffect()
 // @0x140f01430
 void FUN_140f01430()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc)
         pPc->FUN_14166ed70(0x56057c6);
 }
@@ -849,7 +849,7 @@ int UIBeautyShopStyleDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsEscapePressed())
     {
         FUN_140f082d0();
         return 1;
@@ -918,12 +918,12 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             else
             {
                 MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
-                if (spItem == 0 || spItem->FUN_140527840() == 0)
+                if (spItem == 0 || spItem->GetData() == 0)
                     return 1;
-                Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+                Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
                 if (pPc == 0)
                     return 1;
-                if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
+                if (reinterpret_cast<Unk_BSItemData*>(spItem->GetData())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
                 {
                     ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_beauty_msg_error_style_disable_gender"), 0, FUN_140b240b0());
                     return 1;
@@ -1092,7 +1092,7 @@ void UIBeautyShopStyleDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
             unsigned nFee = 0;
             Unk_BSFee* pFee = GetFee(&nFee);
             unsigned __int64 nBase = (unsigned)GetFeeAmount();
-            CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nBase);
+            CStringW strPrice = GetFeePriceText(pFee, (const unsigned*)&nBase);
             CMsTime tDate(spItem->GetCreationTime());
             CStringW strDate = FormatStringId(0x276, FUN_14083bab0(tDate, L"/"));
             strText = BlockFormat(0x275, GetItemName(spItem->GetItemId()), strDate, strPrice);
@@ -1118,7 +1118,7 @@ void UIBeautyShopStyleDialog::OnNotifyGameEventChanged(NotifyObject* pNotify)
         FUN_140f07520(pFee, &nFee);
         if (MS2Ptr<ASMovieClip> spPcBang = GetChild<ASMovieClip>("m_pcBang"))
         {
-            int nRet = ((CGameRule*)GetGameRule())->FUN_140476cf0(FUN_140f07960(), GetPlayerLevel());
+            int nRet = ((CGameRule*)GetGameRule())->GetSaleIndex(FUN_140f07960(), GetPlayerLevel());
             spPcBang->vfunc_4(nRet == 0);
         }
         UIBillDialog* pBill;
@@ -1183,7 +1183,7 @@ bool UIBeautyShopStyleDialog::FUN_140f05880(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
-        Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPc != 0)
         {
             int nSlot = FUN_140f01070(GetShopKind());
@@ -1277,7 +1277,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
         __int64 nNewUid = packet.ReadInt64();
         int nSlot = packet.ReadUInt8();
         __int64 nTime = packet.ReadInt64();
-        Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPc)
         {
             MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PCBase*)(pPc))->GetEquipByUid(nUid);
@@ -1292,7 +1292,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
             int nIndex = (int)m_298.size();
             m_298.push_back(spCopy);
             ASObj obj(2);
-            FUN_140f096f0(obj, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCopy->FUN_140527840())), nSlot,
+            FUN_140f096f0(obj, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCopy->GetData())), nSlot,
                           GetFeeAmount(), ((class PC*)(class PCBase*)(pPc))->GetGender());
             m_30->Invoke("updateItem", nIndex, Scaleform::GFx::Value(obj.GetValue()));
             FUN_1412752d0(L"s_beauty_msg_complete_save_hair_style", 1);
@@ -1372,7 +1372,7 @@ bool UIBeautyShopStyleDialog::InitData()
     if (m_30 == 0)
         return false;
     IItemCustomizeEventListener::FUN_140f0b710(0);
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (!pPc)
         return false;
     bool bCap = FUN_140f09630();
@@ -1380,7 +1380,7 @@ bool UIBeautyShopStyleDialog::InitData()
     bool bSale = false;
     if (FUN_140f07960() > 0)
     {
-        int nRet = ((CGameRule*)GetGameRule())->FUN_140476cf0(FUN_140f07960(), GetPlayerLevel());
+        int nRet = ((CGameRule*)GetGameRule())->GetSaleIndex(FUN_140f07960(), GetPlayerLevel());
         bSale = nRet == 0;
     }
     m_30->Invoke("initData", L"$s_beauty_title_my_style_hair", bCap, bSale);
@@ -1406,7 +1406,7 @@ bool UIBeautyShopStyleDialog::InitData()
 // @0x140f07310
 bool UIBeautyShopStyleDialog::FUN_140f07310()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != 0)
     {
         int nSlot = FUN_140f01070(GetShopKind());
@@ -1433,7 +1433,7 @@ void UIBeautyShopStyleDialog::FUN_140f07520(Unk_BSFee* pFee, unsigned* pPrice)
         return;
     int nLevel = GetPlayerLevel();
     int nEvent = FUN_140f07960();
-    int nRet = ((CGameRule*)GetGameRule())->FUN_140476cf0(nEvent, nLevel);
+    int nRet = ((CGameRule*)GetGameRule())->GetSaleIndex(nEvent, nLevel);
     bool bSale = nRet == 0;
     if (!pFee)
     {
@@ -1447,12 +1447,12 @@ void UIBeautyShopStyleDialog::FUN_140f07520(Unk_BSFee* pFee, unsigned* pPrice)
     if (bDiscount)
     {
         unsigned __int64 nSale64 = nSale;
-        CStringW strSale = FUN_14134a220(pFee, (const unsigned*)&nSale64);
+        CStringW strSale = GetFeePriceText(pFee, (const unsigned*)&nSale64);
         m_30->Invoke("setFee", FUN_1409404f0(nPrice), CStringW(strSale), bSale, bDiscount);
     }
     else
     {
-        CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nPrice);
+        CStringW strPrice = GetFeePriceText(pFee, (const unsigned*)&nPrice);
         m_30->Invoke("setFee", CStringW(strPrice), FUN_1409eb450(nSale), bSale, bDiscount);
     }
 }
@@ -1489,15 +1489,15 @@ void UIBeautyShopStyleDialog::FUN_140f07a00()
 // @0x140f07a60
 int UIBeautyShopStyleDialog::FUN_140f07a60(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || spItem->FUN_140527840() == 0)
+    if (spItem == 0 || spItem->GetData() == 0)
         return 0;
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
-    spItem->SetObjectId(((class GameObject*)(class PCBase*)(((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())))->GetObjectId());
+    spItem->SetObjectId(((class GameObject*)(class PCBase*)(((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer())))->GetObjectId());
     if (!m_198->EquipItem(spItem.get()))
     {
-        if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
+        if (reinterpret_cast<Unk_BSItemData*>(spItem->GetData())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
             ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_beauty_msg_error_save_style_disable_gender"), 0, FUN_140b240b0());
         return 0;
     }
@@ -1512,8 +1512,8 @@ void UIBeautyShopStyleDialog::FUN_140f07cc0()
         return;
     Scaleform::GFx::Value& root = m_30->GetValue();
     int bChanged = m_198->FUN_140cd2c20();
-    FUN_140cff950(root, CString("m_save"), bChanged);
-    FUN_140cff950(root, CString("m_reset"), bChanged);
+    SetChildEnabled(root, CString("m_save"), bChanged);
+    SetChildEnabled(root, CString("m_reset"), bChanged);
     unsigned nFee = 0;
     Unk_BSFee* pFee = GetFee(&nFee);
     if (bChanged)
@@ -1529,7 +1529,7 @@ void UIBeautyShopStyleDialog::FUN_140f07cc0()
 // @0x140f07e20
 void UIBeautyShopStyleDialog::FUN_140f07e20()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ASDataProvider arr(2);
@@ -1596,7 +1596,7 @@ int UIBeautyShopStyleDialog::FUN_140f08220()
     m_198->RestoreSlot(nSlot);
     if (Unk_BSField* pField = (Unk_BSField*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd3620())
         pField->vfunc_149();
-    ((class GFxSceneService*)(CUserMail::GetGFxSceneService()))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(CUserMail::GetGFxSceneService()))->SetSubScene(0x620001d);
     return 1;
 }
 
@@ -1612,7 +1612,7 @@ void UIBeautyShopStyleDialog::FUN_140f082d0()
         return;
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
-    spBox->FUN_141a01800(2);
+    spBox->SetButtonPreset(2);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
     FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
 }
@@ -1648,7 +1648,7 @@ int UIBeautyShopStyleDialog::BuildBillRows(AScript& out, unsigned* pPrice)
         CString strKey(bChanged ? "$s_beauty_change_style" : "$s_beauty_none");
         CStringW strName = GetGFxManager()->Localize(strKey);
         row.SetWStringMember("detail", StringFormat<CStringW>(strRow, strName));
-        CStringW strPrice = bChanged ? FUN_14134a220(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice))
+        CStringW strPrice = bChanged ? GetFeePriceText(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice))
                                      : GetStringCommonByKey(L"s_beauty_fee_default");
         row.SetWStringMember("strPrice", strPrice);
         arr.PushValue(Scaleform::GFx::Value(row.GetValue()));
@@ -1821,7 +1821,7 @@ void UIBeautyShopStyleDialog::SetExtendSlotVisible(int b)
 {
     if (m_30 == 0)
         return;
-    FUN_140cff840(m_30->GetValue(), CString("m_extendSlot"), b);
+    SetChildVisible(m_30->GetValue(), CString("m_extendSlot"), b);
 }
 
 // The "my codi" tab changed: drop the page when its outfit expired.
@@ -1867,7 +1867,7 @@ bool UIBeautyShopStyleDialog::FUN_140f09560()
 // @0x140f09630
 bool UIBeautyShopStyleDialog::FUN_140f09630()
 {
-    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return false;
     bool bResult = false;
@@ -1885,7 +1885,7 @@ bool UIBeautyShopStyleDialog::FUN_140f09630()
 // @0x140f096f0
 bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nMerat, int nGender)
 {
-    FUN_140f324f0(obj, MS2Ptr<CItemData>(spData), false);
+    WriteItemInfo(obj, MS2Ptr<CItemData>(spData), false);
     obj.SetIntMember("idx", nIndex);
     obj.SetMemberUInt("merat", nMerat);
     obj.SetBoolMember("enableDelete", true);
@@ -1948,8 +1948,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const wchar_t* a1, b
     ASArgList args;
     args.resize(3);
     FUN_1422bcea0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[1], a2);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1960,8 +1960,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CString
     args.resize(4);
     FUN_1422bcea0(&args[0], a1);
     FUN_1422bcea0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
-    FUN_1422bcce0(&args[3], a4);
+    SetBoolean(&args[2], a3);
+    SetBoolean(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

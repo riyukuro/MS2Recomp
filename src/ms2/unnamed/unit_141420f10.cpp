@@ -41,11 +41,11 @@ int FUN_141420f10(CItemData* pData, AvatarPC* pAvatar)
 }
 
 // @0x141420f90
-int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar)
+int GetItemCustomizeId(CItem* pItem, AvatarPC* pAvatar)
 {
     if (pItem == 0)
         return 0;
-    CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
+    CItemData* pData = reinterpret_cast<CItemData*>(pItem->GetData());
     if (pData == 0)
         return 0;
     if (pData->FUN_14053d510())

@@ -488,7 +488,7 @@ class Unk_MsgFiles : public CFileSystem { };
 CString GetXmlDebugPath(const CString& strFile);                      // the data path of a file
 CString FUN_14016a600(const wchar_t* psz, int n);                   // wide -> narrow
 CString GetCharacterFolder();                                            // the UI settings directory
-CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+CString JoinPath(const CString& strRoot, const CString& strFile);   // path join
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -510,7 +510,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_140873420(void* pCfg, const char* szName, CStringW* pstr);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* szDelim);   // split
 void FUN_140988d60(CStringW& str, std::vector<CStringW>& arr, const wchar_t* szDelim);   // split
-bool FUN_140d2aa60(CStringW& strHtml);                              // the input has item links
+bool HasChatLink(CStringW& strHtml);                              // the input has item links
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);          // uicommon.cpp: reports a user
 void SendWeddingInvitation(__int64 nKey);                                   // uicommon.cpp: blocks a user
 
@@ -553,7 +553,7 @@ CStringW FUN_141842320(const CStringW& strText);                    // text to h
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
 void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& history);   // the input history keys
 Scaleform::GFx::Movie* GetMovie(int nMovieId);                                  // the movie of a UI layer
-CStringW FUN_140298ea0(CStringW strKey);                            // the string of a key
+CStringW GetStringByKey(CStringW strKey);                            // the string of a key
 int FUN_140718200(const CStringW& str);                             // to int
 void ShowSystemNotice(const CStringW& strText, int nA, int nB);        // a system message
 void ShowEnterLimitMessage(int nRoomId, int nState);                        // the room entry refusal message
@@ -649,7 +649,7 @@ int UIMessenger::vfunc_4()
         return 0;
     FUN_141a15970();
     if (vfunc_53(pRoot))
-        return doc.SaveFile(FUN_140cc2a00(GetCharacterFolder(), FUN_14016a600(m_strName, 0)));
+        return doc.SaveFile(JoinPath(GetCharacterFolder(), FUN_14016a600(m_strName, 0)));
     return 0;
 }
 
@@ -669,7 +669,7 @@ int UIMessenger::vfunc_5()
     else
     {
         TiXmlDocument doc;
-        if (doc.LoadFile(FUN_140cc2a00(GetCharacterFolder(), FUN_14016a600(m_strName, 0)), TIXML_ENCODING_UNKNOWN))
+        if (doc.LoadFile(JoinPath(GetCharacterFolder(), FUN_14016a600(m_strName, 0)), TIXML_ENCODING_UNKNOWN))
         {
             void* pLoaded = (void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild(GetTypeName());
             if (pLoaded == 0)
@@ -755,7 +755,7 @@ int UIMessenger::vfunc_54(void* pCfg)
 int UIMessenger::vfunc_84()
 {
     m_80 = 0;
-    return DeleteFileA(FUN_140cc2a00(GetCharacterFolder(), FUN_14016a600(m_strName, 0)));
+    return DeleteFileA(JoinPath(GetCharacterFolder(), FUN_14016a600(m_strName, 0)));
 }
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
@@ -820,7 +820,7 @@ int UIMessenger::vfunc_13()
         FUN_141a17700();
         return 1;
     }
-    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116dd30(0x49405, 0, 0))
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->IsActionKeyPressed(0x49405, 0, 0))
     {
         if (m_textInput)
         {
@@ -840,7 +840,7 @@ int UIMessenger::vfunc_13()
             return 1;
         }
     }
-    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d840())
+    else if (((class Unk_MsgKeys*)FUN_14025e7c0())->IsEscapePressed())
         return FUN_141a12260();
     else if (m_textInput && m_textInput->GetFocused() && ((class Unk_MsgKeys*)FUN_14025e7c0())->WasKeyPressed(0x79, 0, 0))
     {
@@ -1223,7 +1223,7 @@ void UIMessenger::FUN_141a0f180()
 void UIMessenger::SubmitLine(CStringW strText, CStringW strHtml, bool bHistory)
 {
     CStringW strSend = strText;
-    bool bLinks = FUN_140d2aa60(strHtml);
+    bool bLinks = HasChatLink(strHtml);
     if (bLinks)
         strSend = strHtml;
     if (strText.GetAt(0) == L'/')
@@ -1272,7 +1272,7 @@ void UIMessenger::OnChatEmoticonSelected(NotifyObject* pNotify)
         CloseEmoticonPreview();
         return;
     }
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(pSelected->m_nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(pSelected->m_nEmoticonId);
     if (!spEmo)
         return;
     MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)GetMyCharacter())->GetChatEmoticon();
@@ -1292,7 +1292,7 @@ void UIMessenger::OnChatEmoticonSelected(NotifyObject* pNotify)
 // @0x141a0f7b0
 void UIMessenger::SelectDefaultSubject()
 {
-    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     RebuildSubjectList();
@@ -1415,7 +1415,7 @@ bool UIMessenger::OnChannelChatConfirm(int nButton, const CMsgBoxData& box)
 // @0x141a0fe20
 int UIMessenger::SendEmoticon(int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!spEmo)
         return 0;
     MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)GetMyCharacter())->GetChatEmoticon();
@@ -1439,7 +1439,7 @@ int UIMessenger::SendEmoticon(int nEmoticonId)
 // @0x141a10010
 void UIMessenger::TypeEmoticon(int nType, int nEmoticonId)
 {
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!spEmo)
         return;
     CStringW strSize(L"");
@@ -1476,7 +1476,7 @@ void UIMessenger::TypeEmoticon(int nType, int nEmoticonId)
 // @0x141a10490
 int UIMessenger::SetEmoticonFavorite(int nEmoticonId, bool bFavorite)
 {
-    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
+    ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->GetEmoticon(nEmoticonId);
     if (!spEmo)
         return 0;
     MS2Ptr<CChatEmoticonCli> spCli = ((class Unk_MsgUser*)GetMyCharacter())->GetChatEmoticon();
@@ -1740,7 +1740,7 @@ void UIMessenger::FUN_141a139c0(const CStringW& strText, int bClear)
 {
     if (m_textOutput.get())
     {
-        int bAtEnd = m_textOutput->FUN_1422e4680();
+        int bAtEnd = m_textOutput->IsScrolledToEnd();
         if (bClear)
             m_textOutput->SetHtmlTextA("");
         if (!strText.IsEmpty())
@@ -1957,7 +1957,7 @@ void UIMessenger::SelectSubject(int nType)
 // @0x141a14760
 void UIMessenger::FUN_141a14760()
 {
-    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_subject.get() != 0)
@@ -1985,7 +1985,7 @@ void UIMessenger::FUN_141a14760()
 // @0x141a148b0
 bool UIMessenger::ExecuteEmotionCommand(const CStringW& strText)
 {
-    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> > emotions;
@@ -2024,7 +2024,7 @@ bool UIMessenger::ExecuteEmotionCommand(const CStringW& strText)
 // @0x141a14bb0
 void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
 {
-    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (pPlayer->vfunc_77() == strTarget)
@@ -2363,17 +2363,17 @@ void UIMessenger::FUN_141a16c50(int nRoomId)
 // @0x141a16cc0
 void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
     {
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
     if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_party_has_party")), 1, 1);
         return;
     }
     int nState = ((class Unk_MsgUser*)GetMyCharacter())->GetDungeonEnterState(nRoomId);
@@ -2406,17 +2406,17 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 // @0x141a172a0
 void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
 {
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     if (pMe->vfunc_77() == strLeader)
     {
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
     if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
-        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
+        ShowSystemNotice(GetStringByKey(CStringW(L"s_party_has_party")), 1, 1);
         return;
     }
     int nState = ((class Unk_MsgUser*)GetMyCharacter())->GetDungeonEnterState(nRoomId);
@@ -2633,7 +2633,7 @@ extern unsigned long s_color25;                                    // the system
 CStringW FUN_1401aa6a0(int n);                                      // to string
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 void FUN_141275260(int nStringId, int nA, int nB);                  // a system message by id
-int FUN_141276180(const CString& strSound, const CString& strB);    // plays a system sound
+int PlaySystemSound(const CString& strSound, const CString& strB);    // plays a system sound
 void FUN_141275150(CItem* pItem, int nCount, int nOld, int nManyId, int nOneId);   // inventory count message
 void FUN_1412750f0(CItem* pItem, int nSlot, int nManyId, int nOneId);
 CStringW TranslateEnumDungeonGroup(unsigned int nGroupType);                             // the dungeon group name
@@ -2646,11 +2646,11 @@ CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nFontSize);   
 CStringW FUN_141841c60(unsigned nPartyId, CStringW strLeader, unsigned __int64 nA, unsigned __int64 nCharId, unsigned nRoomId, unsigned nGroupType,
                        int bFlag, int nMaxUsers, unsigned nFontSize);   // the helper recruit line
 bool FUN_140d2ab10(CStringW& strHtml);
-bool FUN_140d2c080(CStringW strHtml, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);   // the links
+bool FindLinks(CStringW strHtml, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);   // the links
 __int64 FUN_140d2caf0(const CStringW& strLink);            // the item uid of a link
 CStringW FUN_14183e930(const CStringW& strLink, unsigned nColor);       // the link in a colour
-void FUN_14083d2b0(CStringW& strHtml);                              // html to text
-void FUN_1401d3700(CString& strFile);                               // localizes a file name
+void StripTags(CStringW& strHtml);                              // html to text
+void ToLower(CString& strFile);                               // localizes a file name
 void FUN_140841420(CStringW& strFile);
 CString FUN_140188f50(const char* psz, int n);
 CString GetDefaultOptionFolder();                                            // the default UI settings directory
@@ -2803,7 +2803,7 @@ void UIMessengerBrowser::vfunc_43()
             UIMessenger* pWindow = m_windows[i];
             if (pWindow != 0)
             {
-                MS2Ptr<AScript> spMovie = pWindow->FUN_1422dba00();
+                MS2Ptr<AScript> spMovie = pWindow->GetScript();
                 if (spMovie.get() != 0)
                 {
                     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)spMovie);
@@ -2843,7 +2843,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     if (TSingleton<CDynamicBanWordManager>::GetInstance() != 0)
     {
         CStringW strReplaced;
-        int nResult = TSingleton<CDynamicBanWordManager>::GetInstance()->FUN_14034a230(strText, strReplaced);
+        int nResult = TSingleton<CDynamicBanWordManager>::GetInstance()->FilterText(strText, strReplaced);
         if (nResult == 2)
             return;
         if (nResult == 1)
@@ -2884,7 +2884,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
         UIWhisperNotifyDialog* pNotify = Unk_SptGetUI<UIWhisperNotifyDialog>(0x4e5e);
         if (pNotify != 0)
             pNotify->AddWhisper(nCharId, strText, strWindow);
-        FUN_141276180(s_strWhisperSound, "");
+        PlaySystemSound(s_strWhisperSound, "");
     }
     else if (nType == 0x11)
     {
@@ -2904,7 +2904,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 0x10)
     {
-        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
             const CStringW& strMsg = FormatStringId<CStringW>(0xac7, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
@@ -2913,7 +2913,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 0x19)
     {
-        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
         {
             const CStringW& strMsg = FormatStringId<CStringW>(0xaca, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, line.m_nFieldId));
@@ -2941,7 +2941,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     if (nType == 0x12)
     {
         ShowSystemNotice(FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_chat_mega_phone"), strName, strText), 0xb, 0);
-        FUN_141276180(s_strGuildMegaphoneSound, "");
+        PlaySystemSound(s_strGuildMegaphoneSound, "");
     }
     CStringW strHtml;
     if (nType == 0x19)
@@ -3153,13 +3153,13 @@ void UIMessengerBrowser::LoadDefaultWindows()
     {
         CString strFile;
         strFile.Format("%s%d.xml", "MessengerDialog", i);
-        FUN_1401d3700(strFile);
+        ToLower(strFile);
         CString strDefault;
         strDefault.Format("DefaultMessenger%d.xml", i);
-        FUN_1401d3700(strDefault);
+        ToLower(strDefault);
         TiXmlDocument doc;
         int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->LoadXmlFile(
-            &doc, FUN_140cc2a00(FUN_140188f50(GetDefaultOptionFolder(), 0), strDefault), 0, true, false);
+            &doc, JoinPath(FUN_140188f50(GetDefaultOptionFolder(), 0), strDefault), 0, true, false);
         if (bLoaded)
         {
             UIMessenger* pWindow = new UIMessenger(this, doc, FUN_14016a730(strFile, 0), m_184);
@@ -3263,7 +3263,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
     if (nCount > 1)
     {
         CStringW strFormat(L"");
-        if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->IsInstallItem())
+        if (pItem != 0 && ((CItemData*)pItem->GetData())->IsInstallItem())
             strFormat = GetStringCommon(700);
         else
             strFormat = GetStringCommon(nManyId);
@@ -3272,7 +3272,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
     else
     {
         CStringW strFormat(L"");
-        if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->IsInstallItem())
+        if (pItem != 0 && ((CItemData*)pItem->GetData())->IsInstallItem())
             strFormat = GetStringCommon(699);
         else
             strFormat = GetStringCommon(nOneId);
@@ -3414,7 +3414,7 @@ void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
         int nMinute = time.GetMinute();
         int nSecond = time.GetSecond();
         CStringW strLine(it->second);
-        FUN_14083d2b0(strLine);
+        StripTags(strLine);
         int nLength = strOut.GetLength();
         if (nLength + strLine.GetLength() > 2000)
             break;
@@ -3486,7 +3486,7 @@ UIMessenger* UIMessengerBrowser::FindWindowByName(const CStringW& strName)
 void UIMessengerBrowser::ColorItemLinks(CStringW& strHtml)
 {
     ATL::CAtlList<CStringW> links;
-    if (!FUN_140d2c080(strHtml, links, CStringW(L"<A HREF="), CStringW(L"/A>")))
+    if (!FindLinks(strHtml, links, CStringW(L"<A HREF="), CStringW(L"/A>")))
         return;
     for (POSITION pos = links.GetHeadPosition(); pos != 0; links.GetNext(pos))
     {
@@ -3667,7 +3667,7 @@ void UIMessengerBrowser::DumpChatLog()
     int nYear = time.GetYear();
     CString strFile = Unk_SocketFormat("ChatLog{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}.txt", nYear, nMonth, nDay,
                                        nHour, nMinute, nSecond);
-    CString strPath = FUN_140cc2a00("../Debug/", strFile);
+    CString strPath = JoinPath("../Debug/", strFile);
     FILE* pFile = fopen(strPath, "w");
     if (pFile != 0)
     {
@@ -3694,10 +3694,10 @@ void UIMessengerBrowser::LoadWindows()
         {
             CString strFile;
             strFile.Format("%s%d.xml", "MessengerDialog", i);
-            FUN_1401d3700(strFile);
+            ToLower(strFile);
             TiXmlDocument doc;
             int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->LoadXmlFile(
-                &doc, FUN_140cc2a00(FUN_140188f50(GetCharacterFolder(), 0), strFile), 0, false, false);
+                &doc, JoinPath(FUN_140188f50(GetCharacterFolder(), 0), strFile), 0, false, false);
             if (bLoaded)
             {
                 UIMessenger* pWindow = new UIMessenger(this, doc, FUN_14016a730(strFile, 0), m_184);
@@ -3742,7 +3742,7 @@ int UIMessengerBrowser::FUN_141a26e00(const CStringW& strHtml, int nKind)
 // @0x141a26f10
 int UIMessengerBrowser::ShowChatBalloon(const CStringW& strName, const CStringW& strText, int nType)
 {
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return 0;
     PCBase* pSpeaker = ((PCBase*)WorldService::GetInstance()->FUN_141bd1420(strName));
@@ -3815,10 +3815,10 @@ int UIMessengerBrowser::FUN_141a27570()
     {
         CString strFile;
         strFile.Format("%s%d.xml", "MessengerDialog", i);
-        FUN_1401d3700(strFile);
+        ToLower(strFile);
         TiXmlDocument doc;
         bool bFailed = !((class Unk_MsgFiles*)GetFileSystem())->LoadXmlFile(
-            &doc, FUN_140cc2a00(FUN_140188f50(GetCharacterFolder(), 0), strFile), 0, false, false);
+            &doc, JoinPath(FUN_140188f50(GetCharacterFolder(), 0), strFile), 0, false, false);
         if (bFailed)
             continue;
         void* pDialog = (void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("MessengerDialog");
@@ -3861,8 +3861,8 @@ int UIMessengerBrowser::FUN_141a27570()
         {
             CString strFile;
             strFile.Format("%s%d.xml", "MessengerDialog", i);
-            FUN_1401d3700(strFile);
-            DeleteFileA(FUN_140cc2a00(GetCharacterFolder(), ToCString(strFile, 0)));
+            ToLower(strFile);
+            DeleteFileA(JoinPath(GetCharacterFolder(), ToCString(strFile, 0)));
         }
         return 0;
     }
@@ -4207,7 +4207,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item 
 // @0x141a10660
 void UIMessenger::SendChat(int nType, CStringW strText, CStringW strTarget, __int64 nClubId)
 {
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     int nChannel = FUN_141482f00(nType);
@@ -4451,7 +4451,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
     if (nType == 0x10 && MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_b0)
     {
-        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pMe == 0)
             return false;
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
@@ -4462,8 +4462,8 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         {
             spBox->AddStringArg(CStringW(strText));
             spBox->SetItemUid(spItem->GetItemUid());
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, 1, -1, 1);
-            spBox->FUN_141a01800(1);
+            spBox->SetItemEntry(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, 1, -1, 1);
+            spBox->SetButtonPreset(1);
             spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::OnSuperChatConfirm));
@@ -4477,7 +4477,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         if (spBox.get() != 0)
         {
             spBox->AddStringArg(CStringW(strText));
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::OnWorldChatConfirm));
@@ -4491,7 +4491,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         if (spBox.get() != 0)
         {
             spBox->AddStringArg(CStringW(strText));
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::OnChannelChatConfirm));
@@ -4504,8 +4504,8 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 
 template <class T> inline T Unk_HpxMin(T a, T b) { return a < b ? a : b; }
 void FUN_14183ea40(unsigned nItemId, CStringW& strIconPath);             // the icon of an item
-unsigned int FUN_1403bb8a0();                                                // the world chat original price
-unsigned int FUN_1403bb8d0();                                                // the channel chat original price
+unsigned int GetMeratConsumeWorldChat();                                                // the world chat original price
+unsigned int GetMeratConsumeChannelChat();                                                // the channel chat original price
 extern unsigned long s_color10;                                     // the subject colours: social
 extern unsigned long s_color16;                                     // party
 extern unsigned long s_color17;                                     // guild
@@ -4517,7 +4517,7 @@ extern unsigned long s_color20;                                     // channel
 // @0x141a14dc0
 void UIMessenger::RebuildSubjectList()
 {
-    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pMe == 0)
         return;
     BuildSubjectList();
@@ -4546,7 +4546,7 @@ void UIMessenger::RebuildSubjectList()
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "world");
         item.SetMemberUInt(s_strPrice, GetWorldChatMeratCost());
-        item.SetMemberUInt(s_strOriginPrice, FUN_1403bb8a0());
+        item.SetMemberUInt(s_strOriginPrice, GetMeratConsumeWorldChat());
         item.SetWStringMember(s_strLabel, GetGFxManager()->Localize("$s_talkpanelsetting_world"));
         item.FUN_1409c4990(s_strColor, s_color19);
         spSubject->AddItemRow(item);
@@ -4556,7 +4556,7 @@ void UIMessenger::RebuildSubjectList()
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "channel");
         item.SetMemberUInt(s_strPrice, GetChannelChatMeratCost());
-        item.SetMemberUInt(s_strOriginPrice, FUN_1403bb8d0());
+        item.SetMemberUInt(s_strOriginPrice, GetMeratConsumeChannelChat());
         item.SetWStringMember(s_strLabel, GetGFxManager()->Localize("$s_talkpanelsetting_channel"));
         item.FUN_1409c4990(s_strColor, s_color20);
         spSubject->AddItemRow(item);
@@ -4615,14 +4615,14 @@ int FUN_1418fd330(__int64 nCharId);
 void FUN_1418fde20(__int64 nAccountId, __int64 nCharId, int nKind, const CStringW& strName, Delegate<bool(int, const CMsgBoxData&)> callback);
 void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax, int nShareRate);   // joins a UGC event
 UIMeratMarketDialog* FindMeratMarketDialog(int nUiId);
-__int64 FUN_140718320(const CStringW& str);
+__int64 ParseInt64W(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141a0a900
 void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (strMethod == "getTooltip")
@@ -4712,8 +4712,8 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
     }
     else if (_stricmp("billDialog", strMethod) == 0)
     {
-        int nProductId = FUN_1407181d0(pArgs->FUN_1422b8d30());
-        int nA = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nProductId = ParseUInt(pArgs->FUN_1422b8d30());
+        int nA = ParseUInt(pArgs->FUN_1422b8d30());
         int nC = FUN_140718170(pArgs->FUN_1422b8d30());
         int nB = FUN_140718170(pArgs->FUN_1422b8d30());
         FUN_141a16bb0(nProductId, nA, nB);
@@ -4723,7 +4723,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         CString strKey = pArgs->FUN_1422b8d30();
         bool bExact = FUN_140718390(pArgs->FUN_1422b8d30());
         CStringW strText = pArgs->FUN_1422b8f40();
-        int nValue = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nValue = ParseUInt(pArgs->FUN_1422b8d30());
         UIMeratMarketDialog* pMarket = FindMeratMarketDialog(0x4ec1);
         if (pMarket != 0)
             pMarket->SearchByKey(strKey, bExact, strText, nValue);
@@ -4782,7 +4782,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         __int64 nCharId = 0;
         if (strChar.GetLength() > 0)
             nCharId = _wtoi64(strChar);
-        __int64 nFee = FUN_140718320(strFee);
+        __int64 nFee = ParseInt64W(strFee);
         int nMax = FUN_1407181a0(strMax);
         int nShare = FUN_1407181a0(strShare);
         if (FUN_1418fd330(nCharId))
@@ -4813,7 +4813,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
             return;
         {
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
-            spBox->FUN_141a01800(1);
+            spBox->SetButtonPreset(1);
             spBox->Append<__int64>(nWeddingId);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::OnBlockConfirm));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));

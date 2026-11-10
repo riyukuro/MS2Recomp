@@ -131,7 +131,7 @@ class Unk_ItemEquipData : public CItemData { };
 class Unk_PetPlayer : public MyPC
 {
 };
-class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
+class Unk_PetPlayerMgr { public: Unk_PetPlayer* GetLocalPlayer(); };
 
 // The UI manager: open a dialog / look one up.
 class Unk_PiUIManager
@@ -330,7 +330,7 @@ MS2Ptr<CPetData> FUN_140cbda70(int nPet)
     MS2Ptr<CItem> pet = GetPetItem(nPet);
     if (pet == 0)
         return MS2Ptr<CPetData>(0);
-    MS2Ptr<CItemData> data(pet->FUN_140527840());
+    MS2Ptr<CItemData> data(pet->GetData());
     if (data == 0)
         return MS2Ptr<CPetData>(0);
     return TSingleton<CPetDataTable>::GetInstance()->Find(data->GetPetId());
@@ -429,7 +429,7 @@ void RemoveEquipSlotBag(const CString& strBag)
     TabContentsPetInfo::EquipSlotBag* pBag = GetEquipSlotBag(Unk_NotifyContext::FindBinding(strBag));
     if (pBag)
     {
-        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(pBag))->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strBag);
     }
 }
@@ -598,7 +598,7 @@ MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 // @0x140cb9ba0
 bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
 {
-    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return false;
     if (nResult == 0)
@@ -622,7 +622,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                     if (pData->m_nState > 0)
                         strText = FormatStringId(0xc19, strName);
                     else
-                        strText = FUN_14028dee0(0xc1a, ((class CGameRule*)GetGameRule())->FUN_140477330(), strName);
+                        strText = FUN_14028dee0(0xc1a, ((class CGameRule*)GetGameRule())->GetPetChangeNameMerat(), strName);
                     if (MS2Ptr<CMsgBoxData> confirm = CreateMessageBox(1, strText, 0, L""))
                     {
                         confirm->AddStringArg(strName);
@@ -1002,7 +1002,7 @@ void PetInfoPreview::vfunc_3()
     MS2Ptr<CItem> pet = GetPetItem(m_nPet);
     if (pet == 0)
         return;
-    MS2Ptr<CItemData> data(pet->FUN_140527840());
+    MS2Ptr<CItemData> data(pet->GetData());
     if (data == 0)
         return;
     if (m_avatar.get() != 0)
@@ -1131,7 +1131,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_13()
 {
     if (m_nPet == 0)
         return 0;
-    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = GetPetItem(m_nPet);
@@ -1146,7 +1146,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_14()
 {
     if (m_nPet == 0)
         return 0;
-    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = GetPetItem(m_nPet);
@@ -1164,7 +1164,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
     void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
-        Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPlayer == 0)
             return static_cast<DragSlot*>(p)->vfunc_10();
         MS2Ptr<CItem> pet = GetPetItem(m_nPet);
@@ -1178,7 +1178,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
 // @0x140cbc7d0 (ITooltip::vfunc_0)
 int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
 {
-    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = GetPetItem(m_nPet);
@@ -1198,7 +1198,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
 // @0x140cbc960
 int TabContentsPetInfo::EquipSlot::vfunc_8(void* p)
 {
-    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> pet = GetPetItem(m_nPet);

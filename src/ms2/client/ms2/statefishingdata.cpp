@@ -174,7 +174,7 @@ void StateFishingData::vfunc_1(Unk_StateDataArg* p)
 void StateFishingData::vfunc_2(Unk_StateDataArg* p)
 {
     StateData::vfunc_2(p);
-    m_nRod = FUN_1407181d0(p->m_str70);
+    m_nRod = ParseUInt(p->m_str70);
 }
 
 // ---- StateFishing ----
@@ -483,9 +483,9 @@ void StateFishing::EquipRod(int nRod)
             spNew->SetObjectId(m_pOwner->GetObjectId());
             spNew->SetItemUid(GenerateUniqueId());
             if (efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200044))
-                spNew->FUN_14052a130(3);
+                spNew->SetVariant(3);
             else
-                spNew->FUN_14052a130(5);
+                spNew->SetVariant(5);
             pPC->vfunc_127(spNew.get(), 0);
             m_spItem = spNew;
         }

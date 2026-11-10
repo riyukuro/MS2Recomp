@@ -39,7 +39,7 @@
 
 // ---- exe callees (recovered elsewhere / not yet) ----
 unsigned long GetTickCountMs2(void);
-bool FUN_14028d470(float a, float b);                       // nearly equal
+bool IsNearlyEqual(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 void DetachFromParent(NiAVObject* pNode);                            // detach the node from its parent
@@ -242,7 +242,7 @@ void CRandomTargetEffect::Hide()
 #pragma warning(disable: 4715)
 int CRandomTargetEffect::SetScale(float fScale)
 {
-    if (FUN_14028d470(m_fScale, fScale)) {
+    if (IsNearlyEqual(m_fScale, fScale)) {
     } else {
         m_fScale = fScale;
         return m_spNode != 0;

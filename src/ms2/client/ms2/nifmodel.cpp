@@ -47,7 +47,7 @@ void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
 void GetPartName(void* self, CString* out);   void CreateAttachNode(class CEquipModel* self, CString* s);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);void AddMeshExtraData(class NiAVObject*);   // C3: was AddMeshExtraData
 float GetPartScale(class CEquipModel*, int);   // C3: was GetPartScale
-   void FUN_141167840(NiAVObject* o, const CString& s, float f);
+   void SetMorphWeight(NiAVObject* o, const CString& s, float f);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 std::set<NiAVObjectPtr>* GetRoots(CEquipModel* self);
@@ -109,9 +109,9 @@ public:
 public:
     int HasSkin();   // C3: was free HasSkin
 public:
-    class Unk_ItemEquipData* FUN_140527840();   // C3: was free FUN_140527840
+    class Unk_ItemEquipData* GetData();   // C3: was free GetData
 public:
-    class Unk_UserProxyItemData* FUN_140527870();   // C3: was free FUN_140527870
+    class Unk_UserProxyItemData* GetProxy();   // C3: was free GetProxy
 };
 
 // @0x141565560
@@ -199,9 +199,9 @@ void CNifModel::vfunc_10()
         std::set<NiAVObjectPtr>& nodes = NODESET(this);
         for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
-            FUN_141167840(sp, "HR:0", GetPartScale((class CEquipModel*)(this), 0));
-            FUN_141167840(sp, "HR0:0", GetPartScale((class CEquipModel*)(this), 0));
-            FUN_141167840(sp, "HR1:1", GetPartScale((class CEquipModel*)(this), 1));
+            SetMorphWeight(sp, "HR:0", GetPartScale((class CEquipModel*)(this), 0));
+            SetMorphWeight(sp, "HR0:0", GetPartScale((class CEquipModel*)(this), 0));
+            SetMorphWeight(sp, "HR1:1", GetPartScale((class CEquipModel*)(this), 1));
         }
     }
 }
@@ -209,7 +209,7 @@ void CNifModel::vfunc_10()
 // @0x141565cb0
 void CNifModel::vfunc_11()
 {
-    void* pPartList = ((void*)static_cast<const MS2Ptr<CItem>&>(reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->GetItem())->FUN_140527870());
+    void* pPartList = ((void*)static_cast<const MS2Ptr<CItem>&>(reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->GetItem())->GetProxy());
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
@@ -268,7 +268,7 @@ void CNifModel::vfunc_13()
     if (!spItem)
         return;
     int nDebugFlag = ((Unk_ModelActor*)pController)->vfunc_48();
-    int nAttrA = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2b0();
+    int nAttrA = reinterpret_cast<CItemData*>(spItem->GetData())->FUN_14053d2b0();
     int nResult = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pController)->GetEquipment())->FUN_1411e99a0(spItem->FUN_140527a20(), GetPartName(), spItem->HasSkin(), nAttrA);
     if (nResult != 0) {
         NiNode* pTarget = *(int*)((char*)m_unk_20 + 0x34) != 0

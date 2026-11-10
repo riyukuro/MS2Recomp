@@ -286,7 +286,7 @@ extern __int64 DAT_143ab2828;
 MS2Ptr<PartyVoteCli> CreateVote(int);
 CStringW GetStringCommon(int);
 template <class T1> CStringW FormatStringId(int, const T1&);
-CStringW FUN_140298ea0(CStringW);
+CStringW GetStringByKey(CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW BlockFormat(int);
 void FUN_1412751b0(const CStringW&, int);
@@ -324,7 +324,7 @@ public:
 public:
     unsigned int FUN_140ae5240(CStringW const&);   // C3: was free FUN_140ae5240
 };
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 class NotifySurvivalState : public NotifyObject {
 public:
     NotifySurvivalState();
@@ -549,12 +549,12 @@ MS2_REPLACE_METHOD(0x14162ABE0, CPartyManager, IsMatchmaking, 15, 0x82B3C62D);
 bool CPartyManager::IsMatchSearching(int bit)
 {
     if (bit == 0) return false;
-    return permissions.FUN_1402e4ee0(bit);
+    return permissions.HasBit(bit);
 }
 MS2_REPLACE_METHOD(0x14162AC00, CPartyManager, IsMatchSearching, 50, 0xBD8235D8);
 
 // @0x14162ac40
-bool CPartyManager::IsAnySearching() { return permissions.FUN_140b912f0(); }
+bool CPartyManager::IsAnySearching() { return permissions.HasAny(); }
 MS2_REPLACE_METHOD(0x14162AC40, CPartyManager, IsAnySearching, 31, 0x7B803D45);
 
 // @0x14162ac70
@@ -767,7 +767,7 @@ void CPartyManager::SendPartyMode1(CStringW name)
     packet.Encode1(1);
     FUN_1401fbd30((unsigned char*)(&request), packet);
     FUN_140710590(packet);
-    FUN_141276180(DAT_143ae2ca8, "");
+    PlaySystemSound(DAT_143ae2ca8, "");
 }
 MS2_REPLACE_METHOD(0x14162BA50, CPartyManager, SendPartyMode1, 239, 0x10B17C55);
 
@@ -776,7 +776,7 @@ void CPartyManager::SendPartyMode23(const Unk_PayloadIdentity& request)
 {
     CStringW name(request.ownerName);
     if (name.IsEmpty()) return;
-    if (name == static_cast<WorldService*>(((void*)WorldService::GetInstance()))->FUN_141bd0d30()) {
+    if (name == static_cast<WorldService*>(((void*)WorldService::GetInstance()))->GetMyPCName()) {
         FUN_1412751b0(BlockFormat(0x32e), 0xe);
         return;
     }
@@ -784,7 +784,7 @@ void CPartyManager::SendPartyMode23(const Unk_PayloadIdentity& request)
     packet.Encode1(0x17);
     FUN_1401fbf70((unsigned char*)(&request), packet);
     FUN_140710590(packet);
-    FUN_141276180(DAT_143ae2ca8, "");
+    PlaySystemSound(DAT_143ae2ca8, "");
 }
 MS2_REPLACE_METHOD(0x14162BB50, CPartyManager, SendPartyMode23, 361, 0x171D882A);
 
@@ -970,7 +970,7 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
     partyName = static_cast<CInputStream&>(packet).ReadUnicodeString();
     partyKind = static_cast<CInputStream&>(packet).ReadInt32();
     PC* player = static_cast<PC*>(
-        static_cast<WorldService*>(((void*)WorldService::GetInstance()))->FUN_141bd0cc0());
+        static_cast<WorldService*>(((void*)WorldService::GetInstance()))->GetLocalPlayer());
     if (((struct Unk_PartyOptionPrefix*)&((Unk_BuddyOptions*)TSingleton<CGameOption>::GetInstance())->GetSettings())->refuseParty) {
         SendPartyMode2(0x14);
         return;
@@ -1198,8 +1198,8 @@ void CPartyManager::FUN_14162dfc0(CInPacket& packet)
     __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
-        CString oldName = p->user.FUN_1408f1a60();
-        p->user.FUN_1408ec410(packet);
+        CString oldName = p->user.GetImage();
+        p->user.DecodeFlags(packet);
         int flags = 399;
         void* ui = FindPartyDialog(0x4e45);
         if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), flags);
@@ -1217,7 +1217,7 @@ void CPartyManager::OnPartyMemberInfoUpdate(CInPacket& packet)
     __int64 id = packet.ReadInt64();
     MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
-        CString oldName = p->user.FUN_1408f1a60();
+        CString oldName = p->user.GetImage();
         p->user.FUN_1408eeb60(&packet);
         int flags = 399;
         void* ui = FindPartyDialog(0x4e45);
@@ -1326,11 +1326,11 @@ void CPartyManager::OnPartyDungeonMatchRegister(CInPacket& packet)
         if (registered) {
             if (IsInParty())
                 FUN_1412751b0(FUN_14028dfa0<CStringW>(L"s_party_match_dungeon_register", name), 2);
-            FUN_141276180("Dungeon_Room_searchParty", "");
+            PlaySystemSound("Dungeon_Room_searchParty", "");
         } else {
             if (IsInParty())
                 FUN_1412751b0(FUN_14028dfa0<CStringW>(L"s_party_match_dungeon_unregister", name), 2);
-            FUN_141276180("Dungeon_Room_searchPartyCancel", "");
+            PlaySystemSound("Dungeon_Room_searchPartyCancel", "");
         }
     }
 }
@@ -1373,7 +1373,7 @@ void CPartyManager::OnPartyResultMessage(CInPacket& packet)
     CStringW name = packet.ReadUnicodeString();
     switch (result) {
     case 0xa: ShowSystemNotice(BlockFormat(0x32a), 1, 1); break;
-    case 0x1c: ShowSystemNotice(FUN_140298ea0(L"s_party_err_inviteMe"), 1, 1); break;
+    case 0x1c: ShowSystemNotice(GetStringByKey(L"s_party_err_inviteMe"), 1, 1); break;
     case 0xf: ShowSystemNotice(FormatStringId(0x32b, name), 1, 1); break;
     case 0x4: FUN_1412751b0(GetStringCommon(0x32c), 0x14); break;
     case 0xe: FUN_1412751b0(GetStringCommon(0x32f), 0x14); break;
@@ -1396,26 +1396,26 @@ void CPartyManager::OnPartyResultMessage(CInPacket& packet)
     case 0x1a: FUN_1412751b0(FormatStringId(0x33e, name), 0x14); break;
     case 0x1b: FUN_1412751b0(FormatStringId(0x35, name), 0x14); break;
     case 0x1d: FUN_140d73ff0(L"s_room_party_err_is_in_user"); break;
-    case 0x1e: ShowSystemNotice(FUN_140298ea0(L"s_party_invite_boss_room"), 1, 1); break;
-    case 0x1f: ShowSystemNotice(FUN_140298ea0(L"s_party_err_not_found"), 1, 1); break;
+    case 0x1e: ShowSystemNotice(GetStringByKey(L"s_party_invite_boss_room"), 1, 1); break;
+    case 0x1f: ShowSystemNotice(GetStringByKey(L"s_party_err_not_found"), 1, 1); break;
     case 0x20: ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_party_request_invite", name), 1, 1); break;
-    case 0x21: ShowSystemNotice(FUN_140298ea0(L"s_party_err_already_vote"), 1, 1); break;
-    case 0x22: ShowSystemNotice(FUN_140298ea0(L"s_party_err_vote_need_more_people"), 1, 1); break;
-    case 0x23: ShowSystemNotice(FUN_140298ea0(L"s_party_err_vote_cooldown"), 1, 1); break;
+    case 0x21: ShowSystemNotice(GetStringByKey(L"s_party_err_already_vote"), 1, 1); break;
+    case 0x22: ShowSystemNotice(GetStringByKey(L"s_party_err_vote_need_more_people"), 1, 1); break;
+    case 0x23: ShowSystemNotice(GetStringByKey(L"s_party_err_vote_cooldown"), 1, 1); break;
     case 0x24: ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_party_err_vote_cannot_kick_vote", FormatDungeonGroupList(name)), 1, 1); break;
-    case 0x25: ShowSystemNotice(FUN_140298ea0(L"s_party_err_vote_cannot_kick_vote_only_dungeon"), 1, 1); break;
+    case 0x25: ShowSystemNotice(GetStringByKey(L"s_party_err_vote_cannot_kick_vote_only_dungeon"), 1, 1); break;
     case 0x26: ShowSystemNotice(GetStringCommon(0x341), 1, 1); break;
     case 0x27: { CStringW key(L"s_party_expel_maple_survival_squad"); ShowSystemNotice(GetStringCommonByKey(key), 1, 1); } break;
     case 0x28: FUN_140d73ff0(L"s_dungeonMatch_error_isNotChief"); break;
     case 0x29: FUN_140d73ff0(L"s_dungeonMatch_error_hasOfflineUser"); break;
     case 0x2a: FUN_140d73ff0(L"s_dungeonMatch_error_insideDungeonUser"); break;
-    case 0x2b: ShowSystemNotice(FUN_140298ea0(L"s_party_err_dungeon_match_another"), 1, 1); break;
-    case 0x2c: ShowSystemNotice(FUN_140298ea0(L"s_party_err_isNotChief"), 1, 1); break;
-    case 0x2d: ShowSystemNotice(FUN_140298ea0(L"s_party_err_hasOfflineUser"), 1, 1); break;
-    case 0x2e: ShowSystemNotice(FUN_140298ea0(L"s_party_err_inside_survival"), 1, 1); break;
-    case 0x2f: ShowSystemNotice(FUN_140298ea0(L"s_party_err_another_matching"), 1, 1); break;
-    case 0x30: ShowSystemNotice(FUN_140298ea0(L"s_party_err_survival_has_solo_register"), 1, 1); break;
-    case 0x31: ShowSystemNotice(FUN_140298ea0(L"s_maple_survival_error_squad_register_over_count"), 1, 1); break;
+    case 0x2b: ShowSystemNotice(GetStringByKey(L"s_party_err_dungeon_match_another"), 1, 1); break;
+    case 0x2c: ShowSystemNotice(GetStringByKey(L"s_party_err_isNotChief"), 1, 1); break;
+    case 0x2d: ShowSystemNotice(GetStringByKey(L"s_party_err_hasOfflineUser"), 1, 1); break;
+    case 0x2e: ShowSystemNotice(GetStringByKey(L"s_party_err_inside_survival"), 1, 1); break;
+    case 0x2f: ShowSystemNotice(GetStringByKey(L"s_party_err_another_matching"), 1, 1); break;
+    case 0x30: ShowSystemNotice(GetStringByKey(L"s_party_err_survival_has_solo_register"), 1, 1); break;
+    case 0x31: ShowSystemNotice(GetStringByKey(L"s_maple_survival_error_squad_register_over_count"), 1, 1); break;
     default: FUN_1412751b0(FormatStringId(0x979, name), 0x14); break;
     }
 }
@@ -1487,10 +1487,10 @@ void CPartyManager::OnPartySurvivalSquadRegister(CInPacket& packet)
         if (IsInParty() == true) channel = 2;
         if (flag29) {
             FUN_1412751b0(GetStringCommonByKey(L"s_maple_survival_squad_register_squad"), channel);
-            FUN_141276180("Dungeon_Room_searchParty", "");
+            PlaySystemSound("Dungeon_Room_searchParty", "");
         } else {
             FUN_1412751b0(GetStringCommonByKey(L"s_maple_survival_squad_unregister_squad"), channel);
-            FUN_141276180("Dungeon_Room_searchPartyCancel", "");
+            PlaySystemSound("Dungeon_Room_searchPartyCancel", "");
         }
         reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifySurvivalState));
     }
@@ -1506,7 +1506,7 @@ void CPartyManager::OnPartyDungeonRoomCreate(CInPacket& packet)
     if (!IsLocalPlayerLeader()) {
         ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::OnDungeonRoomMsgBoxAnswer),
             FUN_14028dfa0<CStringW>(L"s_party_create_dungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, dungeon)));
-        FUN_141276180("Dungeon_Room_Open", "");
+        PlaySystemSound("Dungeon_Room_Open", "");
     }
 }
 #endif

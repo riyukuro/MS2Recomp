@@ -234,7 +234,7 @@ struct Unk_ColorItems {
     void FUN_140200950(COutputStream&);
     void FUN_140200a50(void*);
     void AddItem(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
-    void FUN_140200c10();
+    void Clear();
     bool IsEmpty();
     MS2Ptr<CCItemColoringPacket::ChangeColorItem> GetItem(size_t);
     MS2Ptr<CCItemColoringPacket::ChangeColorItem> FUN_140200d40();
@@ -289,7 +289,7 @@ void FUN_1401f9f20(unsigned char* payload, COutputStream& stream)
     stream.WriteInt32(reinterpret_cast<int*>(payload + 0x28)[0]);
     stream.WriteInt32(reinterpret_cast<int*>(payload + 0x28)[1]);
     stream.WriteInt16(static_cast<short>(reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength()));
-    stream.WriteBytes(reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140204eb0(),reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength());
+    stream.WriteBytes(reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetBuffer(),reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength());
     stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x70));
 }
 MS2_REPLACE(0x1401F9F20, FUN_1401f9f20, 345, 0x728AE70E);
@@ -307,7 +307,7 @@ void FUN_1401fa080(unsigned char* payload, void* inputPacket)
     reinterpret_cast<int*>(payload + 0x28)[1]=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
     unsigned int count=static_cast<unsigned short>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt16());
     reinterpret_cast<CByteBuffer*>(payload+0x30)->FUN_140204670(count);
-    reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBytes(reinterpret_cast<CByteBuffer*>(payload+0x30)->FUN_140204eb0(),count);
+    reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBytes(reinterpret_cast<CByteBuffer*>(payload+0x30)->GetBuffer(),count);
     *reinterpret_cast<int*>(payload + 0x70)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
 }
 
@@ -1770,11 +1770,11 @@ void Unk_ColorItems::AddItem(MS2Ptr<CCItemColoringPacket::ChangeColorItem> item)
 MS2_REPLACE_METHOD(0x140200BC0, Unk_ColorItems, AddItem, 61, 0x074EBB45);
 
 // @0x140200c10
-void Unk_ColorItems::FUN_140200c10()
+void Unk_ColorItems::Clear()
 {
     items.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x140200C10, Unk_ColorItems, FUN_140200c10, 31, 0x3439313D);
+MS2_REPLACE_METHOD(0x140200C10, Unk_ColorItems, Clear, 31, 0x3439313D);
 
 // @0x140200c40
 bool Unk_ColorItems::IsEmpty()
@@ -1801,7 +1801,7 @@ MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
         return item;
     }
     else{
-        FUN_140200c10();
+        Clear();
         return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
     }
 }
@@ -1871,14 +1871,14 @@ void FUN_140201360(unsigned char* payload, void* inputPacket)
 }
 
 // @0x140201790
-void Unk_ReportData::FUN_140201790(const Unk_ReportData& other)
+void Unk_ReportData::CopyFrom(const Unk_ReportData& other)
 {
     type=other.type;reason=other.reason;name=other.name;itemName=other.itemName;m_20=other.m_20;m_28=other.m_28;content=other.content;
     m_38.Copy(other.m_38);itemId=other.itemId;guildId=other.guildId;guildNumber=other.guildNumber;m_60=other.m_60;comment=other.comment;
     m_88=other.m_88;m_90=other.m_90;m_98=other.m_98;reportTitle=other.reportTitle;reportId=other.reportId;reportPath=other.reportPath;reportComment=other.reportComment;
     m_c0=other.m_c0;m_c8=other.m_c8;m_d0=other.m_d0;m_d8=other.m_d8;m_e0=other.m_e0;
 }
-MS2_REPLACE_METHOD(0x140201790, Unk_ReportData, FUN_140201790, 622, 0xBF6F7AEF);
+MS2_REPLACE_METHOD(0x140201790, Unk_ReportData, CopyFrom, 622, 0xBF6F7AEF);
 
 // @0x140201a10
 void FUN_140201a10(unsigned char* payload, COutputStream& stream)
@@ -2136,7 +2136,7 @@ inline void CByteBuffer::FUN_140204670(int count) {
     m_uLength+=count;
 }
 // @0x140204eb0
-inline unsigned char* CByteBuffer::FUN_140204eb0(){return &m_aByteBuff[0];}
+inline unsigned char* CByteBuffer::GetBuffer(){return &m_aByteBuff[0];}
 // @0x140205190
 inline unsigned CByteBuffer::GetLength()const{return m_uLength;}
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -92,7 +92,7 @@ void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool); 
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -143,9 +143,9 @@ void UIIndividualPvPDialog::OnLoadComplete()
     m_spJoin = GetChild<ASButton>("m_joinPVP");
     m_spName = GetChild<ASTextField>("m_arenaName");
     m_spDetail = GetChild<ASTextField>("m_arenaDetail");
-    m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
+    m_spRegister->AddClickHandler(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
     reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_spUnregister)->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), (void*)0);
-    m_spJoin->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::SendCancelRequest), 0);
+    m_spJoin->AddClickHandler(ParamsDelegate(this, &UIIndividualPvPDialog::SendCancelRequest), 0);
     m_arenas.clear();
     for (int i = 1; i < 4; i++)
     {
@@ -279,7 +279,7 @@ void UIIndividualPvPDialog::UpdateWaitTimeLabels()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<std::pair<int, int> > counts;
-    ((class CGameRule*)GetGameRule())->FUN_140477ab0(counts);
+    ((class CGameRule*)GetGameRule())->GetValues(counts);
     for (unsigned int i = 0; i < counts.GetCount(); i++)
     {
         std::pair<int, int> count = counts[i];
@@ -313,7 +313,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
         ShowMessageBox(GetStringCommon(0x428), 0, 0, L"");
         return;
     }
-    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (reinterpret_cast<AdditionalCliList*>(pPC->FUN_1416749a0())->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
@@ -516,7 +516,7 @@ template StringXmlProc<IndividualArenaStringId>::ValueMap* StringXmlProc<Individ
 __declspec(selectany) extern int(__cdecl* const ms2_pfnPvpCompare)(const IndividualArenaStringId&, const IndividualArenaStringId&) = &ATL::CDefaultCompareTraits<IndividualArenaStringId>::CompareElementsOrdered;
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x1412cc450
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CString a2)
@@ -524,7 +524,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
     ASArgList args;
     args.resize(2);
     FUN_1422bcea0(&args[0], a1);
-    FUN_1422bce70(&args[1], a2);
+    SetString(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

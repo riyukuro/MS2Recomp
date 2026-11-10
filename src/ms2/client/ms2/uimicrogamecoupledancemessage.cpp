@@ -63,7 +63,7 @@ void UIMicroGameCoupleDanceMessage::vfunc_3()
 // @0x140e65b00
 void UIMicroGameCoupleDanceMessage::vfunc_43()
 {
-    MS2Ptr<ASDisplayObject> pRoot = FUN_1422dba50();
+    MS2Ptr<ASDisplayObject> pRoot = GetDisplayObject();
     if (pRoot == 0)
         return;
     pRoot->vfunc_2(5, 0, 0);

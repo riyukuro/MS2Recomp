@@ -79,7 +79,7 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual void GetPosition(Unk_SkipActorPos* pOut);       // slot 18 (+0x90)
 };
-bool FUN_14028d470(float a, float b);                      // float equality test
+bool IsNearlyEqual(float a, float b);                      // float equality test
 
 // The caller's world transform (NiTransform layout, 0x34 bytes: rotate 0x24, translate, scale). Only the translate is read.
 class Unk_SkipEffect
@@ -147,9 +147,9 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
     Vector3 delta = (reinterpret_cast<const Vector3&>(pCheck->m_pos) - reinterpret_cast<const Vector3&>(pos));
     float fDist = delta.Unitize();
     float fView = pCheck->m_fViewDistance;
-    if (FUN_14028d470(fView, -1.0f))
+    if (IsNearlyEqual(fView, -1.0f))
         fView = static_cast<const std::vector<float>&>(m_rows[pCheck->m_nRow].m_dist)[pCheck->m_nCaster];
-    bool bZero = FUN_14028d470(fView, 0);
+    bool bZero = IsNearlyEqual(fView, 0);
     bool bNear = fDist < fView;
     return !(bZero | bNear);
 }

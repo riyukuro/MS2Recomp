@@ -222,7 +222,7 @@ void UIHideSettingDialog::BuildList()
                     bSelected = true;
             } else {
                 UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(info->m_nId);
-                if (!pEntity || pEntity->FUN_1422dba00() == 0)
+                if (!pEntity || pEntity->GetScript() == 0)
                     bSelected = true;
             }
             info->FUN_141986df0((ASObj&)*obj, bSelected);

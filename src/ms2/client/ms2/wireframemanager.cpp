@@ -121,7 +121,7 @@ int UIWorldMap::MapTile::FUN_141b94b90()
         DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_70);
         if (room.get() ? true : false)
         {
-            if (!room->m_limitDayOfWeeks.FUN_140b91330())
+            if (!room->m_limitDayOfWeeks.IsNone())
             {
                 int nNow = GetServerDayOfWeek();
                 if (!room->m_limitDayOfWeeks[nNow])

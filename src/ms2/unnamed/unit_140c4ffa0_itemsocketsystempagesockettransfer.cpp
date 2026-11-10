@@ -68,7 +68,7 @@ extern int DAT_143ab2914;
 
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
 void FUN_1412752d0(const CStringW& key, int type);
-int FUN_141276180(const CString& sound, const CString& arg);
+int PlaySystemSound(const CString& sound, const CString& arg);
 void DestroyItemInfoSlot(const CString& name);
 void DestroyItemSlotBag(const CString& name);
 void CreateItemInfoSlot(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
@@ -90,7 +90,7 @@ public:
 class Unk_GsClip { public: MS2Ptr<Unk_SocketPageBag> GetItemBag(const CString&); };   // C3: gemstoneswappage's Unk_GsClip (0x140c4bc60)
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 v);
-CStringW FUN_140627390(unsigned id);
+CStringW GetGemStoneName(unsigned id);
 CStringW GetGemstoneOptionText(int itemId);
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> info);
 int FUN_140628200(MS2Ptr<CItem> source, MS2Ptr<CItem> target);
@@ -163,7 +163,7 @@ void ItemSocketSystemPageSocketTransfer::vfunc_7(MS2Ptr<AScript> root)
         m_root = root->FUN_1409b4560("m_socketTransferPage");
     if (m_root == 0)
         return;
-    FUN_140c51050();
+    RefreshSourceItems();
     if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0"))
         m_sourceControl = reinterpret_cast<Unk_GsClip*>(slots.operator->())->GetItemBag("m_itemBag");
     if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
@@ -174,13 +174,13 @@ void ItemSocketSystemPageSocketTransfer::vfunc_7(MS2Ptr<AScript> root)
     if (m_debugButton.get() != 0) {
         m_debugButton->vfunc_3(debug);
         if (debug)
-            m_debugButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::FUN_140c53a70), 0);
+            m_debugButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::OnDebugTransfer), 0);
     }
     m_debugFillButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
     if (m_debugFillButton.get() != 0) {
         m_debugFillButton->vfunc_3(debug);
         if (debug)
-            m_debugFillButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16), 0);
+            m_debugFillButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16), 0);
     }
     FUN_140f6d450(m_slots0Name, m_sourceItems, 0x435, 0x20);
     FUN_140f6d450(m_slots1Name, m_targetItems, 0x415, 0x20);
@@ -237,7 +237,7 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
         return 1;
     } else if (_stricmp("onClickAction", event) == 0) {
         if (m_state == 1)
-            FUN_140c51fa0();
+            RequestTransfer();
         else if (m_state == 2)
             FUN_140c527d0();
     }
@@ -245,9 +245,9 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
 }
 
 // @0x140c51050
-void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
+void ItemSocketSystemPageSocketTransfer::RefreshSourceItems()
 {
-    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (!player)
         return;
     m_sourceItems.RemoveAll();
@@ -289,11 +289,11 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
 }
 
 // @0x140c51410
-void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
+void ItemSocketSystemPageSocketTransfer::RefreshTargetItems()
 {
     if (m_source == 0 || !m_source->GetSocket())
         return;
-    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (!player)
         return;
     m_targetItems.RemoveAll();
@@ -321,10 +321,10 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
 // @0x140c51680
 void ItemSocketSystemPageSocketTransfer::SelectSourceItem(MS2Ptr<CItem> item)
 {
-    FUN_140c52a80();
+    ClearSelectedItems();
     if (m_root == 0)
         return;
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return;
     __int64 uid = item->GetItemUid();
     if (FUN_141425750(uid, 0) == 0) {
@@ -334,17 +334,17 @@ void ItemSocketSystemPageSocketTransfer::SelectSourceItem(MS2Ptr<CItem> item)
     CItemSocket* socket = item->GetSocket();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
-    FUN_141276180(s_strSelectSound, "");
+    PlaySystemSound(s_strSelectSound, "");
     socket->GetLockedSlotCount();
     m_source = item;
     SetInfoSlotItem(m_sourceName, m_source);
     ASObj data(2);
     data.SetWStringMember("itemName", m_source->FUN_140528160());
-    FUN_140c52b20(data);
+    FillIngredientData(data);
     m_root->Invoke("playSelect", data.GetValue());
     m_state = 1;
     m_sourceUid = m_source->GetItemUid();
-    FUN_140c51410();
+    RefreshTargetItems();
     ClearListSelection(m_targetControl);
 }
 
@@ -356,13 +356,13 @@ void ItemSocketSystemPageSocketTransfer::SelectTargetItem(MS2Ptr<CItem> item)
     CItemSocket* socket = m_source->GetSocket();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return;
     if (m_state != 1 && m_state != 2) {
         ClearListSelection(m_targetControl);
         return;
     }
-    FUN_141276180(s_strSelectSound, "");
+    PlaySystemSound(s_strSelectSound, "");
     if (m_state == 2) {
         FUN_140c527d0();
         return;
@@ -375,7 +375,7 @@ void ItemSocketSystemPageSocketTransfer::SelectTargetItem(MS2Ptr<CItem> item)
     CItemSocket* targetSocket = item->GetSocket();
     if (targetSocket == 0 || targetSocket->GetMaxSlot() == 0)
         return;
-    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->GetLocalPlayer());
     if (player == 0)
         return;
     m_target = item;
@@ -390,9 +390,9 @@ void ItemSocketSystemPageSocketTransfer::SelectTargetItem(MS2Ptr<CItem> item)
 }
 
 // @0x140c51fa0
-void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
+void ItemSocketSystemPageSocketTransfer::RequestTransfer()
 {
-    if (m_source == 0 || m_source->FUN_140527840() == 0)
+    if (m_source == 0 || m_source->GetData() == 0)
         return;
     __int64 sourceUid = m_source->GetItemUid();
     if (FUN_141425750(sourceUid, 0) == 0) {
@@ -412,7 +412,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
-    MS2Ptr<CItemData> sourceData(m_source->FUN_140527840());
+    MS2Ptr<CItemData> sourceData(m_source->GetData());
     unsigned level = sourceSocket->GetOpenSlotCount();
     int flag = sourceData->GetSkinType();
     int itemId = 0;
@@ -436,7 +436,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
             return;
         }
     }
-    MS2Ptr<CItemData> targetData(m_target->FUN_140527840());
+    MS2Ptr<CItemData> targetData(m_target->GetData());
     if (targetData == 0)
         return;
     CItemSocket* targetSocket = m_target->GetSocket();
@@ -499,7 +499,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52930()
 }
 
 // @0x140c52a80
-void ItemSocketSystemPageSocketTransfer::FUN_140c52a80()
+void ItemSocketSystemPageSocketTransfer::ClearSelectedItems()
 {
     m_source = 0;
     m_target = 0;
@@ -515,15 +515,15 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52ac0()
 }
 
 // @0x140c52b20
-void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
+void ItemSocketSystemPageSocketTransfer::FillIngredientData(ASObj& data)
 {
     FUN_140c52ac0();
-    if (m_source == 0 || m_source->FUN_140527840() == 0)
+    if (m_source == 0 || m_source->GetData() == 0)
         return;
     CItemSocket* socket = m_source->GetSocket();
     if (socket == 0)
         return;
-    MS2Ptr<CItemData> sourceData(m_source->FUN_140527840());
+    MS2Ptr<CItemData> sourceData(m_source->GetData());
     unsigned level = socket->GetOpenSlotCount();
     int flag = sourceData->GetSkinType();
     int itemId = 0;
@@ -533,7 +533,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     CIngredientContainer cost(1);
     price = price < 0 ? 0 : price;
     ((class CIngredientContainer*)(class CIngredientContainer*)(&cost))->FUN_14026bd10(itemId, price);
-    FUN_140f6dc70(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_source), &fee, MS2Ptr<SaleParam>(0));
+    BuildIngredientRows(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_source), &fee, MS2Ptr<SaleParam>(0));
     int slotFlags = 0x405;
     int slotSize = 0x20;
     CreateItemInfoSlot(m_targetName, MS2Ptr<CItem>(m_target), 0, slotFlags, slotSize);
@@ -543,9 +543,9 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
 }
 
 // @0x140c52f10
-void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj& data, int unlockIndex)
+void ItemSocketSystemPageSocketTransfer::FillSocketRows(MS2Ptr<CItem> item, ASObj& data, int unlockIndex)
 {
-    if (item == 0 || item->FUN_140527840() == 0)
+    if (item == 0 || item->GetData() == 0)
         return;
     CItemSocket* socket = item->GetSocket();
     if (socket == 0)
@@ -567,7 +567,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
             int gemId = info->GetGemId();
             CStringW gemName = GetGemstoneOptionText(gemId);
             CStringW gemStat = FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info));
-            text = StringFormat<CStringW, CStringW, CStringW>(rowStat, FUN_140627390(gemId), gemName, gemStat);
+            text = StringFormat<CStringW, CStringW, CStringW>(rowStat, GetGemStoneName(gemId), gemName, gemStat);
         }
         rows.PushWString(text);
     }
@@ -600,14 +600,14 @@ void ItemSocketSystemPageSocketTransfer::OnTransferResult(CInPacket* packet)
     ASObj data(2);
     int unlockIndex = -1;
     data.SetIntMember("unlockSocketIndex", unlockIndex);
-    FUN_140c52f10(MS2Ptr<CItem>(m_target), data, unlockIndex);
+    FillSocketRows(MS2Ptr<CItem>(m_target), data, unlockIndex);
     {
         CStringW strName;   // unused in the exe, constructed and destroyed around the item name
         data.SetWStringMember("itemName", m_target->FUN_140528160());
     }
     m_sourceUid = 0;
     uid = m_target->GetItemUid();
-    FUN_141276180(s_strSuccessSound, "");
+    PlaySystemSound(s_strSuccessSound, "");
     m_root->Invoke("playSuccess", data.GetValue());
     m_state = 2;
     ClearListSelection(m_targetControl);
@@ -615,10 +615,10 @@ void ItemSocketSystemPageSocketTransfer::OnTransferResult(CInPacket* packet)
     FUN_140c54030();
     FUN_140f6e700(m_source->GetItemUid());
     FUN_140f6e700(m_target->GetItemUid());
-    FUN_140c51050();
+    RefreshSourceItems();
     DragSlotBag* bag = FUN_140c54570(m_slots0Name);
     if (bag != 0) {
-        ((class DragSlotBag*)(class DragSlotBag*)(bag))->FUN_1422cc9e0();
+        ((class DragSlotBag*)(class DragSlotBag*)(bag))->ClearSlots();
         bag->vfunc_10((int)m_sourceItems.GetCount());
     }
     if (m_sourceControl.get() != 0)
@@ -629,7 +629,7 @@ void ItemSocketSystemPageSocketTransfer::OnTransferResult(CInPacket* packet)
 // @0x140c53920
 void ItemSocketSystemPageSocketTransfer::FUN_140c53920(CInPacket* packet)
 {
-    if (m_root == 0 || m_source == 0 || !m_source->FUN_140527840())
+    if (m_root == 0 || m_source == 0 || !m_source->GetData())
         return;
     if (DAT_143ab2914 < 0x32)
         return;
@@ -640,7 +640,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53920(CInPacket* packet)
 }
 
 // @0x140c53a70
-void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageSocketTransfer::OnDebugTransfer(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_source == 0)
         return;
@@ -648,7 +648,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         return;
     if (m_state != 1)
         return;
-    if (m_source == 0 || m_source->FUN_140527840() == 0)
+    if (m_source == 0 || m_source->GetData() == 0)
         return;
     __int64 sourceUid = m_source->GetItemUid();
     if (FUN_141425750(sourceUid, 0) == 0) {
@@ -760,7 +760,7 @@ bool ItemSocketSystemPageSocketTransfer::FUN_140c54210(int result, const CMsgBox
 }
 
 // @0x140c544d0
-DragSlotBag* FUN_140c544d0(NotifyContext::BindData* p)
+DragSlotBag* GetDragSlotBag(NotifyContext::BindData* p)
 {
     DragSlotBag* bag = 0;
     if (p != 0 && p->TypeCast(0x6202736, (void**)&bag))
@@ -770,7 +770,7 @@ DragSlotBag* FUN_140c544d0(NotifyContext::BindData* p)
 }
 
 // @0x140c54520
-ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p)
+ItemSlotBag* GetItemSlotBag(NotifyContext::BindData* p)
 {
     ItemSlotBag* bag = 0;
     if (p != 0 && p->TypeCast(0x620002e, (void**)&bag))
@@ -782,13 +782,13 @@ ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p)
 // @0x140c54570
 DragSlotBag* FUN_140c54570(const CString& name)
 {
-    return FUN_140c544d0(Unk_NotifyContext::FindBinding(name));
+    return GetDragSlotBag(Unk_NotifyContext::FindBinding(name));
 }
 
 // @0x140c54590
 ItemSlotBag* FUN_140c54590(const CString& name)
 {
-    return FUN_140c54520(Unk_NotifyContext::FindBinding(name));
+    return GetItemSlotBag(Unk_NotifyContext::FindBinding(name));
 }
 
 // Hooks (functions that build no callback delegates and read no unit statics).
@@ -796,16 +796,16 @@ MS2_REPLACE_METHOD(0x140C50300, ItemSocketSystemPageSocketTransfer, vfunc_1, 34,
 MS2_REPLACE_METHOD(0x140C50D20, ItemSocketSystemPageSocketTransfer, vfunc_2, 34, 0xF66F66F3);
 MS2_REPLACE_METHOD(0x140C50E00, ItemSocketSystemPageSocketTransfer, vfunc_3, 570, 0x2306E369);
 MS2_REPLACE_METHOD(0x140C50D50, ItemSocketSystemPageSocketTransfer, vfunc_5, 166, 0x59B3020E);
-MS2_REPLACE_METHOD(0x140C51050, ItemSocketSystemPageSocketTransfer, FUN_140c51050, 951, 0x7BDED608);
-MS2_REPLACE_METHOD(0x140C51410, ItemSocketSystemPageSocketTransfer, FUN_140c51410, 615, 0xFC56AB9C);
+MS2_REPLACE_METHOD(0x140C51050, ItemSocketSystemPageSocketTransfer, RefreshSourceItems, 951, 0x7BDED608);
+MS2_REPLACE_METHOD(0x140C51410, ItemSocketSystemPageSocketTransfer, RefreshTargetItems, 615, 0xFC56AB9C);
 MS2_REPLACE_METHOD(0x140C527D0, ItemSocketSystemPageSocketTransfer, FUN_140c527d0, 332, 0x54CB44DE);
 MS2_REPLACE_METHOD(0x140C52930, ItemSocketSystemPageSocketTransfer, FUN_140c52930, 322, 0x5C280B39);
-MS2_REPLACE_METHOD(0x140C52A80, ItemSocketSystemPageSocketTransfer, FUN_140c52a80, 52, 0xB67C4D1C);
+MS2_REPLACE_METHOD(0x140C52A80, ItemSocketSystemPageSocketTransfer, ClearSelectedItems, 52, 0xB67C4D1C);
 MS2_REPLACE_METHOD(0x140C52AC0, ItemSocketSystemPageSocketTransfer, FUN_140c52ac0, 86, 0x639902B4);
-MS2_REPLACE_METHOD(0x140C52B20, ItemSocketSystemPageSocketTransfer, FUN_140c52b20, 995, 0x9CEADCBE);
-MS2_REPLACE_METHOD(0x140C52F10, ItemSocketSystemPageSocketTransfer, FUN_140c52f10, 1237, 0x59CBBE94);
+MS2_REPLACE_METHOD(0x140C52B20, ItemSocketSystemPageSocketTransfer, FillIngredientData, 995, 0x9CEADCBE);
+MS2_REPLACE_METHOD(0x140C52F10, ItemSocketSystemPageSocketTransfer, FillSocketRows, 1237, 0x59CBBE94);
 MS2_REPLACE_METHOD(0x140C53920, ItemSocketSystemPageSocketTransfer, FUN_140c53920, 319, 0x125C8A93);
-MS2_REPLACE_METHOD(0x140C53A70, ItemSocketSystemPageSocketTransfer, FUN_140c53a70, 957, 0xE021B62B);
+MS2_REPLACE_METHOD(0x140C53A70, ItemSocketSystemPageSocketTransfer, OnDebugTransfer, 957, 0xE021B62B);
 MS2_REPLACE_METHOD(0x140C53E40, ItemSocketSystemPageSocketTransfer, SendItemSocketSystemMode16, 326, 0x93DED7C3);
 MS2_REPLACE_METHOD(0x140C53F90, ItemSocketSystemPageSocketTransfer, FUN_140c53f90, 41, 0x01CA403F);
 MS2_REPLACE_METHOD(0x140C53FC0, ItemSocketSystemPageSocketTransfer, SendItemSocketSystemMode12, 95, 0x9F00587C);

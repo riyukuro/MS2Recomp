@@ -31,15 +31,15 @@ public:
     void FUN_140b0eba0(int nObjectId);
     int GetCoupleType() const;                              // couple type
     CStringW GetName() const;                         // name
-    __int64 FUN_140b0ec80();                                // id of the character this effect is keyed by
+    __int64 GetCharacterId();                                // id of the character this effect is keyed by
     void FUN_140b0ecd0();                                   // arm: activate when the partner exists
     void SpawnEffect();                                   // spawn the effect
     void RemoveEffect();                                   // remove the effect
     bool FUN_140b0ef20();                                   // current map allows the effect
     CString GetEffectName();                                // effect name from the gem table
     NiPoint3 FUN_140b0f160();                               // midpoint of owner and partner
-    void FUN_140b0f260();                                   // send the start request
-    void FUN_140b0f3a0(int nMode);                          // 0 start, 1 stop
+    void SendStartRequest();                                   // send the start request
+    void SetEffectMode(int nMode);                          // 0 start, 1 stop
 
     int m_bInRange;                                         // +0x18 (effect running within range)
     int m_bActive;                                          // +0x1c

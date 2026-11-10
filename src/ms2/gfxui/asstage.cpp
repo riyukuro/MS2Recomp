@@ -39,11 +39,11 @@ void ASStage::SetFocus(MS2Ptr<ASInteractiveObject> spFocus)
 MS2_REPLACE_METHOD(0x1422CFD30, ASStage, SetFocus, 232, 0x478C3201);
 
 // @0x1422cfe20
-MS2Ptr<ASInteractiveObject> ASStage::FUN_1422cfe20()
+MS2Ptr<ASInteractiveObject> ASStage::GetFocus()
 {
     return MS2Ptr<ASInteractiveObject>(0);
 }
-MS2_REPLACE_METHOD(0x1422CFE20, ASStage, FUN_1422cfe20, 55, 0x0FDCBAB2);
+MS2_REPLACE_METHOD(0x1422CFE20, ASStage, GetFocus, 55, 0x0FDCBAB2);
 
 // @0x1422cfe60
 void ASStage::SetStageWidth(int nWidth)

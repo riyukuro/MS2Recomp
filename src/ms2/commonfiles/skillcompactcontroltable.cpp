@@ -42,7 +42,7 @@ public:
 #define MS2_VALIDATE_RETURN_ERRCODE(expr, errorcode) \
     { int _Expr_val = !!(expr); if (!(_Expr_val)) { errno = errorcode; _invalid_parameter_noinfo(); return errorcode; } }
 // @0x140dcefa0
-errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const src, rsize_t const srcSize)
+errno_t MemmoveS(void* const dst, rsize_t const dstSize, void const* const src, rsize_t const srcSize)
 {
     if (srcSize == 0) return 0;
     MS2_VALIDATE_RETURN_ERRCODE(dst != NULL, EINVAL);
@@ -58,7 +58,7 @@ errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString ToCString(const char* psz, int n);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -121,7 +121,7 @@ int CSkillCompactControlTable::Load()
         XmlGetAttr((class TiXmlElement*)(pJob), "baseSP", nBaseSP);
         for (TiXmlElement* pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pJob))->FirstChild("skill")); pSkill != 0; pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pSkill)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pSkill)))
                 continue;
             Unk_CcSkillPtr spSkill(new CCompactControlSkill);
             XmlGetAttr((class TiXmlElement*)(pSkill), "id", spSkill->m_nSkillId);
@@ -209,4 +209,4 @@ void CSkillCompactControlTable::SetInit(bool b)
     s_bInit = b;
 }
 
-CPtred* FUN_1401ba820(CPtred* p);   // 0x1401ba820 lives in unit_1401b6d10.cpp (a second definition breaks the DLL link)
+CPtred* InitRefCount(CPtred* p);   // 0x1401ba820 lives in unit_1401b6d10.cpp (a second definition breaks the DLL link)

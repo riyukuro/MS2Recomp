@@ -166,7 +166,7 @@ CString FUN_1412756c0(__int64 nBase, __int64 nId);         // the cache file nam
 struct Unk_ClPaths { char m_pad[0x60]; CString m_s60; };
 CString ToCString(const char* psz, int n);                         // normalized path copy
 class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
-void FUN_141b70490(const CString& strFile);                         // delete the file
+void DeleteDirectoryTree(const CString& strFile);                         // delete the file
 extern __int64 DAT_143ab2820;                                       // the account id
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
@@ -182,7 +182,7 @@ void FUN_1401fa2c0(unsigned char* pReq, COutputStream& packet);   // the Unk_ClR
 CStringW StringFormat(const wchar_t* psz);                      // StringFormat
 class Unk_ClBox : public CMsgBoxData { public: };
 void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
-CStringW FUN_140298ea0(CStringW strKey);                     // string table text (second table)
+CStringW GetStringByKey(CStringW strKey);                     // string table text (second table)
 struct Unk_ClSettingU16 { char m_p[0x58]; };
 struct Unk_ClSettingU32 { char m_p[0x58]; };
 namespace Common { namespace Constants { template<class T> class Value { public: T* Get(); }; } }   // C3: Value<int>::Get 0x1402056b0
@@ -228,7 +228,7 @@ void FUN_140710590(COutPacket& packet);                 // send
 
 
 
-class CInputKeyHandler { public: bool FUN_14116d890(bool bAlt); };   // C3: member view (placeholder/cinputkeyhandler.h)
+class CInputKeyHandler { public: bool IsEnterPressed(bool bAlt); };   // C3: member view (placeholder/cinputkeyhandler.h)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class ASDialog : public ASDisplayObjectContainer { };
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10
@@ -249,7 +249,7 @@ public:
 CSceneStateMulti* GetSceneStateMulti();
 class Unk_ClUIMgr { public: void FUN_141adc530(int nId); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-int FUN_1406516b0();                                    // the language id
+int GetRegion();                                    // the language id
 class Unk_ClNet                                         // the network service (slots 0..22)
 {
 public:
@@ -280,7 +280,7 @@ public:
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 void FUN_14151f200();
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim, int nExpected);   // split
-unsigned __int64 FUN_140718370(const CStringW& str);                         // parse an id
+unsigned __int64 ParseUInt64W(const CStringW& str);                         // parse an id
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void* GetGameRule();   // C3: was GetGameRule
 // the GameEventUserValue readers of gamerule.cpp / uileveluppackagewidgetdialog.cpp (same view)
@@ -307,7 +307,7 @@ void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 int FUN_14107b7e0(unsigned int, class Unk_UserProxy const*, class PC*);   // C3: was FUN_14107b7e0
 void FUN_141b70290();
 class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
-class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bOnce); };   // C3: member view (uiupperhuddialog.h)
+class UIWebBrowserBase { public: void Navigate(const CString& strUrl, bool bOnce); };   // C3: member view (uiupperhuddialog.h)
 class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
 class CNetworkService   // C3: member view for the former free stand-ins
 {
@@ -394,7 +394,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
                 spItem->FUN_140526c10(nRank);
                 spItem->ReadFromStream(packet);
                 spItem->SetItemUid(nUid);
-                spItem->FUN_14052a130(2);
+                spItem->SetVariant(2);
                 state.m_260.Add(spItem);
             }
         }
@@ -587,7 +587,7 @@ int UICharacterListDialog::vfunc_65()
 void UICharacterListDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    switch (((CInPacket*)p)->FUN_14070fe80())
+    switch (((CInPacket*)p)->GetOpcode())
     {
     case 0xe:
     {
@@ -709,7 +709,7 @@ void UICharacterListDialog::OnLoadComplete()
     if (IsBurningLevelupEventRunning())
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f2a)));
     AttachBurningLevelupDescButton();
-    if (FUN_1406516b0() == 3)
+    if (GetRegion() == 3)
         AttachHealthGame();
     if (MS2Ptr<ASButton> spDelete = GetChild<ASButton>("m_deleteAccount"))
     {
@@ -749,7 +749,7 @@ int UICharacterListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     CStringW strAnswer(arrTag[1]);
                     if (!strAnswer.IsEmpty())
                     {
-                        PC* pPC = reinterpret_cast<PC*>(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
+                        PC* pPC = reinterpret_cast<PC*>(((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()));
                         if (pPC != 0)
                         {
                             bool bSame = strAnswer.CompareNoCase(pPC->vfunc_77()) == 0;
@@ -764,13 +764,13 @@ int UICharacterListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 else if (strCommand == L"revivalChar")
                 {
-                    unsigned __int64 nId = FUN_140718370(arrTag[1]);
+                    unsigned __int64 nId = ParseUInt64W(arrTag[1]);
                     if (nId > 0)
                         CancelDelete(FindCharacter(nId));
                 }
                 else if (strCommand == L"finalDelete")
                 {
-                    unsigned __int64 nId = FUN_140718370(arrTag[1]);
+                    unsigned __int64 nId = ParseUInt64W(arrTag[1]);
                     if (nId > 0)
                         CheckDelete(nId);
                 }
@@ -790,7 +790,7 @@ int UICharacterListDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsEnterPressed(false))
     {
         if (m_90->GetMouseChildren() != 0)
             m_90->Invoke("onEnterKey");
@@ -879,7 +879,7 @@ void UICharacterListDialog::SetCharacterText(unsigned __int64 nId, CString str)
 // @0x1418ed650
 bool UICharacterListDialog::IsBurningLevelupEventRunning()
 {
-    if (!((class CGameRule*)GetGameRule())->FUN_14047bb90())
+    if (!((class CGameRule*)GetGameRule())->IsLoginNoticeOn())
         return false;
     bool bValue = false;
     if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(900, bValue))
@@ -1293,7 +1293,7 @@ void UICharacterListDialog::OpenUrl(CString strUrl)
     void* pBrowser = ((void*)FindWebBrowser(0x4e6a));
     if (pBrowser == 0)
         return;
-    ((UIWebBrowserBase*)pBrowser)->FUN_14135ec00(strUrl, false);
+    ((UIWebBrowserBase*)pBrowser)->Navigate(strUrl, false);
 }
 
 // @0x1418ef890
@@ -1410,7 +1410,7 @@ void UICharacterListDialog::CharacterRemoved(unsigned __int64 nId, int nIndex)
     CString strFile;
     strFile.Format("%s%s", (const char*)ToCString(((struct Unk_ClPaths*)GetCommonResource())->m_s60, 0), (const char*)FUN_1412756c0(DAT_143ab2820, nId));
     if (efd::File::DirectoryExists(ToCString(strFile, 0)))
-        FUN_141b70490(strFile);
+        DeleteDirectoryTree(strFile);
 }
 
 // @0x1418f1060
@@ -1521,7 +1521,7 @@ void UICharacterListDialog::SendCharacterManagementMode2()
 {
     if (m_1d8 != 0)
         return;
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return;
     Unk_ClReqSelect req;
@@ -1688,14 +1688,14 @@ void UICharacterListDialog::FUN_1418f1f10()
     if (m_1e0 != 0)
     {
         m_1e0 = 0;
-        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0)
             ((class PCBase*)(class MyPC*)(pPC))->FUN_14166cc40(0xd);
     }
     else if (m_1e4 != 0)
     {
         m_1e4 = 0;
-        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0)
             ((class PCBase*)(class MyPC*)(pPC))->FUN_14166cc40(0xe);
     }
@@ -1841,9 +1841,9 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     }
     if (m_224 == 1)
     {
-        static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
-        static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
-        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_url)->Get());
+        static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(GetStringByKey(CStringW(L"s_delete_account_terms_step_2")));
+        static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(GetStringByKey(CStringW(L"s_delete_account_check_msg_step_2")), 0);
+        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(GetStringByKey(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_url)->Get());
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         ShowOrReplaceByTag(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 2;
@@ -1851,7 +1851,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     }
     else if (m_224 == 2)
     {
-        static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_3")));
+        static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(GetStringByKey(CStringW(L"s_delete_account_terms_step_3")));
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0Enabled(false);
         static_cast<Unk_ClBox*>(m_228.operator->())->SetAgreement(true);
         static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(CStringW(L""), CString(""));
@@ -1862,11 +1862,11 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     }
     else if (m_224 == 3)
     {
-        m_228 = CreateMessageBox(0xf, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4")), 0, CStringW(L""));
+        m_228 = CreateMessageBox(0xf, GetStringByKey(CStringW(L"s_delete_account_terms_step_4")), 0, CStringW(L""));
         if (m_228.get() != 0)
         {
-            m_228->AddStringArg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label1")));
-            m_228->AddStringArg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label2")));
+            m_228->AddStringArg(GetStringByKey(CStringW(L"s_delete_account_terms_step_4_label1")));
+            m_228->AddStringArg(GetStringByKey(CStringW(L"s_delete_account_terms_step_4_label2")));
             m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
             m_224 = 4;
@@ -1908,10 +1908,10 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
     }
     else if (m_224 == 5)
     {
-        m_228 = CreateMessageBox(0x1b, FUN_140298ea0(L"s_delete_account_terms_step_end"), 0, L"");
+        m_228 = CreateMessageBox(0x1b, GetStringByKey(L"s_delete_account_terms_step_end"), 0, L"");
         if (m_228.get() != 0)
         {
-            m_228->FUN_141a01800(3);
+            m_228->SetButtonPreset(3);
             m_228->SetButtonLabels(GetStringCommonByKey(L"s_delete_account_terms_step_end_game_button"), L"", L"");
             static_cast<Unk_ClBox*>(m_228.operator->())->SetTitle(GetStringCommonByKey(L"s_delete_account_terms_step_end_title"));
             m_228->SetAgreement(true);
@@ -1981,7 +1981,7 @@ unsigned UICharacterListDialog::FindFreePreviewSlot()
 {
     for (unsigned n = 4; n < 0xe; ++n)
     {
-        if (WorldService::GetInstance()->FUN_141bd1290(n) == 0)
+        if (WorldService::GetInstance()->FindPCById(n) == 0)
             return n;
     }
     return 0;
@@ -2076,7 +2076,7 @@ void UICharacterListDialog::ShowBurningLevelupPopup(unsigned __int64 nId)
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, StringFormat<CStringW>(GetStringCommonByKey(spFound->m_setCharacterPopupStringKey), spCharacter->FUN_1418e9cd0()), 0, L"");
     if (spBox == 0)
         return;
-    spBox->FUN_141a01800(2);
+    spBox->SetButtonPreset(2);
     FUN_1418f4df0(spFound, spBox);
     spBox->Append<__int64>(spCharacter->FUN_1418e9cb0());
     if (!spFound->m_setCharacterPopupBottomStringKey.IsEmpty())
@@ -2115,7 +2115,7 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
     MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, GetStringCommonByKey(spFound->m_descPopupStringKey), 0, CStringW(L""));
     if (spBox == 0)
         return;
-    spBox->FUN_141a01800(3);
+    spBox->SetButtonPreset(3);
     FUN_1418f4df0(spFound, spBox);
     FUN_140d73c60(spBox);
 }
@@ -2141,11 +2141,11 @@ void UICharacterListDialog::AttachBurningLevelupDescButton()
 void UICharacterListDialog::FUN_1418f2190()
 {
     m_221 = 0;
-    m_228 = CreateMessageBox(0x1b, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_1")), 0, CStringW(L""));
+    m_228 = CreateMessageBox(0x1b, GetStringByKey(CStringW(L"s_delete_account_terms_step_1")), 0, CStringW(L""));
     if (m_228.get() != 0)
     {
-        m_228->FUN_141a01800(2);
-        m_228->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_1")), 0);
+        m_228->SetButtonPreset(2);
+        m_228->SetCheckbox0(GetStringByKey(CStringW(L"s_delete_account_check_msg_step_1")), 0);
         m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_140d73c60(m_228);
         m_224 = 1;
@@ -2222,7 +2222,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnDeletePC", szMethod) == 0)
     {
-        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC != 0)
         {
             CStringW strMsg(L"");

@@ -35,7 +35,7 @@ static CString skill="skill";static CString stun="stun";
 static Unk_1402a9d70 condition(17,0.75f,0.25f,2.25f,10);
 }
 class Unk_UpperEvents {public:void FUN_1419308c0(UIEntityEventListener*);void FUN_141930950(UIEntityEventListener*);};
-class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
+class Unk_LsEntityEvents* GetEntityEventDispatcher();   // C3: was GetEntityEventDispatcher
 class Unk_UpperConfigData {public:int m_0;short m_4;char m_6;bool m_hp;char m_8;bool m_buff;};
 CString GetFontName(unsigned int);
 class Unk_WsC_GameObj : public GameObject {};   // C3: WorldService::FUN_141bd1180 result (static_cast to GameObject)
@@ -49,7 +49,7 @@ template <> MS2Ptr<ASEffectManager>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddR
 class Unk_UpperActor {public:
  virtual ~Unk_UpperActor();virtual void vfunc_1();virtual void vfunc_2();virtual void vfunc_3();virtual void vfunc_4();virtual void vfunc_5();virtual void* vfunc_6();};
 CStringW FUN_1401aa6a0(int);
-class UILapenshardShieldBar : public UIHeadUpDisplay {public:void FUN_140c5f8f0(MS2Ptr<AdditionalCli>);MS2Ptr<AdditionalCli> GetBuff();void FUN_140c5faf0();};
+class UILapenshardShieldBar : public UIHeadUpDisplay {public:void SetBuff(MS2Ptr<AdditionalCli>);MS2Ptr<AdditionalCli> GetBuff();void PlayEnd();};
 template<class T> T* Unk_AcFindUI(eUIClassID);
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 void FUN_1422bcdd0(Scaleform::GFx::Value*,__int64);void FUN_1422bcea0(Scaleform::GFx::Value*,const wchar_t*);void FUN_1422bccb0(Scaleform::GFx::Value*,int);
@@ -92,7 +92,7 @@ MS2_REPLACE(0x141B4A150, GetHpBarValues, 1256, 0x1B6E404C);
 // @0x141b4a640
 UpperHpBarEntity::UpperHpBarEntity():m_id(0),m_hp(0),m_kind(3),m_visible(false),m_pending(17,.75f,.25f,2.25f,10),m_buffs(17,.75f,.25f,2.25f,10){}
 // @0x141b4a740
-UpperHpBarEntity::~UpperHpBarEntity(){FUN_141b4a840();}
+UpperHpBarEntity::~UpperHpBarEntity(){Reset();}
 // @0x141b4a7d0
 void UpperHpBarEntity::SetNameAndKind(const CString& name,const int& kind){m_name=name;m_kind=kind;}
 MS2_REPLACE_METHOD(0x141B4A7D0, UpperHpBarEntity, SetNameAndKind, 62, 0x117F1A56);
@@ -102,8 +102,8 @@ const CString& UpperHpBarEntity::GetName(){return m_name;}
 MS2_REPLACE_METHOD(0x141B4A820, UpperHpBarEntity, GetName, 15, 0x271C8F51);
 
 // @0x141b4a840
-void UpperHpBarEntity::FUN_141b4a840(){FUN_141b4b3f0();m_clip=0;m_gauge=0;m_pending.RemoveAll();m_buffs.RemoveAll();}
-MS2_REPLACE_METHOD(0x141B4A840, UpperHpBarEntity, FUN_141b4a840, 98, 0x735A1D01);
+void UpperHpBarEntity::Reset(){RemoveBuffDisplays();m_clip=0;m_gauge=0;m_pending.RemoveAll();m_buffs.RemoveAll();}
+MS2_REPLACE_METHOD(0x141B4A840, UpperHpBarEntity, Reset, 98, 0x735A1D01);
 
 // @0x141b4a8b0
 void UpperHpBarEntity::SetClip(MS2Ptr<ASUIComponent> clip){
@@ -140,19 +140,19 @@ void UpperHpBarEntity::AddBuff(MS2Ptr<AdditionalCli> buff){
 }
 MS2_REPLACE_METHOD(0x141B4AC50, UpperHpBarEntity, AddBuff, 1137, 0xA5388BA2);
 // @0x141b4b3f0
-void UpperHpBarEntity::FUN_141b4b3f0(){for(POSITION pos=m_buffs.GetStartPosition();pos;m_buffs.GetNext(pos)){MS2Ptr<ASEffectManager> buff=m_buffs.GetValueAt(pos);m_gauge->RemoveChild(buff->GetValue());}}
-MS2_REPLACE_METHOD(0x141B4B3F0, UpperHpBarEntity, FUN_141b4b3f0, 259, 0x54C4F728);
+void UpperHpBarEntity::RemoveBuffDisplays(){for(POSITION pos=m_buffs.GetStartPosition();pos;m_buffs.GetNext(pos)){MS2Ptr<ASEffectManager> buff=m_buffs.GetValueAt(pos);m_gauge->RemoveChild(buff->GetValue());}}
+MS2_REPLACE_METHOD(0x141B4B3F0, UpperHpBarEntity, RemoveBuffDisplays, 259, 0x54C4F728);
 
 // @0x141b4b0d0
-void UpperHpBarEntity::FUN_141b4b0d0(MS2Ptr<AdditionalCli> buff){
+void UpperHpBarEntity::UpdateBuff(MS2Ptr<AdditionalCli> buff){
  if(buff==0||buff.operator->()->GetOwner()==0){MS2_ASSERT_AT(140,0);return;}
  if(m_clip==0){m_pending.SetAt(buff.operator->()->GetKey(),buff);return;}
  MS2Ptr<ASEffectManager> obj;
  if(m_buffs.Lookup(((class GameObject*)(void*)(buff.operator->()->GetOwner()))->GetObjectId(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->UpdateEffect(buff);
 }
-MS2_REPLACE_METHOD(0x141B4B0D0, UpperHpBarEntity, FUN_141b4b0d0, 354, 0x44015F7B);
+MS2_REPLACE_METHOD(0x141B4B0D0, UpperHpBarEntity, UpdateBuff, 354, 0x44015F7B);
 // @0x141b4b240
-void UpperHpBarEntity::FUN_141b4b240(PCBase* actor,const int& id){
+void UpperHpBarEntity::RemoveBuff(PCBase* actor,const int& id){
  if(m_clip==0){m_pending.RemoveKey(id);}
  else{
   MS2Ptr<ASEffectManager> obj;
@@ -164,16 +164,16 @@ void UpperHpBarEntity::FUN_141b4b240(PCBase* actor,const int& id){
     if(ui!=0){
      if(ui->FUN_141986d30()!=0){
       MS2Ptr<AdditionalCli> cur=ui->GetBuff();
-      if(cur.get()!=0){if(cur->GetKey()==ref->GetKey())ui->FUN_140c5faf0();}
+      if(cur.get()!=0){if(cur->GetKey()==ref->GetKey())ui->PlayEnd();}
      }
     }
    }
   }
  }
 }
-MS2_REPLACE_METHOD(0x141B4B240, UpperHpBarEntity, FUN_141b4b240, 422, 0xB9F4F251);
+MS2_REPLACE_METHOD(0x141B4B240, UpperHpBarEntity, RemoveBuff, 422, 0xB9F4F251);
 // @0x141b4b500
-void UpperHpBarEntity::FUN_141b4b500(){
+void UpperHpBarEntity::UpdateHp(){
  if(m_clip==0)return;
  if(m_id==0)return;
  if(!GetVisible())return;
@@ -188,7 +188,7 @@ void UpperHpBarEntity::FUN_141b4b500(){
    GetHpBarValues(actor,normal,&stage,&cur,&max,&hp,&shield);
    if(m_hp==cur){
     CNpc* npc=efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(actor));
-    if(npc!=0&&cur>0&&npc->FUN_141093030()!=0&&npc->vfunc_65()!=0)m_clip.operator->()->SetBoolMember("m_delayHide",true);
+    if(npc!=0&&cur>0&&npc->IsClass4Or6()!=0&&npc->vfunc_65()!=0)m_clip.operator->()->SetBoolMember("m_delayHide",true);
     return;
    }
    m_clip.operator->()->Invoke("update",cur,hp,stage,shield);
@@ -196,18 +196,18 @@ void UpperHpBarEntity::FUN_141b4b500(){
   }
  }
 }
-MS2_REPLACE_METHOD(0x141B4B500, UpperHpBarEntity, FUN_141b4b500, 847, 0xC9E245A6);
+MS2_REPLACE_METHOD(0x141B4B500, UpperHpBarEntity, UpdateHp, 847, 0xC9E245A6);
 // @0x141b4b860
 void UpperHpBarEntity::FUN_141b4b860(){for(POSITION pos=m_buffs.GetStartPosition();pos;m_buffs.GetNext(pos)){int id=m_buffs.GetKeyAt(pos);MS2Ptr<ASEffectManager> buff=m_buffs.GetValueAt(pos);buff->vfunc_4(id==m_id);}}
 MS2_REPLACE_METHOD(0x141B4B860, UpperHpBarEntity, FUN_141b4b860, 230, 0x137E47DF);
 
 // @0x141b4b950
-void UpperHpBarEntity::FUN_141b4b950(bool show){for(POSITION pos=m_buffs.GetStartPosition();pos;m_buffs.GetNext(pos)){int id=m_buffs.GetKeyAt(pos);void* actor=WorldService::GetInstance()->FUN_141bd1320(id);if(!actor)continue;{MS2Ptr<ASEffectManager> buff=m_buffs.GetValueAt(pos);((class ASEffectManager*)(class ASDisplayObject*)(buff.operator->()))->SetFilter(show);}}}
+void UpperHpBarEntity::FUN_141b4b950(bool show){for(POSITION pos=m_buffs.GetStartPosition();pos;m_buffs.GetNext(pos)){int id=m_buffs.GetKeyAt(pos);void* actor=WorldService::GetInstance()->FindNpcById(id);if(!actor)continue;{MS2Ptr<ASEffectManager> buff=m_buffs.GetValueAt(pos);((class ASEffectManager*)(class ASDisplayObject*)(buff.operator->()))->SetFilter(show);}}}
 MS2_REPLACE_METHOD(0x141B4B950, UpperHpBarEntity, FUN_141b4b950, 228, 0xB7CA5092);
 
 // @0x141b4ba40
-void UpperHpBarEntity::FUN_141b4ba40(bool show){if(m_clip==0)return;if(m_gauge==0)return;MS2Ptr<ASTextField> hp=m_gauge->FUN_1409b4620("m_hp");if(hp.get())hp->vfunc_4(show);}
-MS2_REPLACE_METHOD(0x141B4BA40, UpperHpBarEntity, FUN_141b4ba40, 217, 0x79C61FFD);
+void UpperHpBarEntity::SetHpTextVisible(bool show){if(m_clip==0)return;if(m_gauge==0)return;MS2Ptr<ASTextField> hp=m_gauge->FUN_1409b4620("m_hp");if(hp.get())hp->vfunc_4(show);}
+MS2_REPLACE_METHOD(0x141B4BA40, UpperHpBarEntity, SetHpTextVisible, 217, 0x79C61FFD);
 
 // @0x141b4bb20
 void UpperHpBarEntity::SetVisible(bool show){if(m_clip==0)return;if(m_visible!=show)m_clip->vfunc_4(show);m_visible=show;}
@@ -254,11 +254,11 @@ CString UIUpperHpBar::GetTypeName(){return "UpperHpBar";}
 MS2_REPLACE_METHOD(0x141B4BF90, UIUpperHpBar, GetTypeName, 61, 0x046B9C17);
 
 // @0x141b4bfe0
-void UIUpperHpBar::OnLoadComplete(){UIObject::OnLoadComplete();((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);AScript data(2);bool showHp=reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_hp;data.SetBoolMember("displayHpValue",showHp);m_30->Invoke("initData",data.GetValue());m_current=0;FUN_141b4ceb0(reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_buff);}
+void UIUpperHpBar::OnLoadComplete(){UIObject::OnLoadComplete();((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_1419308c0(this);AScript data(2);bool showHp=reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_hp;data.SetBoolMember("displayHpValue",showHp);m_30->Invoke("initData",data.GetValue());m_current=0;FUN_141b4ceb0(reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_buff);}
 MS2_REPLACE_METHOD(0x141B4BFE0, UIUpperHpBar, OnLoadComplete, 326, 0xF892494F);
 
 // @0x141b4c130
-void UIUpperHpBar::vfunc_26(){UIObject::vfunc_26();((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.FUN_141b4a840();}}m_current=0;}
+void UIUpperHpBar::vfunc_26(){UIObject::vfunc_26();((class Unk_UpperEvents*)GetEntityEventDispatcher())->FUN_141930950(this);{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.Reset();}}m_current=0;}
 MS2_REPLACE_METHOD(0x141B4C130, UIUpperHpBar, vfunc_26, 172, 0x8CC6B376);
 
 // @0x141b4c1f0
@@ -270,7 +270,7 @@ void UIUpperHpBar::vfunc_43(){MS2Ptr<ASGameEntity> root(dynamic_cast<ASGameEntit
 MS2_REPLACE_METHOD(0x141B4C260, UIUpperHpBar, vfunc_43, 187, 0x941B81CC);
 
 // @0x141b4c330
-void UIUpperHpBar::vfunc_15(){UISwfEntity::vfunc_15();if(m_30==0)return;{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.FUN_141b4b500();}}}
+void UIUpperHpBar::vfunc_15(){UISwfEntity::vfunc_15();if(m_30==0)return;{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.UpdateHp();}}}
 MS2_REPLACE_METHOD(0x141B4C330, UIUpperHpBar, vfunc_15, 133, 0x4E60939D);
 
 // @0x141b4c3c0
@@ -282,7 +282,7 @@ void UIUpperHpBar::vfunc_o70_2(const void* pId){
  if(m_30==0)return;
  PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(*static_cast<const egf::EntityID*>(pId))));
  if(actor==0)return;
- UpperHpBarEntity& entity=FUN_141b4d170(actor);
+ UpperHpBarEntity& entity=GetEntity(actor);
  int kind=((class GameObject*)(void*)(actor))->GetObjectId();
  if(entity.DestroyEntity(kind))m_current=0;
 }
@@ -291,9 +291,9 @@ MS2_REPLACE_METHOD_VIA(0x141B4C3E0, UIUpperHpBar, UIEntityEventListener, vfunc_o
 void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
  if(m_30==0)return;
  if((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e96)))!=0||(((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4ec4)))!=0)return;
- UpperHpBarEntity& e=FUN_141b4d170(actor);
+ UpperHpBarEntity& e=GetEntity(actor);
  if(!FUN_141b4d630(e,kind,((class GameObject*)(void*)(actor))->GetObjectId()))return;
- if(!FUN_141b4d320(e))return;
+ if(!TryShowEntity(e))return;
  if(e.GetClip()==0){
   Scaleform::GFx::Value created=m_30->Invoke("createHpBar",e.GetName());
   MS2Ptr<ASUIComponent> clip=Unk_ASCreate<ASUIComponent>(FUN_1422db730(),created);
@@ -333,7 +333,7 @@ void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
   bool changed=ui->FUN_141986d30()!=0&&buff.get()!=ui->GetBuff().get();
   if(changed)ui->vfunc_3();
   if(buff.get()!=0){
-   if(*(int*)((char*)buff.operator->()->GetLevelData()+0x2b0)!=0)ui->FUN_140c5f8f0(buff);
+   if(*(int*)((char*)buff.operator->()->GetLevelData()+0x2b0)!=0)ui->SetBuff(buff);
   }
  }
  m_current=&e;
@@ -344,7 +344,7 @@ void UIUpperHpBar::FUN_141b4c4c0(const CString& name,const int& kind){m_entities
 MS2_REPLACE_METHOD(0x141B4C4C0, UIUpperHpBar, FUN_141b4c4c0, 67, 0xCFED0236);
 
 // @0x141b4ce20
-void UIUpperHpBar::FUN_141b4ce20(bool show){if(m_30==0)return;{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.FUN_141b4ba40(show);}}}
+void UIUpperHpBar::FUN_141b4ce20(bool show){if(m_30==0)return;{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.SetHpTextVisible(show);}}}
 MS2_REPLACE_METHOD(0x141B4CE20, UIUpperHpBar, FUN_141b4ce20, 132, 0xE0E175AB);
 
 // @0x141b4ceb0
@@ -352,19 +352,19 @@ void UIUpperHpBar::FUN_141b4ceb0(bool show){if(m_30==0)return;{UpperHpBarEntity*
 MS2_REPLACE_METHOD(0x141B4CEB0, UIUpperHpBar, FUN_141b4ceb0, 132, 0xE3C6703A);
 
 // @0x141b4cf40
-void UIUpperHpBar::AddBuff(MS2Ptr<AdditionalCli> buff){FUN_141b4d170(buff.operator->()->GetOwner()).AddBuff(buff);}
+void UIUpperHpBar::AddBuff(MS2Ptr<AdditionalCli> buff){GetEntity(buff.operator->()->GetOwner()).AddBuff(buff);}
 MS2_REPLACE_METHOD(0x141B4CF40, UIUpperHpBar, AddBuff, 124, 0xCE7E3D09);
 
 // @0x141b4cfd0
-void UIUpperHpBar::FUN_141b4cfd0(MS2Ptr<AdditionalCli> buff){FUN_141b4d170(buff.operator->()->GetOwner()).FUN_141b4b0d0(buff);}
-MS2_REPLACE_METHOD(0x141B4CFD0, UIUpperHpBar, FUN_141b4cfd0, 124, 0xCF63FB8F);
+void UIUpperHpBar::UpdateBuff(MS2Ptr<AdditionalCli> buff){GetEntity(buff.operator->()->GetOwner()).UpdateBuff(buff);}
+MS2_REPLACE_METHOD(0x141B4CFD0, UIUpperHpBar, UpdateBuff, 124, 0xCF63FB8F);
 
 // @0x141b4d060
-void UIUpperHpBar::FUN_141b4d060(PCBase* actor,int id){FUN_141b4d170(actor).FUN_141b4b240(actor,id);}
-MS2_REPLACE_METHOD(0x141B4D060, UIUpperHpBar, FUN_141b4d060, 57, 0xEA91662F);
+void UIUpperHpBar::RemoveBuff(PCBase* actor,int id){GetEntity(actor).RemoveBuff(actor,id);}
+MS2_REPLACE_METHOD(0x141B4D060, UIUpperHpBar, RemoveBuff, 57, 0xEA91662F);
 
 // @0x141b4d0a0
-void UIUpperHpBar::FUN_141b4d0a0(){if(FUN_1422dc430()){UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.FUN_141b4b3f0();}}}
+void UIUpperHpBar::FUN_141b4d0a0(){if(FUN_1422dc430()){UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.RemoveBuffDisplays();}}}
 MS2_REPLACE_METHOD(0x141B4D0A0, UIUpperHpBar, FUN_141b4d0a0, 109, 0x0D08AA72);
 
 // @0x141b4d120
@@ -372,15 +372,15 @@ int UIUpperHpBar::vfunc_28(const char* method,const Scaleform::GFx::Value* args,
 MS2_REPLACE_METHOD(0x141B4D120, UIUpperHpBar, vfunc_28, 67, 0xCDAB7DE3);
 
 // @0x141b4d170
-UpperHpBarEntity& UIUpperHpBar::FUN_141b4d170(void* actor){
+UpperHpBarEntity& UIUpperHpBar::GetEntity(void* actor){
  CNpc* npc=efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(actor));
  if(npc){if(npc->GetNpcData().operator->()->HasPropertyTag(5))return m_entities[0];
  int kind=npc->GetNpcData().operator->()->GetClass();switch(kind){case 4:case 6:return m_entities[1];case 3:case 7:return m_entities[2];default:return m_entities[3];}}
  Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(pc)return m_entities[1];return m_entities[3];
 }
-MS2_REPLACE_METHOD(0x141B4D170, UIUpperHpBar, FUN_141b4d170, 411, 0xEE28EACC);
+MS2_REPLACE_METHOD(0x141B4D170, UIUpperHpBar, GetEntity, 411, 0xEE28EACC);
 // @0x141b4d320
-bool UIUpperHpBar::FUN_141b4d320(UpperHpBarEntity& target){
+bool UIUpperHpBar::TryShowEntity(UpperHpBarEntity& target){
  if(m_current!=0&&m_current->GetVisible()==true){
   CNpc* npc=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FindObjectById(m_current->GetId()))));
   bool isBoss=npc&&npc->GetNpcData().operator->()->HasPropertyTag(4);
@@ -396,7 +396,7 @@ bool UIUpperHpBar::FUN_141b4d320(UpperHpBarEntity& target){
  m_entities[kind].SetVisible(true);
  return true;
 }
-MS2_REPLACE_METHOD(0x141B4D320, UIUpperHpBar, FUN_141b4d320, 660, 0xFDBB1952);
+MS2_REPLACE_METHOD(0x141B4D320, UIUpperHpBar, TryShowEntity, 660, 0xFDBB1952);
 // @0x141b4d5c0
 void UIUpperHpBar::HideAllEntities(){{UpperHpBarEntity* entities=m_entities;for(unsigned int i=0;i<4;++i){UpperHpBarEntity& entity=entities[static_cast<int>(i)];entity.SetVisible(false);}}}
 MS2_REPLACE_METHOD(0x141B4D5C0, UIUpperHpBar, HideAllEntities, 97, 0xA3A3684D);

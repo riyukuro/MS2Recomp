@@ -50,13 +50,13 @@ public:
     int fieldD4,fieldD8;
     Unk_CubeTextRecord record;
     Unk_PayloadPtr<NoticeCubeInfo> notice;
-    efd::Point3 FUN_1408b5370();                    // the world position of the cube (FUN_1408a15b0 of the cell)
-    int FUN_1408b4f20();                                    // the item id (ugcmanager.cpp#4)
-    class CUgcItemLook* FUN_1408b4f80();                    // the UGC look of the item (ugcmanager.cpp#4)
+    efd::Point3 GetWorldPosition();                    // the world position of the cube (FUN_1408a15b0 of the cell)
+    int GetItemId();                                    // the item id (ugcmanager.cpp#4)
+    class CUgcItemLook* GetLook();                    // the UGC look of the item (ugcmanager.cpp#4)
     unsigned FUN_1408b4e90() const;                         // field5c
     bool FUN_1408b4eb0(const CubeItemInfo* pInfo) const;     // holds this item (0: holds no valid item)
-    __int64 FUN_1408b4f50() const;                          // the item uid
-    void FUN_1408b4fd0(egf::Entity* pEntity);               // entity created: apply or download the look image
+    __int64 GetInstanceId() const;                          // the item uid
+    void OnEntityCreated(egf::Entity* pEntity);               // entity created: apply or download the look image
     int FUN_1408b51d0();                                    // apply the downloaded look image (0: not downloaded)
     static long ms_nCount;                                  // 0x143ab2440 live instances (ctor/dtor)
 };

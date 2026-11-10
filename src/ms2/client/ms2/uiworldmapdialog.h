@@ -52,18 +52,18 @@ public:
     virtual void vfunc_80(void* p);                                         // 80 0x141b54f00 the "m_fieldSearch" request answer
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x141b56a20
 
-    void FUN_141b56c30(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b56c30 the boss icon tooltip
+    void GetBossIconTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b56c30 the boss icon tooltip
     int GetFieldToShow();                                                    // 0x141b57410 the field to show
     void OnIconPacket(CInPacket* pPacket);                                 // 0x141b57580 packet 0x84 mode 0: the tiles
     void OnAdditionalInfoPacket(CInPacket* pPacket);                                 // 0x141b57620 packet 0x84 mode 1: additional infos
-    void FUN_141b57660();                                                   // 0x141b57660 select the pending field
+    void SelectPendingField();                                                   // 0x141b57660 select the pending field
     void ApplyPendingSearch();                                                   // 0x141b57740 apply the pending search text
     void BuildWorldTiles();                                                   // 0x141b57870 build the tiles of the world
-    void FUN_141b58200();                                                   // 0x141b58200
-    void FUN_141b58220();                                                   // 0x141b58220 update the additional infos
+    void RequestWorldmapMode0();                                                   // 0x141b58200
+    void UpdateAdditionalInfos();                                                   // 0x141b58220 update the additional infos
     void UpdateAdditionalInfo(MS2Ptr<UIWorldMap::MapTile> spTile);                 // 0x141b58350 "updateAdditional"
-    void FUN_141b58670(unsigned int nFieldId, int nQuestId, int nLevel, int bRelated);   // 0x141b58670 add a quest line
-    void FUN_141b58830(unsigned int nFieldId, int nNpcField, int nNpcId, int nKind, int nQuestId, short nLevel, int nState);   // 0x141b58830 add an npc quest line
+    void AddQuestLine(unsigned int nFieldId, int nQuestId, int nLevel, int bRelated);   // 0x141b58670 add a quest line
+    void AddNpcQuestLine(unsigned int nFieldId, int nNpcField, int nNpcId, int nKind, int nQuestId, short nLevel, int nState);   // 0x141b58830 add an npc quest line
     void SendRequestWorldmapMode0();                                                   // 0x141b58e80 request the tiles (packet 0x4a)
     void FUN_141b58f00();                                                   // 0x141b58f00
     void FUN_141b58f80();                                                   // 0x141b58f80
@@ -83,15 +83,15 @@ public:
     void FlushQueuedTiles();                                                   // 0x141b5b190 flush the queued tiles
     CStringW GetTileTooltip(MS2Ptr<UIWorldMap::MapTile> spTile);             // 0x141b5b380 the tile tooltip
     void CreateMapTile(MS2Ptr<UIWorldMap::MapTile> spTile);                 // 0x141b5b790 "createMap"
-    void FUN_141b5bc70(int nFieldId);                                       // 0x141b5bc70 select a field once open
+    void SetPendingField(int nFieldId);                                       // 0x141b5bc70 select a field once open
     void SetPendingSearch(CStringW strText);                                   // 0x141b5bcc0 search once open
-    void FUN_141b5bd30();                                                   // 0x141b5bd30 the display settings changed
+    void OnDisplaySettingsChanged();                                                   // 0x141b5bd30 the display settings changed
     void UpdateFieldMission();                                                   // 0x141b5be10
-    void FUN_141b5c230();                                                   // 0x141b5c230 the field mission mode
+    void SetFieldMissionMode();                                                   // 0x141b5c230 the field mission mode
     void SetFieldMissionReward(int nRound, ASObj* pObj);                            // 0x141b5c2b0 the field mission rewards
     void SendQuest();                                                   // 0x141b5cbc0 request the mission reward (packet 0x29)
-    void FUN_141b5cc40(int nRound);                                         // 0x141b5cc40 "m_fieldMission"
-    MS2Ptr<UIWorldMap::MapTile> FUN_141b5d120();                            // 0x141b5d120 the current tile
+    void UpdateFieldMissionRound(int nRound);                                         // 0x141b5cc40 "m_fieldMission"
+    MS2Ptr<UIWorldMap::MapTile> GetCurrentTile();                            // 0x141b5d120 the current tile
     void SendRequestWorldmapMode1();
     void FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* pObj);    // 0x141b5d4b0 the tile part of "createMap"
     void FUN_141b5e160(MS2Ptr<UIWorldMap::IconInfo> spIcon, ASObj* pObj);   // 0x141b5e160
@@ -108,18 +108,18 @@ public:
     void FUN_141b60170(MS2Ptr<UIWorldMap::AddtionalInfo> spInfo, ASObj* pObj);   // 0x141b60170 mode 4 additional info
     void ApplySearchedField();                                                   // 0x141b602f0 apply the searched field
     void SearchFieldByName(CStringW strText);                                   // 0x141b60490 search a field by name
-    void FUN_141b605e0(CStringW strName);                                   // 0x141b605e0
-    int FUN_141b602a0(int nFieldId);                                        // 0x141b602a0 the field shown for a field
+    void SelectFieldByName(CStringW strName);                                   // 0x141b605e0
+    int GetParentFieldId(int nFieldId);                                        // 0x141b602a0 the field shown for a field
     bool FUN_141b60b40(int nFrom, int nTo);                                 // 0x141b60b40 the fields are linked by a portal
-    void FUN_141b60c40(int nFieldId, bool b);                               // 0x141b60c40
+    void SetFieldSearchInfo(int nFieldId, bool b);                               // 0x141b60c40
     void FUN_141b60d40(CStringW strText);                                   // 0x141b60d40
-    void FUN_141b60e90(int nFieldId, MyPC* pPlayer);                        // 0x141b60e90 the cash taxi prompt
+    void CheckCashTaxi(int nFieldId, MyPC* pPlayer);                        // 0x141b60e90 the cash taxi prompt
     void FUN_141b614c0(MyPC* pPlayer);                                      // 0x141b614c0 the cash taxi prompts (vip, meso, advanced ticket)
     void FUN_141b61ff0(int nFieldId);                                       // 0x141b61ff0 select a tile
     bool OnMissionAttackConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5af30 the mission attack prompt
 
 
-    int FUN_141b69340() { return m_nWorld; }                                // 0x141b69340
+    int GetSelectedWorld() { return m_nWorld; }                                // 0x141b69340
     int FUN_141b69690() { return m_nField; }                                // 0x141b69690
 
 protected:

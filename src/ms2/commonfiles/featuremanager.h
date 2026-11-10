@@ -33,7 +33,7 @@ public:
 
     bool Init();                            // 0x1403687f0 fills the name -> id map, false when the count is not 279
     void Clear();                   // empties the map with RemoveAll (never called)
-    static CFeatureTable* FUN_14036f550();  // the instance (created when missing)
+    static CFeatureTable* GetOrCreateInstance();  // the instance (created when missing)
     static void DestroyInstance();            // deletes the instance
 
     typedef ATL::CAtlMap<CStringW, Unk_FeatureId, ATL::CStringElementTraits<CStringW> > NameMap;
@@ -61,7 +61,7 @@ public:
     bool FUN_14036d6d0();
     bool FUN_14036d710(int nFeature);
     bool IsLocaleInList(const CStringW& strList);                // one of a ","-separated list of locales matches
-    int FUN_14036d8b0();                                        // the server number of the window title
+    int GetLevel();                                        // the server number of the window title
     CString GetLocaleName();                                    // the server name of the window title
     CStringW GetLocaleNameW();                                   // the same as a wide string
     int GetFeatureIdByName(const CStringW& strName);                 // the level of a feature name

@@ -143,7 +143,7 @@ MS2_REPLACE_METHOD(0x14192AD70, UIDynamicActionDialog, vfunc_65, 100, 0);
 void UIDynamicActionDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer != 0)
         pPlayer->GetSkillSystem()->FUN_141769280();
     m_190.clear();
@@ -277,7 +277,7 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
     if (it == m_190.end())
         return;
     __int64 nPeriod = it->second->m_28;
-    ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
+    ASTooltip tooltip(WorldService::GetInstance()->GetLocalPlayer(), 0x10, 2);
     if (FUN_1409e1b80(&tooltip, nAction, 0) != 0) {
         ASObj stat(2);
         stat.SetIntMember("type", 1);
@@ -412,7 +412,7 @@ void UIDynamicActionDialog::FUN_14192c6b0()
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg == 0)
         return;
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
@@ -448,7 +448,7 @@ MS2_REPLACE_METHOD(0x14192C930, UIDynamicActionDialog, SetFocusByEmotion, 117, 0
 // @0x14192c9b0
 void UIDynamicActionDialog::UseAction(int nAction)
 {
-    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (reinterpret_cast<PC*>(pPlayer)->IsInCubeMode())

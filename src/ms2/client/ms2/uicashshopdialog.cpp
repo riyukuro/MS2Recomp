@@ -222,7 +222,7 @@ extern char DAT_143ab2943;
 
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int nStringId, int a, int b);                    // a notice
-unsigned FUN_1407181d0(const CString& str);                              // text to number
+unsigned ParseUInt(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pOut);   // bind a child of the root (unit_141347b10)
@@ -392,11 +392,11 @@ bool UICashShopDialog::vfunc_75()
 void UICashShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    int nProductId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+    int nProductId = ParseUInt(pArgs->FUN_1422b8d30());
     MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FindSaleProduct(nProductId);
     if (!spProduct)
         return;
-    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
+    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->GetLocalPlayer()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_data.m_n28, spProduct->m_data.m_n2c) != 0)
         *pRetVal = tip.GetValue();
 }
@@ -535,7 +535,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp("onBuyProduct", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
+            int nProductId = ParseUInt(data.FUN_1422b8d30());
             MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FindSaleProduct(nProductId);
             if (spProduct == 0)
                 return 0;
@@ -553,7 +553,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("OnUseLink", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
+            int nProductId = ParseUInt(data.FUN_1422b8d30());
             MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FindSaleProduct(nProductId);
             if (!spProduct)
                 return 0;
@@ -687,7 +687,7 @@ void UICashShopDialog::OnBannerClick(MS2Ptr<CashBannerInfo> spBanner)
         FUN_1418fe1c0(spBanner->m_strValue);
     }
     else if (strType == "product") {
-        int nProductId = FUN_1407181d0(spBanner->m_strValue);
+        int nProductId = ParseUInt(spBanner->m_strValue);
         MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FindSaleProduct(nProductId);
         if (spProduct == 0)
             return;
@@ -939,7 +939,7 @@ void UICashShopDialog::FUN_141037360()
             MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x11, strText, 0, L"");
             if (spBox.get() != 0) {
                 spGift->SetCountClamped(1);
-                spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
+                spBox->SetItemEntry(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->Append<int>(spRow->m_n1c);
                 spBox->Append<unsigned>(spRow->m_n18);
                 spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
@@ -1007,7 +1007,7 @@ bool UICashShopDialog::CanReceiveItem(int nItemId, int* pnReason, int* pnTab)
         return true;
     if (spItem->HasExpandInvenFunction() != 0) {
         Unk_CashFnArgs* pArgs = reinterpret_cast<Unk_CashFnArgs*>(&spItem->function.parameter);
-        if (pArgs->FUN_1408d2380() > 1)
+        if (pArgs->GetArgCount() > 1)
             *pnTab = FUN_1402912d0(pArgs->FUN_1408d21c0(1, CStringW(L"")));
         if (*pnTab == -1) {
         }
@@ -1223,7 +1223,7 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
     MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FindSaleProduct(spCashBill->GetProductId());
     if (spProduct == 0)
         return false;
-    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()), 0x20, 2);
+    ASTooltip tip(((class Unk_CashPlayer*)((class WorldService*)(class Unk_CashWorld*)(reinterpret_cast<Unk_CashWorld*>(WorldService::GetInstance())))->GetLocalPlayer()), 0x20, 2);
     if (tip.FUN_1409e1770(spProduct->m_data.m_n28, spProduct->m_data.m_n2c) != 0)
         *pRetVal = tip.GetValue();
     return true;

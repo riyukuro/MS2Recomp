@@ -364,13 +364,13 @@ void FUN_14107a560(void* p)
 }
 
 // @0x14107a580
-void FUN_14107a580(void* p1, void* p2)
+void AddDataStreamRef(void* p1, void* p2)
 {
     ((efd::vector<NiDataStreamRef*>*)p1)->emplace_back(*(NiDataStreamRef* const*)p2);
 }
 
 // @0x14107a5b0
-void FUN_14107a5b0(void* p1, void* p2)
+void AddMesh(void* p1, void* p2)
 {
     ((Unk_MeshVec*)p1)->emplace_back(*(NiMesh* const*)p2);
 }

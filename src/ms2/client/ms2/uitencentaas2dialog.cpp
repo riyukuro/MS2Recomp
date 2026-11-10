@@ -200,7 +200,7 @@ void UITencentAas2Dialog::OnLoadComplete()
     }
     vfunc_43();
     GetChildInto<ASUIComponent>("m_renderTarget", m_spTarget);
-    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, m_strPage, "", vfunc_88());
+    TSingleton<CWebBrowserService>::GetInstance()->OpenBrowser(m_nBrowserId, m_strPage, "", vfunc_88());
     vfunc_87(&m_size);
     TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();

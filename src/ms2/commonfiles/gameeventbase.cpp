@@ -211,7 +211,7 @@ MS2_REPLACE_METHOD(0x1402E2220, GameEvent, vfunc_7, 101, 0xA9EA75F4);
 // @0x1402e2290
 bool GameEvent::HasFlag(int kind)
 {
-    return m_flags.FUN_1402e4ee0(kind);
+    return m_flags.HasBit(kind);
 }
 MS2_REPLACE_METHOD(0x1402E2290, GameEvent, HasFlag, 41, 0xDB1D8834);
 
@@ -573,11 +573,11 @@ Unk_PartyBitRef& Unk_PartyBitRef::operator=(bool bValue)
 }
 
 // @0x1402e4ee0
-bool Unk_PartyBits::FUN_1402e4ee0(int nPos)
+bool Unk_PartyBits::HasBit(int nPos)
 {
     return Test(nPos);
 }
-MS2_REPLACE_METHOD(0x1402E4EE0, Unk_PartyBits, FUN_1402e4ee0, 32, 0x3522FD57);
+MS2_REPLACE_METHOD(0x1402E4EE0, Unk_PartyBits, HasBit, 32, 0x3522FD57);
 
 // @0x1402e49d0
 Unk_PartyBits::Unk_PartyBits()

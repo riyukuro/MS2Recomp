@@ -39,9 +39,9 @@
 class Unk_MailSession;
 Unk_MailSession* FUN_1403ed2d0();
 int FUN_141bcfbd0(Unk_MailSession*);
-class Unk_BmPriceMgr* FUN_1401c0db0();
+class Unk_BmPriceMgr* GetLuaClient();
 int FUN_1422b9ea0(__int64);
-int FUN_141276180(const CString&, const CString&);
+int PlaySystemSound(const CString&, const CString&);
 
 class CUserMail {
 public:
@@ -52,11 +52,11 @@ public:
     ~CUserMail();
     void FUN_1408e3030();
     int FUN_1408e3050();
-    MailPtr FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CStringW d, CStringW e);
+    MailPtr CreateSendMail(__int64 a, CStringW b, __int64 c, CStringW d, CStringW e);
     void SetUnreadCount(unsigned v);
-    int FUN_1408e34e0();
-    void FUN_1408e3500(int v);
-    int FUN_1408e3520();
+    int GetUnreadCount();
+    void SetUnreadAlarm(int v);
+    int GetUnreadAlarm();
     void FUN_1408e3540(__int64 key, __int64 value);
     void GetMailsByKind(MailArray& out, int kind);
     void GetAllMails(MailArray& out);
@@ -77,7 +77,7 @@ public:
     void SetSendKeepItem(int index, MS2Ptr<CItem> item);
     KeepPtr GetSendKeep(int index);
     void SetSendMoney(__int64 value);
-    __int64 FUN_1408e44e0();
+    __int64 GetSendMoney();
     int FindFreeSendSlot();
     void UpdateSendFee();
     __int64 GetSendFee();

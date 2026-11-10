@@ -40,7 +40,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 class Unk_MeratLog { public: template <class T> void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* format, const T& value); };   // C3: 0x1406a6d70 = Log<unsigned int> (meratmarketbasketinfo.cpp)
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 bool FUN_140768040(unsigned nChance);                                   // the percent roll
 void* GetExpTable();   // C3: was GetExpTable
@@ -121,7 +121,7 @@ RewardContentsItemTable::RewardContentsItemTable()
 // @0x140770810
 bool RewardContentsItemTable::Load(void* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
         return false;
     XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "itemTableID", m_nItemTableId);
     if (m_nItemTableId == 0)
@@ -163,7 +163,7 @@ RewardContents::RewardContents()
 // @0x140770af0
 bool RewardContents::Load(void* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
         return false;
     XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "rewardID", m_nRewardId);
     XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "mesoTableID", m_nMesoTableId);
@@ -253,7 +253,7 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
         }
         for (TiXmlElement* pChild = ((class TiXmlElement *)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
         {
-            if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
+            if (!IsElementAvailable((struct Unk_XmlElement*)(pChild)))
                 continue;
             unsigned short nLevel = 0;
             __int64 nMeso = 0;

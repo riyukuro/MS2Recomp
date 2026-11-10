@@ -79,7 +79,7 @@ CString UIChangeJobDialog::GetTypeName()
 void UIChangeJobDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     FUN_140bd8040(reinterpret_cast<PC*>(pPC)->GetSubJob());
@@ -93,7 +93,7 @@ int UIChangeJobDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     if (_stricmp("onChangeJob", szMethod) == 0)
     {
         vfunc_67();
-        FUN_140bd89d0(CChangeJobTable::GetInstance()->GetStartQuestId((Unk_SubJobCode)m_nJobCode));
+        ShowJobChangeNotice(CChangeJobTable::GetInstance()->GetStartQuestId((Unk_SubJobCode)m_nJobCode));
         return 1;
     }
     return 0;
@@ -127,7 +127,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         ASObj skill(2);
         skill.SetMemberUInt("id", spData->m_skills1[i]);
         skill.SetStringMember("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
-        ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tooltip(WorldService::GetInstance()->GetLocalPlayer(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills1[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.GetValue());
         skills1.PushValue(skill.GetValue());
@@ -140,7 +140,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         ASObj skill(2);
         skill.SetMemberUInt("id", spData->m_skills2[i]);
         skill.SetStringMember("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
-        ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
+        ASTooltip tooltip(WorldService::GetInstance()->GetLocalPlayer(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills2[i], 1, 1) != 0)
             skill.FUN_1409adbe0("tooltip", tooltip.GetValue());
         skills2.PushValue(skill.GetValue());
@@ -153,7 +153,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
 // @0x140bd88e0
 int UIChangeJobDialog::CanChangeJob()
 {
-    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (CChangeJobTable::GetInstance()->CanChange(reinterpret_cast<PC*>(pPC)->GetJobGroupId(), (Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->GetSubJob(), (unsigned short)pPC->vfunc_78()) == 0)
@@ -166,7 +166,7 @@ int UIChangeJobDialog::CanChangeJob()
 }
 
 // @0x140bd89d0
-void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
+void UIChangeJobDialog::ShowJobChangeNotice(int nJobCode)
 {
     MS2Ptr<CQuestData> spJob = GetQuestData(nJobCode);
     if (!spJob)

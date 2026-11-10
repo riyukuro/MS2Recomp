@@ -875,7 +875,7 @@ void SkillData::Load(TiXmlElement* pElem)
     m_blockB0.Load(pBasic);
     m_block150.Load(pBasic);
     m_block160.Load(pBasic);
-    m_block170.FUN_140802d50(pBasic);
+    m_block170.LoadPush(pBasic);
     m_sensor.LoadElement(pBasic, "sensor");
     m_condition.Load(pBasic);
     std::vector<TiXmlElement*> vLevels;
@@ -1019,7 +1019,7 @@ Unk_SkillSensor* SkillData::GetSensor()
 MS2_REPLACE_METHOD(0x1407e9d00, SkillData, GetSensor, 35, 0x77FC31CF);
 
 // @0x1407e9d30
-bool SkillData::FUN_1407e9d30()
+bool SkillData::IsEmotion()
 {
     switch (GetMainType())
     {
@@ -1029,7 +1029,7 @@ bool SkillData::FUN_1407e9d30()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1407e9d30, SkillData, FUN_1407e9d30, 50, 0x8F6D364A);
+MS2_REPLACE_METHOD(0x1407e9d30, SkillData, IsEmotion, 50, 0x8F6D364A);
 
 // @0x1407e9d70
 bool SkillData::FUN_1407e9d70()
@@ -1057,7 +1057,7 @@ bool SkillData::FUN_1407e9de0()
 MS2_REPLACE_METHOD(0x1407e9de0, SkillData, FUN_1407e9de0, 48, 0xFEF49BD3);
 
 // @0x1407e9e20
-bool SkillData::FUN_1407e9e20()
+bool SkillData::IsUnrideOnUse()
 {
     switch (GetMainType())
     {
@@ -1076,7 +1076,7 @@ bool SkillData::FUN_1407e9e20()
     }
     return m_bUnrideOnUse;
 }
-MS2_REPLACE_METHOD(0x1407e9e20, SkillData, FUN_1407e9e20, 90, 0x00BE5DCE);
+MS2_REPLACE_METHOD(0x1407e9e20, SkillData, IsUnrideOnUse, 90, 0x00BE5DCE);
 
 // @0x1407e9ea0
 bool SkillData::FUN_1407e9ea0()
@@ -1313,7 +1313,7 @@ void SkillDataTable::AddSkill(MS2Ptr<SkillData> spSkill)
         m_groups[spSkill->m_nGroupIDs].insert(nSkillId);
     m_skills.insert(std::make_pair(spSkill->GetId(), spSkill));
     IndexSensors(spSkill);
-    FUN_1407eec60(spSkill);
+    MarkFinishSkill(spSkill);
 }
 
 // @0x1407ee9f0
@@ -1341,7 +1341,7 @@ void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 }
 
 // @0x1407eec60
-void SkillDataTable::FUN_1407eec60(MS2Ptr<SkillData> spSkill)
+void SkillDataTable::MarkFinishSkill(MS2Ptr<SkillData> spSkill)
 {
     if (((class Unk_SkillFlags*)GetStanceTable())->HasFinishSkill(spSkill->GetId()))
         spSkill->SetFinishSkill();

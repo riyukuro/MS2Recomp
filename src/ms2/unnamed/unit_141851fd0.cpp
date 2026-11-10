@@ -102,7 +102,7 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg);
 void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg);
 void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg);
 void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg);
-void FUN_1418528f0(Unk_CtrlMax* pMax, void* pCtrl);
+void UpdateMaxEndKeyTime(Unk_CtrlMax* pMax, void* pCtrl);
 void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl);
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl);
 
@@ -179,7 +179,7 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
     void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
-        FUN_1418528f0(pArg, pCtrl);
+        UpdateMaxEndKeyTime(pArg, pCtrl);
         pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
     if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
@@ -316,7 +316,7 @@ Unk_CtrlValue::Unk_CtrlValue(float fValue)
 }
 
 // @0x1418528f0
-void FUN_1418528f0(Unk_CtrlMax* pMax, void* pCtrl)
+void UpdateMaxEndKeyTime(Unk_CtrlMax* pMax, void* pCtrl)
 {
     if (((class NiTimeController*)(void*)(pCtrl))->GetEndKeyTime() > pMax->m_fValue)
         pMax->m_fValue = ((class NiTimeController*)(void*)(pCtrl))->GetEndKeyTime();

@@ -97,8 +97,8 @@ class Unk_MsgASArray : public ASArray
 CString GetBoxTypeName(int nType);                                   // the AS box type name
 CString GetTextTypeName(int nTextType);                               // the AS text input type name
 CString GetSoundName(int nSound);                                  // the sound event name
-CString FUN_1407186a0(const CStringW& str);
-bool FUN_1407183f0(const CStringW& str);
+CString ToNarrowString(const CStringW& str);
+bool ParseBoolW(const CStringW& str);
 
 // @0x141a034d0
 int CMsgBoxData::FillObj(ASObj& obj)
@@ -132,9 +132,9 @@ int CMsgBoxData::FillObj(ASObj& obj)
     {
         if (m_timer.m_nArmed != -1)
         {
-            m_timer.m_nSec = m_timer.m_timer.FUN_140868ab0() / 1000;
+            m_timer.m_nSec = m_timer.m_timer.GetRemaining() / 1000;
             m_timer.m_nArmed = -1;
-            m_timer.m_timer.FUN_140868820();
+            m_timer.m_timer.SetExpired();
         }
         obj.SetIntMember("time", m_timer.m_nSec);
         if (m_timer.m_nShowFormat != 0)
@@ -239,7 +239,7 @@ int CMsgBoxData::FUN_141a04900()
     {
         if (m_timer.m_nArmed > 0)
         {
-            int nSec = m_timer.m_timer.FUN_140868ab0() / 1000;
+            int nSec = m_timer.m_timer.GetRemaining() / 1000;
             return (nSec > 0 && m_timer.m_timer.IsExpired() == 0) ? 1 : 0;
         }
         if (m_timer.m_nSec < 0)
@@ -365,11 +365,11 @@ void CMsgBoxData::SetLayoutAndSound()
     case 1:
     case 0x14:
     case 0x18:
-        FUN_141a01800(1);
+        SetButtonPreset(1);
         break;
     case 0:
         nSound = 2;
-        FUN_141a01800(3);
+        SetButtonPreset(3);
         break;
     case 5:
     case 6:
@@ -386,13 +386,13 @@ void CMsgBoxData::SetLayoutAndSound()
     case 0x16:
     case 0x19:
     case 0x1a:
-        FUN_141a01800(2);
+        SetButtonPreset(2);
         break;
     case 0x17:
-        FUN_141a01800(5);
+        SetButtonPreset(5);
         break;
     default:
-        FUN_141a01800(3);
+        SetButtonPreset(3);
         break;
     }
     m_strSound = GetSoundName(nSound);
@@ -720,7 +720,7 @@ bool CMsgBoxData::GetStringArg(unsigned int nIndex, CString& strOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
-    strOut = FUN_1407186a0(m_args[nIndex]);
+    strOut = ToNarrowString(m_args[nIndex]);
     return true;
 }
 
@@ -729,7 +729,7 @@ bool CMsgBoxData::GetBoolArg(unsigned int nIndex, bool& bOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
-    bOut = FUN_1407183f0(m_args[nIndex]);
+    bOut = ParseBoolW(m_args[nIndex]);
     return true;
 }
 

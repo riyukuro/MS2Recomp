@@ -90,7 +90,7 @@ extern template class MS2Ptr<CBanTextChecker>;
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CStringW FUN_140763e10(int nNumber);                            // a number with digit grouping
-int FUN_14053feb0(int nItemId);                                 // default rank of an item
+int GetItemRank(int nItemId);                                 // default rank of an item
 __int64 GetServerTime();                                        // the server time
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
 void ShowMessageBox(CStringW text, int nA, void* pListener, CStringW strTag);     // pop the notice
@@ -284,14 +284,14 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 // @0x1412d7aa0
 void UIMaidDialog::SetData()
 {
-    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
+    CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nMaidId)));
     if (pNpc == 0)
         return;
     MS2Ptr<CMaid> spMaid = reinterpret_cast<CNpc*>(pNpc)->GetMaid();
@@ -313,9 +313,9 @@ void UIMaidDialog::SetData()
             obj.SetStringMember("maidFace", CString(strFace));
     }
     obj.SetWStringMember("specialty", CStringW(spDesc->specialty));
-    obj.SetWStringMember("name", reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
-    obj.SetWStringMember("title", reinterpret_cast<CNpc*>(pNpc)->FUN_141093980());
-    obj.FUN_1409adc90("rank", FUN_14053feb0(spMaid->m_nItemId));
+    obj.SetWStringMember("name", reinterpret_cast<CNpc*>(pNpc)->GetName());
+    obj.SetWStringMember("title", reinterpret_cast<CNpc*>(pNpc)->GetTitle());
+    obj.FUN_1409adc90("rank", GetItemRank(spMaid->m_nItemId));
     obj.SetWStringMember("specialTitle", CStringW(m_strSpecialTitle));
     obj.SetIntMember("salaryType", spInfo->salaryType);
     obj.SetWStringMember("salary", StringFormat(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo->salary)));
@@ -489,14 +489,14 @@ void UIMaidDialog::SetMaid(int nMaidId, unsigned __int64 nMaidUid)
 // @0x1412d9680
 void UIMaidDialog::UpdateStatus()
 {
-    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
+    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nMaidId)));
     if (pView == 0)
         return;
     MS2Ptr<CMaid> spMaid = pView->GetMaid();
@@ -529,14 +529,14 @@ void UIMaidDialog::UpdateStatus()
 // @0x1412d9b90
 void UIMaidDialog::UpdateProperty()
 {
-    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return;
     if (m_30.IsNull())
         return;
     if (m_nMaidId == 0)
         return;
-    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
+    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nMaidId)));
     if (pView == 0)
         return;
     MS2Ptr<CMaid> spMaid = pView->GetMaid();
@@ -550,8 +550,8 @@ void UIMaidDialog::UpdateProperty()
         return;
 
     ASObj obj(2);
-    obj.SetWStringMember("name", pView->FUN_141093310());
-    obj.SetWStringMember("title", pView->FUN_141093980());
+    obj.SetWStringMember("name", pView->GetName());
+    obj.SetWStringMember("title", pView->GetTitle());
     if (spMaid->FUN_1409eeda0().IsEmpty())
     {
         obj.SetWStringMember("title", CStringW(spDesc->title));
@@ -587,12 +587,12 @@ void UIMaidDialog::UpdateProperty()
 CStringW UIMaidDialog::FUN_1412da590()
 {
     CStringW strText(L"");
-    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->GetLocalPlayer();
     if (pPlayer == 0)
         return strText;
     if (m_nMaidId == 0)
         return strText;
-    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
+    CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nMaidId)));
     if (pView == 0)
         return strText;
     MS2Ptr<CMaid> spMaid = pView->GetMaid();

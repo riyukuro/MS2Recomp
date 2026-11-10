@@ -56,7 +56,7 @@ class CGameOption;
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); bool FUN_141683200(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool IsActionKeyPressed(int nKey); bool IsActionKeyDown(int nKey); bool IsActionKeyReleased(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_WkOwnerSlots
@@ -254,12 +254,12 @@ void StateWalk::vfunc_8(double fTime)
     {
         m_n10 = 0x18;
     }
-    if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
+    if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d41))
     {
         pPC->TryUseChairOrBed(1, 0);
         return;
     }
-    if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
+    if (pPC != 0 && pBuff->IsActionKeyPressed(0x30d42))
     {
         pPC->TryUseChairOrBed(2, 0);
         return;
@@ -282,7 +282,7 @@ void StateWalk::vfunc_8(double fTime)
         m_n50 = 0;
         return;
     }
-    if (pBuff->FUN_141683200(0x493ea) && m_pOwner->FUN_1416749c0())
+    if (pBuff->IsActionKeyReleased(0x493ea) && m_pOwner->FUN_1416749c0())
     {
         m_n48 = 1;
         m_n10 = 0x18;

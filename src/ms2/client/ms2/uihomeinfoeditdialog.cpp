@@ -40,7 +40,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 public:
     static Unk_AkoHouseSvc* GetInstance();                              // the cube service singleton
 };
-int FUN_1406516a0();                                                // the locale index
+int GetLanguage();                                                // the locale index
 class CMsgBoxData : public CPtred
 {
 public:
@@ -101,7 +101,7 @@ MS2_REPLACE_METHOD(0x140C268D0, UIHomeInfoEditDialog, GetHomeName, 61, 0xA1A1AAF
 // @0x140c26920
 int UIHomeInfoEditDialog::FUN_140c26920()
 {
-    switch (FUN_1406516a0())
+    switch (GetLanguage())
     {
     case 0:
     case 1:

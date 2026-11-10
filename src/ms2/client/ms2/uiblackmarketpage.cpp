@@ -132,7 +132,7 @@ void ShowBlockNotice(const BlockPtr& spBlock, int nAction, unsigned __int64 n); 
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text of a key, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -149,21 +149,21 @@ public:
 
 CStringW FUN_141275860(__int64 n);                                  // the meso amount text of the total price
 CStringW FUN_141275900(const CStringW& str);                        // the meso amount text of a number string
-CStringW FUN_1412757d0(__int64 n);                                  // the fee text (feature 0xc5)
+CStringW GetNumberText(__int64 n);                                  // the fee text (feature 0xc5)
 CStringW FUN_140719a00(__int64 n);                                  // a number as text
 CStringW FUN_14083cb20(const CStringW& str);                        // grouped digits
 CStringW FUN_14083cf10(const CStringW& str);                        // the digits of a money text
 CStringW FormatPercent(int nCurrency, bool bIcon);                  // the currency name
 CStringW FUN_14083bab0(const CMsTime& t, CStringW strSep);          // a date as text
 CString FUN_1407194b0(__int64 t);                                   // a time as text
-__int64 FUN_140718320(const CStringW& str);                         // a decimal string as a 64-bit number
-unsigned __int64 FUN_140718370(const CStringW& str);
+__int64 ParseInt64W(const CStringW& str);                         // a decimal string as a 64-bit number
+unsigned __int64 ParseUInt64W(const CStringW& str);
 __int64 FUN_141b71960(const char* sz);                              // a uid string as a number
 CStringW FUN_141b71910(__int64 n);                                  // a uid as text
 CStringW FUN_14183e930(const CStringW& str, unsigned int nColor);   // colored text
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
 void ShowItemMessageBox(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl);   // item system message
-int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
+int PlaySystemSound(const CString& strSound, const CString& strArg); // play a UI sound
 void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTitle);   // message box of a string id
 MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nA, Delegate<bool(int, const CMsgBoxData&)> cb);   // OK box
 MS2Ptr<CMsgBoxData> ShowTermsMessageBoxWithCallback(int nType, const CStringW& strTitle, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -189,7 +189,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, S
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     SetValue(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -1086,7 +1086,7 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
         strMsg = FormatStringId(0x947, strPrice, strDefault);
     }
     MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
-    spBox->FUN_141a01ee0(spShow, ((CItem*)spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->SetItemEntry(spShow, ((CItem*)spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
     spBox->SetMsg(strMsg);
     spBox->SetButtonLabelIds(0x477, 0x478, 0);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::OnBuyCountMsgBox));
@@ -1309,7 +1309,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nUid = FUN_141b71960(data.FUN_1422b8d30());
-            __int64 nPrice = FUN_140718320(data.FUN_1422b8f40());
+            __int64 nPrice = ParseInt64W(data.FUN_1422b8f40());
             int nCount = data.PopInt();
             OnClickRegister(nUid, nPrice, nCount);
         }
@@ -1335,7 +1335,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
                 else
                     strMsg = FUN_14028dfa0(CStringW(L"s_msg_blackmarket_ask_stopsale"), FUN_1409404f0(nPrice));
                 MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
-                spBox->FUN_141a01ee0(spEntry->m_item, spEntry->m_item->FUN_140527b10(), 1, 0, -1, -1, 1);
+                spBox->SetItemEntry(spEntry->m_item, spEntry->m_item->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->SetMsg(strMsg);
                 spBox->SetButtonLabelIds(0x477, 0x478, 0);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemRegister::FUN_140f13950));
@@ -1393,7 +1393,7 @@ void BlackMarketPageItemRegister::FUN_140f12d40(MS2Ptr<CBlackMarketProduct> spEn
     int nDays = TSingleton<Client::Constants>::GetInstance()->BlackMarketSellEndDay.Read();
     CStringW strMsg = FormatStringId(0x943, nDays);
     ShowItemMessageBox(spEntry->m_item, strMsg, "");
-    FUN_141276180("BlackMarket_Ready", "");
+    PlaySystemSound("BlackMarket_Ready", "");
     m_bFilled = true;
 }
 
@@ -1446,7 +1446,7 @@ void BlackMarketPageItemRegister::FUN_140f13420(NotifyContext::BindData* pSlot, 
         ASObj obj(2);
         if (FUN_140f14650(obj, item, m_item))
         {
-            m_20->Invoke("setRegisterItem", pBind->FUN_1422c8d40(), obj.GetValue());
+            m_20->Invoke("setRegisterItem", pBind->GetData(), obj.GetValue());
             SelectItem(MS2Ptr<CItem>(&item));
         }
     }
@@ -1544,8 +1544,8 @@ void BlackMarketPageItemRegister::SendRegisterRequest()
     FUN_14025a680(strKeyword, parts, L",");
     if (parts.GetCount() >= 3)
     {
-        __int64 nUid = FUN_140718370(parts.GetAt(0));
-        __int64 nPrice = FUN_140718320(parts.GetAt(1));
+        __int64 nUid = ParseUInt64W(parts.GetAt(0));
+        __int64 nPrice = ParseInt64W(parts.GetAt(1));
         int nCount = FUN_1407181a0(parts.GetAt(2));
         CBlackMarketMan::GetInstance()->SendBlackMarketMode2(nUid, nPrice, nCount);
     }
@@ -1648,7 +1648,7 @@ CStringW BlackMarketPageItemRegister::FUN_140f14900(int nRank)
     __int64 nFee = GetBlackMarketRegisterDepositMax();
     CStringW strFee;
     if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xc5))
-        strFee = FUN_1412757d0(nFee);
+        strFee = GetNumberText(nFee);
     else
         strFee = FUN_14083cb20(FUN_140719a00(nFee));
     return FormatStringId(0x92a, nDays, FormatPercent(nCurrency, false), nFeeRate, strFee);
@@ -1686,7 +1686,7 @@ int FUN_140f14ce0(ASObj& obj, MS2Ptr<CBlackMarketProduct> spEntry, bool bManage)
 {
     if (!spEntry || !spEntry->m_item)
         return 0;
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer != 0)
     {
         MS2Ptr<CItem> spItem = spEntry->m_item;
@@ -1705,7 +1705,7 @@ int FUN_140f14ce0(ASObj& obj, MS2Ptr<CBlackMarketProduct> spEntry, bool bManage)
             }
             {
                 // CItem::FUN_140527840 returns the item's CItemData (citem.h keeps the older placeholder type).
-                MS2Ptr<CItemData> spData = reinterpret_cast<CItemData*>(((CItem*)spItem)->FUN_140527840());
+                MS2Ptr<CItemData> spData = reinterpret_cast<CItemData*>(((CItem*)spItem)->GetData());
                 if (spData.get() && spData->property.slotMax > 1)
                     obj.SetWStringMember("price_1", FormatStringId(0x91b, FUN_1409404f0(nUnitPrice)));
             }

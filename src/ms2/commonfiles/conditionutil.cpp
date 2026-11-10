@@ -49,7 +49,7 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>), FUN_1401782a0 (std::vector<unsigned>)
 void Unk_ParseExtra(CString strBody, CConditionDict* pDict);                                // "k=v,k=v" into a dictionary
 int FUN_140718170(const CString& str);
-unsigned int FUN_1407181d0(const CString& str);
+unsigned int ParseUInt(const CString& str);
 bool FUN_140718390(const CString& str);
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -974,7 +974,7 @@ bool CQuestConditionCheckerUserFind::CheckEquipItemsOr(const CString& strValue, 
 // @0x1402a9910
 bool CQuestConditionCheckerUserFind::CheckTitleId(const CString& strValue, ConditionUserFindContext* pContext)
 {
-    int nTitle = FUN_1407181d0(strValue);
+    int nTitle = ParseUInt(strValue);
     return nTitle == pContext->m_gender;
 }
 MS2_REPLACE_METHOD(0x1402a9910, CQuestConditionCheckerUserFind, CheckTitleId, 75, 0x132DA8BF);
@@ -982,7 +982,7 @@ MS2_REPLACE_METHOD(0x1402a9910, CQuestConditionCheckerUserFind, CheckTitleId, 75
 // @0x1402a9970
 bool CQuestConditionCheckerUserFind::CheckRideeId(const CString& strValue, ConditionUserFindContext* pContext)
 {
-    int nRidee = FUN_1407181d0(strValue);
+    int nRidee = ParseUInt(strValue);
     return nRidee == pContext->m_24;
 }
 MS2_REPLACE_METHOD(0x1402a9970, CQuestConditionCheckerUserFind, CheckRideeId, 75, 0x64964A63);

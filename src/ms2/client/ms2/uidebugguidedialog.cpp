@@ -260,8 +260,8 @@ void UIDebugGuideDialog::OnLoadInit()
     BindCloseButton("m_closeButton");
     reinterpret_cast<ASScrollingList*>(m_leftList.operator->())->AddListIndexChangeListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectGroup));
     reinterpret_cast<ASScrollingList*>(m_rightList.operator->())->AddListIndexChangeListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
-    m_executeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnExecute), 0);
-    m_multiExecuteButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnMultiExecute), 0);
+    m_executeButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnExecute), 0);
+    m_multiExecuteButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnMultiExecute), 0);
     reinterpret_cast<ASEventDispatcher*>(m_movie.operator->())->AddEventListener("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
     FillGroups();
 }
@@ -356,7 +356,7 @@ void UIDebugGuideDialog::LoadXml(CString strPath)
     for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("Group")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("Group")))
     {
         Unk_DebugGuideGroup group(pElem);
-        bool bSkip = !group.m_strCharOnly.IsEmpty() && ((class WorldService*)WorldService::GetInstance())->FUN_141bd0d30() != group.m_strCharOnly;
+        bool bSkip = !group.m_strCharOnly.IsEmpty() && ((class WorldService*)WorldService::GetInstance())->GetMyPCName() != group.m_strCharOnly;
         if (bSkip)
             continue;
         m_groups.push_back(group);

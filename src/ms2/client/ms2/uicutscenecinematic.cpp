@@ -73,7 +73,7 @@ public:
 class Unk_CscWorld
 {
 public:
-    MyPC* FUN_141bd0cc0();                                          // the local player
+    MyPC* GetLocalPlayer();                                          // the local player
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer* pPlayer);   // C3: was FUN_140a7b810 (mouseinteract.cpp)
@@ -85,7 +85,7 @@ public:
    // the length of a sound, -1 if absent
 CSoundService* GetSoundService();
 
-class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
+class GFxSceneService { public: int SetSubScene(int nSubSceneId); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table: the key name of a binding
 class Unk_SoundSink* GetKeyTable();   // C3: the key table (calls cast back)
@@ -105,9 +105,9 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);             // to wide
 CStringW FUN_1401aa6a0(int nNpcId);                                 // npc name
 CString FUN_140cc2c70(const CString& strName);                      // the full path of an illust
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strLabel);   // gotoAndPlay a child
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 extern unsigned int DAT_143af62d4;                                  // client area width
 extern unsigned int DAT_143af62d8;                                  // client area height
@@ -229,7 +229,7 @@ int UICutSceneCinematic::vfunc_13()
         FUN_1419080b0();
         return 1;
     }
-    if (TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116d840())
+    if (TSingleton<CInputKeyHandler>::GetInstance()->IsEscapePressed())
     {
         RequestSkip();
         return 1;
@@ -276,11 +276,11 @@ void UICutSceneCinematic::SetCinematicKeyMode(bool bOn)
     {
         if (TSingleton<UITalkManager>::GetInstance()->GetTalking())
             TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
-        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x6200041);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetSubScene(0x6200041);
     }
     else
     {
-        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->SetSubScene(0x620001d);
     }
 }
 MS2_REPLACE_METHOD(0x141908040, UICutSceneCinematic, SetCinematicKeyMode, 95, 0x0200FE35);
@@ -404,7 +404,7 @@ void UICutSceneCinematic::FUN_141908750()
     m_nTalkEnd = nTick + m_spTalk->m_nDuration;
     if (m_spTalk->m_nNpcId == 0)
     {
-        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC)
             SetScript(pPC->vfunc_77(), CStringW(m_spTalk->m_strText), CStringW(), 0);
     }
@@ -482,7 +482,7 @@ void UICutSceneCinematic::RequestSkip()
 void UICutSceneCinematic::SkipCinematic()
 {
     SendTrigger();
-    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC)
         reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->FUN_1409536d0();
     TSingleton<NotifySystem>::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
@@ -622,7 +622,7 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     MS2Ptr<TriggerVoiceProperty> spVoice = TSingleton<SoundPropertyMgr>::GetInstance()->FindTriggerVoice(strSound);
     if (spVoice.get())
     {
-        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pPC)
         {
             CString strEvent;
@@ -808,8 +808,8 @@ inline Scaleform::GFx::Value AScript::FUN_14190b490(const char* szMethod, unsign
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcd10(&args[1], a2);
+    SetUInt(&args[0], a1);
+    SetUInt(&args[1], a2);
     FUN_1422bcd70(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -819,7 +819,7 @@ inline Scaleform::GFx::Value AScript::FUN_14190b570(const char* szMethod, bool a
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcce0(&args[0], a1);
+    SetBoolean(&args[0], a1);
     FUN_1422bcea0(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);

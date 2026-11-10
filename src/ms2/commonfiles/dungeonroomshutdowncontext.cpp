@@ -35,7 +35,7 @@ template <> int XmlValueByName(TiXmlElement* pElem, const char* pszName, Unk_Dun
 //
 
 // @0x140345b40
-TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc)
+TiXmlElement* GetFirstChildElement(TiXmlDocument* pDoc)
 {
     return ((class TiXmlElement*)((class TiXmlNode*)(class TiXmlDocument*)(pDoc))->FirstChildElement());
 }
@@ -51,7 +51,7 @@ void DungeonRoomShutdownContext::LoadRoomIds(const CStringW& strXml)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == 0)
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRoom")); pNode != 0;
@@ -65,12 +65,12 @@ void DungeonRoomShutdownContext::LoadRoomIds(const CStringW& strXml)
 }
 
 // @0x140343fc0
-void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
+void DungeonRoomShutdownContext::LoadGroups(const CStringW& strXml)
 {
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == 0)
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonGroup")); pNode != 0;
@@ -92,13 +92,13 @@ bool DungeonRoomShutdownContext::HasRoomId(unsigned nRoomId)
 }
 
 // @0x140344140
-bool DungeonRoomShutdownContext::FUN_140344140(Unk_DungeonGroupType eGroup)
+bool DungeonRoomShutdownContext::HasGroup(Unk_DungeonGroupType eGroup)
 {
     return m_groups.find(eGroup) != m_groups.end();
 }
 
 // @0x1403441a0
-bool DungeonRoomShutdownContext::FUN_1403441a0()
+bool DungeonRoomShutdownContext::HasEntries()
 {
     if (!m_roomIds.empty())
         return 1;

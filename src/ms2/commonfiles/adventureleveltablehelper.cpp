@@ -151,7 +151,7 @@ public:
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: param was TiXmlElement*
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: param was TiXmlElement*
 
 int FUN_1408731a0(TiXmlElement*, const char*, unsigned short*);
 int FUN_1408731e0(TiXmlElement*, const char*, int*);
@@ -180,7 +180,7 @@ unsigned short FUN_140197310(TiXmlElement* pElem, const char* pszName, unsigned 
 }
 
 // @0x140197350
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault)
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault)
 {
     int nVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<int&>(nVal)) != 0)
@@ -189,7 +189,7 @@ int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault)
 }
 
 // @0x140197390
-unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault)
+unsigned GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned nDefault)
 {
     unsigned nVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(unsigned int*)(&nVal)) != 0)
@@ -198,7 +198,7 @@ unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefau
 }
 
 // @0x1401973d0
-float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault)
+float GetFloatAttr(TiXmlElement* pElem, const char* pszName, float fDefault)
 {
     float fVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<float&>(fVal)) != 0)
@@ -219,19 +219,19 @@ void FUN_1401958c0(void*, void*)
 }
 
 // @0x1401958d0
-bool FUN_1401958d0(CAdventureLevelReward* p)
+bool IsEmptyReward(CAdventureLevelReward* p)
 {
     return &DAT_142ceae98 == p;
 }
 
 // @0x140195aa0
-bool FUN_140195aa0(CAdventureLevelAbility* p)
+bool IsEmptyAbility(CAdventureLevelAbility* p)
 {
     return p == &DAT_142ceaea8;
 }
 
 // @0x140195ae0
-bool FUN_140195ae0(CAdventureLevelMission* p)
+bool IsEmptyMission(CAdventureLevelMission* p)
 {
     return p == &DAT_142ceaec8;
 }
@@ -282,7 +282,7 @@ CAdventureLevelTable::~CAdventureLevelTable()
 }
 
 // @0x14019d470
-void FUN_14019d470(bool bLoaded)
+void SetLoaded(bool bLoaded)
 {
     DAT_143aac290 = bLoaded;
 }
@@ -300,7 +300,7 @@ bool CAdventureLevelTable::LoadAll()
         return false;
     if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xfb) && !LoadMission())
         return false;
-    FUN_14019d470(true);
+    SetLoaded(true);
     return true;
 }
 
@@ -423,14 +423,14 @@ bool CAdventureLevelTable::LoadReward()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("reward")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nLevel = FUN_140197310(pNode, "level", 0);
         CAdventureLevelReward row;
         row.m_nType = ParseRewardType(Unk_ReadString((class Unk_XmlNode*)(pNode), "type", CString("")).Trim());
-        row.m_nId = FUN_140197390(pNode, "id", 0);
-        row.m_nRank = FUN_140197350(pNode, "rank", 0);
-        row.m_nValue = FUN_140197350(pNode, "value", 0);
+        row.m_nId = GetUIntAttr(pNode, "id", 0);
+        row.m_nRank = GetIntAttr(pNode, "rank", 0);
+        row.m_nValue = GetIntAttr(pNode, "value", 0);
         m_mapReward.insert(std::make_pair(nLevel, row));
         m_vecLevels.push_back(nLevel);
     }
@@ -454,16 +454,16 @@ bool CAdventureLevelTable::LoadAbility()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         CAdventureLevelAbility row;
-        row.m_nEffectId = FUN_140197390(pNode, "additionalEffectId", 0);
-        row.m_nId = FUN_140197350(pNode, "id", 0);
-        row.m_nRequireLevel = FUN_140197390(pNode, "requireLevel", 0);
-        row.m_nInterval = FUN_140197350(pNode, "interval", 0);
-        row.m_nMaxCount = FUN_140197350(pNode, "maxCount", 0);
-        row.m_fStartValue = FUN_1401973d0(pNode, "startValue", 0);
-        row.m_fAddValue = FUN_1401973d0(pNode, "addValue", 0);
+        row.m_nEffectId = GetUIntAttr(pNode, "additionalEffectId", 0);
+        row.m_nId = GetIntAttr(pNode, "id", 0);
+        row.m_nRequireLevel = GetUIntAttr(pNode, "requireLevel", 0);
+        row.m_nInterval = GetIntAttr(pNode, "interval", 0);
+        row.m_nMaxCount = GetIntAttr(pNode, "maxCount", 0);
+        row.m_fStartValue = GetFloatAttr(pNode, "startValue", 0);
+        row.m_fAddValue = GetFloatAttr(pNode, "addValue", 0);
         m_mapAbility.insert(std::make_pair(row.m_nEffectId, row));
         m_vecAbilityIds.push_back(row.m_nEffectId);
     }
@@ -487,15 +487,15 @@ bool CAdventureLevelTable::LoadMission()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mission")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mission")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
-        unsigned nId = FUN_140197390(pNode, "missionId", 0);
+        unsigned nId = GetUIntAttr(pNode, "missionId", 0);
         CAdventureLevelMission row;
-        row.m_nCount = FUN_140197390(pNode, "missionCount", 0);
+        row.m_nCount = GetUIntAttr(pNode, "missionCount", 0);
         row.m_nOne = 1;
-        row.m_nItemId = FUN_140197390(pNode, "itemId", 0);
-        row.m_nItemRank = FUN_140197350(pNode, "itemRank", 0);
-        row.m_nItemCount = FUN_140197350(pNode, "itemCount", 0);
+        row.m_nItemId = GetUIntAttr(pNode, "itemId", 0);
+        row.m_nItemRank = GetIntAttr(pNode, "itemRank", 0);
+        row.m_nItemCount = GetIntAttr(pNode, "itemCount", 0);
         m_mapMission.insert(std::make_pair(nId, row));
     }
     return true;

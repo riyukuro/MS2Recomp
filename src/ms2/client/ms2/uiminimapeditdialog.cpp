@@ -342,7 +342,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x141a53100
 void UIMinimapEditDialog::FUN_141a53100()
 {
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap == 0)
         return;
     TiXmlDocument doc;
@@ -379,7 +379,7 @@ void UIMinimapEditDialog::FUN_141a53100()
 // @0x141a53750
 void UIMinimapEditDialog::FUN_141a53750()
 {
-    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->GetFieldData();
     if (spMap == 0)
         return;
     if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
@@ -444,7 +444,7 @@ void UIMinimapEditDialog::SetWorldObjectsHidden(int bShow)
         m_hidden.RemoveAll();
         m_instanced.RemoveAll();
         ATL::CAtlList<efd::SmartPointer<GameObject> > objects(10);
-        WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&objects), 0);
+        WorldService::GetInstance()->CollectObjects(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&objects), 0);
         for (POSITION pos = objects.GetHeadPosition(); pos != NULL; objects.GetNext(pos))
         {
             efd::SmartPointer<GameObject> spObject = objects.GetAt(pos);
@@ -554,7 +554,7 @@ CString UIMinimapEditDialog::GetXBlockPath(CString strXBlock)
 CString UIMinimapEditDialog::GetMinimapImagePath()
 {
     CString strPath;
-    strPath.Format("./Data/Resource/Image/Map/Minimap/%08d.dds", WorldService::GetInstance()->FUN_141bd3060());
+    strPath.Format("./Data/Resource/Image/Map/Minimap/%08d.dds", WorldService::GetInstance()->GetFieldId());
     return strPath;
 }
 

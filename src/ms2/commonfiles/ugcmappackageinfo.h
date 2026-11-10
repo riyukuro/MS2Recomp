@@ -18,7 +18,7 @@ class UGCMapPackageInfo : public CPtred
 public:
     UGCMapPackageInfo();                    // 0x1408b9860
 
-    void FUN_1408b98f0(void* pXmlNode);     // read one <cube> element (name invented)
+    void LoadFromXml(void* pXmlNode);     // read one <cube> element (name invented)
 
     int m_nItemId;                          // +0x18 "itemID"
     int m_nItemCount;                       // +0x1c "itemCount" (default 1)
@@ -50,6 +50,6 @@ MS2_CHECK_OFFSET(CUGCMapPackageData, m_cubes, 0x30);
 
 typedef MS2SvrPtr<CUGCMapPackageData> UGCMapPackageDataPtr;
 
-UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName);     // cached lookup, loads on miss
-void FUN_1408b9c90();                                           // clear the cache
+UGCMapPackageDataPtr GetUGCMapPackageData(const CString& strName);     // cached lookup, loads on miss
+void ClearCache();                                           // clear the cache
 UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName);     // load from xml (inserts into the cache)

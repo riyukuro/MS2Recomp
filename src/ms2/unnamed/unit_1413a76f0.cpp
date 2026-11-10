@@ -35,12 +35,12 @@ public:
 class Unk_GcWorld
 {
 public:
-    Unk_GcPC* FUN_141bd0cc0();                              // the local player
+    Unk_GcPC* GetLocalPlayer();                              // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 
@@ -91,7 +91,7 @@ CGuideConditionMovement::CGuideConditionMovement()
 // @0x1413a7820
 int CGuideConditionMovement::vfunc_3()
 {
-    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPC == 0)
         return 0;
     if (reinterpret_cast<const efd::Point3&>(m_vLastPos) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))

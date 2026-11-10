@@ -86,7 +86,7 @@ class WeddingManager;
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void ShowSystemNotice(const CStringW& text, int nA, int nB);       // message popup
 void FUN_140710590(COutPacket& packet);                         // send the packet
-unsigned __int64 FUN_140718370(const CStringW& text);           // text -> number
+unsigned __int64 ParseUInt64W(const CStringW& text);           // text -> number
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
 CString ToCString(const char* psz, int n);
 CString FUN_141028be0(__int64 nCharSN, const CString& strProfile, int nA, CString strB);   // the profile picture url
@@ -128,7 +128,7 @@ CString UIWeddingGuestDialog::GetTypeName()
 int UIWeddingGuestDialog::vfunc_65()
 {
     bool bOpen = false;
-    switch (WeddingManager::GetInstance()->FUN_140d295d0()->m_nState)
+    switch (WeddingManager::GetInstance()->GetWeddingProxy()->m_nState)
     {
     case 1:
         bOpen = true;
@@ -223,7 +223,7 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             std::vector<GuestPtr> guests;
             for (std::map<CStringW, GuestPtr>::iterator it = m_guests.begin(); it != m_guests.end(); ++it)
                 guests.push_back(it->second);
-            pInvitation->FUN_140fe5f20(reinterpret_cast<const std::vector<UIWeddingInvitationDialog::GuestPtr>&>(guests));
+            pInvitation->SetGuests(reinterpret_cast<const std::vector<UIWeddingInvitationDialog::GuestPtr>&>(guests));
         }
         vfunc_67();
         return 1;
@@ -234,8 +234,8 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
-            unsigned __int64 nFirst = FUN_140718370(data.FUN_1422b8f40());
-            unsigned __int64 nSecond = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nFirst = ParseUInt64W(data.FUN_1422b8f40());
+            unsigned __int64 nSecond = ParseUInt64W(data.FUN_1422b8f40());
             int nError = WeddingManager::GetInstance()->CanInvite(nFirst, nSecond, (int)(m_guests.size() + 1));
             if (nError != 0)
             {
@@ -350,7 +350,7 @@ void UIWeddingGuestDialog::FUN_140fcdcf0()
 bool UIWeddingGuestDialog::CanAddGuest(const CStringW& strName)
 {
     int nGuests;                                    // declared first: the exe gives it the first frame slot
-    WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
+    WeddingProxy* pProxy = WeddingManager::GetInstance()->GetWeddingProxy();
     if (strName == pProxy->m_groom.m_strName || strName == pProxy->m_bride.m_strName)
     {
         ShowSystemNotice(GetStringCommonByKey(L"s_wedding_invitation_error_user"), 1, 1);
@@ -399,9 +399,9 @@ UIWeddingGuestPage::~UIWeddingGuestPage()
 // @0x140fd6c70
 bool UIWeddingGuestPage::vfunc_1()
 {
-    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
+    if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->GetScript()))->IsNull())
         return false;
-    Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
+    Scaleform::GFx::Value kPage = m_pDialog->GetScript()->GetMember("m_currentPage");
     if (kPage.IsNull() != 0)
         return false;
     m_pScript = Unk_ASCreate<ASUIComponent>(m_pDialog->FUN_1422db730(), kPage);
@@ -464,7 +464,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
         for (size_t i = 0; i < buddies.GetCount(); i++)
         {
             CBuddyManager::Ptr spBuddy = buddies[i];
-            if (spBuddy->FUN_1401cc5f0() == 0)
+            if (spBuddy->IsFriend() == 0)
                 continue;
             ASObj row(2);
             row.SetWStringMember("name", spBuddy->GetName());
@@ -542,7 +542,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
     if (!UIWeddingGuestPage::vfunc_1())
         return false;
     GuildArray members;
-    CGuildManager::GetInstance()->FUN_1404d0420(&members);
+    CGuildManager::GetInstance()->GetMembers(&members);
     if (members.GetCount() == 0)
         return true;
     if (MS2Ptr<ASScrollingList> spList = static_cast<AScript*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
@@ -590,7 +590,7 @@ bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx
         {
             bool bSelected = data.PopBool();
             CStringW strName = data.FUN_1422b8f40();
-            MS2Ptr<CGuildMember> spMember = FUN_140fd80e0(strName);
+            MS2Ptr<CGuildMember> spMember = FindGuildMember(strName);
             if (spMember.get() != 0)
             {
                 if (!bSelected)
@@ -614,10 +614,10 @@ bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx
 }
 
 // @0x140fd80e0
-MS2Ptr<CGuildMember> UIWeddingGuestPageGuild::FUN_140fd80e0(const CStringW& strName)
+MS2Ptr<CGuildMember> UIWeddingGuestPageGuild::FindGuildMember(const CStringW& strName)
 {
     GuildArray members;
-    CGuildManager::GetInstance()->FUN_1404d0420(&members);
+    CGuildManager::GetInstance()->GetMembers(&members);
     for (size_t i = 0; i < members.GetCount(); i++)
     {
         if (members[i]->data.GetName() == strName)

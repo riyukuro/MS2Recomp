@@ -26,7 +26,7 @@ class GlobalContext { public: StringManager* GetStringManager() const; };   // e
 
 // The vector constructor iterator: runs ctor on count items of size bytes.
 // @0x140001020
-void FUN_140001020(void* ptr, UPInt size, int count, void (*ctor)(void*))
+void ConstructArray(void* ptr, UPInt size, int count, void (*ctor)(void*))
 {
     char* p = (char*)ptr;
     while (--count >= 0)
@@ -38,14 +38,14 @@ void FUN_140001020(void* ptr, UPInt size, int count, void (*ctor)(void*))
 
 // ASString::~ASString on a node holder.
 // @0x1400010b0
-void FUN_1400010b0(ASStringNode** holder)
+void ReleaseStringNode(ASStringNode** holder)
 {
     (*holder)->Release();
 }
 
 // ASString::AssignNode: takes a reference on node and drops the old one.
 // @0x1400010e0
-void FUN_1400010e0(ASStringNode** holder, ASStringNode* node)
+void SetStringNode(ASStringNode** holder, ASStringNode* node)
 {
     node->AddRef();
     (*holder)->Release();
@@ -113,7 +113,7 @@ void FUN_140001420(U1020Object* obj)
 // ArrayPagedBase<const RefCountBaseGC*, 10, 5, AllocatorPagedLH_POD<..., 2>>::allocatePage (sf_arraypaged.h): the
 // page table grows by 5 entries, a page holds 1024 pointers.
 // @0x140001450
-void FUN_140001450(U1020PagedArray* a, UPInt nb)
+void AddPage(U1020PagedArray* a, UPInt nb)
 {
     if (nb >= a->MaxPages)
     {

@@ -29,8 +29,8 @@ public:
     void FUN_14107ae00();                                   // fill with a random gender and the default appearance
     int ApplyToPC(PC* pPC);                           // apply to a pc
     int FUN_14107c3a0(PC* pPC);                           // apply to a pc and its default items
-    void FUN_14107ad90();                                   // reset to the defaults
-    void FUN_14107afa0();                                   // both equip records = the default appearance
+    void Reset();                                   // reset to the defaults
+    void SetDefaultEquip();                                   // both equip records = the default appearance
 
     int m_nType;                                            // +0x18 (3 = lobby preview)
     unsigned long long m_n20;                               // +0x20

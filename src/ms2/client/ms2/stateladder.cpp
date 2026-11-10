@@ -23,7 +23,7 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-bool FUN_14028d470(float a, float b);                                                      // approx equal
+bool IsNearlyEqual(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
 class GameObjectController   // C3: member view for the former free stand-ins
 {
@@ -85,10 +85,10 @@ public:
 };
 // The actor's move-key state (PCBase::FUN_14166d240).
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
-class Unk_PCMove { public: bool IsActionKeyDown(int); bool FUN_141683100(int);  public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: bool IsActionKeyDown(int); bool IsActionKeyPressed(int);  public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_LadderMove : public Unk_PCMove {
 public:
-class Unk_PCMove { public: bool IsActionKeyDown(int); bool FUN_141683100(int); };
+class Unk_PCMove { public: bool IsActionKeyDown(int); bool IsActionKeyPressed(int); };
 
 };
 
@@ -119,7 +119,7 @@ void Unk_LadderStep::FUN_1417d7ad0(unsigned int ms)
 // @0x1417d7b00
 float Unk_LadderStep::FUN_1417d7b00()
 {
-    return m_timer.FUN_140868940();
+    return m_timer.GetRatio();
 }
 
 // @0x1417d7b30
@@ -251,7 +251,7 @@ void StateLadder::vfunc_8(double fTime)
     if (m_timerPos.IsExpired() != 0)
         kDir = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->GetMoveDirection()));
     reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
-    if (((class Unk_PCMove*)(pMove))->FUN_141683100(0x493e1) || m_n28 != 0)
+    if (((class Unk_PCMove*)(pMove))->IsActionKeyPressed(0x493e1) || m_n28 != 0)
     {
         m_n28 = 0;
         reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->GetMoveDirection())));
@@ -390,7 +390,7 @@ float StateLadder::UpdateClimb()
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
         {
-            fMove = 75.0f * m_timerUp.FUN_140868b20();
+            fMove = 75.0f * m_timerUp.GetRatioDelta();
             egf::Entity* pFound = FUN_1417d8b20(1, 0xbadf0a13);
             if (pFound == 0)
             {
@@ -429,7 +429,7 @@ float StateLadder::UpdateClimb()
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
         {
-            fMove = 75.0f * m_timerDown.FUN_140868b20();
+            fMove = 75.0f * m_timerDown.GetRatioDelta();
             egf::Entity* pFound = FUN_1417d8b20(2, 0xbadf0a13);
             if (pFound == 0 && m_pLadder != 0)
             {
@@ -458,7 +458,7 @@ float StateLadder::UpdateClimb()
                 else
                 {
                     reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));
-                    if (FUN_14028d470(kPos.z, kProp.z) != 0)
+                    if (IsNearlyEqual(kPos.z, kProp.z) != 0)
                         m_n10 = 0x2e;
                 }
             }

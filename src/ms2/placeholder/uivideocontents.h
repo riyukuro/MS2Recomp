@@ -30,7 +30,7 @@ public:
     float GetVolume();                          // "volume"
     float GetTime();                          // "time": the current play time (s)
     void Play(const CString& strPath);     // play(path)
-    void FUN_1422e9610();                           // rePlay()
+    void RePlay();                           // rePlay()
     void Stop();                           // stop()
     void Seek(float fTime);                // seek(time)
     void Pause();                           // pause()

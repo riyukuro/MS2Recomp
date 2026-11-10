@@ -74,7 +74,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, int nValue);      // SetAttribute
 CString GetCharacterFolder();                                                    // the character save directory
 CString GetAccountFolder();                                                    // the account save directory
-CString FUN_140cc2a00(const CString& strDir, const CString& strFile);       // path join
+CString JoinPath(const CString& strDir, const CString& strFile);       // path join
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
 CStringW FUN_14083cb20(const CStringW& str);
@@ -83,7 +83,7 @@ CStringW GetQuestName(int nQuestId);                                       // qu
       // the name / profanity filter
 class CReservedWordTable;
 class Unk_LqActor : public MyPC { };
-class Unk_LqWorld { public: Unk_LqActor* FUN_141bd0cc0(); };
+class Unk_LqWorld { public: Unk_LqActor* GetLocalPlayer(); };
 class Unk_LqUIMgr { public: void FUN_141adc530(int nClass); };
 class Unk_LqSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -100,7 +100,7 @@ unsigned short GetQuestLevel(int);  // C3: the definition's signature
 //
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 void* FUN_140764020();   // C3: was FUN_140764020
 typedef MS2Ptr<CLearningQuestData> LqPtr;
 typedef ATL::CAtlArray<LqPtr> LqArray;
@@ -118,7 +118,7 @@ UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::OnChangeServer));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
-    FUN_140bfc4b0()->AddListener(this);
+    GetQuestEventDispatcher()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
 }
 
@@ -128,7 +128,7 @@ UILearningQuestDialog::~UILearningQuestDialog()
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::OnChangeServer));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
-    FUN_140bfc4b0()->RemoveListener(this);
+    GetQuestEventDispatcher()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
 }
 
@@ -163,7 +163,7 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp(szMethod, "onOk") == 0)
     {
-        Unk_LqActor* pActor = ((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+        Unk_LqActor* pActor = ((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pActor == 0)
             return 0;
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
@@ -364,7 +364,7 @@ void UILearningQuestDialog::LoadLearningQuest()
         CLearningQuestTable::GetInstance()->GetAll(all);
     for (size_t i = 0; i < all.GetCount(); i++)
         m_2c8.SetAt(all[i]->m_nId, 0);
-    int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_1e8, (const char*)FUN_140cc2a00(GetCharacterFolder(), "learningQuestCharacter.xml"), 0, true, false);
+    int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_1e8, (const char*)JoinPath(GetCharacterFolder(), "learningQuestCharacter.xml"), 0, true, false);
     if (bCharacterLoaded != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_1e8))->FirstChild("ms2"));
@@ -386,7 +386,7 @@ void UILearningQuestDialog::LoadLearningQuest()
             }
         }
     }
-    int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_258, (const char*)FUN_140cc2a00(GetAccountFolder(), "learningQuestAccount.xml"), 0, true, false);
+    int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_258, (const char*)JoinPath(GetAccountFolder(), "learningQuestAccount.xml"), 0, true, false);
     if (bAccountLoaded != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
@@ -435,7 +435,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind == 0)
             XmlSetAttr(pList, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
-    reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)FUN_140cc2a00(GetCharacterFolder(), "learningQuestCharacter.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)JoinPath(GetCharacterFolder(), "learningQuestCharacter.xml"));
     TiXmlElement* pRoot2 = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
     if (pRoot2 == 0)
     {
@@ -458,7 +458,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind != 0)
             XmlSetAttr(pList2, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
-    reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)FUN_140cc2a00(GetAccountFolder(), "learningQuestAccount.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)JoinPath(GetAccountFolder(), "learningQuestAccount.xml"));
 }
 
 // @0x140ea2e50
@@ -558,7 +558,7 @@ void UILearningQuestDialog::BuildCompleteReward(const CQuestData::CompleteReward
 // @0x140ea3910
 void UILearningQuestDialog::MarkDirty()
 {
-    if (((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == 0)
+    if (((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()) == 0)
         return;
     if (((class GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         return;

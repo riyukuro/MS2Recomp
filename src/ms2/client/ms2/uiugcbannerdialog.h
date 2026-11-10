@@ -32,7 +32,7 @@ struct Unk_DateParts
     int m_dow;
     int m_hour2;
     int m_minute;
-    CStringW FUN_14088e040();                                   // the date as text
+    CStringW GetDateText();                                   // the date as text
 };
 MS2_CHECK_SIZE(Unk_DateParts, 0x30);
 

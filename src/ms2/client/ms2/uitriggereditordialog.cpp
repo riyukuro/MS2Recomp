@@ -126,12 +126,12 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_TeWorld
 {
 public:
-    PCBase* FUN_141bd0cc0();                                            // the local player
+    PCBase* GetLocalPlayer();                                            // the local player
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
 // AScript invoke helpers that are not in ascript.h (one COMDAT per argument list).
@@ -149,14 +149,14 @@ extern int g_bAppActive;                                                // 0x143
 class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
 CStringW GetStringCommon(int nStringId);                                  // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // common string by key
-CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);                 // the value as a string
+CStringW ValueToStringW(const Scaleform::GFx::Value& v);                 // the value as a string
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // system message
 MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Unk_TeBoxDelegate cb);
 template <class A> MS2Ptr<CMsgBoxData> Unk_PmShowYesNo(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, A arg);   // C3: was FUN_141a879a0 (uipartydialog)
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                          // show the box
 CString FUN_141b6e500(const CString& strDir, const char* pszFilter, const CString& strDefault);   // open-file dialog
 CString FUN_141b6e880(const CString& strDir, const char* pszFilter, const CString& strDefault);   // save-file dialog
-void FUN_1401d3700(CString& strPath);                                   // normalize a path
+void ToLower(CString& strPath);                                   // normalize a path
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringW XmlWide(const char* pszUtf8);                                  // utf-8 -> wide
 CString FUN_140390ea0(const wchar_t* psz, int nUnk);                    // wide -> narrow
@@ -224,7 +224,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         UIWebBrowserBase* pBrowser = ((class UIWebBrowserBase*)FindWebBrowser(0x4e6a));
         if (pBrowser == 0)
             return 0;
-        pBrowser->FUN_14135ec00(*TSingleton<Client::Constants>::GetInstance()->TriggerEditorHelpURL.Get(), true);
+        pBrowser->Navigate(*TSingleton<Client::Constants>::GetInstance()->TriggerEditorHelpURL.Get(), true);
         return 1;
     }
     else if (_stricmp("OnSaveFile", szMethod) == 0)
@@ -270,8 +270,8 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (nArgs != 2)
             return 1;
         Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::OnRemoveStateAnswer);
-        CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), FUN_1422b9490(pArgs[0]));
-        Unk_PmShowYesNo<CStringW>(strText, 1, cb, FUN_1422b9490(pArgs[1]));
+        CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), ValueToStringW(pArgs[0]));
+        Unk_PmShowYesNo<CStringW>(strText, 1, cb, ValueToStringW(pArgs[1]));
         return 1;
     }
     return 0;
@@ -287,7 +287,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
-        SetChildText(GetGFxValue(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
+        SetChildText(GetGFxValue(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->GetItemId()), m_nCubeId));
     reinterpret_cast<Unk_EpEntity*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
@@ -303,11 +303,11 @@ void UITriggerEditorDialog::OnLoadComplete()
         FUN_140710590(packet);
     }
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_newStateButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton1)).get())
-        m_spButton1->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba00), 0);
+        m_spButton1->AddClickHandler(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba00), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_rollbackButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton2)).get())
-        m_spButton2->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba30), 0);
+        m_spButton2->AddClickHandler(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba30), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_clearContentButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton3)).get())
-        m_spButton3->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2bb10), 0);
+        m_spButton3->AddClickHandler(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2bb10), 0);
 }
 MS2_REPLACE_METHOD(0x141B2AA10, UITriggerEditorDialog, OnLoadComplete, 1827, 0x93A07744);
 
@@ -379,7 +379,7 @@ MS2_REPLACE_METHOD(0x141B2B3A0, UITriggerEditorDialog, vfunc_43, 39, 0x6156B88B)
 // @0x141b2b3d0
 int UITriggerEditorDialog::vfunc_13()
 {
-    if (CInputKeyHandler::GetInstance()->FUN_14116d840())
+    if (CInputKeyHandler::GetInstance()->IsEscapePressed())
     {
         FUN_141b30060(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::OnCloseAnswer), L"TestArg");
         return 1;
@@ -496,11 +496,11 @@ int UITriggerEditorDialog::OpenTriggerFile()
     CString strPath = FUN_141b6e500("./Data/Xml/Trigger/", "xml\0*.xml", "");
     if (strPath.IsEmpty())
         return 1;
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     char szDir[MAX_PATH + 1];
     GetCurrentDirectoryA(MAX_PATH, szDir);
     CString strDir(szDir);
-    FUN_1401d3700(strDir);
+    ToLower(strDir);
     strDir.Replace("\\", "/");
     CString strFile(strPath);
     strFile.Replace("\\", "/");
@@ -657,11 +657,11 @@ int UITriggerEditorDialog::SaveTriggerFile()
     CString strPath = FUN_141b6e880("./Data/Xml/Trigger/", "xml\0*.xml", m_strFileName);
     if (strPath.IsEmpty())
         return 0;
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     char szDir[MAX_PATH + 1];
     GetCurrentDirectoryA(MAX_PATH, szDir);
     CString strDir(szDir);
-    FUN_1401d3700(strDir);
+    ToLower(strDir);
     strDir.Replace("\\", "/");
     CString strFile(strPath);
     strFile.Replace("\\", "/");
@@ -730,7 +730,7 @@ MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E
 // @0x141b2d870
 void UITriggerEditorDialog::RefreshInstallObjectList()
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_30 == 0)
@@ -755,7 +755,7 @@ void UITriggerEditorDialog::RefreshInstallObjectList()
             continue;
         ASObj obj(2);
         obj.SetIntMember("id", nIndex);
-        CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20());
+        CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->GetItemId());
         obj.SetWStringMember("text", strText);
         int nHash = FUN_1408a03c0(pCube->position);
         obj.SetIntMember("hash", nHash);
@@ -891,7 +891,7 @@ MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, RefreshStates, 5046, 0xB0
 // @0x141b2f140
 void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
 {
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     if (m_30 == 0)
@@ -982,8 +982,8 @@ bool CompareCubeNames(Cube* pLeft, Cube* pRight)
         return false;
     if (pRight->item.IsNull())
         return false;
-    CStringW strLeft = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pLeft->FUN_1408b4f20());
-    CStringW strRight = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRight->FUN_1408b4f20());
+    CStringW strLeft = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pLeft->GetItemId());
+    CStringW strRight = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRight->GetItemId());
     if (strLeft.GetAt(0) < strRight.GetAt(0))
         return true;
     return false;

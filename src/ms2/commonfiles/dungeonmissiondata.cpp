@@ -160,7 +160,7 @@ MS2Ptr<DungeonMissionData> DungeonMissionData::Create(TiXmlElement* pElem)
     if (strType.GetLength() == 0)
         return MS2Ptr<DungeonMissionData>(0);
     CStringW strClass = StringFormat(L"DungeonMissionData{0}", strType);
-    MS2Ptr<DungeonMissionData> pData(static_cast<DungeonMissionData*>(FUN_1401f7f50(strClass)));
+    MS2Ptr<DungeonMissionData> pData(static_cast<DungeonMissionData*>(CreateClassObject(strClass)));
     if (pData == 0)
         pData.AssignRaw(new DungeonMissionData);
     pData->Load(pElem);

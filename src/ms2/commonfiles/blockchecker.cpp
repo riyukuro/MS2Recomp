@@ -113,7 +113,7 @@ void CBlockChecker::Clear() { for(size_t i=0;i<m_records.GetCount();++i) m_recor
 MS2_REPLACE_METHOD(0x1401CA390, CBlockChecker, Clear, 96, 0xEBE98BC1);
 // @0x1401ca400
 CStringW GetBlockActionMessage(const BlockPtr& record,int action) {
-    int message=FUN_1401ca560(record->kind,action);
+    int message=GetBlockMessageId(record->kind,action);
     switch(message) { case 0x432: case 0x438: {
         CMsTime time(record->expiry);
         return BlockFormat(message,time.GetYear(),time.GetMonth(),time.GetDay(),time.GetHour(),time.GetMinute(),time.GetSecond());
@@ -123,7 +123,7 @@ CStringW GetBlockActionMessage(const BlockPtr& record,int action) {
 }
 MS2_REPLACE(0x1401CA400, GetBlockActionMessage, 338, 0x2B651537);
 // @0x1401ca560
-int FUN_1401ca560(int type,int action) {
+int GetBlockMessageId(int type,int action) {
     switch(type) {
     case 2: return action==2 ? 0x433 : 0x432;
     case 4: return 0x432;
@@ -159,7 +159,7 @@ int FUN_1401ca560(int type,int action) {
     }
     return message;
 }
-MS2_REPLACE(0x1401CA560, FUN_1401ca560, 323, 0x2E15B3FC);
+MS2_REPLACE(0x1401CA560, GetBlockMessageId, 323, 0x2E15B3FC);
 // @0x1401ca720
 bool CBlockChecker::IsExpired(BlockPtr record) { return record==NULL || record->expiry<GetServerTime(); }
 MS2_REPLACE_METHOD(0x1401CA720, CBlockChecker, IsExpired, 120, 0x15368163);

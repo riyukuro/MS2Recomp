@@ -41,7 +41,7 @@
 //
 
 extern "C" float (__cdecl* __imp_ceilf)(float);
-bool FUN_1406a5040(int nId);                                        // the id is a special (whole) sale id
+bool IsShopTab(int nId);                                        // the id is a special (whole) sale id
 
 // ---- one sale event (PreminmMarketSaleEventContext: m_18 rate in 1/10000, m_20 covered ids, m_30 currency) ----
 
@@ -76,7 +76,7 @@ bool FUN_1407cdfc0(PreminmMarketSaleEventContext* pContext, int nId, int nCurren
     if (!bFound)
     {
         bool bWhole = false;
-        bool bSpecial = FUN_1406a5040(nId);
+        bool bSpecial = IsShopTab(nId);
         if (bSpecial)
             bWhole = true;
         else
@@ -219,7 +219,7 @@ CShutdownEventDropBox::CShutdownEventDropBox()
 }
 
 // @0x1407d0150
-bool CShutdownEventDropBox::FUN_1407d0150(unsigned long nBoxId)
+bool CShutdownEventDropBox::AddShutdown(unsigned long nBoxId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_ids[nBoxId]++;
@@ -227,7 +227,7 @@ bool CShutdownEventDropBox::FUN_1407d0150(unsigned long nBoxId)
 }
 
 // @0x1407d01d0
-void CShutdownEventDropBox::FUN_1407d01d0(unsigned long nBoxId)
+void CShutdownEventDropBox::RemoveShutdown(unsigned long nBoxId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_ids.find(nBoxId) == m_ids.end())
@@ -256,7 +256,7 @@ CShutdownEventInteractObject::CShutdownEventInteractObject()
 }
 
 // @0x1407d0420
-bool CShutdownEventInteractObject::FUN_1407d0420(unsigned nFieldId, int nObjectId)
+bool CShutdownEventInteractObject::AddShutdown(unsigned nFieldId, int nObjectId)
 {
     std::pair<unsigned, int> key(nFieldId, nObjectId);
     Unk_CriticalSectionLock lock(m_lock, 1);
@@ -265,7 +265,7 @@ bool CShutdownEventInteractObject::FUN_1407d0420(unsigned nFieldId, int nObjectI
 }
 
 // @0x1407d04c0
-void CShutdownEventInteractObject::FUN_1407d04c0(unsigned nFieldId, int nObjectId)
+void CShutdownEventInteractObject::RemoveShutdown(unsigned nFieldId, int nObjectId)
 {
     std::pair<unsigned, int> key(nFieldId, nObjectId);
     Unk_CriticalSectionLock lock(m_lock, 1);
@@ -370,7 +370,7 @@ CShutdownEventFunctionItem::CShutdownEventFunctionItem()
 }
 
 // @0x1407d0c30
-bool CShutdownEventFunctionItem::FUN_1407d0c30(unsigned long nItemId)
+bool CShutdownEventFunctionItem::AddShutdown(unsigned long nItemId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_items[nItemId]++;
@@ -378,7 +378,7 @@ bool CShutdownEventFunctionItem::FUN_1407d0c30(unsigned long nItemId)
 }
 
 // @0x1407d0cb0
-void CShutdownEventFunctionItem::FUN_1407d0cb0(unsigned long nItemId)
+void CShutdownEventFunctionItem::RemoveShutdown(unsigned long nItemId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_items.find(nItemId) == m_items.end())

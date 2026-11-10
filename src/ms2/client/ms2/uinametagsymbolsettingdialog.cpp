@@ -62,7 +62,7 @@ char* GetSymbolIds(Unk_NtMgr* p);                                  // 0x14131e13
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 void FUN_1422ba6e0();
@@ -109,7 +109,7 @@ MS2_REPLACE_METHOD(0x14131DA10, UINameTagSymbolSettingDialog, vfunc_67, 24, 0x6C
 void UINameTagSymbolSettingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_NtPlayer* pPlayer = ((struct Unk_NtPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    Unk_NtPlayer* pPlayer = ((struct Unk_NtPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     size_t nSelected = 0;
     if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_list"))
     {

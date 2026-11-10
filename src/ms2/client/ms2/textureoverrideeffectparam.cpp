@@ -39,7 +39,7 @@ private:
     void* m_unk[6];
 };
 
-CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);   // resource path join
+CString JoinPath(const CString& strRoot, const CString& strPath);   // resource path join
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // @0x14184b540
@@ -60,7 +60,7 @@ MS2_REPLACE_METHOD(0x14184b590, TextureOverrideEffectParam, vfunc_1, 63, 0x5AA43
 bool TextureOverrideEffectParam::vfunc_5(int nFlags)
 {
     if (GetNifLoadingService())
-        ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(FUN_140cc2a00("", m_strTexturePath), nFlags);
+        ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(JoinPath("", m_strTexturePath), nFlags);
     return true;
 }
 MS2_REPLACE_METHOD(0x14184b5e0, TextureOverrideEffectParam, vfunc_5, 161, 0x73218F92);
@@ -105,7 +105,7 @@ bool TextureOverrideEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget
         }
     }
     const TextureOverrideEffectParam* pTexParam = static_cast<const TextureOverrideEffectParam*>(pParam);
-    CString strPath = FUN_140cc2a00("", pTexParam->m_strTexturePath);
+    CString strPath = JoinPath("", pTexParam->m_strTexturePath);
     m_spTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strPath, 5);
     return true;
 }

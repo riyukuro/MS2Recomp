@@ -86,7 +86,7 @@ int DisplaySlot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
         return 0;
-    ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
+    ASTooltip tip(WorldService::GetInstance()->GetLocalPlayer(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
@@ -98,7 +98,7 @@ int DisplaySlot::vfunc_0(void* p)
 // @0x140a507f0
 int DisplaySlot::vfunc_8(void* p)
 {
-    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->GetLocalPlayer();
     if (pPlayer == 0)
         return 0;
     if (m_spItem == 0)

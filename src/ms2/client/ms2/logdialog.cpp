@@ -215,7 +215,7 @@ class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstan
 // ---- unit-local views of callees emitted in other units ----
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // narrow -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
-bool FUN_14083d990(CStringA);  // C3: the definition's signature
+bool SetClipboardTextA(CStringA);  // C3: the definition's signature
 void FUN_1412751b0(const CStringW& strText, int nType);                 // HUD system message
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
@@ -510,7 +510,7 @@ void CLogDialog::CopySelection()
         int nItem = m_list.GetNextSelectedItem(pos);
         strText.Append(StringFormat<CStringA>("{0}\n", m_list.GetItemText(nItem, 3)));
     }
-    FUN_14083d990(strText);
+    SetClipboardTextA(strText);
 }
 
 // @0x141451290

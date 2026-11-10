@@ -206,7 +206,7 @@ public:
     virtual void vfunc_66() = 0;
 };
 class Unk_GmNotify : public NotifyObject { public: char m_pad_18[8]; CStringW m_20; };
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 class Unk_GmGrid;
 class Unk_GmField;
@@ -215,7 +215,7 @@ class Unk_GmConstLevel { public: unsigned int m_value; };
 class Unk_GmApp : public WorldService
 {
 public:
-    PC* FUN_141bd0cc0();                                                // the local player
+    PC* GetLocalPlayer();                                                // the local player
 };
 class Unk_GmTable
 {
@@ -518,7 +518,7 @@ class Unk_SingletonObj* FUN_140939a10();
 #define FUN_140939a10() ((NotifySystem*)FUN_140939a10())   // C3: was NotifySystem* FUN_140939a10()
 class Unk_BonusBar* GetGameEventUserValueManager();   // C3: was GetGameEventUserValueManager
 class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_SoundSink* GetKeyTable();   // C3: the Unk_GmGuideTable (calls cast back)
 class CCharacterAbilityTable;
@@ -541,14 +541,14 @@ public:
     int FUN_14047c820();
     float FUN_14047d4e0();
     float FUN_14047d5c0();
-    void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
+    void GetLevelUpPackageIds(ATL::CAtlArray<unsigned>& out);
     MS2Ptr<GalleryContext> GetGallery();             // 0x14047cf60
     MS2Ptr<TimeRunEventContext> GetTimeRunEvent();   // 0x14047d6c0
-    MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
+    MS2Ptr<StampEventContext> GetStampEvent(Unk_AttendTable& table);
     MS2Ptr<LongTermAttendGiftContext> GetLongTermAttendGift();   // 0x14047ce70
     MS2Ptr<RpsContext> GetRps();                                 // 0x14047d140
 };
-bool FUN_14028d470(float, float);
+bool IsNearlyEqual(float, float);
 enum Unk_SubJobCode : int;
 class CChangeJobTable { public: int GetStartQuestId(Unk_SubJobCode eJob); };   // C3: the real member (local view, was FUN_1401d6d70)
 int FUN_1401e0800(unsigned short nLevel);
@@ -750,13 +750,13 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 // ---- exe functions: messages, strings ----
 
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 void ShowSystemNotice(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
 void FUN_1412752d0(const CStringW& str, int n);
-int FUN_1413499b0(int);   // C3: was FUN_1413499b0
+int ToggleShopTab(int);   // C3: was ToggleShopTab
 int EnsureScreenshotDirectory(CStringW* pPath);   // C3: the real free function (was FUN_14184fe60)
 void FUN_140710590(COutPacket& packet);
 bool FUN_141900c80(int nResult, const CMsgBoxData& box);
@@ -826,7 +826,7 @@ void UIGameMenuDialog::vfunc_67()
     ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIDialogEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
-    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->RemoveListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_order.RemoveAll();
     m_enabled.RemoveAll();
@@ -850,7 +850,7 @@ void UIGameMenuDialog::OnLoadComplete()
     ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->AddListener(static_cast<UIDialogEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
-    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->AddListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     RefreshMenu();
     FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIGameMenuDialog::OnNotifyGameEventChanged));
@@ -1105,7 +1105,7 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 // @0x141937ca0
 void UIGameMenuDialog::vfunc_oa0_29()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int bHas = 0;
@@ -1157,7 +1157,7 @@ void UIGameMenuDialog::FUN_141937ea0(void*, int)
 // @0x141937ed0
 void UIGameMenuDialog::UpdateContractAndHomeMenu()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int nContract = ((class MyPC*)(class PCBase*)(pPc))->FUN_141527ed0();
@@ -1170,7 +1170,7 @@ void UIGameMenuDialog::UpdateContractAndHomeMenu()
             !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820)
             nShown = 1;
         else
-            nShown = WorldService::GetInstance()->FUN_141bd30a0()->m_nHomeReturnable;
+            nShown = WorldService::GetInstance()->GetFieldData()->m_nHomeReturnable;
         SetMenuEnable(0x16, nShown);
     }
 }
@@ -1179,9 +1179,9 @@ void UIGameMenuDialog::UpdateContractAndHomeMenu()
 void UIGameMenuDialog::FUN_141938100()
 {
     int bShow = 1;
-    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8de0)->Get()))
+    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->GetFieldId() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8de0)->Get()))
         bShow = 0;
-    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060() != 62000000 && !FUN_1409312f0())
+    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->GetFieldId() != 62000000 && !FUN_1409312f0())
         bShow = 0;
     SetMenuEnable(0x2e, bShow);
 }
@@ -1255,7 +1255,7 @@ void UIGameMenuDialog::UpdateEventPopups()
 // MS2-FUNCTIONAL: iterator locals
 void UIGameMenuDialog::UpdateSkillUpgradeNotify()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int bHas = 0;
@@ -1277,7 +1277,7 @@ void UIGameMenuDialog::UpdateSkillUpgradeNotify()
 // @0x141938850
 void UIGameMenuDialog::FUN_141938850()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     const int* pQuest = reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6dd0)->Get());
@@ -1314,14 +1314,14 @@ int UIGameMenuDialog::IsMenuExpanded(CString strName)
 // @0x141938ae0
 void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int nCount = 0;
     if (nId == 0x4e2d) {
         nCount = g_143ab2a90.FUN_140a616e0();
     } else if (nId == 0x4e49) {
-        nCount = g_143ab2ee0.FUN_1408e34e0();
+        nCount = g_143ab2ee0.GetUnreadCount();
     } else if (nId == 0x4e4d) {
         nCount = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5070();
     } else if (nId == 0x4e73) {
@@ -1341,7 +1341,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         nCount = nValue;
     } else if (nId == 0x4f2f) {
         ATL::CAtlArray<int> arr;
-        reinterpret_cast<CGameRule*>((class Unk_GmEvtMgr*)GetGameRule())->FUN_14047c870(*reinterpret_cast<ATL::CAtlArray<unsigned>*>(&arr));
+        reinterpret_cast<CGameRule*>((class Unk_GmEvtMgr*)GetGameRule())->GetLevelUpPackageIds(*reinterpret_cast<ATL::CAtlArray<unsigned>*>(&arr));
         for (size_t i = 0; i < arr.GetCount(); ++i) {
             if (((CQuestManagerCommon*)(Unk_GmQuestState*)&(((class Unk_GmQuestHolder*)FUN_140764020())->state))->IsQuestComplete(arr[i]) != 0)
                 nCount++;
@@ -1510,7 +1510,7 @@ void UIGameMenuDialog::RefreshMenu()
     UpdateContractAndHomeMenu();
     UpdateQuestMenu();
     FUN_141938100();
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != NULL) {
         CPet* pPet = (CPet*)((class PCBase*)(class PCBase*)(pPc))->FUN_141676a10();
         if (pPet != NULL)
@@ -1542,7 +1542,7 @@ void UIGameMenuDialog::ModifyMenuEntity(int nId)
 void UIGameMenuDialog::FUN_141939ec0()
 {
     int nEnable = 1;
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     efd::SmartPointer<Ridee> spInfo(((class PCBase*)(class PCBase*)(pPc))->GetRidee());
@@ -1780,7 +1780,7 @@ void UIGameMenuDialog::FUN_14193b4a0(void* pQuest)
 {
     if (pQuest == NULL)
         return;
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int nJob = TSingleton<CChangeJobTable>::GetInstance()->GetStartQuestId((Unk_SubJobCode)((class PC*)(class PCBase*)(pPc))->GetSubJob());
@@ -1823,13 +1823,13 @@ void UIGameMenuDialog::FUN_14193b670()
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x4e) != 0)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f04);
     else
-        ShowMessageBox(FUN_140298ea0(CStringW(L"s_pvp_arena_close_test_season_msg")), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringByKey(CStringW(L"s_pvp_arena_close_test_season_msg")), 0, 0, CStringW(L""));
 }
 
 // @0x14193b750
 void UIGameMenuDialog::FUN_14193b750()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     if (((class PC*)(class PCBase*)(pPc))->FUN_141659690() != 0) {
@@ -1846,7 +1846,7 @@ void UIGameMenuDialog::FUN_14193b750()
         ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820) {
         nShown = 1;
     } else {
-        nShown = WorldService::GetInstance()->FUN_141bd30a0()->m_nHomeReturnable;
+        nShown = WorldService::GetInstance()->GetFieldData()->m_nHomeReturnable;
     }
     if (nShown == 0) {
         if (FUN_14193e9c0() != 0)
@@ -1955,7 +1955,7 @@ void UIGameMenuDialog::FUN_14193c000()
     if (nRestarted != 0) {
         ShowSystemNotice(GetStringCommonByKey(L"s_quest_epic_restart_restarted"), 1, 1);
     } else {
-        if (((class CGameRule*)(class Unk_GmEvtMgr*)(((class Unk_GmEvtMgr*)GetGameRule())))->FUN_14047c530(reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060()) == 0) {
+        if (((class CGameRule*)(class Unk_GmEvtMgr*)(((class Unk_GmEvtMgr*)GetGameRule())))->FUN_14047c530(reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->GetFieldId()) == 0) {
             ShowSystemNotice(GetStringCommonByKey(L"s_quest_epic_restart_invalid_field"), 1, 1);
         } else {
             if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringCommonByKey(L"s_quest_epic_restart_warning"), nullptr, CStringW(L""))) {
@@ -1985,7 +1985,7 @@ void UIGameMenuDialog::FUN_14193c3c0()
 // @0x14193c550
 void UIGameMenuDialog::OpenStampEventDialog()
 {
-    MS2Ptr<StampEventContext> spEvent = ((class CGameRule*)GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spEvent = ((class CGameRule*)GetGameRule())->GetStampEvent(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spEvent == NULL) {
         ShowSystemNotice(GetStringCommonByKey(L"s_stampevent_invalid_event"), 1, 1);
         return;
@@ -2042,7 +2042,7 @@ void UIGameMenuDialog::FUN_14193c800()
     void* pDlg = FindUIDialog<UITimeRunEventDialog>(0x4f43);
     if (pDlg != 0) {
         if (((class UITimeRunEventDialog*)(void*)(pDlg))->FUN_140ee3290() == 0) {
-            ShowSystemNotice(FUN_140298ea0(CStringW(L"s_event_mission_timerun_invalid")), 1, 1);
+            ShowSystemNotice(GetStringByKey(CStringW(L"s_event_mission_timerun_invalid")), 1, 1);
             return;
         }
         ((UIDialog*)pDlg)->FUN_141924680();
@@ -2052,7 +2052,7 @@ void UIGameMenuDialog::FUN_14193c800()
 // @0x14193c930
 void UIGameMenuDialog::FUN_14193c930()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->GetId() == 0) {
@@ -2169,7 +2169,7 @@ void UIGameMenuDialog::FUN_14193d400()
 // @0x14193d450
 void UIGameMenuDialog::FUN_14193d450()
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     if (((class MyPC*)(class PCBase*)(pPc))->FUN_141527ed0() == 0)
@@ -2206,7 +2206,7 @@ void UIGameMenuDialog::FUN_14193d590()
 // @0x14193d5c0
 void UIGameMenuDialog::FUN_14193d5c0()
 {
-    FUN_1413499b0(9);
+    ToggleShopTab(9);
 }
 
 // @0x14193d5e0
@@ -2268,7 +2268,7 @@ bool UIGameMenuDialog::SendBeauty(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != NULL && ((class MyPC*)(class PCBase*)(pPc))->FUN_141529ae0(0, 0, 0, 0) != 0) {
         int nIndex = box.FUN_141a02e50(0, 0);
         COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
@@ -2284,7 +2284,7 @@ bool UIGameMenuDialog::FUN_14193d9e0(int nResult, const CMsgBoxData&)
 {
     if (nResult != 0)
         return true;
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc != NULL)
         ((class MyPC*)(class PCBase*)(pPc))->SendRequestHome(0);
     return true;
@@ -2363,7 +2363,7 @@ void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const
 // @0x14193df10
 void UIGameMenuDialog::GetCharacterAbilityTooltip(Scaleform::GFx::Value* pOut)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
     int nQuestDone = ((CQuestManagerCommon*)(Unk_GmQuestState*)&(((class Unk_GmQuestHolder*)FUN_140764020())->state))->IsQuestRewarded(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6dd0)->Get()));
@@ -2383,11 +2383,11 @@ void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
     CStringW strText = GetStringCommonByKey(L"s_tooltip_gamemenu_mushking_royal");
     float nKillExp = ((class CGameRule*)(class Unk_GmEvtMgr*)(((class Unk_GmEvtMgr*)GetGameRule())))->FUN_14047d4e0();
     float nTimeExp = ((class CGameRule*)(class Unk_GmEvtMgr*)(((class Unk_GmEvtMgr*)GetGameRule())))->FUN_14047d5c0();
-    if (FUN_14028d470(nKillExp, 0) == 0) {
+    if (IsNearlyEqual(nKillExp, 0) == 0) {
         strText += L"\n";
         strText += FUN_14028dfa0<float>(CStringW(L"s_maple_survival_event_buff_improve_kill_exp"), nKillExp);
     }
-    if (FUN_14028d470(nTimeExp, 0) == 0) {
+    if (IsNearlyEqual(nTimeExp, 0) == 0) {
         strText += L"\n";
         strText += FUN_14028dfa0<float>(CStringW(L"s_maple_survival_event_buff_improve_time_exp"), nTimeExp);
     }
@@ -2399,10 +2399,10 @@ void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
 // @0x14193e2e0
 void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
 {
-    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == NULL)
         return;
-    int nField = FUN_14193e940(reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060());
+    int nField = FUN_14193e940(reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->GetFieldId());
     int nBeauty = FUN_1418fe060();
     if (nBeauty == 0 && nField == 0) {
         if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), nullptr, CStringW(L""))) {
@@ -2537,7 +2537,7 @@ Scaleform::GFx::Value ASDialog::FUN_14193f350(const char* szMethod, bool a1, int
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcce0(&args[0], a1);
+    SetBoolean(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);

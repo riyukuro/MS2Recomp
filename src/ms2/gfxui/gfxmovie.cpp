@@ -30,7 +30,7 @@
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
+void SetString(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
@@ -296,7 +296,7 @@ void GFxMovie::GetViewportSize(int* pnWidth, int* pnHeight)
 }
 
 // @0x1422be080
-void GFxMovie::FUN_1422be080(int bPause)
+void GFxMovie::SetPaused(int bPause)
 {
     m_60->SetPause(bPause != 0);
 }
@@ -316,7 +316,7 @@ void GFxMovie::FUN_1422be100(const Scaleform::GFx::FunctionHandler::Params& para
 
 // Bind scaleform.ms2.common.Common.m_getFormatFunction to FUN_1422be100.
 // @0x1422be140
-void GFxMovie::FUN_1422be140()
+void GFxMovie::RegisterFormatFunction()
 {
     Scaleform::GFx::Value vCommon = GetDefinitionByName("scaleform.ms2.common.Common");
     AScript kCommon(vCommon, 2);
@@ -331,7 +331,7 @@ void GFxMovie::SetCommonCallback(void (*pfn)(AScript& kCommon, int nMovieId))
 }
 
 // @0x1422be2a0
-void GFxMovie::FUN_1422be2a0()
+void GFxMovie::InvokeCommonCallback()
 {
     if (m_78)
     {
@@ -421,7 +421,7 @@ inline Scaleform::GFx::Value GFxMovie::FUN_1422be7f0(const char* szMethod, CStri
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bce70(&args[0], a1);
+    SetString(&args[0], a1);
     return FUN_1422bd250(szMethod, args);
 }
 
@@ -431,6 +431,6 @@ void* GFxMovie::vfunc_2()
     return (void*)&ms_RTTI;
 }
 
-MS2_REPLACE_METHOD(0x1422BE140, GFxMovie, FUN_1422be140, 314, 0xD12302DD);
-MS2_REPLACE_METHOD(0x1422BE2A0, GFxMovie, FUN_1422be2a0, 180, 0x7F908042);
+MS2_REPLACE_METHOD(0x1422BE140, GFxMovie, RegisterFormatFunction, 314, 0xD12302DD);
+MS2_REPLACE_METHOD(0x1422BE2A0, GFxMovie, InvokeCommonCallback, 180, 0x7F908042);
 MS2_REPLACE_METHOD(0x1422BD250, GFxMovie, FUN_1422bd250, 248, 0x35C7C06A);

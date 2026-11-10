@@ -30,9 +30,9 @@ class Unk_PCCubeCraft { public: int GetMode(); };   // C3: cubecraft_2.cpp
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
+    MS2Ptr<CFieldDataCli> GetFieldData();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
 class PC { public: int IsInCubeMode(); };   // C3: unit-local view
 class MyPC   // C3: member view for the former free stand-ins
@@ -204,14 +204,14 @@ MS2Ptr<CItem> CubeHolderManager::FindItemByInstanceId(__int64 instanceId) {
 MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FindItemByInstanceId, 170, 0xC00EE4A8);
 // @0x1410b5e70
 int CubeHolderManager::IsInCubeMode() {
-    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if(pc==0) return 0;
     return ((PC*)pc)->IsInCubeMode();
 }
 MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, IsInCubeMode, 54, 0x2F3817D5);
 // @0x1410b5eb0
 int CubeHolderManager::GetCubeCraftMode() {
-    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer());
     if(pc==0) return 0;
     Unk_PCCubeCraft* craft=((class MyPC*)(class PCBase*)(pc))->GetActiveCubeCraft();
     if(craft==0) return 0;
@@ -221,7 +221,7 @@ MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, GetCubeCraftMode, 81, 0x1BD60
 // @0x1410b5f10
 int CubeHolderManager::IsItemAllowedInCurrentSpace(int itemId) {
     if(GetCubeCraftMode()==2) return 0;
-    MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->GetFieldData();
     if(field==0) return 0;
     MS2Ptr<CItemData> item=FUN_14053f870(itemId);
     if(item==0) return 0;
@@ -239,7 +239,7 @@ int CubeHolderManager::FUN_1410b6060(unsigned index) {
         if(info==0) return 2;
         MS2Ptr<CItemData> item=FUN_14053f870(info->itemId);
         if(item==0) return 2;
-        MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->FUN_141bd30a0();
+        MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->GetFieldData();
         if((item->install.space&field->m_nIndoorMask)!=field->m_nIndoorMask) return 3;
     }
     return 0;

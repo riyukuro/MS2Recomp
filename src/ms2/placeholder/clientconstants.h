@@ -33,9 +33,9 @@ public:
 namespace Common { class Constants; } class Unk_SingletonObj1;   // C3: FUN_1401d3200 decl dropped (= TSingleton<Client::Constants>::GetInstance, see GetClientConstants()); the Common::Constants view below (Unk_SingletonObj1 = the C3 canonical name)
 #define GetClientConstants() (reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))   // 0x1401d3200 read as the Unk_SingletonObj1 view (C3: was FUN_1401d3200())
 // CString -> value parsers (other units).
-unsigned short FUN_140718110(const CString& s);
-unsigned int FUN_1407181d0(const CString& s);
-unsigned long FUN_140718290(const CString& s);
+unsigned short ParseUInt16(const CString& s);
+unsigned int ParseUInt(const CString& s);
+unsigned long ParseULong(const CString& s);
 __int64 FUN_1407182f0(const CString& s);
 bool FUN_140718390(const CString& s);
 efd::Point3* FUN_140db9570(efd::Point3* out, const CString& s);

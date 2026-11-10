@@ -102,10 +102,10 @@ void FUN_141632630(const CStringW& str, std::vector<int>& out, const wchar_t* sz
 
 
 void FUN_140988d60(CStringW& str, std::vector<CStringW>& out, const wchar_t* szDelim);    // split a text
-__int64 FUN_140718320(const CStringW& str);
+__int64 ParseInt64W(const CStringW& str);
 int FUN_140718200(const CStringW& str);
-unsigned FUN_140718140(const CStringW& str);
-unsigned long FUN_1407182c0(const CStringW& str);
+unsigned ParseUIntW(const CStringW& str);
+unsigned long ParseULongW(const CStringW& str);
 CStringW GetFullPath(const CStringW& strDir);
 CStringW FUN_141b6e360(const CStringW& strDir, const wchar_t* szFilter, const CStringW& strDefault);
 
@@ -161,7 +161,7 @@ CString UINpcControlDialog::GetTypeName()
 void UINpcControlDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    int nOp = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    int nOp = static_cast<CInPacket*>(p)->GetOpcode();
     if (nOp != 0x87)
         return;
     {
@@ -182,7 +182,7 @@ void UINpcControlDialog::vfunc_79(void* p)
             int nId = static_cast<CInPacket*>(p)->ReadInt32();
             if (nId != m_nNpcId)
                 return;
-            PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(nId));
+            PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(nId));
             if (pActor == 0)
                 return;
             CString strNode = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
@@ -207,7 +207,7 @@ void UINpcControlDialog::vfunc_79(void* p)
                 } else {
                     Unk_CtlNpc* pNpc = ((class Unk_CtlNpc*)FUN_140a38a00((class Unk_BossObject*)(pObj)));
                     if (pNpc != 0)
-                        strTarget = pNpc->FUN_141093310();
+                        strTarget = pNpc->GetName();
                 }
             }
             __int64 nPap = static_cast<CInPacket*>(p)->ReadInt64();
@@ -240,7 +240,7 @@ void UINpcControlDialog::vfunc_79(void* p)
         } else if (nKind == 8) {
             int nId = static_cast<CInPacket*>(p)->ReadInt32();
             int nLine = static_cast<CInPacket*>(p)->ReadInt32();
-            PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(nId));
+            PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(nId));
             if (pActor == 0)
                 return;
             if (m_spAi == 0)
@@ -280,7 +280,7 @@ int UINpcControlDialog::vfunc_13()
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
-    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d840()) {
+    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->IsEscapePressed()) {
         vfunc_67();
         return 1;
     }
@@ -321,7 +321,7 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 // @0x141a63770
 void UINpcControlDialog::UpdateNpcName()
 {
-    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FindNpcById(m_nNpcId));
     if (pActor == 0)
         return;
     CStringW strName = FUN_1401aa6a0(((class CNpc*)(class PCBase*)(pActor))->GetNpcId());
@@ -508,7 +508,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
 // @0x141a64ba0
 void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
 {
-    __int64 nArg = FUN_140718320(strArg);
+    __int64 nArg = ParseInt64W(strArg);
     if (nCommand == 1) {
         if (0 < nArg && nArg <= 0x64)
             SendNpcCommand(1, nArg);
@@ -549,9 +549,9 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
         if (parts.size() >= 1)
             nAdditional = FUN_140718200(parts[0]);
         if (parts.size() >= 2)
-            nLevel = FUN_140718140(parts[1]);
+            nLevel = ParseUIntW(parts[1]);
         if (parts.size() >= 3)
-            nExtra = FUN_1407182c0(parts[2]);
+            nExtra = ParseULongW(parts[2]);
         if (nAdditional == 0)
             return;
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);

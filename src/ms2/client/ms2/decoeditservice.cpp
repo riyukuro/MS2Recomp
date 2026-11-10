@@ -216,7 +216,7 @@ MS2_REPLACE_METHOD(0x14116F900, DecoEditService, SetBrush, 127, 0xD9372A8C);
 CString DecoEditService::GetXmlPath()
 {
     CString strFile;
-    strFile.Format("%08d_deco.xml", ((class WorldService*)(WorldService::GetInstance()))->FUN_141bd3060());
+    strFile.Format("%08d_deco.xml", ((class WorldService*)(WorldService::GetInstance()))->GetFieldId());
     CString strPath;
     strPath.Format("./Data/Xml/Map/%s", (const char*)strFile);
     return strPath;
@@ -397,7 +397,7 @@ efd::AsyncResult DecoEditService::OnInit()
     m_mapBrushes.SetAt(0, new PaintBrush);
     m_mapBrushes.SetAt(1, new NoiseBrush);
     GetMessageService()->Subscribe(this, s_cat, 0, false);
-    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->AddCallback(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
 
@@ -620,7 +620,7 @@ bool DecoItem::LoadNif(CString strAsset)
     m_bKfm = false;
     m_str88 = "DecoItemNIF";
     SetModel("urn:gamebryo-scenegraph:" + FUN_141b6ed00(strAsset));
-    if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
+    if (!WorldService::GetInstance()->OnObjectCreated(this, 0, 1))
         return false;
     return false;
 }
@@ -633,7 +633,7 @@ bool DecoItem::LoadKfm(CString strAsset)
     m_bKfm = true;
     m_str88 = "DecoItemKFM";
     SetModelPath("urn:gamebryo-animation:" + FUN_141b6ed00(strAsset));
-    if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
+    if (!WorldService::GetInstance()->OnObjectCreated(this, 0, 1))
         return false;
     return false;
 }

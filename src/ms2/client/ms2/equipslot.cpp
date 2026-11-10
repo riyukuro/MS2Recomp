@@ -47,7 +47,7 @@ public:
 class Unk_EqWorld
 {
 public:
-    Unk_EqPlayer* FUN_141bd0cc0();
+    Unk_EqPlayer* GetLocalPlayer();
 };
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
@@ -189,7 +189,7 @@ int EquipSlot::vfunc_20()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -200,7 +200,7 @@ int EquipSlot::vfunc_21()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
-            ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            ((CItem*)spItem)->GetData()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
 
@@ -209,7 +209,7 @@ int EquipSlot::vfunc_0(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    void* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    void* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_14120ce90(m_nKind);
@@ -233,7 +233,7 @@ int EquipSlot::vfunc_8(void* p)
 {
     if (m_spPC == 0)
         return 0;
-    Unk_EqPlayer* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_EqPlayer* pPlayer = ((Unk_EqPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -248,7 +248,7 @@ int EquipSlot::vfunc_8(void* p)
     {
         if (m_nSlot == 4)
         {
-            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
+            if (((CItem*)spItem)->GetData()->FUN_14053d460() != false)
             {
                 slot.SetGrayColor(1);
                 goto LAB_gray_done;
@@ -256,7 +256,7 @@ int EquipSlot::vfunc_8(void* p)
         }
         if (m_nSlot == 9)
         {
-            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
+            if (((CItem*)spItem)->GetData()->FUN_14053d2b0() != false)
                 slot.SetGrayColor(1);
         }
 LAB_gray_done:
@@ -303,7 +303,7 @@ MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
         spItem = m_spPC->GetEquipItemByKind(nKind, (Unk_InventoryEquipSlot)5);
         if (spItem.get() != 0 ? true : false)
         {
-            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
+            if (((CItem*)spItem)->GetData()->FUN_14053d460() != false)
                 return spItem;
         }
     }
@@ -312,7 +312,7 @@ MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
         spItem = m_spPC->GetEquipItemByKind(nKind, (Unk_InventoryEquipSlot)8);
         if (spItem.get() != 0 ? true : false)
         {
-            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
+            if (((CItem*)spItem)->GetData()->FUN_14053d2b0() != false)
                 return spItem;
         }
     }
@@ -346,7 +346,7 @@ int EquipSlot::FUN_14120d250(CItem* pItem)
 {
     if (FUN_14120d510(pItem) == 0)
         return 0;
-    if (pItem->FUN_140527840()->IsCashItem() != false)
+    if (pItem->GetData()->IsCashItem() != false)
     {
         FUN_140d73bc0(0xd7, 0, 0, CStringW(L""));
         return 0;
@@ -368,7 +368,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
             FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140527840()->GetModelOrEmpty()->HasGroupType(m_nSlot) == false)
+    if (pItem->GetData()->GetModelOrEmpty()->HasGroupType(m_nSlot) == false)
     {
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
@@ -416,7 +416,7 @@ void DestroyEquipSlotBag(const CString& strName)
     EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
-        pBag->FUN_1422cc9e0();
+        pBag->ClearSlots();
         Unk_NotifyContext::UnregisterBinding(strName);
     }
 }

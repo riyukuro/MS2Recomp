@@ -120,7 +120,7 @@ void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 void ClearFlags(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // set an Int value
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // set a Boolean value
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);                  // set a Boolean value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // set a Value from an AS object
 void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // copy a Value
 extern int DAT_143ab2974;                                                   // the preview cool-down (seconds; server config 34)
@@ -207,7 +207,7 @@ void UIBlueprintMarketDialog::OnLoadComplete()
     do { m_30->FUN_140bbe7c0<ASDropdownMenu>("m_sort", m_sort);
     if (m_sort == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(0x51), __FUNCTION__)); } while (0);
     if (m_search.get() != 0)
-        m_search->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnSearch), 0);
+        m_search->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnSearch), 0);
     ASObj data(2);
     FUN_140ec0700(&data, 1);
     data.SetIntMember("sendUnitPageCount", 5);
@@ -870,7 +870,7 @@ Scaleform::GFx::Value AScript::FUN_140bbeb40(const char* szMethod, const ASArray
     args.resize(4);
     FUN_1422bce40(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -882,7 +882,7 @@ Scaleform::GFx::Value AScript::FUN_140bbec80(const char* szMethod, ASDataProvide
     args.resize(3);
     SetValue(&args[0], a1.FUN_1422bb890());
     FUN_1422bccb0(&args[1], a2);
-    FUN_1422bcce0(&args[2], a3);
+    SetBoolean(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

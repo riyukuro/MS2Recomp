@@ -13,7 +13,7 @@
 #include "ms2/placeholder/uiworldmap.h"   // C3: the factories' record types
 #include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<T> (friend Unk_MS2PtrAccess)
 // The runtime's refcount-1 helper, the four types' pooled allocator+constructor and their release helpers (other units).
-class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
+class CPtred* InitRefCount(class CPtred*);   // C3: was InitRefCount
 UIWorldMap::AddtionalInfo* FUN_141b9d8e0(void* pTag);   // C3: returns the record
 UIWorldMap::FieldSearchInfo* FUN_141b9d950(void* pTag);   // C3: returns the record
 UIWorldMap::IconInfo* FUN_141b9d9c0(void* pTag);   // C3: returns the record
@@ -67,23 +67,23 @@ void Unk_MS2PtrAccess::FUN_141bb1520(MS2Ptr<UIWorldMap::MapTile>& sp)
 // @0x141bb1550
 void* FUN_141bb1550(void*)
 {
-    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d8e0(0))));
+    return ((void*)InitRefCount((class CPtred*)(FUN_141b9d8e0(0))));
 }
 
 // @0x141bb1570
 void* FUN_141bb1570(void*)
 {
-    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d950(0))));
+    return ((void*)InitRefCount((class CPtred*)(FUN_141b9d950(0))));
 }
 
 // @0x141bb1590
 void* FUN_141bb1590(void*)
 {
-    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9d9c0(0))));
+    return ((void*)InitRefCount((class CPtred*)(FUN_141b9d9c0(0))));
 }
 
 // @0x141bb15b0
 void* FUN_141bb15b0(void*)
 {
-    return ((void*)FUN_1401ba820((class CPtred*)(FUN_141b9da20(0))));
+    return ((void*)InitRefCount((class CPtred*)(FUN_141b9da20(0))));
 }

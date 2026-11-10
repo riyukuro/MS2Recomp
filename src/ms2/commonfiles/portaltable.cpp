@@ -78,7 +78,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071ae20(const CString& strFile);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW);
-unsigned int FUN_140197390(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
+unsigned int GetUIntAttr(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
 
 struct Unk_XmlElement;
 void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);   // collect the named children
@@ -116,8 +116,8 @@ bool CPortalTable::LoadNames()
     for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
         TiXmlElement* pNode = (TiXmlElement*)*it;
-        int nFieldId = FUN_140197390(pNode, "fieldID", 0);
-        int nPortalId = FUN_140197390(pNode, "portalID", 0);
+        int nFieldId = GetUIntAttr(pNode, "fieldID", 0);
+        int nPortalId = GetUIntAttr(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;
         m_names[key] = FUN_1401bf530(pNode, "name", L"");
     }
@@ -147,8 +147,8 @@ bool CPortalTable::LoadRandomTargets()
     for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
         TiXmlElement* pNode = (TiXmlElement*)*it;
-        int nFieldId = FUN_140197390(pNode, "fieldID", 0);
-        int nPortalId = FUN_140197390(pNode, "portalID", 0);
+        int nFieldId = GetUIntAttr(pNode, "fieldID", 0);
+        int nPortalId = GetUIntAttr(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;
         PortalRandomTargetPtr& slot = m_targets[key];
         if (!slot)
@@ -156,9 +156,9 @@ bool CPortalTable::LoadRandomTargets()
         slot->m_nFieldId = nFieldId;
         slot->m_nPortalId = nPortalId;
         PortalRandomTarget target;
-        target.nWeight = FUN_140197390(pNode, "weight", 0);
-        target.nTargetFieldId = FUN_140197390(pNode, "targetFieldID", 0);
-        target.nTargetPortalId = FUN_140197390(pNode, "targetPortalID", 0);
+        target.nWeight = GetUIntAttr(pNode, "weight", 0);
+        target.nTargetFieldId = GetUIntAttr(pNode, "targetFieldID", 0);
+        target.nTargetPortalId = GetUIntAttr(pNode, "targetPortalID", 0);
         slot->m_nTotalWeight += target.nWeight;
         slot->m_targets.push_back(target);
     }

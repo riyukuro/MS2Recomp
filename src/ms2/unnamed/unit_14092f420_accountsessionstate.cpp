@@ -101,7 +101,7 @@
 // ---- unit-local stand-ins ---------------------------------------------------------------------------------------------
 
 // C3: the Unk_MailSession / Unk_ObjTable view and Unk_FieldRef are gone (no caller since f64e3e85e):
-// the field getter is WorldService::FUN_141bd30a0() -> MS2Ptr<CFieldDataCli>, declared on the WorldService view below.
+// the field getter is WorldService::GetFieldData() -> MS2Ptr<CFieldDataCli>, declared on the WorldService view below.
 
 
 
@@ -121,8 +121,8 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static WorldService* GetInstance();
-    void* FUN_141bd0cc0();
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    void* GetLocalPlayer();
+    MS2Ptr<CFieldDataCli> GetFieldData();
 };
 
 // A learned skill: its record and flags (the skill book hands out MS2Ptr<SkillLevelData>).
@@ -285,7 +285,7 @@ extern ATL::CAtlArray<int> DAT_143ab32b8;
 
 class Unk_UiManager { public: };
 
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 
 // ---- functions --------------------------------------------------------------------------------------------------------
 
@@ -315,7 +315,7 @@ unsigned FUN_14092f4e0(int nSkillId)
 {
     if (g_143ab2a90.FUN_140a62d30(nSkillId) != 0)
         return 1;
-    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc != 0)
     {
         Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->GetJobSystem());
@@ -326,7 +326,7 @@ unsigned FUN_14092f4e0(int nSkillId)
             {
                 if (reinterpret_cast<Unk_SkillRec*>(spSkill.operator->()->GetSkill())->m_bBlocked)
                     return 0;
-                return pPc->FUN_141525480(nSkillId, spSkill.operator->()->FUN_140804450());
+                return pPc->FUN_141525480(nSkillId, spSkill.operator->()->HasSequenceName());
             }
             return pPc->FUN_141525480(nSkillId, true);   // C3: MyPC::FUN_141525480 (mypc.h)
         }
@@ -391,7 +391,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
         MS2Ptr<CItemData> spData(0);
         Unk_Inventory::ItemPtr spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.get() != 0)
-            spData.AssignRaw((CItemData*)spItem->FUN_140527840());
+            spData.AssignRaw((CItemData*)spItem->GetData());
         else
             spData = FUN_14053f870(nItemId);
         if (spData == 0)
@@ -399,7 +399,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
         if (!((class CItemData*)(class CItemData*)(spData.get()))->FUN_14053e460())
             return 0;
     }
-    FUN_141276180(s_143ab2ed8, "");
+    PlaySystemSound(s_143ab2ed8, "");
     if (!FUN_140930d70())
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
@@ -448,7 +448,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         MS2Ptr<CItemData> spData(0);
         Unk_Inventory::ItemPtr spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.get() != 0)
-            spData.AssignRaw((CItemData*)spItem->FUN_140527840());
+            spData.AssignRaw((CItemData*)spItem->GetData());
         else
             spData = FUN_14053f870(nItemId);
         if (spData == 0)
@@ -462,7 +462,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         FUN_141275260(0x888, 1, 1);
         return 0;
     }
-    FUN_141276180(s_143ab2ed8, "");
+    PlaySystemSound(s_143ab2ed8, "");
     if (!FUN_140930d70())
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
@@ -487,7 +487,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
         FUN_141275260(0x888, 1, 1);
         return 0;
     }
-    FUN_141276180(s_143ab3008, "");
+    PlaySystemSound(s_143ab3008, "");
     if (!FUN_140930d70())
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
@@ -521,7 +521,7 @@ int SendKeyTableMode8(int nSlot)
 }
 
 // @0x140930110
-bool FUN_140930110(int nValue)
+bool IsUpperTargetId(int nValue)
 {
     return g_upperTargetId == nValue;
 }
@@ -591,7 +591,7 @@ __int64 FUN_1409302d0()
 }
 
 // @0x140930300
-__int64 FUN_140930300()
+__int64 GetOwnMerat()
 {
     return g_143ab2a78[0] + g_143ab2a78[1] + g_143ab2a78[3];
 }
@@ -603,7 +603,7 @@ __int64 FUN_140930370()
 }
 
 // @0x140930390
-__int64 FUN_140930390(unsigned nMask)
+__int64 GetWalletAmountByMask(unsigned nMask)
 {
     if (nMask == 0)
         return 0;
@@ -622,7 +622,7 @@ __int64 FUN_140930390(unsigned nMask)
 }
 
 // @0x140930490
-__int64 FUN_140930490()
+__int64 GetMesoMarketTokens()
 {
     return DAT_143ab28f0;
 }
@@ -733,7 +733,7 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
         {
             if (FUN_140930200(i) == true)
                 continue;
-            unsigned nBits = FUN_1403bb210(i, false);
+            unsigned nBits = GetColorMask(i, false);
             if ((nBits & nMask) == 0)
                 continue;
             if ((*pWallet)[i] >= nRemain)
@@ -829,7 +829,7 @@ unsigned char FUN_140930c50()
 }
 
 // @0x140930c90
-unsigned char FUN_140930c90(__int64 nId)
+unsigned char IsHousingOwner(__int64 nId)
 {
     int bResult;
     if (DAT_143ab2857 && DAT_143ab2938 == nId)
@@ -864,7 +864,7 @@ unsigned char FUN_140930d20(__int64 nId)
 // @0x140930d70
 bool FUN_140930d70()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return false;
     bool bResult = reinterpret_cast<CSkillSystem*>(((class MyPC*)(class Unk_MyPc*)(pPc))->GetSkillSystem())->GetSkillSet().get() != 0;
@@ -876,7 +876,7 @@ int FUN_140931890(ATL::CAtlArray<int>* pArray, unsigned short* pValue);
 // @0x140930e10
 int FUN_140930e10()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     int nCount = 0;
@@ -955,7 +955,7 @@ int FUN_140931250(Unk_FameAlliance nAlliance)
 }
 
 // @0x140931290
-int FUN_140931290()
+int GetGeneralFameGrade()
 {
     int nBest = 0;
     for (int i = 1; i < 10; i = i + 1)
@@ -974,12 +974,12 @@ bool FUN_1409312f0()
         return false;
     if (FUN_140930b10())
         return false;
-    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return false;
     if (((class PCBase*)(class Unk_MyPc*)(pPc))->IsDead())
         return false;
-    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->GetFieldData();
     if (spField.IsNull())
         return false;
     return true;
@@ -988,7 +988,7 @@ bool FUN_1409312f0()
 // @0x1409313b0
 unsigned FUN_1409313b0()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->GetLocalPlayer());
     if (pPc == 0)
         return 0xffffffff;
     unsigned short nLevel = (unsigned short)pPc->vfunc_78();
@@ -1109,7 +1109,7 @@ MS2_REPLACE(0x14092FAC0, FUN_14092fac0, 1051, 0xDAF9E13C);
 MS2_REPLACE(0x14092FEF0, SendKeyTableMode5, 326, 0x3471EE0B);
 MS2_REPLACE(0x140930040, SendKeyTableMode6, 81, 0xB09A1348);
 MS2_REPLACE(0x1409300A0, SendKeyTableMode8, 103, 0x9DE9981A);
-MS2_REPLACE(0x140930110, FUN_140930110, 45, 0x35E26EF0);
+MS2_REPLACE(0x140930110, IsUpperTargetId, 45, 0x35E26EF0);
 MS2_REPLACE(0x140930150, FUN_140930150, 49, 0x600B5E60);
 MS2_REPLACE(0x140930190, FUN_140930190, 34, 0x990CD6A7);
 MS2_REPLACE(0x1409301C0, FUN_1409301c0, 31, 0xD4DDD20D);
@@ -1119,10 +1119,10 @@ MS2_REPLACE(0x140930240, GetMeratBalance, 8, 0xA2C0D39F);
 MS2_REPLACE(0x140930250, FUN_140930250, 59, 0xA9A57F01);
 MS2_REPLACE(0x1409302A0, FUN_1409302a0, 29, 0xFD5CE0CE);
 MS2_REPLACE(0x1409302D0, FUN_1409302d0, 29, 0xA25DF127);
-MS2_REPLACE(0x140930300, FUN_140930300, 92, 0xF2C19ABD);
+MS2_REPLACE(0x140930300, GetOwnMerat, 92, 0xF2C19ABD);
 MS2_REPLACE(0x140930370, FUN_140930370, 26, 0x38ECCADD);
-MS2_REPLACE(0x140930390, FUN_140930390, 245, 0x5A4DAC0E);
-MS2_REPLACE(0x140930490, FUN_140930490, 8, 0x0D9ADA60);
+MS2_REPLACE(0x140930390, GetWalletAmountByMask, 245, 0x5A4DAC0E);
+MS2_REPLACE(0x140930490, GetMesoMarketTokens, 8, 0x0D9ADA60);
 MS2_REPLACE(0x1409304A0, FUN_1409304a0, 36, 0x7B99688F);
 MS2_REPLACE(0x1409304D0, FUN_1409304d0, 159, 0x2452A543);
 MS2_REPLACE(0x140930580, GetWallet, 8, 0x5EEA02EA);
@@ -1137,7 +1137,7 @@ MS2_REPLACE(0x140930B70, FUN_140930b70, 29, 0x392C3F35);
 MS2_REPLACE(0x140930BA0, FUN_140930ba0, 112, 0x6CE930F5);
 MS2_REPLACE(0x140930C20, FUN_140930c20, 38, 0x4B6E77CD);
 MS2_REPLACE(0x140930C50, FUN_140930c50, 50, 0xD820A189);
-MS2_REPLACE(0x140930C90, FUN_140930c90, 59, 0x8307E93A);
+MS2_REPLACE(0x140930C90, IsHousingOwner, 59, 0x8307E93A);
 MS2_REPLACE(0x140930CE0, FUN_140930ce0, 50, 0x04A46EC7);
 MS2_REPLACE(0x140930D20, FUN_140930d20, 59, 0xB6070E05);
 MS2_REPLACE(0x140930D70, FUN_140930d70, 143, 0x5DDD397F);
@@ -1146,7 +1146,7 @@ MS2_REPLACE(0x140930F20, FUN_140930f20, 181, 0xAB6D1980);
 MS2_REPLACE(0x140930FE0, FUN_140930fe0, 530, 0x22983945);
 MS2_REPLACE(0x140931210, GetFamePoints, 47, 0x5984E440);
 MS2_REPLACE(0x140931250, FUN_140931250, 50, 0x6490BC3C);
-MS2_REPLACE(0x140931290, FUN_140931290, 81, 0x20EF52D0);
+MS2_REPLACE(0x140931290, GetGeneralFameGrade, 81, 0x20EF52D0);
 MS2_REPLACE(0x1409312F0, FUN_1409312f0, 176, 0xB25D8E28);
 MS2_REPLACE(0x1409313B0, FUN_1409313b0, 150, 0x698D7CE5);
 MS2_REPLACE(0x140931590, AddWalletAmount, 144, 0x50E78C9C);
@@ -1250,7 +1250,7 @@ void FUN_140933a50(Unk_TailSet* pTree, Unk_TailSetNode* pNode);
 void FUN_1409339b0(Unk_TailAlmTree* pTree, Unk_TailAlmNode* pNode);
 // 0x140931d80 = _Tree_node<pair<const unsigned, CAdventureLevelMissionData>>::_Freenode0
 void FUN_1409322a0(Unk_TailAlc* pAlc, Unk_TailAlmVal* pVal);
-Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
+Unk_TailIter* GetEnd(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
 // (was FUN_140935280: now the real _Tree member)
 // (was FUN_140935890: now the real _Tree member)
 // (was FUN_140932130: now the real set member)
@@ -1416,7 +1416,7 @@ Unk_TailAlc* FUN_140932820(Unk_TailAlc* pThis)
 }
 
 // @0x140932930
-void FUN_140932930(Unk_TailTreeA* pThis)
+void DestroyTree(Unk_TailTreeA* pThis)
 {
     FUN_140932970(pThis);
 }
@@ -1456,7 +1456,7 @@ void FUN_1409329f0(Unk_TailBoxPtr* pThis) noexcept
 //
 
 // @0x140932b40
-void FUN_140932b40(Unk_TailSet* pThis)
+void DestroySet(Unk_TailSet* pThis)
 {
     reinterpret_cast<Unk_TailSTree*>(pThis)->Unk_TailSTree::~_Tree();
 }
@@ -1655,7 +1655,7 @@ void FUN_140934cd0(Unk_TailBoxPtr* pThis, void*)
 void FUN_140934fc0(Unk_TailSet* pThis)
 {
     Unk_TailIter itEnd;
-    Unk_TailIter itLast = *FUN_140935690(pThis, &itEnd);
+    Unk_TailIter itLast = *GetEnd(pThis, &itEnd);
     Unk_TailIter itFirst = reinterpret_cast<const Unk_TailIter&>(static_cast<const Unk_TailCIt&>(reinterpret_cast<Unk_TailSTree*>(pThis)->begin()));
     reinterpret_cast<Unk_TailSTree*>(pThis)->erase(reinterpret_cast<Unk_TailCIt&>(itFirst), reinterpret_cast<Unk_TailCIt&>(itLast));   // erase(begin(), end())
 }
@@ -1717,7 +1717,7 @@ bool FUN_1409355e0(std::vector<Unk_TailPair>* pThis)
 }
 
 // @0x140935690
-Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
+Unk_TailIter* GetEnd(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 {
     Unk_TailSetNode** pVal = (Unk_TailSetNode**)((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
     FUN_1409326c0(pRet, *pVal, std::addressof(*(Unk_TailTVal*)pVal));
@@ -1725,7 +1725,7 @@ Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 }
 
 // @0x140935980
-Unk_TailIter* FUN_140935980(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter itWhere)
+Unk_TailIter* Erase(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter itWhere)
 {
     void* pVal = ((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
     Unk_TailIter itNext = itWhere;

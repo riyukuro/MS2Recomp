@@ -32,7 +32,7 @@ extern void FUN_142cc99b4();
 extern void FUN_142cc99d4();
 extern void FUN_142cc9a18();
 extern void FUN_142cc9a38();
-extern void FUN_142cc9a7c();
+extern void DestroyAtlBaseModule();
 
 namespace
 {
@@ -178,5 +178,5 @@ void FUN_14014d18c()
 void FUN_14014d1ac()
 {
     new (&ATL::_AtlBaseModule) ATL::CAtlBaseModule();
-    std::atexit(FUN_142cc9a7c);
+    std::atexit(DestroyAtlBaseModule);
 }

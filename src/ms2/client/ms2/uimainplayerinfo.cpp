@@ -117,7 +117,7 @@ public:
     virtual void vfunc_12(void* p);
 };
 SkillSlotBag* FUN_141763cb0(NotifyContext::BindData* pWnd);
-DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pWnd);
+DragSlotBag* GetDragSlotBag(NotifyContext::BindData* pWnd);
 class SkillSlot* FUN_141761e60(class DragSlot*);   // C3: was FUN_141761e60
 void FUN_1417634a0(const CString& strName);                             // drop the slot bar
 void FUN_1417633f0(const CString& strName, int nCount);                 // create the slot bar
@@ -268,7 +268,7 @@ class Unk_MpPC : public MyPC
 {
 public:
 };
-class Unk_MpWorld : public WorldService { public: Unk_MpPC* FUN_141bd0cc0();};
+class Unk_MpWorld : public WorldService { public: Unk_MpPC* GetLocalPlayer();};
 
 
 // The achievement of a progress notice.
@@ -292,7 +292,7 @@ class CItemData;
 class CItem
 {
 public:
-    class Unk_ItemEquipData* FUN_140527840();   // citem.h's return type; the callers cast to CItemData
+    class Unk_ItemEquipData* GetData();   // citem.h's return type; the callers cast to CItemData
     __int64 GetItemUid();
     int GetItemId();
     int HasCubeTextureMesh();
@@ -312,11 +312,11 @@ int FUN_1418dd0c0();
 int FUN_1418dd110();
 int GetServerTick();
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
-bool FUN_14028d470(float a, float b);
+bool IsNearlyEqual(float a, float b);
 void ShowSystemNotice(const CStringW& str, int a, int b);
-CStringW FUN_140298ea0(CStringW strKey);
+CStringW GetStringByKey(CStringW strKey);
 CStringW BlockFormat(int nId);
-int FUN_141276180(const CString& a, const CString& b);
+int PlaySystemSound(const CString& a, const CString& b);
 CStringW FUN_14093b970(int nId);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
 
@@ -473,7 +473,7 @@ void UIMainPlayerInfo::vfunc_67()
 void UIMainPlayerInfo::OnLoadInit()
 {
     UIBuiltInDialog::OnLoadInit();
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_nEP[0] = pPc->FUN_141670a00(10);
@@ -505,7 +505,7 @@ void UIMainPlayerInfo::OnLoadInit()
 void UIMainPlayerInfo::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_nSlotMode = 0;
@@ -559,7 +559,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                             MS2Ptr<Cube> weapon(reinterpret_cast<CubeMapInformationService*>(phys.operator->())->GetCubeAtPoint(pCtl->GetPtCell()));
                             if (weapon.operator Cube*() != 0)
                             {
-                                if (Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()))
+                                if (Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()))
                                     pPc->FUN_14152f140(reinterpret_cast<Unk_MpWeaponRow*>(weapon.operator->())->m_18);
                             }
                         }
@@ -619,7 +619,7 @@ void UIMainPlayerInfo::vfunc_15()
 {
     if (FUN_1422dc2d0() == 0)
         return;
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     m_effectManager->Update();
@@ -643,17 +643,17 @@ void UIMainPlayerInfo::vfunc_15()
 // @0x1419ef930
 int UIMainPlayerInfo::vfunc_13()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     if (pPc->FUN_141659690() != 0)
         return 0;
     if (pPc->IsCubeMode1() != 0)
         return 0;
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
     {
         ShowSystemNotice(BlockFormat(0x60), 1, 1);
-        FUN_141276180(s_strNotThisPlace, "");
+        PlaySystemSound(s_strNotThisPlace, "");
     }
     if (FUN_1419f2b60())
         return 1;
@@ -728,9 +728,9 @@ void UIMainPlayerInfo::vfunc_oa0_3(int nCur, int nMax)
         m_nHP[0] = nCur;
         m_nHP[1] = nMax;
     }
-    if (Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()))
+    if (Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer()))
     {
-        if (!FUN_14028d470(((AdditionalCliList*)(Unk_MpStat*)(((Unk_MpStat*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416749a0())))->GetSpConsumeChangeHpRate(), 0.0f))
+        if (!IsNearlyEqual(((AdditionalCliList*)(Unk_MpStat*)(((Unk_MpStat*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416749a0())))->GetSpConsumeChangeHpRate(), 0.0f))
             FUN_1419f37f0(1);
     }
 }
@@ -773,14 +773,14 @@ void UIMainPlayerInfo::vfunc_oa0_24(int n)
 // @0x1419f0280
 void UIMainPlayerInfo::vfunc_oa0_25(void* p)
 {
-    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)FUN_140c544d0(Unk_NotifyContext::FindBinding(GetSlotName())))
+    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)GetDragSlotBag(Unk_NotifyContext::FindBinding(GetSlotName())))
         pBox->vfunc_11(p);
 }
 
 // @0x1419f0320
 void UIMainPlayerInfo::vfunc_oa0_26(void* p)
 {
-    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)FUN_140c544d0(Unk_NotifyContext::FindBinding(GetSlotName())))
+    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)GetDragSlotBag(Unk_NotifyContext::FindBinding(GetSlotName())))
         pBox->vfunc_12(p);
 }
 
@@ -796,7 +796,7 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
 {
     if (m_playerInfo == 0)
         return;
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (FUN_1419f16b0() == 0)
@@ -852,17 +852,17 @@ void UIMainPlayerInfo::vfunc_22(void* pItem)
 // @0x1419f09e0
 void UIMainPlayerInfo::vfunc_2(void* pItem)
 {
-    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->GetData()))->FUN_14053e460())
         RefreshSlotForItem(MP_ITEM(pItem));
-    ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FUN_14142f1c0(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->GetSkillId(), MP_ITEM(pItem)->GetItemId(), MP_ITEM(pItem)->GetItemUid());
+    ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FUN_14142f1c0(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->GetData()))->GetSkillId(), MP_ITEM(pItem)->GetItemId(), MP_ITEM(pItem)->GetItemUid());
 }
 
 // @0x1419f0a80
 void UIMainPlayerInfo::vfunc_3(void* pItem, bool b)
 {
-    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->GetData()))->FUN_14053e460())
     {
-        int nKey = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FindKeyBySlotAndPriority(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->GetSkillId(), 0);
+        int nKey = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FindKeyBySlotAndPriority(((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->GetData()))->GetSkillId(), 0);
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->SendKeyTableMode1(nKey);
         RefreshSlotForItem(MP_ITEM(pItem));
     }
@@ -873,7 +873,7 @@ void UIMainPlayerInfo::vfunc_4(void* pItem, int n)
 {
     if (pItem == 0)
         return;
-    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->FUN_140527840()))->FUN_14053e460())
+    if (((class CItemData*)(class CItemData*)(MP_ITEM(pItem)->GetData()))->FUN_14053e460())
         RefreshSlotForItem(MP_ITEM(pItem));
 }
 
@@ -952,7 +952,7 @@ void UIMainPlayerInfo::RemoveBuffEffect(int nBuffId)
 // @0x1419f1200
 void UIMainPlayerInfo::AddCustomBuffEffect(int nId, int nLevel)
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     RemoveCustomBuffEffect(nId);
@@ -1024,7 +1024,7 @@ void UIMainPlayerInfo::UpdateName()
 // @0x1419f16b0
 int UIMainPlayerInfo::FUN_1419f16b0()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     int bVisible = 1;
@@ -1074,7 +1074,7 @@ void UIMainPlayerInfo::RefreshQuickSlots()
     FUN_1417633f0(GetSlotName(), 0x19);
     if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
         spSlot->Invoke("updateBindSlot", reinterpret_cast<Unk_MpCfgData*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand);
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     MS2Ptr<CSkillSet> spSet = ((MyPC*)(Unk_MpPC*)(pPc))->GetSkillSystem()->GetSkillSet();
@@ -1096,7 +1096,7 @@ void UIMainPlayerInfo::FUN_1419f1c80()
     for (unsigned i = 0; i < nCount; i++)
     {
         int nKey = i + 500001;
-        if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(nKey, 0, 0))
+        if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(nKey, 0, 0))
         {
             if (Unk_MpSlot* pSlot = GetSlot(i))
                 ((SkillSlot*)(Unk_MpSlot*)(pSlot))->FUN_14175f200();
@@ -1270,7 +1270,7 @@ Unk_MpSlot* UIMainPlayerInfo::FindSlotForItem(CItem* pItem)
         pSlot = ((Unk_MpSlot*)((SkillSlotBag*)(Unk_MpSlotBar*)(pBar))->FindSlotByItemId(pItem->GetItemId()));
     if (pSlot == 0)
     {
-        int nSlot = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FindQuickSlotBySkillAndItemUid(((class CItemData*)(class CItemData*)(pItem->FUN_140527840()))->GetSkillId(), nUid);
+        int nSlot = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->FindQuickSlotBySkillAndItemUid(((class CItemData*)(class CItemData*)(pItem->GetData()))->GetSkillId(), nUid);
         pSlot = GetSlot(nSlot);
     }
     return pSlot;
@@ -1321,31 +1321,31 @@ int UIMainPlayerInfo::FUN_1419f2b60()
 {
     if (FUN_140930d70())
     {
-        bool bKey = ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0) ||
-                    ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0) ? true : false;
+        bool bKey = ((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x49411, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x4940e, 0, 0) ||
+                    ((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x4940f, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x49410, 0, 0) ? true : false;
         if (bKey)
         {
-            ShowSystemNotice(FUN_140298ea0(CStringW(L"s_err_cannot_change_shortkey_page")), 1, 1);
+            ShowSystemNotice(GetStringByKey(CStringW(L"s_err_cannot_change_shortkey_page")), 1, 1);
             return 1;
         }
         return 0;
     }
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x4940e, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->SetQuickSlotPage(0, true);
         return 1;
     }
-    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x4940f, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->SetQuickSlotPage(1, true);
         return 1;
     }
-    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x49410, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)GetKeyTable())))->SetQuickSlotPage(2, true);
         return 1;
     }
-    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyPressed(0x49411, 0, 0))
     {
         OnNextPage();
         return 1;
@@ -1361,7 +1361,7 @@ void UIMainPlayerInfo::UpdateSlotForItem(CItem* pItem)
     Unk_MpSlot* pSlot = FindSlotForItem(pItem);
     if (pSlot != 0)
     {
-        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetSkillId(((class CItemData*)(class CItemData*)(pItem->FUN_140527840()))->GetSkillId());
+        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetSkillId(((class CItemData*)(class CItemData*)(pItem->GetData()))->GetSkillId());
         pSlot->vfunc_10();
     }
     else
@@ -1391,7 +1391,7 @@ void UIMainPlayerInfo::ClearSlotForItem(CItem* pItem)
 // @0x1419f2eb0
 void UIMainPlayerInfo::InitPlayerInfo()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     if (((JobSystem*)((PC*)(Unk_MpPC*)(pPc))->GetJobSystem())->GetJobData() == 0)
@@ -1445,7 +1445,7 @@ void UIMainPlayerInfo::UnloadRenderTarget()
 // @0x1419f3370
 void UIMainPlayerInfo::OnRideOff()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return;
     ((MyPC*)(Unk_MpPC*)(pPc))->SendRequestRideMode1((RideOffAction*)(RideOffActionRidingUI*)(new RideOffActionRidingUI(0)));
@@ -1460,7 +1460,7 @@ int UIMainPlayerInfo::GetBuffEffectId(int nId)
 // @0x1419f3420
 CStringW UIMainPlayerInfo::GetPlayerNameWithTitles()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return L"";
     CStringW strName = pPc->vfunc_77();
@@ -1532,7 +1532,7 @@ void FUN_1419f37f0(unsigned int nFlags)
 // @0x1419f3810
 Unk_MpRideeCtl* FUN_1419f3810()
 {
-    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPc == 0)
         return 0;
     return ((Unk_MpRideeCtl*)((MyPC*)(Unk_MpPC*)(pPc))->GetActiveCubeCraft());

@@ -53,7 +53,7 @@ public:
     CDirWatcher();                                          // 0x1401d1940
     // implicit dtor 0x1401d2980 (no vptr store in the exe)
     virtual unsigned int vfunc_1(void*, Unk_140659080&);    // 0x1401d19b0
-    void FUN_1401d1cd0();                                   // close the directory handle and wait for the thread
+    void Stop();                                   // close the directory handle and wait for the thread
     int FUN_1401d1d20() const;                             // the directory handle was closed
 private:
     MS2_LAYOUT_FRIEND;
@@ -152,7 +152,7 @@ class CommonResource   // C3: member view for the former free stand-ins
 public:
     void CheckReload();
 };
-class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
+class Unk_BmPriceMgr* GetLuaClient();   // C3: was GetLuaClient
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 
 template<class T, class U> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format,
@@ -169,7 +169,7 @@ CLockCriticalSection g_cacheLock;               // 0x143aac550
 
 CDirWatcher* GetDirWatcher();
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage = 0);
-void FUN_1401d3700(CString& str);
+void ToLower(CString& str);
 unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime);
 
 // @0x1401d1020
@@ -198,10 +198,10 @@ CString* CCacheData::GetPath()
 bool CCacheData::SetPath(CString strPath)
 {
     FILETIME kTime;
-    if (FUN_1401d17f0(strPath, &kTime) == 0)
+    if (GetFileWriteTime(strPath, &kTime) == 0)
     {
-        std::string kFound = GetFileSystem()->FUN_14039b810(std::string(strPath));
-        if (FUN_1401d17f0(CString(kFound.c_str()), &kTime) == 0)
+        std::string kFound = GetFileSystem()->GetLocalePath(std::string(strPath));
+        if (GetFileWriteTime(CString(kFound.c_str()), &kTime) == 0)
             return false;
         else
             strPath = kFound.c_str();
@@ -241,7 +241,7 @@ void OnFileChanged(CString strPath);
 // @0x1401d1400
 void OnFileChanged(CString strPath)
 {
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     if (strPath.Find("shaders") != -1)
         return;
     HANDLE hFile = INVALID_HANDLE_VALUE;
@@ -292,19 +292,19 @@ void OnFileChanged(CString strPath)
 // @0x1401d1730
 unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime)
 {
-    FUN_1401d3700(strPath);
+    ToLower(strPath);
     Unk_CriticalSectionLock kGuard(g_cacheLock, 1);
     return s_map.Lookup(strPath, *pTime);
 }
 
 // @0x1401d17b0
-void FUN_1401d17b0(Unk_FileChangeFunctor kListener)
+void SetFileChangeListener(Unk_FileChangeFunctor kListener)
 {
     s_listener = kListener;
 }
 
 // @0x1401d17f0
-int CCacheData::FUN_1401d17f0(CString strPath, FILETIME* pTime)
+int CCacheData::GetFileWriteTime(CString strPath, FILETIME* pTime)
 {
     if (GetFileSystem()->FUN_140398190())
     {
@@ -366,7 +366,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                     pInfo = 0;
             }
             ((Common::Constants*)GetClientConstants())->Reload();
-            ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)FUN_1401c0db0())))->Update();
+            ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)GetLuaClient())))->Update();
             ((class CommonResource*)(class Unk_SingletonObj*)(GetCommonResource()))->CheckReload();
         }
         else
@@ -378,7 +378,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
 }
 
 // @0x1401d1cd0
-void CDirWatcher::FUN_1401d1cd0()
+void CDirWatcher::Stop()
 {
     if (m_hDir != 0)
     {
@@ -440,7 +440,7 @@ CThread::~CThread()
     FUN_1401d2fa0();
 }
 
-inline void* FUN_1401d3020(HANDLE* pHandle, void* pNew)
+inline void* ExchangeHandle(HANDLE* pHandle, void* pNew)
 {
     return _InterlockedExchangePointer(pHandle, pNew);
 }
@@ -449,7 +449,7 @@ inline void* FUN_1401d3020(HANDLE* pHandle, void* pNew)
 void CThread::FUN_1401d2fa0()
 {
     m_threadId = 0;
-    HANDLE hThread = (HANDLE)FUN_1401d3020(&m_thread, 0);
+    HANDLE hThread = (HANDLE)ExchangeHandle(&m_thread, 0);
     if (hThread != 0)
         CloseHandle(hThread);
 }
@@ -503,7 +503,7 @@ inline bool FUN_1401d3720(CString& str)
 }
 
 // @0x1401d3700
-void FUN_1401d3700(CString& str)
+void ToLower(CString& str)
 {
     FUN_1401d3720(str);
 }

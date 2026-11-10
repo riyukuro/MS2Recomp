@@ -166,11 +166,11 @@ class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerB
 class Unk_SmPlayer : public PC { };                        // the job of the player
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // bind a child
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
-class Unk_SmPlayers { public: Unk_SmPlayer* FUN_141bd0cc0(); };
+class Unk_SmPlayers { public: Unk_SmPlayer* GetLocalPlayer(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void* GetLocalPlayer();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
       // text of a string id
@@ -181,7 +181,7 @@ CStringW FUN_14016a730(const char* psz, int n);                             // n
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 template <class T> CStringW FUN_14028dfa0(CStringW strKey, const T& nArg);  // string table text with one argument
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the page
-int FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
+int PlaySystemSound(const CString& strEvent, const CString& strArg);         // play a sound event
 void DestroyItemInfoSlot(const CString& strName);                                 // drop the item shown under a dialog name
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -263,7 +263,7 @@ void UISystemMailNotifyDialog::OnLoadComplete()
                 m_btnOnTime->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISystemMailNotifyDialog::FUN_1412a5de0), (void*)0);
             m_onTimeEvent->vfunc_3(1);
             m_onTimeEvent->vfunc_13("open");
-            FUN_141276180(s_strPopUp, "");
+            PlaySystemSound(s_strPopUp, "");
         }
     }
     else
@@ -362,7 +362,7 @@ void UISystemMailNotifyDialog::ShowMail(int nMailId)
         return;
     if (m_event == 0)
         return;
-    Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     m_strUrl = ((class CGameRule*)GetGameRule())->GetUserConditionText(rec->m_nGameEventId);
@@ -384,7 +384,7 @@ void UISystemMailNotifyDialog::ShowMail(int nMailId)
         CStringW strDesc = StringFormat<CStringW>(GetStringCommonByKey(FUN_14016a730(rec->m_notify.m_strDescKey, 0)), strAttach);
         SetNestedChildText((&*m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
-    FUN_141276180(s_strPopUp, "");
+    PlaySystemSound(s_strPopUp, "");
     FUN_1412a60d0();
 }
 
@@ -487,7 +487,7 @@ void UISystemMailNotifyDialog::FUN_1412a61a0()
     m_178 = m_17c;
     if (m_178 == 0)
         vfunc_67();
-    FUN_141276180(s_strPopDown, "");
+    PlaySystemSound(s_strPopDown, "");
 }
 
 // @0x1412a62a0

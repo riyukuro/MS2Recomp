@@ -21,13 +21,13 @@ public:
     void FUN_1401ce2b0(const char* pszLine);                            // add a line to the log's second list
     void FUN_1401ce2f0(const char* pszFormat, ...);                     // printf-style line, second list
     void FlushLog();                                               // flush the log file
-    void FUN_1401ce3d0(TFunctor<void, EmptyParam> callback);            // register a shutdown callback
+    void AddCallback(TFunctor<void, EmptyParam> callback);            // register a shutdown callback
     void FUN_1401ce420();                                               // drop the callbacks and mark a clean exit
     void FUN_1401ce450();                                               // no-op
-    CStringW FUN_1401ce460();                                           // the dump file path (built once)
-    CString FUN_1401ce8d0();                                            // the build string without ':'
+    CStringW GetDumpPath();                                           // the dump file path (built once)
+    CString GetBuildString();                                            // the build string without ':'
     void FUN_1401ce9b0();                                               // no-op
-    void FUN_1401ce9c0();                                               // disable the CRT's SetUnhandledExceptionFilter
+    void DisableUnhandledExceptionFilter();                                               // disable the CRT's SetUnhandledExceptionFilter
     void FUN_1401ceb40();                                               // no-op
     void FUN_1401ceb50();                                               // no-op
 

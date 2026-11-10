@@ -28,7 +28,7 @@ public:
     void SetExtra(const CStringW& str);
     void SetMsg(const CStringW& str);
     void SetCallback(Unk_MsgBoxCallback cb);   // 0x141a027c0
-    void FUN_141a01800(int n);
+    void SetButtonPreset(int n);
     void SetTitle(const CStringW& str);
     void SetCheckbox0(CStringW str, bool b);
     void SetCheckbox1(CStringW str, bool b);
@@ -46,7 +46,7 @@ class Unk_PCBaseFlags
 public:
     Unk_PCBaseFlags& SetBit(unsigned nPos, bool bValue);   // set / clear one bit
     bool IsBitSet(unsigned nPos) const;                // test one bit
-    void FUN_140d752e0(unsigned char c);                             // fill both bytes
+    void FillBits(unsigned char c);                             // fill both bytes
     void FUN_140d75340();                                   // trim the unused top bits
 
     unsigned char m_bits[2];
@@ -64,7 +64,7 @@ class Unk_BitSet11 : public Unk_PCBaseFlags
 {
 public:
     Unk_BitSet11();
-    Unk_BitRef FUN_140d75090(unsigned nPos);
+    Unk_BitRef GetBitRef(unsigned nPos);
 };
 
 class CReservedWordTable;
@@ -85,13 +85,13 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
         CStringW tag(L"terms");
         box->SetExtra(tag);
     }
-    box->FUN_141a01800(1);
+    box->SetButtonPreset(1);
     box->SetTitle(strA);
     box->SetCheckbox0(GetStringCommon(0x9d0), 1);
     CStringW coupon = FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(coupon);
     box->SetCheckbox1(CStringW(coupon), 1);
-    box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
+    box->SetAgreement(g_143ac2fb8.GetBitRef(nBit).FUN_140d750f0());
     box->SetCallback(cb);
     FUN_140d73c60(box);
     return box;
@@ -132,7 +132,7 @@ int FUN_140d74f70(CStringW& tag)
 // @0x140d75040
 Unk_BitSet11::Unk_BitSet11()
 {
-    FUN_140d752e0(0);
+    FillBits(0);
 }
 
 // @0x140d75060
@@ -143,7 +143,7 @@ Unk_BitRef::Unk_BitRef(Unk_PCBaseFlags* pSet, unsigned nPos)
 }
 
 // @0x140d75090
-Unk_BitRef Unk_BitSet11::FUN_140d75090(unsigned nPos)
+Unk_BitRef Unk_BitSet11::GetBitRef(unsigned nPos)
 {
     (void)((!!(nPos < 11)) || (_wassert(L"UINT(pos) < UINT(T)", _CRT_WIDE(MS2_THIS_FILE), 0x98), 0));
     return Unk_BitRef(this, nPos);
@@ -179,7 +179,7 @@ bool Unk_PCBaseFlags::IsBitSet(unsigned nPos) const
 }
 
 // @0x140d752e0
-void Unk_PCBaseFlags::FUN_140d752e0(unsigned char c)
+void Unk_PCBaseFlags::FillBits(unsigned char c)
 {
     for (int i = 1; i >= 0; i--)
         m_bits[i] = c;

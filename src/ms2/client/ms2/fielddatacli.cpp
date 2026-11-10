@@ -207,7 +207,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
 // @0x140a55460
 MS2Ptr<CFieldDataCli> CFieldDataCli::Find(int fieldId)
 {
-    return MS2Ptr<CFieldDataCli>(dynamic_cast<CFieldDataCli*>((CFieldData*)CFieldData::FUN_140374140(fieldId)));
+    return MS2Ptr<CFieldDataCli>(dynamic_cast<CFieldDataCli*>((CFieldData*)CFieldData::FindField(fieldId)));
 }
 
 // @0x140a55500

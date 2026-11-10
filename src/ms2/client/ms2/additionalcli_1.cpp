@@ -53,7 +53,7 @@ public:
 };
 
 int GetServerTick();   // C3: was GetServerTick
-bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
+bool IsUpperTargetId(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FindMainPlayerInfo(int nClass);                // 0x140931900 the main player info dialog
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // 0x141b6efc0 the scene node of an entity
 
@@ -173,7 +173,7 @@ void AdditionalCli::DecodeModifyPacket(PCBase* pOwner, unsigned nFlags, const Un
         bool bCountChanged = m_nOverlapCount != state.m_n10;
         bool bTimeChanged = m_nEndTick != state.m_n4;
         ApplyState(state);
-        bool bMe = FUN_140930110(m_nCasterId);
+        bool bMe = IsUpperTargetId(m_nCasterId);
         if (bMe)
         {
             if (bTimeChanged)
@@ -300,7 +300,7 @@ void AdditionalCli::StopEffects(int nCaster)
 {
     RemoveKeepEffect();
     PlayStopEffect(nCaster);
-    bool bMe = FUN_140930110(m_nCasterId);
+    bool bMe = IsUpperTargetId(m_nCasterId);
     if (bMe && m_spLevel->GetParent()->GetFlag48())
     {
         UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
@@ -547,7 +547,7 @@ int AdditionalCli::GetSortOrder()
         nOrder += 10;
     if (m_nCasterId == m_pOwner->GetObjectId())
         nOrder += 2;
-    else if (FUN_140930110(m_nCasterId))
+    else if (IsUpperTargetId(m_nCasterId))
         nOrder += 1;
     return nOrder;
 }
@@ -555,7 +555,7 @@ int AdditionalCli::GetSortOrder()
 // @0x14096d430
 void AdditionalCli::UpdateBuffUI()
 {
-    bool bMe = FUN_140930110(m_nCasterId);
+    bool bMe = IsUpperTargetId(m_nCasterId);
     if (m_spLevel->m_ui.FUN_1401927c0(bMe))
     {
         if (efd::DynamicCast<MyPC>(m_pOwner))
@@ -570,7 +570,7 @@ void AdditionalCli::UpdateBuffUI()
             {
                 UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
                 if (pBar)
-                    pBar->FUN_141b4cfd0(MS2Ptr<AdditionalCli>(this));
+                    pBar->UpdateBuff(MS2Ptr<AdditionalCli>(this));
             }
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)

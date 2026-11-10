@@ -63,7 +63,7 @@ public:
     void SortNpcQuestIds();                                   // sorts the npc quest lists
     void SortQuestIdsByLevel();                                   // sorts m_1d8
     void FUN_140750f30();
-    void FUN_14074f160();                                   // builds every index from m_quests
+    void BuildIndexes();                                   // builds every index from m_quests
     void FUN_14074ee30();                                   // scales every reward by the level rate   // the quest and every quest that requires it
 
     CLockCriticalSection m_lock;                                            // +0x10

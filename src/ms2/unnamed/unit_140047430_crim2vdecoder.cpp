@@ -32,7 +32,7 @@ void FUN_14005e600(__int64 a1, unsigned int* a2);
 void FUN_14005e650(__int64 a1, int* a2, unsigned int* a3, unsigned int* a4);
 void FUN_14005e6c0(__int64 a1, unsigned int* a2, unsigned int* a3);
 void FUN_14005b860(__int64 a1);
-const char* FUN_140047420(void);                        // unit_140046e04
+const char* GetVersionString(void);                        // unit_140046e04
 void FUN_140054590(void* pCtx, int nIndex, unsigned __int64 a3, unsigned __int64 a4, unsigned __int64 a5);
 void FUN_1400545c0(void* pCtx, unsigned __int64 a2, unsigned int a3);
 void FUN_1400545d0(void* pCtx, unsigned __int64* pOut, unsigned int* pCount);
@@ -356,7 +356,7 @@ void FUN_140047840(Unk_M2vCtx* pCtx, int nIndex, int nValue)
 void RegisterM2vDecoderFunctions(void)
 {
     DAT_143e64b88 = 1;
-    DAT_143e64b60 = (void*)FUN_140047420;
+    DAT_143e64b60 = (void*)GetVersionString;
     DAT_143e64b20 = (void*)FUN_140047430;
     DAT_143e64b80 = (void*)FUN_140047770;
     DAT_143e64b78 = (void*)FUN_140047620;

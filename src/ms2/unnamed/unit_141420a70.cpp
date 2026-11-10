@@ -26,7 +26,7 @@ int FUN_141420a70(CItem* pItem, AvatarPC* pAvatar)
 {
     if (pItem == 0 || pAvatar == 0)
         return 0;
-    MS2Ptr<CItemData> sp(reinterpret_cast<CItemData*>(pItem->FUN_140527840()));
+    MS2Ptr<CItemData> sp(reinterpret_cast<CItemData*>(pItem->GetData()));
     if (sp.IsNull())
         return 0;
     int nId = FUN_141420b30(sp, pAvatar);

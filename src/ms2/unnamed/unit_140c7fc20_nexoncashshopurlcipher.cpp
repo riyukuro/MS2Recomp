@@ -61,7 +61,7 @@ void* FUN_140c7fc20(const unsigned* pSrc, int n)
 }
 
 // @0x140c7fcd0 - unpack n bytes from a word buffer into a fresh byte buffer
-void* FUN_140c7fcd0(const unsigned* pSrc, int n)
+void* WordsToBytes(const unsigned* pSrc, int n)
 {
     unsigned char* pDst = (unsigned char*)malloc((__int64)n);
     for (int i = 0; i < n; i++)
@@ -258,7 +258,7 @@ int FUN_140c816b0(const unsigned* pKey, const void* pIv, const void* pIn, int nL
     unsigned* pWords = (unsigned*)FUN_140c7fc20((const unsigned*)pCopy, nLen);
     FUN_140c810a0(&ctx, pWords, nLen, pCipher, &nOut);
     FUN_140c81460(&ctx, (unsigned char*)(pCipher + nOut / 4), (unsigned*)&nTail);
-    void* pBytes = FUN_140c7fcd0(pCipher, nOut + nTail);
+    void* pBytes = WordsToBytes(pCipher, nOut + nTail);
     memcpy(pOut, pBytes, (size_t)(nOut + nTail));
     free(pWords);
     free(pBytes);
@@ -286,7 +286,7 @@ int FUN_140c818a0(const unsigned* pKey, const void* pIv, const void* pIn, int nL
     unsigned* pWords = (unsigned*)FUN_140c7fc20((const unsigned*)pCopy, nLen);
     FUN_140c810a0(&ctx, pWords, nLen, pCipher, &nOut);
     if (FUN_140c81460(&ctx, (unsigned char*)(pCipher + nOut / 4), (unsigned*)&nTail) > 0) {
-        void* pBytes = FUN_140c7fcd0(pCipher, nOut - nTail);
+        void* pBytes = WordsToBytes(pCipher, nOut - nTail);
         memcpy(pPlain, pBytes, (__int64)(nOut - nTail));
         nResult = nOut - nTail;
         if (nResult < 0)
@@ -388,7 +388,7 @@ void FUN_140c84fb0(void* p)
 }
 
 // @0x140c85110 - the channel id
-CString FUN_140c85110()
+CString GetChannelName()
 {
     return CString("MS2");
 }
@@ -406,7 +406,7 @@ int FUN_140c851a0()
 }
 
 // @0x140c851b0 - hkey: hash of channel + nxid + "yyyyMMddhh" (12-hour clock) of the server time
-CString FUN_140c851b0(const CString& strChannel, const CString& strNxId, CMsTime& time)
+CString MakeHashKey(const CString& strChannel, const CString& strNxId, CMsTime& time)
 {
     int nHour = time.GetHour() % 12;
     if (nHour == 0)
@@ -425,10 +425,10 @@ CString FUN_140c85310(const CString& strPlain);
 CString GetCashShopPayUrl(u64 nNxId)
 {
     CMsTime time(GetServerTime());
-    CString strChannel = FUN_140c85110();
+    CString strChannel = GetChannelName();
     CString strNxId = FormatNexonId(nNxId);
     int nType = FUN_140c851a0();
-    CString strKey = FUN_140c851b0(strChannel, strNxId, time);
+    CString strKey = MakeHashKey(strChannel, strNxId, time);
     CString strToken = Unk_SocketFormat("chid={0}&nxid={1}&ctype={2}&hkey={3}", strChannel, strNxId, nType, strKey);
     CString strCipher = FUN_140c85310(strToken);
     return StringFormat("{0}?id={1}&channel={2}&type={3}", "https://nxpay.nexon.com/cash/pay.aspx",

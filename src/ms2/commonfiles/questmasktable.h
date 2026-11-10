@@ -55,7 +55,7 @@ private:
     void Make() { Release(); m_p = Create(0); }
     void Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
     static QuestMask* Allocate(void*) { return new QuestMask(); }
-    static QuestMask* Create(void*) { return static_cast<QuestMask*>(FUN_1401ba820(Allocate(0))); }
+    static QuestMask* Create(void*) { return static_cast<QuestMask*>(InitRefCount(Allocate(0))); }
     static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     void AddRefImpl(void*) const { Ref(m_p); }
     void ReleaseImpl(void*) { if (CPtred::ReleasePtred(m_p) == 0) { Ref(m_p); CPtred::DeletePtred(m_p); } }

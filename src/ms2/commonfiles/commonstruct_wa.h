@@ -48,7 +48,7 @@ public:
     bool IsEmpty();
     void FUN_14026b3a0(COutputStream&);
     void FUN_14026b410(CInPacket&);
-    unsigned FUN_14026b4b0();
+    unsigned GetTagItemId();
     unsigned GetItemId();
     int m_a, m_b, m_c;
 };
@@ -90,7 +90,7 @@ public:
     void Write(COutputStream& out);
     void Read(CInPacket& in);
     Unk_IngVec* FUN_14026c230();
-    void FUN_14026c250(CIngredientContainer* other);
+    void Merge(CIngredientContainer* other);
     Unk_IngRef FindIngredient(unsigned key);
     Unk_IngVec m_items;
 };
@@ -105,7 +105,7 @@ public:
 MS2_CHECK_SIZE(Unk_IngContRef, 16);
 class Unk_IngHolder {
 public:
-    bool FUN_14026c550(Unk_IngHolder* other);
+    bool IsDifferentFrom(Unk_IngHolder* other);
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
     Unk_IngContRef m_container;
 };
@@ -146,9 +146,9 @@ public:
     virtual ~DungeonRewardInfo();          // 0x14026c610
     void Write(COutputStream& out);
     void Read(CInPacket& in);
-    __int64 FUN_14026cbf0();               // the exe callers read all of rax (signed compare)
+    __int64 GetExp();               // the exe callers read all of rax (signed compare)
     unsigned FUN_14026cc70();
-    __int64 FUN_14026ccf0();               // the exe callers read all of rax (signed compare)
+    __int64 GetMeso();               // the exe callers read all of rax (signed compare)
     unsigned GetReward(unsigned key);
     void Clear();
     bool HasRewards();
@@ -201,14 +201,14 @@ public:
     // ~NpcShopItemLife (0x14027e8e0) is implicit: the exe dtor stores no vptr.
     bool IsDifferentFrom(NpcShopItemLife* other);
     MS2SvrPtr<CPtred> Clone();
-    bool FUN_14026ebc0(void* xml);
+    bool LoadFromXml(void* xml);
     void Write(COutputStream& out);
     void Read(CInPacket& in);
-    bool FUN_14026f000();
+    bool IsNotOnlyVisible();
     bool IsVisible(const CMsTime& now);
     bool IsNotExpired(const CMsTime& now);
     bool IsValid();
-    __int64 FUN_14026f170();
+    __int64 GetExpireTime();
     int m_type, m_value;
     CMsTime m_time;
     bool m_onlyVisible;
@@ -220,8 +220,8 @@ class ItemDropItemLife : public CPtred {
 public:
     ItemDropItemLife();                    // 0x14026f220
     // ~ItemDropItemLife (0x14027e8c0) is implicit: the exe dtor stores no vptr.
-    bool FUN_14026f290(void* xml);
-    __int64 FUN_14026f520();
+    bool LoadFromXml(void* xml);
+    __int64 GetExpireTime();
     bool IsValid();
     int m_type, m_value;
     CMsTime m_time;
@@ -248,7 +248,7 @@ public:
     Unk_HistRef(const Unk_HistRef&);               // 0x14027cc30
     Unk_HistRef(Unk_HistRef&&);                    // 0x14027cbe0
     ~Unk_HistRef();                                // 0x14027e060
-    Unk_HistRef& FUN_14027eab0(Unk_HistRef&);      // assign
+    Unk_HistRef& Assign(Unk_HistRef&);      // assign
     bool operator==(CUserChangeableItemHistory*) const;   // 0x14027ed20
     CUserChangeableItemHistory* operator->() const { return m_p; }   // 0x14027f300 (ICF: MS2Ptr<CIngredientInfo>::operator T*)
     void* m_unknown; CUserChangeableItemHistory* m_p;
@@ -300,8 +300,8 @@ class ChangeableProductInfo : public CPtred {
 public:
     ChangeableProductInfo();               // 0x140270170
     // ~ChangeableProductInfo (0x14027e7e0) is implicit: the exe dtor stores no vptr.
-    void FUN_140270230(Unk_ProdRef other);
-    bool FUN_140270330(const CMsTime& now);
+    void CopyFrom(Unk_ProdRef other);
+    bool IsExpired(const CMsTime& now);
     bool FUN_1402703a0(const CMsTime& now);
     bool FUN_140270450(const CMsTime& now);
     int m_18, m_1c, m_20, m_24;
@@ -315,7 +315,7 @@ class HomeBlockInfo : public CPtred {
 public:
     HomeBlockInfo();                       // 0x1402704b0
     // ~HomeBlockInfo (0x14027e820) is implicit: the exe dtor stores no vptr.
-    void FUN_140270530();
+    void Reset();
     void Write(COutputStream& out);
     void Read(CInPacket& in);
     __int64 m_18, m_20, m_28;
@@ -337,7 +337,7 @@ bool FUN_14026aeb0(const ItemEntity&, const ItemEntity&);
 void FUN_140274fc0(CStringW&, void*, const wchar_t*);
 void FUN_140275180(CStringW&, void*, const wchar_t*);
 void FUN_140275080(CString&, void*, const char*);
-unsigned FUN_1407181d0(const CString&);
+unsigned ParseUInt(const CString&);
 void FUN_140177de0(CString&, Unk_IntArr*, const char*);
 void FUN_1408733e0(void*, const char*, CString&);
 int FUN_1402767f0(void*, const char*, unsigned*);

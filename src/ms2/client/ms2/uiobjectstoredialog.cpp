@@ -64,7 +64,7 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft,
 void FUN_140710590(COutPacket& packet);
 void FUN_141901390(int nRelease, int nUiType);
 
-void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
+void SetString(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -75,7 +75,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, CStringW
 {
     ASArgList args;
     args.resize(6);
-    FUN_1422bce70(&args[0], (const char*)a1);
+    SetString(&args[0], (const char*)a1);
     FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     FUN_1422bcea0(&args[2], (const wchar_t*)a3);
     FUN_1422bcea0(&args[3], (const wchar_t*)a4);

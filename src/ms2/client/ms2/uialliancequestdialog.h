@@ -27,10 +27,10 @@ public:
     virtual void vfunc_o178_2(void* pQuest);                    // 0x140bf6a90 close when a kind 9 quest changes
 
     int FUN_140bf6af0(int nNpc);                                // 0x140bf6af0 the alliance of an alliance npc
-    CStringW FUN_140bf6b20(int nAlliance);                      // 0x140bf6b20 "current fame grade" text
+    CStringW GetCurrentFameGradeText(int nAlliance);                      // 0x140bf6b20 "current fame grade" text
     CStringW GetDailyMissionText(int nAlliance);                      // 0x140bf6be0 "daily mission" text
     CStringW GetQuestResetTimeText(unsigned nQuest);                    // 0x140bf6c90 time left until the quest resets
-    void FUN_140bf6ef0();                                       // 0x140bf6ef0 send the fame header to the movie
+    void SetFameHeader();                                       // 0x140bf6ef0 send the fame header to the movie
     void FUN_140bf70f0();                                       // 0x140bf70f0 send the npc portrait and speech
     void FUN_140bf7630();                                       // 0x140bf7630 fill "m_list" with the quests
     int CanUseCompletionTicket(unsigned nQuest);                         // 0x140bf8800 a completion ticket can be used
@@ -42,8 +42,8 @@ public:
     bool SendQuestMode33(int nResult, const CMsgBoxData& rBox);   // 0x140bf9110 ticket use confirmed
     void CollectAcceptableQuests();                                       // 0x140bf91b0 collect the acceptable quests
     void CollectCompletableQuests();                                       // 0x140bf9360 collect the completable quests
-    int FUN_140bf94e0(int nQuest);                              // 0x140bf94e0 the quest is among the collected acceptable ones
-    int FUN_140bf9530(int nQuest);                              // 0x140bf9530 the quest is among the collected completable ones
+    int IsAcceptableQuest(int nQuest);                              // 0x140bf94e0 the quest is among the collected acceptable ones
+    int IsCompletableQuest(int nQuest);                              // 0x140bf9530 the quest is among the collected completable ones
     unsigned FUN_140bf9580(unsigned nQuest);                    // 0x140bf9580 the quest to act on for a row (0 = none)
     int AreQuestRequirementsMet(unsigned nQuest);                         // 0x140bf9a40 the fame / required quests are met
     CStringW GetRequirementText();                                   // 0x140bf9bd0 "requirement" text (empty when met)

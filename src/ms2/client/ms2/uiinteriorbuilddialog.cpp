@@ -164,11 +164,11 @@ void UIInteriorBuildDialog::SetData()
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
     if (spItem == 0)
         return;
-    MS2SvrPtr<CItemData> spData(spItem->FUN_140527840());
+    MS2SvrPtr<CItemData> spData(spItem->GetData());
     if (spData == 0)
         return;
     CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
-    UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
+    UGCMapPackageDataPtr spPackage = GetUGCMapPackageData(strPackage);
     if (spPackage == 0)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -190,23 +190,23 @@ void UIInteriorBuildDialog::OnUseItem()
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
     if (spItem == 0)
         return;
-    if (!CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()))
+    if (!CFieldData::FUN_140374410(WorldService::GetInstance()->GetFieldId()))
     {
         FUN_140d73bc0(0xb8e, 0, 0, CStringW(L""));
         return;
     }
-    if (spItem->FUN_140527840()->function.parameter.FUN_1408d2380() < 1)
+    if (spItem->GetData()->function.parameter.GetArgCount() < 1)
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs&>(spItem->GetData()->function.parameter).FUN_1408d21c0(0, L""), 0);
     if (strPackage.IsEmpty())
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
+    UGCMapPackageDataPtr spPackage = GetUGCMapPackageData(strPackage);
     if (spPackage == 0)
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
@@ -217,7 +217,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb90, 0, 0, CStringW(L""));
         return;
     }
-    Unk_UGCMapPtr spMap = FUN_1408ad3f0(WorldService::GetInstance()->FUN_141bd3060());
+    Unk_UGCMapPtr spMap = GetUGCMap(WorldService::GetInstance()->GetFieldId());
     if (spMap == 0)
     {
         FUN_140d73bc0(0xb92, 0, 0, CStringW(L""));

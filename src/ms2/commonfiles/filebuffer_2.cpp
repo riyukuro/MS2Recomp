@@ -72,7 +72,7 @@ void CFileLogger::SetLogFileLimit(int nId, unsigned int nLimit)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->SetLimit(nLimit);
     LeaveCriticalSection(&ms_cs);
@@ -84,7 +84,7 @@ void CFileLogger::FUN_140392270(int nId)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->ClearTail();
     LeaveCriticalSection(&ms_cs);
@@ -96,7 +96,7 @@ void CFileLogger::FlushLog(int nId)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
     {
         ms_paths.insert(pFile->GetName());
@@ -157,7 +157,7 @@ void CFileLogger::FUN_140392600(int nId, const char* pszLine)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->AddLine(pszLine);
     LeaveCriticalSection(&ms_cs);
@@ -169,7 +169,7 @@ void CFileLogger::FUN_140392670(int nId, const char* pszLine)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->AddTailLine(pszLine);
     LeaveCriticalSection(&ms_cs);
@@ -181,7 +181,7 @@ void CFileLogger::FUN_1403926e0(int nId, const CString& strLine)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->FUN_1408670e0(strLine);
     LeaveCriticalSection(&ms_cs);
@@ -193,7 +193,7 @@ void CFileLogger::FUN_140392750(int nId, const CString& strLine)
     if (ms_bInit == 0)
         return;
     EnterCriticalSection(&ms_cs);
-    CTextLogFile* pFile = FUN_140394b50(nId);
+    CTextLogFile* pFile = GetLogFile(nId);
     if (pFile != 0)
         pFile->FUN_140867180(strLine);
     LeaveCriticalSection(&ms_cs);

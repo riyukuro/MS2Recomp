@@ -169,7 +169,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
+bool IsElementAvailable(struct Unk_XmlElement*);   // C3: was IsElementAvailable
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -179,7 +179,7 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: comma separated list (0x140178570 ints, 0x1401788f0 strings)
 int Parse_14021a330(const CStringA& value);     // alliance name -> id (0 when unknown)
 int Parse_14021a480(const CStringA& value);     // season name -> id
-void FUN_1401d3700(CStringA& str);          // normalises the symbol name
+void ToLower(CStringA& str);          // normalises the symbol name
 CString ToCString(const char* psz, int n);
 
 // The type enum of a famePickMethod <method>.
@@ -264,7 +264,7 @@ int FUN_14035bc20(TiXmlElement* pElem, const char* pszName, Unk_FameAlliance* pO
 
 // Index of a value in an int array (-1 when it is not there).
 // @0x14035b9a0
-int FUN_14035b9a0(ATL::CAtlArray<Unk_FameAlliance>* pArray, Unk_FameAlliance* pnValue)
+int FindAllianceIndex(ATL::CAtlArray<Unk_FameAlliance>* pArray, Unk_FameAlliance* pnValue)
 {
     for (int i = 0; i < (int)pArray->GetCount(); i++)
     {
@@ -393,7 +393,7 @@ CFamePickMethod::~CFamePickMethod()
 // @0x140358ff0
 int CFamePickMethod::Read(TiXmlElement* pElem)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
+    if (!IsElementAvailable((struct Unk_XmlElement*)(pElem)))
         return 0;
     FUN_14035baa0(pElem, "type", &m_nType);
     XmlTokenList(pElem, "pickCountByRank", m_aPickCountByRank);
@@ -435,7 +435,7 @@ int CFameDef::Read(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "officerNpcKind", m_nOfficerNpcKind);
     XmlGetAttr((class TiXmlElement*)(pElem), "symbol", m_strSymbol);
     XmlGetAttr((class TiXmlElement*)(pElem), "isExped", m_nIsExped);
-    FUN_1401d3700(m_strSymbol);
+    ToLower(m_strSymbol);
     FUN_14035bb60(pElem, "season", &m_nSeason);
     return m_nAlliance != 10;
 }
@@ -505,13 +505,13 @@ int CFameTable::LoadFame()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         GradePtr spGrade(new CFameGradeData);
         if (spGrade->Read(pNode) == 0)
             continue;
         m_aGrades[spGrade->m_nAlliance].SetAt(spGrade->m_nGrade, spGrade);
-        if (FUN_14035b9a0(&m_aAllianceId, &spGrade->m_nAlliance) == -1)
+        if (FindAllianceIndex(&m_aAllianceId, &spGrade->m_nAlliance) == -1)
             m_aAllianceId.Add(spGrade->m_nAlliance);
     }
     return 1;
@@ -532,7 +532,7 @@ int CFameTable::LoadFameLog()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         LogPtr spLog(new CFameLogData);
         if (spLog->Read(pNode) == 0)
@@ -557,7 +557,7 @@ int CFameTable::LoadFameLimit()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         LimitPtr spLimit(new CFameLimitData);
         if (spLimit->Read(pNode) == 0)
@@ -588,7 +588,7 @@ int CFameTable::LoadPickMethod()
     }
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pEnv))->FirstChild("method")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("method")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
             continue;
         PickPtr spMethod(new CFamePickMethod);
         if (spMethod->Read(pNode) == 0)
@@ -617,7 +617,7 @@ int CFameTable::LoadFameDef()
     }
     for (TiXmlElement* pSeason = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pSeason != 0; pSeason = ((class TiXmlElement*)((class Unk_XmlNode*)(pSeason))->NextSibling("season")))
     {
-        if (!FUN_14028f710((struct Unk_XmlElement*)(pSeason)))
+        if (!IsElementAvailable((struct Unk_XmlElement*)(pSeason)))
             continue;
         SeasonPtr spSeason(new CFameSeasonDef);
         if (spSeason->Read(pSeason) == 0)

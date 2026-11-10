@@ -116,7 +116,7 @@ void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 
 // Strings / messages.
 CStringW GetStringCommonByKey(const CStringW& key);
-CStringW FUN_140298ea0(CStringW key);
+CStringW GetStringByKey(CStringW key);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
 void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
@@ -141,13 +141,13 @@ public:
     __int64 GetItemUid();
 };
 class Unk_RmIconTable { public: void FUN_141adc530(int nId); };
-class Unk_RmPlayers { public: PCBase* FUN_141bd0cc0(); };
+class Unk_RmPlayers { public: PCBase* GetLocalPlayer(); };
 class Unk_140166410* FUN_140166410();
 
 // The AS script calls of this dialog (inline COMDATs of the Invoke family).
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned n);
+void SetUInt(Scaleform::GFx::Value* pValue, unsigned n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 class Unk_RmScript : public AScript
 {
@@ -164,8 +164,8 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5fe90(const char* szMethod, C
     ASArgList args;
     args.resize(3);
     FUN_1422bcea0(&args[0], (const wchar_t*)strText);
-    FUN_1422bcd10(&args[1], nCount);
-    FUN_1422bcce0(&args[2], bLock);
+    SetUInt(&args[1], nCount);
+    SetBoolean(&args[2], bLock);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -175,7 +175,7 @@ inline Scaleform::GFx::Value AScript::FUN_140f5ff80(const char* szMethod, CStrin
     ASArgList args;
     args.resize(2);
     FUN_1422bcea0(&args[0], (const wchar_t*)strText);
-    FUN_1422bcce0(&args[1], bFinal);
+    SetBoolean(&args[1], bFinal);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -183,7 +183,7 @@ inline Scaleform::GFx::Value AScript::FUN_140f5ff80(const char* szMethod, CStrin
 #define RM_NOT_FOUND(key) ShowMessageBox(GetStringCommonByKey(key), 0, 0, CStringW(L""))
 
 // The scroll item's data record as a CItemData (the repacking dialog does the same cast).
-#define RM_DATA(spItem) MS2Ptr<CItemData>(reinterpret_cast<CItemData*>((spItem)->FUN_140527840()))
+#define RM_DATA(spItem) MS2Ptr<CItemData>(reinterpret_cast<CItemData*>((spItem)->GetData()))
 
 // ---- fmt call glue: the string-key formatter with an int and a custom-typed int argument (as in
 // uiitemrepackingscrolldialog.cpp: the int enum goes through its own format_arg) ----
@@ -271,7 +271,7 @@ void UIItemRemakeScrollDialog::OnLoadComplete()
     CStringW strDesc;
     m_nPet = 0;
     MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
-    if (spScroll && spScroll->FUN_140527840() != 0)
+    if (spScroll && spScroll->GetData() != 0)
     {
         MS2Ptr<CItemRemakeScrollData> spRow = GetRemakeScrollData(RM_DATA(spScroll));
         GetScrollLimitNotice(MS2Ptr<CItemRemakeScrollData>(spRow), strNotice);
@@ -397,7 +397,7 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
         FUN_1412752d0(L"s_itemremake_scroll_error_invalid_target", 1);
         return;
     }
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<CItemRemakeScrollData> spRow = GetRemakeScrollData(RM_DATA(spScroll));
@@ -418,7 +418,7 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
         {
             box->SetCallback(RmMsgBoxFn(this, &UIItemRemakeScrollDialog::FUN_140f5f2a0));
             box->SetItemUid(spItem->GetItemUid());
-            box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            box->SetItemEntry(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<__int64>(nOptionUid);
             box->Append<int>(nUnk);
@@ -444,7 +444,7 @@ void UIItemRemakeScrollDialog::SendRemakeRequest(unsigned __int64 nOptionUid, in
         FUN_1412752d0(L"s_itemremake_scroll_error_invalid_target", 1);
         return;
     }
-    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     if (pPlayer == 0)
         return;
     MS2Ptr<CItemRemakeScrollData> spRow = GetRemakeScrollData(RM_DATA(spScroll));
@@ -459,7 +459,7 @@ void UIItemRemakeScrollDialog::SendRemakeRequest(unsigned __int64 nOptionUid, in
             if (box.get() != 0)
             {
                 box->SetItemUid(spItem->GetItemUid());
-                box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+                box->SetItemEntry(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                 box->Append<__int64>(nOptionUid);
                 box->SetButtonLabelIds(0x477, 0x478, 0);
                 FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
@@ -484,7 +484,7 @@ void UIItemRemakeScrollDialog::SendRemakeRequest(unsigned __int64 nOptionUid, in
     {
         if (m_nOptionCount <= 1)
         {
-            NOTICE(FUN_140298ea0(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
+            NOTICE(GetStringByKey(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
             return;
         }
         int nLockId = GetLockItemId(MS2Ptr<CItem>(spItem));
@@ -649,7 +649,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
             Unk_RemakeStat stat(2, MS2Ptr<CItem>(m_spTarget), false);
             CStringW strLocked = GetLockedOptionText(stat, aLocked);
             CStringW strName = m_spIngredient->FUN_140528160();
-            unsigned nPetId = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
+            unsigned nPetId = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->GetData())->function.parameter).FUN_1408d1f60(0, 0);
             strAsk = FUN_14028dfa0<unsigned __int64, unsigned int, CStringW, CStringW, unsigned int>(CStringW(L"s_pet_remake_ask_lock_item_option"), aLocked.GetCount(), nPetId, strLocked, strName, nPetId);
         }
         else
@@ -741,7 +741,7 @@ void UIItemRemakeScrollDialog::GetEnableLockOption(ASData& data)
     {
         if (nNeed == 0)
         {
-            CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
+            CStringW strNotice = GetStringByKey(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strNotice);
             ShowMessageBox(CStringW(strNotice), 0, 0, CStringW(L""));
         }
@@ -759,7 +759,7 @@ void UIItemRemakeScrollDialog::GetEnableLockOption(ASData& data)
             if (nPetId == nNeed)
                 ShowMessageBox(FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_pet_remake_notice_lock_item_option_limit"), spIngredient->FUN_140528160(), nPetId), 0, 0, CStringW(L""));
             else
-                ShowMessageBox(FUN_140298ea0(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0, CStringW(L""));
+                ShowMessageBox(GetStringByKey(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0, CStringW(L""));
         }
     }
     else
@@ -1141,7 +1141,7 @@ void UIItemRemakeScrollDialog::OnTargetSlotDrop(ItemScrollSlot& slot, DragSlot* 
             return;
         }
         MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
-        if (spScroll == 0 || spScroll->FUN_140527840() == 0)
+        if (spScroll == 0 || spScroll->GetData() == 0)
         {
             RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
             return;
@@ -1169,7 +1169,7 @@ void UIItemRemakeScrollDialog::OnTargetSlotDrop(ItemScrollSlot& slot, DragSlot* 
             }
         }
         else if (m_spIngredient.get() != 0)
-            nLockCount = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
+            nLockCount = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->GetData())->function.parameter).FUN_1408d1f60(0, 0);
         obj.SetWStringMember("itemName", CStringW(strName));
         obj.SetIntMember("maxOptionLockCount", nLockCount != 0);
         m_30->Invoke("selectItem", obj.GetValue());

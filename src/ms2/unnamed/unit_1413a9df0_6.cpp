@@ -102,7 +102,7 @@ template <> MS2Ptr<ASDisplayObject> AScript::FUN_140e159f0<ASDisplayObject>(cons
 {
     Scaleform::GFx::Value node = GetMember(strName);
     if (node.IsObject())
-        return FUN_140d01be0(m_nMovieId, node);
+        return CreateDisplayObject(m_nMovieId, node);
     return MS2Ptr<ASDisplayObject>(0);
 }
 
@@ -115,7 +115,7 @@ template <> MS2Ptr<ASDisplayObject> UISwfEntity::GetChild<ASDisplayObject>(const
 }
 
 // @0x1413b1b20
-void* FUN_1413b1b20(unsigned nUIId)
+void* GetChatEmoticonDialog(unsigned nUIId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -127,7 +127,7 @@ void* FUN_1413b1b20(unsigned nUIId)
 }
 
 // @0x1413b1bc0
-void* FUN_1413b1bc0(unsigned nUIId)
+void* GetItemEnchantDialog(unsigned nUIId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {

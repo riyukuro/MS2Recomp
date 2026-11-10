@@ -171,7 +171,7 @@ void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // spl
 // The table file loader helpers.
 CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
+bool IsElementAvailable(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 class Unk_LaunchOptions { public: bool FUN_1406af020(void); }; class Unk_1406aeee0 : public Unk_LaunchOptions { };
 class Unk_LaunchOptions* GetLaunchOptions();
 
@@ -1562,7 +1562,7 @@ void DungeonRoomTable::LoadCoupons()
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRewardCoupon")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRewardCoupon")))
     {
-        if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
+        if (!IsElementAvailable(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
         MS2Ptr<DungeonRewardCoupon> pCoupon(new DungeonRewardCoupon);
         pCoupon->Load(pNode);

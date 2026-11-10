@@ -42,13 +42,13 @@ public:
     int Init(int nId, int nSkillId, const ATL::CAtlArray<Vector3>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
     void StopEffects();                                   // stop every spawned effect
     void FadeOutEffects();                                   // fade out every spawned effect
-    void FUN_1416f6900();                                   // a tick hit
-    void FUN_1416f6b90();                                   // reset
+    void PlayHitEffect();                                   // a tick hit
+    void Reset();                                   // reset
     int GetId();                                    // the id
     void StopLoopEffects();                                   // end the region skill
-    Vector3 FUN_1416f6ed0();                        // the first point
-    void FUN_1416f6f50();                                   // per frame: respawn the culled effects
-    void FUN_1416f7790();                                   // the late effect
+    Vector3 GetFirstPoint();                        // the first point
+    void UpdateEffects();                                   // per frame: respawn the culled effects
+    void PlayLateEffect();                                   // the late effect
     MS2_LAYOUT_FRIEND;
     MS2Ptr<SkillData> m_spRow;                              // +0x18 the skill row
     MS2Ptr<SkillLevelData> m_spSkill;                       // +0x28 the skill level

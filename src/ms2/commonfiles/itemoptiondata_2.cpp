@@ -218,7 +218,7 @@ CLogString* GetLogString();                            // the log
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 template <class A, class B> void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                                const A& first, const B& second);   // characterability.cpp's template
-int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nSpecial);   // the special stat is blocked
+int HasSpecialAbility(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nSpecial);   // the special stat is blocked
 int GetRandomRange(int nRange, int nBase);               // random number in [nBase, nBase + nRange)
 // probability.cpp: the roll logs
 bool AppendItemOptionRandomStatLog(unsigned nProbVer, unsigned nStatId, int nValue, Unk_ProbabilityLog* pLogs);
@@ -272,7 +272,7 @@ bool ItemOptionValue::HasValue()
 }
 
 // @0x1405ce3f0
-bool ItemOptionValue::FUN_1405ce3f0()
+bool ItemOptionValue::IsKindOne()
 {
     if (GetStat() != -1)
         return IsStatKindOne(GetStat());
@@ -283,7 +283,7 @@ bool ItemOptionValue::FUN_1405ce3f0()
 }
 
 // @0x1405ce470
-BOOL ItemOptionValue::FUN_1405ce470()
+BOOL ItemOptionValue::IsSpecial()
 {
     if (GetStat() != -1)
         return FALSE;
@@ -1399,7 +1399,7 @@ bool ItemOptionValueRandom::LoadFromXml(TiXmlElement* pElem)
 }
 
 // @0x1405d26c0
-CString ItemOptionValueRandom::FUN_1405d26c0()
+CString ItemOptionValueRandom::GetName()
 {
     int nStat = GetStat();
     if (nStat != -1)
@@ -1420,7 +1420,7 @@ unsigned ItemOptionValueRandom::GetSpecial()
 }
 
 // @0x1405d2790
-BOOL ItemOptionValueRandom::FUN_1405d2790()
+BOOL ItemOptionValueRandom::IsSpecial()
 {
     if (GetStat() != -1)
         return FALSE;
@@ -1655,7 +1655,7 @@ int ItemOptionVariationData::GetId()
 }
 
 // @0x1405d3a40
-int ItemOptionVariationData::FUN_1405d3a40()
+int ItemOptionVariationData::PickStat()
 {
     int nStat = 0;
     if (m_picker.Pick(nStat))
@@ -1797,7 +1797,7 @@ bool ItemOptionRandom::RollPresetOptions(MS2Ptr<Unk_ItemOptionPreset> spPreset, 
             ItemOptionValueRandom* pValue = *it;
             if (pValue == NULL)
                 continue;
-            if (pValue->FUN_1405d26c0().CompareNoCase(strName) != 0)
+            if (pValue->GetName().CompareNoCase(strName) != 0)
                 continue;
             spContext->AddRandomValue(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
             if (nCount <= 0)
@@ -1840,7 +1840,7 @@ void ItemOptionRandom::FUN_1405d48d0(MS2Ptr<CItemOption> spOption, int nRank, Un
 }
 
 // @0x1405d4bb0
-bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom)
+bool ItemOptionRandom::RerollUntilChanged(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom)
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spTarget->m_spSource, spTarget->m_nRank, MS2Ptr<ItemOptionRandom>(this)));
@@ -1869,10 +1869,10 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
             bool bLocked = false;
             if (nLocked > 0)
             {
-                if (pValue->FUN_1405d2790() == 0)
+                if (pValue->IsSpecial() == 0)
                 {
                     int nStat = pValue->GetStat();
-                    BOOL bSpecial = pValue->FUN_1405d2790();
+                    BOOL bSpecial = pValue->IsSpecial();
                     if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                   std::pair<int, int>(bSpecial, nStat)) != spTarget->m_vLocked.end())
                     {
@@ -1883,7 +1883,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 else
                 {
                     int nSpecial = pValue->GetSpecial();
-                    BOOL bSpecial = pValue->FUN_1405d2790();
+                    BOOL bSpecial = pValue->IsSpecial();
                     if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                   std::pair<int, int>(bSpecial, nSpecial)) != spTarget->m_vLocked.end())
                     {
@@ -1895,7 +1895,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
             if (bLocked)
             {
                 // a kept stat: copied from the source
-                if (pValue->FUN_1405d2790() == 0)
+                if (pValue->IsSpecial() == 0)
                 {
                     int nStat = pValue->GetStat();
                     MS2Ptr<BaseOption> spBase = spTarget->m_spSource->GetStatOption(2, nStat);
@@ -1961,10 +1961,10 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 bool bLocked = false;
                 if (nLeft > 0)
                 {
-                    if (pValue->FUN_1405d2790() == 0)
+                    if (pValue->IsSpecial() == 0)
                     {
                         int nStat = pValue->GetStat();
-                        BOOL bSpecial = pValue->FUN_1405d2790();
+                        BOOL bSpecial = pValue->IsSpecial();
                         if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                       std::pair<int, int>(bSpecial, nStat)) != spTarget->m_vLocked.end())
                         {
@@ -1975,7 +1975,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                     else
                     {
                         int nSpecial = pValue->GetSpecial();
-                        BOOL bSpecial = pValue->FUN_1405d2790();
+                        BOOL bSpecial = pValue->IsSpecial();
                         if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                       std::pair<int, int>(bSpecial, nSpecial)) != spTarget->m_vLocked.end())
                         {
@@ -1986,7 +1986,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 }
                 if (bLocked)
                 {
-                    if (pValue->FUN_1405d2790() == 0)
+                    if (pValue->IsSpecial() == 0)
                     {
                         int nStat = pValue->GetStat();
                         MS2Ptr<BaseOption> spBase = spSource->GetStatOption(2, nStat);
@@ -2035,7 +2035,7 @@ bool ItemOptionRandom::AddRandomOption(MS2Ptr<CItemOption> spOption, int nRank, 
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spOption, nRank, MS2Ptr<ItemOptionRandom>(this)));
-    MS2Ptr<ItemOptionValueRandom> spValue = FUN_1405d8f30(spContext, pRandom);
+    MS2Ptr<ItemOptionValueRandom> spValue = PickValue(spContext, pRandom);
     if (spValue == 0)
         return false;
     if (spValue->GetStat() != -1)
@@ -2075,7 +2075,7 @@ void ItemOptionRandom::SimulateOptions(MS2Ptr<CItemOption> spOption, int nRank, 
             {
                 Unk_CriticalSectionLock guard(lock, 1);
                 for (ItemOptionValueRandom* pValue : vValues)
-                    mapCounts[pValue->FUN_1405d26c0()]++;
+                    mapCounts[pValue->GetName()]++;
             }
         });
     for (auto& kCount : mapCounts)
@@ -2104,14 +2104,14 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
     std::vector<std::pair<CString, std::pair<unsigned, int> > > vInfo;
     for (auto& spValue : m_vValues)
     {
-        CString strName = spValue->FUN_1405d26c0();
+        CString strName = spValue->GetName();
         unsigned nWeight = spValue->GetWeight();
         std::pair<unsigned, int> kInfo;
         kInfo.first = nWeight;
         kInfo.second = spValue->GetStatId();
         vInfo.push_back(std::make_pair(strName, kInfo));
         bool bArmor = spContext->GetStatGroup() == 2 &&
-                      ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0;
+                      ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->GetName()).get() != 0;
         if (bArmor)
         {
             nArmor += nWeight;
@@ -2143,7 +2143,7 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
     {
         for (size_t j = 0; j < nCount; j++)
         {
-            double dProb = FUN_1405d9660(vWeights, i, j);
+            double dProb = GetPickProbability(vWeights, i, j);
             vProb[j] += dProb;
         }
     }
@@ -2301,7 +2301,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
         if (spValue == 0)
             continue;
         if (spContext->GetStatGroup() == 2 &&
-            ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0)
+            ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->GetName()).get() != 0)
         {
             spLockedArmor = spValue;
             continue;
@@ -2315,7 +2315,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     }
     for (auto& spValue : m_vValues)
     {
-        CString strName = spValue->FUN_1405d26c0();
+        CString strName = spValue->GetName();
         int nWeight = spValue->GetWeight();
         if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
         {
@@ -2394,7 +2394,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
     ATL::CAtlArray<ItemOptionValueRandom*> arrSpecial;
     for (auto& spValue : m_vValues)
     {
-        CString strName = spValue->FUN_1405d26c0();
+        CString strName = spValue->GetName();
         if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
         {
             arrArmor.Add(spValue.get());
@@ -2416,7 +2416,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
             for (unsigned j = 0; j < arrArmor.GetCount(); j++)
             {
                 ItemOptionValueRandom* pValue = arrArmor[j];
-                if (pValue->FUN_1405d26c0().CompareNoCase(strName) == 0)
+                if (pValue->GetName().CompareNoCase(strName) == 0)
                 {
                     vOut.push_back(pValue);
                     bFound = true;
@@ -2441,7 +2441,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
             for (unsigned j = 0; j < arrSpecial.GetCount(); j++)
             {
                 ItemOptionValueRandom* pValue = arrSpecial[j];
-                if (pValue->FUN_1405d26c0().CompareNoCase(strName) == 0)
+                if (pValue->GetName().CompareNoCase(strName) == 0)
                 {
                     vOut.push_back(pValue);
                     bFound = true;
@@ -2462,7 +2462,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
 // @0x1405d8f30
 // One more row for an option: the rows it already holds are skipped; an exclusive (armor) row or special ability
 // it holds stands in for its group in the weighted pick.
-MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionRandomContext> spContext,
+MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::PickValue(MS2Ptr<ItemOptionRandomContext> spContext,
                                                               Unk_Random* pRandom)
 {
     Unk_ItemOptionValuePicker picker;
@@ -2477,7 +2477,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
     {
         for (auto& pValue : vHeld)
         {
-            CString strName = pValue->FUN_1405d26c0();
+            CString strName = pValue->GetName();
             if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
             {
                 spHeldArmor.AssignRaw(pValue);
@@ -2492,7 +2492,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
     }
     for (auto& spValue : m_vValues)
     {
-        CString strName = spValue->FUN_1405d26c0();
+        CString strName = spValue->GetName();
         int nWeight = spValue->GetWeight();
         if (!vHeld.empty() && std::find(vHeld.begin(), vHeld.end(), spValue) != vHeld.end())
             continue;
@@ -2534,7 +2534,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
 // @0x1405d9660
 // The chance that entry nIndex is among nPick weighted picks without replacement: the sum over every ordered choice
 // of nPick - 1 other entries picked before it.
-double ItemOptionRandom::FUN_1405d9660(std::vector<unsigned>& vWeights, size_t nPick, size_t nIndex)
+double ItemOptionRandom::GetPickProbability(std::vector<unsigned>& vWeights, size_t nPick, size_t nIndex)
 {
     unsigned nTotal = 0;
     for (size_t i = 0; i < vWeights.size(); i++)
@@ -2610,7 +2610,7 @@ void ItemOptionRandomContext::SetTarget(MS2Ptr<Unk_1405e74c0> spTarget)
 }
 
 // @0x1405d9c30
-BOOL ItemOptionRandomContext::FUN_1405d9c30(CString strName)
+BOOL ItemOptionRandomContext::HasExclusiveStat(CString strName)
 {
     if (GetStatGroup() == 2 && FUN_1405db0b0(m_spOption, strName))
         return 1;
@@ -2659,7 +2659,7 @@ int ItemOptionRandomContext::AddRandomValue(MS2Ptr<ItemOptionValueRandom> spValu
     };
     if (spValue->GetStat() != -1)
     {
-        if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
+        if (HasExclusiveStat(spValue->GetName()))
             return 0;
         MS2Ptr<BaseOption> spBase(new BaseOption);
         spBase->SetValue(spValue->FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext>(this), pRandom));
@@ -2672,9 +2672,9 @@ int ItemOptionRandomContext::AddRandomValue(MS2Ptr<ItemOptionValueRandom> spValu
     }
     else
     {
-        if (FUN_14081d650(m_spOption, 2, spValue->GetSpecial()) != 0)
+        if (HasSpecialAbility(m_spOption, 2, spValue->GetSpecial()) != 0)
             return 0;
-        if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
+        if (HasExclusiveStat(spValue->GetName()))
             return 0;
         MS2Ptr<BaseOption> spBase(new BaseOption);
         spBase->SetValue(spValue->FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext>(this), pRandom));
@@ -2703,7 +2703,7 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
     };
     if (spValue->GetStat() != -1)
     {
-        if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
+        if (HasExclusiveStat(spValue->GetName()))
             return 0;
         MS2Ptr<BaseOption> spBase(new BaseOption);
         spBase->m_nIndex = nIndex;
@@ -2718,9 +2718,9 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
     }
     else
     {
-        if (FUN_14081d650(m_spOption, 2, spValue->GetSpecial()) != 0)
+        if (HasSpecialAbility(m_spOption, 2, spValue->GetSpecial()) != 0)
             return 0;
-        if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
+        if (HasExclusiveStat(spValue->GetName()))
             return 0;
         MS2Ptr<BaseOption> spBase(new BaseOption);
         spBase->m_nIndex = nIndex;
@@ -2743,7 +2743,7 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
 {
     if (*pCount <= 0)
         return 0;
-    if (FUN_1405d9d10(spValue->FUN_1405d26c0()))
+    if (FUN_1405d9d10(spValue->GetName()))
         return 0;
     auto log = [this, spValue, pLogs](int nValue) -> bool
     {
@@ -2766,7 +2766,7 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (m_spTarget->m_nRoll == 0)
             return 1;
-        if (FUN_14081d650(m_spTarget->m_spResult, 2, spValue->GetSpecial()) != 0)
+        if (HasSpecialAbility(m_spTarget->m_spResult, 2, spValue->GetSpecial()) != 0)
             return 0;
         MS2Ptr<BaseOption> spBase(new BaseOption);
         spBase->SetValue(spValue->FUN_1405d2800(MS2Ptr<ItemOptionRandomContext>(this)));
@@ -2860,7 +2860,7 @@ int& FUN_1405e6670(int& r)
 }
 
 
-// This unit's pair<int,int>(int&, int&) copy, called by ItemOptionRandom::FUN_1405d4bb0 / FUN_1405d55e0: the first int
+// This unit's pair<int,int>(int&, int&) copy, called by ItemOptionRandom::RerollUntilChanged / FUN_1405d55e0: the first int
 // through 0x1405e6670, the second through 0x140180c20 (the toolchain's instance is the shared 0x1404d9610).
 // @0x1405dbe80
 std::pair<int, int>* FUN_1405dbe80(std::pair<int, int>* pThis, int& a, int& b)

@@ -52,7 +52,7 @@ class Unk_EmoPlayer : public CNpc                                               
 class CFameTable { public: int IsOfficerNpc(int nKind); CString GetSymbolByOfficerNpc(int nKind); };   // famegradedata.h's fame table
 class Unk_EmoNpcTable* GetFameTable();
 CString SelectStringByQuestId(int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class Unk_EmoUIScale;
 class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
@@ -67,7 +67,7 @@ public:
     int FUN_1422b9ea0();
     int GetSubSceneId();
 };
-bool FUN_140930110(int nActorId);
+bool IsUpperTargetId(int nActorId);
 class Unk_EmoClip : public ASGameEntity { };   // C3: FUN_1422bb870 (AScript) and FUN_1422c00f0 (ASDisplayObject) are inherited
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
@@ -159,7 +159,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
     float fDefault = 400.0f;
     m_c0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_218)->Get(fDefault);
     m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_2600)->Read();
-    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->AddListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
 }
@@ -167,7 +167,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 // @0x14192f0f0
 UIEmoticon::Entity::~Entity()
 {
-    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->RemoveListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
@@ -441,7 +441,7 @@ void RemoveEmoticonEntity(int nActorId)
 // @0x14192fe00
 unsigned int GetNpcId(Unk_EmoPlayer* pPlayer)
 {
-    unsigned int nNpcId = pPlayer->FUN_1410937b0();
+    unsigned int nNpcId = pPlayer->GetKind();
     return nNpcId;
 }
 
@@ -479,7 +479,7 @@ UIEmoticon::Entity* UIEmoticon::GetOrCreateEntity(int nActorId)
         {
             if (m_78.IsEmpty())
             {
-                bool bFlag = FUN_140930110(nActorId);
+                bool bFlag = IsUpperTargetId(nActorId);
                 bFlag = false;
                 Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
@@ -503,8 +503,8 @@ UIEmoticon::Entity* UIEmoticon::GetOrCreateEntity(int nActorId)
                     int nOld = pEntity->FUN_140f48d20();
                     if (nActorId != nOld)
                     {
-                        bool bNew = FUN_140930110(nActorId);
-                        if (FUN_140930110(nOld) || bNew)
+                        bool bNew = IsUpperTargetId(nActorId);
+                        if (IsUpperTargetId(nOld) || bNew)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())

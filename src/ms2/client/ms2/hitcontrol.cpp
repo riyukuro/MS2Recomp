@@ -21,7 +21,7 @@ public:
 };
 
 IDistanceCalculator* CreateDistanceCalculator(int nType);                      // commonutil: calculator for a curve kind
-bool FUN_14028d470(float a, float b);                               // approx equal
+bool IsNearlyEqual(float a, float b);                               // approx equal
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x1413fc9d0
@@ -61,7 +61,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
     if (m_kDir == efd::Point3::ZERO)
         return false;
     float fDist = Update(dTime);
-    if (FUN_14028d470(fDist, 0)) {
+    if (IsNearlyEqual(fDist, 0)) {
         if (m_b38)
             static_cast<PCBase*>(pActor)->vfunc_59(1, 0, 0, 0);
         Reset();

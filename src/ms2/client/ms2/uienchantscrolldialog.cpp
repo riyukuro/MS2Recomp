@@ -71,15 +71,15 @@ class UIInventoryDialog { public: void FUN_141999e00(); };
 template<class T> T* Unk_BreakDialog(int);
 
 CStringW GetStatValueText(unsigned nKey);                                           // option name template
-__int64 FUN_140632990(__int64 nBase, float fExtra);                                 // the option value
+__int64 ScaleValue(__int64 nBase, float fExtra);                                 // the option value
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                                // rank-coloured text
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 void FUN_14151f200();
-unsigned __int64 FUN_140718370(const CStringW& str);
+unsigned __int64 ParseUInt64W(const CStringW& str);
 void FUN_140710590(COutPacket& packet);
 void FUN_141275260(int nId, int a, int b);                                          // system message by string id
-int FUN_141276180(const CString& strSound, const CString& strArg);
+int PlaySystemSound(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strTag);
 void FUN_140cd73b0(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);   // set the slot item
@@ -161,7 +161,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp(szMethod, "onEnchant") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nItemUid = ParseUInt64W(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
             if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
@@ -282,7 +282,7 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
             // The box methods live on the derived box; the downcast is offset 0 (no code).
             spBox.operator->()->SetItemUid(nItemUid);
             spBox.operator->()->FUN_141a024a0(0);
-            spBox.operator->()->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox.operator->()->SetItemEntry(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox.operator->()->SetButtonLabelIds(0x475, 0, 0);
             FUN_140d73c60(spBox);
         }
@@ -389,9 +389,9 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
             ASObj obj(2);
             __int64 nBase = reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetStatValue(nKey, 0, 0);
             float fExtra = reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetEnchantRatio(nKey);
-            float fRate = spOpt->FUN_140266e10();
-            __int64 nBefore = FUN_140632990(nBase, fExtra);
-            __int64 nAfter = FUN_140632990(nBase, fExtra + fRate);
+            float fRate = spOpt->GetRate();
+            __int64 nBefore = ScaleValue(nBase, fExtra);
+            __int64 nAfter = ScaleValue(nBase, fExtra + fRate);
             CStringW strBefore = StringFormat(L"{0}", nBefore);
             CStringW strAfter = StringFormat(L"{0}", nAfter);
             CStringW strName = GetStatValueText(nKey);
@@ -443,11 +443,11 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
                 ASObj obj(2);
                 __int64 nBase = reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetStatValue(nKey, 0, 0);
                 float fExtra = reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetEnchantRatio(nKey);
-                float fRateLow = spLow->FUN_140266e10();
-                float fRateHigh = spHigh->FUN_140266e10();
-                __int64 nBefore = FUN_140632990(nBase, fExtra);
-                __int64 nAfterLow = FUN_140632990(nBase, fExtra + fRateLow);
-                __int64 nAfterHigh = FUN_140632990(nBase, fExtra + fRateHigh);
+                float fRateLow = spLow->GetRate();
+                float fRateHigh = spHigh->GetRate();
+                __int64 nBefore = ScaleValue(nBase, fExtra);
+                __int64 nAfterLow = ScaleValue(nBase, fExtra + fRateLow);
+                __int64 nAfterHigh = ScaleValue(nBase, fExtra + fRateHigh);
                 CStringW strBefore = StringFormat(L"{0}", nBefore);
                 CStringW strAfter = StringFormat(L"{0}~{1}", nAfterLow, nAfterHigh);
                 CStringW strName = GetStatValueText(nKey);

@@ -37,11 +37,11 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
 public:
-    int FUN_141bd3060();   // C3: was free FUN_141bd3060
+    int GetFieldId();   // C3: was free GetFieldId
 };
 CStringW GetStringCommon(int nId);
 void ShowMessageBox(CStringW text, int nA, void* pB, CStringW tag);
@@ -75,7 +75,7 @@ CPVPManager::~CPVPManager() noexcept
 void CPVPManager::Clear()
 {
     m_timers.m_timer.Clear();
-    m_entries.FUN_14101b7f0();
+    m_entries.Clear();
 }
 
 // @0x141280ca0
@@ -99,7 +99,7 @@ void CPVPManager::SendCancelRequest()
     {
     case 2:
     {
-        Unk_PvpActorPtr spActor(((class Unk_PvpActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
+        Unk_PvpActorPtr spActor(((class Unk_PvpActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer()));
         if (spActor == 0)
             return;
         if (reinterpret_cast<PCBase*>(spActor.operator->())->IsDead() != 0)
@@ -110,7 +110,7 @@ void CPVPManager::SendCancelRequest()
         CIndividualArenaDataTable::DataPtr spRecord = reinterpret_cast<CIndividualArenaDataTable*>(GetIndividualArenaDataTable())->GetData(Selection());
         if (spRecord == 0)
             return;
-        if (spRecord->m_nFieldID == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())
+        if (spRecord->m_nFieldID == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetFieldId())
         {
             ShowMessageBox(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;

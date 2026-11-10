@@ -49,7 +49,7 @@ template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void* IntToUserData(int n);                                     // int -> delegate user data
 int UserDataToInt(void* p);                                     // delegate user data -> int
-void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void SetBoolean(Scaleform::GFx::Value* pValue, bool b);
 
 // @0x140fc07a0
 UIWatchAGameDialog::UIWatchAGameDialog()
@@ -128,10 +128,10 @@ void UIWatchAGameDialog::OnLoadComplete()
         m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
-        m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), IntToUserData(i));
+        m_buttons[i]->AddClickHandler(WagClickDelegate(this, &UIWatchAGameDialog::OnActionButtonClick), IntToUserData(i));
     }
     m_foldButton = GetChild<ASButton>("m_foldButton");
-    m_foldButton->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
+    m_foldButton->AddClickHandler(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
     {
         CStringW strKey(L"s_watchagame_change_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/ChangeCamera.png");
@@ -166,7 +166,7 @@ void UIWatchAGameDialog::vfunc_43()
 }
 
 // @0x140fc1380
-void UIWatchAGameDialog::FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIWatchAGameDialog::OnActionButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
@@ -176,7 +176,7 @@ void UIWatchAGameDialog::FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Pa
     switch (nIndex)
     {
     case 0:
-        FUN_140fc1710();
+        NextCamera();
         break;
     case 1:
         ResetCamera();
@@ -223,7 +223,7 @@ void UIWatchAGameDialog::SetActionButton(int nIndex, const CString& strIcon, con
 }
 
 // @0x140fc1710
-void UIWatchAGameDialog::FUN_140fc1710()
+void UIWatchAGameDialog::NextCamera()
 {
     if (m_cameras.empty())
         return;
@@ -247,7 +247,7 @@ void UIWatchAGameDialog::ResetCamera()
 // @0x140fc1850
 void UIWatchAGameDialog::PlayEmotion(int nEmotion)
 {
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPC == 0)
         return;
     if (pPC->FUN_141675ed0() == 1)
@@ -275,8 +275,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, bool a2)
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcce0(&args[0], a1);
-    FUN_1422bcce0(&args[1], a2);
+    SetBoolean(&args[0], a1);
+    SetBoolean(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

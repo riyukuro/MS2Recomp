@@ -200,7 +200,7 @@ public:
     virtual void Unk_Slot76();
     virtual CStringW vfunc_77();
 };
-class Unk_ThWorld { public: Unk_ThPc* FUN_141bd0cc0(); };
+class Unk_ThWorld { public: Unk_ThPc* GetLocalPlayer(); };
 
 class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -229,7 +229,7 @@ private:
     void* m_8;
 };
 MS2_CHECK_SIZE(Unk_ThHallRef, 0x10);
-bool FUN_140900f30(__int64 nTime);
+bool IsNightTime(__int64 nTime);
 // 0x1406c47a0 is CMsTime(__time64_t) (ms2/placeholder/mstime.h)
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
 class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
@@ -339,7 +339,7 @@ void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"SuperWorldChat")
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 0)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.GetArgCount() > 0)
     {
         CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, CStringW(L""));
         if (!strName.IsEmpty())
@@ -357,14 +357,14 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"SuperWorldChat")
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.GetArgCount() > 1)
     {
         CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
         nSize = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.GetArgCount() > 2)
     {
         const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
@@ -382,14 +382,14 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"WeddingChat")
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.GetArgCount() > 1)
     {
         CStringW strName = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(0, L"");
         if (!strName.IsEmpty())
             strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
         nSize = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d1f60(1, 0);
     }
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 2)
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.GetArgCount() > 2)
     {
         const CStringW& strColor = reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d21c0(2, L"");
         nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
@@ -621,7 +621,7 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
         MS2Ptr<WeddingHallData> room = hall->FindHall(wed.m_c);
         if (reinterpret_cast<Unk_ThRoomRef*>(&room)->FUN_141847320() != 0)
         {
-            strDate = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, room->GetFieldId(FUN_140900f30(wed.m_10)));
+            strDate = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, room->GetFieldId(IsNightTime(wed.m_10)));
         }
     }
     CStringW strBody2 = FUN_14028dee0(0x680, nIconSize);
@@ -759,7 +759,7 @@ ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor)
 // @0x1418426b0
 int FUN_1418426b0(const CStringW& strName)
 {
-    Unk_ThPc* pPc = ((Unk_ThPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    Unk_ThPc* pPc = ((Unk_ThPc*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
     bool bMe = pPc != 0 && pPc->vfunc_77() == strName;
     if (bMe)
         return 1;

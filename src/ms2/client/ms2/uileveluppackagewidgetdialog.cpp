@@ -84,7 +84,7 @@ MS2_CHECK_SIZE(ASDialog, 0x88);
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 class Unk_EwActorSlots
@@ -105,7 +105,7 @@ class Unk_EwSelf : public PC { };      // the job; the burning key of the player
 #define Unk_EwBurningKey(pSelf) ((__int64)static_cast<Unk_EwSelf*>(pSelf)->FUN_141656a80())
 
 // listener registries
-UIQuestEventDispatcher* FUN_140bfc4b0();
+UIQuestEventDispatcher* GetQuestEventDispatcher();
 class UIStatusEventDispatcher;
 
 // quests
@@ -123,7 +123,7 @@ class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 
 // the event tables (0x143ab2fc0, a GameEventUserValue): (kind, event id) -> value; the entry view is that of the attend table
 __int64 GetServerTime();                                    // the server time
-unsigned __int64 FUN_140718370(const CStringW& strValue);   // _wtoi64
+unsigned __int64 ParseUInt64W(const CStringW& strValue);   // _wtoi64
 class Unk_AttendValue
 {
 public:
@@ -306,7 +306,7 @@ int UILevelUpPackageWidgetDialog::vfunc_65()
 {
     if (!UIEventWidgetDialog::vfunc_65())
         return 0;
-    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->AddListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -315,7 +315,7 @@ MS2_REPLACE_METHOD(0x140C595E0, UILevelUpPackageWidgetDialog, vfunc_65, 143, 0x7
 // @0x140c59680
 void UILevelUpPackageWidgetDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
+    GetQuestEventDispatcher()->RemoveListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIEventWidgetDialog::vfunc_67();
 }
@@ -354,7 +354,7 @@ MS2_REPLACE_METHOD(0x140C597F0, UILevelUpPackageWidgetDialog, vfunc_84, 52, 0x9B
 int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
 {
     UIEventWidgetDialog::vfunc_85(rObj);
-    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!pSelf)
         return 0;
     Unk_DcLevelRange range;
@@ -399,7 +399,7 @@ MS2_REPLACE_METHOD(0x140C59BA0, UILevelUpPackageWidgetDialog, vfunc_87, 32, 0x2A
 // @0x140c59bd0
 int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
 {
-    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!pSelf)
         return 0;
     unsigned short nLevel = Unk_EwActorLevel(pSelf);
@@ -488,7 +488,7 @@ void UIBurningEventWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
 // @0x140c5a220
 int UIBurningEventWidgetDialog::vfunc_84()
 {
-    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
@@ -517,7 +517,7 @@ MS2_REPLACE_METHOD(0x140C5A220, UIBurningEventWidgetDialog, vfunc_84, 490, 0x6EA
 int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
 {
     UIEventWidgetDialog::vfunc_85(rObj);
-    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
@@ -557,7 +557,7 @@ MS2_REPLACE_METHOD(0x140C5A420, UIBurningEventWidgetDialog, vfunc_85, 1261, 0x59
 // @0x140c5a930
 void UIBurningEventWidgetDialog::vfunc_86()
 {
-    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+    void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetLocalPlayer();
     if (!pSelf)
         return;
     MS2Ptr<BurningLevelupContext> spContext = reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->Get(m_190);
@@ -615,7 +615,7 @@ __int64 Unk_AttendValue::FUN_140c5afd0(const __int64& nDefault) const
     CMsTime now(GetServerTime());
     if (m_expire <= now)
         return nDefault;
-    return FUN_140718370(m_strValue);
+    return ParseUInt64W(m_strValue);
 }
 
 // @0x140c5c510

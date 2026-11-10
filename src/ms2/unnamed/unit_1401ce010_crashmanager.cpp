@@ -124,7 +124,7 @@ void CCrashManager::FlushLog()
 }
 
 // @0x1401ce3d0
-void CCrashManager::FUN_1401ce3d0(TFunctor<void, EmptyParam> callback)
+void CCrashManager::AddCallback(TFunctor<void, EmptyParam> callback)
 {
     m_callbacks.push_back(callback);
 }
@@ -142,7 +142,7 @@ void CCrashManager::FUN_1401ce450()
 }
 
 // @0x1401ce460
-CStringW CCrashManager::FUN_1401ce460()
+CStringW CCrashManager::GetDumpPath()
 {
     if (!m_strDumpPath.IsEmpty())
         return m_strDumpPath;
@@ -180,10 +180,10 @@ CStringW CCrashManager::FUN_1401ce460()
     m_strDumpPath = strPath;
     return strPath;
 }
-MS2_REPLACE_METHOD(0x1401ce460, CCrashManager, FUN_1401ce460, 1128, 0x562C8DC6);
+MS2_REPLACE_METHOD(0x1401ce460, CCrashManager, GetDumpPath, 1128, 0x562C8DC6);
 
 // @0x1401ce8d0
-CString CCrashManager::FUN_1401ce8d0()
+CString CCrashManager::GetBuildString()
 {
     CString strResult;
     strResult.Format("%s %s", (LPCSTR)m_strName, (LPCSTR)CString(m_strBuild));
@@ -197,7 +197,7 @@ void CCrashManager::FUN_1401ce9b0()
 }
 
 // @0x1401ce9c0
-void CCrashManager::FUN_1401ce9c0()
+void CCrashManager::DisableUnhandledExceptionFilter()
 {
     HMODULE hKernel32 = LoadLibraryA("kernel32.dll");
     FARPROC pOrgEntry = GetProcAddress(hKernel32, "SetUnhandledExceptionFilter");
@@ -230,7 +230,7 @@ void CCrashManager::FUN_1401ce9c0()
     }
     FreeLibrary(hKernel32);
 }
-MS2_REPLACE_METHOD(0x1401ce9c0, CCrashManager, FUN_1401ce9c0, 366, 0xCDACFBF2);
+MS2_REPLACE_METHOD(0x1401ce9c0, CCrashManager, DisableUnhandledExceptionFilter, 366, 0xCDACFBF2);
 
 // @0x1401ceb40
 void CCrashManager::FUN_1401ceb40()
@@ -243,12 +243,12 @@ void CCrashManager::FUN_1401ceb50()
 }
 
 // @0x1401ceb60
-void FUN_1401ceb60()
+void SetDumpPath()
 {
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionCN())
     {
         int nStart = 0;
-        CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();
+        CStringW strPath = Unk_CrashSingleton::GetInstance()->GetDumpPath();
         CStringW strName = strPath.Tokenize(L".", nStart);
         CStringW strExt = strPath.Tokenize(L".", nStart);
         int nIndex = 0;
@@ -266,7 +266,7 @@ void FUN_1401ceb60()
     }
     else
     {
-        CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();
+        CStringW strPath = Unk_CrashSingleton::GetInstance()->GetDumpPath();
         CrashReporter_SetFullDumpPath(strPath.GetBuffer());
     }
 }

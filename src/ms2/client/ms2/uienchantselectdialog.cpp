@@ -41,12 +41,12 @@ class CTalkScript;
 Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nKind);   // the talk script of the npc with the kind
 class Unk_MyPCSurvival : public UITalkManager {};
 
-// The world / local player (FUN_1403ed2d0 / FUN_141bd0cc0); vfunc 65 (0x208) is "talk state".
+// The world / local player (FUN_1403ed2d0 / GetLocalPlayer); vfunc 65 (0x208) is "talk state".
 class Unk_EsWorld;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* GetLocalPlayer();
     static class WorldService* GetInstance();
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
@@ -94,10 +94,10 @@ void UIEnchantSelectDialog::OnLoadComplete()
     FUN_1419260d0("m_webGuideButton", 0);
     ASButton* pType1 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type1Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type1Button)).get());
     if (pType1 != 0)
-        m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)1);
+        m_type1Button->AddClickHandler(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)1);
     ASButton* pType2 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type2Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type2Button)).get());
     if (pType2 != 0)
-        m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)2);
+        m_type2Button->AddClickHandler(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)2);
     if (MS2Ptr<ASMovieClip> recommend = GetChild<ASMovieClip>("m_recommendType2"))
         recommend->vfunc_4(reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xfc));
     {
@@ -123,7 +123,7 @@ void UIEnchantSelectDialog::OnTypeButtonClick(const Scaleform::GFx::FunctionHand
         strMode = "expMode";
         nNpcId = 0xa7dabe;
     }
-    PCBase* pPc = ((class PCBase*)((class WorldService*)(class Unk_EsWorld*)(((class Unk_EsWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    PCBase* pPc = ((class PCBase*)((class WorldService*)(class Unk_EsWorld*)(((class Unk_EsWorld*)WorldService::GetInstance())))->GetLocalPlayer());
     if (pPc != 0 && pPc->vfunc_65() == 1)
     {
         ShowSystemNotice(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);

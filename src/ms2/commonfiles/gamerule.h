@@ -187,7 +187,7 @@ public:
     void SetBeautyShopSaleEvent(int a, int b, BOOL c);               // GameEventSaleBeautyShop
     void RemoveBeautyShopSaleEvent(int a, BOOL c);
     unsigned GetDiscountedPrice(int nEvent, unsigned nPrice, int nLevel);
-    int FUN_140476cf0(int nEvent, int nLevel);
+    int GetSaleIndex(int nEvent, int nLevel);
     void FUN_140476d50(int nEvent, int nLevel, unsigned* pRate, int* pIndex);
     void FUN_140476ef0(ATL::CAtlArray<int>& out, int nLevel, unsigned nMin);
     void SetChatMeratRates(int eventId, int a, int b, int c);   // GameEventSaleChat start
@@ -195,17 +195,17 @@ public:
     __int64 GetSuperChatMeratCost();
     __int64 GetWorldChatMeratCost();
     __int64 GetChannelChatMeratCost();
-    __int64 FUN_140477330();
+    __int64 GetPetChangeNameMerat();
     void AddHotTimeEvent(int eventId, MS2Ptr<SAHotTimeEventContext> spContext);
     void RemoveHotTimeEvent(int eventId);
     int FUN_1404774a0(unsigned key, int bAll);
     void GetHotTimeEvents(ATL::CAtlList<MS2Ptr<SAHotTimeEventContext> >& list);
-    int FUN_140477640(int bPcBang);
+    int HasHotTime(int bPcBang);
     int FUN_1404776f0(int key);
     void FUN_1404777a0(int key, int value);
     void WriteValues(COutputStream& out, int key);
     void ReadValues(CInPacket& packet);
-    void FUN_140477ab0(ATL::CAtlArray<std::pair<int, int> >& out);
+    void GetValues(ATL::CAtlArray<std::pair<int, int> >& out);
     BOOL FUN_140477bb0();
     void AddMesoRevivalEvent(int eventId, MS2Ptr<MesoRevivalEventContext> spContext);
     void RemoveMesoRevivalEvent(int eventId);
@@ -266,7 +266,7 @@ public:
     void SetAutoFishingName(CStringW str);
     CStringW GetAutoFishingName();
     void FUN_140479a00(int value);                          // GameEventSaleAutoPlayInstrument
-    int FUN_140479a20();
+    int GetAutoPlayInstrumentSale();
     void SetAutoPlayInstrumentName(CStringW str);
     CStringW GetAutoPlayInstrumentName();
     bool IsDungeonRoomShutdown(unsigned roomId);
@@ -294,8 +294,8 @@ public:
     MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByGroup(Unk_DungeonGroupType group);
     MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByDungeon(unsigned dungeonId);
     MS2Ptr<DungeonBonusRewardCtx> MergeDungeonBonusRewards(const std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts);
-    void FUN_14047afb0(MS2Ptr<DungeonBonusRewardCtx> spContext);
-    void FUN_14047b070(MS2Ptr<DungeonBonusRewardCtx> spContext);
+    void AddDungeonBonusRewardByDungeon(MS2Ptr<DungeonBonusRewardCtx> spContext);
+    void RemoveDungeonBonusRewardByDungeon(MS2Ptr<DungeonBonusRewardCtx> spContext);
     MS2Ptr<DungeonBonusRewardCtx> FUN_14047b170(unsigned dungeonId);
     void FUN_14047b300(unsigned dungeonId, Unk_DungeonGroupType group, std::vector<unsigned>& out);
     void SetSkillUpgradeSale(MS2Ptr<SkillUpgradeSaleEventContext> spContext);     // GameEventSaleSkillUpgrade
@@ -307,19 +307,19 @@ public:
     unsigned FUN_14047b860(float rate, unsigned value);
     void SetBlueMarbleEvent(MS2Ptr<BlueMarbleEventContext> spContext);                  // GameEventBlueMarble
     MS2Ptr<BlueMarbleEventContext> GetBlueMarbleEvent();
-    void FUN_14047b990(int value);
-    int FUN_14047b9b0();
+    void SetLobbyMap(int value);
+    int GetLobbyMap();
     void SetSaleUgcDesignRate(int eventId, int rate);                                     // GameEventSaleUGCDesign
     void RemoveSaleUgcDesignRate(int eventId);
     unsigned GetSaleUgcDesignRate();
     void SetLoginNotice(bool bOn, const CMsTime& time);                             // GameEventLoginNotice
-    bool FUN_14047bb90();
-    CMsTime FUN_14047bbe0();
+    bool IsLoginNoticeOn();
+    CMsTime GetLoginNoticeTime();
     __int64 FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price);
     void SetSaleCubes(int eventId, ATL::CRBMultiMap<Unk_SaleHousingKey, MS2Ptr<SaleCube> >& cubes);   // GameEventSaleHousing
     void RemoveSaleCubes(int eventId);
     void SetEpicRestart(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c); // GameEventEpicRestart
-    void FUN_14047c1e0();
+    void ClearEpicRestart();
     int GetEpicRestartEventId();
     __int64 GetEpicRestartEndTime();
     BOOL FUN_14047c380(unsigned value);
@@ -329,10 +329,10 @@ public:
     void SetLevelUpPackage(int level, const CStringW& str);                            // GameEventLevelUpPackage
     void ClearLevelUpPackage();
     int FUN_14047c820();
-    void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
+    void GetLevelUpPackageIds(ATL::CAtlArray<unsigned>& out);
     void AddStampEvent(MS2Ptr<StampEventContext> spContext);                      // GameEventStampEvent
     void RemoveStampEvent(MS2Ptr<StampEventContext> spContext);
-    MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
+    MS2Ptr<StampEventContext> GetStampEvent(Unk_AttendTable& table);
     void SetLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext);             // GameEventLongTermAttendGift start
     void ClearLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext);             // ... end
     MS2Ptr<LongTermAttendGiftContext> GetLongTermAttendGift();
@@ -374,15 +374,15 @@ public:
     void AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext);                // GameEventEnchantRate
     void RemoveEnchantRateEvent(int eventId);
     void SetRankDuelOpen(bool bOpen);                                               // GameEventRankDuel
-    bool FUN_14047e790();
+    bool IsRankDuelOpen();
     void SetGuildChampionshipOpen(bool bOpen);                                               // GameEventGuildChampionship
     bool IsGuildChampionshipOpen();
     void SetQuestAdditionalReward(unsigned a, unsigned b, MS2Ptr<QuestAdditionalRewardContext> spContext);   // GameEventQuestAdditionalReward
     void RemoveQuestAdditionalReward(unsigned a, unsigned b);
     unsigned GetQuestAdditionalRewardRate(unsigned a, unsigned b, int index);
     unsigned GetQuestAdditionalRewardItemRate(unsigned a, unsigned b, unsigned itemId);
-    void FUN_14047ec80(bool bOpen);                         // guild vs game open
-    bool FUN_14047eca0();
+    void SetGuildVsGameOpen(bool bOpen);                         // guild vs game open
+    bool IsGuildVsGameOpen();
     void GetItemTagRewards(CStringW tag, std::vector<ItemEntity>& out);
     void AddItemTagReward(int key, MS2Ptr<Unk_ItemTagRewardContext> spContext);
     void RemoveItemTagReward(int key);

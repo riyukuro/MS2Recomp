@@ -46,7 +46,7 @@ public:
     int FUN_1422e7930();                                            // 0x1422e7930 m_68
     int GetSceneId();                                            // 0x1422e7950 m_6c the scene entity id
     int IsShown();                                            // 0x1422e7970 m_70 shown
-    int FUN_1422e7990(int nSceneId);                                // 0x1422e7990 has a child scene of the id
+    int HasChildScene(int nSceneId);                                // 0x1422e7990 has a child scene of the id
     void SetSubSceneId(int nSceneId);                               // 0x1422e7a40 switch the sub-scene (GFxSceneService)
     UISceneEntity* FUN_1422e7a70(int nSceneId);                     // 0x1422e7a70 the child scene of the id
 

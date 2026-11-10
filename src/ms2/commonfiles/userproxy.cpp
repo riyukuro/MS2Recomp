@@ -51,7 +51,7 @@ template <class T> T ClampProxyValue(const T &x, T lo, T hi) {
 }
 extern int DAT_143ab0248; // platform setting owned by the configuration unit
 
-void FUN_14083d2b0(CStringW &);
+void StripTags(CStringW &);
 __int64 GetServerTime();
 unsigned char FUN_14028da10();
 #define PROXY_STREAM(p) (reinterpret_cast<CInputStream *>(reinterpret_cast<char *>(p) + 8))
@@ -684,7 +684,7 @@ void UserPlayCommonInfoData::Reset() {
 MS2_REPLACE_METHOD(0x1408E9610, UserPlayCommonInfoData, Reset, 458, 0xACFCB653);
 
 // @0x1408e97e0
-void UserPlayCommonInfoData::FUN_1408e97e0(COutputStream &s) {
+void UserPlayCommonInfoData::WriteToStream(COutputStream &s) {
   s.WriteInt32(m_18);
   s.WriteInt16(m_1c);
   s.WriteInt32(m_20);
@@ -718,10 +718,10 @@ void UserPlayCommonInfoData::FUN_1408e97e0(COutputStream &s) {
   s.WriteInt32(m_b8);
   s.WriteInt32(m_bc);
 }
-MS2_REPLACE_METHOD(0x1408E97E0, UserPlayCommonInfoData, FUN_1408e97e0, 844, 0xF60073B5);
+MS2_REPLACE_METHOD(0x1408E97E0, UserPlayCommonInfoData, WriteToStream, 844, 0xF60073B5);
 
 // @0x1408e9b40
-void UserPlayCommonInfoData::FUN_1408e9b40(CInputStream &s) {
+void UserPlayCommonInfoData::ReadFromStream(CInputStream &s) {
   m_18 = s.ReadInt32();
   m_1c = s.ReadInt16();
   m_20 = s.ReadInt32();
@@ -755,7 +755,7 @@ void UserPlayCommonInfoData::FUN_1408e9b40(CInputStream &s) {
   m_b8 = s.ReadInt32();
   m_bc = s.ReadInt32();
 }
-MS2_REPLACE_METHOD(0x1408E9B40, UserPlayCommonInfoData, FUN_1408e9b40, 844, 0x315EC51A);
+MS2_REPLACE_METHOD(0x1408E9B40, UserPlayCommonInfoData, ReadFromStream, 844, 0x315EC51A);
 
 // @0x1408e9ea0
 CUserPlayInfoProxy::CUserPlayInfoProxy() { m_198 = 0; }
@@ -952,7 +952,7 @@ void Unk_UserProxySummaryPacket::CopyFrom(Unk_UserProxy *p) {
   m_24 = p->m_78;
   m_28 = p->m_80;
   m_30 = p->FUN_1408f1b60();
-  m_38 = p->FUN_1408f1a60();
+  m_38 = p->GetImage();
   ATL::CAtlArray<MS2Ptr<Club::NameInfo>> clubs;
   p->GetClubs(clubs);
   for (size_t i = 0; i < clubs.GetCount(); ++i)
@@ -1056,7 +1056,7 @@ void Unk_UserProxy::Reset() {
   m_c4 = Vector3(0, 0, 0);
   m_d0 = 0;
   reinterpret_cast<Unk_IntTriple&>(m_d4).Clear();
-  FUN_1408f0850("");
+  SetImage("");
   FUN_1408f08c0(L"");
   FUN_1408f09c0(L"");
   m_220.RemoveAll();
@@ -1110,49 +1110,49 @@ void Unk_UserProxy::FUN_1408ec260() {
 MS2_REPLACE_METHOD(0x1408EC260, Unk_UserProxy, FUN_1408ec260, 346, 0x6DD26C75);
 
 // @0x1408ec3c0
-void Unk_UserProxy::FUN_1408ec3c0(COutputStream &s) {
+void Unk_UserProxy::EncodeFlags(COutputStream &s) {
   Unk_UserProxyFlagsPacket p;
   p.CopyFrom(this);
   p.Encode(s);
 }
-MS2_REPLACE_METHOD(0x1408EC3C0, Unk_UserProxy, FUN_1408ec3c0, 59, 0x6881C03A);
+MS2_REPLACE_METHOD(0x1408EC3C0, Unk_UserProxy, EncodeFlags, 59, 0x6881C03A);
 
 // @0x1408ec410
-void Unk_UserProxy::FUN_1408ec410(CInPacket &s) {
+void Unk_UserProxy::DecodeFlags(CInPacket &s) {
   Unk_UserProxyFlagsPacket p;
   p.Decode(s);
-  FUN_1408f0460(p);
+  ApplyFlags(p);
 }
-MS2_REPLACE_METHOD(0x1408EC410, Unk_UserProxy, FUN_1408ec410, 59, 0xF8231901);
+MS2_REPLACE_METHOD(0x1408EC410, Unk_UserProxy, DecodeFlags, 59, 0xF8231901);
 
 // @0x1408ec460
-void Unk_UserProxy::FUN_1408ec460(COutputStream &s) {
+void Unk_UserProxy::EncodeStats(COutputStream &s) {
   Unk_UserProxyStatsPacket p;
   p.CopyFrom(this);
   p.Encode(s);
 }
-MS2_REPLACE_METHOD(0x1408EC460, Unk_UserProxy, FUN_1408ec460, 59, 0x0EDFA3EA);
+MS2_REPLACE_METHOD(0x1408EC460, Unk_UserProxy, EncodeStats, 59, 0x0EDFA3EA);
 
 // @0x1408ec4b0
-void Unk_UserProxy::FUN_1408ec4b0(CInPacket &s) {
+void Unk_UserProxy::DecodeStats(CInPacket &s) {
   Unk_UserProxyStatsPacket p;
   p.Decode(s);
-  FUN_1408f04c0(p);
+  ApplyStats(p);
 }
-MS2_REPLACE_METHOD(0x1408EC4B0, Unk_UserProxy, FUN_1408ec4b0, 59, 0xF01F526A);
+MS2_REPLACE_METHOD(0x1408EC4B0, Unk_UserProxy, DecodeStats, 59, 0xF01F526A);
 
 // @0x1408ec500
-void Unk_UserProxy::FUN_1408ec500(COutputStream &s) {
+void Unk_UserProxy::EncodeSummary(COutputStream &s) {
   Unk_UserProxySummaryPacket p;
   p.CopyFrom(this);
   p.Encode(s);
 }
 
 // @0x1408ec570
-void Unk_UserProxy::FUN_1408ec570(CInPacket &s) {
+void Unk_UserProxy::DecodeSummary(CInPacket &s) {
   Unk_UserProxySummaryPacket p;
   p.Decode(&s);
-  FUN_1408f0520(p);
+  ApplySummary(p);
 }
 
 // @0x1408ec5e0
@@ -1197,7 +1197,7 @@ void Unk_UserProxy::Encode(COutputStream &s) {
   s.WriteVector3(m_c4);
   s.WriteInt32(m_d0);
   reinterpret_cast<Unk_IntTriple&>(m_d4).WriteTo(s);
-  s.WriteUnicodeStringA(FUN_1408f1a60());
+  s.WriteUnicodeStringA(GetImage());
   s.WriteUnicodeString(FUN_1408f1ae0());
   s.WriteUnicodeString(FUN_1408f1be0());
   EncodeLabels(s);
@@ -1270,7 +1270,7 @@ void Unk_UserProxy::Decode(CInPacket *p) {
   m_c4 = PROXY_STREAM(p)->ReadVector3();
   m_d0 = PROXY_STREAM(p)->ReadInt32();
   reinterpret_cast<Unk_IntTriple&>(m_d4).ReadFrom(*PROXY_STREAM(p));
-  FUN_1408f0850(PROXY_STREAM(p)->ReadUnicodeStringA());
+  SetImage(PROXY_STREAM(p)->ReadUnicodeStringA());
   FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f09c0(PROXY_STREAM(p)->ReadUnicodeString());
   DecodeLabels(*PROXY_STREAM(p));
@@ -1333,7 +1333,7 @@ void Unk_UserProxy::FUN_1408ee190(COutputStream &s) {
   s.WriteInt64(m_80);
   s.WriteUnicodeString(FUN_1408f1b60());
   s.WriteUnicodeString(FUN_1408f1ae0());
-  s.WriteUnicodeStringA(FUN_1408f1a60());
+  s.WriteUnicodeStringA(GetImage());
   EncodeClubs(s);
   s.WriteUInt8(m_24);
   for (size_t i = 0; i < 12; ++i)
@@ -1396,7 +1396,7 @@ void Unk_UserProxy::FUN_1408eeb60(CInPacket *p) {
   m_80 = PROXY_STREAM(p)->ReadInt64();
   FUN_1408f0950(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
-  FUN_1408f0850(PROXY_STREAM(p)->ReadUnicodeStringA());
+  SetImage(PROXY_STREAM(p)->ReadUnicodeStringA());
   DecodeClubs(*p);
   m_24 = PROXY_STREAM(p)->ReadUInt8();
   for (size_t i = 0; i < 12; ++i)
@@ -1429,30 +1429,30 @@ MS2_REPLACE_METHOD(0x1408EEB60, Unk_UserProxy, FUN_1408eeb60, 3352, 0x1D7DF205);
 
 // @0x1408ef880
 void Unk_UserProxy::EncodePlayInfo(COutputStream &s) {
-  m_340->m_18.FUN_1408e97e0(s);
+  m_340->m_18.WriteToStream(s);
   s.WriteInt64(m_340->m_198);
 }
 MS2_REPLACE_METHOD(0x1408EF880, Unk_UserProxy, EncodePlayInfo, 107, 0x7288E7FB);
 
 // @0x1408ef900
 void Unk_UserProxy::DecodePlayInfo(CInPacket &p) {
-  m_340->m_18.FUN_1408e9b40(*PROXY_STREAM(&p));
+  m_340->m_18.ReadFromStream(*PROXY_STREAM(&p));
   m_340->m_198 = PROXY_STREAM(&p)->ReadInt64();
 }
 MS2_REPLACE_METHOD(0x1408EF900, Unk_UserProxy, DecodePlayInfo, 138, 0x6A87F2EE);
 
 // @0x1408ef990
-void Unk_UserProxy::FUN_1408ef990(COutputStream &s) {
+void Unk_UserProxy::EncodeClub(COutputStream &s) {
   Unk_UserProxyClubPacket p;
   p.CopyFrom(this);
   p.Encode(s);
 }
 
 // @0x1408efa00
-void Unk_UserProxy::FUN_1408efa00(CInPacket &s) {
+void Unk_UserProxy::DecodeClub(CInPacket &s) {
   Unk_UserProxyClubPacket p;
   p.Decode(s);
-  FUN_1408f06e0(p);
+  ApplyClub(p);
 }
 
 // @0x1408efa70
@@ -1501,7 +1501,7 @@ void Unk_UserProxy::CopyFrom(const Unk_UserProxy &p) {
   for (size_t i = 0; i < 12; ++i)
     m_140[i] = p.m_140[i];
   reinterpret_cast<Unk_IntTriple&>(m_d4).Copy(reinterpret_cast<const Unk_IntTriple&>(p.m_d4));
-  FUN_1408f0850(const_cast<Unk_UserProxy &>(p).FUN_1408f1a60());
+  SetImage(const_cast<Unk_UserProxy &>(p).GetImage());
   FUN_1408f08c0(const_cast<Unk_UserProxy &>(p).FUN_1408f1ae0());
   FUN_1408f09c0(p.FUN_1408f1be0());
   for (int i = 0; i < 3; ++i) {
@@ -1536,25 +1536,25 @@ void Unk_UserProxy::CopyFrom(const Unk_UserProxy &p) {
 MS2_REPLACE_METHOD(0x1408EFA70, Unk_UserProxy, CopyFrom, 2532, 0xDB69999B);
 
 // @0x1408f0460
-void Unk_UserProxy::FUN_1408f0460(const Unk_UserProxyFlagsPacket &p) {
+void Unk_UserProxy::ApplyFlags(const Unk_UserProxyFlagsPacket &p) {
   m_0 = p.m_0;
   m_44 = p.m_8;
   m_48 = p.m_c;
   m_4c = p.m_10;
 }
-MS2_REPLACE_METHOD(0x1408F0460, Unk_UserProxy, FUN_1408f0460, 77, 0xACD2362D);
+MS2_REPLACE_METHOD(0x1408F0460, Unk_UserProxy, ApplyFlags, 77, 0xACD2362D);
 
 // @0x1408f04c0
-void Unk_UserProxy::FUN_1408f04c0(const Unk_UserProxyStatsPacket &p) {
+void Unk_UserProxy::ApplyStats(const Unk_UserProxyStatsPacket &p) {
   m_0 = p.m_0;
   m_28 = p.m_8;
   m_2c = p.m_c;
   m_30 = p.m_10;
 }
-MS2_REPLACE_METHOD(0x1408F04C0, Unk_UserProxy, FUN_1408f04c0, 75, 0x7F03D85A);
+MS2_REPLACE_METHOD(0x1408F04C0, Unk_UserProxy, ApplyStats, 75, 0x7F03D85A);
 
 // @0x1408f0520
-void Unk_UserProxy::FUN_1408f0520(Unk_UserProxySummaryPacket &p) {
+void Unk_UserProxy::ApplySummary(Unk_UserProxySummaryPacket &p) {
   m_8 = p.m_0;
   m_14 = p.m_10;
   m_28 = p.m_14;
@@ -1567,17 +1567,17 @@ void Unk_UserProxy::FUN_1408f0520(Unk_UserProxySummaryPacket &p) {
   SetClubs(clubs);
   SetName(p.m_8);
   FUN_1408f0950(p.m_30);
-  FUN_1408f0850(p.m_38);
+  SetImage(p.m_38);
   m_3c = p.m_1c;
   m_40 = p.m_20;
   if (m_330.get())
     m_330->vfunc_2(p.m_88.get());
   FUN_1408f0a30(p.m_98);
 }
-MS2_REPLACE_METHOD(0x1408F0520, Unk_UserProxy, FUN_1408f0520, 428, 0x77AC4D8E);
+MS2_REPLACE_METHOD(0x1408F0520, Unk_UserProxy, ApplySummary, 428, 0x77AC4D8E);
 
 // @0x1408f06e0
-void Unk_UserProxy::FUN_1408f06e0(Unk_UserProxyClubPacket &p) {
+void Unk_UserProxy::ApplyClub(Unk_UserProxyClubPacket &p) {
   m_0 = p.m_0;
   m_8 = p.m_8;
   CStringW name(p.m_10);
@@ -1587,11 +1587,11 @@ void Unk_UserProxy::FUN_1408f06e0(Unk_UserProxyClubPacket &p) {
   p.GetClubs(clubs);
   SetClubs(clubs);
 }
-MS2_REPLACE_METHOD(0x1408F06E0, Unk_UserProxy, FUN_1408f06e0, 186, 0x549831D0);
+MS2_REPLACE_METHOD(0x1408F06E0, Unk_UserProxy, ApplyClub, 186, 0x549831D0);
 
 // @0x1408f07a0
-void Unk_UserProxy::FUN_1408f07a0(const Unk_UserProxyColor &p) { reinterpret_cast<Unk_IntTriple&>(m_d4).ReadArray((struct Unk_IntArr*)&p); }
-MS2_REPLACE_METHOD(0x1408F07A0, Unk_UserProxy, FUN_1408f07a0, 43, 0xE310C0A3);
+void Unk_UserProxy::SetColor(const Unk_UserProxyColor &p) { reinterpret_cast<Unk_IntTriple&>(m_d4).ReadArray((struct Unk_IntArr*)&p); }
+MS2_REPLACE_METHOD(0x1408F07A0, Unk_UserProxy, SetColor, 43, 0xE310C0A3);
 
 // @0x1408f07e0
 void Unk_UserProxy::SetName(const CStringW &p) {
@@ -1600,7 +1600,7 @@ void Unk_UserProxy::SetName(const CStringW &p) {
 }
 
 // @0x1408f0850
-void Unk_UserProxy::FUN_1408f0850(const CString &p) {
+void Unk_UserProxy::SetImage(const CString &p) {
   Unk_CriticalSectionLock lock(&m_290, 1);
   m_2d0 = p;
 }
@@ -1609,7 +1609,7 @@ void Unk_UserProxy::FUN_1408f0850(const CString &p) {
 void Unk_UserProxy::FUN_1408f08c0(const CStringW &p) {
   Unk_CriticalSectionLock lock(&m_290, 1);
   CStringW tmp(p);
-  FUN_14083d2b0(tmp);
+  StripTags(tmp);
   m_2d8 = tmp;
 }
 
@@ -1862,7 +1862,7 @@ CStringW Unk_UserProxy::GetName() {
 }
 
 // @0x1408f1a60
-CString Unk_UserProxy::FUN_1408f1a60() {
+CString Unk_UserProxy::GetImage() {
   Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2d0;
 }
@@ -1892,7 +1892,7 @@ CString Unk_UserProxy::FUN_1408f1c60() const {
 }
 
 // @0x1408f1ce0
-int Unk_UserProxy::FUN_1408f1ce0() {
+int Unk_UserProxy::GetTombType() {
   unsigned short value = m_4c & 3;
   if (value == 1)
     return 1;
@@ -1937,7 +1937,7 @@ void Unk_UserProxy::FUN_1408f1e60() {
   m_14 = rand() % 2 ? 1 : 0;
   MS2Ptr<CItem> item(new CItem());
   if (item->FUN_140523c40(0x9a1d21, 1, 0)) {
-    Unk_UserProxyItemData *data = item->FUN_140527870();
+    Unk_UserProxyItemData *data = item->GetProxy();
     if (data) {
       for (int i = 0; i < 2; ++i)
         m_58[i] = reinterpret_cast<CItemExtraData *>(data)->GetCurrentRgbComponent(i);

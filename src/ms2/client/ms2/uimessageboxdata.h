@@ -183,7 +183,7 @@ public:
     bool GetBoolArg(unsigned int nIndex, bool& bOut) const;      // the nIndex-th argument as a bool
 
     // 0x141a01800 / 0x141a014d0 / 0x141a01480 / 0x141a03070 live in uimessagebox.cpp's range.
-    void FUN_141a01800(int n);
+    void SetButtonPreset(int n);
     bool HasCallback();
     bool InvokeCallback(int n, Scaleform::GFx::Value* pMovie);
     bool IsModaless() const;
@@ -194,7 +194,7 @@ public:
     void SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
     void SetItemUid(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
-    void FUN_141a01620(int n);                                      // petmanager.cpp: the inventory slot argument
+    void SetInventorySlot(int n);                                      // petmanager.cpp: the inventory slot argument
     void SetTimer(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
     void FUN_141a02460(int n);
     void SetModaless(int n);
@@ -202,7 +202,7 @@ public:
     void FUN_141a024c0();                                           // m_20f = true
     void SetAgreement(bool b);
     void SetSize(int nWidth, int nHeight);
-    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
+    void SetItemEntry(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void SetButtonLabelIds(int nA, int nB, int nC);
     void SetItemById(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
     void SetStrike(const CStringW& str);
@@ -215,14 +215,14 @@ public:
     // 0x1405340b0 (the bodies are in itembreakmanager.cpp).
     template <class T> void Append(T v);
     void FUN_140533ff0(int n);                                      // C3: alias of Append<int>, goes once its callers move
-    void FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode);   // the character card (uiguilddialog.cpp: change master / expel)
+    void SetCharacterInfo(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode);   // the character card (uiguilddialog.cpp: change master / expel)
     // Reads argument nIndex back (int: 0x140be25f0, defined in uiclosetdialog.cpp); false when there are fewer arguments.
     template <class T> bool GetArg(unsigned nIndex, T& out) const;
     void FUN_1405340b0(__int64 n);                                  // C3: alias of Append<__int64>, goes once its callers move
     void SetItem(MS2Ptr<CMsgBoxDataItem> spItem);             // add an item entry (the callee destroys it; uiblackmarketpage.cpp)
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)
     void SetListener(void* p);                                    // unit_140dfef30: the listener of the box (leaveInField)
-    void FUN_140e01830(__int64 n);                                  // appends an __int64 argument as text (unit_140dfef30)
+    void AppendInt64(__int64 n);                                  // appends an __int64 argument as text (unit_140dfef30)
     void AddStringArg(CStringW str);                               // appends a string argument (the callee destroys it)
     void FUN_141b2fe80(const wchar_t* psz);                         // appends a string argument (inline COMDAT, uitriggereditordialog.cpp)
 
@@ -238,7 +238,7 @@ public:
     bool FUN_141a02e10(int nIndex, bool bDefault) const;            // the nIndex-th argument as a bool
     int GetType() const;                                      // keep the box open after the result
     int FUN_141a02c60() const;                                      // the storage slot
-    int FUN_141a02c80() const;                                      // the inventory slot argument (set by FUN_141a01620)
+    int GetInventorySlot() const;                                      // the inventory slot argument (set by SetInventorySlot)
     int GetId() const;                                      // the box id
     IMessageListener* GetListener() const;                        // the listener
     const CStringW& GetExtra() const;                          // the tag
@@ -250,9 +250,9 @@ public:
     __int64 FUN_141a02f10(int nIndex, __int64 nDefault) const;      // the nIndex-th argument as an __int64
     bool FUN_141a03050() const;
     bool FUN_141a03090() const;                                     // the enter key presses the default button
-    bool FUN_141a030b0() const;                                     // a type with a default button
+    bool HasDefaultButton() const;                                     // a type with a default button
     bool FUN_141a03100() const;                                     // the escape key closes the box
-    void FUN_141a03130(UIMessageBox* pBox, int nSec);               // OnChangeTime
+    void OnChangeTime(UIMessageBox* pBox, int nSec);               // OnChangeTime
     void OnPopupTimerComplete(UIMessageBox* pBox);                         // OnPopupTimerComplete
     void FUN_141a03470();                                           // before closing
     static void SaveModalessPosition(MS2Ptr<ASDialog> spBox);              // remember the modaless box position
@@ -272,8 +272,8 @@ public:
     void FUN_141a029b0(const Unk_MsgBoxBuff& buff);                 // buffNotify: copy the buff record
     void SetRequiredItems(const ATL::CAtlArray<ItemEntity>& items);    // the required items
     void FUN_141a02a70(CStringW strTitle, CString strUrl);          // the hyper link
-    void FUN_141a02b00(const CStringW& strDefault, ATL::CAtlList<CStringW>& list);   // the drop-down list
-    CStringW FUN_141a02d00() const;                                 // the drop-down default text
+    void SetChoices(const CStringW& strDefault, ATL::CAtlList<CStringW>& list);   // the drop-down list
+    CStringW GetDefaultChoice() const;                                 // the drop-down default text
     CString FUN_141a02f50(int nIndex, CString strDefault) const;    // the nIndex-th argument as a string
     static long s_nLastId;                                          // 0x1439f9b54 (starts at 1): the box ids
     // 0x141a00450 below: inline COMDAT, defined in uimessagebox.cpp

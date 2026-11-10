@@ -92,7 +92,7 @@ float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
-bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
+bool IsNearlyEqual(float a, float b);               // a == b (within epsilon)
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
 class CCapRotationController   // C3: member view for the former free stand-ins
 {
@@ -125,7 +125,7 @@ CHomeCameraMode::CHomeCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pP
       m_100(reinterpret_cast<const efd::Point3&>(g_143b01a60)),
       m_10c(reinterpret_cast<const efd::Point3&>(g_143a08cf8))
 {
-    m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
+    m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->GetPlayerHeight();
 }
 
 // @0x140b64e40
@@ -317,7 +317,7 @@ MS2_REPLACE_METHOD(0x140B65310, CHomeCameraMode, vfunc_8, 2901, 0xFFFC5422);
 void CHomeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->GetLocalPlayer());
     if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300009))
@@ -329,7 +329,7 @@ MS2_REPLACE_METHOD(0x140B65E70, CHomeCameraMode, vfunc_9, 208, 0x69A99AEA);
 // @0x140b65f50
 void CHomeCameraMode::vfunc_33()
 {
-    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->GetFieldData();
     if (reinterpret_cast<Unk_CameraOption*>(spOption.get()))
     {
         float fRotation = reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_154;
@@ -380,7 +380,7 @@ void CHomeCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_54;
         if (m_ac && g_143abb090 != 0.0f)
             m_50 = g_143abb090;
-        m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
+        m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->GetPlayerHeight();
         m_88 = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_17()));
         m_88.z += vfunc_27();
         float fAngle = FUN_140b66b10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
@@ -510,13 +510,13 @@ void CHomeCameraMode::vfunc_37(double fTime)
                 }
             }
         }
-        else if (!FUN_14028d470(fDist, 0.0f) && !(fDist > 10.0f))
+        else if (!IsNearlyEqual(fDist, 0.0f) && !(fDist > 10.0f))
         {
             m_b0 = 1;
             m_b8 = 0.0f;
             fBlend = 0.0f;
         }
-        if (FUN_14028d470(fDist, 0.0f))
+        if (IsNearlyEqual(fDist, 0.0f))
         {
             m_dc = m_c4;
         }

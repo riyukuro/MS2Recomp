@@ -48,7 +48,7 @@ void UILoginNotice::OnLoadComplete()
                                                       MS2_THIS_FILE, MS2_LINE(26), __FUNCTION__));
     } while (0);
     if (m_createButton.get())
-        m_createButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UILoginNotice::OnClickCreateButton), 0);
+        m_createButton->AddClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UILoginNotice::OnClickCreateButton), 0);
     SendNoticeDialog();
 }
 MS2_REPLACE_METHOD(0x140EA61D0, UILoginNotice, OnLoadComplete, 701, 0x7ECEAA69);

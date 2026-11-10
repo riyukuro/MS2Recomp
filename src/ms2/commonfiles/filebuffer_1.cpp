@@ -51,7 +51,7 @@
 #include "hook/ms2hook.h"
 CString FUN_14016a600(const wchar_t*,int);
 CString FUN_140390ea0(const wchar_t*,int);
-CString FUN_140391100(const wchar_t*);
+CString WideToUtf8(const wchar_t*);
 
 // @0x14038b7c0
 CFileBuffer::CFileBuffer() : m_pBuffer(0), m_nSize(0), m_field34(0), m_field38(0), m_key() {}
@@ -111,7 +111,7 @@ MS2_REPLACE_METHOD(0x14038bb10, CFileBuffer, GetBuffer, 15, 0xCBEE5D21);
 
 // MS2-FUNCTIONAL: identical calls, flags, buffer sizes and control flow; one unused scalar has a different stack slot.
 // @0x14038bb30
-void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& out)
+void ListFilesRecursive(const char* root, const char* relative, std::list<CString>& out)
 {
     BOOL more = TRUE;
     unsigned __int64 fileSize;
@@ -131,7 +131,7 @@ void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& o
                 std::string subpath(relative);
                 subpath += found.cFileName;
                 subpath += "/";
-                FUN_14038bb30(root,subpath.c_str(),out);
+                ListFilesRecursive(root,subpath.c_str(),out);
             }
             more = FindNextFileA(search,&found);
         }
@@ -155,7 +155,7 @@ void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& o
         FindClose(search);
     }
 }
-MS2_REPLACE(0x14038bb30, FUN_14038bb30, 1001, 0x0F1F4D97);
+MS2_REPLACE(0x14038bb30, ListFilesRecursive, 1001, 0x0F1F4D97);
 
 // Not hooked: constructs COnlinePatchFileBuffer with unit-local RTTI.
 COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative);
@@ -176,7 +176,7 @@ COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative)
     CloseHandle(file);
     // Preserve the original failure paths and its low-DWORD byte-count test.
     if (read != static_cast<DWORD>(size)) return 0;
-    std::string digest = FUN_14038c1f0(bytes,size);
+    std::string digest = ComputeSha1Hex(bytes,size);
     if (digest.length() == 0) return 0;
     COnlinePatchFileBuffer* result = new COnlinePatchFileBuffer;
     result->name = relative;
@@ -190,7 +190,7 @@ COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative)
 // Not hooked: constructs Crypto++ objects with unit-local RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x14038c1f0
-std::string FUN_14038c1f0(const void* data, size_t size)
+std::string ComputeSha1Hex(const void* data, size_t size)
 {
     if (data == 0) return std::string("");
     CryptoPP::SHA1 sha;
@@ -219,14 +219,14 @@ COnlinePatchFileBuffer::~COnlinePatchFileBuffer()
 // @0x140390ea0
 CString FUN_140390ea0(const wchar_t* text, int)
 {
-    return FUN_140391100(text);
+    return WideToUtf8(text);
 }
 MS2_REPLACE(0x140390ea0, FUN_140390ea0, 63, 0xC1107041);
 
 // @0x140391100
-CString FUN_140391100(const wchar_t* text)
+CString WideToUtf8(const wchar_t* text)
 {
     CString result = FUN_14016a600(text, CP_UTF8);
     return result;
 }
-MS2_REPLACE(0x140391100, FUN_140391100, 101, 0x6F3B0172);
+MS2_REPLACE(0x140391100, WideToUtf8, 101, 0x6F3B0172);

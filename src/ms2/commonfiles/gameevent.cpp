@@ -106,13 +106,13 @@ COutputStream& FUN_14070f9a0(COutputStream& out, unsigned value);
 // String field parsers (commonutil).
 int FUN_140718200(const CStringW& text);                                      // int
 int FUN_1407181a0(const CStringW& text);
-bool FUN_1407183f0(const CStringW& text);                                     // bool
+bool ParseBoolW(const CStringW& text);                                     // bool
 void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims);
-void FUN_1402928e0(const CStringW& text, ATL::CAtlArray<float>& values, const wchar_t* delims);
+void ParseFloatList(const CStringW& text, ATL::CAtlArray<float>& values, const wchar_t* delims);
 void ParseIntArray(CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* delims);
 bool FUN_14081dcd0(int nSaType);                                        // the SA value is a percent
 void* GetGameRule();   // C3: was GetGameRule
-TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+TiXmlElement * GetFirstChildElement(TiXmlDocument *);  // C3: the definition's signature
 int FUN_1401d9a00(const CStringW& text);                                    // a token as int
 // The dungeon open period value (gameeventvalue.cpp): registers / removes a dungeon tag's open period.
 class CGameEventValueDungeonOpenPeriod   // C3: unit-local view (gameeventvalue.h; the former free stand-ins)
@@ -172,8 +172,8 @@ public:
     void Clear();
 };
 // The table attribute readers with a default (adventureleveltablehelper.cpp).
-int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
-unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
+int GetIntAttr(TiXmlElement* pElem, const char* pszName, int nDefault);
+unsigned GetUIntAttr(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
 class CGameEventValueItemBox   // C3: unit-local view (gameeventvalue.h; the former free stand-ins)
 {
 public:
@@ -305,7 +305,7 @@ public:
     void Remove(unsigned int);
     void Set(unsigned int, unsigned int);
 };
-unsigned __int64 FUN_140718370(const CStringW& text);                         // unsigned __int64
+unsigned __int64 ParseUInt64W(const CStringW& text);                         // unsigned __int64
 CStringW FUN_140718600(const CStringW& value);                         // copy
 // The UGC cube palette (ugccubepalette.cpp): the show-item box.
 unsigned AddBoxById(unsigned nArgA, unsigned nArgB);
@@ -323,7 +323,7 @@ class CLogString* GetLogString();
 int Parse_14021bc30(const CStringA& value);    // commonenum.cpp
 
 // The event factories (registered by name below each class).
-GameEvent* FUN_1403bb510();
+GameEvent* CreateGameEventSaleChat();
 GameEvent* CreateGameEventSAHotTime();
 GameEvent* CreateGameEventPCBangSAHotTime();
 GameEvent* CreateGameEventSaleBeautyShop();
@@ -343,88 +343,88 @@ GameEvent* CreateGameEventEventFieldPopup();
 GameEvent* CreateGameEventSaleAutoFishing();
 GameEvent* CreateGameEventSaleAutoPlayInstrument();
 GameEvent* CreateGameEventTrafficOptimizer();
-GameEvent* FUN_1403bff70();
-GameEvent* FUN_1403c0290();
-GameEvent* FUN_1403c0690();
-GameEvent* FUN_1403c0990();
-GameEvent* FUN_1403c10e0();
-GameEvent* FUN_1403c13e0();
-GameEvent* FUN_1403c1560();
-GameEvent* FUN_1403c1e00();
-GameEvent* FUN_1403c2260();
-GameEvent* FUN_1403c2b80();
-GameEvent* FUN_1403c2d00();
-GameEvent* FUN_1403c2f60();
-GameEvent* FUN_1403c33f0();
-GameEvent* FUN_1403c3ba0();
-GameEvent* FUN_1403c40f0();
-GameEvent* FUN_1403c4410();
-GameEvent* FUN_1403c4680();
-GameEvent* FUN_1403c50c0();
-GameEvent* FUN_1403c51b0();
-GameEvent* FUN_1403c5b40();
-GameEvent* FUN_1403c6110();
-GameEvent* FUN_1403c65c0();
-GameEvent* FUN_1403c68a0();
-GameEvent* FUN_1403c6a80();
-GameEvent* FUN_1403c6e80();
-GameEvent* FUN_1403c70f0();
-GameEvent* FUN_1403c7360();
-GameEvent* FUN_1403c7640();
-GameEvent* FUN_1403c78b0();
-GameEvent* FUN_1403c7b20();
-GameEvent* FUN_1403c7e80();
-GameEvent* FUN_1403c81a0();
-GameEvent* FUN_1403c8400();
-GameEvent* FUN_1403c8660();
-GameEvent* FUN_1403c88d0();
-GameEvent* FUN_1403c8b40();
-GameEvent* FUN_1403c9190();
-GameEvent* FUN_1403c9430();
-GameEvent* FUN_1403c9720();
-GameEvent* FUN_1403c9b20();
-GameEvent* FUN_1403c9d90();
-GameEvent* FUN_1403ca200();
-GameEvent* FUN_1403ca470();
-GameEvent* FUN_1403ca6e0();
-GameEvent* FUN_1403cabf0();
-GameEvent* FUN_1403cb1c0();
-GameEvent* FUN_1403cb6f0();
-GameEvent* FUN_1403cbbf0();
-GameEvent* FUN_1403cbed0();
-GameEvent* FUN_1403cc130();
-GameEvent* FUN_1403cc2b0();
-GameEvent* FUN_1403cc6c0();
-GameEvent* FUN_1403ccaf0();
-GameEvent* FUN_1403cd5e0();
-GameEvent* FUN_1403cd970();
-GameEvent* FUN_1403cdbe0();
-GameEvent* FUN_1403ce7c0();
-GameEvent* FUN_1403cf130();
-GameEvent* FUN_1403cf400();
-GameEvent* FUN_1403cf820();
-GameEvent* FUN_1403cfb10();
-GameEvent* FUN_1403d0090();
-GameEvent* FUN_1403d03f0();
-GameEvent* FUN_1403d1240();
-GameEvent* FUN_1403d13e0();
-GameEvent* FUN_1403d1580();
-GameEvent* FUN_1403d16f0();
-GameEvent* FUN_1403d1960();
-GameEvent* FUN_1403d2930();
-GameEvent* FUN_1403d3010();
-GameEvent* FUN_1403d3570();
-GameEvent* FUN_1403d3ae0();
-GameEvent* FUN_1403d3f50();
-GameEvent* FUN_1403d47f0();
-GameEvent* FUN_1403d4e30();
-GameEvent* FUN_1403d50e0();
-GameEvent* FUN_1403d5350();
-GameEvent* FUN_1403d5900();
-GameEvent* FUN_1403d5f10();
-GameEvent* FUN_1403d6050();
-GameEvent* FUN_1403d6980();
-GameEvent* FUN_1403d6ae0();
+GameEvent* CreateGameEventDungeonRoomShutdown();
+GameEvent* CreateGameEventDungeonOpenPeriod();
+GameEvent* CreateGameEventFieldShutdown();
+GameEvent* CreateGameEventDungeonExtraReward();
+GameEvent* CreateGameEventSaleRemake();
+GameEvent* CreateGameEventSaleGemStoneUpgrade();
+GameEvent* CreateGameEventSaleSkillUpgrade();
+GameEvent* CreateGameEventNpcEventDrop();
+GameEvent* CreateGameEventBlueMarble();
+GameEvent* CreateGameEventSaleUGCDesign();
+GameEvent* CreateGameEventMeratMarketNotice();
+GameEvent* CreateGameEventDungeonEnterTimeLimit();
+GameEvent* CreateGameEventSaleHousing();
+GameEvent* CreateGameEventEpicRestart();
+GameEvent* CreateGameEventLevelUpPackage();
+GameEvent* CreateGameEventUpdateString();
+GameEvent* CreateGameEventStampEvent();
+GameEvent* CreateGameEventStampEventChar();
+GameEvent* CreateGameEventTimeRunEvent();
+GameEvent* CreateGameEventMassiveConstructionEvent();
+GameEvent* CreateGameEventEnchantRate();
+GameEvent* CreateGameEventRankDuel();
+GameEvent* CreateGameEventGuildChampionship();
+GameEvent* CreateGameEventQuestAdditionalReward();
+GameEvent* CreateGameEventGuildSkillSale();
+GameEvent* CreateGameEventGuildPersonalSkillSale();
+GameEvent* CreateGameEventGuildExp();
+GameEvent* CreateGameEventGuildFund();
+GameEvent* CreateGameEventGuildCoin();
+GameEvent* CreateGameEventMasteryReward();
+GameEvent* CreateGameEventMeratMarketOpenTab();
+GameEvent* CreateGameEventWorldmapIcon();
+GameEvent* CreateGameEventMasteryReduce();
+GameEvent* CreateGameEventUGCMapContractSale();
+GameEvent* CreateGameEventUGCMapExtensionSale();
+GameEvent* CreateGameEventConstructShowItem();
+GameEvent* CreateGameEventTransferItemBound();
+GameEvent* CreateGameEventSaleItemsRestricted();
+GameEvent* CreateGameEventUgcMapCommendationGM();
+GameEvent* CreateGameEventDeleteUrlCache();
+GameEvent* CreateGameEventPetMastery();
+GameEvent* CreateGameEventPetBattleExp();
+GameEvent* CreateGameEventPetComposeSale();
+GameEvent* CreateGameEventItemBox();
+GameEvent* CreateGameEventShutdownInteractObjectId();
+GameEvent* CreateGameEventShutdownFunctionItem();
+GameEvent* CreateGameEventShutdownSkillItem();
+GameEvent* CreateGameEventShutdownUGCUpload();
+GameEvent* CreateGameEventFindDungeonHelperBonus();
+GameEvent* CreateGameEventGuildVsGameOpen();
+GameEvent* CreateGameEventChatFiltering();
+GameEvent* CreateGameEventBattlePetSpawn();
+GameEvent* CreateGameEventGallery();
+GameEvent* CreateGameEventIgnoreConstructionLockEvent();
+GameEvent* CreateGameEventStarShop();
+GameEvent* CreateGameEventSnowman();
+GameEvent* CreateGameEventRps();
+GameEvent* CreateGameEventNpcShopTalk();
+GameEvent* CreateGameEventNpcShopGivePoint();
+GameEvent* CreateGameEventNpcShopResetPriceSale();
+GameEvent* CreateGameEventReactor();
+GameEvent* CreateGameEventCustomTriggerString();
+GameEvent* CreateGameEventTreeWatering();
+GameEvent* CreateGameEventShutdownBillboard();
+GameEvent* CreateGameEventShutdownUGCBanner();
+GameEvent* CreateGameEventPublicTest();
+GameEvent* CreateGameEventAdventureLevelBonusExpRate();
+GameEvent* CreateGameEventBurningLevelup();
+GameEvent* CreateGameEventFestival();
+GameEvent* CreateGameEventCoupleDance();
+GameEvent* CreateGameEventFieldEffect();
+GameEvent* CreateGameEventExchangeScrollSale();
+GameEvent* CreateGameEventItemTradeRestriction();
+GameEvent* CreateGameEventCollectItemGroup();
+GameEvent* CreateGameEventShutdownDummy();
+GameEvent* CreateGameEventSalePetCrystal();
+GameEvent* CreateGameEventArcadeOpen();
+GameEvent* CreateGameEventBingoEvent();
+GameEvent* CreateGameEventFinishPayback();
+GameEvent* CreateGameEventLongTermAttendGift();
+GameEvent* CreateGameEventSaleLapenshardUpgradeRGB();
+GameEvent* CreateGameEventGuildEventFund();
 
 // Shared header statics (sort names, condition strings).
 static CStringA s_sortNames7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -578,10 +578,10 @@ template <class T> int XmlValueRange(TiXmlElement* pElem, const char* pszName, T
 
 // ---- GameEventSaleChat ----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleChat(L"GameEventSaleChat", (ClassObjectCreateFn)FUN_1403bb510);
+static ClassObjectRegistrar s_regSaleChat(L"GameEventSaleChat", (ClassObjectCreateFn)CreateGameEventSaleChat);
 #endif
 // @0x1403bb510
-GameEvent* FUN_1403bb510() { return new GameEventSaleChat; }
+GameEvent* CreateGameEventSaleChat() { return new GameEventSaleChat; }
 
 // @0x1403bb570
 CStringW GameEventSaleChat::GetTypeName() { return CStringW(L"GameEventSaleChat"); }
@@ -632,8 +632,8 @@ void GameEventSaleChat::vfunc_6() { ((class CGameRule*)GetGameRule())->RemoveCha
 MS2_REPLACE_METHOD(0x1403BB7E0, GameEventSaleChat, vfunc_6, 35, 0x24F80A7E);
 
 // @0x1403bb810
-__int64 FUN_1403bb810() { return ((class CGameRule*)GetGameRule())->GetSuperChatMeratCost(); }
-MS2_REPLACE(0x1403BB810, FUN_1403bb810, 22, 0x5F8463DB);
+__int64 GetSuperChatMeratCost() { return ((class CGameRule*)GetGameRule())->GetSuperChatMeratCost(); }
+MS2_REPLACE(0x1403BB810, GetSuperChatMeratCost, 22, 0x5F8463DB);
 // @0x1403bb830
 int GetWorldChatMeratCost() { return (int)((class CGameRule*)GetGameRule())->GetWorldChatMeratCost(); }
 MS2_REPLACE(0x1403BB830, GetWorldChatMeratCost, 22, 0x75EBD94B);
@@ -641,14 +641,14 @@ MS2_REPLACE(0x1403BB830, GetWorldChatMeratCost, 22, 0x75EBD94B);
 int GetChannelChatMeratCost() { return (int)((class CGameRule*)GetGameRule())->GetChannelChatMeratCost(); }
 MS2_REPLACE(0x1403BB850, GetChannelChatMeratCost, 22, 0xB3D82860);
 // @0x1403bb870
-unsigned FUN_1403bb870() { return *GetClientConstants()->MeratConsumeSuperChat.Get(); }
-MS2_REPLACE(0x1403BB870, FUN_1403bb870, 30, 0x8D4E122B);
+unsigned GetMeratConsumeSuperChat() { return *GetClientConstants()->MeratConsumeSuperChat.Get(); }
+MS2_REPLACE(0x1403BB870, GetMeratConsumeSuperChat, 30, 0x8D4E122B);
 // @0x1403bb8a0
-unsigned FUN_1403bb8a0() { return *GetClientConstants()->MeratConsumeWorldChat.Get(); }
-MS2_REPLACE(0x1403BB8A0, FUN_1403bb8a0, 30, 0xA8A84703);
+unsigned GetMeratConsumeWorldChat() { return *GetClientConstants()->MeratConsumeWorldChat.Get(); }
+MS2_REPLACE(0x1403BB8A0, GetMeratConsumeWorldChat, 30, 0xA8A84703);
 // @0x1403bb8d0
-unsigned FUN_1403bb8d0() { return *GetClientConstants()->MeratConsumeChannelChat.Get(); }
-MS2_REPLACE(0x1403BB8D0, FUN_1403bb8d0, 30, 0xAE9B7E9B);
+unsigned GetMeratConsumeChannelChat() { return *GetClientConstants()->MeratConsumeChannelChat.Get(); }
+MS2_REPLACE(0x1403BB8D0, GetMeratConsumeChannelChat, 30, 0xAE9B7E9B);
 
 // ---- GameEventSAHotTime ---------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
@@ -674,7 +674,7 @@ void GameEventSAHotTime::vfunc_2()
     ATL::CAtlArray<unsigned> ids;
     FUN_140274fc0(m_68, &ids, L",");
     ATL::CAtlArray<float> values;
-    FUN_1402928e0(m_70, values, L",");
+    ParseFloatList(m_70, values, L",");
     if (ids.GetCount() != values.GetCount())
         return;
     for (unsigned i = 0; i < ids.GetCount(); i++) {
@@ -885,7 +885,7 @@ GameEventMesoRevival::GameEventMesoRevival() : m_d0(false)
 }
 
 // @0x1403bca40
-void GameEventMesoRevival::vfunc_2() { m_d0 = FUN_1407183f0(m_68); }
+void GameEventMesoRevival::vfunc_2() { m_d0 = ParseBoolW(m_68); }
 MS2_REPLACE_METHOD(0x1403BCA40, GameEventMesoRevival, vfunc_2, 42, 0xACBF923C);
 
 // @0x1403bca70
@@ -941,7 +941,7 @@ void GameEventItemBuff::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
     CStringW strType;
@@ -998,10 +998,10 @@ void GameEventDungeonBonusReward::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
-    TiXmlElement* pElem = FUN_140345b40((TiXmlDocument *)pRoot);
+    TiXmlElement* pElem = GetFirstChildElement((TiXmlDocument *)pRoot);
     if ((m_d0.get() ? true : false) && pElem)
         m_d0->Load(pElem);
 }
@@ -1221,7 +1221,7 @@ void GameEventQuestTag::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
     CStringA strType;
@@ -1696,10 +1696,10 @@ MS2_REPLACE_METHOD(0x1403BFF50, GameEventTrafficOptimizer, vfunc_9, 13, 0xC078F4
 
 // ---- GameEventDungeonRoomShutdown -----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDungeonRoomShutdown(L"GameEventDungeonRoomShutdown", (ClassObjectCreateFn)FUN_1403bff70);
+static ClassObjectRegistrar s_regDungeonRoomShutdown(L"GameEventDungeonRoomShutdown", (ClassObjectCreateFn)CreateGameEventDungeonRoomShutdown);
 #endif
 // @0x1403bff70
-GameEvent* FUN_1403bff70() { return new GameEventDungeonRoomShutdown; }
+GameEvent* CreateGameEventDungeonRoomShutdown() { return new GameEventDungeonRoomShutdown; }
 
 // @0x1403bffd0
 CStringW GameEventDungeonRoomShutdown::GetTypeName() { return CStringW(L"GameEventDungeonRoomShutdown"); }
@@ -1717,8 +1717,8 @@ void GameEventDungeonRoomShutdown::vfunc_2()
 {
     m_d0.AssignRaw(new DungeonRoomShutdownContext);
     m_d0->LoadRoomIds(m_68);
-    m_d0->FUN_140343fc0(m_70);
-    if (!m_d0->FUN_1403441a0())
+    m_d0->LoadGroups(m_70);
+    if (!m_d0->HasEntries())
         m_d0 = 0;
 }
 MS2_REPLACE_METHOD(0x1403C0090, GameEventDungeonRoomShutdown, vfunc_2, 255, 0x59566783);
@@ -1737,10 +1737,10 @@ MS2_REPLACE_METHOD(0x1403C0270, GameEventDungeonRoomShutdown, vfunc_9, 13, 0xC07
 
 // ---- GameEventDungeonOpenPeriod -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDungeonOpenPeriod(L"GameEventDungeonOpenPeriod", (ClassObjectCreateFn)FUN_1403c0290);
+static ClassObjectRegistrar s_regDungeonOpenPeriod(L"GameEventDungeonOpenPeriod", (ClassObjectCreateFn)CreateGameEventDungeonOpenPeriod);
 #endif
 // @0x1403c0290
-GameEvent* FUN_1403c0290() { return new GameEventDungeonOpenPeriod; }
+GameEvent* CreateGameEventDungeonOpenPeriod() { return new GameEventDungeonOpenPeriod; }
 
 // @0x1403c02f0
 CStringW GameEventDungeonOpenPeriod::GetTypeName() { return CStringW(L"GameEventDungeonOpenPeriod"); }
@@ -1801,10 +1801,10 @@ MS2_REPLACE_METHOD(0x1403C0600, GameEventDungeonOpenPeriod, vfunc_6, 129, 0xB35F
 
 // ---- GameEventFieldShutdown -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regFieldShutdown(L"GameEventFieldShutdown", (ClassObjectCreateFn)FUN_1403c0690);
+static ClassObjectRegistrar s_regFieldShutdown(L"GameEventFieldShutdown", (ClassObjectCreateFn)CreateGameEventFieldShutdown);
 #endif
 // @0x1403c0690
-GameEvent* FUN_1403c0690() { return new GameEventFieldShutdown; }
+GameEvent* CreateGameEventFieldShutdown() { return new GameEventFieldShutdown; }
 
 // @0x1403c06f0
 CStringW GameEventFieldShutdown::GetTypeName() { return CStringW(L"GameEventFieldShutdown"); }
@@ -1824,10 +1824,10 @@ void GameEventFieldShutdown::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -1851,10 +1851,10 @@ MS2_REPLACE_METHOD(0x1403C0970, GameEventFieldShutdown, vfunc_9, 13, 0xC078F4D1)
 
 // ---- GameEventDungeonExtraReward ------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDungeonExtraReward(L"GameEventDungeonExtraReward", (ClassObjectCreateFn)FUN_1403c0990);
+static ClassObjectRegistrar s_regDungeonExtraReward(L"GameEventDungeonExtraReward", (ClassObjectCreateFn)CreateGameEventDungeonExtraReward);
 #endif
 // @0x1403c0990
-GameEvent* FUN_1403c0990() { return new GameEventDungeonExtraReward; }
+GameEvent* CreateGameEventDungeonExtraReward() { return new GameEventDungeonExtraReward; }
 
 // @0x1403c09f0
 CStringW GameEventDungeonExtraReward::GetTypeName() { return CStringW(L"GameEventDungeonExtraReward"); }
@@ -1873,10 +1873,10 @@ void GameEventDungeonExtraReward::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<DungeonExtraRewardCountCtx> spCount(new DungeonExtraRewardCountCtx);
         spCount->m_18 = GetID();
@@ -1958,10 +1958,10 @@ MS2_REPLACE_METHOD(0x1403C1080, GameEventSale, vfunc_4, 79, 0x387A8D8B);
 
 // ---- GameEventSaleRemake --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleRemake(L"GameEventSaleRemake", (ClassObjectCreateFn)FUN_1403c10e0);
+static ClassObjectRegistrar s_regSaleRemake(L"GameEventSaleRemake", (ClassObjectCreateFn)CreateGameEventSaleRemake);
 #endif
 // @0x1403c10e0
-GameEvent* FUN_1403c10e0() { return new GameEventSaleRemake; }
+GameEvent* CreateGameEventSaleRemake() { return new GameEventSaleRemake; }
 
 // @0x1403c1140
 CStringW GameEventSaleRemake::GetTypeName() { return CStringW(L"GameEventSaleRemake"); }
@@ -2010,10 +2010,10 @@ MS2_REPLACE_METHOD(0x1403C13A0, GameEventSaleRemake, vfunc_6, 47, 0xAB4281F4);
 
 // ---- GameEventSaleGemStoneUpgrade -----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleGemStoneUpgrade(L"GameEventSaleGemStoneUpgrade", (ClassObjectCreateFn)FUN_1403c13e0);
+static ClassObjectRegistrar s_regSaleGemStoneUpgrade(L"GameEventSaleGemStoneUpgrade", (ClassObjectCreateFn)CreateGameEventSaleGemStoneUpgrade);
 #endif
 // @0x1403c13e0
-GameEvent* FUN_1403c13e0() { return new GameEventSaleGemStoneUpgrade; }
+GameEvent* CreateGameEventSaleGemStoneUpgrade() { return new GameEventSaleGemStoneUpgrade; }
 
 // @0x1403c1440
 CStringW GameEventSaleGemStoneUpgrade::GetTypeName() { return CStringW(L"GameEventSaleGemStoneUpgrade"); }
@@ -2036,10 +2036,10 @@ MS2_REPLACE_METHOD(0x1403C1530, GameEventSaleGemStoneUpgrade, vfunc_6, 35, 0xC8B
 
 // ---- GameEventSaleSkillUpgrade --------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleSkillUpgrade(L"GameEventSaleSkillUpgrade", (ClassObjectCreateFn)FUN_1403c1560);
+static ClassObjectRegistrar s_regSaleSkillUpgrade(L"GameEventSaleSkillUpgrade", (ClassObjectCreateFn)CreateGameEventSaleSkillUpgrade);
 #endif
 // @0x1403c1560
-GameEvent* FUN_1403c1560() { return new GameEventSaleSkillUpgrade; }
+GameEvent* CreateGameEventSaleSkillUpgrade() { return new GameEventSaleSkillUpgrade; }
 
 // @0x1403c15c0
 CStringW GameEventSaleSkillUpgrade::GetTypeName() { return CStringW(L"GameEventSaleSkillUpgrade"); }
@@ -2121,10 +2121,10 @@ MS2_REPLACE_METHOD(0x1403C1D50, GameEventSaleSkillUpgrade, vfunc_6, 158, 0x81180
 
 // ---- GameEventNpcEventDrop ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regNpcEventDrop(L"GameEventNpcEventDrop", (ClassObjectCreateFn)FUN_1403c1e00);
+static ClassObjectRegistrar s_regNpcEventDrop(L"GameEventNpcEventDrop", (ClassObjectCreateFn)CreateGameEventNpcEventDrop);
 #endif
 // @0x1403c1e00
-GameEvent* FUN_1403c1e00() { return new GameEventNpcEventDrop; }
+GameEvent* CreateGameEventNpcEventDrop() { return new GameEventNpcEventDrop; }
 
 // @0x1403c1e60
 CStringW GameEventNpcEventDrop::GetTypeName() { return CStringW(L"GameEventNpcEventDrop"); }
@@ -2144,10 +2144,10 @@ void GameEventNpcEventDrop::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
-    TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+    TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot);
     if (!pNode)
         return;
     MS2Ptr<NpcEventDropEventContext> spContext(new NpcEventDropEventContext);
@@ -2177,10 +2177,10 @@ MS2_REPLACE_METHOD(0x1403C2220, GameEventNpcEventDrop, vfunc_6, 47, 0x0ADD96DA);
 
 // ---- GameEventBlueMarble --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regBlueMarble(L"GameEventBlueMarble", (ClassObjectCreateFn)FUN_1403c2260);
+static ClassObjectRegistrar s_regBlueMarble(L"GameEventBlueMarble", (ClassObjectCreateFn)CreateGameEventBlueMarble);
 #endif
 // @0x1403c2260
-GameEvent* FUN_1403c2260() { return new GameEventBlueMarble; }
+GameEvent* CreateGameEventBlueMarble() { return new GameEventBlueMarble; }
 
 // @0x1403c22c0
 CStringW GameEventBlueMarble::GetTypeName() { return CStringW(L"GameEventBlueMarble"); }
@@ -2258,10 +2258,10 @@ MS2_REPLACE_METHOD(0x1403C2B20, GameEventBlueMarble, vfunc_6, 79, 0xD37814B8);
 
 // ---- GameEventSaleUGCDesign -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleUGCDesign(L"GameEventSaleUGCDesign", (ClassObjectCreateFn)FUN_1403c2b80);
+static ClassObjectRegistrar s_regSaleUGCDesign(L"GameEventSaleUGCDesign", (ClassObjectCreateFn)CreateGameEventSaleUGCDesign);
 #endif
 // @0x1403c2b80
-GameEvent* FUN_1403c2b80() { return new GameEventSaleUGCDesign; }
+GameEvent* CreateGameEventSaleUGCDesign() { return new GameEventSaleUGCDesign; }
 
 // @0x1403c2be0
 CStringW GameEventSaleUGCDesign::GetTypeName() { return CStringW(L"GameEventSaleUGCDesign"); }
@@ -2284,10 +2284,10 @@ MS2_REPLACE_METHOD(0x1403C2CD0, GameEventSaleUGCDesign, vfunc_6, 35, 0xC878D363)
 
 // ---- GameEventMeratMarketNotice -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regMeratMarketNotice(L"GameEventMeratMarketNotice", (ClassObjectCreateFn)FUN_1403c2d00);
+static ClassObjectRegistrar s_regMeratMarketNotice(L"GameEventMeratMarketNotice", (ClassObjectCreateFn)CreateGameEventMeratMarketNotice);
 #endif
 // @0x1403c2d00
-GameEvent* FUN_1403c2d00() { return new GameEventMeratMarketNotice; }
+GameEvent* CreateGameEventMeratMarketNotice() { return new GameEventMeratMarketNotice; }
 
 // @0x1403c2d60
 CStringW GameEventMeratMarketNotice::GetTypeName() { return CStringW(L"GameEventMeratMarketNotice"); }
@@ -2322,10 +2322,10 @@ MS2_REPLACE_METHOD(0x1403C2F50, GameEventMeratMarketNotice, vfunc_6, 6, 0xA9AF6E
 
 // ---- GameEventDungeonEnterTimeLimit ---------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDungeonEnterTimeLimit(L"GameEventDungeonEnterTimeLimit", (ClassObjectCreateFn)FUN_1403c2f60);
+static ClassObjectRegistrar s_regDungeonEnterTimeLimit(L"GameEventDungeonEnterTimeLimit", (ClassObjectCreateFn)CreateGameEventDungeonEnterTimeLimit);
 #endif
 // @0x1403c2f60
-GameEvent* FUN_1403c2f60() { return new GameEventDungeonEnterTimeLimit; }
+GameEvent* CreateGameEventDungeonEnterTimeLimit() { return new GameEventDungeonEnterTimeLimit; }
 
 // @0x1403c2fc0
 CStringW GameEventDungeonEnterTimeLimit::GetTypeName() { return CStringW(L"GameEventDungeonEnterTimeLimit"); }
@@ -2373,10 +2373,10 @@ void GameEventDungeonEnterTimeLimit::FUN_1403c31c0(const CStringW& strXml)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (!pRoot)
         return;
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<EventTimeLimitDungeonContext> spContext(new EventTimeLimitDungeonContext);
         spContext->m_eventId = GetID();
@@ -2394,10 +2394,10 @@ MS2_REPLACE_METHOD(0x1403C31C0, GameEventDungeonEnterTimeLimit, FUN_1403c31c0, 5
 
 // ---- GameEventSaleHousing -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleHousing(L"GameEventSaleHousing", (ClassObjectCreateFn)FUN_1403c33f0);
+static ClassObjectRegistrar s_regSaleHousing(L"GameEventSaleHousing", (ClassObjectCreateFn)CreateGameEventSaleHousing);
 #endif
 // @0x1403c33f0
-GameEvent* FUN_1403c33f0() { return new GameEventSaleHousing; }
+GameEvent* CreateGameEventSaleHousing() { return new GameEventSaleHousing; }
 
 // @0x1403c3450
 CStringW GameEventSaleHousing::GetTypeName() { return CStringW(L"GameEventSaleHousing"); }
@@ -2475,10 +2475,10 @@ MS2_REPLACE_METHOD(0x1403C39D0, GameEventSaleHousing, vfunc_4, 458, 0x2F7119E0);
 
 // ---- GameEventEpicRestart -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regEpicRestart(L"GameEventEpicRestart", (ClassObjectCreateFn)FUN_1403c3ba0);
+static ClassObjectRegistrar s_regEpicRestart(L"GameEventEpicRestart", (ClassObjectCreateFn)CreateGameEventEpicRestart);
 #endif
 // @0x1403c3ba0
-GameEvent* FUN_1403c3ba0() { return new GameEventEpicRestart; }
+GameEvent* CreateGameEventEpicRestart() { return new GameEventEpicRestart; }
 
 // @0x1403c3c00
 CStringW GameEventEpicRestart::GetTypeName() { return CStringW(L"GameEventEpicRestart"); }
@@ -2505,7 +2505,7 @@ void GameEventEpicRestart::OnStart() { ((class CGameRule*)GetGameRule())->SetEpi
 MS2_REPLACE_METHOD(0x1403C3D80, GameEventEpicRestart, OnStart, 155, 0xDC91DCFD);
 
 // @0x1403c3e30
-void GameEventEpicRestart::vfunc_6() { ((class CGameRule*)GetGameRule())->FUN_14047c1e0(); }
+void GameEventEpicRestart::vfunc_6() { ((class CGameRule*)GetGameRule())->ClearEpicRestart(); }
 MS2_REPLACE_METHOD(0x1403C3E30, GameEventEpicRestart, vfunc_6, 27, 0x4FC9645D);
 
 // @0x1403c3e60
@@ -2532,10 +2532,10 @@ MS2_REPLACE_METHOD(0x1403C3F30, GameEventEpicRestart, vfunc_4, 440, 0x84F320C1);
 
 // ---- GameEventLevelUpPackage ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regLevelUpPackage(L"GameEventLevelUpPackage", (ClassObjectCreateFn)FUN_1403c40f0);
+static ClassObjectRegistrar s_regLevelUpPackage(L"GameEventLevelUpPackage", (ClassObjectCreateFn)CreateGameEventLevelUpPackage);
 #endif
 // @0x1403c40f0
-GameEvent* FUN_1403c40f0() { return new GameEventLevelUpPackage; }
+GameEvent* CreateGameEventLevelUpPackage() { return new GameEventLevelUpPackage; }
 
 // @0x1403c4150
 CStringW GameEventLevelUpPackage::GetTypeName() { return CStringW(L"GameEventLevelUpPackage"); }
@@ -2584,10 +2584,10 @@ MS2_REPLACE_METHOD(0x1403C4350, GameEventLevelUpPackage, vfunc_4, 179, 0xEBAFE72
 
 // ---- GameEventUpdateString ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regUpdateString(L"GameEventUpdateString", (ClassObjectCreateFn)FUN_1403c4410);
+static ClassObjectRegistrar s_regUpdateString(L"GameEventUpdateString", (ClassObjectCreateFn)CreateGameEventUpdateString);
 #endif
 // @0x1403c4410
-GameEvent* FUN_1403c4410() { return new GameEventUpdateString; }
+GameEvent* CreateGameEventUpdateString() { return new GameEventUpdateString; }
 
 // @0x1403c4470
 CStringW GameEventUpdateString::GetTypeName() { return CStringW(L"GameEventUpdateString"); }
@@ -2631,10 +2631,10 @@ MS2_REPLACE_METHOD(0x1403C45F0, GameEventUpdateString, vfunc_4, 134, 0x817B68F0)
 
 // ---- GameEventStampEvent --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regStampEvent(L"GameEventStampEvent", (ClassObjectCreateFn)FUN_1403c4680);
+static ClassObjectRegistrar s_regStampEvent(L"GameEventStampEvent", (ClassObjectCreateFn)CreateGameEventStampEvent);
 #endif
 // @0x1403c4680
-GameEvent* FUN_1403c4680() { return new GameEventStampEvent; }
+GameEvent* CreateGameEventStampEvent() { return new GameEventStampEvent; }
 
 // @0x1403c46e0
 CStringW GameEventStampEvent::GetTypeName() { return CStringW(L"GameEventStampEvent"); }
@@ -2665,7 +2665,7 @@ void GameEventStampEvent::vfunc_2()
         return;
     }
     MS2Ptr<StampEventContext> spContext(new StampEventContext(GetID()));
-    TiXmlElement* pStampRoot = FUN_140345b40(&docStamp);
+    TiXmlElement* pStampRoot = GetFirstChildElement(&docStamp);
     if (pStampRoot)
     {
         TiXmlElement* pTag = ((class TiXmlElement*)((class Unk_XmlNode*)(pStampRoot))->FirstChild("tag"));
@@ -2681,7 +2681,7 @@ void GameEventStampEvent::vfunc_2()
             spContext->m_stamps.Add(spStamp);
         }
     }
-    TiXmlElement* pRewardRoot = FUN_140345b40(&docReward);
+    TiXmlElement* pRewardRoot = GetFirstChildElement(&docReward);
     if (pRewardRoot)
     {
         for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
@@ -2740,10 +2740,10 @@ MS2_REPLACE_METHOD(0x1403C5010, GameEventStampEvent, vfunc_4, 170, 0x5E42215F);
 
 // ---- GameEventStampEventChar ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regStampEventChar(L"GameEventStampEventChar", (ClassObjectCreateFn)FUN_1403c50c0);
+static ClassObjectRegistrar s_regStampEventChar(L"GameEventStampEventChar", (ClassObjectCreateFn)CreateGameEventStampEventChar);
 #endif
 // @0x1403c50c0
-GameEvent* FUN_1403c50c0() { return new GameEventStampEventChar; }
+GameEvent* CreateGameEventStampEventChar() { return new GameEventStampEventChar; }
 
 // @0x1403c5120
 CStringW GameEventStampEventChar::GetTypeName() { return CStringW(L"GameEventStampEventChar"); }
@@ -2754,10 +2754,10 @@ GameEventStampEventChar::GameEventStampEventChar() { m_d0 = false; }
 
 // ---- GameEventTimeRunEvent ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regTimeRunEvent(L"GameEventTimeRunEvent", (ClassObjectCreateFn)FUN_1403c51b0);
+static ClassObjectRegistrar s_regTimeRunEvent(L"GameEventTimeRunEvent", (ClassObjectCreateFn)CreateGameEventTimeRunEvent);
 #endif
 // @0x1403c51b0
-GameEvent* FUN_1403c51b0() { return new GameEventTimeRunEvent; }
+GameEvent* CreateGameEventTimeRunEvent() { return new GameEventTimeRunEvent; }
 
 // @0x1403c5210
 CStringW GameEventTimeRunEvent::GetTypeName() { return CStringW(L"GameEventTimeRunEvent"); }
@@ -2775,7 +2775,7 @@ GameEventTimeRunEvent::GameEventTimeRunEvent()
 void GameEventTimeRunEvent::vfunc_2()
 {
     MS2Ptr<TimeRunEventContext> spContext(new TimeRunEventContext(GetID()));
-    if (FUN_1403c5670(spContext) == 0)
+    if (LoadQuests(spContext) == 0)
         return;
     if (FUN_1403c58e0(spContext) == 0)
         return;
@@ -2813,12 +2813,12 @@ void GameEventTimeRunEvent::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C55C0, GameEventTimeRunEvent, vfunc_4, 170, 0xD50DD980);
 
 // @0x1403c5670
-int GameEventTimeRunEvent::FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext)
+int GameEventTimeRunEvent::LoadQuests(MS2Ptr<TimeRunEventContext> spContext)
 {
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return 0;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return 0;
     for (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest; pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
@@ -2832,7 +2832,7 @@ int GameEventTimeRunEvent::FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1403C5670, GameEventTimeRunEvent, FUN_1403c5670, 608, 0x6AA1FEF2);
+MS2_REPLACE_METHOD(0x1403C5670, GameEventTimeRunEvent, LoadQuests, 608, 0x6AA1FEF2);
 
 // @0x1403c58e0
 int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
@@ -2840,7 +2840,7 @@ int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return 0;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return 0;
     for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
@@ -2878,10 +2878,10 @@ MS2_REPLACE(0x1403D7F80, ParseUInt64List, 191, 0x139C2656);
 
 // ---- GameEventMassiveConstructionEvent ------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regMassiveConstructionEvent(L"GameEventMassiveConstructionEvent", (ClassObjectCreateFn)FUN_1403c5b40);
+static ClassObjectRegistrar s_regMassiveConstructionEvent(L"GameEventMassiveConstructionEvent", (ClassObjectCreateFn)CreateGameEventMassiveConstructionEvent);
 #endif
 // @0x1403c5b40
-GameEvent* FUN_1403c5b40() { return new GameEventMassiveConstructionEvent; }
+GameEvent* CreateGameEventMassiveConstructionEvent() { return new GameEventMassiveConstructionEvent; }
 
 // @0x1403c5ba0
 CStringW GameEventMassiveConstructionEvent::GetTypeName() { return CStringW(L"GameEventMassiveConstructionEvent"); }
@@ -2968,10 +2968,10 @@ MS2_REPLACE_METHOD(0x1403C60E0, GameEventMassiveConstructionEvent, vfunc_6, 40, 
 
 // ---- GameEventEnchantRate -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regEnchantRate(L"GameEventEnchantRate", (ClassObjectCreateFn)FUN_1403c6110);
+static ClassObjectRegistrar s_regEnchantRate(L"GameEventEnchantRate", (ClassObjectCreateFn)CreateGameEventEnchantRate);
 #endif
 // @0x1403c6110
-GameEvent* FUN_1403c6110() { return new GameEventEnchantRate; }
+GameEvent* CreateGameEventEnchantRate() { return new GameEventEnchantRate; }
 
 // @0x1403c6170
 CStringW GameEventEnchantRate::GetTypeName() { return CStringW(L"GameEventEnchantRate"); }
@@ -3030,10 +3030,10 @@ MS2_REPLACE_METHOD(0x1403C64A0, GameEventEnchantRate, vfunc_4, 280, 0x5427E70E);
 
 // ---- GameEventRankDuel ----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regRankDuel(L"GameEventRankDuel", (ClassObjectCreateFn)FUN_1403c65c0);
+static ClassObjectRegistrar s_regRankDuel(L"GameEventRankDuel", (ClassObjectCreateFn)CreateGameEventRankDuel);
 #endif
 // @0x1403c65c0
-GameEvent* FUN_1403c65c0() { return new GameEventRankDuel; }
+GameEvent* CreateGameEventRankDuel() { return new GameEventRankDuel; }
 
 // @0x1403c6620
 CStringW GameEventRankDuel::GetTypeName() { return CStringW(L"GameEventRankDuel"); }
@@ -3081,10 +3081,10 @@ MS2_REPLACE_METHOD(0x1403C6810, GameEventRankDuel, vfunc_4, 134, 0x1C2FF7FE);
 
 // ---- GameEventGuildChampionship -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildChampionship(L"GameEventGuildChampionship", (ClassObjectCreateFn)FUN_1403c68a0);
+static ClassObjectRegistrar s_regGuildChampionship(L"GameEventGuildChampionship", (ClassObjectCreateFn)CreateGameEventGuildChampionship);
 #endif
 // @0x1403c68a0
-GameEvent* FUN_1403c68a0() { return new GameEventGuildChampionship; }
+GameEvent* CreateGameEventGuildChampionship() { return new GameEventGuildChampionship; }
 
 // @0x1403c6900
 CStringW GameEventGuildChampionship::GetTypeName() { return CStringW(L"GameEventGuildChampionship"); }
@@ -3120,10 +3120,10 @@ MS2_REPLACE_METHOD(0x1403C6A50, GameEventGuildChampionship, vfunc_6, 29, 0x2BB70
 
 // ---- GameEventQuestAdditionalReward ---------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regQuestAdditionalReward(L"GameEventQuestAdditionalReward", (ClassObjectCreateFn)FUN_1403c6a80);
+static ClassObjectRegistrar s_regQuestAdditionalReward(L"GameEventQuestAdditionalReward", (ClassObjectCreateFn)CreateGameEventQuestAdditionalReward);
 #endif
 // @0x1403c6a80
-GameEvent* FUN_1403c6a80() { return new GameEventQuestAdditionalReward; }
+GameEvent* CreateGameEventQuestAdditionalReward() { return new GameEventQuestAdditionalReward; }
 
 // @0x1403c6ae0
 CStringW GameEventQuestAdditionalReward::GetTypeName() { return CStringW(L"GameEventQuestAdditionalReward"); }
@@ -3178,10 +3178,10 @@ MS2_REPLACE_METHOD(0x1403C6DD0, GameEventQuestAdditionalReward, vfunc_4, 162, 0x
 
 // ---- GameEventGuildSkillSale ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildSkillSale(L"GameEventGuildSkillSale", (ClassObjectCreateFn)FUN_1403c6e80);
+static ClassObjectRegistrar s_regGuildSkillSale(L"GameEventGuildSkillSale", (ClassObjectCreateFn)CreateGameEventGuildSkillSale);
 #endif
 // @0x1403c6e80
-GameEvent* FUN_1403c6e80() { return new GameEventGuildSkillSale; }
+GameEvent* CreateGameEventGuildSkillSale() { return new GameEventGuildSkillSale; }
 
 // @0x1403c6ee0
 CStringW GameEventGuildSkillSale::GetTypeName() { return CStringW(L"GameEventGuildSkillSale"); }
@@ -3224,10 +3224,10 @@ MS2_REPLACE_METHOD(0x1403C7090, GameEventGuildSkillSale, vfunc_4, 79, 0xF3AF033C
 
 // ---- GameEventGuildPersonalSkillSale --------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildPersonalSkillSale(L"GameEventGuildPersonalSkillSale", (ClassObjectCreateFn)FUN_1403c70f0);
+static ClassObjectRegistrar s_regGuildPersonalSkillSale(L"GameEventGuildPersonalSkillSale", (ClassObjectCreateFn)CreateGameEventGuildPersonalSkillSale);
 #endif
 // @0x1403c70f0
-GameEvent* FUN_1403c70f0() { return new GameEventGuildPersonalSkillSale; }
+GameEvent* CreateGameEventGuildPersonalSkillSale() { return new GameEventGuildPersonalSkillSale; }
 
 // @0x1403c7150
 CStringW GameEventGuildPersonalSkillSale::GetTypeName() { return CStringW(L"GameEventGuildPersonalSkillSale"); }
@@ -3270,10 +3270,10 @@ MS2_REPLACE_METHOD(0x1403C7300, GameEventGuildPersonalSkillSale, vfunc_4, 79, 0x
 
 // ---- GameEventGuildExp ----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildExp(L"GameEventGuildExp", (ClassObjectCreateFn)FUN_1403c7360);
+static ClassObjectRegistrar s_regGuildExp(L"GameEventGuildExp", (ClassObjectCreateFn)CreateGameEventGuildExp);
 #endif
 // @0x1403c7360
-GameEvent* FUN_1403c7360() { return new GameEventGuildExp; }
+GameEvent* CreateGameEventGuildExp() { return new GameEventGuildExp; }
 
 // @0x1403c73c0
 CStringW GameEventGuildExp::GetTypeName() { return CStringW(L"GameEventGuildExp"); }
@@ -3324,10 +3324,10 @@ MS2_REPLACE_METHOD(0x1403C75E0, GameEventGuildExp, vfunc_4, 79, 0x4BB6E3B6);
 
 // ---- GameEventGuildFund ---------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildFund(L"GameEventGuildFund", (ClassObjectCreateFn)FUN_1403c7640);
+static ClassObjectRegistrar s_regGuildFund(L"GameEventGuildFund", (ClassObjectCreateFn)CreateGameEventGuildFund);
 #endif
 // @0x1403c7640
-GameEvent* FUN_1403c7640() { return new GameEventGuildFund; }
+GameEvent* CreateGameEventGuildFund() { return new GameEventGuildFund; }
 
 // @0x1403c76a0
 CStringW GameEventGuildFund::GetTypeName() { return CStringW(L"GameEventGuildFund"); }
@@ -3370,10 +3370,10 @@ MS2_REPLACE_METHOD(0x1403C7850, GameEventGuildFund, vfunc_4, 79, 0xCC7FB574);
 
 // ---- GameEventGuildCoin ---------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildCoin(L"GameEventGuildCoin", (ClassObjectCreateFn)FUN_1403c78b0);
+static ClassObjectRegistrar s_regGuildCoin(L"GameEventGuildCoin", (ClassObjectCreateFn)CreateGameEventGuildCoin);
 #endif
 // @0x1403c78b0
-GameEvent* FUN_1403c78b0() { return new GameEventGuildCoin; }
+GameEvent* CreateGameEventGuildCoin() { return new GameEventGuildCoin; }
 
 // @0x1403c7910
 CStringW GameEventGuildCoin::GetTypeName() { return CStringW(L"GameEventGuildCoin"); }
@@ -3416,10 +3416,10 @@ MS2_REPLACE_METHOD(0x1403C7AC0, GameEventGuildCoin, vfunc_4, 79, 0x114CC551);
 
 // ---- GameEventMasteryReward -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regMasteryReward(L"GameEventMasteryReward", (ClassObjectCreateFn)FUN_1403c7b20);
+static ClassObjectRegistrar s_regMasteryReward(L"GameEventMasteryReward", (ClassObjectCreateFn)CreateGameEventMasteryReward);
 #endif
 // @0x1403c7b20
-GameEvent* FUN_1403c7b20() { return new GameEventMasteryReward; }
+GameEvent* CreateGameEventMasteryReward() { return new GameEventMasteryReward; }
 
 // @0x1403c7b80
 CStringW GameEventMasteryReward::GetTypeName() { return CStringW(L"GameEventMasteryReward"); }
@@ -3474,10 +3474,10 @@ MS2_REPLACE_METHOD(0x1403C7DC0, GameEventMasteryReward, vfunc_4, 179, 0x2141B150
 
 // ---- GameEventMeratMarketOpenTab ------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regMeratMarketOpenTab(L"GameEventMeratMarketOpenTab", (ClassObjectCreateFn)FUN_1403c7e80);
+static ClassObjectRegistrar s_regMeratMarketOpenTab(L"GameEventMeratMarketOpenTab", (ClassObjectCreateFn)CreateGameEventMeratMarketOpenTab);
 #endif
 // @0x1403c7e80
-GameEvent* FUN_1403c7e80() { return new GameEventMeratMarketOpenTab; }
+GameEvent* CreateGameEventMeratMarketOpenTab() { return new GameEventMeratMarketOpenTab; }
 
 // @0x1403c7ee0
 CStringW GameEventMeratMarketOpenTab::GetTypeName() { return CStringW(L"GameEventMeratMarketOpenTab"); }
@@ -3524,10 +3524,10 @@ MS2_REPLACE_METHOD(0x1403C8140, GameEventMeratMarketOpenTab, vfunc_6, 80, 0x2E26
 
 // ---- GameEventWorldmapIcon ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regWorldmapIcon(L"GameEventWorldmapIcon", (ClassObjectCreateFn)FUN_1403c81a0);
+static ClassObjectRegistrar s_regWorldmapIcon(L"GameEventWorldmapIcon", (ClassObjectCreateFn)CreateGameEventWorldmapIcon);
 #endif
 // @0x1403c81a0
-GameEvent* FUN_1403c81a0() { return new GameEventWorldmapIcon; }
+GameEvent* CreateGameEventWorldmapIcon() { return new GameEventWorldmapIcon; }
 
 // @0x1403c8200
 CStringW GameEventWorldmapIcon::GetTypeName() { return CStringW(L"GameEventWorldmapIcon"); }
@@ -3570,10 +3570,10 @@ MS2_REPLACE_METHOD(0x1403C8370, GameEventWorldmapIcon, vfunc_4, 134, 0x4F43BF29)
 
 // ---- GameEventMasteryReduce -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regMasteryReduce(L"GameEventMasteryReduce", (ClassObjectCreateFn)FUN_1403c8400);
+static ClassObjectRegistrar s_regMasteryReduce(L"GameEventMasteryReduce", (ClassObjectCreateFn)CreateGameEventMasteryReduce);
 #endif
 // @0x1403c8400
-GameEvent* FUN_1403c8400() { return new GameEventMasteryReduce; }
+GameEvent* CreateGameEventMasteryReduce() { return new GameEventMasteryReduce; }
 
 // @0x1403c8460
 CStringW GameEventMasteryReduce::GetTypeName() { return CStringW(L"GameEventMasteryReduce"); }
@@ -3616,10 +3616,10 @@ MS2_REPLACE_METHOD(0x1403C8600, GameEventMasteryReduce, vfunc_4, 79, 0x568F6686)
 
 // ---- GameEventUGCMapContractSale ------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regUGCMapContractSale(L"GameEventUGCMapContractSale", (ClassObjectCreateFn)FUN_1403c8660);
+static ClassObjectRegistrar s_regUGCMapContractSale(L"GameEventUGCMapContractSale", (ClassObjectCreateFn)CreateGameEventUGCMapContractSale);
 #endif
 // @0x1403c8660
-GameEvent* FUN_1403c8660() { return new GameEventUGCMapContractSale; }
+GameEvent* CreateGameEventUGCMapContractSale() { return new GameEventUGCMapContractSale; }
 
 // @0x1403c86c0
 CStringW GameEventUGCMapContractSale::GetTypeName() { return CStringW(L"GameEventUGCMapContractSale"); }
@@ -3662,10 +3662,10 @@ MS2_REPLACE_METHOD(0x1403C88A0, GameEventUGCMapContractSale, vfunc_6, 35, 0x88C8
 
 // ---- GameEventUGCMapExtensionSale -----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regUGCMapExtensionSale(L"GameEventUGCMapExtensionSale", (ClassObjectCreateFn)FUN_1403c88d0);
+static ClassObjectRegistrar s_regUGCMapExtensionSale(L"GameEventUGCMapExtensionSale", (ClassObjectCreateFn)CreateGameEventUGCMapExtensionSale);
 #endif
 // @0x1403c88d0
-GameEvent* FUN_1403c88d0() { return new GameEventUGCMapExtensionSale; }
+GameEvent* CreateGameEventUGCMapExtensionSale() { return new GameEventUGCMapExtensionSale; }
 
 // @0x1403c8930
 CStringW GameEventUGCMapExtensionSale::GetTypeName() { return CStringW(L"GameEventUGCMapExtensionSale"); }
@@ -3708,10 +3708,10 @@ MS2_REPLACE_METHOD(0x1403C8B10, GameEventUGCMapExtensionSale, vfunc_6, 35, 0xB59
 
 // ---- GameEventConstructShowItem -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regConstructShowItem(L"GameEventConstructShowItem", (ClassObjectCreateFn)FUN_1403c8b40);
+static ClassObjectRegistrar s_regConstructShowItem(L"GameEventConstructShowItem", (ClassObjectCreateFn)CreateGameEventConstructShowItem);
 #endif
 // @0x1403c8b40
-GameEvent* FUN_1403c8b40() { return new GameEventConstructShowItem; }
+GameEvent* CreateGameEventConstructShowItem() { return new GameEventConstructShowItem; }
 
 // @0x1403c8ba0
 CStringW GameEventConstructShowItem::GetTypeName() { return CStringW(L"GameEventConstructShowItem"); }
@@ -3787,10 +3787,10 @@ MS2_REPLACE_METHOD(0x1403C9160, GameEventConstructShowItem, vfunc_6, 30, 0x417D1
 
 // ---- GameEventTransferItemBound -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regTransferItemBound(L"GameEventTransferItemBound", (ClassObjectCreateFn)FUN_1403c9190);
+static ClassObjectRegistrar s_regTransferItemBound(L"GameEventTransferItemBound", (ClassObjectCreateFn)CreateGameEventTransferItemBound);
 #endif
 // @0x1403c9190
-GameEvent* FUN_1403c9190() { return new GameEventTransferItemBound; }
+GameEvent* CreateGameEventTransferItemBound() { return new GameEventTransferItemBound; }
 
 // @0x1403c91f0
 CStringW GameEventTransferItemBound::GetTypeName() { return CStringW(L"GameEventTransferItemBound"); }
@@ -3807,7 +3807,7 @@ GameEventTransferItemBound::GameEventTransferItemBound() : m_d0(true)
 void GameEventTransferItemBound::vfunc_2()
 {
     if (!m_68.IsEmpty())
-        m_d0 = FUN_1407183f0(m_68);
+        m_d0 = ParseBoolW(m_68);
 }
 MS2_REPLACE_METHOD(0x1403C92B0, GameEventTransferItemBound, vfunc_2, 67, 0x41D5E5F7);
 
@@ -3837,10 +3837,10 @@ MS2_REPLACE_METHOD(0x1403C93E0, GameEventTransferItemBound, vfunc_6, 60, 0xFF7D7
 
 // ---- GameEventSaleItemsRestricted -----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleItemsRestricted(L"GameEventSaleItemsRestricted", (ClassObjectCreateFn)FUN_1403c9430);
+static ClassObjectRegistrar s_regSaleItemsRestricted(L"GameEventSaleItemsRestricted", (ClassObjectCreateFn)CreateGameEventSaleItemsRestricted);
 #endif
 // @0x1403c9430
-GameEvent* FUN_1403c9430() { return new GameEventSaleItemsRestricted; }
+GameEvent* CreateGameEventSaleItemsRestricted() { return new GameEventSaleItemsRestricted; }
 
 // @0x1403c9490
 CStringW GameEventSaleItemsRestricted::GetTypeName() { return CStringW(L"GameEventSaleItemsRestricted"); }
@@ -3893,10 +3893,10 @@ MS2_REPLACE_METHOD(0x1403C96F0, GameEventSaleItemsRestricted, vfunc_6, 35, 0xE41
 
 // ---- GameEventUgcMapCommendationGM ----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regUgcMapCommendationGM(L"GameEventUgcMapCommendationGM", (ClassObjectCreateFn)FUN_1403c9720);
+static ClassObjectRegistrar s_regUgcMapCommendationGM(L"GameEventUgcMapCommendationGM", (ClassObjectCreateFn)CreateGameEventUgcMapCommendationGM);
 #endif
 // @0x1403c9720
-GameEvent* FUN_1403c9720() { return new GameEventUgcMapCommendationGM; }
+GameEvent* CreateGameEventUgcMapCommendationGM() { return new GameEventUgcMapCommendationGM; }
 
 // @0x1403c9780
 CStringW GameEventUgcMapCommendationGM::GetTypeName() { return CStringW(L"GameEventUgcMapCommendationGM"); }
@@ -3916,7 +3916,7 @@ GameEventUgcMapCommendationGM::GameEventUgcMapCommendationGM()
 void GameEventUgcMapCommendationGM::vfunc_2()
 {
     m_d0 = FUN_1407181a0(m_68);
-    m_d8 = FUN_140718370(m_70);
+    m_d8 = ParseUInt64W(m_70);
     m_e0 = m_78;
 }
 MS2_REPLACE_METHOD(0x1403C9880, GameEventUgcMapCommendationGM, vfunc_2, 101, 0xF623363A);
@@ -3951,10 +3951,10 @@ MS2_REPLACE_METHOD(0x1403C9AF0, GameEventUgcMapCommendationGM, vfunc_6, 38, 0x26
 
 // ---- GameEventDeleteUrlCache ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDeleteUrlCache(L"GameEventDeleteUrlCache", (ClassObjectCreateFn)FUN_1403c9b20);
+static ClassObjectRegistrar s_regDeleteUrlCache(L"GameEventDeleteUrlCache", (ClassObjectCreateFn)CreateGameEventDeleteUrlCache);
 #endif
 // @0x1403c9b20
-GameEvent* FUN_1403c9b20() { return new GameEventDeleteUrlCache; }
+GameEvent* CreateGameEventDeleteUrlCache() { return new GameEventDeleteUrlCache; }
 
 // @0x1403c9b80
 CStringW GameEventDeleteUrlCache::GetTypeName() { return CStringW(L"GameEventDeleteUrlCache"); }
@@ -3998,10 +3998,10 @@ MS2_REPLACE_METHOD(0x1403C9D60, GameEventDeleteUrlCache, vfunc_6, 29, 0x9173CFD7
 
 // ---- GameEventPetMastery --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regPetMastery(L"GameEventPetMastery", (ClassObjectCreateFn)FUN_1403c9d90);
+static ClassObjectRegistrar s_regPetMastery(L"GameEventPetMastery", (ClassObjectCreateFn)CreateGameEventPetMastery);
 #endif
 // @0x1403c9d90
-GameEvent* FUN_1403c9d90() { return new GameEventPetMastery; }
+GameEvent* CreateGameEventPetMastery() { return new GameEventPetMastery; }
 
 // @0x1403c9df0
 CStringW GameEventPetMastery::GetTypeName() { return CStringW(L"GameEventPetMastery"); }
@@ -4071,10 +4071,10 @@ MS2_REPLACE_METHOD(0x1403CA1C0, GameEventPetMastery, vfunc_6, 56, 0x17A2B462);
 
 // ---- GameEventPetBattleExp ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regPetBattleExp(L"GameEventPetBattleExp", (ClassObjectCreateFn)FUN_1403ca200);
+static ClassObjectRegistrar s_regPetBattleExp(L"GameEventPetBattleExp", (ClassObjectCreateFn)CreateGameEventPetBattleExp);
 #endif
 // @0x1403ca200
-GameEvent* FUN_1403ca200() { return new GameEventPetBattleExp; }
+GameEvent* CreateGameEventPetBattleExp() { return new GameEventPetBattleExp; }
 
 // @0x1403ca260
 CStringW GameEventPetBattleExp::GetTypeName() { return CStringW(L"GameEventPetBattleExp"); }
@@ -4117,10 +4117,10 @@ MS2_REPLACE_METHOD(0x1403CA440, GameEventPetBattleExp, vfunc_6, 35, 0xD43D95A8);
 
 // ---- GameEventPetComposeSale ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regPetComposeSale(L"GameEventPetComposeSale", (ClassObjectCreateFn)FUN_1403ca470);
+static ClassObjectRegistrar s_regPetComposeSale(L"GameEventPetComposeSale", (ClassObjectCreateFn)CreateGameEventPetComposeSale);
 #endif
 // @0x1403ca470
-GameEvent* FUN_1403ca470() { return new GameEventPetComposeSale; }
+GameEvent* CreateGameEventPetComposeSale() { return new GameEventPetComposeSale; }
 
 // @0x1403ca4d0
 CStringW GameEventPetComposeSale::GetTypeName() { return CStringW(L"GameEventPetComposeSale"); }
@@ -4163,10 +4163,10 @@ MS2_REPLACE_METHOD(0x1403CA6B0, GameEventPetComposeSale, vfunc_6, 35, 0x448E3F17
 
 // ---- GameEventItemBox -----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regItemBox(L"GameEventItemBox", (ClassObjectCreateFn)FUN_1403ca6e0);
+static ClassObjectRegistrar s_regItemBox(L"GameEventItemBox", (ClassObjectCreateFn)CreateGameEventItemBox);
 #endif
 // @0x1403ca6e0
-GameEvent* FUN_1403ca6e0() { return new GameEventItemBox; }
+GameEvent* CreateGameEventItemBox() { return new GameEventItemBox; }
 
 // @0x1403ca740
 CStringW GameEventItemBox::GetTypeName() { return CStringW(L"GameEventItemBox"); }
@@ -4186,7 +4186,7 @@ void GameEventItemBox::vfunc_2()
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
     MS2Ptr<ItemBoxEventContext> spBox(new ItemBoxEventContext);
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     spBox->m_3c = m_id;
@@ -4253,10 +4253,10 @@ MS2_REPLACE_METHOD(0x1403CAB70, GameEventItemBox, vfunc_6, 115, 0x11447945);
 
 // ---- GameEventShutdownInteractObjectId ------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownInteractObjectId(L"GameEventShutdownInteractObjectId", (ClassObjectCreateFn)FUN_1403cabf0);
+static ClassObjectRegistrar s_regShutdownInteractObjectId(L"GameEventShutdownInteractObjectId", (ClassObjectCreateFn)CreateGameEventShutdownInteractObjectId);
 #endif
 // @0x1403cabf0
-GameEvent* FUN_1403cabf0() { return new GameEventShutdownInteractObjectId; }
+GameEvent* CreateGameEventShutdownInteractObjectId() { return new GameEventShutdownInteractObjectId; }
 
 // @0x1403cac50
 CStringW GameEventShutdownInteractObjectId::GetTypeName() { return CStringW(L"GameEventShutdownInteractObjectId"); }
@@ -4275,13 +4275,13 @@ void GameEventShutdownInteractObjectId::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
-        unsigned nFieldId = FUN_140197390(pNode, "fieldId", 0);
-        int nObjectId = FUN_140197350(pNode, "objectId", 0);
+        unsigned nFieldId = GetUIntAttr(pNode, "fieldId", 0);
+        int nObjectId = GetIntAttr(pNode, "objectId", 0);
         if (nFieldId == 0 || nObjectId == 0)
             continue;
         m_d0.insert(std::make_pair(nFieldId, nObjectId));
@@ -4322,7 +4322,7 @@ MS2_REPLACE_METHOD(0x1403CAF60, GameEventShutdownInteractObjectId, vfunc_4, 241,
 void GameEventShutdownInteractObjectId::OnStart()
 {
     for (std::set<std::pair<unsigned, int> >::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->FUN_1407d0420((*it).first, (*it).second);
+        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->AddShutdown((*it).first, (*it).second);
 }
 MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, OnStart, 165, 0x329092AB);
 
@@ -4330,16 +4330,16 @@ MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, OnStart, 165,
 void GameEventShutdownInteractObjectId::vfunc_6()
 {
     for (std::set<std::pair<unsigned, int> >::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->FUN_1407d04c0((*it).first, (*it).second);
+        ((class CShutdownEventInteractObject*)(class CShutdownEventInteractObject*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()))->RemoveShutdown((*it).first, (*it).second);
 }
 MS2_REPLACE_METHOD(0x1403CB110, GameEventShutdownInteractObjectId, vfunc_6, 165, 0xD1095170);
 
 // ---- GameEventShutdownFunctionItem ----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownFunctionItem(L"GameEventShutdownFunctionItem", (ClassObjectCreateFn)FUN_1403cb1c0);
+static ClassObjectRegistrar s_regShutdownFunctionItem(L"GameEventShutdownFunctionItem", (ClassObjectCreateFn)CreateGameEventShutdownFunctionItem);
 #endif
 // @0x1403cb1c0
-GameEvent* FUN_1403cb1c0() { return new GameEventShutdownFunctionItem; }
+GameEvent* CreateGameEventShutdownFunctionItem() { return new GameEventShutdownFunctionItem; }
 
 // @0x1403cb220
 CStringW GameEventShutdownFunctionItem::GetTypeName() { return CStringW(L"GameEventShutdownFunctionItem"); }
@@ -4358,12 +4358,12 @@ void GameEventShutdownFunctionItem::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
-        unsigned nItemId = FUN_140197390(pNode, "itemId", 0);
+        unsigned nItemId = GetUIntAttr(pNode, "itemId", 0);
         if (nItemId == 0)
             continue;
         m_d0.insert(nItemId);
@@ -4399,7 +4399,7 @@ MS2_REPLACE_METHOD(0x1403CB4E0, GameEventShutdownFunctionItem, vfunc_4, 190, 0x9
 void GameEventShutdownFunctionItem::OnStart()
 {
     for (std::set<unsigned>::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->FUN_1407d0c30(*it);
+        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->AddShutdown(*it);
 }
 MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, OnStart, 141, 0x94440A91);
 
@@ -4407,16 +4407,16 @@ MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, OnStart, 141, 0x9
 void GameEventShutdownFunctionItem::vfunc_6()
 {
     for (std::set<unsigned>::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
-        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->FUN_1407d0cb0(*it);
+        ((class CShutdownEventFunctionItem*)(class CShutdownEventFunctionItem*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownFunctionItem()))->RemoveShutdown(*it);
 }
 MS2_REPLACE_METHOD(0x1403CB650, GameEventShutdownFunctionItem, vfunc_6, 141, 0x8AF4E104);
 
 // ---- GameEventShutdownSkillItem -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownSkillItem(L"GameEventShutdownSkillItem", (ClassObjectCreateFn)FUN_1403cb6f0);
+static ClassObjectRegistrar s_regShutdownSkillItem(L"GameEventShutdownSkillItem", (ClassObjectCreateFn)CreateGameEventShutdownSkillItem);
 #endif
 // @0x1403cb6f0
-GameEvent* FUN_1403cb6f0() { return new GameEventShutdownSkillItem; }
+GameEvent* CreateGameEventShutdownSkillItem() { return new GameEventShutdownSkillItem; }
 
 // @0x1403cb750
 CStringW GameEventShutdownSkillItem::GetTypeName() { return CStringW(L"GameEventShutdownSkillItem"); }
@@ -4435,12 +4435,12 @@ void GameEventShutdownSkillItem::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
-        unsigned nItemId = FUN_140197390(pNode, "itemId", 0);
+        unsigned nItemId = GetUIntAttr(pNode, "itemId", 0);
         if (nItemId == 0)
             continue;
         m_d0.emplace(nItemId);
@@ -4502,10 +4502,10 @@ MS2_REPLACE_METHOD(0x1403CBB60, GameEventShutdownSkillItem, vfunc_6, 137, 0x73A9
 
 // ---- GameEventShutdownUGCUpload -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownUGCUpload(L"GameEventShutdownUGCUpload", (ClassObjectCreateFn)FUN_1403cbbf0);
+static ClassObjectRegistrar s_regShutdownUGCUpload(L"GameEventShutdownUGCUpload", (ClassObjectCreateFn)CreateGameEventShutdownUGCUpload);
 #endif
 // @0x1403cbbf0
-GameEvent* FUN_1403cbbf0() { return new GameEventShutdownUGCUpload; }
+GameEvent* CreateGameEventShutdownUGCUpload() { return new GameEventShutdownUGCUpload; }
 
 // @0x1403cbc50
 CStringW GameEventShutdownUGCUpload::GetTypeName() { return CStringW(L"GameEventShutdownUGCUpload"); }
@@ -4523,7 +4523,7 @@ void GameEventShutdownUGCUpload::vfunc_2()
 {
     FUN_140274fc0(m_68, &m_d0, L",");
     if (!m_70.IsEmpty())
-        m_f0 = FUN_1407183f0(m_70) == true;
+        m_f0 = ParseBoolW(m_70) == true;
 }
 MS2_REPLACE_METHOD(0x1403CBD20, GameEventShutdownUGCUpload, vfunc_2, 132, 0x0D5D5CF9);
 
@@ -4539,7 +4539,7 @@ struct Unk_ShutdownUGCUploadInfo
     std::set<Unk_UGCUploadType> m_ids;          // +0x00
     BOOL m_bFlag;                               // +0x10
 };
-bool FUN_1407d1ef0(class CShutdownEventUGCUpload*, unsigned int, struct Unk_ShutdownUGCUploadInfo const&);   // C3: was FUN_1407d1ef0
+bool AddEvent(class CShutdownEventUGCUpload*, unsigned int, struct Unk_ShutdownUGCUploadInfo const&);   // C3: was FUN_1407d1ef0
 void RemoveEvent(class CShutdownEventUGCUpload*, unsigned int);   // C3: was FUN_1407d1f70
 
 // @0x1403cbdb0
@@ -4549,7 +4549,7 @@ void GameEventShutdownUGCUpload::OnStart()
     info.m_bFlag = m_f0;
     for (size_t i = 0; i < m_d0.GetCount(); i++)
         info.m_ids.insert((Unk_UGCUploadType)m_d0[i]);
-    FUN_1407d1ef0((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), GetID(), info);
+    AddEvent((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), GetID(), info);
 }
 MS2_REPLACE_METHOD(0x1403CBDB0, GameEventShutdownUGCUpload, OnStart, 208, 0x414A87F9);
 
@@ -4559,10 +4559,10 @@ MS2_REPLACE_METHOD(0x1403CBE90, GameEventShutdownUGCUpload, vfunc_6, 55, 0xC4914
 
 // ---- GameEventFindDungeonHelperBonus --------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regFindDungeonHelperBonus(L"GameEventFindDungeonHelperBonus", (ClassObjectCreateFn)FUN_1403cbed0);
+static ClassObjectRegistrar s_regFindDungeonHelperBonus(L"GameEventFindDungeonHelperBonus", (ClassObjectCreateFn)CreateGameEventFindDungeonHelperBonus);
 #endif
 // @0x1403cbed0
-GameEvent* FUN_1403cbed0() { return new GameEventFindDungeonHelperBonus; }
+GameEvent* CreateGameEventFindDungeonHelperBonus() { return new GameEventFindDungeonHelperBonus; }
 
 // @0x1403cbf30
 CStringW GameEventFindDungeonHelperBonus::GetTypeName() { return CStringW(L"GameEventFindDungeonHelperBonus"); }
@@ -4605,10 +4605,10 @@ MS2_REPLACE_METHOD(0x1403CC0E0, GameEventFindDungeonHelperBonus, vfunc_4, 62, 0x
 
 // ---- GameEventGuildVsGameOpen ---------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildVsGameOpen(L"GameEventGuildVsGameOpen", (ClassObjectCreateFn)FUN_1403cc130);
+static ClassObjectRegistrar s_regGuildVsGameOpen(L"GameEventGuildVsGameOpen", (ClassObjectCreateFn)CreateGameEventGuildVsGameOpen);
 #endif
 // @0x1403cc130
-GameEvent* FUN_1403cc130() { return new GameEventGuildVsGameOpen; }
+GameEvent* CreateGameEventGuildVsGameOpen() { return new GameEventGuildVsGameOpen; }
 
 // @0x1403cc190
 CStringW GameEventGuildVsGameOpen::GetTypeName() { return CStringW(L"GameEventGuildVsGameOpen"); }
@@ -4628,21 +4628,21 @@ MS2_REPLACE_METHOD(0x1403CC240, GameEventGuildVsGameOpen, vfunc_2, 6, 0xA9AF6E37
 // @0x1403cc250
 void GameEventGuildVsGameOpen::OnStart()
 {
-    ((class CGameRule*)GetGameRule())->FUN_14047ec80(true);
+    ((class CGameRule*)GetGameRule())->SetGuildVsGameOpen(true);
     TSingleton<CGuildManager>::GetInstance()->NotifyVsGameCanRegister();
 }
 MS2_REPLACE_METHOD(0x1403CC250, GameEventGuildVsGameOpen, OnStart, 42, 0xA6426729);
 
 // @0x1403cc280
-void GameEventGuildVsGameOpen::vfunc_6() { ((class CGameRule*)GetGameRule())->FUN_14047ec80(false); }
+void GameEventGuildVsGameOpen::vfunc_6() { ((class CGameRule*)GetGameRule())->SetGuildVsGameOpen(false); }
 MS2_REPLACE_METHOD(0x1403CC280, GameEventGuildVsGameOpen, vfunc_6, 29, 0xCD21E29A);
 
 // ---- GameEventChatFiltering -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regChatFiltering(L"GameEventChatFiltering", (ClassObjectCreateFn)FUN_1403cc2b0);
+static ClassObjectRegistrar s_regChatFiltering(L"GameEventChatFiltering", (ClassObjectCreateFn)CreateGameEventChatFiltering);
 #endif
 // @0x1403cc2b0
-GameEvent* FUN_1403cc2b0() { return new GameEventChatFiltering; }
+GameEvent* CreateGameEventChatFiltering() { return new GameEventChatFiltering; }
 
 // @0x1403cc310
 CStringW GameEventChatFiltering::GetTypeName() { return CStringW(L"GameEventChatFiltering"); }
@@ -4702,10 +4702,10 @@ MS2_REPLACE_METHOD(0x1403CC640, GameEventChatFiltering, vfunc_6, 117, 0x9083579C
 
 // ---- GameEventBattlePetSpawn ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regBattlePetSpawn(L"GameEventBattlePetSpawn", (ClassObjectCreateFn)FUN_1403cc6c0);
+static ClassObjectRegistrar s_regBattlePetSpawn(L"GameEventBattlePetSpawn", (ClassObjectCreateFn)CreateGameEventBattlePetSpawn);
 #endif
 // @0x1403cc6c0
-GameEvent* FUN_1403cc6c0() { return new GameEventBattlePetSpawn; }
+GameEvent* CreateGameEventBattlePetSpawn() { return new GameEventBattlePetSpawn; }
 
 // @0x1403cc720
 CStringW GameEventBattlePetSpawn::GetTypeName() { return CStringW(L"GameEventBattlePetSpawn"); }
@@ -4766,10 +4766,10 @@ MS2_REPLACE_METHOD(0x1403CCA30, GameEventBattlePetSpawn, vfunc_4, 182, 0x29CCF11
 
 // ---- GameEventGallery -----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGallery(L"GameEventGallery", (ClassObjectCreateFn)FUN_1403ccaf0);
+static ClassObjectRegistrar s_regGallery(L"GameEventGallery", (ClassObjectCreateFn)CreateGameEventGallery);
 #endif
 // @0x1403ccaf0
-GameEvent* FUN_1403ccaf0() { return new GameEventGallery; }
+GameEvent* CreateGameEventGallery() { return new GameEventGallery; }
 
 // @0x1403ccb50
 CStringW GameEventGallery::GetTypeName() { return CStringW(L"GameEventGallery"); }
@@ -4850,7 +4850,7 @@ bool GameEventGallery::ReadCardData(MS2Ptr<GalleryContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(3951), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
     }
-    TiXmlElement* root = FUN_140345b40(&doc);
+    TiXmlElement* root = GetFirstChildElement(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(3954), "root" && 0);
@@ -4885,7 +4885,7 @@ bool GameEventGallery::ReadRewardData(MS2Ptr<GalleryContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(3974), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v2)" && 0);
         return false;
     }
-    TiXmlElement* root = FUN_140345b40(&doc);
+    TiXmlElement* root = GetFirstChildElement(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(3977), "root" && 0);
@@ -4903,10 +4903,10 @@ MS2_REPLACE_METHOD(0x1403CD3B0, GameEventGallery, ReadRewardData, 554, 0x9ABB4F0
 
 // ---- GameEventIgnoreConstructionLockEvent ---------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regIgnoreConstructionLockEvent(L"GameEventIgnoreConstructionLockEvent", (ClassObjectCreateFn)FUN_1403cd5e0);
+static ClassObjectRegistrar s_regIgnoreConstructionLockEvent(L"GameEventIgnoreConstructionLockEvent", (ClassObjectCreateFn)CreateGameEventIgnoreConstructionLockEvent);
 #endif
 // @0x1403cd5e0
-GameEvent* FUN_1403cd5e0() { return new GameEventIgnoreConstructionLockEvent; }
+GameEvent* CreateGameEventIgnoreConstructionLockEvent() { return new GameEventIgnoreConstructionLockEvent; }
 
 // @0x1403cd640
 CStringW GameEventIgnoreConstructionLockEvent::GetTypeName() { return CStringW(L"GameEventIgnoreConstructionLockEvent"); }
@@ -4965,10 +4965,10 @@ MS2_REPLACE_METHOD(0x1403CD940, GameEventIgnoreConstructionLockEvent, vfunc_6, 2
 
 // ---- GameEventStarShop ----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regStarShop(L"GameEventStarShop", (ClassObjectCreateFn)FUN_1403cd970);
+static ClassObjectRegistrar s_regStarShop(L"GameEventStarShop", (ClassObjectCreateFn)CreateGameEventStarShop);
 #endif
 // @0x1403cd970
-GameEvent* FUN_1403cd970() { return new GameEventStarShop; }
+GameEvent* CreateGameEventStarShop() { return new GameEventStarShop; }
 
 // @0x1403cd9d0
 CStringW GameEventStarShop::GetTypeName() { return CStringW(L"GameEventStarShop"); }
@@ -5011,10 +5011,10 @@ MS2_REPLACE_METHOD(0x1403CDBB0, GameEventStarShop, vfunc_6, 37, 0x64449FE9);
 
 // ---- GameEventSnowman -----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSnowman(L"GameEventSnowman", (ClassObjectCreateFn)FUN_1403cdbe0);
+static ClassObjectRegistrar s_regSnowman(L"GameEventSnowman", (ClassObjectCreateFn)CreateGameEventSnowman);
 #endif
 // @0x1403cdbe0
-GameEvent* FUN_1403cdbe0() { return new GameEventSnowman; }
+GameEvent* CreateGameEventSnowman() { return new GameEventSnowman; }
 
 // @0x1403cdc40
 CStringW GameEventSnowman::GetTypeName() { return CStringW(L"GameEventSnowman"); }
@@ -5092,7 +5092,7 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(4145), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
     }
-    TiXmlElement* root = FUN_140345b40(&doc);
+    TiXmlElement* root = GetFirstChildElement(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4148), "root" && 0);
@@ -5154,10 +5154,10 @@ MS2_REPLACE_METHOD(0x1403CE6E0, GameEventSnowman, ReadRewardData, 204, 0xC6BC6B8
 
 // ---- GameEventRps ---------------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regRps(L"GameEventRps", (ClassObjectCreateFn)FUN_1403ce7c0);
+static ClassObjectRegistrar s_regRps(L"GameEventRps", (ClassObjectCreateFn)CreateGameEventRps);
 #endif
 // @0x1403ce7c0
-GameEvent* FUN_1403ce7c0() { return new GameEventRps; }
+GameEvent* CreateGameEventRps() { return new GameEventRps; }
 
 // @0x1403ce820
 CStringW GameEventRps::GetTypeName() { return CStringW(L"GameEventRps"); }
@@ -5229,13 +5229,13 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(4233), 0);
         return false;
     }
-    TiXmlElement* root = FUN_140345b40(&doc);
+    TiXmlElement* root = GetFirstChildElement(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4240), 0);
         return false;
     }
-    TiXmlElement* xel = FUN_140345b40((TiXmlDocument *)root);
+    TiXmlElement* xel = GetFirstChildElement((TiXmlDocument *)root);
     if (xel == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4247), 0);
@@ -5276,10 +5276,10 @@ MS2_REPLACE_METHOD(0x1403CEC90, GameEventRps, ReadRpsData, 1167, 0x8689EC48);
 
 // ---- GameEventNpcShopTalk -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regNpcShopTalk(L"GameEventNpcShopTalk", (ClassObjectCreateFn)FUN_1403cf130);
+static ClassObjectRegistrar s_regNpcShopTalk(L"GameEventNpcShopTalk", (ClassObjectCreateFn)CreateGameEventNpcShopTalk);
 #endif
 // @0x1403cf130
-GameEvent* FUN_1403cf130() { return new GameEventNpcShopTalk; }
+GameEvent* CreateGameEventNpcShopTalk() { return new GameEventNpcShopTalk; }
 
 // @0x1403cf190
 CStringW GameEventNpcShopTalk::GetTypeName() { return CStringW(L"GameEventNpcShopTalk"); }
@@ -5328,10 +5328,10 @@ MS2_REPLACE_METHOD(0x1403CF370, GameEventNpcShopTalk, vfunc_4, 124, 0x40C53A95);
 
 // ---- GameEventNpcShopGivePoint --------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regNpcShopGivePoint(L"GameEventNpcShopGivePoint", (ClassObjectCreateFn)FUN_1403cf400);
+static ClassObjectRegistrar s_regNpcShopGivePoint(L"GameEventNpcShopGivePoint", (ClassObjectCreateFn)CreateGameEventNpcShopGivePoint);
 #endif
 // @0x1403cf400
-GameEvent* FUN_1403cf400() { return new GameEventNpcShopGivePoint; }
+GameEvent* CreateGameEventNpcShopGivePoint() { return new GameEventNpcShopGivePoint; }
 
 // @0x1403cf460
 CStringW GameEventNpcShopGivePoint::GetTypeName() { return CStringW(L"GameEventNpcShopGivePoint"); }
@@ -5388,10 +5388,10 @@ MS2_REPLACE_METHOD(0x1403CF730, GameEventNpcShopGivePoint, vfunc_4, 227, 0xD8618
 
 // ---- GameEventNpcShopResetPriceSale ---------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regNpcShopResetPriceSale(L"GameEventNpcShopResetPriceSale", (ClassObjectCreateFn)FUN_1403cf820);
+static ClassObjectRegistrar s_regNpcShopResetPriceSale(L"GameEventNpcShopResetPriceSale", (ClassObjectCreateFn)CreateGameEventNpcShopResetPriceSale);
 #endif
 // @0x1403cf820
-GameEvent* FUN_1403cf820() { return new GameEventNpcShopResetPriceSale; }
+GameEvent* CreateGameEventNpcShopResetPriceSale() { return new GameEventNpcShopResetPriceSale; }
 
 // @0x1403cf880
 CStringW GameEventNpcShopResetPriceSale::GetTypeName() { return CStringW(L"GameEventNpcShopResetPriceSale"); }
@@ -5440,10 +5440,10 @@ MS2_REPLACE_METHOD(0x1403CFAD0, GameEventNpcShopResetPriceSale, vfunc_6, 46, 0x3
 
 // ---- GameEventReactor -----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regReactor(L"GameEventReactor", (ClassObjectCreateFn)FUN_1403cfb10);
+static ClassObjectRegistrar s_regReactor(L"GameEventReactor", (ClassObjectCreateFn)CreateGameEventReactor);
 #endif
 // @0x1403cfb10
-GameEvent* FUN_1403cfb10() { return new GameEventReactor; }
+GameEvent* CreateGameEventReactor() { return new GameEventReactor; }
 
 // @0x1403cfb70
 CStringW GameEventReactor::GetTypeName() { return CStringW(L"GameEventReactor"); }
@@ -5519,10 +5519,10 @@ MS2_REPLACE_METHOD(0x1403CFFC0, GameEventReactor, ReadReactorData, 197, 0xD96E4B
 
 // ---- GameEventCustomTriggerString -----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regCustomTriggerString(L"GameEventCustomTriggerString", (ClassObjectCreateFn)FUN_1403d0090);
+static ClassObjectRegistrar s_regCustomTriggerString(L"GameEventCustomTriggerString", (ClassObjectCreateFn)CreateGameEventCustomTriggerString);
 #endif
 // @0x1403d0090
-GameEvent* FUN_1403d0090() { return new GameEventCustomTriggerString; }
+GameEvent* CreateGameEventCustomTriggerString() { return new GameEventCustomTriggerString; }
 
 // @0x1403d00f0
 CStringW GameEventCustomTriggerString::GetTypeName() { return CStringW(L"GameEventCustomTriggerString"); }
@@ -5541,10 +5541,10 @@ void GameEventCustomTriggerString::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
-    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         CStringW strId;
         CStringW strName;
@@ -5583,10 +5583,10 @@ MS2_REPLACE_METHOD(0x1403D03A0, GameEventCustomTriggerString, vfunc_4, 62, 0xA06
 
 // ---- GameEventTreeWatering ------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regTreeWatering(L"GameEventTreeWatering", (ClassObjectCreateFn)FUN_1403d03f0);
+static ClassObjectRegistrar s_regTreeWatering(L"GameEventTreeWatering", (ClassObjectCreateFn)CreateGameEventTreeWatering);
 #endif
 // @0x1403d03f0
-GameEvent* FUN_1403d03f0() { return new GameEventTreeWatering; }
+GameEvent* CreateGameEventTreeWatering() { return new GameEventTreeWatering; }
 
 // @0x1403d0450
 CStringW GameEventTreeWatering::GetTypeName() { return CStringW(L"GameEventTreeWatering"); }
@@ -5753,10 +5753,10 @@ MS2_REPLACE_METHOD(0x1403D08F0, GameEventTreeWatering, ReadTreeWateringData, 237
 
 // ---- GameEventShutdownBillboard -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownBillboard(L"GameEventShutdownBillboard", (ClassObjectCreateFn)FUN_1403d1240);
+static ClassObjectRegistrar s_regShutdownBillboard(L"GameEventShutdownBillboard", (ClassObjectCreateFn)CreateGameEventShutdownBillboard);
 #endif
 // @0x1403d1240
-GameEvent* FUN_1403d1240() { return new GameEventShutdownBillboard; }
+GameEvent* CreateGameEventShutdownBillboard() { return new GameEventShutdownBillboard; }
 
 // @0x1403d12a0
 CStringW GameEventShutdownBillboard::GetTypeName() { return CStringW(L"GameEventShutdownBillboard"); }
@@ -5783,10 +5783,10 @@ MS2_REPLACE_METHOD(0x1403D13A0, GameEventShutdownBillboard, vfunc_6, 43, 0xF627A
 
 // ---- GameEventShutdownUGCBanner -------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownUGCBanner(L"GameEventShutdownUGCBanner", (ClassObjectCreateFn)FUN_1403d13e0);
+static ClassObjectRegistrar s_regShutdownUGCBanner(L"GameEventShutdownUGCBanner", (ClassObjectCreateFn)CreateGameEventShutdownUGCBanner);
 #endif
 // @0x1403d13e0
-GameEvent* FUN_1403d13e0() { return new GameEventShutdownUGCBanner; }
+GameEvent* CreateGameEventShutdownUGCBanner() { return new GameEventShutdownUGCBanner; }
 
 // @0x1403d1440
 CStringW GameEventShutdownUGCBanner::GetTypeName() { return CStringW(L"GameEventShutdownUGCBanner"); }
@@ -5813,10 +5813,10 @@ MS2_REPLACE_METHOD(0x1403D1540, GameEventShutdownUGCBanner, vfunc_6, 43, 0x2C142
 
 // ---- GameEventPublicTest --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regPublicTest(L"GameEventPublicTest", (ClassObjectCreateFn)FUN_1403d1580);
+static ClassObjectRegistrar s_regPublicTest(L"GameEventPublicTest", (ClassObjectCreateFn)CreateGameEventPublicTest);
 #endif
 // @0x1403d1580
-GameEvent* FUN_1403d1580() { return new GameEventPublicTest; }
+GameEvent* CreateGameEventPublicTest() { return new GameEventPublicTest; }
 
 // @0x1403d15e0
 CStringW GameEventPublicTest::GetTypeName() { return CStringW(L"GameEventPublicTest"); }
@@ -5844,10 +5844,10 @@ MS2_REPLACE_METHOD(0x1403D16E0, GameEventPublicTest, vfunc_6, 6, 0xA9AF6E37);
 
 // ---- GameEventAdventureLevelBonusExpRate ----------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regAdventureLevelBonusExpRate(L"GameEventAdventureLevelBonusExpRate", (ClassObjectCreateFn)FUN_1403d16f0);
+static ClassObjectRegistrar s_regAdventureLevelBonusExpRate(L"GameEventAdventureLevelBonusExpRate", (ClassObjectCreateFn)CreateGameEventAdventureLevelBonusExpRate);
 #endif
 // @0x1403d16f0
-GameEvent* FUN_1403d16f0() { return new GameEventAdventureLevelBonusExpRate; }
+GameEvent* CreateGameEventAdventureLevelBonusExpRate() { return new GameEventAdventureLevelBonusExpRate; }
 
 // @0x1403d1750
 CStringW GameEventAdventureLevelBonusExpRate::GetTypeName() { return CStringW(L"GameEventAdventureLevelBonusExpRate"); }
@@ -5903,10 +5903,10 @@ inline void Unk_BurningLevelupLog(Unk_CommonLog* log, int level, int category, c
 MS2_REPLACE_METHOD(0x1403D8110, CXmlData, GetInt, 142, 0xEF9D94D9);
 
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regBurningLevelup(L"GameEventBurningLevelup", (ClassObjectCreateFn)FUN_1403d1960);
+static ClassObjectRegistrar s_regBurningLevelup(L"GameEventBurningLevelup", (ClassObjectCreateFn)CreateGameEventBurningLevelup);
 #endif
 // @0x1403d1960
-GameEvent* FUN_1403d1960() { return new GameEventBurningLevelup; }
+GameEvent* CreateGameEventBurningLevelup() { return new GameEventBurningLevelup; }
 
 // @0x1403d19c0
 CStringW GameEventBurningLevelup::GetTypeName() { return CStringW(L"GameEventBurningLevelup"); }
@@ -5929,10 +5929,10 @@ void GameEventBurningLevelup::vfunc_2()
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
             return;
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == NULL)
             return;
-        TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+        TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
         XmlGetAttr((class TiXmlElement*)(pNode), "beginLevel", m_d0->m_beginLevel);
@@ -5950,10 +5950,10 @@ void GameEventBurningLevelup::vfunc_2()
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
             return;
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == NULL)
             return;
-        TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+        TiXmlElement* pNode = GetFirstChildElement((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
         for (pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
@@ -5972,7 +5972,7 @@ void GameEventBurningLevelup::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_80) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     TiXmlElement* pJumping = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("jumpingOption"));
@@ -6056,10 +6056,10 @@ MS2_REPLACE_METHOD(0x1403D28C0, GameEventBurningLevelup, vfunc_6, 99, 0xF75D4F8C
 
 // ---- GameEventFestival ----------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regFestival(L"GameEventFestival", (ClassObjectCreateFn)FUN_1403d2930);
+static ClassObjectRegistrar s_regFestival(L"GameEventFestival", (ClassObjectCreateFn)CreateGameEventFestival);
 #endif
 // @0x1403d2930
-GameEvent* FUN_1403d2930() { return new GameEventFestival; }
+GameEvent* CreateGameEventFestival() { return new GameEventFestival; }
 
 // @0x1403d2990
 CStringW GameEventFestival::GetTypeName() { return CStringW(L"GameEventFestival"); }
@@ -6146,10 +6146,10 @@ MS2_REPLACE_METHOD(0x1403D2F60, GameEventFestival, IsInPeriod, 159, 0x3DA8F208);
 
 // ---- GameEventCoupleDance -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regCoupleDance(L"GameEventCoupleDance", (ClassObjectCreateFn)FUN_1403d3010);
+static ClassObjectRegistrar s_regCoupleDance(L"GameEventCoupleDance", (ClassObjectCreateFn)CreateGameEventCoupleDance);
 #endif
 // @0x1403d3010
-GameEvent* FUN_1403d3010() { return new GameEventCoupleDance; }
+GameEvent* CreateGameEventCoupleDance() { return new GameEventCoupleDance; }
 
 // @0x1403d3070
 CStringW GameEventCoupleDance::GetTypeName() { return CStringW(L"GameEventCoupleDance"); }
@@ -6175,7 +6175,7 @@ void GameEventCoupleDance::vfunc_2()
             MS2_ASSERT_AT(MS2_LINE(4337), 0);
             return;
         }
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4344), 0);
@@ -6190,7 +6190,7 @@ void GameEventCoupleDance::vfunc_2()
             MS2_ASSERT_AT(MS2_LINE(4354), 0);
             return;
         }
-        TiXmlElement* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = GetFirstChildElement(&doc);
         if (pRoot == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4361), 0);
@@ -6230,10 +6230,10 @@ MS2_REPLACE_METHOD(0x1403D3520, GameEventCoupleDance, vfunc_4, 66, 0x1D864C52);
 
 // ---- GameEventFieldEffect -------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regFieldEffect(L"GameEventFieldEffect", (ClassObjectCreateFn)FUN_1403d3570);
+static ClassObjectRegistrar s_regFieldEffect(L"GameEventFieldEffect", (ClassObjectCreateFn)CreateGameEventFieldEffect);
 #endif
 // @0x1403d3570
-GameEvent* FUN_1403d3570() { return new GameEventFieldEffect; }
+GameEvent* CreateGameEventFieldEffect() { return new GameEventFieldEffect; }
 
 // @0x1403d35d0
 CStringW GameEventFieldEffect::GetTypeName() { return CStringW(L"GameEventFieldEffect"); }
@@ -6264,7 +6264,7 @@ void GameEventFieldEffect::OnStart()
     reinterpret_cast<CGameEventValueFieldEffect*>(TSingleton<CGameEventValueManager>::GetInstance()->GetFieldEffect())->Set(m_d0);
     if (m_d0.get())
     {
-        if (m_d0->HasField(WorldService::GetInstance()->FUN_141bd3060()))
+        if (m_d0->HasField(WorldService::GetInstance()->GetFieldId()))
             TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->SetAreaEffectName(FUN_1401d4330(m_d0->m_effect, 0));
     }
 }
@@ -6300,10 +6300,10 @@ MS2_REPLACE_METHOD(0x1403D3A20, GameEventFieldEffect, vfunc_4, 184, 0x153206A0);
 
 // ---- GameEventExchangeScrollSale ------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regExchangeScrollSale(L"GameEventExchangeScrollSale", (ClassObjectCreateFn)FUN_1403d3ae0);
+static ClassObjectRegistrar s_regExchangeScrollSale(L"GameEventExchangeScrollSale", (ClassObjectCreateFn)CreateGameEventExchangeScrollSale);
 #endif
 // @0x1403d3ae0
-GameEvent* FUN_1403d3ae0() { return new GameEventExchangeScrollSale; }
+GameEvent* CreateGameEventExchangeScrollSale() { return new GameEventExchangeScrollSale; }
 
 // @0x1403d3b40
 CStringW GameEventExchangeScrollSale::GetTypeName() { return CStringW(L"GameEventExchangeScrollSale"); }
@@ -6359,10 +6359,10 @@ MS2_REPLACE_METHOD(0x1403D3E60, GameEventExchangeScrollSale, vfunc_4, 221, 0x69D
 
 // ---- GameEventItemTradeRestriction ----------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regItemTradeRestriction(L"GameEventItemTradeRestriction", (ClassObjectCreateFn)FUN_1403d3f50);
+static ClassObjectRegistrar s_regItemTradeRestriction(L"GameEventItemTradeRestriction", (ClassObjectCreateFn)CreateGameEventItemTradeRestriction);
 #endif
 // @0x1403d3f50
-GameEvent* FUN_1403d3f50() { return new GameEventItemTradeRestriction; }
+GameEvent* CreateGameEventItemTradeRestriction() { return new GameEventItemTradeRestriction; }
 
 // @0x1403d3fb0
 CStringW GameEventItemTradeRestriction::GetTypeName() { return CStringW(L"GameEventItemTradeRestriction"); }
@@ -6453,10 +6453,10 @@ MS2_REPLACE_METHOD(0x1403D4620, GameEventItemTradeRestriction, vfunc_4, 446, 0x4
 
 // ---- GameEventCollectItemGroup --------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regCollectItemGroup(L"GameEventCollectItemGroup", (ClassObjectCreateFn)FUN_1403d47f0);
+static ClassObjectRegistrar s_regCollectItemGroup(L"GameEventCollectItemGroup", (ClassObjectCreateFn)CreateGameEventCollectItemGroup);
 #endif
 // @0x1403d47f0
-GameEvent* FUN_1403d47f0() { return new GameEventCollectItemGroup; }
+GameEvent* CreateGameEventCollectItemGroup() { return new GameEventCollectItemGroup; }
 
 // @0x1403d4850
 CStringW GameEventCollectItemGroup::GetTypeName() { return CStringW(L"GameEventCollectItemGroup"); }
@@ -6480,7 +6480,7 @@ void GameEventCollectItemGroup::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     TiXmlElement* pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
@@ -6530,10 +6530,10 @@ MS2_REPLACE_METHOD(0x1403D4DC0, GameEventCollectItemGroup, vfunc_6, 99, 0x03C44F
 
 // ---- GameEventShutdownDummy -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdownDummy(L"GameEventShutdownDummy", (ClassObjectCreateFn)FUN_1403d4e30);
+static ClassObjectRegistrar s_regShutdownDummy(L"GameEventShutdownDummy", (ClassObjectCreateFn)CreateGameEventShutdownDummy);
 #endif
 // @0x1403d4e30
-GameEvent* FUN_1403d4e30() { return new GameEventShutdownDummy; }
+GameEvent* CreateGameEventShutdownDummy() { return new GameEventShutdownDummy; }
 
 // @0x1403d4e90
 CStringW GameEventShutdownDummy::GetTypeName() { return CStringW(L"GameEventShutdownDummy"); }
@@ -6589,10 +6589,10 @@ MS2_REPLACE_METHOD(0x1403D5080, GameEventShutdownDummy, vfunc_7, 85, 0x4989C6BF)
 
 // ---- GameEventSalePetCrystal ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSalePetCrystal(L"GameEventSalePetCrystal", (ClassObjectCreateFn)FUN_1403d50e0);
+static ClassObjectRegistrar s_regSalePetCrystal(L"GameEventSalePetCrystal", (ClassObjectCreateFn)CreateGameEventSalePetCrystal);
 #endif
 // @0x1403d50e0
-GameEvent* FUN_1403d50e0() { return new GameEventSalePetCrystal; }
+GameEvent* CreateGameEventSalePetCrystal() { return new GameEventSalePetCrystal; }
 
 // @0x1403d5140
 CStringW GameEventSalePetCrystal::GetTypeName() { return CStringW(L"GameEventSalePetCrystal"); }
@@ -6635,10 +6635,10 @@ MS2_REPLACE_METHOD(0x1403D5320, GameEventSalePetCrystal, vfunc_6, 35, 0x327FD4C0
 
 // ---- GameEventArcadeOpen --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regArcadeOpen(L"GameEventArcadeOpen", (ClassObjectCreateFn)FUN_1403d5350);
+static ClassObjectRegistrar s_regArcadeOpen(L"GameEventArcadeOpen", (ClassObjectCreateFn)CreateGameEventArcadeOpen);
 #endif
 // @0x1403d5350
-GameEvent* FUN_1403d5350() { return new GameEventArcadeOpen; }
+GameEvent* CreateGameEventArcadeOpen() { return new GameEventArcadeOpen; }
 
 // @0x1403d53b0
 CStringW GameEventArcadeOpen::GetTypeName() { return CStringW(L"GameEventArcadeOpen"); }
@@ -6661,7 +6661,7 @@ void GameEventArcadeOpen::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    TiXmlElement* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = GetFirstChildElement(&doc);
     if (pRoot == NULL)
         return;
     TiXmlElement* pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
@@ -6712,10 +6712,10 @@ MS2_REPLACE_METHOD(0x1403D5870, GameEventArcadeOpen, vfunc_6, 127, 0x88628A37);
 
 // ---- GameEventBingoEvent --------------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regBingoEvent(L"GameEventBingoEvent", (ClassObjectCreateFn)FUN_1403d5900);
+static ClassObjectRegistrar s_regBingoEvent(L"GameEventBingoEvent", (ClassObjectCreateFn)CreateGameEventBingoEvent);
 #endif
 // @0x1403d5900
-GameEvent* FUN_1403d5900() { return new GameEventBingoEvent; }
+GameEvent* CreateGameEventBingoEvent() { return new GameEventBingoEvent; }
 
 // @0x1403d5960
 CStringW GameEventBingoEvent::GetTypeName() { return CStringW(L"GameEventBingoEvent"); }
@@ -6775,10 +6775,10 @@ MS2_REPLACE_METHOD(0x1403D5EA0, GameEventBingoEvent, vfunc_6, 99, 0xBF565714);
 
 // ---- GameEventFinishPayback -----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regFinishPayback(L"GameEventFinishPayback", (ClassObjectCreateFn)FUN_1403d5f10);
+static ClassObjectRegistrar s_regFinishPayback(L"GameEventFinishPayback", (ClassObjectCreateFn)CreateGameEventFinishPayback);
 #endif
 // @0x1403d5f10
-GameEvent* FUN_1403d5f10() { return new GameEventFinishPayback; }
+GameEvent* CreateGameEventFinishPayback() { return new GameEventFinishPayback; }
 
 // @0x1403d5f70
 CStringW GameEventFinishPayback::GetTypeName() { return CStringW(L"GameEventFinishPayback"); }
@@ -6805,10 +6805,10 @@ MS2_REPLACE_METHOD(0x1403D6040, GameEventFinishPayback, vfunc_6, 6, 0xA9AF6E37);
 
 // ---- GameEventLongTermAttendGift ------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regLongTermAttendGift(L"GameEventLongTermAttendGift", (ClassObjectCreateFn)FUN_1403d6050);
+static ClassObjectRegistrar s_regLongTermAttendGift(L"GameEventLongTermAttendGift", (ClassObjectCreateFn)CreateGameEventLongTermAttendGift);
 #endif
 // @0x1403d6050
-GameEvent* FUN_1403d6050() { return new GameEventLongTermAttendGift; }
+GameEvent* CreateGameEventLongTermAttendGift() { return new GameEventLongTermAttendGift; }
 
 // @0x1403d60b0
 CStringW GameEventLongTermAttendGift::GetTypeName() { return CStringW(L"GameEventLongTermAttendGift"); }
@@ -6842,7 +6842,7 @@ void GameEventLongTermAttendGift::vfunc_2()
     }
     MS2Ptr<LongTermAttendGiftContext> spContext(new LongTermAttendGiftContext(GetID()));
     TiXmlElement* pInfo;
-    TiXmlElement* pInfoRoot = FUN_140345b40(&docInfo);
+    TiXmlElement* pInfoRoot = GetFirstChildElement(&docInfo);
     if (pInfoRoot && (pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pInfoRoot))->FirstChild("info"))) != NULL)
     {
         XmlGetAttr((class TiXmlElement*)(pInfo), "title", spContext->m_title);
@@ -6850,7 +6850,7 @@ void GameEventLongTermAttendGift::vfunc_2()
         XmlGetAttr((class TiXmlElement*)(pInfo), "merat", reinterpret_cast<unsigned int&>(spContext->m_merat));
         XmlGetAttr((class TiXmlElement*)(pInfo), "eventTag", spContext->m_eventTag);
     }
-    TiXmlElement* pRewardRoot = FUN_140345b40(&docReward);
+    TiXmlElement* pRewardRoot = GetFirstChildElement(&docReward);
     if (pRewardRoot)
     {
         for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
@@ -6905,10 +6905,10 @@ MS2_REPLACE_METHOD(0x1403D68D0, GameEventLongTermAttendGift, vfunc_4, 170, 0xFD1
 
 // ---- GameEventSaleLapenshardUpgradeRGB ------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regSaleLapenshardUpgradeRGB(L"GameEventSaleLapenshardUpgradeRGB", (ClassObjectCreateFn)FUN_1403d6980);
+static ClassObjectRegistrar s_regSaleLapenshardUpgradeRGB(L"GameEventSaleLapenshardUpgradeRGB", (ClassObjectCreateFn)CreateGameEventSaleLapenshardUpgradeRGB);
 #endif
 // @0x1403d6980
-GameEvent* FUN_1403d6980() { return new GameEventSaleLapenshardUpgradeRGB; }
+GameEvent* CreateGameEventSaleLapenshardUpgradeRGB() { return new GameEventSaleLapenshardUpgradeRGB; }
 
 // @0x1403d69e0
 CStringW GameEventSaleLapenshardUpgradeRGB::GetTypeName() { return CStringW(L"GameEventSaleLapenshardUpgradeRGB"); }
@@ -6927,10 +6927,10 @@ MS2_REPLACE_METHOD(0x1403D6AB0, GameEventSaleLapenshardUpgradeRGB, vfunc_6, 35, 
 
 // ---- GameEventGuildEventFund ----------------------------------------------------------------------------------------
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regGuildEventFund(L"GameEventGuildEventFund", (ClassObjectCreateFn)FUN_1403d6ae0);
+static ClassObjectRegistrar s_regGuildEventFund(L"GameEventGuildEventFund", (ClassObjectCreateFn)CreateGameEventGuildEventFund);
 #endif
 // @0x1403d6ae0
-GameEvent* FUN_1403d6ae0() { return new GameEventGuildEventFund; }
+GameEvent* CreateGameEventGuildEventFund() { return new GameEventGuildEventFund; }
 
 // @0x1403d6b40
 CStringW GameEventGuildEventFund::GetTypeName() { return CStringW(L"GameEventGuildEventFund"); }

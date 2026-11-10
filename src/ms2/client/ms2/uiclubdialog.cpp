@@ -52,7 +52,7 @@ class CMsgBoxData : public CPtred
 public:
     CStringW FUN_141a02d50() const;                                     // the input text
     void SetExtra(const CStringW& strTag);                         // tag
-    void FUN_141a01800(int n);
+    void SetButtonPreset(int n);
     void SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // input box setup (0x141a01d30)
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);     // result callback
     void SetBuff(int nBuffId, short nLevel, CStringW strName);         // club buff description
@@ -90,7 +90,7 @@ class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange
 CString FUN_140719530(unsigned __int64 n);                                       // number to text
 unsigned __int64 FUN_140718350(const CString& str);                              // text to number
 CStringW GetStringCommon(int nId);                                        // string table text
-CStringW FUN_140298ea0(CStringW strKey);                                // localized string by key
+CStringW GetStringByKey(CStringW strKey);                                // localized string by key
 template <class A1, class A2> CStringW FUN_14028dfa0(CStringW strKey, const A1& a1, const A2& a2);   // wcformat.h's key formatter
 template <class A> CStringW FormatStringId(int nId, const A& a);
 template <class A1, class A2> CStringW FUN_14028dee0(int nId, const A1& a1, const A2& a2);   // the string-id formatter (formatstringid.h)
@@ -195,7 +195,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         MS2Ptr<CClubCli> club = GetClubClientManager()->GetClub(m_nClubId);
         if (club.get() != 0) {
             if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, StringFormat<CStringW>(GetStringCommon(0x363), club->GetName()), 0, CStringW(L""))) {
-                box->FUN_141a01800(2);
+                box->SetButtonPreset(2);
                 box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
                 FUN_140d73c60(box);
             }
@@ -208,10 +208,10 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         CClubDataTable::BuffPtr buff = GetClubDataTable()->GetFirstBuff();
         int nBuffId = buff->m_effectId;
         unsigned short nLevel = buff->m_effectLevel;
-        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x25, FUN_140298ea0(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x25, GetStringByKey(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetExtra(s_strClubBuff);
-            box->FUN_141a01800(2);
+            box->SetButtonPreset(2);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::OnMsgBoxBuffConfirm));
             if (club->GetBuffId() != 0) {
                 box->SetBuff(club->GetBuffId(), club->GetBuffLevel(),
@@ -331,7 +331,7 @@ void UIClubDialog::RefreshCategoryList()
                 spList->SetSelectedIndex(-1);
                 spList->FUN_1422dd1d0();
                 ASDataProvider rows(2);
-                CStringW strMyName = WorldService::GetInstance()->FUN_141bd0d30();
+                CStringW strMyName = WorldService::GetInstance()->GetMyPCName();
                 for (POSITION pos = spMap.operator->()->GetHeadPosition(); pos != 0; spMap.operator->()->GetNext(pos)) {
                     __int64 nClubSN = spMap.operator->()->GetKeyAt(pos);
                     MS2Ptr<CClubCli> spClub = spMap.operator->()->GetValueAt(pos);

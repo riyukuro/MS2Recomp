@@ -27,8 +27,8 @@ public:
     static NotifyContext::BindData* FindBinding(const CString& strName);    // 0x1422c8e90
     static void RegisterBinding(const CString& strName, NotifyContext::BindData* pData);   // 0x1422c8f10 bind pData under strName
     static void UnregisterBinding(const CString& strName);                         // 0x1422c8f70 clear the binding and unregister it
-    void LogAndClearBindings();                                                      // 0x1422c8de0 log the bindings left, then FUN_1422c9010
-    static void FUN_1422c9010();                                               // 0x1422c9010 clear and unregister every binding
+    void LogAndClearBindings();                                                      // 0x1422c8de0 log the bindings left, then ClearAllBindings
+    static void ClearAllBindings();                                               // 0x1422c9010 clear and unregister every binding
     static void NotifyChangedBindings();                                               // 0x1422c90d0 notify the bindings that depend on a changed name
     static void MarkNameChanged(const CString& strName);                         // 0x1422c9380 strName changed (keytable.cpp)
     static void MarkNamePushed(const CString& strName);                         // 0x1422c93e0 strName pushed its own data
