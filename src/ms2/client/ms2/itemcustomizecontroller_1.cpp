@@ -50,17 +50,17 @@ struct Unk_PickTargetView : public CEquipModel {};   // layout-identical view of
 
 // ---- out-of-unit callees ----
 
-float FUN_141422340(CEquipModel* pPart, int nIndex);        // customize value nIndex of the part (C3: itemugcmesh's free function)
+float GetPartScale(CEquipModel* pPart, int nIndex);        // customize value nIndex of the part (C3: itemugcmesh's free function)
 class CEquipModel;
 void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLocal, void* pTrans, void* pRot);   // C3: equipmodel's free function (the target's anchor and frame)
-void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex (itemugcmesh.cpp)
+void SetPartScale(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex (itemugcmesh.cpp)
 
 class CEquipItem : public CPtred
 {
 public:
     int FUN_1411dc0d0();                                        // number of customizable parts
     int FUN_1411dc820();                                        // customize value of the item
-    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
+    struct Unk_EquipItemData* GetItemData();                               // the item
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
 };
@@ -119,7 +119,7 @@ struct Unk_ICCConfig
 struct Unk_ICCApp { char m_pad[8]; char m_manager[1]; };
 class CMainSystem;
 namespace efd { class ServiceManager; }
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera); the service manager
 
 // ---- static initializers (.text$di) ----
 #ifndef MS2_HOOK_DLL
@@ -334,7 +334,7 @@ void CItemCustomizeController::ApplyValues()
     {
         MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts[0]);
         for (int i = 0; i < 2; i++)
-            FUN_1414225d0(spPart, i, m_afValue[i]);   // MS2Ptr<CEquipModel> copy 0x1411de2a0 into the by-value arg
+            SetPartScale(spPart, i, m_afValue[i]);   // MS2Ptr<CEquipModel> copy 0x1411de2a0 into the by-value arg
     }
 }
 
@@ -352,7 +352,7 @@ void CItemCustomizeController::ReadValues()
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             for (int i = 0; i < 2; i++)
             {
-                float fValue = FUN_141422340(spPart.get(), i);
+                float fValue = GetPartScale(spPart.get(), i);
                 float fMin, fMax;
                 vfunc_26(i, &fMin, &fMax);
                 m_afValue[i] = efd::Clamp(fValue, fMin, fMax);
@@ -448,7 +448,7 @@ void CItemCustomizeController::UpdateDrag()
     Unk_ICCEntityLoader* pLoader = reinterpret_cast<Unk_ICCEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
-    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(pPlayer->FUN_14123c460());
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(pPlayer->GetEntityID());
     if (pScene == 0)
         return;
     void* pCameraManager = ((void*)FUN_1413f9a70());
@@ -543,7 +543,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
         CEquipModel* pTarget = aTargets[i].get();
         if (pTarget == 0)
             continue;
-        if (!reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547170())
+        if (!reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->FUN_14053ec70()->FUN_140547170())
             pTarget->FUN_1411679d0(fScale, fMode, m_spPicker->m_spMesh.FUN_141412c90());
         else
             pTarget->FUN_1411679d0(fScale, fMode, 0);
@@ -554,7 +554,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
 // @0x1414126d0
 int CItemCustomizeController::vfunc_41()
 {
-    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
+    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->GetServiceManager();
     ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
     NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
     int nWheel = 0;
@@ -567,7 +567,7 @@ void CItemCustomizeController::OnMouseButton1(const efd::Point3& kPos)
 {
     if (m_bUseButton1)
     {
-        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->GetServiceManager();
         ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
         NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
         int nMode = m_spPicker->GetMode();
@@ -588,7 +588,7 @@ void CItemCustomizeController::OnMouseButton2(int bActive, const efd::Point3& kP
 {
     if (m_bUseButton2)
     {
-        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->GetServiceManager();
         ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
         NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
         int nMode = m_spPicker->GetMode();

@@ -443,15 +443,15 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 // Stand-ins for unrecovered singletons MS2 drives.
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 CNetworkService* FUN_140714f90();
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_1414a5910(char* pOptimizer);   // C3: the frame time limit (COptimizer)
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 // TSingleton<CLogString> declares no GetInstance: its live-instance getter is GetLogString (0x140166440).
 template <>
 inline CLogString* Unk_SingletonCreator<CLogString>::CreateInstance() { return TSingleton<CLogString>::s_instance ? GetLogString() : new CLogString; }
 class Unk_Ms2PhysXHelper;
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-void FUN_1414a2a10();                                           // TSingleton delete of FUN_1409f7ca0()
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
+void FUN_1414a2a10();                                           // TSingleton delete of GetPhysXHelper()
 void FUN_1414a3f10();                                           // TSingleton delete of CrashManagerCli::GetInstance()
 void FUN_140cca840(int n);                                      // crash on purpose (the /crash command)
 class Unk_Ms2PrecacheOption;
@@ -500,7 +500,7 @@ Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtoco
 int FUN_1406516b0();                                            // the service locale: 1 jp, 2 en, 3 cn, else kr
 CString FUN_140652330(int nLocale);                             // the locale's UI font name
 void FUN_1414a6230(efd::IBase* (*pfnFactory)());                // the KFM cache factory of egmAnimation
-efd::IBase* FUN_1414a9a10();                                    // creates an MS2KFMCache
+efd::IBase* CreateKFMCache();                                    // creates an MS2KFMCache
 struct Unk_MCPPtr;
 Unk_MCPPtr FUN_140d96230(NiVisibleArray* pVisibleSet, NiSPWorkflowManager* pWorkflowManager);  // MS2MeshCullingProcess
 #ifdef MS2_HOOK_DLL
@@ -607,7 +607,7 @@ bool MS2::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
     DAT_143afcb90 = 0;
     DAT_143afcba8 = 0;
     DAT_143b08a3c = 0;
-    ((class COptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->ApplyFrameLimitFromOptions();
+    ((class COptimizer*)(class COptimizer*)(((class COptimizer*)GetOptimizer())))->ApplyFrameLimitFromOptions();
     MessageLoop();
     Shutdown();
     return true;
@@ -714,11 +714,11 @@ void MS2::Precache()
 // @0x14148a530
 void MS2::RegisterUIScenes()
 {
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogo));
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneModeSelect));
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogin));
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLobby));
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneGame));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogo));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneModeSelect));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLogin));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneLobby));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(new UISceneGame));
 }
 MS2_REPLACE_METHOD(0x14148A530, MS2, RegisterUIScenes, 745, 0x75D64F29);
 // @0x14148a820
@@ -739,7 +739,7 @@ void MS2::MessageLoop()
             }
         } else {
             Tick();
-            int nFrameTime = FUN_1414a5910((char*)FUN_1409f7c90());
+            int nFrameTime = FUN_1414a5910((char*)GetOptimizer());
             if (nFrameTime) {
                 DWORD dwNow = GetTickCountMs2();
                 int nElapsed = dwNow - m_uiLastTickTime;
@@ -885,7 +885,7 @@ void MS2::Shutdown()
             m_spServiceManager->RunOnce();
             nState = m_spServiceManager->GetCurrentState();
         }
-        if (((class Unk_Ms2PhysXHelper*)FUN_1409f7ca0()))
+        if (((class Unk_Ms2PhysXHelper*)GetPhysXHelper()))
             FUN_1414a2a10();
         m_spServiceManager = 0;
     }
@@ -992,8 +992,8 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     efd::SmartPointer<ecr::LightService> spLight = EE_NEW MS2LightService;
     m_spServiceManager->RegisterSystemService(spLight);
     efd::SmartPointer<ecr::TextureRapidIterationService> spTextureRapidIteration = EE_NEW ecr::TextureRapidIterationService;
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1414a5a30())
-        FUN_1414a6230(FUN_1414a9a10);
+    if (((class COptimizer*)GetOptimizer())->FUN_1414a5a30())
+        FUN_1414a6230(CreateKFMCache);
     efd::SmartPointer<egmAnimation::AnimationService> spAnimation = EE_NEW MS2AnimationService;
     m_spServiceManager->RegisterSystemService(spAnimation, 1785);
     efd::SmartPointer<ecr::CameraService> spCamera = EE_NEW MS2CameraService;
@@ -1225,7 +1225,7 @@ extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;                // 0x143ac2bd0
 extern Unk_Inventory g_143ab2a90;                               // 0x143ab2a90 (unit_1406125d0.h has its own view of DAT_143ab2a90)
 void FUN_14092f2c0(int n);
 int FUN_1414b1230();                                            // the single-instance / mutex check
-bool FUN_140d86270();                                           // the client platform init
+bool CreateClientPlatform();                                           // the client platform init
 int FUN_1406c34c0();
 int FUN_1406c34b0();
 int FUN_141b6fcf0(const CStringW& strText, const CStringW& strCaption, unsigned nType);   // error message box (wide)
@@ -1273,14 +1273,14 @@ class CUserConditionEventData   // C3: member view for the former free stand-ins
 public:
     static void Load();
 };
-void FUN_140978fb0();
+void ClearAddressTable();
 class CAddressTable   // C3: member view for the former free stand-ins
 {
 public:
     static int LoadTable();
 };
 void FUN_140d4fd50(CMachineIDManager* p);
-void FUN_140d86330();
+void DestroyClientPlatform();
 class CDebugConsole   // C3: member view for the former free stand-ins
 {
 public:
@@ -1517,7 +1517,7 @@ void FUN_141627390();
 void FUN_1416275e0();
 void FUN_1416bb2e0();
 void FUN_1416bb5f0();
-void FUN_1416bc0f0();
+void InitMaterialNames();
 void ResetMaterialNames();
 void InitShaderConstantNames();
 void ResetShaderConstantNames();
@@ -1607,7 +1607,7 @@ BOOL CGameApp::InitInstance()
     RawString kErrors;
     if (FUN_1414b1230() == 0)
         return FALSE;
-    if (!FUN_140d86270())
+    if (!CreateClientPlatform())
     {
         if (FUN_1406c34c0() != 0)
             FUN_141b6fcf0(g_143ac2fe0, L"", 0);
@@ -1749,7 +1749,7 @@ BOOL CGameApp::InitInstance()
     else
         FUN_141627390();
     Unk_SingletonCreator<CFilePreload>::CreateInstance();
-    FUN_1416bc0f0();
+    InitMaterialNames();
     FUN_1416bb2e0();
     InitShaderConstantNames();
     InitDummyNames();
@@ -1950,7 +1950,7 @@ BOOL CGameApp::InitInstance()
         FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x34), L"", 0);
         return FALSE;
     }
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
@@ -2267,7 +2267,7 @@ BOOL CGameApp::InitInstance()
     FUN_1414a02a0();
     FUN_1414a2470();
     FUN_1414a00c0();
-    FUN_140978fb0();
+    ClearAddressTable();
     FUN_1414a1d50();
     FUN_1414a1570();
     FUN_1414a1630();
@@ -2339,7 +2339,7 @@ BOOL CGameApp::InitInstance()
     FUN_1414a3e50();
     FUN_1414a41b0();
     FUN_1414a07e0();
-    FUN_140d86330();
+    DestroyClientPlatform();
     FUN_1414a2770();
     FUN_1414a4990();
     FUN_1414a25f0();

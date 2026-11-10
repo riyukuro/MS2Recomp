@@ -37,7 +37,7 @@ static Unk_1402a9d70 condition(17,0.75f,0.25f,2.25f,10);
 class Unk_UpperEvents {public:void FUN_1419308c0(UIEntityEventListener*);void FUN_141930950(UIEntityEventListener*);};
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 class Unk_UpperConfigData {public:int m_0;short m_4;char m_6;bool m_hp;char m_8;bool m_buff;};
-CString FUN_140b62550(unsigned int);
+CString GetFontName(unsigned int);
 class Unk_WsC_GameObj : public GameObject {};   // C3: WorldService::FUN_141bd1180 result (static_cast to GameObject)
 template<class T> MS2Ptr<T> Unk_ASCreate(int,const Scaleform::GFx::Value&);
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int,const Scaleform::GFx::Value&);
@@ -117,14 +117,14 @@ void UpperHpBarEntity::FUN_141b4a8b0(MS2Ptr<ASUIComponent> clip){
 MS2_REPLACE_METHOD(0x141B4A8B0, UpperHpBarEntity, FUN_141b4a8b0, 686, 0x8A562DEA);
 
 // @0x141b4ab70
-bool UpperHpBarEntity::DestroyEntity(const int& id){if(m_id!=id)return false;m_id=0;m_hp=0;if(m_clip.get())m_clip->Invoke("destroyEntity",FUN_140b62550(id));return true;}
+bool UpperHpBarEntity::DestroyEntity(const int& id){if(m_id!=id)return false;m_id=0;m_hp=0;if(m_clip.get())m_clip->Invoke("destroyEntity",GetFontName(id));return true;}
 MS2_REPLACE_METHOD(0x141B4AB70, UpperHpBarEntity, DestroyEntity, 215, 0xE47BB395);
 
 // @0x141b4ac50
 void UpperHpBarEntity::FUN_141b4ac50(MS2Ptr<AdditionalCli> buff){
  if(buff==0||buff.operator->()->GetOwner()==0){MS2_ASSERT_AT(89,0);return;}
   if(m_clip==0){m_pending.SetAt(buff.operator->()->GetKey(),buff);return;}
-  const int& key=((class GameObject*)(void*)(buff.operator->()->GetOwner()))->FUN_14123c580();
+  const int& key=((class GameObject*)(void*)(buff.operator->()->GetOwner()))->GetObjectId();
   MS2Ptr<ASEffectManager> obj;
   if(!m_buffs.Lookup(key,obj)){
    obj=FUN_140e6cd80(2,"flash.display.MovieClip",0,0);
@@ -148,7 +148,7 @@ void UpperHpBarEntity::FUN_141b4b0d0(MS2Ptr<AdditionalCli> buff){
  if(buff==0||buff.operator->()->GetOwner()==0){MS2_ASSERT_AT(140,0);return;}
  if(m_clip==0){m_pending.SetAt(buff.operator->()->GetKey(),buff);return;}
  MS2Ptr<ASEffectManager> obj;
- if(m_buffs.Lookup(((class GameObject*)(void*)(buff.operator->()->GetOwner()))->FUN_14123c580(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->UpdateEffect(buff);
+ if(m_buffs.Lookup(((class GameObject*)(void*)(buff.operator->()->GetOwner()))->GetObjectId(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->UpdateEffect(buff);
 }
 MS2_REPLACE_METHOD(0x141B4B0D0, UpperHpBarEntity, FUN_141b4b0d0, 354, 0x44015F7B);
 // @0x141b4b240
@@ -156,7 +156,7 @@ void UpperHpBarEntity::FUN_141b4b240(PCBase* actor,const int& id){
  if(m_clip==0){m_pending.RemoveKey(id);}
  else{
   MS2Ptr<ASEffectManager> obj;
-  if(m_buffs.Lookup(((class GameObject*)(void*)(actor))->FUN_14123c580(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->RemoveEffect(id);
+  if(m_buffs.Lookup(((class GameObject*)(void*)(actor))->GetObjectId(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->RemoveEffect(id);
   MS2Ptr<AdditionalCli> ref=reinterpret_cast<AdditionalCliList*>(((class PCBase*)(void*)(actor))->FUN_1416749a0())->GetShield();
   if(ref.get()!=0){
    if(ref->GetKey()==id){
@@ -283,7 +283,7 @@ void UIUpperHpBar::vfunc_o70_2(const void* pId){
  PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(*static_cast<const egf::EntityID*>(pId))));
  if(actor==0)return;
  UpperHpBarEntity& entity=FUN_141b4d170(actor);
- int kind=((class GameObject*)(void*)(actor))->FUN_14123c580();
+ int kind=((class GameObject*)(void*)(actor))->GetObjectId();
  if(entity.DestroyEntity(kind))m_current=0;
 }
 MS2_REPLACE_METHOD_VIA(0x141B4C3E0, UIUpperHpBar, UIEntityEventListener, vfunc_o70_2, 203, 0xF66E7D53);
@@ -292,7 +292,7 @@ void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
  if(m_30==0)return;
  if((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e96)))!=0||(((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec4)))!=0)return;
  UpperHpBarEntity& e=FUN_141b4d170(actor);
- if(!FUN_141b4d630(e,kind,((class GameObject*)(void*)(actor))->FUN_14123c580()))return;
+ if(!FUN_141b4d630(e,kind,((class GameObject*)(void*)(actor))->GetObjectId()))return;
  if(!FUN_141b4d320(e))return;
  if(e.GetClip()==0){
   Scaleform::GFx::Value created=m_30->Invoke("createHpBar",e.FUN_141b4a820());
@@ -317,10 +317,10 @@ void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
  args.FUN_1407cbbe0("timer",timer);
  args.FUN_1407cbbe0("isShowTag",FUN_141b4d860(actor));
  args.FUN_1407cbb20("tagName",shield);
- args.FUN_1409c0d20("jobCode",FUN_141b4d8a0(actor));
+ args.SetMemberUInt("jobCode",FUN_141b4d8a0(actor));
  args.FUN_1407cb9c0("step",stage);
  args.FUN_1407cbb20("hpText",hp);
- e.FUN_141b4bc50(((class GameObject*)(void*)(actor))->FUN_14123c580());
+ e.FUN_141b4bc50(((class GameObject*)(void*)(actor))->GetObjectId());
  e.FUN_141b4bc70(cur);
  ASUIComponent* gauge=e.GetClip().get();
  if(gauge!=0){
@@ -333,7 +333,7 @@ void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
   bool changed=ui->FUN_141986d30()!=0&&buff.get()!=ui->GetBuff().get();
   if(changed)ui->vfunc_3();
   if(buff.get()!=0){
-   if(*(int*)((char*)buff.operator->()->FUN_14096d810()+0x2b0)!=0)ui->FUN_140c5f8f0(buff);
+   if(*(int*)((char*)buff.operator->()->GetLevelData()+0x2b0)!=0)ui->FUN_140c5f8f0(buff);
   }
  }
  m_current=&e;
@@ -405,18 +405,18 @@ MS2_REPLACE_METHOD(0x141B4D5C0, UIUpperHpBar, FUN_141b4d5c0, 97, 0xA3A3684D);
 bool UIUpperHpBar::FUN_141b4d630(UpperHpBarEntity& entity,int kind,int id){if(kind==g_upperTargetId)return true;if(entity.GetVisible()&&entity.FUN_141b4bbe0()==id)return true;return false;}
 MS2_REPLACE_METHOD(0x141B4D630, UIUpperHpBar, FUN_141b4d630, 86, 0xFD636C18);
 // @0x141b4d690
-CString UIUpperHpBar::FUN_141b4d690(void* actor){CString id=FUN_140b62550(((class GameObject*)(void*)(actor))->FUN_14123c580());return id;}
+CString UIUpperHpBar::FUN_141b4d690(void* actor){CString id=GetFontName(((class GameObject*)(void*)(actor))->GetObjectId());return id;}
 MS2_REPLACE_METHOD(0x141B4D690, UIUpperHpBar, FUN_141b4d690, 107, 0xEA6EC0D6);
 
 // @0x141b4d710
-CStringW UIUpperHpBar::FUN_141b4d710(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(pc){return TSingleton<CStringTable>::GetInstance()->FUN_141811980(6,pc->FUN_141654730());}else{CNpc* npc=efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(actor));if(npc)return TSingleton<CStringTable>::GetInstance()->FUN_141811980(17,npc->GetNpcData().operator->()->GetRace());}return L"";}
+CStringW UIUpperHpBar::FUN_141b4d710(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(pc){return TSingleton<CStringTable>::GetInstance()->FUN_141811980(6,pc->GetSubJob());}else{CNpc* npc=efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(actor));if(npc)return TSingleton<CStringTable>::GetInstance()->FUN_141811980(17,npc->GetNpcData().operator->()->GetRace());}return L"";}
 MS2_REPLACE_METHOD(0x141B4D710, UIUpperHpBar, FUN_141b4d710, 322, 0x42472180);
 // @0x141b4d860
 bool UIUpperHpBar::FUN_141b4d860(void* actor){return efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(actor))!=0;}
 MS2_REPLACE_METHOD(0x141B4D860, UIUpperHpBar, FUN_141b4d860, 57, 0xEC468757);
 
 // @0x141b4d8a0
-int UIUpperHpBar::FUN_141b4d8a0(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(!pc)return 0;return pc->FUN_141654730();}
+int UIUpperHpBar::FUN_141b4d8a0(void* actor){Unk_UpperPC* pc=reinterpret_cast<Unk_UpperPC*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(actor)));if(!pc)return 0;return pc->GetSubJob();}
 MS2_REPLACE_METHOD(0x141B4D8A0, UIUpperHpBar, FUN_141b4d8a0, 56, 0xE9446796);
 
 // @0x141b4da00

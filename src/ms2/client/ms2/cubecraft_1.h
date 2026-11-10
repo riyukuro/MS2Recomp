@@ -86,7 +86,7 @@ public:
     virtual void vfunc_129(void* pStream);                  // 129 0x1410a1830
 
     void FUN_1410a12e0(PCBase* pOwner);             // 0x1410a12e0 m_nOwnerId = owner object id
-    PCBase* FUN_1410a1310();                        // 0x1410a1310 the owner (world lookup by id)
+    PCBase* GetOwner();                        // 0x1410a1310 the owner (world lookup by id)
 
     int m_nOwnerId;                                         // +0xd40
     StatePcGuideObjectController m_ctrl;                    // +0xd48
@@ -152,10 +152,10 @@ class Unk_FishLine
 public:
     Unk_FishLine();                                         // 0x140cd7d80
     ~Unk_FishLine();                                        // 0x140cd7e40
-    void FUN_140cd7eb0(int nKind, efd::Point3 kPos);        // 0x140cd7eb0 start
+    void CreateGuide(int nKind, efd::Point3 kPos);        // 0x140cd7eb0 start
     void Destroy();                                         // 0x140cd8080 stop
-    void FUN_140cd80d0();                                   // 0x140cd80d0 update
-    int FUN_140cd85b0();                                    // the line is out
+    void Update();                                   // 0x140cd80d0 update
+    int IsWaitTimerExpired();                                    // the line is out
     int FUN_140cd85e0();                                    // the grid cell under the float
     efd::Point3 FUN_140cd8630();                            // the float position
     void FUN_140cd8740(efd::Point3 kPos);                   // the float landed
@@ -198,7 +198,7 @@ public:
     void FUN_1410a4cb0();                                   // hide the float model
     void FUN_1410a4d30(void* pCatch);                       // show the catch text
     void FUN_1410a5690();                                   // rebuild the line points
-    void FUN_1410a59f0();                                   // fishing gem name effect
+    void UpdateLureEffect();                                   // fishing gem name effect
 
     Unk_FishLine m_fishLine;                                // +0xda8 line effect
     int m_nEffectA;                                         // +0xe50
@@ -229,11 +229,11 @@ public:
     int FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PCBase* pOwner,
         MS2Ptr<Unk_SkillMagicInfo> spInfo);                 // init (the info is by value: the callee destroys it)
     void ReleaseGuide();                                   // release the control
-    int FUN_1410a65f0(int nSkill);                          // true when the target is out of range
+    int IsOutOfRange(int nSkill);                          // true when the target is out of range
     bool IsReleased();                                   // +0xdd0 released
     efd::Point3 GetOriginPosition();                            // 12 bytes at +0xdb8
-    float FUN_1410a6790();                                  // +0xdc8 (0 once released)
-    float FUN_1410a67d0();                                  // +0xdcc
+    float GetMoveSpeed();                                  // +0xdc8 (0 once released)
+    float GetMaxDistance();                                  // +0xdcc
     long long FUN_1410a67f0();
 
     MS2Ptr<Unk_SkillMagicInfo> m_spInfo;                    // +0xda8

@@ -79,7 +79,7 @@ public:
 };
 ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
 class CPhysXHelper
 {
@@ -197,7 +197,7 @@ MS2_REPLACE_METHOD(0x140B651D0, CHomeCameraMode, vfunc_7, 222, 0x3F1915D8);
 // @0x140b652c0
 void CHomeCameraMode::vfunc_10()
 {
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->SetTarget(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140B652C0, CHomeCameraMode, vfunc_10, 59, 0x3AEC2CB0);
 
@@ -614,15 +614,15 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
                 float fLen = ptDir.Unitize();
                 efd::Point3 ptBack = -reinterpret_cast<const efd::Point3&>(ptDir);
                 Vector3 ptHit = g_143b01a60;
-                if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
+                if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(static_cast<Vector3>(reinterpret_cast<Vector3&>(m_88)), ptHit, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
+                    if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(static_cast<Vector3>(reinterpret_cast<Vector3&>(m_88)), ptHit, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
                         return 1;
                 }
                 else
                 {
                     Vector3 ptHit2 = g_143b01a60;
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(ptHit, ptHit2, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
+                    if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(ptHit, ptHit2, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
                         return 1;
                 }
             }

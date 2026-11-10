@@ -79,7 +79,7 @@ class Unk_LpWorld : public CMeratMarketMan
 {
 };
 
-class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
+class Unk_SingletonObj* GetMeratMarketMan();   // C3: was GetMeratMarketMan
 UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
@@ -376,7 +376,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
         if (pInfo->FUN_1406a0fe0())
         {
             CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
-            Unk_AdbPtr spBanner = GetAdBannerManagerCli()->FUN_14096b5b0(2, strName);
+            Unk_AdbPtr spBanner = GetAdBannerManagerCli()->FindBannerByName(2, strName);
             if (spBanner.get() != 0)
             {
                 m_spBanner.AssignRaw(new ShopBannerInfo());
@@ -429,7 +429,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     spProduct->GetProductOID(&oid);
     unsigned char* pInfo = (unsigned char*)&spItem->m_premium;
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
-        spItem = ((class CMeratMarketMan*)FUN_140939a00())->FUN_140d578d0(reinterpret_cast<Unk_MeratProductKey&>(oid));
+        spItem = ((class CMeratMarketMan*)GetMeratMarketMan())->FindAdProduct(reinterpret_cast<Unk_MeratProductKey&>(oid));
     AScript* pBuyBtn = out.FUN_140ec2a90();
     int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
     if (*(pInfo + 0x108) != 0 && reinterpret_cast<CMeratMarketPremiumProduct*>(pInfo)->GetPriceOf(0) == 0)
@@ -451,8 +451,8 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
             return;
         spBuy->FUN_140d60a80(spItem, nBuyType, FUN_14069c3e0(nPriceKind), 1);
         spBuy->FUN_140d60d60(0, 1);
-        ((class Unk_LpWorld*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
-        ((class Unk_LpWorld*)FUN_140939a00())->StartPendingPurchases(nBuyType);
+        ((class Unk_LpWorld*)GetMeratMarketMan())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
+        ((class Unk_LpWorld*)GetMeratMarketMan())->StartPendingPurchases(nBuyType);
     }
     else
     {

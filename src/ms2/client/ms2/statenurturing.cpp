@@ -113,7 +113,7 @@ public:
 };
 int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
-CFunctionCubeService* FUN_1409670b0();
+CFunctionCubeService* GetFunctionCubeService();
 
 // ---- the casting bar lookup ----
 
@@ -175,7 +175,7 @@ void StateNurturing::vfunc_4(StateData* pData)
     m_pOwner->PlayAnimation(FUN_140ac13a0(), 1.0f, false, false);
     PCBase* pPC = FUN_1417b8370();
     MyPC* pRider = FUN_1417b84b0();
-    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
     if (pRider)
     {
@@ -192,7 +192,7 @@ void StateNurturing::vfunc_4(StateData* pData)
         m_spTarget = 0;
         m_aCubes.clear();
         ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> > aCubes;
-        FUN_1409670b0()->FUN_141232810(aCubes);
+        GetFunctionCubeService()->CollectNurturingCubes(aCubes);
         float fNearest = FLT_MAX;
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
@@ -357,7 +357,7 @@ MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
     if (!pPC)
         return MS2Ptr<CNurturingCubeObject>(0);
     ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> > aCubes;
-    FUN_1409670b0()->FUN_141232810(aCubes);
+    GetFunctionCubeService()->CollectNurturingCubes(aCubes);
     float fNearest = FLT_MAX;
     MS2Ptr<CNurturingCubeObject> spNearest(0);
     for (size_t i = 0; i < aCubes.GetCount(); i++)
@@ -439,11 +439,11 @@ void StateInterActionSpawnObject::vfunc_4(StateData* pData)
     if (pCube)
     {
         if (m_n10 == 0xa7)
-            pCube->FUN_140a4f2b0(100);
+            pCube->SetAnimState(100);
         else if (m_n10 == 0xa5)
-            pCube->FUN_140a4f2b0(0x67);
+            pCube->SetAnimState(0x67);
         else if (m_n10 == 0xa6)
-            pCube->FUN_140a4f2b0(0x65);
+            pCube->SetAnimState(0x65);
     }
 }
 MS2_REPLACE_METHOD(0x140AC1CA0, StateInterActionSpawnObject, vfunc_4, 148, 0x1EA41B91);
@@ -495,7 +495,7 @@ void StateIdleSpawnObject::vfunc_2(int n)
         CubeSpawnObject* pCube = FUN_140ac21e0();
         if (pCube)
         {
-            pCube->FUN_140a4f2b0(0x62);
+            pCube->SetAnimState(0x62);
             pCube->FUN_140a4f3f0(0x62);
         }
     }
@@ -515,11 +515,11 @@ void StateIdleSpawnObject::vfunc_4(StateData* pData)
         {
         case 0xa2:
             m_n10 = 0xa3;
-            pCube->FUN_140a4f2b0(99);
+            pCube->SetAnimState(99);
             pCube->FUN_140a4f3f0(99);
             break;
         case 0xa8:
-            pCube->FUN_140a4f2b0(0x62);
+            pCube->SetAnimState(0x62);
             pCube->FUN_140a4f3f0(0x62);
             break;
         }
@@ -527,7 +527,7 @@ void StateIdleSpawnObject::vfunc_4(StateData* pData)
     else
     {
         m_n10 = 0xa3;
-        pCube->FUN_140a4f2b0(99);
+        pCube->SetAnimState(99);
         pCube->FUN_140a4f3f0(99);
     }
 }
@@ -567,14 +567,14 @@ void StateIdleSpawnObject::vfunc_3(double fTime)
             if (m_n10 != 0xa8 && m_n10 != 0xa3)
             {
                 m_n10 = 0xa3;
-                pCube->FUN_140a4f2b0(99);
+                pCube->SetAnimState(99);
                 pCube->FUN_140a4f3f0(99);
             }
         }
         else if (m_n10 != 0xa3)
         {
             m_n10 = 0xa3;
-            pCube->FUN_140a4f2b0(99);
+            pCube->SetAnimState(99);
             pCube->FUN_140a4f3f0(99);
         }
     }

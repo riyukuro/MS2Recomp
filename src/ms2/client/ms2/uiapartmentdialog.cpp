@@ -67,13 +67,13 @@ class UIUGCEventDispatcher;
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apartment group row
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
 CStringW GetStringCommon(int nStringId);                          // string table text
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 void FUN_140cffb90(const Scaleform::GFx::Value& root, CString strName, int bPlay);
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_14151f200();
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 extern int DAT_143ab288c;                                       // the portal's map id
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -195,7 +195,7 @@ void UIApartmentDialog::FUN_1418b6580()
     Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    FUN_140cfee80(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
+    SetChildText(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
     FUN_140cff840(FUN_1422dbc00(), CString("m_contractButton"), m_nRoom == 0);
     FUN_140cff840(FUN_1422dbc00(), CString("m_contractEffect"), 0);
     FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_normal"), m_group.FUN_1408ad2f0() == 0);
@@ -237,7 +237,7 @@ bool UIApartmentDialog::FUN_1418b6ab0(int nMode)
 {
     if (FUN_1422dc2d0() == 0)
         return false;
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox == 0 || pBox->FUN_1419f8270() != 0)
         return false;
     MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
@@ -308,18 +308,18 @@ void UIApartmentDialog::FUN_1418b6ec0(int nUiType)
 {
     if (nUiType == 0x2f)
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ef));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f2));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ef));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f2));
     }
     else if (nUiType == 0x31)
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7f0));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f3));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7f0));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f3));
     }
     else
     {
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ee));
-        FUN_140cfefe0(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f1));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_default", GetStringCommon(0x7ee));
+        SetNestedChildText(FUN_1422dbc00(), "m_brokerSay", "m_say", GetStringCommon(0x7f1));
     }
 }
 

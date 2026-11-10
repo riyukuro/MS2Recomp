@@ -23,7 +23,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // "#RRGGBB"-style string to colour.
-Unk_AfterImageColor FUN_140db93e0(const CString& str);
+Unk_AfterImageColor ParseColorA(const CString& str);
 extern efd::ColorA DAT_143a09670;                               // default colour
 
 // @0x140987430
@@ -48,7 +48,7 @@ void CAfterImageEffectParam::vfunc_1(TiXmlElement* pNode)
     CString strColor;
     if (!XmlGetAttr((class TiXmlElement*)(pNode), "color", strColor))
     {
-        m_kColor = FUN_140db93e0(strColor);
+        m_kColor = ParseColorA(strColor);
     }
     else
     {
@@ -80,7 +80,7 @@ CEffectPtr CAfterImageEffectParam::vfunc_6()
 Unk_AfterImageRef::Unk_AfterImageRef(CAfterImageEffectParam* pParam)
 {
     m_pParam = pParam;
-    FUN_140981190();
+    AddRef();
 }
 
 // 0x140987930 is NiColorA(const efd::ColorA&) (Gamebryo inline, emitted by

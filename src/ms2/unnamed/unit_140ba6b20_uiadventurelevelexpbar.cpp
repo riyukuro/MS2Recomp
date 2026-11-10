@@ -185,7 +185,7 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
     Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    efd::SmartPointer<Ridee> spHolder(pPlayer->FUN_1416764a0());
+    efd::SmartPointer<Ridee> spHolder(pPlayer->GetRidee());
     if (spHolder != 0)
     {
         bool bMounted = spHolder->GetData()->m_basic.m_nHidePCInfo != 0 ? 1 : 0;

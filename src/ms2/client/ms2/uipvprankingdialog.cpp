@@ -144,7 +144,7 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
         ((class AScript*)(pObj))->FUN_1407cbb20("charName", pEntry->m_strName);
         ((class AScript*)(pObj))->FUN_1407cb9c0("score", pEntry->m_nScore);
         if (pPC != 0)
-            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pPC)->FUN_141654730());
+            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pPC)->GetSubJob());
     }
     return true;
 }

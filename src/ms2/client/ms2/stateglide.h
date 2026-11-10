@@ -25,9 +25,9 @@ public:
     virtual void vfunc_7(int n);                            // 7  0x1417c9250
     virtual void vfunc_8(double fTime);                     // 8  0x1417c92a0
     virtual void vfunc_9(double fTime);                     // 9  0x1417c9360 (switch between the two animations)
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417c9710
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417c9710
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417ca1e0
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x1417c9660
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417c9660
     virtual bool vfunc_38(StateData* pData);                // 38 0x1417c9790
 
     void FUN_1417c9880(float fTime);                        // advance the glide and move the actor

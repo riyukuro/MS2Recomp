@@ -30,7 +30,7 @@ void CFishCube::FUN_1403b0910(COutputStream* pStream)
 MS2_REPLACE_METHOD(0x1403b0910, CFishCube, FUN_1403b0910, 129, 0x2568022D);
 
 // @0x1403b09a0
-void CFishCube::FUN_1403b09a0(COutputStream* pStream)
+void CFishCube::WriteFull(COutputStream* pStream)
 {
     pStream->WriteInt32(m_id);
     pStream->WriteInt32(m_a);
@@ -38,7 +38,7 @@ void CFishCube::FUN_1403b09a0(COutputStream* pStream)
     pStream->WriteInt32(m_c);
     pStream->WriteInt16((short)m_d);
 }
-MS2_REPLACE_METHOD(0x1403b09a0, CFishCube, FUN_1403b09a0, 140, 0x567C591A);
+MS2_REPLACE_METHOD(0x1403b09a0, CFishCube, WriteFull, 140, 0x567C591A);
 
 // @0x1403b0a40
 void CFishCube::FUN_1403b0a40(CByteBuffer* pStream)

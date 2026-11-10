@@ -12,8 +12,8 @@ class MS2ActorUpdater : public CPtred
 public:
     MS2ActorUpdater(egf::EntityID kId);              // 0x1414a8240 (the caller copies the id: by value)
     virtual ~MS2ActorUpdater();                                     // 0x1414a8380
-    float FUN_1414a8410(const Vector3& kPos);               // m_fDistB = |kPos - entity position|
-    float FUN_1414a84f0(const Vector3& kPos);               // m_fDistA = |kPos - entity position|
+    float UpdateDistB(const Vector3& kPos);               // m_fDistB = |kPos - entity position|
+    float UpdateDistA(const Vector3& kPos);               // m_fDistA = |kPos - entity position|
     void FUN_1414a85d0(float fInterval);                            // run the gate with the mode's duration
     float GetDistB() const;                                    // m_fDistB
     float GetDistA() const;                                    // m_fDistA

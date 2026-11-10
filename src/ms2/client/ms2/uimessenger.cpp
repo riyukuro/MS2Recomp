@@ -526,11 +526,11 @@ extern Unk_Inventory g_143ab2a90;                                   // the playe
 // The messenger state (messengerdata.cpp's Unk_MdState): the current window name and the browser (+0x48).
 struct Unk_MdNames
 {
-    CStringW FUN_1414829e0();                                       // the current window name
+    CStringW GetCurrentName();                                       // the current window name
     void FUN_141482c80(CStringW strName);                           // make a window the current one
-    CStringW FUN_141482a50();                                       // the whisper window name
-    void FUN_141482b70();                                           // reset
-    void FUN_141482d30(CStringW strName);                           // forget a window
+    CStringW GetValidName();                                       // the whisper window name
+    void Clear();                                           // reset
+    void RemoveName(CStringW strName);                           // forget a window
 };
 class Unk_MsgState : public Unk_MdNames
 {
@@ -540,7 +540,7 @@ public:
     UIMessenger* m_pNewTabWindow;                                   // +0x40 the window asking for a new tab
     UIMessengerBrowser* m_pBrowser;                                 // +0x48
 };
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 int FUN_141482f00(int nChannel);                                    // the line type of a chat channel
 
 int FUN_141276f80(Unk_CommandChat* chat);                       // sends a chat line
@@ -1281,7 +1281,7 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
         MS2_ASSERT_AT(0x4c3, 0);
         return;
     }
-    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+    if (!spCli->IsEmoticonUsable(spEmo->m_nId))
         return;
     std::list<ChatEmoticonDataPtr> emoticons;
     emoticons.push_back(spEmo);
@@ -1424,7 +1424,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
         MS2_ASSERT_AT(0x782, 0);
         return 0;
     }
-    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+    if (!spCli->IsEmoticonUsable(spEmo->m_nId))
         return 0;
     COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
     packet.WriteUInt8(3);
@@ -1485,7 +1485,7 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
         MS2_ASSERT_AT(0x7d3, 0);
         return 0;
     }
-    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+    if (!spCli->IsEmoticonUsable(spEmo->m_nId))
         return 0;
     int nOp = bFavorite ? 5 : 6;
     COutPacket packet(static_cast<int>(SendOp::ChatSticker), 0);
@@ -1603,7 +1603,7 @@ void UIMessenger::FUN_141a12e40(int nType, CStringW strText, bool bHistory)
 // @0x141a12f30
 int UIMessenger::FUN_141a12f30()
 {
-    if (((class Unk_MsgState*)FUN_141482e80())->FUN_1414829e0() != m_strName)
+    if (((class Unk_MsgState*)GetState())->GetCurrentName() != m_strName)
         return 0;
     {
         MS2Ptr<ASTextInput> spInput = m_textInput;
@@ -1674,7 +1674,7 @@ void UIMessenger::FUN_141a13210()
         ChatEmoticonDataPtr spEmo = *it;
         if (!spEmo)
             continue;
-        if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+        if (!spCli->IsEmoticonUsable(spEmo->m_nId))
             continue;
         found.push_back(spEmo);
     }
@@ -1713,7 +1713,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
         if (!spEmo)
             continue;
         ASObj item(2);
-        item.FUN_1409c0d20("id", spEmo->m_nId);
+        item.SetMemberUInt("id", spEmo->m_nId);
         item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
         item.FUN_1407cb9c0("width", spEmo->m_nWidth);
         item.FUN_1407cb9c0("height", spEmo->m_nHeight);
@@ -1791,12 +1791,12 @@ void UIMessenger::FUN_141a13c20(int bUp)
 // @0x141a13d20
 CStringW UIMessenger::FUN_141a13d20()
 {
-    if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
+    if (((class Unk_MsgState*)GetState())->m_pBrowser != 0)
     {
         for (unsigned i = 1; i < 100; i++)
         {
             CStringW strName = BlockFormat<unsigned>(0x57d, *(const unsigned*)&i);
-            if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a25410(0, strName))
+            if (((class Unk_MsgState*)GetState())->m_pBrowser->FUN_141a25410(0, strName))
                 return strName;
         }
     }
@@ -1989,7 +1989,7 @@ bool UIMessenger::FUN_141a148b0(const CStringW& strText)
     if (pPlayer == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> > emotions;
-    pPlayer->FUN_141523bc0()->FUN_1417691a0(emotions);
+    pPlayer->GetSkillSystem()->FUN_1417691a0(emotions);
     if (emotions.GetCount() == 0)
         return false;
     CStringW strLine(strText);
@@ -2141,7 +2141,7 @@ int UIMessenger::vfunc_88(const CStringW& strText, int nType)
 // @0x141a15e80
 void UIMessenger::vfunc_90()
 {
-    ((class Unk_MsgState*)FUN_141482e80())->FUN_141482c80(m_strName);
+    ((class Unk_MsgState*)GetState())->FUN_141482c80(m_strName);
 }
 
 // @0x141a15ef0
@@ -2160,8 +2160,8 @@ void UIMessenger::vfunc_92()
         {
             SelectTabByName(strName);
             vfunc_4();
-            ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 2;
-            ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
+            ((class Unk_MsgState*)GetState())->m_nNewTabMode = 2;
+            ((class Unk_MsgState*)GetState())->m_pNewTabWindow = this;
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e62)));
         }
     }
@@ -2218,16 +2218,16 @@ void UIMessenger::vfunc_96(int nMenu)
 {
     if (nMenu == 0)
     {
-        ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 1;
-        ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
+        ((class Unk_MsgState*)GetState())->m_nNewTabMode = 1;
+        ((class Unk_MsgState*)GetState())->m_pNewTabWindow = this;
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e62)));
     }
     else if (nMenu == 1)
     {
         if (RemoveTabByName(GetSelectedTabName()))
         {
-            if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
-                ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a245d0(m_strName);
+            if (((class Unk_MsgState*)GetState())->m_pBrowser != 0)
+                ((class Unk_MsgState*)GetState())->m_pBrowser->FUN_141a245d0(m_strName);
             vfunc_4();
         }
     }
@@ -2273,8 +2273,8 @@ void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
             pWindow->SelectTabByName(spTab->m_strName);
             pWindow->vfunc_4();
         }
-        if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
-            ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a245d0(m_strName);
+        if (((class Unk_MsgState*)GetState())->m_pBrowser != 0)
+            ((class Unk_MsgState*)GetState())->m_pBrowser->FUN_141a245d0(m_strName);
         vfunc_4();
     }
 }
@@ -2291,8 +2291,8 @@ void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWi
     {
         ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
         tabs.Add(spTab);
-        if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
-            ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
+        if (((class Unk_MsgState*)GetState())->m_pBrowser != 0)
+            ((class Unk_MsgState*)GetState())->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
         ReselectCurrentTab();
         vfunc_4();
     }
@@ -2337,7 +2337,7 @@ void UIMessenger::FUN_141a168a0(ATL::CAtlArray<CStringW>& args)
 // @0x141a16bb0
 void UIMessenger::FUN_141a16bb0(int nProductId, int nA, int nB)
 {
-    UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
+    UICashShopDialog* pShop = FindCashShopDialog(0x4ebc);
     if (pShop == 0)
         return;
     ATL::CAtlArray<unsigned> ids;
@@ -2528,7 +2528,7 @@ bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
 // @0x141a184c0
 UIMessenger* FUN_141a184c0(CString strName)
 {
-    return dynamic_cast<UIMessenger*>(FUN_140b632f0()->GetUISwfEntity(strName).get());
+    return dynamic_cast<UIMessenger*>(GetUISwfEntityManager()->GetUISwfEntity(strName).get());
 }
 
 // @0x141a17a60
@@ -2602,7 +2602,7 @@ struct Unk_1407a5820
 void FUN_1407a5960(Unk_1407a5820& extra, CInputStream& in);
 
 // The inventory item events.
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was Unk_MbItemEvents*
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was Unk_MbItemEvents*
 class Unk_ItemEventSystem
 {
 public:
@@ -2612,7 +2612,7 @@ public:
 
    // 2: drop, 1: replaced
    // the user is blinded
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was BlindManager*
+class Unk_MeratBlindManager* GetBlindManager();   // C3: was BlindManager*
 class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 
 // The game options: the community switches and the chat balloon switches.
@@ -2694,7 +2694,7 @@ UIMessengerBrowser::UIMessengerBrowser()
     m_88 = 1;
     FUN_141925e70(0, 1);
     m_itHistory = m_history.end();
-    ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = this;
+    ((class Unk_MsgState*)GetState())->m_pBrowser = this;
     TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
     TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
     TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
@@ -2707,7 +2707,7 @@ UIMessengerBrowser::~UIMessengerBrowser()
 {
     m_history.clear();
     m_itHistory = m_history.end();
-    ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = 0;
+    ((class Unk_MsgState*)GetState())->m_pBrowser = 0;
     TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
     TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
     TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
@@ -2726,7 +2726,7 @@ int UIMessengerBrowser::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    ((Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(this);
     return 1;
 }
 
@@ -2740,11 +2740,11 @@ void UIMessengerBrowser::vfunc_67()
         if (pWindow != 0)
         {
             pWindow->vfunc_67();
-            FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+            GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
         }
     }
     m_windows.RemoveAll();
-    ((Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(this);
 }
 
 // @0x141a21c50
@@ -2851,7 +2851,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     if (strText.IsEmpty())
         return;
-    if (((BlindManager*)FUN_1409c1730())->IsBlocked(0, strName))
+    if (((BlindManager*)GetBlindManager())->IsBlocked(0, strName))
         return;
     if (nType == 5)
     {
@@ -3124,7 +3124,7 @@ void UIMessengerBrowser::FUN_141a23c20()
     m_reports.RemoveAll();
     m_history.clear();
     m_itHistory = m_history.end();
-    ((class Unk_MsgState*)FUN_141482e80())->FUN_141482b70();
+    ((class Unk_MsgState*)GetState())->Clear();
 }
 
 // @0x141a23d50
@@ -3215,9 +3215,9 @@ void UIMessengerBrowser::FUN_141a24490()
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
         {
-            ((class Unk_MsgState*)FUN_141482e80())->FUN_141482d30(pWindow->GetName());
+            ((class Unk_MsgState*)GetState())->RemoveName(pWindow->GetName());
             pWindow->vfunc_84();
-            FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+            GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
         }
     }
     m_windows.RemoveAll();
@@ -3233,10 +3233,10 @@ void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
         {
             if (pWindow->m_tabs.IsEmpty())
             {
-                ((class Unk_MsgState*)FUN_141482e80())->FUN_141482d30(pWindow->GetName());
+                ((class Unk_MsgState*)GetState())->RemoveName(pWindow->GetName());
                 pWindow->vfunc_84();
                 m_windows.RemoveAt(i, 1);
-                FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
             }
         }
     }
@@ -3334,7 +3334,7 @@ void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && ((class Unk_MsgState*)FUN_141482e80())->FUN_1414829e0() == pWindow->GetName())
+        if (pWindow != 0 && ((class Unk_MsgState*)GetState())->GetCurrentName() == pWindow->GetName())
             pWindow->FUN_141a0ec30(strText);
     }
 }
@@ -3380,7 +3380,7 @@ void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && ((class Unk_MsgState*)FUN_141482e80())->FUN_141482a50() == pWindow->GetName())
+        if (pWindow != 0 && ((class Unk_MsgState*)GetState())->GetValidName() == pWindow->GetName())
             pWindow->FUN_141a14bb0(strTarget);
     }
 }
@@ -4100,7 +4100,7 @@ public:
 };
 int FUN_1418fccc0(int nMsg, unsigned __int64 p2, unsigned __int64 p3, CStringW* pStr);    // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case copy
-UIMessengerBrowser* FUN_140a3ab70(int nUiId);                       // Unk_GetUI<UIMessengerBrowser>
+UIMessengerBrowser* FindMessengerBrowser(int nUiId);                       // Unk_GetUI<UIMessengerBrowser>
 
 // MS2-FUNCTIONAL: the slash command popup; temporaries differ from the exe (functional-first)
 // @0x141a0cab0
@@ -4153,7 +4153,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
     FUN_14025a680(strLower, words, L" ");
     if (!strLower.IsEmpty())
         strCommand = words.GetAt(0);
-    MS2Ptr<UIMessengerBrowser> spBrowser(FUN_140a3ab70(0x4e61));
+    MS2Ptr<UIMessengerBrowser> spBrowser(FindMessengerBrowser(0x4e61));
     if (spBrowser == 0)
         return 0;
     if (strLower.GetLength() > 0)
@@ -4281,7 +4281,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 2:
         if (!strText.IsEmpty())
         {
-            if (pMe->FUN_141527280())
+            if (pMe->IsInParty())
             {
                 Unk_CommandChat chat;
                 chat.kind = 7;
@@ -4299,7 +4299,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 3:
         if (!strText.IsEmpty())
         {
-            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() != 0)
+            if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() != 0)
             {
                 Unk_CommandChat chat;
                 chat.kind = 8;
@@ -4317,7 +4317,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x18:
         if (!strText.IsEmpty())
         {
-            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+            if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
             {
                 FUN_141275260(0x388, 1, 1);
                 break;
@@ -4460,7 +4460,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, GetStringCommon(0xaa1), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_140b76940(CStringW(strText));
+            spBox->AddStringArg(CStringW(strText));
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, 1, -1, 1);
             spBox->FUN_141a01800(1);
@@ -4476,7 +4476,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, BlockFormat<unsigned>(0xaa2, FUN_1403bb830()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_140b76940(CStringW(strText));
+            spBox->AddStringArg(CStringW(strText));
             spBox->FUN_141a01800(1);
             spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
@@ -4490,7 +4490,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, BlockFormat<unsigned>(0xaa3, FUN_1403bb850()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_140b76940(CStringW(strText));
+            spBox->AddStringArg(CStringW(strText));
             spBox->FUN_141a01800(1);
             spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
@@ -4545,8 +4545,8 @@ void UIMessenger::FUN_141a14dc0()
     {
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "world");
-        item.FUN_1409c0d20(s_strPrice, FUN_1403bb830());
-        item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8a0());
+        item.SetMemberUInt(s_strPrice, FUN_1403bb830());
+        item.SetMemberUInt(s_strOriginPrice, FUN_1403bb8a0());
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_world"));
         item.FUN_1409c4990(s_strColor, s_color19);
         spSubject->AddItemRow(item);
@@ -4555,8 +4555,8 @@ void UIMessenger::FUN_141a14dc0()
     {
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "channel");
-        item.FUN_1409c0d20(s_strPrice, FUN_1403bb850());
-        item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8d0());
+        item.SetMemberUInt(s_strPrice, FUN_1403bb850());
+        item.SetMemberUInt(s_strOriginPrice, FUN_1403bb8d0());
         item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_channel"));
         item.FUN_1409c4990(s_strColor, s_color20);
         spSubject->AddItemRow(item);
@@ -4634,8 +4634,8 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
             ASTooltip tooltip(pPlayer, 2, 2);
             if (tooltip.FUN_1409e0d40(spItem.get()))
             {
-                tooltip.FUN_1409c6c80();
-                tooltip.FUN_1409db7b0(spItem);
+                tooltip.ShowCloseButton();
+                tooltip.SetEnablePreview(spItem);
                 *pRetVal = tooltip.FUN_1422bb870();
             }
         }
@@ -4655,9 +4655,9 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         int nId = atoi(pArgs->FUN_1422b8d30());
         int nGrade = atoi(pArgs->FUN_1422b8d30());
         ASTooltip tooltip(pPlayer, 2, 2);
-        if (tooltip.FUN_1409e21a0(nId, nGrade))
+        if (tooltip.SetAchieveTooltip(nId, nGrade))
         {
-            tooltip.FUN_1409c6c80();
+            tooltip.ShowCloseButton();
             CStringW strState = pArgs->FUN_1422b8f40();
             CStringW strDate = pArgs->FUN_1422b8f40();
             if (strDate.GetLength() != 0)

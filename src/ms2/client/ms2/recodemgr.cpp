@@ -41,14 +41,14 @@ struct Unk_RmRenderService { char m_pad[0x48]; Unk_RmRenderLink* m_pLink; };
 class Unk_AeGraphicOption   // C3: member view (real class not in this TU)
 {
 public:
-    unsigned int FUN_1409a8aa0() const;
-    unsigned int FUN_1409a8ab0() const;
+    unsigned int GetWidth() const;
+    unsigned int GetHeight() const;
 };
 class Unk_RmGraphic { public:   };
 class Unk_AeGameOption   // C3: member view (real class not in this TU)
 {
 public:
-    Unk_AeGraphicOption* FUN_1409a8ac0();
+    Unk_AeGraphicOption* GetGraphicOption();
 };
 class Unk_RmOption { public:  };
 
@@ -159,10 +159,10 @@ int RecodeMgr::FUN_140c9bc70(CString strText)
 }
 
 // @0x140c9bda0
-void RecodeMgr::FUN_140c9bda0() { ((Unk_AeGraphicOption*)(Unk_RmGraphic*)(((Unk_RmGraphic*)((Unk_AeGameOption*)(Unk_RmOption*)(reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0())))->FUN_1409a8ab0(); }
+void RecodeMgr::FUN_140c9bda0() { ((Unk_AeGraphicOption*)(Unk_RmGraphic*)(((Unk_RmGraphic*)((Unk_AeGameOption*)(Unk_RmOption*)(reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())))->GetGraphicOption())))->GetHeight(); }
 
 // @0x140c9bdd0
-void RecodeMgr::FUN_140c9bdd0() { ((Unk_AeGraphicOption*)(Unk_RmGraphic*)(((Unk_RmGraphic*)((Unk_AeGameOption*)(Unk_RmOption*)(reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0())))->FUN_1409a8aa0(); }
+void RecodeMgr::FUN_140c9bdd0() { ((Unk_AeGraphicOption*)(Unk_RmGraphic*)(((Unk_RmGraphic*)((Unk_AeGameOption*)(Unk_RmOption*)(reinterpret_cast<Unk_RmOption*>(TSingleton<CGameOption>::GetInstance())))->GetGraphicOption())))->GetWidth(); }
 
 // @0x140c9be00
 int RecodeMgr::FUN_140c9be00()

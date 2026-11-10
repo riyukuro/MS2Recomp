@@ -7,6 +7,6 @@ class DynamicInstancing : public MeshInstancing {
 public:
     DynamicInstancing(const Unk_MeshInstancingConfig& config);          // 0x141194290
     virtual ~DynamicInstancing();                                       // 0x1411942e0
-    bool FUN_141194330(egf::Entity*, unsigned, unsigned, NiTransform*); // 0x141194330
+    bool AddEntity(egf::Entity*, unsigned, unsigned, NiTransform*); // 0x141194330
 };
 MS2_CHECK_SIZE(DynamicInstancing, 0xd8);

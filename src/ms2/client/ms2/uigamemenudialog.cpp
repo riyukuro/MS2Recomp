@@ -242,7 +242,7 @@ class Unk_GmQuestHolder { public: char m_pad_0[0x10]; Unk_GmQuestState state; };
 class Unk_AttendTable   // C3: member view (real class not in this TU)
 {
 public:
-    int FUN_1409617d0(int, unsigned int, int const&);
+    int GetValue(int, unsigned int, int const&);
 };
 class Unk_GpCondRef   // C3: member view (real class not in this TU)
 {
@@ -517,7 +517,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();
 #define FUN_140939a10() ((NotifySystem*)FUN_140939a10())   // C3: was NotifySystem* FUN_140939a10()
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GmGuideTable (calls cast back)
@@ -525,10 +525,10 @@ class CCharacterAbilityTable;
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
-void* FUN_1409670e0();
-class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
+void* GetCubeMapInformationService();
+class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
-class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
+class Unk_SingletonObj* GetMeratMarketMan();   // C3: was GetMeratMarketMan
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // ---- exe functions: events, quests, shop ----
@@ -634,7 +634,7 @@ template <class T> T* Unk_SSGGetDialog(int nId);
 template <class T> T* Unk_GetUI(int nId);
 class UILevelUpPackageDialog; class UITimeRunEventDialog; class UICashAttendDialog; class UIRpsEventDialog; class UIAttendGiftDialog; class UIMentoringDialog;
 class UIAdventureLevelDialog; class UIGalleryEventDialog; class UIStampEventDialog; class UIVIPDialog; class UIRealEstateDialog;
-class UICoupleDanceEventDialog* FUN_140b769d0(int);   // C3: was FUN_140b769d0
+class UICoupleDanceEventDialog* FindCoupleDanceEventDialog(int);   // C3: was FindCoupleDanceEventDialog
 class UIHomeInfoDialog* FUN_140bbea00(int);   // C3: was FUN_140bbea00
 class UIHomeMenuDialog* FUN_140ef49b0(int);   // C3: was FUN_140ef49b0
 class UILevelUpPackageDialog   // C3: member view for the former free stand-ins
@@ -729,13 +729,13 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class UserUGCMapInfo* FUN_141523c50();   // the house record (+0x1618)
+    class UserUGCMapInfo* GetUGCMapInfo();   // the house record (+0x1618)
     int FUN_141527160(int);   MS2Ptr<CStatPointManager> FUN_140c25130();
     int HasNoHome();
     int FUN_141527ed0();
     int FUN_141529ae0(int, int, int, __int64);
     void SendRequestHome(int);
-    int FUN_14152e970(int);
+    int GetRemainingSkillPoints(int);
 };
 class UISkillBookTreeDialog
 {
@@ -823,7 +823,7 @@ int UIGameMenuDialog::vfunc_65()
 void UIGameMenuDialog::vfunc_67()
 {
     UIBuiltInDialog::vfunc_67();
-    ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
@@ -847,7 +847,7 @@ void UIGameMenuDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     LoadRenderTarget();
-    ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_141928050(static_cast<UIDialogEventListener*>(this));
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
@@ -1073,7 +1073,7 @@ void UIGameMenuDialog::vfunc_15()
     }
     if (m_bPetUpdate) {
         m_bPetUpdate = false;
-        bool bShow = ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->HasBuyableAdProduct() == 1;
+        bool bShow = ((class CMeratMarketMan*)(void*)(((void*)GetMeratMarketMan())))->HasBuyableAdProduct() == 1;
         FUN_14193daf0(bShow);
     }
 }
@@ -1260,13 +1260,13 @@ void UIGameMenuDialog::FUN_141938700()
         return;
     int bHas = 0;
     std::vector<JobSkillPtr> list;
-    ((JobSystem*)((class PC*)(class PCBase*)(pPc))->FUN_1416546d0())->GetSkills(list, 0, true);
+    ((JobSystem*)((class PC*)(class PCBase*)(pPc))->GetJobSystem())->GetSkills(list, 0, true);
     std::vector<JobSkillPtr>& kRange = list;   // the exe walks the raw element range (add rax, 0x10)
     JobSkillPtr* pIt = kRange._Unchecked_begin();
     JobSkillPtr* pEnd = kRange._Unchecked_end();
     for (; pIt != pEnd; ++pIt) {
         JobSkillPtr& e = *pIt;
-        if (UISkillBookTreeDialog::CanUpgrade(e, ((class MyPC*)(class PCBase*)(pPc))->FUN_14152e970(e->GetJobLevel()))) {
+        if (UISkillBookTreeDialog::CanUpgrade(e, ((class MyPC*)(class PCBase*)(pPc))->GetRemainingSkillPoints(e->GetJobLevel()))) {
             bHas = 1;
             break;
         }
@@ -1327,7 +1327,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
     } else if (nId == 0x4e73) {
         nCount = ((class CAchieveManager*)(void*)(((void*)FUN_1406c7600())))->GetRewardTotal(0);
     } else if (nId == 0x4f2d) {
-        nCount = ((class JobSystemCli*)(void*)(((void*)((class PC*)(class PCBase*)(pPc))->FUN_1416546d0())))->ChangedMainSkills();
+        nCount = ((class JobSystemCli*)(void*)(((void*)((class PC*)(class PCBase*)(pPc))->GetJobSystem())))->ChangedMainSkills();
     } else if (nId == 0x4efa) {
         nCount = ((class CQuestManager*)(class Unk_GmQuestHolder*)(((class Unk_GmQuestHolder*)FUN_140764020())))->CountCompletedLevelGuideQuests();
     } else if (nId == 0x4f53) {
@@ -1379,7 +1379,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
     } else if (nId == 0x4f87) {
         nCount = TSingleton<CAdventureLevelTable>::GetInstance()->CountUnclaimedRewards(pPc->vfunc_141(), DAT_143ab3308);
     } else if (nId == 0x4f71) {
-        void* p = ((void*)FUN_140b769d0(0x4f71));
+        void* p = ((void*)FindCoupleDanceEventDialog(0x4f71));
         if (p != 0)
             nCount = ((class UICoupleDanceEventDialog*)(void*)(p))->FUN_140bfe180();
     } else if (nId == 0x4f33) {
@@ -1405,7 +1405,7 @@ void UIGameMenuDialog::FUN_1419391c0()
 {
     int nCount = 0;
     if (!FUN_1409301c0()) {
-        if ((__int64)((CubeMapInformationService*)FUN_1409670e0())->FUN_1410d4940() > 0)
+        if ((__int64)((CubeMapInformationService*)GetCubeMapInformationService())->FUN_1410d4940() > 0)
             nCount = 1;
     }
     int nKey = FindTopMenuId(0x16);
@@ -1545,7 +1545,7 @@ void UIGameMenuDialog::FUN_141939ec0()
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    efd::SmartPointer<Ridee> spInfo(((class PCBase*)(class PCBase*)(pPc))->FUN_1416764a0());
+    efd::SmartPointer<Ridee> spInfo(((class PCBase*)(class PCBase*)(pPc))->GetRidee());
     if (spInfo != 0) {
         bool bBusy = spInfo->GetData()->m_basic.m_nHidePCInfo != 0;
         if (bBusy)
@@ -1783,7 +1783,7 @@ void UIGameMenuDialog::FUN_14193b4a0(void* pQuest)
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    int nJob = TSingleton<CChangeJobTable>::GetInstance()->GetStartQuestId((Unk_SubJobCode)((class PC*)(class PCBase*)(pPc))->FUN_141654730());
+    int nJob = TSingleton<CChangeJobTable>::GetInstance()->GetStartQuestId((Unk_SubJobCode)((class PC*)(class PCBase*)(pPc))->GetSubJob());
     if (((class CQuest*)(void*)(pQuest))->FUN_140bfc580() == nJob)
         m_nDirty = 1;
 }
@@ -1858,7 +1858,7 @@ void UIGameMenuDialog::FUN_14193b750()
             FUN_141275260(0x86f, 1, 0);
         return;
     }
-    Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50());
+    Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->GetUGCMapInfo());
     if (FUN_14193fbd0(reinterpret_cast<Unk_GmTargetRef*>(&target)))
         return;
     if (((class MyPC*)(class PCBase*)(pPc))->HasNoHome() != 0) {
@@ -1951,7 +1951,7 @@ void UIGameMenuDialog::FUN_14193c000()
         return;
     }
     int nOut = 0;
-    int nRestarted = ((Unk_AttendTable*)&(DAT_143ab3010))->FUN_1409617d0(0x44c, nQuest, *(int const*)(int*)(&nOut));
+    int nRestarted = ((Unk_AttendTable*)&(DAT_143ab3010))->GetValue(0x44c, nQuest, *(int const*)(int*)(&nOut));
     if (nRestarted != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_restarted"), 1, 1);
     } else {
@@ -2177,7 +2177,7 @@ void UIGameMenuDialog::FUN_14193d450()
     TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e76);
     void* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != 0) {
-        Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->GetUGCMapInfo());
         ((class UIRealEstateDialog*)(void*)(pDlg))->FUN_141ab4000(((Unk_GmTarget*)target.operator->())->m_24, ((Unk_GmTarget*)target.operator->())->m_20);
     }
 }
@@ -2244,7 +2244,7 @@ void UIGameMenuDialog::FUN_14193d700()
     } else if (TSingleton<PaybackTable>::GetInstance()->IsResetWindow() != 0) {
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f93);
         FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
-    } else if (reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->IsAvailable(0) == 0) {
+    } else if (reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->IsAvailable(0) == 0) {
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f93);
         FUN_140d73aa0(GetStringCommonByKey(L"s_payback_error_uiopen_end_time"), 0, 0, CStringW(L""));
     } else {

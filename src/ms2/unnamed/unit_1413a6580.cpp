@@ -58,7 +58,7 @@ Unk_SoundSink* FUN_1409331f0();
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public: int GetPairKey(int nKey, int& rOut);
-    int FUN_14142c940(__int64, int);
+    int FindKeyByActionAndPriority(__int64, int);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -107,15 +107,15 @@ int CGuideConditionInput::vfunc_3()
         return 0;
     int nHeld = (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(m_n20, false, 0) && TSingleton<CUIService>::GetInstance()->FUN_141adbb00() == 0) ? 1 : 0;
     if (m_nTick == 0)
-        return FUN_1413a55a0(nHeld);
+        return ApplyNot(nHeld);
     if (nHeld == 0)
     {
         m_nDeadline = 0;
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     }
     if (m_nDeadline == 0)
         m_nDeadline = GetTickCountMs2() + m_nTick;
-    return FUN_1413a5600(GetTickCountMs2() >= (unsigned)m_nDeadline);
+    return ApplyNotBool(GetTickCountMs2() >= (unsigned)m_nDeadline);
 }
 MS2_REPLACE_METHOD(0x1413A66C0, CGuideConditionInput, vfunc_3, 252, 0xEEAD86B3);
 
@@ -156,34 +156,34 @@ int CGuideConditionActionInput::vfunc_3()
 {
     int nKey = 0;
     int nAltKey0, nAltKey1, nAltKey2;
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 0);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 0);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
         nAltKey0 = 0;
         if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
     }
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 1);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 1);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
         nAltKey1 = 0;
         if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
     }
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 2);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 2);
     if (nKey != 0)
     {
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
         nAltKey2 = 0;
         if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey2, false, 0))
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
     }
-    return FUN_1413a55a0(0);
+    return ApplyNot(0);
 }
 MS2_REPLACE_METHOD(0x1413A6960, CGuideConditionActionInput, vfunc_3, 595, 0x47F42DA8);
 
@@ -232,6 +232,6 @@ int CGuideConditionPortalEnable::vfunc_3()
         return 0;
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
     ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pPC->vfunc_18())), &arrPortals);
-    return FUN_1413a5600(arrPortals.GetCount() != 0);
+    return ApplyNotBool(arrPortals.GetCount() != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

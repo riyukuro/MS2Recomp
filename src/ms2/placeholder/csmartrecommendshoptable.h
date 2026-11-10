@@ -39,16 +39,16 @@ MS2_CHECK_OFFSET(CRecommendItem, m_strBuyButtonText, 0x38);
 MS2_CHECK_OFFSET(CRecommendItem, m_nRequireItemCount, 0x58);
 
 // The loaded rows (RTTI .?AVCRecommendTableCache@@, 0xa0 bytes): a cache record (file path / write time) with the
-// code -> row map. The name used here is the placeholder's original one; the exe's RTTI name is CRecommendTableCache.
-class Unk_SmartRecommendShops : public CCacheData
+// code -> row map. Named by that RTTI (was the placeholder Unk_SmartRecommendShops).
+class CRecommendTableCache : public CCacheData
 {
 public:
-    Unk_SmartRecommendShops();                              // 0x140816470
-    virtual ~Unk_SmartRecommendShops() = default;           //  0 0x140816620 (??_G 0x1408167b0)
+    CRecommendTableCache();                              // 0x140816470
+    virtual ~CRecommendTableCache() = default;           //  0 0x140816620 (??_G 0x1408167b0)
     ATL::CAtlMap<unsigned int, MS2Ptr<CRecommendItem> > m_items;    // +0x28
     CLockCriticalSection m_lock;                            // +0x70
 };
-MS2_CHECK_SIZE(Unk_SmartRecommendShops, 0xa0);
+MS2_CHECK_SIZE(CRecommendTableCache, 0xa0);
 
 class CSmartRecommendShopTable : public TSingleton<CSmartRecommendShopTable>,
                                  public CValidData<CSmartRecommendShopTable>
@@ -69,7 +69,7 @@ public:
     static bool s_bInit;                                    // 0x143ab1a31
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_SmartRecommendShops> m_spData;               // +0x10
+    MS2Ptr<CRecommendTableCache> m_spData;               // +0x10
     int m_bLoaded;                                          // +0x20
     int m_pad_24;
 };

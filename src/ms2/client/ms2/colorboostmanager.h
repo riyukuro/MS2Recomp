@@ -38,8 +38,8 @@ public:
     CColorBoostManager();                                                       // 0x14109bd60
     virtual ~CColorBoostManager();                                              // 0x14109bdc0, ??_G 0x14109c0b0
 
-    void FUN_14109be00(const CColorBoostData& kData);                           // add a boost
-    void FUN_14109be30(const egf::EntityID& kId);                               // per-frame update of the actor's colour
+    void AddBoost(const CColorBoostData& kData);                           // add a boost
+    void UpdateBoosts(const egf::EntityID& kId);                               // per-frame update of the actor's colour
 
 private:
     ATL::CAtlList<CColorBoostData> m_boosts;                                    // +0x10

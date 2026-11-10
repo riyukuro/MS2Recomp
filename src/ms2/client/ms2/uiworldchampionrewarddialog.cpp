@@ -90,7 +90,7 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
     }
 WC_WRAP(1)
 WC_WRAP(3)
-void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);
+void SetChildHtmlText(const Scaleform::GFx::Value&, CString, CStringW);
 int FUN_140bd09c0(void*);
 class CMsgBoxData : public CPtred {};
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
@@ -293,7 +293,7 @@ void UIWorldChampionRewardDialog::FUN_140feb6b0() {
     FUN_140feb870();
     FUN_140febc40();
     CStringW season = FUN_14028dfa0(L"s_world_champion_season_info", m_season, FUN_140b8ed80(m_start), FUN_140b8ed80(m_end));
-    FUN_140cff1b0(FUN_1422dbb40(), "m_curSeason", season);
+    SetChildHtmlText(FUN_1422dbb40(), "m_curSeason", season);
 }
 MS2_REPLACE_METHOD(0x140feb6b0, UIWorldChampionRewardDialog, FUN_140feb6b0, 429, 0xA66C5C9A);
 // @0x140feb870

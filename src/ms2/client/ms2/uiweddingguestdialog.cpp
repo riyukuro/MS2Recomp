@@ -96,7 +96,7 @@ unsigned int FUN_140900f00();                                            // max 
 #include "ms2/placeholder/wcformat.h"
 Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
-class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
+class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 
 
 typedef ATL::CAtlArray<CBuddyManager::Ptr> BuddyArray;
@@ -164,7 +164,7 @@ void UIWeddingGuestDialog::vfunc_43()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        UITalkCinematic* pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
+        UITalkCinematic* pRef = ((class UITalkCinematic*)FindTalkCinematic(0x4e40));
         if (pRef != 0)
         {
             int nX = pRef->GetLowerCutGlobalY();

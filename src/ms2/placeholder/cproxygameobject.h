@@ -41,28 +41,28 @@ public:
     virtual ~CProxyGameObject();                        // slot 0, 0x1416c1f00 (??_G 0x1416c2bc0)
 
     int FUN_1416c1ff0();                                // m_40 is the self object
-    int FUN_1416c2040();                                // m_40 is another object
+    int IsOtherPlayer();                                // m_40 is another object
     int FUN_1416c2090();                                // has a template id and no pending flag
     int FUN_1416c20d0();                               // handle +0x18 has an object
     int FUN_1416c2110();
     int FUN_1416c21c0();
-    Unk_ProxyValue88* FUN_1416c2200();
-    MS2Ptr<NpcDataCli> FUN_1416c2220();
-    Vector3 FUN_1416c2270();
+    Unk_ProxyValue88* GetQuestState();
+    MS2Ptr<NpcDataCli> GetNpcData();
+    Vector3 GetPosition();
     void* FUN_1416c22f0();
     void* FUN_1416c2310();
     unsigned short FUN_1416c2330();
     int FUN_1416c2350();
     int FUN_1416c2370();
     int FUN_1416c2390();
-    CStringW FUN_1416c23b0();
+    CStringW GetName();
     CString FUN_1416c2520();
     CStringW FUN_1416c2570();
     CStringW FUN_1416c2600();
     int FUN_1416c2920();
     Unk_ProxyValueD0* FUN_1416c2950();
     int FUN_1416c2990(int nTemplateId);
-    void FUN_1416c2a80();
+    void UpdateQuestState();
     bool FUN_1416c2b30();
     bool FUN_1416c2b70();
 

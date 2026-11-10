@@ -71,7 +71,7 @@ private:
     __int64 m_pad_8;
 };
 class CServerString;
-Unk_PatchTextOwner* FUN_140a87680();
+Unk_PatchTextOwner* GetServerString();
 
 // @0x140a86e50
 COnlinePatchFileContext::COnlinePatchFileContext() : m_pData(0), m_nSize(0), m_nReceived(0)
@@ -90,7 +90,7 @@ COnlinePatchFileContext::~COnlinePatchFileContext()
 }
 
 // @0x140a87680
-Unk_PatchTextOwner* FUN_140a87680()
+Unk_PatchTextOwner* GetServerString()
 {
     return reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::s_instance);
 }
@@ -290,7 +290,7 @@ void COnlinePatchManagerCli::ReloadTables()
     ((class CMaidInfoTable*)(class Unk_PatchTableA*)(reinterpret_cast<Unk_PatchTableA*>(TSingleton<CMaidInfoTable>::GetInstance())))->Load();
     LoadSystemMailContent();
     LoadTalkScripts();
-    ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(FUN_140a87680()->FUN_140a87690()))->Load();
+    ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(GetServerString()->FUN_140a87690()))->Load();
     TSingleton<CStringTable>::GetInstance()->FUN_141811960();
     ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload();
 }

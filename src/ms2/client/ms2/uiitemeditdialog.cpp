@@ -128,7 +128,7 @@ public:
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 
 // The current field.
@@ -166,10 +166,10 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class UICameraEditDialog { public: void SetEnableFlagIfHidden(int n); };   // C3: view of uicameraeditdialog.h
-UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class Unk_IESound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -219,7 +219,7 @@ CString UIItemEditDialog::GetTypeName()
 void UIItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
     if (TSingleton<UITalkManager>::GetInstance()->GetTalking() != 0)
@@ -233,15 +233,15 @@ void UIItemEditDialog::vfunc_67()
 void UIItemEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_1419bdb50(0);
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
     {
-        m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+        m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
         m_198->SelectSlot(6);
     }
-    m_1a8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
+    m_1a8 = (Unk_BSCamera*)FindCameraEditDialog((eUIClassID)0x4ef2);
     if (m_30.get())
     {
         CString strGuide = ((struct Unk_IEConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_cc50;
@@ -270,7 +270,7 @@ void UIItemEditDialog::vfunc_15()
     if (vfunc_55() != 0)
         return;
     if (m_198.get())
-        m_198->FUN_140cd1bf0();
+        m_198->UpdateEditItems();
     if (m_1a8)
         reinterpret_cast<UICameraEditDialog*>(m_1a8)->SetEnableFlagIfHidden(m_198->IsDragging() == 0);
 }
@@ -361,8 +361,8 @@ void UIItemEditDialog::vfunc_24(void* p)
     NoticeMessage effect;   // C3: was Unk_IEEffectRequest
     ((Unk_IEEffectRequest&)(effect)).m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
     ((Unk_IEEffectRequest&)(effect)).m_n08 = 1;
-    ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&((Unk_IEEffectRequest&)(effect))))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580());
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_IEEffectRequest&)(effect))));
+    ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&((Unk_IEEffectRequest&)(effect))))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->GetObjectId());
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_IEEffectRequest&)(effect))));
     FUN_1419bdb50(0);
     m_1b0 = 0;
 }
@@ -375,7 +375,7 @@ int UIItemEditDialog::vfunc_1(void* p)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+    if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -387,7 +387,7 @@ int UIItemEditDialog::vfunc_3(void* p, float)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+    if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -399,7 +399,7 @@ int UIItemEditDialog::vfunc_2(void* p, float, int)
         return 0;
     if (m_198 == 0)
         return 0;
-    if (m_198->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+    if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         FUN_1419bdb50(1);
     return 1;
 }
@@ -456,7 +456,7 @@ bool UIItemEditDialog::FUN_1419bd7a0()
         return false;
     {
         Unk_IEEquipPtr spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655e10(6);
-        if (spEquip.get() && spEquip->FUN_1411dc7f0() && spEquip->FUN_1411dc7f0()->FUN_14053e210())
+        if (spEquip.get() && spEquip->GetItemData() && spEquip->GetItemData()->FUN_14053e210())
             return true;
     }
     return false;

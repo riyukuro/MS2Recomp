@@ -28,8 +28,8 @@ public:
     void FUN_1417b7430(PCBase* pOwner);                     // init with the owner
     void FUN_1417b7450();                                   // drop the records
     int FUN_1417b7490();                                    // a record is due
-    MS2Ptr<Unk_StateArg22> FUN_1417b7620();                 // copy of the current record
-    void FUN_1417b7670(Unk_StateArg22* pRec);               // set the current record
+    MS2Ptr<StateSyncObject> FUN_1417b7620();                 // copy of the current record
+    void FUN_1417b7670(StateSyncObject* pRec);               // set the current record
     void FUN_1417b76b0(float fTime);                        // advance with the game time
 };
 MS2_CHECK_SIZE(StateRideeController, 0x50);

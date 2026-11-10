@@ -14,7 +14,7 @@ public:
     UICashShopDialog* FUN_140b051c0() const;                        // the pointee (null test)
     UICashShopDialog* FUN_140b051d0() const;                        // the pointee
 private:
-    void FUN_140b054b0();                                           // takes the reference
+    void AddRef();                                           // takes the reference
     void FUN_140b05500(void*);
     void FUN_140b05530();                                           // drops the reference
     void FUN_140b05570(void*);
@@ -24,4 +24,4 @@ private:
 };
 MS2_CHECK_SIZE(Unk_CashShopRef, 0x10);
 
-UICashShopDialog* FUN_140b04f80(int nId);                           // the open UICashShopDialog with the UI id
+UICashShopDialog* FindCashShopDialog(int nId);                           // the open UICashShopDialog with the UI id

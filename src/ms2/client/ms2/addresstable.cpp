@@ -237,7 +237,7 @@ CStringW CAddressTable::FormatBuddy(__int64 nCharId, int nId, int nType, int nUn
 // Shutdown: empties the address map (called from the client's teardown list in ms2.cpp). The atexit destructor of
 // s_addresses (0x142c9d630) is a separate function that runs ~CRBMap.
 // @0x140978fb0
-void FUN_140978fb0()
+void ClearAddressTable()
 {
     s_addresses.RemoveAll();
 }

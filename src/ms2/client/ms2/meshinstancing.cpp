@@ -16,7 +16,7 @@
 #include "ms2/client/ms2/ms2lightservice.h"
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
@@ -42,7 +42,7 @@ public:
 ecr::RenderService* FUN_1413f9890();
 class CameraMgr { public: bool IsSphereInFrustum(const efd::Point3& kPos, float fRadius); };   // C3: view of camera.h (was free FUN_140af0aa0)
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
-void FUN_14147dae0(NiNode*, bool);
+void CompactChildren(NiNode*, bool);
 const efd::utf8string& FUN_14112e120(egf::Entity*);
 
 // @0x14147be60
@@ -52,7 +52,7 @@ MeshInstancing::MeshInstancing(const Unk_MeshInstancingConfig& cfg, int m)
 // @0x14147bf70
 MeshInstancing::~MeshInstancing() { vfunc_1(); }
 // @0x14147c010
-void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned count, NiTransform* transform, bool bFlag) {
+void MeshInstancing::Init(egf::Entity* entity, unsigned cap, unsigned count, NiTransform* transform, bool bFlag) {
     if (!ready) {
         flag28 = false;
         id10 = entity->GetEntityID();
@@ -70,11 +70,11 @@ void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned c
         root->GrowChildArray(cap);
         root->SetLocalTransform(identity);
         id18 = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce760(FUN_14112e120(entity), config.asset, bFlag);
-        source = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id18);
+        source = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id18);
         FUN_141568ac0(source, FUN_1413fa320(entity));
-        FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0x2a7fd9f4, flag2a);
-        FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, config.flags30);
-        FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, config.flags31);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0x2a7fd9f4, flag2a);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, config.flags30);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, config.flags31);
         NiAVObject* scene = FUN_141b6efc0(source);
         flag2b = FUN_1413fa390(entity);
         if (scene != NULL) {
@@ -102,7 +102,7 @@ void MeshInstancing::vfunc_1() {
         NiInstancingUtilities::DisableMeshInstancing(mesh);
     }
     if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*() != NULL) {
-        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(source);
+        TSingleton<EntityWorldManager>::GetInstance()->DestroyEntity(source);
         source = NULL;
     }
     entries.clear();
@@ -121,7 +121,7 @@ MS2_REPLACE_METHOD(0x14147c730, MeshInstancing, UpdateIfVisible, 244, 0x6D8D9B6A
 // @0x14147c830
 void MeshInstancing::RefreshRootAndSource() {
     if ((NiNode*)root != NULL) {
-        FUN_14147dae0(root.operator->(), true);
+        CompactChildren(root.operator->(), true);
         FUN_141851f90((void*)((NiNode*)root), 0.0f);
         root->UpdateEffects();
         root->UpdateProperties();
@@ -144,7 +144,7 @@ void MeshInstancing::UpdateNodes(double dt) {
 // @0x14147ca20
 void MeshInstancing::SetSourceVisible(bool enabled) {
     if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()) {
-        FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0xa0b6b179, enabled);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0xa0b6b179, enabled);
         unknown24 = !enabled;
     }
 }
@@ -155,7 +155,7 @@ void MeshInstancing::FUN_14147caa0() {
     for (std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
         egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
-            FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0xa0b6b179, false);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(entity), 0xa0b6b179, false);
             if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(it->first))) renderer->RemoveRenderedEntity(entity, it->second.original);
         }
     }
@@ -166,8 +166,8 @@ void MeshInstancing::FUN_14147cbc0() {
     for (std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
         egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
-            FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0xa0b6b179, false);
-            FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0x2a7fd9f4, true);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(entity), 0xa0b6b179, false);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(entity), 0x2a7fd9f4, true);
             if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(entity->GetEntityID())))
                 renderer->RemoveRenderedEntity(entity, it->second.original);
         }
@@ -224,7 +224,7 @@ MS2_REPLACE_METHOD(0x14147cf90, MeshInstancing, FUN_14147cf90, 44, 0xBBAC2F44);
 void MeshInstancing::FUN_14147d0c0(bool enabled) {
     if (reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()) {
         if (!config.flags30) enabled = false;
-        FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, enabled);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, enabled);
         NiAVObject* object = FUN_141b6efc0(source);
         if (object != NULL) {
             FUN_141567330(object, enabled);
@@ -239,7 +239,7 @@ void MeshInstancing::FUN_14147d180(bool value) {
     if ((bool)(reinterpret_cast<const egf::EntityPtr*>(&source)->operator egf::Entity*()))
     {
         if (config.flags31)
-            FUN_14098c6e0((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, value);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, value);
     }
 }
 // @0x14147d200
@@ -270,13 +270,13 @@ struct Unk_NiNodeChildren : NiNode {
     using NiNode::m_kChildren;
 };
 // @0x14147dae0
-void FUN_14147dae0(NiNode* node, bool recursive) {
+void CompactChildren(NiNode* node, bool recursive) {
     ((Unk_NiNodeChildren*)node)->m_kChildren.Compact();
     ((Unk_NiNodeChildren*)node)->m_kChildren.UpdateSize();
     if (recursive) {
         for (unsigned i = 0; i < ((Unk_NiNodeChildren*)node)->m_kChildren.GetSize(); ++i) {
             NiNode* child = NiDynamicCast(NiNode, node->GetAt(i));
-            if (child != NULL) FUN_14147dae0(child, recursive);
+            if (child != NULL) CompactChildren(child, recursive);
         }
     }
 }

@@ -110,7 +110,7 @@ extern unsigned char DAT_1430e3b20;
 // Reconnect (same as CSceneStateMove::OnUpdate)
 CString FUN_14016a600(const wchar_t*, int);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0
-class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
+class UIObject* FindUIObject(int);   // C3: was FindUIObject
 int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned);
 
 // Notify registry (as uidtattendpopup.cpp)
@@ -154,7 +154,7 @@ void FUN_1412753b0(const CStringW&, int, int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 int FUN_1406516b0();
 CStringW GetStringCommon(int);
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 
@@ -319,13 +319,13 @@ CSceneStateMulti::BackUpCharacterInfo::BackUpCharacterInfo(MyPC* pPC)
 {
     if (pPC != 0)
     {
-        m_nGender = ((class PC*)(class MyPC*)(pPC))->FUN_141658e60();
+        m_nGender = ((class PC*)(class MyPC*)(pPC))->GetGender();
         for (int i = 0; i < 2; i++)
             m_equip[i] = *((Unk_CharEquip const*)&((class PC*)(class MyPC*)(pPC))->FUN_141659220(i));
-        m_nJobCode = reinterpret_cast<PC*>(pPC)->FUN_141654700();
-        m_n68 = reinterpret_cast<PC*>(pPC)->FUN_141654730();
+        m_nJobCode = reinterpret_cast<PC*>(pPC)->GetJobGroupId();
+        m_n68 = reinterpret_cast<PC*>(pPC)->GetSubJob();
         ATL::CAtlArray<MS2Ptr<CEquipItem> > tmp;
-        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->FUN_1416561a0()))->CollectShownItems(m_items);
+        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->GetEquipment()))->CollectShownItems(m_items);
     }
 }
 
@@ -384,12 +384,12 @@ void CSceneStateMulti::OnUpdate(double fTime)
         {
             if (m_reconnectTimer.FUN_140868c00() != 0)
             {
-                if (FUN_140714f90()->FUN_1415384e0() == 0)
+                if (FUN_140714f90()->IsConnected() == 0)
                 {
                     FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
                     m_nRetry = m_nRetry + 1;
                     CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
-                    void* loading = ((void*)FUN_141540270(0x3ed));
+                    void* loading = ((void*)FindUIObject(0x3ed));
                     if (loading)
                         reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
                 }
@@ -487,7 +487,7 @@ void CSceneStateMulti::vfunc_1(int)
         if (TSingleton<CameraMgr>::GetInstance()->GetSavedSetting(tmp))
         {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(tmp);
-            reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed750(4, 1);
+            reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->SetMode(4, 1);
         }
     }
 }
@@ -577,7 +577,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
         info.m_n30 = reinterpret_cast<JobTable*>(reinterpret_cast<void*>(TSingleton<JobTable>::GetInstance()))->GetSubJob1(m_nJobCode);
         info.m_b58 = bFlag;
         if (info.FUN_14107c3a0(reinterpret_cast<PC*>(spPC.operator MyPC*())))
-            m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c500();
+            m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->GetEntityIDValue();
     }
 }
 
@@ -598,15 +598,15 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
             info.m_equip[i] = pInfo->m_equip[i];
         if (info.FUN_14107b440(reinterpret_cast<PC*>(spPC.operator MyPC*())))
         {
-            m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c500();
+            m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->GetEntityIDValue();
             ATL::CAtlList<MS2Ptr<CEquipItem> >& items = pInfo->m_items;
             for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
             {
                 MS2Ptr<CItem> sub = items.GetAt(pos)->GetItem();
                 if (sub.get() != 0)
                 {
-                    sub->SetObjectId(reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c580());
-                    reinterpret_cast<PC*>(spPC.operator->())->FUN_141653d10(sub);
+                    sub->SetObjectId(reinterpret_cast<GameObject*>(spPC.operator->())->GetObjectId());
+                    reinterpret_cast<PC*>(spPC.operator->())->AddItemAndPreloadModels(sub);
                 }
             }
         }
@@ -634,7 +634,7 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
             if (pChar == 0)
                 continue;
             efd::vector<unsigned long long> ids;
-            FUN_1413fb630(((egf::Entity*)(reinterpret_cast<GameObject*>(pActor)->FUN_14123c410())), (efd::vector<NiMesh*>*)&ids);
+            FUN_1413fb630(((egf::Entity*)(reinterpret_cast<GameObject*>(pActor)->GetEntity())), (efd::vector<NiMesh*>*)&ids);
             for (unsigned iId = 0; iId < ids.size(); iId++)
             {
                 if ((long long)pRow->GetAVObject() == (long long)ids.at(iId))
@@ -740,7 +740,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
     }
     int nWaiting = packet.ReadInt32();
     CStringW text = StringFormat<int>(GetStringCommon(0xac0), nWaiting);
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
     {
         Unk_MessageBoxPtr current = pBox->FUN_1419f8470();

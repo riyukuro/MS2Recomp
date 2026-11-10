@@ -172,7 +172,7 @@ void UIExpBar::FUN_141932430()
     Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    efd::SmartPointer<Ridee> spHolder(reinterpret_cast<Ridee*>(pPlayer->FUN_1416764a0()));
+    efd::SmartPointer<Ridee> spHolder(reinterpret_cast<Ridee*>(pPlayer->GetRidee()));
     if (spHolder != (Ridee*)0)
     {
         bool bMounted = spHolder->GetData()->m_basic.m_nHidePCInfo != 0 ? 1 : 0;

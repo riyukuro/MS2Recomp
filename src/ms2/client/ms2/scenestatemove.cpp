@@ -25,7 +25,7 @@ CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_140298ea0(CStringW);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
-class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
+class UIObject* FindUIObject(int);   // C3: was FindUIObject
 int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned);
 extern void (*DAT_143b03490)(short, unsigned char, const char*);
 extern unsigned char DAT_1430c3b20;
@@ -80,13 +80,13 @@ void CSceneStateMove::OnUpdate(double fTime)
     {
         if (m_bConnecting != 0 && m_timer.FUN_140868c00() != 0)
         {
-            if (FUN_140714f90()->FUN_1415384e0() == 0)
+            if (FUN_140714f90()->IsConnected() == 0)
             {
                 m_bConnecting = 0;
                 m_nRetry = m_nRetry + 1;
                 m_timer.FUN_140868750(10000);
                 CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
-                void* loading = ((void*)FUN_141540270(0x3ed));
+                void* loading = ((void*)FindUIObject(0x3ed));
                 if (loading)
                     reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
             }
@@ -99,7 +99,7 @@ void CSceneStateMove::OnUpdate(double fTime)
             if (FUN_140714f90()->RestoreServerAddress())
             {
                 CStringW text = FUN_140298ea0(CStringW(L"s_reconnect_to_server_fail"));
-                void* loading = ((void*)FUN_141540270(0x3ed));
+                void* loading = ((void*)FindUIObject(0x3ed));
                 if (loading)
                     reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
                 m_bFailed = 1;

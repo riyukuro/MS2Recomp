@@ -94,7 +94,7 @@ public:
     virtual int vfunc_14();                                             // 14 0x1417ecbd0
     virtual int vfunc_15();                                             // 15 0x1417e92c0
     virtual int vfunc_18();                                             // 18 0x1417e7150
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);                     // 22 0x1417e67c0
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);                     // 22 0x1417e67c0
     virtual void vfunc_26(Unk_StateDataArg* p);                         // 26 0x1417e91f0
 
     MS2Ptr<CSkillRecord> GetRecord();                               // the running cast

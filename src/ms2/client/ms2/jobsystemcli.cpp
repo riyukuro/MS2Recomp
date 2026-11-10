@@ -60,7 +60,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
+        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->GetSkillSystem()->GetSkillSet();
         if (spSet.get() != 0)
         {
             unsigned short nLevel = spSet->GetSkillLevel(nSkillId);
@@ -88,13 +88,13 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
+        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->GetSkillSystem()->GetSkillSet();
         if (spSet.get() != 0)
         {
             if (spSet->HasSkill(nSkillId, 0) != 0)
                 return true;
         }
-        if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)
+        if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->GetSkillTree()))->GetSkillLevel(nSkillId) > 0)
             return true;
         if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId) > 0)
             return true;
@@ -104,7 +104,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
             int nMain = GetJobData()->GetSubSkillParent(nSkillId);
             if (nMain != 0)
             {
-                if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain) > 0)
+                if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->GetSkillTree()))->GetSkillLevel(nMain) > 0)
                     return true;
             }
         }
@@ -133,7 +133,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer == 0)
         return 0;
-    unsigned short nTreeLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId); unsigned short nUnused = 0; unsigned short nLevel = nTreeLevel;
+    unsigned short nTreeLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->GetSkillTree()))->GetSkillLevel(nSkillId); unsigned short nUnused = 0; unsigned short nLevel = nTreeLevel;
     if (nLevel != 0)
         return nLevel;
     if (GetJobData().IsNull())
@@ -141,7 +141,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     int nMain = GetJobData()->GetSubSkillParent(nSkillId);
     if (nMain == 0)
         return 0;
-    unsigned short nRet = 0; unsigned short nMainLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain); unsigned short nUnused2 = 0; nRet = nMainLevel; return nRet;
+    unsigned short nRet = 0; unsigned short nMainLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->GetSkillTree()))->GetSkillLevel(nMain); unsigned short nUnused2 = 0; nRet = nMainLevel; return nRet;
 }
 
 // @0x140a6e0a0
@@ -206,7 +206,7 @@ void JobSystemCli::RefreshActiveStance()
         const int nStanceSlot = 1;
         JobSkillPtr spSkill = FindSkill(nStanceSlot);
         if (spSkill.get() != 0)
-            NotifySkill(reinterpret_cast<PC*>(m_pOwner)->FUN_14165c570(), spSkill->m_nLevel);
+            NotifySkill(reinterpret_cast<PC*>(m_pOwner)->GetNormalAttackSkillId(), spSkill->m_nLevel);
     }
 }
 
@@ -218,7 +218,7 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
         MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spRow.IsNull())
             return;
-        reinterpret_cast<PC*>(m_pOwner)->FUN_14165c720(nSkillId, nLevel);
+        reinterpret_cast<PC*>(m_pOwner)->PreloadComboSkill(nSkillId, nLevel);
     }
 }
 

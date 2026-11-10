@@ -50,7 +50,7 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Free functions of the exe, bound by their FUN_<va> names.
 __int64 GetServerTime();
-UIGameMenuDialog* FUN_140938b90(int nId);
+UIGameMenuDialog* FindGameMenuDialog(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
@@ -237,17 +237,17 @@ void DungeonRecordManagerCli::OnPacket(CInPacket& packet)
 
 // reads a count and that many (room id, record) pairs
 // @0x140b22f40
-CInputStream& FUN_140b22f40(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecordCliPtr>& map);
+CInputStream& ReadRecordMap(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecordCliPtr>& map);
 // @0x140b22ea0
-CInputStream& FUN_140b22ea0(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRankRewardPtr>& map);
-CInputStream& FUN_140b22fe0(CInputStream& in, DungeonRankRewardPtr& spReward);
-CInputStream& FUN_140b23070(CInputStream& in, DungeonRecordCliPtr& spRecord);
+CInputStream& ReadRankRewardMap(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRankRewardPtr>& map);
+CInputStream& ReadRankReward(CInputStream& in, DungeonRankRewardPtr& spReward);
+CInputStream& ReadRecord(CInputStream& in, DungeonRecordCliPtr& spRecord);
 
 // @0x140b20d40
 void DungeonRecordManagerCli::OnRecords(CInPacket& packet)
 {
     m_records.RemoveAll();
-    FUN_140b22f40(packet, m_records);
+    ReadRecordMap(packet, m_records);
 }
 
 // @0x140b20d90
@@ -256,7 +256,7 @@ void DungeonRecordManagerCli::OnAddRecord(CInPacket& packet)
     DungeonRecordCliPtr spRecord(new DungeonRecordCli);
     packet >> *spRecord;
     m_records.SetAt(spRecord->GetDungeonRoomID(), spRecord);
-    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+    if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938ae0(0x4f1c, 0);
 }
 
@@ -284,7 +284,7 @@ void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
 
 // the end-of-dungeon photo dialog, if open
 // @0x140b23100
-UIDungeonClosingPhotoDialog* FUN_140b23100(int nId)
+UIDungeonClosingPhotoDialog* FindClosingPhotoDialog(int nId)
 {
     if (CUIService::GetInstance())
     {
@@ -298,7 +298,7 @@ UIDungeonClosingPhotoDialog* FUN_140b23100(int nId)
 // @0x140b21150
 void DungeonRecordManagerCli::OnClosingPhoto(CInPacket& packet)
 {
-    if (UIDungeonClosingPhotoDialog* pDlg = FUN_140b23100(0x4f19))
+    if (UIDungeonClosingPhotoDialog* pDlg = FindClosingPhotoDialog(0x4f19))
         pDlg->FUN_140e0eb40(packet);
 }
 
@@ -315,7 +315,7 @@ void DungeonRecordManagerCli::OnAddRecordExtra(CInPacket& packet)
     packet >> *spRecord;
     m_records.SetAt(spRecord->GetDungeonRoomID(), spRecord);
     FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
-    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+    if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938ae0(0x4f1c, 0);
 }
 
@@ -444,7 +444,7 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
 void DungeonRecordManagerCli::OnRewards(CInPacket& packet)
 {
     m_rewards.RemoveAll();
-    FUN_140b22ea0(packet, m_rewards);
+    ReadRankRewardMap(packet, m_rewards);
 }
 
 // @0x140b21fe0
@@ -678,35 +678,35 @@ void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
 }
 
 // @0x140b22ea0
-CInputStream& FUN_140b22ea0(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRankRewardPtr>& map)
+CInputStream& ReadRankRewardMap(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRankRewardPtr>& map)
 {
     unsigned nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRankRewardPtr spReward;
         unsigned nKey;
-        FUN_140b22fe0(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spReward);
+        ReadRankReward(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spReward);
         map.SetAt(nKey, spReward);
     }
     return in;
 }
 
 // @0x140b22f40
-CInputStream& FUN_140b22f40(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecordCliPtr>& map)
+CInputStream& ReadRecordMap(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecordCliPtr>& map)
 {
     unsigned nCount = in.ReadInt32();
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRecordCliPtr spRecord;
         unsigned nKey;
-        FUN_140b23070(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spRecord);
+        ReadRecord(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spRecord);
         map.SetAt(nKey, spRecord);
     }
     return in;
 }
 
 // @0x140b22fe0
-CInputStream& FUN_140b22fe0(CInputStream& in, DungeonRankRewardPtr& spReward)
+CInputStream& ReadRankReward(CInputStream& in, DungeonRankRewardPtr& spReward)
 {
     spReward.AssignRaw(new DungeonRankReward);
     in >> *spReward;
@@ -714,7 +714,7 @@ CInputStream& FUN_140b22fe0(CInputStream& in, DungeonRankRewardPtr& spReward)
 }
 
 // @0x140b23070
-CInputStream& FUN_140b23070(CInputStream& in, DungeonRecordCliPtr& spRecord)
+CInputStream& ReadRecord(CInputStream& in, DungeonRecordCliPtr& spRecord)
 {
     spRecord.AssignRaw(new DungeonRecordCli);
     in >> *spRecord;

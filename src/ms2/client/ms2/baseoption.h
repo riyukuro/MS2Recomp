@@ -36,7 +36,7 @@ public:
     void SetEnabled(bool b);
     int GetType() const;                                      // m_nType
     int GetActive() const;                                      // m_nActive
-    int FUN_140a02e50() const;                                      // m_nId
+    int GetId() const;                                      // m_nId
 
 public:
     int m_nPending;                                                 // +0x18 a change arrived before the option was active
@@ -48,4 +48,4 @@ public:
 };
 MS2_CHECK_SIZE(CBaseOption, 0x30);
 
-UIGameOptionDialog* FUN_140a02e60(int nDialogId);                   // the open UIGameOptionDialog, or 0
+UIGameOptionDialog* FindGameOptionDialog(int nDialogId);                   // the open UIGameOptionDialog, or 0

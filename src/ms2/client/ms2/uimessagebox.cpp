@@ -190,10 +190,10 @@ void FUN_1418fe1c0(const CString& strUrl);                            // open a 
 
 // The message box queue (uimessageboxdata.cpp's callers).
 void FUN_14151f200();                                           // show the next queued box
-void FUN_14151f720(MS2Ptr<CMsgBoxData> spData);
+void RemoveFromQueue(MS2Ptr<CMsgBoxData> spData);
 int FUN_14151f6e0();
 MS2Ptr<CMsgBoxData> FUN_14151f820();
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
@@ -210,7 +210,7 @@ class Unk_MessageBoxSound { public: virtual void vfunc_0(); virtual void vfunc_1
 template <class T> T* Unk_UgcGetDialog(int nId);   // C3: was FUN_141876420
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140e43fe0 (T = ASDialog)
 
-UICashShopDialog* FUN_140b04f80(int nId);
+UICashShopDialog* FindCashShopDialog(int nId);
 class CGuildManager;
 class Unk_MessageBoxSocket : public CNetworkService
 {
@@ -253,14 +253,14 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_MessageBoxNameDialog : public UICharacterListDialog { public: };
 template <class T> T* Unk_MMDialog(int nId);          // mentoringmanager.cpp
 template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820
-void FUN_141404930(__int64 nUid);
-void FUN_141425fc0(__int64, int, void*);   // C3: was FUN_141425fc0
+void PlayItemSoundByUid(__int64 nUid);
+void RequestSellItem(__int64, int, void*);   // C3: was RequestSellItem
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pOut);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 int FUN_141276a30(const CStringW& strName, CStringW& strError);  // validate a character name
 bool RequestCoupleEmotion(__int64, int);   // C3: was FUN_140b845a0
 int UseItem(MS2Ptr<CItem> spItem, int n);
-bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
+bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
 
 class Unk_MessageBoxGameOption { public: char m_pad_00[0x10]; __time64_t m_nFuncItemAsk; __time64_t m_nCurrencyAsk; };
@@ -708,14 +708,14 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
     }
     else
     {
-        FUN_141425fc0(spItem->GetItemUid(), nCount, (void*)(spItem.get()));
+        RequestSellItem(spItem->GetItemUid(), nCount, (void*)(spItem.get()));
     }
 }
 
 // @0x1419f8de0
 void UIMessageBox::AttachToLayer()
 {
-    FUN_140b632f0()->BringToFront(this, m_layer);
+    GetUISwfEntityManager()->BringToFront(this, m_layer);
 }
 MS2_REPLACE_METHOD(0x1419F8DE0, UIMessageBox, AttachToLayer, 41, 0x2CD98C0B);
 
@@ -735,8 +735,8 @@ MS2_REPLACE_METHOD(0x1419F8E10, UIMessageBox, PlayMessageSound, 163, 0xBFB98928)
 void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
 {
     m_count = 1;
-    FUN_140b632f0()->AddToLayer(this, m_layer);
-    FUN_140b632f0()->BringToFront(this, m_layer);
+    GetUISwfEntityManager()->AddToLayer(this, m_layer);
+    GetUISwfEntityManager()->BringToFront(this, m_layer);
     reinterpret_cast<Unk_MessageBoxSound*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(0x4e48);
     m_data = spData;
     PlayMessageSound(spData);
@@ -765,7 +765,7 @@ void UIMessageBox::FUN_1419f9110()
     if (!FUN_1419f8270())
     {
         vfunc_8(0);
-        FUN_140b632f0()->RemoveFromLayer(this, 4);
+        GetUISwfEntityManager()->RemoveFromLayer(this, 4);
         FUN_141276180(s_close, "");
     }
     if (m_data.get() ? true : false)
@@ -819,7 +819,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
             if (spData == m_data.get())
                 FUN_14151f200();
             else
-                FUN_14151f720(spData);
+                RemoveFromQueue(spData);
         }
     }
     else
@@ -847,7 +847,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
             if (spNext->FUN_141a02ca0() == nBoxId)
                 FUN_14151f200();
             else
-                FUN_14151f720(spData);
+                RemoveFromQueue(spData);
         }
     }
 }
@@ -1301,9 +1301,9 @@ int UIMessageBox::HandleLearnSkillButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
-            pPlayer->FUN_1416546d0()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc20(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc40());
+            pPlayer->GetJobSystem()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc20(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc40());
     }
     return 1;
 }
@@ -1314,7 +1314,7 @@ int UIMessageBox::HandleUnlockcashButton(int nButton)
 {
     if (nButton == 0)
     {
-        UICashShopDialog* pPeer = FUN_140b04f80(20156);
+        UICashShopDialog* pPeer = FindCashShopDialog(20156);
         if (pPeer)
             pPeer->FUN_1410356f0();
     }
@@ -1358,7 +1358,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
         return 1;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_data->FUN_141a02c00());
         if (spItem.get())
         {
             ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemInventoryMode5(spItem->GetItemUid());
@@ -1459,7 +1459,7 @@ int UIMessageBox::HandleLearnEmotionButton(int nButton)
     {
         __int64 nUid = m_data->FUN_141a02c00();
         FUN_14151f200();
-        if (MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid))
+        if (MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid))
             g_143ab2a90.SendEmotion(spItem.get());
     }
     return 1;
@@ -1536,7 +1536,7 @@ int UIMessageBox::FUN_1419fc810(int nButton)
         if (bAsk != 0)
         {
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
                 if (spItem.get())
                 {
                     CStringW strName;
@@ -1557,7 +1557,7 @@ int UIMessageBox::FUN_1419fc810(int nButton)
             }
             return 1;
         }
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             CStringW strEmpty(L"");
@@ -1629,7 +1629,7 @@ int UIMessageBox::HandleConfirmChangeCharNameButton(int nButton)
     {
         __int64 nUid = m_data->FUN_141a02f10(0, 0);
         const CStringW& strName = m_data->FUN_141a02fd0(1, CStringW());
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
             g_143ab2a90.FUN_140a63880(spItem.get(), strName);
     }
@@ -1676,7 +1676,7 @@ int UIMessageBox::HandleSummonBindPetButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         pPlayer->FUN_14152aa90(spItem, 1);
@@ -1696,7 +1696,7 @@ int UIMessageBox::FUN_1419fd260(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
@@ -1727,7 +1727,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
@@ -1758,7 +1758,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UIItemPetTrainingDialog* pDialog = GetItemUseDialog<UIItemPetTrainingDialog>(0x4f12);
@@ -1785,7 +1785,7 @@ int UIMessageBox::FUN_1419fd830(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
@@ -1816,7 +1816,7 @@ int UIMessageBox::HandleRemakeOptionScrollBindPetButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UIItemRemakeScrollDialog* pDialog = Unk_MessageBoxDialog<UIItemRemakeScrollDialog>(0x4f09);
@@ -1843,18 +1843,18 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         int nSkill = 0;
-        m_data->FUN_140961900(0, nSkill);
+        m_data->GetIntArg(0, nSkill);
         MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkill, 1);
         if (spLevel == 0)
             return 0;
         Unk_InventorySkillRequest request(nSkill, 1);
         request.remap = spLevel->FUN_140804450();
         request.item = spItem->GetItemUid();
-        MS2Ptr<CSkillRecord> spRecord = pPlayer->FUN_141523bc0()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> spRecord = pPlayer->GetSkillSystem()->FUN_141765570(request);
         if (spRecord == 0)
             return 0;
         spRecord->m_bItemSkill = true;
@@ -1872,7 +1872,7 @@ int UIMessageBox::HandleUseBindFuncItemButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         UseItem(spItem, 1);
@@ -1890,12 +1890,12 @@ int UIMessageBox::HandleUseBindEquipItemButton(int nButton)
     int nResult = 0;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         int nArg0 = m_data->FUN_141a02e90(0, 0);
         int nArg1 = m_data->FUN_141a02e90(1, 0);
-        nResult = g_143ab2a90.FUN_140a62270(spItem.get(), nArg0, nArg1, 1);
+        nResult = g_143ab2a90.RequestEquipItem(spItem.get(), nArg0, nArg1, 1);
     }
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe8) && nResult == 0 && g_143ab2a90.FUN_140a66f20() == nUid)
         g_143ab2a90.FUN_140a66f40(0);
@@ -1911,11 +1911,11 @@ int UIMessageBox::HandleUseBindGemEquipItemButton(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
         int nCount = m_data->FUN_141a02e50(0, 0);
-        FUN_141271960(spItem, nCount, 1);
+        EquipGem(spItem, nCount, 1);
     }
     return 1;
 }
@@ -2031,7 +2031,7 @@ int UIMessageBox::HandleSellButton(int nButton, int nCount)
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
         FUN_14151f200();
-        FUN_1419f8920(g_143ab2a90.FUN_140a5d680(nUid), nCount);
+        FUN_1419f8920(g_143ab2a90.FindItemByUid(nUid), nCount);
         return 1;
     }
     return 1;
@@ -2057,7 +2057,7 @@ int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
                 if (pDialog->FUN_141b283f0(&nSlot))
                 {
                     TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode8(nUid, nCount, nSlot);
-                    FUN_141404930(nUid);
+                    PlayItemSoundByUid(nUid);
                 }
             }
         }
@@ -2076,7 +2076,7 @@ int UIMessageBox::FUN_1419fea00(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        FUN_141425fc0(nUid, nCount, (void*)(g_143ab2a90.FUN_140a5d680(nUid).get()));
+        RequestSellItem(nUid, nCount, (void*)(g_143ab2a90.FindItemByUid(nUid).get()));
     }
     return 1;
 }
@@ -2092,7 +2092,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
         MS2Ptr<CMsgBoxData> spData = m_data;
         if (strName.IsEmpty())
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
@@ -2100,7 +2100,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
         CStringW strError;
         if (FUN_141276a30(strName, strError) == 0)
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
                 pBox->FUN_1419f82b0(strError);
             return 0;
@@ -2125,7 +2125,7 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         MS2Ptr<CMsgBoxData> spData = m_data;
         if (strName.IsEmpty())
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
@@ -2133,7 +2133,7 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         CStringW strError;
         if (FUN_141276a30(strName, strError) == 0)
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
                 pBox->FUN_1419f82b0(strError);
             return 0;
@@ -2165,7 +2165,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
         MS2Ptr<CMsgBoxData> spData = m_data;
         if (strName.IsEmpty())
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
@@ -2180,7 +2180,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
             }
         }
         __int64 nUid = spData->FUN_141a02c00();
-        CItem* pItem = g_143ab2a90.FUN_140a5d680(nUid).get();
+        CItem* pItem = g_143ab2a90.FindItemByUid(nUid).get();
         if (!pItem)
             return 0;
         g_143ab2a90.FUN_140a63880(pItem, strName);
@@ -2203,7 +2203,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         }
         MS2Ptr<CMsgBoxData> spData = m_data;
         __int64 nUid = spData->FUN_141a02c00();
-        CItem* pItem = g_143ab2a90.FUN_140a5d680(nUid);
+        CItem* pItem = g_143ab2a90.FindItemByUid(nUid);
         if (!pItem)
             return 0;
         Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -2288,7 +2288,7 @@ int UIMessageBox::FUN_1419ff870(int nButton)
         return 1;
     }
     Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_1416764d0())
+    if (((class PCBase*)(class PC*)(pPlayer))->IsRiding())
     {
         MS2Ptr<RideOffActionCoupleEmotion> spAction(new RideOffActionCoupleEmotion(0));
         spAction->m_n28 = nEmotion;
@@ -2326,7 +2326,7 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
     packet.Encode2(2);
     packet.Encode8(pTarget->FUN_141656a80());
     FUN_140710590(packet);
-    pPlayer->vfunc_59(0x3c, new StateMicroGameRpsData(((class GameObject*)(void*)(pTarget))->FUN_14123c580()), 0x99, 0);
+    pPlayer->vfunc_59(0x3c, new StateMicroGameRpsData(((class GameObject*)(void*)(pTarget))->GetObjectId()), 0x99, 0);
     return 1;
 }
 
@@ -2338,7 +2338,7 @@ int UIMessageBox::FUN_1419ffe20(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             CStringW strEmpty(L"");
@@ -2378,7 +2378,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
     packet.Encode4(nRound);
     packet.Encode8(pTarget->FUN_141656a80());
     FUN_140710590(packet);
-    pPlayer->vfunc_59(0x45, new StateMicroGameCoupleDanceData(((class GameObject*)(void*)(pTarget))->FUN_14123c580()), 0xa9, 0);
+    pPlayer->vfunc_59(0x45, new StateMicroGameCoupleDanceData(((class GameObject*)(void*)(pTarget))->GetObjectId()), 0xa9, 0);
     return 1;
 }
 
@@ -2415,7 +2415,7 @@ static int FUN_141a002b0(__int64 nUid, int nCount)
 {
     if (nUid == 0)
         return 1;
-    return FUN_141a00180(g_143ab2a90.FUN_140a5d680(nUid), nCount);
+    return FUN_141a00180(g_143ab2a90.FindItemByUid(nUid), nCount);
 }
 
 int Parse_1402180a0(const CStringW& value);                     // the block type of a name (commonenum.cpp)

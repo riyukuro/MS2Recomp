@@ -72,7 +72,7 @@ int GPUManager::FUN_141375390(CStringW adapterName)
 }
 
 // @0x1413758b0
-void GPUManager::FUN_1413758b0()
+void GPUManager::Update()
 {
     m_elapsed += TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
     if (0.1f > m_elapsed) {
@@ -97,12 +97,12 @@ void GPUManager::FUN_1413759f0()
 }
 
 // @0x141375a80
-void GPUManager::FUN_141375a80()
+void GPUManager::LogGpuMemory()
 {
     char text[64];
-    FUN_1413758b0();
-    unsigned __int64 total = FUN_141375c90();
-    unsigned __int64 used = FUN_141375c80();
+    Update();
+    unsigned __int64 total = GetTotalMemory();
+    unsigned __int64 used = GetUsedMemory();
     int percent = FUN_141375ca0();
     float pct = (float)percent * 0.01f;
     float mb = pct * (float)total;
@@ -113,15 +113,15 @@ void GPUManager::FUN_141375a80()
 }
 
 // @0x141375c80
-unsigned __int64 GPUManager::FUN_141375c80() { return m_28; }
+unsigned __int64 GPUManager::GetUsedMemory() { return m_28; }
 
 // @0x141375c90
-unsigned __int64 GPUManager::FUN_141375c90() { return m_20; }
+unsigned __int64 GPUManager::GetTotalMemory() { return m_20; }
 
 // @0x141375ca0
 int GPUManager::FUN_141375ca0() { return m_34; }
 
 MS2_REPLACE_METHOD(0x141375390, GPUManager, FUN_141375390, 1300, 0xE9CF4B22);
-MS2_REPLACE_METHOD(0x1413758B0, GPUManager, FUN_1413758b0, 300, 0x9F48965D);
+MS2_REPLACE_METHOD(0x1413758B0, GPUManager, Update, 300, 0x9F48965D);
 MS2_REPLACE_METHOD(0x1413759F0, GPUManager, FUN_1413759f0, 131, 0xCBCFC807);
-MS2_REPLACE_METHOD(0x141375A80, GPUManager, FUN_141375a80, 291, 0xA07212EB);
+MS2_REPLACE_METHOD(0x141375A80, GPUManager, LogGpuMemory, 291, 0xA07212EB);

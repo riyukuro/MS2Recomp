@@ -140,7 +140,7 @@ static Unk_1402a9d70 s_condition5(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
 
-// The state-sync record (StateSyncObject; Unk_StateArg22 in statemanager.h) as StateData slots 1/2 see it.
+// The state-sync record (StateSyncObject in statemanager.h) as StateData slots 1/2 see it.
 class Unk_StateDataArg
 {
 public:
@@ -171,7 +171,7 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArgDance, m_strC0, 0xc0);
 
 // The micro-game sync records (RTTI .?AVStateSyncObjectMicroGameRps@@ / ...CoupleDance@@).
-class StateSyncObjectMicroGameRps : public Unk_StateArg22
+class StateSyncObjectMicroGameRps : public StateSyncObject
 {
 public:
     int m_nB8;
@@ -180,7 +180,7 @@ public:
     CStringW m_strC8;                                   // +0xc8
 };
 MS2_CHECK_OFFSET(StateSyncObjectMicroGameRps, m_strC8, 0xc8);
-class StateSyncObjectMicroGameCoupleDance : public Unk_StateArg22
+class StateSyncObjectMicroGameCoupleDance : public StateSyncObject
 {
 public:
     int m_nB8;
@@ -190,7 +190,7 @@ public:
 MS2_CHECK_OFFSET(StateSyncObjectMicroGameCoupleDance, m_strC0, 0xc0);
 
 // A record the controllers send (the sync record plus its packet writer).
-class Unk_GuideRecord : public Unk_StateArg22
+class Unk_GuideRecord : public StateSyncObject
 {
 public:
 };
@@ -198,7 +198,7 @@ public:
 // Packet send / the session globals.
 void FUN_140710590(COutPacket& packet);
 extern unsigned char DAT_143ab2856;
-int FUN_141472bc0();
+int GetServerTick();
 class Unk_LaunchOptions { public: bool FUN_1406af100(); };     // replay / spectator mode
 Unk_LaunchOptions* FUN_1406aeee0();
 class Unk_TOEntity;
@@ -269,7 +269,7 @@ public:
     int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 class Unk_AvPhysicsSvc;
-Unk_AvPhysicsSvc* FUN_1409f7ca0();
+Unk_AvPhysicsSvc* GetPhysXHelper();
 class Unk_StPhysObj
 {
 public:
@@ -292,7 +292,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 //
-float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
+float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pRight, efd::Point3* pSide);
 
 // The actor's physics body and its hit report.
@@ -489,7 +489,7 @@ void StateLocalController::vfunc_0()
         return;
     COutPacket packet(static_cast<int>(SendOp::UserSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
-    packet.WriteInt32(FUN_141472bc0());
+    packet.WriteInt32(GetServerTick());
     packet.WriteInt32(TSingleton<CMainSystem>::GetInstance()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(this)->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(this)->m_records.GetHeadPosition(); pos;
@@ -545,7 +545,7 @@ void StateRideeController::vfunc_0()
         return;
     COutPacket packet(static_cast<int>(SendOp::RideSync), 0);
     packet.WriteUInt8(DAT_143ab2856);
-    packet.WriteInt32(FUN_141472bc0());
+    packet.WriteInt32(GetServerTick());
     packet.WriteInt32(TSingleton<CMainSystem>::GetInstance()->GetElapsedTime());
     packet.WriteUInt8((unsigned char)static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetCount());
     for (POSITION pos = static_cast<View*>(static_cast<StateLocalController*>(this))->m_records.GetHeadPosition(); pos;
@@ -729,7 +729,7 @@ void State::vfunc_21(int n)
 MS2_REPLACE_METHOD(0x1417b81e0, State, vfunc_21, 10, 0x96F6F902);
 
 // @0x1417b81f0
-int State::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int State::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     return 0;
 }
@@ -772,7 +772,7 @@ MS2Ptr<StateData> State::vfunc_27()
 MS2_REPLACE_METHOD(0x1417b82d0, State, vfunc_27, 55, 0xF68217F9);
 
 // @0x1417b8310
-bool State::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool State::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     return false;
 }
@@ -1035,9 +1035,9 @@ void StateClimb::vfunc_4(StateData* pData)
     m_fSpeedH = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbSpeedH)->Read();
     m_timerHit.FUN_140868750(100);
     m_timerHang.FUN_140868750(100);
-    m_pOwner->FUN_14123cb20(false);
+    m_pOwner->SetShadowVisible(false);
     if (MyPC* pMyPC = FUN_1417b84b0()) {
-        if (reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())
+        if (reinterpret_cast<PC*>(pMyPC)->GetHeldItem())
             reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
     }
     efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
@@ -1060,7 +1060,7 @@ void StateClimb::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
     ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
-    m_pOwner->FUN_14123cb20(true);
+    m_pOwner->SetShadowVisible(true);
 }
 MS2_REPLACE_METHOD(0x1417bc340, StateClimb, vfunc_5, 70, 0xFD7CFEDA);
 
@@ -1194,7 +1194,7 @@ int StateClimb::FUN_1417bcc80()
     kInfo.m_dir = m_pOwner->GetForwardDirection();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0)) {
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0)) {
         Unk_StPhysObj* pWall = reinterpret_cast<Unk_StPhysObj*>(reinterpret_cast<CubeMapInformationService*>(kSvc.operator->())->GetCubeByEntity(kInfo.m_hitEntity));
         if (pWall != 0 && reinterpret_cast<CubeMapInformationService*>(kSvc.operator->())->FUN_1410b9080(reinterpret_cast<Cube*>(pWall), 0x10000) == 0) {
             efd::Point3 kTop;
@@ -1220,7 +1220,7 @@ int StateClimb::FUN_1417bcf20()
     kInfo.m_dir = m_pOwner->GetForwardDirection();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0))
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0))
         return 1;
     return 0;
 }
@@ -1241,7 +1241,7 @@ int StateClimb::FUN_1417bd030(int bLeft)
     kInfo.m_dir = kRight;
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0)) {
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0)) {
         Unk_StPhysObj* pObj = reinterpret_cast<Unk_StPhysObj*>(reinterpret_cast<CubeMapInformationService*>(kSvc.operator->())->GetCubeByEntity(kInfo.m_hitEntity));
         if (pObj != 0)
             return 1;
@@ -1258,7 +1258,7 @@ int StateClimb::FUN_1417bd310(efd::Point3 kPos)
     kInfo.m_dir = m_pOwner->GetForwardDirection();
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0)) {
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0)) {
         reinterpret_cast<PCBase*>(m_pOwner)->SetLookDirection(-kInfo.m_hitNormal, 1, 0);
         return 1;
     }
@@ -1289,7 +1289,7 @@ int StateClimb::FUN_1417bd420(void* pWall)
                     kEdge.x = m_pOwner->vfunc_18().x;
                 else
                     kEdge.y = m_pOwner->vfunc_18().y;
-                if (FUN_140966ea0(reinterpret_cast<const Vector3&>(kEdge), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18()))) < 100.0f)
+                if (GetPlanarDistance(reinterpret_cast<const Vector3&>(kEdge), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18()))) < 100.0f)
                     return 0;
             }
         }
@@ -1307,7 +1307,7 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_dir = -efd::Point3::UNIT_Z;
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
         if (kDown.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kDown.m_hitEntity);
             if (spObj.get()) {
@@ -1322,7 +1322,7 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_dir = efd::Point3::UNIT_Z;
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
         if (kUp.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kUp.m_hitEntity);
             if (spObj.get()) {
@@ -1346,7 +1346,7 @@ int StateClimb::FUN_1417bda60()
         NiPoint3 kPos = m_pOwner->vfunc_18();
         float fMax = 5.0f;
         float fDist = 0.0f;
-        if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a450(MS2_ST_POINT(kPos), &fDist, 5.0f) && !(fDist > 5.0f)) {
+        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(MS2_ST_POINT(kPos), &fDist, 5.0f) && !(fDist > 5.0f)) {
             m_n10 = 0x62;
             return 1;
         }
@@ -1361,13 +1361,13 @@ int StateClimb::FUN_1417bda60()
             kInfo.m_maxDist = 50.0f;
             kInfo.m_groups = 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 99.0f);
-            if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0))
+            if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0))
                 return 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(5.0f, 0.0f, 99.0f);
-            if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0))
+            if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0))
                 return 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(-5.0f, 0.0f, 99.0f);
-            if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0))
+            if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kInfo, 0))
                 return 1;
             m_n10 = 0x5f;
             return 1;
@@ -1579,7 +1579,7 @@ void StateClimb::FUN_1417beb40()
     kInfo.m_groups = FUN_1417bc010();
     efd::Point3 kTarget = kInfo.m_origin + kInfo.m_dir * 52.0f;
     float fDist = 0.0f;
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a450(kTarget, &fDist, 150.0f))
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(kTarget, &fDist, 150.0f))
         fDist = fDist - fMargin;
     kTarget.x = kPos.x;
     kTarget.y = kPos.y;
@@ -1706,7 +1706,7 @@ void StateCrawl::vfunc_9(double fTime)
     } else {
         switch (m_n10) {
         case 0x1b: {
-            unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+            unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
             if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x20, nSeq))
                 reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x20);
             break;
@@ -1714,7 +1714,7 @@ void StateCrawl::vfunc_9(double fTime)
         case 0x1c: {
             CString strAnim("Prostrate_Crawl_A");
             PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner);
-            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_141658e60() == 1)
+            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->GetGender() == 1)
                 strAnim = "Prostrate_Crawl_B";
             bool bChanged = strAnim != static_cast<Unk_StPC*>(m_pOwner)->FUN_14166dc50();
             if (bChanged) {
@@ -1744,7 +1744,7 @@ void StateCrawl::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
 MS2_REPLACE_METHOD(0x1417bf760, StateCrawl, TextKeyEvent, 128, 0x4B897556);
 
 // @0x1417bf7f0
-int StateCrawl::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateCrawl::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
         return 0;
@@ -1791,8 +1791,8 @@ void StateDash::vfunc_4(StateData* pData)
     NoticeMessage kEffect;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kEffect)).m_strName = FUN_1401d31f0()->m_strDashEffect;
     ((Unk_ExpTarget&)(kEffect)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(m_pOwner));
-    kEffect.SetActor(m_pOwner->FUN_14123c580());
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kEffect))));
+    kEffect.SetActor(m_pOwner->GetObjectId());
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kEffect))));
 }
 MS2_REPLACE_METHOD(0x1417bf9f0, StateDash, vfunc_4, 366, 0x5300BC55);
 
@@ -1814,7 +1814,7 @@ void StateDash::vfunc_3(double fTime)
     case 0x20: {
         efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
-        float fStep = FUN_140966ea0(reinterpret_cast<const Vector3&>(m_posLast), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18())));
+        float fStep = GetPlanarDistance(reinterpret_cast<const Vector3&>(m_posLast), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18())));
         m_fDist += fStep;
         m_posLast = m_pOwner->vfunc_18();
         if (fStep < 2.0f) {
@@ -1852,7 +1852,7 @@ MS2_REPLACE_METHOD(0x1417bfbd0, StateDash, vfunc_3, 1436, 0xB4537625);
 void StateDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     switch (m_n10) {
     case 0x1f:
         if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, nSeq)) {
@@ -1884,7 +1884,7 @@ void StateDash::AnimActivated(NiActorManager* pkManager, unsigned int eSequenceI
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, eSequenceID)) {
         float fStop = pkManager->GetNextEventTime(NiActorManager::TEXT_KEY_EVENT, eSequenceID, "stop");
         if (fStop != NiActorManager::INVALID_TIME) {
-            fStop -= (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+            fStop -= (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
             m_timerStop.FUN_140868750((int)(fStop * 1000.0f));
         }
     }
@@ -1907,7 +1907,7 @@ void StateDash::vfunc_6()
     if (m_n10 != 0x1d)
         return;
     m_n10 = 0x20;
-    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x35, nSeq))
         reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x35);
 }
@@ -2193,9 +2193,9 @@ void StateMicroGameRpsData::vfunc_2(Unk_StateDataArg* p)
 MS2_REPLACE_METHOD(0x1417c1620, StateMicroGameRpsData, vfunc_2, 130, 0x6BB4FA5D);
 
 // @0x1417c16b0
-bool StateMicroGameRpsData::FUN_1417c16b0(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameRpsData::FUN_1417c16b0(MS2Ptr<StateSyncObject> p)
 {
-    MS2Ptr<StateSyncObjectMicroGameRps> spRps(dynamic_cast<StateSyncObjectMicroGameRps*>((Unk_StateArg22*)p));
+    MS2Ptr<StateSyncObjectMicroGameRps> spRps(dynamic_cast<StateSyncObjectMicroGameRps*>((StateSyncObject*)p));
     if (spRps == 0)
         return false;
     if (m_n1c != spRps->m_nBC)
@@ -2236,10 +2236,10 @@ void StateMicroGameCoupleDanceData::vfunc_2(Unk_StateDataArg* p)
 MS2_REPLACE_METHOD(0x1417c1910, StateMicroGameCoupleDanceData, vfunc_2, 112, 0xCEF11D0A);
 
 // @0x1417c1990
-bool StateMicroGameCoupleDanceData::FUN_1417c1990(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameCoupleDanceData::FUN_1417c1990(MS2Ptr<StateSyncObject> p)
 {
     MS2Ptr<StateSyncObjectMicroGameCoupleDance> spDance(
-        dynamic_cast<StateSyncObjectMicroGameCoupleDance*>((Unk_StateArg22*)p));
+        dynamic_cast<StateSyncObjectMicroGameCoupleDance*>((StateSyncObject*)p));
     if (spDance == 0)
         return false;
     if (m_str != spDance->m_strC0)

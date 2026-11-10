@@ -42,16 +42,16 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The physics helper (singleton): collision group of the lifted prop.
 class CPhysXHelper;
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class NxGroupsMask;
 class CPhysXHelper   // C3: member view for the former free stand-in
 {
 public:
-    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
+    void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
 };
 
 // Entity properties read by hash.
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
 void FUN_1401d3700(CString& str);
 
@@ -108,7 +108,7 @@ int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds
 void FUN_141b71e70(egf::EntityID kId, bool bOn, unsigned int nArg, bool bFlag);   // the id by value
 void FUN_140ae1e80(NiAVObject* pComp, float fA, float fB, float fC, float fD, egf::EntityID kId);
-void FUN_14098b3e0(NiAVObject* pComp, float fA, bool bB);
+void SetNodeAlpha(NiAVObject* pComp, float fA, bool bB);
 void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 int FUN_140ae1c10();
 class CGraphicOptionTable   // C3: member view for the former free stand-ins
@@ -298,12 +298,12 @@ void CLiftableObject::SetState(int nState)
     {
     case 0:
     case 2:
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.data()), 9, 0, 1);
-        FUN_141447ec0(1);
+        ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(reinterpret_cast<egf::Entity*>(m_ent.data()), 9, 0, 1);
+        SetActive(1);
         break;
     case 1:
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.data()), 5, 0, 1);
-        FUN_141447ec0(0);
+        ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(reinterpret_cast<egf::Entity*>(m_ent.data()), 5, 0, 1);
+        SetActive(0);
         break;
     }
     UpdateConditions();
@@ -316,12 +316,12 @@ void CLiftableObject::FUN_141447c10()
     {
         m_timer.FUN_1408687f0();
         bool bOff = false;
-        FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOff));
+        SetCachedBoolProperty((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOff));
     }
 }
 
 // @0x141447c80
-Vector3 CLiftableObject::FUN_141447c80() const
+Vector3 CLiftableObject::GetPosition() const
 {
     return m_vC4;
 }
@@ -333,7 +333,7 @@ int CLiftableObject::FUN_141447cc0() const
 }
 
 // @0x141447ce0
-Unk_Entity* CLiftableObject::FUN_141447ce0()
+Unk_Entity* CLiftableObject::GetEntity()
 {
     return (Unk_Entity*)m_ent.data();
 }
@@ -345,7 +345,7 @@ int CLiftableObject::IsNotFixed() const
 }
 
 // @0x141447d50
-void CLiftableObject::FUN_141447d50(int nOn)
+void CLiftableObject::SetHighlight(int nOn)
 {
     if (m_ent.data() == 0)
         return;
@@ -368,7 +368,7 @@ void CLiftableObject::UpdateConditions()
 }
 
 // @0x141447ec0
-void CLiftableObject::FUN_141447ec0(bool bActive)
+void CLiftableObject::SetActive(bool bActive)
 {
     m_bC1 = bActive;
     if (bActive)
@@ -376,10 +376,10 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
         if (m_ent.data() != 0)
         {
             bool bOn = true;
-            FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOn));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOn));
             void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
             if (pComp != 0)
-                FUN_14098b3e0((NiAVObject*)pComp, 1.0f, false);
+                SetNodeAlpha((NiAVObject*)pComp, 1.0f, false);
         }
     }
     else

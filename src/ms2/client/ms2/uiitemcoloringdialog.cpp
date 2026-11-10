@@ -168,8 +168,8 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
+UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -275,7 +275,7 @@ MS2_REPLACE_METHOD(0x1419ac1d0, UIItemColoringDialog, GetTypeName, 61, 0x40CB051
 void UIItemColoringDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_1419ae790();
     Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc != 0)
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x1419ac540, UIItemColoringDialog, vfunc_74, 52, 0xE735FA8A);
 void UIItemColoringDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
-    m_2d8 = FUN_140cd47b0((eUIClassID)0x4ef2);
+    m_2d8 = FindCameraEditDialog((eUIClassID)0x4ef2);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419adbe0));
 }
@@ -320,10 +320,10 @@ void UIItemColoringDialog::OnLoadComplete()
     Unk_IcPlayer* pPc = ((Unk_IcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     m_198 = GetTickCountMs2();
     m_19c = (FUN_14109a9e0() % 6 + 5) * 1000;
-    m_268.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_268.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     FUN_1419afe30();
     m_25c = 1;
     ((class Unk_IcPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
@@ -357,7 +357,7 @@ void UIItemColoringDialog::vfunc_15()
         return;
     if (m_2d8 != 0)
         m_2d8->SetEnableFlagIfHidden(m_268->IsDragging() == 0);
-    m_268->FUN_140cd1bf0();
+    m_268->UpdateEditItems();
     if ((unsigned)(GetTickCountMs2() - m_198) > m_19c) {
         FUN_1419ae790();
         m_198 = GetTickCountMs2();
@@ -394,7 +394,7 @@ int UIItemColoringDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     int nIndex = _wtoi(aParts[2]);
                     CStringW strNext = aParts[3];
                     if (m_268.get() != 0) {
-                        unsigned __int64 nPrev = m_268->FUN_140cd1980();
+                        unsigned __int64 nPrev = m_268->GetEditItemUid();
                         if (nPrev > 0) {
                             if (nResult == 0) {
                                 int bAppend = nIndex == -1;
@@ -502,7 +502,7 @@ int UIItemColoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     } else if (_stricmp("OnClickReset", szMethod) == 0) {
         if (m_268.get() != 0) {
-            m_268->RestoreUid(m_268->FUN_140cd1980());
+            m_268->RestoreUid(m_268->GetEditItemUid());
             ASObj obj(2);
             int nFlags = 6;
             FUN_140f328a0(m_268, obj, nFlags);
@@ -528,7 +528,7 @@ void UIItemColoringDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
     } else if (_stricmp("getTooltipColor", strMethod) == 0) {
         if (m_268 == 0)
             return;
-        MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
+        MS2Ptr<CItem> spItem = m_268->GetEditItem();
         if (spItem == 0)
             return;
         ASTooltip tooltip(1, 2);
@@ -598,7 +598,7 @@ void UIItemColoringDialog::FUN_1419ae170()
         return;
     m_278.RemoveAll();
     ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->FUN_1411e3000(equips, 4, 0, 1);
+    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->FUN_1411e3000(equips, 4, 0, 1);
     ASArray items(2);
     for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
@@ -608,7 +608,7 @@ void UIItemColoringDialog::FUN_1419ae170()
             MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (spItem == 0)
                 continue;
-            Unk_EquipItemData* pData = spEquip->FUN_1411dc7f0();
+            Unk_EquipItemData* pData = spEquip->GetItemData();
             if (pData == 0)
                 continue;
             if (spEquip->FUN_1411dcda0() == 0)
@@ -640,7 +640,7 @@ void UIItemColoringDialog::FUN_1419ae790()
         return;
     if (m_268 == 0)
         return;
-    int nItemId = m_268->FUN_140cd17e0();
+    int nItemId = m_268->GetEditItemId();
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData.get() != 0) {
         int nPose = 0;
@@ -703,10 +703,10 @@ MS2_REPLACE_METHOD(0x1419aeb50, UIItemColoringDialog, RefreshBasketState, 94, 0x
 void UIItemColoringDialog::FUN_1419aebc0(const __int64* pUid, int nIndex)
 {
     bool bAsk = true;
-    bool bHasColor = (m_268.get() ? true : false) && (m_268->FUN_140cd1890().get() ? true : false);
+    bool bHasColor = (m_268.get() ? true : false) && (m_268->GetEditItem().get() ? true : false);
     if (bHasColor && FUN_140f02a80(m_254.first, m_254.second)) {
         bAsk = false;
-        m_268->RestoreUid(m_268->FUN_140cd1980());
+        m_268->RestoreUid(m_268->GetEditItemUid());
         if (nIndex < 0)
             ClearSelected();
     }
@@ -714,7 +714,7 @@ void UIItemColoringDialog::FUN_1419aebc0(const __int64* pUid, int nIndex)
         int nAsked = FUN_1419b1fd0(m_268, *pUid, nIndex, CString(""), static_cast<IMessageListener*>(this));
         if (nAsked != 0)
             return;
-        m_268->RestoreUid(m_268->FUN_140cd1980());
+        m_268->RestoreUid(m_268->GetEditItemUid());
     }
     FUN_1419b02c0(*pUid, nIndex);
 }
@@ -827,8 +827,8 @@ void UIItemColoringDialog::FUN_1419af750()
         NoticeMessage request;   // the hair apply effect
         request.m_strName = ((struct Unk_IcEffectPaths*)FUN_1401d31f0())->m_hairApply;
         request.m_nObject = 1;
-        request.SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
+        request.SetActor(((class GameObject*)(class PCBase*)(pPc))->GetObjectId());
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&request));
     }
 }
 MS2_REPLACE_METHOD(0x1419af750, UIItemColoringDialog, FUN_1419af750, 222, 0x7478D72B);
@@ -971,7 +971,7 @@ void UIItemColoringDialog::FUN_1419b02c0(__int64 nUid, int nIndex)
     if (m_268 == 0)
         return;
     m_268->SelectUid(nUid);
-    MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
+    MS2Ptr<CItem> spItem = m_268->GetEditItem();
     if (spItem == 0)
         return;
     MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
@@ -1123,7 +1123,7 @@ MS2Ptr<CItem> UIItemColoringDialog::AddCurrentItemToBasket(int nItemId)
 {
     if (m_268 == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
+    MS2Ptr<CItem> spItem = m_268->GetEditItem();
     if ((spItem.get() ? true : false) && spItem->FUN_1405276c0() == nItemId) {
         m_268->ResetEdit();
         m_2a8.AddTail(spItem);
@@ -1186,7 +1186,7 @@ MS2_REPLACE_METHOD(0x1419b1760, UIItemColoringDialog, FUN_1419b1760, 395, 0xCC30
 bool UIItemColoringDialog::FUN_1419b1900(int bCoupon)
 {
     if (bCoupon != 0 && m_1a8.m_2c != 0)
-        return g_143ab2a90.FUN_140a60ec0(m_1a8.m_2c) == 1;
+        return g_143ab2a90.HasItemWithTag(m_1a8.m_2c) == 1;
     return false;
 }
 MS2_REPLACE_METHOD(0x1419b1900, UIItemColoringDialog, FUN_1419b1900, 94, 0x9C2766CC);
@@ -1252,7 +1252,7 @@ bool UIItemColoringDialog::FUN_1419b1b50()
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7b);
     FUN_1419b1e40(m_2a8);
     FUN_1419b1e40(m_278);
-    m_268->RestoreUid(m_268->FUN_140cd1980());
+    m_268->RestoreUid(m_268->GetEditItemUid());
     m_268->SelectUid(0);
     m_268->FUN_140cd3820();
     FUN_140f014f0(m_268);
@@ -1337,7 +1337,7 @@ int FUN_1419b1fd0(MS2Ptr<Customize> spCustomize, const __int64& nUid, int nIndex
         CStringW strCmd;
         strCmd.Format(L"changeitem,%I64u,%d,%s", nUid, nIndex, (const char*)strTag);
         CStringW strName;
-        if (MS2Ptr<CItem> spItem = spCustomize->FUN_140cd1890()) {
+        if (MS2Ptr<CItem> spItem = spCustomize->GetEditItem()) {
             int nRarity = FUN_141275c00(spItem->GetRarity());
             strName = FUN_14183e930(spItem->FUN_140527b10(), nRarity);
         }

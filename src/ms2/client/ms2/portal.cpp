@@ -44,7 +44,7 @@
 class EntityWorldManager   // C3: member view for the former free stand-ins
 {
 public:
-    class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
+    class egf::Entity* FindEntity(class egf::EntityID const&);
 };
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
@@ -71,7 +71,7 @@ float FUN_14028d280(unsigned uMilliseconds);                        // ms -> sec
 
 // The clock and tick count.
 struct Unk_PortalClockOwner;
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 
 // The field world and the portal table.
 class Unk_PortalWorld { };
@@ -81,7 +81,7 @@ class Unk_PortalTableHolder { public:  };   // CPortalTable::GetName
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // scene root by id
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // The map record behind a counted pointer (the portal's map image list).
 
@@ -134,7 +134,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
 }
 
 // @0x14169b2e0
-int Unk_PortalBox::FUN_14169b2e0(const Vector3* pPoint)
+int Unk_PortalBox::ContainsPoint(const Vector3* pPoint)
 {
     return NxBoxContainsPoint(m_obb, static_cast<const NxVec3&>(NxVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
 }
@@ -179,7 +179,7 @@ int CPortal::FUN_14169b890()
 {
     if (m_nEndTime > 0)
     {
-        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
         if (pEntity == 0)
             return 0;
         Vector3 ptPos = DAT_143b01a60;
@@ -195,9 +195,9 @@ int CPortal::FUN_14169b890()
 }
 
 // @0x14169ba90
-int CPortal::FUN_14169ba90()
+int CPortal::ApplyMinimapTexture()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return 0;
     int nMapId = 0;
@@ -226,7 +226,7 @@ int CPortal::FUN_14169ba90()
                             CString strPath(*(CString*)((char*)spMap->m_spMinimap.operator->() + 0x18));
                             if (!strPath.IsEmpty())
                             {
-                                NiTexturePtr spTex = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strPath, 5);
+                                NiTexturePtr spTex = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strPath, 5);
                                 if ((NiTexture*)spTex != 0)
                                     ((NiTexturingProperty::Map*)(class NiTexturingProperty::Map*)(pMap))->SetTexture((NiTexture*)spTex);
                             }
@@ -245,7 +245,7 @@ void CPortal::FUN_14169bd40()
     if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime > 0 && m_tooltip.get() != 0)
     {
         CStringW strText;
-        unsigned nNow = ((class CMainSystem*)(struct Unk_PortalClockOwner*)(reinterpret_cast<Unk_PortalClockOwner*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390();
+        unsigned nNow = ((class CMainSystem*)(struct Unk_PortalClockOwner*)(reinterpret_cast<Unk_PortalClockOwner*>(TSingleton<CMainSystem>::GetInstance())))->GetServerTick();
         if (nNow >= m_nEndTime)
         {
             strText = L"00:00";
@@ -280,17 +280,17 @@ void CPortal::FUN_14169bd40()
     }
     if (m_nEventTime != 0)
     {
-        unsigned nTick = FUN_141472bc0();
+        unsigned nTick = GetServerTick();
         if (nTick > m_nEventTime)
         {
             m_nEventTime = 0;
-            FUN_14169cd50(1, 1);
+            SetShownAndGlow(1, 1);
             if (m_tooltip.get() != 0)
                 reinterpret_cast<Unk_PortalTipSlots*>(m_tooltip.operator->())->vfunc_8(1);
         }
         else
         {
-            FUN_14169cd50(0, 0);
+            SetShownAndGlow(0, 0);
             if (m_tooltip.get() != 0)
                 reinterpret_cast<Unk_PortalTipSlots*>(m_tooltip.operator->())->vfunc_8(0);
         }
@@ -302,13 +302,13 @@ void CPortal::FUN_14169c280()
 {
     if (m_nType == 6)
     {
-        FUN_14169ba90();
+        ApplyMinimapTexture();
         FUN_14169b890();
     }
     else if (m_nType == 3 || m_nType == 0x10)
     {
         if (m_strTip.GetLength() > 0)
-            FUN_14169ba90();
+            ApplyMinimapTexture();
         FUN_14169b890();
     }
     else if (m_nType == 10)
@@ -329,7 +329,7 @@ int CPortal::FUN_14169c330()
 }
 
 // @0x14169c3b0
-CStringW CPortal::FUN_14169c3b0()
+CStringW CPortal::GetActionText()
 {
     switch (m_nType)
     {
@@ -385,7 +385,7 @@ CString CPortal::FUN_14169c5f0()
 }
 
 // @0x14169cae0
-CStringW CPortal::FUN_14169cae0()
+CStringW CPortal::GetName()
 {
     if (m_nType == 0x11)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, m_nId);
@@ -400,7 +400,7 @@ CStringW CPortal::FUN_14169cae0()
 }
 
 // @0x14169cc40
-int CPortal::FUN_14169cc40()
+int CPortal::CheckQuestMask()
 {
     return TSingleton<CQuestMaskTable>::GetInstance()->CheckPortal(reinterpret_cast<Unk_QmPortal*>(this));
 }
@@ -408,7 +408,7 @@ int CPortal::FUN_14169cc40()
 // @0x14169cc70
 void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
 {
-    efd::SmartPointer<egf::Entity> spEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    efd::SmartPointer<egf::Entity> spEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (spEntity == 0)
         return;
     ((egf::Entity*)spEntity)->SetPropertyValue(0xfd95ca52, reinterpret_cast<const efd::Point3&>(pos));
@@ -417,9 +417,9 @@ void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
 }
 
 // @0x14169cd50
-void CPortal::FUN_14169cd50(int bShown, int bGlow)
+void CPortal::SetShownAndGlow(int bShown, int bGlow)
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -435,7 +435,7 @@ void CPortal::FUN_14169cd50(int bShown, int bGlow)
 // @0x14169ce50
 void CPortal::FUN_14169ce50(int bShown, int bGlow, int bExtra)
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -451,9 +451,9 @@ void CPortal::FUN_14169ce50(int bShown, int bGlow, int bExtra)
 }
 
 // @0x14169cf90
-void CPortal::FUN_14169cf90(int bShown)
+void CPortal::SetShown(int bShown)
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -463,9 +463,9 @@ void CPortal::FUN_14169cf90(int bShown)
 }
 
 // @0x14169d050
-void CPortal::FUN_14169d050(int bGlow)
+void CPortal::SetGlow(int bGlow)
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return;
     if (!FUN_14169c330())
@@ -478,17 +478,17 @@ void CPortal::FUN_14169d0e0()
 {
     if (TSingleton<CQuestMaskTable>::GetInstance()->HasPortalMask(reinterpret_cast<Unk_QmPortal*>(this)) != 0)
     {
-        int nState = FUN_14169cc40();
-        FUN_14169cd50(nState, nState);
+        int nState = CheckQuestMask();
+        SetShownAndGlow(nState, nState);
     }
     if (((class WorldService*)(class Unk_PortalWorld*)(reinterpret_cast<Unk_PortalWorld*>(WorldService::GetInstance())))->FUN_141bd3060() == 0x1e8673 && m_nId == 2)
-        FUN_14169cd50(1, 1);
+        SetShownAndGlow(1, 1);
 }
 
 // @0x14169d160
-bool CPortal::FUN_14169d160()
+bool CPortal::IsShown()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return false;
     bool bShown = false;
@@ -499,20 +499,20 @@ bool CPortal::FUN_14169d160()
 // @0x14169d1d0
 bool CPortal::FUN_14169d1d0()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return false;
     bool bExtra = true;
     bool bOverridden = pEntity->IsPropertyOverridden(0xe084c8de);
     if (bOverridden)
         pEntity->GetPropertyValue(0xe084c8de, bExtra);
-    return (bExtra && FUN_14169d160()) ? 1 : 0;
+    return (bExtra && IsShown()) ? 1 : 0;
 }
 
 // @0x14169d280
 int CPortal::FUN_14169d280()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return 0;
     int nValue = 0;
@@ -521,9 +521,9 @@ int CPortal::FUN_14169d280()
 }
 
 // @0x14169d2f0
-Vector3 CPortal::FUN_14169d2f0()
+Vector3 CPortal::GetPosition()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return DAT_143b01a60;
     Vector3 ptPos = DAT_143b01a60;
@@ -534,7 +534,7 @@ Vector3 CPortal::FUN_14169d2f0()
 // @0x14169d3a0
 void CPortal::FUN_14169d3a0()
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity);
     if (pEntity == 0)
         return;
     if (m_nType == 0x10)

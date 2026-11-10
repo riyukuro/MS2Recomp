@@ -32,8 +32,8 @@ public:
     virtual void vfunc_9(double fTime);                     // 9  0x1417d6000 (animation selection)
     virtual int vfunc_15();                                 // 15 0x1417d6ac0: 1
     virtual int vfunc_19();                                 // 19 0x1417d6ae0: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417d64c0
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x1417d6560
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417d64c0
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417d6560
 
     bool FUN_1417d65d0();                                   // the jump has lasted long enough (timer + m_n80 < clock)
     int FUN_1417d6620();                                    // the object to sit / lie on (+0x58) is taken or the ride ended

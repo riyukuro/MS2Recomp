@@ -5404,7 +5404,7 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     MS2Ptr<CUgcUploadCtrl> upload = m_upload;
     if (upload == NULL) return;
     MS2Ptr<CItem> item(0);
-    if (static_cast<unsigned __int64>(upload->m_itemUid) > 0) item = g_143ab2a90.FUN_140a5d680(upload->m_itemUid);
+    if (static_cast<unsigned __int64>(upload->m_itemUid) > 0) item = g_143ab2a90.FindItemByUid(upload->m_itemUid);
     CStringW price;
     if (item == NULL) price = FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms_price", FUN_1418fec00(m_fee.first, m_fee.second, false));
     FUN_140d748b0(10, FUN_14028dfa0<CStringW>(L"s_ugc_item_edit_terms", price),
@@ -5427,7 +5427,7 @@ bool UIItemBlueprintCreateDialog::FUN_140c37d50(int result, const CMsgBoxData&) 
     CUgcViewerBlueprintImage* viewer = static_cast<CUgcViewerBlueprintImage*>(m_upload->m_spViewer.get());
     if (!viewer) return true;
     viewer->m_proxy.m_strName = GetTrimmedName();
-    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(m_upload->m_itemUid);
+    MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(m_upload->m_itemUid);
     if (item.get()) {
         viewer->m_proxy.m_n18 = item->FUN_140528540();
         viewer->m_proxy.m_n20 = item->GetItemUid();

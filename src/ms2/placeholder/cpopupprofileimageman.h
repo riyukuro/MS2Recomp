@@ -41,9 +41,9 @@ public:
 
     CPopupProfileImageMan();                                // 0x141697320
     virtual ~CPopupProfileImageMan();                       //  0 0x1416973a0 (??_G 0x1416980c0)
-    void FUN_141697430();                                   // drop the entries that are shown long enough
-    int FUN_141697760(unsigned __int64 nId);                // register a character; 0 when it is not accepted
-    void FUN_1416979e0(unsigned __int64 nId);               // forget a character and hide its popup
+    void RemoveExpired();                                   // drop the entries that are shown long enough
+    int AddShown(unsigned __int64 nId);                // register a character; 0 when it is not accepted
+    void RemoveShown(unsigned __int64 nId);               // forget a character and hide its popup
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x08

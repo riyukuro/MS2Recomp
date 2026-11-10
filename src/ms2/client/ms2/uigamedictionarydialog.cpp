@@ -85,7 +85,7 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 // Input state, the movie manager, the player and the text hooks.
 class Unk_DictInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 class CReservedWordTable;
 CStringW GetStringCommon(int nStringId);                      // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
@@ -250,7 +250,7 @@ int UIGameDictionaryDialog::vfunc_13()
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0 && ((class Unk_DictInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
     {
-        if (FUN_140b632f0() != 0 && FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+        if (GetUISwfEntityManager() != 0 && GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) == 0)
             return 0;
         if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
         {

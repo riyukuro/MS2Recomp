@@ -128,7 +128,7 @@ void FUN_1412751f0(const CStringW& str, int a, int b);
 bool FUN_14028d470(float a, float b);
 
 // Pet-related helpers of other units.
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC);
 int FUN_140b118f0(int nItemId, PCBase* pPC);
 unsigned FUN_140b119c0(int nItemId, PCBase* pPC);
@@ -294,7 +294,7 @@ void CPet::vfunc_53(float f)
         {
             vfunc_23(FUN_140b10150());
             bool bShow = FUN_140b10150() == 0;
-            FUN_14123cb20(bShow);
+            SetShadowVisible(bShow);
         }
     }
     FUN_140b11180();
@@ -338,7 +338,7 @@ void CPet::vfunc_125(int n)
 {
     m_unk_15c = 1;
     FUN_1410932c0(0);
-    WorldService::GetInstance()->FUN_141bbbcf0(FUN_14123c580(), 1);
+    WorldService::GetInstance()->FUN_141bbbcf0(GetObjectId(), 1);
     ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc>((Unk_SSGNpc*)this))));
 }
 
@@ -349,7 +349,7 @@ void CPet::vfunc_52(double fTime)
     if (GetKind() != 0)
         fScale = fScale * 2.0f;
     FUN_14123c330(fScale);
-    float fRatio = FUN_14123c260() / GetScaleAC();
+    float fRatio = GetScale() / GetScaleAC();
     if (fRatio != m_fScaleA8)
     {
         int bDown = m_fScaleA8 - fRatio > 0.0f ? 0 : 1;
@@ -367,7 +367,7 @@ void CPet::vfunc_52(double fTime)
             if (fRatio > m_fScaleA8)
                 fRatio = m_fScaleA8;
         }
-        FUN_14123c280(fRatio * GetScaleAC());
+        SetScale(fRatio * GetScaleAC());
     }
 }
 
@@ -470,8 +470,8 @@ void CPet::FUN_140b10400()
     void* pItem = reinterpret_cast<CDropItem*>(pField)->FUN_140b12380();
     if (pItem == 0)
         return;
-    ((class CDropItem*)(class Unk_WsC_GameObj*)(pField))->FUN_141191330(FUN_14123c580());
-    ((class CDropItem*)(class Unk_WsC_GameObj*)(pField))->FUN_141190900(FUN_14123c580());
+    ((class CDropItem*)(class Unk_WsC_GameObj*)(pField))->FUN_141191330(GetObjectId());
+    ((class CDropItem*)(class Unk_WsC_GameObj*)(pField))->FUN_141190900(GetObjectId());
 }
 
 // @0x140b10510
@@ -485,12 +485,12 @@ void CPet::FUN_140b10510()
             void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
             if (pLocal != 0)
             {
-                if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
+                if (static_cast<PCBase*>(pLocal)->GetObjectId() == GetKind())
                 {
                     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                     ((Unk_EffectTarget&)(kTarget)).m_strName = *Client::Constants::GetInstance()->PetTamingMaxPointEffect.Get();
                     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-                    kTarget.SetActor(FUN_14123c580());
+                    kTarget.SetActor(GetObjectId());
                     m_nFxMax = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 }
             }
@@ -515,12 +515,12 @@ void CPet::FUN_140b10510()
         if (pLocal != 0)
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-            if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
+            if (GetKind() == static_cast<PCBase*>(pLocal)->GetObjectId())
                 ((Unk_EffectTarget&)(kTarget)).m_strName = FUN_140291c10(m_nGradeFx);
             else
                 ((Unk_EffectTarget&)(kTarget)).m_strName = *Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser.Get();
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-            kTarget.SetActor(FUN_14123c580());
+            kTarget.SetActor(GetObjectId());
             m_nFxOther = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         }
     }
@@ -533,7 +533,7 @@ void CPet::FUN_140b107f0(int nKind)
     void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pLocal != 0)
     {
-        if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == m_nKind)
+        if (static_cast<PCBase*>(pLocal)->GetObjectId() == m_nKind)
         {
             bool bShow = IsDead() == 0 && (vfunc_129().get() != 0 ? true : false);
             if (bShow)
@@ -560,7 +560,7 @@ void CPet::FUN_140b10a10(unsigned __int64 nPoint)
         if (nPoint == *Client::Constants::GetInstance()->TamingPetMaxPoint.Get())
         {
             void* pLocal = WorldService::GetInstance()->FUN_141bd0cc0();
-            if (pLocal != 0 && static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
+            if (pLocal != 0 && static_cast<PCBase*>(pLocal)->GetObjectId() == GetKind())
                 FUN_1412751f0(GetStringCommonByKey(L"s_pet_msg_taming_max_point"), 1, 1);
             bRename = 1;
             goto Store;
@@ -643,7 +643,7 @@ float CPet::FUN_140b11020()
 // @0x140b11050
 MS2Ptr<UITamingBar::Entity> CPet::vfunc_129()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<UITamingBar::Entity>(0);
     if (m_spBar == 0)
     {
@@ -738,7 +738,7 @@ void CPet::FUN_140b114e0(int nAnimId)
         m_nIdleMs = 0;
     }
     if (spLine->m_strEffect.GetLength() > 0)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<Unk_PetAnimLine>&>(spRow->m_contents[0])->m_strEffect), vfunc_18());
+        TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(reinterpret_cast<MS2Ptr<Unk_PetAnimLine>&>(spRow->m_contents[0])->m_strEffect), vfunc_18());
 }
 
 // @0x140b11760
@@ -747,7 +747,7 @@ void CPet::FUN_140b11760(CString strEffect)
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = vfunc_58();
-    kTarget.SetActor(FUN_14123c580());
+    kTarget.SetActor(GetObjectId());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
 }
 
@@ -776,7 +776,7 @@ int FUN_140b118f0(int nItemId, PCBase* pPC)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return 0;
-    if (static_cast<MyPC*>(pPC)->FUN_141523bc0()->FUN_141765fe0(spData->FUN_14053dc20(), 0) > 0.0f)
+    if (static_cast<MyPC*>(pPC)->GetSkillSystem()->FUN_141765fe0(spData->FUN_14053dc20(), 0) > 0.0f)
         return 1;
     return 0;
 }

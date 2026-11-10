@@ -117,7 +117,7 @@ private:
 };
 class UIPopUpMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
 class Unk_PopupMenu* FUN_140c30140(int nId);                              // the open popup menu dialog
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);     // the "blocked" notice
 
 
@@ -140,13 +140,13 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStrin
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show it
 void FUN_141275260(int nStrId, int nA, int nB);                     // system notice
 float FUN_140bf4fd0(float f);                                       // ceil
-void FUN_1414728e0(const CStringA& strKey);                         // drop a registered item tooltip
-void FUN_1414727e0(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
+void RemoveMailItemSlot(const CStringA& strKey);                         // drop a registered item tooltip
+void CreateMailItemSlot(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
 CStringW FUN_1409404f0(__int64 n);                                  // an amount as text
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool bIcon);  // a price as text
 int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
-UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
+UIMarketBillDialog* FindMarketBillDialog(int nUiType);                     // the open dialog of a UI id
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -614,7 +614,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
                     pItem->SetCountClamped(spAd->m_n1c);
                     CStringA strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
-                    FUN_1414727e0(strKey, MS2Ptr<CItem>(pItem), spAd->m_n24, i);
+                    CreateMailItemSlot(strKey, MS2Ptr<CItem>(pItem), spAd->m_n24, i);
                     nCount++;
                 }
             }
@@ -629,7 +629,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
             {
                 CStringA strKey;
                 strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
-                FUN_1414727e0(strKey, spAttach->m_item, spAttach->m_n20, i);
+                CreateMailItemSlot(strKey, spAttach->m_item, spAttach->m_n20, i);
                 nCount++;
             }
         }
@@ -645,7 +645,7 @@ void UIMailListDialog::FUN_1419e6b70()
     {
         CStringA strKey;
         strKey.Format("%s.%d", (const char*)GetTypeName(), i);
-        FUN_1414728e0(strKey);
+        RemoveMailItemSlot(strKey);
     }
 }
 MS2_REPLACE_METHOD(0x1419E6B70, UIMailListDialog, FUN_1419e6b70, 174, 0x75771166); // FUN_1419e6b70
@@ -831,7 +831,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onSendMail", szMethod) == 0)
     {
         {
-            BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xb);
+            BlockPtr spBlock = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(0xb);
             if (spBlock.get() != 0)
             {
                 FUN_140a30ad0(spBlock, 0xb, 0);
@@ -909,7 +909,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22d), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                spBox->FUN_140b76940(CStringW(strIds));
+                spBox->AddStringArg(CStringW(strIds));
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode18));
                 FUN_140d73c60(spBox);
             }
@@ -928,7 +928,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 {
                     spBox->FUN_141a01800(1);
                     spBox->SetCheckbox0(GetStringCommon(0x232), 0);
-                    spBox->FUN_140b76940(CStringW(strIds));
+                    spBox->AddStringArg(CStringW(strIds));
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
                 }
@@ -938,7 +938,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22e), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_140b76940(CStringW(strIds));
+                    spBox->AddStringArg(CStringW(strIds));
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
                 }
@@ -954,7 +954,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22f), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                spBox->FUN_140b76940(CStringW(strIds));
+                spBox->AddStringArg(CStringW(strIds));
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode19));
                 FUN_140d73c60(spBox);
             }
@@ -1040,7 +1040,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(nStrId), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_140b76940(FUN_141b71910(nMailId));
+        spBox->AddStringArg(FUN_141b71910(nMailId));
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode13));
         FUN_140d73c60(spBox);
     }
@@ -1267,7 +1267,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
     MS2Ptr<TMailAdBillDataParam> spParam = FUN_1419e8620("mailAd");
     if (spParam == 0)
         return false;
-    UIMarketBillDialog* pBillDialog = FUN_140b09580(0x4f17);
+    UIMarketBillDialog* pBillDialog = FindMarketBillDialog(0x4f17);
     if (pBillDialog == 0)
         return false;
     CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get();
@@ -1293,7 +1293,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
         spBill->SetIconFromItem(spItemData, spAd->m_n20);
         spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spAd->m_n18));
         spBill->SetSalePrice(FUN_1418fec00(nCurrency, spAd->m_n38, false), spAd->m_n38);
-        spBill->FUN_1409abcd0(nCurrency);
+        spBill->SetPayType(nCurrency);
         spBill->FUN_1419eb8f0((int)i);
         bills.Add(spBill);
     }

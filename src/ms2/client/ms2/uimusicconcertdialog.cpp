@@ -46,7 +46,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -210,7 +210,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
         return;
     CStringW strAction = GetStringCommonByKey(L"s_music_concert_can_play");
     unsigned nStart = WorldService::GetInstance()->FUN_141bcaf60();
-    unsigned nNow = FUN_141472bc0();
+    unsigned nNow = GetServerTick();
     if (nNow > nStart)
     {
         m_topText->SetTextW(GetStringCommonByKey(L"s_music_concert_can_register_text"));
@@ -253,7 +253,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
     if (pPC == 0)
         return;
     unsigned nStart = WorldService::GetInstance()->FUN_141bcaf60();
-    unsigned nNow = FUN_141472bc0();
+    unsigned nNow = GetServerTick();
     if (nNow > nStart)
     {
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_music_concert_msg_confirm_register"), 1);
@@ -295,7 +295,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode13()
 // @0x140e6ab90
 void UIMusicConcertDialog::FUN_140e6ab90()
 {
-    CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
+    CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->GetMode();
     if (pMode != 0 && pMode->vfunc_1() == 0x10)
     {
         CLocalTargetCameraMode* pLocal = static_cast<CLocalTargetCameraMode*>(pMode);

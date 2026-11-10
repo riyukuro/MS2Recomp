@@ -68,7 +68,7 @@ public:
     void FUN_141085440();                                   // 0x141085440 marks the model's meshes unlightable
     void FUN_141085530(MS2Ptr<CItem> spItem);               // 0x141085530 vfunc_59 once the model is loaded
     void FUN_1410855b0();                                   // 0x1410855b0 builds the UGC mesh list
-    NiTexturePtr FUN_141085700();                           // 0x141085700 UGC texture (or null)
+    NiTexturePtr GetUgcTexture();                           // 0x141085700 UGC texture (or null)
     MS2Ptr<CItemUgcMeshContainer> GetUgcMesh();          // 0x141085830 copy of m_spUgcMesh
     MS2Ptr<CItemData> GetItemData();                      // 0x141085880 copy of m_spItemData
     void SetListener(IAvatarObjectEventListener* p);      // 0x141085ab0

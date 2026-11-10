@@ -79,12 +79,12 @@ void FUN_140710590(COutPacket& packet);
 #include "ms2/placeholder/wcformat.h"  // FUN_14028dfa0 and its wrappers
 
 CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids);
-void* FUN_140a8a680(int nUiId);
+void* FindPartyDialog(int nUiId);
 void* FUN_140a8a720();
 
-// The dialog ids: FUN_140a8ac50 is the party dialog id.
+// The dialog ids: GetPartyDialogId is the party dialog id.
 // @0x140a8ac50
-inline int FUN_140a8ac50() { return 0x4e45; }
+inline int GetPartyDialogId() { return 0x4e45; }
 
 // ---- PartyVoteCli ----
 
@@ -92,7 +92,7 @@ inline int FUN_140a8ac50() { return 0x4e45; }
 PartyVoteCli::PartyVoteCli() : id(0), kind(0), owner(0), expires(0) {}
 
 // @0x140a89240
-MS2Ptr<PartyVoteCli> FUN_140a89240(int kind)
+MS2Ptr<PartyVoteCli> CreateVote(int kind)
 {
     MS2Ptr<PartyVoteCli> vote;
     switch (kind)
@@ -135,7 +135,7 @@ unsigned char PartyVoteCli::vfunc_5() { return 0; }
 void PartyVoteCli::vfunc_6(unsigned __int64) {}
 
 // @0x140a894c0
-int PartyVoteCli::FUN_140a894c0() const { return kind; }
+int PartyVoteCli::GetKind() const { return kind; }
 
 // @0x140a894e0
 void PartyVoteCli::AddVote(unsigned __int64 member, bool accepted)
@@ -209,9 +209,9 @@ void PartyVoteKickUserCli::vfunc_2()
     CStringW strName;
     MS2Ptr<CPartyMember> member = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(owner);
     if (member.get() != 0)
-        strName = member->FUN_141637bd0();
+        strName = member->GetName();
     FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_party_vote_kick_user_notify"), strName), 2);
-    void* pDialog = FUN_140a8a680(0x4e45);
+    void* pDialog = FindPartyDialog(0x4e45);
     if (pDialog != 0)
     {
         reinterpret_cast<UIPartyDialog*>(pDialog)->FUN_141a759b0();
@@ -323,7 +323,7 @@ CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids)
 }
 
 // @0x140a8a680
-void* FUN_140a8a680(int nUiId)
+void* FindPartyDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -340,14 +340,14 @@ void* FUN_140a8a720()
     CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)FUN_140a8ac50());
+    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)GetPartyDialogId());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UIPartyDialog*>(spUI.operator->());
 }
 
 MS2_REPLACE_METHOD(0x140A89380, PartyVoteCli, vfunc_1, 149, 0xE53851CF);
-MS2_REPLACE_METHOD(0x140A894C0, PartyVoteCli, FUN_140a894c0, 14, 0x8AEE455B);
+MS2_REPLACE_METHOD(0x140A894C0, PartyVoteCli, GetKind, 14, 0x8AEE455B);
 MS2_REPLACE_METHOD(0x140A894E0, PartyVoteCli, AddVote, 116, 0x3FCDCE36);
 MS2_REPLACE_METHOD(0x140A89560, PartyVoteCli, GetYesCount, 31, 0x46B95FC3);
 MS2_REPLACE_METHOD(0x140A89590, PartyVoteCli, GetNoCount, 31, 0xD8882F4A);
@@ -361,5 +361,5 @@ MS2_REPLACE_METHOD(0x140A8A040, PartyVoteReadyCli, vfunc_6, 100, 0x7070D226);
 MS2_REPLACE_METHOD(0x140A8A0B0, PartyVoteReadyCli, OnMessageBoxResult, 74, 0x70360213);
 MS2_REPLACE_METHOD(0x140A8A100, PartyVoteReadyCli, vfunc_7, 83, 0x567FCC8A);
 MS2_REPLACE(0x140A8A230, FUN_140a8a230, 111, 0xE8E39513);
-MS2_REPLACE(0x140A8A680, FUN_140a8a680, 147, 0xC0BB06FA);
+MS2_REPLACE(0x140A8A680, FindPartyDialog, 147, 0xC0BB06FA);
 MS2_REPLACE(0x140A8A720, FUN_140a8a720, 172, 0x154A3F4C);

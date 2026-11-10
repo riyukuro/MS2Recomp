@@ -40,8 +40,8 @@ class Unk_RsWorld : public WorldService
 public:
 };
 // The local session (0x1409f7c90): zero when the id is a local player.
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
+int GetServerTick();   // C3: was GetServerTick
 
 // The game settings (0x1401d3200); the fade time of a region effect.
 class Unk_RsFloatVar { char m_pad[0x58]; };   // a Common::Constants::Value<float>
@@ -101,10 +101,10 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     int nEffect2;
     int nEffect;
     m_nOwnerType = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd19d0(m_nOwnerId);
-    m_bLocal = (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_14161ce60(m_nOwnerId) == 0);
+    m_bLocal = (reinterpret_cast<COptimizer*>(GetOptimizer())->FUN_14161ce60(m_nOwnerId) == 0);
     if (!m_pAttr->m_strEffect.IsEmpty())
     {
-        m_spEffect = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(m_pAttr->m_strEffect);
+        m_spEffect = TSingleton<EffectDataManager>::GetInstance()->GetEffectData(m_pAttr->m_strEffect);
         if (m_spEffect.get() != 0)
         {
             for (unsigned i = 0; i < m_points.GetCount(); i++)
@@ -128,7 +128,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                 }
                 else
                 {
-                    unsigned nTime = FUN_141472bc0();
+                    unsigned nTime = GetServerTick();
                     if (m_pAttr->m_bNoSpawn)
                         nTime = nTick;
                     m_pending.push_back(std::make_pair(m_points[i], nTime));
@@ -138,7 +138,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     }
     if (!m_pAttr->m_strEndEffect.IsEmpty())
     {
-        m_spEffect2 = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(m_pAttr->m_strEndEffect);
+        m_spEffect2 = TSingleton<EffectDataManager>::GetInstance()->GetEffectData(m_pAttr->m_strEndEffect);
         if (m_spEffect2.get() != 0)
         {
             for (unsigned i = 0; i < m_points.GetCount(); i++)
@@ -246,7 +246,7 @@ void CRegionSkillObject::FUN_1416f6900()
             xf.m_Translate = static_cast<NiPoint3&&>(niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
         }
     }
 }
@@ -279,7 +279,7 @@ void CRegionSkillObject::FUN_1416f6b90()
             xf.m_Translate = static_cast<NiPoint3&&>(niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
         }
     }
 }
@@ -315,7 +315,7 @@ void CRegionSkillObject::FUN_1416f6f50()
         for (; it != m_pending.end(); ++it)
         {
             unsigned nTime = it->second;
-            if (FUN_141472bc0() < nTime)
+            if (GetServerTick() < nTime)
                 continue;
             {
                 Vector3 pt = it->first;
@@ -408,7 +408,7 @@ void CRegionSkillObject::FUN_1416f7790()
         return;
     if (m_pAttr->m_strLateEffect.IsEmpty())
         return;
-    unsigned nNow = FUN_141472bc0();
+    unsigned nNow = GetServerTick();
     if (m_nStartTick > nNow)
         return;
     {
@@ -428,7 +428,7 @@ void CRegionSkillObject::FUN_1416f7790()
                 xf.m_Translate = static_cast<NiPoint3&&>(niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+                TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
             }
         }
         m_bLateDone = 1;

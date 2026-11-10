@@ -10,14 +10,14 @@
 #include "ms2/placeholder/citem.h"
 #include "hook/ms2hook.h"
 
-// Game-system singleton (FUN_140a6a840 returns the global at 0x143ab7f08) that keeps the UIItemEventListener list.
+// Game-system singleton (GetItemEventDispatcher returns the global at 0x143ab7f08) that keeps the UIItemEventListener list.
 class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);     // register (no duplicates)
     void FUN_1419caeb0(UIItemEventListener* pListener);     // unregister
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // Registry of named bags/slots (GFx bind data): lookup by name, add, remove.
 
@@ -31,13 +31,13 @@ static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Crea
 TradeSlotBag::TradeSlotBag(const CString& strName)
     : DragSlotBag(strName)
 {
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x14185ea20
 TradeSlotBag::~TradeSlotBag()
 {
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x14185eac0

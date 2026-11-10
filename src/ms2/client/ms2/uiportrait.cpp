@@ -40,7 +40,7 @@ public:
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1416aac60(class NiAVObject*);
+    void RemoveMirroredScene(class NiAVObject*);
 };
 
 static float GetCurrentTime();                                  // 0x141a90fe0 (name invented)
@@ -65,7 +65,7 @@ void UIPortrait::vfunc_2()
         GameObject* pPlayer = (GameObject*)WorldService::GetInstance()->FUN_141bd3620();
         if (pPlayer)
         {
-            NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);
+            NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->GetEntity())) + NiPoint3(0.0f, 0.0f, 25.0f);
             m_spCamera->SetTranslate(kTarget + pPlayer->GetForwardDirection() * 130.0f);
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, efd::Point3::UNIT_Z);
@@ -112,7 +112,7 @@ void UIPortrait::vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& ar
                 pNode->UpdateEffects();
                 m_spClick->vfunc_12(pNode);
                 FUN_141568d80(pNode);
-                ((class PostProcessingService*)(class Unk_PortraitEffectMgr*)(((class Unk_PortraitEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aac60((class NiAVObject*)(pNode));
+                ((class PostProcessingService*)(class Unk_PortraitEffectMgr*)(((class Unk_PortraitEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->RemoveMirroredScene((class NiAVObject*)(pNode));
             }
         }
     }
@@ -154,7 +154,7 @@ MS2_REPLACE_METHOD(0x141A90ED0, UIPortrait, vfunc_15, 261, 0xDD71E32D);
 // @0x141a90fe0
 static float GetCurrentTime()
 {
-    return (float)((class CMainSystem*)(class Unk_PortraitClock*)(reinterpret_cast<Unk_PortraitClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    return (float)((class CMainSystem*)(class Unk_PortraitClock*)(reinterpret_cast<Unk_PortraitClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
 }
 
 // @0x141a91000

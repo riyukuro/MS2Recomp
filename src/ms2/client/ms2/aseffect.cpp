@@ -46,7 +46,7 @@ bool FUN_140930110(int nActorId);
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(long);                               // number -> text
@@ -128,7 +128,7 @@ void ASEffect::Update()
             m_a0->vfunc_14(nFrame);
         return;
     }
-    if (m_buff->m_nStartTick == m_buff->m_nEndTick || m_buff->FUN_14096d810()->IsHideBuffIcon())
+    if (m_buff->m_nStartTick == m_buff->m_nEndTick || m_buff->GetLevelData()->IsHideBuffIcon())
     {
         if (m_a0->FUN_1422c2300() != 0x1e)
             m_a0->vfunc_14(0x1e);
@@ -184,7 +184,7 @@ MS2_REPLACE_METHOD(0x1409B37C0, ASEffect, SetStartTime, 25, 0xDF53FE3F);
 // @0x1409b37e0
 bool ASEffect::IsBuffType()
 {
-    return m_buff->FUN_14096d810()->IsBuff();
+    return m_buff->GetLevelData()->IsBuff();
 }
 MS2_REPLACE_METHOD(0x1409B37E0, ASEffect, IsBuffType, 49, 0xE1E26C20);
 
@@ -202,7 +202,7 @@ bool ASEffect::IsOwnerAlive()
         return false;
     if (m_buff->GetOwner() == 0)
         return false;
-    if (FUN_140930110(((class GameObject*)(void*)(m_buff->GetOwner()))->FUN_14123c580()) == 1)
+    if (FUN_140930110(((class GameObject*)(void*)(m_buff->GetOwner()))->GetObjectId()) == 1)
         return false;
     if (FUN_140930110(m_buff->m_nCasterId) == 0)
         return false;
@@ -228,7 +228,7 @@ MS2_REPLACE_METHOD(0x1409B3930, ASEffect, GetE4, 17, 0x798679FF);
 void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, m_buff->GetRemainTicks());
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->GetLevelData()), m_e0, m_buff->GetRemainTicks());
     *params.pRetVal = tip.FUN_1422bb870();
 }
 
@@ -239,7 +239,7 @@ void ASEffect::UpdateIcon()
         return;
     if (!m_e9)
         return;
-    if (m_buff->FUN_14096d810()->IsBuff())
+    if (m_buff->GetLevelData()->IsBuff())
         m_b0->vfunc_15("none");
     else if (IsOwnerAlive())
         m_b0->vfunc_15("yellow");
@@ -251,7 +251,7 @@ void ASEffect::UpdateIcon()
     else if (m_buff->m_nOverlapCount <= 1)
         m_d0->SetTextW(L"");
     m_c0->SetTextW(L"");
-    Invoke("setIcon", m_buff->FUN_14096d810()->GetIcon());
+    Invoke("setIcon", m_buff->GetLevelData()->GetIcon());
     m_e9 = false;
 }
 
@@ -420,7 +420,7 @@ void ASEffectManager::AddEffect(MS2Ptr<AdditionalCli> spBuff)
     MS2Ptr<ASEffect> spEffect(new ASEffect(spBuff));
     spEffect->SetE0(m_a0);
     spEffect->SetStartTime(GetTickCountMs2());
-    spEffect->SetE4(spBuff->FUN_14096d350());
+    spEffect->SetE4(spBuff->GetSortOrder());
     m_b8.SetAt(spBuff->GetKey(), spEffect);
 }
 

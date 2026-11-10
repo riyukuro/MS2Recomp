@@ -26,7 +26,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 // @0x14176f2a0
 CMeshUpdateGate::CMeshUpdateGate()
 {
-    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     m_fInterval = 0.0f;
     m_fDuration = 0.0f;
     m_bActive = false;
@@ -119,7 +119,7 @@ MS2_REPLACE_METHOD(0x14176f680, CMeshUpdateGate, FUN_14176f680, 130, 0x22CFBCFD)
 // @0x14176f710
 void CMeshUpdateGate::FUN_14176f710()
 {
-    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
 }
 MS2_REPLACE_METHOD(0x14176f710, CMeshUpdateGate, FUN_14176f710, 40, 0x42587A2C);
 
@@ -127,11 +127,11 @@ MS2_REPLACE_METHOD(0x14176f710, CMeshUpdateGate, FUN_14176f710, 40, 0x42587A2C);
 bool CMeshUpdateGate::FUN_14176f740(float)
 {
     float fInterval = m_fInterval;
-    float fElapsed = (float)(((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280() - m_fLast);
+    float fElapsed = (float)(((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime() - m_fLast);
     bool bDue = !(fInterval > fElapsed);
     if (bDue)
     {
-        m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+        m_fLast = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
         m_bPending = true;
         m_bActive = false;
         return true;

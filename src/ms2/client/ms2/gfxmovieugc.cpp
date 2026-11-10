@@ -61,11 +61,11 @@ int GFxMovieUgc::vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlag
     if (GFxMovie::vfunc_6(pLoader, strPath, nLoadFlags))
     {
         m_60->SetBackgroundAlpha(1.0f);
-        if (FUN_14127dd70() == 0)
+        if (CreateRenderTexture() == 0)
             return 0;
-        if (FUN_14127dc60() == 0)
+        if (CreateRenderTarget() == 0)
             return 0;
-        if (FUN_14127de50(m_spRenderTexture) == 0)
+        if (SetBaseTexture(m_spRenderTexture) == 0)
             return 0;
         return 1;
     }
@@ -113,7 +113,7 @@ void GFxMovieUgc::vfunc_11()
 void GFxMovieUgc::vfunc_12()
 {
     GFxMovie::vfunc_12();
-    FUN_14127de50(0);
+    SetBaseTexture(0);
     if (m_spRenderTarget != 0)
     {
         m_spRenderTarget->vfunc_2();
@@ -125,11 +125,11 @@ bool GFxMovieUgc::vfunc_13()
 {
     if (!GFxMovie::vfunc_13())
         return false;
-    if (FUN_14127dd70() == 0)
+    if (CreateRenderTexture() == 0)
         return false;
-    if (FUN_14127dc60() == 0)
+    if (CreateRenderTarget() == 0)
         return false;
-    if (FUN_14127de50(m_spRenderTexture) == 0)
+    if (SetBaseTexture(m_spRenderTexture) == 0)
         return false;
     return true;
 }
@@ -155,7 +155,7 @@ void GFxMovieUgc::vfunc_39(int a, int b, int c, bool d, bool e)
     GFxMovieEventHandler::vfunc_39(a, b, c, d, e);
 }
 // @0x14127dc60
-int GFxMovieUgc::FUN_14127dc60()
+int GFxMovieUgc::CreateRenderTarget()
 {
     if (!m_spRenderTexture)
         return 0;
@@ -177,7 +177,7 @@ int GFxMovieUgc::FUN_14127dc60()
     return 0;
 }
 // @0x14127dd70
-int GFxMovieUgc::FUN_14127dd70()
+int GFxMovieUgc::CreateRenderTexture()
 {
     if (!m_spObject)
         return 0;
@@ -197,7 +197,7 @@ int GFxMovieUgc::FUN_14127dd70()
     return 0;
 }
 // @0x14127de50
-int GFxMovieUgc::FUN_14127de50(NiRenderedTexture* pTexture)
+int GFxMovieUgc::SetBaseTexture(NiRenderedTexture* pTexture)
 {
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, m_spObject->GetProperty(NiProperty::TEXTURING));
     if (pTexturing)
@@ -222,6 +222,6 @@ MS2_REPLACE_METHOD(0x14127d9d0, GFxMovieUgc, vfunc_12, 121, 0x88E213A9);
 MS2_REPLACE_METHOD(0x14127da50, GFxMovieUgc, vfunc_13, 113, 0xAED5E240);
 MS2_REPLACE_METHOD(0x14127dad0, GFxMovieUgc, vfunc_40, 127, 0x6E1649F0);
 MS2_REPLACE_METHOD(0x14127db60, GFxMovieUgc, vfunc_41, 75, 0x5B8E2E00);
-MS2_REPLACE_METHOD(0x14127dc60, GFxMovieUgc, FUN_14127dc60, 265, 0x666C97BE);
-MS2_REPLACE_METHOD(0x14127dd70, GFxMovieUgc, FUN_14127dd70, 213, 0x180E575F);
-MS2_REPLACE_METHOD(0x14127de50, GFxMovieUgc, FUN_14127de50, 267, 0xE814C7D2);
+MS2_REPLACE_METHOD(0x14127dc60, GFxMovieUgc, CreateRenderTarget, 265, 0x666C97BE);
+MS2_REPLACE_METHOD(0x14127dd70, GFxMovieUgc, CreateRenderTexture, 213, 0x180E575F);
+MS2_REPLACE_METHOD(0x14127de50, GFxMovieUgc, SetBaseTexture, 267, 0xE814C7D2);

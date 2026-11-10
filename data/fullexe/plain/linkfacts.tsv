@@ -1,0 +1,231 @@
+# the link-plan facts plainglue.py derive cannot compute from the repository (plainglue.py facts writes them from
+# a finished cmake/fullexe build at each glue refresh; derive reads them):
+#   pick     <unit>  <recipe:name>   an engine twin (two units-gb.json entries, one unit) linked from the entry
+#                                    that is not the default (the first recipe:name): the gate's pair counts chose it
+#   va       <unit>  <hex va>        an engine or library unit with no progress/status.tsv row, placed at its gate
+#                                    pairs' lowest exe VA (shared COMDATs that status.tsv credits to another unit)
+#   closure  <unit>  <kind>  <obj>   an obj with no exe VA that the link pulls in for a symbol nothing else defines
+#                                    (COFF symbol closure over the built objs), in link order
+#   noinit   <unit>                  a unit that the exe's .CRT$XC table names but whose objs register no static
+#                                    initializer of their own (initorder.py leaves it out of the ranking)
+pick	gb:efd/SystemDesc_Win32	v2525:gamebryo/foundation/efd/win32/systemdesc_win32
+va	gb:CryptoPP/cbcmac	14235d650
+va	gb:CryptoPP/des	14235d650
+va	gb:CryptoPP/eax	142306990
+va	gb:CryptoPP/emsa2	1423051c0
+va	gb:CryptoPP/gcm	142339f40
+va	gb:CryptoPP/gost	142309510
+va	gb:CryptoPP/gzip	14232d540
+va	gb:CryptoPP/luc	142303ca0
+va	gb:CryptoPP/mars	142309510
+va	gb:CryptoPP/md2	142346690
+va	gb:CryptoPP/md5	142328660
+va	gb:CryptoPP/mqv	14230ba00
+va	gb:CryptoPP/network	142329150
+va	gb:CryptoPP/oaep	142339f40
+va	gb:CryptoPP/panama	14235d650
+va	gb:CryptoPP/pssr	142339f40
+va	gb:CryptoPP/rabin	14230baf0
+va	gb:CryptoPP/rc2	14235d650
+va	gb:CryptoPP/rc5	142308830
+va	gb:CryptoPP/rc6	142308830
+va	gb:CryptoPP/rsa	142308830
+va	gb:CryptoPP/rw	14230baf0
+va	gb:CryptoPP/safer	14235d650
+va	gb:CryptoPP/salsa	142308830
+va	gb:CryptoPP/seal	142309510
+va	gb:CryptoPP/serpent	142309510
+va	gb:CryptoPP/shacal2	142309510
+va	gb:CryptoPP/shark	142308830
+va	gb:CryptoPP/socketft	142303d40
+va	gb:CryptoPP/square	142309510
+va	gb:CryptoPP/tea	142308830
+va	gb:CryptoPP/tiger	142309600
+va	gb:CryptoPP/trdlocal	142303d40
+va	gb:CryptoPP/ttmac	142303ca0
+va	gb:CryptoPP/twofish	142309510
+va	gb:CryptoPP/vmac	142309600
+va	gb:CryptoPP/wait	142303c10
+va	gb:CryptoPP/wake	14232bba0
+va	gb:CryptoPP/whrlpool	142309600
+va	gb:CryptoPP/winpipes	142303d40
+va	gb:CryptoPP/xtr	14230baf0
+va	gb:CryptoPP/xtrcrypt	14230baf0
+va	gb:CryptoPP/zdeflate	142303ca0
+va	gb:CryptoPP/zinflate	14230b950
+va	gb:CryptoPP/zlib	14232d540
+va	gb:Effects11/EffectNonRuntime	140159860
+va	gb:Effects11/EffectReflection	1406c3040
+va	gb:Effects11/d3dx11dbg	1402c3760
+va	gb:Lua/print	1402c3760
+va	gb:NSBShaderLib/NSBShaderLibPCH	14015b300
+va	gb:NSBShaderLib/NSBStageAndSamplerStates	14015b300
+va	gb:NSFParserLib/NSFParserLib	14015b300
+va	gb:NSFParserLib/NSFParserLibPCH	14015b300
+va	gb:NiAnimation/NiAnimationMetrics	14015b300
+va	gb:NiAnimation/NiAnimationPCH	14015b300
+va	gb:NiAnimation/NiColorInterpController	14015b300
+va	gb:NiAnimation/NiQuaternionInterpController	14014d5b0
+va	gb:NiBinaryShaderLib/NiBinaryShaderLibPCH	14015b300
+va	gb:NiCollision/NiCollisionMetrics	14015b300
+va	gb:NiCollision/NiCollisionPCH	14015b300
+va	gb:NiCollision/NiDistTriTri	14015b300
+va	gb:NiCollision/NiDrawableBV	14015b300
+va	gb:NiD3D10Renderer/NiD3D10RendererPCH	14015b300
+va	gb:NiD3DXEffectShaderLib/NiD3DXEffectShaderLibPCH	14015b300
+va	gb:NiDX9Renderer/NiD3DRendererPCH	14015b300
+va	gb:NiDX9Renderer/NiDX9RendererMetrics	14015b300
+va	gb:NiDX9RendererSetup/NiDX9RendererSetupPCH	14015b300
+va	gb:NiFloodgate/NiFloodgatePCH	14015b300
+va	gb:NiFloodgate/NiNopKernel	14015b300
+va	gb:NiInput/NiInputPCH	14015b300
+va	gb:NiMain/Ni2DRenderView	14015b300
+va	gb:NiMain/NiAccumulatorProcessor	14015b300
+va	gb:NiMain/NiCompositeValidator	14015b300
+va	gb:NiMain/NiCulledObjectValidator	14015b300
+va	gb:NiMain/NiLogicalANDCompositeValidator	14015b300
+va	gb:NiMain/NiMainMetrics	14015b300
+va	gb:NiMain/NiMainPCH	14015b300
+va	gb:NiMain/NiMaterialLibrary_Win32	14015b300
+va	gb:NiMain/NiMediaPaths_Win32	14015b300
+va	gb:NiMain/NiParallelUpdateTaskManager	14015b300
+va	gb:NiMain/NiProcessor	14015b300
+va	gb:NiMain/NiShaderError	14015b300
+va	gb:NiMain/NiShadowMaterialSwapProcessor	14015b300
+va	gb:NiMain/NiTAbstractPoolAllocatorFuncStorage	14015b300
+va	gb:NiMain/NiTask	14015b300
+va	gb:NiMain/NiTaskManager	14015b300
+va	gb:NiMain/NiTextureStage	14015b300
+va	gb:NiMesh/NiMeshPCH	14015b300
+va	gb:NiParticle/NiPSMetrics	14015b300
+va	gb:NiParticle/NiParticlePCH	14015b300
+va	gb:NiPhysX/NiPhysXAccumInterpolatorDest	14015b300
+va	gb:NiPhysX/NiPhysXAllocator	14015b300
+va	gb:NiPhysX/NiPhysXClothDest	14014d4f0
+va	gb:NiPhysX/NiPhysXInterpolatorDest	14015b300
+va	gb:NiPhysX/NiPhysXPCH	14015b300
+va	gb:NiPhysX/NiPhysXUserOutput	14015b300
+va	gb:NiPhysXParticle/NiPhysXParticlePCH	14015b300
+va	gb:NiSystem/NiDebug	14015b300
+va	gb:NiSystem/NiSystemPCH	14015b300
+va	gb:NiTerrain/NiTerrainEvents	14015b300
+va	gb:NiTerrain/NiTerrainPCH	14015b300
+va	gb:NiTerrain/NiTerrainSectorFileDeveloper	140159860
+va	gb:NiTerrain/NiTerrainSectorPager	14015b300
+va	gb:NiTerrain/NiWater	14015b300
+va	gb:NiTerrain/NiWaterMaterial	14014d530
+va	gb:NiTerrain/NiWaterMaterialNodeLibrary	14015b300
+va	gb:NiTerrain/NiWaterMaterialPixelDescriptor	14015b300
+va	gb:NiTerrain/NiWaterMaterialVertexDescriptor	14015b300
+va	gb:NiVisualTracker/NiVisualTrackerPCH	14015b300
+va	gb:ZLib/gzio	1402c3760
+va	gb:cef/cpptoc/server_handler_cpptoc	142782a60
+va	gb:cef/cpptoc/views/browser_view_delegate_cpptoc	14277dc80
+va	gb:cef/cpptoc/views/button_delegate_cpptoc	142796000
+va	gb:cef/cpptoc/views/panel_delegate_cpptoc	1427a5a60
+va	gb:cef/cpptoc/views/textfield_delegate_cpptoc	142796000
+va	gb:cef/cpptoc/views/view_delegate_cpptoc	1427a5a60
+va	gb:cef/cpptoc/views/window_delegate_cpptoc	1427a2720
+va	gb:cef/ctocpp/server_ctocpp	1427796d0
+va	gb:cef/ctocpp/test/translator_test_ctocpp	142784350
+va	gb:cef/ctocpp/test/translator_test_ref_ptr_library_child_child_ctocpp	142788480
+va	gb:cef/ctocpp/test/translator_test_ref_ptr_library_child_ctocpp	142788480
+va	gb:cef/ctocpp/test/translator_test_scoped_library_child_ctocpp	142784350
+va	gb:cef/ctocpp/test/translator_test_scoped_library_ctocpp	142784350
+va	gb:cef/ctocpp/views/browser_view_ctocpp	14277dc80
+va	gb:cef/ctocpp/views/button_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/display_ctocpp	142791d90
+va	gb:cef/ctocpp/views/label_button_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/menu_button_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/panel_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/textfield_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/view_ctocpp	14277e6e0
+va	gb:cef/ctocpp/views/window_ctocpp	14277e6e0
+va	gb:cef/wrapper/cef_message_router	14278a4d0
+va	gb:cef/wrapper/cef_stream_resource_handler	142788160
+va	gb:cef/wrapper/cef_xml_object	142778550
+va	gb:cef/wrapper/cef_zip_archive	142789fd0
+va	gb:ecrD3D11Renderer/ComputeRenderClick	14015b300
+va	gb:ecrD3D11Renderer/D3D11Include	14015b300
+va	gb:ecrD3D11Renderer/ecrD3D11RendererPCH	14015b300
+va	gb:ecrInput/ControlBuiltins	140159860
+va	gb:ecrInput/ecrInputPCH	14015b300
+va	gb:ecrPhysX/ecrPhysXPCH	14015b300
+va	gb:efd/CircularBuffer	14015b300
+va	gb:efd/DataStream	14015b300
+va	gb:efd/IBase	14015b300
+va	gb:efd/ID128_Win32	14015b300
+va	gb:efd/ILogger	14015b300
+va	gb:efd/IMemLogHandler	14015b300
+va	gb:efd/Metrics	14015b300
+va	gb:efd/ParameterListMessage	14015b300
+va	gb:efd/Point4_Win32	14015b300
+va	gb:efd/StackUtils	14015b300
+va	gb:efd/String	14015b300
+va	gb:efd/SystemLogger	14015b300
+va	gb:efd/ToolServiceManager	14015b300
+va	gb:efd/efdPCH	14015b300
+va	gb:efd/utf16char	14015b300
+va	gb:efdNetwork/BridgeService	140159860
+va	gb:efdNetwork/IConnection	14015b300
+va	gb:efdNetwork/TransportFactory	140159860
+va	gb:efdNetwork/efdNetworkPCH	14015b300
+va	gb:efdPhysX/PhysXAllocator	14015b300
+va	gb:efdPhysX/efdPhysXPCH	14015b300
+va	gb:egf/BreakpointMessages	140159860
+va	gb:egf/NotificationService	140159860
+va	gb:egf/ServiceAllocator	14015b300
+va	gb:egf/egfPCH	14015b300
+va	gb:egfPhysX/ServiceAllocator	14015b300
+va	gb:egfPhysX/TriggerService	140159860
+va	gb:egfPhysX/egfPhysXPCH	14015b300
+va	gb:egmPhysXWhitebox/egmPhysXWhiteboxPCH	14015b300
+va	gb:egmVisualizers/ProxyService	140159860
+va	gb:egmVisualizers/egmVisualizersPCH	14015b300
+va	gb:egmWhitebox/egmWhiteboxPCH	14015b300
+va	gb:jpeg/jcmarker	1426fbf40
+va	gb:jpeg/jcsample	1426fbf40
+va	gb:jpeg/jdatasrc	1426fbf40
+va	gb:pcre/pcre_dfa_exec	1428e0b30
+va	gb:png/pngpread	142706d40
+closure	gb:Effects11/EffectRuntime	engine-closure	gb/obj/stock/stock__engine__gamebryo__3rdParty__Effects11__Package__EffectRuntime.cpp.obj
+closure	gb:TinyXML/tinyxmlerror	engine-closure	gb/obj/stock/stock__engine__gamebryo__3rdParty__TinyXML__efdXML__tinyxmlerror.cpp.obj
+closure	gb:Lua/lopcodes	engine-closure	gb/obj/stock/stock__engine__gamebryo__3rdParty__Lua__Package__src__lopcodes.cpp.obj
+closure	gb:cef/base/cef_callback_internal	lib-closure	gb/obj/lib-cef/cef__base__cef_callback_internal.obj
+closure	gb:cef/base/cef_ref_counted	lib-closure	gb/obj/lib-cef/cef__base__cef_ref_counted.obj
+closure	gb:cef/base/cef_lock_impl	lib-closure	gb/obj/lib-cef/cef__base__cef_lock_impl.obj
+closure	gb:cef/cpptoc/urlrequest_client_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__urlrequest_client_cpptoc.obj
+closure	gb:cef/cpptoc/test/translator_test_ref_ptr_client_child_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__test__translator_test_ref_ptr_client_child_cpptoc.obj
+closure	gb:cef/cpptoc/test/translator_test_ref_ptr_client_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__test__translator_test_ref_ptr_client_cpptoc.obj
+closure	gb:cef/cpptoc/test/translator_test_scoped_client_child_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__test__translator_test_scoped_client_child_cpptoc.obj
+closure	gb:cef/cpptoc/test/translator_test_scoped_client_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__test__translator_test_scoped_client_cpptoc.obj
+closure	gb:cef/cpptoc/views/menu_button_delegate_cpptoc	lib-closure	gb/obj/lib-cef/cef__cpptoc__views__menu_button_delegate_cpptoc.obj
+closure	gb:cef/ctocpp/print_job_callback_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__print_job_callback_ctocpp.obj
+closure	gb:cef/ctocpp/sslinfo_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__sslinfo_ctocpp.obj
+closure	gb:cef/ctocpp/test/translator_test_ref_ptr_library_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__test__translator_test_ref_ptr_library_ctocpp.obj
+closure	gb:cef/ctocpp/views/box_layout_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__views__box_layout_ctocpp.obj
+closure	gb:cef/ctocpp/views/fill_layout_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__views__fill_layout_ctocpp.obj
+closure	gb:cef/ctocpp/views/layout_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__views__layout_ctocpp.obj
+closure	gb:cef/ctocpp/views/menu_button_pressed_lock_ctocpp	lib-closure	gb/obj/lib-cef/cef__ctocpp__views__menu_button_pressed_lock_ctocpp.obj
+closure	gb:cef/wrapper/cef_byte_read_handler	lib-closure	gb/obj/lib-cef/cef__wrapper__cef_byte_read_handler.obj
+closure	gb:CryptoPP/adler32	lib-closure	gb/obj/lib-cryptopp/cryptopp__adler32.obj
+closure	gb:cef/wrapper/cef_closure_task	lib-closure	gb/obj/lib-cef/cef__wrapper__cef_closure_task.obj
+closure	gb:CryptoPP/gf256	lib-closure	gb/obj/lib-cryptopp/cryptopp__gf256.obj
+closure	gb:CryptoPP/gf2_32	lib-closure	gb/obj/lib-cryptopp/cryptopp__gf2_32.obj
+closure	gb:CryptoPP/pkcspad	lib-closure	gb/obj/lib-cryptopp/cryptopp__pkcspad.obj
+closure	gb:CryptoPP/skipjack	lib-closure	gb/obj/lib-cryptopp/cryptopp__skipjack.obj
+closure	gb:CryptoPP/channels	lib-closure	gb/obj/lib-cryptopp/cryptopp__channels.obj
+closure	gb:CryptoPP/fips140	lib-closure	gb/obj/lib-cryptopp/cryptopp__fips140.obj
+closure	gb:CryptoPP/casts	lib-closure	gb/obj/lib-cryptopp/cryptopp__casts.obj
+closure	gb:CryptoPP/dessp	lib-closure	gb/obj/lib-cryptopp/cryptopp__dessp.obj
+closure	gb:CryptoPP/marss	lib-closure	gb/obj/lib-cryptopp/cryptopp__marss.obj
+closure	gb:CryptoPP/rdtables	lib-closure	gb/obj/lib-cryptopp/cryptopp__rdtables.obj
+closure	gb:CryptoPP/sharkbox	lib-closure	gb/obj/lib-cryptopp/cryptopp__sharkbox.obj
+closure	gb:CryptoPP/tftables	lib-closure	gb/obj/lib-cryptopp/cryptopp__tftables.obj
+closure	gb:CryptoPP/squaretb	lib-closure	gb/obj/lib-cryptopp/cryptopp__squaretb.obj
+closure	gb:CryptoPP/tigertab	lib-closure	gb/obj/lib-cryptopp/cryptopp__tigertab.obj
+closure	gb:jpeg/jidctflt	engine-closure	gb/obj/stock/jpeg__jidctflt.c.obj
+closure	gb:Lua2/lopcodes	engine-closure	gb/obj/stock/lua2__lopcodes.c.obj
+closure	gb:pcre/pcre_chartables	engine-closure	gb/obj/stock/pcre__pcre_chartables.c.obj
+closure	gb:pcre/pcre_tables	engine-closure	gb/obj/stock/pcre__pcre_tables.c.obj
+noinit	lib_di_atl

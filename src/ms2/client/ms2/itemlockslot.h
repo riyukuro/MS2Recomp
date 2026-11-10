@@ -29,7 +29,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x140d41b40 the item in the slot
     virtual int vfunc_0(void* p);                       // ITooltip 0x140d41b90 build the tooltip into p
 
-    int FUN_140d41e00(__int64 nItemUid);                // can the item be locked
+    int CanLockItem(__int64 nItemUid);                // can the item be locked
 
 public:
     MS2_LAYOUT_FRIEND;

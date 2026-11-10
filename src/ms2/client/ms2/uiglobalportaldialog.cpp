@@ -41,7 +41,7 @@ class ASDialog : public ASDisplayObject
 struct Unk_GpParams { char m_pad[0x30]; void* m_pButton; };
 int FUN_140bd09c0(void* pButton);                                       // which button
 
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);   // set a text clip's text
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);   // set a text clip's text
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
@@ -164,7 +164,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
 {
     if (FUN_1422dc430() == 0)
         return;
-    FUN_140cfefe0(FUN_1422dbc00(), "m_text", "textField", m_strText);
+    SetNestedChildText(FUN_1422dbc00(), "m_text", "textField", m_strText);
     if (m_strCaption1.IsEmpty() && m_strCaption2.IsEmpty() && m_strCaption3.IsEmpty())
     {
         vfunc_67();

@@ -79,7 +79,7 @@ class ASDialog : public ASDisplayObjectContainer {};
    // the first item of an id
 extern Unk_Inventory g_143ab2a90;                             // the local player's inventory
 
-UITalkCinematic* FUN_140a7b2b0(int nUiId);                      // an open dialog of an id
+UITalkCinematic* FindTalkCinematic(int nUiId);                      // an open dialog of an id
 UIBillDialog* FUN_140f0a350(int nUiId);
 class Unk_WrUIManager { public: void FUN_141adc530(int nUiId); };   // open a dialog
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
@@ -172,7 +172,7 @@ void UIWeddingHallReservationDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pTalk;
-    if (pDialog != 0 && (pTalk = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0 && (pTalk = FindTalkCinematic(0x4e40)) != 0)
     {
         int nX = pTalk->GetLowerCutGlobalY();
         int nY = pTalk->GetIllustGlobalX() - 0x50;
@@ -340,7 +340,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
         return;
     MS2Ptr<CItem> spCoupon(0);
     if (spHall->FUN_140906e80() != 0)
-        spCoupon = g_143ab2a90.FUN_140a5e040(spHall->FUN_140906e80());
+        spCoupon = g_143ab2a90.FindItemByTag(spHall->FUN_140906e80());
     MS2Ptr<UIBillDialog::TData> spBill(new UIBillDialog::TData());
     MS2Ptr<AScript> spData(new ASObj(2));
     static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("category",

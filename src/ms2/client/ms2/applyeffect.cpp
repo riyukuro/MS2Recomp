@@ -110,9 +110,9 @@ NiColor FUN_141b6dea0(unsigned int uiColor);                // 0xRRGGBB -> color
 bool FUN_14028d470(float fA, float fB);                     // |a - b| < epsilon
 
 struct Unk_GraphicState;
-bool FUN_14125e020(const Unk_GraphicState* pState);         // fog option
-bool FUN_14125e0b0(const Unk_GraphicState* pState);         // soft particle option
-bool FUN_14125e160(const Unk_GraphicState* pState);         // outer glow option
+bool IsFogEnabled(const Unk_GraphicState* pState);         // fog option
+bool IsHdrEnabled(const Unk_GraphicState* pState);         // soft particle option
+bool IsOuterGlowEnabled(const Unk_GraphicState* pState);         // outer glow option
 
 // Header-inline engine / option accessors compiled into this TU (the COMDAT copies the other units call).
 class Unk_AeGraphicOption
@@ -121,9 +121,9 @@ public:
     // @0x1409a8fd0
     bool FUN_1409a8fd0() const { return m_bFieldFog; }
     // @0x1409a8ab0
-    unsigned int FUN_1409a8ab0() const { return m_uiHeight; }
+    unsigned int GetHeight() const { return m_uiHeight; }
     // @0x1409a8aa0
-    unsigned int FUN_1409a8aa0() const { return m_uiWidth; }
+    unsigned int GetWidth() const { return m_uiWidth; }
     unsigned char m_pad0[0x18];
     bool m_bFieldFog;                                       // +0x18
     unsigned char m_pad19[0xb];
@@ -138,7 +138,7 @@ public:
     // @0x1409a8b10
     static Unk_AeGameOption* FUN_1409a8b10() { return reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::s_instance); }
     // @0x1409a8ac0
-    Unk_AeGraphicOption* FUN_1409a8ac0() { return &m_graphic; }
+    Unk_AeGraphicOption* GetGraphicOption() { return &m_graphic; }
     unsigned char m_pad0[0x6c];
     Unk_AeGraphicOption m_graphic;
 };
@@ -152,7 +152,7 @@ extern NiFixedString DAT_143ae5358, DAT_143ae5360, DAT_143ae5368, DAT_143ae5370,
 extern NiFixedString DAT_143ae5458, DAT_143ae5460, DAT_143ae5468;                                // screen ratio
 
 // 0x1409a8f20/0x1409a8f90: finite checks before a shader constant is updated.
-int FUN_1409a8f20(const NiColor* pkColor)                   // @0x1409a8f20
+int IsColorFinite(const NiColor* pkColor)                   // @0x1409a8f20
 {
     if ((_fpclass((double)pkColor->r) & 0x207) != 0 || (_fpclass((double)pkColor->g) & 0x207) != 0 ||
         (_fpclass((double)pkColor->b) & 0x207) != 0) {
@@ -175,7 +175,7 @@ class Unk_AeFeatureState
 {
 public:
     // @0x1409a8f00
-    bool FUN_1409a8f00() const { return m_bActive; }
+    bool IsActive() const { return m_bActive; }
     unsigned char m_pad0[0x90];
     bool m_bActive;
 };
@@ -194,11 +194,11 @@ class PostProcessingService   // C3: member view
 public:
     PostProcessEffect* GetStep(int nStep);
     bool SetStepActive(int nFeature, bool bEnable);
-    void FUN_1416aa450(int nFeature, bool bFlag);
+    void SetClickActive(int nFeature, bool bFlag);
 };
 
 // Shader constant update helpers (0x1409a5770 float array, 0x1409a5810 point array).
-bool FUN_1409a5770(NiFixedString& kKey, const float* pfData, int iCount);
+bool UpdateGlobalShaderConstantFloats(NiFixedString& kKey, const float* pfData, int iCount);
 bool FUN_1409a5810(NiFixedString& kKey, const NiPoint3* pkData, int iCount);
 bool FUN_1409a5850(NiFixedString& kKey, const bool* pbData, unsigned int uiSize);
 ecr::SceneGraphService* FUN_1413f98b0();
@@ -234,7 +234,7 @@ void FUN_141b70c50(class NiAVObject*, float, float);   // C3: was FUN_141b70c50
 NiAVObject* FUN_141b6efc0(egf::Entity* pOwner);
 
 // @0x1409a4020
-bool ApplyEffect::FUN_1409a4020(int nId, CScreenEffectBase* pEffect)
+bool ApplyEffect::AddEffect(int nId, CScreenEffectBase* pEffect)
 {
     if (nId != 0 && pEffect != 0) {
         int key = pEffect->vfunc_5();
@@ -256,7 +256,7 @@ bool ApplyEffect::FUN_1409a3b60(bool bEnable)
 }
 
 // @0x1409a4090
-void ApplyEffect::FUN_1409a4090()
+void ApplyEffect::ClearEffects()
 {
     for (EffectMap::iterator it = m_effects.begin(); it != m_effects.end(); ++it) {
         if (it->second.get() != 0) {
@@ -267,7 +267,7 @@ void ApplyEffect::FUN_1409a4090()
 }
 
 // @0x1409a4150
-void ApplyEffect::FUN_1409a4150()
+void ApplyEffect::UpdateEffects()
 {
     for (EffectMap::iterator it = m_effects.begin(); it != m_effects.end(); ++it) {
         if (it->second.get() ? true : false) {
@@ -283,7 +283,7 @@ void ApplyEffect::FUN_1409a3ee0(int nId, int nType)
 {
     MS2Ptr<CScreenEffectBase>& rEffect = m_effects[nId];
     if (rEffect.get() ? true : false) {
-        if (rEffect->FUN_1409a8c30() == nType) {
+        if (rEffect->GetType() == nType) {
             rEffect->vfunc_1();
         }
     }
@@ -294,7 +294,7 @@ void ApplyEffect::FUN_1409a3f80(int nId, int nType)
 {
     MS2Ptr<CScreenEffectBase>& rEffect = m_effects[nId];
     if (rEffect.get() ? true : false) {
-        if (rEffect->FUN_1409a8c30() == nType) {
+        if (rEffect->GetType() == nType) {
             rEffect->vfunc_3();
         }
     }
@@ -336,13 +336,13 @@ void ApplyEffect::SetOuterGlowEnabled(bool bEnabled)
 // @0x1409a4e30
 void ApplyEffect::ApplySoftParticleOption()
 {
-    SetSoftParticlesOption(FUN_14125e0b0((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()), 0);
+    SetSoftParticlesOption(IsHdrEnabled((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()), 0);
 }
 
 // @0x1409a4ed0
 void ApplyEffect::ApplyOuterGlowOption()
 {
-    SetOuterGlowEnabled(FUN_14125e160((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()));
+    SetOuterGlowEnabled(IsOuterGlowEnabled((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()));
 }
 
 // @0x1409a4f10
@@ -356,11 +356,11 @@ void ApplyEffect::SetFeature8(bool bEnabled, bool bUnused)
 {
     ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(8, bEnabled);
     float fOne = 1.0f;
-    FUN_1409a5770(DAT_143ae5340, &fOne, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5340, &fOne, 1);
 }
 
 // @0x1409a5770
-bool FUN_1409a5770(NiFixedString& kKey, const float* pfData, int iCount)
+bool UpdateGlobalShaderConstantFloats(NiFixedString& kKey, const float* pfData, int iCount)
 {
     for (int i = 0; i < iCount; i++) {
         if (!FUN_1409a8f90(&pfData[i])) {
@@ -396,7 +396,7 @@ void ApplyEffect::ApplyOuterGlowColor()
 {
     MS2Ptr<CFieldDataCli> field = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_AeFieldInfo*>(field.get()) != 0) {
-        if (FUN_14125e160((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0())) {
+        if (IsOuterGlowEnabled((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption())) {
             FUN_1409a5810(DAT_143ae5348, &reinterpret_cast<Unk_AeFieldInfo*>(field.operator->())->m_vOuterGlow, 1);
         }
     }
@@ -428,22 +428,22 @@ void ApplyEffect::ResetScreenRatio()
 {
     float fZero = 0.0f;
     float fOne = 1.0f;
-    FUN_1409a5770(DAT_143ae5350, &fOne, 1);
-    FUN_1409a5770(DAT_143ae5340, &fZero, 1);
-    FUN_1409a5770(DAT_143ae5458, &fZero, 1);
-    unsigned int uiA = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    unsigned int uiB = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
+    UpdateGlobalShaderConstantFloats(DAT_143ae5350, &fOne, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5340, &fZero, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5458, &fZero, 1);
+    unsigned int uiA = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()->GetHeight();
+    unsigned int uiB = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()->GetWidth();
     if (uiA != 0 && uiB != 0) {
         if (uiA >= uiB) {
             float fFirst = (float)uiB / (float)uiA;
             float fSecond = fZero;
-            FUN_1409a5770(DAT_143ae5460, &fFirst, 1);
-            FUN_1409a5770(DAT_143ae5468, &fSecond, 1);
+            UpdateGlobalShaderConstantFloats(DAT_143ae5460, &fFirst, 1);
+            UpdateGlobalShaderConstantFloats(DAT_143ae5468, &fSecond, 1);
         } else {
             float fFirst = fZero;
             float fSecond = (float)uiA / (float)uiB;
-            FUN_1409a5770(DAT_143ae5460, &fFirst, 1);
-            FUN_1409a5770(DAT_143ae5468, &fSecond, 1);
+            UpdateGlobalShaderConstantFloats(DAT_143ae5460, &fFirst, 1);
+            UpdateGlobalShaderConstantFloats(DAT_143ae5468, &fSecond, 1);
         }
     }
 }
@@ -451,21 +451,21 @@ void ApplyEffect::ResetScreenRatio()
 // @0x1409a4f40
 void ApplyEffect::SetScreenRatio(float fScale)
 {
-    unsigned int uiA = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    unsigned int uiB = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
+    unsigned int uiA = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()->GetHeight();
+    unsigned int uiB = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption()->GetWidth();
     if (uiA == 0 || uiB == 0) {
         return;
     }
     if (uiA >= uiB) {
         float fFirst = fScale * ((float)uiB / (float)uiA);
         float fSecond = fScale;
-        FUN_1409a5770(DAT_143ae5460, &fFirst, 1);
-        FUN_1409a5770(DAT_143ae5468, &fSecond, 1);
+        UpdateGlobalShaderConstantFloats(DAT_143ae5460, &fFirst, 1);
+        UpdateGlobalShaderConstantFloats(DAT_143ae5468, &fSecond, 1);
     } else {
         float fFirst = fScale;
         float fSecond = fScale * ((float)uiA / (float)uiB);
-        FUN_1409a5770(DAT_143ae5460, &fFirst, 1);
-        FUN_1409a5770(DAT_143ae5468, &fSecond, 1);
+        UpdateGlobalShaderConstantFloats(DAT_143ae5460, &fFirst, 1);
+        UpdateGlobalShaderConstantFloats(DAT_143ae5468, &fSecond, 1);
     }
 }
 
@@ -479,15 +479,15 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
         Unk_AeFeatureState* pState = (Unk_AeFeatureState*)((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(3);
         if (pState != 0) {
             if (bEnabled) {
-                FUN_1409a5770(DAT_143ae5358, &pField->m_fSoftParticle0, 1);
-                FUN_1409a5770(DAT_143ae5360, &pField->m_fSoftParticle1, 1);
-                FUN_1409a5770(DAT_143ae5368, &pField->m_fSoftParticle2, 1);
-                FUN_1409a5770(DAT_143ae5370, &pField->m_fSoftParticle3, 1);
-                FUN_1409a5770(DAT_143ae5378, &pField->m_fSoftParticle4, 1);
+                UpdateGlobalShaderConstantFloats(DAT_143ae5358, &pField->m_fSoftParticle0, 1);
+                UpdateGlobalShaderConstantFloats(DAT_143ae5360, &pField->m_fSoftParticle1, 1);
+                UpdateGlobalShaderConstantFloats(DAT_143ae5368, &pField->m_fSoftParticle2, 1);
+                UpdateGlobalShaderConstantFloats(DAT_143ae5370, &pField->m_fSoftParticle3, 1);
+                UpdateGlobalShaderConstantFloats(DAT_143ae5378, &pField->m_fSoftParticle4, 1);
             }
             ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(3, bEnabled);
-            bEnabled = (bEnabled && pState->FUN_1409a8f00()) ? 1 : 0;
-            ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(8, bEnabled);
+            bEnabled = (bEnabled && pState->IsActive()) ? 1 : 0;
+            ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetClickActive(8, bEnabled);
         }
     }
     return bEnabled;
@@ -496,9 +496,9 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
 // @0x1409a49b0
 void ApplyEffect::ApplyFieldFog()
 {
-    Unk_AeGraphicOption* pOption = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0();
+    Unk_AeGraphicOption* pOption = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption();
     if (pOption != 0) {
-        ApplyFieldFogRange(FUN_14125e020((const Unk_GraphicState*)pOption));
+        ApplyFieldFogRange(IsFogEnabled((const Unk_GraphicState*)pOption));
     }
     MS2Ptr<CFieldDataCli> field = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_AeFieldInfo*>(field.get()) != 0) {
@@ -517,7 +517,7 @@ void ApplyEffect::ApplyFieldFog()
 void ApplyEffect::ApplyFieldFogEnabled(bool bEnabled)
 {
     ApplyFieldFogRange(bEnabled);
-    Unk_AeGraphicOption* pOption = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0();
+    Unk_AeGraphicOption* pOption = Unk_AeGameOption::FUN_1409a8b10()->GetGraphicOption();
     if (pOption == 0) {
         return;
     }
@@ -639,7 +639,7 @@ void ApplyEffect::SetFogEffect(bool bEnabled, unsigned int* puiColor, float fNea
     bEnabled = true;
     if (NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae52f8) == 0) {
         NiShaderFactory::RegisterGlobalShaderConstant(DAT_143ae52f8, NiShaderAttributeDesc::ATTRIB_TYPE_BOOL, 1, &bEnabled);
-        if (!FUN_1409a8f20(&kColor)) {
+        if (!IsColorFinite(&kColor)) {
             throw 13;
         }
         NiShaderFactory::RegisterGlobalShaderConstant(DAT_143ae5300, NiShaderAttributeDesc::ATTRIB_TYPE_POINT3, 0xc, &kColor);
@@ -659,9 +659,9 @@ void ApplyEffect::SetFogEffect(bool bEnabled, unsigned int* puiColor, float fNea
     }
     FUN_1409a5850(DAT_143ae52f8, &bEnabled, 1);
     FUN_1409a5810(DAT_143ae5300, (const NiPoint3*)&kColor, 1);
-    FUN_1409a5770(DAT_143ae5308, &fNear, 1);
-    FUN_1409a5770(DAT_143ae5310, &fFar, 1);
-    FUN_1409a5770(DAT_143ae5318, &fDensity, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5308, &fNear, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5310, &fFar, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5318, &fDensity, 1);
 }
 
 // @0x1409a3c20

@@ -51,12 +51,12 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
     {
         if (pData->HasSkinType())
         {
-            MS2Ptr<CEquipItem> a4 = reinterpret_cast<PC*>(pAvatar)->FUN_141655c90(4);
-            MS2Ptr<CEquipItem> a5 = reinterpret_cast<PC*>(pAvatar)->FUN_141655c90(5);
+            MS2Ptr<CEquipItem> a4 = reinterpret_cast<PC*>(pAvatar)->GetEquipItemLayer0(4);
+            MS2Ptr<CEquipItem> a5 = reinterpret_cast<PC*>(pAvatar)->GetEquipItemLayer0(5);
             if ((bool)(CEquipItem*)a5 && (bool)(CEquipItem*)a4)
             {
-                MS2Ptr<CEquipItem> b4 = reinterpret_cast<PC*>(pAvatar)->FUN_141655cf0(4);
-                MS2Ptr<CEquipItem> b5 = reinterpret_cast<PC*>(pAvatar)->FUN_141655cf0(5);
+                MS2Ptr<CEquipItem> b4 = reinterpret_cast<PC*>(pAvatar)->GetEquipItemLayer1(4);
+                MS2Ptr<CEquipItem> b5 = reinterpret_cast<PC*>(pAvatar)->GetEquipItemLayer1(5);
                 if (b5 == 0)
                     nResult = 5;
                 else if (b4 == 0)
@@ -79,7 +79,7 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
             MS2Ptr<CEquipItem> h5 = reinterpret_cast<PC*>(pAvatar)->FUN_141655e10(5);
             if ((CEquipItem*)h5)
             {
-                if (reinterpret_cast<CItemData*>(((void*)h5->FUN_1411dc7f0()))->FUN_14053d460())
+                if (reinterpret_cast<CItemData*>(((void*)h5->GetItemData()))->FUN_14053d460())
                 {
                     nResult = 5;
                 }

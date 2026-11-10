@@ -194,7 +194,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             pkt.WriteInt32(nCount);
             pkt.WriteBool(false);
             FUN_140710590(pkt);
-            TSingleton<CFilePreload>::GetInstance()->FUN_1412104c0(nNpc);
+            TSingleton<CFilePreload>::GetInstance()->AddPreloadId(nNpc);
         }
         return 1;
     } else if (_stricmp("OnSummonPet", szMethod) == 0) {
@@ -213,7 +213,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             pkt.WriteBool(true);
             pkt.WriteFloat(fValue);
             FUN_140710590(pkt);
-            TSingleton<CFilePreload>::GetInstance()->FUN_1412104c0(nNpc);
+            TSingleton<CFilePreload>::GetInstance()->AddPreloadId(nNpc);
         }
         return 1;
     } else if (_stricmp("OnReleasePet", szMethod) == 0) {
@@ -238,7 +238,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     if (spObj.get() != 0) {
                         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                         pkt.WriteUInt8(2);
-                        pkt.WriteVector3Short(spObj->FUN_1416c2270());
+                        pkt.WriteVector3Short(spObj->GetPosition());
                         FUN_140710590(pkt);
                     }
                 } else {
@@ -273,7 +273,7 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
             if (spObj.get() != 0) {
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                 pkt.WriteUInt8(2);
-                pkt.WriteVector3Short(spObj->FUN_1416c2270());
+                pkt.WriteVector3Short(spObj->GetPosition());
                 FUN_140710590(pkt);
                 m_nPendingNpc = 0;
             }
@@ -299,7 +299,7 @@ void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
     {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.WriteUInt8(2);
-        pkt.WriteVector3Short(spActor->FUN_1416c2270());
+        pkt.WriteVector3Short(spActor->GetPosition());
         FUN_140710590(pkt);
         m_nPendingNpc = 0;
     }

@@ -63,7 +63,7 @@ public:
     void FUN_140a38d90(Vector3 pt);   // C3: was Unk_CameraManager::FUN_140a38d90
     efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
         NiAVObject* pRoot);                                         // pick the scene under a window point
-    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
+    void SetTarget(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
     class Unk_CameraTargetEntity* FUN_140a38d60();   // C3: bosstargetcamera.cpp
 };
 class Unk_GameContext
@@ -354,7 +354,7 @@ void CToolSmoothCameraMode::vfunc_30()
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(pActor, 1);
+            TSingleton<CameraMgr>::GetInstance()->SetTarget(pActor, 1);
             break;
         }
     }

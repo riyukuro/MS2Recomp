@@ -86,7 +86,7 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
 }
 
 // @0x140a22f10
-UIBlackMarketDialog* FUN_140a22f10(int nClass)
+UIBlackMarketDialog* FindBlackMarketDialog(int nClass)
 {
     if (reinterpret_cast<Unk_BmUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -125,13 +125,13 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
         m_tmB = CMsTime(qwB);
     }
     else if (cSub == 1)
-        FUN_140a211a0(packet);
+        OnOwnProductList(packet);
     else if (cSub == 2)
-        FUN_140a21340(packet);
+        OnOwnProductAdded(packet);
     else if (cSub == 3)
-        FUN_140a21460(packet);
+        OnOwnProductRemoved(packet);
     else if (cSub == 4)
-        FUN_140a216b0(packet);
+        OnSearchResult(packet);
     else if (cSub == 5)
         FUN_140a21930(packet);
     else if (cSub == 7)
@@ -223,12 +223,12 @@ void CBlackMarketMan::SendBlackMarketMode8(int nA, int nB)
 }
 
 // @0x140a20cf0
-int CBlackMarketMan::FUN_140a20cf0(MS2Ptr<CBlackMarketProduct> sp)
+int CBlackMarketMan::AddOwnProduct(MS2Ptr<CBlackMarketProduct> sp)
 {
     if (sp == 0)
         return 0;
     int bNew = 1;
-    MS2Ptr<CBlackMarketProduct> spOld = FUN_140a20e70(sp->m_qw18);
+    MS2Ptr<CBlackMarketProduct> spOld = FindOwnProduct(sp->m_qw18);
     if (spOld.get() != 0)
         bNew = 0;
     if (Unk_LockGuard guard = m_lock)
@@ -240,7 +240,7 @@ int CBlackMarketMan::FUN_140a20cf0(MS2Ptr<CBlackMarketProduct> sp)
 }
 
 // @0x140a20e00
-void CBlackMarketMan::FUN_140a20e00(unsigned __int64 qwId)
+void CBlackMarketMan::RemoveOwnProduct(unsigned __int64 qwId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -250,7 +250,7 @@ void CBlackMarketMan::FUN_140a20e00(unsigned __int64 qwId)
 }
 
 // @0x140a20e70
-MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FUN_140a20e70(unsigned __int64 qwId)
+MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FindOwnProduct(unsigned __int64 qwId)
 {
     MS2Ptr<CBlackMarketProduct> sp(0);
     if (Unk_LockGuard guard = m_lock)
@@ -262,7 +262,7 @@ MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FUN_140a20e70(unsigned __int64 qwId
 }
 
 // @0x140a20f30
-void CBlackMarketMan::FUN_140a20f30(MS2Ptr<CBlackMarketProduct> sp)
+void CBlackMarketMan::AddSearchProduct(MS2Ptr<CBlackMarketProduct> sp)
 {
     if (sp == 0)
         return;
@@ -277,7 +277,7 @@ void CBlackMarketMan::FUN_140a20f30(MS2Ptr<CBlackMarketProduct> sp)
 }
 
 // @0x140a20ff0
-MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FUN_140a20ff0(unsigned __int64 qwId)
+MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FindSearchProduct(unsigned __int64 qwId)
 {
     MS2Ptr<CBlackMarketProduct> sp(0);
     if (Unk_LockGuard guard = m_lock)
@@ -289,13 +289,13 @@ MS2Ptr<CBlackMarketProduct> CBlackMarketMan::FUN_140a20ff0(unsigned __int64 qwId
 }
 
 // @0x140a210b0
-size_t CBlackMarketMan::FUN_140a210b0()
+size_t CBlackMarketMan::GetOwnProductCount()
 {
     return m_mapOwn.GetCount();
 }
 
 // @0x140a210e0
-void CBlackMarketMan::FUN_140a210e0(ProductList& out)
+void CBlackMarketMan::GetOwnProducts(ProductList& out)
 {
     out.RemoveAll();
     if (Unk_LockGuard guard = m_lock)
@@ -309,7 +309,7 @@ void CBlackMarketMan::FUN_140a210e0(ProductList& out)
 }
 
 // @0x140a211a0
-void CBlackMarketMan::FUN_140a211a0(CInPacket& packet)
+void CBlackMarketMan::OnOwnProductList(CInPacket& packet)
 {
     m_mapOwn.RemoveAll();
     int nCount = packet.ReadInt32();
@@ -318,28 +318,28 @@ void CBlackMarketMan::FUN_140a211a0(CInPacket& packet)
         MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
         sp->Read(&packet);
         sp->m_item->SetCountClamped(sp->GetRemain());
-        FUN_140a20cf0(sp);
+        AddOwnProduct(sp);
     }
-    UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+    UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
         pDlg->FUN_1418d0de0(&m_mapOwn);
 }
 
 // @0x140a21340
-void CBlackMarketMan::FUN_140a21340(CInPacket& packet)
+void CBlackMarketMan::OnOwnProductAdded(CInPacket& packet)
 {
     MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
     sp->Read(&packet);
-    if (FUN_140a20cf0(sp))
+    if (AddOwnProduct(sp))
     {
-        UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+        UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
         if (pDlg != 0)
             ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d0e40(sp);
     }
 }
 
 // @0x140a21460
-void CBlackMarketMan::FUN_140a21460(CInPacket& packet)
+void CBlackMarketMan::OnOwnProductRemoved(CInPacket& packet)
 {
     unsigned __int64 qwId = packet.ReadInt64();
     int bFlag = packet.ReadUInt8();
@@ -348,16 +348,16 @@ void CBlackMarketMan::FUN_140a21460(CInPacket& packet)
     {
         if (MS2Ptr<CBlackMarketProduct> sp = pPair != 0 ? pPair->m_value : MS2Ptr<CBlackMarketProduct>(0))
         {
-            UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+            UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
             if (pDlg != 0)
                 ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d0f00(sp, bFlag);
-            FUN_140a20e00(qwId);
+            RemoveOwnProduct(qwId);
         }
     }
 }
 
 // @0x140a216b0
-void CBlackMarketMan::FUN_140a216b0(CInPacket& packet)
+void CBlackMarketMan::OnSearchResult(CInPacket& packet)
 {
     if (m_nReload != 0)
     {
@@ -374,9 +374,9 @@ void CBlackMarketMan::FUN_140a216b0(CInPacket& packet)
         sp->Read(&packet);
         sp->m_item->SetCountClamped(sp->GetRemain());
         if (sp->m_item->FUN_140527840() != 0)
-            FUN_140a20f30(sp);
+            AddSearchProduct(sp);
     }
-    UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+    UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
     {
         pDlg->FUN_1418d1330(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
@@ -388,17 +388,17 @@ void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
 {
     unsigned __int64 qwId = packet.ReadInt64();
     int nBought = packet.ReadInt32();
-    MS2Ptr<CBlackMarketProduct> sp = FUN_140a20ff0(qwId);
+    MS2Ptr<CBlackMarketProduct> sp = FindSearchProduct(qwId);
     if (sp == 0)
         return;
     sp->m_nBought += nBought;
     sp->m_item->SetCountClamped(sp->GetRemain());
     if (sp->GetRemain() == 0)
         sp->m_nStateA = 1;
-    CBlackMarketProduct* pOld = FUN_140a20e70(qwId).get();
+    CBlackMarketProduct* pOld = FindOwnProduct(qwId).get();
     if (pOld != 0)
         sp->m_nStateA = 1;
-    UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+    UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
     {
         int nOld = m_listSearch.GetCount();
@@ -414,7 +414,7 @@ void CBlackMarketMan::FUN_140a21be0(CInPacket& packet)
     int nA = packet.ReadInt32();
     int nB = packet.ReadInt32();
     __int64 qw = packet.ReadInt64();
-    UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+    UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
         pDlg->FUN_1418d13a0(nA, nB, (void*)qw);
 }
@@ -517,7 +517,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         Unk_BmMessage(0x92b, 1, 1, nResult);
         break;
     }
-    UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
+    UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
         pDlg->FUN_1418d0b60(bType, nResult, (void*)qw);
 }

@@ -118,7 +118,7 @@ int CBaseOption::vfunc_14()
 // @0x140a02d70
 UIGameOptionDialog* CBaseOption::GetOptionDialog()
 {
-    return FUN_140a02e60(0x4ef3);
+    return FindGameOptionDialog(0x4ef3);
 }
 
 // @0x140a02d90
@@ -154,13 +154,13 @@ int CBaseOption::GetActive() const
 }
 
 // @0x140a02e50
-int CBaseOption::FUN_140a02e50() const
+int CBaseOption::GetId() const
 {
     return m_nId;
 }
 
 // @0x140a02e60
-UIGameOptionDialog* FUN_140a02e60(int nDialogId)
+UIGameOptionDialog* FindGameOptionDialog(int nDialogId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {

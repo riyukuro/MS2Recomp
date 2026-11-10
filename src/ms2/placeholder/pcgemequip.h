@@ -23,7 +23,7 @@ public:
     ~PCGemEquip();                                          // 0x14126fd70 takes the gems of types 10, 7, 11, 12 off
     void ReadFromStream(CInputStream& stream, int nOwner);   // 0x14126fea0 read the worn gem items of a packet
     void SetItemByGemType(int nGemType, MS2Ptr<CItem> spItem); // 0x141270030 store the item at the index of the type
-    unsigned FUN_1412700b0();                               // 0x1412700b0 number of slots
+    unsigned GetItemCount();                               // 0x1412700b0 number of slots
     int GetItems(ATL::CAtlArray<MS2Ptr<CItem> >& out);   // 0x1412700e0 copy of the items; nonempty
     MS2Ptr<CItem> GetItemByGemType(int nGemType);              // 0x141270140 the item worn for a gem type (checks its type)
     bool HasItemId(int nItemId);                        // 0x141270290 an item with this item id is worn
@@ -32,7 +32,7 @@ public:
     void FUN_1412704d0();                                   // 0x1412704d0 apply the worn gems (CItemGem::vfunc_5)
     void FUN_141270610();                                   // 0x141270610 CItemGem::vfunc_6 of every slot
     void FUN_141270680();                                   // 0x141270680 CItemGem::vfunc_7 of every slot
-    int FUN_1412706f0(int nSlot);                           // 0x1412706f0 the transparency gem's hidden flag of an equip slot
+    int IsSlotHidden(int nSlot);                           // 0x1412706f0 the transparency gem's hidden flag of an equip slot
     MS2Ptr<CGemBase> FUN_141270740(int nGemType);           // 0x141270740 the gem worn for a type
     MS2Ptr<CItem> RemoveItemOfSameGemType(MS2Ptr<CItem> spItem);      // 0x1412709d0 take the gem item off
     MS2Ptr<CItem> RemoveByGemType(int nGemType);              // 0x141270ab0 take the item of a type off
@@ -45,8 +45,8 @@ public:
     int FUN_141271290(int nGemType);                        // 0x141271290 the array index of a gem type
     MS2Ptr<CItem> FUN_1412712e0(int nIndex);                // 0x1412712e0 the item at an index (calls CItemGem::vfunc_6)
     MS2Ptr<CItem> FUN_141271500(int nIndex);                // 0x141271500 the item at an index (calls CItemGem::vfunc_7)
-    MS2Ptr<CItem> FUN_141271630(int nIndex);                // 0x141271630 the item at an index
-    void FUN_1412716d0(int nIndex, MS2Ptr<CItem> spItem);   // 0x1412716d0 set the item at an index
+    MS2Ptr<CItem> GetItemAt(int nIndex);                // 0x141271630 the item at an index
+    void SetItemAt(int nIndex, MS2Ptr<CItem> spItem);   // 0x1412716d0 set the item at an index
     bool FUN_141271750(int nGemType);                       // 0x141271750 types 5 and 6
     void FUN_141271780(int nGemType, MS2Ptr<CItem> spItem); // 0x141271780 register a skin gem item
     void FUN_141271870(int nGemType, MS2Ptr<CItem> spItem); // 0x141271870 unregister it

@@ -284,8 +284,8 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
         int nMapId = 0;
         int nPortalId = 0;
         __int64 nFee = 0;
-        box.FUN_140961900(0, nMapId);
-        box.FUN_140961900(1, nPortalId);
+        box.GetIntArg(0, nMapId);
+        box.GetIntArg(1, nPortalId);
         box.FUN_140e01c50(2, nFee);
         if (DAT_143ab2898 < nFee)
         {
@@ -849,7 +849,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 CString FUN_140e01de0(MS2Ptr<CMeratMarketProduct> item)
 {
     if (item.get() != 0)
-        return StringFormat<CString>("limited_{0}", CString(item->m_key.FUN_1409b0470()));
+        return StringFormat<CString>("limited_{0}", CString(item->m_key.GetKeyString()));
     return CString("");
 }
 

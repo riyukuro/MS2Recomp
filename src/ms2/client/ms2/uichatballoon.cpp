@@ -101,7 +101,7 @@ public:
     virtual void vfunc_24(bool b);
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-UICutSceneMovie* FUN_14138fd50(int nUiId);
+UICutSceneMovie* FindCutSceneMovie(int nUiId);
 void* FUN_14136f3e0(int nUiId);
 int FUN_141274ff0();
 int FUN_141275080();
@@ -160,7 +160,7 @@ void UIChatBalloon::Entity::vfunc_5()
     {
         PC* pPc = (efd::DynamicCast<PC, PCBase>(pActor));
         if (pPc != 0)
-            if (((PCGemEquip*)pPc->FUN_14165f460())->FUN_141270740(3) == 0)
+            if (((PCGemEquip*)pPc->GetGemEquip())->FUN_141270740(3) == 0)
                 m_a8.Empty();
         ASObj obj(m_18);
         obj.FUN_1407cbb20("text", m_b0);
@@ -525,7 +525,7 @@ int FUN_1418fcb70()
 {
     if (FUN_14025e7a0()->FUN_1422b0f10() != 0)
         return 1;
-    UICutSceneMovie* pA = FUN_14138fd50(0x4e7e);
+    UICutSceneMovie* pA = FindCutSceneMovie(0x4e7e);
     if (pA != 0 && pA->FUN_1419102c0() != 0)
         return 0;
     UIGuideEvent* pB = (UIGuideEvent*)FUN_14136f3e0(0x4e53);

@@ -29,7 +29,7 @@
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-// The state-sync record (Unk_StateArg22 in statemanager.h) as StateData slots 1/2 see it: +0x70 carries the kind.
+// The state-sync record (StateSyncObject in statemanager.h) as StateData slots 1/2 see it: +0x70 carries the kind.
 class Unk_StateDataArg
 {
 public:
@@ -258,7 +258,7 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
     if (pPC)
     {
         m_n48 += 100;
-        if (((void*)((class PC*)(class PCBase*)(pPC))->FUN_14165f100()))
+        if (((void*)((class PC*)(class PCBase*)(pPC))->GetHeldItem()))
             ((class PC*)(class PCBase*)(pPC))->SendRequestCube();
     }
     if (FUN_1417b8560())

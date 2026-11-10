@@ -42,8 +42,8 @@ class Unk_HsPC : public PC
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
-void FUN_141415600(const CString& strName);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
+void DestroyItemInfoSlot(const CString& strName);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
@@ -215,9 +215,9 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
 {
     ASObj row(2);
     row.FUN_140c1f8b0("team", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0());
-    ((ASObj*)(ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
+    ((ASObj*)(ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->GetSubJob());
     ((class AScript&)(row)).FUN_1407cbb20("charName", pPC->vfunc_77());
-    row.FUN_1409c0d20("kill", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a660());
+    row.SetMemberUInt("kill", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a660());
     ((class AScript&)(row)).FUN_1407cb9c0("death", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0() != 0);
     row.FUN_1409c1180("exp", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a600());
     row.FUN_1407cbbe0("isMe", bMine);
@@ -235,7 +235,7 @@ CString UIHideAndSeekResultDialog::FUN_140c1f300(unsigned int nItemId, int nCoun
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return CString("");
         spItem->SetCountClamped(nCount);
-        FUN_141415450(strKey, spItem, 0, 0x411, 0);
+        CreateItemInfoSlot(strKey, spItem, 0, 0x411, 0);
         m_boundIcons.insert(strKey);
     }
     return strKey;
@@ -248,7 +248,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f590()
     std::set<CString>::iterator it = m_boundIcons.begin();
     std::set<CString>::iterator itEnd = m_boundIcons.end();
     for (; it != itEnd; ++it)
-        FUN_141415600(*it);
+        DestroyItemInfoSlot(*it);
     m_boundIcons.clear();
 }
 MS2_REPLACE_METHOD(0x140C1F590, UIHideAndSeekResultDialog, FUN_140c1f590, 135, 0x47207A4E);

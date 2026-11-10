@@ -41,7 +41,7 @@ public:
     virtual void vfunc_5(int n);                       // 5  @0x1410245e0
     virtual void vfunc_8(double fTime);                // 8  @0x141024940 (empty)
     virtual int vfunc_17();                            // 17 @0x141024a20: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);    // 22 @0x1410249f0: 1
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);    // 22 @0x1410249f0: 1
     virtual MS2Ptr<StateData> vfunc_27();              // 27 @0x141024960: a new StateDataGrabTarget
     int FUN_141024a30(int nTarget);                    // @0x141024a30: the payload names this grabbed actor
     efd::Point3 m_kPos;                                // +0x40 (the owner's position before the grab)

@@ -101,14 +101,14 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The notice hub (global via FUN_140939a10).
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
-// The item event hub (global via FUN_140a6a840); the view of the definition in uiitemenchantdialog.cpp.
+// The item event hub (global via GetItemEventDispatcher); the view of the definition in uiitemenchantdialog.cpp.
 class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* listener);      // register (once)
     void FUN_1419caeb0(UIItemEventListener* listener);      // unregister
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // The world (global via FUN_1403ed2d0): the own character.
 class Unk_MWorld
@@ -177,7 +177,7 @@ CStringW FUN_1419021b0(unsigned nHave, unsigned nNeed);               // "have/n
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/placeholder/asuicomponent.h"   // C3 type identity: ASUIComponent
 #include "ms2/placeholder/wcformat.h"
-void FUN_140d432d0(ItemSlotBinder* pBinder, int n);
+void SetIconType(ItemSlotBinder* pBinder, int n);
 void FUN_140710590(COutPacket& pkt);
 
 // The AS controls of the movie. Slot 3 / 23 / 24 are the ones the dialog calls.
@@ -284,7 +284,7 @@ CStringW FUN_14183e9c0(CStringW str, int nRank);
 CStringW FUN_140298ea0(CStringW strKey);
 int FUN_140930e10();
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140c43630
-class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
+class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerBrowser
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool bHistory); };   // C3: member view (uimessenger.h)
 extern ATL::CAtlMap<unsigned int, int> DAT_143ab31a0;   // scenestategame.cpp
 extern __int64 DAT_143ab2898;
@@ -355,9 +355,9 @@ UIMasteryDialog::UIMasteryDialog()
     memset(m_268, 0, sizeof(m_268));
     memset(m_scroll, 0, sizeof(m_scroll));
     FUN_141924170(1);
-    FUN_140d432d0(&m_reward, 0x11);
-    FUN_140d432d0(&m_require, 1);
-    FUN_140d432d0(&m_mastery, 0x11);
+    SetIconType(&m_reward, 0x11);
+    SetIconType(&m_require, 1);
+    SetIconType(&m_mastery, 0x11);
     m_nPendingSub = 0;
     m_nPendingList = 0;
     m_304 = 0;
@@ -384,7 +384,7 @@ CString UIMasteryDialog::GetTypeName()
 // @0x140eae4c0
 int UIMasteryDialog::vfunc_65()
 {
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(this);
     return UIDialog::vfunc_65();
 }
 
@@ -418,7 +418,7 @@ void UIMasteryDialog::vfunc_67()
             m_nMainTab = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
         }
     }
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(this);
     UIDialog::vfunc_67();
 }
 
@@ -562,7 +562,7 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 break;
             }
             }
-            UIMessengerBrowser* pChat = FUN_140a3ab70(0x4e61);
+            UIMessengerBrowser* pChat = FindMessengerBrowser(0x4e61);
             if (pChat)
                 pChat->FUN_141a25770(CStringW(strCommand), false);
         }
@@ -859,7 +859,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 int nNeed = CalcIngredientCount(spRec->m_nType, spRec->m_nRequireMastery, ref->m_c);
                 int nHave = 0;
                 if (ref->m_b != 0)
-                    nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                    nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 else
                     nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
                 CStringW strCnt = FUN_1419021b0(nHave, nNeed);
@@ -888,7 +888,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 int nNeed = CalcIngredientCount(spRec->m_nType, spRec->m_nRequireMastery, ref->m_c);
                 int nHave = 0;
                 if (ref->m_b != 0)
-                    nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                    nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 else
                     nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
                 if (nHave < nNeed)
@@ -944,7 +944,7 @@ void UIMasteryDialog::FUN_140eb24a0()
         ASArray rows(2);
         for (int nLevel = 1; nLevel <= (int)nMax; nLevel++) {
             Unk_MItemArray items;
-            FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), items);
+            FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), items);
             if (nLevel != 1 && items.GetCount() == 0)
                 continue;
             int nAdd = FUN_140933200()->GetMasteryValue(nLevel);
@@ -953,7 +953,7 @@ void UIMasteryDialog::FUN_140eb24a0()
                 nSumCur += nAdd;
             ASObj row(2);
             row.FUN_1407cb9c0("id", nLevel);
-            row.FUN_1409c0d20("level", nSum);
+            row.SetMemberUInt("level", nSum);
             row.FUN_1407cbb20("levelStr", FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), nLevel));
             int bInactive = Common::FindElement<int>(DAT_143ab32b8, nLevel) != -1;
             CString strState;
@@ -1036,7 +1036,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
             if (!spFurn->hasPrice && !DAT_143ab2e20.FUN_1408fbe90(spFurn->FUN_1405494e0()))
                 continue;
             ASObj row(2);
-            row.FUN_1409c0d20("id", spFurn->FUN_1405494e0());
+            row.SetMemberUInt("id", spFurn->FUN_1405494e0());
             row.FUN_1407cba60("icon", spDef->GetIconPath());
             row.FUN_1407cbbe0("lock", FUN_140eb8cd0(MS2Ptr<ItemHousing>(spFurn)) == 0);
             reinterpret_cast<Unk_MPageArray&>(page).PushObj(row);
@@ -1488,7 +1488,7 @@ int UIMasteryDialog::FUN_140eb6870()
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return 0;
-    MS2Ptr<JobData> spJob = TSingleton<JobTable>::GetInstance()->GetJobData(reinterpret_cast<PC*>(pPc)->FUN_141654700());
+    MS2Ptr<JobData> spJob = TSingleton<JobTable>::GetInstance()->GetJobData(reinterpret_cast<PC*>(pPc)->GetJobGroupId());
     if (spJob.IsNull())
         return 0;
     return spJob->m_defaultWeaponSlot;
@@ -1502,8 +1502,8 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
         return;
     unsigned int nNeed = FUN_1409670c0()->Value(nType, nIndex);
     unsigned int nId = FUN_1409670c0()->MakeID(nType, nIndex);
-    obj.FUN_1409c0d20("id", nId);
-    obj.FUN_1409c0d20("level", nNeed);
+    obj.SetMemberUInt("id", nId);
+    obj.SetMemberUInt("level", nNeed);
     obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
     int nFlag = 0;
     DAT_143ab31a0.Lookup(nId, nFlag);
@@ -1514,7 +1514,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
         strState = (reinterpret_cast<PC*>(pPc)->GetMastery(nType) >= nNeed) ? "active" : "lock";
     obj.FUN_1407cba60("state", CString(strState));
     Unk_MItemArray items;
-    FUN_1409670c0()->Rewards(nId, reinterpret_cast<PC*>(pPc)->FUN_141654700(), items);
+    FUN_1409670c0()->Rewards(nId, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), items);
     if (items.GetCount() > 0) {
         MS2Ptr<ItemEntity> spItem0(items[0]);
         obj.FUN_1407cba60("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
@@ -1553,7 +1553,7 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
             int nHave = 0;
             int nNeed = CalcIngredientCount(spRec->m_nType, spRec->m_nRequireMastery, ref->m_c);
             if (ref->m_b != 0)
-                nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
             else
                 nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
             int nCan = nHave / nNeed;
@@ -1636,16 +1636,16 @@ int UIMasteryDialog::CalcAdjustedItemCount(int nType, unsigned int nNeedMastery,
     float fStat = 0;
     switch (nType) {
     case 3:
-        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x43);
+        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x43);
         break;
     case 5:
-        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x44);
+        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x44);
         break;
     case 4:
-        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x47);
+        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x47);
         break;
     case 6:
-        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x48);
+        fStat = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x48);
         break;
     }
     float fOne = 1.0f;
@@ -1737,16 +1737,16 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<CMasteryReceipe> spRec)
     float fBonus = 0.0f;
     switch (spRec->m_nType) {
     case 7:
-        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x45);
+        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x45);
         break;
     case 8:
-        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x46);
+        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x46);
         break;
     case 9:
-        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x49);
+        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x49);
         break;
     case 10:
-        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x4a);
+        fBonus = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x4a);
         break;
     }
     nValue = (int)FUN_1404820b0(nValue, 1.0f + fBonus);

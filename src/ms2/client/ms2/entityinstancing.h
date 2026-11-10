@@ -46,14 +46,14 @@ public:
     void vfunc_1() override;
     bool FUN_1411c5880(egf::Entity*, unsigned);
     int FUN_1411c58d0(egf::Entity*);
-    void FUN_1411c5e30(egf::Entity*, bool);
+    void SetEntityVisible(egf::Entity*, bool);
     void FUN_1411c5f40(egf::Entity*);
-    void FUN_1411c6030(egf::Entity*);
-    int FUN_1411c6390(egf::Entity*, bool);
+    void HideEntity(egf::Entity*);
+    int ShowEntity(egf::Entity*, bool);
     void FUN_1411c66e0();
     void FUN_1411c67f0(const egf::EntityID&);
     void FUN_1411c68d0();
-    bool FUN_1411c6a50(egf::EntityID id);   // by value: the exe callers copy
+    bool IsHidden(egf::EntityID id);   // by value: the exe callers copy
     void FUN_1411c6ae0(unsigned);
     std::list<egf::EntityID> hidden;
 };

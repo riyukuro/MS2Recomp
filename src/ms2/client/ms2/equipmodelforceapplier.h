@@ -46,4 +46,4 @@ public:
 MS2_CHECK_SIZE(EquipModelWindApplier, 0x20);
 
 // Factory (0x141209640): wind applier for a model whose info type is 7, else the null applier.
-IEquipModelForceApplierPtr FUN_141209640(CEquipModel* pModel);
+IEquipModelForceApplierPtr CreateForceApplier(CEquipModel* pModel);

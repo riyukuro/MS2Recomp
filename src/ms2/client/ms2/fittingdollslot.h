@@ -31,7 +31,7 @@ public:
     virtual int vfunc_8(void* p);                       // 8  0x14121d810 build the slot (item, flags) into p
     virtual void vfunc_9();                             // 9  0x14121dc90 set m_strSlotType on the bound value
     virtual int vfunc_13();                             // 13 0x14121d1c0 return 0
-    virtual int vfunc_14();                             // 14 0x14121d1d0 destroy the doll item (FUN_14121ddc0)
+    virtual int vfunc_14();                             // 14 0x14121d1d0 destroy the doll item (DestroyDollItem)
     virtual int vfunc_15();                             // 15 0x14121d1f0 link the item
     virtual int vfunc_18(void* p);                      // 18 0x14121d280 an inventory item was dropped on the slot
     virtual int vfunc_20();                             // 20 0x14121d330 drag start: item sound
@@ -39,9 +39,9 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();                   // 25 0x14121db80 the item worn by the doll in the slot
     virtual int vfunc_0(void* p);                       // ITooltip 0x14121d610 build the tooltip into p
 
-    PC* FUN_14121dd90();                                // 0x14121dd90 the player
-    FittingDollPC* FUN_14121dd50();                     // 0x14121dd50 the doll
-    int FUN_14121ddc0();                                // 0x14121ddc0 destroy the doll item (confirm box / packet 0x42)
+    PC* GetPC();                                // 0x14121dd90 the player
+    FittingDollPC* GetDoll();                     // 0x14121dd50 the doll
+    int DestroyDollItem();                                // 0x14121ddc0 destroy the doll item (confirm box / packet 0x42)
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -70,8 +70,8 @@ public:
     virtual CString vfunc_15(int nIndex);               // 15 0x14121ecb0 "<name>.<equip position>"
     virtual DragSlot* vfunc_16(int nIndex);             // 16 0x14121ed70 new FittingDollSlot for the position of nIndex
 
-    int FUN_14121eee0();                                // number of slots
-    Unk_InventoryEquipSlot FUN_14121ef10(int nIndex);   // the equip position of a slot index
+    int GetSlotCount();                                // number of slots
+    Unk_InventoryEquipSlot GetEquipSlot(int nIndex);   // the equip position of a slot index
 
 public:
     MS2_LAYOUT_FRIEND;

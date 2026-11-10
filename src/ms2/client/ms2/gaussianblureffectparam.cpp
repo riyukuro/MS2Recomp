@@ -26,13 +26,13 @@ public:
 class Unk_AeGraphicOption
 {
 public:
-    unsigned int FUN_1409a8ab0() const;   // width
-    unsigned int FUN_1409a8aa0() const;   // height
+    unsigned int GetHeight() const;   // width
+    unsigned int GetWidth() const;   // height
 };
-class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* GetGraphicOption(); };   // C3: unit-local view (def in applyeffect)
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5460;                                             // blur offset x constant name
 extern NiFixedString DAT_143ae5468;                                             // blur offset y constant name
 
@@ -90,23 +90,23 @@ void GaussianBlurEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fOffset = (m_fOffsetMax - m_fOffsetMin) * fT + m_fOffsetMin;
-    unsigned int nWidth = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
-    unsigned int nHeight = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
+    unsigned int nWidth = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->GetHeight();
+    unsigned int nHeight = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->GetWidth();
     if (nWidth == 0 || nHeight == 0)
         return;
     if (nWidth >= nHeight)
     {
         float fX = fOffset * ((float)nHeight / (float)nWidth);
         float fY = fOffset;
-        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
-        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
+        UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
+        UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
     }
     else
     {
         float fX = fOffset;
         float fY = fOffset * ((float)nWidth / (float)nHeight);
-        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
-        FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
+        UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5460), &fX, 1);
+        UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5468), &fY, 1);
     }
 }
 MS2_REPLACE_METHOD(0x140cfd490, GaussianBlurEffect, vfunc_7, 394, 0xDB8F90F3);

@@ -155,7 +155,7 @@ void * FUN_1413f98f0(void);  // C3: the definition's signature
 ecr::SceneGraphService* FUN_1413f98b0();
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
-void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
+void SetCachedBoolProperty(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };   // C3: member view (the material class the fade supports)
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
@@ -303,7 +303,7 @@ bool BGTransparencyMgr::IsTarget(egf::Entity* pEntity)
         return false;
     for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
     {
-        if ((*it)->FUN_14123c410() == pTarget)
+        if ((*it)->GetEntity() == pTarget)
             return false;
     }
     if (pTarget->GetModel() != 0 && pTarget->GetModel()->ContainsModel(0x2ea80520))
@@ -396,7 +396,7 @@ void BGTransparencyMgr::vfunc_1()
             {
                 if (RayHits(ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0(), ptDirA, itRegion->m_pNode))
                 {
-                    pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(itRegion->m_id);
+                    pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(itRegion->m_id);
                     if (pEntityA != 0)
                     {
                         bool bAdded = false;
@@ -423,7 +423,7 @@ void BGTransparencyMgr::vfunc_1()
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
-                                pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+                                pEntityA = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
                                 if (pEntityA != 0)
                                     kHit.insert(pEntityA);
                             }
@@ -432,7 +432,7 @@ void BGTransparencyMgr::vfunc_1()
                 }
                 if (RayHits(ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0(), ptDirB, itRegion->m_pNode))
                 {
-                    pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(itRegion->m_id);
+                    pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(itRegion->m_id);
                     if (pEntityB != 0 && pEntityA != pEntityB)
                     {
                         bool bAdded = false;
@@ -459,7 +459,7 @@ void BGTransparencyMgr::vfunc_1()
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
-                                pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+                                pEntityB = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
                                 if (pEntityB != 0)
                                     kHit.insert(pEntityB);
                             }
@@ -522,7 +522,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                                     if (spInstancing->FUN_1413d6f40(pEntity) != 0)
                                     {
                                         bool bTrue = true;
-                                        FUN_14098c6e0((Unk_CachedEntity*)pEntity, 0xa0b6b179, bTrue);
+                                        SetCachedBoolProperty((Unk_CachedEntity*)pEntity, 0xa0b6b179, bTrue);
                                     }
                                 }
                                 pMaterial->vfunc_2(kBound);
@@ -617,7 +617,7 @@ void BGTransparencyMgr::UpdateFadeIn()
                 if (spInstancing->FUN_1413d6fc0(pEntity) != 0)
                 {
                     bool bFalse = false;
-                    FUN_14098c6e0((Unk_CachedEntity*)pEntity, 0xa0b6b179, bFalse);
+                    SetCachedBoolProperty((Unk_CachedEntity*)pEntity, 0xa0b6b179, bFalse);
                 }
             }
             ReleaseMaterials(pEntity, pElement);

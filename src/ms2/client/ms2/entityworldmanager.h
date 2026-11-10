@@ -54,7 +54,7 @@ MS2_CHECK_OFFSET(Unk_EntityWorldRecord, loadedEntities, 0x58);
 MS2_CHECK_OFFSET(Unk_EntityWorldRecord, createdEntities, 0x68);
 
 // The exe instantiates GetSystemServiceAs/DynamicCast twice for CLASS_ID 0x07001008 (no ICF): once for
-// egfPhysX::SceneService (FUN_1411cf630) and once for the type of the 'scenes' member (OnInit, 0xd8). The latter
+// egfPhysX::SceneService (LoadMap) and once for the type of the 'scenes' member (OnInit, 0xd8). The latter
 // is modelled as a subclass that inherits CLASS_ID; it is never instantiated.
 class Unk_PhysXSceneView : public egfPhysX::SceneService {};
 class EntityWorldManager;
@@ -84,36 +84,36 @@ public:
     virtual void vfunc_1(int);
     virtual void vfunc_3(int);
     virtual void vfunc_4(int);
-    Unk_WorldEntityMap::iterator FUN_1411ce4c0();
-    bool FUN_1411ce510(Unk_WorldEntityMap::iterator&, egf::Entity*&);
-    Unk_WorldEntityMap::iterator FUN_1411ce5a0();
-    bool FUN_1411ce5f0(Unk_WorldEntityMap::iterator&, egf::Entity*&);
-    Unk_WorldEntityMap::iterator FUN_1411ce680();
-    bool FUN_1411ce6d0(Unk_WorldEntityMap::iterator&, egf::Entity*&);
+    Unk_WorldEntityMap::iterator BeginAllEntities();
+    bool NextAllEntity(Unk_WorldEntityMap::iterator&, egf::Entity*&);
+    Unk_WorldEntityMap::iterator BeginLoadedEntities();
+    bool NextLoadedEntity(Unk_WorldEntityMap::iterator&, egf::Entity*&);
+    Unk_WorldEntityMap::iterator BeginCreatedEntities();
+    bool NextCreatedEntity(Unk_WorldEntityMap::iterator&, egf::Entity*&);
     egf::EntityID FUN_1411ce760(const efd::utf8string&, efd::AssetID&, bool);
     egf::EntityPtr FactoryEntity(const efd::utf8string&, egf::EntityID, bool);
     egf::EntityPtr FUN_1411cedd0(egf::FlatModelID, egf::EntityID, bool);
-    egf::EntityID FUN_1411cef50(const efd::utf8string&, const efd::Category&,
+    egf::EntityID CreateEntity(const efd::utf8string&, const efd::Category&,
         efd::ParameterList*, efd::ParameterList*, egf::EntityID, bool);
     egf::EntityPtr FUN_1411ce7c0(efd::utf8string, efd::utf8string, efd::Point3, efd::Point3, float, int, int);
-    bool FUN_1411cf0b0(efd::utf8string, efd::AssetID&, bool&);
-    bool FUN_1411cf2d0(egf::Entity*, efd::ParameterList*);   // returns AddEntity's result (CKfmModel reads it)
-    egf::EntityPtr FUN_1411cf3d0(const egf::EntityID&);
-    egf::Entity* FUN_1411cf440(const egf::EntityID&);
-    void FUN_1411cf540(egf::EntityID id);                    // by value
-    void FUN_1411cf570(egf::Entity*);
-    void FUN_1411cf5a0(egf::EntityID, egf::Entity*);   // the id by value: the exe caller copies it
-    bool FUN_1411cf630(int, const egf::BlockIdentification&);
-    void FUN_1411cf980(int, const egf::BlockIdentification&);
+    bool GetModelAsset(efd::utf8string, efd::AssetID&, bool&);
+    bool AddEntity(egf::Entity*, efd::ParameterList*);   // returns AddEntity's result (CKfmModel reads it)
+    egf::EntityPtr LookupEntity(const egf::EntityID&);
+    egf::Entity* FindEntity(const egf::EntityID&);
+    void DestroyEntityById(egf::EntityID id);                    // by value
+    void DestroyEntity(egf::Entity*);
+    void AddLoadedEntity(egf::EntityID, egf::Entity*);   // the id by value: the exe caller copies it
+    bool LoadMap(int, const egf::BlockIdentification&);
+    void UnloadMap(int, const egf::BlockIdentification&);
     bool FUN_1411cfb80(unsigned*, int*);
-    int FUN_1411cfbe0();
-    void FUN_1411cfce0();
-    void FUN_1411cfd40(const egf::EntityChangeMessage*, efd::Category);
-    void FUN_1411cffa0(const egf::EntityChangeMessage*, efd::Category);
+    int GetLoadedMapCount();
+    void WriteCrashLog();
+    void OnEntityAdded(const egf::EntityChangeMessage*, efd::Category);
+    void OnEntityRemoved(const egf::EntityChangeMessage*, efd::Category);
     void FUN_1411d0a60(unsigned, int);
-    unsigned FUN_1411d0ab0();   // size(), read 32-bit by the visual tracker
-    unsigned FUN_1411d0af0();
-    efd::UInt32 FUN_1411d0b30();
+    unsigned GetLoadedEntityCount();   // size(), read 32-bit by the visual tracker
+    unsigned GetCreatedEntityCount();
+    efd::UInt32 GetEntityCount();
 public:
     unsigned currentMap;
     std::map<unsigned, Unk_EntityWorldRecord> worlds;

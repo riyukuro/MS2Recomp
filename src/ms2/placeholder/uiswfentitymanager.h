@@ -107,4 +107,4 @@ MS2_CHECK_OFFSET(UISwfEntityManager, m_mapUnloading, 0x208);
 MS2_CHECK_OFFSET(UISwfEntityManager, m_258, 0x258);
 MS2_CHECK_SIZE(UISwfEntityManager, 0x260);
 
-UISwfEntityManager* FUN_140b632f0();    // the instance (a global pointer at 0x143abb058)
+UISwfEntityManager* GetUISwfEntityManager();    // the instance (a global pointer at 0x143abb058)

@@ -78,7 +78,7 @@ public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
@@ -96,7 +96,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CSt
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show the message box
 void FUN_1409e2ed0(Scaleform::GFx::Value* pRetVal, ItemAble& item);   // the tooltip of a reward item
 void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned nItemId, unsigned nRank, unsigned nCount);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString strLabel);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
@@ -505,8 +505,8 @@ void UIPcBangDialog::UpdateRows()
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[i];
         const Scaleform::GFx::Value& row = m_rows[i]->FUN_1422bb870();
         FUN_140d00360(row, "itemSlot", spBonus->m_itemId, spBonus->vfunc_o18_1(), spBonus->m_count);
-        FUN_140cfee80(row, "itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spBonus->m_itemId));
-        FUN_140cfee80(row, "reqPlayTime", BlockFormat<unsigned>(0x97c, spBonus->GetMinutes()));
+        SetChildText(row, "itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spBonus->m_itemId));
+        SetChildText(row, "reqPlayTime", BlockFormat<unsigned>(0x97c, spBonus->GetMinutes()));
     }
     UpdateProgress();
 }
@@ -553,7 +553,7 @@ void UIPcBangDialog::RefreshGiftList()
         if (spItem->FUN_140523c40(spGift->m_itemId, spGift->vfunc_o18_1(), 0))
         {
             ASObj obj(2);
-            obj.FUN_1409c0d20("id", spGift->m_giftId);
+            obj.SetMemberUInt("id", spGift->m_giftId);
             ((class AScript&)(obj)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
             obj.FUN_1407cba60("iconPath", spData->GetIconPath());
@@ -610,7 +610,7 @@ unsigned UIPcBangDialog::GetPlayTime()
 {
     if (!IsPcBang())
         return m_nPlayTime;
-    unsigned nNow = FUN_141472bc0();
+    unsigned nNow = GetServerTick();
     unsigned nElapsed = nNow > m_nStartTime ? nNow - m_nStartTime : 0;
     unsigned nTotal = nElapsed + m_nPlayTime;
     return nTotal;

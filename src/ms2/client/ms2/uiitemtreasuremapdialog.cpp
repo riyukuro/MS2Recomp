@@ -44,20 +44,20 @@ class ASDialog : public ASDisplayObject {};
 
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
-class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
+class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 
 
 // Movie helpers: set a member of the movie root to a visibility / enable flag / text.
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
-void FUN_14141f970(const CString& strBag);                                  // drop an item bag
-void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
-void FUN_141415600(const CString& strBindID);                               // release the item bound to the name
-void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n2, int n3);   // bind an item to the name
+void DestroyItemSlotBag(const CString& strBag);                                  // drop an item bag
+void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
+void DestroyItemInfoSlot(const CString& strBindID);                               // release the item bound to the name
+void CreateItemInfoSlot(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n2, int n3);   // bind an item to the name
 int FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_140710590(COutPacket& packet);                                     // send
@@ -111,7 +111,7 @@ void UIItemTreasureMapDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pRef;
-    if (pDialog != 0 && (pRef = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40))) != 0)
+    if (pDialog != 0 && (pRef = ((class UITalkCinematic*)FindTalkCinematic(0x4e40))) != 0)
     {
         int nX = pRef->GetLowerCutGlobalY();
         int nY = pRef->GetIllustGlobalX() - 0x50;
@@ -145,15 +145,15 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");
         if (m_bFree != 0)
             strDesc = GetStringCommonByKey(L"s_item_treasure_map_free_appraise_desc");
-        FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc", CStringW(strDesc));
+        SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc", CStringW(strDesc));
     }
 }
 
 // @0x140c558a0
 void UIItemTreasureMapDialog::vfunc_67()
 {
-    FUN_14141f970(m_strBag);
-    FUN_141415600(m_strBind);
+    DestroyItemSlotBag(m_strBag);
+    DestroyItemInfoSlot(m_strBind);
     m_nState = 0;
     m_spTarget = 0;
     m_items.RemoveAll();
@@ -250,7 +250,7 @@ void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandle
         FUN_140c56670();
         if (m_nTargetUid > 0)
         {
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nTargetUid);
             if (spItem.get() != 0)
             {
                 if ((unsigned int)spItem->vfunc_4() > 0)
@@ -287,19 +287,19 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
 {
     m_items.RemoveAll();
     ATL::CAtlArray<unsigned __int64> uids;
-    g_143ab2a90.FUN_140a609a0(7, uids);
+    g_143ab2a90.GetItemUidsInCategory(7, uids);
     for (unsigned i = 0; i < uids.GetCount(); i++)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(uids[i]);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(uids[i]);
         if (spItem == 0)
             continue;
         if (!FUN_140c57a70(MS2Ptr<CItem>(spItem)))
             continue;
         m_items.Add(spItem);
     }
-    FUN_14141f970(m_strBag);
-    MS2Ptr<CItem> (*pfnGetItem)(void*, int) = FUN_141420330;
-    FUN_14141f770(m_strBag, (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x415, 8);
+    DestroyItemSlotBag(m_strBag);
+    MS2Ptr<CItem> (*pfnGetItem)(void*, int) = GetItemFromArray;
+    CreateItemSlotBag(m_strBag, (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x415, 8);
     if (m_itemBag.get() != 0)
     {
         m_itemBag->SetSelectedIndex(-1);
@@ -347,7 +347,7 @@ void UIItemTreasureMapDialog::FUN_140c56670()
         return;
     m_nState = 0;
     m_spTarget = 0;
-    FUN_141415600(m_strBind);
+    DestroyItemInfoSlot(m_strBind);
     MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
     if (spSlot.get() != 0)
     {
@@ -372,14 +372,14 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
     if (m_board == 0)
         return;
     m_nCost = nCost;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
         return;
     if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) == 0)
         return;
     m_spTarget = spItem;
-    FUN_141415600(m_strBind);
-    FUN_141415450(m_strBind, MS2Ptr<CItem>(m_spTarget), 0, 0x415, 8);
+    DestroyItemInfoSlot(m_strBind);
+    CreateItemInfoSlot(m_strBind, MS2Ptr<CItem>(m_spTarget), 0, 0x415, 8);
     MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
     if (spSlot.get() != 0)
     {
@@ -399,9 +399,9 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
     else
         FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
-    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", m_spTarget->FUN_140528160());
+    SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc1", m_spTarget->FUN_140528160());
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 1);
-    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc2", CStringW(strCost));
+    SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc2", CStringW(strCost));
     FUN_141276180(s_sndChoice, "");
 }
 
@@ -414,8 +414,8 @@ void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
     {
-        FUN_141415600(m_strBind);
-        FUN_141415450(m_strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0x800);
+        DestroyItemInfoSlot(m_strBind);
+        CreateItemInfoSlot(m_strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0x800);
         MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
         if (spSlot.get() != 0)
         {
@@ -432,7 +432,7 @@ void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
     if (spEff.get() != 0)
         spEff->vfunc_12(1);
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
-    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
+    SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
     FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
     FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_back"));
     FUN_141276180(s_sndStamp, "");

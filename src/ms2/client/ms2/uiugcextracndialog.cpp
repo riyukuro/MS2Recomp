@@ -247,7 +247,7 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     m_bCameraMode = bCameraMode;
     if (m_bCameraMode)
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else

@@ -79,7 +79,7 @@ struct Unk_UgcItemData : public CItemData
 class CEquipItem : public CPtred
 {
 public:
-    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item's data
+    struct Unk_EquipItemData* GetItemData();                               // the item's data
     MS2Ptr<CItem> GetItem();                                  // the item object holding the proxy data
     void FUN_1411dd150();
     void FUN_1411dcd00();
@@ -157,23 +157,23 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
-void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);
+void SetItemScale(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);
 int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex);
 void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale);
-NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName);
+NiAVObjectPtr FindMeshByName(NiAVObjectPtr spRoot, const CString& strName);
 class CEquipModel;                                                  // equipmodel.cpp: the real type of CEquipModel
 void FUN_1412014f0(CEquipModel* pPart, void* pOffset);              // stores the offset
 void FUN_141201620(CEquipModel* pPart, void* pEuler);               // stores the euler
 void* FUN_141200ab0(CEquipModel* pPart);                            // the part's model facts
-std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pPart);         // the part's node set
+std::set<NiAVObjectPtr>* GetRoots(CEquipModel* pPart);         // the part's node set
 void FUN_141201cb0(CEquipModel* pPart, std::set<NiAVObjectPtr>& kOut);   // copies the node set of the part
 bool FUN_141427d60(NiAVObject* pObj);                               // the object is a mesh-type leaf
 int FUN_140f02bc0();
 extern char DAT_142f10fe4[];                                        // name tails of the model files
 extern char DAT_142f10ff0[];
-unsigned FUN_141427ab0(void* pMesh);                                // material count of a mesh
-void* FUN_141427ae0(void* pMesh, unsigned nIndex);                  // material slot
+unsigned GetMaterialCount(void* pMesh);                                // material count of a mesh
+void* GetMaterialAt(void* pMesh, unsigned nIndex);                  // material slot
 
 // Rows of the item-colour tables (a 16-byte handle; FUN_14056c2d0 releases it).
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -215,7 +215,7 @@ struct Unk_UgcAvatarService
     virtual void v24(); virtual void v25();
     virtual void Refresh(unsigned nCharacterId);                    // +0xd0
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 // The local player's vtable up to slot 139 (+0x458), the one this unit calls; the earlier slots are placeholders.
 #define UGC_VSLOT(n) virtual void vslot_##n();
 #define UGC_VSLOT10(n) UGC_VSLOT(n##0) UGC_VSLOT(n##1) UGC_VSLOT(n##2) UGC_VSLOT(n##3) UGC_VSLOT(n##4) \
@@ -318,26 +318,26 @@ unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObj
 }
 
 // @0x141422340
-float FUN_141422340(CEquipModel* pPart, int nIndex)
+float GetPartScale(CEquipModel* pPart, int nIndex)
 {
     if (pPart == 0)
         return 1.0f;
     MS2Ptr<CEquipItem> spItem = pPart->FUN_141200a40();
     if (spItem.IsNull())
         return 1.0f;
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053cfd0())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_afValue[nIndex];
     }
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_f58;
     }
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053d070())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053d070())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -347,25 +347,25 @@ float FUN_141422340(CEquipModel* pPart, int nIndex)
 }
 
 // @0x1414225d0
-void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue)
+void SetPartScale(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue)
 {
     if (!spPart)
         return;
-    FUN_141422660(spPart->FUN_141200a40(), nIndex, fValue);
+    SetItemScale(spPart->FUN_141200a40(), nIndex, fValue);
 }
 
 // @0x141422660
-void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
+void SetItemScale(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 {
     if (spItem.IsNull())
         return;
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053cfd0())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             pProxy->m_afValue[nIndex] = fValue < 0.0f ? 0.0f : fValue;
     }
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0 && nIndex == 0)
@@ -374,15 +374,15 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 }
 
 // @0x141422840
-void FUN_141422840(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale)
+void SetPartTransform(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale)
 {
     if (pPart == 0)
         return;
-    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 0, fScale);
-    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 1, fScale);
+    SetPartScale(MS2Ptr<CEquipModel>(pPart), 0, fScale);
+    SetPartScale(MS2Ptr<CEquipModel>(pPart), 1, fScale);
     FUN_1412014f0(pPart, const_cast<Vector3*>(&kPos));
     FUN_141201620(pPart, const_cast<Vector3*>(&kEuler));
-    FUN_141422b30(pPart, *FUN_141201c90(pPart), kPos, kEuler, fScale);
+    FUN_141422b30(pPart, *GetRoots(pPart), kPos, kEuler, fScale);
 }
 
 // @0x141422950 - transform -> euler angles in degrees
@@ -395,17 +395,17 @@ void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler)
 }
 
 // @0x141422a00
-void FUN_141422a00(CEquipModel* pPart, Vector3 kPos, const NiMatrix3& kRot, float fScale)
+void SetPartTransformFromMatrix(CEquipModel* pPart, Vector3 kPos, const NiMatrix3& kRot, float fScale)
 {
     if (pPart == 0)
         return;
     Vector3 kEuler;
     FUN_141422950(kRot, &kEuler);
-    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 0, fScale);
-    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 1, fScale);
+    SetPartScale(MS2Ptr<CEquipModel>(pPart), 0, fScale);
+    SetPartScale(MS2Ptr<CEquipModel>(pPart), 1, fScale);
     FUN_1412014f0(pPart, &kPos);
     FUN_141201620(pPart, &kEuler);
-    FUN_141422b30(pPart, *FUN_141201c90(pPart), kPos, kEuler, fScale);
+    FUN_141422b30(pPart, *GetRoots(pPart), kPos, kEuler, fScale);
 }
 
 
@@ -425,7 +425,7 @@ void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Ve
     efd::Matrix3 kRot;
     kRot.FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                             (kEuler.z * 3.1415927f) / 180.0f);
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -464,10 +464,10 @@ int FUN_141422f30(NiAVObject* pRoot)
         NiRenderObject* pMesh = NiDynamicCast(NiRenderObject, pObject);
         if (pMesh != 0)
         {
-            unsigned nCount = FUN_141427ab0(pMesh);
+            unsigned nCount = GetMaterialCount(pMesh);
             for (unsigned i = 0; i < nCount; i++)
             {
-                void* pSlot = FUN_141427ae0(pMesh, i);
+                void* pSlot = GetMaterialAt(pMesh, i);
                 NiMaterial* pMaterial = ((NiMaterialInstance*)pSlot)->GetMaterial();
                 if (pMaterial->GetName() == "MS2CharacterSkinMaterial")
                     bSkin = 1;
@@ -499,7 +499,7 @@ int FUN_141423120(const CString& strName, NiAVObjectPtr spRoot, NiAVObjectPtr* p
 {
     if (spRoot == 0)
         return 0;
-    NiAVObjectPtr spFound = FUN_141423480(spRoot, strName);
+    NiAVObjectPtr spFound = FindMeshByName(spRoot, strName);
     if (spFound == 0)
         return 0;
     NiTexturingProperty* pTex = NiDynamicCast(NiTexturingProperty, spFound->GetProperty(8));
@@ -538,7 +538,7 @@ int FUN_1414232f0(NiAVObjectPtr spMesh, NiTexturePtr spTexture)
 
 // @0x141423480 - finds the named child of a model; a node without a mesh is resolved to its first child
 //   NiAVObjectPtr ctor's return through three stack slots (+0x48/+0x50/+0x60, a reference-binding chain) not reproduced
-NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName)
+NiAVObjectPtr FindMeshByName(NiAVObjectPtr spRoot, const CString& strName)
 {
     if (spRoot)
     {
@@ -570,9 +570,9 @@ int FUN_141423650(unsigned* pArgb, int nSlot, Unk_UgcPlayer* pPlayer)
     NiColor kColor = FUN_141b6dea0(*pArgb);
     //
     ((PC*)pPlayer)->FUN_1416591e0(nSlot == 0 ? 0 : 1, *(const NiColor*)&kColor);
-    FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), nSlot == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
-    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
-    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
+    FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->GetEntity()), nSlot == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)GetItemEventDispatcher();
+    pService->Refresh(((PC*)pPlayer)->GetGender());
     return 1;
 }
 
@@ -598,10 +598,10 @@ int FUN_141423760(const ItemColorEx& kLook, PC* pPlayer)
         NiColor kColor = FUN_141b6dea0(reinterpret_cast<const Unk_UgcLook&>(kLook).m_aColor[i]);
         //
         pPlayer->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
-        FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
+        FUN_141b6f220(FUN_141b6efc0(pPlayer->GetEntity()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
-    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
-    pService->Refresh(pPlayer->FUN_141658e60());
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)GetItemEventDispatcher();
+    pService->Refresh(pPlayer->GetGender());
     return 1;
 }
 
@@ -622,10 +622,10 @@ int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
         NiColor kColor = FUN_141b6dea0((*(CAtlArray<unsigned>*)&kColors)[i]);
         //
         ((PC*)pPlayer)->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
-        FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
+        FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->GetEntity()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
-    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
-    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)GetItemEventDispatcher();
+    pService->Refresh(((PC*)pPlayer)->GetGender());
     return 1;
 }
 
@@ -692,8 +692,8 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         return 0;
     bool bFlag = false;
     if (kExtra.m_nType == FUN_140f02bc0())
-        bFlag = reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053d020() == 1;
-    pProxy->SetSlotColor((const ItemColorEx*)&kExtra, bFlag, reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053e310(nIndex), nIndex);
+        bFlag = reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053d020() == 1;
+    pProxy->SetSlotColor((const ItemColorEx*)&kExtra, bFlag, reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData())->FUN_14053e310(nIndex), nIndex);
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -738,7 +738,7 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0()));
+    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData()));
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -854,7 +854,7 @@ int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, 
     *pbEmpty = 1;
     for (size_t i = 0; i < aParts.GetCount(); i++)
     {
-        std::set<NiAVObjectPtr>& kSet = *FUN_141201c90(aParts[i].operator->());
+        std::set<NiAVObjectPtr>& kSet = *GetRoots(aParts[i].operator->());
         const std::set<NiAVObjectPtr>& rSet = kSet;
         std::set<NiAVObjectPtr>::iterator itEnd = rSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = rSet.begin(); it != itEnd; ++it)
@@ -897,7 +897,7 @@ int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, 
 }
 
 // @0x141425130 - true when a mesh of the model has an animation controller of the UGC type
-int FUN_141425130(NiAVObject* pRoot)
+int HasMorphWeightsController(NiAVObject* pRoot)
 {
     Unk_NodeQueue kQueue(pRoot);
     NiAVObject* pObject;
@@ -944,7 +944,7 @@ CString FUN_1414253b0(const CString& strPath, int bDiffuse)
 }
 
 // @0x141425540 - effect file of the swim tube (nGender 1 = female, nAction 0x30 = idle)
-CString FUN_141425540(int nGender, int nAction)
+CString GetSwimEffectPath(int nGender, int nAction)
 {
     if (0x30 == nAction)
     {
@@ -969,10 +969,10 @@ void FUN_141425610()
     void* pScene = TSingleton<CEffectService>::GetInstance();
     if (pScene != 0)
     {
-        FUN_1411a4800(FUN_141425540(1, 0x30), 5);
-        FUN_1411a4800(FUN_141425540(1, 0x31), 5);
-        FUN_1411a4800(FUN_141425540(0, 0x30), 5);
-        FUN_1411a4800(FUN_141425540(0, 0x31), 5);
+        FUN_1411a4800(GetSwimEffectPath(1, 0x30), 5);
+        FUN_1411a4800(GetSwimEffectPath(1, 0x31), 5);
+        FUN_1411a4800(GetSwimEffectPath(0, 0x30), 5);
+        FUN_1411a4800(GetSwimEffectPath(0, 0x31), 5);
     }
 }
 
@@ -985,7 +985,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
 {
     if (pbEquipped != 0)
         *pbEquipped = false;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem.get() != 0)
         return spItem;
     Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
@@ -1004,14 +1004,14 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
 // @0x1414258e0 - the inventory has the item
 bool FUN_1414258e0(__int64 nUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     return spItem.get() != 0;
 }
 
 // ---- item names ----
 
 // @0x141425950 - display name of an item; a linked item (kind 0xb) is shown through its link-kind string
-CStringW FUN_141425950(unsigned nItemId)
+CStringW GetItemDisplayName(unsigned nItemId)
 {
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -1055,7 +1055,7 @@ CStringW FUN_141425c00(int nCategory)
 }
 
 // @0x141425e40 - logs the scene graph below pObj, one tab per depth
-void FUN_141425e40(NiAVObject* pObj, int nDepth)
+void LogNodeTree(NiAVObject* pObj, int nDepth)
 {
     if (pObj == 0)
         return;
@@ -1074,14 +1074,14 @@ void FUN_141425e40(NiAVObject* pObj, int nDepth)
             for (int i = 0; i < nCount; i++)
             {
                 NiAVObject* pChild = pNode->GetAt(i);
-                FUN_141425e40(pChild, nDepth + 1);
+                LogNodeTree(pChild, nDepth + 1);
             }
         }
     }
 }
 
 // @0x141425fc0 - sells nCount of a stack, unless the item is a summoned pet item
-void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
+void RequestSellItem(__int64 nUid, int nCount, void* pCallback)
 {
     if (nCount <= 0)
         return;
@@ -1141,7 +1141,7 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
         return false;
-    Unk_UgcItemData* pData = reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0());
+    Unk_UgcItemData* pData = reinterpret_cast<Unk_UgcItemData*>(spItem->GetItemData());
     if (pData == 0)
         return false;
     if (!pData->HasCubeTextureMesh())
@@ -1379,13 +1379,13 @@ void* FUN_141427a70(void* pObj)                 // raw second pointer field
 }
 
 // @0x141427ab0
-unsigned FUN_141427ab0(void* pMesh)             // MS2-FUNCTIONAL: raw material count
+unsigned GetMaterialCount(void* pMesh)             // MS2-FUNCTIONAL: raw material count
 {
     return ((NiTObjectSet<NiMaterialInstance>*)((char*)pMesh + 0xf8))->GetSize();
 }
 
 // @0x141427ae0
-void* FUN_141427ae0(void* pMesh, unsigned nIndex)          // MS2-FUNCTIONAL: raw material slot
+void* GetMaterialAt(void* pMesh, unsigned nIndex)          // MS2-FUNCTIONAL: raw material slot
 {
     return FUN_141427a50((char*)pMesh + 0xf8, nIndex);
 }
@@ -1397,13 +1397,13 @@ bool FUN_141427d60(NiAVObject* pObj)            // MS2-FUNCTIONAL: raw flag test
 }
 
 // @0x141427fb0
-void FUN_141427fb0(void* pPick, bool bFront)    // MS2-FUNCTIONAL: raw NiPick::SetFrontOnly
+void SetFrontOnly(void* pPick, bool bFront)    // MS2-FUNCTIONAL: raw NiPick::SetFrontOnly
 {
     *((bool*)pPick + 0x50) = bFront;
 }
 
 // @0x141427fd0
-void FUN_141427fd0(void* pPick, int nType)      // MS2-FUNCTIONAL: raw NiPick::SetIntersectType
+void SetIntersectType(void* pPick, int nType)      // MS2-FUNCTIONAL: raw NiPick::SetIntersectType
 {
     *(int*)((char*)pPick + 8) = nType;
 }
@@ -1417,7 +1417,7 @@ bool FUN_141427ff0(void* pFilter, unsigned short nId)      // MS2-FUNCTIONAL: ra
 }
 
 // @0x141428240
-bool FUN_141428240(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness test
+bool IsEmpty(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness test
 {
     return ((std::set<efd::SmartPointer<NiAVObject>>*)pSet)->size() == 0;
 }
@@ -1454,17 +1454,17 @@ template Unk_UmStrTree::iterator Unk_UmStrTree::find(const CStringA&);   // with
 //
 
 // ---- hooks ----
-MS2_REPLACE(0x141422340, FUN_141422340, 650, 0xACEEF5C4);
-MS2_REPLACE(0x1414225D0, FUN_1414225d0, 131, 0xC95C0386);
-MS2_REPLACE(0x141422660, FUN_141422660, 471, 0xF037BD35);
-MS2_REPLACE(0x141422840, FUN_141422840, 259, 0xAF3D108C);
+MS2_REPLACE(0x141422340, GetPartScale, 650, 0xACEEF5C4);
+MS2_REPLACE(0x1414225D0, SetPartScale, 131, 0xC95C0386);
+MS2_REPLACE(0x141422660, SetItemScale, 471, 0xF037BD35);
+MS2_REPLACE(0x141422840, SetPartTransform, 259, 0xAF3D108C);
 MS2_REPLACE(0x141422950, FUN_141422950, 164, 0x6F768EA3);
-MS2_REPLACE(0x141422A00, FUN_141422a00, 287, 0x259B91DB);
+MS2_REPLACE(0x141422A00, SetPartTransformFromMatrix, 287, 0x259B91DB);
 MS2_REPLACE(0x141422B30, FUN_141422b30, 1011, 0x90C84991);
 MS2_REPLACE(0x141422F30, FUN_141422f30, 485, 0xE30684FD);
 MS2_REPLACE(0x141423120, FUN_141423120, 456, 0x62ABC47B);
 MS2_REPLACE(0x1414232F0, FUN_1414232f0, 393, 0xD9B80474);
-MS2_REPLACE(0x141423480, FUN_141423480, 443, 0x16EC5D6F);
+MS2_REPLACE(0x141423480, FindMeshByName, 443, 0x16EC5D6F);
 MS2_REPLACE(0x141423650, FUN_141423650, 262, 0xE2249C38);
 MS2_REPLACE(0x141423760, FUN_141423760, 270, 0xA6E5159E);
 MS2_REPLACE(0x141423880, FUN_141423880, 340, 0x3C5229FE);
@@ -1479,17 +1479,17 @@ MS2_REPLACE(0x141424760, FUN_141424760, 300, 0x090807C5);
 MS2_REPLACE(0x1414248A0, FUN_1414248a0, 187, 0x5E3F8A34);
 MS2_REPLACE(0x141424970, FUN_141424970, 892, 0x51F27444);
 MS2_REPLACE(0x141424D00, FUN_141424d00, 1051, 0xD7487E34);
-MS2_REPLACE(0x141425130, FUN_141425130, 228, 0x045E9E5B);
+MS2_REPLACE(0x141425130, HasMorphWeightsController, 228, 0x045E9E5B);
 MS2_REPLACE(0x141425220, FUN_141425220, 383, 0x40E9CB45);
 MS2_REPLACE(0x1414253B0, FUN_1414253b0, 383, 0xCD4D1901);
-MS2_REPLACE(0x141425540, FUN_141425540, 194, 0xDAD8B5AA);
+MS2_REPLACE(0x141425540, GetSwimEffectPath, 194, 0xDAD8B5AA);
 MS2_REPLACE(0x141425610, FUN_141425610, 301, 0x63D9CFC7);
 MS2_REPLACE(0x141425750, FUN_141425750, 385, 0x1489E13A);
 MS2_REPLACE(0x1414258E0, FUN_1414258e0, 103, 0xD2DD71BB);
-MS2_REPLACE(0x141425950, FUN_141425950, 679, 0xA7CF1E8C);
+MS2_REPLACE(0x141425950, GetItemDisplayName, 679, 0xA7CF1E8C);
 MS2_REPLACE(0x141425C00, FUN_141425c00, 559, 0xC16BED4A);
-MS2_REPLACE(0x141425E40, FUN_141425e40, 367, 0x07FC4250);
-MS2_REPLACE(0x141425FC0, FUN_141425fc0, 377, 0xA4FE0BD1);
+MS2_REPLACE(0x141425E40, LogNodeTree, 367, 0x07FC4250);
+MS2_REPLACE(0x141425FC0, RequestSellItem, 377, 0xA4FE0BD1);
 MS2_REPLACE_METHOD(0x141426140, CItemUgcMeshContainer, Clear, 31, 0x3504FA6E);
 MS2_REPLACE_METHOD(0x141426540, CItemUgcMeshContainer, FUN_141426540, 517, 0xB00154AD);
 MS2_REPLACE_METHOD(0x141426750, CItemUgcMeshContainer, GetPartNames, 173, 0x4E7801C6);

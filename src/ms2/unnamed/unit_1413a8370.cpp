@@ -44,12 +44,12 @@ extern Unk_Inventory g_143ab2a90;
 // CItem::FUN_140527840's record (item.cpp owns the real one).
 class Unk_ItemEquipData : public CItemData { };
 
-// The equip holder of the player (PC::FUN_1416561a0).
+// The equip holder of the player (PC::GetEquipment).
 class Unk_GcEquipSet : public CEquipment { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 int FUN_1405451c0(CStringA&);             // the equip slot of a slot name
 
@@ -128,7 +128,7 @@ MS2_REPLACE_METHOD(0x1413A8460, CGuideConditionEquipSkill, vfunc_2, 63, 0x7F9BBE
 int CGuideConditionEquipSkill::vfunc_3()
 {
     unsigned nEquipped = (FUN_1409331f0()->FindQuickSlotBySkillAndItemUid(m_n20, 0) != -1);
-    return FUN_1413a5600(nEquipped == (unsigned)m_nIsEquip);
+    return ApplyNotBool(nEquipped == (unsigned)m_nIsEquip);
 }
 MS2_REPLACE_METHOD(0x1413A84B0, CGuideConditionEquipSkill, vfunc_3, 110, 0x37B43B46);
 
@@ -162,7 +162,7 @@ int CGuideConditionConstructable::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(((class MyPC*)(void*)(pPC))->FUN_141527f60());
+    return ApplyNot(((class MyPC*)(void*)(pPC))->FUN_141527f60());
 }
 MS2_REPLACE_METHOD(0x1413A86A0, CGuideConditionConstructable, vfunc_3, 66, 0x5819452E);
 
@@ -184,7 +184,7 @@ MS2_REPLACE_METHOD(0x1413A8750, CGuideConditionIsMyHome, GetTypeName, 61, 0x3B53
 // @0x1413a87a0
 int CGuideConditionIsMyHome::vfunc_3()
 {
-    return FUN_1413a5600(((class Unk_GcHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640());
+    return ApplyNotBool(((class Unk_GcHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640());
 }
 MS2_REPLACE_METHOD(0x1413A87A0, CGuideConditionIsMyHome, vfunc_3, 40, 0xA195356B);
 
@@ -208,7 +208,7 @@ int CGuideConditionAchieveTab::vfunc_3()
 {
     void* pDialog = Unk_DrGetDialog<UIAchieveDialog>(0x4e73);
     if (pDialog != 0 && DialogSlot55(pDialog) == 0)
-        return FUN_1413a5600(m_n20 == Unk_GcState178((char*)(pDialog)));
+        return ApplyNotBool(m_n20 == Unk_GcState178((char*)(pDialog)));
     return 0;
 }
 MS2_REPLACE_METHOD(0x1413A8880, CGuideConditionAchieveTab, vfunc_3, 111, 0xAD3B536C);
@@ -250,19 +250,19 @@ int CGuideConditionEquipItem::vfunc_3()
     void* pPC = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405451c0(reinterpret_cast<CStringA &>(m_strSlotName)), m_nSlotType);
+    MS2Ptr<CEquipItem> spEquip = ((class Unk_GcEquipSet*)((class PC*)(void*)(pPC))->GetEquipment())->GetItemAt(FUN_1405451c0(reinterpret_cast<CStringA &>(m_strSlotName)), m_nSlotType);
     if (spEquip == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (m_nItemID != 0 && spEquip->FUN_1411dc820() != (int)m_nItemID)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     bool bNoItem = spEquip->GetItem() == 0 || !spEquip->GetItem()->FUN_140528980();
     if (bNoItem)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (m_nItemRangeBegin != 0 && (unsigned)spEquip->FUN_1411dc820() < m_nItemRangeBegin)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (m_nItemRangeLast != 0 && (unsigned)spEquip->FUN_1411dc820() > m_nItemRangeLast)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A8AA0, CGuideConditionEquipItem, vfunc_3, 757, 0x78B4A17E);
 
@@ -299,7 +299,7 @@ int CGuideConditionUgcManagementTab::vfunc_3()
         return 0;
     if (DialogSlot55(pDialog) != 0)
         return 0;
-    return FUN_1413a55a0(1);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A8F60, CGuideConditionUgcManagementTab, vfunc_3, 83, 0x25D67B3A);
 
@@ -332,7 +332,7 @@ MS2_REPLACE_METHOD(0x1413A9070, CGuideConditionDesignItem, vfunc_2, 87, 0xE90182
 int CGuideConditionDesignItem::vfunc_3()
 {
     ATL::CAtlArray<MS2Ptr<CItem> > arrItems;
-    g_143ab2a90.FUN_140a60790(arrItems);
+    g_143ab2a90.GetAllItems(arrItems);
     for (size_t i = 0; i < arrItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = arrItems.GetAt(i);
@@ -344,9 +344,9 @@ int CGuideConditionDesignItem::vfunc_3()
             continue;
         if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->GetType() != m_nItemType)
             continue;
-        return FUN_1413a55a0(1);
+        return ApplyNot(1);
     }
-    return FUN_1413a55a0(0);
+    return ApplyNot(0);
 }
 MS2_REPLACE_METHOD(0x1413A90D0, CGuideConditionDesignItem, vfunc_3, 386, 0xD184D0EF);
 
@@ -397,13 +397,13 @@ MS2_REPLACE_METHOD(0x1413A93D0, CGuideConditionExistItem, vfunc_2, 157, 0x5F8A74
 // @0x1413a9480
 int CGuideConditionExistItem::vfunc_3()
 {
-    if (m_nItemId != 0 && g_143ab2a90.FUN_140a5ece0(m_nItemId, 1) == 0)
-        return FUN_1413a55a0(0);
-    if (m_nItemType != 0 && g_143ab2a90.FUN_140a60ad0(m_nItemType) == 0)
-        return FUN_1413a55a0(0);
-    if (m_nIconType != 0 && g_143ab2a90.FUN_140a60d70(m_nIconType) == 0)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+    if (m_nItemId != 0 && g_143ab2a90.HasItemCount(m_nItemId, 1) == 0)
+        return ApplyNot(0);
+    if (m_nItemType != 0 && g_143ab2a90.HasItemOfType(m_nItemType) == 0)
+        return ApplyNot(0);
+    if (m_nIconType != 0 && g_143ab2a90.HasItemWithIconCode(m_nIconType) == 0)
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A9480, CGuideConditionExistItem, vfunc_3, 182, 0x3855BA85);
 
@@ -453,10 +453,10 @@ int CGuideConditionCountItem::vfunc_3()
         return 0;
     int nCount = g_143ab2a90.FUN_140a60c20(m_nItemType);
     if (m_nMin != -1 && m_nMin > nCount)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (m_nMax != -1 && m_nMax < nCount)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A9770, CGuideConditionCountItem, vfunc_3, 161, 0x33243481);
 
@@ -499,10 +499,10 @@ int CGuideConditionCountInDoorInstallItem::vfunc_3()
         return 0;
     int nCount = FUN_1413a9ac0();
     if (m_nMin != -1 && m_nMin > nCount)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (m_nMax != -1 && m_nMax < nCount)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 151, 0x15929663);
 

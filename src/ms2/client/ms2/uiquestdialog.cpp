@@ -230,7 +230,7 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 __int64 FUN_141aa4980(CQuest* pQuest);                          // when the quest was completed
 bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
-CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
+CString SelectStringByQuestId(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -248,8 +248,8 @@ int FUN_141276180(const CString& strSound, const CString& strExtra);
 void FUN_141275260(int nStringId, int a, int b);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
-void FUN_141415600(const CString& strName);                     // close a quest movie by name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nType, int nFlags);
+void DestroyItemInfoSlot(const CString& strName);                     // close a quest movie by name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int nType, int nFlags);
 void FUN_140710590(COutPacket& packet);
 
 // The AS controls of the movie (children of the root). Slot 24 is the one the dialog calls on the list.
@@ -783,7 +783,7 @@ void UIQuestDialog::SelectQuest(int nQuestId)
     if (MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_questInfo"))
     {
         ASObj info(2);
-        info.FUN_1409c0d20("id", nQuestId);
+        info.SetMemberUInt("id", nQuestId);
         info.FUN_1407cbb20("title", QuestTitle(nQuestId));
         info.FUN_1407cbb20("level", BlockFormat(0x459, spData->m_level));
         info.FUN_1407cb9c0("hideReward", 0);
@@ -985,7 +985,7 @@ CString UIQuestDialog::RewardIconName(int nItemId, int nRarity, int nCount, CStr
         pItem->SetCountClamped(nCount);
         CString strIcon;
         strIcon.Format("%s_%s", (const char*)GetTypeName(), (const char*)FUN_14016a5c0((const char*)strBindName, 0));
-        FUN_141415450(strIcon, MS2Ptr<CItem>(pItem), 0, 0x11, 0x800);
+        CreateItemInfoSlot(strIcon, MS2Ptr<CItem>(pItem), 0, 0x11, 0x800);
         return strIcon;
     }
     return "";
@@ -1008,7 +1008,7 @@ CString UIQuestDialog::QuestStateName(CQuest* pQuest)
         CString strRepeat("satisfied_repeat");
         CString strSatisfied("satisfied");
         CString strEpic("satisfied_epic");
-        return FUN_141082090(pQuest->FUN_140bfc580(), strEpic, strSatisfied, strRepeat, strEvent);
+        return SelectStringByQuestId(pQuest->FUN_140bfc580(), strEpic, strSatisfied, strRepeat, strEvent);
     }
     else if (pQuest->IsRewarded() != 0)
         return "complete";
@@ -1220,7 +1220,7 @@ CStringW UIQuestDialog::QuestDate(__int64 nTime)
 void UIQuestDialog::ClearOpened()
 {
     for (size_t i = 0; i < m_opened.GetCount(); i++)
-        FUN_141415600(m_opened[i]);
+        DestroyItemInfoSlot(m_opened[i]);
     m_opened.RemoveAll();
 }
 
@@ -1291,7 +1291,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
                 continue;
         }
         ASObj node(2);
-        node.FUN_1409c0d20("id", spQuest->FUN_140bfc580());
+        node.SetMemberUInt("id", spQuest->FUN_140bfc580());
         node.FUN_1407cb9c0("regist", spQuest->GetTrackingState());
         node.FUN_1407cb9c0("forceRegist", FUN_14074b790(spQuest->FUN_140bfc580()));
         node.FUN_1407cbbe0("progress", spQuest->GetState() == 1);
@@ -1370,7 +1370,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
         CQuestData::QuestRewardItem& rItem = spData->m_complete.m_choiceRewards[i];
         if (rItem.m_itemId != 0)
         {
-            if (FUN_140748050(&rItem, reinterpret_cast<PC*>(pPlayer)->FUN_141654700()) != 0)
+            if (FUN_140748050(&rItem, reinterpret_cast<PC*>(pPlayer)->GetJobGroupId()) != 0)
             {
                 CString strBind;
                 strBind.Format("reward%d", nIndex++);
@@ -1463,7 +1463,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
                 continue;
         }
         ASObj node(2);
-        node.FUN_1409c0d20("id", nId);
+        node.SetMemberUInt("id", nId);
         node.FUN_1407cb9c0("regist", 0);
         node.FUN_1407cb9c0("progress", 0);
         node.FUN_1407cbb20("label", QuestTitle(nId));

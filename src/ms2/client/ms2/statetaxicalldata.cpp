@@ -179,7 +179,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
         MyPC* pMyPC = FUN_1417b84b0();
         if (pMyPC != 0)
         {
-            if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+            if (((void*)(reinterpret_cast<PC*>(pMyPC)->GetHeldItem())) != 0)
                 reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
         }
         unsigned nNow = GetTickCountMs2();
@@ -375,7 +375,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     msg.m_strName = strEffect;
     msg.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     msg.m_p18 = &xf;
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&msg));
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&msg));
 }
 
 // @0x1417fe260

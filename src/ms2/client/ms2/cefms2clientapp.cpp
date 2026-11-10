@@ -37,11 +37,11 @@ CCefMS2ClientApp::~CCefMS2ClientApp()
 void CCefMS2ClientApp::FUN_140cbff60(bool bUnk)
 {
     bool v = (bUnk && m_bEditableFocus) ? 1 : 0;
-    FUN_140cbffc0(v);
+    SetImeRequest(v);
 }
 
 // @0x140cbffc0
-void CCefMS2ClientApp::FUN_140cbffc0(bool bImeRequest)
+void CCefMS2ClientApp::SetImeRequest(bool bImeRequest)
 {
     if (m_bImeRequest != bImeRequest) {
         m_bImeRequest = bImeRequest;
@@ -52,7 +52,7 @@ void CCefMS2ClientApp::FUN_140cbffc0(bool bImeRequest)
 }
 
 // @0x140cc0130
-bool CCefMS2ClientApp::FUN_140cc0130()
+bool CCefMS2ClientApp::GetImeRequest()
 {
     return m_bImeRequest;
 }
@@ -86,7 +86,7 @@ void CCefMS2ClientApp::OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser, CefRe
 {
     bool bEditable = (node != NULL) && node->IsEditable();
     m_bEditableFocus = bEditable;
-    FUN_140cbffc0(bEditable);
+    SetImeRequest(bEditable);
 }
 
 // @0x140cc04b0

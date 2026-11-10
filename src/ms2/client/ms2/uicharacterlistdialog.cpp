@@ -144,9 +144,9 @@ void FUN_141260cb0(Unk_GsConnect* p);                   // the definer's free fu
 void FUN_141260e70(Unk_GsConnect* p);
 //
 // C3: FUN_140cfd260 / FUN_140c58ac0 are CGameOption's (cgameoption.h); Unk_GsConnect views its connect block
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 //
-void FUN_14125f670(struct Unk_GpState* p, bool bUse, bool bNotify);   // C3: the definer's signature (gameoptionstruct.cpp)
+void SetGamepadEnabled(struct Unk_GpState* p, bool bUse, bool bNotify);   // C3: the definer's signature (gameoptionstruct.cpp)
 void FUN_14125bd20(struct Unk_InterfaceFlag* p, bool b);   // C3: was (unsigned char*, unsigned char) (gameoptionstruct.cpp)
 extern bool DAT_143ab2946;
 extern unsigned short DAT_143ab2944;                    // the highest character level
@@ -181,7 +181,7 @@ void FUN_1401fa4f0(unsigned char* pReq, COutputStream& packet);   // the Unk_ClR
 void FUN_1401fa2c0(unsigned char* pReq, COutputStream& packet);   // the Unk_ClReqRename body
 CStringW StringFormat(const wchar_t* psz);                      // StringFormat
 class Unk_ClBox : public CMsgBoxData { public: };
-void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
+void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
 CStringW FUN_140298ea0(CStringW strKey);                     // string table text (second table)
 struct Unk_ClSettingU16 { char m_p[0x58]; };
 struct Unk_ClSettingU32 { char m_p[0x58]; };
@@ -216,7 +216,7 @@ CStringW GetStringCommon(int nId);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int nFlag);            // lock the movie input
 CString FUN_141028a90(CString str, int nFlag);
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
 #include "ms2/commonfiles/serverpacketdef.h"   // Unk_NetworkTransfer: the popup answer of the server (0x30; ctor 0x141540eb0, dtor 0x141541190)
 
@@ -460,7 +460,7 @@ void UICharacterListDialog::CCharacterInfo::FUN_1418e9ed0(unsigned nSeconds)
 {
     m_nSeconds = nSeconds;
     if (nSeconds > 0)
-        m_nStarted = (unsigned)TSingleton<CMainSystem>::GetInstance()->FUN_141473390();
+        m_nStarted = (unsigned)TSingleton<CMainSystem>::GetInstance()->GetServerTick();
     else
         m_nStarted = 0;
 }
@@ -470,7 +470,7 @@ int UICharacterListDialog::CCharacterInfo::FUN_1418e9f30()
 {
     if (m_nStarted > 0 && m_nSeconds > 0)
     {
-        unsigned nPassed = ((unsigned)TSingleton<CMainSystem>::GetInstance()->FUN_141473390() - m_nStarted) / 1000;
+        unsigned nPassed = ((unsigned)TSingleton<CMainSystem>::GetInstance()->GetServerTick() - m_nStarted) / 1000;
         return m_nSeconds - nPassed;
     }
     return 0;
@@ -665,7 +665,7 @@ void UICharacterListDialog::vfunc_15()
                 if (nLeft > 0)
                 {
                     CStringW strText = FormatStringId<CStringW>(3, FUN_141b708a0(nLeft, 0));
-                    FUN_140cfefe0(spMovie->FUN_1422bb870(), "m_delete", "m_label", strText);
+                    SetNestedChildText(spMovie->FUN_1422bb870(), "m_delete", "m_label", strText);
                 }
                 else
                 {
@@ -1047,7 +1047,7 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
         DAT_143ab2828 = spPreview->FUN_1418e9cb0();
         FUN_141b70290();
         TSingleton<CGameOption>::GetInstance()->LoadCharacterOption();
-        FUN_14125f670(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), *reinterpret_cast<bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
+        SetGamepadEnabled(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), *reinterpret_cast<bool*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
         FUN_14125bd20(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), *reinterpret_cast<bool*>(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
     }
     else
@@ -1071,7 +1071,7 @@ void UICharacterListDialog::FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned 
             {
                 m_1e4 = 1;
                 __int64 nId = ((class PCBase*)(class MyPC*)(pPC))->FUN_141656a80();
-                m_1c0 = ((class PCBase*)(class MyPC*)(pPC))->FUN_14123c500();
+                m_1c0 = ((class PCBase*)(class MyPC*)(pPC))->GetEntityIDValue();
                 SelectCharacter(nId);
                 m_1c8 = nId;
                 FUN_1418f1d00();
@@ -1845,7 +1845,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
         static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_url)->Get());
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
-        FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
+        ShowOrReplaceByTag(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 2;
         return false;
     }
@@ -1856,7 +1856,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         static_cast<Unk_ClBox*>(m_228.operator->())->SetAgreement(true);
         static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(CStringW(L""), CString(""));
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
-        FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
+        ShowOrReplaceByTag(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 3;
         return false;
     }
@@ -1865,8 +1865,8 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         m_228 = FUN_140d73d20(0xf, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4")), 0, CStringW(L""));
         if (m_228.get() != 0)
         {
-            m_228->FUN_140b76940(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label1")));
-            m_228->FUN_140b76940(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label2")));
+            m_228->AddStringArg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label1")));
+            m_228->AddStringArg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label2")));
             m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
             m_224 = 4;
@@ -1938,7 +1938,7 @@ void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo)
     obj.FUN_140bd0d90("jobcode", pState->m_40);
     obj.FUN_1407cbb20("levelJob", FormatStringId(2, reinterpret_cast<const unsigned short&>(pState->m_34), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pState->m_40)));
     if (pInfo->FUN_1418ea020() > 0)
-        obj.FUN_1409c0d20("waitDelTime", pInfo->FUN_1418e9f30());
+        obj.SetMemberUInt("waitDelTime", pInfo->FUN_1418e9f30());
     obj.FUN_1407cba60("imgPath", FUN_141028be0(pState->m_8, pInfo->FUN_1418e9d90(), 1, CString("")));
     CMsTime created(pState->m_70);
     CStringW strCreated = FUN_14083bab0(created, L"/");

@@ -22,7 +22,7 @@
 // MS2-PINS-END tplpin
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
 float FUN_14028d3a0(float fPercent);                        // commonutil: percent to rate
@@ -440,7 +440,7 @@ int CSkillRecord::HasTarget(unsigned nKey, unsigned nTarget)
 // @0x14175a430
 void CSkillRecord::SendSkill()
 {
-    m_nSendTick = FUN_141472bc0();
+    m_nSendTick = GetServerTick();
     COutPacket packet(static_cast<int>(SendOp::Skill));
     packet.Encode1(3);
     packet.Encode8(m_nCastId);
@@ -593,7 +593,7 @@ int CDamageRecord::FUN_14175ad50()
         if (pPC != 0) {
             if (nMaterial != 0)
                 return nMaterial;
-            MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1860(5, 6, 0);
+            MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->FUN_1411e1860(5, 6, 0);
             if (spWeapon.get() != 0)
                 nMaterial = spWeapon->GetItem()->FUN_140527840()->m_nAttackMaterial;
         }
@@ -655,7 +655,7 @@ int CDotDamageRecord::vfunc_1()
     MS2Ptr<AdditionalCli> spBuff = ((AdditionalCliList*)(reinterpret_cast<PCBase*>(pCaster)->FUN_1416749a0()))->FUN_14096fc80(m_nEffectLevel);
     if (spBuff == 0)
         return 0;
-    return reinterpret_cast<Unk_SrBuffLevel*>(spBuff->FUN_14096d810())->m_nDotDamageType;
+    return reinterpret_cast<Unk_SrBuffLevel*>(spBuff->GetLevelData())->m_nDotDamageType;
 }
 
 // @0x14175b130

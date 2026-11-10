@@ -48,7 +48,7 @@ template<class T> bool Contains(T& values, int n) {
     return false;
 }
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
+class Unk_AttendTable { public: int GetValue(int nKind, unsigned nId, const int& nDefault); };
 class Unk_LtaTable {
 public:
     CStringW FUN_140c6d980(int, int, const CStringW&);
@@ -304,7 +304,7 @@ MS2_REPLACE_METHOD(0x140e83200, UIRpsEventDialog, FUN_140e83200, 201, 0xDA46B974
 int UIRpsEventDialog::FUN_140e832d0() {
     MS2Ptr<RpsContext> event = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (event == NULL) return 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x708, event->m_48, 0);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x708, event->m_48, 0);
 }
 MS2_REPLACE_METHOD(0x140e832d0, UIRpsEventDialog, FUN_140e832d0, 147, 0x667F9F28);
 // @0x140e83370
@@ -330,9 +330,9 @@ void UIRpsEventDialog::FUN_140e83370(MS2Ptr<RpsContext> event) {
             MS2Ptr<CItemData> item = FUN_14053f870(entry.m_itemId);
             if (item == NULL) { MS2_ASSERT_AT(210, 0); break; }
             ASObj obj(2);
-            obj.FUN_1409c0d20("itemID", entry.m_itemId);
+            obj.SetMemberUInt("itemID", entry.m_itemId);
             obj.FUN_1409adc90("itemRank", static_cast<ItemAble&>(entry).vfunc_o18_1());
-            obj.FUN_1409c0d20("itemCount", entry.m_count);
+            obj.SetMemberUInt("itemCount", entry.m_count);
             obj.FUN_1407cbbe0("itemPiece", item->IsPieceItem());
             obj.FUN_1407cba60("iconPath", FUN_140e83120(entry.m_itemId));
             items.PushValue(obj.FUN_1422bb870());

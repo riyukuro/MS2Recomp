@@ -27,7 +27,7 @@ public:
     // A position between the two control points (random fractions per axis).
     Vector3 FUN_14145c030(void* pRandom);                   // 0x14145c030
     CMagicData& operator=(const CMagicData& kOther);                // 0x141468f10 (the implicit copy assignment)
-    int FUN_14145c180();                                            // 0x14145c180 any control point is not the zero point
+    int HasControlPoints();                                            // 0x14145c180 any control point is not the zero point
 
     Vector3 m_ptFireOffset;                                 // +0x18 fireOffsetPosition
     Vector3 m_ptFireFixed;                                  // +0x24 fireFixedPosition
@@ -139,7 +139,7 @@ public:
     virtual ~CMagic();                                              // 0 0x14145d390
 
     // Start the projectile: bind the skill and caster records, copy the move data, build the scene root and prime the effects.
-    int FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
+    int Init(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
         Vector3 ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
     void FUN_14145d9d0();                                           // 0x14145d9d0 flight time and the random landing point
     void FUN_14145ddd0(Vector3 ptStart);                    // 0x14145ddd0 restart from a new start point
@@ -147,14 +147,14 @@ public:
     void FUN_14145e960(unsigned nNow);                              // 0x14145e960 spawn the main effect
     void FUN_141460640(unsigned nNow);                              // 0x141460640 release every spawned effect (nNow unused)
     void FUN_141460700(unsigned nNow);                              // 0x141460700 restart the flight from the current point
-    void FUN_141461140();                                           // 0x141461140 pick the target point
+    void UpdateTargetPosition();                                           // 0x141461140 pick the target point
     void SetPosition(Vector3 ptNew);                      // 0x141461a80 move the projectile and its scene root
     void SetDirection(Vector3 ptDirection);                // 0x141461b60 set the direction and rotate
     void SetMatRotation(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
     void FUN_141463fb0(unsigned nNow);                              // 0x141463fb0 end-of-flight transitions
     void UpdateCulling();                                           // 0x141464160 show/hide the scene root by distance
     bool ShouldCullByDistance();                                           // 0x141464220 is the projectile out of the visible range
-    Unk_MagicEntity* FUN_141464360();                               // 0x141464360 the target entity
+    Unk_MagicEntity* GetTargetEntity();                               // 0x141464360 the target entity
     int FUN_141464410();                                            // 0x141464410 the caster's lock-on entity
     int FUN_141464490();                                            // 0x141464490 has an attacker record
     void SetVisible(int bHide);                                  // 0x1414644d0 show or hide the scene root
@@ -176,10 +176,10 @@ public:
     void FUN_14145f570(unsigned nNow);                              // 0x14145f570 begin the destroy phase
     void FUN_14145ec50(unsigned nNow);                              // 0x14145ec50 per-frame update while alive
     void FUN_1414609e0();                                           // 0x1414609e0
-    void FUN_141464790(void* pHits, int nHits);                      // 0x141464790 play the hit effect on every hit entity
+    void PlayHitEffects(void* pHits, int nHits);                      // 0x141464790 play the hit effect on every hit entity
     void FUN_141464b40();                                           // 0x141464b40
     void FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow);  // 0x141466da0 piercing hit tick
-    void FUN_141461720(int nFlag);                                  // 0x141461720
+    void UpdateLookAtRotation(int nFlag);                                  // 0x141461720
     void FUN_1414614d0();                                           // 0x1414614d0
     void FUN_1414607e0(unsigned nNow);                              // 0x1414607e0 (nNow unused)
 
@@ -243,12 +243,12 @@ public:
     void SetPosition(Vector3 ptNew);                      // 0x141467d00 move the projectile
     void SetDirection(Vector3 ptDirection);                // 0x141467d50 turn the projectile
     void RunEndEffects();                                           // 0x141467ed0 begin the destroy phase of an orphaned model
-    void FUN_141467da0();                                           // 0x141467da0
+    void GetState();                                           // 0x141467da0
     void FUN_141467800();                                           // 0x141467800
     int CanCancel(unsigned long long nTag);                     // 0x141467dd0 can this cast be cancelled
     CMagic* GetMagic();                                        // 0x141467b90 the projectile
-    void FUN_141467860();                                           // 0x141467860 per-tick update
-    void FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Vector3 ptStart,
+    void Update();                                           // 0x141467860 per-tick update
+    void Init(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Vector3 ptStart,
         unsigned n530, unsigned n534, unsigned n53c);                // 0x141467500 start a projectile for a cast
 
     Unk_SocketPtr<CMagic> m_spMagic;                                // +0x18
@@ -332,7 +332,7 @@ public:
     int AddModel(Unk_SocketPtr<CMagicModel> spModel);                         // 0x14146cbd0 register a model
     void RemoveModel(Unk_SocketPtr<CMagicModel> spModel);                        // 0x14146cd10 unregister a model
     Unk_SocketPtr<Unk_MagicTag> FindCast(unsigned long long nCast);          // 0x14146ce30 find a cast record
-    void FUN_14146ceb0(unsigned long long nCast);                                  // 0x14146ceb0 forget a cast record
+    void RemoveCast(unsigned long long nCast);                                  // 0x14146ceb0 forget a cast record
     std::pair<bool, bool> FUN_14146c990(int* pKey, Unk_NiPoint3* pPoint, unsigned nOwner, Unk_MagicEntity* pCaster, int* pType);   // 0x14146c990 may the cast and end effects of a hit play
     void FUN_14146bc20(Unk_MagicTag* pTag);          // 0x14146bc20 the cast animation of a cast record
     void FUN_14146bc80(Unk_MagicTag* pTag);          // 0x14146bc80 play the end of a cast record

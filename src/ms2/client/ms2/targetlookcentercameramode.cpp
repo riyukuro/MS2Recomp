@@ -123,8 +123,8 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             Vector3 ptDir = (ptTarget - ptPos);
             ptDir.Unitize();
             (ptPos += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_84)));
-            float fTargetMove = FUN_140966ea0(ptPrevTarget, m_78);
-            float fPosMove = FUN_140966ea0(ptPrevPos, ptPos);
+            float fTargetMove = GetPlanarDistance(ptPrevTarget, m_78);
+            float fPosMove = GetPlanarDistance(ptPrevPos, ptPos);
             if (fTargetMove > fPosMove)
                 ++nLoop;
             if (m_50 < m_58 || m_54 + m_b4 < m_50)

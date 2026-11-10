@@ -51,7 +51,7 @@ public:
 };
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
-MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);              // new ASCheckBox(v, n)
+MS2Ptr<ASCheckBox> CreateCheckBox(int nMovieId, const Scaleform::GFx::Value& v);              // new ASCheckBox(v, n)
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140bc6120 (T = ASItemRendererBase; defined in uicashattenddialog.cpp)
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
@@ -272,7 +272,7 @@ template <> MS2Ptr<ASCheckBox> AScript::FUN_140c11f50<ASCheckBox>(const CString&
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
-        return FUN_140a57df0(m_nMovieId, v);
+        return CreateCheckBox(m_nMovieId, v);
     return MS2Ptr<ASCheckBox>(0);
 }
 

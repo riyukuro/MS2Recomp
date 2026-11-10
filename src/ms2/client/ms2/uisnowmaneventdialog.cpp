@@ -69,7 +69,7 @@ class CItemData : public CPtred { public: CString GetIconPath(); };   // C3: mem
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_140710590(COutPacket&);
 
-UIRewardNotify* FUN_140938cd0(int);
+UIRewardNotify* FindRewardNotify(int);
 
 // ASObj members used here only (the shared header lacks them).
 class Unk_SnowmanDisplay { public: virtual void vfunc_0(); virtual void vfunc_1(int, int, int, int, int); };
@@ -299,9 +299,9 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<SnowmanContext> context)
             if (!snowman->m_items.IsEmpty())
                 item = snowman->m_items[0];
             ASObj reward(2);
-            reward.FUN_1409c0d20("itemID", item.m_itemId);
+            reward.SetMemberUInt("itemID", item.m_itemId);
             reward.FUN_1409adc90("itemRank", item.vfunc_o18_1());
-            reward.FUN_1409c0d20("itemCount", item.m_count);
+            reward.SetMemberUInt("itemCount", item.m_count);
             reward.FUN_1407cba60("iconPath", FUN_140e96500(item.m_itemId));
             row.FUN_1409eb270("dailyCompleteReward", reward);
         }
@@ -310,9 +310,9 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<SnowmanContext> context)
             if (!snowman->m_bonusItems.IsEmpty())
                 item = snowman->m_bonusItems[0];
             ASObj reward(2);
-            reward.FUN_1409c0d20("itemID", item.m_itemId);
+            reward.SetMemberUInt("itemID", item.m_itemId);
             reward.FUN_1409adc90("itemRank", item.vfunc_o18_1());
-            reward.FUN_1409c0d20("itemCount", item.m_count);
+            reward.SetMemberUInt("itemCount", item.m_count);
             reward.FUN_1407cba60("iconPath", FUN_140e96500(item.m_itemId));
             row.FUN_1409eb270("accumCompleteReward", reward);
         }
@@ -546,7 +546,7 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
     } else {
         switch (type) {
         case 0xc: {
-            UIRewardNotify* popup = FUN_140938cd0(20061);
+            UIRewardNotify* popup = FindRewardNotify(20061);
             if (popup == 0)
                 break;
             int count = packet.ReadInt32();
@@ -558,7 +558,7 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
             break;
         }
         case 0xd: {
-            UIRewardNotify* popup = FUN_140938cd0(20061);
+            UIRewardNotify* popup = FindRewardNotify(20061);
             if (popup == 0)
                 break;
             int count = packet.ReadInt32();

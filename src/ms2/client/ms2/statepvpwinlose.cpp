@@ -41,7 +41,7 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        nId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->FUN_140967420().operator->())->m_nTeam;
+        nId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->GetPvPInfo().operator->())->m_nTeam;
     }
     if (m_n10 == 0x73)
     {

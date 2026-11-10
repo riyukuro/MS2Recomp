@@ -137,8 +137,8 @@ inline bool Unk_RsGetShaderSource(NiString& kNifPath, NiString& kNodeName)
 class Unk_AeGraphicOption
 {
 public:
-    unsigned int FUN_1409a8ab0() const;         // width
-    unsigned int FUN_1409a8aa0() const;         // height
+    unsigned int GetHeight() const;         // width
+    unsigned int GetWidth() const;         // height
 public:
     int m_n0;                    // +0x00
     int m_n4;                    // +0x04
@@ -154,7 +154,7 @@ MS2_CHECK_OFFSET(Unk_AeGraphicOption, m_nBufferFormat, 0x2c);
 class Unk_AeGameOption
 {
 public:
-    Unk_AeGraphicOption* FUN_1409a8ac0();
+    Unk_AeGraphicOption* GetGraphicOption();
 };
 // Video options (the stored resolution and flags).
 class Unk_RsVideoOptions : public Unk_AeGraphicOption
@@ -163,8 +163,8 @@ public:
     // @0x1414f0470
     int GetMode() const { return m_nMode; }
 };
-void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow);
-bool FUN_14125e820(Unk_GraphicState* p, int nWidth, int nHeight);
+void SetQuality(Unk_GraphicState* p, int nQuality, int bFollow);
+bool IsResolutionAvailable(Unk_GraphicState* p, int nWidth, int nHeight);
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
 // Application window manager.
 class Unk_GsApp   // C3: gameoptionstruct.cpp's application view
@@ -189,10 +189,10 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class Unk_GoDeviceInfo   // C3: gameoption.cpp's device info view
 {
 public:
-    CStringW FUN_141245ab0();                       // adapter description
+    CStringW GetAdapterName();                       // adapter description
 };
 // (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_141b91ab0();
 // UI front end: slot 23 shows a message dialog.
 class Unk_RsUI
@@ -598,14 +598,14 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     NiRendererSettings settings;
     efd::IConfigManager* pConfig = m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>();
     settings.LoadFromConfigManager(pConfig);
-    settings.m_bVSync = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bVSync;
+    settings.m_bVSync = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->m_bVSync;
     settings.m_eDX9FBFormat = (NiDX9Renderer::FramebufferMode)TSingleton<CGraphicOptionTable>::GetInstance()->GetMultisampleValue(
-        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nBufferFormat);
+        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->m_nBufferFormat);
     settings.m_bFullscreen = bFullscreen;
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
     if (settings.m_bVSync) {
-        ((class COptimizer*)FUN_1409f7c90())->ClearFrameLimit();
+        ((class COptimizer*)GetOptimizer())->ClearFrameLimit();
     }
     if (((class Unk_RsApp*)FUN_140aadf80())->IsWindowHidden()) {
         settings.m_bFullscreen = false;
@@ -696,24 +696,24 @@ efd::AsyncResult MS2RenderService::OnInit()
         }
         TSingleton<GPUManager>::GetInstance()->FUN_141375390(adapterName);
     }
-    int fullscreenMode = TSingleton<CGameOption>::GetInstance()->FUN_141243f50(0);
-    bool bFullscreenFlag = fullscreenMode != 0 ? false : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->GetMode() == 0;
-    bool bBorderless = fullscreenMode != 0 ? true : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->GetMode() == 2;
-    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
-    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
+    int fullscreenMode = TSingleton<CGameOption>::GetInstance()->IsOptionFileMissingOrOutdated(0);
+    bool bFullscreenFlag = fullscreenMode != 0 ? false : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->GetMode() == 0;
+    bool bBorderless = fullscreenMode != 0 ? true : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->GetMode() == 2;
+    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->GetHeight();
+    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->GetWidth();
     ((class Unk_RsApp*)FUN_140aadf80())->FUN_1412642e0(bBorderless);
     if (bBorderless) {
         bFullscreenFlag = true;
     }
     if (fullscreenMode != 0) {
-        int mode = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
-        FUN_14125e1f0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), mode, 1);
+        int mode = TSingleton<CGameOption>::GetInstance()->GetBenchmarkLevel();
+        SetQuality(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()), mode, 1);
     }
-    bool bBasicDriver = reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0() == L"Microsoft Basic Display Driver";
+    bool bBasicDriver = reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
         ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
+        message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(), (LPCWSTR)GetStringCommon(0x8d5));
         CStringA caption = FUN_14028dc80(0x8d4);
         CStringA text = FUN_14016a600(message, 0);
         NiMessageBox(text, caption, 0);
@@ -725,27 +725,27 @@ efd::AsyncResult MS2RenderService::OnInit()
         if (!CreateRendererSized(bFullscreenFlag, width, height)) {
             ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
     }
-    if (!FUN_14125e820(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), width, height)) {
+    if (!IsResolutionAvailable(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()), width, height)) {
         width = 0x400;
         height = 0x300;
         if (!((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
             ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
     }
     if (fullscreenMode != 0) {
-        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nMode = 2;
-        FUN_14125eb00(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), width, height);
+        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()->m_nMode = 2;
+        FUN_14125eb00(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption()), width, height);
         TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
     }
     ((class Unk_RsApp*)FUN_140aadf80());

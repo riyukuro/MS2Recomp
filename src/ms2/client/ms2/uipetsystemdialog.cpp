@@ -40,7 +40,7 @@ static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh"
 // ---- out-of-unit callees (names describe uses) ----
 
 struct Unk_IsItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -104,14 +104,14 @@ int UIPetSystemDialog::vfunc_65()
     m_198.SetAt(2, new TabInfo(0xccf, FUN_140e74ee0(vfunc_84()), "petEvolution"));
     m_198.SetAt(3, new TabInfo(0xcd1, FUN_140e74df0(vfunc_84()), "petRemakeOption"));
     m_198.SetAt(4, new TabInfo(0xcd0, FUN_140e74d00(vfunc_84()), "petCollect"));
-    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     return 0;
 }
 
 // @0x140e73c20
 void UIPetSystemDialog::vfunc_67()
 {
-    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     OnRemoveTab();
     for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
     {
@@ -263,7 +263,7 @@ int UIPetSystemDialog::vfunc_84()
 // @0x140e74730
 MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 {
-    return g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
+    return g_143ab2a90.FindItemByUid(((class CPetManager*)FUN_140535320())->GetSummonUid());
 }
 
 // @0x140e74790

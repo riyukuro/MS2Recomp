@@ -206,7 +206,7 @@ public:
     int IsBeforeStartGrade(unsigned nAchieve, int nGrade);        // 0: not reached
 };
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
+CStringW GetRequireAchieveText(int nAchieve, int nGrade, CStringW strDefault);
 
 // The player and its equipment.
 class Unk_BSPlayer : public PCBase
@@ -217,12 +217,12 @@ class Unk_BSPlayerCap : public PCGemEquip { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141658e60();
+    int GetGender();
     int FUN_141658f30();
-    class Unk_MyPCEquip* FUN_14165f460();
+    class Unk_MyPCEquip* GetGemEquip();
     MS2Ptr<CEquipItem> GetEquipByUid(__int64 nItemUid);
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 
 // The current field (the page refreshes its camera through it).
@@ -309,8 +309,8 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-class UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
+class UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class UICameraEditDialog   // C3: member view
 {
 public:
@@ -473,8 +473,8 @@ void FUN_140f01350()
     NoticeMessage request;
     request.m_strName = ((struct Unk_BSEffectPaths*)FUN_1401d31f0())->m_hairApply;
     request.m_nObject = 1;
-    request.SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
+    request.SetActor(((class GameObject*)(class PCBase*)(pPc))->GetObjectId());
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&request));
 }
 
 // @0x140f01430
@@ -579,7 +579,7 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
                 strName = strRgb;
             CStringW strAchieve;
             if (static_cast<unsigned>(spRow->m_n24) > 0 && ((class CAchieveManager*)FUN_1406c7600())->IsBeforeStartGrade(static_cast<unsigned>(spRow->m_n24), spRow->m_n28) == 0)
-                strAchieve = FUN_14093bd40(static_cast<unsigned>(spRow->m_n24), spRow->m_n28, L"");
+                strAchieve = GetRequireAchieveText(static_cast<unsigned>(spRow->m_n24), spRow->m_n28, L"");
             if (!strAchieve.IsEmpty())
                 strOut = strName.IsEmpty() == true
                              ? strAchieve
@@ -615,7 +615,7 @@ bool FUN_140f01eb0(ASTooltip& tip, Unk_BSPricePtr spPrice, short nLevel, const C
         else if (spPrice->m_achieve > 0)
         {
             strText = FUN_14028dfa0<CStringW, CStringW, CStringW>(L"s_beauty_tooltip_price_with_achieve", FUN_140f010c0(spPrice->m_id),
-                                    FUN_14093bd40(spPrice->m_achieve, spPrice->m_grade, L""), strPrice);
+                                    GetRequireAchieveText(spPrice->m_achieve, spPrice->m_grade, L""), strPrice);
         }
     }
     if (strText.IsEmpty())
@@ -811,7 +811,7 @@ int UIBeautyShopStyleDialog::vfunc_84()
 void UIBeautyShopStyleDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_1a8.AssignRaw((Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2));
+    m_1a8.AssignRaw((Unk_BSCamera*)FindCameraEditDialog((eUIClassID)0x4ef2));
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopStyleDialog::FUN_140f05460));
     FUN_140f06e10();
@@ -837,7 +837,7 @@ void UIBeautyShopStyleDialog::vfunc_67()
     m_298.clear();
     m_2b0 = 0;
     FUN_140f01430();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopStyleDialog::FUN_140f05460));
     ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
@@ -923,7 +923,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pPc == 0)
                     return 1;
-                if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->FUN_141658e60()) == 0)
+                if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
                 {
                     FUN_140d74390(GetStringCommonByKey(L"s_beauty_msg_error_style_disable_gender"), 0, FUN_140b240b0());
                     return 1;
@@ -1293,7 +1293,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
             m_298.push_back(spCopy);
             ASObj obj(2);
             FUN_140f096f0(obj, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCopy->FUN_140527840())), nSlot,
-                          FUN_140f08160(), ((class PC*)(class PCBase*)(pPc))->FUN_141658e60());
+                          FUN_140f08160(), ((class PC*)(class PCBase*)(pPc))->GetGender());
             m_30->Invoke("updateItem", nIndex, Scaleform::GFx::Value(obj.FUN_1422bb870()));
             FUN_1412752d0(L"s_beauty_msg_complete_save_hair_style", 1);
         }
@@ -1387,14 +1387,14 @@ bool UIBeautyShopStyleDialog::FUN_140f06e10()
     m_270 = reinterpret_cast<Unk_ReportScript*>(m_30.operator->())->GetChild<ASGameEntity>("m_customStyle");
     if (m_270.get())
         m_items = m_270.operator->()->FUN_140bfa6a0<ASTileCacheList>("m_items");   // C3: AScript::FUN_140bfa6a0<ASTileCacheList>
-    m_198.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_198.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     int nSlot = FUN_140f01070(nKind);
     if (nKind == 1)
         FUN_140f079a0();
     m_198->SelectSlot(nSlot);
     FUN_140f07cc0();
     FUN_140f07e20();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab",
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopStyleDialog::FUN_140f09380));
     if (m_260)
@@ -1494,10 +1494,10 @@ int UIBeautyShopStyleDialog::FUN_140f07a60(MS2Ptr<CItem> spItem)
     Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    spItem->SetObjectId(((class GameObject*)(class PCBase*)(((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())))->FUN_14123c580());
+    spItem->SetObjectId(((class GameObject*)(class PCBase*)(((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())))->GetObjectId());
     if (!m_198->EquipItem(spItem.get()))
     {
-        if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->FUN_141658e60()) == 0)
+        if (reinterpret_cast<Unk_BSItemData*>(spItem->FUN_140527840())->IsGenderAllowed(((class PC*)(class PCBase*)(pPc))->GetGender()) == 0)
             FUN_140d74390(GetStringCommonByKey(L"s_beauty_msg_error_save_style_disable_gender"), 0, FUN_140b240b0());
         return 0;
     }
@@ -1548,7 +1548,7 @@ void UIBeautyShopStyleDialog::FUN_140f07e20()
                 {
                     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
                     if (spData.get())
-                        FUN_140f096f0(obj, MS2Ptr<CItemData>(spData), spItem->FUN_140526b50(), nFee, ((class PC*)(class PCBase*)(pPc))->FUN_141658e60());
+                        FUN_140f096f0(obj, MS2Ptr<CItemData>(spData), spItem->FUN_140526b50(), nFee, ((class PC*)(class PCBase*)(pPc))->GetGender());
                 }
             }
             else
@@ -1873,8 +1873,8 @@ bool UIBeautyShopStyleDialog::FUN_140f09630()
     bool bResult = false;
     if (FUN_140f07980() == 1)
     {
-        m_268 = ((class Unk_BSPlayerCap*)((class PC*)(class PCBase*)(pPc))->FUN_14165f460())->FUN_1412706f0(0);
-        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->GetTopLayerItem(6, 0);
+        m_268 = ((class Unk_BSPlayerCap*)((class PC*)(class PCBase*)(pPc))->GetGemEquip())->IsSlotHidden(0);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPc))->GetEquipment())->GetTopLayerItem(6, 0);
         if (spEquip.get())
             bResult = true;
     }
@@ -1887,7 +1887,7 @@ bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nM
 {
     FUN_140f324f0(obj, MS2Ptr<CItemData>(spData), false);
     obj.FUN_1407cb9c0("idx", nIndex);
-    obj.FUN_1409c0d20("merat", nMerat);
+    obj.SetMemberUInt("merat", nMerat);
     obj.FUN_1407cbbe0("enableDelete", true);
     bool bDisable = static_cast<Unk_BSItemData*>(spData.operator->())->IsGenderAllowed(nGender) == 0;
     obj.FUN_1407cbbe0("disable", bDisable);

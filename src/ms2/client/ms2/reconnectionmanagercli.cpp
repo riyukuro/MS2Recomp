@@ -228,8 +228,8 @@ void CReconnectionManagerCli::OnReconnectFailed(int error) {
     if (IsFatalReconnectError(error) == 1 || IsReconnectTimedOut() == 1) {
         HideProgress();
         if (FUN_140714f90() != 0) {
-            if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->FUN_1415384e0() != 0) {
-                FUN_140714f90()->FUN_141538510();
+            if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->IsConnected() != 0) {
+                FUN_140714f90()->Close();
             }
         }
         PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x465, (WPARAM)m_cli.m_postParam, 0);
@@ -282,7 +282,7 @@ MS2_REPLACE_METHOD(0x140AAD970, CReconnectionManagerCli, HideProgress, 53, 0xA61
 // @0x140aad9b0
 void CReconnectionManagerCli::DisconnectAndDelayReconnect(int seconds) {
     m_cli.m_deadline = GetTickCountMs2() + seconds * 1000;
-    FUN_140714f90()->FUN_141538510();
+    FUN_140714f90()->Close();
     PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x465, 0x2745, 0);
 }
 MS2_REPLACE_METHOD(0x140AAD9B0, CReconnectionManagerCli, DisconnectAndDelayReconnect, 93, 0x25593940);

@@ -105,9 +105,9 @@ public:
     float m_14;                                                     // +0x14 ctor 1.0f
     int m_18;                                                       // +0x18 not set by the ctor (derived classes store 4)
     int m_pad_1c;
-    MS2Ptr<ASStage> m_20;                                           // +0x20 the stage object (created by FUN_140b62400)
+    MS2Ptr<ASStage> m_20;                                           // +0x20 the stage object (created by CreateStage)
     MS2Ptr<ASMouseCursor> m_30;                                     // +0x30 the mouse cursor (type 6 of the movie manager)
-    MS2Ptr<ASMovieClipLoader> m_40;                                 // +0x40 vfunc_11 invokes "shutdown" on it (FUN_140b62350)
+    MS2Ptr<ASMovieClipLoader> m_40;                                 // +0x40 vfunc_11 invokes "shutdown" on it (CreateMovieClipLoader)
     unsigned m_50;                                                  // +0x50 ctor 0; MemoryParams::MaxCollectionRoots if set
     Scaleform::KeyModifiers m_54;                                   // +0x54 the last key modifiers (ctor FUN_14127c3b0)
     Scaleform::UInt8 m_pad_55[3];
@@ -121,8 +121,8 @@ MS2_CHECK_SIZE(GFxMovie, 0x80);
 
 // Wrap an AS object of movie nMovieId in a new ASStage / ASMovieClipLoader (new 0x80 + ctor 0x1422cfcb0 / 0x1422cfff0).
 // Template-looking COMDAT pair in the ?\gfxmoviedamage.cpp range; the names are invented.
-MS2Ptr<ASStage> FUN_140b62400(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<ASMovieClipLoader> FUN_140b62350(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASStage> CreateStage(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASMovieClipLoader> CreateMovieClipLoader(int nMovieId, const Scaleform::GFx::Value& v);
 MS2_CHECK_OFFSET(GFxMovie, m_20, 0x20);
 MS2_CHECK_OFFSET(GFxMovie, m_60, 0x60);
 MS2_CHECK_OFFSET(GFxMovie, m_78, 0x78);

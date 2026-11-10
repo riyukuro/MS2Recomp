@@ -30,7 +30,7 @@ public:
     static class WorldService* GetInstance();
 };
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
-class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
+class GameObject { public: egf::Entity* GetEntity(); };   // C3: unit-local view
    NiAVObject* FUN_141b6efc0(egf::Entity* a);
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
 {
@@ -38,7 +38,7 @@ public:
     static class NiMaterial* CreateMaterial(class NiFixedString const&);
 };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_14098dfc0(class NiAVObject*);   // C3: was FUN_14098dfc0
 bool FUN_141568c90(class NiRenderObject*);   // C3: was FUN_141568c90
 unsigned int FUN_141568dc0(class NiAVObject*);   // C3: was FUN_141568dc0
@@ -46,7 +46,7 @@ void FUN_141568df0(class NiAVObject*);   // C3: was FUN_141568df0
 class CMeshUVPicker   // C3: member view for the former free stand-ins
 {
 public:
-    static void FUN_141480710(class NiObjectNET*, class NiFixedString const&, class NiColorA const&);
+    static void SetColorExtraData(class NiObjectNET*, class NiFixedString const&, class NiColorA const&);
 };
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -72,7 +72,7 @@ extern NiFixedString DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8,
 typedef CAtlMap<NiAVObject*, NiAVObject*> OutlineMap;
 
 
-void FUN_1414d39a0(OutlineMap& map);
+void CollectOutlineTargets(OutlineMap& map);
 // The walk's CAtlList<NiAVObject*> (head, tail, ...).
 struct Unk_OlpNode { Unk_OlpNode* m_pNext; Unk_OlpNode* m_pPrev; void* m_element; };
 struct Unk_OlpList { Unk_OlpNode* m_pHead; Unk_OlpNode* m_pTail; };
@@ -97,7 +97,7 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)GetClientConstants()) + 0xb4d0)->Read();
     for (unsigned j = 0; j < 9; ++j)
         col[j] = col[j] * scale;
-    FUN_1409a5770(DAT_143ae53c8, (float const*)(col), 9);
+    UpdateGlobalShaderConstantFloats(DAT_143ae53c8, (float const*)(col), 9);
     m_nOutlined = 0;
 }
 
@@ -106,7 +106,7 @@ void MS2OutlinePreProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
 {
     if (pkInput == 0) return;
     OutlineMap objSet(17, 0.75f, 0.25f, 2.25f, 10);
-    FUN_1414d39a0(objSet);
+    CollectOutlineTargets(objSet);
     MaterialSwapSavedMap matMap;
     NiVisibleArray outArr;
     unsigned n = pkInput->GetCount();
@@ -130,7 +130,7 @@ void MS2OutlinePreProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
                 ((class NiMaterialInstance*)(void*)(((void*)((class NiRenderObject*)(void*)(obj))->GetActiveMaterialInstance())))->ClearCachedShader();
                 obj->SetMaterialNeedsUpdate(true);
                 NiColorA packed = ent != 0 ? ent->GetValue() : efd::ColorA::BLACK;
-                CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), DAT_143ae50f0, *(class NiColorA const*)(&packed));
+                CMeshUVPicker::SetColorExtraData((class NiObjectNET*)(obj), DAT_143ae50f0, *(class NiColorA const*)(&packed));
                 outArr.Add(*obj);
                 if (ent != 0) any = true;
             }
@@ -170,14 +170,14 @@ void FUN_1414d37a0(void* obj, int idx)
 }
 
 // @0x1414d38b0
-void FUN_1414d38b0(void* obj, void* color)
+void AddOutlineColor(void* obj, void* color)
 {
     int v = 0;
     if (DAT_143ae2b34 != 0)
         v = FUN_141568dc0((class NiAVObject*)(obj));
     if (v == 0) {
         if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) == 0) {
-            CMeshUVPicker::FUN_141480710((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColorA const*)(color));
+            CMeshUVPicker::SetColorExtraData((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColorA const*)(color));
             if (DAT_143ae2b34 != 0)
                 FUN_141568df0((class NiAVObject*)(obj));
         }
@@ -188,7 +188,7 @@ void FUN_1414d38b0(void* obj, void* color)
 void FUN_1414d4c70(void* obj, unsigned v) { *(unsigned*)((char*)obj + 0xe0) = v; }
 
 // @0x1414d3930
-void FUN_1414d3930(void* obj)
+void RemoveOutline(void* obj)
 {
     if (((void*)((class NiObjectNET*)(void*)(obj))->GetExtraData(DAT_143ae50e0)) != 0)
         ((class NiObjectNET*)(void*)(obj))->RemoveExtraData(DAT_143ae50e0);
@@ -226,11 +226,11 @@ void* FUN_1414d3ff0(void* list) { return *(void**)((char*)list + 0x10); }
 // CAtlList<NiAVObject*> sits at +0.
 
 // @0x1414d39a0
-void FUN_1414d39a0(OutlineMap& map)
+void CollectOutlineTargets(OutlineMap& map)
 {
     void* sc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (sc == 0) return;
-    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<GameObject*>(sc)->FUN_14123c410()));
+    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<GameObject*>(sc)->GetEntity()));
     while ((size_t)FUN_1414d3ff0(&wl) > 0) {
         NiAVObject* node = reinterpret_cast<Unk_OlpAtlList*>(&wl)->RemoveHead();
         if (node != 0) {

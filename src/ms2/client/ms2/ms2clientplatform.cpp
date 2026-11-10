@@ -1,5 +1,5 @@
-// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The publisher platform factory: FUN_140d86270 creates the
-// Nexon (country 0) or Tencent (country 3) IClientPlatform singleton, FUN_140d86330 destroys both.
+// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The publisher platform factory: CreateClientPlatform creates the
+// Nexon (country 0) or Tencent (country 3) IClientPlatform singleton, DestroyClientPlatform destroys both.
 // MS2-UNIT: client\ms2\ms2clientplatform.cpp
 // MS2-RANGE: 0x140d86270-0x140d86560 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2clientplatform.cpp"
@@ -18,12 +18,12 @@ int FUN_1406c34c0();                            // the Nexon platform enabled pr
 class CClientPlatformNexonKorea;
 IClientPlatform* FUN_140d86370();
 IClientPlatform* FUN_140d863f0();
-CClientPlatformTencent* FUN_140d86550();               // the Tencent platform singleton
+CClientPlatformTencent* GetTencentPlatform();               // the Tencent platform singleton
 void FUN_140d86470();
-void FUN_140d864e0();
+void DestroyTencentPlatform();
 
 // @0x140d86270
-bool FUN_140d86270()
+bool CreateClientPlatform()
 {
     bool bResult = true;
     switch (DAT_143ab0248) {
@@ -43,18 +43,18 @@ bool FUN_140d86270()
         return false;
     return true;
 }
-MS2_REPLACE(0x140D86270, FUN_140d86270, 171, 0x003E167D);
+MS2_REPLACE(0x140D86270, CreateClientPlatform, 171, 0x003E167D);
 
 // @0x140d86330
-void FUN_140d86330()
+void DestroyClientPlatform()
 {
     if (TSingleton<CClientPlatformNexonKorea>::GetInstance() != 0)
         FUN_140d86470();
-    if (FUN_140d86550() != 0)
-        FUN_140d864e0();
+    if (GetTencentPlatform() != 0)
+        DestroyTencentPlatform();
     DAT_143ac2fd8 = 0;
 }
-MS2_REPLACE(0x140D86330, FUN_140d86330, 50, 0x6C8FF6F9);
+MS2_REPLACE(0x140D86330, DestroyClientPlatform, 50, 0x6C8FF6F9);
 
 // @0x140d86370
 IClientPlatform* FUN_140d86370()
@@ -73,7 +73,7 @@ IClientPlatform* FUN_140d863f0()
 {
     IClientPlatform* pPlatform;
     if (TSingleton<CClientPlatformTencent>::s_instance != 0)
-        pPlatform = FUN_140d86550();
+        pPlatform = GetTencentPlatform();
     else
         pPlatform = new CClientPlatformTencent;
     return pPlatform;
@@ -91,18 +91,18 @@ void FUN_140d86470()
 MS2_REPLACE(0x140D86470, FUN_140d86470, 98, 0x0EF39B86);
 
 // @0x140d864e0
-void FUN_140d864e0()
+void DestroyTencentPlatform()
 {
     if (TSingleton<CClientPlatformTencent>::s_instance != 0) {
-        delete FUN_140d86550();
+        delete GetTencentPlatform();
         TSingleton<CClientPlatformTencent>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x140D864E0, FUN_140d864e0, 98, 0x1B90A320);
+MS2_REPLACE(0x140D864E0, DestroyTencentPlatform, 98, 0x1B90A320);
 
 // @0x140d86550
-CClientPlatformTencent* FUN_140d86550()
+CClientPlatformTencent* GetTencentPlatform()
 {
     return TSingleton<CClientPlatformTencent>::s_instance;
 }
-MS2_REPLACE(0x140D86550, FUN_140d86550, 8, 0xA6EA81C0);
+MS2_REPLACE(0x140D86550, GetTencentPlatform, 8, 0xA6EA81C0);

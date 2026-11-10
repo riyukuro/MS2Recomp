@@ -33,7 +33,7 @@ public:
     virtual int vfunc_12();                                     // 12 0x141221270 return 10
 
     // 0x141220be0: standalone create (no caller recovered; the first argument is unused).
-    static CFogEffect* FUN_141220be0(void* pUnused, const CFogEffectParam* pParam);
+    static CFogEffect* CreateFromParam(void* pUnused, const CFogEffectParam* pParam);
     void FUN_141220f50();                                       // 0x141220f50 {}
     void FUN_141220f60(double dNow);                            // 0x141220f60 apply the blend at dNow
 

@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x1400befb0-0x1400bf220 .text$di
 // MS2-RANGE: 0x140935c20-0x1409436b0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?FUN_140938cd0@@YAPEAVUIRewardNotify@@H@Z 0x140938cd0 ; unique
+// MS2-PIN: ?FindRewardNotify@@YAPEAVUIRewardNotify@@H@Z 0x140938cd0 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VCAchieve@@@@QEBA_NPEAVCAchieve@@@Z 0x1409392f0 ; unique
 // MS2-PIN: memmove_s 0x14093acb0 ; unique
 // MS2-PIN: ??$FormatStringId@M@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBM@Z 0x14093f980 ; unique
@@ -146,7 +146,7 @@ public:
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141658e60();
+    int GetGender();
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
@@ -211,17 +211,17 @@ WC_WRAP(2)
 
 // This unit's own text helpers (defined below).
 CStringW FUN_14093ce70(int nId, int nGrade);
-int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg);
+int GetSpecialRewardNotify(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg);
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat);
 CStringW FUN_14093dd50(int nId, __int64 nA, __int64 nB);
 CStringW FUN_14093dee0(int nId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14093e000(int nId, __int64 nA, __int64 nB);
 CStringW FUN_14093e190(int nId, const CStringW& strA, const CStringW& strB);
-int FUN_14093e2b0(int nCondType);
-CStringW FUN_14093f4d0(int nSeconds);
-CStringW FUN_14093f670(int nValue);
-CStringW FUN_14093f800(__int64 nTime);
+int GetConditionDisplayKind(int nCondType);
+CStringW FormatDuration(int nSeconds);
+CStringW FormatDistance(int nValue);
+CStringW FormatDate(__int64 nTime);
 CStringW FUN_1409404f0(__int64 nValue);
 int FUN_140940370(TiXmlElement* pNode, const char* pszName, int* pOut);
 int FUN_140940430(TiXmlElement* pNode, const char* pszName, int* pOut);
@@ -246,10 +246,10 @@ bool CAchieveUIData::s_bInit;                                                   
 // ---- inline helpers (COMDATs of this obj) ----------------------------------------------------------------------------------------
 
 // @0x140939920
-inline ATL::CAtlList<MS2Ptr<CAchieveData> >* FUN_140939920() { return &DAT_143aab428; }
+inline ATL::CAtlList<MS2Ptr<CAchieveData> >* GetAchieveDataList() { return &DAT_143aab428; }
 
 // @0x140939a00
-inline Unk_SingletonObj* FUN_140939a00() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMeratMarketMan>::s_instance); }
+inline Unk_SingletonObj* GetMeratMarketMan() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMeratMarketMan>::s_instance); }
 
 // @0x140939a10
 inline Unk_SingletonObj* FUN_140939a10() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<NotifySystem>::s_instance); }
@@ -372,7 +372,7 @@ MS2_REPLACE_METHOD(0x140935F80, CAchieveManager, GetList, 608, 0xB6DD836C);
 // @0x1409361f0
 void CAchieveManager::GetListFromTable(CAchieveList& rOut, int nType, unsigned char nCategory, int bStarted, int bGradeReached)
 {
-    ATL::CAtlList<MS2Ptr<CAchieveData> >* pList = FUN_140939920();
+    ATL::CAtlList<MS2Ptr<CAchieveData> >* pList = GetAchieveDataList();
     for (POSITION pos = pList->GetHeadPosition(); pos != 0; pList->GetNext(pos))
     {
         MS2Ptr<CAchieveData> pData = pList->GetAt(pos);
@@ -462,7 +462,7 @@ int CAchieveManager::IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade)
 }
 
 // The three dialog lookups (UI ids 0x4e28 / 0x2711 / 0x4e5d).
-UIGameMenuDialog* FUN_140938b90(int nId)
+UIGameMenuDialog* FindGameMenuDialog(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -473,7 +473,7 @@ UIGameMenuDialog* FUN_140938b90(int nId)
     return 0;
 }
 
-UIMyInfoDialog* FUN_140938c30(int nId)
+UIMyInfoDialog* FindMyInfoDialog(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -484,7 +484,7 @@ UIMyInfoDialog* FUN_140938c30(int nId)
     return 0;
 }
 
-UIRewardNotify* FUN_140938cd0(int nId)
+UIRewardNotify* FindRewardNotify(int nId)
 {
     if (reinterpret_cast<Unk_AmUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -543,13 +543,13 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
             {
                 if (nOldStart != pAchieve->GetStartGrade())
                     NotifyReward(nId, nOldStart);
-                UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+                UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
                 if (pMenu != 0)
                     ((class UIGameMenuDialog*)(class UIGameMenuDialog*)(pMenu))->FUN_141937ea0((void*)(pAchieve.get()), bNotified);
                 UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
                 if (pInfo != 0)
                     pInfo->FUN_1419f0bb0(reinterpret_cast<Unk_MpAchieve*>(pAchieve.get()));
-                UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
+                UIMyInfoDialog* pMyInfo = FindMyInfoDialog(0x2711);
                 if (pMyInfo != 0)
                     ((class UIMyInfoDialog*)(class UIMyInfoDialog*)(pMyInfo))->FUN_141a5a560();
             }
@@ -566,10 +566,10 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
     int nState = pAchieve->GetState();
     int nGrade = ((nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade()) < 1)
         ? 1 : (nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade());
-    ((class CMeratMarketMan*)(class Unk_SingletonObj*)(FUN_140939a00()))->PushAdProducts(pAchieve->GetId(), nGrade);
+    ((class CMeratMarketMan*)(class Unk_SingletonObj*)(GetMeratMarketMan()))->PushAdProducts(pAchieve->GetId(), nGrade);
     if (pAchieve->GetType() == 8)
         return;
-    UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
     if (pNotify != 0)
         pNotify->FUN_141abfdc0((Unk_RNAchieve*)pAchieve);
     {
@@ -598,12 +598,12 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
     MS2Ptr<CAchieveGradeData> pGrade = pData->GetGrade(nGrade);
     if (pGrade.IsNull())
         return;
-    UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
     if (pNotify == 0)
         return;
     CStringW strIcon;
     CStringW strMsg;
-    if (FUN_14093dc90(nId, nGrade, strIcon, strMsg) != 0)
+    if (GetSpecialRewardNotify(nId, nGrade, strIcon, strMsg) != 0)
     {
         pNotify->FUN_141ac1580(strIcon, strMsg, 0);
         FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_auth_notify_manual"), FUN_14093ce70(nId, nGrade)), 0x1c);
@@ -676,7 +676,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                     if (pPC == 0)
                         break;
                     {
-                        CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
+                        CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
                         CStringA strValue;
                         if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
                         {
@@ -708,7 +708,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPC == 0)
                 return;
-            CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
+            CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
             CStringA strValue;
             if (pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue))
             {
@@ -939,7 +939,7 @@ CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat)
 }
 
 // @0x14093bd40
-CStringW FUN_14093bd40(int nId, int nGrade, CStringW strFormat)
+CStringW GetRequireAchieveText(int nId, int nGrade, CStringW strFormat)
 {
     CStringW strTitle = FUN_14093bad0(nId, nGrade, CStringW(L""));
     if (strTitle.IsEmpty())
@@ -951,7 +951,7 @@ CStringW FUN_14093bd40(int nId, int nGrade, CStringW strFormat)
 }
 
 // @0x14093bf10
-CStringW FUN_14093bf10(CAchieve* pAchieve, int nGrade)
+CStringW GetAchieveProgressText(CAchieve* pAchieve, int nGrade)
 {
     if (pAchieve == 0)
         return CStringW(L"");
@@ -960,16 +960,16 @@ CStringW FUN_14093bf10(CAchieve* pAchieve, int nGrade)
     if (nProgress > nValue)
         nProgress = nValue;
     CStringW strText;
-    switch (FUN_14093e2b0(pAchieve->GetCondType()))
+    switch (GetConditionDisplayKind(pAchieve->GetCondType()))
     {
     case 1:
-        strText = FormatStringId<CStringW, CStringW>(0x800, FUN_14093f4d0((int)nProgress), FUN_14093f4d0((int)nValue));
+        strText = FormatStringId<CStringW, CStringW>(0x800, FormatDuration((int)nProgress), FormatDuration((int)nValue));
         break;
     case 2:
-        strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_achieve_renderer_count_distance"), FUN_14093f670((int)nProgress), FUN_14093f670((int)nValue));
+        strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_achieve_renderer_count_distance"), FormatDistance((int)nProgress), FormatDistance((int)nValue));
         break;
     case 0:
-        strText = FormatStringId<CStringW, CStringW>(0x800, FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nValue / 60)));
+        strText = FormatStringId<CStringW, CStringW>(0x800, FormatDuration((int)(nProgress / 60)), FormatDuration((int)(nValue / 60)));
         break;
     default:
         strText = FormatStringId(0x7ff, nProgress, nValue);
@@ -993,16 +993,16 @@ CStringW FUN_14093c320(CAchieve* pAchieve)
     __int64 nProgress = pAchieve->GetProgress();
     __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
     CStringW strText;
-    switch (FUN_14093e2b0(pAchieve->GetCondType()))
+    switch (GetConditionDisplayKind(pAchieve->GetCondType()))
     {
     case 1:
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)nProgress), FUN_14093f4d0((int)nTarget));
+        strText = FUN_14093e190(pAchieve->GetId(), FormatDuration((int)nProgress), FormatDuration((int)nTarget));
         break;
     case 2:
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f670((int)nProgress), FUN_14093f670((int)nTarget));
+        strText = FUN_14093e190(pAchieve->GetId(), FormatDistance((int)nProgress), FormatDistance((int)nTarget));
         break;
     case 0:
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nTarget / 60)));
+        strText = FUN_14093e190(pAchieve->GetId(), FormatDuration((int)(nProgress / 60)), FormatDuration((int)(nTarget / 60)));
         break;
     case 3:
         if (nTarget != 0)
@@ -1029,16 +1029,16 @@ CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
     __int64 nGoal = pGrade->m_pCondition->m_nGoal;
     __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
     CStringW strText;
-    switch (FUN_14093e2b0(pGrade->m_pCondition->m_nType))
+    switch (GetConditionDisplayKind(pGrade->m_pCondition->m_nType))
     {
     case 1:
-        strText = FUN_14093dee0(nId, FUN_14093f4d0((int)nGoal), FUN_14093f4d0((int)nTarget));
+        strText = FUN_14093dee0(nId, FormatDuration((int)nGoal), FormatDuration((int)nTarget));
         break;
     case 2:
-        strText = FUN_14093dee0(nId, FUN_14093f670((int)nGoal), FUN_14093f670((int)nTarget));
+        strText = FUN_14093dee0(nId, FormatDistance((int)nGoal), FormatDistance((int)nTarget));
         break;
     case 0:
-        strText = FUN_14093dee0(nId, FUN_14093f4d0((int)(nGoal / 60)), FUN_14093f4d0((int)(nTarget / 60)));
+        strText = FUN_14093dee0(nId, FormatDuration((int)(nGoal / 60)), FormatDuration((int)(nTarget / 60)));
         break;
     default:
         strText = FUN_14093dd50(nId, nGoal, nTarget);
@@ -1134,7 +1134,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
                 Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPC == 0)
                     break;
-                CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
+                CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
                 CStringA strValue;
                 pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
                 return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
@@ -1146,7 +1146,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPC == 0)
                 return CStringW(L"");
-            CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->FUN_141658e60() == 0 ? "male" : "female");
+            CStringA strGender(((class PC*)(class Unk_AmPC*)(pPC))->GetGender() == 0 ? "male" : "female");
             CStringA strValue;
             pGrade->m_reward.m_mapExtra.Lookup(strGender, strValue);
             return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_beauty"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1407181d0(strValue)));
@@ -1157,7 +1157,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
 
 // The special notify icon / text of a grade, when the special reward table has them.
 // @0x14093dc90
-int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg)
+int GetSpecialRewardNotify(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg)
 {
     MS2Ptr<CAchieveUIData::SpecialRewardDesc> pSpecial = CAchieveUIData::FindSpecialReward(nId, nGrade);
     if (pSpecial.get() != 0)
@@ -1223,7 +1223,7 @@ CStringW FUN_14093e190(int nId, const CStringW& strA, const CStringW& strB)
 
 // How the progress of a condition type is shown: 0 minutes, 1 seconds, 2 distance, 3 stack, 4 plain count.
 // @0x14093e2b0
-int FUN_14093e2b0(int nCondType)
+int GetConditionDisplayKind(int nCondType)
 {
     if (ConditionKindOfType(nCondType) == 0x11)
     {
@@ -1250,14 +1250,14 @@ int FUN_14093e2b0(int nCondType)
 
 // The time (as a date string) an achievement entry was recorded, or "" when it was never.
 // @0x14093e330
-CStringW FUN_14093e330(CAchieve* pAchieve, int nKey)
+CStringW GetRecordedDateText(CAchieve* pAchieve, int nKey)
 {
     if (pAchieve == 0)
         return CStringW(L"");
     __int64 nTime = pAchieve->GetValue(nKey);
     if (nTime == 0)
         return CStringW(L"");
-    return FUN_14093f800(nTime);
+    return FormatDate(nTime);
 }
 
 #ifndef MS2_HOOK_DLL
@@ -1476,7 +1476,7 @@ int CAchieveCategory::Matches(unsigned nAchieveId)
 
 // "minutes seconds" text of a duration given in seconds.
 // @0x14093f4d0
-CStringW FUN_14093f4d0(int nSeconds)
+CStringW FormatDuration(int nSeconds)
 {
     CStringW strText;
     int nMinutes = nSeconds / 60;
@@ -1499,7 +1499,7 @@ CStringW FUN_14093f4d0(int nSeconds)
 
 // A distance in millimetres as metres / kilometres text.
 // @0x14093f670
-CStringW FUN_14093f670(int nValue)
+CStringW FormatDistance(int nValue)
 {
     CStringW strText;
     if (nValue < 1000)
@@ -1520,7 +1520,7 @@ CStringW FUN_14093f670(int nValue)
 }
 
 // @0x14093f800
-CStringW FUN_14093f800(__int64 nTime)
+CStringW FormatDate(__int64 nTime)
 {
     CMsTime time(nTime);
     CStringW str = FUN_14083bab0(time, CStringW(L"/"));

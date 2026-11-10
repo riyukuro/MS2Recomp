@@ -10,10 +10,10 @@ public:
     virtual ~HardwareInstancingService();
     void FUN_1413d7d10(const egf::EntityID&);
     void FUN_1413d78e0(egf::Entity* pEntity);   // refresh the entity's instancing
-    int FUN_1413d7e30();                    // the grid instance count
-    unsigned FUN_1413d7eb0();               // the group instance count
+    int GetCellSize();                    // the grid instance count
+    unsigned GetInstancingCount();               // the group instance count
     int FUN_1413d6890(egf::Entity* pEntity);    // is the entity excluded
-    void FUN_1413d73a0(unsigned nMap);          // unload a map
+    void ClearMap(unsigned nMap);          // unload a map
     int FUN_1413d7d90(const egf::EntityID& id);  // is the entity instanced
 private:
     unsigned char unknown30[0x80];

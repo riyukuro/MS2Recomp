@@ -76,7 +76,7 @@ void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime);  
 //
 bool FUN_14028d470(float a, float b);                               // nearly equal
 
-void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
+void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8 (service lookup cell)
 struct Unk_CcSvcCell;
@@ -108,7 +108,7 @@ struct Unk_LightTarget
 MS2_CHECK_OFFSET(Unk_LightTarget, m_pPreData, 0x18);
 
 // The entity: property setters by hash.
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
 class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 {
@@ -122,7 +122,7 @@ class Unk_Entity
 public:
 };
 
-#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+#include "ms2/guess/separatenode.h"   // SeparateNode (was a local view)
 //
 //
 //
@@ -345,7 +345,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
             m_spParent = pShadow;
         if (!pLightParam->m_update.FUN_140afc5a0() && !FUN_14144b630(&pLightParam->m_update))
         {
-            Unk_SeparateNode* pSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(pLightParam->m_update);
+            SeparateNode* pSep = new (efd::MemHint(efd::MemHint::NONE)) SeparateNode(pLightParam->m_update);
             pSep->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spOuter), false);
             m_spOuter = pSep;
         }
@@ -363,13 +363,13 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
         return false;
 
     bool bFalse = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x2a7fd9f4, bFalse);
+    SetCachedBoolProperty((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x2a7fd9f4, bFalse);
     float fFifty = 50.0f;
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x9109875b, fFifty);
     bool bTrue = true;
-    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0xef627d53, bTrue);
+    SetCachedBoolProperty((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0xef627d53, bTrue);
     bool bFalse2 = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x78e546ab, bFalse2);
+    SetCachedBoolProperty((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x78e546ab, bFalse2);
     FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0x2d8cf386, const_cast<efd::Color*>(&pLightParam->m_clrDiffuse));
     FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0xc3f0329e, const_cast<efd::Color*>(&pLightParam->m_clrSpecular));
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, pLightParam->m_fDimmer);
@@ -379,7 +379,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x9f7d1fa7, pLightParam->m_fAttQuadratic);
     Vector3 ptWorld = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
     reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(ptWorld));
-    TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity), 0);
+    TSingleton<EntityWorldManager>::GetInstance()->AddEntity((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity), 0);
     if (FUN_14028d470(pLightParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
@@ -404,7 +404,7 @@ void CLightEffect::vfunc_4()
     {
         NiNode* pParent = static_cast<NiNode*>(m_spParent.operator->());
         pParent->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spOuter), true);
-        m_spOuter->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        m_spOuter->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
     }
     m_b2e = true;
 }
@@ -413,7 +413,7 @@ MS2_REPLACE_METHOD(0x14144AD00, CLightEffect, vfunc_4, 221, 0xFE4D83F7);
 // @0x14144adf0
 void CLightEffect::vfunc_7()
 {
-    FUN_140a0b2a0((class NiAVObject*)((NiNode*)m_spOuter));
+    DetachFromParent((class NiAVObject*)((NiNode*)m_spOuter));
     if ((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity) != 0)
     {
         CMainSystem::DestroyEntity((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity));

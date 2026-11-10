@@ -12,9 +12,9 @@
 // MS2-PIN: ??0?$ServiceUpdate@VWorldService@@@@QEAA@XZ 0x14151dc50 ; prop
 // MS2-PIN: ?DecRefCount@VisualTrackerService@egmVisualTracker@@UEBAXXZ 0x14151e650 ; unique
 // MS2-PIN: ?DeleteThis@VisualTrackerService@egmVisualTracker@@MEBAXXZ 0x14151e690 ; unique
-// MS2-PIN: ?FUN_14151e770@Unk_VtmCaches@@QEAAIXZ 0x14151e770 ; unique
-// MS2-PIN: ?FUN_14151e790@Unk_VtmCaches@@QEAAIXZ 0x14151e790 ; unique
-// MS2-PIN: ?FUN_14151e7c0@Unk_VtmNifCount@@QEAA_KXZ 0x14151e7c0 ; prop
+// MS2-PIN: ?GetNifCacheCount@Unk_VtmCaches@@QEAAIXZ 0x14151e770 ; unique
+// MS2-PIN: ?GetTextureCacheCount@Unk_VtmCaches@@QEAAIXZ 0x14151e790 ; unique
+// MS2-PIN: ?GetCount@Unk_VtmNifCount@@QEAA_KXZ 0x14151e7c0 ; prop
 // MS2-PIN: ?TypeCast@VisualTrackerService@egmVisualTracker@@UEBA_NIPEAPEAX@Z 0x14151ea70 ; unique
 // MS2-PIN: ?TypeCast@VisualTrackerService@egmVisualTracker@@UEBA_NIPEAPEBX@Z 0x14151eac0 ; unique
 // MS2-PINS-END tplpin
@@ -127,8 +127,8 @@ struct Unk_VtmSlots72 : Unk_VtmSlots64 { virtual void vfunc_64(); virtual void v
 struct Unk_VtmSlots80 : Unk_VtmSlots72 { virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77(); virtual void vfunc_78(); virtual void vfunc_79(); };
 struct Unk_VtmSlots88 : Unk_VtmSlots80 { virtual void vfunc_80(); virtual void vfunc_81(); virtual void vfunc_82(); virtual void vfunc_83(); virtual void vfunc_84(); virtual void vfunc_85(); virtual void vfunc_86(); virtual void vfunc_87(); };
 
-struct Unk_VtmCount { void* m_pHead; unsigned __int64 m_nSize; unsigned __int64 FUN_14151e8e0() { return m_nSize; } };   // the exe's list header: head pointer, element count
-struct Unk_VtmObjectTable { char m_pad[0x10]; Unk_VtmCount m_items; unsigned __int64 FUN_14151e8c0() { return m_items.FUN_14151e8e0(); } };  // +0x10: the list whose size is shown
+struct Unk_VtmCount { void* m_pHead; unsigned __int64 m_nSize; unsigned __int64 GetSize() { return m_nSize; } };   // the exe's list header: head pointer, element count
+struct Unk_VtmObjectTable { char m_pad[0x10]; Unk_VtmCount m_items; unsigned __int64 GetObjectCount() { return m_items.GetSize(); } };  // +0x10: the list whose size is shown
 struct Unk_VtmMovieStats { char m_pad[0x20]; efd::SmartPointer<Unk_VtmObjectTable> m_spObjects; };   // +0x20: the object table
 struct Unk_VtmMovieView : Unk_VtmSlots48 { virtual void vfunc_48(); virtual Unk_VtmMovieStats* vfunc_49(); };   // MS2: slot 49
 struct Unk_VtmMovie { char m_pad[0x18]; efd::SmartPointer<Unk_VtmMovieView> m_spView; };       // FUN_1422bb8b0(i): UI layer i
@@ -153,13 +153,13 @@ struct Unk_SmallObjectAllocator
 
 struct Unk_SmallObjectAllocatorRef { Unk_SmallObjectAllocator* m_p; };    // passed by value (8-byte copy)
 
-// ---- the nif/texture cache statistics object (FUN_140a0afd0) ----
-struct Unk_VtmNifCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 FUN_14151e7c0() { return m_nCount; } };
-struct Unk_VtmTexCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 FUN_14151e7d0() { return m_nCount; } };
+// ---- the nif/texture cache statistics object (GetNifLoadingService) ----
+struct Unk_VtmNifCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 GetCount() { return m_nCount; } };
+struct Unk_VtmTexCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 GetCount() { return m_nCount; } };
 struct Unk_VtmCaches
 {
-    unsigned FUN_14151e770() { return (unsigned)m_nifs.FUN_14151e7c0(); }
-    unsigned FUN_14151e790() { return (unsigned)m_textures.FUN_14151e7d0(); }
+    unsigned GetNifCacheCount() { return (unsigned)m_nifs.GetCount(); }
+    unsigned GetTextureCacheCount() { return (unsigned)m_textures.GetCount(); }
 
     char m_pad0[0x28];
     Unk_VtmNifCount m_nifs;                     // +0x28
@@ -193,13 +193,13 @@ public:
 };
 // EntityWorldManager::FUN_1411d0ab0/af0: block/game-object entity counts (size_t, narrowed to the tracker's 32-bit arg)
 class Unk_GoGpuMgr { public: unsigned __int64 GetVideoMem(); };            // memory/system statistics (gameoption.cpp)
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 namespace ecr { class SceneGraphService; }
 ecr::SceneGraphService* FUN_1413f98b0();
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class Unk_VtmCameraMgr : public CameraMgr { };
-class Unk_EmModelLoader { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
+class Unk_EmModelLoader { public: efd::utf8string GetCurrentSequenceName(const egf::EntityID& kKey); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 namespace Scaleform { namespace GFx { class Movie; } }
@@ -208,7 +208,7 @@ CString FUN_141277f60(int nLayer);                                      // name 
 class Unk_GoDeviceInfo { public: unsigned __int64 GetBandwidth(); };   // the memory bandwidth (gameoption.cpp)
 // (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 CNetworkService* FUN_140714f90();
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
@@ -224,7 +224,7 @@ IDirect3D9* GetIDirect3D9() { return NiDX9RendererStatics::ms_pkD3D9; }
 // @0x14151e740
 int FUN_14151e740() { return DAT_143b0d788; }
 // @0x14151e750: the allocator behind the memory manager
-Unk_SmallObjectAllocator* FUN_14151e750()
+Unk_SmallObjectAllocator* GetAllocator()
 {
     Unk_SmallObjectAllocator* pAlloc = *reinterpret_cast<Unk_SmallObjectAllocator**>(&efd::MemManager::Get());
     return pAlloc;
@@ -232,7 +232,7 @@ Unk_SmallObjectAllocator* FUN_14151e750()
 // @0x14151e8f0
 int FUN_14151e8f0(GPUManager* pGpu) { return pGpu->m_30; }
 // @0x14151e890
-NxScene* FUN_14151e890(Unk_PhysXSceneHandle* pHandle) { return pHandle->m_pScene; }
+NxScene* GetScene(Unk_PhysXSceneHandle* pHandle) { return pHandle->m_pScene; }
 
 // @0x14151e7f0: bytes held by the 256 small-object size classes
 unsigned __int64 FUN_14151e7f0(Unk_SmallObjectAllocatorRef kAlloc)
@@ -356,19 +356,19 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if ((HardwareInstancingService*)spInstancing != 0)
         {
-            m_spInstancingGroup->FUN_14118b9b0(spInstancing.operator->()->FUN_1413d7eb0(), bForce, 0);
-            m_spInstancingGrid->FUN_14118b820(spInstancing.operator->()->FUN_1413d7e30(), bForce, 0);
+            m_spInstancingGroup->FUN_14118b9b0(spInstancing.operator->()->GetInstancingCount(), bForce, 0);
+            m_spInstancingGrid->FUN_14118b820(spInstancing.operator->()->GetCellSize(), bForce, 0);
             m_spUseInstancing->FUN_14118bc70(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc7420(), bForce, 0);
         }
-        m_spEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85a0(), bForce, 0);
-        m_spInfiniteEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85c0(), bForce, 0);
+        m_spEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->GetEffectCount(), bForce, 0);
+        m_spInfiniteEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->GetLoopingEffectCount(), bForce, 0);
         m_spNpcCount->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bc1640(), bForce, 0);
         m_spVertices->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86a0(), bForce, 0);
         m_spTriangles->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86c0(), bForce, 0);
-        m_spBlockEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0ab0(), bForce, 0);
-        m_spGameObjectEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0af0(), bForce, 0);
-        m_spEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0b30(), bForce, 0);
-        m_spLoadedMap->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cfbe0(), bForce, 0);
+        m_spBlockEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->GetLoadedEntityCount(), bForce, 0);
+        m_spGameObjectEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->GetCreatedEntityCount(), bForce, 0);
+        m_spEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->GetEntityCount(), bForce, 0);
+        m_spLoadedMap->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->GetLoadedMapCount(), bForce, 0);
 
         // Number of objects held by the GFx movie of each UI layer.
         for (unsigned nLayer = 0; nLayer < 7; ++nLayer)
@@ -381,7 +381,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
                     Unk_VtmMovieStats* pStats = pMovie->m_spView->vfunc_49();       // MS2: slot 49
                     if (pStats != 0)
                     {
-                        m_spSortLabel[nLayer]->FUN_14118b9b0((unsigned)pStats->m_spObjects->FUN_14151e8c0(), bForce, 0);
+                        m_spSortLabel[nLayer]->FUN_14118b9b0((unsigned)pStats->m_spObjects->GetObjectCount(), bForce, 0);
                     }
                 }
             }
@@ -396,7 +396,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             {
                 NiPoint3 kPos = pTarget->vfunc_18();
                 m_spPos->FUN_14118bdc0(kPos, bForce);
-                efd::utf8string strAnim = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(pTarget->FUN_14123c460());
+                efd::utf8string strAnim = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->GetCurrentSequenceName(pTarget->GetEntityID());
                 m_spAnim->FUN_14118bee0(strAnim, bForce);
             }
             if (pMover != 0)
@@ -413,12 +413,12 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
 
     if (m_nPage == 2)
     {
-        unsigned nMb = ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB();
+        unsigned nMb = ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB();
         m_spPageFile->FUN_14118b9b0(nMb, bForce, 0);
-        nMb = ((class COptimizer*)FUN_1409f7c90())->GetPrivateUsageMB();
+        nMb = ((class COptimizer*)GetOptimizer())->GetPrivateUsageMB();
         m_spPrivateUsage->FUN_14118b9b0(nMb, bForce, 0);
         efd::MemManager::Get();
-        Unk_SmallObjectAllocator* pAlloc = FUN_14151e750();
+        Unk_SmallObjectAllocator* pAlloc = GetAllocator();
         if (pAlloc != 0)
         {
             unsigned nKb = (unsigned)(FUN_14151e7f0(Unk_SmallObjectAllocatorRef{ pAlloc }) / 0x400);
@@ -436,11 +436,11 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             m_spActorCount->FUN_14118b9b0(pAssets->GetActorCount(), bForce, 0);
             m_spKfmCacheCount->FUN_14118b9b0(pAssets->GetKFMCacheCount(), bForce, 0);
         }
-        m_spNifCount->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->FUN_14151e770(), bForce, 0);
-        m_spTextureCount->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->FUN_14151e790(), bForce, 0);
+        m_spNifCount->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->GetNifCacheCount(), bForce, 0);
+        m_spTextureCount->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->GetTextureCacheCount(), bForce, 0);
 
-        unsigned nGpuTotalMb = TSingleton<GPUManager>::GetInstance()->FUN_141375c90();
-        unsigned nGpuUsedMb = TSingleton<GPUManager>::GetInstance()->FUN_141375c80();
+        unsigned nGpuTotalMb = TSingleton<GPUManager>::GetInstance()->GetTotalMemory();
+        unsigned nGpuUsedMb = TSingleton<GPUManager>::GetInstance()->GetUsedMemory();
         int nGpuCore = FUN_14151e8f0(TSingleton<GPUManager>::GetInstance());
         int nGpuPercent = TSingleton<GPUManager>::GetInstance()->FUN_141375ca0();
         m_spGpuCore->FUN_14118b820(nGpuCore, true, "%");
@@ -460,11 +460,11 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
     {
         if (reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bcfbd0() != 0)
         {
-            Unk_PhysXSceneHandle* pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(0);
+            Unk_PhysXSceneHandle* pHandle = ((class CPhysXHelper*)GetPhysXHelper())->GetScene(0);
             if (pHandle != 0)
             {
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
-                NxScene* pScene = FUN_14151e890(pHandle);
+                ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
+                NxScene* pScene = GetScene(pHandle);
                 if (pScene != 0)
                 {
                     CString strMax;
@@ -492,13 +492,13 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
                     strMax.Format("/%d", kStats.maxStaticShapes);
                     m_spPx0StaticShapes->FUN_14118b9b0(kStats.numStaticShapes, bForce, (const char*)strMax);
                 }
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+                ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             }
-            pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(1);
+            pHandle = ((class CPhysXHelper*)GetPhysXHelper())->GetScene(1);
             if (pHandle != 0)
             {
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
-                NxScene* pScene = FUN_14151e890(pHandle);
+                ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
+                NxScene* pScene = GetScene(pHandle);
                 if (pScene != 0)
                 {
                     CString strMax;
@@ -525,25 +525,25 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
                     strMax.Format("/%d", kStats.maxStaticShapes);
                     m_spPx1StaticShapes->FUN_14118b9b0(kStats.numStaticShapes, bForce, (const char*)strMax);
                 }
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+                ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             }
         }
     }
 
     if (m_nPage == 4)
     {
-        m_spNifNotCache->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifNotCache, bForce, 0);
-        m_spNifForceKeep->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifForceKeep, bForce, 0);
-        m_spNifMySkill->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifMySkill, bForce, 0);
-        m_spNifOtherSkill->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifOtherSkill, bForce, 0);
-        m_spNifNpc->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifNpc, bForce, 0);
-        m_spNifDependTime->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nNifDependTime, bForce, 0);
-        m_spTexNotCache->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexNotCache, bForce, 0);
-        m_spTexForceKeep->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexForceKeep, bForce, 0);
-        m_spTexMySkill->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexMySkill, bForce, 0);
-        m_spTexOtherSkill->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexOtherSkill, bForce, 0);
-        m_spTexNpc->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexNpc, bForce, 0);
-        m_spTexDependTime->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->m_nTexDependTime, bForce, 0);
+        m_spNifNotCache->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifNotCache, bForce, 0);
+        m_spNifForceKeep->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifForceKeep, bForce, 0);
+        m_spNifMySkill->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifMySkill, bForce, 0);
+        m_spNifOtherSkill->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifOtherSkill, bForce, 0);
+        m_spNifNpc->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifNpc, bForce, 0);
+        m_spNifDependTime->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nNifDependTime, bForce, 0);
+        m_spTexNotCache->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexNotCache, bForce, 0);
+        m_spTexForceKeep->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexForceKeep, bForce, 0);
+        m_spTexMySkill->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexMySkill, bForce, 0);
+        m_spTexOtherSkill->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexOtherSkill, bForce, 0);
+        m_spTexNpc->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexNpc, bForce, 0);
+        m_spTexDependTime->FUN_14118b9b0(((struct Unk_VtmCaches*)GetNifLoadingService())->m_nTexDependTime, bForce, 0);
     }
 
     return VisualTrackerService::OnTick();
@@ -678,7 +678,7 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     m_spOsName = AddDebugString(m_idSystemPage, TSingleton<COSInfo>::GetInstance()->GetFullName(), 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     {
         char szText[128];
-        unsigned __int64 nVideoMem = ((class Unk_GoGpuMgr*)FUN_1409f7c90())->GetVideoMem();
+        unsigned __int64 nVideoMem = ((class Unk_GoGpuMgr*)GetOptimizer())->GetVideoMem();
         float fGB = (float)nVideoMem / 1024.0f;
         sprintf_s(szText, 128, "%.1fGB", (double)fGB);
         m_spMemory = AddDebugString(m_idSystemPage, szText, 670, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));

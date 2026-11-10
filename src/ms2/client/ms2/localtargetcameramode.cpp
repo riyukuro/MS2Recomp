@@ -148,7 +148,7 @@ void CLocalTargetCameraMode::vfunc_7()
 {
     if (m_1ec == 2)
     {
-        CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0();
+        CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->GetTargetMode();
         if (pMode)
             static_cast<CTargetCameraMode*>(pMode)->FUN_14183dfe0(m_c0, m_d8);
     }
@@ -225,9 +225,9 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 m_178 = 0;
                 (TSingleton<CameraMgr>::GetInstance())->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_108));
                 if (m_1ec == 0 || m_1ec == 2)
-                    (TSingleton<CameraMgr>::GetInstance())->FUN_140947980(2);
+                    (TSingleton<CameraMgr>::GetInstance())->SetPendingMode(2);
                 else
-                    (TSingleton<CameraMgr>::GetInstance())->FUN_140947980(m_1ec);
+                    (TSingleton<CameraMgr>::GetInstance())->SetPendingMode(m_1ec);
                 vfunc_11(m_108.m_setting.m_0);
             }
             else
@@ -325,7 +325,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
 void CLocalTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->SetTarget(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B);
 

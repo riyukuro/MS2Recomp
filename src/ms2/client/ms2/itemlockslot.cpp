@@ -41,7 +41,7 @@ class Unk_BreakRules* FUN_140535310();   // C3: was FUN_140535310
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -76,10 +76,10 @@ ItemLockSlot::ItemLockSlot(const CString& strName, int nIndex, MS2Ptr<CItem> spI
 // @0x140d41990
 int ItemLockSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
+    void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
             ((class CItemLockManager*)FUN_140535310())->FUN_140612e90(spItem);
     }
@@ -121,7 +121,7 @@ int ItemLockSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
         if (IsEnabled())
-            tip.FUN_1409db7b0(spItem);
+            tip.SetEnablePreview(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -145,9 +145,9 @@ int ItemLockSlot::vfunc_8(void* p)
 }
 
 // @0x140d41e00
-int ItemLockSlot::FUN_140d41e00(__int64 nItemUid)
+int ItemLockSlot::CanLockItem(__int64 nItemUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (!spItem)
         return 0;
     if (((CItem*)spItem)->CanBeItemLocked() == false)
@@ -219,6 +219,6 @@ MS2_REPLACE_METHOD(0x140D41A60, ItemLockSlot, vfunc_14, 102, 0xC7EE1CAB);
 MS2_REPLACE_METHOD(0x140D41AD0, ItemLockSlot, vfunc_15, 97, 0xC098DB9B);
 MS2_REPLACE_METHOD(0x140D41B40, ItemLockSlot, vfunc_25, 67, 0x047509C0);
 MS2_REPLACE_METHOD(0x140D41CF0, ItemLockSlot, vfunc_8, 255, 0xBDFF241E);
-MS2_REPLACE_METHOD(0x140D41E00, ItemLockSlot, FUN_140d41e00, 163, 0x6D64D169);
+MS2_REPLACE_METHOD(0x140D41E00, ItemLockSlot, CanLockItem, 163, 0x6D64D169);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca4df0-0x142ca4f10 .text$yd

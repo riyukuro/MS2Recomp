@@ -198,7 +198,7 @@ bool UIUGCCubeBillDialog::FUN_140ee8000(int nAnswer, const CMsgBoxData& data)
     if (nAnswer == 0)
     {
         __int64 nItemUid = data.FUN_141a02c20();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.get() != 0)
             FUN_140ee8610(spItem);
     }

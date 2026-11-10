@@ -33,13 +33,13 @@ public:
     int GetState() const;
     void SetState(int nState);                             // set state, collision group
     void FUN_141447c10();                                       // stop the cooldown
-    Vector3 FUN_141447c80() const;                      // +0xc4
+    Vector3 GetPosition() const;                      // +0xc4
     int FUN_141447cc0() const;                                  // +0xa8
-    Unk_Entity* FUN_141447ce0();
+    Unk_Entity* GetEntity();
     int IsNotFixed() const;                                 // not fixed
-    void FUN_141447d50(int nOn);
+    void SetHighlight(int nOn);
     void UpdateConditions();                                       // refresh availability
-    void FUN_141447ec0(bool bActive);                           // highlight on/off
+    void SetActive(bool bActive);                           // highlight on/off
     void FUN_141448050(bool bActive);
 
     int m_nState;                       // +0x18

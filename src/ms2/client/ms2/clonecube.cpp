@@ -141,14 +141,14 @@ bool CloneCube::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 
     m_spItemData = spData;
     m_spItem = spItem;
-    bool bChanged = strPath != FUN_14123bbd0();
+    bool bChanged = strPath != GetModelPath();
     if (bChanged)
     {
-        if (FUN_14123c410())
+        if (GetEntity())
         {
             if (m_spUgcMesh.get())
                 m_spUgcMesh->Clear();
-            FUN_14123bc20(strPath);
+            ChangeModel(strPath);
             m_bReloading = true;
             if (m_pListener)
                 m_pListener->vfunc_3(this);
@@ -156,13 +156,13 @@ bool CloneCube::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         else if (spData.get())
         {
             if (spData->install.preset.IsEmpty())
-                FUN_14123bb80(strPath);
+                SetModelPath(strPath);
             else
                 m_str88 = spData->install.preset;
         }
         else
         {
-            FUN_14123bb80(strPath);
+            SetModelPath(strPath);
         }
     }
     if (FUN_14123bea0() && !bChanged)
@@ -185,7 +185,7 @@ void CloneCube::FUN_1410852a0()
         return;
 
     ATL::CAtlArray<NiNode*> arr;
-    NiNode* pNode = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pNode = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pNode)
     {
         pNode->SetAppCulled(false);
@@ -219,7 +219,7 @@ void FUN_1410865e0(NiObjectNET* pObj, const NiFixedString& kKey, bool bValue);
 // @0x141085440
 void CloneCube::FUN_141085440()
 {
-    NiAVObject* pRoot = NiDynamicCast(NiAVObject, FUN_141b6efc0(FUN_14123c410()));
+    NiAVObject* pRoot = NiDynamicCast(NiAVObject, FUN_141b6efc0(GetEntity()));
     if (pRoot)
     {
         if (DAT_143ae2b34)
@@ -254,16 +254,16 @@ void CloneCube::FUN_1410855b0()
     if (m_spUgcMesh == 0)
         m_spUgcMesh.AssignRaw(new CItemUgcMeshContainer);
     if (m_spUgcMesh.get())
-        m_spUgcMesh->FUN_141426540(m_spItemData, NiAVObjectPtr(FUN_141b6efc0(FUN_14123c410())));
+        m_spUgcMesh->FUN_141426540(m_spItemData, NiAVObjectPtr(FUN_141b6efc0(GetEntity())));
 }
 MS2_REPLACE_METHOD(0x1410855B0, CloneCube, FUN_1410855b0, 329, 0xE3C47C83);
 
 // @0x141085700
-NiTexturePtr CloneCube::FUN_141085700()
+NiTexturePtr CloneCube::GetUgcTexture()
 {
     return m_spUgcMesh.get() ? m_spUgcMesh->FUN_141426d40() : NiTexturePtr(0);
 }
-MS2_REPLACE_METHOD(0x141085700, CloneCube, FUN_141085700, 284, 0x9CED1E0E);
+MS2_REPLACE_METHOD(0x141085700, CloneCube, GetUgcTexture, 284, 0x9CED1E0E);
 
 // @0x141085830
 MS2Ptr<CItemUgcMeshContainer> CloneCube::GetUgcMesh()

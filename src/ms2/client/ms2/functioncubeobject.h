@@ -235,7 +235,7 @@ public:
     void SetId(CString str);                              // 0x141226b80 set the id
     CString GetId();                                      // 0x141226bd0 the id
     void FUN_141226c20(bool bFlag);                               // 0x141226c20
-    int FUN_141226cd0();                                          // 0x141226cd0 item id
+    int GetItemId();                                          // 0x141226cd0 item id
     Vector3 GetPosition();                                     // 0x141226d00 position property
     // @0x140967140 (inline; COMDAT in actionkeyobject.cpp's range)
     unsigned char FUN_140967140() { return m_bAlt; }
@@ -244,8 +244,8 @@ public:
     MS2Ptr<CBoxCollision> UpdateAndGetBoxCollision();                        // 0x141226f90 refresh the box pose, return it
     void PlayHitSoundAtPosition(int nSound);                               // 0x141227100
     void FUN_1412271c0(int nState);                               // 0x1412271c0
-    int FUN_1412271f0();                                          // 0x1412271f0
-    int FUN_141227270();                                                   // 0x141227270
+    int HasModel();                                          // 0x1412271f0
+    int HasSkillUrl();                                                   // 0x141227270
     CObjectData::OpenWeb GetWebLinkInfo();                              // 0x1412272b0
     void FUN_141227310();                                         // 0x141227310
     void FUN_141227360();                                         // 0x141227360
@@ -253,7 +253,7 @@ public:
     void HideNotice();                                         // 0x141227780
     void FUN_1412277d0(unsigned char bOn);                                 // 0x1412277d0
     void OpenSubKindDialog();                                         // 0x1412278b0
-    void FUN_141227950();                                         // 0x141227950
+    void UpdateCameraEffect();                                         // 0x141227950
     void FUN_141227cd0();                                         // 0x141227cd0
     void FUN_141227dd0(int nSkip);                                // 0x141227dd0
     void OpenTriggerEditor();                                         // 0x141228060
@@ -263,8 +263,8 @@ public:
     void OpenHomeSummon();                                         // 0x141228340
 
     // exe members defined elsewhere
-    int FUN_140966fc0();                                          // cube kind of the data row
-    int FUN_1409674f0();                                          // exe member of another unit
+    int GetKind();                                          // cube kind of the data row
+    int GetSubKind();                                          // exe member of another unit
     int FUN_14112e110();                                          // item id
     int FUN_14122e6d0();                                          // 0x14122e6d0
     int FUN_14122e710();                                          // 0x14122e710
@@ -389,9 +389,9 @@ public:
 
     int FUN_14122bda0();                                          // 0x14122bda0 may the player use it
     int FUN_14122c340();                                          // 0x14122c340 is it the player's own
-    int FUN_14122c410();                                          // 0x14122c410 npc id of the level
+    int GetPetNpcId();                                          // 0x14122c410 npc id of the level
     void FUN_14122c460(int nMode);                                // 0x14122c460 success notice
-    void FUN_14122c7b0(int nError);                               // 0x14122c7b0 error notice
+    void ShowErrorNotice(int nError);                               // 0x14122c7b0 error notice
     efd::SmartPointer<CubeSpawnObject> GetValue();                           // 0x14122cab0 (copy of the pet pointer)
     __int64 FUN_14122cb00();                                      // 0x14122cb00
     unsigned short GetLevel();                               // 0x14122cb20
@@ -399,8 +399,8 @@ public:
     unsigned FUN_14122cb60();                                     // 0x14122cb60
     __int64 FUN_14122cb80();                                      // 0x14122cb80
     __int64 GetTime();                                      // 0x14122cba0
-    void FUN_14122cbc0(unsigned short nLevel, egf::EntityPtr ent);    // 0x14122cbc0 spawn the pet
-    void FUN_14122ce80(unsigned short nLevel);                    // 0x14122ce80 respawn on a level change
+    void SpawnPet(unsigned short nLevel, egf::EntityPtr ent);    // 0x14122cbc0 spawn the pet
+    void ChangePetLevel(unsigned short nLevel);                    // 0x14122ce80 respawn on a level change
     int FUN_14122d190();                                          // 0x14122d190 is the timer over
     int FUN_14122d200();                                          // 0x14122d200 action id
     void ShowNoticeOnce(const CStringW& str);                      // 0x14122d2a0 notice once
@@ -469,14 +469,14 @@ public:
     void FUN_14122f110(const egf::EntityChangeMessage* pMsg, efd::Category cat);    // entity removed (8254)
     void FUN_14122f240(const efd::IMessage* pMsg, efd::Category cat);
     void FUN_14122f270(CInPacket* pPacket);         // the cube packet dispatcher
-    void FUN_141230310(CInPacket* pPacket);
+    void ReadCubeState(CInPacket* pPacket);
     void AddPendingCube(unsigned nA, unsigned nB, int nKind);
     void TransferPendingState(CString strId, MS2Ptr<CFunctionCubeObject> spObject);
     MS2Ptr<CFunctionCubeObject> FindCube(CString strId);
     void AddCube(MS2Ptr<CFunctionCubeObject> spObject);
     void RemoveCube(CString strId);
     MS2Ptr<CFunctionCubeObject> FUN_141230f60(Vector3 pt, float fRange, __int64 nOwner);
-    MS2Ptr<CFunctionCubeObject> FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind);
+    MS2Ptr<CFunctionCubeObject> FindNearestCubeOfKind(Vector3 pt, float fRange, __int64 nOwner, int nKind);
     void FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut);
     void SetTagArea(MS2Ptr<Unk_FcArea> spArea, MS2Ptr<Unk_FcTag> spTag);
     void FUN_141231730();
@@ -486,8 +486,8 @@ public:
     void FUN_141232260();
     void FUN_141232330(int nItem, float fValue);
     int FUN_141232430(int nItem, __int64 nOwner);
-    void FUN_141232660(ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> >& aOut, __int64 nOwner);
-    void FUN_141232810(ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> >& aOut);
+    void CollectHomemadeCubes(ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> >& aOut, __int64 nOwner);
+    void CollectNurturingCubes(ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> >& aOut);
 
     efd::Category m_catGlobal;                                    // +0x28 the message service's unique category
     CubeMap m_mapCubes;                                           // +0x30 cube id -> object

@@ -9,7 +9,7 @@
 // MS2-PIN: ??0MS2EntityManagerService@@QEAA@XZ 0x1414b4a90 ; unique
 // MS2-PIN: ??1MS2EntityManagerService@@UEAA@XZ 0x1414b4ad0 ; unique
 // MS2-PIN: ?SendEntityUpdateNotification@MS2EntityManagerService@@UEAAXPEAVEntity@egf@@@Z 0x1414b5430 ; unique
-// MS2-PIN: ?FUN_1414b54f0@MS2EntityManagerService@@QEAA_NPEBVEntity@egf@@@Z 0x1414b54f0 ; unique
+// MS2-PIN: ?IsEntityDirty@MS2EntityManagerService@@QEAA_NPEBVEntity@egf@@@Z 0x1414b54f0 ; unique
 // MS2-PIN: ??$_Kfn@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Umap_traits@VEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@V?$_Uhash_compare@VEntityID@egf@@UEntityIDHashFunctor@2@U?$equal_to@VEntityID@egf@@@std@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@SAAEBVEntityID@egf@@AEBU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@1@@Z 0x1414b71d0 ; unique
 // MS2-PIN: ??$addressof@$$CBU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@YAPEBU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@0@AEBU10@@Z 0x1414b73e0 ; unique
 // MS2-PIN: ??$addressof@$$CBV?$_List_val@U?$_List_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@YAPEBV?$_List_val@U?$_List_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@0@AEBV10@@Z 0x1414b73f0 ; unique
@@ -96,7 +96,7 @@
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1414b8750
 // 0x1414b7830 is efd::map<EntityID, PendingEntityCreationData>::try_emplace (operator[] 0x1414b87d0 -> it -> _Try_emplace
 // 0x1414b7280), not set<unsigned>::equal_range (that one is 0x1413f7760, hardwareinstancingservice.cpp's range, under
-// egf::Entity::IsDirty 0x1413ec7a0). Both pair through CreateEntity's m_entityIdToPendingDataMap[id] (FUN_1414b4b00).
+// egf::Entity::IsDirty 0x1413ec7a0). Both pair through CreateEntity's m_entityIdToPendingDataMap[id] (CreateEntity).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2entitymanagerservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2entitymanagerservice.h"
@@ -144,7 +144,7 @@ MS2EntityManagerService::MS2EntityManagerService() {}
 MS2EntityManagerService::~MS2EntityManagerService() {}
 MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
 // @0x1414b4b00
- egf::EntityID MS2EntityManagerService::FUN_1414b4b00(const efd::utf8string& model,efd::AssetID& asset,bool addToWorld) {
+ egf::EntityID MS2EntityManagerService::CreateEntity(const efd::utf8string& model,efd::AssetID& asset,bool addToWorld) {
     const efd::Category& callback=g_entityCallback;
     efd::ParameterList* creationArgs=0;
     efd::ParameterList* initialProps=0;
@@ -165,7 +165,7 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         FUN_140de8bd0(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
         efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if(instancing)instancing->FUN_1413d7d10(id);
-        if(addToWorld)TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf5a0(id,entity);
+        if(addToWorld)TSingleton<EntityWorldManager>::GetInstance()->AddLoadedEntity(id,entity);
         AddEntity(entity,creationArgs);
         return id;
     }
@@ -188,7 +188,7 @@ void MS2EntityManagerService::SendEntityUpdateNotification(egf::Entity* entity) 
 }
 MS2_REPLACE_METHOD(0x1414B5430,MS2EntityManagerService,SendEntityUpdateNotification,177,0xF175D17E);
 // @0x1414b54f0
-bool MS2EntityManagerService::FUN_1414b54f0(const egf::Entity* source) {
+bool MS2EntityManagerService::IsEntityDirty(const egf::Entity* source) {
     egf::EntityPtr entity(0);
     return m_entityDirtyMap.find(source->GetEntityID(),entity);
 }

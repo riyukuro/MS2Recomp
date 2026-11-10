@@ -80,12 +80,20 @@ public:
     virtual int vfunc_2();
 };
 
+// The child clip lookup is uicashattenddialog's Unk_CadNode::FUN_140bc7400<Unk_CadCheck> (0x140bc7450): the exe folds the
+// movie clip instantiations into that one body. Its result is MS2Ptr<Unk_CadCheck>; this view of it is MS2Ptr<ASMovieClip>
+// for every member, and its dtor is the same body (0x1409b4a90, folded with MS2Ptr<ASMovieClip>'s).
+class Unk_CadCheck;
+template<> class MS2Ptr<Unk_CadCheck> : public MS2Ptr<ASMovieClip> { public: ~MS2Ptr(); };
+class Unk_CadNode : public ASDisplayObjectContainer { public:
+    template<class T> MS2Ptr<T> FUN_140bc7400(const CString& strName);
+};
+
 // The child lookups every AS container wrapper has (the six deep searches are the 0x2c1-byte instances, one per child
 // class). +0x18 the movie id, +0x20 the root value (AScript).
 class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
-    MS2Ptr<ASMovieClip> FUN_140bc7450(const CString& strName);                      // child clip by name (another unit)
     MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);                    // child button
     MS2Ptr<ASCheckBox> FUN_140d01ce0(const CString& strName);                      // child check box
     MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
@@ -117,7 +125,7 @@ MS2_CHECK_SIZE(ASDisplayObjectContainer, 0x80);
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acc910 (T = ASButton)
-MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASCheckBox> CreateCheckBox(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASLabel> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
 
@@ -197,7 +205,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisi
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->vfunc_3(nVisible);
@@ -209,7 +217,7 @@ void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->FUN_1422c1fe0(n);
@@ -221,7 +229,7 @@ void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString s
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->vfunc_13(strLabel);
@@ -233,7 +241,7 @@ void FUN_140cffb90(const Scaleform::GFx::Value& root, CString strName, int nFram
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->vfunc_12(nFrame);
@@ -245,7 +253,7 @@ void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString s
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->vfunc_15(strLabel);
@@ -257,7 +265,7 @@ void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nFram
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip.operator->()->vfunc_14(nFrame);
@@ -271,7 +279,7 @@ void FUN_140cffef0(const Scaleform::GFx::Value& root, CString strName, CString s
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     FUN_140d00050(&(*spClip).FUN_1422bb890(), CString(strLabel));
@@ -312,11 +320,11 @@ void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     ASSlot slot(2);
-    if (slot.FUN_1409c4510(a, b, c) != 0)
+    if (slot.SetItemById(a, b, c) != 0)
         spClip->Invoke("setSlotData", ASSlot(slot));
 }
 
@@ -326,7 +334,7 @@ void FUN_140d004f0(const Scaleform::GFx::Value& root, CString strName, ASSlot* p
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     spClip->Invoke("setSlotData", ASSlot(*pSlot));
@@ -399,7 +407,7 @@ void FUN_140d00b80(const Scaleform::GFx::Value& root, CString strName, int n)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->SetWidthInt(n);
@@ -411,7 +419,7 @@ void FUN_140d00c80(const Scaleform::GFx::Value& root, CString strName, int n)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->SetHeightInt(n);
@@ -423,7 +431,7 @@ int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return 0;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return 0;
     return spClip.operator->()->FUN_1422c1340();
@@ -538,7 +546,7 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovi
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     FUN_140d013b0((*spClip).FUN_1422bb890(), nMovieId);
@@ -561,7 +569,7 @@ void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDis
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spClip = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
     FUN_140d01780((*spClip).FUN_1422bb890(), bDisable);
@@ -678,7 +686,7 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
 // @0x140d01e70
 MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, ASButton, Unk_ASCreate<ASButton>)
 // @0x140d02140
-MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, FUN_140a57df0)
+MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, CreateCheckBox)
 // @0x140d02410
 MS2_FINDER_DEEP(140d02410, FUN_140d02410, ASDisplayObject, FUN_140d01be0)
 // @0x140d026e0

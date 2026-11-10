@@ -52,11 +52,11 @@ public:
 };
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
-MS2Ptr<ASRadioButton> FUN_140a463d0(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
+MS2Ptr<ASRadioButton> CreateRadioButton(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
 template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                            // wrap in a color tag
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
@@ -96,7 +96,7 @@ template <> MS2Ptr<ASRadioButton> AScript::FUN_140e159f0<ASRadioButton>(const CS
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
-        return FUN_140a463d0(m_nMovieId, v);
+        return CreateRadioButton(m_nMovieId, v);
     return MS2Ptr<ASRadioButton>(0);
 }
 // @0x140e28c80
@@ -190,9 +190,9 @@ void UIDungeonSearchSelectDialog::InitSelection(int nPage, std::set<unsigned>& r
 void UIDungeonSearchSelectDialog::InitTitleAndRadio()
 {
     if (m_nPage == 1)
-        FUN_140cfee80(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_normal");
+        SetChildText(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_normal");
     else
-        FUN_140cfee80(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_raid");
+        SetChildText(FUN_1422dbb40(), "m_title", L"$s_dungeonSearchSelect_title_raid");
     m_radio->FUN_1422ce090(m_bAll);
     UpdateListCount();
 }

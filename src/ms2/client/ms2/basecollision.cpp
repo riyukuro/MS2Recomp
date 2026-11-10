@@ -73,7 +73,7 @@ struct Unk_UtilFloat3;
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
 NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
 float FUN_14059d930(float f);                                       // fabsf
-float FUN_140966ea0(Vector3 kA, Vector3 kB);   // C3: the definer's signature (0x140966ea0), planar distance
+float GetPlanarDistance(Vector3 kA, Vector3 kB);   // C3: the definer's signature (0x140966ea0), planar distance
 
 static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFlags, unsigned int nNpcKinds);
 static void ShuffleTargets(ATL::CAtlArray<efd::SmartPointer<GameObject> >& arr);
@@ -186,7 +186,7 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
 }
 
 // @0x1409fc390
-void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot)
+void CBaseCollision::DetectWithEulerRotation(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot)
 {
     reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_3(spCtx->m_kPos, kRot, 1.0f);
     NiPoint3 kDir;
@@ -199,7 +199,7 @@ void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3&
 }
 
 // @0x1409fc540
-void CBaseCollision::FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot)
+void CBaseCollision::DetectWithMatrixRotation(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot)
 {
     reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_2(spCtx->m_kPos, kRot, 1.0f);
     kRot.GetCol(0, spCtx->m_kDir);
@@ -234,12 +234,12 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             continue;
         if (spCtx->m_pExclude != NULL)
         {
-            if (spCtx->m_pExclude->Lookup(pObj->FUN_14123c580()) != NULL)
+            if (spCtx->m_pExclude->Lookup(pObj->GetObjectId()) != NULL)
                 continue;
         }
         if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
         {
-            if (pObj->FUN_14123c580() == spCtx->m_pOwner->FUN_14123c580())
+            if (pObj->GetObjectId() == spCtx->m_pOwner->GetObjectId())
             {
                 if (spCtx->m_bRideToRider != 0)
                 {
@@ -287,7 +287,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             }
             if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
             {
-                if (pObj->FUN_14123c580() == spCtx->m_pOwner->FUN_14123c580())
+                if (pObj->GetObjectId() == spCtx->m_pOwner->GetObjectId())
                 {
                     if (spCtx->m_bRideToRider != 0)
                     {
@@ -301,14 +301,14 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 }
             }
             spCtx->m_arrTargets.Add(pObj);
-            kMetrics.SetAt(pObj->FUN_14123c580(), kHit.m_kMetric);
+            kMetrics.SetAt(pObj->GetObjectId(), kHit.m_kMetric);
             if (bFacing)
             {
                 efd::Point3 kTo = pObj->vfunc_18() - spCtx->m_kPos;
                 kTo.z = 0.0f;
                 kTo.Unitize();
                 float fDot = spCtx->m_kDir.Dot(kTo);
-                kFacing.SetAt(pObj->FUN_14123c580(), fDot);
+                kFacing.SetAt(pObj->GetObjectId(), fDot);
             }
         }
     }
@@ -330,7 +330,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             {
                 if (bFromOwner != 0)
                 {
-                    if (!pTarget->FUN_1416749a0()->HasEnabledWithIdAndCaster(nBuff, spCtx->m_pOwner->FUN_14123c580()))
+                    if (!pTarget->FUN_1416749a0()->HasEnabledWithIdAndCaster(nBuff, spCtx->m_pOwner->GetObjectId()))
                         continue;
                 }
                 else if (!pTarget->FUN_1416749a0()->HasEnabledWithId(nBuff))
@@ -347,7 +347,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 }
                 if (bSameGuild != 0)
                 {
-                    if (reinterpret_cast<PC*>(pOwnerPC)->FUN_141656be0().IsEmpty() || reinterpret_cast<PC*>(pOwnerPC)->FUN_141656be0() != reinterpret_cast<PC*>(pTargetPC)->FUN_141656be0())
+                    if (reinterpret_cast<PC*>(pOwnerPC)->GetGuildName().IsEmpty() || reinterpret_cast<PC*>(pOwnerPC)->GetGuildName() != reinterpret_cast<PC*>(pTargetPC)->GetGuildName())
                         continue;
                 }
             }
@@ -434,12 +434,12 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 {
                     NiPoint3 kA;
                     NiPoint3 kB;
-                    kMetrics.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), kA);
-                    kMetrics.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), kB);
+                    kMetrics.Lookup(spCtx->m_arrTargets[i]->GetObjectId(), kA);
+                    kMetrics.Lookup(spCtx->m_arrTargets[j]->GetObjectId(), kB);
                     float fA = 0.0f;
                     float fB = 0.0f;
-                    kFacing.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), fA);
-                    kFacing.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), fB);
+                    kFacing.Lookup(spCtx->m_arrTargets[i]->GetObjectId(), fA);
+                    kFacing.Lookup(spCtx->m_arrTargets[j]->GetObjectId(), fB);
                     if (spCtx->m_nSortMode == 2)
                     {
                         if (kA.x < kB.x)
@@ -601,7 +601,7 @@ int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 
             bHit = fLimit > fDistSq;
         }
         if (bHit)
-            pHit->m_kMetric.z = FUN_140966ea0(*(const Vector3*)&pRing->m_ptCenter,
+            pHit->m_kMetric.z = GetPlanarDistance(*(const Vector3*)&pRing->m_ptCenter,
                                               FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&pTargetBox->m_kBox.center)));
     }
     else if (pShape->m_nShape == 3 && pBox->m_nShape == 1)
@@ -796,7 +796,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
         return 0;
     if ((nFlags & 4) == 0)
     {
-        if (pOther->FUN_1416749a0()->FUN_140970990() != 0)
+        if (pOther->FUN_1416749a0()->IsHidden() != 0)
             return 0;
         if (pOther->FUN_14166cb00(6) == true)
             return 0;
@@ -815,7 +815,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
     {
         return 0;
     }
-    if (pActorPC != NULL && pOtherPC != NULL && (reinterpret_cast<PC*>(pActorPC)->FUN_14165ef30() ^ reinterpret_cast<PC*>(pOtherPC)->FUN_14165ef30()) != 0)
+    if (pActorPC != NULL && pOtherPC != NULL && (reinterpret_cast<PC*>(pActorPC)->HasPvPPoint() ^ reinterpret_cast<PC*>(pOtherPC)->HasPvPPoint()) != 0)
         return 0;
     if (nNpcKinds != 0)
     {

@@ -168,7 +168,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 
 class COptimizer { public: int FUN_1409f7ea0(); void AddSuppressor(egf::EntityID kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
 class Unk_AvModeSvc;   // C3: the getter's stand-in pointee; FUN_1409f7ea0 is COptimizer's
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class CEmotionTable { public: void LoadTextures(unsigned int nId, CString strDir); };   // preload the npc's effects
 class CEmotionManager { public: CEmotionTable* GetNpcTable(); };
 class CLua { public: float CalcNpcAsiR(long long a, float b); };
@@ -268,7 +268,7 @@ public:
     efd::SmartPointer<NiAVObject> Load(CString strPath, bool bFlag, int nClass, int nMyRefs, int nOtherRefs);
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 // Depth-first walker over a scene graph (util.cpp).
 class Unk_NodeQueue
 {
@@ -316,7 +316,7 @@ extern int DAT_143abdc30;                                           // the npc i
 
 class WorldService;
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 class Unk_UisSceneMgr;
@@ -373,7 +373,7 @@ float FUN_14109ace0()
 class CCameraMode { public: virtual ~CCameraMode(); };
 class CTargetCameraMode : public CCameraMode {};
 class CBossTargetCamera : public CTargetCameraMode { public: void FUN_140a38550(int nObjectId); };
-class CameraMgr { public: int FUN_140af7e30(); CCameraMode* FUN_140af2520(); };   // (inline getters)
+class CameraMgr { public: int GetModeType(); CCameraMode* GetMode(); };   // (inline getters)
 class GameObjectController { public: void FUN_14123fd30(unsigned int nFlags); public:
     void FUN_14123fbf0(unsigned short);   // C3: was free FUN_14123fbf0
 };
@@ -526,15 +526,15 @@ int CNpc::vfunc_10()
     if (PCBase::vfunc_10() == 0)
         return 0;
     if (FUN_141092ff0()) {
-        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0x12) {
-            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+        if (TSingleton<CameraMgr>::GetInstance()->GetModeType() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (pCamera != NULL)
-                pCamera->FUN_140a38550(FUN_14123c580());
+                pCamera->FUN_140a38550(GetObjectId());
         }
-        WorldService::GetInstance()->AddCombatBgmTracker(FUN_14123c460());
-        ((class COptimizer*)FUN_1409f7c90())->AddSuppressor(FUN_14123c460());
+        WorldService::GetInstance()->AddCombatBgmTracker(GetEntityID());
+        ((class COptimizer*)GetOptimizer())->AddSuppressor(GetEntityID());
         if ((m_spNpcData->m_nClass == 3 || m_spNpcData->m_nClass == 4) && vfunc_116() == 0)
-            ((class COptimizer*)FUN_1409f7c90())->FUN_14109ac50(0);
+            ((class COptimizer*)GetOptimizer())->FUN_14109ac50(0);
     }
     m_strED0 = m_spNpcData->m_dead.GetRandomDefaultAction();
     reinterpret_cast<GameObjectController*>(m_unk_150)->FUN_14123fd30(0x38d);
@@ -545,16 +545,16 @@ int CNpc::vfunc_10()
         if (!m_spNpcData->m_strKeepEffect.IsEmpty()) {
             NoticeMessage kQuery;
             kQuery.m_strName = m_spNpcData->m_strKeepEffect;
-            kQuery.SetActor(FUN_14123c580());
+            kQuery.SetActor(GetObjectId());
             kQuery.m_nObject = m_spNpcData->IsBoss() ? 6 : 5;
             m_nE54 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
         }
         if (!m_spNpcData->m_strCreateEffect.IsEmpty()) {
             NoticeMessage kQuery;
             kQuery.m_strName = m_spNpcData->m_strCreateEffect;
-            kQuery.SetActor(FUN_14123c580());
+            kQuery.SetActor(GetObjectId());
             kQuery.m_nObject = m_spNpcData->IsBoss() ? 6 : 5;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(kQuery));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(kQuery));
         }
         FUN_1410947e0();
     }
@@ -610,8 +610,8 @@ void CNpc::vfunc_12()
 void CNpc::vfunc_14()
 {
     if (FUN_141092ff0() != 0) {
-        WorldService::GetInstance()->FUN_141bc7f10(FUN_14123c460());
-        ((class COptimizer*)FUN_1409f7c90())->RemoveSuppressor(FUN_14123c460());
+        WorldService::GetInstance()->FUN_141bc7f10(GetEntityID());
+        ((class COptimizer*)GetOptimizer())->RemoveSuppressor(GetEntityID());
     }
     FUN_1410979a0();
     FUN_141099ab0();
@@ -693,7 +693,7 @@ unsigned short CNpc::vfunc_79()
 // @0x14108fe90
 MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (m_spA58 == 0) {
         bool bHpBar = GetNpcData()->m_bHpBar;
@@ -710,7 +710,7 @@ MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
 // @0x141090030
 MS2Ptr<Unk_PCBaseComp_a78> CNpc::vfunc_82()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a78>(0);
     if (m_spA78.get() != 0)
         return m_spA78;
@@ -738,7 +738,7 @@ MS2Ptr<Unk_PCBaseComp_a98> CNpc::vfunc_84()
 // @0x1410903b0
 MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a88>(0);
     if (m_spA88.IsNull() && vfunc_116() > 0)
         m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
@@ -749,7 +749,7 @@ MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
 // @0x1410904c0
 MS2Ptr<Unk_PCBaseComp_aa8> CNpc::vfunc_85()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == 0)
         m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
@@ -903,7 +903,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     } else if ((short)m_nDE8 == -3) {
         strAnim = "Jump_B";
     } else {
-        efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460());
+        efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(GetEntityID());
         if (spManager) {
             NiSequenceData* pSeq = spManager->GetSequenceData((short)m_nDE8);
             if (pSeq != NULL)
@@ -957,7 +957,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         }
     }
     FUN_141094ff0(nOwnerActor);
-    FUN_14166ce70(bEmotion);
+    SetEmotion(bEmotion);
     if (!reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving() && m_pD60 == NULL) {
         if (GetCurStateId() == 0xd)
             ptPos.z = static_cast<const efd::Point3&>(vfunc_18()).z;
@@ -1140,7 +1140,7 @@ MS2Ptr<NpcDataCli> CNpc::GetNpcData()
 // @0x1410932c0
 void CNpc::FUN_1410932c0(bool b)
 {
-    NiAVObject* pObj = FUN_141b6efc0(FUN_14123c410());
+    NiAVObject* pObj = FUN_141b6efc0(GetEntity());
     if (pObj != NULL)
         FUN_141567330(pObj, b);
 }
@@ -1276,7 +1276,7 @@ void CNpc::FUN_141093c80()
     if (vfunc_116() == 0) return;
     if ((unsigned char)m_cE40 == 0) return;
     m_questState.Reset();
-    ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->FUN_1416d12d0(FUN_141092fa0(), &m_questState, 0);
+    ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->GetNpcQuestState(FUN_141092fa0(), &m_questState, 0);
     if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
         auto pBalloon = vfunc_83().get();
         if (pBalloon != 0)
@@ -1310,7 +1310,7 @@ void CNpc::FUN_141093eb0()
 void CNpc::FUN_141093fa0()
 {
     if (m_spNpcData.get() != 0)
-        ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4f40(m_spNpcData->m_strSoundStart, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
+        ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->PlayVoiceAt(m_spNpcData->m_strSoundStart, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
 }
 
 // @0x141094050
@@ -1319,7 +1319,7 @@ void CNpc::FUN_141094050()
     if (MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85())
         spBalloon->vfunc_3();
     if (m_spNpcData.get() != 0)
-        ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4f40(m_spNpcData->m_strSoundEnd, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
+        ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->PlayVoiceAt(m_spNpcData->m_strSoundEnd, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
 }
 
 // The ui an npc type opens on talk (0: none).
@@ -1403,7 +1403,7 @@ void FUN_1410943b0(PCBase* pActor, int n)
                     static_cast<CNpc*>(pActor)->ShowChatBalloon(strText);
                 }
                 if (static_cast<const Unk_ScriptContents&>(spScript->m_contents)[0]->m_strSound.GetLength() > 0)
-                    ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4f40(spScript->m_contents[0]->m_strSound, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(static_cast<CNpc*>(pActor)->vfunc_18()));
+                    ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->PlayVoiceAt(spScript->m_contents[0]->m_strSound, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(static_cast<CNpc*>(pActor)->vfunc_18()));
             }
         }
     }
@@ -1439,7 +1439,7 @@ int CNpc::vfunc_69()
 void CNpc::SendInteractNpc()
 {
     COutPacket packet(static_cast<int>(SendOp::InteractNpc), 0);
-    packet.WriteInt32(FUN_14123c580());
+    packet.WriteInt32(GetObjectId());
     FUN_140710590(packet);
 }
 
@@ -1469,7 +1469,7 @@ void CNpc::FUN_1410947e0()
         return;
     CString strNif = CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)1);
     strNif += ".nif";
-    m_spC40 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(FUN_140cc2ba0("Item", strNif), false, 5, 0, 0);
+    m_spC40 = ((class CNifLoadingService*)GetNifLoadingService())->Load(FUN_140cc2ba0("Item", strNif), false, 5, 0, 0);
     efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150("Eff_UI");
     {
         Unk_SceneWalker kWalker((NiAVObject*)(m_spC40));
@@ -1491,7 +1491,7 @@ void CNpc::FUN_1410947e0()
                 CString strIcon = spItem->GetIconPath();
                 FUN_1401d3700(strIcon);
                 if (!strIcon.IsEmpty())
-                    pMap->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(strIcon), 5));
+                    pMap->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(strIcon), 5));
             }
         }
         m_spC40->UpdateEffects();
@@ -1586,7 +1586,7 @@ void CNpc::FUN_141095050()
     NoticeMessage kQuery;
     kQuery.m_strName = m_strEC8;
     kQuery.m_nObject = 6;
-    kQuery.SetActor(pActor->FUN_14123c580());
+    kQuery.SetActor(pActor->GetObjectId());
     kQuery.m_bFlag31 = true;
     m_nEC4 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
 }
@@ -1609,7 +1609,7 @@ void CNpc::FUN_141095190(const CString& strKfm)
 void CNpc::FUN_1410951d0(const CString& strKfm)
 {
     FUN_141095190(strKfm);
-    FUN_14123bc20("urn:gamebryo-animation:" + m_strED8);
+    ChangeModel("urn:gamebryo-animation:" + m_strED8);
 }
 
 // @0x141095240
@@ -1737,7 +1737,7 @@ void CNpc::MakeDeadPhysXActor()
     }
     fBack = fBack + fPushBack;
     fUp = fUp + fPushUp;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == NULL)
         return;
     FUN_1410979a0();
@@ -1767,17 +1767,17 @@ void CNpc::MakeDeadPhysXActor()
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
     kActorDesc.globalPose.t.z = kActorDesc.globalPose.t.z + kBoxDesc.dimensions.z + 0.05f;
     kActorDesc.globalPose.M.rotZ((vfunc_20().z * 3.1415927f) / 180.0f);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pD60 = pScene->createActor(kActorDesc);
     if (m_pD60 != NULL)
         m_pD60->setName("CNpc::MakeDeadPhysXActor");
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
     FUN_141097b40(6);
     CString strAnim = m_spNpcData->m_dead.GetRandomDefaultAction();
     if (0.0f < fPushUp) {
         CString strUp = m_spNpcData->m_dead.GetRandomUpAction();
         if (!strUp.IsEmpty()) {
-            efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460());
+            efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(GetEntityID());
             if (spManager) {
                 if (spManager->FindSequenceID((const char*)strUp) != NiActorManager::INVALID_SEQUENCE_ID)
                     strAnim = strUp;
@@ -1792,11 +1792,11 @@ void CNpc::MakeDeadPhysXActor()
 void CNpc::FUN_1410979a0()
 {
     if (m_pD60 != NULL) {
-        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
         if (pScene != NULL) {
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+            ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
             pScene->releaseActor(*m_pD60);
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+            ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             m_pD60 = NULL;
         }
     }
@@ -1823,7 +1823,7 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
         return;
     if (m_pD60 == NULL)
         return;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     unsigned int nShapes = m_pD60->getNbShapes();
     NxShape* const* ppShapes = m_pD60->getShapes();
     for (unsigned int i = 0; i < nShapes; i++)
@@ -1831,7 +1831,7 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
         NxShape* pShape = ppShapes[i];
         pShape->setGroup(nGroup);
     }
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // A hit: the hit numbers, buff triggers, the boss camera, the hit effect / colour / shake / sound, the knockback record
@@ -1839,7 +1839,7 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
 // @0x141097c40
 void CNpc::vfunc_33(void* a, efd::Point3 kHit)
 {
-    float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     GameObject::vfunc_33(a, kHit);
     FUN_141671c20(MS2Ptr<CDamageRecord>(static_cast<CDamageRecord*>(a)));
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
@@ -1847,12 +1847,12 @@ void CNpc::vfunc_33(void* a, efd::Point3 kHit)
     bool bBoss = GetNpcData()->IsBoss();
     SkillAttackData* pAttack = static_cast<CDamageRecord*>(a)->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
-        reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fb20(1);
+        reinterpret_cast<AdditionalCliList&>(m_unk_748).PlayInvokeEffectsByEvent(1);
     if (bBoss && nOwnerRel == 1) {
-        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0x12) {
-            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+        if (TSingleton<CameraMgr>::GetInstance()->GetModeType() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (pCamera != NULL)
-                pCamera->FUN_140a38550(FUN_14123c580());
+                pCamera->FUN_140a38550(GetObjectId());
         }
     }
     if (static_cast<CDamageRecord*>(a)->GetTotalDamage() < 0) {
@@ -1868,14 +1868,14 @@ void CNpc::vfunc_33(void* a, efd::Point3 kHit)
             if (0.0f < m_spNpcData->m_fDamagedVibrateDuration && 0.0f < fAmp)
                 m_vibrate.FUN_14108e2a0(fNow, fNow + m_spNpcData->m_fDamagedVibrateDuration, fAmp);
             if (bBoss)
-                reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e240(FUN_14123c580());
+                reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e240(GetObjectId());
         }
         m_spSkillRow = static_cast<CDamageRecord*>(a)->m_spLevel;
         m_nD80 = static_cast<CDamageRecord*>(a)->GetAttackData()->m_nDirection;
-        if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->FUN_14123c580()) {
+        if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->GetObjectId()) {
             Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
             float fVolume = pVolume->Read();
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
+            TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
                 m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         }
     }
@@ -1893,11 +1893,11 @@ void CNpc::vfunc_33(void* a, efd::Point3 kHit)
         vfunc_125(1);
         if (nOwnerRel == 1) {
             if (bBoss)
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
+                TSingleton<CEffectService>::GetInstance()->PlayEventVoice(2, pPlayer);
         } else if (pPlayer != NULL && bBoss && pPlayer->IsDead() == 0) {
             if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
-                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
-                    TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(GetObjectId()) != 0)
+                    TSingleton<CEffectService>::GetInstance()->PlayEventVoice(1, pPlayer);
             }
         }
     }
@@ -1910,27 +1910,27 @@ void CNpc::vfunc_33(void* a, efd::Point3 kHit)
 void CNpc::vfunc_34(void* p)
 {
     GameObject::vfunc_34(p);
-    FUN_141672020(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
-    reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fb20(0);
+    OnDotDamageRecord(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
+    reinterpret_cast<AdditionalCliList&>(m_unk_748).PlayInvokeEffectsByEvent(0);
     int nOwnerRel = WorldService::GetInstance()->FUN_141bd19d0(static_cast<CDotDamageRecord*>(p)->m_nOwnerId);
     bool bBoss = GetNpcData()->IsBoss();
     if (bBoss && nOwnerRel == 1) {
-        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0x12) {
-            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+        if (TSingleton<CameraMgr>::GetInstance()->GetModeType() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (pCamera != NULL)
-                pCamera->FUN_140a38550(FUN_14123c580());
+                pCamera->FUN_140a38550(GetObjectId());
         }
     }
     do {
         MS2Ptr<AdditionalCli> spBuff = reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fc80(static_cast<CDotDamageRecord*>(p)->m_nEffectLevel);
         if (spBuff.IsNull())
             break;
-        int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
+        int nMaterial = spBuff->GetLevelData()->m_dotDamage.m_nSoundMaterial;
         if (nMaterial == 0)
             break;
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
+        TSingleton<CEffectService>::GetInstance()->PlayHitSound(nMaterial, m_spNpcData->m_nDefenceMaterial,
             nOwnerRel, vfunc_18(), fVolume);
     } while (0);
     if (IsDead() == 0 && FUN_141670a00(4) == 0) {
@@ -1938,11 +1938,11 @@ void CNpc::vfunc_34(void* p)
         PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (nOwnerRel == 1) {
             if (pPlayer != NULL && GetNpcData()->IsBoss())
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
+                TSingleton<CEffectService>::GetInstance()->PlayEventVoice(2, pPlayer);
         } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->IsDead() == 0) {
             if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
-                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
-                    TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(GetObjectId()) != 0)
+                    TSingleton<CEffectService>::GetInstance()->PlayEventVoice(1, pPlayer);
             }
         }
     }
@@ -1960,17 +1960,17 @@ void CNpc::vfunc_35(void* p)
     if (m_spNpcData.get() != 0 && m_spNpcData->HasPropertyTag(0x1d))
         FUN_141671c20(MS2Ptr<CDamageRecord>(static_cast<CSplashDamageRecord*>(p)));
     else
-        FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(static_cast<CSplashDamageRecord*>(p)));
+        OnSplashDamageRecord(MS2Ptr<CSplashDamageRecord>(static_cast<CSplashDamageRecord*>(p)));
     int nOwnerRel = WorldService::GetInstance()->FUN_141bd19d0(static_cast<CSplashDamageRecord*>(p)->m_nOwnerId);
     SkillAttackData* pAttack = static_cast<CSplashDamageRecord*>(p)->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
-        reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fb20(1);
+        reinterpret_cast<AdditionalCliList&>(m_unk_748).PlayInvokeEffectsByEvent(1);
     bool bBoss = GetNpcData()->IsBoss();
     if (bBoss && nOwnerRel == 1) {
-        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0x12) {
-            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+        if (TSingleton<CameraMgr>::GetInstance()->GetModeType() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (pCamera != NULL)
-                pCamera->FUN_140a38550(FUN_14123c580());
+                pCamera->FUN_140a38550(GetObjectId());
         }
     }
     if (static_cast<CSplashDamageRecord*>(p)->GetTotalDamage() < 0) {
@@ -1978,7 +1978,7 @@ void CNpc::vfunc_35(void* p)
         FUN_14166ccb0()->vfunc_6();
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
+        TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
             m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         m_spSkillRow = static_cast<CSplashDamageRecord*>(p)->m_spLevel;
         m_nD80 = static_cast<CSplashDamageRecord*>(p)->GetAttackData()->m_nDirection;
@@ -1989,11 +1989,11 @@ void CNpc::vfunc_35(void* p)
         PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (nOwnerRel == 1) {
             if (pPlayer != NULL && GetNpcData()->IsBoss())
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
+                TSingleton<CEffectService>::GetInstance()->PlayEventVoice(2, pPlayer);
         } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->IsDead() == 0) {
             if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
-                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
-                    TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(GetObjectId()) != 0)
+                    TSingleton<CEffectService>::GetInstance()->PlayEventVoice(1, pPlayer);
             }
         }
     }
@@ -2014,8 +2014,8 @@ void CNpc::FUN_141098fb0(int nKind)
         NoticeMessage kQuery;
         kQuery.m_strName = strEffect;
         kQuery.m_nObject = GetNpcData()->IsBoss() ? 6 : 5;
-        kQuery.SetActor(FUN_14123c580());
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(kQuery));
+        kQuery.SetActor(GetObjectId());
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(kQuery));
     }
     if (nKind == 0 && m_nE54 > 0) {
         ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nE54);
@@ -2028,7 +2028,7 @@ void CNpc::FUN_141098fb0(int nKind)
 void CNpc::FUN_141099170(float fTime)
 {
     NiPoint3 kRot = vfunc_20();
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() != 0 && FUN_14028d470(kRot.z, m_f934))
+    if (((class COptimizer*)GetOptimizer())->FUN_14109a9d0() != 0 && FUN_14028d470(kRot.z, m_f934))
         return;
     SetTargetYaw(FUN_14028d5b0(m_f934));
     float fDelta = m_f934 - kRot.z;
@@ -2064,7 +2064,7 @@ void CNpc::FUN_141099370(float fTime)
     } else {
         m_nDE0 += (int)FUN_14028d260(fTime);
         if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(GetClientConstants()->MonologueInterval.Get()) + nRandom)) {
-            TSingleton<UITalkManager>::GetInstance()->FUN_141b20790(FUN_14123c580(), vfunc_116());
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b20790(GetObjectId(), vfunc_116());
             FUN_141099580();
         }
     }
@@ -2076,7 +2076,7 @@ void CNpc::FUN_141099580()
     m_nDE0 = 0;
     unsigned int nRandom = FUN_140a35ca0(GetClientConstants()->MonologueRandom.Get());
     if (nRandom != 0) {
-        int nObjectId = FUN_14123c580();
+        int nObjectId = GetObjectId();
         Unk_Random kRandom(nObjectId * FUN_140768010(nRandom, 0));
         m_nDE4 = kRandom.FUN_1407684c0() % nRandom;
     }
@@ -2094,7 +2094,7 @@ int CNpc::vfunc_124(int nNpcId)
         FUN_141095190(m_spNpcData->m_model.m_strKfm);
     if (m_strED8.IsEmpty())
         return 0;
-    FUN_14123bb80("urn:gamebryo-animation:" + m_strED8);
+    SetModelPath("urn:gamebryo-animation:" + m_strED8);
     CStringW strName = FUN_1401aa6a0(m_spNpcData->GetId());
     if (!strName.IsEmpty() && m_spNpcData.operator->()->GetNametag())
         vfunc_76(CStringW(strName));
@@ -2107,7 +2107,7 @@ int CNpc::vfunc_124(int nNpcId)
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != NULL) {
         NiPoint3 kPos = pPlayer->vfunc_18();
-        efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
+        efd::SmartPointer<Ridee> spRidee(pPlayer->GetRidee());
         if (spRidee != 0)
             kPos = spRidee->vfunc_18();
         FUN_14123daa0(kPos);
@@ -2131,7 +2131,7 @@ void CNpc::vfunc_125(int bShow)
     if (bShow != 0) {
         FUN_141098fb0(0);
         if (m_spNpcData.get() != 0)
-            ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4f40(m_spNpcData->m_strSoundDead, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
+            ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->PlayVoiceAt(m_spNpcData->m_strSoundDead, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
     }
     if (GetNpcData()->GetCorpseHitAble()) {
         float fWidth = m_spNpcData->m_corpse.m_shape.m_fWidth;
@@ -2147,7 +2147,7 @@ void CNpc::vfunc_125(int bShow)
             spTag->FUN_141a5e540("Eff_Body");
     }
     if (FUN_141092ff0())
-        WorldService::GetInstance()->FUN_141bc7f10(FUN_14123c460());
+        WorldService::GetInstance()->FUN_141bc7f10(GetEntityID());
     if (m_nEA8 != 0)
         DetachEffectUiNode();
     m_timerEE8.FUN_140868750(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
@@ -2161,7 +2161,7 @@ void CNpc::vfunc_125(int bShow)
 // @0x141095bd0
 void CNpc::vfunc_50()
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != NULL) {
         for (unsigned i = 0; i < m_arrE68.GetCount(); i++) {
             MS2Ptr<CBoxCollision> spBox = m_arrE68[i];
@@ -2178,7 +2178,7 @@ void CNpc::vfunc_50()
             continue;
         reinterpret_cast<Unk_BoxCollisionPlace*>(spBox.operator->())->vfunc_3(
             static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108),
-            static_cast<const efd::Point3&>(vfunc_20()), FUN_14123c260());
+            static_cast<const efd::Point3&>(vfunc_20()), GetScale());
     }
     if (IsDead() != 0 && GetNpcData()->GetCorpseHitAble() != 0) {
         Unk_GoAttachment* pAttachment = vfunc_26();
@@ -2245,7 +2245,7 @@ void CNpc::vfunc_49()
     int nLodLo = pMgr->GetShadowOptionOffset(nKind);
     float fUnused = 1.0f;
     m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo, m_spNpcData->m_fShadowScale, 1.0f);
-    FUN_14123cb20(m_bUnkB8);
+    SetShadowVisible(m_bUnkB8);
 }
 
 // The npc's stats from a packet.
@@ -2298,7 +2298,7 @@ void CNpc::NxTerrainPhsyx()
         return;
     if (m_spNpcData->m_collision.m_strShape != "box")
         return;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == NULL)
         return;
     NxVec3 kUnused;
@@ -2316,7 +2316,7 @@ void CNpc::NxTerrainPhsyx()
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
     kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z;
     kActorDesc.globalPose.M.rotZ((vfunc_20().z * 3.1415927f) / 180.0f);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pD68 = pScene->createActor(kActorDesc);
     if (m_pD68 != NULL) {
         m_pD68->setName("CNpc::NxTerrainPhsyx");
@@ -2327,7 +2327,7 @@ void CNpc::NxTerrainPhsyx()
             pShape->setGroup(0);
         }
     }
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // Releases the npc's body actor (+0xd68).
@@ -2335,12 +2335,12 @@ void CNpc::NxTerrainPhsyx()
 void CNpc::FUN_141099ab0()
 {
     if (m_pD68 != NULL) {
-        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
         if (pScene != NULL) {
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+            ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
             pScene->releaseActor(*m_pD68);
             WorldService::GetInstance()->FUN_141bc8e00();
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+            ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             m_pD68 = NULL;
         }
     }
@@ -2350,12 +2350,12 @@ void CNpc::FUN_141099ab0()
 void CNpc::vfunc_53(float fTime)
 {
     PCBase::vfunc_53(fTime);
-    float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     if (FUN_141092ff0() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
         if (m_unk_c4 <= m_spNpcData->m_fBossSoundDistance)
-            WorldService::GetInstance()->FUN_141bc7d40(FUN_14123c460());
+            WorldService::GetInstance()->FUN_141bc7d40(GetEntityID());
         else if (m_unk_c4 >= m_spNpcData->m_fBossSoundEndDistance)
-            WorldService::GetInstance()->FUN_141bc7fe0(FUN_14123c460());
+            WorldService::GetInstance()->FUN_141bc7fe0(GetEntityID());
     }
     if (m_pD60 == NULL) {
         if (reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving()) {
@@ -2397,7 +2397,7 @@ void CNpc::vfunc_53(float fTime)
                     if (pPet != NULL) {
                         PC* pOwner = static_cast<PC*>(FUN_141094f60());
                         if (pOwner != NULL) {
-                            MS2Ptr<CItem> spItem = pOwner->FUN_141663450();
+                            MS2Ptr<CItem> spItem = pOwner->GetPetItem();
                             if (((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL && ((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL)
                                 nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)((CItem*)spItem)->GetRarity());
                         }

@@ -73,7 +73,7 @@ MS2_REPLACE_METHOD(0x14191AA40, UIDebugTooltip, FUN_14191aa40, 30, 0xA515CB4B);
 // @0x14191aa70
 void UIDebugTooltip::FUN_14191aa70()
 {
-    FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
     m_7c = 0;
     m_78 = 0;
 }

@@ -63,7 +63,7 @@ float ASVideoPlayer::FUN_1422e9480()
 // @0x1422e9490
 void ASVideoPlayer::FUN_1422e9490(float fVolume)
 {
-    FUN_1409c4a30("volume", fVolume);
+    SetMemberFloat("volume", fVolume);
 }
 MS2_REPLACE_METHOD(0x1422E9490, ASVideoPlayer, FUN_1422e9490, 43, 0x955DA732);
 

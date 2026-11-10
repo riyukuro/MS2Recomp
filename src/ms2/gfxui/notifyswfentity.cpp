@@ -46,7 +46,7 @@ void NotifySwfEntity::getUserData(const Params& params)
             args.AddValue(params.pArgs[i]);
     }
 
-    MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(strEntity);
+    MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(strEntity);
     if (spEntity.get()) {
         Scaleform::GFx::Movie* pMovie = params.pMovie;
         if (pMovie) {

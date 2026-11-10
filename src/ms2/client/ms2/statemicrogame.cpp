@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x140b866d0-0x140b8c180 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??8?$MS2Ptr@VRpsGameData@@@@QEBA_NPEAVRpsGameData@@@Z 0x140b8bb30 ; unique
-// MS2-PIN: ??8?$MS2Ptr@VUnk_StateArg22@@@@QEBA_NPEAVUnk_StateArg22@@@Z 0x140b8bbf0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VStateSyncObject@@@@QEBA_NPEAVStateSyncObject@@@Z 0x140b8bbf0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameCoupleDance@@@@YAPEAVUIMicroGameCoupleDance@@H@Z 0x140b8b5c0
@@ -133,17 +133,17 @@ CStringW FUN_140298ea0(CStringW str);                    // 0x140298ea0 string-t
 void FUN_141275260(int nStringId, int nA, int nB);       // 0x141275260 notice by string id
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 extern Unk_Inventory g_143ab2a90;                        // the rps event's context table
-class UICoupleDanceEventDialog* FUN_140b769d0(int);   // C3: was FUN_140b769d0
+class UICoupleDanceEventDialog* FindCoupleDanceEventDialog(int);   // C3: was FindCoupleDanceEventDialog
 
 // The scene-graph probes of the placement test (see statecoupleemotion.cpp: the same helper sits in that obj).
 class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);
-    bool FUN_14168a770(const Vector3* pPoint);
+    bool CheckCapsuleOverlap(const Vector3* pPoint);
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);   // 0x14168a310
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class Unk_MgEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
 // The ray cast record RayCastFixedDirection fills (0x68, ctor 0x140ad4440; as in state.cpp, physxhelper.h needs NOMINMAX).
 struct Unk_RayCastInfo
@@ -223,7 +223,7 @@ void StateMicroGameRps::vfunc_3(double fTime)
 }
 
 // @0x140b869c0
-int StateMicroGameRps::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateMicroGameRps::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
     {
@@ -252,7 +252,7 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
         return;
     CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
     CString strAnim;
-    if (!pRider->FUN_14166f790(&strKey, strAnim, 0))
+    if (!pRider->GetEmotionAnimation(&strKey, strAnim, 0))
         return;
     if (pRider->FUN_14166dc50() != strAnim)
         return;
@@ -300,7 +300,7 @@ void StateMicroGameRps::vfunc_9(double fTime)
     case 0x99:
     case 0x9a:
     {
-        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
         FUN_140b87a40(nSeq);
         return;
     }
@@ -309,7 +309,7 @@ void StateMicroGameRps::vfunc_9(double fTime)
         return;
     CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
     CString strAnim;
-    if (!m_pOwner->FUN_14166f790(&strKey, strAnim, 0))
+    if (!m_pOwner->GetEmotionAnimation(&strKey, strAnim, 0))
         return;
     efd::utf8string kAnim((const char*)strAnim);
     m_pOwner->PlayAnimation(kAnim, 1.0f, false, false);
@@ -325,7 +325,7 @@ void StateMicroGameRps::vfunc_6()
 }
 
 // @0x140b87100
-bool StateMicroGameRps::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameRps::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     if (FUN_1417b7e40() != p->m_nSub)
         return true;
@@ -343,7 +343,7 @@ int StateMicroGameRps::FUN_140b871c0()
 }
 
 // @0x140b87210
-bool StateMicroGameRps::FUN_140b87210(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameRps::FUN_140b87210(MS2Ptr<StateSyncObject> p)
 {
     if (m_spRps.get() != 0)
         return m_spRps->FUN_1417c16b0(p);
@@ -634,13 +634,13 @@ bool FUN_140b884e0(Vector3& kPoint)
 {
     kPoint.z += 5.0f;
     float fDist = 0.0f;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const Vector3*)&kPoint))
+    if (((class CPhysXHelper*)GetPhysXHelper())->CheckCapsuleOverlap((const Vector3*)&kPoint))
         return false;
     Vector3 kDown = DAT_143b01a60;
     Unk_RayCastInfo kHit;           // 0x68: RayCastFixedDirection fills it up to the hit normal (+0x64)
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
@@ -753,7 +753,7 @@ void StateMicroGameCoupleDance::vfunc_3(double fTime)
 }
 
 // @0x140b88e20
-int StateMicroGameCoupleDance::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateMicroGameCoupleDance::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
     {
@@ -804,7 +804,7 @@ void StateMicroGameCoupleDance::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
     {
-        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
         FUN_140b89e40(nSeq);
         return;
     }
@@ -821,7 +821,7 @@ void StateMicroGameCoupleDance::vfunc_6()
 }
 
 // @0x140b89350
-bool StateMicroGameCoupleDance::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameCoupleDance::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     if (FUN_1417b7e40() != p->m_nSub)
         return true;
@@ -831,7 +831,7 @@ bool StateMicroGameCoupleDance::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x140b89410
-bool StateMicroGameCoupleDance::FUN_140b89410(MS2Ptr<Unk_StateArg22> p)
+bool StateMicroGameCoupleDance::FUN_140b89410(MS2Ptr<StateSyncObject> p)
 {
     if (m_spDance.get() != 0)
         return m_spDance->FUN_1417c1990(p);
@@ -1037,7 +1037,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
         break;
     case 0xb0:
         {
-            UIDialog* pPane = (UIDialog*)((void*)FUN_140b769d0(0x4f71));
+            UIDialog* pPane = (UIDialog*)((void*)FindCoupleDanceEventDialog(0x4f71));
             if (pPane != 0 && pPane->FUN_141924630() == 0)
                 reinterpret_cast<UIDialog*>(pPane)->FUN_141924680();
             pRider->FUN_14166cc40(0xb1);

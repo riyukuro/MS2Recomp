@@ -65,7 +65,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_140719530(unsigned __int64 n);                      // number to string
 class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class UIMessengerBrowser* m_48; };
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 
@@ -306,8 +306,8 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
-            if (((class Unk_InvChat*)FUN_141482e80())->m_48 != 0)
-                ((class Unk_InvChat*)FUN_141482e80())->m_48->FUN_141a252a0(strName);
+            if (((class Unk_InvChat*)GetState())->m_48 != 0)
+                ((class Unk_InvChat*)GetState())->m_48->FUN_141a252a0(strName);
         }
         return 1;
     }

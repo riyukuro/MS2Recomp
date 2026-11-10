@@ -52,7 +52,7 @@ public:
     // C3: the value update is the real UIShieldBar::Entity::FUN_140e85fc0 (0x140e85fc0)
 };
 
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // 0x141b6efc0 the scene node of an entity
@@ -100,22 +100,22 @@ AdditionalCli::~AdditionalCli()
 }
 
 // @0x14096bc20
-bool AdditionalCli::FUN_14096bc20(int nOwner, MS2Ptr<AdditionalCli> spSrc)
+bool AdditionalCli::CloneFrom(int nOwner, MS2Ptr<AdditionalCli> spSrc)
 {
     if (spSrc == 0)
         return false;
     *this = *spSrc;
-    if (spSrc->GetOwner() && spSrc->GetOwner()->FUN_14123c580() == m_nCasterId)
+    if (spSrc->GetOwner() && spSrc->GetOwner()->GetObjectId() == m_nCasterId)
         m_nCasterId = nOwner;
     m_pOwner = static_cast<PCBase*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1200(nOwner)));
     m_nKeepEffect = 0;
     if (IsValid())
-        FUN_14096c740();
+        RestartKeepEffect();
     return true;
 }
 
 // @0x14096bd30
-void AdditionalCli::FUN_14096bd30(PCBase* pOwner, int nId, unsigned short nLevel, int n44)
+void AdditionalCli::InitLocal(PCBase* pOwner, int nId, unsigned short nLevel, int n44)
 {
     m_pOwner = pOwner;
     m_nKey = 1;
@@ -124,7 +124,7 @@ void AdditionalCli::FUN_14096bd30(PCBase* pOwner, int nId, unsigned short nLevel
     m_b44 = n44;
     m_spLevel = SkillDataTableCli::GetInstance()->FUN_140aafef0(m_nId, m_nLevel);
     if (IsValid())
-        FUN_14096c740();
+        RestartKeepEffect();
 }
 
 // @0x14096be10
@@ -137,13 +137,13 @@ void AdditionalCli::FUN_14096be10(PCBase* pOwner, const Unk_AdditionalOwner& own
     ApplyState(state);
     Unk_AdditionalValue value;
     value.Decode(packet);
-    FUN_14096c360(value);
-    FUN_14096c390(value);
+    SetShieldValue(value);
+    SetShieldMax(value);
     m_spLevel = SkillDataTableCli::GetInstance()->FUN_140aafef0(m_nId, m_nLevel);
 }
 
 // @0x14096bf40
-void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_AdditionalOwner& owner, CInPacket& packet)
+void AdditionalCli::DecodeModifyPacket(PCBase* pOwner, unsigned nFlags, const Unk_AdditionalOwner& owner, CInPacket& packet)
 {
     if (pOwner == 0)
     {
@@ -177,23 +177,23 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
         if (bMe)
         {
             if (bTimeChanged)
-                FUN_14096d0c0();
+                UpdateStanceBarTime();
             if (bCountChanged)
-                FUN_14096d130();
+                UpdateStanceBarLevel();
         }
         if (bEnabled != m_bEnabled)
         {
             if (m_spLevel->IsKeepCondition99())
             {
                 if (bEnabled)
-                    FUN_14096c650(m_nCasterId);
+                    StopEffects(m_nCasterId);
                 else
-                    FUN_14096c740();
+                    RestartKeepEffect();
             }
         }
         else if (bCountChanged && m_spLevel->HasOverlapKeepEffect())
         {
-            FUN_14096ca50();
+            PlayOverlapEffects();
             return;
         }
     }
@@ -201,8 +201,8 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
     {
         Unk_AdditionalValue value;
         value.Decode(packet);
-        FUN_14096c360(value);
-        FUN_14096d5c0();
+        SetShieldValue(value);
+        UpdateShieldBar();
     }
 }
 
@@ -225,13 +225,13 @@ void AdditionalCli::ApplyState(const Unk_AdditionalState& state)
 }
 
 // @0x14096c360
-void AdditionalCli::FUN_14096c360(const Unk_AdditionalValue& value)
+void AdditionalCli::SetShieldValue(const Unk_AdditionalValue& value)
 {
     m_nShieldValue = value.m_n0;
 }
 
 // @0x14096c390
-void AdditionalCli::FUN_14096c390(const Unk_AdditionalValue& value)
+void AdditionalCli::SetShieldMax(const Unk_AdditionalValue& value)
 {
     m_nShieldMax = value.m_n0;
 }
@@ -266,37 +266,37 @@ void AdditionalCli::FUN_14096c4c0()
 }
 
 // @0x14096c520
-void AdditionalCli::FUN_14096c520()
+void AdditionalCli::Update()
 {
     FUN_14096db40();
     if (!m_bEnabled && m_spLevel->IsKeepCondition99())
         return;
-    if (m_pOwner->FUN_141676500() && !m_spLevel->m_bAllowBattleRidingState)
+    if (m_pOwner->IsBattleRiding() && !m_spLevel->m_bAllowBattleRidingState)
     {
         if (m_bSuspended)
             return;
         m_bSuspended = 1;
-        FUN_14096c650(m_nCasterId);
-        FUN_14096d430();
+        StopEffects(m_nCasterId);
+        UpdateBuffUI();
         return;
     }
     if (m_bSuspended)
     {
         m_bSuspended = 0;
-        FUN_14096d430();
-        FUN_14096c740();
+        UpdateBuffUI();
+        RestartKeepEffect();
     }
     if (!m_nKeepEffect)
     {
         if (m_spLevel->HasOverlapKeepEffect())
-            FUN_14096ca50();
+            PlayOverlapEffects();
         else
             PlayKeepEffect();
     }
 }
 
 // @0x14096c650
-void AdditionalCli::FUN_14096c650(int nCaster)
+void AdditionalCli::StopEffects(int nCaster)
 {
     RemoveKeepEffect();
     PlayStopEffect(nCaster);
@@ -320,11 +320,11 @@ int AdditionalCli::IsValid()
 }
 
 // @0x14096c740
-void AdditionalCli::FUN_14096c740()
+void AdditionalCli::RestartKeepEffect()
 {
     if (m_spLevel->HasOverlapKeepEffect())
     {
-        FUN_14096ca50();
+        PlayOverlapEffects();
     }
     else
     {
@@ -342,7 +342,7 @@ void AdditionalCli::PlayKeepEffect()
         return;
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strKeepEffect;
-    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
     ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
     ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
     ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
@@ -351,7 +351,7 @@ void AdditionalCli::PlayKeepEffect()
 }
 
 // @0x14096c8e0
-void AdditionalCli::FUN_14096c8e0()
+void AdditionalCli::PlayOverlapStartEffect()
 {
     if (IsPortraitOwner())
         return;
@@ -362,18 +362,18 @@ void AdditionalCli::FUN_14096c8e0()
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
         kTarget.SetLookupId(m_nCasterId);
-        CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+        CEffectService::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
 // @0x14096ca50
-void AdditionalCli::FUN_14096ca50()
+void AdditionalCli::PlayOverlapEffects()
 {
-    FUN_14096c8e0();
+    PlayOverlapStartEffect();
     FUN_14096ca80();
 }
 
@@ -391,14 +391,14 @@ void AdditionalCli::FUN_14096ca80()
             return;
         CEffectService::GetInstance()->FUN_1411a6060(m_nKeepEffect);
         m_nKeepEffect = 0;
-        FUN_14096ccc0(std::max<unsigned>(1, nCount - 1));
+        PlayOverlapEndEffect(std::max<unsigned>(1, nCount - 1));
     }
     std::map<unsigned, CString, std::greater<unsigned> >::iterator it = effect.m_mapKeep.upper_bound(nCount + 1);
     if (it != effect.m_mapKeep.end())
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
@@ -408,7 +408,7 @@ void AdditionalCli::FUN_14096ca80()
 }
 
 // @0x14096ccc0
-void AdditionalCli::FUN_14096ccc0(int nCount)
+void AdditionalCli::PlayOverlapEndEffect(int nCount)
 {
     if (IsPortraitOwner())
         return;
@@ -420,11 +420,11 @@ void AdditionalCli::FUN_14096ccc0(int nCount)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
         kTarget.SetLookupId(m_nCasterId);
-        CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+        CEffectService::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
@@ -436,7 +436,7 @@ void AdditionalCli::RemoveKeepEffect()
     CEffectService::GetInstance()->FUN_1411a6060(m_nKeepEffect);
     m_nKeepEffect = 0;
     if (m_spLevel->HasOverlapKeepEffect())
-        FUN_14096ccc0(0);
+        PlayOverlapEndEffect(0);
 }
 
 // @0x14096cec0
@@ -452,10 +452,10 @@ void AdditionalCli::PlayInvokeEffect()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strInvokeEffect;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         kTarget.SetLookupId(m_nCasterId);
-        CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+        CEffectService::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
@@ -470,7 +470,7 @@ int AdditionalCli::FUN_14096d050()
 }
 
 // @0x14096d0c0
-void AdditionalCli::FUN_14096d0c0()
+void AdditionalCli::UpdateStanceBarTime()
 {
     if (!m_spLevel->GetParent()->GetFlag48())
         return;
@@ -480,11 +480,11 @@ void AdditionalCli::FUN_14096d0c0()
 }
 
 // @0x14096d130
-void AdditionalCli::FUN_14096d130()
+void AdditionalCli::UpdateStanceBarLevel()
 {
     if (!m_spLevel->GetParent()->GetFlag49())
         return;
-    MS2Ptr<StanceData> spStance = TSingleton<StanceTable>::GetInstance()->HitCountStance(FUN_14096d2a0());
+    MS2Ptr<StanceData> spStance = TSingleton<StanceTable>::GetInstance()->HitCountStance(GetId());
     if (spStance == 0)
         return;
     MS2Ptr<StanceLevelData> spLevel = spStance->LevelData(m_nOverlapCount);
@@ -508,7 +508,7 @@ PCBase* AdditionalCli::GetOwner()
 }
 
 // @0x14096d2a0
-unsigned AdditionalCli::FUN_14096d2a0()
+unsigned AdditionalCli::GetId()
 {
     return m_nId;
 }
@@ -524,9 +524,9 @@ unsigned AdditionalCli::GetRemainTicks()
 {
     if (m_nEndTick == 0)
         return 0;
-    if (m_nEndTick < FUN_141472bc0())
+    if (m_nEndTick < GetServerTick())
         return 0;
-    return m_nEndTick - FUN_141472bc0();
+    return m_nEndTick - GetServerTick();
 }
 
 // @0x14096d330
@@ -536,7 +536,7 @@ unsigned AdditionalCli::FUN_14096d330()
 }
 
 // @0x14096d350
-int AdditionalCli::FUN_14096d350()
+int AdditionalCli::GetSortOrder()
 {
     if (m_spLevel == 0)
         return 0;
@@ -545,7 +545,7 @@ int AdditionalCli::FUN_14096d350()
         nOrder += 20;
     else if (m_spLevel->IsKeepCondition99())
         nOrder += 10;
-    if (m_nCasterId == m_pOwner->FUN_14123c580())
+    if (m_nCasterId == m_pOwner->GetObjectId())
         nOrder += 2;
     else if (FUN_140930110(m_nCasterId))
         nOrder += 1;
@@ -553,7 +553,7 @@ int AdditionalCli::FUN_14096d350()
 }
 
 // @0x14096d430
-void AdditionalCli::FUN_14096d430()
+void AdditionalCli::UpdateBuffUI()
 {
     bool bMe = FUN_140930110(m_nCasterId);
     if (m_spLevel->m_ui.FUN_1401927c0(bMe))
@@ -580,7 +580,7 @@ void AdditionalCli::FUN_14096d430()
 }
 
 // @0x14096d5c0
-void AdditionalCli::FUN_14096d5c0()
+void AdditionalCli::UpdateShieldBar()
 {
     if (!GetOwner())
         return;
@@ -601,7 +601,7 @@ bool AdditionalCli::FUN_14096d6b0()
         return false;
     if (!m_bEnabled && m_spLevel->IsKeepCondition99())
         return false;
-    if (m_pOwner->FUN_14123c580() != m_nCasterId)
+    if (m_pOwner->GetObjectId() != m_nCasterId)
         return false;
     if (m_spLevel->m_motion.m_strKeepEffect.IsEmpty())
         return false;
@@ -621,7 +621,7 @@ bool AdditionalCli::IsActive()
 }
 
 // @0x14096d810
-AdditionalLevelData* AdditionalCli::FUN_14096d810()
+AdditionalLevelData* AdditionalCli::GetLevelData()
 {
     return m_spLevel.get();
 }
@@ -633,7 +633,7 @@ void AdditionalCli::PlayStartEffect()
         return;
     if (m_spLevel->m_motion.m_strStartEffect.IsEmpty())
         return;
-    if (FUN_141b6efc0(m_pOwner->FUN_14123c410()))
+    if (FUN_141b6efc0(m_pOwner->GetEntity()))
     {
         Unk_WsC_GameObj* pCaster = WorldService::GetInstance()->FUN_141bd1200(m_nCasterId);
         if (pCaster != 0 && pCaster->vfunc_25() != 0)
@@ -641,10 +641,10 @@ void AdditionalCli::PlayStartEffect()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strStartEffect;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         kTarget.SetLookupId(m_nCasterId);
-        CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+        CEffectService::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
     }
 }
 
@@ -658,10 +658,10 @@ void AdditionalCli::PlayStopEffect(int nCaster)
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strStopEffect;
     ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
     ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(nCaster);
     kTarget.SetLookupId(nCaster);
-    CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+    CEffectService::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
 }
 
 // @0x14096db00
@@ -688,13 +688,13 @@ void AdditionalCli::FUN_14096db40()
     }
     else
     {
-        unsigned nSkill = pMyPC->FUN_141673ef0();
+        unsigned nSkill = pMyPC->GetCurrentSkillId();
         bool bFound = m_spLevel->m_setUsedSkillIDs.find(nSkill) != m_spLevel->m_setUsedSkillIDs.end();
         if (!bFound)
             m_bEnabled = 0;
     }
     if (m_bEnabled == 0 && m_spLevel->IsKeepCondition99())
-        FUN_14096c650(m_nCasterId);
+        StopEffects(m_nCasterId);
 }
 
 // @0x14096dcb0
@@ -702,8 +702,8 @@ AdditionalCustomCli::AdditionalCustomCli(PCBase* pOwner, int nKey, int nId, unsi
 {
     m_pOwner = pOwner;
     m_nKey = nKey;
-    m_nCasterId = pOwner->FUN_14123c580();
-    m_nStartTick = FUN_141472bc0();
+    m_nCasterId = pOwner->GetObjectId();
+    m_nStartTick = GetServerTick();
     m_nEndTick = nEndTick;
     m_nOverlapCount = nCount;
     m_spLevel = SkillDataTableCli::GetInstance()->FUN_140aafef0(nId, 1);

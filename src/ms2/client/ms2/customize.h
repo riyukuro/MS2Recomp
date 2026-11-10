@@ -159,13 +159,13 @@ public:
 
     Customize(int nObjectId, IItemCustomizeEventListener* pListener, bool bPreview);     // 0x140cd1570
     virtual ~Customize();                                       // 0x140cd16e0 (??_G 0x140cd53a0)
-    int FUN_140cd17e0();                        // the previewed item id
-    MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)
-    __int64 FUN_140cd1980();                    // the uid of the item being dyed
+    int GetEditItemId();                        // the previewed item id
+    MS2Ptr<CItem> GetEditItem();              // the previewed item (uiitemcoloringdialog.cpp)
+    __int64 GetEditItemUid();                    // the uid of the item being dyed
     NiPointer<CItemCustomizeController> FUN_140cd1a30();           // the part being edited
     unsigned GetEditFlags();                   // what the item can customize (EditItems::GetFlags)
     IItemCustomizeEventListener* GetListener();   // the listener
-    void FUN_140cd1bf0();                       // per frame
+    void UpdateEditItems();                       // per frame
     bool EquipItem(CItem* pItem);           // preview an item (false: not wearable)
     bool EquipItemId(int nItemId);            // preview an item id (false: not wearable)
     void ClearPreview();                       // take the preview items off

@@ -67,14 +67,14 @@ bool FUN_14028d470(float a, float b);                               // nearly eq
 class CMainSystem;
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
-void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
+void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
 
 // Random float (about -1..1), tick counter, camera direction.
 float FUN_14109ace0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // Resource manager (singleton 0x140a0afd0): texture load by path. 0x140cc2ba0 joins directory + file name.
-class Unk_ResourceMgr* FUN_140a0afd0();
+class Unk_ResourceMgr* GetNifLoadingService();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Elements of the target's point list (CAtlArray operator[] / GetCount instances of another obj).
@@ -279,14 +279,14 @@ void LightningEffect::vfunc_4()
     static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spRoot), true);
     m_spRoot->UpdateEffects();
     m_spRoot->UpdateProperties();
-    m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+    m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
     m_b2e = true;
 }
 
 // @0x14144cb50
 void LightningEffect::vfunc_7()
 {
-    FUN_140a0b2a0((class NiAVObject*)((NiNode*)m_spRoot));
+    DetachFromParent((class NiAVObject*)((NiNode*)m_spRoot));
 }
 
 // @0x14144cb80
@@ -348,7 +348,7 @@ void LightningEffect::Rebuild()
         }
     }
     CString strName = m_spParam->m_arrTexture[nClass][(size_t)nIndex];
-    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp))->SetBaseTexture((class NiTexture*)(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5).operator NiTexture*()));
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp))->SetBaseTexture((class NiTexture*)(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5).operator NiTexture*()));
     m_spMesh->GetMesh()->UpdateProperties();
     BuildPath(kFirst, kLast);
 

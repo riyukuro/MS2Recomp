@@ -39,7 +39,7 @@ public:
     virtual void vfunc_6(bool bSoldOut);                                    //  6 set sold out
 
     // Creates the product object of an AS value / of a product type (2 home, 1 limited, else plain).
-    static MS2Ptr<ASMeratMarketProductBase> FUN_1409bbc30(Scaleform::GFx::Value& v, const int& nMovieId);
+    static MS2Ptr<ASMeratMarketProductBase> CreateFromValue(Scaleform::GFx::Value& v, const int& nMovieId);
     static MS2Ptr<ASMeratMarketProductBase> FUN_1409bbf30(const int& nType, const int& nMovieId);
 
     void SetIndex(int nIndex);                                         // m_nIndex = nIndex
@@ -54,7 +54,7 @@ public:
     int GetProductType();                                                    // m_nProductType
 
     // Member setters (one COMDAT per enum type of the original).
-    void FUN_1409c0f00(const char* szName, int n);                          // product type
+    void SetMemberInt(const char* szName, int n);                          // product type
     void FUN_1409c0fa0(const char* szName, int n);                          // product UI type
     void FUN_1409c1040(const char* szName, int n);                          // price type
     void FUN_1409c10e0(const char* szName, int n);                          // sale state
@@ -100,9 +100,9 @@ public:
 
     void FUN_1409be940(Unk_MeratPremium& premium);                          // prices by sale kind
     void FUN_1409be9b0(Unk_MeratPremium& premium);                          // plain prices
-    void FUN_1409bef00(Unk_MeratPremium& premium);                          // random payback prices
+    void SetRandomPaybackPrice(Unk_MeratPremium& premium);                          // random payback prices
     void FUN_1409bf300(Unk_MeratPremium& premium);                          // random coupon prices
-    void FUN_1409bf780(Unk_MeratPremium& premium);                          // "remain" / "soldOut"
+    void SetRemainAndSoldOut(Unk_MeratPremium& premium);                          // "remain" / "soldOut"
 };
 MS2_CHECK_SIZE(ASMeratMarketLimitedProduct, 0x60);
 

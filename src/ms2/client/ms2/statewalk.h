@@ -21,7 +21,7 @@ public:
     virtual void vfunc_10(float a, float b, float c, float d, int e);   // 10 0x141800ac0 (owner slot 115 -> speed)
     virtual int vfunc_15();                                 // 15 0x141800a90
     virtual int vfunc_19();                                 // 19 0x141801010: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x141800b60: 1
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x141800b60: 1
     virtual void vfunc_34();                                // 34 0x141801020: m_n28 = 1
     virtual void vfunc_36(int n);                           // 36 0x141800b90: m_n4c = n
     virtual int vfunc_37();                                 // 37 0x141800bb0: m_n4c

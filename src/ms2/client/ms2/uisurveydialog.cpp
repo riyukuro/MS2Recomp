@@ -27,7 +27,7 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
 template <class A, class B, class C> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c);
 template <class A> CStringW FormatStringId(int nId, const A& a);         // string table text with one argument
 void FUN_1412751b0(const CStringW& strText, int nColor);            // print to the chat
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);    // message box
 
@@ -56,7 +56,7 @@ void UISurveyDialog::OnLoadComplete()
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
-    FUN_140cff1b0(FUN_1422dbb40(), "m_textSurvey", L"[" + strKind + L"] " + m_190);
+    SetChildHtmlText(FUN_1422dbb40(), "m_textSurvey", L"[" + strKind + L"] " + m_190);
     for (size_t i = 0; i < m_198.GetCount(); i++)
         m_30->Invoke("addItem", m_198[i]);
     m_30->Invoke("initDatas");

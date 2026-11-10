@@ -364,13 +364,13 @@ Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
 MS2_REPLACE(0x140afdec0, CCameraMode::FUN_140afdec0, 936, 0x6D68000D);
 
 // @0x140afe270
-void CCameraMode::FUN_140afe270(float f, bool bApply)
+void CCameraMode::SetZoomFactor(float f, bool bApply)
 {
     m_70 = f;
     if (bApply)
         FUN_140afe4b0();
 }
-MS2_REPLACE_METHOD(0x140afe270, CCameraMode, FUN_140afe270, 60, 0x4C2590A6);
+MS2_REPLACE_METHOD(0x140afe270, CCameraMode, SetZoomFactor, 60, 0x4C2590A6);
 
 // @0x140afe2c0
 BOOL CCameraMode::vfunc_31()

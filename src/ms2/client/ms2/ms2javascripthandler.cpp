@@ -47,7 +47,7 @@ public:
 class CGuildManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1413b6160();
+    int IsInGuild();
 };
 class CGuildInfo   // C3: member view for the former free stand-ins
 {
@@ -158,13 +158,13 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     retval->SetValue("sn", CefV8Value::CreateString(csAccount), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("name", CefV8Value::CreateString(csName), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("level", CefV8Value::CreateInt((unsigned short)pPC->vfunc_78()), V8_PROPERTY_ATTRIBUTE_READONLY);
-    retval->SetValue("job", CefV8Value::CreateInt(reinterpret_cast<PC*>(pPC)->FUN_141654700()), V8_PROPERTY_ATTRIBUTE_READONLY);
+    retval->SetValue("job", CefV8Value::CreateInt(reinterpret_cast<PC*>(pPC)->GetJobGroupId()), V8_PROPERTY_ATTRIBUTE_READONLY);
     retval->SetValue("world", CefV8Value::CreateInt(DAT_143ab2830), V8_PROPERTY_ATTRIBUTE_READONLY);
-    if (((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6160() != 0) {
+    if (((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->IsInGuild() != 0) {
         CStringA strGuild;
         strGuild.Format("%lld", ((class CGuildInfo*)(void*)((char*)((void*)TSingleton<CGuildManager>::GetInstance()) + 8))->FUN_1404ccbd0());
         CefString csGuild((const char*)strGuild);
-        CefString csGuildName((const wchar_t*)reinterpret_cast<PC*>(pPC)->FUN_141656be0());
+        CefString csGuildName((const wchar_t*)reinterpret_cast<PC*>(pPC)->GetGuildName());
         retval->SetValue("guild_sn", CefV8Value::CreateString(csGuild), V8_PROPERTY_ATTRIBUTE_READONLY);
         retval->SetValue("guild_name", CefV8Value::CreateString(csGuildName), V8_PROPERTY_ATTRIBUTE_READONLY);
     }

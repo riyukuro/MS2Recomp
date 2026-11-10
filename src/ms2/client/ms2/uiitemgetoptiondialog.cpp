@@ -64,16 +64,16 @@ void FUN_141261310(Unk_GsAutoLoot* pDst, const Unk_GsAutoLoot* pSrc);   // copy 
 //
 void FUN_141260ed0(Unk_GsAutoLoot* p);                                  // reset to the defaults
 int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, class TiXmlDocument* pDoc);   // C3: was FUN_141260f40
-void FUN_141261530(Unk_GsAutoLoot* p, bool b);                          // set equip
-void FUN_141261550(Unk_GsAutoLoot* p, int n);                           // set the grade
-void FUN_141261570(Unk_GsAutoLoot* p, bool b);                          // set consume
-void FUN_141261590(Unk_GsAutoLoot* p, bool b);                          // set etc
-void FUN_1412615b0(Unk_GsAutoLoot* p, bool b);                          // set meso
-void FUN_1412615d0(Unk_GsAutoLoot* p, bool b);                          // set merat
-void FUN_1412615f0(Unk_GsAutoLoot* p, bool b);                          // set token
-void FUN_141261610(Unk_GsAutoLoot* p, bool b);                          // set other
-void FUN_141261630(Unk_GsAutoLoot* p, bool b);                          // set gemstone
-void FUN_141261650(Unk_GsAutoLoot* p, bool b);                          // set pet
+void SetAutoLootEquip(Unk_GsAutoLoot* p, bool b);                          // set equip
+void SetAutoLootEquipGrade(Unk_GsAutoLoot* p, int n);                           // set the grade
+void SetAutoLootConsume(Unk_GsAutoLoot* p, bool b);                          // set consume
+void SetAutoLootEtc(Unk_GsAutoLoot* p, bool b);                          // set etc
+void SetAutoLootMeso(Unk_GsAutoLoot* p, bool b);                          // set meso
+void SetAutoLootMerat(Unk_GsAutoLoot* p, bool b);                          // set merat
+void SetAutoLootToken(Unk_GsAutoLoot* p, bool b);                          // set token
+void SetAutoLootOther(Unk_GsAutoLoot* p, bool b);                          // set other
+void SetAutoLootGemStone(Unk_GsAutoLoot* p, bool b);                          // set gemstone
+void SetAutoLootPet(Unk_GsAutoLoot* p, bool b);                          // set pet
 
 // ---- out-of-unit callees ----
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -85,7 +85,7 @@ public:
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 #define FUN_140c8b450(p) ((Unk_GoAutoCfg*)reinterpret_cast<CPetManager*>(p)->GetInfo())   // C3: CPetManager::GetInfo (cpetmanager.h)
-class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* FUN_141244300(); Unk_GoAutoLoot* FUN_141533e20(); };   // C3: member view (gameoption.cpp)
+class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* GetCharacterDoc(); Unk_GoAutoLoot* FUN_141533e20(); };   // C3: member view (gameoption.cpp)
 void FUN_140710590(COutPacket& packet);                         // send
 
 // @0x1419d95c0
@@ -174,7 +174,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261530((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootEquip((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -184,7 +184,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261570((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootConsume((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -194,7 +194,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261590((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootEtc((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -204,7 +204,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261630((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootGemStone((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -214,7 +214,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_1412615b0((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootMeso((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -224,7 +224,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_1412615d0((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootMerat((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -234,7 +234,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_1412615f0((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootToken((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -244,7 +244,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261610((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootOther((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -254,7 +254,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bValue = data.PopBool();
-            FUN_141261650((Unk_GsAutoLoot*)&m_opt, bValue);
+            SetAutoLootPet((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
@@ -277,7 +277,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 nGrade = 5;
             else if (nIndex == 5)
                 nGrade = 6;
-            FUN_141261550((Unk_GsAutoLoot*)&m_opt, nGrade);
+            SetAutoLootEquipGrade((Unk_GsAutoLoot*)&m_opt, nGrade);
         }
         return 1;
     }
@@ -335,23 +335,23 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
     if (m_nMode != 0)
     {
         FUN_141260ed0((Unk_GsAutoLoot*)&m_opt);
-        LoadGameOptionAutoLooting((Unk_GsAutoLoot*)&m_opt, TSingleton<CGameOption>::GetInstance()->FUN_141244300());
+        LoadGameOptionAutoLooting((Unk_GsAutoLoot*)&m_opt, TSingleton<CGameOption>::GetInstance()->GetCharacterDoc());
     }
     else
     {
-        FUN_1412615b0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
+        SetAutoLootMeso((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
-            FUN_1412615d0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
-        FUN_141261590((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
-        FUN_1412615f0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
-        FUN_141261530((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
-        FUN_141261570((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
-        FUN_141261610((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
-        FUN_141261550((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
+            SetAutoLootMerat((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
+        SetAutoLootEtc((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
+        SetAutoLootToken((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
+        SetAutoLootEquip((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
+        SetAutoLootConsume((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
+        SetAutoLootOther((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
+        SetAutoLootEquipGrade((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
-            FUN_141261630((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
+            SetAutoLootGemStone((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
-            FUN_141261650((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
+            SetAutoLootPet((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
     }
 }
 

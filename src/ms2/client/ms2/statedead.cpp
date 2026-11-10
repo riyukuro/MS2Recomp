@@ -112,10 +112,10 @@ void StateDead::vfunc_4(StateData* pData)
         MS2Ptr<CFieldDataCli> kField = WorldService::GetInstance()->FUN_141bd30a0();
         if (kField == 0)
             return;
-        if (reinterpret_cast<PC*>(pPC)->FUN_14165ef30() != 0)
+        if (reinterpret_cast<PC*>(pPC)->HasPvPPoint() != 0)
         {
             bRevive = true;
-            nAnimId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->FUN_140967420().operator->())->m_nTeam;
+            nAnimId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->GetPvPInfo().operator->())->m_nTeam;
         }
         else
         {
@@ -150,14 +150,14 @@ void StateDead::vfunc_4(StateData* pData)
         if (pMyPC != 0)
         {
             reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
-            ((CPushControl*)pMyPC->FUN_141675eb0())->FUN_1413fcf90();
+            ((CPushControl*)pMyPC->GetPushControl())->Reset();
         }
         if (bRevive == true)
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strReviveEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
-            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         }
         else
@@ -165,8 +165,8 @@ void StateDead::vfunc_4(StateData* pData)
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strDeathEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
-            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
         }
         if (reinterpret_cast<PC*>(FUN_1417b84b0())->IsRevivalBlocked() != 0)
             reinterpret_cast<CGuideManager*>(((void*)FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(8), 0, 0);
@@ -242,7 +242,7 @@ void StateDeadNPC::vfunc_4(StateData* pData)
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
-        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
     reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_14123fbf0(5);
@@ -303,7 +303,7 @@ void StateDeadNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
                 return;
             MyPC* pMyPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pMyPC != 0)
-                pMyPC->FUN_1415294f0(m_pOwner->FUN_14123c580(), pNpc->FUN_141094e20());
+                pMyPC->FUN_1415294f0(m_pOwner->GetObjectId(), pNpc->FUN_141094e20());
         }
     }
 }

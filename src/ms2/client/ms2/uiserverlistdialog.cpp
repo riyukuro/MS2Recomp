@@ -183,7 +183,7 @@ struct Unk_NetworkLoginResult {
 };
 MS2_CHECK_SIZE(Unk_NetworkLoginResult,0x58);
 void FUN_141b70390();
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: ugcmanager_4.cpp's return type
+class Unk_MeratBlindManager* GetBlindManager();   // C3: ugcmanager_4.cpp's return type
 extern __int64 DAT_143ab2820;
 extern int DAT_143ab2834;
 extern __int64 DAT_143ab2838;
@@ -620,7 +620,7 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
         DAT_143ab2838 = reply.a50;
         FUN_141b70390();
         TSingleton<CGameOption>::GetInstance()->LoadAccountOption();
-        ((BlindManager*)FUN_1409c1730())->Load();
+        ((BlindManager*)GetBlindManager())->Load();
     }
 }
 

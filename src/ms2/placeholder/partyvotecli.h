@@ -16,7 +16,7 @@ public:
     virtual void vfunc_6(unsigned __int64);
     virtual void vfunc_7(__int64, bool);
     void AddVote(unsigned __int64, bool);
-    int FUN_140a894c0() const;      // kind
+    int GetKind() const;      // kind
     size_t GetYesCount();         // yes count
     size_t GetNoCount();         // no count
     bool HasVoted();     // the local player already voted

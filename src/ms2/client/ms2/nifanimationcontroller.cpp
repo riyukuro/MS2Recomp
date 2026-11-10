@@ -51,7 +51,7 @@ CNifAnimationController::~CNifAnimationController()
 const NiRTTI* CNifAnimationController::GetRTTI() const { return &ms_RTTI; }
 
 // The .nif loading service (CNifLoadingService; nifmodel.cpp declares the same view). Only the loader this unit calls.
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // The scene-graph walk (applyeffect.cpp / kfmmodel.cpp declare the same view).
 class Unk_NodeQueue
@@ -65,11 +65,11 @@ public:
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 
 // @0x141544850
-bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::Point3& kEuler)
+bool CNifAnimationController::Load(int mode, CStringA name, const efd::Point3& kEuler)
 {
     m_58 = mode;
     if (m_58 == 0) {
-        m_10 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(name, false, 5, 0, 0);
+        m_10 = ((class CNifLoadingService*)GetNifLoadingService())->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             NiTransform kXf = m_10->GetLocalTransform();
             kXf.m_Rotate.FromEulerAnglesXYZ((-kEuler.x * 3.1415927f) / 180.0f, (-kEuler.y * 3.1415927f) / 180.0f,
@@ -96,7 +96,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
             }
         }
     } else if (m_58 == 1) {
-        m_10 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(name, false, 5, 0, 0);
+        m_10 = ((class CNifLoadingService*)GetNifLoadingService())->Load(name, false, 5, 0, 0);
         if (m_10 != 0) {
             m_28 = NiDynamicCast(NiNode, m_10->GetObjectByName("Camera01"));
             Unk_AeSceneIter walk((NiAVObject*)(m_28));
@@ -133,7 +133,7 @@ efd::Point3 CNifAnimationController::FUN_141545020() { return m_38; }
 efd::Point3 CNifAnimationController::FUN_141545050() { return m_44; }
 
 // @0x141545080
-void FUN_141545080(int value, void* node)
+void SetAnimTypeRecursive(int value, void* node)
 {
     for (void* c = ((void*)((class NiObjectNET*)(void*)(node))->GetControllers()); c != 0; c = ((void*)((class NiTimeController*)(void*)(c))->GetNext()))
         ((NiTimeController*)c)->SetAnimType((NiTimeController::AnimType)value);
@@ -143,7 +143,7 @@ void FUN_141545080(int value, void* node)
         while (it != 0) {
             void* ch = (NiProperty*)((class NiAVObject*)(void*)(pSwitch))->GetPropertyList().GetNext(it);
             if (ch != 0 && ((void*)((class NiObjectNET*)(void*)(ch))->GetControllers()) != 0)
-                FUN_141545080(value, ch);
+                SetAnimTypeRecursive(value, ch);
         }
     }
     if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(node))) {
@@ -151,24 +151,24 @@ void FUN_141545080(int value, void* node)
         for (unsigned int i = 0; i < ((NiNode*)pNode)->GetArrayCount(); ++i) {
             void* ch = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             if (ch != 0)
-                FUN_141545080(value, ch);
+                SetAnimTypeRecursive(value, ch);
         }
     }
 }
 
 // @0x1415451d0
-void FUN_1415451d0(int value, void* entityId)
+void SetEntityAnimType(int value, void* entityId)
 {
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
+    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(*static_cast<const egf::EntityID*>(entityId));
     if (ent == 0)
         return;
     void* n = ((ecr::SceneGraphService*)sg)->GetSceneGraphFromEntity((egf::Entity const*)ent);
     if (n == 0)
         return;
-    FUN_141545080(value, n);
+    SetAnimTypeRecursive(value, n);
 }
 
 // @0x141545250
@@ -177,7 +177,7 @@ void FUN_141545250(egf::EntityID kId, int mode)
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(kId);
+    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(kId);
     if (ent == 0)
         return;
     void* n = ((ecr::SceneGraphService*)sg)->GetSceneGraphFromEntity((egf::Entity const*)ent);

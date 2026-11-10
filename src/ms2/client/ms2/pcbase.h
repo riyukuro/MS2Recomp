@@ -258,11 +258,11 @@ public:
     MS2Ptr<CStateManager> GetStateMgr();                  // 0x141678750 copy of m_spStateMgr (w17)
     void FUN_141676310(int n);                              // 0x141676310 empty
     bool HasAnimSequence(const char* szName);                 // 0x141679220 FUN_141679270 found a sequence
-    int FUN_1416765b0();                                    // 0x1416765b0 the ridee has a free seat
+    int HasFreePassengerSeat();                                    // 0x1416765b0 the ridee has a free seat
     void FUN_141676060(NiPoint3 kPos);                      // 0x141676060 set +0xc10 (forwarded to the ridee)
     void FUN_14166ebf0(PCBase* pOther);                     // 0x14166ebf0 copy pOther's +0xae0 entity position
     int FUN_141675ed0();                                    // 0x141675ed0 standing on a kind-8 (water) entity
-    void FUN_141676140();                                   // 0x141676140 send the fall damage since +0xc10
+    void SendFallDamage();                                   // 0x141676140 send the fall damage since +0xc10
     void FUN_141678ad0(CString strName, bool bOutline, float fScale, float fAngle);   // 0x141678ad0 attach a model under "Eff_UI" (+0xc40)
     void DetachEffectUiNode();
     GameObject* FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arrTargets, float fAngle, efd::Point3 kDir, int nMode);   // 0x141679800 best target in a cone by angle (alive first)
@@ -272,12 +272,12 @@ public:
     void FUN_14166ed70(int n);                              // 0x14166ed70
     void FUN_14166ef10(const CString& str, int nA, int nB, bool bC);   // 0x14166ef10 play an emotion
     int FUN_14166f6d0();
-    bool FUN_14166f790(void* pKey, CString& strOut, int n);   // 0x14166f790 effect name of a key
+    bool GetEmotionAnimation(void* pKey, CString& strOut, int n);   // 0x14166f790 effect name of a key
     void FUN_14166f940();                                   // 0x14166f940 emotion timer expired: back to default                                    // 0x14166f6d0
     CString FUN_14166f740();                                // 0x14166f740 (returns a string)
     void FUN_141671c20(MS2Ptr<CDamageRecord> spRecord);     // 0x141671c20 show a hit (damage numbers or the miss effect)
-    void FUN_141672020(MS2Ptr<CDotDamageRecord> spRecord);
-    void FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord);   // 0x1416721d0 show a splash hit   // 0x141672020 show a DoT tick
+    void OnDotDamageRecord(MS2Ptr<CDotDamageRecord> spRecord);
+    void OnSplashDamageRecord(MS2Ptr<CSplashDamageRecord> spRecord);   // 0x1416721d0 show a splash hit   // 0x141672020 show a DoT tick
     int FUN_1416725c0(NiPoint3 kDir, float fDist, float fHeight, float fUp);   // 0x1416725c0 can step fDist along kDir (motioncontroller)
     static int FUN_141677f40(PCBase* pActor);                // 0x141677f40 local rider: request getting off (states)
     void FUN_1416788d0();                                   // 0x1416788d0 cast skill 20000011 (or the "not now" notice)
@@ -290,14 +290,14 @@ public:
     int GetCurStateId();                                    // 0x14166c930 current state id (0: none)
     int FUN_14166cc80();                                    // 0x14166cc80 current sub state
     State* FUN_14166ccb0();                                 // 0x14166ccb0 current state
-    void FUN_141670700(int nType, __int64 nValue);           // 0x141670700 (scenestategame packet 0x64: 10, skill id)
+    void SetCurrentStat(int nType, __int64 nValue);           // 0x141670700 (scenestategame packet 0x64: 10, skill id)
     __int64 FUN_141656a80();                                // 0x141656a80 (scenestategame packet 0x39 battle record key)
     void FUN_14166ce50(int n);                              // 0x14166ce50 (scenestategame packet 0x34: 0)
     int IsDead();                                    // 0x14166ce30 dead (1)
     // @0x140976780
-    int FUN_140976780() { return m_unk_118; }               // sound pitch (additionalcli.cpp)
+    int GetSoundPitch() { return m_unk_118; }               // sound pitch (additionalcli.cpp)
     // @0x1409788b0
-    void FUN_1409788b0(int n) { m_unk_118 = n; }
+    void SetSoundPitch(int n) { m_unk_118 = n; }
     float GetTargetYaw();                                  // 0x14166da40
     void UpdateTargetYawFromLook();                                   // 0x14166d820
     void FUN_14166e0a0();                                   // 0x14166e0a0
@@ -306,24 +306,24 @@ public:
     void FUN_141671960(float fSpeed);                       // 0x141671960
     Unk_PCBaseBuffs* FUN_1416749a0();                       // 0x1416749a0
     bool FUN_1416749c0();                                   // 0x1416749c0
-    int FUN_141676410();                                    // 0x141676410 riding id
+    int GetRideeId();                                    // 0x141676410 riding id
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141676930();             // 0x141676930 ugc ridee item
     void FUN_141676b50(int bRun);                           // 0x141676b50
     int FUN_141676b70();                                    // 0x141676b70
     void FUN_141678240(egf::EntityID& kId, NiPoint3& kPos);   // 0x141678240 out: +0xae0 / +0xae8
     void FUN_141678290(egf::EntityID kId, NiPoint3 kPos);   // 0x141678290
     void FUN_141678360();                                   // 0x141678360
-    class Ridee* FUN_1416764a0();                           // 0x1416764a0 the ridee this actor rides (scenestategame, w86)
-    void FUN_14166ce70(int nEmotion);                       // 0x14166ce70 (scenestategame packet 0x3f, w86)
+    class Ridee* GetRidee();                           // 0x1416764a0 the ridee this actor rides (scenestategame, w86)
+    void SetEmotion(int nEmotion);                       // 0x14166ce70 (scenestategame packet 0x3f, w86)
     __int64 GetStat(int nKind, int nStat);            // 0x141670990 stat value (kind 0..2, stat 0..0x22; scenestategame w109)
     // pcbase.cpp (w112)
-    void FUN_141670ed0(Unk_PCBaseEntity* pEntity);          // 0x141670ed0 ground material of the entity under the actor
+    void UpdateGroundMaterial(Unk_PCBaseEntity* pEntity);          // 0x141670ed0 ground material of the entity under the actor
     CString FUN_141671480();                                // 0x141671480 footstep material
     BOOL IsDashModel();                                   // 0x1416719c0 model is a "Dash" model
     int FUN_141671a30();                                    // 0x141671a30 standing on ground
     void FUN_1416700b0(int nType);                          // 0x1416700b0 banner
-    void FUN_141670180(bool bShow);                         // 0x141670180 refresh the hp bar
-    void FUN_141670260(int nShield, bool bShow);            // 0x141670260 refresh the shield bar
+    void UpdateHpBar(bool bShow);                         // 0x141670180 refresh the hp bar
+    void UpdateShieldBar(int nShield, bool bShow);            // 0x141670260 refresh the shield bar
     float FUN_141670390();                                  // 0x141670390 height (+ mount)
     void SetStat(int nKind, int nStat, __int64 nValue);   // 0x141670540 set a stat value
     void FUN_1416705c0(int nStat, __int64 nValue);          // 0x1416705c0
@@ -397,27 +397,27 @@ public:
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673bf0(__int64 nTagId, int nKind);   // 0x141673bf0 find in +0x8e8
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673ce0(MS2Ptr<Unk_PCBaseComp_b18> spItem);   // 0x141673ce0 replace +0x8e8 with it
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673e10(__int64 nTagId);   // 0x141673e10 find in +0x8e8
-    int FUN_141673ef0();                                     // 0x141673ef0 skill id of the running skill state (avatarpc.cpp)
+    int GetCurrentSkillId();                                     // 0x141673ef0 skill id of the running skill state (avatarpc.cpp)
     void AddColorBoost(float a, float b, float c);           // 0x141673f70 color boost (also the ridee)
     efd::Point3 CalcMoveDirectionNoYaw(efd::Point3 kDir);             // 0x141674b60 local dir -> world dir
     int FUN_141674bc0();                                     // 0x141674bc0 (buffs)
     NiAVObject* FUN_141675150(const CString& strNode);       // 0x141675150 the named node (the ridee's when riding)
-    unsigned int FUN_141675240();                            // 0x141675240 movement flags of the buffs
+    unsigned int GetIgnoreCollisionGroups();                            // 0x141675240 movement flags of the buffs
     efd::SmartPointer<NiAVObject> FUN_1416757c0(CString strName);   // 0x1416757c0 node of +0xb88
     efd::SmartPointer<NiAVObject> FUN_1416758a0(CString strName);   // 0x1416758a0 node of +0xbb8
     efd::SmartPointer<NiAVObject> FUN_141675930();          // 0x141675930 copy of +0xbe8
-    int FUN_141675cd0(NiPoint3 kPos, CString strUnused, CString* pName, float* pDist);   // 0x141675cd0 nearest node in +0xbb8
-    int FUN_141675e60();                                     // 0x141675e60 +0xbb8 not empty
-    void* FUN_141675eb0();                                   // 0x141675eb0 &m_pushControl (statemanager.cpp)
-    void FUN_141676320(MS2Ptr<RideOnAction> spAction);       // 0x141676320 (by value)
-    MS2Ptr<RideOnAction> FUN_141676370();                    // 0x141676370 copy of +0xb00
+    int FindNearestGrabNode(NiPoint3 kPos, CString strUnused, CString* pName, float* pDist);   // 0x141675cd0 nearest node in +0xbb8
+    int HasGrabNodes();                                     // 0x141675e60 +0xbb8 not empty
+    void* GetPushControl();                                   // 0x141675eb0 &m_pushControl (statemanager.cpp)
+    void SetRideOnAction(MS2Ptr<RideOnAction> spAction);       // 0x141676320 (by value)
+    MS2Ptr<RideOnAction> GetRideOnAction();                    // 0x141676370 copy of +0xb00
     int FUN_1416763c0();                                     // 0x1416763c0 the ridee's object id
-    int FUN_141676500();                                     // 0x141676500 the ridee's type is 1
+    int IsBattleRiding();                                     // 0x141676500 the ridee's type is 1
     void FUN_141676670(unsigned int nKey, int nValue);       // 0x141676670 +0xb28
     void FUN_1416766b0(MS2Ptr<Unk_PCBaseComp_b18> spItem);   // 0x1416766b0 (by value)
-    void FUN_141676700();                                    // 0x141676700 +0xb28 RemoveAll
-    void FUN_141676730(unsigned int nKey);                   // 0x141676730 +0xb28 RemoveKey
-    int FUN_141676760();                                     // 0x141676760 +0xb28 count
+    void ClearPassengers();                                    // 0x141676700 +0xb28 RemoveAll
+    void RemovePassenger(unsigned int nKey);                   // 0x141676730 +0xb28 RemoveKey
+    int GetPassengerCount();                                     // 0x141676760 +0xb28 count
     int FUN_141676790(unsigned int nKey);                    // 0x141676790 +0xb28 lookup (0 if missing)
     NiPoint3 FUN_1416767d0();                                // 0x1416767d0 vfunc_18 of the ridee when riding
     NiPoint3 GetRideeAwareRotation();                                // 0x141676880 vfunc_20 of the ridee when riding
@@ -448,7 +448,7 @@ public:
     // mypc.cpp (w99)
     unsigned short FUN_141661e00();                         // 0x141661e00 the channel the actor is on
     int FUN_141661e20();                                    // 0x141661e20
-    int FUN_1416764d0();                                    // 0x1416764d0 riding
+    int IsRiding();                                    // 0x1416764d0 riding
 
 public:
     MS2_LAYOUT_FRIEND;

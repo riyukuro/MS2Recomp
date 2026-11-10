@@ -71,7 +71,7 @@ class Unk_LgUIMgr                                       // the UI service (FUN_1
 {
 public:
 };
-class CNetworkService { public: int FUN_1415384e0(); int ConnectToConfiguredServer(); };   // C3: member view (networkservice.h), FUN_140714f90
+class CNetworkService { public: int IsConnected(); int ConnectToConfiguredServer(); };   // C3: member view (networkservice.h), FUN_140714f90
 class Unk_LgWorld;                                      // FUN_1403ed2d0
 class Unk_LgHost;                                       // FUN_14025e7a0
 class Unk_LgPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1409331f0 (m_8 +8)
@@ -197,7 +197,7 @@ void UISceneLogin::vfunc_15()
         FUN_141acfc70();
     if (m_nShown != 0)
         return;
-    if (TSingleton<CFilePreload>::GetInstance()->FUN_141210c60() != 0)
+    if (TSingleton<CFilePreload>::GetInstance()->IsDataReady() != 0)
         FUN_141acf860(0x3ffe);
     if (m_nProgress == 0xffff)
     {
@@ -205,7 +205,7 @@ void UISceneLogin::vfunc_15()
         {
             if (FUN_140714f90() != 0)
             {
-                if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->FUN_1415384e0() == 0 && DAT_143ab284b == 0)
+                if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->IsConnected() == 0 && DAT_143ab284b == 0)
                     FUN_141acf420();
             }
         }
@@ -268,7 +268,7 @@ void UISceneLogin::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     if (((class WorldService*)(class Unk_LgWorld*)(((class Unk_LgWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    if (TSingleton<CFilePreload>::GetInstance()->FUN_141210c60() != 0)
+    if (TSingleton<CFilePreload>::GetInstance()->IsDataReady() != 0)
         FUN_141acf860(0x3ffe);
     GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FindMovie(4));
     if (pBg != 0)

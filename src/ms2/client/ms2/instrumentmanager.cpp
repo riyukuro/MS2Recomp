@@ -105,9 +105,9 @@ public:
     class Unk_PCBaseBuffs* FUN_1416749a0();
     __int64 FUN_141656a80();
 };
-class GameObject { public: int FUN_14123c580(); };   // C3: member view
+class GameObject { public: int GetObjectId(); };   // C3: member view
 class PC { public: void FUN_14165ebb0(float fSpeed); };   // C3: member view
-class MyPC { public: bool FUN_141527280(); };   // C3: member view
+class MyPC { public: bool IsInParty(); };   // C3: member view
 // A field actor (PC base): vtable slot 18 returns the world position.
 class Unk_ImActor
 {
@@ -165,7 +165,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(CItem* pItem, int n);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -199,7 +199,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 
 void FUN_14125fe20(Unk_SoundState* pSound);                                 // reapply the sound volumes
 int FUN_141260310(Unk_SoundState* pSound);                                  // the instrument volume
-int FUN_141472bc0();                                                        // the server clock bias
+int GetServerTick();                                                        // the server clock bias
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW BlockFormat(int nId);                                              // system notice text
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);  // message box
@@ -275,7 +275,7 @@ CInstrumentManager::~CInstrumentManager()
 // @0x140d05f70
 void CInstrumentManager::vfunc_1(int nMap)
 {
-    m_baseTime = GetTickCountMs2() - FUN_141472bc0();
+    m_baseTime = GetTickCountMs2() - GetServerTick();
     unsigned nResult = 0;
     if (!m_midi.IsOpen())
         nResult = m_midi.Open();
@@ -350,7 +350,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         voice.m_program = nProgram;
         voice.m_percussion = nPercussion;
         Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
         if (nSlot == 0x10)
@@ -367,7 +367,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         int nOwner = packet.ReadInt32();
         unsigned nMsg = packet.ReadInt32();
         Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
             nKey = 0;
         if (IsBlocked(nOwner) == true)
             return;
@@ -394,13 +394,13 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         voice.m_program = nProgram;
         voice.m_percussion = nPercussion;
         Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
         if (nSlot == 0x10)
             return;
         if (m_baseTime == 0x7fffffff)
-            m_baseTime = GetTickCountMs2() - FUN_141472bc0();
+            m_baseTime = GetTickCountMs2() - GetServerTick();
         int nStartTime = nStart + 300 + m_baseTime;
         int nEnd = 0;
         if (nKind == 0)
@@ -430,7 +430,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         int nKey = packet.ReadInt32();
         int nOwner = packet.ReadInt32();
         Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+        if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
             nKey = 0;
         int nSlot = FindSlot(nKey);
         if (nSlot == 0x10)
@@ -444,11 +444,11 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         // a composed score item
         __int64 nUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             spItem->FUN_140524eb0(packet);
-            ((class Unk_ImItemEvents*)FUN_140a6a840())->vfunc_3(spItem.get(), 0);
+            ((class Unk_ImItemEvents*)GetItemEventDispatcher())->vfunc_3(spItem.get(), 0);
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
                 pDialog->FUN_140fefd00(MS2Ptr<CItem>(spItem));
@@ -458,11 +458,11 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
     {
         __int64 nUid = packet.ReadInt64();
         int nValue = packet.ReadInt32();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             spItem->FUN_140527320(nValue);
-            ((class Unk_ImItemEvents*)FUN_140a6a840())->vfunc_3(spItem.get(), 0);
+            ((class Unk_ImItemEvents*)GetItemEventDispatcher())->vfunc_3(spItem.get(), 0);
         }
     }
     else if (nType == 10)
@@ -470,7 +470,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // the score text of an item
         __int64 nUid = packet.ReadInt64();
         CString strScore = packet.ReadString();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
@@ -491,8 +491,8 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_ImResource*)FUN_1401d31f0())->m_strEnsembleEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = pActor == pMe ? 1 : 3;
-        kTarget.SetActor(reinterpret_cast<GameObject*>(pActor)->FUN_14123c580());
-        TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a4a00((Unk_EffectTarget&)(kTarget));
+        kTarget.SetActor(reinterpret_cast<GameObject*>(pActor)->GetObjectId());
+        TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->InsertEffect((Unk_EffectTarget&)(kTarget));
     }
     else if (nType == 17)
     {
@@ -598,7 +598,7 @@ void CInstrumentManager::NoteOn(int nNote)
 {
     if (!m_ensemble)
         return;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_instrumentUid);
     if (spItem == 0)
         return;
     if (!spItem->FUN_140528980())
@@ -620,7 +620,7 @@ void CInstrumentManager::NoteOn(int nNote)
         return;
     Voice voice;
     voice.m_channel = 0;
-    voice.m_owner = reinterpret_cast<GameObject*>(pMe)->FUN_14123c580();
+    voice.m_owner = reinterpret_cast<GameObject*>(pMe)->GetObjectId();
     voice.m_position = pMe->vfunc_18();
     voice.m_program = spCategory->m_nGMId;
     voice.m_percussion = spCategory->m_nPercussionId;
@@ -668,7 +668,7 @@ void CInstrumentManager::NoteOff(int nNote)
 // @0x140d07960
 bool CInstrumentManager::PlayScore(__int64 nScoreUid)
 {
-    MS2Ptr<CItem> spScore = g_143ab2a90.FUN_140a5d680(nScoreUid);
+    MS2Ptr<CItem> spScore = g_143ab2a90.FindItemByUid(nScoreUid);
     if (spScore == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
@@ -679,7 +679,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spInstrument = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spInstrument = g_143ab2a90.FindItemByUid(m_instrumentUid);
     if (spInstrument == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
@@ -716,12 +716,12 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return false;
-    if (!reinterpret_cast<MyPC*>(pMe)->FUN_141527280())
+    if (!reinterpret_cast<MyPC*>(pMe)->IsInParty())
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_need_party_for_ensemble"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spInstrument = g_143ab2a90.FUN_140a5d680(m_instrumentUid);
+    MS2Ptr<CItem> spInstrument = g_143ab2a90.FindItemByUid(m_instrumentUid);
     if (spInstrument == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
@@ -732,7 +732,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
-    MS2Ptr<CItem> spScore = g_143ab2a90.FUN_140a5d680(nScoreUid);
+    MS2Ptr<CItem> spScore = g_143ab2a90.FindItemByUid(nScoreUid);
     if (spScore == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
@@ -973,7 +973,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
 void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool bRemote)
 {
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+    if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
     {
         ((class Unk_ImPlatform*)((void*)GetClientPlatform()))->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
         m_performing = true;
@@ -1011,7 +1011,7 @@ void CInstrumentManager::OnPerformEnd(int nOwner)
     if (pActor != 0)
         reinterpret_cast<PC*>(pActor)->FUN_14165ebb0(1.0f);
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
+    if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->GetObjectId() == nOwner)
     {
         ((class Unk_ImPlatform*)((void*)GetClientPlatform()))->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
         m_performing = false;
@@ -1037,13 +1037,13 @@ bool CInstrumentManager::PreviewScore(const CString& strText, int nCategory, int
     int nProgram = spCategory->m_nGMId;
     Voice voice;
     voice.m_channel = 0;
-    voice.m_owner = reinterpret_cast<GameObject*>(pMe)->FUN_14123c580();
+    voice.m_owner = reinterpret_cast<GameObject*>(pMe)->GetObjectId();
     voice.m_position = pMe->vfunc_18();
     voice.m_program = nProgram;
     voice.m_percussion = spCategory->m_nPercussionId;
     int nSlot = GetSlot(0, voice);
     unsigned nNow = GetTickCountMs2();
-    unsigned nEnd = PlayScoreText(strText, nNow - nOffset, nProgram, voice.m_percussion, nSlot, 0, reinterpret_cast<GameObject*>(pMe)->FUN_14123c580());
+    unsigned nEnd = PlayScoreText(strText, nNow - nOffset, nProgram, voice.m_percussion, nSlot, 0, reinterpret_cast<GameObject*>(pMe)->GetObjectId());
     *pnDuration = nEnd - (nNow - nOffset);
     if (nEnd > nNow)
         return true;

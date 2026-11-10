@@ -42,7 +42,7 @@ extern GameEventUserValue DAT_143ab2fc0;
 extern GameEventUserValue DAT_143ab3010;
 
 // GameEventUserValue::GetValue<int> (0x1409617d0): its GameEventVariable::GetValue<int> has no body yet.
-class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned int nId, const int& nDefault); };
+class Unk_AttendTable { public: int GetValue(int nKind, unsigned int nId, const int& nDefault); };
 
 // The root AS object of the dialog movie and the clip kinds used here.
 class ASDialog : public ASDisplayObject
@@ -91,7 +91,7 @@ private:
     void* m_180; void* m_188; void* m_190; void* m_198;
 };
 MS2_CHECK_SIZE(CItem, 0x1a0);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // The local player: a large virtual class; slot 78 is the level.
 class Unk_DTPlayer
@@ -202,7 +202,7 @@ MS2_REPLACE_METHOD(0x140F35BB0, UIDTEventDialog, GetTypeName, 61, 0x85A1FB0B);
 void UIDTEventDialog::vfunc_67()
 {
     for (POSITION pos = m_binds.GetHeadPosition(); pos != NULL; m_binds.GetNext(pos))
-        FUN_141415600(m_binds.GetAt(pos));
+        DestroyItemInfoSlot(m_binds.GetAt(pos));
     m_binds.RemoveAll();
     UIDialog::vfunc_67();
 }
@@ -329,7 +329,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
         return 0;
     GameEventUserValue& rTable = pReward->m_ctx->m_b33 ? DAT_143ab3010 : DAT_143ab2fc0;
     int nDefault = 0;
-    pReward->m_step = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2be, pReward->m_ctx->m_id, nDefault);
+    pReward->m_step = reinterpret_cast<Unk_AttendTable&>(rTable).GetValue(0x2be, pReward->m_ctx->m_id, nDefault);
     if (pReward->m_ctx->m_rewards.GetCount() <= pReward->m_step)
         return 0;
     MS2Ptr<EventStruct::DTReward> pStep(pReward->m_ctx->m_rewards[(int)pReward->m_step]);
@@ -338,7 +338,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     __int64 nDefault64 = 0;
     pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).GetValue(0x2bd, pReward->m_ctx->m_id, nDefault2);
     __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
@@ -361,12 +361,12 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
         item->SetCountClamped(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
-        FUN_141415450(strBindID, item, 0, 0x415, 0);
+        CreateItemInfoSlot(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
+    obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cba60("bindID", strBindID);
-    obj.FUN_1409c0d20("itemCount", pStep->e);
+    obj.SetMemberUInt("itemCount", pStep->e);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
@@ -385,7 +385,7 @@ int UIDTEventDialog::vfunc_85(Unk_DTPtr<RewardItem> pReward)
         return 0;
     GameEventUserValue& rTable = pReward->m_ctx->m_b33 ? DAT_143ab3010 : DAT_143ab2fc0;
     int nDefault = 0;
-    unsigned int nStep = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2be, pReward->m_ctx->m_id, nDefault);
+    unsigned int nStep = reinterpret_cast<Unk_AttendTable&>(rTable).GetValue(0x2be, pReward->m_ctx->m_id, nDefault);
     if (pReward->m_ctx->m_rewards.GetCount() <= nStep) {
         vfunc_86(pReward);
         return 0;
@@ -399,7 +399,7 @@ int UIDTEventDialog::vfunc_85(Unk_DTPtr<RewardItem> pReward)
     __int64 nDefault64 = 0;
     pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).GetValue(0x2bd, pReward->m_ctx->m_id, nDefault2);
     __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
@@ -417,7 +417,7 @@ int UIDTEventDialog::vfunc_85(Unk_DTPtr<RewardItem> pReward)
     int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
     CStringW strRemain = FUN_140f388c0(&remain);
     ASObj obj(2);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
+    obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);
@@ -434,7 +434,7 @@ int UIDTEventDialog::vfunc_86(Unk_DTPtr<RewardItem> pReward)
     if (pReward == NULL)
         return 0;
     ASObj obj(2);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
+    obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
     m_30->Invoke("removeItem", obj.FUN_1422bb870());
     return 1;
 }
@@ -457,7 +457,7 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     __int64 nDefault64 = 0;
     pReward->m_start = rTable.GetValue<__int64>(700, pReward->m_ctx->m_id, nDefault64);
     int nDefault2 = 0;
-    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).FUN_1409617d0(0x2bd, pReward->m_ctx->m_id, nDefault2);
+    pReward->m_elapsed = reinterpret_cast<Unk_AttendTable&>(rTable).GetValue(0x2bd, pReward->m_ctx->m_id, nDefault2);
     __int64 now = GetServerTime();
     if (pReward->m_start == 0)
         pReward->m_start = now;
@@ -480,13 +480,13 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
         item->SetCountClamped(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
-        FUN_141415450(strBindID, item, 0, 0x415, 0);
+        CreateItemInfoSlot(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
     obj.FUN_1407cb9c0("change", 1);
-    obj.FUN_1409c0d20("eventID", pReward->m_ctx->m_id);
+    obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
     obj.FUN_1407cba60("bindID", strBindID);
-    obj.FUN_1409c0d20("itemCount", pStep->e);
+    obj.SetMemberUInt("itemCount", pStep->e);
     obj.FUN_1407cbb20("remainTime", strRemain);
     obj.FUN_1407cb9c0("gaugeRate", nGauge);
     obj.FUN_1407cb9c0("vibrate", bVibrate);

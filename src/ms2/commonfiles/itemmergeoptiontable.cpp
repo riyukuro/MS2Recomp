@@ -137,8 +137,8 @@ public:
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signature
 template <class A> CStringW FormatStringId(int nId, const A& a);             // the highlighted text
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
+bool FormatRandomOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
+bool FormatRandomSpecialOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
 class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
@@ -642,7 +642,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             }
             if (nFlag == 0)
                 return strLine;
-            if (FUN_1409c5210(strExtra, spItem, nStat, 4, spValue, strLine))
+            if (FormatRandomOptionValue(strExtra, spItem, nStat, 4, spValue, strLine))
                 strLines.Append(strExtra);
         }
         for (POSITION pos = rSpecial.GetStartPosition(); pos != 0; rSpecial.GetNext(pos))
@@ -661,7 +661,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             }
             if (nFlag == 0)
                 return strLine;
-            if (FUN_1409c56f0(strExtra, spItem, nStat, 4, spValue, strLine))
+            if (FormatRandomSpecialOptionValue(strExtra, spItem, nStat, 4, spValue, strLine))
                 strLines.Append(strExtra);
         }
         strResult.Append(strLines);

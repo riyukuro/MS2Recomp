@@ -83,7 +83,7 @@ struct Unk_ClientConfig
 // The scene camera (FUN_1413f9890()->GetActiveRenderSurface()->GetCamera()) and its frustum.
 ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
 class CPhysXHelper
 {
@@ -226,8 +226,8 @@ void CTargetCameraMode::vfunc_8(double fTime)
             Vector3 ptDir = (ptTarget - ptPos);
             ptDir.Unitize();
             (ptPos += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_84)));
-            float fTargetMove = FUN_140966ea0(ptPrevTarget, m_78);
-            float fPosMove = FUN_140966ea0(ptPrevPos, ptPos);
+            float fTargetMove = GetPlanarDistance(ptPrevTarget, m_78);
+            float fPosMove = GetPlanarDistance(ptPrevPos, ptPos);
             if (fTargetMove > fPosMove)
                 ++nLoop;
             if (m_50 < m_58 || m_54 + m_b4 < m_50)
@@ -335,7 +335,7 @@ MS2_REPLACE_METHOD(0x14183b270, CTargetCameraMode, vfunc_9, 758, 0x07F55314);
 void CTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->SetTarget(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x14183b570, CTargetCameraMode, vfunc_10, 74, 0x9E7A33EE);
 
@@ -558,11 +558,11 @@ bool CTargetCameraMode::FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot)
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
-        float fYaw = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_23();
-        float fPitch = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_22();
+        float fYaw = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->vfunc_23();
+        float fPitch = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->vfunc_22();
         float fDist = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
         Vector3 ptTarget = pTarget->vfunc_17();
-        ptTarget.z += TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_27();
+        ptTarget.z += TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->vfunc_27();
         float fX = fDist * FUN_1409f25a0(fYaw) + ptTarget.x;
         float fY = fDist * FUN_1409f2310(fYaw) + ptTarget.y;
         float fZ = fDist * FUN_1409f2310(fPitch) + ptTarget.z;
@@ -760,15 +760,15 @@ BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
                     fLen = 1.0f;
                 efd::Point3 ptBack = -reinterpret_cast<const efd::Point3&>(ptDir);
                 Vector3 ptHit = g_143b01a60;
-                if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
+                if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(m_78, ptHit, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
+                    if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(m_78, ptHit, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
                         return 1;
                 }
                 else
                 {
                     Vector3 ptHit2 = g_143b01a60;
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(ptHit, ptHit2, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
+                    if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(ptHit, ptHit2, reinterpret_cast<Vector3&>(ptBack), fLen, 0x209))
                         return 1;
                 }
             }

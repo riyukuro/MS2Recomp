@@ -63,7 +63,7 @@ class CSkillRecord : public Unk_PCBaseComp_b18 {};
 #include <efd/Matrix3.h>
 class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nId); bool FUN_141683100(int nId); };   // C3: view of the real class (unit_141682f80)
 
-CFunctionCubeService* FUN_1409670b0();
+CFunctionCubeService* GetFunctionCubeService();
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
 namespace egmAnimation { class AnimationService; }
@@ -171,14 +171,14 @@ void StateUseFurniture::vfunc_4(StateData* pData)
     m_spFurniture.AssignRaw(dynamic_cast<StateUseFurnitureData*>(pData));
     if (m_spFurniture.get())
     {
-        m_spCube = FUN_1409670b0()->FindCube(m_spFurniture->m_strKey);
+        m_spCube = GetFunctionCubeService()->FindCube(m_spFurniture->m_strKey);
     }
     else
     {
         m_spFurniture.AssignRaw(new StateUseFurnitureData());
         PCBase* pMe = FUN_1417b8370();
         if (pMe != 0)
-            m_spCube = FUN_1409670b0()->FindCube(m_spFurniture->m_strKey);
+            m_spCube = GetFunctionCubeService()->FindCube(m_spFurniture->m_strKey);
     }
     if (m_spCube.get())
     {
@@ -194,7 +194,7 @@ void StateUseFurniture::vfunc_4(StateData* pData)
             Unk_EffectQuery kQuery;
             kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
             kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
-            kQuery.SetActor(m_pOwner->FUN_14123c580());
+            kQuery.SetActor(m_pOwner->GetObjectId());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
         }
     }
@@ -293,9 +293,9 @@ void StateUseFurniture::vfunc_8(double fTime)
     Unk_PCMove* pBuff = (Unk_PCMove*)pPC->FUN_14166d240();
     pPC->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (pBuff->FUN_141683100(0x30d41))
-        pPC->FUN_1415248d0(1, 0);
+        pPC->TryUseChairOrBed(1, 0);
     else if (pBuff->FUN_141683100(0x30d42))
-        pPC->FUN_1415248d0(2, 0);
+        pPC->TryUseChairOrBed(2, 0);
     else if (pPC->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
         pPC->vfunc_59(6, 0, 0x25, 0);
     else if (m_pOwner->FUN_1416749c0())
@@ -327,8 +327,8 @@ void StateUseFurniture::vfunc_5(int n)
         Unk_EffectQuery kQuery;
         kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
         kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
-        kQuery.SetActor(m_pOwner->FUN_14123c580());
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
+        kQuery.SetActor(m_pOwner->GetObjectId());
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     }
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
@@ -368,7 +368,7 @@ void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eS
         return;
     if (m_n64 == 0)
     {
-        efd::utf8string kName = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationNameFromId(m_pOwner->FUN_14123c460(), eSequenceID);
+        efd::utf8string kName = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationNameFromId(m_pOwner->GetEntityID(), eSequenceID);
         if (UfEqual((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
             m_n64 = 1;
     }

@@ -32,7 +32,7 @@ CScaleModifier::~CScaleModifier()
 // @0x14170b610
 bool CScaleModifier::Update()
 {
-    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     if (dNow > m_dStartTime + m_fDuration || dNow < m_dStartTime)
     {
         if (m_bActive)
@@ -59,7 +59,7 @@ MS2_REPLACE_METHOD(0x14170b610, CScaleModifier, Update, 378, 0x2188D5BC);
 // @0x14170b7a0
 void CScaleModifier::Start(float fBaseScale)
 {
-    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     m_fBaseScale = fBaseScale;
     m_bActive = true;
 }

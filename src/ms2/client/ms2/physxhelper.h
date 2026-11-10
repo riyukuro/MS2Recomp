@@ -47,7 +47,7 @@ public:
     ClosestHitReport(NxActor* pIgnoreA, NxActor* pIgnoreB); // 0x14168abb0
     // implicit virtual dtor: 0x14168acf0 (scalar deleting 0x14168b070)
     virtual bool onHit(const NxRaycastHit& hit);            // 0x14168b3a0
-    const NxRaycastHit* FUN_14168b0f0() const;              // the stored hit, or 0 when none was found
+    const NxRaycastHit* GetHit() const;              // the stored hit, or 0 when none was found
     bool FUN_14168b120(NxActor* pA, NxActor* pB);           // same actor, or actors owned by the same entity
     NxActor* m_pIgnoreA;            // +0x08
     NxActor* m_pIgnoreB;            // +0x10
@@ -66,24 +66,24 @@ public:
     virtual ~CPhysXHelper();                                                                // 0x141689240 (scalar deleting 0x14168b030)
     Unk_PhysXSceneHandle* GetScene(int nScene);
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
-    NxActor* FUN_1416897d0(void* pObj);                                                      // the actor of a game object
+    NxActor* GetPhysicsActor(void* pObj);                                                      // the actor of a game object
     egf::Entity* GetEntityFromActor(NxActor* pActor);
     bool FUN_141689a10(egf::Entity* pEntity);
     void FUN_141689ac0(efd::SmartPointer<egfPhysX::EntityActorData> spProp);
     void FUN_141689d00(NxActor* pActor, unsigned short nGroup, const NxGroupsMask* pMask);
-    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
-    NxScene* FUN_14168a1c0();
+    void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
+    NxScene* GetNxScene();
     float FUN_14168a210();
     int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                       Vector3* pNormal, int nMask);
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);   // no exe caller copies
     void FUN_14168a540(int);
-    void FUN_14168a570();
-    void FUN_14168a5a0();
+    void Unlock();
+    void CacheScenes();
     void ClearScenes();
-    void* FUN_14168a750();
-    bool FUN_14168a770(const Vector3* pPoint);
+    void* GetControllerManager();
+    bool CheckCapsuleOverlap(const Vector3* pPoint);
     int FUN_14168a9b0(void* pEntity, Vector3 ptFrom);   // by value: the exe callers pass a copy
     NxControllerManager* m_pControllerMgr;      // +0x08
     Unk_PhysXLockOwner* m_pLock;                // +0x10

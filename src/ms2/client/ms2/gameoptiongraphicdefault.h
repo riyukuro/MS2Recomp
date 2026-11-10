@@ -62,8 +62,8 @@ public:
     virtual int vfunc_14();                                       // 0x14124d890
 
     void FUN_14124ce20();                                           // apply the page to the live graphic options
-    void FUN_14124d080();                                           // fill the m_resolution combo
-    void FUN_14124d5f0(int nIndex, int* pnWidth, int* pnHeight);   // the size of the nIndex-th display mode
+    void FillResolutionCombo();                                           // fill the m_resolution combo
+    void GetModeSize(int nIndex, int* pnWidth, int* pnHeight);   // the size of the nIndex-th display mode
 
     Unk_GraphicState m_state;                                       // +0x30 (ctor 0x14125d890)
     Unk_GraphicState2 m_state2;                                     // +0x60 (ctor 0x14125ec20)

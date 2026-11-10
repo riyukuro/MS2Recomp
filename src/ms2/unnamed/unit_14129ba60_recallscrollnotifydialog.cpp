@@ -162,7 +162,7 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {
                     box->Append<int>(nSlot);
-                    box->FUN_140b76940(CStringW(m_names[nSlot]));
+                    box->AddStringArg(CStringW(m_names[nSlot]));
                     box->Append<unsigned int>(m_fields[nSlot]);
                     box->FUN_141a02460(1);
                     box->FUN_141a02480(1);

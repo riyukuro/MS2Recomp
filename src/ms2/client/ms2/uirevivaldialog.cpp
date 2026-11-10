@@ -54,7 +54,7 @@ public:
 class MyPC : public PC   // C3: the real PC (fittingdollpc.h) for the job id, level and busy calls
 {
 public:
-    int FUN_141528160();
+    int GetMesoRevivalRemainingCount();
 };
 
 // The client constants (singleton 0x1401d3200): the revival related values.
@@ -132,7 +132,7 @@ public:
 
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_14151f200();
-void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
+void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
 CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
@@ -326,7 +326,7 @@ void UIRevivalDialog::FUN_141abae20()
     {
         CStringW strMsg;
         MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
-        if (pPc->FUN_1416546d0()->GetJobGroupID() == 1 || ((reinterpret_cast<long long>(spField.get()) ? true : false) && spField->m_nDeathPenalty == 0))
+        if (pPc->GetJobSystem()->GetJobGroupID() == 1 || ((reinterpret_cast<long long>(spField.get()) ? true : false) && spField->m_nDeathPenalty == 0))
         {
             strMsg = GetStringCommon(0x27c);
         }
@@ -446,7 +446,7 @@ void UIRevivalDialog::FUN_141abbb20()
     int nCoupon = FUN_141abc9d0();
     if (nCoupon != 0)
     {
-        MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(4);
+        MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(4);
         if (hItem.get() != 0)
             bHasCoupon = 1;
     }
@@ -500,15 +500,15 @@ void UIRevivalDialog::FUN_141abc080()
     int nCoupon = FUN_141abc9d0();
     if (nCoupon != 0)
     {
-        MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(4);
+        MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(4);
         if (hItem.get() != 0)
             bHasCoupon = 1;
     }
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
         __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(), 0);
-        float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
-            ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
+        float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42)
+            ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42);
         nCost = FUN_140632990(nCost, 1.0f - fRate);
         nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
@@ -565,7 +565,7 @@ int UIRevivalDialog::FUN_141abc7f0()
     int nResult = 0;
     if (((CGameRule*)FUN_1401c0d90())->FUN_140477d10(pPc->FUN_141658f30()) == 1)
         nResult = 1;
-    else if ((unsigned int)pPc->FUN_141528160() > 0)
+    else if ((unsigned int)pPc->GetMesoRevivalRemainingCount() > 0)
         nResult = 1;
     if (nResult != 0)
     {
@@ -684,8 +684,8 @@ void UIRevivalDialog::FUN_141abccb0()
         return;
     __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(),
         pPc->FUN_1416749a0()->GetOverlapCount(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_51d8)->Get(), 0));
-    float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
-        ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
+    float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42)
+        ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0x42);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
@@ -706,7 +706,7 @@ void UIRevivalDialog::FUN_141abccb0()
             else
                 strMsg = FormatStringId<__int64>(0x283, m_190);
             m_180->SetMsg(strMsg);
-            FUN_14151f4e0(m_180->FUN_141a02b90(), m_180);
+            ShowOrReplaceByTag(m_180->FUN_141a02b90(), m_180);
         }
     }
 }
@@ -717,11 +717,11 @@ void UIRevivalDialog::FUN_141abd290()
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    int nA = pPc->FUN_141528160();
+    int nA = pPc->GetMesoRevivalRemainingCount();
     int nB = ((CGameRule*)FUN_1401c0d90())->FUN_140477d10(pPc->FUN_141658f30());
     __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
-    float fRate = reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4)
-        ? reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4);
+    float fRate = reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4)
+        ? reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()) != 0)
@@ -734,7 +734,7 @@ void UIRevivalDialog::FUN_141abd290()
     }
     else
     {
-        unsigned int nKind = pPc->FUN_141528160();
+        unsigned int nKind = pPc->GetMesoRevivalRemainingCount();
         strLabel = FUN_14028dee0<CStringW, unsigned int>(0x285, FUN_1409404f0(nCost), nKind);
     }
     static_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("setButtonLabel", 2, strLabel);
@@ -751,7 +751,7 @@ void UIRevivalDialog::FUN_141abd640()
     MS2Ptr<ASCheckBox> spCoupon = GetChild<ASCheckBox>("m_coupon");
     if (spCoupon == 0)
         return;
-    MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(4);
+    MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(4);
     if (m_1b4 != 0 && hItem.get() != 0)
     {
         if (spCoupon->FUN_1422c2030() == 0)

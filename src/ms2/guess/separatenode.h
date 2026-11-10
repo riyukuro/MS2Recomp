@@ -1,4 +1,4 @@
-// separatenode.h - Unk_SeparateNode (exe symbols ??0Unk_SeparateNode@@...; RTTI name "SeparateNode"): a NiNode that
+// separatenode.h - SeparateNode (RTTI .?AVSeparateNode@@, NiRTTI name "SeparateNode"): a NiNode that
 // keeps its world transform separated from the parent's - UpdateWorldData resets the world transform and then copies
 // only the parent components (translate / rotate / scale) whose bit is set in a 1-byte bitset<3>. Recovered from
 // MapleStory2.exe KMS2_DEV x64 (2022-04-13); the unit is `?\separatenode.cpp` (.text$mn 0x141751290-0x1417516d0,
@@ -13,14 +13,14 @@ class NiCloningProcess;
 
 // 0x138 bytes. vftable 0x142f60d20 (overrides slots 0 ddtor, 2 GetRTTI, 3 CreateClone, 32 UpdateWorldData). The exe's
 // 1-byte member is bitset.h's Unk_Bitset<3> (Unk_LightUpdateBits). Implicit dtor 0x1417514c0, ??_G 0x141751660.
-class Unk_SeparateNode : public NiNode
+class SeparateNode : public NiNode
 {
 public:
     // The exe mangles this ctor as `...@EEE@Z` (three unsigned char); declaring the params `bool` is what reproduces
     // its bytes (it forwards the raw argument to Unk_BitRef::operator=(bool) with no normalization).
-    Unk_SeparateNode(bool b0, bool b1, bool b2);                           // 0x141751380
-    Unk_SeparateNode(Unk_LightUpdateBits kBits);                             // 0x141751470
-    virtual ~Unk_SeparateNode();                                             // 0x1417514c0
+    SeparateNode(bool b0, bool b1, bool b2);                           // 0x141751380
+    SeparateNode(Unk_LightUpdateBits kBits);                             // 0x141751470
+    virtual ~SeparateNode();                                             // 0x1417514c0
     virtual const NiRTTI* GetRTTI() const;                                   // slot 2, 0x1417516c0
     virtual NiObject* CreateClone(NiCloningProcess& kCloning);               // slot 3, 0x141751290
     virtual void UpdateWorldData();                                          // slot 32, 0x1417514f0
@@ -29,6 +29,6 @@ public:
 
     Unk_LightUpdateBits m_kBits;                                             // +0x130: which parent components to keep
 };
-MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
-MS2_CHECK_OFFSET(Unk_SeparateNode, m_kBits, 0x130);
+MS2_CHECK_SIZE(SeparateNode, 0x138);
+MS2_CHECK_OFFSET(SeparateNode, m_kBits, 0x130);
 

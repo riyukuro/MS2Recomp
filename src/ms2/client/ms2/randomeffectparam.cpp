@@ -34,8 +34,8 @@ CString FUN_140188f50(const char* psz, int n);                                  
 template <class C> void XmlSplit(const CString&, C&, const char*);  // split to uints
 
 // Effect factory (effectservice): parse one <effect> element / create the runtime effect of a param.
-CEffectParamPtr FUN_1411a04e0(const CString& strOwner, TiXmlElement* pNode);
-CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
+CEffectParamPtr CreateEffectParam(const CString& strOwner, TiXmlElement* pNode);
+CEffectPtr CreateEffect(CEffectParam* pParam, Unk_EffectTarget* pTarget);
 
 // Game log (commonfiles singleton 0x140166440).
 class CLogString;
@@ -87,7 +87,7 @@ void CRandomEffectParam::vfunc_1(TiXmlElement* pNode)
     XmlSplit(strProb, (ATL::CAtlArray<unsigned int>&)m_arrWeights, ", ");
     for (TiXmlElement* pChild = ((TiXmlElement*)((Unk_XmlNode*)(TiXmlElement*)(pNode))->FirstChild("effect")); pChild; pChild = ((TiXmlElement*)((Unk_XmlNode*)(TiXmlElement*)(pChild))->NextSibling("effect")))
     {
-        CEffectParamPtr spParam = FUN_1411a04e0(m_str20, pChild);
+        CEffectParamPtr spParam = CreateEffectParam(m_str20, pChild);
         if (spParam.get())
             m_arrEffects.Add(spParam);
     }
@@ -171,7 +171,7 @@ bool CRandomEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         nIndex = *kPicker.Pick(kRandom);
     }
     const CEffectParamPtr& spParam = pRandom->m_arrEffects[nIndex];
-    m_spEffect = FUN_14119eae0(spParam.get(), pTarget);
+    m_spEffect = CreateEffect(spParam.get(), pTarget);
     if (m_spEffect == NULL)
         return false;
     return true;

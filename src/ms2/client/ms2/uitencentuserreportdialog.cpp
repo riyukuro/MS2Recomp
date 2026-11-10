@@ -303,7 +303,7 @@ MS2_REPLACE_METHOD(0x140EDBE30, UITencentUserReportDialog, FUN_140edbe30, 329, 0
 void UITencentUserReportDialog::FUN_140edbf80()
 {
     if (TSingleton<BlindManager>::GetInstance()->Block(5, m_data.content) == true)
-        TSingleton<CGuildManager>::GetInstance()->FUN_1413baef0(m_data.m_28, 0);
+        TSingleton<CGuildManager>::GetInstance()->UpdateGuildPoster(m_data.m_28, 0);
 }
 MS2_REPLACE_METHOD(0x140EDBF80, UITencentUserReportDialog, FUN_140edbf80, 132, 0x3A397539);
 

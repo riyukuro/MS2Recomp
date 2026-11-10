@@ -103,7 +103,7 @@ int CGuideConditionMovement::vfunc_3()
         bDone = true;
     else
         bDone = false;
-    return FUN_1413a5600(bDone);
+    return ApplyNotBool(bDone);
 }
 MS2_REPLACE_METHOD(0x1413A7820, CGuideConditionMovement, vfunc_3, 289, 0x92925FED);
 
@@ -136,7 +136,7 @@ int CGuideConditionInventoryTab::vfunc_3()
 {
     Unk_TabInventory* pInv = reinterpret_cast<Unk_TabInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInv != 0 && pInv->vfunc_55() == 0)
-        return FUN_1413a5600(m_n20 == ((class UIInventoryDialog*)(pInv))->FUN_141999de0());
+        return ApplyNotBool(m_n20 == ((class UIInventoryDialog*)(pInv))->FUN_141999de0());
     return 0;
 }
 MS2_REPLACE_METHOD(0x1413A7A50, CGuideConditionInventoryTab, vfunc_3, 111, 0xD63E69C8);

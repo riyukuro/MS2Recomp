@@ -57,7 +57,7 @@ public:
     int FUN_141254590() const { return m_nTab; }                    // 0x141254590
     int FUN_141254a00() const { return m_nF1cc; }                   // 0x141254a00
     template <class T> MS2Ptr<T> GetTabChild(CString strName, int nIndex);   // "getTabChild" (instances per T, e.g. 0x1412536b0)
-    MS2Ptr<class ASUIComponent> FUN_14124ff50(int nIndex);         // 0x14124ff50 "getTabComponent" (gameoption.cpp)
+    MS2Ptr<class ASUIComponent> GetTabComponent(int nIndex);         // 0x14124ff50 "getTabComponent" (gameoption.cpp)
 
     int m_nTab;                                                     // +0x178 current tab id (1 on a fresh dialog)
     ATL::CAtlMap<int, MS2Ptr<CBaseOption>> m_mapPages;              // +0x180 tab id -> page

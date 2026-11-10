@@ -79,7 +79,7 @@ Unk_Int3 FUN_1408a0400(int nKey);                                    // C3: the 
 efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, efd::Point3& kCentre);     // fills kCentre with the cell centre (the exe copies the cell: by value)
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x1417c8900
 StateGlide::StateGlide(PCBase* pOwner) : StateMoveSkill(pOwner), m_nEffect(0)
@@ -132,19 +132,19 @@ void StateGlide::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(pPC)->vfunc_18();
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770(reinterpret_cast<const Vector3*>(&kPos)))
+        if (((class CPhysXHelper*)GetPhysXHelper())->CheckCapsuleOverlap(reinterpret_cast<const Vector3*>(&kPos)))
         {
             pPC->vfunc_59(1, 0, 0, 0);
             return;
         }
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
-        ((CPushControl*)pPC->FUN_141675eb0())->FUN_1413fcf90();
+        ((CPushControl*)pPC->GetPushControl())->Reset();
     }
     m_nAnim = 99;
     Unk_EffectQuery query;
     query.m_strName = m_spRow->m_strEffectIdle;
     query.m_nObject = 0;
-    query.SetActor(m_pOwner->FUN_14123c580());
+    query.SetActor(m_pOwner->GetObjectId());
     query.m_bFlag31 = true;
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->vfunc_47(false);
@@ -174,7 +174,7 @@ void StateGlide::vfunc_3(double fTime)
         {
             efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_18();
             float fDist = 0.0f;
-            if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+            if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
                 bLand = 1;
         }
     }
@@ -238,7 +238,7 @@ void StateGlide::vfunc_9(double fTime)
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectRun;
                 query.m_nObject = 0;
-                query.SetActor(m_pOwner->FUN_14123c580());
+                query.SetActor(m_pOwner->GetObjectId());
                 query.m_bFlag31 = true;
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
@@ -253,7 +253,7 @@ void StateGlide::vfunc_9(double fTime)
                 Unk_EffectQuery query;
                 query.m_strName = m_spRow->m_strEffectIdle;
                 query.m_nObject = 0;
-                query.SetActor(m_pOwner->FUN_14123c580());
+                query.SetActor(m_pOwner->GetObjectId());
                 query.m_bFlag31 = true;
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
@@ -265,7 +265,7 @@ void StateGlide::vfunc_9(double fTime)
 }
 
 // @0x1417c9660
-bool StateGlide::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateGlide::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     if (m_spRow == 0)
         return true;
@@ -273,7 +273,7 @@ bool StateGlide::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x1417c9710
-int StateGlide::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateGlide::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     return 1;
 }

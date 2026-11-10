@@ -39,7 +39,7 @@ class CFeatureManager { public: bool FUN_14036d570(int nFeature); bool IsRegionJ
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_1401c0d90();   // C3: returns the game rule
 class CItem;
-class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nSlot); };   // C3: member view (inventory.h)
+class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); MS2Ptr<CItem> FindItemByTag(int nSlot); };   // C3: member view (inventory.h)
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 class CItem : public CPtred   // C3: member view for the former free stand-ins
 {
@@ -82,7 +82,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     __int64 nItemUid = 0;
     int nKind = 1;
-    if (((class PC*)(class MyPC*)(pPC))->FUN_141662de0() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x57) != 0)
+    if (((class PC*)(class MyPC*)(pPC))->IsVip() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x57) != 0)
     {
         nKind = 2;
     }
@@ -90,9 +90,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     {
         if (((CGameRule*)FUN_1401c0d90())->IsFreeAirTaxiActive() == 0)
         {
-            MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(10);
+            MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(10);
             if (hItem.operator==(0))
-                hItem = g_143ab2a90.FUN_140a5e040(0xb);
+                hItem = g_143ab2a90.FindItemByTag(0xb);
             if (hItem.get() != 0)
             {
                 nItemUid = hItem.operator->()->GetItemUid();
@@ -112,7 +112,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         int nHave = g_143ab2a90.FUN_140a5f7b0(0xb, 0);
         if (nHave >= nNeed)
         {
-            MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(0xb);
+            MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(0xb);
             if (hItem.operator==(0))
                 return 0;
             nItemUid = hItem.operator->()->GetItemUid();
@@ -132,7 +132,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
             }
         }
     }
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n28 = nCallType;
@@ -178,7 +178,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         return 0;
     }
     int nKind = 5;
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = nKind;
@@ -226,7 +226,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         return 0;
     }
     int nKind = 4;
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = nKind;
@@ -269,7 +269,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
         return 0;
     }
     int nKind = 6;
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = nKind;
@@ -291,7 +291,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 }
 
 // @0x140b040a0
-int CCashCallManager::FUN_140b040a0(int nCount)
+int CCashCallManager::CanRecall(int nCount)
 {
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
@@ -344,9 +344,9 @@ int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (FUN_140b040a0(nCount) == 0)
+    if (CanRecall(nCount) == 0)
         return 0;
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionRecall> spAction(new RideOffActionRecall(0));
         spAction->m_n28 = nTarget;

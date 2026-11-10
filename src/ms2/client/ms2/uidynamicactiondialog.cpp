@@ -86,7 +86,7 @@ class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x14093
 // Input state, the movie manager, the key binds.
 class Unk_DaInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 // the key table: FUN_1409331f0 (ckeytable.h)
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
@@ -145,7 +145,7 @@ void UIDynamicActionDialog::vfunc_67()
     UIDialog::vfunc_67();
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
-        pPlayer->FUN_141523bc0()->FUN_141769280();
+        pPlayer->GetSkillSystem()->FUN_141769280();
     m_190.clear();
 }
 MS2_REPLACE_METHOD(0x14192ADE0, UIDynamicActionDialog, vfunc_67, 87, 0);
@@ -215,8 +215,8 @@ int UIDynamicActionDialog::vfunc_13()
         return 1;
     if (((Unk_DaInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-        if (pDlg != 0 && FUN_140b632f0() != 0) {
-            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (ASTextInput*)m_1a0 != 0) {
+        if (pDlg != 0 && GetUISwfEntityManager() != 0) {
+            if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) != 0 && (ASTextInput*)m_1a0 != 0) {
                 if (m_1a0.operator->()->GetFocused() != 0) {
                     SetSearchText(m_1a0->GetText());
                     reinterpret_cast<ASUIComponent*>(pDlg)->SetFocused(1);
@@ -324,7 +324,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 return 0;
             m_178.Clear();
             m_178.m_4 = nAction;
-            int nKey = FUN_1409331f0()->FUN_14142c940((unsigned)m_178.m_4, 0);
+            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)m_178.m_4, 0);
             m_184.Clear();
             m_184.m_8 = nKey;
             m_184.m_4 = nAction;
@@ -416,9 +416,9 @@ void UIDynamicActionDialog::FUN_14192c6b0()
     if (pPlayer == 0)
         return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    pPlayer->FUN_141523bc0()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));   // C3: CSkillSystem::FUN_1417691a0 (skillsystem.h)
-    int nMode = pPlayer->FUN_141523bc0()->SetShowError(0);
-    pPlayer->FUN_141523bc0()->SetShowError(nMode);
+    pPlayer->GetSkillSystem()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));   // C3: CSkillSystem::FUN_1417691a0 (skillsystem.h)
+    int nMode = pPlayer->GetSkillSystem()->SetShowError(0);
+    pPlayer->GetSkillSystem()->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
@@ -530,10 +530,10 @@ void UIDynamicActionDialog::FUN_14192ca70()
             }
             if (nNew != 0)
                 nFocus = nId;
-            int nKey = FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0);
+            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)nId, 0);
             CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
             ASObj action(2);
-            action.FUN_1409c0d20("id", nId);
+            action.SetMemberUInt("id", nId);
             action.FUN_1407cbb20("key", strKey);
             action.FUN_1407cb9c0("isNew", nNew);
             action.FUN_1407cb9c0("isLocked", 0);
@@ -599,10 +599,10 @@ void UIDynamicActionDialog::FUN_14192d100()
             }
             if (nNew != 0)
                 nFocus = nId;
-            int nKey = FUN_1409331f0()->FUN_14142c940((unsigned)nId, 0);
+            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)nId, 0);
             CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
             ASObj action(2);
-            action.FUN_1409c0d20("id", nId);
+            action.SetMemberUInt("id", nId);
             action.FUN_1407cbb20("key", strKey);
             action.FUN_1407cb9c0("isNew", nNew);
             action.FUN_1407cb9c0("isLocked", 0);

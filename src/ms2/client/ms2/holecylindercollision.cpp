@@ -69,7 +69,7 @@ int CHoleCylinderCollision::ContainsPoint(const Vector3& pt) const
 {
     if (GetBottom() > pt.z || GetTop() < pt.z)
         return 0;
-    float fDist = FUN_140966ea0(pt, m_ptCenter);
+    float fDist = GetPlanarDistance(pt, m_ptCenter);
     if (fDist < m_fInnerRadius || fDist > m_fOuterRadius)
         return 0;
     return 1;

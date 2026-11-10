@@ -332,14 +332,14 @@ CMasteryInteriorTable* FUN_140933200();
 class Unk_ItemSlotTable* FUN_140933210();   // C3: was FUN_140933210
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
-Unk_SingletonObj* FUN_140939a00();
+Unk_SingletonObj* GetMeratMarketMan();
 Unk_SingletonObj* FUN_140939a10();
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
-class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
-class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
+class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 void* FUN_140aadf70();   // C3: was FUN_140aadf70
 Unk_SingletonObj* FUN_140ac74e0();
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
@@ -348,8 +348,8 @@ void* FUN_140c24ef0();   // C3: was FUN_140c24ef0
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
-Unk_SingletonObj* FUN_140cea070();
-class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
+Unk_SingletonObj* GetSmartPushManager();
+class Unk_RankTable* GetRankingArenaDataTable();   // C3: was GetRankingArenaDataTable
 class CQuestNavigator* FUN_140e7c990();   // C3: was FUN_140e7c990
 // (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
@@ -635,7 +635,7 @@ MS2_REPLACE(0x1414A23B0, FUN_1414a23b0, 94, 0x70469E1B);
 void FUN_1414a2410()
 {
     if (TSingleton<CMeratMarketMan>::s_instance != 0) {
-        delete FUN_140939a00();
+        delete GetMeratMarketMan();
         TSingleton<CMeratMarketMan>::s_instance = 0;
     }
 }
@@ -725,7 +725,7 @@ MS2_REPLACE(0x1414A2770, FUN_1414a2770, 94, 0xF22A46B0);
 void FUN_1414a27d0()
 {
     if (TSingleton<COptimizer>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_1409f7c90()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetOptimizer()));
         TSingleton<COptimizer>::s_instance = 0;
     }
 }
@@ -779,7 +779,7 @@ MS2_REPLACE(0x1414A29B0, FUN_1414a29b0, 94, 0x213EEB3E);
 void FUN_1414a2a10()
 {
     if (TSingleton<CPhysXHelper>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_1409f7ca0()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetPhysXHelper()));
         TSingleton<CPhysXHelper>::s_instance = 0;
     }
 }
@@ -869,7 +869,7 @@ MS2_REPLACE(0x1414A2D70, FUN_1414a2d70, 94, 0x3B1D802E);
 void FUN_1414a2dd0()
 {
     if (TSingleton<CRankingArenaDataTable>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_140dc19b0()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetRankingArenaDataTable()));
         TSingleton<CRankingArenaDataTable>::s_instance = 0;
     }
 }
@@ -986,7 +986,7 @@ MS2_REPLACE(0x1414A3250, FUN_1414a3250, 94, 0x3CBF46EE);
 void FUN_1414a32b0()
 {
     if (TSingleton<CSmartPushManager>::s_instance != 0) {
-        delete FUN_140cea070();
+        delete GetSmartPushManager();
         TSingleton<CSmartPushManager>::s_instance = 0;
     }
 }
@@ -1418,7 +1418,7 @@ MS2_REPLACE(0x1414A4450, FUN_1414a4450, 94, 0x87DBB161);
 void FUN_1414a44b0()
 {
     if (TSingleton<ItemPreviewMgr>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_1409bb9e0()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetItemPreviewMgr()));
         TSingleton<ItemPreviewMgr>::s_instance = 0;
     }
 }
@@ -1508,7 +1508,7 @@ MS2_REPLACE(0x1414A4810, FUN_1414a4810, 94, 0x6F65BAF4);
 void FUN_1414a4870()
 {
     if (TSingleton<PaybackManagerClient>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_1409c1740()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetPaybackManager()));
         TSingleton<PaybackManagerClient>::s_instance = 0;
     }
 }
@@ -1670,7 +1670,7 @@ MS2_REPLACE(0x1414A4EF0, FUN_1414a4ef0, 94, 0x2D1FF1F4);
 void FUN_1414a4f50()
 {
     if (TSingleton<UIItemEventDispatcher>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_140a6a840()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)GetItemEventDispatcher()));
         TSingleton<UIItemEventDispatcher>::s_instance = 0;
     }
 }

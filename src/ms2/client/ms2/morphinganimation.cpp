@@ -136,7 +136,7 @@ MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, SetWeight, 295, 0x516868E3);
 // @0x141487d80
 NiAVObject* CMorphingAnimation::FindNode(const CString& strNodeName)
 {
-    Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460()));
+    Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<GameObject*>(m_pOwner)->GetEntityID()));
     if (pEntry != NULL) {
         NiNode* pRoot = ((class NiNode *)((class NiActorManager*)(pEntry))->GetNIFRoot());
         if (pRoot == NULL)

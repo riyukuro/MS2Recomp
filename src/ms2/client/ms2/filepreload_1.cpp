@@ -6,10 +6,10 @@
 // MS2-PIN: ??0CFilePreload@@QEAA@XZ 0x14120f7c0 ; unique
 // MS2-PIN: ??1CFilePreload@@UEAA@XZ 0x14120f9d0 ; unique
 // MS2-PIN: ?vfunc_1@CFilePreload@@UEAAIPEAXAEAVUnk_140659080@@@Z 0x14120fb80 ; unique
-// MS2-PIN: ?FUN_1412102e0@CFilePreload@@QEAAXXZ 0x1412102e0 ; unique
+// MS2-PIN: ?Stop@CFilePreload@@QEAAXXZ 0x1412102e0 ; unique
 // MS2-PIN: ?FUN_141210420@CFilePreload@@QEAAXH@Z 0x141210420 ; unique
-// MS2-PIN: ?FUN_1412104a0@CFilePreload@@QEAAXH@Z 0x1412104a0 ; unique
-// MS2-PIN: ?FUN_1412104c0@CFilePreload@@QEAAXI@Z 0x1412104c0 ; unique
+// MS2-PIN: ?EnablePreloadIds@CFilePreload@@QEAAXH@Z 0x1412104a0 ; unique
+// MS2-PIN: ?AddPreloadId@CFilePreload@@QEAAXI@Z 0x1412104c0 ; unique
 // MS2-PIN: ?FUN_141210540@CFilePreload@@QEAAXIGH@Z 0x141210540 ; unique
 // MS2-PIN: ?FUN_1412106a0@CFilePreload@@QEAAXU?$pair@IG@std@@H@Z 0x1412106a0 ; unique
 // MS2-PIN: ?FUN_141210770@CFilePreload@@QEAAXI@Z 0x141210770 ; unique
@@ -17,21 +17,21 @@
 // MS2-PIN: ?FUN_141210960@CFilePreload@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x141210960 ; unique
 // MS2-PIN: ?FUN_141210ac0@CFilePreload@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141210ac0 ; unique
 // MS2-PIN: ?FUN_141210c20@CFilePreload@@QEAAXXZ 0x141210c20 ; unique
-// MS2-PIN: ?FUN_141210c60@CFilePreload@@QEAAHXZ 0x141210c60 ; unique
-// MS2-PIN: ?FUN_141210c80@CFilePreload@@QEAAHXZ 0x141210c80 ; unique
+// MS2-PIN: ?IsDataReady@CFilePreload@@QEAAHXZ 0x141210c60 ; unique
+// MS2-PIN: ?GetPhase@CFilePreload@@QEAAHXZ 0x141210c80 ; unique
 // MS2-PIN: ?FUN_141210ca0@CFilePreload@@SAX_N@Z 0x141210ca0 ; unique
-// MS2-PIN: ?FUN_141210cc0@CFilePreload@@QEAAX_N@Z 0x141210cc0 ; unique
-// MS2-PIN: ?FUN_141210ce0@CFilePreload@@QEAAXV?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@@Z 0x141210ce0 ; unique
+// MS2-PIN: ?SetAsynchronous@CFilePreload@@QEAAX_N@Z 0x141210cc0 ; unique
+// MS2-PIN: ?RunJob@CFilePreload@@QEAAXV?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@@Z 0x141210ce0 ; unique
 // MS2-PIN: ?FUN_141210da0@CFilePreload@@QEAAXXZ 0x141210da0 ; unique
-// MS2-PIN: ?FUN_141210e10@CFilePreload@@QEAAX_N@Z 0x141210e10 ; unique
-// MS2-PIN: ?FUN_141210f00@CFilePreload@@QEAAX_N@Z 0x141210f00 ; unique
+// MS2-PIN: ?PreloadDataStep1@CFilePreload@@QEAAX_N@Z 0x141210e10 ; unique
+// MS2-PIN: ?PreloadDataStep2@CFilePreload@@QEAAX_N@Z 0x141210f00 ; unique
 // MS2-PIN: ?FUN_141211240@CFilePreload@@QEAAXPEAX@Z 0x141211240 ; unique
 // MS2-PIN: ?FUN_141211380@CFilePreload@@QEAAXPEAX@Z 0x141211380 ; unique
 // MS2-PIN: ?FUN_141211480@CFilePreload@@QEAAXPEAX@Z 0x141211480 ; unique
 // MS2-PIN: ?FUN_1412115e0@CFilePreload@@QEAAXPEAX@Z 0x1412115e0 ; unique
-// MS2-PIN: ?FUN_141211b30@CFilePreload@@QEAAXH@Z 0x141211b30 ; unique
+// MS2-PIN: ?NotifyProgress@CFilePreload@@QEAAXH@Z 0x141211b30 ; unique
 // MS2-PIN: ?FUN_141211b80@CFilePreload@@SAIPEAX@Z 0x141211b80 ; unique
-// MS2-PIN: ?FUN_141211c20@CFilePreload@@QEAAXXZ 0x141211c20 ; unique
+// MS2-PIN: ?ClearBackgroundThread@CFilePreload@@QEAAXXZ 0x141211c20 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_PreloadId@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadId@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141211c40 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_PreloadPath@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadPath@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141211c70 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadId@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadId@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadId@@@std@@@std@@@1@$$QEA_N@Z 0x141211ca0 ; unique
@@ -175,11 +175,11 @@
 // MS2-PIN: ??_G?$TSingleton@VCFilePreload@@@@UEAAPEAXI@Z 0x141215160 ; unique
 // MS2-PIN: ??_GUnk_PreloadPath@@QEAAPEAXI@Z 0x1412151e0 ; unique
 // MS2-PIN: ?Start@CThread@@QEAAHPEAXHHIPEAU_SECURITY_ATTRIBUTES@@@Z 0x141215220 ; unique
-// MS2-PIN: ?FUN_141215480@@YAPEAVCLearningQuestTable@@XZ 0x141215480 ; unique
-// MS2-PIN: ?FUN_141215500@@YAPEAVCMeratMarketPremium@@XZ 0x141215500 ; unique
+// MS2-PIN: ?GetLearningQuestTable@@YAPEAVCLearningQuestTable@@XZ 0x141215480 ; unique
+// MS2-PIN: ?GetMeratMarketPremium@@YAPEAVCMeratMarketPremium@@XZ 0x141215500 ; unique
 // MS2-PIN: ?IsNull@?$TFunctor@XV?$ParamList@HVEmptyParam@@@@@@QEBA_NXZ 0x1412155d0 ; unique
 // MS2-PIN: ?IsNull@?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@QEBA_NXZ 0x141215600 ; unique
-// MS2-PIN: ?FUN_141215630@COptimizer@@QEBAHXZ 0x141215630 ; unique
+// MS2-PIN: ?GetPreloadMode@COptimizer@@QEBAHXZ 0x141215630 ; unique
 // MS2-PIN: ?GetThreadId@CThread@@QEBAKXZ 0x141215640 ; unique
 // MS2-PIN: ?Clear@?$TFunctor@XV?$ParamList@HVEmptyParam@@@@@@QEAAXXZ 0x141215650 ; unique
 // MS2-PIN: ?Clear@?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@QEAAXXZ 0x1412156c0 ; unique
@@ -320,7 +320,7 @@ static CString s_chartNames[]={"None","Buy","PriceLow","PriceHigh","Create","Cha
 #include "ms2/placeholder/cinteractobjectdata.h"
 #include "ms2/commonfiles/itemdatatable.h"
 extern bool DAT_1439f7068;
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -335,7 +335,7 @@ CFilePreload::CFilePreload() : stopped(0),preloadIds(0),asynchronous(true),initi
 }
 // @0x14120f9d0
 CFilePreload::~CFilePreload() {
-    FUN_1412102e0();
+    Stop();
     if(semaphore) CloseHandle(semaphore);
 }
 // @0x14120fb80
@@ -362,27 +362,27 @@ void CFilePreload::FUN_14120fcc0() {
     if(state) return;
     FUN_141210da0();
     Start(this,0,0,0,0);
-    FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
+    RunJob(Job(this,&CFilePreload::FUN_141211240));
 }
 // @0x14120fdb0
 void CFilePreload::FUN_14120fdb0() {
     if(initialized) return;
     Start(this,0,0,0,0);
-    FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
+    RunJob(Job(this,&CFilePreload::FUN_141211240));
 }
 // @0x14120fe80
 void CFilePreload::FUN_14120fe80() {
     if(!initialized) return;
     if(state) return;
-    if(preloadIds!=0 && !ids.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211380));
-    else if(!itemRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211480));
-    else if(!effectRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412115e0));
-    else if(!nifRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211700));
-    else if(!paths.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211880));
-    else if(!itemIds.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412119e0));
+    if(preloadIds!=0 && !ids.empty()) RunJob(Job(this,&CFilePreload::FUN_141211380));
+    else if(!itemRequests.empty()) RunJob(Job(this,&CFilePreload::FUN_141211480));
+    else if(!effectRequests.empty()) RunJob(Job(this,&CFilePreload::FUN_1412115e0));
+    else if(!nifRequests.empty()) RunJob(Job(this,&CFilePreload::FUN_141211700));
+    else if(!paths.empty()) RunJob(Job(this,&CFilePreload::FUN_141211880));
+    else if(!itemIds.empty()) RunJob(Job(this,&CFilePreload::FUN_1412119e0));
 }
 // @0x1412102e0
-void CFilePreload::FUN_1412102e0() {
+void CFilePreload::Stop() {
     if(stopped==0) {
         stopped=1;
         { if(Unk_LockGuard guard=stateLock) { __assume(0); } else { state=3; } }
@@ -398,7 +398,7 @@ void CFilePreload::FUN_1412102e0() {
         FUN_1401d2fa0();
     }
 }
-MS2_REPLACE_METHOD(0x1412102e0, CFilePreload, FUN_1412102e0, 306, 0x14F19F7E);
+MS2_REPLACE_METHOD(0x1412102e0, CFilePreload, Stop, 306, 0x14F19F7E);
 // @0x141210420
 void CFilePreload::FUN_141210420(int ignored) {
     preloadIds=0;
@@ -406,17 +406,17 @@ void CFilePreload::FUN_141210420(int ignored) {
 }
 MS2_REPLACE_METHOD(0x141210420, CFilePreload, FUN_141210420, 110, 0xC342E578);
 // @0x1412104a0
-void CFilePreload::FUN_1412104a0(int ignored) { preloadIds=1; }
-MS2_REPLACE_METHOD(0x1412104a0, CFilePreload, FUN_1412104a0, 22, 0x6EA4C275);
+void CFilePreload::EnablePreloadIds(int ignored) { preloadIds=1; }
+MS2_REPLACE_METHOD(0x1412104a0, CFilePreload, EnablePreloadIds, 22, 0x6EA4C275);
 // @0x1412104c0
-void CFilePreload::FUN_1412104c0(unsigned id) {
+void CFilePreload::AddPreloadId(unsigned id) {
     if(Unk_LockGuard guard=idsLock) { __assume(0); } else { ids.insert(id); }
 }
-MS2_REPLACE_METHOD(0x1412104c0, CFilePreload, FUN_1412104c0, 108, 0x3223B7B3);
+MS2_REPLACE_METHOD(0x1412104c0, CFilePreload, AddPreloadId, 108, 0x3223B7B3);
 // @0x141210540
 void CFilePreload::FUN_141210540(unsigned id,unsigned short level,int priority) {
     if(id!=0) {
-        if(priority==3 && ((class COptimizer*)FUN_1409f7c90())->FUN_141215630()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
+        if(priority==3 && ((class COptimizer*)GetOptimizer())->GetPreloadMode()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
         Unk_PreloadId request(id,level,priority);
         if(Unk_LockGuard guard=itemLock) { __assume(0); } else {
             auto found=itemRequests.find(request);
@@ -429,7 +429,7 @@ MS2_REPLACE_METHOD(0x141210540, CFilePreload, FUN_141210540, 341, 0xB396B8B5);
 // @0x1412106a0
 void CFilePreload::FUN_1412106a0(Unk_PreloadKey key,int priority) {
     if(key.first!=0) {
-        if(priority==3 && ((class COptimizer*)FUN_1409f7c90())->FUN_141215630()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
+        if(priority==3 && ((class COptimizer*)GetOptimizer())->GetPreloadMode()==1 && ((void*)WorldService::GetInstance())!=0 && ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca2e0()!=0) return;
         Unk_PreloadId request(key,priority);
         if(Unk_LockGuard guard=itemLock) { __assume(0); } else { itemRequests.insert(request); }
     }
@@ -469,35 +469,35 @@ void CFilePreload::FUN_141210ac0(CString path) {
 }
 MS2_REPLACE_METHOD(0x141210ac0, CFilePreload, FUN_141210ac0, 139, 0x4E4DCC81);
 // @0x141210b60
-int CFilePreload::FUN_141210b60(unsigned id) {
+int CFilePreload::HasPreloadId(unsigned id) {
     if(Unk_LockGuard guard=idsLock) { __assume(0); } else { return ids.find(id)!=ids.end(); }
     // Original has no defined return on a failed lock; lock guards always succeed here.
 
 }
-MS2_REPLACE_METHOD(0x141210b60, CFilePreload, FUN_141210b60, 174, 0xBD7D11C6);
+MS2_REPLACE_METHOD(0x141210b60, CFilePreload, HasPreloadId, 174, 0xBD7D11C6);
 // @0x141210c20
 void CFilePreload::FUN_141210c20() { if(GetThreadId()!=0) FUN_1401d3510(INFINITE); }
 MS2_REPLACE_METHOD(0x141210c20, CFilePreload, FUN_141210c20, 43, 0x0152E27A);
 // @0x141210c60
-int CFilePreload::FUN_141210c60() { return dataReady; }
-MS2_REPLACE_METHOD(0x141210c60, CFilePreload, FUN_141210c60, 14, 0x620CA41F);
+int CFilePreload::IsDataReady() { return dataReady; }
+MS2_REPLACE_METHOD(0x141210c60, CFilePreload, IsDataReady, 14, 0x620CA41F);
 // @0x141210c80
-int CFilePreload::FUN_141210c80() { return phase; }
-MS2_REPLACE_METHOD(0x141210c80, CFilePreload, FUN_141210c80, 14, 0x7A15C443);
+int CFilePreload::GetPhase() { return phase; }
+MS2_REPLACE_METHOD(0x141210c80, CFilePreload, GetPhase, 14, 0x7A15C443);
 // @0x141210ca0
 void CFilePreload::FUN_141210ca0(bool enabled) { DAT_1439f7068=enabled; }
 MS2_REPLACE(0x141210ca0, CFilePreload::FUN_141210ca0, 16, 0xD5595944);
 // @0x141210cc0
-void CFilePreload::FUN_141210cc0(bool enabled) { asynchronous=enabled; }
-MS2_REPLACE_METHOD(0x141210cc0, CFilePreload, FUN_141210cc0, 23, 0x397CC0E5);
+void CFilePreload::SetAsynchronous(bool enabled) { asynchronous=enabled; }
+MS2_REPLACE_METHOD(0x141210cc0, CFilePreload, SetAsynchronous, 23, 0x397CC0E5);
 // @0x141210ce0
-void CFilePreload::FUN_141210ce0(Job next) {
+void CFilePreload::RunJob(Job next) {
     if(asynchronous) {
         { if(Unk_LockGuard guard=stateLock) { __assume(0); } else { job=next; state=1; } }
         ReleaseSemaphore(semaphore,1,0);
     } else next(this);
 }
-MS2_REPLACE_METHOD(0x141210ce0, CFilePreload, FUN_141210ce0, 178, 0xE0D783F8);
+MS2_REPLACE_METHOD(0x141210ce0, CFilePreload, RunJob, 178, 0xE0D783F8);
 // @0x141210da0
 void CFilePreload::FUN_141210da0() {
     if(asynchronous) backgroundThread=AfxBeginThread(FUN_141211b80,this,0,0,0,0);
@@ -510,8 +510,8 @@ class CReactorDataTable; class CNifLoadingService; class SkillDataTableCli; clas
 class Unk_PreloadServiceA; class Unk_PreloadServiceB; class Unk_PreloadServiceC; class Unk_PreloadServiceD;
 class CLearningQuestTable;
 class CMeratMarketPremium;
-CLearningQuestTable* FUN_141215480();
-CMeratMarketPremium* FUN_141215500();
+CLearningQuestTable* GetLearningQuestTable();
+CMeratMarketPremium* GetMeratMarketPremium();
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -525,7 +525,7 @@ public:
     void LoadAll();
 };
 void FUN_1411a49a0(CString);
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 class CQuestNavigationMap   // C3: member view for the former free stand-ins
 {
@@ -557,64 +557,64 @@ class EffectDataManager   // C3: member view for the former free stand-ins
 public:
     void LoadEffectFiles();
 };
-void CFilePreload::FUN_141210e10(bool notify) {
+void CFilePreload::PreloadDataStep1(bool notify) {
     CStopWatch watch("PreloadDataStep1");
     if(stopped==0) CInteractObjectData::LoadAll();
     watch.vfunc_1("CInteractObjectData::ReadAll");
     if(stopped==0) ((class CReactorDataTable*)(TSingleton<CReactorDataTable>::GetInstance()))->Reload();
     watch.vfunc_1("CReactorDataTable::GetInstance()->Init");
-    if(notify) FUN_141211b30(0x40);
-    if(stopped==0) ((class CMeratMarketPremium*)(FUN_141215500()))->Init();
+    if(notify) NotifyProgress(0x40);
+    if(stopped==0) ((class CMeratMarketPremium*)(GetMeratMarketPremium()))->Init();
     watch.vfunc_1("CMeratMarketPremium::CreateInstance()->Init");
-    if(notify) FUN_141211b30(0x80);
+    if(notify) NotifyProgress(0x80);
     phase=1;
 }
-MS2_REPLACE_METHOD(0x141210e10, CFilePreload, FUN_141210e10, 230, 0x9568662A);
+MS2_REPLACE_METHOD(0x141210e10, CFilePreload, PreloadDataStep1, 230, 0x9568662A);
 // @0x141210f00
-void CFilePreload::FUN_141210f00(bool notify) {
+void CFilePreload::PreloadDataStep2(bool notify) {
     if(((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af0a0()) {
         CStopWatch watch("PreloadDataStep2");
         if(stopped==0 && DAT_1439f7068) ((class NpcDataTableCli*)(void*)(((void*)FUN_1406d6e90())))->LoadAll();
         watch.vfunc_1("CNpcData::ReadAll");
-        if(notify) FUN_141211b30(0x100);
+        if(notify) NotifyProgress(0x100);
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/CH/Common"));
         watch.vfunc_1("PreLoadCommonEffect CH/Common");
-        if(notify) FUN_141211b30(0x200);
+        if(notify) NotifyProgress(0x200);
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/CH/Emotion"));
         watch.vfunc_1("PreLoadCommonEffect CH/Emotion");
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/CH/Music"));
         watch.vfunc_1("PreLoadCommonEffect CH/Music");
-        if(notify) FUN_141211b30(0x400);
+        if(notify) NotifyProgress(0x400);
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/NPC/Common"));
         watch.vfunc_1("PreLoadCommonEffect NPC/Common");
         if(stopped==0 && DAT_1439f7068) FUN_1411a49a0(CString("./Data/Xml/Effect/Item/enchant"));
         watch.vfunc_1("PreLoadCommonEffect Item/enchant");
-        if(notify) FUN_141211b30(0x800);
-        if(stopped==0 && DAT_1439f7068 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) ((class CNifLoadingService*)(((class CNifLoadingService*)FUN_140a0afd0())))->PreloadEffectNifs();
+        if(notify) NotifyProgress(0x800);
+        if(stopped==0 && DAT_1439f7068 && ((class CNifLoadingService*)GetNifLoadingService())!=0) ((class CNifLoadingService*)(((class CNifLoadingService*)GetNifLoadingService())))->PreloadEffectNifs();
         watch.vfunc_1("CNifLoadingService::GetInstance()->PreLoad");
-        if(notify) FUN_141211b30(0x1000);
+        if(notify) NotifyProgress(0x1000);
     }
     phase=2;
 }
-MS2_REPLACE_METHOD(0x141210f00, CFilePreload, FUN_141210f00, 826, 0xAF9D15C6);
+MS2_REPLACE_METHOD(0x141210f00, CFilePreload, PreloadDataStep2, 826, 0xAF9D15C6);
 // @0x141211240
 void CFilePreload::FUN_141211240(void*) {
     dataReady=0;
     if(stopped==0) ((class QuestDataTable*)(class Unk_PreloadServiceA*)(reinterpret_cast<Unk_PreloadServiceA*>(TSingleton<QuestDataTable>::GetInstance())))->LoadQuestData();
     if(stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->InitTraceTable();
-    FUN_141211b30(2);
+    NotifyProgress(2);
     if(stopped==0) ((class CEnchantScrollTable*)(class Unk_PreloadServiceC*)(((class Unk_PreloadServiceC*)TSingleton<CEnchantScrollTable>::GetInstance())))->Load();
     if(stopped==0) LoadQuestDescription();
-    FUN_141211b30(4);
+    NotifyProgress(4);
     if(stopped==0) LoadTalkScripts();
     if(stopped==0) CAchieveUIData::LoadAll();
     if(stopped==0) CAchieveData::LoadAll();
-    FUN_141211b30(8);
-    if(stopped==0) ((class CLearningQuestTable*)(FUN_141215480()))->Load();
-    FUN_141211b30(0x10);
+    NotifyProgress(8);
+    if(stopped==0) ((class CLearningQuestTable*)(GetLearningQuestTable()))->Load();
+    NotifyProgress(0x10);
     dataReady=1;
     initialized=1;
-    FUN_141211b30(0x2000);
+    NotifyProgress(0x2000);
     callback.Clear();
 }
 // hk1 2026-10-20: not hooked - the DLL talk-script loader (talkscript.cpp LoadTalkScripts) it starts ends in a null CAtlMap in exe FUN_14085b850 (work/hk1/report.md). MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
@@ -654,8 +654,8 @@ void CFilePreload::FUN_141211700(void*) {
     std::set<Unk_PreloadPath> pending;
     { if(Unk_LockGuard guard=nifLock) { __assume(0); } else { pending=nifRequests; nifRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) {
-            ((CNifLoadingService*)((class CNifLoadingService*)FUN_140a0afd0()))->GetTexture(CString(it->path),it->priority);
+        if(stopped==0 && ((class CNifLoadingService*)GetNifLoadingService())!=0) {
+            ((CNifLoadingService*)((class CNifLoadingService*)GetNifLoadingService()))->GetTexture(CString(it->path),it->priority);
         }
         else return;
     }
@@ -667,7 +667,7 @@ void CFilePreload::FUN_141211880(void*) {
     std::set<CString> pending;
     { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { pending=paths; paths.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) ((class CNifLoadingService*)FUN_140a0afd0())->Preload(CString(*it), (bool)0, 5);
+        if(stopped==0 && ((class CNifLoadingService*)GetNifLoadingService())!=0) ((class CNifLoadingService*)GetNifLoadingService())->Preload(CString(*it), (bool)0, 5);
         else return;
     }
 }
@@ -678,7 +678,7 @@ void CFilePreload::FUN_1412119e0(void*) {
     std::set<unsigned> pending;
     { if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { pending=itemIds; itemIds.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) {
+        if(stopped==0 && ((class CNifLoadingService*)GetNifLoadingService())!=0) {
             if(TSingleton<SkillDataTableCli>::GetInstance()!=0) {
                 TSingleton<SkillDataTableCli>::GetInstance()->GetAdditional(*it);
             }
@@ -688,10 +688,10 @@ void CFilePreload::FUN_1412119e0(void*) {
 }
 MS2_REPLACE_METHOD(0x1412119e0, CFilePreload, FUN_1412119e0, 319, 0xF38A508F);
 // @0x141211b30
-void CFilePreload::FUN_141211b30(int mask) {
+void CFilePreload::NotifyProgress(int mask) {
     if(stopped==0 && !callback.IsNull()) callback(mask);
 }
-MS2_REPLACE_METHOD(0x141211b30, CFilePreload, FUN_141211b30, 74, 0xBA47AD5F);
+MS2_REPLACE_METHOD(0x141211b30, CFilePreload, NotifyProgress, 74, 0xBA47AD5F);
 // @0x141211b80
 UINT CFilePreload::FUN_141211b80(void* context) {
     CFilePreload* self=static_cast<CFilePreload*>(context);
@@ -699,19 +699,19 @@ UINT CFilePreload::FUN_141211b80(void* context) {
     {
         if(self->stopped==0) ((class EffectDataManager*)(class Unk_PreloadServiceD*)(((class Unk_PreloadServiceD*)TSingleton<EffectDataManager>::GetInstance())))->LoadEffectFiles();
         if(self->stopped==0) {
-            self->FUN_141210e10(false);
+            self->PreloadDataStep1(false);
             TSingleton<CItemDataTable>::GetInstance()->LoadAllItemData();
             if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->Rebuild();
-            self->FUN_141210f00(false);
+            self->PreloadDataStep2(false);
         }
-        self->FUN_141211c20();
+        self->ClearBackgroundThread();
     }
     return 0;
 }
 MS2_REPLACE(0x141211b80, CFilePreload::FUN_141211b80, 144, 0x5105728F);
 // @0x141211c20
-void CFilePreload::FUN_141211c20() { backgroundThread=0; }
-MS2_REPLACE_METHOD(0x141211c20, CFilePreload, FUN_141211c20, 22, 0x94B5ABB3);
+void CFilePreload::ClearBackgroundThread() { backgroundThread=0; }
+MS2_REPLACE_METHOD(0x141211c20, CFilePreload, ClearBackgroundThread, 22, 0x94B5ABB3);
 
 static unsigned __stdcall PreloadThreadEntry(void* context);
 #pragma function(memset)
@@ -760,15 +760,15 @@ int CThread::Start(void* user,int priority,int suspended,unsigned stackSize,LPSE
 MS2_REPLACE_METHOD(0x141215220, CThread, Start, 594, 0x0FE72BCD);
 // Unhooked: these allocate using executable constructors and expose singletons.
 // @0x141215480
-CLearningQuestTable* FUN_141215480() {
+CLearningQuestTable* GetLearningQuestTable() {
     return TSingleton<CLearningQuestTable>::s_instance!=0 ? TSingleton<CLearningQuestTable>::GetInstance() : new CLearningQuestTable;
 }
 // @0x141215500
-CMeratMarketPremium* FUN_141215500() {
+CMeratMarketPremium* GetMeratMarketPremium() {
     return TSingleton<CMeratMarketPremium>::s_instance!=0 ? TSingleton<CMeratMarketPremium>::GetInstance() : new CMeratMarketPremium;
 }
 // @0x141215630
-int COptimizer::FUN_141215630() const { return preloadMode; }
+int COptimizer::GetPreloadMode() const { return preloadMode; }
 // @0x141215640
 DWORD CThread::GetThreadId() const { return m_threadId; }
 // @0x141215aa0

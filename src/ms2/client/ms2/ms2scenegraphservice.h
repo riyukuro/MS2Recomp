@@ -64,13 +64,13 @@ public:
     void ClearAllCachedShaders();                                           // 0x1414f18f0 (FUN_1414f18f0)
     virtual void AddToUpdate(SceneGraphData* pData);                        // 0x1414f19b0
     virtual void RemoveFromUpdate(SceneGraphData* pData);                   // 0x1414f1c10
-    static void FUN_1414f1d00(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin, efd::UInt32 uiEnd,
+    static void UpdateBucketRange(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin, efd::UInt32 uiEnd,
         NiUpdateProcess* pkProcess);                                        // 0x1414f1d00 MultiSceneUpdater callback
     void AddAlwaysUpdated(NiAVObject* pkSceneGraph);                           // 0x1414f1e30 always update in bucket 1
     void SetBucketOverride(egf::EntityID entityID, int iBucket);                // 0x1414f1e70 bucket override by entity
-    void FUN_1414f1ec0();                                                   // 0x1414f1ec0 drop all bucket overrides
+    void ClearBucketOverrides();                                                   // 0x1414f1ec0 drop all bucket overrides
     void ClearBucketOverride(egf::EntityID entityID);                             // 0x1414f1ef0 drop one bucket override (by value, as the exe callers pass it)
-    void FUN_1414f1f50(int iBucket);                                        // 0x1414f1f50 update one bucket
+    void UpdateBucket(int iBucket);                                        // 0x1414f1f50 update one bucket
     void MS2_MarkPreloadsAsFound(AssetData* pAssetData);                    // 0x1414f2250
     AssetData* MS2_SetAssetDataFromCache(AssetDataPtr spAssetData, ecr::SceneGraphCache::SceneGraphCacheHandle cacheHandle,
         bool usagePending);                                                 // 0x1414f2430

@@ -22,7 +22,7 @@ class CNifLoadingService   // C3: member view (nifeffectparam.h)
 public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
+class Unk_ResourceMgr* GetNifLoadingService();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -64,7 +64,7 @@ bool ScreenMaskingRenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     CString path;
     path.Format("%s/Image/ScreenMask/title_make_ch.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
-    s_screenMaskTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)path, 0)), 5);
+    s_screenMaskTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)path, 0)), 5);
     void* res = 0;
     res = FUN_140c8f690(FUN_1416b4990(this, "ScreenMasking", (void*)FUN_1416ba620, this, FUN_140c8f680(&m_80), 0, 0, 0, "ScreenMasking", (NiTexture*)s_screenMaskTexture, 0, 0));
     if (res == 0) {
@@ -91,10 +91,10 @@ bool FUN_1416ba600(void* a, void* b) { return true; }
 // @0x1416ba620
 bool FUN_1416ba620(void* a, void* b) { return true; }
 
-void FUN_1416ba640(efd::SmartPointer<NiTexture> tex);
+void SetScreenMaskTexture(efd::SmartPointer<NiTexture> tex);
 #ifndef MS2_HOOK_DLL
 // @0x1416ba640
-void FUN_1416ba640(efd::SmartPointer<NiTexture> tex)
+void SetScreenMaskTexture(efd::SmartPointer<NiTexture> tex)
 {
     if (s_pkScreenMaskProp != 0) {
         void* r = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(8));

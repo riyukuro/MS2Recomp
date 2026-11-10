@@ -781,7 +781,7 @@ __int64 CGameRankingCli::OwnerId(int nBoard)
 {
     __int64 nId = 0;
     if (nBoard == 1 || nBoard == 5) {
-        if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+        if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
             return 0;
         nId = reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_8.FUN_1404ccbd0();
     }
@@ -2915,7 +2915,7 @@ int FUN_140b3e700(int nType)
 
 // The row object of a board type.
 // @0x140b3e7f0
-MS2Ptr<GameRankingItem::IRankItem> FUN_140b3e7f0(int nType)
+MS2Ptr<GameRankingItem::IRankItem> CreateRankItem(int nType)
 {
     MS2Ptr<GameRankingItem::IRankItem> spItem(0);
     switch (nType) {

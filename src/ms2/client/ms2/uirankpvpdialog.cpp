@@ -64,7 +64,7 @@ struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
+class Unk_RankTable* GetRankingArenaDataTable();   // C3: was GetRankingArenaDataTable
 CStringW GetStringCommonByKey(const CStringW& str);                        // string table text by key
 CStringW GetStringCommon(int nId);                                    // string table text by id
 template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a);             // the key's text formatted with a
@@ -74,7 +74,7 @@ template <class A, class B, class C> CStringW FUN_14028dfa0(CStringW strKey, con
 template <class A, class B> CStringW StringFormat(const wchar_t* szFormat, const A& a, const B& b);
 template <class A> CString StringFormat(const char* szFormat, const A& a);
 enum Unk_ClosingJob { Unk_ClosingJob_None };   // uidungeonclosingphotodialog's job enum (StringFormat<Unk_ClosingJob> 0x140e10af0)
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);     // toast
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
@@ -279,7 +279,7 @@ void UIRankPvPDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
             tooltip.FUN_1409eb310(s_strTooltipAlign, 7);
             for (int i = 1; i < 8; i++)
             {
-                RankingArenaData* pGrade = ((class CRankingArenaDataTable*)FUN_140dc19b0())->GetGrade(i);
+                RankingArenaData* pGrade = ((class CRankingArenaDataTable*)GetRankingArenaDataTable())->GetGrade(i);
                 CString strNameKey = StringFormat<int>("rankName{0}", i);
                 CString strScoreKey = StringFormat<int>("score{0}", i);
                 CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x22, pGrade->m_nGrade);
@@ -339,7 +339,7 @@ void UIRankPvPDialog::FUN_140f94490()
     m_rating->SetTextW(strRating);
     m_seasonWinCount->SetTextW(strWin);
     m_seasonBestRating->SetTextW(strBest);
-    RankingArenaData* pGrade = ((class CRankingArenaDataTable*)FUN_140dc19b0())->GetGradeOfRating(nRating);
+    RankingArenaData* pGrade = ((class CRankingArenaDataTable*)GetRankingArenaDataTable())->GetGradeOfRating(nRating);
     int nGrade = pGrade->m_nGrade;
     CString strLabel = StringFormat<int>("_{0}", nGrade);
     m_rankMark->vfunc_15(strLabel);
@@ -355,7 +355,7 @@ void UIRankPvPDialog::FUN_140f94840()
     int nLose = CPVPManager::GetInstance()->GetRankDuel()->m_total30;
     int nTotal = nWin + nLose;
     CStringW strTotal = FUN_14028dfa0<int, int, int>(CStringW(L"s_rank_duel_ui_total_history"), nTotal, nWin, nLose);
-    FUN_140cfee80((*m_statisticsPage).FUN_1422bb890(), "m_totalHistory", strTotal);
+    SetChildText((*m_statisticsPage).FUN_1422bb890(), "m_totalHistory", strTotal);
     std::map<int, MS2Ptr<ASMovieClip> >::iterator it = m_history.begin();
     std::map<int, MS2Ptr<ASMovieClip> >::iterator itEnd = m_history.end();
     for (; it != itEnd; ++it)
@@ -370,12 +370,12 @@ void UIRankPvPDialog::FUN_140f94840()
         if (spRecord == 0)
             spRecord.AssignRaw(new RankDuelStatisticalData);
         FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", StringFormat<Unk_ClosingJob>("_{0}", (Unk_ClosingJob)TSingleton<JobTable>::GetInstance()->GetSubJob1(nJobGroup)));
-        FUN_140cfee80((*spRow).FUN_1422bb890(), "jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4d, nJobGroup));
+        SetChildText((*spRow).FUN_1422bb890(), "jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4d, nJobGroup));
         MS2Ptr<ASTextField> spWinRate = spRow->FUN_1409b4620("winRate");
         CStringW strNone(L"-");
         if (spRecord->m_value1c == 0 && spRecord->m_value20 == 0)
         {
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "winCount", strNone);
+            SetChildText((*spRow).FUN_1422bb890(), "winCount", strNone);
             if (spWinRate)
             {
                 spWinRate->SetTextW(strNone);
@@ -384,7 +384,7 @@ void UIRankPvPDialog::FUN_140f94840()
         }
         else
         {
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "winCount", FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_win_count"), spRecord->m_value1c));
+            SetChildText((*spRow).FUN_1422bb890(), "winCount", FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_win_count"), spRecord->m_value1c));
             int nRate = spRecord->m_value1c * 100 / (spRecord->m_value1c + spRecord->m_value20);
             if (spWinRate)
             {

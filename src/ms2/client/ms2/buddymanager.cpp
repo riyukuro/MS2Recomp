@@ -88,11 +88,11 @@ void FUN_1401fc790(unsigned char* pRequest, COutputStream& out);   // C3: the re
 class UICommunityDialog : public UIDialog { public: int FUN_1418d6960(); void FUN_1418d6430(int); };
 class UICommunityQueryDialog : public UIDialog {};
 class UIGameMenuDialog : public UIDialog { public: void FUN_141937e70(int); };   // C3: unit-local view
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 UICommunityDialog* FUN_140ae5990(int);
 UICommunityQueryDialog* FUN_140ae5a30(int);
 // @0x140ae2e90
-void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
+void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
     unsigned position=input.vfunc_0();
     Unk_BuddyResponse response; reinterpret_cast<Unk_SPDB*>(&response)->FUN_1407a3cc0(reinterpret_cast<Unk_SPDReader&>(input)); reinterpret_cast<CInPacket&>(input).SetOffset(position);
     Ptr buddy(0); int field=0; int channel=0;
@@ -184,7 +184,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     }
     case 20: SendBuddyMode20(); break;
     }
-    UIGameMenuDialog* popup=FUN_140938b90(0x4e28); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
+    UIGameMenuDialog* popup=FindGameMenuDialog(0x4e28); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
 }
 
 // @0x140ae4820
@@ -246,8 +246,8 @@ MS2_REPLACE_METHOD(0x140AE55A0, CBuddyManager, SendBuddyMode20, 136, 0x33CF1841)
 void CBuddyManager::AddBuddy(Ptr p) { if(Unk_LockGuard guard=lock) {} else { if(ids.Lookup(p->id)) return; POSITION pos=list.AddTail(p); p->position=pos; ids.SetAt(p->id,p); accounts.SetAt(p->account,p); } }
 MS2_REPLACE_METHOD(0x140AE5630, CBuddyManager, AddBuddy, 268, 0x737F3292);
 // @0x140ae5750
-void CBuddyManager::FUN_140ae5750(__int64 id) { if(Unk_LockGuard guard=lock) {} else { Ptr pBuddy; ids.Lookup(id,pBuddy); MS2_ASSERT_AT(102,pBuddy); if(pBuddy.get()) RemoveBuddy(pBuddy); } }
-MS2_REPLACE_METHOD(0x140AE5750, CBuddyManager, FUN_140ae5750, 237, 0x8966D4E2);
+void CBuddyManager::RemoveBuddyById(__int64 id) { if(Unk_LockGuard guard=lock) {} else { Ptr pBuddy; ids.Lookup(id,pBuddy); MS2_ASSERT_AT(102,pBuddy); if(pBuddy.get()) RemoveBuddy(pBuddy); } }
+MS2_REPLACE_METHOD(0x140AE5750, CBuddyManager, RemoveBuddyById, 237, 0x8966D4E2);
 // @0x140ae5850
 void CBuddyManager::RemoveBuddy(Ptr p) { if(Unk_LockGuard guard=lock) {} else { list.RemoveAt(p->position); ids.RemoveKey(p->id); accounts.RemoveKey(p->account); } }
 MS2_REPLACE_METHOD(0x140AE5850, CBuddyManager, RemoveBuddy, 178, 0xE4E576ED);

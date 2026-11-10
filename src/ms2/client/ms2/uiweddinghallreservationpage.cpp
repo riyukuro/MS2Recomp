@@ -29,7 +29,7 @@ class UIWeddingHallReservationDialog   // C3: member view for the former free st
 public:
     void FUN_140fdc9f0();
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -166,14 +166,14 @@ void UIWeddingHallReservationPageCancel::vfunc_5()
 {
     ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc9f0();
     m_pDialog->vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 
 // @0x140fe2690
 void UIWeddingHallReservationPageCancel::vfunc_6()
 {
     m_pDialog->vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 
 // @0x140fe26d0

@@ -95,7 +95,7 @@ enum SAType;   // C3: the special ability type (commonfiles/additionalactionaddi
 // The local player (only its stats).
 #include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 class Unk_UmPC { public: };
-class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, the equip holder)
+class PC { public: struct Unk_PCEquipSet* GetEquipment(); };   // C3: the real member (0x1416561a0, the equip holder)
 
 class Unk_MdBookTable* FUN_1412db940();   // C3: was FUN_1412db940
 
@@ -136,11 +136,11 @@ void* FUN_14025e7c0();                                          // the client's 
 int FUN_1412dd760(struct Unk_MdMaidItem*);   // C3: was FUN_1412dd760
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
 void FUN_141275260(int nStringId, int nA, int nB);
-void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
-void FUN_141415600(const CString& strKey);
+void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
+void DestroyItemInfoSlot(const CString& strKey);
 void FUN_14151f200();
 int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* p);
-UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by UI id
+UITalkCinematic* FindTalkCinematic(int nId);                        // a dialog by UI id
 
 // The player's inventory (owned counts) and the account id.
 // The cube map service (cubemapinformationservice_3.h; its include adds egf::kENTITY_INVALID's dynamic initializer).
@@ -257,11 +257,11 @@ void UIManufactureDialog::vfunc_67()
     m_nLastTick = 0;
     m_mapRecipes.RemoveAll();
     for (size_t i = 0; i < m_aRowKeys.GetCount(); i++)
-        FUN_141415600(m_aRowKeys[i]);
+        DestroyItemInfoSlot(m_aRowKeys[i]);
     for (size_t j = 0; j < m_aIngredientKeys.GetCount(); j++)
-        FUN_141415600(m_aIngredientKeys[j]);
-    FUN_141415600(m_strProductKey);
-    FUN_141415600(m_strProgressKey);
+        DestroyItemInfoSlot(m_aIngredientKeys[j]);
+    DestroyItemInfoSlot(m_strProductKey);
+    DestroyItemInfoSlot(m_strProgressKey);
     vfunc_47(1);
     UIDialog::vfunc_67();
 }
@@ -353,7 +353,7 @@ void UIManufactureDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0 && (pRef = FindTalkCinematic(0x4e40)) != 0)
     {
         int nX = pRef->GetLowerCutGlobalY();
         int nY = pRef->GetIllustGlobalX() - 0x14;
@@ -533,7 +533,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                         nFlags = 0x2415;
                     CString strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
-                    FUN_141415450(strKey, spItem, (int)i, nFlags, 0x800);
+                    CreateItemInfoSlot(strKey, spItem, (int)i, nFlags, 0x800);
                     m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
                     m_aRowKeys.Add(strKey);
                 }
@@ -569,8 +569,8 @@ void UIManufactureDialog::FUN_1412e4240()
             {
                 spItem->SetCountClamped(nAmount);
                 m_strProgressKey.Format("%s_prgress", (const char*)GetTypeName());
-                FUN_141415600(m_strProgressKey);
-                FUN_141415450(m_strProgressKey, spItem, 0, 0x415, 0x800);
+                DestroyItemInfoSlot(m_strProgressKey);
+                CreateItemInfoSlot(m_strProgressKey, spItem, 0, 0x415, 0x800);
                 m_30->FUN_140c38f00("bindProgress", CString(m_strProgressKey), CStringW(strName));
             }
             CMsTime tReady(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_140694170());
@@ -623,7 +623,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->maidExp);
+        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3e), spRecipe->maidExp);
         CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId);
         ATL::CTimeSpan span((unsigned __int64)spRecipe->leadTimes[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
@@ -638,11 +638,11 @@ void UIManufactureDialog::FUN_1412e48a0()
         {
             spProduct->SetCountClamped(nAmount);
             m_strProductKey.Format("%s_product", (const char*)GetTypeName());
-            FUN_141415450(m_strProductKey, spProduct, 0, 0x415, 0x800);
+            CreateItemInfoSlot(m_strProductKey, spProduct, 0, 0x415, 0x800);
             m_30->Invoke("bindProduct", CString(m_strProductKey));
         }
         for (size_t i = 0; i < m_aIngredientKeys.GetCount(); i++)
-            FUN_141415600(m_aIngredientKeys[i]);
+            DestroyItemInfoSlot(m_aIngredientKeys[i]);
         std::vector<CStringW> aUnused;
         for (size_t k = 0; k < spRecipe->ingredients.size(); k++)
         {
@@ -655,20 +655,20 @@ void UIManufactureDialog::FUN_1412e48a0()
             if (spData == 0)
                 continue;
             int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->field04 : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->count);
+            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3f), spIngredient->count);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
                 spIngItem->SetCountClamped(nNeeded);
                 CString strKey;
                 strKey.Format("%s_Ingredient.%d", (const char*)GetTypeName(), k + 1);
-                FUN_141415450(strKey, spIngItem, (int)k, 0x415, 0x800);
+                CreateItemInfoSlot(strKey, spIngItem, (int)k, 0x415, 0x800);
                 m_aIngredientKeys.Add(strKey);
                 unsigned nHave = 0;
                 if (nGroup == 0)
                     nHave = g_143ab2a90.FUN_140a5f180(nIngItem, 0);
                 else
-                    nHave = g_143ab2a90.FUN_140a5f780(nGroup, 0);
+                    nHave = g_143ab2a90.GetItemCountByTag(nGroup, 0);
                 CStringW strBreak(L"");
                 if (nHave >= 10000 || (nHave >= 1000 && nNeeded >= 100))
                     strBreak = L"\n";
@@ -723,7 +723,7 @@ void UIManufactureDialog::FUN_1412e5c90()
         return;
     FUN_1412e48a0();
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(0, reinterpret_cast<Unk_MfNpc*>(pNpc));
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
 }
@@ -745,7 +745,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
     if (nResult != 1)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -768,7 +768,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
     if (nResult != 1)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -784,7 +784,7 @@ void UIManufactureDialog::FUN_1412e6110(int nResult)
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
     if (nResult == 1)
@@ -808,7 +808,7 @@ void UIManufactureDialog::OnRecieve()
     if (FUN_1412e7170(nResult) == 0)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -851,7 +851,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     if (FUN_1412e7170(nResult) == 0)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -871,7 +871,7 @@ void UIManufactureDialog::OnRecieveJackpot()
     if (FUN_1412e7170(nResult) == 0)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -887,7 +887,7 @@ void UIManufactureDialog::FUN_1412e6850(int nResult)
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
     if (FUN_1412e7170(nResult) != 0)
@@ -911,7 +911,7 @@ void UIManufactureDialog::FUN_1412e69a0()
     if (nResult != 4)
     {
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
     }
@@ -927,7 +927,7 @@ void UIManufactureDialog::FUN_1412e6af0(int nResult)
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
     if (nResult == 4)
@@ -954,7 +954,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
         spItem->SetCountClamped(nAmount);
         Unk_TalkItemList aItems;
         aItems.Add(spItem);
-        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
         {
             CStringW strExp(L"");

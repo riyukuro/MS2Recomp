@@ -170,8 +170,8 @@ void FUN_140b77e50(const CString& strBag);                                      
 void FUN_140b77cf0(const CString& strBag, const ATL::CAtlArray<TabContentsPetEvolution::IdCount>& items);
 
 // Item icon registry and UI helpers.
-void FUN_141415600(const CString& strBindID);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void DestroyItemInfoSlot(const CString& strBindID);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 int FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
 void FUN_1412752d0(const CStringW& strMsg, int nType);                  // chat/system notice
 void FUN_141275260(int nMsgId, int a1, int a2);
@@ -438,7 +438,7 @@ void PetEvolutionPetEnchant::vfunc_2()
 {
     FUN_140b77e50(m_strBag);
     FUN_140b77500(m_strTarget);
-    FUN_141415600(m_strResult);
+    DestroyItemInfoSlot(m_strResult);
 }
 
 // @0x140ac7e80
@@ -449,7 +449,7 @@ void PetEvolutionPetEnchant::vfunc_3()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nPoint = (unsigned)((CItem*)(pet))->FUN_140528bd0();
@@ -547,7 +547,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
@@ -570,11 +570,11 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
         obj.FUN_1407cbb20(s_itemName, reinterpret_cast<CItem*>(pet.operator->())->FUN_140528160());
         obj.FUN_1409c48f0(s_itemLevel, nPetClass);
         obj.FUN_1407cbb20(s_meso, FormatStringId<int>(0x986, 0));
-        obj.FUN_1409c0d20("petEvolutionPoint", (unsigned)((CItem*)(pet))->FUN_140528bd0());
+        obj.SetMemberUInt("petEvolutionPoint", (unsigned)((CItem*)(pet))->FUN_140528bd0());
         obj.FUN_1407cba60("bagId", m_strTarget);
         obj.FUN_1407cbb20("resultMsg", GetStringCommonByKey(L"s_pet_evolution_notice"));
         obj.FUN_1407cba60("bagId", m_strTarget);
-        obj.FUN_1409c0d20("requirePoint", nNeed);
+        obj.SetMemberUInt("requirePoint", nNeed);
         if (nNeed <= (unsigned)((CItem*)(pet))->FUN_140528bd0())
         {
             obj.FUN_1407cbbe0("isEvolution", true);
@@ -595,7 +595,7 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     ATL::CAtlArray<IdCount> selected;
@@ -605,7 +605,7 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
     {
         IdCount& sel = selected[i];
         __int64 nUid = sel.first;
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(nUid);
+        ItemPtr item = g_143ab2a90.FindItemByUid(nUid);
         if (item == 0)
             continue;
         __int64 nCost = 0;
@@ -630,7 +630,7 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
@@ -648,11 +648,11 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
     UIInventoryDialog* pInven = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInven != 0)
         pInven->FUN_14199a3f0(m_pOwner->GetUidPet());
-    ItemPtr equipped = reinterpret_cast<PC*>(player)->FUN_141663450();
+    ItemPtr equipped = reinterpret_cast<PC*>(player)->GetPetItem();
     if (equipped.get() != 0)
     {
         if (pet->GetItemUid() == equipped->GetItemUid())
-            reinterpret_cast<PC*>(player)->FUN_141663400(ItemPtr(pet));
+            reinterpret_cast<PC*>(player)->SetPetItem(ItemPtr(pet));
     }
 }
 
@@ -667,7 +667,7 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
@@ -686,7 +686,7 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
 // @0x140ac9e20
 void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
 {
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     Unk_PetItemInfo* info = ((class Unk_PetItemInfo*)((class CItem*)(class CItem*)(pet))->FUN_1405278a0());
@@ -713,8 +713,8 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     MS2Ptr<ASMovieClip> slot = evolutionSlot->FUN_1409b4560("m_slot");
     if (slot == 0)
         return;
-    FUN_141415600(m_strResult);
-    FUN_141415450(m_strResult, ItemPtr(preview), 0, 0, 0x10800);
+    DestroyItemInfoSlot(m_strResult);
+    CreateItemInfoSlot(m_strResult, ItemPtr(preview), 0, 0, 0x10800);
     obj.FUN_1407cbb20(s_itemName + "2", reinterpret_cast<CItem*>(preview.operator->())->FUN_140528160());
     slot->Invoke("setData", CString(m_strResult));
 }
@@ -892,7 +892,7 @@ void TabContentsPetEvolution::FUN_140acaf20(ATL::CAtlArray<IdCount>& out)
 // MS2-FUNCTIONAL: frame layout of the message box and packet branches differs
 void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
 {
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -952,7 +952,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
 // @0x140acb560
 void TabContentsPetEvolution::FUN_140acb560(unsigned nPoint)
 {
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(GetUidPet());
     if (pet == 0)
         return;
     unsigned nHave = (unsigned)((CItem*)(pet))->FUN_140528bd0();
@@ -974,7 +974,7 @@ int TabContentsPetEvolution::FUN_140acb6f0()
     {
         IdCount& sel = m_selected[i];
         unsigned __int64 uid = sel.first;
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(uid);
+        ItemPtr item = g_143ab2a90.FindItemByUid(uid);
         if (item == 0)
             continue;
         int nAdd = (unsigned)((CItem*)(item))->FUN_140528bd0() > 0 ? (unsigned)((CItem*)(item))->FUN_140528bd0() : 1;
@@ -1002,10 +1002,10 @@ void TabContentsPetEvolution::FUN_140acb850()
     m_pool.RemoveAll();
     m_selected.RemoveAll();
     ATL::CAtlArray<unsigned __int64> ids;
-    g_143ab2a90.FUN_140a609a0(9, ids);
+    g_143ab2a90.GetItemUidsInCategory(9, ids);
     for (unsigned i = 0; i < ids.GetCount(); i++)
     {
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(ids[i]);
+        ItemPtr item = g_143ab2a90.FindItemByUid(ids[i]);
         if (item == 0)
             continue;
         MS2Ptr<CPetData> row = TSingleton<CPetDataTable>::GetInstance()->Find((unsigned)((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
@@ -1024,18 +1024,18 @@ void TabContentsPetEvolution::FUN_140acba80()
 {
     m_pool.RemoveAll();
     m_selected.RemoveAll();
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     if (nNeed == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
-    g_143ab2a90.FUN_140a609a0(9, ids);
+    g_143ab2a90.GetItemUidsInCategory(9, ids);
     for (unsigned i = 0; i < ids.GetCount(); i++)
     {
         __int64 id = ids[i];
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+        ItemPtr item = g_143ab2a90.FindItemByUid(id);
         if (item == 0)
             continue;
         if (reinterpret_cast<CPetManager*>(FUN_140535320())->GetSummonUid() == id)
@@ -1072,12 +1072,12 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_pool.GetCount())
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     IdCount& entry = m_pool[nIndex];
     unsigned __int64 id = entry.first;
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item == 0)
         return;
     __int64 nPrice = ((class CItem*)(class CItem*)(item))->FUN_140528e00();
@@ -1120,7 +1120,7 @@ void TabContentsPetEvolution::FUN_140acc1d0(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_selected.GetCount())
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     FUN_140acc380(nIndex);
@@ -1159,7 +1159,7 @@ unsigned __int64 TabContentsPetEvolution::FUN_140acc300(ATL::CAtlArray<IdCount>&
 int TabContentsPetEvolution::FUN_140acc380(int nIndex)
 {
     const unsigned __int64 id = FUN_140acc300(m_selected, nIndex);
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item.get() != 0)
     {
         m_selected.RemoveAt(nIndex, 1);
@@ -1193,7 +1193,7 @@ int TabContentsPetEvolution::FUN_140acc4e0(unsigned __int64 id)
     nCount--;
     if (nCount == 0)
         m_pool.RemoveAt(nPos, 1);
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item.get() != 0)
     {
         m_selected.Add(FUN_140acc7d0(id));
@@ -1205,7 +1205,7 @@ int TabContentsPetEvolution::FUN_140acc4e0(unsigned __int64 id)
 // @0x140acc650
 int TabContentsPetEvolution::FUN_140acc650(unsigned __int64 id)
 {
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item == 0)
         return 0;
     unsigned nHave = g_143ab2a90.FUN_140a5f060(item->GetItemUid());

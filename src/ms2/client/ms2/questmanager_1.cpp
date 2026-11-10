@@ -53,9 +53,9 @@ public:
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141654700();
-    struct Unk_PCEquipSet* FUN_1416561a0();
-    int FUN_141658e60();
+    int GetJobGroupId();
+    struct Unk_PCEquipSet* GetEquipment();
+    int GetGender();
     int FUN_141658f30();
     int FUN_141661c50();
 };
@@ -74,7 +74,7 @@ void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 extern const wchar_t DAT_142f5515c[];
 UIMainPlayerInfo* FUN_140931900(int);
 
-UIRewardNotify* FUN_140938cd0(int);
+UIRewardNotify* FindRewardNotify(int);
 void* FUN_1401c0d90();
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -172,16 +172,16 @@ int CQuest::CheckUserFind(PCBase* actor)
     PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!mine) return 0;
     ConditionUserFindContext context;
-    context.m_job = ((class PC*)(class PCBase*)(actor))->FUN_141654700();
+    context.m_job = ((class PC*)(class PCBase*)(actor))->GetJobGroupId();
     context.m_level = (unsigned short)actor->vfunc_78();
-    context.m_myKind = ((class PC*)(class PCBase*)(mine))->FUN_141658e60();
-    context.m_targetKind = ((class PC*)(class PCBase*)(actor))->FUN_141658e60();
+    context.m_myKind = ((class PC*)(class PCBase*)(mine))->GetGender();
+    context.m_targetKind = ((class PC*)(class PCBase*)(actor))->GetGender();
     context.m_gender = ((class PC*)(class PCBase*)(actor))->FUN_141661c50();
-    context.m_24 = ((class PCBase*)(class PCBase*)(actor))->FUN_141676410();
+    context.m_24 = ((class PCBase*)(class PCBase*)(actor))->GetRideeId();
     ATL::CAtlList<MS2Ptr<CEquipItem>> skills(10);
-    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(skills, 0);
-    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(skills, 1);
-    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(skills, 2);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->GetEquipment())->CollectShownItemsInLayer(skills, 0);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->GetEquipment())->CollectShownItemsInLayer(skills, 1);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->GetEquipment())->CollectShownItemsInLayer(skills, 2);
     for (POSITION pos = skills.GetHeadPosition(); pos; skills.GetNext(pos)) {
         MS2Ptr<CEquipItem> skill(skills.GetAt(pos));
         if (!skill) continue;
@@ -330,7 +330,7 @@ void CQuest::ShowRewards(int reward)
             break;
         }
     }
-    UIRewardNotify* dialog = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* dialog = FindRewardNotify(0x4e5d);
     if (dialog) {
         int useBonus = 1;
         if (m_data->m_level < *GetClientConstants()->QuestRewardSAIgnoreLevel.Get()) useBonus = 0;
@@ -362,7 +362,7 @@ void CQuest::ShowRewards(int reward)
                 for (size_t i = 0; i < m_data->m_complete.m_choiceRewards.GetCount(); ++i) {
                     CQuestData::QuestRewardItem* item = &m_data->m_complete.m_choiceRewards[i];
                     if (item->m_itemId != 0) {
-                        if (FUN_140748050(item, ((class PC*)(class PCBase*)(actor))->FUN_141654700()) != 0) {
+                        if (FUN_140748050(item, ((class PC*)(class PCBase*)(actor))->GetJobGroupId()) != 0) {
                             int itemId = m_data->m_complete.m_choiceRewards[i].m_itemId;
                             int count = m_data->m_complete.m_choiceRewards[i].m_count;
                             dialog->FUN_141abf6e0(itemId, count);

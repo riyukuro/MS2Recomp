@@ -133,7 +133,7 @@ CStringW FUN_140763e10(int nScore);                                         // t
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow to wide
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void* FUN_140bb9630(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
@@ -499,8 +499,8 @@ void UIArcadeMainDialog::FUN_140ef7230()
     m_rankView->vfunc_3(1);
     if (m_emptyView.get() != 0)
         m_emptyView->vfunc_3(0);
-    FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
-    FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x21, spGame->m_nId));
+    SetChildText((*m_rankView).FUN_1422bb890(), "m_gameName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
+    SetChildText((*m_rankView).FUN_1422bb890(), "m_gameDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x21, spGame->m_nId));
     for (int i = 0; i < 10; i++)
     {
         int nNo = i + 1;
@@ -508,8 +508,8 @@ void UIArcadeMainDialog::FUN_140ef7230()
         MS2Ptr<ASMovieClip> spRow = m_rankView->FUN_1409b4560(strName);
         if (spRow == (ASMovieClip*)0)
             continue;
-        FUN_140cfee80((*spRow).FUN_1422bb890(), "m_charName", m_ranks[+spGame->m_nId].m_rows[i].second);
-        FUN_140cfee80((*spRow).FUN_1422bb890(), "m_score", FUN_140763e10(m_ranks[+spGame->m_nId].m_rows[i].first));
+        SetChildText((*spRow).FUN_1422bb890(), "m_charName", m_ranks[+spGame->m_nId].m_rows[i].second);
+        SetChildText((*spRow).FUN_1422bb890(), "m_score", FUN_140763e10(m_ranks[+spGame->m_nId].m_rows[i].first));
         MS2Ptr<ASMovieClip> spIcon = spRow->FUN_1409b4560("m_rankIcon");
         if (spIcon.get() != 0)
             spIcon->vfunc_14(i + 1);
@@ -517,7 +517,7 @@ void UIArcadeMainDialog::FUN_140ef7230()
     MS2Ptr<ASMovieClip> spMine = m_rankView->FUN_1409b4560("m_myRank");
     if (spMine.get() != 0)
     {
-        FUN_140cfee80((*spMine).FUN_1422bb890(), "m_score", FUN_140763e10(m_scores[+spGame->m_nId]));
+        SetChildText((*spMine).FUN_1422bb890(), "m_score", FUN_140763e10(m_scores[+spGame->m_nId]));
     }
     m_30.operator->()->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
 }

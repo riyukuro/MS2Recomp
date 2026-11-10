@@ -223,7 +223,7 @@ public:
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)
     void FUN_141a02860(void* p);                                    // unit_140dfef30: the listener of the box (leaveInField)
     void FUN_140e01830(__int64 n);                                  // appends an __int64 argument as text (unit_140dfef30)
-    void FUN_140b76940(CStringW str);                               // appends a string argument (the callee destroys it)
+    void AddStringArg(CStringW str);                               // appends a string argument (the callee destroys it)
     void FUN_141b2fe80(const wchar_t* psz);                         // appends a string argument (inline COMDAT, uitriggereditordialog.cpp)
 
     // Accessors uimessagebox.cpp calls (0x141a01570-0x141a03470 and outside COMDATs).
@@ -256,7 +256,7 @@ public:
     void FUN_141a03390(UIMessageBox* pBox);                         // OnPopupTimerComplete
     void FUN_141a03470();                                           // before closing
     static void FUN_141a04f80(MS2Ptr<ASDialog> spBox);              // remember the modaless box position
-    bool FUN_140961900(unsigned int nIndex, int& nOut) const;       // the nIndex-th argument (COMDATs outside the range)
+    bool GetIntArg(unsigned int nIndex, int& nOut) const;       // the nIndex-th argument (COMDATs outside the range)
     bool FUN_140b19130(unsigned int nIndex, __int64& nOut) const;
     bool FUN_140b76a70(unsigned int nIndex, CStringW& strOut) const;
     bool FUN_140be25f0(unsigned int nIndex, int& nOut) const;

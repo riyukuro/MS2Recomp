@@ -74,17 +74,17 @@ public:
     NiAVObjectPtr Load(CString, bool, int, int, int);
     NiPointer<NiTexture> FindTexture(CString, const NiTexture::FormatPrefs*);   // C3: was Unk_CubeResourceService::FUN_141553eb0
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 extern NiFixedString DAT_143ae50a0;
 float FUN_140a38cd0(float);
 class CrashManagerCli;
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
-NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
+NiPointer<NiAVObject> FindMeshByName(NiPointer<NiAVObject>, const CString&);
 int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiTexture>);
 // CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
 class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
-FittingDollPC* FUN_14121b590(int, int, int);
+FittingDollPC* GetOrCreateDoll(int, int, int);
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: was (const NiMatrix3&, NiPoint3&)
 void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 int FUN_14123c660(GameObject*);
@@ -101,13 +101,13 @@ class EntityWorldManager;
 class EntityWorldManager   // C3: member view (entityworldmanager.h pulls headers this unit cannot take)
 {
 public:
-    bool FUN_1411cf0b0(efd::utf8string, efd::AssetID&, bool&);
-    void FUN_1411cf570(egf::Entity*);
+    bool GetModelAsset(efd::utf8string, efd::AssetID&, bool&);
+    void DestroyEntity(egf::Entity*);
     efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string, efd::Point3, efd::Point3, float, int, int);
 };
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 // C3: FUN_140a38a50 is egf::Entity::SetPropertyValue<efd::Point3> (0x140a38a50)
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 {
 public:
@@ -143,14 +143,14 @@ void CNifCubeGuide::vfunc_1() {
 }
 MS2_REPLACE_METHOD(0x1410afbc0, CNifCubeGuide, vfunc_1, 65, 0x6D059F2B);
 // @0x1410afc10
-int CNifCubeGuide::FUN_1410afc10(CString assetName) {
+int CNifCubeGuide::LoadAsset(CString assetName) {
     asset = assetName;
-    node = NiDynamicCast(NiNode, (NiAVObject*)((class CNifLoadingService*)FUN_140a0afd0())->Load(assetName, 0, 5, 0, 0));
+    node = NiDynamicCast(NiNode, (NiAVObject*)((class CNifLoadingService*)GetNifLoadingService())->Load(assetName, 0, 5, 0, 0));
     if (node != NULL)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1410afc10, CNifCubeGuide, FUN_1410afc10, 315, 0xC8D83785);
+MS2_REPLACE_METHOD(0x1410afc10, CNifCubeGuide, LoadAsset, 315, 0xC8D83785);
 // @0x1410afd60
 void CNifCubeGuide::vfunc_2(const NiPoint3& position) {
     NiPoint3 kPos(static_cast<const efd::Point3&>(position));
@@ -253,12 +253,12 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (textureName.GetLength() == 0) return 0;
     CString path = FUN_1410280d0(2, item->look->m_strUrl);
     if (_access(path, 4) != 0) return 1;
-    NiPointer<NiTexture> texture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(path, NULL);
+    NiPointer<NiTexture> texture = ((class CNifLoadingService*)GetNifLoadingService())->FindTexture(path, NULL);
     if (texture == NULL) {
         TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(item.get(), 0);
         return 1;
     }
-    NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
+    NiPointer<NiAVObject> target = FindMeshByName(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
     if (target) {
         if (FUN_1414232f0(target, texture) != 0) return 0;
     }
@@ -271,11 +271,11 @@ CFittingDollCubeGuide::CFittingDollCubeGuide() : doll(NULL) { doll = NULL; }
 // @0x1410b0b40
 CFittingDollCubeGuide::~CFittingDollCubeGuide() { doll = NULL; }
 // @0x1410b0ba0
-int CFittingDollCubeGuide::FUN_1410b0ba0(int type, int index, int itemId) {
-    doll = FUN_14121b590(type, index, itemId);
+int CFittingDollCubeGuide::CreateDoll(int type, int index, int itemId) {
+    doll = GetOrCreateDoll(type, index, itemId);
     return doll != NULL;
 }
-MS2_REPLACE_METHOD(0x1410b0ba0, CFittingDollCubeGuide, FUN_1410b0ba0, 85, 0x86AA16EF);
+MS2_REPLACE_METHOD(0x1410b0ba0, CFittingDollCubeGuide, CreateDoll, 85, 0x86AA16EF);
 // @0x1410b0c00
 void CFittingDollCubeGuide::vfunc_2(const NiPoint3& position) { doll->vfunc_19(reinterpret_cast<const efd::Point3&>(position)); }
 MS2_REPLACE_METHOD(0x1410b0c00, CFittingDollCubeGuide, vfunc_2, 89, 0x5A33550F);
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x1410b0e30, CFittingDollCubeGuide, vfunc_6, 63, 0x47D49A16);
 int CFittingDollCubeGuide::vfunc_7() { return doll->FUN_14123c660(); }
 MS2_REPLACE_METHOD(0x1410b0e80, CFittingDollCubeGuide, vfunc_7, 39, 0xADF60E57);
 // @0x1410b0eb0
-void CFittingDollCubeGuide::vfunc_9(float scale) { doll->FUN_14123c280(scale); doll->SetScaleAC(scale); }
+void CFittingDollCubeGuide::vfunc_9(float scale) { doll->SetScale(scale); doll->SetScaleAC(scale); }
 MS2_REPLACE_METHOD(0x1410b0eb0, CFittingDollCubeGuide, vfunc_9, 82, 0x9FE77C47);
 // @0x1410b0f10
 void CFittingDollCubeGuide::vfunc_10(NiNode* parent, int attachName) {
@@ -325,10 +325,10 @@ CKfmCubeGuide::CKfmCubeGuide() : entity(NULL) {
 // @0x1410b10b0
 CKfmCubeGuide::~CKfmCubeGuide() { entity = NULL; parent = NULL; }
 // @0x1410b1120
-int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
+int CKfmCubeGuide::LoadAsset(CString assetName) {
     bool isActor = false;
     efd::AssetID id;
-    if (!TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf0b0(efd::utf8string((const char*)assetName), id, isActor)) return 0;
+    if (!TSingleton<EntityWorldManager>::GetInstance()->GetModelAsset(efd::utf8string((const char*)assetName), id, isActor)) return 0;
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
     entity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0(
@@ -336,7 +336,7 @@ int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     if (entity != NULL) return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1410b1120, CKfmCubeGuide, FUN_1410b1120, 762, 0xBCF2509E);
+MS2_REPLACE_METHOD(0x1410b1120, CKfmCubeGuide, LoadAsset, 762, 0xBCF2509E);
 // No hook: NiIntegerExtraData has an inline constructor and DLL-local vftable.
 // @0x1410b1420
 void CKfmCubeGuide::vfunc_1() {
@@ -417,7 +417,7 @@ void CKfmCubeGuide::vfunc_8(float value) {
     } else { pendingAlpha = 1; alpha = value; }
 }
 // @0x1410b1ce0
-void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; FUN_14098c6e0((class Unk_CachedEntity*)(entity.operator->()), 0xa0b6b179, hidden); }
+void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; SetCachedBoolProperty((class Unk_CachedEntity*)(entity.operator->()), 0xa0b6b179, hidden); }
 MS2_REPLACE_METHOD(0x1410b1ce0, CKfmCubeGuide, vfunc_6, 81, 0x4D8BA781);
 // @0x1410b1d40
 int CKfmCubeGuide::vfunc_7() { bool hidden; entity.operator->()->GetPropertyValue(0xa0b6b179, hidden); return hidden ? false : true; }
@@ -433,7 +433,7 @@ void CKfmCubeGuide::vfunc_10(NiNode* node, int) {
 }
 MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
 // @0x1410b1e80
-void CKfmCubeGuide::vfunc_11() { TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(entity.data()); parent = NULL; }
+void CKfmCubeGuide::vfunc_11() { TSingleton<EntityWorldManager>::GetInstance()->DestroyEntity(entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
 // Unk_CubeHeightIndex: ms2/placeholder/cubeheightindex.h (C3: was the Unk_CubeDisplayLookup view)
@@ -446,10 +446,10 @@ MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 //
 //
 // @0x1410b24b0
-int Unk_CubeHeightIndex::FUN_1410b24b0(unsigned a, unsigned b) {
+int Unk_CubeHeightIndex::GetHeight(unsigned a, unsigned b) {
     int value = INT_MIN;
     int key = Unk_CubeHeightIndex::Key(a, b);
     m_heights.find(key, value);
     return value;
 }
-MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeHeightIndex, FUN_1410b24b0, 75, 0x218D804F);
+MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeHeightIndex, GetHeight, 75, 0x218D804F);

@@ -72,7 +72,7 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
     m_pose.t.z = ptPos.z;
     m_pose.M.id();
     m_pose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    reinterpret_cast<const Unk_CtbMat34&>(m_pose).FUN_140b00260(reinterpret_cast<Unk_CtbMat34*>(&m_inverse));
+    reinterpret_cast<const Unk_CtbMat34&>(m_pose).Invert(reinterpret_cast<Unk_CtbMat34*>(&m_inverse));
     NxCreateBox(m_obb, m_bounds, m_pose);
     return 1;
 }
@@ -205,7 +205,7 @@ Vector3 CCameraTargetBoundingCylinder::GetClosest(const Vector3& pt)
     {
         efd::Point2 ptDir(pt.x - m_center.x, pt.y - m_center.y);
         reinterpret_cast<Unk_Point2&>(ptDir).FUN_140affeb0();
-        Unk_Point2 ptEdge = reinterpret_cast<Unk_Point2&>(ptDir).FUN_140affce0(m_radius);
+        Unk_Point2 ptEdge = reinterpret_cast<Unk_Point2&>(ptDir).Scaled(m_radius);
         ptNear.x = m_center.x + ptEdge.x;
         ptNear.y = m_center.y + ptEdge.y;
     }
@@ -223,7 +223,7 @@ CCameraTargetBounding::CCameraTargetBounding()
 }
 
 // @0x140affce0
-Unk_Point2 Unk_Point2::FUN_140affce0(float f) const
+Unk_Point2 Unk_Point2::Scaled(float f) const
 {
     Unk_Point2 r = *this;
     r.x = r.x * f;
@@ -257,7 +257,7 @@ float Unk_Point2::FUN_140affeb0()
 }
 
 // @0x140afff50
-bool Unk_CtbMat33::FUN_140afff50(Unk_CtbMat33* pOut) const
+bool Unk_CtbMat33::Invert(Unk_CtbMat33* pOut) const
 {
     float c0 = m11 * m22 - m12 * m21;
     float c1 = m02 * m21 - m01 * m22;
@@ -288,9 +288,9 @@ bool Unk_CtbMat33::FUN_140afff50(Unk_CtbMat33* pOut) const
 }
 
 // @0x140b00260
-bool Unk_CtbMat34::FUN_140b00260(Unk_CtbMat34* pOut) const
+bool Unk_CtbMat34::Invert(Unk_CtbMat34* pOut) const
 {
-    bool bOk = m_rot.FUN_140afff50(&pOut->m_rot);
+    bool bOk = m_rot.Invert(&pOut->m_rot);
     ((class NxMat33*)(struct Unk_CtbMat33 const*)(&pOut->m_rot))->multiply(static_cast<const NxVec3&>(reinterpret_cast<const NxVec3&>(m_pos) * -1.0f), *(class NxVec3*)(&pOut->m_pos));
     return bOk;
 }
@@ -302,6 +302,6 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_ctbMemmoveS)(void*, size
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x140affe70, Unk_Point2, FUN_140affe70, 61, 0x39BB8533);
 MS2_REPLACE_METHOD(0x140affeb0, Unk_Point2, FUN_140affeb0, 157, 0xABEDF44D);
-MS2_REPLACE_METHOD(0x140afff50, Unk_CtbMat33, FUN_140afff50, 777, 0xB05E510B);
-MS2_REPLACE_METHOD(0x140b00260, Unk_CtbMat34, FUN_140b00260, 108, 0xB288BF53);
+MS2_REPLACE_METHOD(0x140afff50, Unk_CtbMat33, Invert, 777, 0xB05E510B);
+MS2_REPLACE_METHOD(0x140b00260, Unk_CtbMat34, Invert, 108, 0xB288BF53);
 

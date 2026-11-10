@@ -32,8 +32,8 @@ bool FUN_1406a5930();                                               // star poin
 class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);   // the amount text of a token kind
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field's text
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field's text
 
 // @0x1413518a0
 UITokenPocketDialog::UITokenPocketDialog()
@@ -124,23 +124,23 @@ void UITokenPocketDialog::FUN_141352560()
         return;
     const CString& strField = "textField";
     if (m_180.get() != 0)
-        FUN_140cfee80(m_180->FUN_1422bb890(), strField, FUN_141900120(4, 0, 0));
+        SetChildText(m_180->FUN_1422bb890(), strField, FUN_141900120(4, 0, 0));
     if (m_190.get() != 0)
-        FUN_140cfee80(m_190->FUN_1422bb890(), strField, FUN_141900120(5, 0, 0));
+        SetChildText(m_190->FUN_1422bb890(), strField, FUN_141900120(5, 0, 0));
     if (m_1a0.get() != 0)
-        FUN_140cfee80(m_1a0->FUN_1422bb890(), strField, FUN_141900120(6, 0, 0));
+        SetChildText(m_1a0->FUN_1422bb890(), strField, FUN_141900120(6, 0, 0));
     if (m_1b0.get() != 0)
-        FUN_140cfee80(m_1b0->FUN_1422bb890(), strField, FUN_141900120(7, 0, 0));
+        SetChildText(m_1b0->FUN_1422bb890(), strField, FUN_141900120(7, 0, 0));
     if (m_1c0.get() != 0)
-        FUN_140cfee80(m_1c0->FUN_1422bb890(), strField, FUN_141900120(0xc, 0, 0));
+        SetChildText(m_1c0->FUN_1422bb890(), strField, FUN_141900120(0xc, 0, 0));
     if (m_1d0.get() != 0)
-        FUN_140cfee80(m_1d0->FUN_1422bb890(), strField, FUN_141900120(0xd, 0, 0));
+        SetChildText(m_1d0->FUN_1422bb890(), strField, FUN_141900120(0xd, 0, 0));
     if (m_1e0.get() != 0)
-        FUN_140cfee80(m_1e0->FUN_1422bb890(), strField, FUN_141900120(0xe, 0, 0));
+        SetChildText(m_1e0->FUN_1422bb890(), strField, FUN_141900120(0xe, 0, 0));
     if (m_1f0.get() != 0)
-        FUN_140cfee80(m_1f0->FUN_1422bb890(), strField, FUN_141900120(0xf, 0, 0));
+        SetChildText(m_1f0->FUN_1422bb890(), strField, FUN_141900120(0xf, 0, 0));
     if (m_200.get() != 0)
-        FUN_140cfee80(m_200->FUN_1422bb890(), strField, FUN_141900120(0x10, 0, 0));
+        SetChildText(m_200->FUN_1422bb890(), strField, FUN_141900120(0x10, 0, 0));
 }
 
 // @0x141352cf0
@@ -149,7 +149,7 @@ MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const C
     MS2Ptr<ASUIComponent> spSlot(new ASUIComponent(CString("UITokenPocketDialog_slot"), 2));
     int nVSpace = -4;
     const CStringW& strSrc = FUN_1418fe870(nTokenKind, &nVSpace, 0);
-    FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
+    SetChildHtmlText(spSlot->FUN_1422bb890(), "icon", StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
     spSlot.get()->SetPositionInt(0xe, m_178);
     m_178 += 0x17;
     m_90->FUN_1422c6900(spSlot->FUN_1422bb890());

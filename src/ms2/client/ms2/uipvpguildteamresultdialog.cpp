@@ -64,7 +64,7 @@ CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
@@ -246,7 +246,7 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    FUN_140cfee80(FUN_1422dbb40(), "m_msg", m_strTitle);
+    SetChildText(FUN_1422dbb40(), "m_msg", m_strTitle);
     Unk_PgtrGuild* pLeft;
     {
         Unk_PgtrGuild* p = m_bSwap ? &m_guildA : &m_guildB;

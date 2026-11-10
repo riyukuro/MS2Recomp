@@ -47,7 +47,7 @@ public:
     CStringA GetName() const;                                   // 0x1414472a0: the liftable's name
     int FUN_141447cc0() const;                                      // its id
     int GetState() const;                                           // nonzero: already carried
-    Vector3 FUN_141447c80() const;                      // its position (C3: liftableobject.h is const)
+    Vector3 GetPosition() const;                      // its position (C3: liftableobject.h is const)
 };
 class Unk_SSGNamedObj : public CLiftableObject {};
 class Unk_SSGWorld : public WorldService
@@ -241,7 +241,7 @@ float PcHudNavigationEntity::vfunc_8()
 // @0x140e78d00
 NpcNavigationEntity::NpcNavigationEntity(efd::SmartPointer<Unk_SSGNpc> spNpc)
 {
-    m_30 = spNpc.operator->()->FUN_14123c580();
+    m_30 = spNpc.operator->()->GetObjectId();
     m_34 = reinterpret_cast<CNpc*>(spNpc.operator->())->FUN_141092fa0();
 }
 
@@ -435,7 +435,7 @@ Vector3 LiftableNavigationEntity::vfunc_7()
     MS2Ptr<Unk_WsB_Lift> spObj = WorldService::GetInstance()->FindLiftByName(m_38);   // C3: was FUN_141bc5a20; read through the Unk_SSGNamedObj view
     if (reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj).IsNull())
         return DAT_143b01a60;
-    Vector3 pt = reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj)->FUN_141447c80();
+    Vector3 pt = reinterpret_cast<MS2Ptr<Unk_SSGNamedObj>&>(spObj)->GetPosition();
     pt.z += 200.0f;
     return pt;
 }
@@ -472,9 +472,9 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
     MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
-    if (reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spPortal->FUN_14169d2f0())) != reinterpret_cast<const efd::Point3&>(pResult->m_20))   // efd::Point3 !=
+    if (reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spPortal->GetPosition())) != reinterpret_cast<const efd::Point3&>(pResult->m_20))   // efd::Point3 !=
         return 0;
-    if (!spPortal->FUN_14169d160())
+    if (!spPortal->IsShown())
         return 0;
     return 1;
 }
@@ -485,7 +485,7 @@ Vector3 PortalNavigationEntity::vfunc_7()
     MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(m_30);
     if (spPortal.get() != 0)
     {
-        Vector3 pt = spPortal->FUN_14169d2f0();
+        Vector3 pt = spPortal->GetPosition();
         pt.z += 200.0f;
         return pt;
     }
@@ -634,7 +634,7 @@ void UIQuestNavigation::FUN_140e7b130(NotifyObject* pNotify)
     NotifyRemoveNpc* pRemove = dynamic_cast<NotifyRemoveNpc*>(pNotify);
     if (!pRemove)
         return;
-    CStringA strKey = Unk_SocketFormat<unsigned>("npc_{0}", pRemove->m_spNpc->FUN_14123c580());
+    CStringA strKey = Unk_SocketFormat<unsigned>("npc_{0}", pRemove->m_spNpc->GetObjectId());
     MS2Ptr<NavigationEntity> spEntity(0);
     if (m_entities.Lookup(strKey, spEntity))
     {

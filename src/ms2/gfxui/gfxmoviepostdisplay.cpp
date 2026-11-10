@@ -60,8 +60,8 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
         {
             Scaleform::GFx::Value vStage(pArgs[0]);
             Scaleform::GFx::Value vLoader(pArgs[1]);
-            FUN_1422be510(FUN_140b62400(m_18, vStage));
-            FUN_1422be5b0(FUN_140b62350(m_18, vLoader));
+            FUN_1422be510(CreateStage(m_18, vStage));
+            FUN_1422be5b0(CreateMovieClipLoader(m_18, vLoader));
             FUN_14025e7a0()->FUN_1422b0790(m_18);
             FUN_1422be140();
             FUN_1422be2a0();
@@ -74,17 +74,17 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (vRoot.IsObject())
-                ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
+                ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (vRoot.IsObject())
-                ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
+                ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_9(szEvent, vRoot, 0.0f);
         }
         else if (_stricmp("playSound", szName) == 0)
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(szEvent);
             if ((spEntity.get() ? true : false) && spEntity->FUN_1422dc390() != 0)
             {
                 CString strSound(pArgs[1].GetString());
@@ -93,11 +93,11 @@ void GFxMoviePostDisplay::vfunc_4(void* pMovie, const char* szEvent, const Scale
         }
         else
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(szEvent);
             if (spEntity.get())
             {
                 if (_stricmp("OnTopMostLayer", szName) == 0)
-                    FUN_140b632f0()->FUN_1422d4dd0(szEvent);
+                    GetUISwfEntityManager()->FUN_1422d4dd0(szEvent);
                 if (spEntity->FUN_1422dc390() != 0)
                     spEntity->vfunc_28(szName, &pArgs[1], nArgs - 1);
                 else

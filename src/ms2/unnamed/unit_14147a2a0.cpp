@@ -24,9 +24,9 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 #include "hook/ms2hook.h"
 
 // ---- exe callees ----
-Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
-float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);                // horizontal distance (z cleared on the copies)
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+Vector3 GetHorizontalDirection(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
+float GetDistance2D(NiPoint3 kA, NiPoint3 kB);                // horizontal distance (z cleared on the copies)
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 float FUN_1407680d0(class Unk_Random*);   // C3: was FUN_1407680d0
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
@@ -59,11 +59,11 @@ void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, f
 {
     m_ptStart = ptStart;
     m_ptEnd = ptEnd;
-    m_ptDir = FUN_141192780(ptStart, ptEnd, true);
+    m_ptDir = GetHorizontalDirection(ptStart, ptEnd, true);
     m_fGravity = fGravity;
     m_fCos = cosf(fAngle);
     m_fSin = sinf(fAngle);
-    float fRange = FUN_140966ea0(ptEnd, ptStart);
+    float fRange = GetPlanarDistance(ptEnd, ptStart);
     float fRise = ptEnd.z - ptStart.z;
     float fTan = FUN_14147af60(fAngle);
     float fValue = fGravity * (fTan * fTan + 1.0f) / (2.0f * (fRange * fTan - fRise));
@@ -88,10 +88,10 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
     kInfo.m_origin = kStart;
     kInfo.m_dir = FUN_14147af10((kEnd - kStart));
     kInfo.m_groups = 0x389;
-    float fDist = FUN_141403f20(reinterpret_cast<NiPoint3&>(kStart), reinterpret_cast<NiPoint3&>(kEnd));
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
+    float fDist = GetDistance2D(reinterpret_cast<NiPoint3&>(kStart), reinterpret_cast<NiPoint3&>(kEnd));
+    if (((class CPhysXHelper*)GetPhysXHelper())->CastRay(&kInfo, pMask))
     {
-        float fHit = FUN_140966ea0(Vector3(kStart), kInfo.m_hitPoint);
+        float fHit = GetPlanarDistance(Vector3(kStart), kInfo.m_hitPoint);
         if (fHit < fDist)
         {
             if (!bProbe)
@@ -115,7 +115,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
     {
         reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cf8);
         kInfo.m_maxDist = fProbeLen;
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
+        if (((class CPhysXHelper*)GetPhysXHelper())->CastRay(&kInfo, pMask))
         {
             Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
             kPoint.z = kPoint.z + 5.0f;

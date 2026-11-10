@@ -110,7 +110,7 @@ END_MESSAGE_MAP()
 void CCashUnlockDialog::OnClose()
 {
     {
-        Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+        Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
             ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->SetUnlockState(0);
     }

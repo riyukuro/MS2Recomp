@@ -63,7 +63,7 @@ CString FUN_1405451e0(int nType);                       // the name of an equip 
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -99,8 +99,8 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(EquipSlotBag);
 
 EquipSlot* FUN_14120d560(NotifyContext::BindData* p);
 EquipSlotBag* FUN_14120e140(NotifyContext::BindData* p);
-void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
-void FUN_14120d8e0(const CString& strName);
+void CreateEquipSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
+void DestroyEquipSlotBag(const CString& strName);
 
 // @0x14120c0e0
 EquipSlot::EquipSlot(const CString& strName, int nIndex, MS2Ptr<PCInfo> spPC, int nSlot, int nKind, int nUnk)
@@ -123,7 +123,7 @@ int EquipSlot::vfunc_14()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        g_143ab2a90.FUN_140a62920(((CItem*)spItem)->GetItemUid());
+        g_143ab2a90.RequestUnequipItem(((CItem*)spItem)->GetItemUid());
     return 1;
 }
 
@@ -150,14 +150,14 @@ int EquipSlot::vfunc_17()
 // @0x14120c320
 int EquipSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
+    void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             if (FUN_14120d2e0(spItem.get()) != 0)
-                g_143ab2a90.FUN_140a62270(spItem.get(), m_nSlot, m_nKind, 0);
+                g_143ab2a90.RequestEquipItem(spItem.get(), m_nSlot, m_nKind, 0);
         }
     }
     else
@@ -221,7 +221,7 @@ int EquipSlot::vfunc_0(void* p)
     {
         tip.SetEnablePuton(vfunc_22());
         if (IsEnabled() == true)
-            tip.FUN_1409db7b0(spItem);
+            tip.SetEnablePreview(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -244,7 +244,7 @@ int EquipSlot::vfunc_8(void* p)
     if (bPc != 0)
         nFlags |= 4;
     ASSlot slot(2);
-    if (slot.FUN_1409c41f0(spItem.get(), pPlayer, m_nSlot, nFlags) != 0)
+    if (slot.SetEquipItem(spItem.get(), pPlayer, m_nSlot, nFlags) != 0)
     {
         if (m_nSlot == 4)
         {
@@ -262,7 +262,7 @@ int EquipSlot::vfunc_8(void* p)
 LAB_gray_done:
         if (bPc != 0 && m_nKind == 2)
         {
-            if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->IsLayerActive() == false)
+            if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->IsLayerActive() == false)
                 slot.SetDisable(1);
         }
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
@@ -373,7 +373,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
     }
-    if (g_143ab2a90.FUN_140a63950(pItem, m_nSlot, m_nKind) == 0)
+    if (g_143ab2a90.CanEquipItem(pItem, m_nSlot, m_nKind) == 0)
         return 0;
     return 1;
 }
@@ -399,19 +399,19 @@ EquipSlot* FUN_14120d560(NotifyContext::BindData* p)
 }
 
 // @0x14120d7c0
-void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk)
+void CreateEquipSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk)
 {
     EquipSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) EquipSlotBag(strName, spPC, nKind, nUnk);
     if (pBag)
     {
-        int nCount = pBag->FUN_14120e090();
+        int nCount = pBag->GetSlotCount();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
         Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14120d8e0
-void FUN_14120d8e0(const CString& strName)
+void DestroyEquipSlotBag(const CString& strName)
 {
     EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
@@ -478,7 +478,7 @@ DragSlot* EquipSlotBag::vfunc_16(int nIndex)
 }
 
 // @0x14120e090
-int EquipSlotBag::FUN_14120e090()
+int EquipSlotBag::GetSlotCount()
 {
     return (int)m_mapSlot.GetCount();
 }

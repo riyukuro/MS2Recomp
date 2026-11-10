@@ -101,8 +101,8 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CString FUN_14021a8b0(int n);                                               // int to text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // the warning bar
 void FUN_140710590(COutPacket& packet);                                     // send
-void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
-void FUN_141415600(const CString& strBindId);                               // release the bind
+void CreateItemInfoSlot(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
+void DestroyItemInfoSlot(const CString& strBindId);                               // release the bind
 void FUN_141924170(UIDialog* p, int n);
 extern int DAT_143abdf50;                                              // refresh flags: 1 guide bar / point, 2 list, 4 counts
 
@@ -149,7 +149,7 @@ void UIDailyMissionDialog::vfunc_67()
     FUN_140bfc4b0()->FUN_141aa8850(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     for (size_t i = 0; i < m_188.GetCount(); i++)
-        FUN_141415600(m_188[i]);
+        DestroyItemInfoSlot(m_188[i]);
     m_188.RemoveAll();
     UIDialog::vfunc_67();
 }
@@ -342,8 +342,8 @@ void UIDailyMissionDialog::FUN_140c001d0()
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-        ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
-        ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
+        ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 1, 0);
+        ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 2, 0);
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
             MS2Ptr<CQuest> spQuest = quests[i];
@@ -483,7 +483,7 @@ void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
     CString strIcon = pQuest->GetData()->m_338.m_8;
     CStringW strDesc = FUN_1416e5350(pQuest->FUN_140bfc580(), 0);
     strDesc.Replace(L"#5c2b00", L"#000000");
-    rRow.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
+    rRow.SetMemberUInt("id", pQuest->FUN_140bfc580());
     rRow.FUN_1407cba60("icon", strIcon);
     ((class AScript&)(rRow)).FUN_1407cbb20("desc", strDesc);
     ((class AScript&)(rRow)).FUN_1407cb9c0("satisfied", pQuest->IsComplete());
@@ -521,7 +521,7 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     int nLevel = (int)spData->m_conditions[0]->m_nGoal;
     CStringW strLevel;
     strLevel = FUN_14028dfa0<int>(CStringW(L"s_daily_mission_mission_point"), nLevel);
-    rRow.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
+    rRow.SetMemberUInt("id", FUN_14074b030(spData.operator->()));
     rRow.FUN_1407cba60("state", strState);
     ((class AScript&)(rRow)).FUN_1407cb9c0("level", nLevel);
     ((class AScript&)(rRow)).FUN_1407cbb20("levelStr", strLevel);
@@ -559,7 +559,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     int nFlags = 0x415;
     CString strBind;
     strBind.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
-    FUN_141415450(strBind, spItem, 0, nFlags, 0x800);
+    CreateItemInfoSlot(strBind, spItem, 0, nFlags, 0x800);
     rRow.FUN_1407cba60("binding", strBind);
     if (bName != 0)
         ((class AScript&)(rRow)).FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
@@ -571,7 +571,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
 int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 {
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 2, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -590,7 +590,7 @@ int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 {
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 1, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -611,7 +611,7 @@ int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 int UIDailyMissionDialog::FUN_140c01f50()
 {
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 4, 0);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -636,7 +636,7 @@ int UIDailyMissionDialog::FUN_140c020d0()
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 5);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 4, 5);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
@@ -659,7 +659,7 @@ int UIDailyMissionDialog::FUN_140c020d0()
 int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 {
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 4, 0);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         MS2Ptr<CQuest> spQuest = quests[i];

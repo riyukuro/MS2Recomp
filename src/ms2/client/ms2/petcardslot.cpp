@@ -36,8 +36,8 @@ public:
     static void FUN_1422c8f70(CString const&);
 };
 
-PetCardSlotBag* FUN_140b78150(NotifyContext::BindData* p);
-PetConsumeSlotBag* FUN_140b781a0(NotifyContext::BindData* p);
+PetCardSlotBag* AsPetCardSlotBag(NotifyContext::BindData* p);
+PetConsumeSlotBag* AsPetConsumeSlotBag(NotifyContext::BindData* p);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(PetCardSlot);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(PetCardSlotBag);
@@ -65,7 +65,7 @@ int PetCardSlot::vfunc_0(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return 0;
     int nFlags = 0x100;
@@ -84,7 +84,7 @@ int PetCardSlot::vfunc_8(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return 0;
     ASSlot slot(2);
@@ -100,7 +100,7 @@ int PetCardSlot::vfunc_8(void* p)
 // @0x140b77330
 MS2Ptr<CItem> PetCardSlot::vfunc_25()
 {
-    return g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    return g_143ab2a90.FindItemByUid(m_nItemUid);
 }
 
 // @0x140b77380
@@ -119,7 +119,7 @@ void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64
     if (pBag)
     {
         int nMax = 15;
-        int nCap = g_143ab2a90.FUN_140a5d050(9);
+        int nCap = g_143ab2a90.GetSlotCount(9);
         int nSlots = PET_MIN(PET_MAX((int)uids.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
         Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
@@ -129,7 +129,7 @@ void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64
 // @0x140b77500
 void FUN_140b77500(const CString& strName)
 {
-    PetCardSlotBag* pBag = FUN_140b78150(Unk_NotifyContext::FUN_1422c8e90(strName));
+    PetCardSlotBag* pBag = AsPetCardSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -186,7 +186,7 @@ int PetConsumeSlot::vfunc_0(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return 0;
     int nFlags = 0x100;
@@ -205,7 +205,7 @@ int PetConsumeSlot::vfunc_8(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return 0;
     ASSlot slot(2);
@@ -224,7 +224,7 @@ int PetConsumeSlot::vfunc_8(void* p)
 // @0x140b77b70
 MS2Ptr<CItem> PetConsumeSlot::vfunc_25()
 {
-    return g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    return g_143ab2a90.FindItemByUid(m_nItemUid);
 }
 
 // @0x140b77bc0
@@ -236,7 +236,7 @@ unsigned __int64 PetConsumeSlot::GetItemUid()
 // @0x140b77be0
 int PetConsumeSlot::IsUnavailable()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return 1;
     if (((CItem*)spItem)->FUN_140528c60() != 0)
@@ -255,7 +255,7 @@ void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBa
     if (pBag)
     {
         int nMax = 15;
-        int nCap = g_143ab2a90.FUN_140a5d050(9);
+        int nCap = g_143ab2a90.GetSlotCount(9);
         int nSlots = PET_MIN(PET_MAX((int)entries.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
         Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
@@ -265,7 +265,7 @@ void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBa
 // @0x140b77e50
 void FUN_140b77e50(const CString& strName)
 {
-    PetConsumeSlotBag* pBag = FUN_140b781a0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    PetConsumeSlotBag* pBag = AsPetConsumeSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -304,7 +304,7 @@ DragSlot* PetConsumeSlotBag::vfunc_16(int nIndex)
 }
 
 // @0x140b78150
-PetCardSlotBag* FUN_140b78150(NotifyContext::BindData* p)
+PetCardSlotBag* AsPetCardSlotBag(NotifyContext::BindData* p)
 {
     PetCardSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200079, (void**)&pBag))
@@ -314,7 +314,7 @@ PetCardSlotBag* FUN_140b78150(NotifyContext::BindData* p)
 }
 
 // @0x140b781a0
-PetConsumeSlotBag* FUN_140b781a0(NotifyContext::BindData* p)
+PetConsumeSlotBag* AsPetConsumeSlotBag(NotifyContext::BindData* p)
 {
     PetConsumeSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x620007d, (void**)&pBag))
@@ -341,7 +341,7 @@ MS2_REPLACE(0x140B77CF0, FUN_140b77cf0, 342, 0x02E66DF3);
 MS2_REPLACE(0x140B77E50, FUN_140b77e50, 65, 0xA753BCAF);
 MS2_REPLACE_METHOD(0x140B77F60, PetConsumeSlotBag, vfunc_15, 175, 0xC812C402);
 MS2_REPLACE_METHOD(0x140B78020, PetConsumeSlotBag, vfunc_16, 299, 0x8D4F8608);
-MS2_REPLACE(0x140B78150, FUN_140b78150, 73, 0xA6BDF7CB);
-MS2_REPLACE(0x140B781A0, FUN_140b781a0, 73, 0x88EBD2AF);
+MS2_REPLACE(0x140B78150, AsPetCardSlotBag, 73, 0xA6BDF7CB);
+MS2_REPLACE(0x140B781A0, AsPetConsumeSlotBag, 73, 0x88EBD2AF);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca0fb0-0x142ca1040 .text$yd

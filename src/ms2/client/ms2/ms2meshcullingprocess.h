@@ -16,7 +16,7 @@ public:
 
     static const NiRTTI ms_RTTI;                                                       // 0x143ac3cd8
 
-    friend NiSPWorkflowManager* FUN_140d96190(MS2MeshCullingProcess* p);     // reads the protected m_pkWorkflowManager
+    friend NiSPWorkflowManager* GetWorkflowManager(MS2MeshCullingProcess* p);     // reads the protected m_pkWorkflowManager
     bool m_ownsWorkflow;                                                               // +0xc0
 };
 MS2_CHECK_SIZE(MS2MeshCullingProcess, 0xc8);

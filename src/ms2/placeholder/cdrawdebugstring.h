@@ -26,10 +26,10 @@ public:
     void FUN_14118bdc0(const NiPoint3& kValue, bool bForce);                // "%.2f %.2f %.2f"
     void FUN_14118bee0(efd::utf8string strValue, bool bForce);                      // by value: the callee destroys it
     void FUN_14118bf80(const char* pszLabel, unsigned x, unsigned y);       // set the label and place the text
-    void FUN_14118c060();                                                   // log the line
-    void FUN_14118c0a0(NiColorA* pColor);                                   // color of the text
-    void FUN_14118c0d0();                                                   // push m_acName into both texts
-    std::string FUN_14118c120(unsigned nValue);                             // 1234567 -> "1,234,567"
+    void WriteToCrashLog();                                                   // log the line
+    void SetColor(NiColorA* pColor);                                   // color of the text
+    void UpdateText();                                                   // push m_acName into both texts
+    std::string FormatWithThousandsSeparator(unsigned nValue);                             // 1234567 -> "1,234,567"
     const char* GetText();                                                  // m_acName
 
 protected:

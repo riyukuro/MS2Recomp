@@ -32,7 +32,7 @@ static CStringW s_strBannerClose(L"bannerClose");
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameeventvalue.h"     // C3: CGameEventValueCoupleDance::Get
 #include "ms2/client/ms2/worldservice.h"
-class GameObject { public: int FUN_14123c580(void); };
+class GameObject { public: int GetObjectId(void); };
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
 class State;
@@ -109,7 +109,7 @@ public:
     virtual void vfunc_57();
     virtual void vfunc_58();
     virtual void vfunc_59(int a1, int a2, int a3, int a4);          // 59: switch to a microgame state
-    int FUN_14123c580();                                            // the actor kind / team
+    int GetObjectId();                                            // the actor kind / team
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b883c0();
@@ -166,7 +166,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x1e, 0);
         return;
     }
-    int bSelfTarget = (((class GameObject*)(pPlayer))->FUN_14123c580() == ((class GameObject*)(pTarget))->FUN_14123c580()) ? 1 : 0;
+    int bSelfTarget = (((class GameObject*)(pPlayer))->GetObjectId() == ((class GameObject*)(pTarget))->GetObjectId()) ? 1 : 0;
     if (bSelfTarget)
     {
         // We cannot challenge ourselves.
@@ -260,7 +260,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x8f, 0);
         return;
     }
-    if (((class GameObject*)(pPlayer))->FUN_14123c580() == ((class GameObject*)(pTarget))->FUN_14123c580())
+    if (((class GameObject*)(pPlayer))->GetObjectId() == ((class GameObject*)(pTarget))->GetObjectId())
     {
         // We cannot dance with ourselves.
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);

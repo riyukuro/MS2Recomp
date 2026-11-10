@@ -24,7 +24,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/placeholder/cgameoption.h"
-class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* GetGraphicOption(); };   // C3: unit-local view (def in applyeffect)
 #include "ms2/client/ms2/gameoptiongraphicdefault.h"
 #include "ms2/commonfiles/ugcdef.h"
 #include "ms2/commonfiles/itemdata.h"
@@ -97,7 +97,7 @@ void CEquipItem::FUN_1411dbf80(int bKeepModels)
     else
     {
         FUN_1411dc560();
-        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->RefreshModel();
+        reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->RefreshModel();
     }
 }
 MS2_REPLACE_METHOD(0x1411DBF80, CEquipItem, FUN_1411dbf80, 69, 0x7DB620F3);
@@ -105,17 +105,17 @@ MS2_REPLACE_METHOD(0x1411DBF80, CEquipItem, FUN_1411dbf80, 69, 0x7DB620F3);
 // @0x1411dbfd0
 void CEquipItem::ReleaseLinkedItems()
 {
-    PC* pPC = FUN_1411dc8c0();
+    PC* pPC = GetPC();
     if (pPC != 0)
     {
-        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(m_linkedItems, 0);
+        reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411e3d20(m_linkedItems, 0);
         m_linkedItems.RemoveAll();
     }
 }
 MS2_REPLACE_METHOD(0x1411DBFD0, CEquipItem, ReleaseLinkedItems, 97, 0x58A50CD3);
 
 // @0x1411dc040
-void CEquipItem::FUN_1411dc040()
+void CEquipItem::UnloadModels()
 {
     POSITION pos = m_models.GetHeadPosition();
     while (pos != NULL)
@@ -126,7 +126,7 @@ void CEquipItem::FUN_1411dc040()
     }
     m_models.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1411DC040, CEquipItem, FUN_1411dc040, 136, 0x9602397C);
+MS2_REPLACE_METHOD(0x1411DC040, CEquipItem, UnloadModels, 136, 0x9602397C);
 
 // @0x1411dc0d0
 int CEquipItem::FUN_1411dc0d0()
@@ -149,7 +149,7 @@ int CEquipItem::FUN_1411dc190(void* p)
 {
     if (p)
     {
-        FUN_1411dc210();
+        ApplyLoadedModels();
         return 1;
     }
     return 0;
@@ -161,7 +161,7 @@ int CEquipItem::FUN_1411dc1d0(void* p)
 {
     if (p)
     {
-        FUN_1411dc210();
+        ApplyLoadedModels();
         return 1;
     }
     return 0;
@@ -169,7 +169,7 @@ int CEquipItem::FUN_1411dc1d0(void* p)
 MS2_REPLACE_METHOD(0x1411DC1D0, CEquipItem, FUN_1411dc1d0, 46, 0x9F62F582);
 
 // @0x1411dc210
-void CEquipItem::FUN_1411dc210()
+void CEquipItem::ApplyLoadedModels()
 {
     if (FUN_1411dc0d0())
     {
@@ -177,15 +177,15 @@ void CEquipItem::FUN_1411dc210()
         FUN_1411dd0f0();
         FUN_1411dd150();
         FUN_1411dd3b0();
-        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e46b0(MS2Ptr<CEquipItem>(this));
+        reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->FUN_1411e46b0(MS2Ptr<CEquipItem>(this));
         FUN_1411dd4a0(m_pPC->vfunc_65());
-        if (FUN_1411dc7f0()->FUN_14053d2f0())
+        if (GetItemData()->FUN_14053d2f0())
             m_pPC->FUN_141659000(1);
-        FUN_1411dd9a0();
+        RequestUgcDownload();
         float fBlend = 1.0f;
         if (m_pPC->GetCurStateId() == 0x2f)
             fBlend = m_pPC->FUN_14165eb80();
-        FUN_1411dd520(m_pPC->FUN_141658d20(), m_pPC->vfunc_60(), m_pPC->FUN_14166e0d0(), fBlend, false);
+        PlayAnimation(m_pPC->FUN_141658d20(), m_pPC->vfunc_60(), m_pPC->FUN_14166e0d0(), fBlend, false);
     }
     else
     {
@@ -194,7 +194,7 @@ void CEquipItem::FUN_1411dc210()
     }
     FUN_1411de030();
 }
-MS2_REPLACE_METHOD(0x1411DC210, CEquipItem, FUN_1411dc210, 742, 0x8BA7AED8);
+MS2_REPLACE_METHOD(0x1411DC210, CEquipItem, ApplyLoadedModels, 742, 0x8BA7AED8);
 
 // @0x1411dc500
 int CEquipItem::FUN_1411dc500(void* p)
@@ -225,7 +225,7 @@ int CEquipItem::FUN_1411dc560()
     m_models.RemoveAll();
     FUN_1411dd0f0();
     FUN_1411dd150();
-    reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e4b30(MS2Ptr<CEquipItem>(this));
+    reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->FUN_1411e4b30(MS2Ptr<CEquipItem>(this));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1411DC560, CEquipItem, FUN_1411dc560, 259, 0xED376193);
@@ -263,11 +263,11 @@ MS2Ptr<CItem> CEquipItem::GetItem()
 MS2_REPLACE_METHOD(0x1411DC7A0, CEquipItem, GetItem, 65, 0xE76D92EE);
 
 // @0x1411dc7f0
-Unk_EquipItemData* CEquipItem::FUN_1411dc7f0()
+Unk_EquipItemData* CEquipItem::GetItemData()
 {
     return static_cast<Unk_EquipItemData*>(m_spItem->FUN_140527840());
 }
-MS2_REPLACE_METHOD(0x1411DC7F0, CEquipItem, FUN_1411dc7f0, 39, 0x136456ED);
+MS2_REPLACE_METHOD(0x1411DC7F0, CEquipItem, GetItemData, 39, 0x136456ED);
 
 // @0x1411dc820
 int CEquipItem::FUN_1411dc820()
@@ -279,27 +279,27 @@ int CEquipItem::FUN_1411dc820()
 MS2_REPLACE_METHOD(0x1411DC820, CEquipItem, FUN_1411dc820, 65, 0xC3F937C3);
 
 // @0x1411dc870
-__int64 CEquipItem::FUN_1411dc870()
+__int64 CEquipItem::GetItemUid()
 {
     if (m_spItem.get() != 0)
         return m_spItem->GetItemUid();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1411DC870, CEquipItem, FUN_1411dc870, 65, 0xC9EF30FC);
+MS2_REPLACE_METHOD(0x1411DC870, CEquipItem, GetItemUid, 65, 0xC9EF30FC);
 
 // @0x1411dc8c0
-PC* CEquipItem::FUN_1411dc8c0()
+PC* CEquipItem::GetPC()
 {
     return m_pPC;
 }
-MS2_REPLACE_METHOD(0x1411DC8C0, CEquipItem, FUN_1411dc8c0, 15, 0xBBB219C9);
+MS2_REPLACE_METHOD(0x1411DC8C0, CEquipItem, GetPC, 15, 0xBBB219C9);
 
 // @0x1411dc8e0
-void CEquipItem::FUN_1411dc8e0(PC* pPC)
+void CEquipItem::SetPC(PC* pPC)
 {
     m_pPC = pPC;
 }
-MS2_REPLACE_METHOD(0x1411DC8E0, CEquipItem, FUN_1411dc8e0, 25, 0xAB8BF0FB);
+MS2_REPLACE_METHOD(0x1411DC8E0, CEquipItem, SetPC, 25, 0xAB8BF0FB);
 
 // @0x1411dc900
 void CEquipItem::SetUgcPending(int bPending)
@@ -407,7 +407,7 @@ int CEquipItem::FUN_1411dcda0()
 MS2_REPLACE_METHOD(0x1411DCDA0, CEquipItem, FUN_1411dcda0, 180, 0x6477AD8D);
 
 // @0x1411dce60
-int CEquipItem::FUN_1411dce60(const CString& strTag)
+int CEquipItem::AddTag(const CString& strTag)
 {
     int bChanged = 0;
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
@@ -421,10 +421,10 @@ int CEquipItem::FUN_1411dce60(const CString& strTag)
     }
     return bChanged;
 }
-MS2_REPLACE_METHOD(0x1411DCE60, CEquipItem, FUN_1411dce60, 164, 0x5DAB8B19);
+MS2_REPLACE_METHOD(0x1411DCE60, CEquipItem, AddTag, 164, 0x5DAB8B19);
 
 // @0x1411dcf10
-int CEquipItem::FUN_1411dcf10(const CString& strTag)
+int CEquipItem::RemoveTag(const CString& strTag)
 {
     int bChanged = 0;
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
@@ -438,10 +438,10 @@ int CEquipItem::FUN_1411dcf10(const CString& strTag)
     }
     return bChanged;
 }
-MS2_REPLACE_METHOD(0x1411DCF10, CEquipItem, FUN_1411dcf10, 164, 0x3E1490C9);
+MS2_REPLACE_METHOD(0x1411DCF10, CEquipItem, RemoveTag, 164, 0x3E1490C9);
 
 // @0x1411dcfc0
-int CEquipItem::FUN_1411dcfc0(const CString& strTag)
+int CEquipItem::HasTag(const CString& strTag)
 {
     if (m_models.IsEmpty())
         return 0;
@@ -450,28 +450,28 @@ int CEquipItem::FUN_1411dcfc0(const CString& strTag)
         return 0;
     return FUN_141200c50(MODEL(spModel), const_cast<CString*>(&strTag));
 }
-MS2_REPLACE_METHOD(0x1411DCFC0, CEquipItem, FUN_1411dcfc0, 191, 0xC7A3714C);
+MS2_REPLACE_METHOD(0x1411DCFC0, CEquipItem, HasTag, 191, 0xC7A3714C);
 
 // @0x1411dd090
 void CEquipItem::FUN_1411dd090()
 {
-    if (FUN_1411dc7f0()->GetEquipSubtype() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
-        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e5c10();
+    if (GetItemData()->GetEquipSubtype() == 0xd || GetItemData()->FUN_14053cfd0())
+        reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->FUN_1411e5c10();
 }
 MS2_REPLACE_METHOD(0x1411DD090, CEquipItem, FUN_1411dd090, 84, 0x5F4E7D1F);
 
 // @0x1411dd0f0
 void CEquipItem::FUN_1411dd0f0()
 {
-    if (FUN_1411dc7f0()->GetEquipSubtype() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
-        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e6ab0();
+    if (GetItemData()->GetEquipSubtype() == 0xd || GetItemData()->FUN_14053cfd0())
+        reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->FUN_1411e6ab0();
 }
 MS2_REPLACE_METHOD(0x1411DD0F0, CEquipItem, FUN_1411dd0f0, 84, 0xD926319C);
 
 // @0x1411dd150
 void CEquipItem::FUN_1411dd150()
 {
-    if (FUN_1411dc7f0()->FUN_14053d070() || FUN_1411dc7f0()->FUN_14053d020())
+    if (GetItemData()->FUN_14053d070() || GetItemData()->FUN_14053d020())
     {
         m_pPC->FUN_141656780();
         m_pPC->FUN_14166f380();
@@ -505,7 +505,7 @@ void CEquipItem::FUN_1411dd280()
     }
     if (static_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053d2f0())
     {
-        if (reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bEnchantEffect)
+        if (reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bEnchantEffect)
         {
             for (POSITION posEffect = m_models.GetHeadPosition(); posEffect != NULL; m_models.GetNext(posEffect))
             {
@@ -520,19 +520,19 @@ MS2_REPLACE_METHOD(0x1411DD280, CEquipItem, FUN_1411dd280, 293, 0x8597AC58);
 // @0x1411dd3b0
 void CEquipItem::FUN_1411dd3b0()
 {
-    if (FUN_1411dc7f0()->GetEquipSubtype() == 0x12)
-        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e7380();
+    if (GetItemData()->GetEquipSubtype() == 0x12)
+        reinterpret_cast<CEquipment*>(m_pPC->GetEquipment())->ApplyMantleScale();
 }
 MS2_REPLACE_METHOD(0x1411DD3B0, CEquipItem, FUN_1411dd3b0, 59, 0xFC5D8593);
 
 // @0x1411dd400
-void CEquipItem::FUN_1411dd400(double fTime)
+void CEquipItem::Update(double fTime)
 {
     if (m_bUgcPending != 0)
     {
         if (FUN_1411dc0d0() && FUN_1411ddcb0() == 1)
         {
-            FUN_1411ddae0();
+            ApplyUgcImage();
             m_bUgcPending = 0;
         }
     }
@@ -541,9 +541,9 @@ void CEquipItem::FUN_1411dd400(double fTime)
         FUN_1411dd0f0();
         m_bTagsDirty = 0;
     }
-    FUN_1411ddfb0(fTime);
+    UpdateModels(fTime);
 }
-MS2_REPLACE_METHOD(0x1411DD400, CEquipItem, FUN_1411dd400, 143, 0x0FFE1A27);
+MS2_REPLACE_METHOD(0x1411DD400, CEquipItem, Update, 143, 0x0FFE1A27);
 
 // @0x1411dd4a0
 void CEquipItem::FUN_1411dd4a0(int n)
@@ -558,20 +558,20 @@ void CEquipItem::FUN_1411dd4a0(int n)
 MS2_REPLACE_METHOD(0x1411DD4A0, CEquipItem, FUN_1411dd4a0, 115, 0x34A15B68);
 
 // @0x1411dd520
-void CEquipItem::FUN_1411dd520(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
+void CEquipItem::PlayAnimation(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
     bool b)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         CKfmModel* pKfm = efd::DynamicCast<CKfmModel>(m_models.GetAt(pos).get());
         if (pKfm != 0)
-            pKfm->FUN_141440380(strA, strB, kDefault, fBlend, b);
+            pKfm->PlayAnimationWithFallback(strA, strB, kDefault, fBlend, b);
     }
 }
-MS2_REPLACE_METHOD(0x1411DD520, CEquipItem, FUN_1411dd520, 185, 0xE9AD54D5);
+MS2_REPLACE_METHOD(0x1411DD520, CEquipItem, PlayAnimation, 185, 0xE9AD54D5);
 
 // @0x1411dd5e0
-void CEquipItem::FUN_1411dd5e0(const CString& strName)
+void CEquipItem::HideMeshesByName(const CString& strName)
 {
     POSITION pos = m_models.GetHeadPosition();
     while (pos != NULL)
@@ -580,7 +580,7 @@ void CEquipItem::FUN_1411dd5e0(const CString& strName)
         FUN_141201180(MODEL(spModel), strName);
     }
 }
-MS2_REPLACE_METHOD(0x1411DD5E0, CEquipItem, FUN_1411dd5e0, 101, 0x7B61FF3C);
+MS2_REPLACE_METHOD(0x1411DD5E0, CEquipItem, HideMeshesByName, 101, 0x7B61FF3C);
 
 // @0x1411dd650
 void CEquipItem::FUN_1411dd650()
@@ -629,7 +629,7 @@ MS2Ptr<CItemUgcMeshContainer> CEquipItem::GetUgcMeshes()
 MS2_REPLACE_METHOD(0x1411DD950, CEquipItem, GetUgcMeshes, 67, 0x8A622E97);
 
 // @0x1411dd9a0
-void CEquipItem::FUN_1411dd9a0()
+void CEquipItem::RequestUgcDownload()
 {
     if (m_bUgcPending != 0)
         return;
@@ -638,14 +638,14 @@ void CEquipItem::FUN_1411dd9a0()
     if (m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60())
     {
         if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
-            TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->FUN_14123c580());
+            TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->GetObjectId());
         SetUgcPending(1);
     }
 }
-MS2_REPLACE_METHOD(0x1411DD9A0, CEquipItem, FUN_1411dd9a0, 304, 0x466982C4);
+MS2_REPLACE_METHOD(0x1411DD9A0, CEquipItem, RequestUgcDownload, 304, 0x466982C4);
 
 // @0x1411ddae0
-void CEquipItem::FUN_1411ddae0()
+void CEquipItem::ApplyUgcImage()
 {
     if (!m_spItem->HasCubeTextureMesh())
         return;
@@ -654,11 +654,11 @@ void CEquipItem::FUN_1411ddae0()
     CString strFile = GetUgcFile();
     if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
         return;
-    CUgcItemPC kItem(m_spItem.get(), m_pPC->FUN_14123c580());
+    CUgcItemPC kItem(m_spItem.get(), m_pPC->GetObjectId());
     if (TSingleton<CUgcManager>::GetInstance()->ApplyImageToPlayerItem(&kItem, strFile) == 0)
-        TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->FUN_14123c580());
+        TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->GetObjectId());
 }
-MS2_REPLACE_METHOD(0x1411DDAE0, CEquipItem, FUN_1411ddae0, 457, 0xDC1D7EF2);
+MS2_REPLACE_METHOD(0x1411DDAE0, CEquipItem, ApplyUgcImage, 457, 0xDC1D7EF2);
 
 // @0x1411ddcb0
 int CEquipItem::FUN_1411ddcb0()
@@ -695,7 +695,7 @@ void CEquipItem::AddModel(CEquipModel* pModel)
 MS2_REPLACE_METHOD(0x1411DDE50, CEquipItem, AddModel, 184, 0x073EED80);
 
 // @0x1411ddf10
-void CEquipItem::FUN_1411ddf10(CEquipModel* pModel)
+void CEquipItem::RemoveModel(CEquipModel* pModel)
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
@@ -707,10 +707,10 @@ void CEquipItem::FUN_1411ddf10(CEquipModel* pModel)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1411DDF10, CEquipItem, FUN_1411ddf10, 148, 0x00BF91C6);
+MS2_REPLACE_METHOD(0x1411DDF10, CEquipItem, RemoveModel, 148, 0x00BF91C6);
 
 // @0x1411ddfb0
-void CEquipItem::FUN_1411ddfb0(double fTime)
+void CEquipItem::UpdateModels(double fTime)
 {
     POSITION pos = m_models.GetHeadPosition();
     while (pos != NULL)
@@ -719,7 +719,7 @@ void CEquipItem::FUN_1411ddfb0(double fTime)
         spModel->vfunc_19(fTime);
     }
 }
-MS2_REPLACE_METHOD(0x1411DDFB0, CEquipItem, FUN_1411ddfb0, 119, 0x2B011AFF);
+MS2_REPLACE_METHOD(0x1411DDFB0, CEquipItem, UpdateModels, 119, 0x2B011AFF);
 
 // @0x1411de030
 void CEquipItem::FUN_1411de030()

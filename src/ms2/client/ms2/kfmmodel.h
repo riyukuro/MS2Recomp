@@ -104,13 +104,13 @@ public:
 
     // non-virtual members
     egf::EntityPtr GetEntity();                         // 0x14143ff20 copy of the entity pointer
-    egf::EntityID FUN_14143ff70();                          // 0x14143ff70 id of the model entity (0 when none)
+    egf::EntityID GetEntityID();                          // 0x14143ff70 id of the model entity (0 when none)
     efd::AssetID GetAssetId();                           // 0x14143fff0 asset id property of the entity
-    NiActorManager* FUN_1414400d0();                        // 0x1414400d0 actor manager of the entity
+    NiActorManager* GetActorManager();                        // 0x1414400d0 actor manager of the entity
     void SetPonyTailDamping(const CString& strBone, float f);    // 0x141440110
     void SetPonyTailOffset(const CString& strBone, float x, float y, float z);   // 0x1414401b0
     void PlaySequence(unsigned int nSeq);                  // 0x141440270
-    void FUN_141440380(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
+    void PlayAnimationWithFallback(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
         bool b);                                            // 0x141440380 play first existing animation
     void CreateEntity();                                   // 0x1414408e0 (re)create the entity
     void DestroyEntity();                                   // 0x1414409f0 destroy the entity
@@ -118,7 +118,7 @@ public:
     void FUN_141440bc0();                                   // 0x141440bc0 pony-tail joint positions
     bool IsDefaultScale();                                   // 0x141440f20 scale is 1.0
     void FUN_141440f60();                                   // 0x141440f60 apply the node scale to the model
-    void FUN_14143f3d0();                                   // 0x14143f3d0 rescale the physics joints
+    void ScalePhysXJointAnchors();                                   // 0x14143f3d0 rescale the physics joints
 
 public:
     MS2_LAYOUT_FRIEND;

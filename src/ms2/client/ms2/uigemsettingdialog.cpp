@@ -48,7 +48,7 @@ public:
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_MyPCEquip* FUN_14165f460();
+    class Unk_MyPCEquip* GetGemEquip();
 };
 void FUN_1405a8650(MS2Ptr<CGemBase>& sp);                       // MS2Ptr release
 void FUN_1401fd2e0(unsigned char* payload, COutputStream& stream);   // write the setting (unit_1401f9eb0.h)
@@ -91,10 +91,10 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
     if (pActor == 0)
         return 0;
 #ifdef __clang__
-    MS2Ptr<CGemBase> spGem = ((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
+    MS2Ptr<CGemBase> spGem = ((class Unk_GsEquip*)((class PC*)(void*)(pActor))->GetGemEquip())->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
     return dynamic_cast<CGemTransparency*>(spGem.operator->());
 #else
-    return dynamic_cast<CGemTransparency*>(((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1).operator->());
+    return dynamic_cast<CGemTransparency*>(((class Unk_GsEquip*)((class PC*)(void*)(pActor))->GetGemEquip())->FUN_141270740(1).operator->());
 #endif
 }
 

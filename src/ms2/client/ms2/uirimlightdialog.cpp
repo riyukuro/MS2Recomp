@@ -74,17 +74,17 @@ void UIRimLightDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    obj.FUN_1409c4a30("lightYaw", Unk_RimLight::FUN_141709930() + 90.0f);
-    obj.FUN_1409c4a30("lightPitch", Unk_RimLight::FUN_141709920());
+    obj.SetMemberFloat("lightYaw", Unk_RimLight::FUN_141709930() + 90.0f);
+    obj.SetMemberFloat("lightPitch", Unk_RimLight::FUN_141709920());
     ((class AScript&)(obj)).FUN_1407cb9c0("shadowMaxHeight", 400);
     obj.FUN_140e06d60("shadowMinScale", 0.5);
     ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultSize", 100);
     ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultBias", 3);
     const NiPoint3* pColor = Unk_RimLight::FUN_141709940();
-    obj.FUN_1409c4a30("sssRed", pColor->x);
-    obj.FUN_1409c4a30("sssGreen", pColor->y);
-    obj.FUN_1409c4a30("sssBlue", pColor->z);
-    obj.FUN_1409c4a30("sssPower", Unk_RimLight::FUN_141709950());
+    obj.SetMemberFloat("sssRed", pColor->x);
+    obj.SetMemberFloat("sssGreen", pColor->y);
+    obj.SetMemberFloat("sssBlue", pColor->z);
+    obj.SetMemberFloat("sssPower", Unk_RimLight::FUN_141709950());
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x141709400, UIRimLightDialog, OnLoadComplete, 452, 0x6611AC2D);

@@ -66,7 +66,7 @@ MS2_REPLACE_METHOD(0x1422E2E70, ASButtonBar, SetItemRendererName, 72, 0x3FB735DA
 // @0x1422e2ec0
 void ASButtonBar::SetSpacing(float f)
 {
-    FUN_1409c4a30("spacing", f);
+    SetMemberFloat("spacing", f);
 }
 MS2_REPLACE_METHOD(0x1422E2EC0, ASButtonBar, SetSpacing, 43, 0x97E6E69D);
 
@@ -108,7 +108,7 @@ MS2_REPLACE_METHOD(0x1422E30A0, ASButtonBar, GetAutoSize, 123, 0x3E8F981B);
 // @0x1422e3130
 void ASButtonBar::SetButtonWidth(float f)
 {
-    FUN_1409c4a30("buttonWidth", f);
+    SetMemberFloat("buttonWidth", f);
 }
 MS2_REPLACE_METHOD(0x1422E3130, ASButtonBar, SetButtonWidth, 43, 0x72FEE434);
 

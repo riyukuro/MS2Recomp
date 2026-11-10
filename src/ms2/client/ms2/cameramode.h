@@ -11,7 +11,7 @@
 namespace egf { class Entity; }   // the property bag at Unk_CameraOwner+0x10
 
 class Unk_CachedEntity;
-void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // bool property setter
+void SetCachedBoolProperty(Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // bool property setter
 
 // The object that owns the camera modes (CCameraMode::m_pOwner); it forwards the settings to the engine camera
 // through the egf::Entity at +0x10 (hash-keyed property setters).
@@ -32,7 +32,7 @@ public:
     void FUN_140afe7c0(bool b)
     {
         if (m_10)
-            FUN_14098c6e0((Unk_CachedEntity*)m_10, 0x2310d55e, b);
+            SetCachedBoolProperty((Unk_CachedEntity*)m_10, 0x2310d55e, b);
     }
     // The egf::Entity property accessors; the bodies are below, under the <egf/Entity.h> guard.
     inline bool FUN_140af8160();
@@ -178,7 +178,7 @@ public:
     static Vector3 FUN_140afdd40(const Vector3& ptEye, const Vector3& ptAt,
                                          const Vector3& ptUp);     // look-at -> euler angles (degrees)
     static Vector3 FUN_140afdec0(float t, const Vector3& a, const Vector3& b); // angle lerp
-    void FUN_140afe270(float f, bool bApply);
+    void SetZoomFactor(float f, bool bApply);
     float FUN_140afe2e0();
     float FUN_140afe300();
     void FUN_140afe4b0();
@@ -192,7 +192,7 @@ public:
     // 0x140ad4b30 (inline, another obj)
     float FUN_140ad4b30() { return m_setting.m_0; }
     // @0x140af9820
-    void FUN_140af9820(Unk_CameraOwner* pOwner) { m_pOwner = pOwner; }
+    void SetOwner(Unk_CameraOwner* pOwner) { m_pOwner = pOwner; }
     // @0x140af99d0
     void FUN_140af99d0(float f) { m_setting.m_4 = f; m_pOwner->FUN_140af9a10(f); }
     // @0x140af9950

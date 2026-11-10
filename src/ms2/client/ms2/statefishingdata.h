@@ -61,7 +61,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140ddac60
     virtual int vfunc_19();                                 // 19 0x140ddcc80: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140ddb4e0
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140ddb4e0
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140ddcbd0: an empty StateFishingData
 
     int FUN_140ddb5d0();                                    // the rod id of the data (0 without data)

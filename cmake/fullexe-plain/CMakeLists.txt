@@ -8,15 +8,18 @@
 # MS2_PLAIN_GLUE defaults to data/fullexe/plain, the committed glue of the newest passing fullexe-latest build.
 #   data/fullexe/imports.tsv   the import names: one .def per DLL here at configure time, lib /def at build time
 # tools/fullexe/plainglue.py write <dir> regenerates the glue from a finished cmake/fullexe build (names, paths and order
-# only); plainglue.py stubs <exe> <dir>/stubs.tsv <obj> extracts the one data stub (g_physXItem) once, like
-# tools/extract_resources.py does the resources. g_physXItem lies in the exe's .bss, so the obj is zero fill and is
-# committed as MS2_PLAIN_GLUE/stubs.obj, the default of MS2_PLAIN_STUBS_OBJ. Built here: the import libs, CryptoPP's MASM objs, hookglue.lib
+# only); plainglue.py stubs <exe> <dir>/stubs.tsv <obj> extracts the data stubs once, like tools/extract_resources.py
+# does the resources. Stubs in the exe's .bss make an obj of zero fill, committed as MS2_PLAIN_GLUE/stubs.obj, the
+# default of MS2_PLAIN_STUBS_OBJ. When stubs.tsv lists no stub (every global has a definition) and MS2_PLAIN_STUBS_OBJ
+# is not set, the link takes no stub obj. Built here: the import libs, CryptoPP's MASM objs, hookglue.lib
 # and shim_runtime.obj.
 # The objs: by default MS2_PLAIN_OBJ_ROOT, the obj cache a cmake/fullexe build (build/progress-<tag>) or the gates left.
 # -DMS2_PLAIN_COMPILE=ON compiles them here instead, one cl command per obj from MS2_PLAIN_GLUE/compile.tsv, flags.tsv
 # and tree.tsv (plainglue.py compile; MS2_PLAIN_CHECKOUT, MS2_PLAIN_ENGINE, MS2_MSVC_ROOT and MS2_PLAIN_GEN fill in
 # their path tokens). Code, data, relocations and symbols come out the same as the cache's; only the /Z7 debug info
 # differs (it records the obj path and command line), and the link drops it.
+# The repository root's default presets (windows, linux) add this directory with MS2_PLAIN_COMPILE=ON; that is the build
+# BUILDING.md describes. Standalone, over an obj cache:
 #   cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja [-DMS2_PLAIN_GLUE=<dir>] -DMS2_PLAIN_OBJ_ROOT=<cache>
 #         [-DMS2_PLAIN_STUBS_OBJ=<obj>] [-DMS2_RESOURCES_RES=<res>]
 # Without MS2_RESOURCES_RES, rc compiles standin/standin.rc (our own icon, manifest and the dialogs the client loads, no
@@ -33,15 +36,24 @@ set(MS2_RESOURCES_RES "" CACHE FILEPATH "the .res (tools/extract_resources.py --
 set(MS2_PLAIN_IMPORTS "${MS2_ROOT}/data/fullexe/imports.tsv" CACHE FILEPATH "import names (dll, symbol)")
 set(MS2_PLAIN_GLUE "${MS2_ROOT}/data/fullexe/plain" CACHE PATH "dir with objs.txt, alias.rsp, stubs.tsv [, stubs.obj, order.txt or order.tar.xz] (tools/fullexe/plainglue.py write)")
 # MS2_PLAIN_DERIVE: the glue of this checkout, made at configure by tools/fullexe/plainglue.py derive from the repository
-# alone (no exe, no exe-reading build): objs.txt from the tracked game sources (MS2-UNIT, their status.tsv VAs) plus
-# MS2_PLAIN_GLUE/link.tsv's engine, library and closure objs, ordered and moved by MS2_PLAIN_GLUE/before.tsv; compile.tsv,
-# flags.tsv, tree.tsv from tools/progress.py and tools/gbtree.py; order.txt from the symbol tables and data/map;
-# stubs.obj from stubs.tsv. AUTO: when MS2_PLAIN_COMPILE is on and the glue has link.tsv (falls back to the committed
-# glue, with a warning, when the derive step fails). Needs the venv's Python (MS2_PLAIN_PYTHON). cmake re-runs it when
-# the tables change or a src/ms2 .cpp is added, removed or renamed.
+# alone (no exe, no exe-reading build): the link plan (link.tsv) from the tracked game sources (MS2-UNIT, their
+# status.tsv VAs) and data/engine/units-*.json's engine and library units, with MS2_PLAIN_GLUE/linkfacts.tsv's few
+# build facts (twin picks, VAs of units without status.tsv rows, closure objs); the static-init moves (before.tsv) from
+# data/fullexe/crtinit-exe.tsv; objs.txt in that order; compile.tsv, flags.tsv, tree.tsv from tools/progress.py and
+# tools/gbtree.py; order.txt from the symbol tables and data/map; stubs.obj from stubs.tsv. Without status.tsv (the
+# published mirror) it reads MS2_PLAIN_GLUE/link.tsv and before.tsv instead. AUTO: when MS2_PLAIN_COMPILE is on and
+# the glue has link.tsv (falls back to the committed glue, with a warning, when the derive step fails). Needs the venv's
+# Python (MS2_PLAIN_PYTHON). cmake re-runs it when the tables or unit lists change or a src/ms2 .cpp is added, removed
+# or renamed.
 set(MS2_PLAIN_DERIVE AUTO CACHE STRING "make the glue from this checkout at configure (plainglue.py derive): AUTO, ON, OFF")
 set_property(CACHE MS2_PLAIN_DERIVE PROPERTY STRINGS AUTO ON OFF)
 option(MS2_PLAIN_COMPILE "compile the objs here from MS2_PLAIN_GLUE/compile.tsv, flags.tsv, tree.tsv (plainglue.py compile) instead of reading MS2_PLAIN_OBJ_ROOT" OFF)
+# MS2_PLAIN_STANDALONE: the game units (compile.tsv rows whose source is under <checkout>/src/ms2) get /DMS2_STANDALONE,
+# so src/hook/ms2hook.h's MS2_REPLACE* lines expand to nothing: no hook::Replacement record, no registration
+# initializer and no method thunk reaches the exe (without it each one calls the shim's no-op hook::Register at static
+# init). The define is added here only: the glue's flag sets, tools/progress.py, the gates' obj cache and the hook DLL
+# never see it (the DLL needs the registrations).
+option(MS2_PLAIN_STANDALONE "MS2_PLAIN_COMPILE: compile the game units with /DMS2_STANDALONE (no hook registrations in the exe)" OFF)
 set(MS2_PLAIN_CHECKOUT "${MS2_ROOT}" CACHE PATH "MS2_PLAIN_COMPILE: the checkout whose sources compile.tsv names (\${ROOT})")
 set(MS2_PLAIN_ENGINE "${MS2_ROOT}/engine" CACHE PATH "MS2_PLAIN_COMPILE: the dir holding gamebryo/ and fmt-ms2/ (\${ENGINE}, MS2_GAMEBRYO_ROOT)")
 set(MS2_MSVC_ROOT "" CACHE PATH "third_party/-layout dir: msvc/ (MSVC 14.16 + Windows SDK, msvc-wine), dxsdk/, src/cryptopp562; empty = third_party")
@@ -75,7 +87,13 @@ if(_derive)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
                  "${MS2_PLAIN_GLUE}/link.tsv" "${MS2_PLAIN_GLUE}/before.tsv" "${MS2_PLAIN_GLUE}/alias.rsp" "${MS2_PLAIN_GLUE}/stubs.tsv"
                  "${MS2_PLAIN_CHECKOUT}/progress/symbols.tsv" "${MS2_PLAIN_CHECKOUT}/progress/symbols-manual.tsv"
-                 "${MS2_PLAIN_CHECKOUT}/data/map/functions.tsv" "${MS2_PLAIN_CHECKOUT}/data/engine/units-gb.json")
+                 "${MS2_PLAIN_CHECKOUT}/data/map/functions.tsv" "${MS2_PLAIN_CHECKOUT}/data/map/units.tsv"
+                 "${MS2_PLAIN_CHECKOUT}/data/fullexe/crtinit-exe.tsv" "${MS2_PLAIN_CHECKOUT}/data/engine/units-gb.json")
+    file(GLOB _ms2_libunits "${MS2_PLAIN_CHECKOUT}/data/engine/units-lib-*.json")
+    if(EXISTS "${MS2_PLAIN_GLUE}/linkfacts.tsv")
+      list(APPEND _ms2_libunits "${MS2_PLAIN_GLUE}/linkfacts.tsv")
+    endif()
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${_ms2_libunits})
     if(EXISTS "${MS2_PLAIN_CHECKOUT}/progress/status.tsv")
       set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${MS2_PLAIN_CHECKOUT}/progress/status.tsv")
     endif()
@@ -122,9 +140,25 @@ endif()
 if(NOT MS2_PLAIN_STUBS_OBJ AND EXISTS "${MS2_PLAIN_GLUE}/stubs.obj")
   set(MS2_PLAIN_STUBS_OBJ "${MS2_PLAIN_GLUE}/stubs.obj")   # zero fill only: committed, no exe bytes
 endif()
+set(_nostubs OFF)   # stubs.tsv lists no stub and no obj is given: link none
+if(NOT MS2_PLAIN_STUBS_OBJ AND EXISTS "${MS2_PLAIN_GLUE}/stubs.tsv")
+  file(STRINGS "${MS2_PLAIN_GLUE}/stubs.tsv" _stubrows REGEX "^[^#]")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${MS2_PLAIN_GLUE}/stubs.tsv")
+  list(FILTER _stubrows EXCLUDE REGEX "^[ \t\r]*$")
+  if(NOT _stubrows)
+    set(_nostubs ON)
+  endif()
+endif()
+set(_stubobj "")
+if(NOT _nostubs)
+  set(_stubobj "${MS2_PLAIN_STUBS_OBJ}")
+endif()
 foreach(v MS2_PLAIN_OBJ_ROOT MS2_PLAIN_STUBS_OBJ MS2_RESOURCES_RES)
   if("${v}" STREQUAL "MS2_RESOURCES_RES" AND NOT MS2_RESOURCES_RES)
     continue()      # the stand-in below
+  endif()
+  if("${v}" STREQUAL "MS2_PLAIN_STUBS_OBJ" AND _nostubs)
+    continue()      # no stub
   endif()
   if(NOT ${v} OR NOT EXISTS "${${v}}")
     message(FATAL_ERROR "${v}=${${v}}: missing (see the header of ${CMAKE_CURRENT_LIST_FILE})")
@@ -270,12 +304,20 @@ add_custom_command(OUTPUT "${OUT}/asm/hookglue.lib"
                    COMMAND ${TOOL_ENV} "${MS2_lib}" /nologo /machine:x64 "/out:${_l}" "${_o}"
                    DEPENDS "${ASM_INC}/hookglue.asm" VERBATIM)
 
-# shim_runtime.obj: entry point, trap logger, no-op hook::Register (tools/fullexe/shim.py's cl line)
+# shim_runtime.obj: entry point, trap logger, no-op hook::Register (tools/fullexe/shim.py's cl line). The crash and boot
+# diagnostics in it (exception and hang logging, boot milestones, see the file's header) are for the test lanes, whose
+# exe-reading build (shim.py) always has them; here they are off unless MS2_SHIM_DIAGNOSTICS is on, and with it on the
+# obj is shim.py's.
+option(MS2_SHIM_DIAGNOSTICS "shim_runtime.cpp's crash/hang logging and boot milestones (fullexe-trap.log beside the exe)" OFF)
+set(_shimdiag "")
+if(NOT MS2_SHIM_DIAGNOSTICS)
+  set(_shimdiag /DMS2_SHIM_DIAGNOSTICS=0)
+endif()
 set(RT_SRC "${MS2_ROOT}/tools/fullexe/shim_runtime.cpp")
 tp(_s "${RT_SRC}")
 tp(_o "${OUT}/shim/shim_runtime.obj")
 add_custom_command(OUTPUT "${OUT}/shim/shim_runtime.obj"
-                   COMMAND ${TOOL_ENV} "${MS2_cl}" /nologo /c /O2 /MD /EHsc /W3 /D_AFXDLL "${_s}" "/Fo${_o}"
+                   COMMAND ${TOOL_ENV} "${MS2_cl}" /nologo /c /O2 /MD /EHsc /W3 /D_AFXDLL ${_shimdiag} "${_s}" "/Fo${_o}"
                    DEPENDS "${RT_SRC}" VERBATIM)
 
 # the response file, in link.py's order: header, import libs, SDK libs, objs, asm, shim, res, aliases, /ORDER
@@ -301,7 +343,13 @@ endif()
 tp(_exe "${OUT}/${MS2_PLAIN_NAME}.exe")
 tp(_map "${OUT}/${MS2_PLAIN_NAME}.map")
 set(RSP "/nologo /machine:x64 /subsystem:windows,6.0 /base:0x140000000 /dynamicbase:no /entry:ms2_fullexe_entry /manifest:no\n")
-string(APPEND RSP "/opt:ref /opt:icf /debug:none /nodefaultlib:D3DX9.lib /nodefaultlib:D3DX10.lib /nodefaultlib:D3DX11.lib "
+# MS2_PLAIN_STANDALONE links with /opt:noref: without the registrations nothing refers to a function whose callers are not
+# written yet, and /opt:ref would drop it from the exe.
+set(_optref ref)
+if(MS2_PLAIN_STANDALONE)
+  set(_optref noref)
+endif()
+string(APPEND RSP "/opt:${_optref} /opt:icf /debug:none /nodefaultlib:D3DX9.lib /nodefaultlib:D3DX10.lib /nodefaultlib:D3DX11.lib "
                   "/nodefaultlib:D3DCompiler.lib /nodefaultlib:NiDX9Renderer.lib\n")
 string(APPEND RSP "/out:\"${_exe}\" /map:\"${_map}\"\n")
 if(MS2_PLAIN_DERIVED)
@@ -335,6 +383,9 @@ if(MS2_PLAIN_COMPILE)
     file(MAKE_DIRECTORY "${_d}")
     if(k STREQUAL "L")
       if(NOT IS_SYMLINK "${p}")
+        if(CMAKE_HOST_WIN32)
+          file(TO_NATIVE_PATH "${t}" t)   # a Windows symlink whose target has '/' does not resolve
+        endif()
         file(CREATE_LINK "${t}" "${p}" SYMBOLIC COPY_ON_ERROR)
       endif()
     else()
@@ -409,8 +460,19 @@ if(MS2_PLAIN_COMPILE)
     endif()
     get_filename_component(_d "${MS2_PLAIN_OBJ_ROOT}/${o}" DIRECTORY)
     file(MAKE_DIRECTORY "${_d}")
+    set(_sa "")
+    if(MS2_PLAIN_STANDALONE)
+      set(_s "${src}")
+      if(CMAKE_HOST_WIN32)    # a glue derived on Windows writes ${ROOT}\src\ms2\<dir>/<unit>.cpp
+        string(REPLACE "\\" "/" _s "${_s}")
+      endif()
+      string(FIND "${_s}" "${MS2_PLAIN_CHECKOUT}/src/ms2/" _p)
+      if(_p EQUAL 0)
+        set(_sa /DMS2_STANDALONE)
+      endif()
+    endif()
     add_custom_command(OUTPUT "${MS2_PLAIN_OBJ_ROOT}/${o}"
-                       COMMAND ${TOOL_ENV} "${MS2_CL_${tool}}" ${_cl_args_${tool}} ${_flags_${id}} "/Fo${MS2_PLAIN_OBJ_ROOT}/${o}" "${src}"
+                       COMMAND ${TOOL_ENV} "${MS2_CL_${tool}}" ${_cl_args_${tool}} ${_flags_${id}} ${_sa} "/Fo${MS2_PLAIN_OBJ_ROOT}/${o}" "${src}"
                        DEPENDS "${src}" WORKING_DIRECTORY "${cwd}" VERBATIM)
   endforeach()
 endif()
@@ -431,7 +493,7 @@ foreach(f IN LISTS LIBS OBJS)
   tp(_f "${f}")
   string(APPEND RSP "\"${_f}\"\n")
 endforeach()
-foreach(f "${OUT}/asm/hookglue.lib" ${ASMOBJS} "${OUT}/shim/shim_runtime.obj" "${MS2_PLAIN_STUBS_OBJ}" "${MS2_RESOURCES_RES}")
+foreach(f "${OUT}/asm/hookglue.lib" ${ASMOBJS} "${OUT}/shim/shim_runtime.obj" ${_stubobj} "${MS2_RESOURCES_RES}")
   tp(_f "${f}")
   string(APPEND RSP "\"${_f}\"\n")
 endforeach()
@@ -452,7 +514,7 @@ tp(_r "${OUT}/link.rsp")
 add_custom_command(OUTPUT "${OUT}/${MS2_PLAIN_NAME}.exe" "${OUT}/${MS2_PLAIN_NAME}.map"
                    COMMAND ${MS2_PLAIN_LAUNCHER} ${TOOL_ENV} "${MS2_link}" "@${_r}"
                    DEPENDS "${OUT}/link.rsp" ${IMPLIBS} ${ASMOBJS} "${OUT}/asm/hookglue.lib" "${OUT}/shim/shim_runtime.obj"
-                           "${MS2_PLAIN_STUBS_OBJ}" "${MS2_RESOURCES_RES}" ${_orderdep} ${OBJS}
+                           ${_stubobj} "${MS2_RESOURCES_RES}" ${_orderdep} ${OBJS}
                    WORKING_DIRECTORY "${OUT}" USES_TERMINAL VERBATIM)
 # the game's file name: a plain copy, the bytes stay those of <MS2_PLAIN_NAME>.exe
 add_custom_command(OUTPUT "${OUT}/MapleStory2.exe"

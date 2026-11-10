@@ -109,11 +109,11 @@ void PCGemEquip::ReadFromStream(CInputStream& stream, int nOwner)
 void PCGemEquip::SetItemByGemType(int nGemType, MS2Ptr<CItem> spItem)
 {
     int nIndex = FUN_141271290(nGemType);
-    FUN_1412716d0(nIndex, spItem);
+    SetItemAt(nIndex, spItem);
 }
 
 // @0x1412700b0
-unsigned PCGemEquip::FUN_1412700b0()
+unsigned PCGemEquip::GetItemCount()
 {
     return (unsigned)m_items.GetCount();
 }
@@ -131,7 +131,7 @@ MS2Ptr<CItem> PCGemEquip::GetItemByGemType(int nGemType)
     if (!FUN_140222e10(nGemType))
         return MS2Ptr<CItem>(0);
     int nIndex = FUN_141271290(nGemType);
-    MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
+    MS2Ptr<CItem> spItem = GetItemAt(nIndex);
     if (spItem == 0 || spItem->FUN_140527840() == 0)
         return MS2Ptr<CItem>(0);
     if (spItem->FUN_140527840()->FUN_14053e900() != nGemType)
@@ -158,7 +158,7 @@ bool PCGemEquip::HasItemId(int nItemId)
 // @0x141270360
 CGemTransparency* PCGemEquip::GetTransparencyGem(unsigned char nIndex)
 {
-    CItem* pItem = FUN_141271630(nIndex).get();
+    CItem* pItem = GetItemAt(nIndex).get();
     if (pItem == 0)
         return 0;
     if (pItem->GetGem() == 0)
@@ -190,10 +190,10 @@ void PCGemEquip::FUN_1412704d0()
     unsigned char nCount = (unsigned char)m_items.GetCount();
     for (unsigned char i = 0; i < nCount; i++)
     {
-        MS2Ptr<CItem> spItem = FUN_141271630(i);
+        MS2Ptr<CItem> spItem = GetItemAt(i);
         if (spItem == 0 || spItem->GetGem() == 0)
             continue;
-        if (m_pOwner->FUN_141662eb0(spItem) == 0)
+        if (m_pOwner->CanUseItem(spItem) == 0)
             continue;
         spItem->GetGem()->vfunc_5(m_pOwner, spItem);
     }
@@ -216,7 +216,7 @@ void PCGemEquip::FUN_141270680()
 }
 
 // @0x1412706f0
-int PCGemEquip::FUN_1412706f0(int nSlot)
+int PCGemEquip::IsSlotHidden(int nSlot)
 {
     CGemTransparency* pGem = FindTransparencyGem();
     if (pGem == 0)
@@ -232,7 +232,7 @@ MS2Ptr<CGemBase> PCGemEquip::FUN_141270740(int nGemType)
     CItem* pItem = GetItemByGemType(nGemType);
     if (pItem == 0)
         return MS2Ptr<CGemBase>(0);
-    if (m_pOwner->FUN_141662eb0(pItem) == 0)
+    if (m_pOwner->CanUseItem(pItem) == 0)
         return MS2Ptr<CGemBase>(0);
     CItemGem* pGem = pItem->GetGem();
     bool bNone = pGem == 0 || pGem->GetGem() == 0;
@@ -260,7 +260,7 @@ MS2Ptr<CItem> PCGemEquip::RemoveByGemType(int nGemType)
     if (MS2Ptr<CItem> spItem = FUN_141271500(nIndex))
     {
         FUN_141271870(nGemType, spItem);
-        FUN_1412716d0(nIndex, MS2Ptr<CItem>(0));
+        SetItemAt(nIndex, MS2Ptr<CItem>(0));
         return spItem;
     }
     return MS2Ptr<CItem>(0);
@@ -280,7 +280,7 @@ bool PCGemEquip::EquipItem(MS2Ptr<CItem> spItem)
 bool PCGemEquip::EquipByGemType(int nGemType, MS2Ptr<CItem> spItem)
 {
     int nIndex = FUN_141271290(nGemType);
-    FUN_1412716d0(nIndex, spItem);
+    SetItemAt(nIndex, spItem);
     CItem* pItem = FUN_1412712e0(nIndex);
     if (pItem)
     {
@@ -293,15 +293,15 @@ bool PCGemEquip::EquipByGemType(int nGemType, MS2Ptr<CItem> spItem)
 // @0x141270e00
 void PCGemEquip::CopyFrom(PCGemEquip& other)
 {
-    size_t nCount = other.FUN_1412700b0();
+    size_t nCount = other.GetItemCount();
     for (size_t i = 0; i < nCount; i++)
     {
-        MS2Ptr<CItem> spItem = other.FUN_141271630((int)i);
+        MS2Ptr<CItem> spItem = other.GetItemAt((int)i);
         if (spItem.IsNull())
             continue;
         MS2Ptr<CItem> spCopy = spItem->Clone();
         if (spCopy)
-            FUN_1412716d0((int)i, spCopy);
+            SetItemAt((int)i, spCopy);
     }
 }
 
@@ -334,7 +334,7 @@ bool PCGemEquip::FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect)
     NoticeMessage kQuery;
     kQuery.m_strName = strEffect;
     kQuery.m_nObject = 0;
-    kQuery.SetActor(m_pOwner->FUN_14123c580());
+    kQuery.SetActor(m_pOwner->GetObjectId());
     int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
     if (nHandle == 0)
         return false;
@@ -369,10 +369,10 @@ int PCGemEquip::FUN_141271290(int nGemType)
 // @0x1412712e0
 MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
 {
-    MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
+    MS2Ptr<CItem> spItem = GetItemAt(nIndex);
     if (spItem == 0 || spItem->GetGem() == 0)
         return MS2Ptr<CItem>(0);
-    if (m_pOwner->FUN_141662eb0(spItem) == 0)
+    if (m_pOwner->CanUseItem(spItem) == 0)
         return MS2Ptr<CItem>(0);
     bool bOff = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_bFlag152 == false;
     if (bOff)
@@ -384,7 +384,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
 // @0x141271500
 MS2Ptr<CItem> PCGemEquip::FUN_141271500(int nIndex)
 {
-    MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
+    MS2Ptr<CItem> spItem = GetItemAt(nIndex);
     if (spItem == 0 || spItem->GetGem() == 0)
         return MS2Ptr<CItem>(0);
     spItem->GetGem()->vfunc_7(m_pOwner, spItem);
@@ -392,7 +392,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_141271500(int nIndex)
 }
 
 // @0x141271630
-MS2Ptr<CItem> PCGemEquip::FUN_141271630(int nIndex)
+MS2Ptr<CItem> PCGemEquip::GetItemAt(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return MS2Ptr<CItem>(0);
@@ -400,7 +400,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_141271630(int nIndex)
 }
 
 // @0x1412716d0
-void PCGemEquip::FUN_1412716d0(int nIndex, MS2Ptr<CItem> spItem)
+void PCGemEquip::SetItemAt(int nIndex, MS2Ptr<CItem> spItem)
 {
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return;
@@ -438,7 +438,7 @@ void PCGemEquip::FUN_141271870(int nGemType, MS2Ptr<CItem> spItem)
 }
 
 // @0x141271960
-bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
+bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
 {
     if (spItem == 0)
         return false;
@@ -482,7 +482,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
 }
 
 // @0x141271f90
-bool FUN_141271f90(MS2Ptr<CItem> spItem)
+bool UnequipGem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;

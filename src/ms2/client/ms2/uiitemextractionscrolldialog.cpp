@@ -73,7 +73,7 @@ UIItemExtractionScrollDialog::SlotBag* FUN_140e4b840(NotifyContext::BindData* p)
 template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d27300
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -124,7 +124,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         UIItemExtractionScrollDialog* pDlg = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49);
@@ -245,10 +245,10 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
             __int64 nUidItem = static_cast<CInPacket*>(pPacket)->ReadInt64();
             __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
             unsigned nCount = (unsigned short)static_cast<CInPacket*>(pPacket)->ReadInt16();
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUidItem);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUidItem);
             if (spItem == 0)
                 return;
-            MS2Ptr<CItem> spResult = g_143ab2a90.FUN_140a5d680(nUidResult);
+            MS2Ptr<CItem> spResult = g_143ab2a90.FindItemByUid(nUidResult);
             if (spResult == 0)
                 return;
             Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->FUN_140527870());
@@ -330,7 +330,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (spItem == 0)
         return;
     if (spItem->FUN_1405292a0() < 1u)
@@ -383,7 +383,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 // @0x140e4b2c0
 void UIItemExtractionScrollDialog::FUN_140e4b2c0(__int64 nScrollUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nScrollUid);
     if (spItem == 0)
         return;
     m_nScrollUid = nScrollUid;
@@ -403,7 +403,7 @@ void UIItemExtractionScrollDialog::FUN_140e4b340()
 // @0x140e4b380
 void UIItemExtractionScrollDialog::OnOk()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nTargetUid);
     if (spItem == 0)
         return;
     CExtractionItemInfoPtr spRow = ((CItemExtractionTable*)FUN_14052d1f0())->GetData(spItem->FUN_1405276c0());

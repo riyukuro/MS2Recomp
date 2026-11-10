@@ -15,11 +15,11 @@ struct Unk_NvPStateInfo { unsigned int m_nVersion; int m_aValue[0x22]; };       
 struct Unk_NvDisplayInfo { unsigned int m_nVersion; int m_aValue[0x120]; };                           // 0x484 bytes
 struct Unk_NvGpuMemory { int m_nCount; int m_aHandle[4]; unsigned int m_nTotal; int m_nFree; };
 
-int FUN_14160ccd0(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut);
+int GetGpuMemory(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut);
 int FUN_14160ce50(NvidiaGPU* pGpu);
 int FUN_14160cf10(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec);
-int FUN_14160d1d0(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec);
-int* FUN_14160d380(int* a, int* b);
+int QueryMemoryInfo(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec);
+int* Min(int* a, int* b);
 
 // @0x14160c6d0
 NvidiaGPU::NvidiaGPU()
@@ -125,7 +125,7 @@ int NvidiaGPU::vfunc_3(int* a, int* b)
 int NvidiaGPU::vfunc_5(unsigned __int64* a, unsigned __int64* b)
 {
     Unk_NvGpuMemory mem;
-    if (FUN_14160ccd0(this, 0, &mem) != 0)
+    if (GetGpuMemory(this, 0, &mem) != 0)
     {
         *a = mem.m_nTotal / 0x400;
         *b = (unsigned int)(mem.m_nTotal - mem.m_nFree) / 0x400;
@@ -134,13 +134,13 @@ int NvidiaGPU::vfunc_5(unsigned __int64* a, unsigned __int64* b)
 }
 
 // @0x14160ccb0
-int FUN_14160ccb0(NvidiaGPU* pGpu)
+int GetGpuCount(NvidiaGPU* pGpu)
 {
     return pGpu->m_nGpus;
 }
 
 // @0x14160ccd0
-int FUN_14160ccd0(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut)
+int GetGpuMemory(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut)
 {
     int nResult = 0;
     int i = 0;
@@ -149,7 +149,7 @@ int FUN_14160ccd0(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut)
         pOut->m_nCount = pGpu->m_pGpus[nIndex].m_nDisplays;
         for (i = 0; i < pOut->m_nCount; i++)
             pOut->m_aHandle[i] = pGpu->m_pGpus[nIndex].m_aDisplay[i].m_nValue;
-        nResult = FUN_14160d1d0(pGpu, pGpu->m_pGpus[nIndex].m_nHandle, &pGpu->m_pGpus[nIndex]);
+        nResult = QueryMemoryInfo(pGpu, pGpu->m_pGpus[nIndex].m_nHandle, &pGpu->m_pGpus[nIndex]);
         do
         {
             if (nResult == 0)
@@ -198,7 +198,7 @@ int FUN_14160cf10(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
         {
             int nMax = 4;
             int nLimit = nCount;
-            pRec->m_nDisplays = *FUN_14160d380(&nLimit, &nMax);
+            pRec->m_nDisplays = *Min(&nLimit, &nMax);
             for (i = 0; i < pRec->m_nDisplays; i++)
             {
                 pRec->m_aDisplay[i].m_nHandle = pBuf[i];
@@ -238,7 +238,7 @@ int FUN_14160d090(NvidiaGPU* pGpu, int nUnused, Unk_NvGpu* pRec)
 }
 
 // @0x14160d1d0
-int FUN_14160d1d0(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
+int QueryMemoryInfo(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
 {
     int nRet;
     int nResult = 0;
@@ -280,8 +280,8 @@ int FUN_14160d280(NvidiaGPU* pGpu, int nUnused, Unk_NvGpu* pRec)
 }
 
 // @0x14160d380 (std::min<int>)
-int* FUN_14160d380(int* a, int* b);
-int* FUN_14160d380(int* a, int* b)
+int* Min(int* a, int* b);
+int* Min(int* a, int* b)
 {
     if (*b < *a)
         return b;

@@ -36,26 +36,26 @@ public:
     virtual int vfunc_14();                                       // 0x141251d90
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // 0x141252f20 (vfunc_o30_0)
 
-    void FUN_141250cc0(int nCategory);                              // fill the key list of a tab
-    void FUN_141252200(int nPadKind);                               // reset to the default keys
+    void RefreshKeyList(int nCategory);                              // fill the key list of a tab
+    void ResetKeysToDefault(int nPadKind);                               // reset to the default keys
     bool FUN_1412523d0(int nButton, const CMsgBoxData& data);       // the reset confirm box answer
     void FUN_141252460();                                           // leave the key edit
     void FUN_1412524d0(__int64 nAction, int nPriority);             // unbind the action's slot
-    CString FUN_141252540(__int64 nAction);                         // the action id as text
-    void FUN_1412525c0(CString strAction, int nPriority);           // focus in: start editing the action's slot
+    CString ActionToString(__int64 nAction);                         // the action id as text
+    void BeginKeyEdit(CString strAction, int nPriority);           // focus in: start editing the action's slot
     void FUN_141252700(int nKey);                                   // bind the edited slot to the key
     void FUN_141252840(int nMsgId);                                 // cancel the edit, with a notice
-    void FUN_141252910();                                           // category 9: back up the quick slot keys
+    void BackupKeys();                                           // category 9: back up the quick slot keys
     void FUN_141252940();                                           // category 9: restore them
     void FUN_141252970();                                           // remember the quick slots
     void FUN_141252ae0();                                           // put the quick slots back
     int FUN_141252c10();                                            // this page is the current tab (the base input tab)
-    int FUN_141252ca0();                                            // this page is the current tab
+    int IsCurrentTab();                                            // this page is the current tab
     void FUN_141252cf0(int bRelease);                               // block / release the player's keys
     int FUN_141252d40(int nKey);                                    // the key may be bound to the edited slot
     int FUN_141252ea0();                                            // the edited action is not a fixed one
     static bool FUN_1412530e0(int* pKey);                           // the key captured since the last call
-    static bool FUN_1412532b0(int nKey);                            // no action uses the key
+    static bool IsKeyUnassigned(int nKey);                            // no action uses the key
     static void FUN_1412532f0(MS2Ptr<CGameOptionInputDefault> sp); // notify the change of a page
     static void FUN_1412533f0();                                    // notify the change of every input tab
 

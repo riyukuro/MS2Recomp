@@ -28,8 +28,8 @@ public:
 public:                                             // the macro ends private
 
     void FUN_140cbff60(bool bUnk);                  // CWebBrowserService::FUN_141b78840 forwards a browser's flag
-    void FUN_140cbffc0(bool bImeRequest);           // tells the browser process the ime state (and queues it for the service)
-    bool FUN_140cc0130();                           // CWebBrowserService::FUN_141b78650
+    void SetImeRequest(bool bImeRequest);           // tells the browser process the ime state (and queues it for the service)
+    bool GetImeRequest();                           // CWebBrowserService::FUN_141b78650
     void FUN_140cc0150();                           // CWebBrowserService::FUN_141b784f0 (before closing a browser)
 private:
     MS2_LAYOUT_FRIEND;

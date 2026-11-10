@@ -37,7 +37,7 @@ class Unk_BirthdaySound
 public:
 };
 
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -79,7 +79,7 @@ MS2_REPLACE_METHOD(0x140BB9860, UIBirthdayCardDialog, vfunc_65, 37, 0x1083A844);
 void UIBirthdayCardDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 MS2_REPLACE_METHOD(0x140BB9890, UIBirthdayCardDialog, vfunc_67, 37, 0xAB07D7CD);
 

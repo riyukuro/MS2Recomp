@@ -23,8 +23,8 @@ struct Unk_MeratProductKey
     // @0x1406a9b40
     void Read(CInPacket& packet) { m_nPremiumId = packet.ReadInt32(); m_nUgcId = packet.ReadInt64(); }
 
-    void FUN_1409c1640(CStringW strText);                   // 0x1409c1640 parse the key from its text (body in another unit)
-    CStringW FUN_1409b0470() const;                         // 0x1409b0470 the key as text ("P<n>" / "U<n>")
+    void ParseOid(CStringW strText);                   // 0x1409c1640 parse the key from its text (body in another unit)
+    CStringW GetKeyString() const;                         // 0x1409b0470 the key as text ("P<n>" / "U<n>")
     bool FUN_140899ce0(const Unk_MeratProductKey& other) const;   // 0x140899ce0 same key (body in another unit)
     bool operator==(const Unk_MeratProductKey& other) const;     // 0x140899ce0 (CRBMap key compare; body in ugcdef.cpp)
     bool operator<(const Unk_MeratProductKey& other) const;      // 0x140899d90 (body in ugcdef.cpp)

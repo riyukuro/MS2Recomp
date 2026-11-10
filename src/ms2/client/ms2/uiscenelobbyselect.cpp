@@ -65,7 +65,7 @@ public:
     void FUN_140aec8a0(bool bKeep);
     bool GetSavedSetting(Unk_CameraSetting& kSetting);
     void FUN_140aed720(const Unk_CameraSetting& kSetting);
-    void FUN_140aed750(int a, int b);
+    void SetMode(int a, int b);
 };
 class Unk_LsCharSelect : public UICharacterListDialog
 {
@@ -146,7 +146,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CBuddyManager;
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: the real function (0x140a6a830, inventory.cpp): the CBlockManager singleton
+class Unk_InventoryStateManager* GetBlockManager();   // C3: the real function (0x140a6a830, inventory.cpp): the CBlockManager singleton
 class HomeBlockManager;
 template <class T> T* Unk_MMDialog(int nId);   // C3: mentoringmanager.cpp
 class UIDamageText;
@@ -212,8 +212,8 @@ int UISceneLobby::vfunc_48(int n)
     TSingleton<CUIService>::GetInstance()->SetMode(0x3ef);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(m_6c);
     TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5190();
-    reinterpret_cast<CBlockManager*>(FUN_140a6a830())->ClearBlocks();
-    TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47940();
+    reinterpret_cast<CBlockManager*>(GetBlockManager())->ClearBlocks();
+    TSingleton<HomeBlockManager>::GetInstance()->Clear();
     {
         MS2Ptr<UIHeadUpDisplay> spTutorial(reinterpret_cast<UIHeadUpDisplay*>(Unk_DmgFindUI<UIDamageText>(0x4e32)));
         if (spTutorial.get() != 0) {
@@ -343,7 +343,7 @@ int UISceneLobbyCreate::vfunc_49(int n)
         Unk_CameraSetting arg;
         if (TSingleton<CameraMgr>::GetInstance()->GetSavedSetting(arg)) {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(arg);
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 1);
+            TSingleton<CameraMgr>::GetInstance()->SetMode(4, 1);
         }
     }
     return FUN_1422e7950();
@@ -399,7 +399,7 @@ int UISceneLobbySelect::vfunc_49(int n)
         Unk_CameraSetting arg;
         if (TSingleton<CameraMgr>::GetInstance()->GetSavedSetting(arg)) {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(arg);
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 1);
+            TSingleton<CameraMgr>::GetInstance()->SetMode(4, 1);
         }
     }
     m_a8 = 0;

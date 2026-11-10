@@ -174,7 +174,7 @@ void StateCashCall::vfunc_4(StateData* pData)
         if (pMyPC != 0)
         {
             m_nEnd = m_nEnd + 100;
-            if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+            if (((void*)(reinterpret_cast<PC*>(pMyPC)->GetHeldItem())) != 0)
                 reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar != 0)
@@ -207,7 +207,7 @@ void StateCashCall::vfunc_5(int n)
         {
             if (m_spCash.get() != 0)
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_spCash->m_nItemUid);
                 if (spItem.get() != 0)
                     FUN_1412751f0(FormatStringId<CStringW>(0xa0, spItem->FUN_140527b10()), 1, 1);
             }
@@ -381,7 +381,7 @@ void StateCashCall::SendRequest()
     }
     else
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_spCash->m_nItemUid);
         if (spItem.get() != 0)
             g_143ab2a90.FUN_140a63880(spItem.get(), StringFormat(L"{0}", m_spCash->m_nPrice));
     }
@@ -416,7 +416,7 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     msg.m_strName = strEffect;
     msg.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     msg.m_p18 = &xf;
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&msg));
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&msg));
 }
 MS2_REPLACE_METHOD(0x1410238D0, StateCashCall, SpawnEffect, 623, 0x4B23E957);
 

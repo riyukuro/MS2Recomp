@@ -19,7 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class NxGroupsMask; struct Unk_RayCastInfo; class CPhysXHelper { public: bool CastRay(Unk_RayCastInfo*, const NxGroupsMask*); };           // cast the ray; fills m_hit
 float FUN_14029dba0(float f);                                           // sinf
 float FUN_14029cc60(float f);                                           // cosf
@@ -100,7 +100,7 @@ void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Poin
             ray.m_mask = 0x201;
             ray.m_pad_20 = 0;
             ray.m_pad_28 = 0;
-            if (((CPhysXHelper*)FUN_1409f7ca0())->CastRay((Unk_RayCastInfo*)&ray, 0)) {
+            if (((CPhysXHelper*)GetPhysXHelper())->CastRay((Unk_RayCastInfo*)&ray, 0)) {
                 point = ray.m_hit + dir * 50.0f;
                 ((CMesh*)m_spMesh)->SetPosition(i * 3, point - center);
                 ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1, point - center);

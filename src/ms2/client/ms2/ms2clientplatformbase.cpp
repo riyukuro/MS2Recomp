@@ -45,9 +45,9 @@ void FUN_14092e580(void* p) noexcept;
 void FUN_14092ea10(void* p, int n);
 class CFeatureManager { public: bool FUN_14036d650(); };
 #include "ms2/commonfiles/meratproductkey.h"   // the report id is a merat product key (UIReportDialog::FUN_141ab9b80)
-Unk_NexonAnalytics* FUN_140c77900();
+Unk_NexonAnalytics* GetNexonAnalytics();
 bool FUN_14092ca70(HMODULE* ppModule, LPCSTR pszDll);   // xmldata.cpp: load the dll into *ppModule (the analytics module handle is at +0)
-class UIReportDialog* FUN_140c76fd0(int nId);
+class UIReportDialog* FindReportDialog(int nId);
 class UIReportDialog : public UIDialog
 {
 public:
@@ -71,10 +71,10 @@ __int64 FUN_140930ae0();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
 class CUIService;
-class UICashShopDialog* FUN_140b04f80(int);   // C3: was FUN_140b04f80
+class UICashShopDialog* FindCashShopDialog(int);   // C3: was FindCashShopDialog
 void* FUN_140aadf80();
 void FUN_1416a0e70();
-void* FUN_140c77560(void* pGame);
+void* GetGraphicState(void* pGame);
 #include "ms2/client/ms2/gameoptiongraphicdefault.h"   // Unk_GraphicState2 (its ctor is 0x14125ec20)
 void FUN_14125ef90(struct Unk_GraphicState2*);   // C3: was FUN_14125ef90
 void FUN_14125ef60(struct Unk_GraphicState2*, struct Unk_GraphicState2 const*);   // C3: was FUN_14125ef60
@@ -143,7 +143,7 @@ void CUserReportData::Reset()
 }
 
 // @0x140c75430 (the report record is passed but unused)
-int FUN_140c75430(CUserReportData* pData, int nKind)
+int GetReportCategory(CUserReportData* pData, int nKind)
 {
     switch (nKind) {
     case 0: return 0;
@@ -250,7 +250,7 @@ void CClientPlatformBase::vfunc_22(int nCode, const char* pszFormat, ...)
         va_start(args, pszFormat);
         strLog.FormatV(pszFormat, args);
         va_end(args);
-        FUN_140c77900()->FUN_14092d1f0(nCode, strLog);
+        GetNexonAnalytics()->FUN_14092d1f0(nCode, strLog);
         Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
@@ -264,7 +264,7 @@ void CClientPlatformBase::vfunc_23(int nCode, const char* pszFormat, ...)
         va_start(args, pszFormat);
         strLog.FormatV(pszFormat, args);
         va_end(args);
-        FUN_140c77900()->FUN_14092d280(nCode, strLog);
+        GetNexonAnalytics()->FUN_14092d280(nCode, strLog);
         Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
@@ -357,7 +357,7 @@ int CClientPlatformBase::vfunc_46() { return 2; }
 // @0x140c75db0
 void CClientPlatformBase::vfunc_47(CStringA strA, CStringA strB)
 {
-    void* pWindow = ((void*)FUN_140b04f80(20156));
+    void* pWindow = ((void*)FindCashShopDialog(20156));
     if (pWindow != 0)
         reinterpret_cast<UICashShopDialog*>(pWindow)->FUN_1410355e0(CStringA(strA), CStringA(strB));
 }
@@ -365,7 +365,7 @@ void CClientPlatformBase::vfunc_47(CStringA strA, CStringA strB)
 // @0x140c75e70
 void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
 {
-    UIReportDialog* pDialog = FUN_140c76fd0(0x4e86);
+    UIReportDialog* pDialog = FindReportDialog(0x4e86);
     if (pDialog == 0)
         return;
     if (pDialog->FUN_141924630() == 1)
@@ -441,7 +441,7 @@ void CClientPlatformBase::vfunc_64(int nMode)
             Unk_GraphicState2 kProfile;
             // kProfile: its ctor (0x14125ec20) resets it to the defaults
             kProfile.m_nOptimalHide = nMode;
-            FUN_14125ef60((struct Unk_GraphicState2*)(FUN_140c77560(((void*)TSingleton<CGameOption>::GetInstance()))), (struct Unk_GraphicState2 const*)(&kProfile));
+            FUN_14125ef60((struct Unk_GraphicState2*)(GetGraphicState(((void*)TSingleton<CGameOption>::GetInstance()))), (struct Unk_GraphicState2 const*)(&kProfile));
             FUN_14125ef90((struct Unk_GraphicState2*)(&kProfile));
         }
         ((class CGameOption*)(void*)(((void*)TSingleton<CGameOption>::GetInstance())))->SaveGameSettings();
@@ -454,7 +454,7 @@ void CClientPlatformBase::vfunc_65(int) {}
 // @0x140c76650
 void CClientPlatformBase::vfunc_67()
 {
-    Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
+    Unk_NexonAnalytics* pAnalytics = GetNexonAnalytics();
     if (FUN_14092ca70(reinterpret_cast<HMODULE*>(pAnalytics), pAnalytics->GetModuleName()) == 1) {
         const char* pszModule = pAnalytics->GetModuleName();
         Unk_FileLog<const char*>(GetLogString(), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
@@ -489,7 +489,7 @@ void CClientPlatformBase::vfunc_68()
     FUN_140c76c70(((void*)GetLogString()), 0xb, 400, L"InitializeNexonAnalytics nexonSn={0} sessionId={1} serviceId={2}", nId,
                   strSession, strSerial);
     Unk_NxNumber kService(DAT_1439f4840);
-    Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
+    Unk_NexonAnalytics* pAnalytics = GetNexonAnalytics();
     Unk_NxString kHost("livelog.nexon.com", 3);
     bool bResult = nId != 0 && pAnalytics->FUN_14092ce80("1.0.0", &kHost)
         && pAnalytics->FUN_14092cf80(&kEvent, &kHost, &kService);
@@ -504,7 +504,7 @@ void CClientPlatformBase::vfunc_69()
 {
     if (m_bAnalyticsOn) {
         m_bAnalyticsOn = false;
-        FUN_140c77900()->FUN_14092d070(true);
+        GetNexonAnalytics()->FUN_14092d070(true);
         Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 를 정상적으로 종료했습니다.");
     }
 }
@@ -513,7 +513,7 @@ void CClientPlatformBase::vfunc_69()
 void CClientPlatformBase::vfunc_70()
 {
     if (m_bAnalyticsLoaded) {
-        Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
+        Unk_NexonAnalytics* pAnalytics = GetNexonAnalytics();
         pAnalytics->FUN_14092cbf0();
         const char* pszModule = pAnalytics->GetModuleName();
         Unk_FileLog<const char*>(GetLogString(), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
@@ -564,7 +564,7 @@ void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszForm
 }
 
 // @0x140c76fd0
-UIReportDialog* FUN_140c76fd0(int nId)
+UIReportDialog* FindReportDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> spObject = ((CUIService*)TSingleton<CUIService>::GetInstance())->FindObject((eUIClassID)nId);
@@ -622,7 +622,7 @@ Unk_NxEvent::Unk_NxEvent()
 }
 
 // @0x140c77560
-void* FUN_140c77560(void* pGame)
+void* GetGraphicState(void* pGame)
 {
     return (char*)pGame + 0x9c;
 }
@@ -678,7 +678,7 @@ Unk_NxEvent::~Unk_NxEvent()
 }
 
 // @0x140c77900
-Unk_NexonAnalytics* FUN_140c77900()
+Unk_NexonAnalytics* GetNexonAnalytics()
 {
     static Unk_NexonAnalytics s_kAnalytics;
     return &s_kAnalytics;

@@ -167,10 +167,10 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UIHeadUpDisplay* pHud = FUN_GetUI<UIHeadUpDisplay>(info->m_nId);
                         if (pHud) {
                             if (bChecked) {
-                                FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pHud));
+                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pHud));
                                 pHud->vfunc_3();
                             } else {
-                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pHud));
+                                GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pHud));
                                 pHud->vfunc_2();
                             }
                         }
@@ -179,10 +179,10 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(nId);
                         if (pEntity) {
                             if (bChecked) {
-                                FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
                                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nId);
                             } else {
-                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
                                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(nId)));
                             }
                         }
@@ -191,9 +191,9 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(nId);
                         if (pEntity) {
                             if (bChecked)
-                                FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
                             else
-                                FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
                         }
                     }
                 }

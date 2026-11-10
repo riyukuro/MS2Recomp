@@ -18,9 +18,9 @@ static egf::EntityID s_nullEntityId(0);
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class CPhysXHelper { public: egf::Entity* GetEntityFromActor(NxActor*); };   // entity owning an actor (null if none)
-int FUN_140cfb1e0(const NxVec3& v);
+int IsFinite(const NxVec3& v);
 
 // header statics, first inclusion
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -50,10 +50,10 @@ NxControllerAction GameObjectControllerHitReport::onShapeHit(const NxControllerS
 {
     if (hit.shape != 0)
     {
-        if (FUN_140cfb1e0(hit.worldNormal) == 0)
+        if (IsFinite(hit.worldNormal) == 0)
             return NX_ACTION_NONE;
         m_normal = hit.worldNormal;
-        Unk_Entity* pEntity = (Unk_Entity*)((class CPhysXHelper*)FUN_1409f7ca0())->GetEntityFromActor(&hit.shape->getActor());
+        Unk_Entity* pEntity = (Unk_Entity*)((class CPhysXHelper*)GetPhysXHelper())->GetEntityFromActor(&hit.shape->getActor());
         if (pEntity != 0)
         {
             m_entity = (egf::Entity*)pEntity;
@@ -151,7 +151,7 @@ int GameObjectControllerHitReport::GetHit() const
 MS2_REPLACE_METHOD(0x140CFB0D0, GameObjectControllerHitReport, GetHit, 14, 0x828204CF);
 
 // @0x140cfb1e0
-int FUN_140cfb1e0(const NxVec3& v)
+int IsFinite(const NxVec3& v)
 {
     return v.isFinite();
 }

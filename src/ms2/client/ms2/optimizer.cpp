@@ -47,7 +47,7 @@
 
 // ---- the world, the actors and the helper services this unit calls ----------------------------------------------------
 class MyPC;
-MyPC* FUN_14161e580(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
+MyPC* AsMyPC(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
 class Unk_OptWorld;
 class Unk_OptObjMap;                                                // the world's actor table
 // C3: TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
@@ -59,7 +59,7 @@ template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source); 
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_141527280();
+    bool IsInParty();
 };
 class CGuildManager;
 bool FUN_14028d470(float a, float b);
@@ -67,14 +67,14 @@ class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Common::Constants:
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_OptOsInfo : public COSInfo { };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class CNifLoadingService   // C3: member view for the former free stand-ins
 {
 public:
     void LowerLifetime(double);
     void ResetLifetime();
 };
-class Unk_GoDeviceInfo { public: CStringW FUN_141245ab0(); };   // gameoption.cpp's device info view
+class Unk_GoDeviceInfo { public: CStringW GetAdapterName(); };   // gameoption.cpp's device info view
 // (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 class CrashManagerCli;
 template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
@@ -98,7 +98,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 class CGameOption;
 template<> CGameOption* TSingleton<CGameOption>::GetInstance();
 struct Unk_OptSettings { unsigned char m_pad_0[0x10]; unsigned char m_bOptimize; };
-void* FUN_140c77560(void*);   // C3: was FUN_140c77560
+void* GetGraphicState(void*);   // C3: was GetGraphicState
 CLogString* GetLogString();
 
 // options of Optimization.xml (contiguous dwords) and the "loaded" flag
@@ -167,11 +167,11 @@ void COptimizer::Update()
             unsigned __int64 nUsage = GetPagefileUsageMB();
             if (0x599 < nUsage)
             {
-                ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->LowerLifetime(120.0);
+                ((class CNifLoadingService*)(void*)(((void*)GetNifLoadingService())))->LowerLifetime(120.0);
             }
             else if (nUsage < 0x564)
             {
-                ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->ResetLifetime();
+                ((class CNifLoadingService*)(void*)(((void*)GetNifLoadingService())))->ResetLifetime();
             }
         }
     }
@@ -199,7 +199,7 @@ void COptimizer::Update()
                 if (0.05f < m_fUpdateTime)
                 {
                     m_fUpdateTime = 0;
-                    FUN_14161d130(false);
+                    UpdateSelectedPlayers(false);
                 }
             }
             m_players.clear();
@@ -209,7 +209,7 @@ void COptimizer::Update()
     {
         UpdateFrameSampling();
     }
-    TSingleton<GPUManager>::GetInstance()->FUN_1413758b0();
+    TSingleton<GPUManager>::GetInstance()->Update();
 }
 
 // @0x14161bdc0
@@ -256,7 +256,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     if (((void*)GetIDirect3D9()) != 0)
     {
-        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(), 0));
+        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(), 0));
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
@@ -330,7 +330,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
         pszKfm = "FALSE";
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
-    TSingleton<GPUManager>::GetInstance()->FUN_141375a80();
+    TSingleton<GPUManager>::GetInstance()->LogGpuMemory();
 }
 
 // @0x14161c360
@@ -411,7 +411,7 @@ void COptimizer::LoadOptimization()
         }
         else
         {
-            int nEnabled = ((struct Unk_OptSettings*)FUN_140c77560(TSingleton<CGameOption>::GetInstance()))->m_bOptimize;
+            int nEnabled = ((struct Unk_OptSettings*)GetGraphicState(TSingleton<CGameOption>::GetInstance()))->m_bOptimize;
             DAT_143ae2b30 = nEnabled;
             DAT_143ae2b34 = nEnabled;
             DAT_143ae2b38 = nEnabled;
@@ -651,7 +651,7 @@ int COptimizer::IsUpdateEnabled() const
 }
 
 // @0x14161d130
-void COptimizer::FUN_14161d130(bool bForce)
+void COptimizer::UpdateSelectedPlayers(bool bForce)
 {
     if (reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance()) != 0)
     {
@@ -661,9 +661,9 @@ void COptimizer::FUN_14161d130(bool bForce)
             PCBase* pLocal = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pLocal != 0)
             {
-                if ((preloadMode & 2) != 0 && ((class MyPC*)(class PCBase*)(pLocal))->FUN_141527280())
+                if ((preloadMode & 2) != 0 && ((class MyPC*)(class PCBase*)(pLocal))->IsInParty())
                 {
-                    int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
+                    int nCount = TSingleton<CPartyManager>::GetInstance()->GetMemberCount();
                     for (int i = 0; i < nCount; i = i + 1)
                     {
                         MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->GetMemberAt(i);
@@ -704,7 +704,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                     TPtr<PC>& spRef = reinterpret_cast<TPtr<PC>&>(((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetValueAt(pos));
                     if (spRef.get() != 0)
                     {
-                        if (FUN_14161e580(spRef) != 0)
+                        if (AsMyPC(spRef) != 0)
                             continue;
                         if (spRef->GetClassID() == 0x6200044)
                             continue;
@@ -817,7 +817,7 @@ void COptimizer::ApplyFlagsToPlayer(PCBase* pPC, int nFlags)
             return;
         }
         pPC->vfunc_24(nFlags);
-        GameObject* pRidee = ((class GameObject*)((class PCBase*)(class PCBase*)(pPC))->FUN_1416764a0());
+        GameObject* pRidee = ((class GameObject*)((class PCBase*)(class PCBase*)(pPC))->GetRidee());
         if (pRidee != 0)
         {
             pRidee->vfunc_24(nFlags);
@@ -827,7 +827,7 @@ void COptimizer::ApplyFlagsToPlayer(PCBase* pPC, int nFlags)
         {
             pWorldObject->vfunc_24(nFlags);
         }
-        GameObject* pAttached = ((class GameObject*)((class PC*)(class PCBase*)(pPC))->FUN_1416625e0());
+        GameObject* pAttached = ((class GameObject*)((class PC*)(class PCBase*)(pPC))->GetFishingGuide());
         if (pAttached != 0)
         {
             pAttached->vfunc_24(nFlags);
@@ -847,7 +847,7 @@ void COptimizer::SetModeAndLimit(int nFlags, int nLimit)
         {
             if ((preloadMode & 8) != 0 && nLimit != 0)
             {
-                FUN_14161d130(true);
+                UpdateSelectedPlayers(true);
             }
             else
             {
@@ -858,7 +858,7 @@ void COptimizer::SetModeAndLimit(int nFlags, int nLimit)
 }
 
 // @0x14161e580
-MyPC* FUN_14161e580(const TPtr<PC>& spPC)
+MyPC* AsMyPC(const TPtr<PC>& spPC)
 {
     MyPC* pMyPC = 0;
     if ((spPC.get() ? true : false) && spPC->TypeCast(0x6200004, (void**)&pMyPC))

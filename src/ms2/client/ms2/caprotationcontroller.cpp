@@ -88,7 +88,7 @@ MS2_CHECK_SIZE(Unk_CapPartInfo, 0x88);
 class CEquipItem : public CPtred
 {
 public:
-    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
+    struct Unk_EquipItemData* GetItemData();                               // the item
     MS2Ptr<CItem> GetItem();                              // the item object holding the model record
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
@@ -147,10 +147,10 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 // The loaded meshes of a part model: a std::set<NiAVObjectPtr> (equipmodel.h).
 typedef std::set<NiAVObjectPtr> Unk_MeshSet;
 class CEquipModel;
-Unk_MeshSet* FUN_141201c90(CEquipModel* pPart);       // C3: the definition's signature (equipmodel.cpp)
+Unk_MeshSet* GetRoots(CEquipModel* pPart);       // C3: the definition's signature (equipmodel.cpp)
 void* FUN_141200ab0(CEquipModel* pPart);              // C3: the part's model facts (equipmodel.cpp; was the Unk_PickTarget member view)
-void FUN_141200160(CEquipModel* pPart, NiPoint3 kOffset);          // C3: sets the part's model offset (equipmodel.cpp)
-void FUN_141200100(CEquipModel* pPart, NiPoint3 kEuler);            // C3: sets the part's model rotation (equipmodel.cpp)
+void SetPosition(CEquipModel* pPart, NiPoint3 kOffset);          // C3: sets the part's model offset (equipmodel.cpp)
+void SetRotation(CEquipModel* pPart, NiPoint3 kEuler);            // C3: sets the part's model rotation (equipmodel.cpp)
 
 // Listener at +0xa0: slots 1, 3 and 5 are called by the controller (the base class only knows slot 0).
 class Unk_CapListener : public Unk_ItemCustomizeListener
@@ -193,7 +193,7 @@ int CCapRotationController::vfunc_3()
 {
     if (InitPart() == 0)
         return 0;
-    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->GetItemData());
     if (pItem == 0)
         return 0;
     ResetHighlight();
@@ -230,7 +230,7 @@ int CCapRotationController::vfunc_29()
 // @0x140b00960
 void CCapRotationController::vfunc_28()
 {
-    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->GetItemData());
     if (pItem != 0)
     {
         if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
@@ -328,14 +328,14 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
     Unk_CapEntityLoader* pLoader = reinterpret_cast<Unk_CapEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
-    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c460());
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<GameObject*>(pPlayer)->GetEntityID());
     if (pScene == 0)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
         m_spEquipItem->GetItem()->FUN_140527870());
     if (pData == 0)
         return;
-    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->GetItemData());
     if (pItem == 0)
         return;
     if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
@@ -355,11 +355,11 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             Unk_NiMatrix3 kFix;
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
-            kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
+            kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->GetScale();   // C3: GameObject via fittingdollpc.h, model scale
             Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3((const efd::Point3&)kN, (const efd::Point3&)kSide, reinterpret_cast<const NiPoint3&>(kUp)))) * reinterpret_cast<const efd::Matrix3&>(kFix))));
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
             kXf.m_Translate = *reinterpret_cast<const NiPoint3*>(&kHit);
-            Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
+            Unk_MeshSet* pSet = GetRoots(m_spPart.operator->());
             const Unk_MeshSet& kSet = *pSet;
             Unk_MeshSet::const_iterator itEnd = kSet.end();
             for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
@@ -373,11 +373,11 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                 FUN_141422950(kWorld.m_Rotate, &pData->m_aEuler[0]);
                 {
                     // by value: the exe passes a 16-aligned copy
-                    FUN_141200160(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aOffset[0]));
+                    SetPosition(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aOffset[0]));
                 }
                 {
 
-                    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aEuler[0]));
+                    SetRotation(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aEuler[0]));
                 }
             }
         }
@@ -390,7 +390,7 @@ void CCapRotationController::vfunc_33()
     UpdateRotationMatrix();
     Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
-        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e5c10();
+        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->FUN_1411e5c10();
     if (m_pListener != 0)
         static_cast<Unk_CapListener*>(m_pListener)->vfunc_5(this, m_spPart.get());
 }
@@ -448,7 +448,7 @@ int CCapRotationController::InitPart()
         return 0;
     m_kMinEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMin;
     m_kMaxEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMax;
-    Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
+    Unk_MeshSet* pSet = GetRoots(m_spPart.operator->());
     const Unk_MeshSet& kSet = *pSet;
     Unk_MeshSet::const_iterator itEnd = kSet.end();
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
@@ -500,7 +500,7 @@ Vector3 CCapRotationController::GetPartEuler()
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return DAT_143b01a60;
-    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->GetItemData())->GetEquipSubtype() != 0xd)
         return DAT_143b01a60;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
@@ -514,7 +514,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return;
-    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->GetItemData())->GetEquipSubtype() != 0xd)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
@@ -528,7 +528,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     kDelta.MakeIdentity();
     Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kOld).Inverse() * reinterpret_cast<const efd::Matrix3&>(kNew))));
     reinterpret_cast<Unk_NiMatrix3&>(kDelta.m_Rotate) = kRot;
-    Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
+    Unk_MeshSet* pSet = GetRoots(m_spPart.operator->());
     const Unk_MeshSet& kSet = *pSet;
     Unk_MeshSet::const_iterator itEnd = kSet.end();
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
@@ -537,7 +537,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
         spNode.operator->()->SetLocalTransform(((class NiAVObject*)(spNode.operator->()))->GetLocalTransform() * kDelta);
     }
     // by value: the exe passes a 16-aligned copy
-    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEuler));
+    SetRotation(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEuler));
     pData->m_aEuler[0] = kEuler;
 }
 

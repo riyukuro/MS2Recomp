@@ -38,7 +38,7 @@ template <> MS2Ptr<ASVideoPlayer> UISwfEntity::GetChild<ASVideoPlayer>(const CSt
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_IntroWindow : public CWindowService { };
@@ -70,7 +70,7 @@ UIIntroMovie::~UIIntroMovie()
 // @0x141995190
 int UIIntroMovie::vfunc_52(const CString& strPath, float fVolume)
 {
-    FUN_140b632f0()->AddToLayer(this, 2);
+    GetUISwfEntityManager()->AddToLayer(this, 2);
     if (!UIVideoContents::vfunc_52(strPath, fVolume))
     {
         ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
@@ -83,7 +83,7 @@ MS2_REPLACE_METHOD(0x141995190, UIIntroMovie, vfunc_52, 96, 0x50BBA5E3);
 // @0x141995200
 int UIIntroMovie::vfunc_53()
 {
-    FUN_140b632f0()->RemoveFromLayer(this, 2);
+    GetUISwfEntityManager()->RemoveFromLayer(this, 2);
     int b = UIVideoContents::vfunc_53();
     FUN_1422dc080();
     return b;

@@ -157,7 +157,7 @@ EffectDummyGroup::EffectDummyGroup()
 }
 
 // @0x140a514e0
-void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
+void EffectDummyGroup::ParseDummies(TiXmlNode* pNode)
 {
     for (TiXmlElement* pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(pNode)))->FirstChild("dummy")); pDummy != 0; pDummy = pDummy->NextSiblingElement())
     {
@@ -166,17 +166,17 @@ void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
         m_dummies.push_back(p);
     }
 }
-MS2_REPLACE_METHOD(0x140A514E0, EffectDummyGroup, FUN_140a514e0, 215, 0xF53907CC);
+MS2_REPLACE_METHOD(0x140A514E0, EffectDummyGroup, ParseDummies, 215, 0xF53907CC);
 
 // @0x140a515c0
-size_t EffectDummyGroup::FUN_140a515c0()
+size_t EffectDummyGroup::GetDummyCount()
 {
     return m_dummies.size();
 }
-MS2_REPLACE_METHOD(0x140A515C0, EffectDummyGroup, FUN_140a515c0, 31, 0xF84B7AE2);
+MS2_REPLACE_METHOD(0x140A515C0, EffectDummyGroup, GetDummyCount, 31, 0xF84B7AE2);
 
 // @0x140a515f0
-MS2SvrPtr<CEffectDummy> EffectDummyGroup::FUN_140a515f0(const CString& name)
+MS2SvrPtr<CEffectDummy> EffectDummyGroup::FindDummyByName(const CString& name)
 {
     for (std::vector<DummyPtr>::iterator it = m_dummies.begin(); it != m_dummies.end(); ++it)
     {
@@ -185,10 +185,10 @@ MS2SvrPtr<CEffectDummy> EffectDummyGroup::FUN_140a515f0(const CString& name)
     }
     return DummyPtr(0);
 }
-MS2_REPLACE_METHOD(0x140A515F0, EffectDummyGroup, FUN_140a515f0, 228, 0xDF39596A);
+MS2_REPLACE_METHOD(0x140A515F0, EffectDummyGroup, FindDummyByName, 228, 0xDF39596A);
 
 // @0x140a516e0
-bool EffectDummyGroup::FUN_140a516e0(unsigned int idx, void* pOut)
+bool EffectDummyGroup::GetDummyAt(unsigned int idx, void* pOut)
 {
     if (idx < m_dummies.size())
     {
@@ -197,5 +197,5 @@ bool EffectDummyGroup::FUN_140a516e0(unsigned int idx, void* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140A516E0, EffectDummyGroup, FUN_140a516e0, 103, 0xB77AC540);
+MS2_REPLACE_METHOD(0x140A516E0, EffectDummyGroup, GetDummyAt, 103, 0xB77AC540);
 

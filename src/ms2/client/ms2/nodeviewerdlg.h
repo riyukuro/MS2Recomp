@@ -28,7 +28,7 @@ public:
 public:
     virtual void DoDataExchange(CDataExchange* pDX);                // slot 66
     virtual BOOL OnInitDialog();                                    // slot 96
-    afx_msg void FUN_140c7f680();                                   // IDCANCEL
+    afx_msg void FUN_140c7f680();                                   // IDCANCEL (not an override: the exe vftable keeps CDialog::OnCancel in that slot, so the name OnCancel is wrong)
     afx_msg void FUN_140c7f770();                                   // IDOK: open the tree
     afx_msg void FUN_140c7f810();                                   // 0x4e3: apply the typed name
     DECLARE_MESSAGE_MAP()

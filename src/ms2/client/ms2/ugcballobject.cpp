@@ -27,7 +27,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 // ---- out-of-unit callees ----
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 extern __int64 DAT_143ab2828;                                       // my character id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
@@ -84,8 +84,8 @@ int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, Unk_UbPoint kPt
 {
     m_nOwner = nOwner;
     m_str88 = "MS2VibrateNoPhysX";
-    FUN_14123bb80(CString("urn:gamebryo-scenegraph:ugc_fi_prop_ball_A01"));
-    FUN_14123c5a0(nObjectId);
+    SetModelPath(CString("urn:gamebryo-scenegraph:ugc_fi_prop_ball_A01"));
+    SetObjectId(nObjectId);
     vfunc_19(MS2_UB_POINT(Vector3(kPt.x, kPt.y, kPt.z)));
     vfunc_21(NiPoint3::ZERO);
     m_fRadius = fRadius;
@@ -93,7 +93,7 @@ int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, Unk_UbPoint kPt
         m_fRadius = 60.0f;
     if (300.0f < m_fRadius)
         m_fRadius = 300.0f;
-    FUN_14123c280(m_fRadius / 75.0f);
+    SetScale(m_fRadius / 75.0f);
     Vector3 kBox(m_fRadius * 2.0f, m_fRadius * 2.0f, m_fRadius * 2.0f);
     m_spBox.AssignRaw(new CBoxCollision);
     m_spBox->m_ptBox = kBox;
@@ -123,7 +123,7 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(7);
         packet.Encode1(3);
-        packet.Encode4(FUN_14123c580());
+        packet.Encode4(GetObjectId());
         FUN_14020af60(&packet, &kForce);
         FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kDir));
         FUN_140710590(packet);
@@ -136,9 +136,9 @@ void CUGCBallObject::FUN_140ded6d0()
 {
     if (m_pActor == 0)
         return;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pActor->wakeUp(0.39999998f);   // the exe constant is 0x3ecccccc, one ULP below 0.4f
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // @0x140ded740
@@ -146,7 +146,7 @@ void CUGCBallObject::FUN_140ded740()
 {
     if (m_pActor != 0)
         return;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == 0)
         return;
     NxMaterialDesc kMatDesc;
@@ -170,7 +170,7 @@ void CUGCBallObject::FUN_140ded740()
     kActorDesc.globalPose.t = kPos;
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
     kActorDesc.globalPose.t.z -= (m_fRadius / 100.0f) * 0.5f;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pActor = pScene->createActor(kActorDesc);
     if (m_pActor != 0)
     {
@@ -182,33 +182,33 @@ void CUGCBallObject::FUN_140ded740()
             NxShape* pShape = ppShapes[i];
             pShape->setGroup(10);
         }
-        m_pActor->userData = FUN_14123c410();
+        m_pActor->userData = GetEntity();
     }
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // @0x140dedaf0
 void CUGCBallObject::FUN_140dedaf0()
 {
-    if (((class CPhysXHelper*)FUN_1409f7ca0()) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper()) == 0)
         return;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == 0)
         return;
     if (m_pActor != 0)
     {
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+        ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
         pScene->releaseActor(*m_pActor);
         WorldService::GetInstance()->FUN_141bc8e00();
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+        ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
         m_pActor = 0;
     }
     if (m_pMaterial != 0)
     {
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+        ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
         pScene->releaseMaterial(*m_pMaterial);
         WorldService::GetInstance()->FUN_141bc8e00();
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+        ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
         m_pMaterial = 0;
     }
 }
@@ -233,7 +233,7 @@ void CUGCBallObject::vfunc_53(float f)
     GameObject::vfunc_53(f);
     if (m_pActor == 0)
         return;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     NxVec3 kPos = m_pActor->getGlobalPosition();
     if (m_nOwner == DAT_143ab2828 && m_vVel.magnitudeSquared() > 1.1920929e-07f)
     {
@@ -244,21 +244,21 @@ void CUGCBallObject::vfunc_53(float f)
     NxQuat kQuat = m_pActor->getGlobalOrientationQuat();
     NxVec3 kLinVel = m_pActor->getLinearVelocity();
     NxVec3 kAngVel = m_pActor->getAngularVelocity();
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
     efd::Point3 kNiPos;
     efd::Point3 kNiRot;
     NiPhysXTypes::NxVec3ToNiPoint3(kPos * 100.0f, reinterpret_cast<NiPoint3&>(kNiPos));
     FUN_140dee3e0(kQuat, kNiRot);
     vfunc_19(kNiPos);
     vfunc_21(kNiRot);
-    FUN_14123c280(m_fRadius / 75.0f);
+    SetScale(m_fRadius / 75.0f);
     unsigned int nTick;
     if (m_nOwner == DAT_143ab2828 && (nTick = GetTickCountMs2(), nTick - m_nLastSend > 100))
     {
         COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
         packet.Encode1(7);
         packet.Encode1(2);
-        packet.Encode4(FUN_14123c580());
+        packet.Encode4(GetObjectId());
         FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kNiPos));
         FUN_14020af60(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kLinVel))));
         FUN_14020af60(&packet, &static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&kAngVel))));
@@ -278,12 +278,12 @@ void CUGCBallObject::FUN_140dee050(CInPacket* pPacket)
     NxVec3 kPos = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0()))) / 100.0f;
     NxVec3 kVel = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
     NxVec3 kAngVel = FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPacket->FUN_1407140d0())));
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     NxVec3 kGlobal = m_pActor->getGlobalPosition();
     m_vVel += kGlobal - kPos;
     m_pActor->setLinearVelocity(kVel);
     m_pActor->setAngularVelocity(kAngVel);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // @0x140dee220
@@ -297,9 +297,9 @@ void CUGCBallObject::FUN_140dee220(CInPacket* pPacket)
     Vector3 kForce = pPacket->FUN_1407140d0();
     Vector3 kAt = pPacket->FUN_1407140d0();
     Vector3 kPos = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())) - (reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAt) * m_fRadius)) / 100.0f));
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pActor->addForceAtPos(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kForce)), FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kPos)), NX_FORCE, true);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // @0x140dee3e0

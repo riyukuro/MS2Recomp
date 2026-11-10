@@ -31,7 +31,7 @@ ASDropdownMenu::~ASDropdownMenu()
 // @0x1422df5f0
 void ASDropdownMenu::SetMenuRowCount(unsigned nRows)
 {
-    FUN_1409c0d20("menuRowCount", nRows);
+    SetMemberUInt("menuRowCount", nRows);
 }
 MS2_REPLACE_METHOD(0x1422DF5F0, ASDropdownMenu, SetMenuRowCount, 40, 0x7A0CCA4B);
 

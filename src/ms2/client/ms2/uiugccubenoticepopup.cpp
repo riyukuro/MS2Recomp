@@ -96,7 +96,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4bb0()
 // @0x140fb4be0
 void UIUGCCubeNoticePopup::FUN_140fb4be0()
 {
-    FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
     m_bPending = 0;
     m_bShown = 0;
 }

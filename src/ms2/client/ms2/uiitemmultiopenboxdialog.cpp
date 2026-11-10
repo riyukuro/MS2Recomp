@@ -15,8 +15,8 @@
 class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5e2e0(int); };
 // ---- out-of-unit callees (names describe uses) ----
 extern Unk_Inventory g_143ab2a90;                                // the player inventory
-void FUN_141415600(const CString& strName);                      // drop the item shown under a dialog name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
+void DestroyItemInfoSlot(const CString& strName);                      // drop the item shown under a dialog name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
@@ -64,7 +64,7 @@ MS2_REPLACE_METHOD(0x140C3F470, UIItemMultiOpenBoxDialog, GetTypeName, 61, 0x54C
 void UIItemMultiOpenBoxDialog::vfunc_67()
 {
     UIModalDialog::vfunc_67();
-    FUN_141415600(GetTypeName());
+    DestroyItemInfoSlot(GetTypeName());
     Unk_McInventoryDialog* pInventory = reinterpret_cast<Unk_McInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInventory != 0)
         pInventory->FUN_140c3fe30(2);
@@ -101,8 +101,8 @@ void UIItemMultiOpenBoxDialog::OnLoadComplete()
     MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5e2e0((int)(m_180));
     if (item.get() != 0)
     {
-        FUN_141415600(GetTypeName());
-        FUN_141415450(GetTypeName(), item, 0, 1, 0);
+        DestroyItemInfoSlot(GetTypeName());
+        CreateItemInfoSlot(GetTypeName(), item, 0, 1, 0);
         if (m_30.get() != 0)
             m_30->Invoke("setItem", GetTypeName());
         m_198 = GetTickCountMs2() + 500;

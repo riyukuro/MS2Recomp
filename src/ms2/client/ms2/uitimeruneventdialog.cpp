@@ -48,11 +48,11 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 
 // The counter tables (0x143ab3010): lookup by (kind, id) with a default.
-class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
+class Unk_AttendTable { public: int GetValue(int nKind, unsigned nId, const int& nDefault); };
 extern GameEventUserValue DAT_143ab3010;
 
 class Unk_SSGDlg4e28 { public: void FUN_140ea5f80(); };   // the game menu dialog (UI type 0x4e28); def in uileveluppackagedialog
-class UIGameMenuDialog* FUN_140938b90(int nType);
+class UIGameMenuDialog* FindGameMenuDialog(int nType);
 
 void* FUN_1401c0d90();
 void* FUN_140764020();
@@ -179,7 +179,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
         if (spContext.get() != 0) {
             int nDefault = 0;
-            int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
+            int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dc, spContext->m_eventId, nDefault);
             if (nReceived == 0) {
                 COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                 packet.Encode1(3);
@@ -194,7 +194,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
             if (spContext.get() != 0) {
                 int nDefault = 0;
-                int nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
+                int nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dd, spContext->m_eventId, nDefault);
                 if (nKey == spContext->GetNextRewardKey(nTaken)) {
                     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                     packet.Encode1(4);
@@ -253,10 +253,10 @@ int UITimeRunEventDialog::FUN_140ee3290()
         if (quest->GetState() == 3) return 0;
     }
     int nDefault = 0;
-    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dc, spContext->m_eventId, nDefault);
     if (nReceived == 0) return 1;
     int nDefault2 = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTaken < nKey) return 1;
@@ -272,9 +272,9 @@ void UITimeRunEventDialog::FUN_140ee3580()
         return;
     unsigned nDistance = FUN_140ee4280(spContext);
     int nDefault = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dd, spContext->m_eventId, nDefault);
     int nDefault2 = 0;
-    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault2);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dc, spContext->m_eventId, nDefault2);
     unsigned nNext = spContext->GetNextRewardKey(nTaken);
     reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setMapData", (int)spContext->m_1c, (int)nDistance);
     m_mapBinder.FUN_140d43990();
@@ -286,7 +286,7 @@ void UITimeRunEventDialog::FUN_140ee3580()
         BOOL bNext = nKey == nNext;
         BOOL bTaken = nKey < nTaken;
         ASObj row(2);
-        row.FUN_1409c0d20("distance", nKey);
+        row.SetMemberUInt("distance", nKey);
         row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>((ItemEntity*)spItem)));
         row.FUN_1407cbbe0("enabled", bReached && bNext && !bTaken ? true : false);
         row.FUN_1407cb9c0("visible", bReached);
@@ -325,7 +325,7 @@ void UITimeRunEventDialog::FUN_140ee3c00(int nDay)
             CStringW strDesc = FUN_1416e5350((int)quest->FUN_140bfc580(), 0);
             strDesc.Replace(L"#5c2b00", L"#ffffff");
             ASObj row(2);
-            row.FUN_1409c0d20("id", spQuest->m_questId);
+            row.SetMemberUInt("id", spQuest->m_questId);
             row.FUN_1407cb9c0("completed", quest->IsRewarded());
             row.FUN_1407cb9c0("satisfied", quest->IsComplete());
             row.FUN_1407cbb20("label", FUN_14028dfa0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
@@ -372,7 +372,7 @@ CStringW UITimeRunEventDialog::FUN_140ee4380(MS2Ptr<TimeRunEventContext> spConte
 void UITimeRunEventDialog::FUN_140ee4570(int)
 {
     FUN_140ee3580();
-    Unk_SSGDlg4e28* pDlg = reinterpret_cast<Unk_SSGDlg4e28*>(FUN_140938b90(0x4e28));
+    Unk_SSGDlg4e28* pDlg = reinterpret_cast<Unk_SSGDlg4e28*>(FindGameMenuDialog(0x4e28));
     if (pDlg != 0)
         pDlg->FUN_140ea5f80();
 }
@@ -402,10 +402,10 @@ int UITimeRunEventDialog::FUN_140ee45c0()
     }
     if (bAll) {
         int nDefault = 0;
-        if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault) == 0) nCount = nCount + 1;
+        if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dc, spContext->m_eventId, nDefault) == 0) nCount = nCount + 1;
     }
     int nDefault2 = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).GetValue(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTotal < nKey)

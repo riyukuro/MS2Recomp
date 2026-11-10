@@ -179,13 +179,13 @@ void UIRealEstateSell::FUN_141ab6230()
         return;
     if (pPC->HasNoHome() != 0)
         return;
-    if (pPC->FUN_141523c50() == 0)
+    if (pPC->GetUGCMapInfo() == 0)
         return;
     if (m_30.IsNull())
         return;
     ASObj obj(2);
     efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+    Unk_BmPtr<UserUGCMapInfo> target(pPC->GetUGCMapInfo());
     Unk_UGCGroup salable;
     if (FUN_1408a0d30(target->m_n24, salable, target->m_n20) == 0)
         return;
@@ -193,7 +193,7 @@ void UIRealEstateSell::FUN_141ab6230()
     ((class AScript&)(obj)).FUN_1407cbb20("houseName", strName);
     CStringW strAddress = CAddressTable::GetText(target->m_n20);
     ((class AScript&)(obj)).FUN_1407cbb20("address", strAddress);
-    ATL::CTimeSpan span = CMsTime(pPC->FUN_141523c50()->m_n30) - CMsTime(GetServerTime());
+    ATL::CTimeSpan span = CMsTime(pPC->GetUGCMapInfo()->m_n30) - CMsTime(GetServerTime());
     if (span.GetDays() >= 0)
     {
         CStringW strExpire;

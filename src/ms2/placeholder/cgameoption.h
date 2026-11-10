@@ -57,7 +57,7 @@ public:
     int LoadGameOption();                                    // load GameOption.xml into the tab blocks
     int LoadAccountOption();                                   // load AccountOption.xml
     int LoadCharacterOption();                                   // load CharacterOption.xml
-    int FUN_141242f60();                                    // load the language block
+    int LoadLanguageOption();                                    // load the language block
     void SaveGameSettings();                                   // save GameOption.xml / AccountOption.xml
     void WriteGameAndAccountFiles();                                   // reset the document roots of game and account options
     void SaveCharacterSettings();                                   // save the character blocks
@@ -67,22 +67,22 @@ public:
     void FUN_141243860();                                    // MS2::Run, before the message loop
     void FUN_1412438d0();                                    // MS2::Run, after the message loop
     void FUN_1412438e0();                                    // MS2::OnShutdown
-    int FUN_1412438f0();                                    // benchmark level (computed on first use)
-    unsigned int FUN_141243f50(int nKind);                  // 1 when the file is missing or its version differs
+    int GetBenchmarkLevel();                                    // benchmark level (computed on first use)
+    unsigned int IsOptionFileMissingOrOutdated(int nKind);                  // 1 when the file is missing or its version differs
     void SetBenchmarkLevel(int nLevel);                         // set the benchmark level
 
-    Unk_CameraState* FUN_140af7de0();                       // &m_camera (0x140af7de0)
+    Unk_CameraState* GetCameraOption();                       // &m_camera (0x140af7de0)
     Unk_CommunityStateB* FUN_140ae6540();                   // &m_account (0x140ae6540)
     Unk_BattleState* FUN_141248630();                       // &m_battle
     Unk_CommunityStateA* FUN_14124ab20();                   // &m_communityA
     Unk_SoundState* FUN_140d13c70();                        // &m_sound
     Unk_GoEtc* FUN_140c9b8b0();                             // &m_etc
-    Unk_GraphicState* FUN_1409a8ac0();                      // &m_graphic
-    Unk_GraphicState2* FUN_140c77560();                     // &m_graphic2
+    Unk_GraphicState* GetGraphicOption();                      // &m_graphic
+    Unk_GraphicState2* GetGraphicState();                     // &m_graphic2
     TiXmlDocument* FUN_1412442a0();                         // &m_docGameDefault
     TiXmlDocument* FUN_1412442c0();                         // &m_docAccountDefault
-    TiXmlDocument* FUN_1412442e0();                         // &m_docGame
-    TiXmlDocument* FUN_141244300();                         // &m_docCharacter
+    TiXmlDocument* GetGameDoc();                         // &m_docGame
+    TiXmlDocument* GetCharacterDoc();                         // &m_docCharacter
     Unk_GoChroma* FUN_140aaaa90();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
     Unk_InterfaceState* FUN_140e09150();                    // &m_interface
     Unk_InterfaceFlag* FUN_140c58ac0();                     // &m_interfaceChar

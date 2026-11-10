@@ -53,10 +53,10 @@ public:
     // @0x140af9b20
     void FUN_140af9b20(int n) { m_c = n; }
     // @0x140af9a50
-    void FUN_140af9a50(egf::Entity* pEntity) { m_10 = pEntity; }
+    void SetCameraEntity(egf::Entity* pEntity) { m_10 = pEntity; }
     // @0x140af7f60
-    egf::Entity* FUN_140af7f60() { return m_10; }
-    egf::EntityID FUN_140af7fd0();                                      // the camera entity id (inline, camera.cpp)
+    egf::Entity* GetCameraEntity() { return m_10; }
+    egf::EntityID GetEntityID();                                      // the camera entity id (inline, camera.cpp)
     unsigned __int64 FUN_141bfe700();                                   // the camera entity id value (inline: its COMDAT reads
                                                                         // the including TU's kENTITY_INVALID copy; worldservice.cpp)
     void FUN_140a38dc0(Vector3 pt);                             // look-at offset (another obj)
@@ -156,10 +156,10 @@ public:
     virtual ~CameraMgr();                                               // 0x140ae9db0
 
     void FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const Vector3* pRot);  // init
-    void FUN_140aea4c0(float fTime);                                    // per-frame update
+    void Update(float fTime);                                    // per-frame update
     void FUN_140aea7f0();                                               // debug camera keys
     void FUN_140aead90();                                               // release the camera, the modes and effects
-    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);         // set the camera target
+    void SetTarget(Unk_CameraTargetEntity* pTarget, int n);         // set the camera target
     BOOL FUN_140aeb070();                                               // activate the camera on the render surface
     // @0x141bfe750
     unsigned __int64 FUN_141bfe750()                                    // the camera entity id value, 0 without a camera
@@ -168,7 +168,7 @@ public:
             return m_pCamera->FUN_141bfe700();
         return 0;
     }
-    void FUN_140aeb420(int nMode, const Unk_CameraFlyBy* pFlyBy);       // switch mode, keeping the setting
+    void ChangeMode(int nMode, const Unk_CameraFlyBy* pFlyBy);       // switch mode, keeping the setting
     void FUN_140aeb730(efd::Point3 ptPos);                              // fixed-position camera at a point
     void FUN_140aeb830(int n);
     void FUN_140aeb880(float f1, float f2, float f3);
@@ -182,8 +182,8 @@ public:
     void FUN_140aec4c0();                                               // create the map camera entity
     CString FUN_140af80c0();                                            // the gameplay camera model name
     void FUN_140aeb600();                                               // leave the map: drop the map camera data
-    void FUN_140aed580(const Unk_CameraFlyBy* pFlyBy, int nKind, float fDuration);  // start a fly-by
-    void FUN_140aed750(int nMode, int bKeep);                           // set the camera mode
+    void SetFlyBy(const Unk_CameraFlyBy* pFlyBy, int nKind, float fDuration);  // start a fly-by
+    void SetMode(int nMode, int bKeep);                           // set the camera mode
     void FUN_140aed1c0();
     void FUN_140aeb1a0();                                               // pick the npc under the cursor (npc control)
     efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
@@ -237,15 +237,15 @@ public:
     float FUN_140b67d10();                                              // distance of the current mode, 0 without one (homecameramode.cpp)
     Vector3 FUN_140a38d00();                                            // m_138, the pending move input (bosstargetcamera.cpp)
     void FUN_140a38d90(Vector3 pt);                                     // m_138 = pt (bosstargetcamera.cpp)
-    Unk_FlyByCameraData* FUN_1412201a0();                               // &m_flyBy (flybycameramode.cpp)
+    Unk_FlyByCameraData* GetFlyByData();                               // &m_flyBy (flybycameramode.cpp)
     void FUN_140ad4ff0(float f);                                        // (another obj)
 
     // @0x140af2520
-    CCameraMode* FUN_140af2520() { return m_spMode.get(); }
+    CCameraMode* GetMode() { return m_spMode.get(); }
     // @0x140af24f0
-    CCameraMode* FUN_140af24f0() { return m_spTargetMode.get(); }
+    CCameraMode* GetTargetMode() { return m_spTargetMode.get(); }
     // @0x140af7e30
-    int FUN_140af7e30() { if (m_spMode.get()) return m_spMode->vfunc_1(); return 0; }
+    int GetModeType() { if (m_spMode.get()) return m_spMode->vfunc_1(); return 0; }
     // @0x140af7f00
     float FUN_140af7f00() { if (m_spMode.get()) return m_spMode->FUN_140af7ef0(); return 0; }
     // @0x140af7ea0
@@ -263,9 +263,9 @@ public:
     // @0x140aed720
     void FUN_140aed720(const Unk_CameraSetting& setting) { m_setting = setting; }
     // @0x140af7f70
-    egf::Entity* FUN_140af7f70() { return (m_pCamera && m_pCamera->FUN_140af7f60()) ? m_pCamera->FUN_140af7f60() : 0; }
+    egf::Entity* FUN_140af7f70() { return (m_pCamera && m_pCamera->GetCameraEntity()) ? m_pCamera->GetCameraEntity() : 0; }
     // @0x140af9a70
-    void FUN_140af9a70(egf::Entity* pEntity) { if (m_pCamera) m_pCamera->FUN_140af9a50(pEntity); }
+    void FUN_140af9a70(egf::Entity* pEntity) { if (m_pCamera) m_pCamera->SetCameraEntity(pEntity); }
     // @0x140af9ab0
     void FUN_140af9ab0(float f1, float f2) { if (m_spMode.get()) m_spMode->vfunc_18(f1, f2); }
     // @0x140af9c10
@@ -277,9 +277,9 @@ public:
     // 0x140947860 (inline, ?\actioncameramode.cpp obj)
     void FUN_140947860(int n) { m_108 = n; }
     // 0x140947980 (inline, ?\actioncameramode.cpp obj)
-    void FUN_140947980(int n) { m_nPendingMode = n; }
+    void SetPendingMode(int n) { m_nPendingMode = n; }
     // 0x1409478a0 (inline, ?\actioncameramode.cpp obj)
-    Unk_CameraEffectState* FUN_1409478a0() { return &m_effect; }
+    Unk_CameraEffectState* GetCameraEffectState() { return &m_effect; }
 
     int m_bFlyBy;                                                       // +0x08
     Unk_CameraSetting m_setting;                                        // +0x0c

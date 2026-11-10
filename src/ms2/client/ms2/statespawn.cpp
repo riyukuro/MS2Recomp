@@ -24,7 +24,7 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-float FUN_14099eb30(const egf::EntityID& kKey, CString strAnim);           // 0x14099eb30 the animation length (the callee destroys the name)
+float GetAnimationDuration(const egf::EntityID& kKey, CString strAnim);           // 0x14099eb30 the animation length (the callee destroys the name)
 bool FUN_14028d470(float a, float b);                                      // approx equal
 
 // The mount's proxy handle (PCBase +0xd50, returned by value) and the entry it resolves to (the spawn effect path at +0x550).
@@ -68,9 +68,9 @@ void StateSpawn::vfunc_4(StateData* pData)
     m_fElapsed = 0;
     m_fDuration = 0;
     m_spSpawn.AssignRaw(dynamic_cast<StateSpawnData*>(pData));
-    m_pOwner->FUN_14123cb20(false);
+    m_pOwner->SetShadowVisible(false);
     m_pOwner->AddHideReason(10);
-    Unk_Random kRandom(m_pOwner->FUN_14123c580());
+    Unk_Random kRandom(m_pOwner->GetObjectId());
     int nDelay = (int)(kRandom.FUN_1407684c0() % 300) + 100;
     m_timer.FUN_140868750(nDelay);
 }
@@ -85,7 +85,7 @@ void StateSpawn::vfunc_5(int n)
     if (pMount != 0)
         nMountId = reinterpret_cast<CPet*>(pMount)->FUN_140b10150();
     m_pOwner->RemoveHideReason(10);
-    m_pOwner->FUN_14123cb20(true);
+    m_pOwner->SetShadowVisible(true);
     m_fElapsed = 0;
     m_fDuration = 0;
 }
@@ -106,7 +106,7 @@ void StateSpawn::vfunc_3(double fTime)
             if (!m_spSpawn->m_str.IsEmpty())
             {
                 m_pOwner->PlayAnimation((const char*)m_spSpawn->m_str, 1.0f, true, false);
-                m_fDuration = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_spSpawn->m_str));
+                m_fDuration = GetAnimationDuration(m_pOwner->GetEntityID(), CString(m_spSpawn->m_str));
             }
         }
         PCBase* pMount = FUN_1417b8480();
@@ -122,7 +122,7 @@ void StateSpawn::vfunc_3(double fTime)
             request.m_strName = reinterpret_cast<Unk_SpawnEntry*>(reinterpret_cast<CNpc*>(((Unk_SpawnMount*)pMount))->GetNpcData().operator->())->m_strEffect;
             request.m_nObject = 0;
             request.m_p18 = &xf;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&request));
         }
     }
     m_fElapsed += (float)fTime;

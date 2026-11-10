@@ -104,7 +104,7 @@ MS2_REPLACE_METHOD(0x1422DCF40, ASCoreList, SetEmptyItemCount, 186, 0xEC17C3DB);
 // @0x1422dd000
 void ASCoreList::SetRowCount(unsigned nRows)
 {
-    FUN_1409c0d20("rowCount", nRows);
+    SetMemberUInt("rowCount", nRows);
 }
 MS2_REPLACE_METHOD(0x1422DD000, ASCoreList, SetRowCount, 40, 0x53A95978);
 

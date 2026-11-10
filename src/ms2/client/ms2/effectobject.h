@@ -25,7 +25,7 @@ public:
 
     // Binds the effect to owner nOwnerId and loads strModel (urn:gamebryo-animation:<name>); the string is by value
     // (the callee destroys it). Always returns 1.
-    int FUN_140a53880(int nOwnerId, CString strModel, float fScale);       // 0x140a53880
+    int Init(int nOwnerId, CString strModel, float fScale);       // 0x140a53880
     // Starts the named sequence on this effect's actor manager and seeks it to the text key's time.
     void FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, const NiFixedString& kTextKey);  // 0x140a539d0
     void FUN_140a53b30(efd::Point3 kDir);                   // 0x140a53b30 GameObject::vfunc_21 without the owner check

@@ -77,7 +77,7 @@ MenteeSearch::ResponseMenteeList::ResponseMenteeList()
 }
 
 // The mentor record of the answer (declared below with the other parsers).
-static CMentorPtr FUN_140b6f200(CByteBuffer& buffer);
+static CMentorPtr ReadMentor(CByteBuffer& buffer);
 
 // @0x140b6dfb0
 int MenteeSearch::ResponseMenteeList::FUN_140b6dfb0(CByteBuffer& buffer)
@@ -89,7 +89,7 @@ int MenteeSearch::ResponseMenteeList::FUN_140b6dfb0(CByteBuffer& buffer)
             int nCount = buffer.ReadInt32();
             for (int i = 0; i < nCount; ++i)
             {
-                CMentorPtr spMentor = FUN_140b6f200(buffer);
+                CMentorPtr spMentor = ReadMentor(buffer);
                 if (spMentor.get() != 0)
                     m_map.SetAt(spMentor->c, spMentor);
             }
@@ -160,7 +160,7 @@ void CMenteeSearchManager::ProcessResponse()
 }
 
 // Shuffles the list (declared here, defined with the other helpers below).
-static void FUN_140b6f560(CMentorArray& arrMentors);
+static void ShuffleMentors(CMentorArray& arrMentors);
 
 // @0x140b6e420
 void CMenteeSearchManager::GetMentees(CMentorArray& arrOut)
@@ -178,7 +178,7 @@ void CMenteeSearchManager::GetMentees(CMentorArray& arrOut)
                 arrOut.Add(spMentor);
         }
     }
-    FUN_140b6f560(arrOut);
+    ShuffleMentors(arrOut);
 }
 
 // @0x140b6e560
@@ -348,7 +348,7 @@ __time64_t FUN_140b6efa0(CByteBuffer& buffer)
 
 // One mentor of the answer.
 // @0x140b6f200
-static CMentorPtr FUN_140b6f200(CByteBuffer& buffer)
+static CMentorPtr ReadMentor(CByteBuffer& buffer)
 {
     CMentorPtr spMentor(new CMentor);
     spMentor->a = buffer.ReadInt64();
@@ -387,7 +387,7 @@ static void FUN_140b6f610(CMentorPtr& a, CMentorPtr& b)
 
 // Fisher-Yates shuffle.
 // @0x140b6f560
-static void FUN_140b6f560(CMentorArray& arrMentors)
+static void ShuffleMentors(CMentorArray& arrMentors)
 {
     int n = (int)arrMentors.GetCount();
     for (int i = n - 1; i >= 1; --i)

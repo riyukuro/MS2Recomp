@@ -66,15 +66,15 @@ CStringW FUN_1413892f0(int nTrigger)
 }
 
 // @0x141389350
-CStringA FUN_141389350(int nLimit)
+CStringA GetLimitName(int nLimit)
 {
     return g_guideLimitNames[nLimit];
 }
 
 // @0x1413893a0
-CStringW FUN_1413893a0(int nLimit)
+CStringW GetLimitNameW(int nLimit)
 {
-    return FUN_14016a730(FUN_141389350(nLimit), 0);
+    return FUN_14016a730(GetLimitName(nLimit), 0);
 }
 
 // @0x141389420

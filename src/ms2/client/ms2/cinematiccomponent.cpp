@@ -81,7 +81,7 @@ public:
     void SelectOption();
     void AddImage(CString key);
 };
-UITalkCinematic* FUN_140a7b2b0(int nId);
+UITalkCinematic* FindTalkCinematic(int nId);
 
 // The chat/name filter.
 class Unk_CinNameFilter : public CReservedWordTable
@@ -91,7 +91,7 @@ public:
 
 // The key name table and settings.
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);
 
 // Local player, world and ui manager.
 class Unk_CinWorld
@@ -105,7 +105,7 @@ class UIJobChangeDialog : public UIObject { public: public:
 int FUN_14151f6e0();
 void FUN_14151f200();
 void FUN_14151f460(int);
-class PC { public: int FUN_141654700(); __int64 FUN_141656ad0(); int FUN_141661aa0(); };   // C3: unit-local view (fittingdollpc.h);                                       // level
+class PC { public: int GetJobGroupId(); __int64 GetAccountId(); int FUN_141661aa0(); };   // C3: unit-local view (fittingdollpc.h);                                       // level
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 extern __int64 DAT_143ab2898;
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
@@ -146,10 +146,10 @@ CStringW FUN_1409404f0(__int64);
 CStringW FUN_1416e4df0(int nQuestId);
 int FUN_1416e6100(int nQuestId, int);
 void FUN_141275260(int, int, int);
-void FUN_1410819f0(const CString& key);
+void AddTalkImage(const CString& key);
 int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket&);
-void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
+void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
 void FUN_1401fdad0(unsigned char*, class COutputStream&);   // C3: was FUN_1401fdad0
 void FUN_140d73bc0(int, int, void*, CStringW);
 
@@ -324,13 +324,13 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
             ASObj effect(2);
             effect.FUN_1407cba60("movie", CString(m_spContent->m_screenEffectMovie));
             effect.FUN_1407cba60("action", CString(m_spContent->m_screenEffectAction));
-            effect.FUN_1409c0d20("value", m_spContent->m_screenEffectValue);
+            effect.SetMemberUInt("value", m_spContent->m_screenEffectValue);
             obj.FUN_1409eb270("screenEffect", effect);
         }
     }
 }
 // @0x14107d4b0
-void CCinematicComponent::FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards, ASObj& obj)
+void CCinematicComponent::FillRewardItems(const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards, ASObj& obj)
 {
     for (size_t i = 0; i < rewards.GetCount(); i++) {
         int nItemId = rewards[i].m_itemId;
@@ -341,16 +341,16 @@ void CCinematicComponent::FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRe
             spItem->SetCountClamped(nCount);
             CString key;
             key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i);
-            FUN_141415450(key, spItem, 0, 0x11, 0x800);
+            CreateItemInfoSlot(key, spItem, 0, 0x11, 0x800);
             CString attr;
             attr.Format("reward%d", i + 1);
-            FUN_1410819f0(key);
+            AddTalkImage(key);
             obj.FUN_1407cba60(attr, CString(key));
         }
     }
 }
 // @0x14107d760
-unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
+unsigned CCinematicComponent::FillTalkReward(ASObj& obj)
 {
     if (m_spContent->m_openTalkReward == 0)
         return 0;
@@ -402,11 +402,11 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             MS2Ptr<CItem> spItem = pReward->m_items[i];
             CString key;
             key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i + 1);
-            FUN_141415450(key, spItem, 0, 0x11, 0x800);
+            CreateItemInfoSlot(key, spItem, 0, 0x11, 0x800);
             CString attr;
             attr.Format("reward%d", i + 1);
             reward.FUN_1407cba60(attr, CString(key));
-            FUN_1410819f0(key);
+            AddTalkImage(key);
         }
         pReward->FUN_141b1dbd0();
         if (bAny != 0)
@@ -421,7 +421,7 @@ CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
     reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(text);
     CStringW keyConfirm = FUN_1409331f0()->GetKeyName(1);
     CStringW keyNext = FUN_1409331f0()->GetKeyName(0x39);
-    int nVariant = *reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0 ? 2 : 0;
+    int nVariant = *reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0 ? 2 : 0;
     if (nVariant == 2)
         text.Replace(keyConfirm, FUN_1409331f0()->GetActionKeyName(0x49409, nVariant));
     text.Replace(keyNext, FUN_1409331f0()->GetActionKeyName(0x493e2, nVariant));
@@ -453,7 +453,7 @@ int CNextCinematicComponent::vfunc_3() { return 4; }
 void CNextCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    m_nReward = FUN_14107d760(obj);
+    m_nReward = FillTalkReward(obj);
     obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d5));
 }
 
@@ -484,7 +484,7 @@ int CCloseCinematicComponent::vfunc_3() { return 3; }
 void CCloseCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    m_nReward = FUN_14107d760(obj);
+    m_nReward = FillTalkReward(obj);
     obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d6));
 }
 
@@ -696,7 +696,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
     ATL::CAtlArray<CQuestData::QuestRewardItem> items;
     for (size_t i = 0; i < spQuest->m_complete.m_choiceRewards.GetCount(); i++) {
         CQuestData::QuestRewardItem& item = spQuest->m_complete.m_choiceRewards[i];
-        if (item.m_itemId != 0 && FUN_140748050(&item, ((PC*)pc)->FUN_141654700()) != 0)
+        if (item.m_itemId != 0 && FUN_140748050(&item, ((PC*)pc)->GetJobGroupId()) != 0)
             items.Add(spQuest->m_complete.m_choiceRewards[i]);
     }
     int nSpecial = FUN_140761c60(m_spContent->m_questId, 1);
@@ -707,7 +707,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
         special.m_count = FUN_14053feb0(0x1c9c6dd);
         items.Add(special);
     }
-    FUN_14107d4b0(items, reward);
+    FillRewardItems(items, reward);
     obj.FUN_1409eb270("reward", reward);
     obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d4));
 }
@@ -807,7 +807,7 @@ int FUN_141081a50(MS2Ptr<CNpcData> spNpc, int bFlag)   // the npc table row: its
     return 0;
 }
 // @0x141082150
-CStringA FUN_141082150(MS2Ptr<CQuestData> spQuest, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
+CStringA SelectStringByQuestKind(MS2Ptr<CQuestData> spQuest, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
 {
     if (spQuest.get() != 0) {
         int nKind = FUN_14074b050(spQuest.operator->());
@@ -827,10 +827,10 @@ CStringA FUN_141082150(MS2Ptr<CQuestData> spQuest, const CStringA& sNormal, cons
     return sDefault;
 }
 // @0x141082090
-CStringA FUN_141082090(int nQuestId, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
+CStringA SelectStringByQuestId(int nQuestId, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
 {
     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
-    return FUN_141082150(spQuest, sNormal, sDefault, sAlt, sEpic);
+    return SelectStringByQuestKind(spQuest, sNormal, sDefault, sAlt, sEpic);
 }
 
 // formatting of the quest-name line (FUN_14028dfa0 is the localized formatter; FUN_141081c60 is its <CStringW, CStringW, int> instance)
@@ -903,7 +903,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                     }
                     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
                     if (spQuest.get() != 0) {
-                        icon.m_icon += FUN_141082090(nQuestId, "_epic", "", "_repeat", "_event");
+                        icon.m_icon += SelectStringByQuestId(nQuestId, "_epic", "", "_repeat", "_event");
                         icon.m_text = FUN_14028dfa0(L"s_quest_distactor_quest_name", FUN_1416e4df0(nQuestId), GetStringCommon(nState), spQuest->m_level);
                         icons.Add(icon);
                     }
@@ -936,14 +936,14 @@ class Unk_CinNullSink { public: void FUN_141080590(void* p); };
 // @0x141080590
 void Unk_CinNullSink::FUN_141080590(void*) {}
 // @0x1410819f0
-void FUN_1410819f0(const CString& key)
+void AddTalkImage(const CString& key)
 {
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
         pTalk->AddImage(key);
 }
 // @0x141081ff0
-UIJobChangeDialog* FUN_141081ff0(int nId)
+UIJobChangeDialog* FindJobChangeDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> spObj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -970,7 +970,7 @@ int CChangeJobComponent::vfunc_2(int nMsg)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7c);
     } else if (nMsg == 0x493e2) {
         int nResult = 0;
-        UIJobChangeDialog* pDlg = FUN_141081ff0(0x4e7c);
+        UIJobChangeDialog* pDlg = FindJobChangeDialog(0x4e7c);
         if (pDlg != 0)
             nResult = ((class UIJobChangeDialog*)(pDlg))->FUN_1419dc530();
         if (FUN_14151f6e0() != 0)
@@ -1029,7 +1029,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
         if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pc->FUN_141529620(), &nOut) == 0)
             return 0;
         efd::SmartPointer<CubeMapInformationService> spSvc2(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-        if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->FUN_141656ad0()) {
+        if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->GetAccountId()) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);
             pkt.Encode4(pc->FUN_141529620());

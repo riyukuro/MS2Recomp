@@ -202,7 +202,7 @@ int UIHpBar::Entity::vfunc_8(int n)
         Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
-        Ridee* pHolder = reinterpret_cast<Ridee*>(pActor->FUN_1416764a0());
+        Ridee* pHolder = reinterpret_cast<Ridee*>(pActor->GetRidee());
         if (pHolder != 0)
         {
             MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
@@ -210,7 +210,7 @@ int UIHpBar::Entity::vfunc_8(int n)
             if (bMounted)
                 return 1;
         }
-        if (pPc->FUN_14165ef30() == 1)
+        if (pPc->HasPvPPoint() == 1)
         {
             if (pPc->FUN_141674bc0() == 0)
                 return 0;
@@ -364,7 +364,7 @@ int UIHpBar::Entity::FUN_141992580()
         Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0)
         {
-            if (pLocal->FUN_14123c580() == pActor->FUN_14123c580())
+            if (pLocal->GetObjectId() == pActor->GetObjectId())
                 m_b4 = 1;
             else
                 m_b4 = pLocal->vfunc_122(pActor) != 0 ? 0 : 1;
@@ -381,7 +381,7 @@ void UIHpBar::Entity::FUN_141992680()
     Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(FUN_140f49330()));
     if (pPc != 0)
     {
-        if (pPc->FUN_14165ef30() != 0)
+        if (pPc->HasPvPPoint() != 0)
             m_b0 = (unsigned short)m_c4;
         else
             m_b0 = 1;

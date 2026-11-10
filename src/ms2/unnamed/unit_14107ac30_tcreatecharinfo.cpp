@@ -103,8 +103,8 @@ public:
     int FUN_140a18070();
     NiPoint3 FUN_140af0250();   // camera world direction; C3: the definer's signature (camera.cpp)
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
@@ -291,7 +291,7 @@ void Unk_RimLight::FUN_14107b2a0(float fYaw, float fPitch)
 void FUN_14107b2d0()
 {
     FUN_14107cad0(&DAT_143ae5398, &Unk_RimLight::s_sssColor, 1);
-    FUN_1409a5770(*(class NiFixedString*)&(DAT_143ae53a0), &Unk_RimLight::s_fSSSPower, 1);
+    UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&(DAT_143ae53a0), &Unk_RimLight::s_fSSSPower, 1);
 }
 MS2_REPLACE(0x14107b2d0, FUN_14107b2d0, 59, 0x1F4B3C77);
 
@@ -328,15 +328,15 @@ int TCreateCharInfo::FUN_14107b440(PC* pPC)
     Vector3 kPos;
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
-    pPC->FUN_14123c5a0(m_nType);
+    pPC->SetObjectId(m_nType);
     pPC->FUN_141656a50(m_n20);
     int nGender = m_nGender;
-    pPC->FUN_14123bb80(FUN_14107b360(nGender));
+    pPC->SetModelPath(FUN_14107b360(nGender));
     pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
     pPC->vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
     pPC->vfunc_131((short)m_n34);
     pPC->vfunc_76(m_str38);
-    pPC->FUN_141658e40(m_nGender);
+    pPC->SetGender(m_nGender);
     int nJob = 1;
     int nJob2 = 10;
     if (FUN_1402226b0(m_nJobCode))
@@ -344,13 +344,13 @@ int TCreateCharInfo::FUN_14107b440(PC* pPC)
         nJob = m_nJobCode;
         nJob2 = m_n30;
     }
-    reinterpret_cast<JobSystem*>(pPC->FUN_1416546d0())->SetJob(nJob, nJob2, (unsigned short)m_n34);
+    reinterpret_cast<JobSystem*>(pPC->GetJobSystem())->SetJob(nJob, nJob2, (unsigned short)m_n34);
     pPC->AddStateFlags(4);
     pPC->vfunc_59(1, 0, 0, 0);
     for (int i = 0; i < 2; i++)
         pPC->FUN_1416591e0(i, reinterpret_cast<const NiColor&>(m_equip[i]));
     Vector3 kHit;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
@@ -368,16 +368,16 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     Vector3 kPos;
     if (pWorld->FUN_141bd0dd0(&kPos, &kDir) == 0)
         return 0;
-    pPC->FUN_14123c5a0(nSlot);
+    pPC->SetObjectId(nSlot);
     pPC->FUN_141656a50(pState->m_8);
     int nGender = pState->m_14;
-    pPC->FUN_14123bb80(FUN_14107b360(nGender));
+    pPC->SetModelPath(FUN_14107b360(nGender));
     pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
     pPC->vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
     pPC->vfunc_131(pState->m_34);
     pPC->vfunc_76(const_cast<Unk_UserProxy*>(pState)->FUN_1408f19e0());
-    pPC->FUN_141658e40(pState->m_14);
-    reinterpret_cast<JobSystem*>(pPC->FUN_1416546d0())->SetJob(pState->m_3c, pState->m_40, pState->m_34);
+    pPC->SetGender(pState->m_14);
+    reinterpret_cast<JobSystem*>(pPC->GetJobSystem())->SetJob(pState->m_3c, pState->m_40, pState->m_34);
     pPC->AddStateFlags(4);
     pPC->vfunc_59(1, 0, 0, 0);
     Unk_CharEquip aEquip[2];
@@ -386,7 +386,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     pPC->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(aEquip[0]));
     pPC->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
     Vector3 kHit;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
@@ -396,15 +396,15 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
         pPC->vfunc_139();
         if (!pState->m_240.IsEmpty())
         {
-            int nObjId = ((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580();
-            pPC->FUN_14165f460()->FUN_141270f10(const_cast<ATL::CAtlArray<MS2Ptr<CItem> >&>(pState->m_240), nObjId);
-            MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(1);
+            int nObjId = ((class GameObject*)(class PCBase*)(pPC))->GetObjectId();
+            pPC->GetGemEquip()->FUN_141270f10(const_cast<ATL::CAtlArray<MS2Ptr<CItem> >&>(pState->m_240), nObjId);
+            MS2Ptr<CGemBase> spGem = pPC->GetGemEquip()->FUN_141270740(1);
             if (spGem.get() != 0)
-                spGem->vfunc_6(pPC, pPC->FUN_14165f460()->GetItemByGemType(1));
+                spGem->vfunc_6(pPC, pPC->GetGemEquip()->GetItemByGemType(1));
         }
         CMsTime kEnd(pState->m_288);
         CMsTime kStart(pState->m_280);
-        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->SetLayerPeriod(kStart, kEnd);
+        reinterpret_cast<CEquipment*>(pPC->GetEquipment())->SetLayerPeriod(kStart, kEnd);
         if (!pState->m_260.IsEmpty())
         {
             size_t nCount = pState->m_260.GetCount();
@@ -413,8 +413,8 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
                 MS2Ptr<CItem> spItem = pState->m_260[i];
                 if (spItem.get() != 0)
                 {
-                    spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
-                    pPC->FUN_141653d10(spItem);
+                    spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->GetObjectId());
+                    pPC->AddItemAndPreloadModels(spItem);
                 }
             }
         }
@@ -428,8 +428,8 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
                 MS2Ptr<CItem> spItem = pState->m_220[i];
                 if (spItem == 0)
                     continue;
-                spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
-                pPC->FUN_141653d10(spItem);
+                spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->GetObjectId());
+                pPC->AddItemAndPreloadModels(spItem);
             }
         }
         return 1;
@@ -512,7 +512,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
                 spItem->FUN_140526c10(nSlot);
                 spItem->SetItemUid(pPC->GenerateSerialId());
                 spItem->SetObjectId(m_nType);
-                pPC->FUN_141653d10(spItem);
+                pPC->AddItemAndPreloadModels(spItem);
             }
         }
         return 1;
@@ -526,20 +526,20 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
     int nId = nSlot;
     if (nId != 0)
     {
-        pDst->FUN_14123c5a0(nId);
+        pDst->SetObjectId(nId);
         pDst->FUN_141656a50(pSrc->FUN_141656a80());
-        pDst->FUN_14123bb80(pSrc->FUN_14123bbd0());
+        pDst->SetModelPath(pSrc->GetModelPath());
         pDst->vfunc_19(*(const efd::Point3*)&static_cast<const NiPoint3&>(pSrc->vfunc_18()));
         efd::Point3 kRot = *(const efd::Point3*)&static_cast<const NiPoint3&>(NiPoint3(0.0f, 0.0f, 90.0f));
         pDst->vfunc_21(kRot);
         pDst->vfunc_131((short)pSrc->vfunc_78());
         pDst->vfunc_76(CStringW(L""));
-        pDst->FUN_141658e40(((class PC*)(class PC*)(pSrc))->FUN_141658e60());
+        pDst->SetGender(((class PC*)(class PC*)(pSrc))->GetGender());
         pDst->vfunc_59(1, 0, 0, 0);
         pDst->AddStateFlags(4);
         pDst->FUN_1416591e0(0, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(0)));
         pDst->FUN_1416591e0(1, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(1)));
-        reinterpret_cast<JobSystem*>(pDst->FUN_1416546d0())->SetJob(((class PC*)(class PC*)(pSrc))->FUN_141654700(), ((class PC*)(class PC*)(pSrc))->FUN_141654730(), (unsigned short)pSrc->vfunc_78());
+        reinterpret_cast<JobSystem*>(pDst->GetJobSystem())->SetJob(((class PC*)(class PC*)(pSrc))->GetJobGroupId(), ((class PC*)(class PC*)(pSrc))->GetSubJob(), (unsigned short)pSrc->vfunc_78());
         if (WorldService::GetInstance()->FUN_141bbb1e0(pDst, 0, 1) != 0)
         {
             pDst->vfunc_139();

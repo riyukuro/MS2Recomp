@@ -298,7 +298,7 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
         int bFound = 0;
         if ((spProduct.get() ? true : false) && !bMatch)
         {
-            CAtlArray<CString>* pCategories = spProduct->FUN_140db5f00();
+            CAtlArray<CString>* pCategories = spProduct->GetCategories();
             for (size_t i = 0; i < pCategories->GetCount(); i++)
             {
                 bFound = bFound || FUN_1413483c0((*pCategories)[i], spTab->m_strCategory);
@@ -403,13 +403,13 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40())
-            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(4, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->GetEquipment())->GetItemAt(4, bAlt);
         else
-            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(5, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->GetEquipment())->GetItemAt(5, bAlt);
     }
     else
     {
-        spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
+        spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->GetEquipment())->GetItemAt(spItem->FUN_140527a20(), bAlt);
     }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
@@ -428,17 +428,17 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
                     {
                         CStringW strEmpty1(L"");
                         CStringW strEmpty2(L"");
-                        pTip->FUN_1409c6640(strEmpty2, strEmpty1);
+                        pTip->SetEnableUseDbClickBoth(strEmpty2, strEmpty1);
                     }
                     {
                         CStringW strEmpty(L"");
                         CStringW strKey(L"s_word_compose_result");
-                        pTip->FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
+                        pTip->SetItemEquipBoth(GetStringCommonByKey(strKey), strEmpty);
                     }
                     if (bCaption)
                     {
                         CStringW strEmpty(L"");
-                        pTip->FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
+                        pTip->SetEnablePutonBoth(strEmpty, GetStringCommon(0x758));
                     }
                     *pOut = pTip->FUN_1422bb870();
                 }
@@ -447,15 +447,15 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     }
     else
     {
-        ASTooltip tip(pPlayer, pLhs->FUN_1409c6560(), 2);
-        if (pRhs->FUN_1409c6560() == 0)
-            pRhs->FUN_1409c6580(pLhs->FUN_1409c6560());
+        ASTooltip tip(pPlayer, pLhs->GetFlags(), 2);
+        if (pRhs->GetFlags() == 0)
+            pRhs->SetFlags(pLhs->GetFlags());
         if (tip.FUN_1409e15a0(spEquipped.get(), spItem.get(), pLhs, pRhs))
         {
             if (bCaption)
             {
                 CStringW strEmpty(L"");
-                tip.FUN_1409c6a20(strEmpty, GetStringCommon(0x758));
+                tip.SetEnablePutonBoth(strEmpty, GetStringCommon(0x758));
             }
             *pOut = tip.FUN_1422bb870();
         }

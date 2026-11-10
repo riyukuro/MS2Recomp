@@ -54,7 +54,7 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- unit-local views of exe objects ----
 
 // The inventory (global 0x143ab2a90): item handle by uid.
-class Unk_Inventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 uid); };
+class Unk_Inventory { public: MS2Ptr<CItem> FindItemByUid(__int64 uid); };
 extern Unk_Inventory g_143ab2a90;   // the real global (0x143ab2a90)
 
 // The enchant data of an item (CItem::FUN_1405278a0).
@@ -162,7 +162,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
             if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
                 packet.Encode1(2);
@@ -228,8 +228,8 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
 {
     m_nItemUid = packet.ReadInt64();
     int nType = (unsigned short)packet.ReadInt16();
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if ((((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         FUN_140cd74a0(GetTypeName());
         FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
@@ -270,7 +270,7 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
     int nResult = (unsigned short)packet.ReadInt16();
     if (nResult == 0) {
         unsigned __int64 nItemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.IsNull())
             return;
         spItem->FUN_140524eb0(packet);
@@ -308,7 +308,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
 {
     FUN_140cd74a0(GetTypeName());
     FUN_140cd73b0(GetTypeName(), m_nScrollUid, MS2Ptr<CItem>(0));
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if ((((MS2Ptr<AScript>*)(void*)(&m_30))->get() ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         CStringW strLevel;
         CStringW strTypes;
@@ -473,7 +473,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e390()
     case 3:
         return StringFormat(L"{0}~{1}", m_nRandomMin, m_nRandomMax);
     case 5: {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             return StringFormat(L"{0}", spItem->FUN_140526fc0());
     }

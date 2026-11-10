@@ -59,7 +59,7 @@ public:
 };
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 
 CVIPTable* FUN_140fb9980();                                     // CVIPTable::GetInstance (defined below)
 class WorldService   // C3: member view for the former free stand-ins
@@ -122,11 +122,11 @@ void UIVIPDialog::vfunc_72()
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (m_nVipEnd != ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() || m_nVip != ((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0()) {
+    if (m_nVipEnd != ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() || m_nVip != ((class PC*)(class PCBase*)(pPlayer))->IsVip()) {
         FUN_140fb9150();
         FUN_140fb8d10();
         m_nVipEnd = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90();
-        m_nVip = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0();
+        m_nVip = ((class PC*)(class PCBase*)(pPlayer))->IsVip();
     }
 }
 
@@ -140,7 +140,7 @@ void UIVIPDialog::OnLoadComplete()
     FUN_140fb8d10();
     SendPremiumClubMode1();
     m_nVipEnd = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90();
-    m_nVip = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0();
+    m_nVip = ((class PC*)(class PCBase*)(pPlayer))->IsVip();
     ((class Unk_VdPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
 }
 
@@ -214,7 +214,7 @@ int UIVIPDialog::FUN_140fb8680()
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() == 0)
+    if (((class PC*)(class PCBase*)(pPlayer))->IsVip() == 0)
         return 0;
     int nCount = 0;
     ATL::CAtlArray<CVIPBenefitItemPtr> items;
@@ -239,7 +239,7 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
         for (unsigned i = 0; i < nCount; i++)
             m_claimedIds.AddTail(packet.ReadInt32());
         FUN_140fb9150();
-        UIGameMenuDialog* pMenu = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pMenu = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pMenu != 0)
             pMenu->FUN_141938ae0(0x4f1b, 0);
     } else if (nMode == 2) {
@@ -273,7 +273,7 @@ void UIVIPDialog::FUN_140fb8d10()
     MS2Ptr<ASTextField> spTime = GetChild<ASTextField>("m_remainTime");
     if (spTime == 0)
         return;
-    if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() == 0) {
+    if (((class PC*)(class PCBase*)(pPlayer))->IsVip() == 0) {
         spTime->SetTextW(GetStringCommonByKey(L"s_vip_dialog_end_time"));
     } else {
         ATL::CTimeSpan span = CMsTime(((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90()) - CMsTime(GetServerTime());
@@ -321,10 +321,10 @@ void UIVIPDialog::FUN_140fb9150()
         if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
             continue;
         ASObj row(2);
-        row.FUN_1409c0d20("id", spBenefit->m_nId);
+        row.SetMemberUInt("id", spBenefit->m_nId);
         row.FUN_1407cbb20("label", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spBenefit->m_nItemId));
         row.FUN_1409adc90("itemGrade", spBenefit->m_nItemRank);
-        row.FUN_1409c0d20("itemCount", spBenefit->m_nItemCount);
+        row.SetMemberUInt("itemCount", spBenefit->m_nItemCount);
         row.FUN_1407cba60("iconPath", spData->GetIconPath());
         row.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
         row.FUN_1407cb9c0("itemVIP", spItem->FUN_140525db0());
@@ -348,7 +348,7 @@ int UIVIPDialog::FUN_140fb9720(unsigned nBenefitId)
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() == 0)
+    if (((class PC*)(class PCBase*)(pPlayer))->IsVip() == 0)
         return 0;
     if (m_claimedIds.Find(nBenefitId) != 0)
         return 0;

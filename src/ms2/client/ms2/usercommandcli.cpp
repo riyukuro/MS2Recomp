@@ -169,7 +169,7 @@ public:
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 class CameraMgr; template <class T> class TSingleton;
 template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // 0x1409478c0, as in camera.h
@@ -177,10 +177,10 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_140aecbb0(int, int, bool);
-    void FUN_140aed580(struct Unk_CameraFlyBy const*, int, float);
+    void SetFlyBy(struct Unk_CameraFlyBy const*, int, float);
     void FUN_140aed720(struct Unk_CameraSetting const&);
-    void FUN_140aed750(int, int);
-    class CCameraMode* FUN_140af2520();
+    void SetMode(int, int);
+    class CCameraMode* GetMode();
 };
 struct Unk_CameraSetting* FUN_140947880(class CCameraMode*);   // C3: was FUN_140947880
 void FUN_1412751f0(const CStringW&,int,int); void FUN_1412751b0(const CStringW&,int);
@@ -216,7 +216,7 @@ public:
 template <> class TSingleton<CommonString> { public: static CommonString* GetInstance(); };   // 0x14025e7d0, as in commonstringtable.h
  void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
 void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void FUN_141adc530(void*,int);
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class CNifLoadingService   // C3: member view for the former free stand-ins
 {
 public:
@@ -227,13 +227,13 @@ public:
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
-    unsigned FUN_1411a4f40(CString strName, const class NiPoint3& kPos);
+    unsigned int InsertEffect(class Unk_EffectTarget&);
+    unsigned PlayVoiceAt(CString strName, const class NiPoint3& kPos);
     void FUN_1411a7e80(int);
     void FUN_1411a8dc0();
     void FUN_1411a8cb0(const CString&);
 };
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class COptimizer   // C3: member view for the former free stand-ins
 {
 public:
@@ -243,12 +243,12 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class UserUGCMapInfo* FUN_141523c50();
+    class UserUGCMapInfo* GetUGCMapInfo();
     static void FUN_141530910(int);
     void SendRequestMoveFieldMode4();
     void SendRequestMoveFieldMode2(int, int, int, __int64, CStringW);
 };
-void* FUN_1409670e0();
+void* GetCubeMapInformationService();
 class CubeMapInformationService { public: int ExportUGCMap(CString); };   // C3: member view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -286,8 +286,8 @@ public:
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-class CGameOption;struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
-void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
+class CGameOption;struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
+void SetGamepadEnabled(struct Unk_GpState*, bool, bool);   // C3: was SetGamepadEnabled
 class CLogString   // C3: member view for the former free stand-ins
 {
 public:
@@ -412,7 +412,7 @@ struct Unk_g1_KeyBinding {
 };
 MS2_CHECK_OFFSET(Unk_g1_KeyBinding, m_18, 0x18);
 MS2_CHECK_OFFSET(Unk_g1_KeyBinding, m_20, 0x20);
-int FUN_14142c940(void*,__int64,int);
+int FindKeyByActionAndPriority(void*,__int64,int);
 void FUN_141253f40(void*);
 void FUN_141254640(void*,__int64*);
 void FUN_141253ee0(void*);
@@ -459,7 +459,7 @@ public:
 };
 class CNPSMan; template <class T> class TSingleton;
 template <> class TSingleton<CNPSMan> { public: static CNPSMan* s_instance; static CNPSMan* GetInstance() { return s_instance; } };   // as in cnpsman.h
-Unk_PmFixedItem * FUN_140c8dac0(void);  // C3: the definition's signature
+Unk_PmFixedItem * GetInstrumentManager(void);  // C3: the definition's signature
 inline void FUN_1413747d0(unsigned char* p) { *p=0; }
 // @0x141374920
 inline void FUN_141374920(unsigned char* p,const int& v) { *(int*)(p+4)=v; *p=1; }
@@ -530,7 +530,7 @@ struct Unk_DamageTest {
 };
 MS2_CHECK_OFFSET(Unk_DamageTest, m_2c0, 0x2c0);
 MS2_CHECK_OFFSET(Unk_DamageTest, m_2c4, 0x2c4);
-UIMessengerBrowser * FUN_140a3ab70(int);  // C3: the definition's signature
+UIMessengerBrowser * FindMessengerBrowser(int);  // C3: the definition's signature
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Set
 class UIDamageText   // C3: member view for the former free stand-ins
 {
@@ -566,7 +566,7 @@ CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
 class Unk_HsInfo : public CPtred { };
 namespace HideAndSeek { class Info { public: int FUN_14050a6a0(); }; }   // C3: member view
-class PC { public: MS2Ptr<Unk_HsInfo> GetHideAndSeekInfo(); struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: member view
+class PC { public: MS2Ptr<Unk_HsInfo> GetHideAndSeekInfo(); struct Unk_PCEquipSet* GetEquipment(); };   // C3: member view
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -920,7 +920,7 @@ int CUserCommandCli::SetLocalCamera(ItemFunctionArgs& args) {
     if(!player) return 0;
     void* actor=((class WorldService*)(void*)(player))->FUN_141bd0cc0();
     if(!actor) return 0;
-    if(TSingleton<CameraMgr>::GetInstance()) ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aecbb0(id, ((class GameObject*)(void*)(actor))->FUN_14123c580(), enabled);
+    if(TSingleton<CameraMgr>::GetInstance()) ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aecbb0(id, ((class GameObject*)(void*)(actor))->GetObjectId(), enabled);
     return 1;
 }
 // @0x141365420
@@ -935,10 +935,10 @@ int CUserCommandCli::SetTargetCamera(ItemFunctionArgs& args) {
     default:
         return 0;
     }
-    void* state=((void*)FUN_140947880((class CCameraMode*)(((void*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140af2520()))));
-    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(0), 0, 0);
+    void* state=((void*)FUN_140947880((class CCameraMode*)(((void*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetMode()))));
+    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->SetFlyBy((struct Unk_CameraFlyBy const*)(0), 0, 0);
     ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(state));
-    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(kind, enabled);
+    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->SetMode(kind, enabled);
     return 1;
 }
 // @0x141365560
@@ -989,7 +989,7 @@ int CUserCommandCli::ShowServerTime(ItemFunctionArgs&) {
 // @0x141365b00
 int CUserCommandCli::PlayVoiceSound(ItemFunctionArgs& args) {
     if(DAT_143ab2914<50) return 0;
-     TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
+     TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
     return 1;
 }
 // @0x141365bf0
@@ -1031,13 +1031,13 @@ int CUserCommandCli::SendAttendance(ItemFunctionArgs&) {
 // @0x141365ee0
 int CUserCommandCli::SetNifLifetime(ItemFunctionArgs& args) {
     float time=args.FUN_1408d2280(0,0);
-    ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->SetLifetime(double(time));
+    ((class CNifLoadingService*)(void*)(((void*)GetNifLoadingService())))->SetLifetime(double(time));
     FUN_1412751b0(StringFormat(L"SetCacheKeepTime {0}",time),20); return 1;
 }
 // @0x141365f80
-int CUserCommandCli::ClearNifCache(ItemFunctionArgs&) { ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->ClearNifCache(); { CStringW text(L"Remove All Cached Nif"); FUN_1412751b0(text,20); } return 1; }
+int CUserCommandCli::ClearNifCache(ItemFunctionArgs&) { ((class CNifLoadingService*)(void*)(((void*)GetNifLoadingService())))->ClearNifCache(); { CStringW text(L"Remove All Cached Nif"); FUN_1412751b0(text,20); } return 1; }
 // @0x141365ff0
-int CUserCommandCli::ClearTextureCache(ItemFunctionArgs&) { ((class CNifLoadingService*)(void*)(((void*)FUN_140a0afd0())))->ClearTextureCache(); { CStringW text(L"Remove All Cached Texture"); FUN_1412751b0(text,20); } return 1; }
+int CUserCommandCli::ClearTextureCache(ItemFunctionArgs&) { ((class CNifLoadingService*)(void*)(((void*)GetNifLoadingService())))->ClearTextureCache(); { CStringW text(L"Remove All Cached Texture"); FUN_1412751b0(text,20); } return 1; }
 // @0x141366060
 int CUserCommandCli::SetWeather(ItemFunctionArgs& args) {
     if(DAT_143ab2914<50) return 0;
@@ -1047,7 +1047,7 @@ int CUserCommandCli::SetWeather(ItemFunctionArgs& args) {
 // @0x141366100
 int CUserCommandCli::SetMaxFps(ItemFunctionArgs& args) {
     if(DAT_143ab2914<50) return 0;
-     { int fps=args.FUN_1408d1f60(0,0); ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->SetFrameLimit(float(fps)); FUN_1412751b0(StringFormat(L"MaxFPS {0}",fps),20); }
+     { int fps=args.FUN_1408d1f60(0,0); ((class COptimizer*)(void*)(((void*)GetOptimizer())))->SetFrameLimit(float(fps)); FUN_1412751b0(StringFormat(L"MaxFPS {0}",fps),20); }
     return 1;
 }
 // @0x1413661b0
@@ -1067,7 +1067,7 @@ int CUserCommandCli::SetHomePassword(ItemFunctionArgs& args) {
     if(args.FUN_1408d2380()>2) flag=args.FUN_1408d1f60(2,0);
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->GetUGCMapInfo());
         if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x18); packet.WriteUInt8((unsigned char)mode);
             packet.WriteUnicodeString(name); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet);
@@ -1096,7 +1096,7 @@ int CUserCommandCli::SetHomeNotice(ItemFunctionArgs& args) {
     if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->GetUGCMapInfo());
         if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x1d); packet.WriteUnicodeString(name); FUN_140710590(packet);
         }
@@ -1108,7 +1108,7 @@ int CUserCommandCli::ExportUgcMap(ItemFunctionArgs& args) {
     CString name="";
     if(args.FUN_1408d2380()>0) name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
     else name.Format("%08d",((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060());
-    int result=((CubeMapInformationService*)FUN_1409670e0())->ExportUGCMap(name);
+    int result=((CubeMapInformationService*)GetCubeMapInformationService())->ExportUGCMap(name);
     if(result) FUN_1412751b0(StringFormat(L"UGCMap exported to Data/Xml/ExportedUGCMap/{0}.xml",name),20);
     else FUN_1412751b0(StringFormat(L"UGCMap export failed",name),20);
     return result;
@@ -1238,7 +1238,7 @@ int CUserCommandCli::ToggleDpsLog(ItemFunctionArgs&) {
 // @0x141367970
 int CUserCommandCli::UseGamePad(ItemFunctionArgs& args) {
     int enabled=args.FUN_1408d20b0(0,0)!=0;
-    FUN_14125f670((struct Unk_GpState*)(((void*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))), enabled!=0, false);
+    SetGamepadEnabled((struct Unk_GpState*)(((void*)GetGamepadState((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))), enabled!=0, false);
     FUN_1412751b0(StringFormat(L"UseGamePad {0}",enabled),20); return 1;
 }
 // @0x141367a40
@@ -1265,7 +1265,7 @@ int CUserCommandCli::ExportDefaultKeyXml(ItemFunctionArgs& args) {
             for(POSITION pos=table->GetHeadPosition();pos!=0;table->GetNext(pos)) {
                 MS2Ptr<CKeySettingParam> item=table->GetAt(pos);
                 if(item.get()) {
-                    int keyCode=TSingleton<CKeyTable>::GetInstance()->FUN_14142c940(item->m_nAction,priority);
+                    int keyCode=TSingleton<CKeyTable>::GetInstance()->FindKeyByActionAndPriority(item->m_nAction,priority);
                     if(keyCode!=0) {
                         TiXmlElement key("key");
                         ((class TiXmlElement*)(void*)(&key))->SetAttribute("priority", priority);
@@ -1344,7 +1344,7 @@ int CUserCommandCli::RecordFishing(ItemFunctionArgs&) {
 // @0x141368730
 int CUserCommandCli::ShowFishRecordReport(ItemFunctionArgs&) {
     void* fishing=FUN_141371ac0(((void*)TSingleton<CFishingManager>::GetInstance()));
-    CString report=((Unk_FishRecord*)fishing)->FUN_140cd8f60();
+    CString report=((Unk_FishRecord*)fishing)->WriteRecordFile();
     FUN_1412751b0(StringFormat(L"FishReport >> {0}",report),20);
     return 1;
 }
@@ -1357,8 +1357,8 @@ int CUserCommandCli::ShowEffectAfterimage(ItemFunctionArgs&) {
         NoticeMessage request;
         request.m_strName="Eff_AfterImage.xml";
         request.m_nObject=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(entry));
-        request.SetActor(((class GameObject*)(void*)(entry))->FUN_14123c580());
-        ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&request));
+        request.SetActor(((class GameObject*)(void*)(entry))->GetObjectId());
+        ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->InsertEffect(*(class Unk_EffectTarget*)(&request));
     }
     return 1;
 }
@@ -1434,7 +1434,7 @@ int CUserCommandCli::Optimize(ItemFunctionArgs& args) {
 int CUserCommandCli::SamplingFrame(ItemFunctionArgs& args) {
     int first=args.FUN_1408d1fd0(0,100);
     int second=args.FUN_1408d1fd0(1,3000);
-    ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->StartFrameSampling(first, second);
+    ((class COptimizer*)(void*)(((void*)GetOptimizer())))->StartFrameSampling(first, second);
     return 1;
 }
 // @0x141369020
@@ -1456,12 +1456,12 @@ int CUserCommandCli::SetNps(ItemFunctionArgs& args) {
 int CUserCommandCli::SetForceGmId(ItemFunctionArgs& args) {
     int id=args.FUN_1408d1f60(0,0);
     if(id>=0) {
-        FUN_141374920((unsigned char*)FUN_140c8dac0()+0x6b8,id);
+        FUN_141374920((unsigned char*)GetInstrumentManager()+0x6b8,id);
         FUN_1412751b0(StringFormat(L"Set ForceGM ID : {0}",id),20);
     } else if(id>0x7f) {
         FUN_1412751b0(StringFormat(L"Invalid Range GM ID"),20);
     } else {
-        FUN_1413747d0((unsigned char*)FUN_140c8dac0()+0x6b8);
+        FUN_1413747d0((unsigned char*)GetInstrumentManager()+0x6b8);
         FUN_1412751b0(StringFormat(L"reset ForceGM ID"),20);
     }
     return 1;
@@ -1860,7 +1860,7 @@ int CUserCommandCli::SetPosition(ItemFunctionArgs& args) {
 }
 // @0x14136bf10
 int CUserCommandCli::DumpChatLog(ItemFunctionArgs&) {
-    void* dialog=FUN_140a3ab70(0x4e61);
+    void* dialog=FindMessengerBrowser(0x4e61);
     if(dialog) ((class UIMessengerBrowser*)(void*)(dialog))->FUN_141a26680();
     return 1;
 }
@@ -1905,7 +1905,7 @@ int CUserCommandCli::ShowMyPcNodes(ItemFunctionArgs& args) {
     if(player==0) return 0;
     void* actor=((class WorldService*)(void*)(player))->FUN_141bd0cc0();
     if(actor==0) return 0;
-    ((class CEquipment*)(void*)(((PC*)actor)->FUN_1416561a0()))->FUN_1411eac40(value);
+    ((class CEquipment*)(void*)(((PC*)actor)->GetEquipment()))->FUN_1411eac40(value);
     return 1;
 }
 // @0x14136c260
@@ -2177,7 +2177,7 @@ int CUserCommandCli::FUN_14136d970(ItemFunctionArgs& args) {
 // @0x14136d9c0
 int CUserCommandCli::FUN_14136d9c0(ItemFunctionArgs& args) {
     int v=args.FUN_1408d20b0(0,0)!=0;
-    g_143ab2a90.FUN_140a66fa0(v);
+    g_143ab2a90.SetAutoEquipEnabled(v);
     return 1;
 }
 // @0x14136da20

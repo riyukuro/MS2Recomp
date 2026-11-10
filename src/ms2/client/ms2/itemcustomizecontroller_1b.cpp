@@ -40,7 +40,7 @@ struct Unk_FactoryItem : public CItemData {};
 class CEquipItem : public CPtred
 {
 public:
-    struct Unk_EquipItemData* FUN_1411dc7f0();                           // the item
+    struct Unk_EquipItemData* GetItemData();                           // the item
     int FUN_1411dc670();                                        // item is a hat (hides hair)
     void GetModels(CAtlArray<MS2Ptr<CEquipModel> >& aOut);      // 0x1411dcc80 the item's models (equipitem.h)
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
@@ -85,14 +85,14 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
     if (pPlayer == 0)
         return ControllerPtr(0);
     ControllerPtr spController(0);
-    if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053d070())
+    if (reinterpret_cast<Unk_FactoryItem*>(spItem->GetItemData())->FUN_14053d070())
     {
         spController = new (efd::MemHint(efd::MemHint::NONE)) CMakeupController;
         spController->Initialize(3);
     }
     else
     {
-        if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
+        if (reinterpret_cast<Unk_FactoryItem*>(spItem->GetItemData())->FUN_14053cfd0())
         {
             MS2Ptr<CEquipItem> spCap = pPlayer->FUN_141655e10(6);
             bool bHasCap;
@@ -144,7 +144,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
         }
         else
         {
-            if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
+            if (reinterpret_cast<Unk_FactoryItem*>(spItem->GetItemData())->GetEquipSubtype() == 0xd)
             {
                 CAtlArray<MS2Ptr<CEquipModel> > aParts;
                 spItem->GetModels(aParts);
@@ -163,7 +163,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
                     delete pMorph;
                     spController = 0;
                 }
-                if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547150())
+                if (reinterpret_cast<Unk_FactoryItem*>(spItem->GetItemData())->FUN_14053ec70()->FUN_140547150())
                 {
                     spController = new (efd::MemHint(efd::MemHint::NONE)) CCapRotationController;
                     if (spController->Initialize(6) == 0)
@@ -187,7 +187,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
 
 // @0x141413d80
 // Per-frame update of all open controllers: the dragged one (or the first hit by the cursor) gets the input.
-void FUN_141413d80()
+void UpdateControllers()
 {
     if (!s_listControllers.IsEmpty())
     {
@@ -241,7 +241,7 @@ void FUN_141413d80()
 
 // @0x141414050
 // True while any open controller is being dragged.
-int FUN_141414050()
+int IsAnyControllerDragging()
 {
     if (!s_listControllers.IsEmpty())
     {
@@ -285,7 +285,7 @@ void FUN_141414180(ControllerPtr spController)
 }
 
 // @0x141414220
-void FUN_141414220()
+void ClearControllers()
 {
     s_listControllers.RemoveAll();
     s_spCurrent = 0;

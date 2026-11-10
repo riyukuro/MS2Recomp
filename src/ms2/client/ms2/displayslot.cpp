@@ -25,8 +25,8 @@ void FUN_1412751f0(const CStringW& str, int a, int b);  // show a notice
 extern Unk_Inventory g_143ab2a90;
 
 
-DisplaySlot* FUN_140a50b00(NotifyContext::BindData* p);
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
+DisplaySlot* AsDisplaySlot(NotifyContext::BindData* p);
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(DisplaySlot);
 
@@ -48,7 +48,7 @@ DisplaySlot::DisplaySlot(const CString& strName, MS2Ptr<CItem> spItem, int nSlot
 // @0x140a504e0
 int DisplaySlot::vfunc_18(void* p)
 {
-    MS2DragSlot* pFrom = FUN_140a50b50((NotifyContext::BindData*)p);
+    MS2DragSlot* pFrom = AsDragSlot((NotifyContext::BindData*)p);
     if (pFrom != 0)
     {
         MS2Ptr<CItem> spItem = pFrom->vfunc_25();
@@ -75,7 +75,7 @@ int DisplaySlot::vfunc_14()
 }
 
 // @0x140a506b0
-void FUN_140a506b0(DisplaySlot* pSlot, MS2Ptr<CItem> spItem)
+void SetItem(DisplaySlot* pSlot, MS2Ptr<CItem> spItem)
 {
     pSlot->m_spItem = spItem;
     pSlot->vfunc_10();
@@ -103,7 +103,7 @@ int DisplaySlot::vfunc_8(void* p)
         return 0;
     if (m_spItem == 0)
         return 0;
-    if (g_143ab2a90.FUN_140a5d680(m_spItem->GetItemUid()) == 0)
+    if (g_143ab2a90.FindItemByUid(m_spItem->GetItemUid()) == 0)
         m_spItem = 0;
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415))
@@ -116,7 +116,7 @@ int DisplaySlot::vfunc_8(void* p)
 }
 
 // @0x140a50980
-__int64 FUN_140a50980(DisplaySlot* pSlot)
+__int64 GetItemUid(DisplaySlot* pSlot)
 {
     if (pSlot->m_spItem == 0)
         return 0;
@@ -124,7 +124,7 @@ __int64 FUN_140a50980(DisplaySlot* pSlot)
 }
 
 // @0x140a509d0
-void FUN_140a509d0(const CString& strName, MS2Ptr<CItem> spItem, int nSlotType)
+void RegisterDisplaySlot(const CString& strName, MS2Ptr<CItem> spItem, int nSlotType)
 {
     DisplaySlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) DisplaySlot(strName, spItem, nSlotType);
     if (pSlot)
@@ -132,15 +132,15 @@ void FUN_140a509d0(const CString& strName, MS2Ptr<CItem> spItem, int nSlotType)
 }
 
 // @0x140a50ac0
-void FUN_140a50ac0(const CString& strName)
+void UnregisterDisplaySlot(const CString& strName)
 {
-    DisplaySlot* pSlot = FUN_140a50b00(Unk_NotifyContext::FUN_1422c8e90(strName));
+    DisplaySlot* pSlot = AsDisplaySlot(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
         Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 
 // @0x140a50b00
-DisplaySlot* FUN_140a50b00(NotifyContext::BindData* p)
+DisplaySlot* AsDisplaySlot(NotifyContext::BindData* p)
 {
     DisplaySlot* pSlot = 0;
     if (p != 0 && p->TypeCast(0x6200087, (void**)&pSlot))
@@ -150,7 +150,7 @@ DisplaySlot* FUN_140a50b00(NotifyContext::BindData* p)
 }
 
 // @0x140a50b50
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p)
 {
     MS2DragSlot* pSlot = 0;
     if (p != 0 && p->TypeCast(0x6200023, (void**)&pSlot))

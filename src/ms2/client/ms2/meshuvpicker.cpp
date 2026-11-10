@@ -99,7 +99,7 @@ bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, f
         return false;
     RenderPickPass(pMesh, pExtras, pCamera, fX, fY, true);
     Unk_UVTexel kTexel;
-    FUN_14147fde0(2, &kTexel);
+    ReadTexel(2, &kTexel);
     *pU = kTexel.FUN_14135dd50(0);
     *pV = kTexel.FUN_14135dd50(1);
     const float kEpsilon = 0.001f;
@@ -118,11 +118,11 @@ bool CMeshUVPicker::PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, 
         return false;
     RenderPickPass(pMesh, pExtras, pCamera, fX, fY, false);
     Unk_UVTexel kTexel;
-    FUN_14147fde0(0, &kTexel);
+    ReadTexel(0, &kTexel);
     *reinterpret_cast<NiPoint3*>(pPos0) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
-    FUN_14147fde0(1, &kTexel);
+    ReadTexel(1, &kTexel);
     *reinterpret_cast<NiPoint3*>(pPos1) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
-    FUN_14147fde0(2, &kTexel);
+    ReadTexel(2, &kTexel);
     *pUV = NiPoint2(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1));
     *pIndex = kTexel.FUN_14135dd50(2);
     const float kEpsilon = 0.001f;
@@ -203,7 +203,7 @@ void CMeshUVPicker::RenderPickPass(NiRenderObject* pMesh, CAtlArray<NiRenderObje
             NiRenderObject* pExtra = (*pExtras)[i];
             const NiMaterial* pExtraMaterial = pExtra->GetActiveMaterial();
             NiColorA kColor = efd::ColorA::BLACK;
-            FUN_141480710(pExtra, DAT_143ae50f0, kColor);
+            SetColorExtraData(pExtra, DAT_143ae50f0, kColor);
             NiMaterial* pExtraUV = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5210));
             pExtra->ApplyAndSetActiveMaterial(pExtraUV, 0xffffffff);
             for (unsigned j = 0; j < pExtra->GetMaterialCount(); j++)
@@ -367,7 +367,7 @@ bool CMeshUVPicker::OnRendererReset(bool bBeforeReset)
 MS2_REPLACE_METHOD(0x14147FD50, CMeshUVPicker, OnRendererReset, 132, 0xF8961D27);
 
 // @0x14147fde0
-bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)
+bool CMeshUVPicker::ReadTexel(int nTarget, Unk_ShaderVec4* pTexel)
 {
     if (!m_14)
         return false;
@@ -403,7 +403,7 @@ bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x14147FDE0, CMeshUVPicker, FUN_14147fde0, 697, 0x265F1825);
+MS2_REPLACE_METHOD(0x14147FDE0, CMeshUVPicker, ReadTexel, 697, 0x265F1825);
 
 // @0x1414800a0
 NiMaterial* CMeshUVPicker::FUN_1414800a0(bool bSecond)
@@ -424,7 +424,7 @@ NiMaterial* CMeshUVPicker::FUN_1414800a0(bool bSecond)
 MS2_REPLACE_METHOD(0x1414800A0, CMeshUVPicker, FUN_1414800a0, 165, 0x7E9A09C7);
 
 // @0x141480710
-void CMeshUVPicker::FUN_141480710(NiObjectNET* pObject, const NiFixedString& kKey, const NiColorA& kColor)
+void CMeshUVPicker::SetColorExtraData(NiObjectNET* pObject, const NiFixedString& kKey, const NiColorA& kColor)
 {
     NiColorExtraData* pExtra = (NiColorExtraData*)NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(pObject->GetExtraData(kKey)));
     if (pExtra == NULL)

@@ -35,7 +35,7 @@ struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);   // C3: 
 // The ui manager (FUN_1403ed2b0) and the dialogue singleton.
 class Unk_AtUIMgr { public: };           // FUN_1403ed2b0's return type
 class CUIService;
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -47,7 +47,7 @@ public:
 class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
 class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
 class CGameOption;
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 int FUN_141277f40();   // C3: was FUN_141277f40
 
 // The client constants singleton: two values at +0xc768 / +0xc7c0 give the screen origin.
@@ -183,7 +183,7 @@ int UIActionTooltip::FUN_1418b1950()
 // @0x1418b1990
 CStringW UIActionTooltip::FUN_1418b1990()
 {
-    int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))) ? 2 : 0;
+    int nFlag = *((unsigned char const*)GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))) ? 2 : 0;
     int nId = FUN_1418b1950();
     return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(nId, nFlag);
 }
@@ -271,7 +271,7 @@ int UIActionTooltip::FUN_1418b2140()
     {
     case 0x14:
     case 0x16:
-        return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking();
+        return ((class UITalkManager*)(void*)(GetUITalkManager()))->GetTalking();
     case 0x10:
         return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e56) == 0;
     case 4:

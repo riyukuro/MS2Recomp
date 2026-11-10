@@ -470,8 +470,8 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
         PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
-        fReduce = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0x40);
-        if (((class PC*)(class PC*)(pPlayer))->FUN_141662de0() != 0)
+        fReduce = reinterpret_cast<CEquipment*>(pPlayer->GetEquipment())->GetAbilityRate((SAType)0x40);
+        if (((class PC*)(class PC*)(pPlayer))->IsVip() != 0)
             bVip = 1;
     }
     __int64 nFee = FUN_14087d150(nMeso, fReduce);

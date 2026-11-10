@@ -35,7 +35,7 @@ public:
     virtual int vfunc_0(void* p);                       // ITooltip 0x140d42940 build the tooltip into p
 
     void SetItem(MS2Ptr<CItem> spItem);                 // 0x140d428a0
-    __int64 FUN_140d428f0();                            // the uid of the item (0 when empty)
+    __int64 GetItemUid();                            // the uid of the item (0 when empty)
     void SetDropFn(ItemScrollSlotDropFn fn);            // 0x140d42b70
     void SetRemoveFn(ItemScrollSlotRemoveFn fn);        // 0x140d42bc0
     void SetFlags(int nFlags);                          // 0x140d42c10

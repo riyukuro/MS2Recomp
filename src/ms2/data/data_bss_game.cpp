@@ -131,6 +131,7 @@ template<> DecoEditService* TSingleton<DecoEditService>::s_instance{};          
 int DAT_143ad1b20;                                              // 0x143ad1b20
 char DAT_143ad2168;                                             // 0x143ad2168
 char DAT_143ad2348;                                             // 0x143ad2348
+int g_physXItem;                                                // 0x143ad8968 (usercommandcli's PhysX item toggle)
 __int64 DAT_143ad9140 = 0LL;                                    // 0x143ad9140
 template<> MS2LightService* TSingleton<MS2LightService>::s_instance{};                                            // 0x143ad95f0
 alignas(8) unsigned char DAT_143adc208[0xf8];                   // 0x143adc208

@@ -113,7 +113,7 @@ int MailItemSlot::vfunc_8(void* p)
 }
 
 // @0x1414727e0
-void FUN_1414727e0(const CString& strName, MS2Ptr<CItem> spItem, int nValue, int nIndex)
+void CreateMailItemSlot(const CString& strName, MS2Ptr<CItem> spItem, int nValue, int nIndex)
 {
     MailItemSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) MailItemSlot(strName, spItem, nValue, nIndex);
     if (pSlot)
@@ -121,7 +121,7 @@ void FUN_1414727e0(const CString& strName, MS2Ptr<CItem> spItem, int nValue, int
 }
 
 // @0x1414728e0
-void FUN_1414728e0(const CString& strName)
+void RemoveMailItemSlot(const CString& strName)
 {
     MailItemSlot* pSlot = FUN_1414729b0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)

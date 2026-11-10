@@ -118,7 +118,7 @@ void UIBanner::Entity::vfunc_5()
         return;
     ASObj info(m_18);
     ((Unk_BannerASObj&)info).FUN_140ba9670("type", m_60);
-    info.FUN_1409c0d20("gameOID", pActor->FUN_14123c580());
+    info.SetMemberUInt("gameOID", pActor->GetObjectId());
     m_38->Invoke("open", ((class AScript&)(info)).FUN_1422bb870());
 }
 

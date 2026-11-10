@@ -73,7 +73,7 @@ public:
     virtual CString vfunc_15(int nIndex);               // 15 0x14120de80 "<name>.<equip position>"
     virtual DragSlot* vfunc_16(int nIndex);             // 16 0x14120df40 new EquipSlot for the position of nIndex
 
-    int FUN_14120e090();                                // number of slots
+    int GetSlotCount();                                // number of slots
     Unk_InventoryEquipSlot FUN_14120e0c0(int nIndex);   // the equip position of a slot index
 
 public:

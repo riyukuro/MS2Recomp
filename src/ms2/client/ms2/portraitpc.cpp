@@ -72,7 +72,7 @@ public:
 // The notify centre (singleton FUN_140939a10): named notify handlers.
 class Unk_SingletonObj* FUN_140939a10();
 
-// The item event hub (singleton FUN_140a6a840).
+// The item event hub (singleton GetItemEventDispatcher).
 class Unk_ItemEventSystem   // C3: member view (real class not in this TU)
 {
 public:
@@ -83,7 +83,7 @@ class Unk_PtItemEvents
 {
 public:
 };
-class Unk_InventoryListener* FUN_140a6a840();   // the item event hub (0x140a6a840, the definer's signature)
+class Unk_InventoryListener* GetItemEventDispatcher();   // the item event hub (0x140a6a840, the definer's signature)
 
 // ---- out-of-unit callees ----
 
@@ -112,8 +112,8 @@ PortraitPC::~PortraitPC()
 }
 
 // @0x141699a20
-PortraitPC* FUN_141699a20(PC* pSource);
-PortraitPC* FUN_141699a20(PC* pSource)
+PortraitPC* CreatePortraitPC(PC* pSource);
+PortraitPC* CreatePortraitPC(PC* pSource)
 {
     if ((unsigned char)DAT_143acdb20 != 0)
         return 0;
@@ -121,15 +121,15 @@ PortraitPC* FUN_141699a20(PC* pSource)
     if (pPortrait != 0)
         return pPortrait;
     pPortrait = new (efd::MemHint(efd::MemHint::NONE)) PortraitPC(pSource);
-    pPortrait->FUN_14123c5a0(2);
+    pPortrait->SetObjectId(2);
     pPortrait->FUN_141656a50(pSource->FUN_141656a80());
-    pPortrait->FUN_14123bb80(pSource->FUN_14123bbd0());
+    pPortrait->SetModelPath(pSource->GetModelPath());
     static_cast<PC*>(pPortrait)->vfunc_19(*reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pSource->vfunc_18())));
     efd::Point3 kDir = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(FUN_14169a860()));
     static_cast<PC*>(pPortrait)->vfunc_21(kDir);
     pPortrait->vfunc_131((short)pSource->vfunc_78());
     pPortrait->vfunc_76(CStringW(L""));
-    pPortrait->FUN_141658e40(((class PC*)(class PC*)(pSource))->FUN_141658e60());
+    pPortrait->SetGender(((class PC*)(class PC*)(pSource))->GetGender());
     pPortrait->vfunc_59(1, 0, 0, 0);
     pPortrait->AddStateFlags(4);
     pPortrait->FUN_1416591e0(0, pSource->FUN_141659220(0));
@@ -148,7 +148,7 @@ void PortraitPC::vfunc_149()
     if (m_pSourcePC != 0)
     {
         ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
-        reinterpret_cast<CEquipment*>(m_pSourcePC->FUN_1416561a0())->CollectShownItems(kEquips);
+        reinterpret_cast<CEquipment*>(m_pSourcePC->GetEquipment())->CollectShownItems(kEquips);
         for (POSITION pos = kEquips.GetHeadPosition(); pos != 0; kEquips.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = kEquips.GetAt(pos);
@@ -160,14 +160,14 @@ void PortraitPC::vfunc_149()
                 MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);
                 if (spCopy.get() != 0)
                 {
-                    spCopy->SetObjectId(FUN_14123c580());
-                    FUN_141653d10(spCopy);
+                    spCopy->SetObjectId(GetObjectId());
+                    AddItemAndPreloadModels(spCopy);
                 }
             }
         }
         vfunc_143();
-        Unk_MyPCEquip* pSrcEquip = m_pSourcePC->FUN_14165f460();
-        FUN_14165f460()->CopyFrom(*pSrcEquip);
+        Unk_MyPCEquip* pSrcEquip = m_pSourcePC->GetGemEquip();
+        GetGemEquip()->CopyFrom(*pSrcEquip);
     }
     FUN_141087390();
     m_b12f8 = false;
@@ -191,7 +191,7 @@ void PortraitPC::vfunc_33(int nClass, int n)
 // @0x14169a040
 void PortraitPC::vfunc_14()
 {
-    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
 }
 
@@ -212,10 +212,10 @@ int PortraitPC::vfunc_10()
     PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC != 0 && m_pSourcePC != 0)
     {
-        if (m_pSourcePC->FUN_14123c580() == pMyPC->FUN_14123c580())
+        if (m_pSourcePC->GetObjectId() == pMyPC->GetObjectId())
         {
             reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
-            reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+            reinterpret_cast<Unk_ItemEventSystem*>(GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
         }
     }
     return 1;
@@ -229,11 +229,11 @@ void PortraitPC::vfunc_143()
     {
         MS2Ptr<CEquipItem> spEquip = reinterpret_cast<MS2Ptr<CEquipItem>&>(((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->GetAt(i));
         if (spEquip.get() != 0)
-            ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->FUN_1411e3600(MS2Ptr<CItem>(reinterpret_cast<MS2Ptr<CItem>&>(spEquip)));
+            ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->EquipItem(MS2Ptr<CItem>(reinterpret_cast<MS2Ptr<CItem>&>(spEquip)));
     }
     vfunc_139();
     ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->RemoveAll();
-    FUN_141653f00();
+    UpdateWeaponAction();
 }
 
 // @0x14169a4f0
@@ -259,7 +259,7 @@ void PortraitPC::RefreshModelEquipment()
     if (FUN_141656750() == 0)
         return;
     ATL::CAtlArray<efd::SmartPointer<NiActorManager> > kEquip;
-    FUN_1410879c0(kEquip);
+    CollectActorManagers(kEquip);
     m_spModelView->vfunc_11(kEquip);
     if (m_pSourcePC != 0)
         FUN_14166ef10(m_pSourcePC->FUN_14166f740(), 1, 1, 0);

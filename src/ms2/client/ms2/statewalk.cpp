@@ -39,7 +39,7 @@ class Unk_CubeSelection;
 struct Unk_EmModelLoader   // C3: as equipmodel.cpp defines it
 {
 
-    efd::utf8string FUN_141206030(const egf::EntityID& kId);
+    efd::utf8string GetCurrentSequenceName(const egf::EntityID& kId);
 };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -51,7 +51,7 @@ class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 class Unk_WkOption { public: char m_pad[0xc]; int m_n0c; };
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 class CGameOption;
 
 // The actor's buff set: the movement direction and the buff tests.
@@ -239,7 +239,7 @@ void StateWalk::vfunc_8(double fTime)
         if (nStick > 0)
         {
             int nOld = m_n10;
-            if (nStick <= ((class Unk_WkOption*)FUN_140a58500((class Unk_GpSettings*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))))->m_n0c)
+            if (nStick <= ((class Unk_WkOption*)GetGamepadState((class Unk_GpSettings*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))))->m_n0c)
                 m_n10 = 0x19;
             else
                 m_n10 = 0x18;
@@ -256,12 +256,12 @@ void StateWalk::vfunc_8(double fTime)
     }
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
-        pPC->FUN_1415248d0(1, 0);
+        pPC->TryUseChairOrBed(1, 0);
         return;
     }
     if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
     {
-        pPC->FUN_1415248d0(2, 0);
+        pPC->TryUseChairOrBed(2, 0);
         return;
     }
     if (m_pOwner->FUN_141671a30() != 0 && (pBuff->FUN_141682fe0(0x493e1) || m_n28 != 0))
@@ -294,7 +294,7 @@ void StateWalk::vfunc_8(double fTime)
     {
         if (reinterpret_cast<PC*>(pPC)->FUN_141659b80(1, 0xbadf0a13, 90.0f) != 0)
         {
-            if (reinterpret_cast<PCBase*>(pPC)->FUN_1416764d0() != 0)
+            if (reinterpret_cast<PCBase*>(pPC)->IsRiding() != 0)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n2c = 0xbadf0a13;
@@ -303,14 +303,14 @@ void StateWalk::vfunc_8(double fTime)
             }
             else
             {
-                pPC->FUN_1415248d0(1, 0xbadf0a13);
+                pPC->TryUseChairOrBed(1, 0xbadf0a13);
             }
         }
         return;
     }
     if ((pPC != 0 && pBuff->FUN_141682fe0(0x30d42)) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2260() != 0)
     {
-        pPC->FUN_1415248d0(2, 0xbadf0a13);
+        pPC->TryUseChairOrBed(2, 0xbadf0a13);
     }
     else if (!m_pOwner->FUN_1416749c0())
     {
@@ -343,7 +343,7 @@ void StateWalk::vfunc_9(double fTime)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0)
     {
-        if (((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
+        if (((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->HasGuide2())
         {
             if (nKey == 0x1c)
                 nKey = 0x38;
@@ -354,7 +354,7 @@ void StateWalk::vfunc_9(double fTime)
     if (m_n10 == 0x17)
         nKey = 0x1f;
     bool bChanged = !(m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2 && m_n50 == 0);
-    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     if (!m_pOwner->FUN_14166de90(nKey, nSeq) || bChanged)
     {
         Unk_Vec4 kSpeed = *(Unk_Vec4*)m_pOwner->FUN_141671920();
@@ -390,7 +390,7 @@ void StateWalk::vfunc_10(float a, float b, float c, float d, int e)
 }
 
 // @0x141800b60
-int StateWalk::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateWalk::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     return 1;
 }
@@ -458,7 +458,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         pMount->vfunc_95();
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        m_pOwner->PlayAnimation(static_cast<const efd::utf8string&>(reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460())).c_str(), m_pOwner->FUN_1416713c0(), bChanged, false);
+        m_pOwner->PlayAnimation(static_cast<const efd::utf8string&>(reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->GetCurrentSequenceName(m_pOwner->GetEntityID())).c_str(), m_pOwner->FUN_1416713c0(), bChanged, false);
     }
 }
 

@@ -127,7 +127,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pMono = static_cast<const CPostEffectParam*>(pParam);
         MonochromeEffect* pEffect = new MonochromeEffect(m_nId, pMono);
-        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->AddEffect(m_nId, pEffect))
             return false;
         break;
     }
@@ -135,7 +135,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pRadial = static_cast<const CPostEffectParam*>(pParam);
         RadialBlurEffect* pEffect = new RadialBlurEffect(m_nId, pRadial);
-        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->AddEffect(m_nId, pEffect))
             return false;
         break;
     }
@@ -143,7 +143,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pMask = static_cast<const CPostEffectParam*>(pParam);
         ScreenMaskingEffect* pEffect = new ScreenMaskingEffect(m_nId, pMask);
-        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->AddEffect(m_nId, pEffect))
             return false;
         break;
     }
@@ -151,7 +151,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pBlur = static_cast<const CPostEffectParam*>(pParam);
         GaussianBlurEffect* pEffect = new GaussianBlurEffect(m_nId, pBlur);
-        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->AddEffect(m_nId, pEffect))
             return false;
         break;
     }
@@ -159,7 +159,7 @@ bool CPostEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     {
         const CPostEffectParam* pShimmer = static_cast<const CPostEffectParam*>(pParam);
         PostShimmerEffect* pEffect = new PostShimmerEffect(m_nId, pShimmer);
-        if (!TSingleton<ApplyEffect>::GetInstance()->FUN_1409a4020(m_nId, pEffect))
+        if (!TSingleton<ApplyEffect>::GetInstance()->AddEffect(m_nId, pEffect))
             return false;
         break;
     }
@@ -244,7 +244,7 @@ CScreenEffectBase::~CScreenEffectBase()
 // @0x140dbd680
 void CScreenEffectBase::vfunc_1()
 {
-    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     m_bStopped = 0;
     m_bStarted = 1;
     if (m_bUseFade && !FUN_14028d470(m_fFadeStart, 0))
@@ -260,7 +260,7 @@ bool CScreenEffectBase::vfunc_2()
         return true;
     if (!m_bStopped)
     {
-        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->FUN_141473280() - m_dStartTime);
+        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->GetGameTime() - m_dStartTime);
         bool bHold = false;
         if (fElapsed >= m_fDuration)
         {
@@ -324,7 +324,7 @@ void CScreenEffectBase::vfunc_3()
             m_fFadeStart = 0;
             m_fHold = 0;
             m_fDuration = m_fFadeEnd;
-            m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+            m_dStartTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
             m_bLoop = 0;
             m_bEnding = 1;
             return;

@@ -300,7 +300,7 @@ MS2_REPLACE_METHOD(0x141838D70, CTarget2DCameraMode, vfunc_26, 112, 0x085F33EE);
 void CTarget2DCameraMode::vfunc_10()
 {
     m_d8 = 0;
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->SetTarget(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x141838DF0, CTarget2DCameraMode, vfunc_10, 74, 0x6F58486D);
 
@@ -412,7 +412,7 @@ bool CTarget2DCameraMode::FUN_141839640(Vector3& ptPos, Vector3& ptRot)
         float fYaw = 3.14159265f;
         float fDist = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
         Vector3 ptTarget = pTarget->vfunc_17();
-        ptTarget.z += TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_27();
+        ptTarget.z += TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->vfunc_27();
         float fX = fDist * FUN_1409f25a0(fYaw) + ptTarget.x;
         float fY = fDist * FUN_1409f2310(fYaw) + ptTarget.y;
         float fZ = ptTarget.z;

@@ -66,7 +66,7 @@ class UIPopUpMenu { public: void FUN_141a7f090(class Unk_PopupMenuInfo const &, 
 Unk_PopupMenu* FUN_140c30140(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
 class Unk_MentorClip : public ASMovieClip {};
 class Unk_MentorScript : public AScript
@@ -204,7 +204,7 @@ void UIMentoringPage::FUN_140c6f190()
     if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
         pSearchMovie->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
-        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
+        SetChildText((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
     }
     if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
     {

@@ -120,7 +120,7 @@ void StateJumpTo::vfunc_3(double fTime)
 void StateJumpTo::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     if (m_n10 == 0x28)
     {
         if (m_spArc->IsRising() != 0 && m_n48 == 0)

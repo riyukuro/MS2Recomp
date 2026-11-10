@@ -547,9 +547,9 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
         MS2Ptr<CItemData> item = m_items[i];
         if (!item)
             continue;
-        if (bJob && !item->limit.IsJobRecommended(pPC->FUN_141654700()))
+        if (bJob && !item->limit.IsJobRecommended(pPC->GetJobGroupId()))
             continue;
-        if (bGender && !item->IsGenderAllowed(pPC->FUN_141658e60()))
+        if (bGender && !item->IsGenderAllowed(pPC->GetGender()))
             continue;
         unsigned nId = item->GetItemId();
         CStringW strId = FUN_1407196b0(nId);
@@ -572,7 +572,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
                                          CStringTable::GetInstance()->FUN_141811980(1, nId));
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
-        row.FUN_1409c0d20("itemId", nId);
+        row.SetMemberUInt("itemId", nId);
         FUN_140841420(strLabel);
         FUN_140841420(strFind);
         strLabel.Remove(L' ');

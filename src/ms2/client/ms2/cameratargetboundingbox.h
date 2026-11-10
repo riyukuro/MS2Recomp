@@ -32,7 +32,7 @@ MS2_CHECK_SIZE(Unk_CtbVec3, 12);
 struct Unk_CtbMat33
 {
     Unk_CtbMat33();                                     // 0x140adb9d0 (also keeps it out of the /GS buffer heuristic)
-    bool FUN_140afff50(Unk_CtbMat33* pOut) const;       // inverse (false when singular: the output is the identity)
+    bool Invert(Unk_CtbMat33* pOut) const;       // inverse (false when singular: the output is the identity)
     float m00, m01, m02;                                // rows
     float m10, m11, m12;
     float m20, m21, m22;
@@ -42,7 +42,7 @@ MS2_CHECK_SIZE(Unk_CtbMat33, 0x24);
 // ctor(bool) 0x140adb9e0, dtor 0x140adbb80).
 struct Unk_CtbMat34
 {
-    bool FUN_140b00260(Unk_CtbMat34* pOut) const;       // inverse
+    bool Invert(Unk_CtbMat34* pOut) const;       // inverse
     Unk_CtbMat33 m_rot;
     Unk_CtbVec3 m_pos;
 };

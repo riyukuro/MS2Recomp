@@ -51,7 +51,7 @@ struct Unk_EaseOut { float Evaluate(float t); };
 struct Unk_C2Ease { float FUN_1410af700(float t); };
 
 // Property access on the entity (hash id, value).
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
 class Unk_CmEntity
 {
@@ -153,10 +153,10 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
     m_timer.FUN_140868750(nMs);
     m_bHide = bHide;
     m_id = id;
-    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
     if (spEntity != 0)
     {
-        FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bHide);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bHide);
         NiAVObject* pNode = FUN_141b6efc0(spEntity);
         if (pNode != 0)
         {
@@ -188,11 +188,11 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
 // @0x141161600
 void Unk_CmFade::FUN_141161600()
 {
-    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_id));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_id));
     if (spEntity != 0)
     {
         bool bVisible = true;
-        FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bVisible);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bVisible);
         MS2_FOR_EACH(TransparencyStandardMaterial* pMaterial, m_materials)
         {
             pMaterial->vfunc_3();
@@ -297,7 +297,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos1 = m_rotate.GetHeadPosition(); pos1 != 0; m_rotate.GetNext(pos1))
     {
         egf::EntityID id = m_rotate.GetKeyAt(pos1);
-        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -332,7 +332,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos3 = m_bounce.GetHeadPosition(); pos3 != 0; m_bounce.GetNext(pos3))
     {
         egf::EntityID id = m_bounce.GetKeyAt(pos3);
-        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -384,7 +384,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos5 = m_scale.GetHeadPosition(); pos5 != 0; m_scale.GetNext(pos5))
     {
         egf::EntityID id = m_scale.GetKeyAt(pos5);
-        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -416,7 +416,7 @@ void CCubeMotionManager::Update()
     for (POSITION pos7 = m_fade.GetHeadPosition(); pos7 != 0; m_fade.GetNext(pos7))
     {
         egf::EntityID id = m_fade.GetKeyAt(pos7);
-        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+        egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
         if (spEntity == 0)
         {
             finished.AddTail(id);
@@ -445,7 +445,7 @@ void CCubeMotionManager::Update()
                 pMaterial->vfunc_4(fade.m_fTo);
             }
             fade.m_timer.FUN_1408687f0();
-            FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xa0b6b179, fade.m_bHide);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xa0b6b179, fade.m_bHide);
             fade.FUN_141161600();
             finished.AddTail(id);
         }

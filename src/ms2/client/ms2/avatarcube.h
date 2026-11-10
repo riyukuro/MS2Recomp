@@ -23,4 +23,4 @@ MS2_CHECK_SIZE(AvatarCube, 0x1a0);
 
 unsigned int FUN_1409f2cd0();   // 0x1409f2cd0
 // Creates an AvatarCube for spData with a free object id (0x410..0x419), rotated 90 degrees; null when none is free.
-AvatarCube* FUN_1409f2670(CItemData* pData);   // 0x1409f2670
+AvatarCube* CreateAvatarCube(CItemData* pData);   // 0x1409f2670

@@ -110,16 +110,16 @@ void StateTalk::vfunc_4(StateData* pData)
     {
         {
             efd::utf8string strFirst(m_pOwner->vfunc_123(0x2d));
-            bFirst = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), reinterpret_cast<const efd::utf8string&>(strFirst))
+            bFirst = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->GetEntityID(), reinterpret_cast<const efd::utf8string&>(strFirst))
                 != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         {
             efd::utf8string strSecond(m_pOwner->vfunc_123(0x2e));
-            bSecond = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), reinterpret_cast<const efd::utf8string&>(strSecond))
+            bSecond = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->GetEntityID(), reinterpret_cast<const efd::utf8string&>(strSecond))
                 != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         MyPC* pPlayer = FUN_1417b84b0();
-        if (pPlayer != 0 && ((void*)(reinterpret_cast<PC*>(pPlayer)->FUN_14165f100())) != 0)
+        if (pPlayer != 0 && ((void*)(reinterpret_cast<PC*>(pPlayer)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pPlayer)->SendRequestCube();
     }
     if (bFirst && bSecond && bTalk)
@@ -183,7 +183,7 @@ void StateTalk::vfunc_9(double fTime)
             NoticeMessage kReq;
             kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x290);
             kReq.m_nObject = 0;
-            kReq.SetActor(m_pOwner->FUN_14123c580());
+            kReq.SetActor(m_pOwner->GetObjectId());
             m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         else if (m_n10 == 0x4b)
@@ -191,7 +191,7 @@ void StateTalk::vfunc_9(double fTime)
             NoticeMessage kReq;
             kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x298);
             kReq.m_nObject = 0;
-            kReq.SetActor(m_pOwner->FUN_14123c580());
+            kReq.SetActor(m_pOwner->GetObjectId());
             m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         m_n40 = m_n10;

@@ -50,7 +50,7 @@ extern CString s_strUseTelescope;
 
 // ---- exe callees (unit-local stand-ins) ----
 // @0x141404030
-static bool FUN_141404030(CInteractObjectData::ConditionEffectList& reqItem)
+static bool HasItems(CInteractObjectData::ConditionEffectList& reqItem)
 {
     if (reqItem.m_aItem.empty())
         return false;
@@ -215,7 +215,7 @@ class Unk_IoCfg { public: int FUN_1402c4c90(int n); };
 struct Unk_IoCfgHolder { char m_pad_00[8]; Unk_IoCfg m_cfg; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // item inventory
 extern Unk_Inventory g_143ab2a90;
@@ -228,7 +228,7 @@ struct Unk_IoRefOwner;
 void FUN_140b27ec0(void* e, unsigned nHash, void* pOut);
 int FUN_1408a2060(Unk_Entity* e, unsigned nHash, efd::utf8string* pOut);
 int FUN_140998250(Unk_Entity* e, unsigned nHash, efd::AssetID* pOut);
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140de8bd0(egf::Entity* e, unsigned nHash, efd::AssetID* pValue);
 const egf::EntityID* FUN_1408b76f0(Unk_Entity* e);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
@@ -242,7 +242,7 @@ const char* Unk_AssetUrnText(const efd::AssetID* pAsset);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_140de0cb0(efd::AssetID* pDst, efd::utf8string* pStr);
 void FUN_1408a8900(efd::utf8string* p);
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& strName, float fVol, bool bLoop); };
+class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& id, const efd::utf8string& strName, float fVol, bool bLoop); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -271,7 +271,7 @@ namespace ecr { class SceneGraphService; }
 ecr::SceneGraphService* GetSceneGraphService();
 
 // post effect / system sound / ui
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 class CUserMail { public: static __int64 FUN_1408e57f0(); };   // C3: the scene-service global (usermail.h clashes on FUN_141276180)
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -285,7 +285,7 @@ CStringW GetStringCommonByKey(const CStringW& str);
    // member (this=rcx, hidden return=rdx)
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_IoUiMgr { public: void FUN_141adc530(int n); };
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 DWORD GetTickCountMs2();
 
 // gathering and tables
@@ -425,7 +425,7 @@ efd::SmartPointer<egf::Entity> CInteractObject::GetEnt()
 }
 
 // @0x1413fd8e0
-egf::EntityID CInteractObject::FUN_1413fd8e0()
+egf::EntityID CInteractObject::GetEntityID()
 {
     if (m_ent.operator==((egf::Entity*)0))
         return egf::EntityID(0);
@@ -433,7 +433,7 @@ egf::EntityID CInteractObject::FUN_1413fd8e0()
 }
 
 // @0x1413fd960
-unsigned __int64 CInteractObject::FUN_1413fd960()
+unsigned __int64 CInteractObject::GetEntityIDValue()
 {
     if (m_ent.operator==((egf::Entity*)0))
         return 0;
@@ -551,7 +551,7 @@ int CInteractObject::CheckHomePrivilege()
         return 0;
     if (m_spRow->m_homePrivilege.m_nCheck == 0)
         return 1;
-    return reinterpret_cast<MyPC*>(pPlayer)->FUN_140967010()->FUN_14050d890(GetRowId());
+    return reinterpret_cast<MyPC*>(pPlayer)->GetHomePrivilege()->FUN_14050d890(GetRowId());
 }
 
 // @0x1413fe120
@@ -565,7 +565,7 @@ int CInteractObject::CheckArenaTeam()
     int nNeed = m_spRow->m_arena.m_nCanInteractTeamId;
     if (nNeed == 0)
         return 1;
-    bool bSame = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPlayer)->FUN_140967420().operator->())->GetPoint() == nNeed;
+    bool bSame = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPlayer)->GetPvPInfo().operator->())->GetPoint() == nNeed;
     if (bSame)
         return 1;
     return 0;
@@ -579,7 +579,7 @@ int CInteractObject::HasAnyRequiredItem()
         return 0;
     if (m_spRow == 0)
         return 0;
-    if (!FUN_141404030(m_spRow->m_aReqItem))
+    if (!HasItems(m_spRow->m_aReqItem))
         return 1;
     std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem.m_aItem;
     std::vector<Unk_InteractReqItem>::const_iterator itEnd = aReq.end();
@@ -659,7 +659,7 @@ void CInteractObject::vfunc_12()
         request.m_p18 = &xf;
         Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer != 0)
-            request.SetActor(reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c580());
+            request.SetActor(reinterpret_cast<GameObject*>(pPlayer)->GetObjectId());
         m_nParticle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&request));
     }
 }
@@ -743,7 +743,7 @@ CInteractMeshObject::CInteractMeshObject()
 // @0x1413feb40
 CInteractMeshObject::~CInteractMeshObject()
 {
-    FUN_1413ff5f0();
+    ReleaseActor();
     m_pActor = 0;
     m_spProp = 0;
 }
@@ -802,11 +802,11 @@ void CInteractMeshObject::vfunc_3(int nState)
     if (m_nState == 2)
     {
         unsigned char bFlag = 0;
-        FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
+        SetCachedBoolProperty((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
         return;
     }
     unsigned char bFlag = 1;
-    FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
+    SetCachedBoolProperty((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
     unsigned bFirst = m_nState == 0;
     CString* pAsset = bFirst != 0 ? &m_strAssetA : &m_strAssetB;
     FUN_1413ff690(*pAsset);
@@ -815,7 +815,7 @@ void CInteractMeshObject::vfunc_3(int nState)
         nCollision = m_spRow->m_mesh.m_nNormalCollision;
     else
         nCollision = m_spRow->m_mesh.m_nReactableCollision;
-    FUN_1413ff800(nCollision);
+    SetCollision(nCollision);
 }
 
 // @0x1413ff0f0
@@ -835,7 +835,7 @@ void CInteractMeshObject::vfunc_8()
 void CInteractMeshObject::vfunc_9()
 {
     CInteractObject::vfunc_9();
-    FUN_1413ff8a0();
+    ApplyAssetB();
 }
 
 class NiPhysXTypes   // C3: member view for the former free stand-ins
@@ -849,7 +849,7 @@ void CInteractMeshObject::MakeNxBoxController()
 {
     if (m_pActor != 0)
         return;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == 0)
         return;
     NxVec3 ptPos;
@@ -870,7 +870,7 @@ void CInteractMeshObject::MakeNxBoxController()
     NxVec3 vSet(m_vPos.x, m_vPos.y, m_vPos.z);
     vSet = vSet * 0.01f;
     vSet.z += m_spRow->m_mesh.m_shapeDimension.z * 0.01f * 0.5f;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+    ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
     m_pActor = pScene->createActor(actorDesc);
     if (m_pActor != 0)
     {
@@ -885,21 +885,21 @@ void CInteractMeshObject::MakeNxBoxController()
         m_pActor->userData = m_spProp.operator egfPhysX::EntityActorData*();
         m_pActor->setGlobalPosition(vSet);
     }
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+    ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
 }
 
 // @0x1413ff5f0
-void CInteractMeshObject::FUN_1413ff5f0()
+void CInteractMeshObject::ReleaseActor()
 {
     if (m_pActor != 0)
     {
-        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
         if (pScene != 0)
         {
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+            ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
             pScene->releaseActor(*m_pActor);
             reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance())->FUN_141bc8e00();
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+            ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             m_pActor = 0;
         }
     }
@@ -917,17 +917,17 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     else if (m_nAssetType == 2)
     {
         efd::utf8string str(strAsset);
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(m_ent->GetEntityID(), str, 1.0f, false);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->PlayAnimation(m_ent->GetEntityID(), str, 1.0f, false);
     }
 }
 
 // @0x1413ff800
-void CInteractMeshObject::FUN_1413ff800(int nCollision)
+void CInteractMeshObject::SetCollision(int nCollision)
 {
     if (nCollision != 0)
         MakeNxBoxController();
     else
-        FUN_1413ff5f0();
+        ReleaseActor();
 }
 
 // @0x1413ff840
@@ -938,7 +938,7 @@ void CInteractMeshObject::PlayReactAni()
 }
 
 // @0x1413ff8a0
-void CInteractMeshObject::FUN_1413ff8a0()
+void CInteractMeshObject::ApplyAssetB()
 {
     FUN_1413ff690(m_strAssetB);
 }
@@ -978,7 +978,7 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
         if (pHelp != 0)
         {
             CStringW strTitle = GetStringCommon(0x666);
-            if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
+            if (*reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
                 strTitle = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
             pHelp->StartCinematic(9, strDesc);
             pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
@@ -1045,7 +1045,7 @@ CInteractUIObject::~CInteractUIObject()
 void CInteractUIObject::vfunc_2(Unk_InteractMsg* pMsg)
 {
     CInteractObject::vfunc_2(pMsg);
-    UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_140b632f0()->GetUISwfEntity(m_spRow->m_ui.m_strSwf).get());
+    UIDialog* pDialog = dynamic_cast<UIDialog*>(GetUISwfEntityManager()->GetUISwfEntity(m_spRow->m_ui.m_strSwf).get());
     if (pDialog != 0)
     {
         if (m_spRow->m_ui.m_strValue.GetLength() != 0)
@@ -1172,7 +1172,7 @@ class Unk_IoTexMgr : public CUgcManager
 {
 public:
 };
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
 
 // ranking
 
@@ -1392,7 +1392,7 @@ CStringW CInteractDisplayImage::GetDisplayName()
 }
 
 // @0x1414021c0
-int CInteractDisplayImage::FUN_1414021c0()
+int CInteractDisplayImage::GetRank()
 {
     if (m_spRow == 0)
         return 0;
@@ -1558,7 +1558,7 @@ int CInteractGatheringObject::FUN_141402b40()
 }
 
 // @0x141402c50
-int CInteractGatheringObject::FUN_141402c50()
+int CInteractGatheringObject::GetRespawnRemainingTime()
 {
     if (m_nRespawnTick != 0)
         return m_nRespawnTick - GetTickCountMs2();
@@ -1601,11 +1601,11 @@ void CInteractGuildPosterObject::vfunc_10()
 {
     if (vfunc_4() == 0)
         return;
-    ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141880230(GetName(), FUN_141402e60());
+    ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141880230(GetName(), GetHousePosterId());
 }
 
 // @0x141402e60
-int CInteractGuildPosterObject::FUN_141402e60()
+int CInteractGuildPosterObject::GetHousePosterId()
 {
     if (m_spRow == 0)
         return 0;
@@ -1617,11 +1617,11 @@ void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
 {
     if (m_ent.operator egf::Entity*() == 0)
         return;
-    int nPoster = FUN_141402e60();
+    int nPoster = GetHousePosterId();
     unsigned __int64 nSvc = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->FUN_1404ccbd0();
     CStringW strRaw = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->FUN_1404d2220(nPoster);
     CStringW strFile = FUN_14016a730(FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), reinterpret_cast<bool&>(bShow)), 0);
-    if (((class BlindManager*)FUN_1409c1730())->IsBlocked(5, CStringW(strRaw)) == 1)
+    if (((class BlindManager*)GetBlindManager())->IsBlocked(5, CStringW(strRaw)) == 1)
     {
         NiTexturePtr spTex = ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->GetDefaultTexture();
         if (spTex)
@@ -1735,7 +1735,7 @@ void CInteractWatchTowerObject::vfunc_3(int nState)
 
 // NiPoint3 taken by value: efd::Point3 results convert through the out-of-line NiPoint3(const efd::Point3&) and are copied into the argument.
 // @0x141403f20
-float FUN_141403f20(NiPoint3 a, NiPoint3 b)
+float GetDistance2D(NiPoint3 a, NiPoint3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
@@ -1750,7 +1750,7 @@ void CInteractWatchTowerObject::vfunc_11()
     Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        float fDist = FUN_141403f20(*(const efd::Point3*)&static_cast<const Vector3&>(pPlayer->GetPosition()), *(const efd::Point3*)&static_cast<const Vector3&>(GetPos()));
+        float fDist = GetDistance2D(*(const efd::Point3*)&static_cast<const Vector3&>(pPlayer->GetPosition()), *(const efd::Point3*)&static_cast<const Vector3&>(GetPos()));
         if (fDist < 2000.0f)
             bNear = 1;
     }

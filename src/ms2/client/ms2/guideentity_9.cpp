@@ -96,14 +96,14 @@ Unk_GeNode** FUN_14139eee0(Unk_GeTreeHead* pHead);                      // the l
 Unk_GeNode** FUN_14139f8e0(Unk_GeTreeHead* pHead);                      // the rightmost
 void FUN_14139eff0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate left
 void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate right
-typedef std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>> Unk_GeTree; struct Unk_GeTreeAccess : Unk_GeTree { static Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode); };   // protected _Destroy_if_node (was FUN_1413a4e30)
+typedef std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>> Unk_GeTree; struct Unk_GeTreeAccess : Unk_GeTree { static Unk_GeIter* InsertNode(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode); };   // protected _Destroy_if_node (was FUN_1413a4e30)
 void* FUN_141398a90(void* pIter);
 void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
 unsigned __int64 FUN_1413a5140(void* pMap);
 void* FUN_1413a5160(void* pNode);
 
 // @0x1413a3d00
-std::pair<int, int>* FUN_1413a3d00(std::pair<int, int>* pDst, const std::pair<int, int>* pSrc)
+std::pair<int, int>* CopyPair(std::pair<int, int>* pDst, const std::pair<int, int>* pSrc)
 {
     pDst->first = std::forward<CGuideManager::Occurrence>(*(CGuideManager::Occurrence*)&pSrc->first);
     pDst->second = std::forward<int>(*(int*)&pSrc->second);
@@ -117,13 +117,13 @@ Unk_GeNode* FUN_1413a3d50(void* pMap, Unk_GeNode* pNode, const int& rKey)  // _B
 }
 
 // @0x1413a46e0
-const int& FUN_1413a46e0(const int& rKey)                                 // std::forward
+const int& Forward(const int& rKey)                                 // std::forward
 {
     return rKey;
 }
 
 // @0x1413a3e00
-Unk_GeIter* Unk_GeTreeAccess::FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
+Unk_GeIter* Unk_GeTreeAccess::InsertNode(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
 {
     Unk_GeTreeHead* pHead = ((struct Unk_GeTreeHead*)&((std::_Tree_comp_alloc<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<int const, int>>, 0>>*)(void*)(pMap))->_Get_data());
     if (FUN_1413a5140(pMap) - 1 <= pHead->m_nSize)
@@ -131,7 +131,7 @@ Unk_GeIter* Unk_GeTreeAccess::FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool b
         reinterpret_cast<Unk_GeTreeAccess*>(pMap)->_Destroy_if_node(reinterpret_cast<Unk_GeTree::_Nodeptr>(pNode));
         std::_Xlength_error("map/set<T> too long");
     }
-    Unk_GeNode* pNew = FUN_1413a3d50(pMap, pNode, FUN_1413a46e0(rKey));
+    Unk_GeNode* pNew = FUN_1413a3d50(pMap, pNode, Forward(rKey));
     pHead->m_nSize = pHead->m_nSize + 1;
     pNew->m_pParent = pWhere;
     if (pWhere == pHead->m_pHead)
@@ -205,21 +205,21 @@ Unk_GeIter* Unk_GeTreeAccess::FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool b
 }
 
 // @0x1413a4620
-void FUN_1413a4620(void* pAlloc, std::pair<int, int>* pDst, const std::pair<int, int>& rVal)
+void ConstructPair(void* pAlloc, std::pair<int, int>* pDst, const std::pair<int, int>& rVal)
 {
     void* pNew = ::operator new(8, pDst);
-    FUN_1413a3d00(static_cast<std::pair<int, int>*>(pNew), &std::forward<const std::pair<int, int>&>(rVal));
+    CopyPair(static_cast<std::pair<int, int>*>(pNew), &std::forward<const std::pair<int, int>&>(rVal));
 }
 
 // @0x1413a47b0
-bool FUN_1413a47b0(const MS2Ptr<CGuideAction>& ref)
+bool IsNullAction(const MS2Ptr<CGuideAction>& ref)
 {
     struct Layout { void* m_unk_00; CGuideAction* m_p; };   // MS2Ptr (m_p is private)
     return reinterpret_cast<const Layout&>(ref).m_p == 0;
 }
 
 // @0x1413a47e0
-bool FUN_1413a47e0(const MS2Ptr<CGuideCondition>& ref)
+bool IsNullCondition(const MS2Ptr<CGuideCondition>& ref)
 {
     struct Layout { void* m_unk_00; CGuideCondition* m_p; };   // MS2Ptr (m_p is private)
     return reinterpret_cast<const Layout&>(ref).m_p == 0;
@@ -317,13 +317,13 @@ CGuideCondition::~CGuideCondition()
 }
 
 // @0x1413a5570
-int FUN_1413a5570(CGuideCondition* pCond)
+int EvaluateCondition(CGuideCondition* pCond)
 {
     return pCond->vfunc_3();
 }
 
 // @0x1413a55a0
-int CGuideCondition::FUN_1413a55a0(int nResult)
+int CGuideCondition::ApplyNot(int nResult)
 {
     int nRet;
     if (m_b1c)
@@ -334,7 +334,7 @@ int CGuideCondition::FUN_1413a55a0(int nResult)
 }
 
 // @0x1413a5600
-int CGuideCondition::FUN_1413a5600(bool bResult)
+int CGuideCondition::ApplyNotBool(bool bResult)
 {
     if (m_b1c)
         return bResult ? 0 : 1;
@@ -452,8 +452,8 @@ void CGuideConditionTrigger::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionTrigger::vfunc_3()
 {
     if (FUN_1405c7ba0((const Unk_MergeRange*)&m_range))
-        return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
-    return FUN_1413a55a0(((class CGuideManager*)FUN_1409331e0())->CheckTrigger((CGuideManager::TriggerType)m_n28, m_a, m_b) != 0);
+        return ApplyNot(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
+    return ApplyNot(((class CGuideManager*)FUN_1409331e0())->CheckTrigger((CGuideManager::TriggerType)m_n28, m_a, m_b) != 0);
 }
 
 // @0x1413a5c80
@@ -494,7 +494,7 @@ int CGuideConditionTimeout::vfunc_3()
 {
     if (m_n28 == 0)
         m_n28 = GetTickCountMs2() + m_n20;
-    return FUN_1413a5600(GetTickCountMs2() >= (unsigned)m_n28);
+    return ApplyNotBool(GetTickCountMs2() >= (unsigned)m_n28);
 }
 
 // @0x1413a5fe0
@@ -535,7 +535,7 @@ int CGuideEntity::CheckStart(bool* pbOpen, unsigned* pnFailed)
 {
     for (unsigned i = 0; i < GE_CONDS(m_condTrigger).GetCount(); ++i)
     {
-        if (FUN_1413a5570(GE_CONDS(m_condTrigger)[i].operator->()) == 0)
+        if (EvaluateCondition(GE_CONDS(m_condTrigger)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -545,7 +545,7 @@ int CGuideEntity::CheckStart(bool* pbOpen, unsigned* pnFailed)
     }
     for (unsigned i = 0; i < GE_CONDS(m_condOpen).GetCount(); ++i)
     {
-        if (FUN_1413a5570(GE_CONDS(m_condOpen)[i].operator->()) == 0)
+        if (EvaluateCondition(GE_CONDS(m_condOpen)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -561,7 +561,7 @@ int CGuideEntity::CheckClose(unsigned* pnFailed)
 {
     for (unsigned i = 0; i < GE_CONDS(m_condClose).GetCount(); ++i)
     {
-        if (FUN_1413a5570(GE_CONDS(m_condClose)[i].operator->()) == 0)
+        if (EvaluateCondition(GE_CONDS(m_condClose)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -578,7 +578,7 @@ int CGuideEntity::CheckCancel(unsigned* pnFailed)
         return 0;
     for (unsigned i = 0; i < GE_CONDS(m_condCancel).GetCount(); ++i)
     {
-        if (FUN_1413a5570(GE_CONDS(m_condCancel)[i].operator->()) == 0)
+        if (EvaluateCondition(GE_CONDS(m_condCancel)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -743,7 +743,7 @@ void CGuideEntity::LoadConditions(TiXmlElement* pElem, Unk_GcCondList& list)
     for (TiXmlElement* pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
         MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pCond);
-        (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
+        (void)((IsNullCondition(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
         if (ref.get())
             GE_CONDS(list).Add(ref);
     }
@@ -754,8 +754,8 @@ void CGuideEntity::LoadActions(TiXmlElement* pElem, CAtlArray<MS2Ptr<CGuideActio
 {
     for (TiXmlElement* pAct = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class TiXmlElement*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
     {
-        MS2Ptr<CGuideAction> ref = FUN_141382b90(pAct);
-        (void)((FUN_1413a47b0(ref) == 0) || (_wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212), 0));
+        MS2Ptr<CGuideAction> ref = CreateGuideAction(pAct);
+        (void)((IsNullAction(ref) == 0) || (_wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212), 0));
         if (ref.operator->())
             list.Add(ref);
     }
@@ -780,4 +780,4 @@ void CGuideEntity::ResetConditions(Unk_GcCondList& list)
     for (unsigned i = 0; i < GE_CONDS(list).GetCount(); ++i)
         GE_CONDS(list)[i]->vfunc_4();
 }
-// MS2-PIN: ?FUN_1413a3e00@Unk_GeTreeAccess@@SAPEAUUnk_GeIter@@PEAXPEAU2@_NPEAUUnk_GeNode@@AEBH3@Z 0x1413a3e00 ; _Insert_at stand-in, a static member of a _Tree<map<int,int>> view for the protected _Destroy_if_node
+// MS2-PIN: ?InsertNode@Unk_GeTreeAccess@@SAPEAUUnk_GeIter@@PEAXPEAU2@_NPEAUUnk_GeNode@@AEBH3@Z 0x1413a3e00 ; _Insert_at stand-in, a static member of a _Tree<map<int,int>> view for the protected _Destroy_if_node

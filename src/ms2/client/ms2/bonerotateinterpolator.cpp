@@ -224,7 +224,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
             NiQuaternion kOut(kBlend);
             m_kTransformValue.SetRotate(kOut);
-            NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->FUN_14123c460());
+            NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->GetEntityID());
             if (pActor != 0)
             {
                 NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
@@ -317,7 +317,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 NiQuaternion kOut(kBlend);
                 m_kTransformValue.SetRotate(kOut);
                 kBlend.ToRotation(m_kLastRotate);
-                NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->FUN_14123c460());
+                NiActorManager* pActor = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetActorManager(pObject->GetEntityID());
                 if (pActor != 0)
                 {
                     NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
@@ -481,7 +481,7 @@ void CBoneRotateManager::StartMode(Unk_BrMode nMode, GameObject* pTarget, int nP
     if (m_actions.Lookup(m_nCurrent, spAction))
     {
         Unk_BrAction* pAction = spAction.operator->();
-        if (pAction->vfunc_1(m_pOwner->FUN_14123c580(), pTarget->FUN_14123c580(), nParam) == false)
+        if (pAction->vfunc_1(m_pOwner->GetObjectId(), pTarget->GetObjectId(), nParam) == false)
             StopLooking();
     }
 }
@@ -548,7 +548,7 @@ void CBoneRotateManager::StopLooking()
 }
 
 // @0x140a35060
-void CBoneRotateManager::FUN_140a35060()
+void CBoneRotateManager::UpdateLookAt()
 {
     if (m_bEnabled == false)
         return;
@@ -608,7 +608,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
 {
     if (m_bEnabled == false)
         return;
-    FUN_140a35060();
+    UpdateLookAt();
     if (m_nCurrent != 0)
     {
         Unk_BrActionPtr spAction(0);
@@ -616,7 +616,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
         {
             Unk_BrAction* pAction = spAction.operator->();
             pAction->vfunc_6(dTime);
-            FUN_140a35060();
+            UpdateLookAt();
         }
     }
     if (m_tmIdle.FUN_140868c00() != 0 && m_nCurrent == 0)
@@ -630,7 +630,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
                 Unk_BrAction* pAction = spAction.operator->();
                 if (pAction->vfunc_3() != false)
                 {
-                    if (spAction->vfunc_1(m_pOwner->FUN_14123c580(), 0, 5000) == false)
+                    if (spAction->vfunc_1(m_pOwner->GetObjectId(), 0, 5000) == false)
                     {
                         StopLooking();
                     }

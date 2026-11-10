@@ -79,7 +79,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -121,7 +121,7 @@ void UIItemPetTrainingDialog::OnLoadComplete()
         pSlot->SetRemoveFn(PtRemoveFn(this, &UIItemPetTrainingDialog::FUN_140e58280));
         pSlot->SetDropFn(PtDropFn(this, &UIItemPetTrainingDialog::FUN_140e58300));
     }
-    m_spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
+    m_spBox = g_143ab2a90.FindItemByUid(m_nOwner);
     if (m_spBox == 0)
         return;
     if (m_spBox->FUN_140527840() == 0)
@@ -282,13 +282,13 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
         return;
     if (m_bDone != 0)
         return;
-    MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
+    MS2DragSlot* pSrc = AsDragSlot(pDrag);
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
+        MS2Ptr<CItem> spPet = g_143ab2a90.FindItemByUid(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (FUN_140e57ed0(spPet, 1) == 0)
             return;
-        MS2Ptr<CItem> spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
+        MS2Ptr<CItem> spBox = g_143ab2a90.FindItemByUid(m_nOwner);
         if (spBox == 0 || spBox->FUN_140527840() == 0)
             return;
         {

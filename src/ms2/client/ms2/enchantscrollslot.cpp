@@ -43,7 +43,7 @@ class Unk_EnchantUIManager { public: };
 
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -55,7 +55,7 @@ void FUN_140710590(COutPacket& packet);                 // send the packet
 // Registry of named bags/slots (GFx bind data).
 
 EnchantScrollSlot* FUN_140cd7a50(NotifyContext::BindData* p);
-UIEnchantScrollDialog* FUN_140cd7aa0(int nClass);
+UIEnchantScrollDialog* FindEnchantScrollDialog(int nClass);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(EnchantScrollSlot);
 
@@ -85,7 +85,7 @@ EnchantScrollSlot::EnchantScrollSlot(const CString& strName, unsigned __int64 nO
 int EnchantScrollSlot::vfunc_17()
 {
     SetItem(MS2Ptr<CItem>(0));
-    UIEnchantScrollDialog* pDlg = FUN_140cd7aa0(0x4ee0);
+    UIEnchantScrollDialog* pDlg = FindEnchantScrollDialog(0x4ee0);
     if (pDlg != 0)
         pDlg->FUN_140f3cb10();
     return vfunc_10();
@@ -94,10 +94,10 @@ int EnchantScrollSlot::vfunc_17()
 // @0x140cd75f0
 int EnchantScrollSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
+    void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             if (FUN_141902660(spItem) != 0)
@@ -174,7 +174,7 @@ EnchantScrollSlot* FUN_140cd7a50(NotifyContext::BindData* p)
 }
 
 // @0x140cd7aa0
-UIEnchantScrollDialog* FUN_140cd7aa0(int nClass)
+UIEnchantScrollDialog* FindEnchantScrollDialog(int nClass)
 {
     if (reinterpret_cast<Unk_EnchantUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -195,4 +195,4 @@ MS2_REPLACE_METHOD(0x140CD7760, EnchantScrollSlot, vfunc_14, 38, 0xF4633F56);
 MS2_REPLACE_METHOD(0x140CD7790, EnchantScrollSlot, vfunc_25, 67, 0xCDBE6222);
 MS2_REPLACE_METHOD(0x140CD7950, EnchantScrollSlot, vfunc_8, 255, 0xC984E3D5);
 MS2_REPLACE(0x140CD7A50, FUN_140cd7a50, 73, 0xCE611679);
-MS2_REPLACE(0x140CD7AA0, FUN_140cd7aa0, 147, 0xCF4161F7);
+MS2_REPLACE(0x140CD7AA0, FindEnchantScrollDialog, 147, 0xCF4161F7);

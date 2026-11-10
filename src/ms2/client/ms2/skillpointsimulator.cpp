@@ -283,7 +283,7 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     void* pPlayer = reinterpret_cast<WorldService*>(((void*)(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    JobDataPtr spJob = ((JobSystem*)(reinterpret_cast<PC*>(pPlayer)->FUN_1416546d0()))->GetJobData();
+    JobDataPtr spJob = ((JobSystem*)(reinterpret_cast<PC*>(pPlayer)->GetJobSystem()))->GetJobData();
     if (spJob == 0)
         return 0;
     JobSkillDataPtr spData = spJob->FindSkill(nSkillId);
@@ -305,7 +305,7 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     }
     if (spData->m_requireQuestID != 0)
     {
-        if (!reinterpret_cast<CQuestManagerCommon*>(reinterpret_cast<char*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0()) + 0x10)->FUN_140745590(spData->m_requireQuestID))
+        if (!reinterpret_cast<CQuestManagerCommon*>(reinterpret_cast<char*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager()) + 0x10)->FUN_140745590(spData->m_requireQuestID))
             return 0;
     }
     return 1;

@@ -92,8 +92,8 @@ public:
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 int FUN_141276180(const CString& strSound, const CString& strArg);               // play a UI sound
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
-void FUN_141415600(const CString& strBindID);                   // release the item bound to the name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void DestroyItemInfoSlot(const CString& strBindID);                   // release the item bound to the name
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
@@ -159,13 +159,13 @@ void UIPvPTeamResultDialog::FUN_141345310()
     PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    bool bNoTeam = pPlayer->FUN_140967420() == NULL;
+    bool bNoTeam = pPlayer->GetPvPInfo() == NULL;
     if (bNoTeam)
         return;
     int nMyTeam = 0;
-    if (reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint() == 0xc9)
+    if (reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->GetPoint() == 0xc9)
         nMyTeam = 1;
-    else if (reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint() == 0xca)
+    else if (reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->GetPoint() == 0xca)
         nMyTeam = 2;
     m_nMyTeam = nMyTeam;
     FUN_141345e40();
@@ -305,7 +305,7 @@ CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return "";
         spItem->SetCountClamped(nAmount);
-        FUN_141415450(strBind, spItem, 0, 0x411, 0);
+        CreateItemInfoSlot(strBind, spItem, 0, 0x411, 0);
         m_slots.insert(strBind);
     }
     return strBind;
@@ -315,7 +315,7 @@ CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
 void UIPvPTeamResultDialog::FUN_141346140()
 {
     for (std::set<CString>::iterator it = m_slots.begin(), itEnd = m_slots.end(); it != itEnd; ++it)
-        FUN_141415600(*it);
+        DestroyItemInfoSlot(*it);
     m_slots.clear();
 }
 

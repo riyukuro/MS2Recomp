@@ -33,7 +33,7 @@ class Unk_HudActor : public PCBase
 };
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera)
 int FUN_141277f40();                                    // next UI layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
@@ -199,7 +199,7 @@ int UIHudEntity::Entity::vfunc_8(int n)
     }
     if (pActor->FUN_14123c660() && n == 0)
     {
-        Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->FUN_1416764a0());
+        Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->GetRidee());
         if (pRidden)
         {
             if (pRidden->FUN_14123c660())
@@ -228,7 +228,7 @@ NiPoint3 UIHudEntity::Entity::vfunc_10()
         int bChanged = 0;
         if (pActor->FUN_14123c660() != 0)
         {
-            Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->FUN_1416764a0());
+            Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->GetRidee());
             if (pRidden != 0)
             {
                 pActor = pRidden;
@@ -338,7 +338,7 @@ void UIHudEntity::FUN_140f49740()
 // @0x140f49890
 int UIHudEntity::FUN_140f49890(int nActorId)
 {
-    if (reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)->FUN_140af8310()->GetShutdown())
+    if (reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)->GetServiceManager()->GetShutdown())
         return 1;
     Unk_HudActor* pActor = reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(nActorId));
     if (pActor == 0)

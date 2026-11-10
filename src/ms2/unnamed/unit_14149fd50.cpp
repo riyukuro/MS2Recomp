@@ -243,13 +243,13 @@ class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
-class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
-class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-class CClubDataTable* FUN_140b1a4e0();   // C3: was FUN_140b1a4e0
+class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
+class Unk_SlotBreakManager* GetItemBreakManager();   // C3: was GetItemBreakManager
+class Unk_SlotLapenTable* GetLapenshardTable();   // C3: was GetLapenshardTable
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
+class CClubDataTable* GetClubDataTable();   // C3: was GetClubDataTable
 class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
 void* FUN_141371b20();
@@ -348,7 +348,7 @@ void FUN_1414a0060()
 {
     if (TSingleton<BlindManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1409c1730());
+        delete (Unk_VirtualDtor*)((void*)GetBlindManager());
         TSingleton<BlindManager>::s_instance = 0;
     }
 }
@@ -491,7 +491,7 @@ void FUN_1414a0540()
 {
     if (TSingleton<CBlockManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140a6a830());
+        delete (Unk_VirtualDtor*)((void*)GetBlockManager());
         TSingleton<CBlockManager>::s_instance = 0;
     }
 }
@@ -590,7 +590,7 @@ void FUN_1414a08a0()
 {
     if (TSingleton<CClubDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140b1a4e0());
+        delete (Unk_VirtualDtor*)((void*)GetClubDataTable());
         TSingleton<CClubDataTable>::s_instance = 0;
     }
 }
@@ -942,7 +942,7 @@ void FUN_1414a14a0()
 {
     if (TSingleton<CInstrumentManager>::s_instance != 0)
     {
-        delete (Unk_SecondaryDtorSingleton*)((void*)FUN_140c8dac0());
+        delete (Unk_SecondaryDtorSingleton*)((void*)GetInstrumentManager());
         TSingleton<CInstrumentManager>::s_instance = 0;
     }
 }
@@ -964,7 +964,7 @@ void FUN_1414a1570()
 {
     if (TSingleton<CItemBreakManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1409c4b20());
+        delete (Unk_VirtualDtor*)((void*)GetItemBreakManager());
         TSingleton<CItemBreakManager>::s_instance = 0;
     }
 }
@@ -1063,7 +1063,7 @@ void FUN_1414a18d0()
 {
     if (TSingleton<CItemLapenshardTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1409c4b30());
+        delete (Unk_VirtualDtor*)((void*)GetLapenshardTable());
         TSingleton<CItemLapenshardTable>::s_instance = 0;
     }
 }

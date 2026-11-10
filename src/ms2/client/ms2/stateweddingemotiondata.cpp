@@ -49,9 +49,9 @@ StateWeddingEmotionData::~StateWeddingEmotionData()
 {
 }
 
-// The dynamic_cast views: the exe casts StateSyncObject -> StateSyncObjectWeddingEmotion (RTTI names are compared, so
-// casting to the Unk_ stand-ins always gave NULL).
-class StateSyncObject { public: virtual ~StateSyncObject(); };
+// The dynamic_cast view: the exe casts StateSyncObject -> StateSyncObjectWeddingEmotion (RTTI names are compared, so
+// casting to the Unk_ stand-ins always gave NULL). StateSyncObject is the real class (statemanager.h); the subclass
+// is a local view (commonfiles/statesyncobject.h is not included here).
 class StateSyncObjectWeddingEmotion : public StateSyncObject {};
 
 // Mirrors the payload into the wedding-emotion part of the sync record: +0xb8/+0xb9 are the two flags, +0xbc the
@@ -124,7 +124,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     }
     m_spData = spData;
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC != 0 && m_spData.get()->m_b2d == 0 && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+    if (pPC != 0 && m_spData.get()->m_b2d == 0 && ((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())) != 0)
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
     m_n50 = GetTickCountMs2();
     if (m_spData.get()->m_b18 != 0)
@@ -230,9 +230,9 @@ void StateWeddingEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
 // Compares the payload against a wedding-emotion sync record: 1 = a different animation is wanted (the state should be
 // re-entered), 0 = nothing to do.
 // @0x140ac7090
-int StateWeddingEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateWeddingEmotion::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
-    Unk_SyncWeddingEmotion* pSync = reinterpret_cast<Unk_SyncWeddingEmotion*>(dynamic_cast<StateSyncObjectWeddingEmotion*>(reinterpret_cast<StateSyncObject*>((Unk_StateArg22*)p)));
+    Unk_SyncWeddingEmotion* pSync = reinterpret_cast<Unk_SyncWeddingEmotion*>(dynamic_cast<StateSyncObjectWeddingEmotion*>(reinterpret_cast<StateSyncObject*>((StateSyncObject*)p)));
     if (pSync == 0)
         return 0;
     if (m_spData == 0)

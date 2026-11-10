@@ -94,7 +94,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class MyPC* FUN_140884db0(class Unk_QueryObj*);   // C3: was FUN_140884db0
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -144,7 +144,7 @@ MS2_REPLACE_METHOD(0x14121d1c0, FittingDollSlot, vfunc_13, 8, 0x7F371472);
 // @0x14121d1d0
 int FittingDollSlot::vfunc_14()
 {
-    return FUN_14121ddc0();
+    return DestroyDollItem();
 }
 MS2_REPLACE_METHOD(0x14121d1d0, FittingDollSlot, vfunc_14, 24, 0x34369C48);
 
@@ -161,10 +161,10 @@ MS2_REPLACE_METHOD(0x14121d1f0, FittingDollSlot, vfunc_15, 131, 0x2FF59A43);
 // @0x14121d280
 int FittingDollSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
             ((class InvenSlot*)(void*)(pItemSlot))->FUN_141405a60(spItem.get(), m_nSlot);
     }
@@ -198,7 +198,7 @@ MS2_REPLACE_METHOD(0x14121d4a0, FittingDollSlot, vfunc_21, 360, 0x889F2550);
 // @0x14121d610 (ITooltip::vfunc_0)
 int FittingDollSlot::vfunc_0(void* p)
 {
-    PC* pPlayer = FUN_14121dd90();
+    PC* pPlayer = GetPC();
     if (pPlayer == 0)
         return 0;
     CItem* pItem = vfunc_25().get();
@@ -212,7 +212,7 @@ int FittingDollSlot::vfunc_0(void* p)
     {
         tip.SetEnablePuton(GetStringCommon(0x75c));
         if (IsEnabled() == true)
-            tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
+            tip.SetEnablePreview(MS2Ptr<CItem>(pItem));
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -222,10 +222,10 @@ int FittingDollSlot::vfunc_0(void* p)
 // @0x14121d810
 int FittingDollSlot::vfunc_8(void* p)
 {
-    PC* pPlayer = FUN_14121dd90();
+    PC* pPlayer = GetPC();
     if (pPlayer == 0)
         return 0;
-    FittingDollPC* pDoll = FUN_14121dd50();
+    FittingDollPC* pDoll = GetDoll();
     if (pDoll == 0)
         return 0;
     PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -235,12 +235,12 @@ int FittingDollSlot::vfunc_8(void* p)
     if (pItem == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
+    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->GetEntityID()));
     if (pCube == 0)
         return 0;
-    int bOwner = pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
+    int bOwner = pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->GetAccountId();
     ASSlot slot(2);
-    if (slot.FUN_1409c41f0(pItem, pPlayer, m_nSlot, 0x49))
+    if (slot.SetEquipItem(pItem, pPlayer, m_nSlot, 0x49))
     {
         if (bOwner)
         {
@@ -265,7 +265,7 @@ int FittingDollSlot::vfunc_8(void* p)
 // @0x14121db80
 MS2Ptr<CItem> FittingDollSlot::vfunc_25()
 {
-    FittingDollPC* pDoll = FUN_14121dd50();
+    FittingDollPC* pDoll = GetDoll();
     if (pDoll == 0)
         return MS2Ptr<CItem>(0);
     int nKind = 0;
@@ -290,34 +290,34 @@ void FittingDollSlot::vfunc_9()
 MS2_REPLACE_METHOD(0x14121dc90, FittingDollSlot, vfunc_9, 177, 0x60A25617);
 
 // @0x14121dd50
-FittingDollPC* FittingDollSlot::FUN_14121dd50()
+FittingDollPC* FittingDollSlot::GetDoll()
 {
     return ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_nDollId)))));
 }
-MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, FUN_14121dd50, 47, 0x50AAF435);
+MS2_REPLACE_METHOD(0x14121dd50, FittingDollSlot, GetDoll, 47, 0x50AAF435);
 
 // @0x14121dd90
-PC* FittingDollSlot::FUN_14121dd90()
+PC* FittingDollSlot::GetPC()
 {
     return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nPcId));
 }
-MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, FUN_14121dd90, 38, 0xA1936EAD);
+MS2_REPLACE_METHOD(0x14121dd90, FittingDollSlot, GetPC, 38, 0xA1936EAD);
 
 // @0x14121ddc0
 // Destroy the doll item of the slot: a confirm box when the item has a reason to keep (or the packet at once).
-int FittingDollSlot::FUN_14121ddc0()
+int FittingDollSlot::DestroyDollItem()
 {
     PCBase* pLocal = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pLocal == 0)
         return 0;
-    FittingDollPC* pDoll = FUN_14121dd50();
+    FittingDollPC* pDoll = GetDoll();
     if (pDoll == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
+    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->GetEntityID()));
     if (pCube == 0)
         return 0;
-    if (pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0())
+    if (pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->GetAccountId())
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)

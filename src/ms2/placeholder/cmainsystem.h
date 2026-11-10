@@ -41,10 +41,10 @@ public:
     float GetFps();                                                 // 0x141473210
     float GetLastGameTimeDelta();                                   // 0x141473230
     double GetDeltaTime();                                          // 0x141473260
-    double FUN_141473280();                                         // the game clock's current time
+    double GetGameTime();                                         // the game clock's current time
     DWORD GetObjectTime(GameObject* pObject);                       // GetTimeByKind of the object's time kind
     DWORD GetTimeByKind(int nKind);                                 // game time, server tick (kind 6) or a converted time
-    int FUN_141473390();                                            // the server tick (re-based when the tick count wraps)
+    int GetServerTick();                                            // the server tick (re-based when the tick count wraps)
     int GetServerTickAt(DWORD dwTick);                                // the server tick at a local tick
     int FUN_141473460();                                            // +0x74
     int FUN_141473480();                                            // +0x78
@@ -68,7 +68,7 @@ public:
     virtual efd::AsyncResult OnInit();                              // 0x141473ca0
     virtual efd::AsyncResult OnTick();                              // 0x141474080
     virtual efd::AsyncResult OnShutdown();                          // 0x1414741e0
-    void FUN_141474450();                                           // applies the graphics option's frame limit
+    void ApplyFrameLimit();                                           // applies the graphics option's frame limit
     void CreateClickRenderStep();                                           // builds the main click render step
 private:
     MS2_LAYOUT_FRIEND;

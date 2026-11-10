@@ -73,10 +73,10 @@ pin already attributed	client/ms2/cubemapinformationservice_tail7.cpp: MS2-PIN ?
 pin already attributed	client/ms2/effectservice.cpp: MS2-PIN ??BAtomicRefCount@efd@@QEAAIXZ 0x1411b1ed0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ??0CFilePreload@@QEAA@XZ 0x14120f7c0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ??1CFilePreload@@UEAA@XZ 0x14120f9d0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412102e0@CFilePreload@@QEAAXXZ 0x1412102e0: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?AddPreloadId@CFilePreload@@QEAAXI@Z 0x1412104c0: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?ClearBackgroundThread@CFilePreload@@QEAAXXZ 0x141211c20: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?EnablePreloadIds@CFilePreload@@QEAAXH@Z 0x1412104a0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210420@CFilePreload@@QEAAXH@Z 0x141210420: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412104a0@CFilePreload@@QEAAXH@Z 0x1412104a0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412104c0@CFilePreload@@QEAAXI@Z 0x1412104c0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210540@CFilePreload@@QEAAXIGH@Z 0x141210540: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412106a0@CFilePreload@@QEAAXU?$pair@IG@std@@H@Z 0x1412106a0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210770@CFilePreload@@QEAAXI@Z 0x141210770: already attributed (tag), ignored
@@ -84,35 +84,34 @@ pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412107f0@CFil
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210960@CFilePreload@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x141210960: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210ac0@CFilePreload@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141210ac0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210c20@CFilePreload@@QEAAXXZ 0x141210c20: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210c60@CFilePreload@@QEAAHXZ 0x141210c60: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210c80@CFilePreload@@QEAAHXZ 0x141210c80: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210ca0@CFilePreload@@SAX_N@Z 0x141210ca0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210cc0@CFilePreload@@QEAAX_N@Z 0x141210cc0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210ce0@CFilePreload@@QEAAXV?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@@Z 0x141210ce0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210da0@CFilePreload@@QEAAXXZ 0x141210da0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210e10@CFilePreload@@QEAAX_N@Z 0x141210e10: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141210f00@CFilePreload@@QEAAX_N@Z 0x141210f00: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211240@CFilePreload@@QEAAXPEAX@Z 0x141211240: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211380@CFilePreload@@QEAAXPEAX@Z 0x141211380: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211480@CFilePreload@@QEAAXPEAX@Z 0x141211480: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_1412115e0@CFilePreload@@QEAAXPEAX@Z 0x1412115e0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211b30@CFilePreload@@QEAAXH@Z 0x141211b30: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211b80@CFilePreload@@SAIPEAX@Z 0x141211b80: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141211c20@CFilePreload@@QEAAXXZ 0x141211c20: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141215480@@YAPEAVCLearningQuestTable@@XZ 0x141215480: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141215500@@YAPEAVCMeratMarketPremium@@XZ 0x141215500: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?FUN_141215630@COptimizer@@QEBAHXZ 0x141215630: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?GetLearningQuestTable@@YAPEAVCLearningQuestTable@@XZ 0x141215480: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?GetMeratMarketPremium@@YAPEAVCMeratMarketPremium@@XZ 0x141215500: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?GetPhase@CFilePreload@@QEAAHXZ 0x141210c80: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?GetPreloadMode@COptimizer@@QEBAHXZ 0x141215630: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?GetThreadId@CThread@@QEBAKXZ 0x141215640: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?IsDataReady@CFilePreload@@QEAAHXZ 0x141210c60: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?NotifyProgress@CFilePreload@@QEAAXH@Z 0x141211b30: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?PreloadDataStep2@CFilePreload@@QEAAX_N@Z 0x141210f00: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?PreloadThreadEntry@@YAIPEAX@Z 0x141215aa0: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?RunJob@CFilePreload@@QEAAXV?$TFunctor@XV?$ParamList@PEAXVEmptyParam@@@@@@@Z 0x141210ce0: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?SetAsynchronous@CFilePreload@@QEAAX_N@Z 0x141210cc0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?Start@CThread@@QEAAHPEAXHHIPEAU_SECURITY_ATTRIBUTES@@@Z 0x141215220: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?Stop@CFilePreload@@QEAAXXZ 0x1412102e0: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_1.cpp: MS2-PIN ?vfunc_1@CFilePreload@@UEAAIPEAXAEAVUnk_140659080@@@Z 0x14120fb80: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ??0CFileSearcher@@QEAA@XZ 0x141218010: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ??1CFileSearcher@@UEAA@XZ 0x1412180f0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?FUN_141218730@CFileSearcher@@QEAAXV?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@@Z 0x141218730: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?FUN_1412187a0@CFileSearcher@@QEAAXV?$TFunctor@XVEmptyParam@@@@@Z 0x1412187a0: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?FUN_141218810@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@3@H_N@Z 0x141218810: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?FUN_141218900@CFileSearcher@@QEAAXXZ 0x141218900: already attributed (tag), ignored
-pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?FUN_141218920@CFileSearcher@@QEAAXXZ 0x141218920: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?Cancel@CFileSearcher@@QEAAXXZ 0x141218900: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?ClearCallbacks@CFileSearcher@@QEAAXXZ 0x141218920: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?SetCompleteCallback@CFileSearcher@@QEAAXV?$TFunctor@XVEmptyParam@@@@@Z 0x1412187a0: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?SetProgressCallback@CFileSearcher@@QEAAXV?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@@Z 0x141218730: already attributed (tag), ignored
+pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?StartSearch@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@3@H_N@Z 0x141218810: already attributed (tag), ignored
 pin already attributed	client/ms2/filepreload_2.cpp: MS2-PIN ?vfunc_1@CFileSearcher@@UEAAIPEAXAEAVUnk_140659080@@@Z 0x1412181a0: already attributed (tag), ignored
 pin already attributed	client/ms2/functioncubeobject.cpp: MS2-PIN ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VCHomemadeCubeObject@@@@@ATL@@SAXPEAV?$MS2Ptr@VCHomemadeCubeObject@@@@0_K@Z 0x141238060: already attributed (tag), ignored
 pin already attributed	client/ms2/gameeventcli.cpp: MS2-PIN ??_GCWin32Heap@ATL@@UEAAPEAXI@Z 0x140ce9a30: already attributed (tag), ignored
@@ -133,7 +132,7 @@ pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?ShowEntityState@C
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?TestCondition@CGuideManager@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?TestEntity@CGuideManager@@QEAAXHH@Z 0x14138cce0: already attributed (tag), ignored
 pin already attributed	client/ms2/guideentity_1b.cpp: MS2-PIN ?ToggleDebug@CGuideManager@@QEAAXXZ 0x14138d460: already attributed (tag), ignored
-pin already attributed	client/ms2/guideentity_9.cpp: MS2-PIN ?FUN_1413a3e00@Unk_GeTreeAccess@@SAPEAUUnk_GeIter@@PEAXPEAU2@_NPEAUUnk_GeNode@@AEBH3@Z 0x1413a3e00: already attributed (tag), ignored
+pin already attributed	client/ms2/guideentity_9.cpp: MS2-PIN ?InsertNode@Unk_GeTreeAccess@@SAPEAUUnk_GeIter@@PEAXPEAU2@_NPEAUUnk_GeNode@@AEBH3@Z 0x1413a3e00: already attributed (tag), ignored
 pin already attributed	client/ms2/instrumentmanager.cpp: MS2-PIN ??$forward@AEAI@std@@YAAEAIAEAI@Z 0x140d115e0: already attributed (tag), ignored
 pin already attributed	client/ms2/instrumentmanager.cpp: MS2-PIN ?FUN_140d061b0@Unk_SSGc8dac0@@QEAAXAEAVCInPacket@@@Z 0x140d061b0: already attributed (tag), ignored
 pin already attributed	client/ms2/instrumentmanager.cpp: MS2-PIN ?FUN_140d073b0@Unk_PiMgr@@QEAAXH@Z 0x140d073b0: already attributed (tag), ignored
@@ -153,32 +152,32 @@ pin already attributed	client/ms2/inventory.cpp: MS2-PIN ??0Unk_InventoryUnequip
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ??0Unk_InventoryUsePacket@@QEAA@XZ 0x140a69aa0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ??1Unk_Inventory@@QEAA@XZ 0x140a5c850: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ??1Unk_InventoryUsePacket@@QEAA@XZ 0x140a69df0: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?ExcludeFromAutoEquip@Unk_Inventory@@QEAAXV?$MS2Ptr@VCItem@@@@@Z 0x140a674c0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5c650@@YA_NV?$MS2Ptr@VCItem@@@@0@Z 0x140a5c650: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5ca60@Unk_Inventory@@QEAAXH@Z 0x140a5ca60: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5cdc0@Unk_Inventory@@QEAA_NI@Z 0x140a5cdc0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5d680@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@_J@Z 0x140a5d680: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5d9a0@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z 0x140a5d9a0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5f780@Unk_Inventory@@QEAAHHH@Z 0x140a5f780: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a603e0@Unk_Inventory@@QEAAHHHH@Z 0x140a603e0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a60790@Unk_Inventory@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@@Z 0x140a60790: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a617f0@Unk_Inventory@@QEAAHV?$MS2Ptr@VCItem@@@@@Z 0x140a617f0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a621c0@Unk_Inventory@@QEAAH_JHH@Z 0x140a621c0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a63900@Unk_Inventory@@QEAAHPEAVCItem@@H@Z 0x140a63900: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a661e0@Unk_Inventory@@QEAAHPEAVCItem@@@Z 0x140a661e0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a66c00@Unk_Inventory@@QEAAXXZ 0x140a66c00: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a66f20@Unk_Inventory@@QEAA_JXZ 0x140a66f20: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a66f40@Unk_Inventory@@QEAAX_J@Z 0x140a66f40: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a66fa0@Unk_Inventory@@QEAAXH@Z 0x140a66fa0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a67000@Unk_Inventory@@QEAAHXZ 0x140a67000: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a673e0@Unk_Inventory@@QEAAXV?$MS2Ptr@VCItem@@@@@Z 0x140a673e0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a674c0@Unk_Inventory@@QEAAXV?$MS2Ptr@VCItem@@@@@Z 0x140a674c0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a6a0d0@Unk_InventoryAccount@@QEAA_NXZ 0x140a6a0d0: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a6a830@@YAPEAVUnk_InventoryStateManager@@XZ 0x140a6a830: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a6a840@@YAPEAVUnk_InventoryListener@@XZ 0x140a6a840: already attributed (tag), ignored
-pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a6aa40@Unk_InventoryArraySetting@@QEAAAEBV?$vector@HV?$allocator@H@std@@@std@@XZ 0x140a6aa40: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FindItemByFunction@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z 0x140a5d9a0: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FindItemByUid@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@_J@Z 0x140a5d680: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?GetAllItems@Unk_Inventory@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@@Z 0x140a60790: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?GetBlockManager@@YAPEAVUnk_InventoryStateManager@@XZ 0x140a6a830: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?GetItemCountByTag@Unk_Inventory@@QEAAHHH@Z 0x140a5f780: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?GetItemEventDispatcher@@YAPEAVUnk_InventoryListener@@XZ 0x140a6a840: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?GetValues@Unk_InventoryArraySetting@@QEAAAEBV?$vector@HV?$allocator@H@std@@@std@@XZ 0x140a6aa40: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?IsAutoEquipEnabled@Unk_Inventory@@QEAAHXZ 0x140a67000: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?IsExtraSlotsMaxed@Unk_Inventory@@QEAA_NI@Z 0x140a5cdc0: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?RemoveItemsInCategory@Unk_Inventory@@QEAAXH@Z 0x140a5ca60: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?ResetAutoEquip@Unk_Inventory@@QEAAXXZ 0x140a66c00: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?SetAutoEquipEnabled@Unk_Inventory@@QEAAXH@Z 0x140a66fa0: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?SwapSlots@Unk_Inventory@@QEAAHHHH@Z 0x140a603e0: already attributed (tag), ignored
 pin already attributed	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ??0MS2EntityManagerService@@QEAA@XZ 0x1414b4a90: already attributed (tag), ignored
 pin already attributed	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ??1MS2EntityManagerService@@UEAA@XZ 0x1414b4ad0: already attributed (tag), ignored
-pin already attributed	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ?FUN_1414b54f0@MS2EntityManagerService@@QEAA_NPEBVEntity@egf@@@Z 0x1414b54f0: already attributed (tag), ignored
+pin already attributed	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ?IsEntityDirty@MS2EntityManagerService@@QEAA_NPEBVEntity@egf@@@Z 0x1414b54f0: already attributed (tag), ignored
 pin already attributed	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ?SendEntityUpdateNotification@MS2EntityManagerService@@UEAAXPEAVEntity@egf@@@Z 0x1414b5430: already attributed (tag), ignored
 pin already attributed	client/ms2/ms2kfmfactory.cpp: MS2-PIN ??0MS2KFMFactory@@QEAA@PEAVAssetFactoryManager@efd@@PEAVMessageService@2@@Z 0x140d8fb20: already attributed (tag), ignored
 pin already attributed	client/ms2/ms2kfmfactory.cpp: MS2-PIN ??0ResponseData@MS2KFMFactory@@QEAA@XZ 0x140d90040: already attributed (tag), ignored
@@ -227,13 +226,13 @@ pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN
 pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN ??1?$map@IV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@std@@@2@@std@@QEAA@XZ 0x1416b6100: already attributed (tag), ignored
 pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@1@XZ 0x1416b6120: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d2910@CQuestManager@@QEAAHIAEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@std@@H@Z 0x1416d2910: already attributed (tag), ignored
-pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d40a0@CQuestManager@@QEAAHHIIAEAV?$list@IV?$allocator@I@std@@@std@@AEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@3@PEAV43@@Z 0x1416d40a0: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?GetQuestIdsByStates@CQuestManager@@QEAAXAEAV?$vector@IV?$allocator@I@std@@@std@@V?$vector@W4Unk_QmQuestState@@V?$allocator@W4Unk_QmQuestState@@@std@@@3@HH@Z 0x1416cb4d0: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?OnQuest@CQuestManager@@QEAAXAEAVCInPacket@@@Z 0x1416cbd90: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode12@CQuestManager@@QEAAXH@Z 0x1416cf510: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode13@CQuestManager@@QEAAXH@Z 0x1416cf630: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode14@CQuestManager@@QEAAXXZ 0x1416d0c10: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode19@CQuestManager@@QEAAXH@Z 0x1416cf750: already attributed (tag), ignored
+pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?TraceQuestPath@CQuestManager@@QEAAHHIIAEAV?$list@IV?$allocator@I@std@@@std@@AEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@3@PEAV43@@Z 0x1416d40a0: already attributed (tag), ignored
 pin already attributed	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AV?$SmartPointer@VNi3DRenderView@@@efd@@XZ 0x1416f9ae0: already attributed (tag), ignored
 pin already attributed	client/ms2/scenestategame.cpp: MS2-PIN ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x141745880: already attributed (tag), ignored
 pin already attributed	client/ms2/skilltieroptionmanager.cpp: MS2-PIN ?FUN_14080c370@@YAHIW4eJobCode@@PEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x14080c370: already attributed (tag), ignored
@@ -1244,7 +1243,7 @@ pin names no function	client/ms2/lapenshardslotbag.cpp: MS2-PIN ?SetOptimalLoad@
 pin names no function	client/ms2/lapenshardslotbag.cpp: MS2-PIN ?UpdateRehashThresholds@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ: no such function in the obj
 pin names no function	client/ms2/magicdata.cpp: MS2-PIN ??0?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@@QEAA@AEBUUnk_SocketNew@@@Z: no such function in the obj
 pin names no function	client/ms2/ms2entitymanagerservice.cpp: MS2-PIN ??$forward@PEAVEntity@egf@@@std@@YA$$QEAPEAVEntity@egf@@AEAPEAV12@@Z: no such function in the obj
-pin names no function	client/ms2/mypc.cpp: MS2-PIN ?FUN_141533e80@Unk_MyPCCameraCtl@@QEAA?AUUnk_StreamPoint@@XZ: no such function in the obj
+pin names no function	client/ms2/mypc.cpp: MS2-PIN ?GetPosition@Unk_MyPCCameraCtl@@QEAA?AUUnk_StreamPoint@@XZ: no such function in the obj
 pin names no function	client/ms2/nmfileevent.cpp: MS2-PIN ??0CNMSerializableEncoder@@QEAA@PEAVCNMStream@@PEAVCNMSerializable@@@Z: no such function in the obj
 pin names no function	client/ms2/nmfileevent.cpp: MS2-PIN ??1CNMSerializableEncoder@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/nmfilepath.cpp: MS2-PIN ??0CNMSerializableEncoder@@QEAA@PEAVCNMStream@@PEAVCNMSerializable@@@Z: no such function in the obj
@@ -1305,11 +1304,12 @@ pin names no function	client/ms2/npcdatacli.cpp: MS2-PIN ??$emplace@AEBUpiecewis
 pin names no function	client/ms2/npcdatacli.cpp: MS2-PIN ??$emplace_front@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$list@U?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@std@@@2@@std@@QEAAXAEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z: no such function in the obj
 pin names no function	client/ms2/npcdatacli.cpp: MS2-PIN ??$insert@AEAU?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@std@@X@?$map@IV?$MS2Ptr@VNpcDataCli@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@std@@@std@@@std@@@std@@_N@1@AEAU?$pair@$$CBIV?$MS2Ptr@VNpcDataCli@@@@@1@@Z: no such function in the obj
 pin names no function	client/ms2/partymanager.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCPartyManager@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
-pin names no function	client/ms2/physxhelper.cpp: MS2-PIN ??__Fs_lock@?8??FUN_1416897d0@CPhysXHelper@@QEAAPEAVNxActor@@PEAX@Z@YAXXZ: no such function in the obj
+pin names no function	client/ms2/physxhelper.cpp: MS2-PIN ??__Fs_lock@?8??GetPhysicsActor@CPhysXHelper@@QEAAPEAVNxActor@@PEAX@Z@YAXXZ: no such function in the obj
 pin names no function	client/ms2/pvprankduelcomponent.cpp: MS2-PIN ??__Es_strSkill@@YAXXZ: no such function in the obj
 pin names no function	client/ms2/pvprankduelcomponent.cpp: MS2-PIN ??__Es_strStun@@YAXXZ: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ??$?0AEBIAEB_K$0A@@?$pair@I_J@std@@QEAA@AEBIAEB_K@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ??R<lambda_6350e5a2645340f9cbac3e1d2031332b>@@QEBA_NH@Z: no such function in the obj
+pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ??R<lambda_df06528fad7761efa3e453193cccf6d6>@@QEBAXH@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cbd90@@YAXPEAXAEAVCInPacket@@@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cf510@@YAXPEAVCQuestManager@@H@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cf630@@YAXPEAVCQuestManager@@H@Z: no such function in the obj
@@ -1341,7 +1341,7 @@ pin names no function	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEAV?$ma
 pin names no function	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEAVGameObject@@@std@@YA$$QEAPEAVGameObject@@AEAPEAV1@@Z: no such function in the obj
 pin names no function	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEBD@std@@YA$$QEAPEBDAEAPEBD@Z: no such function in the obj
 pin names no function	client/ms2/stateemotionidle.cpp: MS2-PIN ??C?$MS2Ptr@VRideOffAction@@@@QEBAPEAVRideOffAction@@XZ: no such function in the obj
-pin names no function	client/ms2/statemanager.cpp: MS2-PIN ??4?$MS2Ptr@VUnk_StateArg22@@@@QEAAAEAV0@H@Z: no such function in the obj
+pin names no function	client/ms2/statemanager.cpp: MS2-PIN ??4?$MS2Ptr@VStateSyncObject@@@@QEAAAEAV0@H@Z: no such function in the obj
 pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?get@?$MS2Ptr@VASButton@@@@QEBAPEAVASButton@@XZ: no such function in the obj
 pin names no function	client/ms2/tableexporter.cpp: MS2-PIN ??C?$MS2Ptr@VCRegionSpawnResult@@@@QEBAPEAVCRegionSpawnResult@@XZ: no such function in the obj
 pin names no function	client/ms2/taileffectobject.cpp: MS2-PIN ??0Unk_TeRequest@@QEAA@XZ: no such function in the obj

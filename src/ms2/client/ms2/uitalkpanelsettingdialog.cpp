@@ -49,7 +49,7 @@ struct Unk_MdState
 };
 MS2_CHECK_OFFSET(Unk_MdState, m_n38, 0x38);
 MS2_CHECK_OFFSET(Unk_MdState, m_p48, 0x48);
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 
 class Unk_140166410* FUN_140166410();
 class Unk_TpsKeys : public CInputKeyHandler {};
@@ -92,15 +92,15 @@ void UITalkPanelSettingDialog::vfunc_69()
 {
     if (m_bApplied == 0)
     {
-        if (FUN_141482e80()->m_n38 == 2)
+        if (GetState()->m_n38 == 2)
         {
-            if (FUN_141482e80()->m_p40 != 0)
+            if (GetState()->m_p40 != 0)
             {
-                MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
+                MessengerData::TalkTab* pTab = GetState()->m_p40->GetCurrentTab();
                 if (pTab != 0)
                 {
-                    FUN_141482e80()->m_p40->RemoveTabByName(pTab->m_strName);
-                    FUN_141482e80()->m_p40->vfunc_4();
+                    GetState()->m_p40->RemoveTabByName(pTab->m_strName);
+                    GetState()->m_p40->vfunc_4();
                 }
             }
         }
@@ -112,9 +112,9 @@ void UITalkPanelSettingDialog::vfunc_69()
 void UITalkPanelSettingDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_141482e80()->FUN_141482e50();
-    if (FUN_141482e80()->m_p48 != 0)
-        FUN_141482e80()->m_p48->FUN_141a25210(1);
+    GetState()->FUN_141482e50();
+    if (GetState()->m_p48 != 0)
+        GetState()->m_p48->FUN_141a25210(1);
     m_spRoot = 0;
 }
 
@@ -126,9 +126,9 @@ void UITalkPanelSettingDialog::OnLoadComplete()
     if (m_spRoot == 0)
         return;
     m_bApplied = 0;
-    if (FUN_141482e80()->m_p40 != 0)
+    if (GetState()->m_p40 != 0)
     {
-        MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
+        MessengerData::TalkTab* pTab = GetState()->m_p40->GetCurrentTab();
         if (pTab != 0)
         {
             if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
@@ -140,8 +140,8 @@ void UITalkPanelSettingDialog::OnLoadComplete()
             FUN_141b24ee0(&pTab->m_panel);
         }
     }
-    if (FUN_141482e80()->m_p48 != 0)
-        FUN_141482e80()->m_p48->FUN_141a25210(0);
+    if (GetState()->m_p48 != 0)
+        GetState()->m_p48->FUN_141a25210(0);
 }
 
 // @0x141b22970
@@ -209,13 +209,13 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        if (m_bApplied == 0 && FUN_141482e80()->m_n38 == 2 && FUN_141482e80()->m_p40 != 0)
+        if (m_bApplied == 0 && GetState()->m_n38 == 2 && GetState()->m_p40 != 0)
         {
-            MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
+            MessengerData::TalkTab* pTab = GetState()->m_p40->GetCurrentTab();
             if (pTab != 0)
             {
-                FUN_141482e80()->m_p40->RemoveTabByName(pTab->m_strName);
-                FUN_141482e80()->m_p40->vfunc_4();
+                GetState()->m_p40->RemoveTabByName(pTab->m_strName);
+                GetState()->m_p40->vfunc_4();
             }
         }
         vfunc_67();
@@ -276,9 +276,9 @@ int UITalkPanelSettingDialog::EventInitialize()
 // @0x141b236c0
 int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 {
-    if (FUN_141482e80()->m_p40 == 0)
+    if (GetState()->m_p40 == 0)
         return 0;
-    MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
+    MessengerData::TalkTab* pTab = GetState()->m_p40->GetCurrentTab();
     if (pTab == 0)
         return 0;
     if (strName.IsEmpty())
@@ -302,12 +302,12 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
             CStringW strOldName(pTab->m_strName);
             CStringW strNewName(strName);
             FUN_141b23ab0(&pTab->m_panel);
-            FUN_141482e80()->m_p40->RenameTab(strOldName, strNewName);
-            FUN_141482e80()->m_p40->ReselectCurrentTab();
+            GetState()->m_p40->RenameTab(strOldName, strNewName);
+            GetState()->m_p40->ReselectCurrentTab();
             if (pTab->m_panel.FUN_141482150() != 0)
             {
-                FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
-                FUN_141482e80()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+                GetState()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
+                GetState()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
             }
             return 1;
         }
@@ -322,9 +322,9 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
 // @0x141b23a40
 int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 {
-    if (FUN_141482e80()->m_p40 != 0 && FUN_141482e80()->m_p48 != 0)
+    if (GetState()->m_p40 != 0 && GetState()->m_p48 != 0)
     {
-        return FUN_141482e80()->m_p48->FUN_141a25410(FUN_141482e80()->m_p40->GetCurrentTab(), strName);
+        return GetState()->m_p48->FUN_141a25410(GetState()->m_p40->GetCurrentTab(), strName);
     }
     return 1;
 }

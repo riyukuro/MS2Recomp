@@ -18,7 +18,7 @@ public:
     int FUN_140b03590(__int64 nItemUid);                    // 0x140b03590 helicopter (type 5)
     int FUN_140b03980(__int64 nItemUid);                    // 0x140b03980 bank (type 4)
     int FUN_140b03d70(__int64 nItemUid);                    // 0x140b03d70 type 6
-    int FUN_140b040a0(int nCount);                          // 0x140b040a0 the player may recall (checks only)
+    int CanRecall(int nCount);                          // 0x140b040a0 the player may recall (checks only)
     int FUN_140b04430(__int64 nTarget, int nCount);         // 0x140b04430 start the recall state 0x2c
 };
 MS2_CHECK_SIZE(CCashCallManager, 0x8);

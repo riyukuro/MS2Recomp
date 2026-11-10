@@ -42,7 +42,7 @@ template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString
 class Unk_AttendTable
 {
 public:
-    int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault);
+    int GetValue(int nKind, unsigned nId, const int& nDefault);
 };
 class Unk_LtaTable { public: CStringW FUN_140c6d980(int nStringId, int nEventId, const CStringW& strDefault); };
 extern GameEventUserValue DAT_143ab2fc0;
@@ -231,7 +231,7 @@ void UIStampEventDialog::FUN_140ed81a0(MS2Ptr<StampEventContext> spContext)
         ASObj row(2);
         row.FUN_1407cb9c0("x", spStamp->m_20);
         row.FUN_1407cb9c0("y", spStamp->m_24);
-        row.FUN_1409c0d20("id", spStamp->m_id);
+        row.SetMemberUInt("id", spStamp->m_id);
         row.FUN_1407cbb20("text", CStringW(strIcon));
         row.FUN_1407cb9c0("isSpecial", spStamp->m_bStamped);
         row.FUN_1407cb9c0("isNew", 0);
@@ -254,15 +254,15 @@ void UIStampEventDialog::FUN_140ed8590(MS2Ptr<StampEventContext> spContext)
             row.FUN_1407cb9c0("count", spReward->m_count);
             row.FUN_1407cb9c0("isSpecial", spReward->m_bReceived);
             row.FUN_1407cb9c0("state", FUN_140ed9180(spReward->m_count, spReward->m_bReceived));
-            row.FUN_1409c0d20("slotID01", spReward->m_item.m_itemId);
-            row.FUN_1409c0d20("slotID02", spReward->m_item2.m_itemId);
+            row.SetMemberUInt("slotID01", spReward->m_item.m_itemId);
+            row.SetMemberUInt("slotID02", spReward->m_item2.m_itemId);
             row.FUN_1409adc90("slotRank01", static_cast<ItemAble&>(spReward->m_item).vfunc_o18_1());
             row.FUN_1409adc90("slotRank02", static_cast<ItemAble&>(spReward->m_item2).vfunc_o18_1());
-            row.FUN_1409c0d20("slotID02", spReward->m_item2.m_itemId);
+            row.SetMemberUInt("slotID02", spReward->m_item2.m_itemId);
             row.FUN_1407cba60("slotIcon01", FUN_140ed9480(spReward->m_item.m_itemId));
             row.FUN_1407cba60("slotIcon02", FUN_140ed9480(spReward->m_item2.m_itemId));
-            row.FUN_1409c0d20("slotItemCount01", spReward->m_item.m_count);
-            row.FUN_1409c0d20("slotItemCount02", spReward->m_item2.m_count);
+            row.SetMemberUInt("slotItemCount01", spReward->m_item.m_count);
+            row.SetMemberUInt("slotItemCount02", spReward->m_item2.m_count);
             row.FUN_1407cba60("eventTag", FUN_140ed9560());
             spList->AddItem(row);
         }
@@ -276,12 +276,12 @@ void UIStampEventDialog::FUN_140ed89f0(MS2Ptr<StampEventContext> spContext)
 {
     if (m_30.IsNull()) return;
     ASObj row(2);
-    row.FUN_1409c0d20("id", spContext->m_item.m_itemId);
+    row.SetMemberUInt("id", spContext->m_item.m_itemId);
     row.FUN_1409adc90("rank", static_cast<ItemAble&>(spContext->m_item).vfunc_o18_1());
     row.FUN_1407cb9c0("active", FUN_140ed8fc0());
     row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spContext->m_item.m_itemId));
     row.FUN_1407cba60("icon", FUN_140ed9480(spContext->m_item.m_itemId));
-    row.FUN_1409c0d20("itemCount", static_cast<ItemAble&>(spContext->m_item).vfunc_o18_2());
+    row.SetMemberUInt("itemCount", static_cast<ItemAble&>(spContext->m_item).vfunc_o18_2());
     m_30->Invoke("setCompleteReward", row);
 }
 MS2_REPLACE_METHOD(0x140ED89F0, UIStampEventDialog, FUN_140ed89f0, 542, 0xCE1AF92F);
@@ -343,7 +343,7 @@ int UIStampEventDialog::FUN_140ed8fc0()
     if (spContext->m_b9c) pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab2fc0);
     else pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab3010);
     int nDefault = 0;
-    if (pTable->FUN_1409617d0(0x4b0, spContext->m_eventId, nDefault) != 0) return 0;
+    if (pTable->GetValue(0x4b0, spContext->m_eventId, nDefault) != 0) return 0;
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
         if (((class CQuestManager*)FUN_140764020())->FUN_140745590(spStamp->m_id) == 0) return 0;

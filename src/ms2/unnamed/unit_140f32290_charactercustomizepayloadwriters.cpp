@@ -162,7 +162,7 @@ void FUN_140f328a0(MS2Ptr<Customize> spCustomize, ASObj& obj, int n)
 {
     if (spCustomize == 0)
         return;
-    MS2Ptr<CItem> spItem = static_cast<Unk_CustomizeView*>(spCustomize.get())->FUN_140cd1890();
+    MS2Ptr<CItem> spItem = static_cast<Unk_CustomizeView*>(spCustomize.get())->GetEditItem();
     if (spItem == 0)
         return;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
@@ -210,9 +210,9 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
                 ASObj kEntry(2);
                 int nIndex = i;
                 ((class AScript&)(kEntry)).FUN_1407cb9c0("id", nIndex);
-                kEntry.FUN_1409c4a30("cur", fCur);
-                kEntry.FUN_1409c4a30("min", fMin);
-                kEntry.FUN_1409c4a30("max", fMax);
+                kEntry.SetMemberFloat("cur", fCur);
+                kEntry.SetMemberFloat("min", fMin);
+                kEntry.SetMemberFloat("max", fMax);
                 kSizes.PushValue(Scaleform::GFx::Value(kEntry.FUN_1422bb870()));
             }
             obj.FUN_1409adbe0("sizedata", Scaleform::GFx::Value(kSizes.FUN_1422bb870()));
@@ -224,7 +224,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         float fDegree = part->vfunc_18();
         if (fDegree < 0.0f)
             fDegree = 360.0f + fDegree;
-        obj.FUN_1409c4a30("cur", fDegree);
+        obj.SetMemberFloat("cur", fDegree);
         obj.FUN_1409adbe0("degreedata", Scaleform::GFx::Value(kDegree.FUN_1422bb870()));
     }
     if ((*pnFlags & 8) != 0)
@@ -313,7 +313,7 @@ bool FUN_140f33400(ASObj& obj, MS2Ptr<ItemColorEx> spColor, int* pnColor1, int* 
     }
     obj.FUN_1409c4990("ch2Color", *pnColor2);
     ((class AScript&)(obj)).FUN_1407cb9c0("colorSN", spColor->m_nColor);
-    obj.FUN_1409c0d20("paletteID", spColor->m_nId);
+    obj.SetMemberUInt("paletteID", spColor->m_nId);
     return true;
 }
 MS2_REPLACE(0x140F33400, FUN_140f33400, 349, 0x8BD542F8);
@@ -476,8 +476,8 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         int nDetail = 0;
         if (bDetail && nSelected == -1)
             nDetail = 1;
-        obj.FUN_1409c0d20("color0", nColor1);
-        obj.FUN_1409c0d20("color2", nColor2);
+        obj.SetMemberUInt("color0", nColor1);
+        obj.SetMemberUInt("color2", nColor2);
         ((class AScript&)(obj)).FUN_1407cb9c0("colorDetail", nDetail);
         ((class AScript&)(obj)).FUN_1407cb9c0("colorSelectedIndex", nSelected);
     }

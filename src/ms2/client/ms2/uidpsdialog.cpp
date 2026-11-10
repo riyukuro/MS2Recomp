@@ -228,14 +228,14 @@ void UIDPSDialog::FUN_141929760()
         PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_DpsWorld*)(reinterpret_cast<Unk_DpsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        if (reinterpret_cast<JobSystem*>(reinterpret_cast<PC*>(pPC)->FUN_1416546d0())->GetJobData().operator==((JobData*)0))
+        if (reinterpret_cast<JobSystem*>(reinterpret_cast<PC*>(pPC)->GetJobSystem())->GetJobData().operator==((JobData*)0))
             return;
         double dSeconds = (unsigned)(GetTickCountMs2() - m_180);
         dSeconds /= 1000.0;
         double dDps = (double)m_188 / dSeconds;
         CStringW strLine = StringFormat(L"Lv.{0} {1}, {2:.2f}Second, total: {3}, {4:.2f} damage/sec\n",
                                         (unsigned short)pPC->vfunc_78(),
-                                        (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPC)->FUN_141654730()),
+                                        (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPC)->GetSubJob()),
                                         dSeconds, m_188, dDps);
         pDialog->Invoke("history", strLine);
     }

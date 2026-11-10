@@ -173,11 +173,11 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
 void UIPvPResultDialog::FUN_1413440a0()
 {
     PC* pPC = reinterpret_cast<PC*>((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    bool bInPvP = pPC && ((CPvPInfo*)pPC->FUN_140967420() ? true : false);
+    bool bInPvP = pPC && ((CPvPInfo*)pPC->GetPvPInfo() ? true : false);
     if (bInPvP)
     {
-        m_178 = reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->m_nMode;
-        m_17c = reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->GetRewardItemId();
+        m_178 = reinterpret_cast<CPvPInfo*>(pPC->GetPvPInfo().operator->())->m_nMode;
+        m_17c = reinterpret_cast<CPvPInfo*>(pPC->GetPvPInfo().operator->())->GetRewardItemId();
     }
 }
 
@@ -208,7 +208,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* 
         pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
         pObj->FUN_1407cbbe0("isMe", ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == pEntry->m_nCharId);
         if (pOther)
-            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pOther)->FUN_141654730());
+            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pOther)->GetSubJob());
         else
             pObj->FUN_1407cb9c0("job", 0);
         int nCount = 0;

@@ -52,7 +52,7 @@
 class PostProcessingService
 {
 public:
-    void FUN_1416aa330();                                   // creates the post-process mode materials
+    void CreateMaterials();                                   // creates the post-process mode materials
     char m_pad0[0x30];
     NiMaterialPtr m_aspMaterial[7];                         // +0x30
     std::map<NiNodePtr, int> m_kRootModes;                  // +0x68
@@ -132,7 +132,7 @@ static CString s_strStun4("stun");
 MS2RenderListProcessor::MS2RenderListProcessor()
     : m_spMaterial(0)
 {
-    ((class PostProcessingService*)(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aa330();
+    ((class PostProcessingService*)(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())))->CreateMaterials();
     m_spMaterial = 0;
     m_ppkSortedAlpha = 0;
     m_pkAlphaObjects = 0;

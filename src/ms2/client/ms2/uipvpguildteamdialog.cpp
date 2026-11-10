@@ -115,11 +115,11 @@ public:
 };
 Unk_PopupMenu* FUN_140c30140(int nUiId);
 
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
 CStringW GetStringCommon(int nStringId);
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names are equal
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
@@ -183,7 +183,7 @@ MS2_REPLACE_METHOD(0x141339900, UIPvPGuildTeamDialog, vfunc_67, 62, 0xA2383290);
 // @0x141339950
 void UIPvPGuildTeamDialog::vfunc_72()
 {
-    unsigned nNow = FUN_141472bc0();
+    unsigned nNow = GetServerTick();
     if (m_nEndTime < nNow)
         return;
     FUN_14133b900(m_nEndTime);
@@ -296,12 +296,12 @@ MS2_REPLACE_METHOD(0x14133A210, UIPvPGuildTeamDialog, FUN_14133a210, 644, 0xF181
 void UIPvPGuildTeamDialog::FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info)
 {
     if (FUN_14133b8c0(info.m_nGuildIdA)) {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameA);
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameB);
+        SetChildText(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameA);
+        SetChildText(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameB);
     }
     else {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameB);
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameA);
+        SetChildText(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameB);
+        SetChildText(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameA);
     }
     FUN_14133b0f0(info.m_nGuildIdA, info.m_strMarkA);
     FUN_14133b0f0(info.m_nGuildIdB, info.m_strMarkB);
@@ -316,7 +316,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         return;
     }
     CStringW strRound = StringFormat(L"ROUND {0}", info.m_nRound);
-    FUN_140cfee80(FUN_1422dbc00(), "m_roundText", strRound);
+    SetChildText(FUN_1422dbc00(), "m_roundText", strRound);
     m_nEndTime = info.m_nEndTime;
     FUN_14133b900(m_nEndTime);
     for (int i = 0; i < 3; i++) {
@@ -343,7 +343,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
             PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
             if (pPC == 0)
                 continue;
-            if (FUN_14133b830(reinterpret_cast<PC*>(pPC)->FUN_141656be0())) {
+            if (FUN_14133b830(reinterpret_cast<PC*>(pPC)->GetGuildName())) {
                 if (nLeft >= 3)
                     continue;
                 FUN_14133bab0(m_spLeftPlayers[nLeft], pPC, bPlaying);
@@ -361,12 +361,12 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         m_spComponent->Invoke("clearTime");
     }
     if (FUN_14133b8c0(info.m_scoreA.m_nGuildId)) {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
+        SetChildText(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
+        SetChildText(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
     }
     else {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
+        SetChildText(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
+        SetChildText(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
     }
 }
 MS2_REPLACE_METHOD(0x14133A7A0, UIPvPGuildTeamDialog, FUN_14133a7a0, 2054, 0x9313CBEC);
@@ -477,12 +477,12 @@ MS2_REPLACE_METHOD(0x14133B8C0, UIPvPGuildTeamDialog, FUN_14133b8c0, 49, 0x684AD
 // @0x14133b900
 void UIPvPGuildTeamDialog::FUN_14133b900(unsigned nEndTime)
 {
-    if (FUN_141472bc0() > nEndTime) {
+    if (GetServerTick() > nEndTime) {
         CStringW strTime(L"0000");
         m_spComponent->Invoke("setTime", strTime);
     }
     else {
-        unsigned nRemain = nEndTime - FUN_141472bc0();
+        unsigned nRemain = nEndTime - GetServerTick();
         int nSec = nRemain / 1000;
         int nMin = nSec / 60;
         int nRest = nSec % 60;
@@ -498,7 +498,7 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
 {
     m_slots[((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()] = spSlot;
     const CStringW& strName = pPC->vfunc_77();
-    int nLevel = reinterpret_cast<PC*>(pPC)->FUN_141654730();
+    int nLevel = reinterpret_cast<PC*>(pPC)->GetSubJob();
     __int64 nHp = pPC->FUN_141670a00(4);
     __int64 nMaxHp = pPC->FUN_141670a30(4);
     spSlot->Invoke("showCharInfo", strName, FUN_140719630(nLevel), nHp, nMaxHp);

@@ -1,8 +1,8 @@
 // gfxmovieugc.h - GFxMovieUgc (RTTI .?AVGFxMovieUgc@@, 0xc0 bytes, base GFxMovieEventHandler): a Scaleform movie drawn into
 // a render texture that becomes the base (decal-cleared) texture of a scene object (UGC pictures on items/blocks). The
 // render chain is the one of GFxMovieBackground (gfxmoviebackground.h) without the logging and the screen view:
-// CreateRenderTexture (FUN_14127dd70, a square texture of the UGC texture size), CreateRenderTarget (FUN_14127dc60, the
-// GFx HAL target over the texture's D3D surface) and SetBaseTexture (FUN_14127de50). vftable 0x142ecf758 (42 slots,
+// CreateRenderTexture (CreateRenderTexture, a square texture of the UGC texture size), CreateRenderTarget (CreateRenderTarget, the
+// GFx HAL target over the texture's D3D surface) and SetBaseTexture (SetBaseTexture). vftable 0x142ecf758 (42 slots,
 // 40/41 new: SetFocus/KillFocus), ctor 0x14127d290, dtor 0x14127d360 (scalar deleting 0x14127e000).
 #pragma once
 
@@ -34,9 +34,9 @@ public:
     virtual void vfunc_40();                                        // 40 0x14127dad0 SetFocusEvent
     virtual void vfunc_41();                                        // 41 0x14127db60 KillFocus event
 
-    int FUN_14127dc60();                                            // CreateRenderTarget
-    int FUN_14127dd70();                                            // CreateRenderTexture
-    int FUN_14127de50(NiRenderedTexture* pTexture);                 // SetBaseTexture (of m_spObject)
+    int CreateRenderTarget();                                            // CreateRenderTarget
+    int CreateRenderTexture();                                            // CreateRenderTexture
+    int SetBaseTexture(NiRenderedTexture* pTexture);                 // SetBaseTexture (of m_spObject)
 
 public:
     CString m_strName;                                              // +0x90

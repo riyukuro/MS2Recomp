@@ -545,7 +545,7 @@ void UISwfEntityManager::vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, fl
         if (sp->FUN_1422dc410())
         {
             FUN_1422d17a0(sp->FUN_1422db730(), strKey, sp->FUN_1422db750());
-            FUN_140b632f0()->FUN_1422d0dc0(sp);
+            GetUISwfEntityManager()->FUN_1422d0dc0(sp);
         }
         else
         {

@@ -45,7 +45,7 @@ public:
     static void FUN_141629e70(Delegate<bool(TiXmlDocument&)> loader);
     static void FUN_141629e30(Delegate<bool(TiXmlDocument&)> loader);
     static void FUN_141629db0(Delegate<bool(TiXmlDocument&)> loader);
-    static void FUN_141629eb0(const CString& strLocale);
+    static void SetLocale(const CString& strLocale);
 
 private:
     MS2_LAYOUT_FRIEND;

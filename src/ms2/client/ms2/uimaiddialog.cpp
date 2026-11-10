@@ -97,7 +97,7 @@ void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW strTag);    
 int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* p);
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                         // send
-UITalkCinematic* FUN_140a7b2b0(int nId);                         // a dialog's position record
+UITalkCinematic* FindTalkCinematic(int nId);                         // a dialog's position record
 class Unk_MaidUnused;                                            // element of an unused local array (its CAtlArray dtor COMDAT is 0x140164210, not the void* one)
 
 // The "int" setters of ASObj used here only exist in the shared header; the exe calls them from this unit.
@@ -163,7 +163,7 @@ void UIMaidDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0 && (pRef = FindTalkCinematic(0x4e40)) != 0)
     {
         int nX = pRef->GetLowerCutGlobalY();
         int nY = pRef->GetIllustGlobalX() - 0x14;

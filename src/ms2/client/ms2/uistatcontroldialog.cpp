@@ -46,7 +46,7 @@ public:
 // The status / item listener registries (singletons 0x140aa6d40 / 0x140a6a840).
 class UIStatusEventDispatcher;
 class Unk_StatItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -98,7 +98,7 @@ int UIStatControlDialog::vfunc_oa0_1()
 // @0x14134e600
 void UIStatControlDialog::vfunc_67()
 {
-    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
@@ -107,7 +107,7 @@ void UIStatControlDialog::vfunc_67()
 void UIStatControlDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14134f150();
 }
@@ -359,6 +359,6 @@ void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat,
     CStringW strLabel;
     strLabel.Format(L"[ %s ] [ %s ]", (const wchar_t*)GetStatCommonText(nStat), (const wchar_t*)strValue);
     row.FUN_1407cbb20("label", CStringW(strLabel));
-    row.FUN_1409c0d20("statIdx", nStat);
+    row.SetMemberUInt("statIdx", nStat);
     list->AddItem(row);
 }

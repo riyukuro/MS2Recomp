@@ -223,7 +223,7 @@ CPopupProfileImageMan::~CPopupProfileImageMan()
 }
 
 // @0x141697430
-void CPopupProfileImageMan::FUN_141697430()
+void CPopupProfileImageMan::RemoveExpired()
 {
     int nNow = GetTickCountMs2();
     if (Unk_LockGuard guard = m_lock)
@@ -258,10 +258,10 @@ void CPopupProfileImageMan::FUN_141697430()
         expired.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x141697430, CPopupProfileImageMan, FUN_141697430, 800, 0x76498148);
+MS2_REPLACE_METHOD(0x141697430, CPopupProfileImageMan, RemoveExpired, 800, 0x76498148);
 
 // @0x141697760
-int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
+int CPopupProfileImageMan::AddShown(unsigned __int64 nId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -297,10 +297,10 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141697760, CPopupProfileImageMan, FUN_141697760, 627, 0x2C413CDA);
+MS2_REPLACE_METHOD(0x141697760, CPopupProfileImageMan, AddShown, 627, 0x2C413CDA);
 
 // @0x1416979e0
-void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
+void CPopupProfileImageMan::RemoveShown(unsigned __int64 nId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -316,7 +316,7 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
             pEntity->vfunc_86()->vfunc_3();
     }
 }
-MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 465, 0xF1C4CEB1);
+MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, RemoveShown, 465, 0xF1C4CEB1);
 
 // @0x141697bc0
 unsigned int FUN_141697bc0(Unk_PpConst* p)

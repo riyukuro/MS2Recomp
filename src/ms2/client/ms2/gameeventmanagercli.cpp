@@ -49,9 +49,9 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
-UIGameMenuDialog* FUN_140938b90(int nUiId);                     // the dialog lookups of other units (same template)
+UIGameMenuDialog* FindGameMenuDialog(int nUiId);                     // the dialog lookups of other units (same template)
 template <class T> T* Unk_MMDialog(int nId);          // mentoringmanager.cpp
-UIPaybackDialog* FUN_140a8c5f0(int nUiId);
+UIPaybackDialog* FindPaybackDialog(int nUiId);
 template <class T> T* FindDTDialog(int nId);          // the dialog of a ui id
 template <class T> T* FindCliDialog(int nId);         // gameeventcli.cpp
 int Parse_14021b830(const CStringA& value);                     // a game menu entry id by name (commonenum.cpp)
@@ -411,7 +411,7 @@ int CGameMenuTable::Init()
 // @0x140cf1110
 int CGameMenuTable::RegisterDefs()
 {
-    UIGameMenuDialog* pGameMenu = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pGameMenu = FindGameMenuDialog(0x4e28);
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 1;
@@ -1011,7 +1011,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_nUiId = 0x4f83;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    UIPaybackDialog* pPayback = FUN_140a8c5f0(0x4f93);
+    UIPaybackDialog* pPayback = FindPaybackDialog(0x4f93);
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 62;

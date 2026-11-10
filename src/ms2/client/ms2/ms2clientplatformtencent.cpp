@@ -56,12 +56,12 @@ public:
     void FUN_141b0ce20(int, int);
 };
 
-UIRewardNotify* FUN_140938cd0(int nUiType);
+UIRewardNotify* FindRewardNotify(int nUiType);
 
 bool FUN_140c7e3d0(CClientPlatformTencent* pThis, unsigned char nKind, bool bOn, int nParam);
-UITencentUserReportDialog* FUN_140c7e460(int nId);
-Unk_ReportData* FUN_140c7e6c0(Unk_ReportData* pTo, const Unk_ReportData* pFrom);
-void FUN_140c7ee40(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData);
+UITencentUserReportDialog* FindTencentReportDialog(int nId);
+Unk_ReportData* CopyReportData(Unk_ReportData* pTo, const Unk_ReportData* pFrom);
+void SetReportData(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData);
 
 class Unk_TcValueApi : public AdditionalCliList { };
 class Unk_TcObject { public: Unk_TcValueApi* FUN_1416749a0(); };
@@ -171,7 +171,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_1409304d0(nBalance, 0, 0, 0);
         ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xb, 0);
         if (nDelta > 0) {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->ShowMeratNotice(nDelta);
             FUN_141276180("Merat_Get", "");
@@ -193,7 +193,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         FUN_140930af0(nBalance);
         ((class UIStatusEventDispatcher*)(void*)(((void*)TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0ce20(0xd, 0);
         if (nDelta > 0) {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->ShowMeratRedNotice(nDelta);
             FUN_141276180("Merat_Get", "");
@@ -287,7 +287,7 @@ bool CClientPlatformTencent::vfunc_41(__int64 a1)
 // @0x140c7dc20 opens the Tencent report dialog with the report copied into its data
 void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
 {
-    UITencentUserReportDialog* pDialog = FUN_140c7e460(0x4f32);
+    UITencentUserReportDialog* pDialog = FindTencentReportDialog(0x4f32);
     if (pDialog != 0) {
         if (pDialog->FUN_141924630() == 1)
             return;
@@ -318,7 +318,7 @@ void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
         data.itemId = spReport->GetField60();
         data.guildId = spReport->GetField48();
         data.guildNumber = spReport->GetField58();
-        FUN_140c7ee40(pDialog, &data);
+        SetReportData(pDialog, &data);
         pDialog->FUN_141924680();
         FUN_141276180(s_strReportSiren, "");
     }
@@ -375,7 +375,7 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
 }
 
 // @0x140c7e460 the open dialog of the given ui class id as a Tencent report dialog
-UITencentUserReportDialog* FUN_140c7e460(int nId)
+UITencentUserReportDialog* FindTencentReportDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -391,7 +391,7 @@ Unk_ReportData::~Unk_ReportData()
 }
 
 // @0x140c7e6c0 member-wise copy of the report struct (the ids at +0x2c/+0x5c/+0x84/+0xdc are not copied)
-Unk_ReportData* FUN_140c7e6c0(Unk_ReportData* pTo, const Unk_ReportData* pFrom)
+Unk_ReportData* CopyReportData(Unk_ReportData* pTo, const Unk_ReportData* pFrom)
 {
     pTo->type = pFrom->type;
     pTo->reason = pFrom->reason;
@@ -426,13 +426,13 @@ Unk_ReportData* FUN_140c7e6c0(Unk_ReportData* pTo, const Unk_ReportData* pFrom)
 }
 
 // @0x140c7ee40 copies the report into the dialog's private m_data (+0x188)
-void FUN_140c7ee40(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData)
+void SetReportData(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData)
 {
-    FUN_140c7e6c0(reinterpret_cast<Unk_ReportData*>(reinterpret_cast<char*>(pDialog) + 0x188), pData);
+    CopyReportData(reinterpret_cast<Unk_ReportData*>(reinterpret_cast<char*>(pDialog) + 0x188), pData);
 }
 
 // @0x140c7e570 frees the BSTR a holder points at
-void FUN_140c7e570(BSTR* p)
+void FreeBstr(BSTR* p)
 {
     SysFreeString(*p);
 }
@@ -440,9 +440,9 @@ void FUN_140c7e570(BSTR* p)
 // the 0x10 byte BSTR holder; the string pointer is its first word
 struct Unk_TcBstrHolder { BSTR m_bstr; void* m_8; };
 // @0x140c7e6a0
-void FUN_140c7e6a0(Unk_TcBstrHolder* p)
+void DestroyBstrHolder(Unk_TcBstrHolder* p)
 {
-    FUN_140c7e570(&p->m_bstr);
+    FreeBstr(&p->m_bstr);
 }
 
 // @0x140c7e9b0 vector/scalar deleting destructor of the 0x10 byte BSTR holders
@@ -453,19 +453,19 @@ extern "C" void __identifier("??_M@YAXPEAX_K1P6AX0@Z@Z")(void* p, size_t nSize, 
 void* FUN_140c7e9b0(void* p, unsigned int nFlags) noexcept
 {
     if (nFlags & 2) {
-        FUN_142749a60(p, 0x10, *(size_t*)((char*)p - 8), (void (*)(void*))FUN_140c7e6a0);
+        FUN_142749a60(p, 0x10, *(size_t*)((char*)p - 8), (void (*)(void*))DestroyBstrHolder);
         if (nFlags & 1)
             operator delete[]((char*)p - 8, *(size_t*)((char*)p - 8) * 0x10 + 8);
         return (char*)p - 8;
     }
-    FUN_140c7e6a0((Unk_TcBstrHolder*)p);
+    DestroyBstrHolder((Unk_TcBstrHolder*)p);
     if (nFlags & 1)
         operator delete(p, 0x10);
     return p;
 }
 
 // @0x140c7ee70
-CRuntimeClass* FUN_140c7ee70()
+CRuntimeClass* GetThisClass()
 {
     return CDialog::GetThisClass();
 }

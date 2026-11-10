@@ -147,7 +147,7 @@ bool RewardPreviewItem::IsJobValid(PC* pPC)
 {
     if (m_reqJobs.IsEmpty())
         return true;
-    int nJob = pPC->FUN_141654700();
+    int nJob = pPC->GetJobGroupId();
     if (nJob == 1)
         nJob = 10;
     for (unsigned i = 0; i < m_reqJobs.GetCount(); i++)

@@ -287,8 +287,8 @@ public:
     CString FUN_1414472a0();                                // the lift's name
     int FUN_141447340();                                    // can be lifted
     float FUN_141447ac0();                                  // the lift radius
-    Vector3 FUN_141447c80();                        // the lift's position
-    void FUN_141447d50(int bHighlight);                     // highlight the lift
+    Vector3 GetPosition();                        // the lift's position
+    void SetHighlight(int bHighlight);                     // highlight the lift
 };
 typedef MS2Ptr<Unk_WsB_Lift> Unk_WsB_LiftPtr;
 // The world service's lift targets (WorldService::FUN_141bc5980, the values of its m_540: CLiftableTarget, the base of
@@ -298,7 +298,7 @@ class Unk_AkoLiftTarget : public CPtred
 {
 public:
     // @0x1409673f0
-    Vector3 FUN_1409673f0() { return m_pos; }
+    Vector3 GetPosition() { return m_pos; }
 
     unsigned char m_unk_18[4];
     Vector3 m_pos;                                  // +0x1c
@@ -343,7 +343,7 @@ public:
     virtual void vfunc_17();
     virtual Vector3 vfunc_18();                     // 18: the position
     // @0x140967120
-    bool FUN_140967120() { return m_bTalkable; }
+    bool IsTalkable() { return m_bTalkable; }
 
     unsigned char m_unk_08[0xe48];
     bool m_bTalkable;                                       // +0xe50
@@ -385,7 +385,7 @@ class Unk_AkoMyPC : public MyPC
 public:
     enum { CLASS_ID = 0x06200004 };
 };
-float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: the definition below (0x140966ea0), planar distance
+float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: the definition below (0x140966ea0), planar distance
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);   // a center notice
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);   // a new message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show a message box
@@ -420,28 +420,28 @@ template <class A, class B> void Unk_AkoMessage(int nStringId, int nA, int nB, c
 }
 
 // @0x1409670b0 the function cube service singleton
-inline CFunctionCubeService* FUN_1409670b0() { return TSingleton<CFunctionCubeService>::s_instance; }
+inline CFunctionCubeService* GetFunctionCubeService() { return TSingleton<CFunctionCubeService>::s_instance; }
 
 // The out-of-line copies of the house and cutscene singleton getters that other TUs call (each under its own FUN_
 // declaration, aliased to these in the full exe).
 // @0x1409670e0 the house service (CubeMapInformationService) singleton
-void* FUN_1409670e0()
+void* GetCubeMapInformationService()
 {
     return TSingleton<CubeMapInformationService>::s_instance;
 }
 
 // @0x140967100 the cutscene service (UITalkManager) singleton
-void* FUN_140967100()
+void* GetUITalkManager()
 {
     return TSingleton<UITalkManager>::s_instance;
 }
 int FUN_140b60d90(egf::Entity* pEntity);
-float FUN_140966f00(Vector3 a, Vector3 b);  // the distance of two points
+float GetDistance(Vector3 a, Vector3 b);  // the distance of two points
 int FUN_1408a1360(Vector3 a, Vector3 b);   // the points are on the same level
 int FUN_1408a03c0(Unk_Int3 pt);                             // the packed key of a cube cell                    // the banner id of a ugc banner entity
 
 // @0x140960c30 an action caption: the string with the argument, cut at '-' when the argument is empty
-CStringW FUN_140960c30(int nStringId, CStringW strArg)
+CStringW GetActionCaption(int nStringId, CStringW strArg)
 {
     CStringW strText = FormatStringId<CStringW>(nStringId, strArg);
     if (strArg.GetLength() == 0)
@@ -452,13 +452,13 @@ CStringW FUN_140960c30(int nStringId, CStringW strArg)
     }
     return strText;
 }
-MS2_REPLACE(0x140960C30, FUN_140960c30, 221, 0x7CEA45B7);
+MS2_REPLACE(0x140960C30, GetActionCaption, 221, 0x7CEA45B7);
 
 // The cube craft controller of the player (MyPC::FUN_141530290).
 class Unk_PCCubeCraft
 {
 public:
-    void FUN_1410aad50();                                   // put the lifted cube down
+    void ConfirmPlacement();                                   // put the lifted cube down
 };
 // The ugc manager singleton.
 
@@ -547,7 +547,7 @@ Unk_ActionKeyManager::~Unk_ActionKeyManager()
 }
 
 // @0x140952ef0
-void Unk_ActionKeyManager::FUN_140952ef0()
+void Unk_ActionKeyManager::Update()
 {
     unsigned nNow = GetTickCountMs2();
     if (nNow - m_nNextTick < 100)
@@ -602,7 +602,7 @@ void Unk_ActionKeyManager::FUN_140952ef0()
             pTooltip->FUN_1418b16f0();
     }
 }
-MS2_REPLACE_METHOD(0x140952EF0, Unk_ActionKeyManager, FUN_140952ef0, 1042, 0x13A46E5D);
+MS2_REPLACE_METHOD(0x140952EF0, Unk_ActionKeyManager, Update, 1042, 0x13A46E5D);
 
 // @0x140953310
 void Unk_ActionKeyManager::ActivateCurrentAction()
@@ -616,7 +616,7 @@ void Unk_ActionKeyManager::ActivateCurrentAction()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (pPlayer->FUN_14165f100())
+    if (pPlayer->GetHeldItem())
         return;
     spAction->vfunc_2();
     if (TSingleton<CMouseController>::GetInstance()->HasMode())
@@ -785,7 +785,7 @@ int TaxiStationAction::vfunc_1()
     pStation->GetPropertyValue(0xe725ea17, bHouse);
     if (bHouse)
     {
-        if (pPlayer->FUN_140967010()->FUN_14050da30() == 0)
+        if (pPlayer->GetHomePrivilege()->FUN_14050da30() == 0)
             return 0;
     }
     else
@@ -880,7 +880,7 @@ int PortalAction::vfunc_1()
     {
         MS2Ptr<CPortal> spPortal = aPortals[i];
         efd::SmartPointer<egf::Entity> spEntity =
-            TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(spPortal->m_idEntity);
+            TSingleton<EntityWorldManager>::GetInstance()->FindEntity(spPortal->m_idEntity);
         if (!spEntity)
             continue;
         bool bVisible = false;
@@ -918,7 +918,7 @@ void PortalAction::vfunc_2()
     m_spEntity->GetPropertyValue(0xa162d321, nTarget);
     bool bHousePortal = false;
     m_spEntity->GetPropertyValue(0xe725ea17, bHousePortal);
-    bool bDenied = bHousePortal && !pPlayer->FUN_140967010()->FUN_14050d6f0(nPortalId);
+    bool bDenied = bHousePortal && !pPlayer->GetHomePrivilege()->FUN_14050d6f0(nPortalId);
     if (bDenied)
     {
         FUN_140d73bc0(0x656, 0, 0, L"");
@@ -981,7 +981,7 @@ CStringW PortalAction::vfunc_6()
     if (m_spEntity->GetPropertyValue(0xa162d321, nTarget) != 0)
         return L"";
     if (nTarget == 0)
-        return FUN_140956e40();
+        return GetPortalName();
     efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     int nMapId = 0;
     if (m_spPortal->m_unk_158)
@@ -1026,7 +1026,7 @@ Unk_AkoTarget PortalAction::vfunc_12()
 {
     if (m_spPortal == 0)
         return Unk_AkoTarget();
-    Vector3 pos = reinterpret_cast<CPortal*>(m_spPortal.operator->())->FUN_14169d2f0();
+    Vector3 pos = reinterpret_cast<CPortal*>(m_spPortal.operator->())->GetPosition();
     if (m_spPortal->m_nType == 5)
         pos.z += 75.0f;
     return Unk_AkoTarget(pos);
@@ -1052,13 +1052,13 @@ void PortalAction::UsePortal(int nTarget, int nPortalId)
         SendRoomDungeon();
         break;
     case 0xc:
-        FUN_1409569a0(nPortalId, 3);
+        OpenDungeonRoomDialogWithMode(nPortalId, 3);
         break;
     case 0xd:
         FUN_140956370(0, 1);
         break;
     case 0xe:
-        FUN_1409569a0(nPortalId, 4);
+        OpenDungeonRoomDialogWithMode(nPortalId, 4);
         break;
     case 0x10:
         FUN_140dff580(nTarget, nPortalId);
@@ -1149,8 +1149,8 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         strPassword.Trim(L",");
         int nTarget = 0;
         int nPortalId = 0;
-        data.FUN_140961900(0, nTarget);
-        data.FUN_140961900(1, nPortalId);
+        data.GetIntArg(0, nTarget);
+        data.GetIntArg(1, nPortalId);
         MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
         {
@@ -1163,7 +1163,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
 }
 MS2_REPLACE_METHOD(0x140956BE0, PortalAction, FUN_140956be0, 559, 0xB0C2A3BB);
 // @0x1409569a0
-void PortalAction::FUN_1409569a0(int nPortalId, int nMode)
+void PortalAction::OpenDungeonRoomDialogWithMode(int nPortalId, int nMode)
 {
     if (UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd))
     {
@@ -1174,7 +1174,7 @@ void PortalAction::FUN_1409569a0(int nPortalId, int nMode)
         pDialog->FUN_141924680();
     }
 }
-MS2_REPLACE_METHOD(0x1409569A0, PortalAction, FUN_1409569a0, 117, 0x7ED71136);
+MS2_REPLACE_METHOD(0x1409569A0, PortalAction, OpenDungeonRoomDialogWithMode, 117, 0x7ED71136);
 // @0x140956a20
 void PortalAction::FUN_140956a20(int nPortalId, int nArg)
 {
@@ -1206,11 +1206,11 @@ void PortalAction::RequestMoveFromCube(Cube* pCell, int nTarget, int nPortalId)
 }
 MS2_REPLACE_METHOD(0x140956AA0, PortalAction, RequestMoveFromCube, 309, 0xFE6AA6E2);
 // @0x140956e40
-CStringW PortalAction::FUN_140956e40()
+CStringW PortalAction::GetPortalName()
 {
-    return reinterpret_cast<CPortal*>(m_spPortal.operator->())->FUN_14169c3b0();
+    return reinterpret_cast<CPortal*>(m_spPortal.operator->())->GetActionText();
 }
-MS2_REPLACE_METHOD(0x140956E40, PortalAction, FUN_140956e40, 73, 0x911E15E5);
+MS2_REPLACE_METHOD(0x140956E40, PortalAction, GetPortalName, 73, 0x911E15E5);
 
 // ---- BuyCubeAction ---------------------------------------------------------------------------------------------------
 // @0x140956e90
@@ -1241,7 +1241,7 @@ void BuyCubeAction::vfunc_2()
     }
     else
     {
-        FUN_140d73aa0(spHouse->FUN_1410d5d80(nError), 0, 0, L"");
+        FUN_140d73aa0(spHouse->GetMessageText(nError), 0, 0, L"");
     }
 }
 MS2_REPLACE_METHOD(0x140956F60, BuyCubeAction, vfunc_2, 342, 0x106CF696);
@@ -1250,7 +1250,7 @@ void BuyCubeAction::vfunc_3()
 {
     if (m_id != egf::kENTITY_INVALID)
     {
-        FUN_1409571a0(m_id, 0);
+        HighlightCubeEntity(m_id, 0);
         m_id = egf::kENTITY_INVALID;
     }
 }
@@ -1262,14 +1262,14 @@ MS2_REPLACE_METHOD(0x140957140, BuyCubeAction, vfunc_5, 11, 0x671D62B5);
 CStringW BuyCubeAction::vfunc_6() { return GetStringCommon(0x635); }
 MS2_REPLACE_METHOD(0x140957160, BuyCubeAction, vfunc_6, 58, 0xE8BBC9CB);
 // @0x1409571a0
-void BuyCubeAction::FUN_1409571a0(egf::EntityID id, int bSelect)
+void BuyCubeAction::HighlightCubeEntity(egf::EntityID id, int bSelect)
 {
     egf::EntityID idNone(0);
     if (id == idNone)
         return;
     FUN_141b71e70(id, bSelect != 0, 1, false);
 }
-MS2_REPLACE_METHOD(0x1409571A0, BuyCubeAction, FUN_1409571a0, 126, 0x67FAFAB3);
+MS2_REPLACE_METHOD(0x1409571A0, BuyCubeAction, HighlightCubeEntity, 126, 0x67FAFAB3);
 
 // ---- LiftCubeAction --------------------------------------------------------------------------------------------------
 // @0x140957230
@@ -1287,9 +1287,9 @@ int LiftCubeAction::vfunc_1()
     Unk_WsB_Lift* pOld = WorldService::GetInstance()->FindLiftByName(m_str18).get();
     Unk_WsB_Lift* pLift = FUN_140957890();
     if (pOld && pOld != pLift)
-        ((CLiftableObject*)(pOld))->FUN_141447d50(0);
+        ((CLiftableObject*)(pOld))->SetHighlight(0);
     if (pLift)
-        ((CLiftableObject*)(pLift))->FUN_141447d50(1);
+        ((CLiftableObject*)(pLift))->SetHighlight(1);
     m_str18 = pLift ? ((CLiftableObject*)(pLift))->GetName() : CString("");
     return pLift != 0;
 }
@@ -1305,9 +1305,9 @@ void LiftCubeAction::vfunc_2()
     Unk_WsB_Lift* pLift = WorldService::GetInstance()->FindLiftByName(m_str18).get();
     if (!pLift)
         return;
-    if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
+    if (pPlayer->GetRidee() && !pPlayer->SendRequestRideMode1(0))
         return;
-    ((CLiftableObject*)(pLift))->FUN_141447d50(0);
+    ((CLiftableObject*)(pLift))->SetHighlight(0);
     COutPacket packet(static_cast<int>(SendOp::Liftable));
     packet.Encode1(1);
     packet.COutPacket::WriteString(((CLiftableObject*)(pLift))->GetName());
@@ -1330,7 +1330,7 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
     {
         if (((CLiftableObject*)(spLift.operator->()))->CanLift() == 0)
             continue;
-        Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->FUN_141447c80();
+        Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->GetPosition();
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(ptLift));
         Vector3 diff = (ptLift - reinterpret_cast<const Vector3&>(pos));
         float fDist = diff.Unitize();
@@ -1350,7 +1350,7 @@ CStringW LiftCubeAction::vfunc_6()
     Unk_WsB_Lift* pLift = WorldService::GetInstance()->FindLiftByName(m_str18);
     if (!pLift)
         return L"";
-    return FUN_140960c30(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((CLiftableObject*)(pLift))->FUN_141447cc0()));
+    return GetActionCaption(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((CLiftableObject*)(pLift))->FUN_141447cc0()));
 }
 MS2_REPLACE_METHOD(0x140957740, LiftCubeAction, vfunc_6, 315, 0x1C11A665);
 
@@ -1386,7 +1386,7 @@ int TalkAction::vfunc_1()
             return 0;
         int bTalk = 0;
         Unk_QmNpcQuestState state;
-        ((CQuestManager*)FUN_140764020())->FUN_1416d12d0(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0(), &state, 1);
+        ((CQuestManager*)FUN_140764020())->GetNpcQuestState(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0(), &state, 1);
         if (state.m_icon != 0xb)
             bTalk = 1;
         if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->GetKind() != 0)
@@ -1398,7 +1398,7 @@ int TalkAction::vfunc_1()
         if (bTalk)
         {
             m_n18 = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
-            m_nNpcId = reinterpret_cast<GameObject*>(pNpc)->FUN_14123c580();
+            m_nNpcId = reinterpret_cast<GameObject*>(pNpc)->GetObjectId();
             m_strName = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
             return 1;
         }
@@ -1456,7 +1456,7 @@ MS2_REPLACE_METHOD(0x140958A60, InteractAction, vfunc_5, 11, 0xCC810D29);
 int InteractAction::vfunc_1()
 {
     CInteractObject* pOld = WorldService::GetInstance()->FindProp(m_strObjectId);
-    CInteractObject* pObject = FUN_140958e70();
+    CInteractObject* pObject = FindUsableInteractObject();
     if (pOld && pOld != pObject)
     {
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
@@ -1477,7 +1477,7 @@ int InteractAction::vfunc_1()
 }
 MS2_REPLACE_METHOD(0x140958120, InteractAction, vfunc_1, 390, 0x2AE0A946);
 // @0x140958e70
-CInteractObject* InteractAction::FUN_140958e70()
+CInteractObject* InteractAction::FindUsableInteractObject()
 {
     if (((class Unk_AkoGuide*)FUN_1409331e0())->IsRestricted(3) != 0)
         return 0;
@@ -1496,7 +1496,7 @@ CInteractObject* InteractAction::FUN_140958e70()
         return 0;
     return pObject;
 }
-MS2_REPLACE_METHOD(0x140958E70, InteractAction, FUN_140958e70, 273, 0xBA3636FF);
+MS2_REPLACE_METHOD(0x140958E70, InteractAction, FindUsableInteractObject, 273, 0xBA3636FF);
 // @0x140958cb0
 void InteractAction::vfunc_3()
 {
@@ -1573,7 +1573,7 @@ void InteractAction::vfunc_2()
     {
         if (pPlayer->FUN_141527160(0x19) == 0)
             return;
-        if (pPlayer->FUN_1416764a0())
+        if (pPlayer->GetRidee())
         {
             MS2Ptr<RideOffActionInteract> spRideOff(new RideOffActionInteract(0));
             spRideOff->m_n28 = pObject->GetRowId();
@@ -1612,7 +1612,7 @@ CStringW InteractAction::vfunc_6()
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
     if (strName.GetLength() < 1)
         return L"";
-    return FUN_140960c30(0x634, strName);
+    return GetActionCaption(0x634, strName);
 }
 MS2_REPLACE_METHOD(0x140958A80, InteractAction, vfunc_6, 450, 0xAA77F3CE);
 
@@ -1627,7 +1627,7 @@ InteractNpcAction::~InteractNpcAction()
 // @0x140959020
 int InteractNpcAction::vfunc_1()
 {
-    m_pNpc = FUN_140959330();
+    m_pNpc = FindInteractNpc();
     if (m_pNpc != 0)
         return 1;
     return 0;
@@ -1646,7 +1646,7 @@ void InteractNpcAction::vfunc_2()
     if (reinterpret_cast<CNpc*>(m_pNpc)->GetNpcData()->m_interact.m_strFunction.GetLength() > 0)
     {
         MS2Ptr<StateInteractNpcData> spData = new StateInteractNpcData();
-        spData->m_nNpc = reinterpret_cast<GameObject*>(m_pNpc)->FUN_14123c580();
+        spData->m_nNpc = reinterpret_cast<GameObject*>(m_pNpc)->GetObjectId();
         static_cast<PCBase*>(pPlayer)->vfunc_59(0x1a, spData, 0, 0);   // PC/MyPC re-declare slot 59 as a new virtual
     }
     else
@@ -1655,7 +1655,7 @@ void InteractNpcAction::vfunc_2()
     }
 }
 // @0x140959330
-Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
+Unk_WsC_GameObj* InteractNpcAction::FindInteractNpc()
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
@@ -1664,9 +1664,9 @@ Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
     if (!pNpc)
     {
         int nKind = 1;
-        bool bRide = (pPlayer->FUN_140967420() ? true : false) && reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->HasPoint();
+        bool bRide = (pPlayer->GetPvPInfo() ? true : false) && reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->HasPoint();
         if (bRide)
-            nKind = reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint();
+            nKind = reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->GetPoint();
         pNpc = WorldService::GetInstance()->FUN_141bd2170(nKind, GetClientConstants()->InteractionDistance.Read(), 1, 0);
     }
     if (!pNpc)
@@ -1675,17 +1675,17 @@ Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
         return 0;
     if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->m_interact.m_strFunction.GetLength() < 1)
         return 0;
-    if (!pNpc->FUN_140967120())
+    if (!pNpc->IsTalkable())
         return 0;
     return pNpc;
 }
-MS2_REPLACE_METHOD(0x140959330, InteractNpcAction, FUN_140959330, 755, 0xAE7C8382);
+MS2_REPLACE_METHOD(0x140959330, InteractNpcAction, FindInteractNpc, 755, 0xAE7C8382);
 // @0x140959240
 CStringW InteractNpcAction::vfunc_6()
 {
     if (m_pNpc == 0)
         return L"";
-    return FUN_140960c30(0x634, reinterpret_cast<CNpc*>(m_pNpc)->FUN_141093310());
+    return GetActionCaption(0x634, reinterpret_cast<CNpc*>(m_pNpc)->FUN_141093310());
 }
 MS2_REPLACE_METHOD(0x140959240, InteractNpcAction, vfunc_6, 145, 0xD2B6814B);
 // @0x140959630
@@ -1755,7 +1755,7 @@ MS2_REPLACE_METHOD(0x1409599F0, RegistUgcAction, vfunc_2, 117, 0x885DE4AF);
 // @0x140959a70
 void RegistUgcAction::vfunc_3()
 {
-    FUN_140959d70(m_spEntity, 0);
+    HighlightUgcEntity(m_spEntity, 0);
     m_spEntity = 0;
 }
 MS2_REPLACE_METHOD(0x140959A70, RegistUgcAction, vfunc_3, 66, 0x541E758C);
@@ -1768,8 +1768,8 @@ int RegistUgcAction::vfunc_1()
     egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bd0220(pPlayer->vfunc_18(), GetClientConstants()->RegistUgcDistance.Read());
     if (m_spEntity != pEntity)
     {
-        FUN_140959d70(m_spEntity, 0);
-        FUN_140959d70(pEntity, 1);
+        HighlightUgcEntity(m_spEntity, 0);
+        HighlightUgcEntity(pEntity, 1);
         m_spEntity = pEntity;
     }
     return m_spEntity != 0;
@@ -1798,13 +1798,13 @@ CStringW RegistUgcAction::vfunc_6()
 }
 MS2_REPLACE_METHOD(0x140959AE0, RegistUgcAction, vfunc_6, 644, 0x60ED213D);
 // @0x140959d70
-void RegistUgcAction::FUN_140959d70(egf::Entity* pEntity, int bSelect)
+void RegistUgcAction::HighlightUgcEntity(egf::Entity* pEntity, int bSelect)
 {
     if (!pEntity)
         return;
     FUN_141b71e70(pEntity->GetEntityID(), bSelect != 0, 1, false);
 }
-MS2_REPLACE_METHOD(0x140959D70, RegistUgcAction, FUN_140959d70, 108, 0x9EED06A3);
+MS2_REPLACE_METHOD(0x140959D70, RegistUgcAction, HighlightUgcEntity, 108, 0x9EED06A3);
 
 // @0x140959eb0 the object weapon cube in front of the player (the two cells ahead and the one below), kept in m_spCube
 int PullObjectWeaponAction::FUN_140959eb0()
@@ -1812,7 +1812,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    if (pPlayer->FUN_14165f100())
+    if (pPlayer->GetHeldItem())
         return 0;
     switch (pPlayer->GetCurStateId())
     {
@@ -1831,7 +1831,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
         if (i >= 0)
         {
             efd::Point3 ptFront;
-            efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
+            efd::SmartPointer<Ridee> spRidee(pPlayer->GetRidee());
             if (spRidee)
                 spCubeMap->GetCellInFrontOfActor(spRidee, 0.0f, reinterpret_cast<Vector3*>(&ptFront), i);
             else
@@ -1844,7 +1844,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
         else
         {
             efd::Point3 ptFront;
-            efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
+            efd::SmartPointer<Ridee> spRidee(pPlayer->GetRidee());
             if (spRidee)
                 spCubeMap->GetCellInFrontOfActor(spRidee, 0.0f, reinterpret_cast<Vector3*>(&ptFront), 0);
             else
@@ -1875,7 +1875,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
             continue;
         float fRange = 150.0f;
         pCube->entity->GetPropertyValue(0x2f9d016f, fRange);
-        if (FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->FUN_1408b5370())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0()))) > fRange)
+        if (GetDistance(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->FUN_1408b5370())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0()))) > fRange)
             continue;
         if (pCube->field48 != 0)
             continue;
@@ -1921,7 +1921,7 @@ void PullObjectWeaponAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (pPlayer->FUN_14165f100())
+    if (pPlayer->GetHeldItem())
         return;
     switch (pPlayer->GetCurStateId())
     {
@@ -1938,7 +1938,7 @@ void PullObjectWeaponAction::vfunc_2()
         int nResult = m_spCube->entity->GetPropertyValue(0xe52a2848, strOwner);
         if (nResult == 0 || !strOwner.empty())
         {
-            if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
+            if (pPlayer->GetRidee() && !pPlayer->SendRequestRideMode1(0))
                 return;
             COutPacket packet(static_cast<int>(SendOp::RequestCube));
             packet.Encode1(0x11);
@@ -1989,7 +1989,7 @@ int PutDownLiftableAction::vfunc_1()
     {
         Unk_AkoLiftTargetPtr spTarget = aTargets[i];
         Vector3 ptTargetCell = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
-        ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(spTarget->FUN_1409673f0(), &ptTargetCell);
+        ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(spTarget->GetPosition(), &ptTargetCell);
         if (reinterpret_cast<efd::Point3&>(ptCell) == reinterpret_cast<efd::Point3&>(ptTargetCell))
             return 1;
     }
@@ -2010,7 +2010,7 @@ void PutDownLiftableAction::vfunc_2()
     if (!pPlayer)
         return;
     if (Unk_PCCubeCraft* pCraft = pPlayer->GetActiveCubeCraft())
-        pCraft->FUN_1410aad50();
+        pCraft->ConfirmPlacement();
 }
 MS2_REPLACE_METHOD(0x14095AD50, PutDownLiftableAction, vfunc_2, 75, 0xE574BACD);
 // @0x14095add0
@@ -2035,18 +2035,18 @@ int FunctionCubeAction::vfunc_1()
         return 0;
     if (pPlayer->GetCurStateId() == 0x29)
         return 0;
-    __int64 nAccount = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0();
+    __int64 nAccount = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->GetAccountId();
     MS2Ptr<CFunctionCubeObject> spObject =
-        FUN_1409670b0()->FUN_141230f60(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0())), GetClientConstants()->FunctionCubeDistance.Read(), nAccount);
+        GetFunctionCubeService()->FUN_141230f60(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0())), GetClientConstants()->FunctionCubeDistance.Read(), nAccount);
     if (spObject == 0)
         return 0;
     m_n20 = spObject->vfunc_9(m_str18);
     m_str18 = spObject->GetId();
-    if (spObject->FUN_1409674f0() == 3 || spObject->FUN_1409674f0() == 2)
+    if (spObject->GetSubKind() == 3 || spObject->GetSubKind() == 2)
         return 0;
-    if (spObject->FUN_140966fc0() == 7 || spObject->FUN_140966fc0() == 8)
+    if (spObject->GetKind() == 7 || spObject->GetKind() == 8)
         return 0;
-    if (spObject->FUN_140966fc0() == 0xd)
+    if (spObject->GetKind() == 0xd)
         return 0;
     if (m_str18.IsEmpty())
         return 0;
@@ -2066,23 +2066,23 @@ void FunctionCubeAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(CString(m_str18));
+    MS2Ptr<CFunctionCubeObject> spObject = GetFunctionCubeService()->FindCube(CString(m_str18));
     if (spObject == 0)
         return;
     if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
     {
-        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->GetAccountId())
         {
-            if (spObject->FUN_1409674f0() == 1)
+            if (spObject->GetSubKind() == 1)
             {
                 FUN_141275260(99, 1, 1);
                 return;
             }
         }
     }
-    if (pPlayer->FUN_1416764a0() && static_cast<bool>(spObject.get()))
+    if (pPlayer->GetRidee() && static_cast<bool>(spObject.get()))
     {
-        if (spObject->FUN_1412271f0() && !pPlayer->SendRequestRideMode1(0))
+        if (spObject->HasModel() && !pPlayer->SendRequestRideMode1(0))
             return;
     }
     spObject->vfunc_8(m_str18);
@@ -2091,7 +2091,7 @@ MS2_REPLACE_METHOD(0x14095B280, FunctionCubeAction, vfunc_2, 483, 0x595BD151);
 // @0x14095b490
 CStringW FunctionCubeAction::vfunc_6()
 {
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(m_str18);
+    MS2Ptr<CFunctionCubeObject> spObject = GetFunctionCubeService()->FindCube(m_str18);
     if (spObject.get())
         return spObject->vfunc_6();
     return L"";
@@ -2100,7 +2100,7 @@ MS2_REPLACE_METHOD(0x14095B490, FunctionCubeAction, vfunc_6, 247, 0xF1723E7B);
 // @0x14095b590
 CStringW FunctionCubeAction::vfunc_8()
 {
-    MS2Ptr<CFunctionCubeObject> spObject = FUN_1409670b0()->FindCube(m_str18);
+    MS2Ptr<CFunctionCubeObject> spObject = GetFunctionCubeService()->FindCube(m_str18);
     if (spObject.get())
         return spObject->vfunc_7();
     return ActionKeyObject::vfunc_8();
@@ -2217,10 +2217,10 @@ int HoldAction::vfunc_1()
     int nTargetId = 0;
     CString strName;
     m_f24 = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
-    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f24);
+    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FindHoldTarget(&nTargetId, &strName, m_f24);
     if (bFound == 0)
         return 0;
-    if (pPlayer->FUN_14123c580() == nTargetId)
+    if (pPlayer->GetObjectId() == nTargetId)
         return 0;
     Unk_WsC_GameObj* pPc = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
     if (pPc != 0)
@@ -2264,14 +2264,14 @@ void HoldAction::vfunc_2()
     {
         pPlayer->vfunc_59(6, 0, 0, 0);
     }
-    else if (pPlayer->FUN_1416764a0())
+    else if (pPlayer->GetRidee())
     {
         pPlayer->SendRequestRideMode1(new RideOffActionHold(0));
     }
     else
     {
         MS2Ptr<StateHoldData> spData(new StateHoldData);
-        if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&spData->m_nTargetId,
+        if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FindHoldTarget(&spData->m_nTargetId,
                 &spData->m_strTargetName, m_f24 + 20.0f))
             pPlayer->vfunc_59(0x20, spData, 0, 0);
     }
@@ -2319,10 +2319,10 @@ int HoldPCAction::vfunc_1()
     int nTargetId = 0;
     CString strName;
     m_f1c = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
-    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f1c);
+    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FindHoldTarget(&nTargetId, &strName, m_f1c);
     if (bFound == 0)
         return 0;
-    if (pPlayer->FUN_14123c580() == nTargetId)
+    if (pPlayer->GetObjectId() == nTargetId)
         return 0;
     Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
     if (pTarget != 0)
@@ -2335,7 +2335,7 @@ int HoldPCAction::vfunc_1()
             return 0;
         if (reinterpret_cast<PC*>(pTarget)->FUN_1416642a0())
             return 0;
-        m_n18 = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
+        m_n18 = reinterpret_cast<GameObject*>(pTarget)->GetObjectId();
     }
     else
     {
@@ -2359,7 +2359,7 @@ void HoldPCAction::vfunc_2()
         return;
     if (pPlayer->GetCurStateId() == 0x20)
         return;
-    if (pPlayer->FUN_1416764a0())
+    if (pPlayer->GetRidee())
     {
         pPlayer->SendRequestRideMode1(new RideOffActionHold(0));
     }
@@ -2402,10 +2402,10 @@ int ReleasePCAction::vfunc_1()
     int nTargetId = 0;
     CString strName;
     m_f1c = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
-    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f1c);
+    int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FindHoldTarget(&nTargetId, &strName, m_f1c);
     if (bFound == 0)
         return 0;
-    if (pPlayer->FUN_14123c580() == nTargetId)
+    if (pPlayer->GetObjectId() == nTargetId)
         return 0;
     Unk_WsC_GameObj* pTarget = WorldService::GetInstance()->FUN_141bd1290(nTargetId);
     if (pTarget != 0)
@@ -2414,7 +2414,7 @@ int ReleasePCAction::vfunc_1()
             return 0;
         if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14152e060() != nTargetId)
             return 0;
-        m_n18 = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
+        m_n18 = reinterpret_cast<GameObject*>(pTarget)->GetObjectId();
     }
     else
     {
@@ -2522,7 +2522,7 @@ CStringW GatheringAction::vfunc_6()
         int nCount = counts.GetValueAt(pos);
         strText += StringFormat(L"{0} x{1}", strName, nCount);
     }
-    return FUN_140960c30(0x634, strText);
+    return GetActionCaption(0x634, strText);
 }
 MS2_REPLACE_METHOD(0x14095D4A0, GatheringAction, vfunc_6, 685, 0xB1C6B98E);
 // @0x14095d760
@@ -2542,7 +2542,7 @@ int GatheringAction::vfunc_13(CInteractObject* pObject)
 }
 MS2_REPLACE_METHOD(0x14095D760, GatheringAction, vfunc_13, 218, 0xB57C14A5);
 // @0x14095d840
-CInteractGatheringObject* GatheringAction::FUN_14095d840()
+CInteractGatheringObject* GatheringAction::FindGatheringObject()
 {
     if (m_strObjectId.IsEmpty())
         return 0;
@@ -2554,7 +2554,7 @@ CInteractGatheringObject* GatheringAction::FUN_14095d840()
     CInteractGatheringObject* pGathering = static_cast<CInteractGatheringObject*>(pObject);
     return pGathering;
 }
-MS2_REPLACE_METHOD(0x14095D840, GatheringAction, FUN_14095d840, 187, 0xA825F12B);
+MS2_REPLACE_METHOD(0x14095D840, GatheringAction, FindGatheringObject, 187, 0xA825F12B);
 // @0x14095d480
 int GatheringAction::vfunc_5() { return 4; }
 MS2_REPLACE_METHOD(0x14095D480, GatheringAction, vfunc_5, 11, 0x85F76FBF);
@@ -2607,7 +2607,7 @@ int HomemadeCubeAction::vfunc_1()
     if (!pPlayer)
         return 0;
     ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
-    FUN_1409670b0()->FUN_141232660(aCubes, reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0());
+    GetFunctionCubeService()->CollectHomemadeCubes(aCubes, reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->GetAccountId());
     float fNearest = FLT_MAX;
     MS2Ptr<CHomemadeCubeObject> spNearest(0);
     m_cubes.RemoveAll();
@@ -2616,7 +2616,7 @@ int HomemadeCubeAction::vfunc_1()
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
         float fDist = (pPlayer->vfunc_18() - spCube->GetPosition()).Length();
         bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get()
-            && FUN_14095e440(spCube);
+            && IsCubeUsable(spCube);
         if (FUN_1408a1360(pPlayer->vfunc_18(), spCube->GetPosition()) == 0)
             bUsable = false;
         if (spCube->FUN_140967140() != bUsable)
@@ -2642,7 +2642,7 @@ CStringW HomemadeCubeAction::vfunc_6()
     ATL::CAtlMap<CStringW, int, ATL::CStringElementTraits<CStringW> > counts;
     for (size_t i = 0; i < m_cubes.GetCount(); i++)
     {
-        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_cubes[i]->FUN_141226cd0());
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_cubes[i]->GetItemId());
         int nCount = 0;
         counts.Lookup(strName, nCount);
         nCount++;
@@ -2657,15 +2657,15 @@ CStringW HomemadeCubeAction::vfunc_6()
         int nCount = counts.GetValueAt(pos);
         strText += StringFormat(L"{0} x{1}", strName, nCount);
     }
-    return FUN_140960c30(0x634, strText);
+    return GetActionCaption(0x634, strText);
 }
 MS2_REPLACE_METHOD(0x14095E110, HomemadeCubeAction, vfunc_6, 685, 0x2F692C76);
 // @0x14095e440
-int HomemadeCubeAction::FUN_14095e440(MS2Ptr<CHomemadeCubeObject> spCube)
+int HomemadeCubeAction::IsCubeUsable(MS2Ptr<CHomemadeCubeObject> spCube)
 {
     return spCube->FUN_141229000(1);
 }
-MS2_REPLACE_METHOD(0x14095E440, HomemadeCubeAction, FUN_14095e440, 66, 0xCD5963F8);
+MS2_REPLACE_METHOD(0x14095E440, HomemadeCubeAction, IsCubeUsable, 66, 0xCD5963F8);
 // @0x14095e0d0
 void HomemadeCubeAction::vfunc_2() { FunctionCubeAction::vfunc_2(); }
 MS2_REPLACE_METHOD(0x14095E0D0, HomemadeCubeAction, vfunc_2, 24, 0x33628DB0);
@@ -2692,7 +2692,7 @@ int NurturingCubeAction::vfunc_1()
     if (!pPlayer)
         return 0;
     ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> > aCubes;
-    FUN_1409670b0()->FUN_141232810(aCubes);
+    GetFunctionCubeService()->CollectNurturingCubes(aCubes);
     float fNearest = FLT_MAX;
     MS2Ptr<CNurturingCubeObject> spNearest(0);
     for (size_t i = 0; i < aCubes.GetCount(); i++)
@@ -2732,10 +2732,10 @@ CStringW NurturingCubeAction::vfunc_6()
     if (!pPlayer)
         return L"";
     if (m_n30 != 0)
-        return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_gift"));
-    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0())
-        return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_eat"));
-    return FUN_140960c30(0x634, GetStringCommonByKey(L"s_action_nurturing_play"));
+        return GetActionCaption(0x634, GetStringCommonByKey(L"s_action_nurturing_gift"));
+    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->GetAccountId())
+        return GetActionCaption(0x634, GetStringCommonByKey(L"s_action_nurturing_eat"));
+    return GetActionCaption(0x634, GetStringCommonByKey(L"s_action_nurturing_play"));
 }
 MS2_REPLACE_METHOD(0x14095E870, NurturingCubeAction, vfunc_6, 490, 0x7769ECD3);
 // @0x14095ea60
@@ -2765,7 +2765,7 @@ int BannerAction::vfunc_1()
         return 0;
     if (!FUN_140b7f400(pPlayer))
         return 0;
-    PCBase* pTarget = FUN_14095edf0();
+    PCBase* pTarget = FindNearestMicroGamePC();
     if (!pTarget)
         return 0;
     MS2Ptr<Unk_PCBaseComp_ac8> spBanner = pTarget->vfunc_87();
@@ -2778,7 +2778,7 @@ MS2_REPLACE_METHOD(0x14095EB80, BannerAction, vfunc_1, 223, 0xBBBA823D);
 // @0x14095ec70
 void BannerAction::vfunc_2()
 {
-    PCBase* pTarget = FUN_14095edf0();
+    PCBase* pTarget = FindNearestMicroGamePC();
     if (!pTarget)
         return;
     UIBanner* pBanner = Unk_GetUI<UIBanner>(0x4e30);
@@ -2787,7 +2787,7 @@ void BannerAction::vfunc_2()
     unsigned nNow = GetTickCountMs2();
     if (nNow - m_n1c < 300)
         return;
-    pBanner->FUN_140ba8b80(pTarget->FUN_14123c580());
+    pBanner->FUN_140ba8b80(pTarget->GetObjectId());
     m_n1c = nNow;
 }
 MS2_REPLACE_METHOD(0x14095EC70, BannerAction, vfunc_2, 132, 0xFA744602);
@@ -2806,7 +2806,7 @@ CStringW BannerAction::vfunc_6()
 }
 MS2_REPLACE_METHOD(0x14095ED20, BannerAction, vfunc_6, 191, 0x7C5FCB93);
 // @0x14095edf0
-PCBase* BannerAction::FUN_14095edf0()
+PCBase* BannerAction::FindNearestMicroGamePC()
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
@@ -2840,7 +2840,7 @@ PCBase* BannerAction::FUN_14095edf0()
             continue;
         if (fHeight < -50.0f)
             continue;
-        float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(ptMine), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())));
+        float fDist = GetPlanarDistance(reinterpret_cast<const Vector3&>(ptMine), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())));
         if (fDist > fMaxDist)
             continue;
         if (fDist < fNearest)
@@ -2851,7 +2851,7 @@ PCBase* BannerAction::FUN_14095edf0()
     }
     return pNearest;
 }
-MS2_REPLACE_METHOD(0x14095EDF0, BannerAction, FUN_14095edf0, 667, 0x36CC3C2A);
+MS2_REPLACE_METHOD(0x14095EDF0, BannerAction, FindNearestMicroGamePC, 667, 0x36CC3C2A);
 // @0x14095ed00
 int BannerAction::vfunc_5() { return 0x19; }
 MS2_REPLACE_METHOD(0x14095ED00, BannerAction, vfunc_5, 11, 0x4FAEBC98);
@@ -2876,7 +2876,7 @@ int ReactorAction::vfunc_1()
     if (spNew)
     {
         spNew->FUN_140b78b40(true);
-        m_nReactorId = spNew->FUN_14123c580();
+        m_nReactorId = spNew->GetObjectId();
         return 1;
     }
     return 0;
@@ -2910,7 +2910,7 @@ void ReactorAction::vfunc_2()
     {
         if (pPlayer->FUN_141527160(0x3d) == 0)
             return;
-        if (pPlayer->FUN_1416764a0())
+        if (pPlayer->GetRidee())
         {
             MS2Ptr<RideOffActionReact> spRideOff(new RideOffActionReact(0));
             spRideOff->m_n28 = spReactor->GetReactorId();
@@ -2950,7 +2950,7 @@ CStringW ReactorAction::vfunc_6()
     CStringW strAction = GetStringCommonByKey(spState->m_strActionStringKey);
     if (strAction.GetLength() < 1)
         return L"";
-    return FUN_140960c30(0x65e, strAction);
+    return GetActionCaption(0x65e, strAction);
 }
 MS2_REPLACE_METHOD(0x14095F870, ReactorAction, vfunc_6, 541, 0xCBB31A63);
 // @0x14095faf0
@@ -3021,7 +3021,7 @@ int QuestUserFindAction::vfunc_1()
     Unk_WsC_GameObj* pTarget = pWorld->FUN_141bd1530(nCharId);
     if (!pTarget)
         return 0;
-    float fDist = FUN_140966f00(pPlayer->vfunc_18(), pTarget->vfunc_18());
+    float fDist = GetDistance(pPlayer->vfunc_18(), pTarget->vfunc_18());
     if (fDist > *GetClientConstants()->InteractionDistance.Get())
         return 0;
     m_n18 = nCharId;
@@ -3076,7 +3076,7 @@ __int64 GetServerTime();                                    // the server time
 class Unk_AttendValue
 {
 public:
-    int FUN_140961970(const int& nDefault) const;
+    int GetValue(const int& nDefault) const;
     void* m_pad_00;
     void* m_pad_08;
     void* m_pad_10;
@@ -3089,12 +3089,12 @@ MS2_CHECK_OFFSET(Unk_AttendValue, m_expire, 0x28);
 class Unk_AttendTable
 {
 public:
-    int FUN_1409617d0(int nRow, unsigned nEventId, const int& nDefault);
+    int GetValue(int nRow, unsigned nEventId, const int& nDefault);
 };
 extern GameEventUserValue DAT_143ab2fc0;
 
 // @0x140961970 the value while it has not expired, else the default
-inline int Unk_AttendValue::FUN_140961970(const int& nDefault) const
+inline int Unk_AttendValue::GetValue(const int& nDefault) const
 {
     CMsTime now(GetServerTime());
     if (m_expire <= now)
@@ -3103,12 +3103,12 @@ inline int Unk_AttendValue::FUN_140961970(const int& nDefault) const
 }
 
 // @0x1409617d0
-inline int Unk_AttendTable::FUN_1409617d0(int nRow, unsigned nEventId, const int& nDefault)
+inline int Unk_AttendTable::GetValue(int nRow, unsigned nEventId, const int& nDefault)
 {
     GameEventVariable::Key key(nRow, nEventId);
     MS2Ptr<GameEventVariable> it;
     if (reinterpret_cast<GameEventUserValue*>(this)->m_variables.Lookup(key, it))
-        return reinterpret_cast<Unk_AttendValue*>(it.operator->())->FUN_140961970(nDefault);
+        return reinterpret_cast<Unk_AttendValue*>(it.operator->())->GetValue(nDefault);
     return nDefault;
 }
 
@@ -3139,13 +3139,13 @@ int TreeWateringAction::vfunc_1()
         return 0;
     NiPoint3 ptTree = reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO);
     spTree->GetPropertyValue(0xfd95ca52, static_cast<efd::Point3&>(ptTree));
-    float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())), reinterpret_cast<const Vector3&>(ptTree));
+    float fDist = GetPlanarDistance(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())), reinterpret_cast<const Vector3&>(ptTree));
     if (fDist < 400.0f)
     {
         int nDefaultWater = 0;
-        m_n18 = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x777, spContext->m_nEventId, nDefaultWater);
+        m_n18 = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x777, spContext->m_nEventId, nDefaultWater);
         int nDefaultBonus = 0;
-        m_n1c = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x778, spContext->m_nEventId, nDefaultBonus);
+        m_n1c = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x778, spContext->m_nEventId, nDefaultBonus);
         if (m_n18 < spContext->m_nDailyLimit)
         {
             MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
@@ -3246,7 +3246,7 @@ MS2_REPLACE_METHOD(0x1409609F0, TreeWateringAction, vfunc_5, 11, 0x25A49707);
 //
 
 // @0x140966ea0 the distance in the xy plane
-float FUN_140966ea0(Vector3 a, Vector3 b)
+float GetPlanarDistance(Vector3 a, Vector3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
@@ -3255,7 +3255,7 @@ float FUN_140966ea0(Vector3 a, Vector3 b)
 }
 
 // @0x140966f00
-float FUN_140966f00(Vector3 a, Vector3 b)
+float GetDistance(Vector3 a, Vector3 b)
 {
     a = (b - a);
     return a.Length();
@@ -3314,13 +3314,13 @@ Vector3 CInteractObject::GetPos()
 }
 
 // @0x140966fc0
-int CFunctionCubeObject::FUN_140966fc0()
+int CFunctionCubeObject::GetKind()
 {
     return m_spData->m_nKind;
 }
 
 // @0x1409674f0
-int CFunctionCubeObject::FUN_1409674f0()
+int CFunctionCubeObject::GetSubKind()
 {
     return m_spData->m_nSubKind;
 }
@@ -3360,14 +3360,14 @@ template <class T> const T& Common::Constants::Value<T>::Get(const T& kDefault)
 // ---- CMsgBoxData (helper instantiated here) ---------------------------------------------------------------------------
 int FUN_140718200(const CStringW& strValue);                // _wtoi
 // @0x140961900
-bool CMsgBoxData::FUN_140961900(unsigned int nIndex, int& nOut) const
+bool CMsgBoxData::GetIntArg(unsigned int nIndex, int& nOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
     nOut = FUN_140718200(m_args[nIndex]);
     return true;
 }
-MS2_REPLACE_METHOD(0x140961900, CMsgBoxData, FUN_140961900, 103, 0x99208798);
+MS2_REPLACE_METHOD(0x140961900, CMsgBoxData, GetIntArg, 103, 0x99208798);
 
 // The range's last bytes are a second TU's CRT memmove_s (the UCRT static __inline copy is per TU; this obj's own copy
 // is pinned at the top).

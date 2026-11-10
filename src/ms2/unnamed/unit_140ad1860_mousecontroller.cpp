@@ -230,7 +230,7 @@ MS2_CHECK_OFFSET(Unk_McPickHit, m_pt, 0x10);
 
 // Math helpers.
 bool FUN_14028d470(float a, float b);                           // approx equal
-float FUN_140966f00(Vector3 a, Vector3 b);      // distance
+float GetDistance(Vector3 a, Vector3 b);      // distance
 // C3: FUN_1420834e0 is efd::operator*(const Point3&, const Matrix3&) (called directly)
 
 // The effect manager and the request it takes (constructed / destroyed out of line).
@@ -266,7 +266,7 @@ MS2_CHECK_OFFSET(Unk_McConstTable, m_pickRange, 0xe668);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The physics helper (singleton) and the camera manager's mode holder.
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 struct Unk_McCameraView                                         // the part of the camera manager used here
 {
     char m_pad_00[0x118];
@@ -478,7 +478,7 @@ void CMouseController::FUN_140ad2300(const Vector3& pt)
     ((Unk_McRequest&)(request)).m_strName = "CH/Common/Eff_mouse_click.xml";
     ((Unk_McRequest&)(request)).m_pXform = &xf;
     ((Unk_McRequest&)(request)).m_nOwnerId = 0;
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_McRequest&)(request))));
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_McRequest&)(request))));
 }
 MS2_REPLACE_METHOD(0x140AD2300, CMouseController, FUN_140ad2300, 226, 0x8DCAE37A);
 
@@ -604,7 +604,7 @@ void CMouseController::FUN_140ad2830()
     info.m_dir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pPc)->GetForwardDirection()));
     info.m_maxDist = 50.0f;
     info.m_groups = 0x201;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
+    if (((class CPhysXHelper*)GetPhysXHelper())->CastRay(&info, 0))
     {
         efd::SmartPointer<CubeMapInformationService> spPhys(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         void* pHit = reinterpret_cast<CubeMapInformationService*>(spPhys.operator->())->GetCubeByEntity(static_cast<egf::Entity*>(info.m_hitEntity));
@@ -621,7 +621,7 @@ void CMouseController::FUN_140ad2830()
                 break;
             case 0x21:
                 {
-                    Unk_McPc* pRidden = reinterpret_cast<Unk_McPc*>(reinterpret_cast<PC*>(pPc)->FUN_1416764a0());
+                    Unk_McPc* pRidden = reinterpret_cast<Unk_McPc*>(reinterpret_cast<PC*>(pPc)->GetRidee());
                     if (pRidden != 0)
                         reinterpret_cast<Unk_McState*>(reinterpret_cast<PC*>(pRidden)->FUN_14166ccb0())->vfunc_34();
                 }
@@ -653,7 +653,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         MS2Ptr<CMouseInteract> sp = m_arrInteract[(size_t)i];
         if (sp->vfunc_1(&ray) != 0)
         {
-            float fDist = FUN_140966f00(vPos, reinterpret_cast<const Vector3&>(ray.vPick));
+            float fDist = GetDistance(vPos, reinterpret_cast<const Vector3&>(ray.vPick));
             if (fDist > (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_McConstTable*)GetClientConstants())->m_pickRange)->Get())
                 continue;
             *pStrHint = ray.strCursor;
@@ -952,10 +952,10 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     if (bFlagA)
     {
         efd::SmartPointer<HardwareInstancingService> spSvc(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
-        Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(spSvc->FUN_1413d66b0(pEntity));
+        Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(spSvc->FindInstancingByEntity(pEntity));
         if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {
-            bResult = !reinterpret_cast<EntityInstancing*>(pInst)->FUN_1411c6a50(pEntity->GetEntityID());
+            bResult = !reinterpret_cast<EntityInstancing*>(pInst)->IsHidden(pEntity->GetEntityID());
         }
         else
         {
@@ -973,7 +973,7 @@ MS2_REPLACE_METHOD(0x140AD3E80, CMouseController, FUN_140ad3e80, 288, 0x978EA17D
 // @0x140ad3fb0
 bool CMouseController::FUN_140ad3fb0(const egf::EntityID& id)
 {
-    egf::Entity* pEntity = ((class EntityWorldManager*)(class Unk_McEntityMgr*)(reinterpret_cast<Unk_McEntityMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(id);
+    egf::Entity* pEntity = ((class EntityWorldManager*)(class Unk_McEntityMgr*)(reinterpret_cast<Unk_McEntityMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FindEntity(id);
     if (pEntity == 0)
         return false;
     return FUN_140ad3e80(pEntity);

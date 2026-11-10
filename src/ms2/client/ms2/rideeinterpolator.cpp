@@ -52,14 +52,14 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
     PCBase* pBody = (PCBase*)FUN_141020ad0(reinterpret_cast<__int64>(WorldService::GetInstance()->FUN_141bd1200(m_nObjectId)));
     if (pBody == 0)
         return false;
-    efd::SmartPointer<Ridee> spRidee(pBody->FUN_1416764a0());
+    efd::SmartPointer<Ridee> spRidee(pBody->GetRidee());
     if (spRidee == 0)
         return false;
     MS2SvrPtr<CRideeData> spData = spRidee->GetData();
     if (spData == 0)
         return false;
     efd::SmartPointer<NiNode> spNode(NiDynamicCast(NiNode, pkInterpTarget));
-    NiAVObject* pRoot = FUN_141b6ef70(pBody->FUN_14123c460());
+    NiAVObject* pRoot = FUN_141b6ef70(pBody->GetEntityID());
     if ((spNode ? true : false) && pRoot != 0)
     {
         Unk_RiderPtr spModel = spData->FUN_140784970();
@@ -95,7 +95,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetRotate(kRot);
         ((class NiAVObject*)(void*)(pRoot))->UpdateEffects();
         pRoot->UpdateProperties();
-        ((class NiAVObject*)(void*)(pRoot))->Update((float)((class CMainSystem*)(class Unk_RiApp*)(reinterpret_cast<Unk_RiApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        ((class NiAVObject*)(void*)(pRoot))->Update((float)((class CMainSystem*)(class Unk_RiApp*)(reinterpret_cast<Unk_RiApp*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
     m_fLastTime = fTime;
     return true;

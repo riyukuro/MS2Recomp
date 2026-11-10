@@ -15,7 +15,7 @@ class Unk_ItemPreview : public ItemPreviewMgr
 {
     // C3: FUN_140d40120 (show spItem) is ItemPreviewMgr's own member
 };
-Unk_ItemPreview* FUN_1409bb9e0();
+Unk_ItemPreview* GetItemPreviewMgr();
 
 // Key/permission state (commonstringtable.cpp singleton 0x14025e7c0, test 0x14116dcb0).
 class CInputKeyHandler   // C3: member view; was Unk_KeyState
@@ -50,8 +50,8 @@ int MS2DragSlot::vfunc_16()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem == NULL)
         return 0;
-    if (FUN_1409bb9e0()->IsHudOn())
-        FUN_1409bb9e0()->OpenPreview(spItem, 0);
+    if (GetItemPreviewMgr()->IsHudOn())
+        GetItemPreviewMgr()->OpenPreview(spItem, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a7bbd0, MS2DragSlot, vfunc_16, 225, 0xF2650599);

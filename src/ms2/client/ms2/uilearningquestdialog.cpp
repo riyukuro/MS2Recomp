@@ -516,7 +516,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
             if (((class CQuestManager*)FUN_140764020())->FUN_140745590(quests[k]) != 0)
                 continue;
             ASObj leaf(2);
-            leaf.FUN_1409c0d20("id", quests[k]);
+            leaf.SetMemberUInt("id", quests[k]);
             leaf.FUN_1407cb9c0("guide", nFirst);
             leaf.FUN_1407cbb20("label", FUN_1416e4df0(quests[k]));
             leaf.FUN_1409c0dc0("rendererClassName", "UILearningQuestDialog_renderer_contents");

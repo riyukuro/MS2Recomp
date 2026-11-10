@@ -47,7 +47,7 @@ struct Unk_PickRenderer
     bool m_bFlag;                                                       // +0x850
 };
 class CEquipModel;
-void* FUN_141200850(CEquipModel* self);   // C3: was the CEquipModel member view (equipmodel.cpp)
+void* GetOwnerObject(CEquipModel* self);   // C3: was the CEquipModel member view (equipmodel.cpp)
 class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class Ni3DRenderView   // C3: member view for the former free stand-ins
 {
@@ -56,7 +56,7 @@ public:
 };
 class CItemData { public: bool FUN_14053cfd0(); };   // C3: member view (itemdata.h)
 class CItem : public CPtred { public: class Unk_ItemEquipData* FUN_140527840(); };          // item -> item data (citem.h's return type)
-class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
+class GameObject { public: egf::Entity* GetEntity(); };   // C3: unit-local view
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class, see nifanimationservice.cpp).
@@ -70,7 +70,7 @@ private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
 
-void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut);
+void CollectSkinRenderObjects(void* pObject, CAtlArray<NiRenderObject*>* pOut);
 
 struct Unk_PickPartName : public CString {};   // layout-identical view of a part-name element
 
@@ -184,7 +184,7 @@ int CItemPickingHelper::PickTarget(CEquipModel* pTarget, const CString* pPart, N
     m_spMesh.FUN_141418a00(0);
     if (pTarget == 0)
         return 0;
-    bool bBad = pTarget->FUN_141200940() == 0 || pTarget->FUN_141200940()->FUN_140527840() == 0;
+    bool bBad = pTarget->GetItem() == 0 || pTarget->GetItem()->FUN_140527840() == 0;
     if (bBad)
         return 0;
     void* pGame = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -194,11 +194,11 @@ int CItemPickingHelper::PickTarget(CEquipModel* pTarget, const CString* pPart, N
     if (pMesh == 0)
         return 0;
     CAtlArray<NiRenderObject*> skins;
-    bool bSkin = reinterpret_cast<CItemData*>(pTarget->FUN_141200940()->FUN_140527840())->FUN_14053cfd0();
+    bool bSkin = reinterpret_cast<CItemData*>(pTarget->GetItem()->FUN_140527840())->FUN_14053cfd0();
     if (bSkin)
     {
-        void* pObject = FUN_141200850(pTarget);
-        FUN_141419670(pObject, &skins);
+        void* pObject = GetOwnerObject(pTarget);
+        CollectSkinRenderObjects(pObject, &skins);
     }
     return PickMesh(pMesh, skins, pHit);
 }
@@ -233,11 +233,11 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
 }
 
 // @0x141419670
-void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
+void CollectSkinRenderObjects(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 {
     if (pObject == 0)
         return;
-    Unk_NodeQueue it(FUN_141b6efc0(reinterpret_cast<GameObject*>(pObject)->FUN_14123c410()));
+    Unk_NodeQueue it(FUN_141b6efc0(reinterpret_cast<GameObject*>(pObject)->GetEntity()));
     NiAVObject* pNode;
     while ((pNode = it.Next(true)) != 0)
     {

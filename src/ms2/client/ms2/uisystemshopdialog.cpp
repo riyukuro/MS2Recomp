@@ -107,7 +107,7 @@ public:
     PushMap m_pushes;                                           // +0x10 id -> push
 };
 MS2_CHECK_OFFSET(Unk_SsPushMgr, m_pushes, 0x10);
-class Unk_SingletonObj* FUN_140cea070();   // C3: was FUN_140cea070
+class Unk_SingletonObj* GetSmartPushManager();   // C3: was GetSmartPushManager
 
 // The local player's buffs (PCBase +0x748).
 #include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
@@ -116,7 +116,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList { };
 extern Unk_Inventory g_143ab2a90;
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -273,7 +273,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     else
                     {
                         // extend the auto fishing: the price packages of the push
-                        MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoFishing>();
+                        MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)GetSmartPushManager())->FUN_FindPush<CSmartPushAutoFishing>();
                         if (!spPush || !spPush->m_data)
                             return 1;
                         CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_autofishing_extend_showcurrentduration_desc"),
@@ -325,7 +325,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 {
                     // extend the auto instrument play: the price packages of the push
                     MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush =
-                        ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
+                        ((class Unk_SsPushMgr*)GetSmartPushManager())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
                     if (!spPush || !spPush->m_data)
                         return 1;
                     CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_auto_play_instrument_extend_showcurrentduration_desc"),
@@ -448,8 +448,8 @@ bool UISystemShopDialog::FUN_140fa62d0(int nButton, const CMsgBoxData& box)
     CStringW strResult = box.FUN_141a02d50();
     bool bAuto = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
     int nPackage = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
-    CFishingManager::GetInstance()->FUN_140cdbdf0(*Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
-    MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoFishing>();
+    CFishingManager::GetInstance()->SetAutoCount(*Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
+    MS2SvrPtr<CSmartPushAutoFishing> spPush = ((class Unk_SsPushMgr*)GetSmartPushManager())->FUN_FindPush<CSmartPushAutoFishing>();
     if (spPush.get())
         spPush->m_n1c = nPackage;
     return true;
@@ -461,7 +461,7 @@ bool UISystemShopDialog::FUN_140fa64a0(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    CFishingManager::GetInstance()->FUN_140cdbdf0(0);
+    CFishingManager::GetInstance()->SetAutoCount(0);
     return true;
 }
 MS2_REPLACE_METHOD(0x140FA64A0, UISystemShopDialog, FUN_140fa64a0, 51, 0x229A1FD4);
@@ -507,7 +507,7 @@ bool UISystemShopDialog::FUN_140fa67a0(int nButton, const CMsgBoxData& box)
     if (CInstrumentManager::GetInstance()->CanPlayEnsemble() == 0)
         return true;
     CInstrumentManager::GetInstance()->SetVolume(*Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
-    MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush = ((class Unk_SsPushMgr*)FUN_140cea070())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
+    MS2SvrPtr<CSmartPushAutoPlayInstrument> spPush = ((class Unk_SsPushMgr*)GetSmartPushManager())->FUN_FindPush<CSmartPushAutoPlayInstrument>();
     if (spPush.get())
         spPush->m_n1c = nPackage;
     return true;
@@ -563,19 +563,19 @@ MS2_REPLACE_METHOD(0x140FA6AB0, UISystemShopDialog, FUN_140fa6ab0, 34, 0xC770924
 // @0x140fa6ae0
 void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    InvenSlot* pSrc = reinterpret_cast<InvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
+    InvenSlot* pSrc = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(pSrc->GetItemUid());
         if (spItem == 0)
             return;
         if (!spItem->HasStringTag(100))
             return;
-        if (CFishingManager::GetInstance()->FUN_140cdbbd0(spItem) == 0)
+        if (CFishingManager::GetInstance()->CanUseBait(spItem) == 0)
             return;
         slot.SetItem(spItem);
         slot.vfunc_10();
-        CFishingManager::GetInstance()->SetBaitId(pSrc->FUN_141405980());
+        CFishingManager::GetInstance()->SetBaitId(pSrc->GetItemId());
     }
 }
 MS2_REPLACE_METHOD(0x140FA6AE0, UISystemShopDialog, FUN_140fa6ae0, 371, 0x27C30815);

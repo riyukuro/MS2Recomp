@@ -55,7 +55,7 @@ class ASDialog : public ASDisplayObject {};
 
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
-UITalkCinematic* FUN_140a7b2b0(int nId);
+UITalkCinematic* FindTalkCinematic(int nId);
 
 
 class Unk_UeWorld { public: MyPC* FUN_141bd0cc0(); };
@@ -78,9 +78,9 @@ public:
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);              // the inventory item with this uid
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
-void FUN_14141f970(const CString& strBag);                       // drop an item bag
-void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
+void DestroyItemSlotBag(const CString& strBag);                       // drop an item bag
+void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
 void FUN_140710590(COutPacket& packet);                          // send
 unsigned __int64 FUN_140718370(const CStringW& str);             // text -> uid
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
@@ -89,7 +89,7 @@ FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 CStringW FUN_1419021b0(unsigned int, unsigned int);                    // "have/need"
 CStringW FUN_1409404f0(__int64 nValue);                          // money text
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -141,9 +141,9 @@ int UIUnlimitedEnchantDialog::vfunc_65()
 // @0x140fb5e50
 void UIUnlimitedEnchantDialog::vfunc_67()
 {
-    FUN_14141f970(GetTypeName());
+    DestroyItemSlotBag(GetTypeName());
     UIDialog::vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 
 // @0x140fb5ec0
@@ -203,7 +203,7 @@ void UIUnlimitedEnchantDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0 && (pRef = FindTalkCinematic(0x4e40)) != 0)
     {
         int nX = pRef->GetLowerCutGlobalY();
         int nY = pRef->GetIllustGlobalX() - 0x50;
@@ -237,8 +237,8 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
             int nFlags = 0x535;
             nFlags &= ~0x10;
             m_binder.FUN_140d43990();
-            FUN_140d432d0(&m_binder, nFlags);
-            FUN_140d432f0(&m_binder, 8);
+            SetIconType(&m_binder, nFlags);
+            SetFlags(&m_binder, 8);
             ASObj data(2);
             data.FUN_1407cba60("targetBinding", m_binder.BindItem(spTarget.get()));
             data.FUN_1407cba60("resultBinding", m_binder.BindItem(spResult.get()));
@@ -251,7 +251,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 Unk_IngRef ref = ingredients.FUN_14026bdc0(i);
                 const int& nIngredientId = ref->FUN_14026b500();
                 const int& nCount = +ref->m_c;
-                int nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                int nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 int nIngredientRank = FUN_14053feb0(nIngredientId);
                 CItem* pIngredient = new CItem();   // raw and never released, as in the exe
                 if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
@@ -321,7 +321,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
     {
         m_items.RemoveAll();
         ATL::CAtlArray<unsigned __int64> uids;
-        g_143ab2a90.FUN_140a609a0(0, uids);
+        g_143ab2a90.GetItemUidsInCategory(0, uids);
         for (unsigned i = 0; i < uids.GetCount(); i++)
         {
             MS2Ptr<CItem> spItem = FUN_1419be700(uids[i]);
@@ -332,7 +332,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             m_items.Add(spItem);
         }
         ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->CollectShownItemsInLayer(equips, 0);
+        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->CollectShownItemsInLayer(equips, 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
@@ -345,9 +345,9 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
                 continue;
             m_items.Add(spItem);
         }
-        FUN_14141f970(GetTypeName());
-        MS2Ptr<CItem> (*pfnGetItem)(void*, int) = FUN_141420330;
-        FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x535, 8);
+        DestroyItemSlotBag(GetTypeName());
+        MS2Ptr<CItem> (*pfnGetItem)(void*, int) = GetItemFromArray;
+        CreateItemSlotBag(GetTypeName(), (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x535, 8);
         if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
         {
             reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);

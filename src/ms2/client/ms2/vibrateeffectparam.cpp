@@ -39,7 +39,7 @@ struct Unk_PadOption
     char m_unk_00[2];
     bool m_bVibration;              // +0x02
 };
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 MS2InputService* FUN_140a58540();
 
 namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
@@ -122,7 +122,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
     if (pParam != NULL)
     {
         CVibrateEffect* pEffect = new (efd::MemHint(efd::MemHint::NONE)) CVibrateEffect;
-        pEffect->m_dStartTime = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280() + pParam->m_fStartDelay;
+        pEffect->m_dStartTime = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
         if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070())
@@ -134,7 +134,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
-            if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
+            if (reinterpret_cast<Unk_PadOption*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
                 FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());
         }
         return pEffect;
@@ -158,7 +158,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
-        if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
+        if (reinterpret_cast<Unk_PadOption*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
             FUN_140a58540()->StartRumbleFor(m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());
     }
     return true;
@@ -168,7 +168,7 @@ MS2_REPLACE_METHOD(0x141b72bd0, CVibrateEffect, vfunc_3, 552, 0xB9466C18);
 // @0x141b72e00
 bool CVibrateEffect::vfunc_9()
 {
-    double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
     return dNow < m_dStartTime + m_fDuration;
 }
 MS2_REPLACE_METHOD(0x141b72e00, CVibrateEffect, vfunc_9, 95, 0xF224C3B9);

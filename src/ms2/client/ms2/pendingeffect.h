@@ -21,8 +21,8 @@ typedef MS2Ptr<CEffectParam> Unk_PeParamPtr;
 class Unk_PeEffectSet : public CPtred
 {
 public:
-    ATL::CAtlList<Unk_PeParamPtr>& FUN_14119f540();         // the param list (+0x28)
-    bool FUN_14119f680();                                   // every param reports vfunc_3 (ready)
+    ATL::CAtlList<Unk_PeParamPtr>& GetParams();         // the param list (+0x28)
+    bool AreAllParamsReady();                                   // every param reports vfunc_3 (ready)
     void FUN_14119f710();                                   // vfunc_4 on each param that is not ready
 };
 

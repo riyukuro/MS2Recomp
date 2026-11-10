@@ -40,7 +40,7 @@ public:
     MS2Ptr<NpcDataCli> GetNpc();                     // 0x140a4f1b0 copy of m_spNpc
     void FUN_140a4f200(void* p);                            // 0x140a4f200
     void FUN_140a4f230(int a, int b);                       // 0x140a4f230 gauge update
-    void FUN_140a4f2b0(unsigned int nState);                // 0x140a4f2b0 play the state's animation
+    void SetAnimState(unsigned int nState);                // 0x140a4f2b0 play the state's animation
     void FUN_140a4f3f0(int n);                              // 0x140a4f3f0 say talk-script line n
     int FUN_140a4f690();                                    // 0x140a4f690 owned by someone else than "me" (BOOL)
 

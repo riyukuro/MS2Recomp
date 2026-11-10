@@ -54,7 +54,7 @@ void FUN_141125970(void* p);
 // secondary-vftable thunk (this - 0x18 = the service) of the service's deleting destructor
 void* FUN_14112d5e0(void* p, unsigned f);
 // MS2-FUNCTIONAL: exe is `sub rcx,0x18; jmp` (this-adjusting thunk)
-void* FUN_14112cdec(void* pSecondary, unsigned f)
+void* ScalarDeletingDtorThunk(void* pSecondary, unsigned f)
 {
     return FUN_14112d5e0((char*)pSecondary - 0x18, f);
 }
@@ -480,13 +480,13 @@ bool FUN_14112e650(Unk_CMISArr16* a, u64 nNewSize);
 void FUN_14112f1a0(void* pDst, const void* pSrc, __int64 n);
 void FUN_14112f1e0(void* pDst, const void* pSrc, __int64 n);
 void FUN_14112f220(void* pDst, const void* pSrc, __int64 n);
-void FUN_14112db10(Unk_CMISHandle16* p, u64 n);
+void ConstructElements(Unk_CMISHandle16* p, u64 n);
 void FUN_14112db90(Unk_CMISHandle16* p, u64 n);
 void FUN_14112dc70(Unk_CMISHandle16* p, u64 n);
 void FUN_14112dcd0(Unk_CMISHandle16* p, u64 n);
 
 // @0x14112d900 Add (array A)
-u64 FUN_14112d900(Unk_CMISArr16* a, const void* pElem)
+u64 Add(Unk_CMISArr16* a, const void* pElem)
 {
     u64 iElement = a->m_nSize;
     if (iElement >= a->m_nMaxSize) {
@@ -529,7 +529,7 @@ u64 FUN_14112da60(Unk_CMISArr16* a, const void* pElem)
 }
 
 // @0x14112db10 CallConstructors (array B)
-void FUN_14112db10(Unk_CMISHandle16* pElements, u64 nElements)
+void ConstructElements(Unk_CMISHandle16* pElements, u64 nElements)
 {
     u64 iElement = 0;
     try {
@@ -561,7 +561,7 @@ void FUN_14112db90(Unk_CMISHandle16* pElements, u64 nElements)
 }
 
 // @0x14112dc10 CallDestructors (array A)
-void FUN_14112dc10(Unk_CMISHandle16* pElements, u64 nElements)
+void DestructElements(Unk_CMISHandle16* pElements, u64 nElements)
 {
     for (u64 i = 0; i < nElements; i++)
         FUN_14112cfa0(pElements + i, 0);
@@ -582,7 +582,7 @@ void FUN_14112dcd0(Unk_CMISHandle16* pElements, u64 nElements)
 }
 
 // @0x14112dfe0 operator[] (array B)
-Unk_CMISHandle16* FUN_14112dfe0(Unk_CMISArr16* a, u64 iElement)
+Unk_CMISHandle16* GetAt(Unk_CMISArr16* a, u64 iElement)
 {
     if (iElement >= a->m_nSize)
         ATL::AtlThrowImpl(0x80070057);
@@ -721,7 +721,7 @@ bool FUN_14112f2f0(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy);
 bool FUN_14112f480(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy);
 
 // @0x14112f260 RemoveAll (array B)
-void FUN_14112f260(Unk_CMISArr16* a)
+void RemoveAll(Unk_CMISArr16* a)
 {
     FUN_14112f2f0(a, 0, -1);
 }
@@ -747,7 +747,7 @@ bool FUN_14112f2f0(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy)
         a->m_nMaxSize = 0;
     } else if (nNewSize <= a->m_nMaxSize) {
         if (nNewSize > a->m_nSize) {
-            FUN_14112db10(a->m_pData + a->m_nSize, nNewSize - a->m_nSize);
+            ConstructElements(a->m_pData + a->m_nSize, nNewSize - a->m_nSize);
         } else if (a->m_nSize > nNewSize) {
             FUN_14112dc70(a->m_pData + nNewSize, a->m_nSize - nNewSize);
         }
@@ -756,7 +756,7 @@ bool FUN_14112f2f0(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy)
         bool bSuccess = FUN_14112e4b0(a, nNewSize);
         if (!bSuccess)
             return false;
-        FUN_14112db10(a->m_pData + a->m_nSize, nNewSize - a->m_nSize);
+        ConstructElements(a->m_pData + a->m_nSize, nNewSize - a->m_nSize);
         a->m_nSize = nNewSize;
     }
     return true;
@@ -963,7 +963,7 @@ struct Unk_T14IBase { void* vptr; };
 struct Unk_T14ISystemService : Unk_T14IBase {};
 struct Unk_T14Service : Unk_T14ISystemService {};
 // @0x14112f6b0 CubeMapInformationService::SetupClassInfo
-void FUN_14112f6b0(void* pInfo, void* pCtx)
+void SetupClassInfo(void* pInfo, void* pCtx)
 {
     static_cast<efd::ClassInfo*>(pInfo)->AddClass("CubeMapInformationService", 0x6100017, (size_t)pCtx, &CubeMapInformationService::ms_ClassInfo);
     FUN_14112f710(pInfo, (void*)((size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14ISystemService, Unk_T14Service)));
@@ -1030,10 +1030,10 @@ template efd::IMessagePtr efd::MessageWrapper<egf::EntityChangeMessage, 8253>::F
 // the return slot and marks it constructed before destroying the local.
 struct Unk_T14Category
 {
-    efd::utf8string FUN_14112f780() const;
+    efd::utf8string ToString() const;
 };
 // @0x14112f780 formats a message category for the delivery log
-efd::utf8string Unk_T14Category::FUN_14112f780() const
+efd::utf8string Unk_T14Category::ToString() const
 {
     efd::utf8string s(efd::Formatted, "Category(0x%016llX)", ((efd::UniversalID*)(void const*)(this))->GetValue());
     return s;

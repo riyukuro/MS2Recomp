@@ -79,7 +79,7 @@ public:
     bool FUN_1416a36f0(bool bEnable);               // toggle the 16-bit float target format
     bool FUN_1416a3760();
     bool FUN_1416a3780();
-    bool FUN_1416a37a0(int nStep, bool bRelink);    // toggle a step's active flag; returns the new state
+    bool ToggleStep(int nStep, bool bRelink);    // toggle a step's active flag; returns the new state
     bool SetStepActive(int nStep, bool bActive);    // set a step's active flag (toggles + relinks when it differs)
     bool IsStepActive(int nStep);                  // is the step active
     PostProcessEffect* GetStep(int nStep);
@@ -90,37 +90,37 @@ public:
     efd::SmartPointer<NiRenderTargetGroup> FUN_1416a3fb0();
     static bool RepointMirroredViewCamera(NiRenderStep* pkStep, void* pvData);                    // re-point the mirrored view at the main camera
     static bool FUN_1416a40c0(NiRenderStep* pkStep, void* pvData);                    // disable user clip planes
-    void FUN_1416a4110(const ecr::SceneGraphAddedMessage* pMessage, efd::Category targetChannel);
-    void FUN_1416a4240(const ecr::SceneGraphRemovedMessage* pMessage, efd::Category targetChannel);
+    void OnSceneGraphAdded(const ecr::SceneGraphAddedMessage* pMessage, efd::Category targetChannel);
+    void OnSceneGraphRemoved(const ecr::SceneGraphRemovedMessage* pMessage, efd::Category targetChannel);
     void FUN_1416a4350(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel);   // 8196
     void FUN_1416a43e0(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel);   // 8253
     void FUN_1416a44d0(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel);   // 8254
-    void FUN_1416a4570(bool bEnable);               // texture-density debug view on/off
+    void SetDensityProcessorActive(bool bEnable);               // texture-density debug view on/off
     bool IsDensityProcessorActive();                           // is the texture-density view on
     void SetDensityMode(int nMode);
     int GetDensityMode();
     void ToggleOverdraw();                           // toggle the outline click
     bool IsOverdrawActive();                           // is the outline click active
-    void FUN_1416aa450(int nClick, bool bActive);
+    void SetClickActive(int nClick, bool bActive);
     bool FUN_1416a66d0();                           // can the device do MRT
     bool FUN_1416a69a0();                           // can the device do float targets
     void FUN_1416a6d90(int nStep, efd::SmartPointer<PostProcessEffect> spStep);   // insert a step
     void FUN_1416a7570();                           // build the pre-process render step
     void FUN_1416a6fc0();                           // debug hot-key: Ctrl+S toggles the post-process debug view
-    void FUN_1416aade0(NiRenderTargetGroup* pkTarget);  // release the D3D references of the target's colour buffer
+    void PurgeTargetBuffer(NiRenderTargetGroup* pkTarget);  // release the D3D references of the target's colour buffer
     void ProcessQueuedStepEvents();                           // flush the queued click events
     void FUN_1416aa240();                           // rebuild the shimmer target over m_aspTextures[7]
-    void FUN_1416aa330();                           // create the seven post-process materials
+    void CreateMaterials();                           // create the seven post-process materials
     bool IsClickActive(int nClick);                 // is click nClick active
     bool IsFadeStep(NiRenderStep* pkStep);       // is the step one of the fade steps
-    void FUN_1416aac60(NiAVObject* pkScene);        // remove a scene from the mirrored view
+    void RemoveMirroredScene(NiAVObject* pkScene);        // remove a scene from the mirrored view
     CDepthOfFieldManager* GetDoF();          // m_spDoF
     void FUN_1416aa6a0(Unk_PPTexture eClick, bool bActive);   // SetPreprocessRCActiveRef: reference-counted SetActive of a pre-process click
     void FUN_1416aa950();                           // attach the reflection texture effect to the reflective nodes
     void FUN_1416ab960();                           // remove the steps from the active render frame
     static bool FUN_1416ac0b0(NiRenderClick* pkClick, void* pvData);   // save the background colour, clear to grey
     static bool FUN_1416ac150(NiRenderClick* pkClick, void* pvData);   // save the background colour, clear to pvData
-    static bool FUN_1416ac1e0(NiRenderClick* pkClick, void* pvData);   // restore the background colour
+    static bool RestoreBackgroundColor(NiRenderClick* pkClick, void* pvData);   // restore the background colour
     static bool FUN_1416ac240(NiRenderClick* pkClick, void* pvData);   // flip the motion-blur frame target
     static bool FUN_1416ac2e0(NiRenderClick* pkClick, void* pvData);   // remember the view-projection matrix
     static void FUN_1416ac3b0(NiRenderTargetGroup* pkTarget);   // point the main scene clicks at a render target
@@ -129,15 +129,15 @@ public:
     bool FUN_1416abd20(bool bBeforeReset);
     void QueueStepEvent(int nEvent);                 // queue an event (13 = fade-in finished)
     NiRenderedTexture* GetRenderedTexture(int nIndex);   // m_aspTextures[nIndex]
-    void FUN_1416a7050();                           // create the MRT targets
+    void CreateRenderedTextures();                           // create the MRT targets
     static void SetTexelSizeAndBlurOffsets(unsigned int uiWidth, unsigned int uiHeight);   // texel size + 9-tap blur offsets shader constants
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a8140();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a8600();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a8e50();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a92e0();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a97b0();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a9a90();
-    efd::SmartPointer<NiViewRenderClick> FUN_1416a9e20();
+    efd::SmartPointer<NiViewRenderClick> CreateVelocityClick();
+    efd::SmartPointer<NiViewRenderClick> CreateDepthClick();
+    efd::SmartPointer<NiViewRenderClick> CreateShimmerClick();
+    efd::SmartPointer<NiViewRenderClick> CreateGlowClick();
+    efd::SmartPointer<NiViewRenderClick> CreateMirroredClick();
+    efd::SmartPointer<NiViewRenderClick> CreateAccumClick();
+    efd::SmartPointer<NiViewRenderClick> CreateOutlineClick();
     void LinkEffects();                           // link the active effects into the post-process render step
     bool FUN_1416ac060(PostProcessEffect* pkEffect);   // (re)create the effect's output over the shared textures
     void FUN_1416abb30(NiTexture* pkTexture);       // copy the m_spTarget190 colour buffer into a texture
@@ -266,7 +266,7 @@ public:
     virtual bool vfunc_13();                                    // 0x1416a1000
     virtual bool vfunc_14();                                    // 0x1416a0ff0
     virtual bool vfunc_15(unsigned int a, void* b);             // 0x1416a0b20
-    static bool FUN_1416a0cd0(NiRenderClick* pkClick, void* pvData);   // pre-render callback: advance the fade, set the constant
+    static bool UpdateFadeInOut(NiRenderClick* pkClick, void* pvData);   // pre-render callback: advance the fade, set the constant
 
     static const NiRTTI ms_RTTI;                                // 0x143ae45a8
     static float ms_fAlpha;                                     // 0x143ae4598
@@ -284,7 +284,7 @@ public:
     virtual bool vfunc_13();                                    // 0x1416a13a0
     virtual bool vfunc_14();                                    // 0x1416a1390
     virtual bool vfunc_15(unsigned int a, void* b);             // 0x1416a10c0
-    static bool FUN_1416a1260(NiRenderClick* pkClick, void* pvData);   // pre-render callback: advance the fade-in
+    static bool UpdateFadeIn(NiRenderClick* pkClick, void* pvData);   // pre-render callback: advance the fade-in
 
     static const NiRTTI ms_RTTI;                                // 0x143ae45c8
     static float ms_fAlpha;                                     // 0x143ae45c0
@@ -340,7 +340,7 @@ public:
     virtual bool vfunc_13();                                    // 0x1416a2430
     virtual bool vfunc_14();                                    // 0x1416a2420
     virtual bool vfunc_15(unsigned int a, void* b);             // 0x1416a1fe0
-    static bool FUN_1416a21c0(NiRenderClick* pkClick, void* pvData);   // pre-render callback: bind the history textures
+    static bool SetMotionBlurTextures(NiRenderClick* pkClick, void* pvData);   // pre-render callback: bind the history textures
 
     static const NiRTTI ms_RTTI;                                // 0x143ae4610
     static NiTexturingProperty* ms_pkTexProp;                   // 0x143ae4608 (the screen quad's texturing property)

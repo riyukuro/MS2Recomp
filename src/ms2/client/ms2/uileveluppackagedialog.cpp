@@ -50,7 +50,7 @@ private:
     char m_pad_178[0x1a0 - 0x178];
     int m_nDirty;
 };
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 
 // the local player (PCBase; vfunc_78 is the level)
 class WorldService   // C3: member view for the former free stand-ins
@@ -65,8 +65,8 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 class UIStatusEventDispatcher;
 
 // items bound to the slots of the rewards
-void FUN_141415600(const CString& strBindID);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void DestroyItemInfoSlot(const CString& strBindID);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // quests: the ids of the package quests come from the game rule table
 void* FUN_1401c0d90();
@@ -113,7 +113,7 @@ int UILevelUpPackageDialog::vfunc_65()
 void UILevelUpPackageDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_188.GetCount(); i++)
-        FUN_141415600(m_188.GetAt(i));
+        DestroyItemInfoSlot(m_188.GetAt(i));
     FUN_140bfc4b0()->FUN_141aa8850(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
@@ -172,7 +172,7 @@ void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
     FUN_140ea4d00();
     if (FUN_140ea4b70() == 0) {
         vfunc_67();
-        if (Unk_SSGDlg4e28* pMenu = ((class Unk_SSGDlg4e28*)FUN_140938b90(0x4e28)))
+        if (Unk_SSGDlg4e28* pMenu = ((class Unk_SSGDlg4e28*)FindGameMenuDialog(0x4e28)))
             pMenu->FUN_140ea5f80();
     }
 }
@@ -290,7 +290,7 @@ void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
         return;
     short nLevel = (short)LgQuestLevel(spData.get());
     CStringW strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), reinterpret_cast<const unsigned short&>(nLevel));
-    rObj.FUN_1409c0d20("id", FUN_14074b030(spData.get()));
+    rObj.SetMemberUInt("id", FUN_14074b030(spData.get()));
     rObj.FUN_1407cba60("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);
     rObj.FUN_1407cbb20("levelStr", strLevel);
@@ -323,7 +323,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
     int nSlotFlags = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
-    FUN_141415450(strBindID, spItem, 0, nSlotFlags, 0x800);
+    CreateItemInfoSlot(strBindID, spItem, 0, nSlotFlags, 0x800);
     rObj.FUN_1407cba60("binding", strBindID);
     m_188.Add(strBindID);
 }

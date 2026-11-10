@@ -17,7 +17,7 @@
 CStringW GetStringCommon(int nStringId);                              // a common string by id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_141a06ff0(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
-void FUN_141415600(const CString& strName);                         // drops an item slot bind id
+void DestroyItemInfoSlot(const CString& strName);                         // drops an item slot bind id
 template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b); // a string by id formatted with two arguments
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
 CStringW FUN_14016a730(const char* psz, int nCodePage);
@@ -53,7 +53,7 @@ inline __declspec(noinline) CMsgBoxData::~CMsgBoxData()
     m_spItem = NULL;
     m_spItem2 = NULL;
     for (size_t i = 0; i < m_reqItems.m_binds.GetCount(); i++)
-        FUN_141415600(m_reqItems.m_binds[i]);
+        DestroyItemInfoSlot(m_reqItems.m_binds[i]);
 }
 
 // @0x141a01480
@@ -564,7 +564,7 @@ MS2_REPLACE_METHOD(0x141A02E50, CMsgBoxData, FUN_141a02e50, 46, 0x49ECCABD);
 // @0x141a02e90
 unsigned int CMsgBoxData::FUN_141a02e90(int nIndex, unsigned int nDefault) const
 {
-    FUN_140961900(nIndex, reinterpret_cast<int&>(nDefault));   // GetArg<unsigned> 0x140961900 is declared once (int&): an unsigned& overload made actionkeyobject's hook &CMsgBoxData::FUN_140961900 ambiguous
+    GetIntArg(nIndex, reinterpret_cast<int&>(nDefault));   // GetArg<unsigned> 0x140961900 is declared once (int&): an unsigned& overload made actionkeyobject's hook &CMsgBoxData::FUN_140961900 ambiguous
     return nDefault;
 }
 MS2_REPLACE_METHOD(0x141A02E90, CMsgBoxData, FUN_141a02e90, 46, 0x12726095);

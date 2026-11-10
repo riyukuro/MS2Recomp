@@ -163,7 +163,7 @@ CNetworkService* FUN_140714f90();
 // (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 void* FUN_140aadf80();
 CSoundService* FUN_140c9cb10();
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class CInstrumentManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -171,7 +171,7 @@ public:
     void Unmute();
 };
 namespace efd { class ServiceManager; }
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera); the service manager
 class Unk_DcService* FUN_141296b50(class Unk_DcHost*);   // C3: was FUN_141296b50
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -734,7 +734,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         }
         if (wParam == 0x47 && (GetAsyncKeyState(0x11) & 0x8000) != 0 && reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance()) != 0)
         {
-            void* pHolder = (void*)reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder)->FUN_140af8310();
+            void* pHolder = (void*)reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder)->GetServiceManager();
             ATL::CComPtr<Unk_ComObj> spObj(((class Unk_ComObj*)FUN_141296b50((class Unk_DcHost*)(pHolder))));
             if (static_cast<Unk_ComObj*>(spObj) != 0)
             {
@@ -805,8 +805,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
                     FUN_140c9cb10()->FUN_1417ae840(0);
-                    if (((void*)FUN_140c8dac0()) != 0)
-                        ((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->Unmute();
+                    if (((void*)GetInstrumentManager()) != 0)
+                        ((class CInstrumentManager*)(void*)(((void*)GetInstrumentManager())))->Unmute();
                 }
                 g_143afa350 = 1;
                 if (g_bHotkeyPrintScreen == 0)
@@ -829,8 +829,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
                     FUN_140c9cb10()->FUN_1417ae840(1);
-                    if (((void*)FUN_140c8dac0()) != 0)
-                        ((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->Mute();
+                    if (((void*)GetInstrumentManager()) != 0)
+                        ((class CInstrumentManager*)(void*)(((void*)GetInstrumentManager())))->Mute();
                 }
                 if (g_bHotkeyPrintScreen != 0)
                     UnregisterHotKey(hWnd, -2);

@@ -169,7 +169,7 @@ MS2_CHECK_OFFSET(Unk_UgcPathConfig, m_strUploadDir, 0xd8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
-class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nKind); };   // C3: member view (inventory.h)
+class Unk_Inventory { public: int GetItemCountByTag(int nTag, int nRarity); MS2Ptr<CItem> FindItemByTag(int nKind); };   // C3: member view (inventory.h)
 extern Unk_Inventory g_143ab2a90;
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 UGCItemSlot* FUN_141b46a20(const CString& strName);
@@ -684,7 +684,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        int nGender = pPC->FUN_141658e60();
+        int nGender = pPC->GetGender();
         MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(nGender, true));
         if (spAvatar.get() != 0)
         {
@@ -698,7 +698,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        int nGender = pPC->FUN_141658e60();
+        int nGender = pPC->GetGender();
         int nOpposite = nGender == 1 ? 0 : 1;
         MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(nOpposite, true));
         if (spAvatar.get() != 0)
@@ -954,11 +954,11 @@ bool UIUGCItemEditDialog::FUN_141b3f3a0(ASObj& obj, MS2Ptr<CUGCDesignData> spDes
     if (spData == 0)
         return false;
     ASSlot slot(2);
-    if (slot.FUN_1409c4510(nItemId, spDesign->m_nItemGrade, 1) == 0)
+    if (slot.SetItemById(nItemId, spDesign->m_nItemGrade, 1) == 0)
         return false;
     int nSlotMax = 1;
     obj.FUN_1409adbe0("iconData", Scaleform::GFx::Value(slot.FUN_1422bb870()));
-    obj.FUN_1409c0d20("itemID", nItemId);
+    obj.SetMemberUInt("itemID", nItemId);
     obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     obj.FUN_1407cb9c0("slotMax", nSlotMax);
     int nGender = spData->limit.genderLimit;
@@ -980,11 +980,11 @@ bool UIUGCItemEditDialog::FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem)
         return false;
     int nItemId = spItem->FUN_1405276c0();
     ASSlot slot(2);
-    if (slot.FUN_1409c4510(nItemId, spItem->GetRarity(), 1) == 0)
+    if (slot.SetItemById(nItemId, spItem->GetRarity(), 1) == 0)
         return false;
     int nSlotMax = spItem->GetCount();
     obj.FUN_1409adbe0("iconData", Scaleform::GFx::Value(slot.FUN_1422bb870()));
-    obj.FUN_1409c0d20("itemID", nItemId);
+    obj.SetMemberUInt("itemID", nItemId);
     obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     obj.FUN_1407cb9c0("slotMax", nSlotMax);
     int nGender = spData->limit.genderLimit;
@@ -1130,7 +1130,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
     }
     if (nMeret != 0)
     {
-        unsigned int nVouchers = g_143ab2a90.FUN_140a5f780(5, 0);
+        unsigned int nVouchers = g_143ab2a90.GetItemCountByTag(5, 0);
         if (nVouchers == 0)
             return false;
         if (nVouchers < (unsigned int)nCount)
@@ -1269,7 +1269,7 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
     if (pPC != 0)
     {
         if (m_spEditItem == 0)
-            nGender = pPC->FUN_141658e60();
+            nGender = pPC->GetGender();
     }
     int nMyGender = FUN_140222b30(nGender, 0);
     ATL::CAtlArray<std::pair<int, CStringW> > genders;
@@ -1428,7 +1428,7 @@ void UIUGCItemEditDialog::FUN_141b41f90(MS2Ptr<CItemData> spData)
         return;
     if (spData->FUN_14053cbc0())
     {
-        int nGender = pPC->FUN_141658e60();
+        int nGender = pPC->GetGender();
         if (spData->IsGenderAllowed(nGender) == 1)
             m_nRadioMode = 1;
         else
@@ -1549,7 +1549,7 @@ int UIUGCItemEditDialog::FUN_141b42a50(MS2Ptr<UIAvatarPC> spAvatar, int nGender)
         return 1;
     AvatarPC* pActor = spAvatar->FUN_1418bd1d0();
     if (pActor != 0 && pActor->GetType() == 1)
-        return nGender == pActor->FUN_141658e60() ? 0 : 2;
+        return nGender == pActor->GetGender() ? 0 : 2;
     return 1;
 }
 
@@ -1565,8 +1565,8 @@ int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatar
             return 2;
         bool bJob = true;
         if (spData->FUN_14053d2f0())
-            bJob = spData->limit.IsJobRecommended(pPC->FUN_141654700());
-        int nGender = pPC->FUN_141658e60();
+            bJob = spData->limit.IsJobRecommended(pPC->GetJobGroupId());
+        int nGender = pPC->GetGender();
         if ((spAvatar.get() ? true : false) && spAvatar->GetKind() == 1)
         {
             MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
@@ -1798,7 +1798,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     int bVoucher = 0;
     if (nPrice > 0)
     {
-        MS2Ptr<CItem> spVoucher = g_143ab2a90.FUN_140a5e040(5);
+        MS2Ptr<CItem> spVoucher = g_143ab2a90.FindItemByTag(5);
         if (spVoucher.get() != 0)
         {
             bVoucher = 1;
@@ -1899,7 +1899,7 @@ void UIUGCItemEditDialog::FUN_141b44b90(ASData& args)
     {
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC != 0)
-            nGender = pPC->FUN_141658e60() + 1;
+            nGender = pPC->GetGender() + 1;
     }
     m_30->Invoke("selectDropDownGender", nGender);
     FUN_141b40220();
@@ -2350,9 +2350,9 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
 {
     if (pPC == 0)
         return;
-    int nGender = pPC->FUN_141658e60();
+    int nGender = pPC->GetGender();
     int nOther = nGender == 0;
-    int nJob = pPC->FUN_141654700();
+    int nJob = pPC->GetJobGroupId();
     size_t nCount = items.GetCount();
     int nResult = 2;
     bool bFound = false;

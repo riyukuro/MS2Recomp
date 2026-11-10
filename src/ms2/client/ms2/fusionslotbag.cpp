@@ -59,7 +59,7 @@ typedef Delegate<int(ItemInfoSlot&)> FusionCanFn;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);      // find an item by uid
 
 void FUN_14123a190(const CString& strName);
-FusionSlotBag* FUN_14123a960(NotifyContext::BindData* p);
+FusionSlotBag* CastToSlotBag(NotifyContext::BindData* p);
 UIItemMergeOptionDialog* FUN_14123a9b0(int nClass);
 
 // Registry of named bags/slots (GFx bind data).
@@ -71,7 +71,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(FusionSlotBag);
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x14123a080
-void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items)
+void CreateSlotBag(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items)
 {
     FusionSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) FusionSlotBag(strName, 0, items);
     if (pBag)
@@ -85,7 +85,7 @@ void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64
 // @0x14123a190
 void FUN_14123a190(const CString& strName)
 {
-    FusionSlotBag* pBag = FUN_14123a960(Unk_NotifyContext::FUN_1422c8e90(strName));
+    FusionSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -137,7 +137,7 @@ void FusionSlotBag::FUN_14123a650(ItemInfoSlot& slot, ASSlot& as)
 }
 
 // @0x14123a960
-FusionSlotBag* FUN_14123a960(NotifyContext::BindData* p)
+FusionSlotBag* CastToSlotBag(NotifyContext::BindData* p)
 {
     FusionSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200043, (void**)&pBag))
@@ -164,12 +164,12 @@ template<> Delegate<int(ItemInfoSlot&)>::DelegateImplBase::~DelegateImplBase() {
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- hooks ----
-MS2_REPLACE(0x14123A080, FUN_14123a080, 259, 0x8838E096);
+MS2_REPLACE(0x14123A080, CreateSlotBag, 259, 0x8838E096);
 MS2_REPLACE(0x14123A190, FUN_14123a190, 65, 0x50282A7F);
 MS2_REPLACE_METHOD(0x14123A2B0, FusionSlotBag, vfunc_15, 68, 0x46698DDD);
 MS2_REPLACE_METHOD(0x14123A300, FusionSlotBag, vfunc_16, 828, 0x4AC84617);
 MS2_REPLACE_METHOD(0x14123A650, FusionSlotBag, FUN_14123a650, 131, 0xDF09E79C);
-MS2_REPLACE(0x14123A960, FUN_14123a960, 73, 0xA87B8FD9);
+MS2_REPLACE(0x14123A960, CastToSlotBag, 73, 0xA87B8FD9);
 MS2_REPLACE(0x14123A9B0, FUN_14123a9b0, 147, 0x2FD00ACC);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cadd80-0x142cade10 .text$yd

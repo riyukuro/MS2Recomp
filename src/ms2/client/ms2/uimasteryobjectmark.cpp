@@ -29,7 +29,7 @@ class Unk_SSGWorld
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player actor
 };
-CFunctionCubeService* FUN_1409670b0();
+CFunctionCubeService* GetFunctionCubeService();
 class Unk_CameraHousing;
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
@@ -210,7 +210,7 @@ void UIMasteryObjectMark::OnLoadComplete()
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(pos);
         if (spContext == 0)
         {
-            CFunctionCubeObject* pCube = FUN_1409670b0()->FindCube(m_cubes.GetKeyAt(pos));
+            CFunctionCubeObject* pCube = GetFunctionCubeService()->FindCube(m_cubes.GetKeyAt(pos));
             if (!pCube)
                 continue;
             CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(pCube);
@@ -315,7 +315,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(posCur);
         if (spContext == 0)
             continue;
-        MS2Ptr<CFunctionCubeObject> spCube = FUN_1409670b0()->FindCube(strKey);
+        MS2Ptr<CFunctionCubeObject> spCube = GetFunctionCubeService()->FindCube(strKey);
         if (spCube.IsNull())
         {
             FUN_140e5b450(strKey);
@@ -324,7 +324,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         int nOwnerOk = 1;
         if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cc00() == 1)
         {
-            if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cbf0() != ((class PC*)(class PCBase*)(pPC))->FUN_141656ad0())
+            if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140e5cbf0() != ((class PC*)(class PCBase*)(pPC))->GetAccountId())
                 nOwnerOk = 0;
         }
         MS2Ptr<CHomemadeCubeObject> spHome(dynamic_cast<CHomemadeCubeObject*>(spCube.get()));
@@ -399,7 +399,7 @@ int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* 
 int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext)
 {
     int nChanged = FUN_140e5b720(static_cast<CHomemadeCubeObject*>(pCube)->FUN_140ca6580()->m_n100, pContext);
-    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_141226cd0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->GetItemId());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;

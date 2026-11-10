@@ -43,8 +43,8 @@ public:
                                                                     // hit test of spTarget's box against this shape
                                                                     // placed at spSelf
 
-    void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot);   // place by a z rotation, then Detect
-    void FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot);     // place by a rotation, then Detect
+    void DetectWithEulerRotation(MS2Ptr<CDetectContext> spCtx, const NiPoint3& kRot);   // place by a z rotation, then Detect
+    void DetectWithMatrixRotation(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot);     // place by a rotation, then Detect
     void Detect(MS2Ptr<CDetectContext> spCtx);                      // 0x1409fc6c0 collect and sort the hit objects
     void Invalidate();                                              // 0x1409fe440 rebuild the wire meshes on next draw
     static int TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,

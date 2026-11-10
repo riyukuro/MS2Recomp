@@ -402,7 +402,7 @@ GFxMovieBackground::~GFxMovieBackground()
     m_spScript = 0;
     if (m_spRenderView)
     {
-        FUN_14127b290();
+        RemoveScene();
         m_spRenderView = 0;
     }
     if (m_spRenderTarget != 0)
@@ -430,7 +430,7 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
             Scaleform::GFx::Value vArg(pArgs[0]);
             m_spScript = reinterpret_cast<MS2Ptr<AScript>&&>(static_cast<MS2Ptr<ASUIComponent>&&>(Unk_ASCreate<ASUIComponent>(m_18, vArg)));
             if (m_spScript.get() != 0)
-                m_spScript->Invoke("loadBG", FUN_14127be10(), m_nCameraFlag);
+                m_spScript->Invoke("loadBG", GetBackgroundName(), m_nCameraFlag);
             m_spViewport = NiNew MinimapViewport;
             m_n98 = m_spViewport->InitFromFieldMinimap(0);
         }
@@ -545,7 +545,7 @@ void GFxMovieBackground::vfunc_11()
     m_spScript = 0;
     if (m_spRenderView)
     {
-        FUN_14127b290();
+        RemoveScene();
         m_spRenderView = 0;
     }
     if (m_spRenderTarget != 0)
@@ -568,7 +568,7 @@ void GFxMovieBackground::vfunc_12()
     GFxMovie::vfunc_12();
     if (m_spRenderView)
     {
-        FUN_14127b290();
+        RemoveScene();
         m_spRenderView = 0;
     }
     if (m_spRenderTarget != 0)
@@ -751,7 +751,7 @@ int GFxMovieBackground::AppendScene()
     return 0;
 }
 // @0x14127b290
-int GFxMovieBackground::FUN_14127b290()
+int GFxMovieBackground::RemoveScene()
 {
     if (!m_spRenderView)
         return 0;
@@ -939,7 +939,7 @@ int GFxMovieBackground::SetBaseTexture(NiRenderedTexture* pTexture)
     return 0;
 }
 // @0x14127be10
-CString GFxMovieBackground::FUN_14127be10()
+CString GFxMovieBackground::GetBackgroundName()
 {
     if (m_strBg.Find(".png", 0) != -1 || m_strBg.Find(".dds", 0) != -1)
     {
@@ -972,12 +972,12 @@ MS2_REPLACE_METHOD(0x14127af40, GFxMovieBackground, SetBackgroundColor, 131, 0x5
 MS2_REPLACE_METHOD(0x14127afd0, GFxMovieBackground, vfunc_16, 97, 0xEC527B97);
 MS2_REPLACE_METHOD(0x14127b040, GFxMovieBackground, vfunc_39, 177, 0xEF74DFFF);
 MS2_REPLACE_METHOD(0x14127b100, GFxMovieBackground, AppendScene, 386, 0x54963695);
-MS2_REPLACE_METHOD(0x14127b290, GFxMovieBackground, FUN_14127b290, 306, 0x7DBF2654);
+MS2_REPLACE_METHOD(0x14127b290, GFxMovieBackground, RemoveScene, 306, 0x7DBF2654);
 MS2_REPLACE_METHOD(0x14127b3d0, GFxMovieBackground, CreateRenderView, 1535, 0xFDE6D0CF);
 MS2_REPLACE_METHOD(0x14127b9e0, GFxMovieBackground, CreateRenderTarget, 349, 0xC4EC9E42);
 MS2_REPLACE_METHOD(0x14127bb50, GFxMovieBackground, CreateRenderTexture, 330, 0x31F3B57A);
 MS2_REPLACE_METHOD(0x14127bcb0, GFxMovieBackground, SetBaseTexture, 336, 0x893CF012);
-MS2_REPLACE_METHOD(0x14127be10, GFxMovieBackground, FUN_14127be10, 360, 0xFCB863E7);
+MS2_REPLACE_METHOD(0x14127be10, GFxMovieBackground, GetBackgroundName, 360, 0xFCB863E7);
 
 // vfunc_9's second by-value Ptr<> argument is the Renderer2D in the exe: its release COMDAT 0x14127c5c0 is a separate
 // copy of 0x14127c550 (the Ptr<Unk_GFxUIHal> one), emitted here explicitly.

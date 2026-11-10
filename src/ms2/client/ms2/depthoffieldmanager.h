@@ -9,9 +9,9 @@ public:
     CDepthOfFieldManager();                 // 0x141177ee0
     virtual ~CDepthOfFieldManager();        // 0x141177f50 (deleting dtor 0x141178250)
 
-    void FUN_141177fa0();                   // fetch the render step and apply the saved enable flag
-    void FUN_141178020(unsigned char on);   // enable / disable
-    unsigned char FUN_1411780c0();          // m_50
+    void Initialize();                   // fetch the render step and apply the saved enable flag
+    void SetEnabled(unsigned char on);   // enable / disable
+    unsigned char IsEnabled();          // m_50
     void FUN_141178000(double dDelta);      // advance the focus fade (PostProcessingService::OnTick)
 
     void* m_10;                             // render step (slot 4)

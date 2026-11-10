@@ -43,8 +43,8 @@ public:
     virtual CStringW vfunc_7();                       // 7 0x1413a5760: description
     virtual int vfunc_8();                                  // 8 0x1413a5810: 0
 
-    int FUN_1413a5600(bool bResult);
-    int FUN_1413a55a0(int nResult);                         // 0x1413a55a0 like FUN_1413a5600 for an int result (negated when m_b1c)
+    int ApplyNotBool(bool bResult);
+    int ApplyNot(int nResult);                         // 0x1413a55a0 like ApplyNotBool for an int result (negated when m_b1c)
     CStringW FUN_1413a5820();                                // 0x1413a5820    // 0x1413a5820 the base description text                        // 0x1413a5600 applies m_b1c (negation) to a check result
 
     int m_n18;                                              // +0x18

@@ -51,7 +51,7 @@ class Unk_PvpArenaTable;
 class CIndividualArenaDataTable;
 
 // @0x1412818c0
-Unk_PvpArenaTable* FUN_1412818c0()
+Unk_PvpArenaTable* GetIndividualArenaDataTable()
 {
     return reinterpret_cast<Unk_PvpArenaTable*>(TSingleton<CIndividualArenaDataTable>::s_instance);
 }
@@ -107,7 +107,7 @@ void CPVPManager::SendCancelRequest()
             FUN_140d73aa0(GetStringCommon(0x42e), 0, 0, CStringW(L""));
             return;
         }
-        CIndividualArenaDataTable::DataPtr spRecord = reinterpret_cast<CIndividualArenaDataTable*>(FUN_1412818c0())->GetData(Selection());
+        CIndividualArenaDataTable::DataPtr spRecord = reinterpret_cast<CIndividualArenaDataTable*>(GetIndividualArenaDataTable())->GetData(Selection());
         if (spRecord == 0)
             return;
         if (spRecord->m_nFieldID == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())

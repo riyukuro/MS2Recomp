@@ -84,7 +84,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
 void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
 void FUN_1412751b0(const CStringW& str, int n);                 // shows a banner
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 int FUN_1418fd6c0(__int64 nHomeId);                            // opens a home
@@ -226,14 +226,14 @@ void UIItemBillBoardDialog::OnLoadComplete()
     if (m_bInstall == 1) {
         m_advertiserMovie->vfunc_4(1);
         m_customerMovie->vfunc_4(0);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_advertiser"));
+        SetChildText((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_advertiser"));
         ASButton* pInstallButton = m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get();
         if (pInstallButton != 0)
             m_installButton.operator->()->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), nullptr);
     } else {
         m_advertiserMovie->vfunc_4(0);
         m_customerMovie->vfunc_4(1);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_customer"));
+        SetChildText((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_customer"));
         ASButton* pHomeButton = m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get();
         if (pHomeButton != 0)
             m_homeButton.operator->()->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), nullptr);
@@ -270,11 +270,11 @@ void UIItemBillBoardDialog::OnLoadComplete()
         int nMonth = createTime.GetMonth();
         int nYear = createTime.GetYear();
         CStringW strCreate = FUN_14028dfa0(CStringW(L"s_special_item_billboard_createTime"), nYear, nMonth, nDay, nHour, nMin, nHours);
-        FUN_140cfee80((*m_customerMovie).FUN_1422bb890(), "m_title", CStringW(m_info.title));
-        FUN_140cfee80((*m_customerMovie).FUN_1422bb890(), "m_desc", CStringW(m_info.text));
-        FUN_140cfee80((*m_customerMovie).FUN_1422bb890(), "m_name", CStringW(m_info.secondName));
-        FUN_140cfee80((*m_customerMovie).FUN_1422bb890(), "m_charInfo", CStringW(strCharInfo));
-        FUN_140cfee80((*m_customerMovie).FUN_1422bb890(), "m_createTime", CStringW(strCreate));
+        SetChildText((*m_customerMovie).FUN_1422bb890(), "m_title", CStringW(m_info.title));
+        SetChildText((*m_customerMovie).FUN_1422bb890(), "m_desc", CStringW(m_info.text));
+        SetChildText((*m_customerMovie).FUN_1422bb890(), "m_name", CStringW(m_info.secondName));
+        SetChildText((*m_customerMovie).FUN_1422bb890(), "m_charInfo", CStringW(strCharInfo));
+        SetChildText((*m_customerMovie).FUN_1422bb890(), "m_createTime", CStringW(strCreate));
         m_30->Invoke("setProfile", FUN_141028be0(m_info.firstId, FUN_14016a600(m_info.firstName, 0), 1, ""));
     }
 }
@@ -555,7 +555,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
     spBox.operator->()->Append<__int64>(m_nItemUid);
-    spBox->FUN_140b76940(CStringW(strInfo));
+    spBox->AddStringArg(CStringW(strInfo));
     FUN_140d73c60(spBox);
 }
 MS2_REPLACE_METHOD(0x140C33840, UIItemBillBoardDialog, FUN_140c33840, 1871, 0x5603826A);
@@ -585,7 +585,7 @@ bool UIItemBillBoardDialog::FUN_140c34050(int nResult, const CMsgBoxData& data)
     if (nResult == 0) {
         __int64 nUid = data.FUN_141a02ed0(0, 0);
         CStringW str = data.FUN_141a02fd0(1, CStringW());
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return true;
         g_143ab2a90.FUN_140a63880(spItem.get(), str);

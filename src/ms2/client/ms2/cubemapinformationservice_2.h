@@ -11,7 +11,7 @@ public:
     void LoadCubes(const Unk_CubePaletteFilter&);
     int GetCubes(CubeArray&);
     int FUN_1410b50d0(MS2Ptr<CubeItemInfo>&);
-    void FUN_1410b5280(MS2Ptr<CubeItemInfo>);
+    void SelectCube(MS2Ptr<CubeItemInfo>);
     void SelectByItemId(int);
     void SelectByInstanceId(__int64);
     void SelectByIndex(int);
@@ -27,8 +27,8 @@ public:
     unsigned GetSelectedPage();
     int GetSelectedIndex();
     MS2Ptr<CItem> FindItemByInstanceId(__int64);
-    int FUN_1410b5e70();
-    int FUN_1410b5eb0();
+    int IsInCubeMode();
+    int GetCubeCraftMode();
     int IsItemAllowedInCurrentSpace(int itemId);
     int FUN_1410b6060(unsigned index);
     void GoToPrevPage();

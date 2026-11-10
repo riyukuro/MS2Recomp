@@ -117,7 +117,7 @@ int CGuideConditionContinentCode::vfunc_3()
     MS2Ptr<CFieldDataCli> info = WorldService::GetInstance()->FUN_141bd30a0();
     if (info.operator==(0))
         return 0;
-    return FUN_1413a5600(m_n20 == reinterpret_cast<CFieldData*>(info.operator->())->GetContinentCode());
+    return ApplyNotBool(m_n20 == reinterpret_cast<CFieldData*>(info.operator->())->GetContinentCode());
 }
 
 // @0x1413aa070
@@ -149,7 +149,7 @@ void CGuideConditionAnyOne::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionAnyOne::vfunc_3()
 {
     for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i) {
-        if (FUN_1413a5570(GE_CONDS(m_conds)[i].operator->()) != 0)
+        if (EvaluateCondition(GE_CONDS(m_conds)[i].operator->()) != 0)
             return 1;
     }
     return 0;
@@ -204,7 +204,7 @@ bool CGuideConditionAllOf::vfunc_6(Unk_GcCondList* pFailed)
 int CGuideConditionAllOf::vfunc_3()
 {
     for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i) {
-        if (FUN_1413a5570(GE_CONDS(m_conds)[i].operator->()) == 0)
+        if (EvaluateCondition(GE_CONDS(m_conds)[i].operator->()) == 0)
             return 0;
     }
     return 1;
@@ -232,7 +232,7 @@ void CGuideConditionAchieveExistTrophy::vfunc_2(TiXmlElement* pElem)
 // @0x1413aa680
 int CGuideConditionAchieveExistTrophy::vfunc_3()
 {
-    return FUN_1413a55a0(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->HasCompletedOfType(*reinterpret_cast<Unk_NullableInt*>(&m_type)));
+    return ApplyNot(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->HasCompletedOfType(*reinterpret_cast<Unk_NullableInt*>(&m_type)));
 }
 
 // @0x1413aa6c0
@@ -272,7 +272,7 @@ int CGuideConditionGuideOpen::vfunc_3()
 {
     MS2Ptr<CGuideEntity> ref = reinterpret_cast<CGuideManager*>(FUN_1409331e0())->FindEntity(m_nGuideId);
     if (reinterpret_cast<Unk_GcSmartRef*>(&ref)->FUN_1413b4130())
-        return FUN_1413a5600(reinterpret_cast<Unk_G9GuideEntry*>(ref.operator->())->m_n1c != 0);
+        return ApplyNotBool(reinterpret_cast<Unk_G9GuideEntry*>(ref.operator->())->m_n1c != 0);
     return 0;
 }
 
@@ -314,7 +314,7 @@ void CGuideConditionGuideClear::vfunc_2(TiXmlElement* pElem)
 // @0x1413aab60
 int CGuideConditionGuideClear::vfunc_3()
 {
-    return FUN_1413a5600(reinterpret_cast<CGuideManager*>(FUN_1409331e0())->IsCleared(m_nGuideId));
+    return ApplyNotBool(reinterpret_cast<CGuideManager*>(FUN_1409331e0())->IsCleared(m_nGuideId));
 }
 
 // @0x1413aaba0
@@ -359,7 +359,7 @@ void CGuideConditionExistShortcut::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionExistShortcut::vfunc_3()
 {
     int nSkill = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotSkillId(m_nSlotIndex);
-    return FUN_1413a5600(nSkill == m_nSkillId);
+    return ApplyNotBool(nSkill == m_nSkillId);
 }
 
 // @0x1413aae10
@@ -385,7 +385,7 @@ CStringW CGuideConditionUgcCollectMoney::GetTypeName()
 // @0x1413aaf80
 int CGuideConditionUgcCollectMoney::vfunc_3()
 {
-    return 0 < reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d56470();
+    return 0 < reinterpret_cast<CMeratMarketMan*>(GetMeratMarketMan())->FUN_140d56470();
 }
 
 // @0x1413aafc0
@@ -406,7 +406,7 @@ int CGuideConditionCanObserveMode::vfunc_3()
     void* pDialog = FUN_1413b1c60("PartyDialog");
     if (pDialog == 0)
         return 0;
-    return FUN_1413a55a0(reinterpret_cast<UIPartyDialog*>(pDialog)->IsObserveModeAvailable());
+    return ApplyNot(reinterpret_cast<UIPartyDialog*>(pDialog)->IsObserveModeAvailable());
 }
 
 // @0x1413ab0e0
@@ -434,7 +434,7 @@ int CGuideConditionMyPlayerLevel::vfunc_3()
     Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a5600(pPC->vfunc_78() >= m_n20);
+    return ApplyNotBool(pPC->vfunc_78() >= m_n20);
 }
 
 // @0x1413ab240
@@ -458,7 +458,7 @@ CStringW CGuideConditionMoney::GetTypeName()
 // @0x1413ab300
 int CGuideConditionMoney::vfunc_3()
 {
-    return FUN_1413a5600(DAT_143ab2898 >= m_n20);
+    return ApplyNotBool(DAT_143ab2898 >= m_n20);
 }
 
 // @0x1413ab350
@@ -487,15 +487,15 @@ void CGuideConditionPlaceUgcCube::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionPlaceUgcCube::vfunc_3()
 {
     if (m_nItemId != 0 && reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FindCubeByItemId(m_nItemId) == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (reinterpret_cast<const Unk_ImNullableInt*>(&m_min)->HasValue() || reinterpret_cast<const Unk_ImNullableInt*>(&m_max)->HasValue()) {
         int nCount = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->CountCubes();
         if (reinterpret_cast<const Unk_ImNullableInt*>(&m_min)->HasValue() && nCount < *FUN_1413989f0(&m_min))
-            return FUN_1413a55a0(0);
+            return ApplyNot(0);
         if (reinterpret_cast<const Unk_ImNullableInt*>(&m_max)->HasValue() && nCount > *FUN_1413989f0(&m_max))
-            return FUN_1413a55a0(0);
+            return ApplyNot(0);
     }
-    return FUN_1413a55a0(1);
+    return ApplyNot(1);
 }
 
 // @0x1413ab5b0
@@ -537,14 +537,14 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
         return 0;
     void* pCube = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(m_pos.GetValue());
     if (pCube == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (Unk_GcBoolHasValue(&m_attachable)) {
         MS2Ptr<CItemData> item = FUN_14053f870(reinterpret_cast<Cube*>(pCube)->FUN_1408b4f20());
         bool bAttach = reinterpret_cast<Unk_G9ItemRec*>(item.operator->())->m_nValue != 0;
         if (bAttach != m_attachable.GetValue())
-            return FUN_1413a55a0(0);
+            return ApplyNot(0);
     }
-    return FUN_1413a55a0(1);
+    return ApplyNot(1);
 }
 
 // @0x1413ab9e0
@@ -583,8 +583,8 @@ void CGuideConditionPlaceUgcCubeByIconType::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionPlaceUgcCubeByIconType::vfunc_3()
 {
     if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->HasCubeWithIconCode(m_nIconType) == 0)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 
 // @0x1413abce0
@@ -627,10 +627,10 @@ int CGuideConditionInteractObject::vfunc_3()
         return 0;
     float fDist = (pPC->vfunc_18() - pObj->GetPos()).Length();
     if (fDist > m_fDistance)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (pObj->FUN_1413b5600() != m_nState)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 
 // @0x1413ac050
@@ -668,7 +668,7 @@ int CGuideConditionLastClosedTextTip::vfunc_3()
 {
     void* pDialog = FUN_14136f3e0(0x4e53);
     if (pDialog != 0)
-        return FUN_1413a5600(m_nEntityId == reinterpret_cast<UIGuideEvent*>(pDialog)->GetLastTip());
+        return ApplyNotBool(m_nEntityId == reinterpret_cast<UIGuideEvent*>(pDialog)->GetLastTip());
     return 0;
 }
 
@@ -742,7 +742,7 @@ int CGuideConditionTitle::vfunc_3()
     Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a5600(reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount() > 0);
+    return ApplyNotBool(reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount() > 0);
 }
 
 // @0x1413ac700
@@ -778,7 +778,7 @@ void CGuideConditionServerTime::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionServerTime::vfunc_3()
 {
     CMsTime now(GetServerTime());
-    return FUN_1413a5600(m_time <= now);
+    return ApplyNotBool(m_time <= now);
 }
 
 // @0x1413ac8e0

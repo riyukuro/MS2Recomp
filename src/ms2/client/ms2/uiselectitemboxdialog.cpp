@@ -88,7 +88,7 @@ CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412752d0(const CStringW& strMessage, int n);                  // pop a notice
 int FUN_141276180(const CString& strCommand, const CString& strArg);
-CString FUN_140b62550(unsigned nIndex);                                 // the index text
+CString GetFontName(unsigned nIndex);                                 // the index text
 CString FUN_14016a600(const wchar_t* psz, int n);                       // wide -> narrow
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs);               // unit_140d1ae30 @0x140d1d3f0
 
@@ -102,8 +102,8 @@ UISelectItemBoxDialog::UISelectItemBoxDialog()
     , m_binderSel("SelectItemBoxDialog_Sel")
 {
     FUN_141924170(1);
-    FUN_140d432d0(&m_binder, 0x411);
-    FUN_140d432d0(&m_binderSel, 0x411);
+    SetIconType(&m_binder, 0x411);
+    SetIconType(&m_binderSel, 0x411);
 }
 
 // @0x140f99420
@@ -122,7 +122,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_close");
-    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(m_uItemUid);
+    MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(m_uItemUid);
     if (item == 0)
         return;
     {
@@ -159,8 +159,8 @@ void UISelectItemBoxDialog::OnLoadComplete()
     if (pPlayer == 0)
         return;
     ItemDropContext params;
-    params.m_job = pPlayer->FUN_141654700();
-    params.m_gender = ((class PC*)(class Unk_SibPlayer*)(pPlayer))->FUN_141658e60();
+    params.m_job = pPlayer->GetJobGroupId();
+    params.m_gender = ((class PC*)(class Unk_SibPlayer*)(pPlayer))->GetGender();
     m_rewards.clear();
     TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nDropBoxId, params, m_rewards, false);
     m_binder.FUN_140d43990();
@@ -215,7 +215,7 @@ void UISelectItemBoxDialog::SetItemUid(unsigned __int64 uItemUid)
 // @0x140f9a230
 void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(m_uItemUid);
+    MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(m_uItemUid);
     if (item == 0)
         return;
     ATL::CAtlArray<unsigned> selected;
@@ -228,7 +228,7 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
             FUN_1412752d0(L"s_selectItemBox_select_wrong", 1);
             return;
         }
-        strIndices += FUN_140b62550(selected[i]);
+        strIndices += GetFontName(selected[i]);
         if (i < selected.GetCount() - 1U)
             strIndices += L",";
     }
@@ -256,7 +256,7 @@ void UISelectItemBoxDialog::FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler:
 // @0x140f9a700
 void UISelectItemBoxDialog::FUN_140f9a700()
 {
-    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(m_uItemUid);
+    MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(m_uItemUid);
     if (item == 0)
         return;
     ATL::CAtlArray<unsigned> selected;

@@ -34,7 +34,7 @@ public:
     void FUN_140db9040(CStringW& strText);              // -> +0x18
     void FUN_140db9070(CStringA& strText);              // -> +0x20 (widened)
     void FUN_140db90e0(CStringW& strText);              // -> +0x20
-    void FUN_140db9170();                               // adds the "platform" survey parameter
+    void AddPlatformSurveyParameter();                               // adds the "platform" survey parameter
     bool HasPlayerHandle();                               // has a player handle
     bool IsArmed();                               // armed
     bool IsShown();                               // survey already shown

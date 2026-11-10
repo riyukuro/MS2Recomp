@@ -253,7 +253,7 @@ template <class T> T* Unk_UgcGetDialog(int nId)
 // A UI entity by name.
 template <class T> T* Unk_UgcGetEntity(CString strName)
 {
-    return dynamic_cast<T*>(FUN_140b632f0()->GetUISwfEntity(strName).get());
+    return dynamic_cast<T*>(GetUISwfEntityManager()->GetUISwfEntity(strName).get());
 }
 
 // ---- CUgcDownloadParam --------------------------------------------------------------------------------------------
@@ -773,7 +773,7 @@ void CUgcDownloadProfile::ProcessResult()
                     if (((class PCBase*)(class Unk_UgcPlayer*)(pMyPC))->FUN_141656a80() == sp->m_characterId)
                     {
                         pMyPC->FUN_1416611b0(strUrl);
-                        nObjectId = ((class GameObject*)(class Unk_UgcPlayer*)(pMyPC))->FUN_14123c580();
+                        nObjectId = ((class GameObject*)(class Unk_UgcPlayer*)(pMyPC))->GetObjectId();
                     }
                     else
                     {
@@ -781,7 +781,7 @@ void CUgcDownloadProfile::ProcessResult()
                         if (pPlayer)
                         {
                             pPlayer->FUN_1416611b0(strUrl);
-                            nObjectId = ((class GameObject*)(class Unk_UgcPlayer*)(pPlayer))->FUN_14123c580();
+                            nObjectId = ((class GameObject*)(class Unk_UgcPlayer*)(pPlayer))->GetObjectId();
                         }
                     }
                     if (nObjectId > 0)
@@ -959,7 +959,7 @@ MS2_REPLACE_METHOD(0x141872630, CUgcDownloadGuildPoster, MakePath, 238, 0x4D0A1E
 void CUgcDownloadGuildPoster::ProcessResult()
 {
     if (m_nResult == 0 && m_spPoster.get())
-        TSingleton<CGuildManager>::GetInstance()/*C3:TSingleton<CGuildManager>::GetInstance*/->FUN_1413baef0(m_spPoster->m_nIndex, 0);
+        TSingleton<CGuildManager>::GetInstance()/*C3:TSingleton<CGuildManager>::GetInstance*/->UpdateGuildPoster(m_spPoster->m_nIndex, 0);
     Unk_AdditionalLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadGuildPoster::ProcessResult]");
 }
 MS2_REPLACE_METHOD(0x141872730, CUgcDownloadGuildPoster, ProcessResult, 131, 0xC7FB1C84);

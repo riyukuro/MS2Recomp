@@ -89,8 +89,8 @@ public:
     unsigned char FUN_141c04fc0() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
 
     efd::SmartPointer<egf::Entity> GetEnt();                                 // copy of the entity handle
-    egf::EntityID FUN_1413fd8e0();                              // id of the entity (0 when unbound)
-    unsigned __int64 FUN_1413fd960();                           // 64-bit id of the entity (0 when unbound)
+    egf::EntityID GetEntityID();                              // id of the entity (0 when unbound)
+    unsigned __int64 GetEntityIDValue();                           // 64-bit id of the entity (0 when unbound)
     void ShowStateEffect();                                       // (re)create the state effect
     void ClearStateEffect();                                       // destroy the state effect
     void SetVisible(unsigned char bVisible);                 // show / hide the entity's actor
@@ -144,11 +144,11 @@ public:
     virtual void vfunc_9();                                     // 0x1413ff140
 
     void MakeNxBoxController();                                 // 0x1413ff170 create the box actor
-    void FUN_1413ff5f0();                                       // release the box actor
+    void ReleaseActor();                                       // release the box actor
     void FUN_1413ff690(const CString& strAsset);                // show the asset on the entity (model / sound)
-    void FUN_1413ff800(int nCollision);                         // box actor on / off
+    void SetCollision(int nCollision);                         // box actor on / off
     void PlayReactAni();                                       // play the use asset of the row
-    void FUN_1413ff8a0();                                       // play the second asset
+    void ApplyAssetB();                                       // play the second asset
 
     NxActor* m_pActor;                                          // +0xb0 the box actor
     efd::SmartPointer<egfPhysX::EntityActorData> m_spProp;                               // +0xb8
@@ -208,7 +208,7 @@ public:
     void ApplyRankEntry(TPtrValue<CGameRankingData> spRank);     // take the data from a ranking entry
     void FUN_1414017b0(const CString& strFile);                 // load the image file into the entity
     CStringW GetDisplayName();                                   // caption of the image
-    int FUN_1414021c0();                                        // rank number of the image
+    int GetRank();                                        // rank number of the image
     int GetDisplayScore();                                        // trophy count of the image
     static UINT GetURLFromIndirectURL(LPVOID pParam);           // 0x141401920 worker thread
     static UINT GetURLFromGameRanking(LPVOID pParam);           // 0x141401c20 worker thread
@@ -247,7 +247,7 @@ public:
     virtual int vfunc_16();                                     // 0x141402ad0
 
     int FUN_141402b40();                                        // the node can be used (gathering table check)
-    int FUN_141402c50();                                        // milliseconds until the node respawns
+    int GetRespawnRemainingTime();                                        // milliseconds until the node respawns
     int FUN_141402c90();                                        // BOOL: the gathering id is a valid node
 
     int m_nRespawnTick;                                         // +0xd8 tick at which the node comes back (0: present)
@@ -266,7 +266,7 @@ public:
     virtual int vfunc_5();                                      // 0x141403fd0
     virtual void vfunc_10();                                    // 0x141402dd0
 
-    int FUN_141402e60();                                        // the poster id of the row
+    int GetHousePosterId();                                        // the poster id of the row
     void UpdatePoster(unsigned char bShow);                    // fetch and show the poster
     void FUN_141403180(CStringW strFile);                       // load the poster file into the entity
 };

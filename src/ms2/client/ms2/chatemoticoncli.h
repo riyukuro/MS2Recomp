@@ -33,18 +33,18 @@ public:
     CChatEmoticonCli();
     virtual ~CChatEmoticonCli();
 
-    void FUN_140a38fa0(CInPacket& packet);              // 0: the full state (owned ids, then the packs with expiry)
+    void OnEmoticonList(CInPacket& packet);              // 0: the full state (owned ids, then the packs with expiry)
     void FUN_140a39170(CInPacket& packet);              // 1: expired packs removed
     void FUN_140a39360(CInPacket& packet);              // 2: packs added (with a chat notice)
     void OnEmoticonMovedToEnd(CInPacket& packet);              // 5: one id moved to the end of the owned list
     void OnEmoticonRemoved(CInPacket& packet);              // 6: one id removed from the owned list
     void OnEmoticonTypedInMessenger(CInPacket& packet);              // 3: a pack opened in the messenger browser
     void OnEmoticonSentInGroupMessenger(CInPacket& packet);              // 4: a pack opened in the group messenger browser
-    void FUN_140a39a20(CInPacket& packet);              // 7: result notice of a pack operation
-    bool FUN_140a39dd0(int nEmoticonId);                // the pack of an emoticon is owned and not expired
+    void OnEmoticonResult(CInPacket& packet);              // 7: result notice of a pack operation
+    bool IsEmoticonUsable(int nEmoticonId);                // the pack of an emoticon is owned and not expired
     bool IsEmoticonFavorite(int nEmoticonId);                // the emoticon is in the owned id list
     bool FUN_140a3a0b0(int nEmoticonId);                // the pack of an emoticon is unowned or expired
-    bool FUN_140a3a140(unsigned nGroupId);                   // the pack is unowned or expired
+    bool IsGroupExpired(unsigned nGroupId);                   // the pack is unowned or expired
     void AddGroup(unsigned nGroupId, __int64 nExpire);  // own a pack (replacing an old entry)
     void RemoveGroup(unsigned nGroupId);                   // forget a pack
     void SendMessenger();                               // report the expired packs to the server

@@ -100,21 +100,21 @@ struct Unk_PonyApp { char m_pad[8]; char m_manager[1];  };
 class Unk_GameContext   // C3: member view for the former free stand-ins
 {
 public:
-    class efd::ServiceManager* FUN_140af8310();
+    class efd::ServiceManager* GetServiceManager();
 };
 struct Unk_PonyScene;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The model facts of a part and the model's non-virtual helpers (?\equipmodel.cpp, ?\itemugcmesh.cpp).
 void* FUN_141200a90(class CEquipModel*);   // C3: was FUN_141200a90
-void FUN_141202240(CEquipModel* pPart, void* pXf);                  // sets the part's local transform
-void FUN_1412021a0(class CEquipModel*, class NiTransform*);   // C3: was FUN_1412021a0
+void SetLocalTransform(CEquipModel* pPart, void* pXf);                  // sets the part's local transform
+void GetLocalTransform(class CEquipModel*, class NiTransform*);   // C3: was GetLocalTransform
 void FUN_1412021f0(class CEquipModel*, class NiTransform*);   // C3: was FUN_1412021f0
 namespace efd { class Point3; } void FUN_1412024f0(class CEquipModel*, class NiPoint3*, efd::Point3*, float*, void*, void*, void*);   // equipmodel.cpp
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
-float FUN_141422340(CEquipModel* pPart, int nIndex);         // customize value nIndex of the part
-void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex
-void FUN_141422840(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale);
+float GetPartScale(CEquipModel* pPart, int nIndex);         // customize value nIndex of the part
+void SetPartScale(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex
+void SetPartTransform(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale);
 void FUN_141422950(class NiMatrix3 const&, Vector3*);   // C3: was FUN_141422950
 void* FUN_141200ab0(class CEquipModel*);
 void FUN_141202480(class CEquipModel*, class NiPoint3*, float*, void*, void*, void*);
@@ -129,12 +129,12 @@ NiAVObject* FUN_141167cf0(const CString& strName);              // scene node by
 
 // PhysX glue (?\kfmmodel.cpp, ?\equipmodelforceapplier.cpp, client\ms2\physxhelper.cpp).
 class CPhysXHelper;
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14168a540(int);
-    void FUN_14168a570();
+    void Unlock();
 };
 namespace efd { template <> CKfmModel* DynamicCast<CKfmModel, CEquipModel>(CEquipModel* p); }   // the part's model as a .kfm model
 template <> ecrPhysX::PropService* Unk_ServiceManager::GetSystemServiceAs<ecrPhysX::PropService>() const;
@@ -191,7 +191,7 @@ MS2_CHECK_SIZE(Unk_PonyJointEntry, 0x18);
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h), iterated by the shared
 // iterator wrappers (the iterator is 8 bytes; begin/end return it through a hidden pointer).
 typedef std::set<efd::SmartPointer<NiAVObject> > Unk_MeshSet;   // the part's mesh objects
-Unk_MeshSet* FUN_141201c90(class CEquipModel*);
+Unk_MeshSet* GetRoots(class CEquipModel*);
 
 // CEquipModel's vfunc_24/vfunc_26 as the exe calls them in FUN_141694650: the point goes by value (16-aligned arg copy).
 class Unk_PonyModelSlots
@@ -211,9 +211,9 @@ static inline const NiPoint3& N3(const Vector3& p) { return reinterpret_cast<con
 static inline Vector3 SPV(const NiPoint3& p) { return Vector3(p.x, p.y, p.z); }
 static inline Vector3& SP(NiPoint3& p) { return reinterpret_cast<Vector3&>(p); }
 
-void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
+void* GetFirstRoot(class CEquipModel*);   // C3: was GetFirstRoot
 class Unk_PonyPlayer;
-void FUN_141695f10(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond);
+void GetPartModels(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond);
 // ---- static initializers (.text$di) ----
 #ifndef MS2_HOOK_DLL
 #include "ms2/placeholder/header_statics_a.h"
@@ -303,12 +303,12 @@ int CPonyTailController::vfunc_3()
             FUN_141695220();
             m_kFirst.m_kStart.m_fScale = vfunc_21();
             m_kSecond.m_kStart.m_fScale = vfunc_21();
-            FUN_1416955b0(1, 0, &CPonyTailController::FUN_141694fb0, 0);
+            FUN_1416955b0(1, 0, &CPonyTailController::GetPartLocalTransform, 0);
         }
     }
     m_fSensitivity = reinterpret_cast<Common::Constants::Value<float>*>(((char*)GetClientConstants()) + 0x2e98)->Read();
-    m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
-    m_bUseButton1 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547170();
+    m_bEnabled = m_spEquipItem->GetItemData()->FUN_14053ec70()->FUN_140547130();
+    m_bUseButton1 = m_spEquipItem->GetItemData()->FUN_14053ec70()->FUN_140547170();
     return 1;
 }
 
@@ -331,17 +331,17 @@ void CPonyTailController::vfunc_6()
     if (pPlayer == 0)
         return;
     if (m_bBusy != 0)
-        FUN_1416955b0(0, 0, &CPonyTailController::FUN_141694fb0, 0);
-    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
+        FUN_1416955b0(0, 0, &CPonyTailController::GetPartLocalTransform, 0);
+    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->GetEntityID());
     if (pActor == 0)
         return;
     MS2Ptr<CEquipModel> spFirst = m_kFirst.m_spModel;
     if (spFirst.get())
     {
-        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spFirst.operator->())->FUN_1412029d0());
+        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spFirst.operator->())->GetPartName());
         if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObj)) != 0)
         {
-            FUN_141202240(reinterpret_cast<CEquipModel*>(spFirst.operator->()), &m_kFirst.m_kRest);
+            SetLocalTransform(reinterpret_cast<CEquipModel*>(spFirst.operator->()), &m_kFirst.m_kRest);
             NiPoint3 kPos, kEuler, kA, kB;
             FUN_141202480((class CEquipModel*)(spFirst.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kA, &kB, &m_kFirst.m_kRest);
             reinterpret_cast<Unk_PonyModelSlots*>(spFirst.operator->())->vfunc_24(kPos);
@@ -352,10 +352,10 @@ void CPonyTailController::vfunc_6()
     MS2Ptr<CEquipModel> spSecond = m_kSecond.m_spModel;
     if (spSecond.get())
     {
-        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spSecond.operator->())->FUN_1412029d0());
+        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spSecond.operator->())->GetPartName());
         if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObj)) != 0)
         {
-            FUN_141202240(reinterpret_cast<CEquipModel*>(spSecond.operator->()), &m_kSecond.m_kRest);
+            SetLocalTransform(reinterpret_cast<CEquipModel*>(spSecond.operator->()), &m_kSecond.m_kRest);
             NiPoint3 kPos, kEuler, kA, kB;
             FUN_141202480((class CEquipModel*)(spSecond.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kA, &kB, &m_kSecond.m_kRest);
             reinterpret_cast<Unk_PonyModelSlots*>(spSecond.operator->())->vfunc_24(kPos);
@@ -421,14 +421,14 @@ void CPonyTailController::vfunc_14(float fValue)
     const Unk_CustomizeRange* pRange = vfunc_23();
     m_afValue[m_nCurIndex] = efd::Clamp(fValue, pRange->m_fMin, pRange->m_fMax);
     float fCur = vfunc_21();
-    if (FUN_141422340(spFirst.get(), 0) == fCur)
+    if (GetPartScale(spFirst.get(), 0) == fCur)
         return;
     m_n98 = 1;
     FUN_141695220();
     m_kFirst.m_kStart.m_fScale = fCur;
     m_kSecond.m_kStart.m_fScale = fCur;
-    FUN_1414225d0(spFirst, 0, fCur);
-    FUN_1416955b0(1, 0, &CPonyTailController::FUN_141694fb0, 0);
+    SetPartScale(spFirst, 0, fCur);
+    FUN_1416955b0(1, 0, &CPonyTailController::GetPartLocalTransform, 0);
     if (m_pListener)
         static_cast<Unk_PonyListener*>(m_pListener)->vfunc_2(this, fCur, 0);
 }
@@ -441,7 +441,7 @@ void CPonyTailController::vfunc_9(int nIndex)
     if (m_spEquipItem->FUN_1411dc0d0() == 0)
         return;
     FUN_141695220();
-    FUN_1416955b0(0, 1, &CPonyTailController::FUN_141695120, nIndex);
+    FUN_1416955b0(0, 1, &CPonyTailController::GetPresetTransform, nIndex);
     m_nValue = nIndex;
     Unk_UserProxyItemData* pData;
     Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
@@ -538,7 +538,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
     NiActorManager* pActor = 0;
     if (pSvc != 0 && pPlayer != 0)
     {
-        pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
+        pActor = pSvc->GetActorManager(pPlayer->GetEntityID());
     }
     if (m_spPicker.operator CItemPickingHelper*() ? true : false)
     {
@@ -551,7 +551,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
         if (spFirst.get() != 0)
         {
             NiAVObject* pObj = ((class NiNode*)((class NiActorManager*)(class NiActorManager*)(pActor))->GetNIFRoot())->GetObjectByName(
-                (const char*)reinterpret_cast<CEquipModel*>(spFirst.operator->())->FUN_1412029d0());
+                (const char*)reinterpret_cast<CEquipModel*>(spFirst.operator->())->GetPartName());
             if (pObj != 0)
                 FUN_1412021f0((class CEquipModel*)(spFirst.operator->()), &m_kFirst.m_kPose);
         }
@@ -559,7 +559,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
         if (spSecond.get() != 0)
         {
             NiAVObject* pObj = ((class NiNode*)((class NiActorManager*)(class NiActorManager*)(pActor))->GetNIFRoot())->GetObjectByName(
-                (const char*)reinterpret_cast<CEquipModel*>(spSecond.operator->())->FUN_1412029d0());
+                (const char*)reinterpret_cast<CEquipModel*>(spSecond.operator->())->GetPartName());
             if (pObj != 0)
                 FUN_1412021f0((class CEquipModel*)(spSecond.operator->()), &m_kSecond.m_kPose);
         }
@@ -587,7 +587,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     if (pPlayer->FUN_14166dc50() != "Equip_Change_Idle_A")
         return;
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
-    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
+    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->GetEntityID());
     if (pActor == 0)
         return;
     MS2Ptr<CEquipModel> spFirst = m_kFirst.m_spModel;
@@ -714,7 +714,7 @@ void CPonyTailController::vfunc_33()
     MS2Ptr<CEquipModel> spSecond = m_kSecond.m_spModel;
     if (spSecond.get())
         reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_28(&m_kSecond.m_kPose.m_Translate, &m_kSecond.m_kPose.m_Rotate, m_kSecond.m_kPose.m_fScale);
-    FUN_1416955b0(0, 0, &CPonyTailController::FUN_141694fb0, 0);
+    FUN_1416955b0(0, 0, &CPonyTailController::GetPartLocalTransform, 0);
     if (m_spEquipItem.get())
     {
         Unk_UserProxyItemData* pData;
@@ -750,7 +750,7 @@ void CPonyTailController::FUN_141694650()
         FUN_141202480((class CEquipModel*)(m_kFirst.m_spModel.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kAnchor, &kUnused, 0);
         reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_24(kPos);
         reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_26(kEuler);
-        FUN_1412021a0((class CEquipModel*)(m_kFirst.m_spModel.operator->()), &m_kFirst.m_kRest);
+        GetLocalTransform((class CEquipModel*)(m_kFirst.m_spModel.operator->()), &m_kFirst.m_kRest);
         m_kFirst.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<Vector3&>(kAnchor)))));
     }
     if ((m_kFirst.m_spModel.get() ? true : false) && (m_kSecond.m_spModel.get() ? true : false)
@@ -773,7 +773,7 @@ void CPonyTailController::FUN_141694650()
         Vector3 kEuler = FUN_140a0b080(kMirror, reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kMirror) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor))) * 10.0f)), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_26(reinterpret_cast<const NiPoint3&>(kEuler));
-        FUN_1412021a0((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);
+        GetLocalTransform((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);
     }
     Unk_UserProxyItemData* pData;
     Unk_UserProxyItemData* pCopy = pData = m_spEquipItem->GetItem()->FUN_140527870();
@@ -789,7 +789,7 @@ void CPonyTailController::FUN_141694ea0(CEquipModel** ppFirst, CEquipModel** ppS
         return;
     CEquipModel* pA = 0;
     CEquipModel* pB = 0;
-    ::FUN_141695f10(pPlayer, &pA, &pB);
+    ::GetPartModels(pPlayer, &pA, &pB);
     if ((bool)m_spPicker.operator CItemPickingHelper*() && pB)
     {
         if (m_spPicker->GetPickedTarget() == pB)
@@ -808,14 +808,14 @@ void CPonyTailController::FUN_141694ea0(CEquipModel** ppFirst, CEquipModel** ppS
 }
 
 // @0x141694fb0
-void CPonyTailController::FUN_141694fb0(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nValue, int nSecond,
+void CPonyTailController::GetPartLocalTransform(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nValue, int nSecond,
                                         Vector3& kPos, Vector3& kEuler, float& fScale)
 {
     if ((bool)spPart.get() && pRoot != 0)
     {
         NiTransform kInverse;
         ((NiTransform*)((void*)&((class NiAVObject*)(void*)(pRoot))->GetWorldTransform()))->Invert(kInverse);
-        NiTransform kLocal = FUN_141695ca0(spPart.get());
+        NiTransform kLocal = GetModelTransform(spPart.get());
         kLocal = kInverse * kLocal;
         kPos = reinterpret_cast<const Vector3&>(kLocal.m_Translate);
         FUN_141422950(*(class NiMatrix3 const*)&static_cast<class NiTransform const&>(kLocal), &kEuler);
@@ -829,7 +829,7 @@ void CPonyTailController::FUN_141694fb0(MS2Ptr<CEquipModel> spPart, NiNode* pRoo
 }
 
 // @0x141695120
-void CPonyTailController::FUN_141695120(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nIndex, int nSecond,
+void CPonyTailController::GetPresetTransform(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nIndex, int nSecond,
                                         Vector3& kPos, Vector3& kEuler, float& fScale)
 {
     Unk_PickPartInfo* pInfo = ((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spPart.operator->())));
@@ -872,14 +872,14 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
     NiPoint3 kD = reinterpret_cast<NiPoint3&>(DAT_143b01a60);
     float fScale = 1.0f;
     FUN_1412024f0((class CEquipModel*)(spPart.operator->()), &kB, reinterpret_cast<efd::Point3*>(&kC), &fScale, (void*)(&kA), (void*)(&kD), 0);
-    FUN_1412021a0((class CEquipModel*)(spPart.operator->()), &pPart->m_kStart);
+    GetLocalTransform((class CEquipModel*)(spPart.operator->()), &pPart->m_kStart);
     FUN_141200e30((class CEquipModel*)(spPart.operator->()), 0);
     reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
     if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spPart.operator->()))) + 0x20) != 0)
     {
         NiNode* pScene = ((class CEffectService*)(struct Unk_PonyScene*)(reinterpret_cast<Unk_PonyScene*>(TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
-        float fTime = (float)((CMainSystem*)(Unk_PonyApp*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
-        Unk_MeshSet* pSet = FUN_141201c90((class CEquipModel*)(spPart.operator->()));
+        float fTime = (float)((CMainSystem*)(Unk_PonyApp*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
+        Unk_MeshSet* pSet = GetRoots((class CEquipModel*)(spPart.operator->()));
         const Unk_MeshSet& kSet = *pSet;
         Unk_MeshSet::iterator itEnd = kSet.end();
         for (Unk_MeshSet::iterator it = kSet.begin(); it != itEnd; ++it)
@@ -908,14 +908,14 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
 {
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
     Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
-    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
+    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->GetEntityID());
     if (pActor == 0)
         return;
     MS2Ptr<CEquipModel> spPart = pPart->m_spModel;
     if (spPart == (CEquipModel*)0)
         return;
     NiAVObject* pObj = ((class NiNode*)((class NiActorManager*)(class NiActorManager*)(pActor))->GetNIFRoot())->GetObjectByName(
-        (const char*)reinterpret_cast<CEquipModel*>(spPart.operator->())->FUN_1412029d0());
+        (const char*)reinterpret_cast<CEquipModel*>(spPart.operator->())->GetPartName());
     if (pObj == 0)
         return;
     if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObj)) == 0)
@@ -937,7 +937,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
     {
         (this->*pFn)(spPart, pRoot, nValue, bSecond, kPos, kEuler, fScale);
     }
-    FUN_141422840(spPart.get(), kPos, kEuler, fScale);
+    SetPartTransform(spPart.get(), kPos, kEuler, fScale);
     if (m_pListener)
         static_cast<Unk_PonyListener*>(m_pListener)->vfunc_5(this, spPart.get());
     pRoot->AttachChild(pNode, true);
@@ -945,7 +945,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
 }
 
 // @0x141695ca0
-NiTransform CPonyTailController::FUN_141695ca0(CEquipModel* pModel)
+NiTransform CPonyTailController::GetModelTransform(CEquipModel* pModel)
 {
     NiTransform kXf;
     kXf.m_Translate = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<CEquipModel*>(pModel)->vfunc_23()))))));
@@ -963,7 +963,7 @@ NiTransform CPonyTailController::FUN_141695ca0(CEquipModel* pModel)
 // @0x141695f00 is CPonyTailController::GetRTTI (pinned above)
 
 // @0x141695f10
-void FUN_141695f10(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond)
+void GetPartModels(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond)
 {
     if (pPlayer == 0)
         return;
@@ -1043,7 +1043,7 @@ void FUN_141696de0(NxJointLimitSoftDesc* pLimit, float fValue)
 }
 
 // @0x141696ea0
-void FUN_141696ea0(NxD6JointDesc* pDesc, float fValue)
+void SetD6JointLimits(NxD6JointDesc* pDesc, float fValue)
 {
     FUN_141696de0(&pDesc->linearLimit, fValue);
     FUN_141696de0(&pDesc->swing1Limit, fValue);
@@ -1074,16 +1074,16 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(CEquipModel* pModel, const voi
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel, CEquipModel>((class CEquipModel*)(pModel));
     if (pKfm == 0)
         return;
-    Unk_ServiceManager* pServiceManager = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
+    Unk_ServiceManager* pServiceManager = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->GetServiceManager());
     ecrPhysX::PropService* pProp = pServiceManager->GetSystemServiceAs<ecrPhysX::PropService>();
-    unsigned nJoints = pProp->GetNumProps(pKfm->FUN_14143ff70());
-    NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0((class CEquipModel*)(pModel));
+    unsigned nJoints = pProp->GetNumProps(pKfm->GetEntityID());
+    NiObjectNET* pNode = (NiObjectNET*)GetFirstRoot((class CEquipModel*)(pModel));
     if (pNode == 0)
         return;
     Unk_NiPoint3 kReference(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiObjectNET*)(pNode))->GetWorldRotate()) * reinterpret_cast<const efd::Point3&>(DAT_143a08cd8))));
     for (unsigned i = 0; i < nJoints; i++)
     {
-        NiPhysXProp* pInfo = pProp->GetPropAt(pKfm->FUN_14143ff70(), i);
+        NiPhysXProp* pInfo = pProp->GetPropAt(pKfm->GetEntityID(), i);
         if (pInfo == 0)
             continue;
         void* pSet = ((void*)((class NiPhysXProp*)(void*)(pInfo))->GetSnapshot());
@@ -1109,7 +1109,7 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(CEquipModel* pModel, const voi
                     {
                         NxD6JointDesc kDesc;
                         pJoint->vfunc_26(kDesc);
-                        FUN_141696ea0(&kDesc, ((const Unk_PonyJointEntry*)pJoints)[k].m_fLimit);
+                        SetD6JointLimits(&kDesc, ((const Unk_PonyJointEntry*)pJoints)[k].m_fLimit);
                         Unk_NiMatrix3 mRot;
                         ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerX * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerY * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerZ * 3.1415927f / 180.0f);
                         NxMat33 mAxis;
@@ -1163,9 +1163,9 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(CEquipModel* pModel, const voi
                         }
                         else
                         {
-                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
+                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(1);
                             pJoint->vfunc_25(kDesc);
-                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
                         }
                     }
                 }

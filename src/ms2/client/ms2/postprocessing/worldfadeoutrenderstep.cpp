@@ -32,12 +32,12 @@ class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera)
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5320;
 extern int DAT_1439f823c;
-bool FUN_1416bafb0(void* a, void* step);
+bool UpdateWorldFadeOut(void* a, void* step);
 
 // @0x143ae5088 / @0x143ae508c (zero-initialised)
 static float s_fade;
@@ -173,7 +173,7 @@ bool WorldFadeOutRenderStep::vfunc_15(unsigned int a, void* b)
     if (!PostProcessEffect::vfunc_15(a, 0))
         return false;
     void* p;
-    p = FUN_140c8f690(FUN_1416b4990(this, "FadeOut", (void*)FUN_1416bafb0, this, reinterpret_cast<PostProcessingService*>(m_70)->GetRenderedTexture(5), 0, 0, 0, "FadeInOut", FUN_140c8f680(&((void**)b)[2]), FUN_140c8f680(&((void**)b)[1]), 0));
+    p = FUN_140c8f690(FUN_1416b4990(this, "FadeOut", (void*)UpdateWorldFadeOut, this, reinterpret_cast<PostProcessingService*>(m_70)->GetRenderedTexture(5), 0, 0, 0, "FadeInOut", FUN_140c8f680(&((void**)b)[2]), FUN_140c8f680(&((void**)b)[1]), 0));
     if (p == 0) {
         vfunc_16();
         return false;
@@ -185,7 +185,7 @@ MS2_REPLACE_METHOD(0x1416BAE20, WorldFadeOutRenderStep, vfunc_15, 388, 0xF523D75
 
 #ifndef MS2_HOOK_DLL
 // @0x1416bafb0
-bool FUN_1416bafb0(void* a, void* step)
+bool UpdateWorldFadeOut(void* a, void* step)
 {
     void* s = step;
     s_fade = 1.0f - ((float)GetTickCount() - (float)s_fadeStartTick) / (float)DAT_1439f823c;
@@ -197,7 +197,7 @@ bool FUN_1416bafb0(void* a, void* step)
         }
     }
     s_fade = s_fade * s_fade;
-    FUN_1409a5770(DAT_143ae5320, (float const*)(&s_fade), 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5320, (float const*)(&s_fade), 1);
     return true;
 }
 #endif
@@ -208,7 +208,7 @@ void WorldFadeOutRenderStep::vfunc_19()
     if (reinterpret_cast<NiRenderStep*>(this)->GetActive() == 1) {
         Unk_WFTarget* a = reinterpret_cast<Unk_WFTarget *>(reinterpret_cast<PostProcessingService*>(m_70)->GetFirstActiveStep());
         if (a->vfunc_17() != 0) {
-            ecr::RenderService* h = reinterpret_cast<Unk_GameContext*>(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8)->FUN_140af8310()->GetSystemServiceAs<ecr::RenderService>();
+            ecr::RenderService* h = reinterpret_cast<Unk_GameContext*>(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8)->GetServiceManager()->GetSystemServiceAs<ecr::RenderService>();
             NiRenderer* p = GetNiRenderer();
             NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
             int w = q->GetWidth(0);
@@ -324,7 +324,7 @@ void FUN_1416bb5f0()
 }
 
 // @0x1416bc0f0
-void FUN_1416bc0f0()
+void InitMaterialNames()
 {
     DAT_143ae51e0 = "NiStandardMaterial";
     DAT_143ae51e8 = "MS2StandardMaterial";
@@ -370,5 +370,5 @@ MS2_REPLACE_METHOD(0x1416bb2b0, WorldFadeOutRenderStep, GetRTTI, 13, 0x6B2BF7C8)
 MS2_REPLACE_METHOD(0x1416bb2c0, WorldFadeOutRenderStep, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416bb2d0, WorldFadeOutRenderStep, vfunc_13, 8, 0x41132FCD);
 MS2_REPLACE(0x1416bb5f0, FUN_1416bb5f0, 2795, 0xCB9A0617);
-MS2_REPLACE(0x1416bc0f0, FUN_1416bc0f0, 636, 0x77CB25AB);
+MS2_REPLACE(0x1416bc0f0, InitMaterialNames, 636, 0x77CB25AB);
 

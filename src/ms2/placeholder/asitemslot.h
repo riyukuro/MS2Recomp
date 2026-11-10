@@ -41,7 +41,7 @@ public:
     void FUN_1409ba630(const Unk_ItemSlotSource& item);         // set the item from a reward record (its slots 0-2)
     void FUN_1409ba6d0();                                       // enable the click preview (registers FUN_1409baa60)
     void SetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, __int64 nUser);   // setTooltipFunction
-    void FUN_1409baa20(const Scaleform::GFx::FunctionHandler::Params& params);   // the tooltip callback: vfunc_25
+    void OnGetTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // the tooltip callback: vfunc_25
     void FUN_1409baa60(const Scaleform::GFx::FunctionHandler::Params& params);   // the click callback: item preview
 
 protected:

@@ -28,7 +28,7 @@ private:
 class CBattleRecord : public CPtred {
 public:
     CBattleRecord(__int64); virtual ~CBattleRecord();
-    __int64 FUN_140a03120(); __int64 FUN_140a03140(int); void AddAmount(int,__int64); void Reset();
+    __int64 GetId(); __int64 GetAmount(int); void AddAmount(int,__int64); void Reset();
     __int64 id; __int64 counts[8];
 };
 MS2_CHECK_SIZE(CBattleRecord,0x60);
@@ -42,7 +42,7 @@ public:
     void Clear(); void StartIfInactive(); void Start(); void Stop(); int IsActive(); unsigned FUN_140a03600();
     void AddRecord(__int64); void RemoveRecord(__int64); int HasRecord(__int64); Ptr GetRecord(__int64);
     void RecordAmount(Ptr,int,__int64); void RecordAmountById(__int64,int,__int64);
-    void FUN_140a03920(); void WriteLogLine(const CString&); void CloseLogFile(); void LogAmount(__int64,int,__int64);
+    void OpenLogFile(); void WriteLogLine(const CString&); void CloseLogFile(); void LogAmount(__int64,int,__int64);
     int active; unsigned start;
     ATL::CAtlMap<__int64,Ptr> records;
     int type; ATL::CAtlFile file;
@@ -59,10 +59,10 @@ public:
     void StartGroupIfInactive(int); void StartGroup(int); void StopGroup(int); int IsGroupActive(int); unsigned GetGroupStartTick(int);
     Ptr GetGroup(int); void AddRecord(int,__int64); void RemoveRecord(int,__int64); int HasRecord(int,__int64);
     CBattleRecordGroup::Ptr GetRecord(int,__int64);
-    CStringW FUN_140a04260(int,__int64,int); CStringW FUN_140a04830(int,__int64,int); CStringW GetElapsedTimeText(int);
+    CStringW GetRecordValueText(int,__int64,int); CStringW FUN_140a04830(int,__int64,int); CStringW GetElapsedTimeText(int);
     static CStringW FUN_140a04bc0(int);
-    void FUN_140a04ef0(Unk_BattleDamage*); void FUN_140a05490(__int64,__int64); void FUN_140a05550(__int64,__int64);
-    void FUN_140a05610(); void FUN_140a05670(__int64); void FUN_140a056c0(__int64);
+    void RecordDamage(Unk_BattleDamage*); void FUN_140a05490(__int64,__int64); void FUN_140a05550(__int64,__int64);
+    void ClearPartyGroups(); void AddPartyMemberRecord(__int64); void RemovePartyMemberRecord(__int64);
     Ptr groups[3];
 };
 MS2_CHECK_SIZE(CBattleRecordManager,0x38);

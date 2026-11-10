@@ -232,7 +232,7 @@ char* FUN_14115a880(char* p) { return reinterpret_cast<char*>(const_cast<egf::En
 // The list append worldservice_1 calls: std::vector<EntityPtr>::emplace_back (folded with
 // vector<Cube*>::push_back). The exe calls the std::allocator instance 0x14111ada0, not the CustomAllocator 0x14111ad30.
 // @0x14115a960
-void FUN_14115a960(void* list, void* elem)
+void PushBackEntityPtr(void* list, void* elem)
 {
     static_cast<std::vector<egf::EntityPtr>*>(list)->emplace_back(*static_cast<const egf::EntityPtr*>(elem));
 }
@@ -248,13 +248,13 @@ struct Unk_CMISXformVec;
 template <unsigned __int64 N> struct Unk_CMISTree;
 
 // @0x14115a8a0
-void FUN_14115a8a0(Unk_CMISKeySet* pVec, Unk_CMISCubeByKey* pVal)
+void PushBackInt(Unk_CMISKeySet* pVec, Unk_CMISCubeByKey* pVal)
 {
     reinterpret_cast<Unk_CMISIntVec*>(pVec)->emplace_back(*reinterpret_cast<const int*>(pVal));
 }
 
 // @0x14115a900
-void FUN_14115a900(Unk_CMISCubePtrSet* pVec, Cube** ppCube)
+void PushBackCubePtr(Unk_CMISCubePtrSet* pVec, Cube** ppCube)
 {
     reinterpret_cast<Unk_CMISCubePtrVec*>(pVec)->emplace_back(*ppCube);
 }
@@ -266,13 +266,13 @@ void FUN_14115a930(void* list, egf::EntityPtr* pEnt)
 }
 
 // @0x14115a990
-void FUN_14115a990(Unk_CMISEntSet* pVec, const Unk_CMISEntityRef* pId)
+void PushBackEntityID(Unk_CMISEntSet* pVec, const Unk_CMISEntityRef* pId)
 {
     reinterpret_cast<Unk_CMISEntityIdVec*>(pVec)->emplace_back(*reinterpret_cast<const egf::EntityID*>(pId));
 }
 
 // @0x14115a9c0
-void FUN_14115a9c0(Unk_CMISXformVec* pVec, const NiTransform* pXform)
+void PushBackTransform(Unk_CMISXformVec* pVec, const NiTransform* pXform)
 {
     reinterpret_cast<Unk_CMISXformVec2*>(pVec)->emplace_back(*pXform);
 }

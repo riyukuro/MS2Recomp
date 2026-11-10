@@ -183,7 +183,7 @@ CNetworkService* FUN_140714f90();
 
 // The ugc / merat market service: the dialog's pending requests.
 class Unk_ShopMarket : public CMeratMarketMan { };
-class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
+class Unk_SingletonObj* GetMeratMarketMan();   // C3: was GetMeratMarketMan
 
 // The gacha box table: the coin item of a gacha shop.
 // (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
@@ -283,7 +283,7 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class CItemLockManager { public: int FUN_140613160(CItem* pItem); };   // 0 = the item is locked
 class Unk_BreakRules* FUN_140535310();
 class Unk_ShopScorePlayer;
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 __int64 FUN_140c8dab0(struct Unk_PmFixedItem*);   // C3: was FUN_140c8dab0
 bool FUN_140633840(MS2Ptr<CItem> spItem);
 
@@ -329,7 +329,7 @@ typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const Unk_ShopPayMap&, const
 
 
 bool FUN_140ebc540(__int64 nPrice);                                 // enough merets (else the charge popup)
-class UIMarketBillDialog* FUN_140b09580(int);   // C3: was FUN_140b09580
+class UIMarketBillDialog* FindMarketBillDialog(int);   // C3: was FindMarketBillDialog
 // ASMeratMarketBuyBillData: the premium product of the row (inline setter)
 inline void FUN_141b0a2d0(ASMeratMarketBuyBillData* pBill, MS2Ptr<CMeratMarketPremiumProduct> spProduct) { pBill->m_spPremium = spProduct; }
 
@@ -351,7 +351,7 @@ void FUN_140d2d230(int nItemId, int nRank, unsigned nShopId, int nSerial);   // 
 void FUN_140d2d150(int nItemId, int nRank);                         // link an item into the chat
 void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct);   // link a premium product into the chat
 
-class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
+class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
@@ -435,7 +435,7 @@ public:
     virtual GameObject* vfunc_24();                                     // MS2: slot 24
 };
 
-CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);  // the achievement requirement text
+CStringW GetRequireAchieveText(int nAchieve, int nGrade, CStringW strDefault);  // the achievement requirement text
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, ASTooltip* pLhs, ASTooltip* pRhs);   // the compare tooltips of an item
 int FUN_14134a170(int nKind);                                           // the currency of a reset kind
 
@@ -458,7 +458,7 @@ public:
     bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);
 };
    // FUN_14025e7a0(): the localizer
-CStringW FUN_141425950(unsigned int nItemId);                                    // the item's name
+CStringW GetItemDisplayName(unsigned int nItemId);                                    // the item's name
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc's name
 __int64 FUN_1418ff5a0(int nType, __int64 nArg, int nArg2);              // the owned currency amount
 class ASButton;
@@ -712,7 +712,7 @@ void UIShopDialog::vfunc_67()
     if (m_nSortKind > 0)
         FUN_140714f90()->SendSystemShop(m_nSortKind, 0);
     m_nSortKind = 0;
-    ((class Unk_ShopMarket*)FUN_140939a00())->OnDialogClosed(vfunc_48());
+    ((class Unk_ShopMarket*)GetMeratMarketMan())->OnDialogClosed(vfunc_48());
     if (m_bSearchDirty)
     {
         m_bSearchDirty = 0;
@@ -842,7 +842,7 @@ void UIShopDialog::OnLoadComplete()
             }
             else if (m_nShopType == 4) {
                 int nCoin = TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId);
-                strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_title_gacha_shop"), FUN_141425950(nCoin));
+                strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_title_gacha_shop"), GetItemDisplayName(nCoin));
             }
             else if (0 < (unsigned)m_nNpcId) {
                 strTitle = FormatStringId<CStringW>(0x45e, FUN_1401aa6a0(m_nNpcId));
@@ -865,7 +865,7 @@ void UIShopDialog::OnLoadComplete()
         if (m_nShopType == 4) {
             unsigned nOwned = g_143ab2a90.FUN_140a5f180(TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId), 0);
             int nCost = TSingleton<ItemGachaBoxTable>::GetInstance()->GetPaymentIconTagByShopId(m_nShopId);
-            data.FUN_1409c0d20("gachaUIType", TSingleton<ItemGachaBoxTable>::GetInstance()->GetUiByShopId(m_nShopId));
+            data.SetMemberUInt("gachaUIType", TSingleton<ItemGachaBoxTable>::GetInstance()->GetUiByShopId(m_nShopId));
             data.FUN_1407cbb20("coinAmount", FUN_1418fec90(2, nOwned, nCost));
         }
     }
@@ -1039,7 +1039,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
                 else
                     BuyProduct(nSerial, nQuantity);
             }
-            else if (((class ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn() != 0)
+            else if (((class ItemPreviewMgr*)GetItemPreviewMgr())->IsHudOn() != 0)
                 PreviewProduct(nSerial, nType, 0);
             else {
                 if (nType == 1)
@@ -1053,7 +1053,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     else if (_stricmp("OnRightClick", szMethod) == 0) {
         ASData args;
         if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
-            if (((class ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn() != 0) {
+            if (((class ItemPreviewMgr*)GetItemPreviewMgr())->IsHudOn() != 0) {
                 Scaleform::GFx::Value value = args.PopValue();
                 AScript obj(value, 2);
                 int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
@@ -1295,7 +1295,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                     if (!FUN_141b04a10(spCli.get(), false)) {
                         int nAchieve = spCli->m_64;
                         int nGrade = spCli->m_68;
-                        strRequire = FUN_14093bd40(nAchieve, nGrade, CStringW(L""));
+                        strRequire = GetRequireAchieveText(nAchieve, nGrade, CStringW(L""));
                     }
                 }
                 int nRhs = 4;
@@ -1307,7 +1307,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 if (!strRequire.IsEmpty())
                     tipRhs.FUN_1409dbc30(FUN_14028dfa0<CStringW>(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
                 FUN_141349210(spItem, pRetVal, true, &tipLhs, &tipRhs);
-                tipRhs.FUN_1409db7b0(spItem);
+                tipRhs.SetEnablePreview(spItem);
             }
         }
         else if (nType == 1) {
@@ -1319,12 +1319,12 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                 CStringW strRequire;
                 MS2Ptr<CMeratMarketPremiumProduct> spPremium = spMerat->m_spProduct;
                 if (!FUN_140ebfb90((class CDBPremiumProduct*)(((MS2Ptr<CMeratMarketPremiumProduct>*)(void*)(&spPremium))->get()), false))
-                    strRequire = FUN_14093bd40(spPremium->m_nf8, spPremium->m_nfc, CStringW(L""));
+                    strRequire = GetRequireAchieveText(spPremium->m_nf8, spPremium->m_nfc, CStringW(L""));
                 if (!strRequire.IsEmpty())
                     tipRhs.FUN_1409dbc30(FUN_14028dfa0<CStringW>(CStringW(L"s_shop_tooltip_require_achieve"), strRequire));
                 MS2Ptr<CItem> spItem = FUN_141b05180(spMerat);
                 FUN_141349210(spItem, pRetVal, true, &tipLhs, &tipRhs);
-                tipRhs.FUN_1409db7b0(spItem);
+                tipRhs.SetEnablePreview(spItem);
             }
         }
     }
@@ -1371,7 +1371,7 @@ void UIShopDialog::vfunc_26()
     m_spProbInfo = 0;
     m_spEquip = 0;
     UnloadRenderTarget();
-    ((class Unk_ShopMarket*)FUN_140939a00())->OnDialogClosed(vfunc_48());
+    ((class Unk_ShopMarket*)GetMeratMarketMan())->OnDialogClosed(vfunc_48());
 }
 MS2_REPLACE_METHOD(0x141AF7D00, UIShopDialog, vfunc_26, 180, 0x023AF0D9);
 
@@ -2097,7 +2097,7 @@ bool UIShopDialog::CanSellItem(MS2Ptr<CItem> spItem)
         return false;
     }
     if (((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053cd10()) {
-        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((class Unk_ShopScorePlayer*)FUN_140c8dac0()))) == spItem->GetItemUid()) {
+        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((class Unk_ShopScorePlayer*)GetInstrumentManager()))) == spItem->GetItemUid()) {
             FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, CStringW(L""));
             return false;
         }
@@ -2433,7 +2433,7 @@ void UIShopDialog::BuyProduct(int nSerial, unsigned nQuantity)
         return;
     if (m_nGroup != 1) {
         CStringW strError;
-        if (!spProduct->FUN_140db70a0(strError)) {
+        if (!spProduct->CheckBuyPeriod(strError)) {
             FUN_140d73aa0(strError, 0, 0, CStringW(L""));
             return;
         }
@@ -2492,11 +2492,11 @@ void UIShopDialog::BuyMeratItem(int nSerial, unsigned nQuantity, AScript& source
         FUN_141275260(0xa17, 1, 1);
         return;
     }
-    if (!((class CMeratMarketMan*)(class Unk_ShopMarket*)(((class Unk_ShopMarket*)FUN_140939a00())))->CanBuyPremiumProduct(spProduct.get(), 1))
+    if (!((class CMeratMarketMan*)(class Unk_ShopMarket*)(((class Unk_ShopMarket*)GetMeratMarketMan())))->CanBuyPremiumProduct(spProduct.get(), 1))
         return;
     if (!FUN_140ebc540(nPrice))
         return;
-    void* pDialog = ((void*)FUN_140b09580(0x4f17));
+    void* pDialog = ((void*)FindMarketBillDialog(0x4f17));
     if (pDialog == 0)
         return;
     MS2Ptr<TMeratMarketBillDataParam> spParam(new TMeratMarketBillDataParam());
@@ -2596,11 +2596,11 @@ void UIShopDialog::PreviewNormalItem(int nSerial, int bForce)
         MS2Ptr<CItem> spItem = spProduct->GetItem();
         if (spItem == 0)
             return;
-        if (((class ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn() || bForce) {
+        if (((class ItemPreviewMgr*)GetItemPreviewMgr())->IsHudOn() || bForce) {
             Unk_UserProxyItemData* pProxy = spItem->FUN_140527870();
             if (pProxy)
                 ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pProxy))->InitColorsFromPalette((class CItemData*)(spItem->FUN_140527840()));
-            ((class ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(spItem, 1);
+            ((class ItemPreviewMgr*)GetItemPreviewMgr())->OpenPreview(spItem, 1);
         }
     }
 }
@@ -2616,11 +2616,11 @@ void UIShopDialog::PreviewMeratItem(int nSerial)
         if (spProduct == 0)
             return;
         MS2Ptr<CItem> spPreview = FUN_141b05180(spItem);
-        if (spPreview.get() && ((class ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn()) {
+        if (spPreview.get() && ((class ItemPreviewMgr*)GetItemPreviewMgr())->IsHudOn()) {
             Unk_UserProxyItemData* pProxy = spPreview->FUN_140527870();
             if (pProxy)
                 ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pProxy))->InitColorsFromPalette((class CItemData*)(spPreview->FUN_140527840()));
-            ((class ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(spPreview, 1);
+            ((class ItemPreviewMgr*)GetItemPreviewMgr())->OpenPreview(spPreview, 1);
         }
     }
 }
@@ -2647,7 +2647,7 @@ void UIShopDialog::CloseShop()
                 FUN_14151f200();
         }
     }
-    UIMarketBillDialog* pBill = (UIMarketBillDialog*)((void*)FUN_140b09580(0x4f17));
+    UIMarketBillDialog* pBill = (UIMarketBillDialog*)((void*)FindMarketBillDialog(0x4f17));
     if (pBill && pBill->vfunc_55() == 0) {
         MS2Ptr<TMarketBillDataParam> spParam = pBill->GetParam();
         if ((spParam.get() ? true : false) && spParam->m_nDialogId == vfunc_48())
@@ -2765,7 +2765,7 @@ void UIShopDialog::AddPreviewIcon(MS2Ptr<CItem> spItem)
     if (spIcon.get()) {
         spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIShopDialog::OnEquipmentTooltip),
                               (long long)spIcon.get());
-        MS2Ptr<ASMovieClip> spClip = spIcon->FUN_1409b9380();
+        MS2Ptr<ASMovieClip> spClip = spIcon->GetSlotClip();
         if (spClip.get())
             spClip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIShopDialog::OnEquipmentChanged),
                                   (void*)spIcon.get());
@@ -2871,11 +2871,11 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         if (spProduct->m_88 == 7)
             bCheck = false;
         if (bCheck) {
-            int nUsable = g_143ab2a90.FUN_140a65770(((MS2Ptr<CItem>*)(void*)(&spItem))->get());
+            int nUsable = g_143ab2a90.GetItemUseError(((MS2Ptr<CItem>*)(void*)(&spItem))->get());
             if (nUsable != 0 && nUsable != 1)
                 return 0;
             if (pPlayer != 0) {
-                int nJob = ((class PC*)(void*)(pPlayer))->FUN_141654700();
+                int nJob = ((class PC*)(void*)(pPlayer))->GetJobGroupId();
                 if (!spData->limit.IsJobRecommended(nJob))
                     return 0;
             }
@@ -2897,9 +2897,9 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         CStringW strLabel = FUN_14183e930(spItem->FUN_140527b10(), nColor);
         data.FUN_1407cbb20("label", strLabel);
         __int64 nSalePrice = spProduct->FUN_140db8180();
-        __int64 nPrice = spProduct->FUN_140db81a0();
+        __int64 nPrice = spProduct->GetOriginalPrice();
         unsigned nItemId = spItem->FUN_1405276c0();
-        data.FUN_1409c0d20("level", spItem->GetRequiredLevel());
+        data.SetMemberUInt("level", spItem->GetRequiredLevel());
         data.FUN_1409c1180("salePrice", nSalePrice);
         data.FUN_1407cbb20("salePriceText", ProductPriceText(nSalePrice, spProduct));
         if (nSalePrice != nPrice && 0 < nPrice) {
@@ -2954,7 +2954,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
             data.FUN_1407cbb20("requireFame", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_shop_require_alliance"), strAlliance, strGrade));
         }
         data.FUN_1407cb9c0("serialID", spProduct->FUN_140db5e70());
-        data.FUN_1409c0d20("itemID", nItemId);
+        data.SetMemberUInt("itemID", nItemId);
         static_cast<Unk_ShopRowObj&>(static_cast<ASObj&>(data)).FUN_141b07000("productType", spProduct->FUN_140db5ee0());
         if (spEvent.get() != 0)
             SetProductPoints(data, spEvent, spProduct);
@@ -2979,11 +2979,11 @@ int UIShopDialog::PopulateMerat(ASSlot& data, MS2Ptr<CNpcShopMeratItemCli> spIte
         return 0;
     int nRarity = spPremium->m_nGrade;
     if (m_nGroup != 1 && m_bCheckEnableItems) {
-        int nUsable = g_143ab2a90.FUN_140a65860(spData, nRarity);
+        int nUsable = g_143ab2a90.GetItemRequirementError(spData, nRarity);
         if (nUsable != 0 && nUsable != 1)
             return 0;
         if (pPlayer != 0) {
-            int nJob = ((class PC*)(void*)(pPlayer))->FUN_141654700();
+            int nJob = ((class PC*)(void*)(pPlayer))->GetJobGroupId();
             if (!spData->limit.IsJobRecommended(nJob))
                 return 0;
         }
@@ -3014,12 +3014,12 @@ int UIShopDialog::PopulateMerat(ASSlot& data, MS2Ptr<CNpcShopMeratItemCli> spIte
         data.FUN_1407cb9c0("displayOrder", spItem->m_nDisplayOrder);
         data.FUN_1407cbbe0("meratItem", true);
         data.FUN_1407cb9c0("serialID", spPremium->m_nId);
-        data.FUN_1409c0d20("itemID", nItemId);
+        data.SetMemberUInt("itemID", nItemId);
         static_cast<Unk_ShopRowObj&>(static_cast<ASObj&>(data)).FUN_141b07000("productType", FUN_141b0a1d0(spItem.operator->()));
         CStringW strFunction(spData->function.name);
         data.FUN_1407cbbe0("showRecipe", spData->HasMaidId());
         data.FUN_1407cbbe0("showPreview", strFunction == L"UGCMapPackage");
-        data.FUN_1409c0d20("level", spData->limit.levelLimit);
+        data.SetMemberUInt("level", spData->limit.levelLimit);
         data.SetIconPathString(spData->GetIconPath());
         CStringW strStar = FUN_140ec05f0(((MS2Ptr<CMeratMarketPremiumProduct>*)(void*)(&spPremium))->get());
         if (!strStar.IsEmpty())
@@ -3047,7 +3047,7 @@ int UIShopDialog::PopulateNewProduct(ASSlot& data, MS2Ptr<CNpcShopProductNewCli>
     if (spData == 0)
         return 0;
     unsigned nRarity = pItem->m_nRarity;
-    if (data.FUN_1409c4510(nItemId, nRarity, 1) != 0) {
+    if (data.SetItemById(nItemId, nRarity, 1) != 0) {
         data.FUN_1407cb9c0("serialID", spProduct->FUN_140db5e70());
         data.FUN_1409c0e60("itemCount", L"");
         unsigned nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nRarity);
@@ -3155,7 +3155,7 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
             spData->FUN_141a06630(spProduct->GetItem()->FUN_140527b10(), true, spItem->GetRarity());
             spData->m_nUnitCount = nUnit;
             spData->m_nCount = 1;
-            spData->m_nMax = spProduct->FUN_140db8400();
+            spData->m_nMax = spProduct->GetMaxAffordableCount();
             spData->m_nPrice = (int)spProduct->FUN_140db8180();
             spData->m_spItem = spItem;
             spBox->SetItem(spData);
@@ -3402,7 +3402,7 @@ void UIShopDialog::OnEquipmentTooltip(const Scaleform::GFx::FunctionHandler::Par
     ASEquipIcon* pIcon = (ASEquipIcon*)params.pUserData;
     if (pIcon != 0) {
         ASTooltip tip((void*)pMyPC, 2, 2);
-        tip.FUN_1409e0d40(pIcon->FUN_1409b9550().get());
+        tip.FUN_1409e0d40(pIcon->GetItem().get());
         tip.SetTooltipAlign(5);
         *params.pRetVal = tip.FUN_1422bb870();
     }
@@ -3414,8 +3414,8 @@ MS2_REPLACE_METHOD(0x141b03c30, UIShopDialog, OnEquipmentTooltip, 277, 0xE1DC431
 void UIShopDialog::OnEquipmentChanged(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASEquipIcon* pIcon = (ASEquipIcon*)params.pUserData;
-    if (pIcon != 0 && (pIcon->FUN_1409b9550().get() ? true : false)) {
-        MS2Ptr<CItem> spItem = pIcon->FUN_1409b9550();
+    if (pIcon != 0 && (pIcon->GetItem().get() ? true : false)) {
+        MS2Ptr<CItem> spItem = pIcon->GetItem();
         MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
         if ((CItemData*)spData != 0) {
             if (spData->GetType() == 0x19) {
@@ -3436,7 +3436,7 @@ bool UIShopDialog::CanPreviewItem(MS2Ptr<CItem> spItem)
     MyPC* pMyPC = reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return false;
-    if (spItem->FUN_1405267d0(reinterpret_cast<PC*>(pMyPC)->FUN_141658e60()) == 0)
+    if (spItem->FUN_1405267d0(reinterpret_cast<PC*>(pMyPC)->GetGender()) == 0)
         return false;
     bool bPreview = FUN_141b48950(spItem);
     return bPreview;
@@ -3565,7 +3565,7 @@ bool FUN_141b047f0(CNpcShopProductCli* pProduct, bool bNotify)
     int nTrophy = pProduct->FUN_140db6fb0();
     if (nTrophy < 1)
         return true;
-    if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+    if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
         return false;
     MyPC* pPlayer = reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -3641,7 +3641,7 @@ bool FUN_141b04c30(CNpcShopProductCli* pProduct, bool bNotify)
     int nScore = FUN_141b0a260(pProduct);
     if (nRank == 0 && nScore == 0)
         return true;
-    if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+    if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
         return false;
     unsigned nExp = TSingleton<CGuildManager>::GetInstance()->GetScore();
     int nLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d3180()->FUN_1404c6110(nExp);
@@ -3680,7 +3680,7 @@ bool FUN_141b04ed0(CNpcShopProductCli* pProduct, bool bNotify)
     int nLevel = FUN_141b0a270(pProduct);
     if (nNpc == 0)
         return true;
-    if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+    if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
         return false;
     int nGuildLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d2990(nNpc);
     if (nLevel > nGuildLevel) {
@@ -3700,7 +3700,7 @@ bool FUN_141b04fd0(CNpcShopProductCli* pProduct, bool bNotify)
         MyPC* pPlayer = reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer == 0)
             return false;
-        if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0 || TSingleton<CGuildManager>::GetInstance()->IsMaster(pPlayer->vfunc_77()) == 0) {
+        if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0 || TSingleton<CGuildManager>::GetInstance()->IsMaster(pPlayer->vfunc_77()) == 0) {
             if (bNotify)
                 FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_buy_no_master"), 1, 1);
             return false;

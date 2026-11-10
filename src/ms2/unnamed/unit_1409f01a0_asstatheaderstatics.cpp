@@ -62,8 +62,8 @@ void ASStat::AddStat(int nStat, unsigned nValue, unsigned nStrengthen, int bEsse
     CStringW strName = GetStatCommonText(nStat);
     ASObj row(2);
     row.FUN_1407cbb20("statName", strName);
-    row.FUN_1409c0d20("statValue", nValue);
-    row.FUN_1409c0d20("statStrengthen", nStrengthen);
+    row.SetMemberUInt("statValue", nValue);
+    row.SetMemberUInt("statStrengthen", nStrengthen);
     if (bEssential != 0)
         m_essential.PushBack(row.FUN_1422bb870());
     else

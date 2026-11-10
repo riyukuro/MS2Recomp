@@ -114,7 +114,7 @@ void StateTreeWatering::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (((void*)((class PC*)(class PCBase*)(pRider))->FUN_14165f100()) != 0)
+        if (((void*)((class PC*)(class PCBase*)(pRider))->GetHeldItem()) != 0)
             ((class PC*)(class PCBase*)(pRider))->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar != 0)

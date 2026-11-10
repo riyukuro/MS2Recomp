@@ -91,8 +91,8 @@ class Unk_1403ed2d0 { public: Unk_ALPlayer* FUN_141bd0cc0(); };
 // The status-listener registry (singleton 0x140aa6d40).
 class UIStatusEventDispatcher;
 
-void FUN_141415600(const CString& strBindID);                           // release the item bound to the name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void DestroyItemInfoSlot(const CString& strBindID);                           // release the item bound to the name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 
 extern template class MS2Ptr<AdditionalLevelData>;
@@ -200,7 +200,7 @@ void UIAdventureLevelDialog::vfunc_67()
 {
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_binds.GetCount(); i++)
-        FUN_141415600(m_binds.GetAt(i));
+        DestroyItemInfoSlot(m_binds.GetAt(i));
     UIDialog::vfunc_67();
 }
 
@@ -380,14 +380,14 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
                 bLock = true;
         }
         ASObj obj(2);
-        obj.FUN_1409c0d20("id", pAbility->m_nEffectId);
+        obj.SetMemberUInt("id", pAbility->m_nEffectId);
         obj.FUN_1407cbbe0("isLock", bLock);
         obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
-        obj.FUN_1409c4a30("abilityStatus", pAbility->GetPercent(pPlayer->vfunc_141()));
+        obj.SetMemberFloat("abilityStatus", pAbility->GetPercent(pPlayer->vfunc_141()));
         if (bLock)
-            obj.FUN_1409c0d20("level", pAbility->m_nRequireLevel);
+            obj.SetMemberUInt("level", pAbility->m_nRequireLevel);
         else if ((int)nStep < pAbility->m_nMaxCount)
-            obj.FUN_1409c0d20("level", pAbility->GetLevelOfCount(pPlayer->vfunc_141()));
+            obj.SetMemberUInt("level", pAbility->GetLevelOfCount(pPlayer->vfunc_141()));
         spList->AddItem(obj);
     }
     spList->vfunc_24(true);
@@ -412,7 +412,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
             continue;
         ASObj obj(2);
-        obj.FUN_1409c0d20("id", it->first);
+        obj.SetMemberUInt("id", it->first);
         FUN_140ba45c0(obj, it->first);
         obj.FUN_1407cbb20("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), reinterpret_cast<const unsigned int&>(pMission->m_nCount)));
         obj.FUN_1407cbbe0("received", it->second.m_b1c);
@@ -435,10 +435,10 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
         strState = "inactive";
     if (nLevel > pPlayer->vfunc_141())
         strState = "lock";
-    obj.FUN_1409c0d20("id", nLevel);
+    obj.SetMemberUInt("id", nLevel);
     obj.FUN_1407cba60("state", strState);
     unsigned int nOne = 1;
-    obj.FUN_1409c0d20("level", (std::max)(nLevel, nOne));
+    obj.SetMemberUInt("level", (std::max)(nLevel, nOne));
     obj.FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
     return 1;
 }
@@ -461,7 +461,7 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
-    FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
+    CreateItemInfoSlot(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
     m_binds.Add(strBindID);
     return 1;
@@ -514,7 +514,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
-    FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
+    CreateItemInfoSlot(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
     obj.FUN_1407cbb20("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->GetRarity()));
     m_binds.Add(strBindID);

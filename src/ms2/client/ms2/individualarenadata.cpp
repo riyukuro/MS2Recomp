@@ -36,7 +36,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 int FUN_140768010(int nRange, int nBase);                                   // random number in [nBase, nBase + nRange)
 
 // An array of strings that can hand out a random element (the weakest-typed caller of the tail function below).
-class Unk_IaNames { public: CString FUN_14051c870(); void* m_names; };
+class Unk_IaNames { public: CString GetRandomName(); void* m_names; };
 
 typedef ATL::CRBMap<CStringW, IndividualArenaStringId, ATL::CStringElementTraits<CStringW> > IndividualArenaStringMap;
 std::auto_ptr<IndividualArenaStringMap> MakeIndividualArenaStringMap();     // 0x14084d0c0
@@ -160,7 +160,7 @@ void CIndividualArenaDataTable::SetInit(bool b)
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // @0x14051c870
-CString Unk_IaNames::FUN_14051c870()
+CString Unk_IaNames::GetRandomName()
 {
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount() == 0)
         return "";

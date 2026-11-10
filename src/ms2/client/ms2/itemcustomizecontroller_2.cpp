@@ -50,7 +50,7 @@ CStringW FUN_1419021b0(unsigned a, unsigned b);                   // format "a/b
 CStringW GetStringCommon(int id);                         // string table lookup
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup menu
-void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
+void SetChildHtmlText(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
 float FUN_140bf4fd0(float f);                           // ceilf
 void Unk_140657820();                                   // 'invalid call' of an empty Delegate (shared)
 
@@ -181,7 +181,7 @@ ItemEnchantSlotBag* FUN_1414151d0(NotifyContext::BindData* p)
 }
 
 // @0x141415450
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags)
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags)
 {
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, spItem, nIndex, nIconType, nFlags);
     if (pSlot)
@@ -197,7 +197,7 @@ void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam)
 }
 
 // @0x141415600
-void FUN_141415600(const CString& strName)
+void DestroyItemInfoSlot(const CString& strName)
 {
     ItemInfoSlot* pSlot = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
@@ -355,12 +355,12 @@ int ItemInfoSlot::vfunc_0(void* p)
                         {
                             {
                                 CStringW strEmpty(L"");
-                                tip2.FUN_1409c6a20(strEmpty, GetStringCommon(0x75a));
+                                tip2.SetEnablePutonBoth(strEmpty, GetStringCommon(0x75a));
                             }
                             {
                                 CStringW strEmpty(L"");
                                 CStringW strKey(L"s_word_compose_result");
-                                tip2.FUN_1409c7060(GetStringCommonByKey(strKey), strEmpty);
+                                tip2.SetItemEquipBoth(GetStringCommonByKey(strKey), strEmpty);
                             }
                             *static_cast<Scaleform::GFx::Value*>(p) = tip2.FUN_1422bb870();
                             return 1;
@@ -373,7 +373,7 @@ int ItemInfoSlot::vfunc_0(void* p)
         {
             nResult = tip.FUN_1409e0d40(m_spItem.get());
             if (IsEnabled())
-                tip.FUN_1409db7b0(m_spItem);
+                tip.SetEnablePreview(m_spItem);
         }
     }
     if (nResult == 1)
@@ -437,7 +437,7 @@ void ItemInfoSlot::SetCountText(int a, int b)
     if (root.IsUndefinedOrNull())
         return;
     CStringW strCount = FUN_1419021b0(a, b);
-    FUN_140cff1b0(m_value18, "m_count", strCount);
+    SetChildHtmlText(m_value18, "m_count", strCount);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

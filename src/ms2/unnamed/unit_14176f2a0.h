@@ -20,9 +20,9 @@ public:
     bool IsActive() const;                                 // m_bActive
     void SetProcess(NiMeshUpdateProcess* pProcess);          // set the process
     // @0x14123ef30 (COMDAT in client\ms2\gameobject.cpp)
-    void FUN_14123ef30(float fDuration) { m_fDuration = fDuration; }
+    void SetUpdateDuration(float fDuration) { m_fDuration = fDuration; }
     // @0x14108c240 (COMDAT in client\ms2\clonepc.cpp)
-    void FUN_14108c240(float fInterval) { m_fInterval = fInterval; }
+    void SetUpdateInterval(float fInterval) { m_fInterval = fInterval; }
 
     float m_fLast;                                              // +0x00 time of the last pass
     float m_fInterval;                                          // +0x04

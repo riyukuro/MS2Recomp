@@ -136,7 +136,7 @@ struct Unk_RainPaths
     CString m_strTexture;
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
+class Unk_ResourceMgr* GetNifLoadingService();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
 ecr::SceneGraphService* FUN_1413f98b0();
@@ -182,7 +182,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
     const int nSpan = 20;
     const int nHalf = 10;
     CubeMapInformationService* pService = GetCubeMapService();
-    Unk_CubeHeightIndex* pWorld = pService->FUN_1410b9e70();
+    Unk_CubeHeightIndex* pWorld = pService->GetHeightIndex();
     Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
     for (int dx = -nHalf; dx < nHalf; dx++)
     {
@@ -190,7 +190,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
         {
             int x = kCell.x + dx;
             int y = kCell.y + dy;
-            int z = pWorld->FUN_1410b24b0(x, y);
+            int z = pWorld->GetHeight(x, y);
             if (z == INT_MIN)
                 continue;
             arrCube.Add(Unk_Int3(x, y, z + 1));
@@ -260,7 +260,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
         const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
@@ -300,7 +300,7 @@ void RainDropOnCubeEmitter::Refresh()
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
     ShuffleColumns(arrCube);
-    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     ATL::CAtlArray<unsigned int> arrKey;
     for (unsigned int i = 0; i < arrCube.GetCount(); i++)
     {
@@ -327,7 +327,7 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
         return false;
 
     Unk_RainDrop& kDrop = m_lstDrops.front();
-    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    double dNow = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     if (kDrop.GetTime() > dNow)
         return false;
 
@@ -375,7 +375,7 @@ void RainDropSystem::Create()
     {
         CString strName;
         strName.Format("%sRainDrop%d.dds", (const char*)((struct Unk_RainPaths*)FUN_1401d31f0())->m_strTexture, i);
-        m_arrTexture.Add(reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->GetTexture(strName, 5));
+        m_arrTexture.Add(reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->GetTexture(strName, 5));
     }
 
     m_spSystem = NiPSParticleSystem::Create(0x200, (NiPSParticleSystem::AlignMethod)2, AsPoint(g_143a08cf8),
@@ -462,7 +462,7 @@ void RainDropSystem::SetupProperties()
 void RainDropSystem::SelectTexture()
 {
     const float fPeriod = 1.0f;
-    float fTime = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fTime = (float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     float fRatio = Fmod(fTime, fPeriod);
     unsigned int nIndex = (unsigned int)((float)m_arrTexture.GetCount() * fRatio / fPeriod);
     NiTexturingProperty* pTexturing = (NiTexturingProperty*)m_spSystem->GetProperty(NiProperty::TEXTURING);

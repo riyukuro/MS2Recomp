@@ -296,7 +296,7 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // The player inventory (global 0x143ab2a90) and its free helpers.
 extern Unk_Inventory g_143ab2a90;
@@ -374,7 +374,7 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 void FUN_14151f200();
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
@@ -523,7 +523,7 @@ int UIInventoryDialog::vfunc_65()
     m_1a0 = -1;
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     return 1;
 }
@@ -532,7 +532,7 @@ MS2_REPLACE_METHOD(0x141997280, UIInventoryDialog, vfunc_65, 158, 0);
 // @0x141997330
 void UIInventoryDialog::vfunc_67()
 {
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     FUN_14199be00(INV_TAB_EQUIP);
     FUN_14199be00(INV_TAB_LIFE);
@@ -835,7 +835,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         int nTab = FUN_141999de0();
         if (nTab >= 0 && nTab < 0xf)
         {
-            if (g_143ab2a90.FUN_140a5cf30(nTab) == 0)
+            if (g_143ab2a90.GetItemCount(nTab) == 0)
                 return 1;
             if (0 < FUN_14199d840(nTab))
             {
@@ -1028,9 +1028,9 @@ int UIInventoryDialog::vfunc_13()
     {
         if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
         {
-            if (FUN_140b632f0() != 0)
+            if (GetUISwfEntityManager() != 0)
             {
-                if (static_cast<Unk_InvSwfManager*>(FUN_140b632f0())->FUN_1422d4e20(CString(m_20)) == 0)
+                if (static_cast<Unk_InvSwfManager*>(GetUISwfEntityManager())->FUN_1422d4e20(CString(m_20)) == 0)
                     return 0;
             }
             if (m_1e0.get() != 0)
@@ -1140,7 +1140,7 @@ void UIInventoryDialog::FUN_141999f60()
     int bItemBreak = 1;
     int bItemLock = 1;
     int bBank = 0;
-    if (((class PC*)(class MyPC*)(pPc))->FUN_141658f30() != 0 || ((class PC*)(class MyPC*)(pPc))->FUN_141662de0() != 0)
+    if (((class PC*)(class MyPC*)(pPc))->FUN_141658f30() != 0 || ((class PC*)(class MyPC*)(pPc))->IsVip() != 0)
         bBank = 1;
     UIDialog* pLock = reinterpret_cast<UIDialog*>(Unk_LockDialog<UIItemLockDialog>(0x4f08));
     UIDialog* pBreak = reinterpret_cast<UIDialog*>(Unk_BreakDialog<UIItemBreakDialog>(0x4e8d));
@@ -1199,7 +1199,7 @@ void UIInventoryDialog::FUN_14199a3f0(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (!spItem)
         return;
     if (InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(Unk_NotifyContext::FUN_1422c8e90(m_188)))
@@ -1326,7 +1326,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
         CStringW strName = box.FUN_141a02d50().Trim(L',');
         if (strName.IsEmpty())
         {
-            if (UIMessageBox* pBox = FUN_14151f890())
+            if (UIMessageBox* pBox = GetMessageBoxLayer())
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return false;
         }
@@ -1339,13 +1339,13 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
                 return false;
             }
         }
-        CItem* pItem = g_143ab2a90.FUN_140a5d680(nItemUid).get();
+        CItem* pItem = g_143ab2a90.FindItemByUid(nItemUid).get();
         if (pItem == 0)
             return false;
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028dfa0(CStringW(L"s_coupleeffect_send_confirm"), strName), 0, CStringW(L"")))
         {
             spBox->Append<__int64>(nItemUid);
-            spBox->FUN_140b76940(CStringW(strName));
+            spBox->AddStringArg(CStringW(strName));
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199b100));
             FUN_140d73c60(spBox);
         }
@@ -1359,7 +1359,7 @@ bool UIInventoryDialog::FUN_14199b100(int nResult, const CMsgBoxData& box)
 {
     __int64 nItemUid = box.FUN_141a02f10(0, 0);
     const CStringW& strName = box.FUN_141a02fd0(1, CStringW());
-    CItem* pItem = g_143ab2a90.FUN_140a5d680(nItemUid).get();
+    CItem* pItem = g_143ab2a90.FindItemByUid(nItemUid).get();
     if (pItem == 0)
         return false;
     if (nResult == 0)
@@ -1416,13 +1416,13 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
                 }
                 else
                 {
-                    if (UIMessageBox* pBox = FUN_14151f890())
+                    if (UIMessageBox* pBox = GetMessageBoxLayer())
                         pBox->FUN_1419f82b0(GetStringCommon(0xe7));
                 }
             }
             else
             {
-                if (UIMessageBox* pBox = FUN_14151f890())
+                if (UIMessageBox* pBox = GetMessageBoxLayer())
                     pBox->FUN_1419f82b0(strMsg);
             }
             return false;
@@ -1466,9 +1466,9 @@ void UIInventoryDialog::FUN_14199ba10()
     if (m_210 == 0)
         return;
     m_1d8 = "";
-    int nCount = g_143ab2a90.FUN_140a5d050(m_194);
+    int nCount = g_143ab2a90.GetSlotCount(m_194);
     FUN_14140ed60(m_188);
-    InventorySlotBag* pBag = FUN_14140eca0(m_188, m_194, nCount);
+    InventorySlotBag* pBag = CreateSlotBag(m_188, m_194, nCount);
     if (pBag == 0)
         return;
     m_210->vfunc_25(pBag->GetSlotNames().FUN_1422bb890());
@@ -1498,7 +1498,7 @@ void UIInventoryDialog::FUN_14199bc00()
             if (nButton == -1)
                 continue;
             Unk_Inventory::ItemArray items;
-            g_143ab2a90.FUN_140a60880((int)i, items);
+            g_143ab2a90.GetItemsInCategory((int)i, items);
             int bNew = 0;
             for (unsigned j = 0; j < items.GetCount(); ++j)
             {
@@ -1520,7 +1520,7 @@ MS2_REPLACE_METHOD(0x14199BC00, UIInventoryDialog, FUN_14199bc00, 499, 0);
 void UIInventoryDialog::FUN_14199be00(int nTab)
 {
     Unk_Inventory::ItemArray items;
-    g_143ab2a90.FUN_140a60880(nTab, items);
+    g_143ab2a90.GetItemsInCategory(nTab, items);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items[i];
@@ -1580,8 +1580,8 @@ MS2_REPLACE_METHOD(0x14199C020, UIInventoryDialog, vfunc_66, 158, 0);
 // @0x14199c0d0
 void UIInventoryDialog::UpdateExpandLabel()
 {
-    unsigned int nUsed = g_143ab2a90.FUN_140a5cf30(m_194);
-    unsigned int nTotal = g_143ab2a90.FUN_140a5d050(m_194);
+    unsigned int nUsed = g_143ab2a90.GetItemCount(m_194);
+    unsigned int nTotal = g_143ab2a90.GetSlotCount(m_194);
     if (MS2Ptr<ASLabel> spLabel = GetChild<ASLabel>("m_expand"))
     {
         spLabel->FUN_1422e4a50(StringFormat(L"{0}/{1}", nUsed, nTotal));
@@ -1642,7 +1642,7 @@ MS2_REPLACE_METHOD(0x14199C2B0, UIInventoryDialog, FUN_14199c2b0, 851, 0);
 void UIInventoryDialog::FUN_14199c610(CStringW strSearch, ATL::CAtlList<CStringW>& names)
 {
     Unk_Inventory::ItemArray items;
-    g_143ab2a90.FUN_140a60880(m_194, items);
+    g_143ab2a90.GetItemsInCategory(m_194, items);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items[i];
@@ -1666,7 +1666,7 @@ bool UIInventoryDialog::FUN_14199c7b0(int nResult, const CMsgBoxData& box)
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0 && m_1e0.get() != 0)
     {
-        static_cast<Unk_InvSwfManager*>(FUN_140b632f0())->FUN_1422d4dd0(CString(m_20));
+        static_cast<Unk_InvSwfManager*>(GetUISwfEntityManager())->FUN_1422d4dd0(CString(m_20));
         m_1e0->SetFocused(1);
     }
     return true;
@@ -1775,7 +1775,7 @@ MS2_REPLACE_METHOD(0x14199D1C0, UIInventoryDialog, FUN_14199d1c0, 1646, 0);
 int UIInventoryDialog::FUN_14199d840(int)
 {
     Unk_Inventory::ItemArray items;
-    g_143ab2a90.FUN_140a60880(m_194, items);
+    g_143ab2a90.GetItemsInCategory(m_194, items);
     int nCount = 0;
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
@@ -1799,7 +1799,7 @@ MS2_REPLACE_METHOD(0x14199D920, UIInventoryDialog, FUN_14199d920, 81, 0);
 // @0x14199d980
 int UIInventoryDialog::FUN_14199d980()
 {
-    if (g_143ab2a90.FUN_140a5cdc0(m_194))
+    if (g_143ab2a90.IsExtraSlotsMaxed(m_194))
         return 0;
     return 1;
 }
@@ -1884,7 +1884,7 @@ struct Unk_MdEntry
 {
     Unk_MdEntry(class Unk_MdSrcA& src); Unk_MdEntry(class Unk_MdSrcB& src); Unk_MdEntry(class Unk_MdSrcC& src);   // 0x141483300 / 0x141483580 / 0x141483830
     unsigned GetKind();
-    __int64 FUN_141483da0();
+    __int64 GetId();
     CStringW GetImage();
     CStringW GetName();
     CStringW GetInfo();
@@ -1923,7 +1923,7 @@ public:
     Unk_InvGroupBrowser* m_pBrowser;                                // +0x50
 };
 MS2_CHECK_OFFSET(Unk_InvChatUI, m_pBrowser, 0x50);
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 class Unk_InvGuildManager
 {
 public:
@@ -2084,7 +2084,7 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
         unsigned nTotal = nCount;
         Unk_ChatPtrChat spChat = TSingleton<CGroupChatManager>::GetInstance()->FindChat(m_180);
         if (spChat.get() != 0)
-            nTotal = nTotal + spChat->FUN_14137bad0();
+            nTotal = nTotal + spChat->GetMemberCount();
         if (nTotal > 0x14)
         {
             spButton->FUN_1422c1fe0(0);
@@ -2201,16 +2201,16 @@ MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, AddBuddyEntries, 268, 0);
 // @0x1419a0a10
 int UIInviteGroupDialog::IsAlreadyListedOrInGroup(__int64 nCharacterId, EntryList& entries)
 {
-    if (((class Unk_InvChatUI*)FUN_141482e80())->m_pBrowser != 0)
+    if (((class Unk_InvChatUI*)GetState())->m_pBrowser != 0)
     {
-        Unk_InvGroupWindow* pWindow = (Unk_InvGroupWindow*)((UIGroupMessengerBrowser*)((class Unk_InvChatUI*)FUN_141482e80())->m_pBrowser)->FindWindowByGroupId(m_180);
+        Unk_InvGroupWindow* pWindow = (Unk_InvGroupWindow*)((UIGroupMessengerBrowser*)((class Unk_InvChatUI*)GetState())->m_pBrowser)->FindWindowByGroupId(m_180);
         if (pWindow != 0 && pWindow->IsGroupMember(nCharacterId))
             return 1;
     }
     for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
     {
         Unk_InvGroupEntry entry = entries.GetAt(pos);
-        if (((Unk_MdEntry&)entry).FUN_141483da0() == nCharacterId)
+        if (((Unk_MdEntry&)entry).GetId() == nCharacterId)
             return 1;
     }
     return 0;
@@ -2225,7 +2225,7 @@ int UIInviteGroupDialog::FUN_1419a0b20()
         if (spInput->GetFocused())
             return 1;
     }
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
         return 0;
     if (reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
@@ -2243,14 +2243,14 @@ ItemBreakSlotBag* FUN_1414109f0(NotifyContext::BindData* pBind);               /
 void FUN_1414109a0(class DragSlotBag*, int);   // C3: was FUN_1414109a0
 void FUN_141410780(const CString& strName);                         // drop the item break bag of a name
 void FUN_1414106d0(const CString& strName);                         // create the item break bag of a name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nFlags, int b);   // bind an item slot to a name
-void FUN_141415600(const CString& strName);                         // release an item slot name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int nFlags, int b);   // bind an item slot to a name
+void DestroyItemInfoSlot(const CString& strName);                         // release an item slot name
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
 int FUN_14053feb0(int nItemId);                                     // the default rarity of an item
-CStringW FUN_141425950(unsigned nItemId);                           // the item name
+CStringW GetItemDisplayName(unsigned nItemId);                           // the item name
 CStringW FUN_140298ea0(CStringW strKey);                            // a localized string
 void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
-class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
+class Unk_SlotBreakManager* GetItemBreakManager();   // C3: was GetItemBreakManager
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0                        // the inventory window
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
@@ -2338,8 +2338,8 @@ void UIItemBreakBase::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_1419a1430();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
-    ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode0(vfunc_88());
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(this);
+    ((class CItemBreakManager*)GetItemBreakManager())->SendItemDismantleMode0(vfunc_88());
     if (UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d))
     {
         pInventory->FUN_141999f60();
@@ -2375,8 +2375,8 @@ void UIItemBreakBase::vfunc_67()
     UIDialog::vfunc_67();
     FUN_141410780(GetTypeName());
     FUN_1419a1fb0();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
-    ((class CItemBreakManager*)FUN_1409c4b20())->ResetBreakMode();
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(this);
+    ((class CItemBreakManager*)GetItemBreakManager())->ResetBreakMode();
 }
 MS2_REPLACE_METHOD(0x1419A18C0, UIItemBreakBase, vfunc_67, 167, 0);
 
@@ -2412,7 +2412,7 @@ void UIItemBreakBase::vfunc_15()
 {
     if (vfunc_55() != 0)
         return;
-    ((class CItemBreakManager*)FUN_1409c4b20())->RemoveMissingItems();
+    ((class CItemBreakManager*)GetItemBreakManager())->RemoveMissingItems();
 }
 MS2_REPLACE_METHOD(0x1419A1A40, UIItemBreakBase, vfunc_15, 52, 0);
 
@@ -2480,7 +2480,7 @@ CString UIItemBreakBase::FUN_1419a1dc0(int nItemId, int nRarity, int nCount)
         pItem->SetCountClamped(nCount);
         CString strName;
         strName.Format("%s_%d", (const char*)GetTypeName(), nItemId);
-        FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+        CreateItemInfoSlot(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_190.AddTail(strName);
         return strName;
     }
@@ -2494,7 +2494,7 @@ void UIItemBreakBase::FUN_1419a1fb0()
     for (POSITION pos = m_190.GetHeadPosition(); pos != 0; m_190.GetNext(pos))
     {
         CString strName = m_190.GetAt(pos);
-        FUN_141415600(strName);
+        DestroyItemInfoSlot(strName);
     }
     m_190.RemoveAll();
 }
@@ -2660,21 +2660,21 @@ MS2_REPLACE_METHOD(0x1419A2E10, UIItemBreakDialog, vfunc_88, 17, 0);
 void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
 {
     if (MS2Ptr<ASButton> spBreak = GetChild<ASButton>("m_break"))
-        spBreak->FUN_1422c1fe0(((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems());
+        spBreak->FUN_1422c1fe0(((class CItemBreakManager*)GetItemBreakManager())->HasBreakItems());
     if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
         if (MS2Ptr<ASTileList> spSlots = spBag->FUN_140accef0<ASTileList>("instance"))
         {
             if (bReset)
             {
-                int nCount = (int)((class CItemBreakManager*)FUN_1409c4b20())->FUN_140533e20();
+                int nCount = (int)((class CItemBreakManager*)GetItemBreakManager())->FUN_140533e20();
                 int nLastRow = nCount / 5;
                 int nTop = (std::max)(nLastRow - 2, 0);
                 spSlots->FUN_1422cf4f0(nTop);
             }
             else
             {
-                int nLastRow = (int)((class CItemBreakManager*)FUN_1409c4b20())->FUN_140533e20() / 5;
+                int nLastRow = (int)((class CItemBreakManager*)GetItemBreakManager())->FUN_140533e20() / 5;
                 int nRow = nIndex / 5;
                 nRow = (std::min)((std::max)(0, nRow), nLastRow);
                 int nTop = spSlots->FUN_1422cf520();
@@ -2730,7 +2730,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
             continue;
         ASObj row(2);
         {
-            CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(nAmount));
+            CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), GetItemDisplayName(nItemId), reinterpret_cast<const unsigned&>(nAmount));
             CString strBinding = FUN_1419a1dc0(nItemId, FUN_14053feb0(nItemId), nAmount);
             row.FUN_1407cba60("slotBinding", CString(strBinding));
             row.FUN_1407cbbe0("toggle", false);
@@ -2751,9 +2751,9 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp(szMethod, "onClickBreak") == 0)
     {
-        if (((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems() != 0)
+        if (((class CItemBreakManager*)GetItemBreakManager())->HasBreakItems() != 0)
         {
-            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->GetMaxItemRarity();
+            int nRarity = ((class CItemBreakManager*)GetItemBreakManager())->GetMaxItemRarity();
             if (nRarity == 6 || nRarity == 5)
             {
                 CStringW strText = nRarity == 6 ? GetStringCommonByKey(L"s_itembreak_artifact_item")
@@ -2792,7 +2792,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     }
     else if (_stricmp(szMethod, "onSendBreak") == 0)
-        return ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode3();
+        return ((class CItemBreakManager*)GetItemBreakManager())->SendItemDismantleMode3();
     else if (_stricmp(szMethod, "onResetBreak") == 0)
     {
         if (UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d))
@@ -2821,7 +2821,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp(szMethod, "OnBundleRegister") == 0)
     {
-        ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode6(m_1f8, m_1fc);
+        ((class CItemBreakManager*)GetItemBreakManager())->SendItemDismantleMode6(m_1f8, m_1fc);
         return 1;
     }
     return 0;
@@ -2872,9 +2872,9 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
             continue;
         CStringW strText;
         if (it->second.FUN_140530990() == 0)
-            strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(it->second.low));
+            strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), GetItemDisplayName(nItemId), reinterpret_cast<const unsigned&>(it->second.low));
         else
-            strText = FUN_14028dfa0<CStringW, unsigned, unsigned>(CStringW(L"s_itembreak_preview_random"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(it->second.low), reinterpret_cast<const unsigned&>(it->second.high));
+            strText = FUN_14028dfa0<CStringW, unsigned, unsigned>(CStringW(L"s_itembreak_preview_random"), GetItemDisplayName(nItemId), reinterpret_cast<const unsigned&>(it->second.low), reinterpret_cast<const unsigned&>(it->second.high));
         ASObj row(2);
         {
             CString strBinding = FUN_1419a4aa0(nItemId);
@@ -2897,7 +2897,7 @@ CString UIItemBreakDialog::FUN_1419a4aa0(int nItemId)
     {
         CString strName;
         strName.Format("%s_preview_%d", (const char*)GetTypeName(), nItemId);
-        FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+        CreateItemInfoSlot(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_1c8.AddTail(strName);
         return strName;
     }
@@ -2911,7 +2911,7 @@ void UIItemBreakDialog::FUN_1419a4c80()
     for (POSITION pos = m_1c8.GetHeadPosition(); pos != 0; m_1c8.GetNext(pos))
     {
         CString strName = m_1c8.GetAt(pos);
-        FUN_141415600(strName);
+        DestroyItemInfoSlot(strName);
     }
     m_1c8.RemoveAll();
 }
@@ -3010,9 +3010,9 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp(szMethod, "onClickBreak") == 0)
     {
-        if (((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems() != 0)
+        if (((class CItemBreakManager*)GetItemBreakManager())->HasBreakItems() != 0)
         {
-            int nRarity = ((class CItemBreakManager*)FUN_1409c4b20())->GetMaxItemRarity();
+            int nRarity = ((class CItemBreakManager*)GetItemBreakManager())->GetMaxItemRarity();
             if (nRarity == 6 || nRarity == 5)
             {
                 CStringW strText = nRarity == 6 ? GetStringCommonByKey(L"s_itembreak_donation_artifact_item")
@@ -3051,7 +3051,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     }
     else if (_stricmp(szMethod, "onSendBreak") == 0)
-        return ((class CItemBreakManager*)FUN_1409c4b20())->SendItemDismantleMode3();
+        return ((class CItemBreakManager*)GetItemBreakManager())->SendItemDismantleMode3();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1419A51B0, UIItemBreakDonationDialog, vfunc_28, 1989, 0);

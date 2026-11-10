@@ -44,7 +44,7 @@ static CString s_winSound = "BattleField_Win";
 // ---- local stand-ins for classes whose units are not recovered yet ----
 enum Unk_ClosingJob { Unk_ClosingJob_None };
 class Unk_ClosingThing : public PCGemEquip { };
-class PC { public: class Unk_MyPCEquip* FUN_14165f460(); int FUN_141654730(); };   // C3: unit-local view (def in pc); the gem equipment
+class PC { public: class Unk_MyPCEquip* GetGemEquip(); int GetSubJob(); };   // C3: unit-local view (def in pc); the gem equipment
 class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
 { public:
     Unk_ModelViewCamera(); void ApplyCharCamera();
@@ -188,7 +188,7 @@ public:
 class ClonePC { public: void FUN_1410885b0(bool b); };   // clonepc.h brings a PC that clashes with this unit's PC view
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); };
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
-void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
+void SetChildText(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW GetStringCommon(int);
@@ -408,7 +408,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->vfunc_76(player->vfunc_77());
             reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->FUN_140e11d00();
             reinterpret_cast<ClonePC*>(av->FUN_1418bd1d0())->FUN_1410885b0(true);
-            reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->FUN_14165f460())->FUN_141270610();
+            reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->GetGemEquip())->FUN_141270610();
             av->vfunc_1(this);
             Unk_ClosingEntry entry;
             entry.m_uid = uid;
@@ -476,8 +476,8 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
             return;
         MS2Ptr<ASMovieClip> charInfo = info->FUN_1409b4560("m_charInfo");
         if (charInfo.get()) {
-            FUN_140cfee80((*charInfo).FUN_1422bb890(), "m_charName", actor->vfunc_77());
-            Unk_ClosingJob job = (Unk_ClosingJob)reinterpret_cast<PC*>(actor)->FUN_141654730();
+            SetChildText((*charInfo).FUN_1422bb890(), "m_charName", actor->vfunc_77());
+            Unk_ClosingJob job = (Unk_ClosingJob)reinterpret_cast<PC*>(actor)->GetSubJob();
             CString jobStr = StringFormat("_{0}", job);
             FUN_140cffca0((*charInfo).FUN_1422bb890(), "m_jobMovie", jobStr);
         }
@@ -491,7 +491,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
                 rank->vfunc_4(false);
             }
         }
-        FUN_140cfee80((*info).FUN_1422bb890(), "m_etcInfo", m_entries[i].m_text);
+        SetChildText((*info).FUN_1422bb890(), "m_etcInfo", m_entries[i].m_text);
     }
 }
 

@@ -27,7 +27,7 @@ class ASDialog : public ASDisplayObject {};
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringW FUN_14083d340(CStringW str);
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 
 // ---- the MS2Ptr<ASCountDownTimer> child lookup (the same four COMDATs every wrapper class gets) ----
@@ -165,8 +165,8 @@ void UIQuizDialog::FUN_14129ad50()
         {
             m_answer->vfunc_3(0);
             m_question->vfunc_3(1);
-            FUN_140cfefe0((*m_question).FUN_1422bb890(), "questionText", "textField", m_strQuestion);
-            FUN_140cfefe0((*m_question).FUN_1422bb890(), "categoryText", "textField", m_strCategory);
+            SetNestedChildText((*m_question).FUN_1422bb890(), "questionText", "textField", m_strQuestion);
+            SetNestedChildText((*m_question).FUN_1422bb890(), "categoryText", "textField", m_strCategory);
             m_countDown.operator->()->SetRemain(m_nSeconds);
             m_question->vfunc_13("show");
         }
@@ -177,7 +177,7 @@ void UIQuizDialog::FUN_14129ad50()
             CString strMark = m_bCorrect ? "correct" : "incorrect";
             FUN_140cffca0((*m_answer).FUN_1422bb890(), "correctMark1", strMark);
             FUN_140cffca0((*m_answer).FUN_1422bb890(), "correctMark2", strMark);
-            FUN_140cfefe0((*m_answer).FUN_1422bb890(), "answerText", "textField", m_strAnswer);
+            SetNestedChildText((*m_answer).FUN_1422bb890(), "answerText", "textField", m_strAnswer);
             m_answer->vfunc_13("show");
         }
     }

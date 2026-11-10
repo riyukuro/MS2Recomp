@@ -39,7 +39,7 @@ UISwfEntity::UISwfEntity()
     : m_20(s_strNoKey), m_28(2), m_2c(0), m_30(0), m_40(0), m_44(0), m_48(0), m_4c(0), m_50(1), m_54(0), m_58(1),
       m_5c(0), m_60(0)
 {
-    FUN_140b632f0()->AddEntity(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(this));
 }
 
 // @0x1422db5d0
@@ -202,10 +202,10 @@ MS2_REPLACE_METHOD(0x1422DBCC0, UISwfEntity, vfunc_9, 164, 0x6E48A992);
 // @0x1422dbd70
 void UISwfEntity::FUN_1422dbd70(int a1, int a2)
 {
-    if (FUN_140b632f0()) {
+    if (GetUISwfEntityManager()) {
         if (m_20 == s_strNoKey && !FUN_1422db790().IsEmpty()) {
             m_2c = a1;
-            FUN_140b632f0()->PreloadSwf(m_28, m_20, FUN_1422db790(), a1, a2);
+            GetUISwfEntityManager()->PreloadSwf(m_28, m_20, FUN_1422db790(), a1, a2);
         }
     }
 }
@@ -221,10 +221,10 @@ MS2_REPLACE_METHOD(0x1422DBF00, UISwfEntity, FUN_1422dbf00, 112, 0x1885C4E6);
 // @0x1422dbf80
 void UISwfEntity::FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3)
 {
-    if (FUN_140b632f0() && m_20 == s_strNoKey && !strPath.IsEmpty()) {
+    if (GetUISwfEntityManager() && m_20 == s_strNoKey && !strPath.IsEmpty()) {
         m_44 = a2;
         m_2c = a1;
-        FUN_140b632f0()->FUN_1422d1320(m_28, m_20, strPath, a1, a2, a3, this);
+        GetUISwfEntityManager()->FUN_1422d1320(m_28, m_20, strPath, a1, a2, a3, this);
     }
 }
 MS2_REPLACE_METHOD(0x1422DBF80, UISwfEntity, FUN_1422dbf80, 243, 0x45190D1E);
@@ -241,8 +241,8 @@ MS2_REPLACE_METHOD(0x1422DC080, UISwfEntity, FUN_1422dc080, 40, 0xB0410145);
 void UISwfEntity::FUN_1422dc0b0()
 {
     vfunc_26();
-    if (FUN_140b632f0())
-        m_20 = FUN_140b632f0()->FUN_1422d17a0(m_28, m_20, m_2c);
+    if (GetUISwfEntityManager())
+        m_20 = GetUISwfEntityManager()->FUN_1422d17a0(m_28, m_20, m_2c);
     vfunc_27();
     m_30 = 0;
     m_4c = 0;
@@ -267,7 +267,7 @@ MS2_REPLACE_METHOD(0x1422DC1E0, UISwfEntity, FUN_1422dc1e0, 117, 0xAA232E42);
 // @0x1422dc260
 void UISwfEntity::FUN_1422dc260(int n)
 {
-    FUN_140b632f0()->FUN_1422d1b20(m_28, m_20, n);
+    GetUISwfEntityManager()->FUN_1422d1b20(m_28, m_20, n);
 }
 MS2_REPLACE_METHOD(0x1422DC260, UISwfEntity, FUN_1422dc260, 66, 0x7BE21F98);
 

@@ -133,7 +133,7 @@ public:
 };
 int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
-CFunctionCubeService* FUN_1409670b0();
+CFunctionCubeService* GetFunctionCubeService();
 
 // The homemade cube's data row, by value (a COMDAT at 0x140ca6580).
 // @0x140ca6580
@@ -155,7 +155,7 @@ void StateHomemade::vfunc_4(StateData* pData)
     m_pOwner->PlayAnimation(FUN_140ca4e50(), 1.0f, false, false);
     m_spHarvest.AssignRaw(dynamic_cast<StateHomemadeData*>(pData));
     PCBase* pPC = FUN_1417b8370();
-    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+    if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
     MyPC* pRider = FUN_1417b84b0();
     if (pRider && m_n10 == 0x8f)
@@ -169,7 +169,7 @@ void StateHomemade::vfunc_4(StateData* pData)
         }
         m_aCubes.clear();
         ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
-        FUN_1409670b0()->FUN_141232660(aCubes, reinterpret_cast<PC*>(pRider)->FUN_141656ad0());
+        GetFunctionCubeService()->CollectHomemadeCubes(aCubes, reinterpret_cast<PC*>(pRider)->GetAccountId());
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
             if (aCubes[i]->FUN_141229000(0) == 0)
@@ -320,11 +320,11 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return 0;
-    MS2Ptr<CGemBase> spGem = ((Unk_HmEquip*)(reinterpret_cast<PC*>(pRider)->FUN_14165f460()))->FUN_141270740(9);
+    MS2Ptr<CGemBase> spGem = ((Unk_HmEquip*)(reinterpret_cast<PC*>(pRider)->GetGemEquip()))->FUN_141270740(9);
     if (!spGem)
         return 0;
     ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;
-    FUN_1409670b0()->FUN_141232660(aCubes, reinterpret_cast<PC*>(pRider)->FUN_141656ad0());
+    GetFunctionCubeService()->CollectHomemadeCubes(aCubes, reinterpret_cast<PC*>(pRider)->GetAccountId());
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];

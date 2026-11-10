@@ -69,9 +69,9 @@ class Unk_SSGDlg4e47* FUN_140de48d0(int);   // C3: was FUN_140de48d0
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
 UIQuestEventDispatcher* FUN_140bfc4b0();
-// The item event hub (FUN_140a6a840) the bag registers with.
+// The item event hub (GetItemEventDispatcher) the bag registers with.
 struct Unk_SsItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -114,15 +114,15 @@ int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 void FUN_140710590(COutPacket& packet);                   // send the packet
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
-void FUN_1414049c0(ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>* pArr, int nType);
-bool FUN_141404ce0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
-bool FUN_1414050c0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
-void FUN_1414043e0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: buy
-void FUN_1414045d0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: sell
+void AddCooldownKeys(ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>* pArr, int nType);
+bool NotifyCooldownStart(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
+bool NotifyCooldownEnd(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
+void ShowUseStoreCountInput(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: buy
+void ShowSwapStoreCountInput(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: sell
 CStringW FUN_1413fa9b0(const CStringW& kIn);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
@@ -199,7 +199,7 @@ void StoreSlot::vfunc_6(void* p)
     int nType = spItem->FUN_1405276c0();
     if (spItem->FUN_140527840()->GetType() == 2 || spItem->FUN_140527840()->GetType() == 0x18)
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(FUN_140719210(nType));
-    FUN_1414049c0((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>*)p, FUN_141808910());
+    AddCooldownKeys((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>*)p, FUN_141808910());
 }
 
 // @0x141808b10
@@ -274,7 +274,7 @@ int StoreSlot::vfunc_14()
         }
         else
         {
-            FUN_1414043e0(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 1, m_nIndex);
+            ShowUseStoreCountInput(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 1, m_nIndex);
         }
     }
     return 1;
@@ -313,11 +313,11 @@ int StoreSlot::vfunc_17()
 // @0x141809460
 int StoreSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spStoreItem = MS2_STORE_TABLE.Slot(m_nIndex);
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(reinterpret_cast<InvenSlot*>(pItemSlot)->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(reinterpret_cast<InvenSlot*>(pItemSlot)->GetItemUid());
         if (spItem == NULL)
             return static_cast<DragSlot*>(p)->vfunc_10();
         int nSlot = m_nIndex;
@@ -349,7 +349,7 @@ int StoreSlot::vfunc_18(void* p)
         }
         else
         {
-            FUN_1414045d0(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 0, m_nIndex);
+            ShowSwapStoreCountInput(spItem->GetItemUid(), spItem->GetCount(), spItem->GetSlotMax(), 0, m_nIndex);
         }
     }
     else
@@ -508,7 +508,7 @@ int StoreSlot::vfunc_0(void* p)
     {
         tip.SetEnablePuton(GetStringCommon(0x754));
         if (IsEnabled() == true)
-            tip.FUN_1409db7b0(spItem);
+            tip.SetEnablePreview(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -540,7 +540,7 @@ CStringW StoreSlot::vfunc_22()
 // @0x14180acb0
 void StoreSlot::vfunc_23(void* p)
 {
-    FUN_141404ce0(FUN_141808910(), (unsigned __int64)p, &m_value18);
+    NotifyCooldownStart(FUN_141808910(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x14180ad00
@@ -549,7 +549,7 @@ void StoreSlot::vfunc_24(void* p)
     int nType = FUN_141808910();
     if (!nType)
         return;
-    FUN_1414050c0(nType, (unsigned __int64)p, &m_value18);
+    NotifyCooldownEnd(nType, (unsigned __int64)p, &m_value18);
 }
 
 // @0x14180ad50
@@ -632,13 +632,13 @@ void FUN_14180b230(const CString& strName)
 StoreSlotBag::StoreSlotBag(const CString& strName, int nStoreId)
     : DragSlotBag(strName), m_nStoreId(nStoreId)
 {
-    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
 }
 
 // @0x14180b340
 StoreSlotBag::~StoreSlotBag()
 {
-    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(struct Unk_SsItemEvents*)(((struct Unk_SsItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
 }
 
 // @0x14180b3e0

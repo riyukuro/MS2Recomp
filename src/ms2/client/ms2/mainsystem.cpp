@@ -108,9 +108,9 @@ class Unk_1409a8b10;
 class Unk_AeGameOption   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_AeGraphicOption* FUN_1409a8ac0();
+    class Unk_AeGraphicOption* GetGraphicOption();
 };
-class Unk_GraphicsOptions                               // FUN_1409a8ac0's result
+class Unk_GraphicsOptions                               // GetGraphicOption's result
 {
 public:
     int GetFrameLimit() { return m_iFrameLimit; }
@@ -142,9 +142,9 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 extern int DAT_143add400[];   // data_bss_game; NetworkService fills the 8 entries from the server (0x14153c63a)
 
 // @0x141472bc0
-int FUN_141472bc0()
+int GetServerTick()
 {
-    return CMainSystem::GetInstance()->FUN_141473390();
+    return CMainSystem::GetInstance()->GetServerTick();
 }
 
 // @0x141472be0
@@ -274,7 +274,7 @@ double CMainSystem::GetDeltaTime()
 }
 
 // @0x141473280
-double CMainSystem::FUN_141473280()
+double CMainSystem::GetGameTime()
 {
     return m_pServiceManager->GetTime(efd::kCLASSID_GameTimeClock);
 }
@@ -290,7 +290,7 @@ DWORD CMainSystem::GetObjectTime(GameObject* pObject)
 DWORD CMainSystem::GetTimeByKind(int nKind)
 {
     if (nKind == 0)
-        return (DWORD)FUN_141473280();
+        return (DWORD)GetGameTime();
     BOOL bServerTick = FALSE;
     switch (nKind)
     {
@@ -304,12 +304,12 @@ DWORD CMainSystem::GetTimeByKind(int nKind)
         break;
     }
     if (bServerTick)
-        return FUN_141473390();
-    return FUN_14028d260((float)FUN_141473280());
+        return GetServerTick();
+    return FUN_14028d260((float)GetGameTime());
 }
 
 // @0x141473390
-int CMainSystem::FUN_141473390()
+int CMainSystem::GetServerTick()
 {
     DWORD dwTick = GetTickCountMs2();
     if (dwTick < m_dwLocalTickBase)
@@ -539,7 +539,7 @@ efd::AsyncResult CMainSystem::OnInit()
 // @0x141474080
 efd::AsyncResult CMainSystem::OnTick()
 {
-    FUN_141474450();
+    ApplyFrameLimit();
     double dNow = m_pServiceManager->GetServiceManagerTime();
     if (m_dLastTime > 0.0)
     {
@@ -584,9 +584,9 @@ efd::AsyncResult CMainSystem::OnShutdown()
 }
 
 // @0x141474450
-void CMainSystem::FUN_141474450()
+void CMainSystem::ApplyFrameLimit()
 {
-    int nLimit = static_cast<Unk_GraphicsOptions*>(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0()))->GetFrameLimit();
+    int nLimit = static_cast<Unk_GraphicsOptions*>(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())))->GetGraphicOption()))->GetFrameLimit();
     FUN_141610410(nLimit);
 }
 

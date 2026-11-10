@@ -79,13 +79,13 @@ bool FUN_140900f30(__int64 nTime);                              // the time is a
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 __int64 FUN_140900da0();                                        // the price of one invitation
-UITalkCinematic* FUN_140a7b2b0(int nId);                           // a dialog's position record
+UITalkCinematic* FindTalkCinematic(int nId);                           // a dialog's position record
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
     void SendNpcTalkMode0();
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 __int64 GetServerTime();                                        // the current time
@@ -131,7 +131,7 @@ void UIWeddingInvitationDialog::vfunc_67()
     UIWeddingGuestDialog* pGuest = FUN_140fe6700(0x4f94);
     if (pGuest != 0)
         pGuest->FUN_140fcdba0();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 
 // @0x140fe5940
@@ -140,7 +140,7 @@ void UIWeddingInvitationDialog::vfunc_43()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        UITalkCinematic* pRef = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pRef = FindTalkCinematic(0x4e40);
         if (pRef != 0)
         {
             int nX = pRef->GetLowerCutGlobalY();

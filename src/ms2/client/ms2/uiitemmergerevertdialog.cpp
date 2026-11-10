@@ -67,7 +67,7 @@ class Unk_MrInvenSlot : public InvenSlot
 };
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 // The item price table (global of the lua state, FUN_1401c0db0).
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
@@ -147,7 +147,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
             if (spItem.IsNull())
                 return 1;
             if (FUN_140e4d330(spItem.get()) != 0)
@@ -228,10 +228,10 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
 {
     if (m_30 == 0)
         return;
-    Unk_MrInvenSlot* pInven = reinterpret_cast<Unk_MrInvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
+    Unk_MrInvenSlot* pInven = reinterpret_cast<Unk_MrInvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(pInven->GetItemUid());
         if (spItem.IsNull())
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
@@ -282,7 +282,7 @@ int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
         return 3;
     if (reinterpret_cast<CItemData*>(pItem->FUN_140527840())->fusion.fusionable == 0)
         return 3;
-    MS2Ptr<CItem> spBase = g_143ab2a90.FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spBase = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spBase.IsNull())
         return 5;
     if (spBase->GetRarity() != pItem->GetRarity())

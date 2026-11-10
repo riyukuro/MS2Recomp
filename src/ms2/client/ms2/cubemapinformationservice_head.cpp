@@ -44,12 +44,12 @@ static CString s_strOnlyWall("system_notice_error_warningOnlyWall");
 class Unk_MyPCHousingSvc
 {
 public:
-    int FUN_1410d5bc0(int nMessage, CString& strOut);          // the message's sound key (0 = none)
-    void FUN_1410d6590(int nMessage);                          // show the build notice
+    int GetMessageSoundKey(int nMessage, CString& strOut);          // the message's sound key (0 = none)
+    void ShowBuildNotice(int nMessage);                          // show the build notice
 };
 
 // @0x1410d5bc0
-int Unk_MyPCHousingSvc::FUN_1410d5bc0(int nMessage, CString& strOut)
+int Unk_MyPCHousingSvc::GetMessageSoundKey(int nMessage, CString& strOut)
 {
     switch (nMessage) {
     case 0:
@@ -174,7 +174,7 @@ int Unk_MyPCHousingSvc::FUN_1410d5bc0(int nMessage, CString& strOut)
 }
 
 // @0x1410d5d80
-CStringW CubeMapInformationService::FUN_1410d5d80(int nMessage)
+CStringW CubeMapInformationService::GetMessageText(int nMessage)
 {
     int nId = 0x691;
     switch (nMessage) {
@@ -303,7 +303,7 @@ CStringW CubeMapInformationService::FUN_1410d5d80(int nMessage)
 }
 
 // @0x1410d6590
-void Unk_MyPCHousingSvc::FUN_1410d6590(int nMessage)
+void Unk_MyPCHousingSvc::ShowBuildNotice(int nMessage)
 {
     if (nMessage == 0x22) {
         ((class CUIService*)(class Unk_LockUIManager*)(reinterpret_cast<Unk_LockUIManager*>(TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
@@ -312,11 +312,11 @@ void Unk_MyPCHousingSvc::FUN_1410d6590(int nMessage)
         if (nMessage == 1)
             return;
         CString strKey;
-        if (FUN_1410d5bc0(nMessage, strKey) == 1) {
+        if (GetMessageSoundKey(nMessage, strKey) == 1) {
             CString strNone("");
             FUN_141276180(strKey, strNone);
         }
-        CStringW strText = reinterpret_cast<CubeMapInformationService*>(this)->FUN_1410d5d80(nMessage);
+        CStringW strText = reinterpret_cast<CubeMapInformationService*>(this)->GetMessageText(nMessage);
         if (!strText.IsEmpty()) {
             FUN_1412751f0(strText, 1, 1);
         }

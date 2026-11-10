@@ -33,7 +33,7 @@ class NiFixedString;
 class NiTextKeyMatch;
 class NiControllerSequence;
 class Unk_StateDataArg;   // StateData slots 1/2 / State slot 26 argument (StateObserverData writes a CStringA at +0x70)
-class Unk_StateArg22;     // MS2Ptr<T> by value in slots 22/28 (dtor 0x140837140, ReleaseImpl 0x1408374b0)
+class StateSyncObject;     // MS2Ptr<T> by value in slots 22/28 (dtor 0x140837140, ReleaseImpl 0x1408374b0)
 class Unk_StateArg29;     // MS2Ptr<T> by value in slots 29/30 (dtor 0x1401bfde0, ICF-folded generic MS2Ptr dtor)
 
 // 0x18. vftable: deleting dtor 0x1417c1e00 (dtor 0x1417c0b00), 0x1417c0b30, 0x1417c0b50 (both empty, one pointer
@@ -81,7 +81,7 @@ public:
     virtual int vfunc_19();                                 // 19 0x1417b81b0: 1
     virtual int vfunc_20();                                 // 20 0x1417b81d0: 0 (StateTaxiCall etc.: 1)
     virtual void vfunc_21(int n);                           // 21 0x1417b81e0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417b81f0: 0 (by value: callee destroys)
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417b81f0: 0 (by value: callee destroys)
     virtual void vfunc_23();                                // 23 0x1417b8220
     virtual void vfunc_24();                                // 24 0x1417b8230
     virtual bool vfunc_25(int n, void* p);                  // 25 0x1417b8240: if (n) vfunc_2(n); return true
@@ -89,7 +89,7 @@ public:
                                                             //    d->vfunc_1(p) (ICF-shared with a CRichEditDoc COMDAT)
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417b82d0: null (MS2Ptr(int) 0x14167e100);
                                                             //    StateBanner 0x140b7f610: new StateBannerData
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x1417b8310: false
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417b8310: false
     virtual void vfunc_29(MS2Ptr<Unk_StateArg29> p);        // 29 0x1417b93b0
     virtual void vfunc_30(MS2Ptr<Unk_StateArg29> p);        // 30 0x1417b93e0
     virtual void vfunc_31(int n);                           // 31 0x1417b9410

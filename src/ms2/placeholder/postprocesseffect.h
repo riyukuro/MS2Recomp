@@ -53,7 +53,7 @@ public:
     virtual void vfunc_21();
     virtual void vfunc_22();
 
-    bool FUN_1409a8f00();                                      // 0x1409a8f00: m_90 (output created)
+    bool IsActive();                                      // 0x1409a8f00: m_90 (output created)
 
     static const NiRTTI ms_RTTI;                               // 0x143ae4640 (0x143afa7a8 is NiDefaultClickRenderStep::ms_RTTI)
 

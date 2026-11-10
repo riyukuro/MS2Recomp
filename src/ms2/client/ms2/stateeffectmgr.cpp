@@ -122,7 +122,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         Unk_StateActorInfo* pInfo;
         if (it->m_nGender != 2 && (pInfo = reinterpret_cast<Unk_StateActorInfo*>(efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject)))) != 0)
         {
-            if (reinterpret_cast<PC*>(pInfo)->FUN_141658e60() != it->m_nGender)
+            if (reinterpret_cast<PC*>(pInfo)->GetGender() != it->m_nGender)
                 continue;
         }
         if (it->m_nEmotionSkillId != 0)
@@ -135,7 +135,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         Unk_EffectQuery query;
         query.m_strName = it->m_strEffect;
         query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
-        query.SetActor(reinterpret_cast<GameObject*>(pObject)->FUN_14123c580());
+        query.SetActor(reinterpret_cast<GameObject*>(pObject)->GetObjectId());
         int nEffectId = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
         if (nEffectId != 0)
             pOut->push_back(reinterpret_cast<const unsigned&>(nEffectId));

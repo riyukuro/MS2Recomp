@@ -648,7 +648,7 @@ unsigned CDPSMeterSystem::ThreadProc()
             PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pMe != 0)
             {
-                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->GetSubJob()));
             }
             if (!PathIsDirectoryW(m_szDir))
                 CreateDirectoryW(m_szDir, NULL);
@@ -1088,9 +1088,9 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         break;
-    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
@@ -1128,9 +1128,9 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         break;
-    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         bTarget = 1;
     MS2Ptr<AdditionalCli> spBuff;
     PCBase* pCaster = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(spRecord->m_nCasterId));
@@ -1141,15 +1141,15 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     float fRate = 0.0f;
     if (!bTarget)
     {
-        fRate = spBuff->FUN_14096d810()->m_dotDamage.m_fRate;
-        fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(5, spBuff->FUN_14096d2a0());
+        fRate = spBuff->GetLevelData()->m_dotDamage.m_fRate;
+        fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(5, spBuff->GetId());
         m_spRecord->m_attack.m_dRate += fRate;
     }
     __int64 nDamage = abs(spRecord->GetTotalDamage());
     int nGrade = spRecord->GetFirstType();
-    unsigned short nLevel = spBuff->FUN_14096d810()->GetLevel();
-    unsigned nEffectId = spBuff->FUN_14096d810()->GetID();
-    AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 1, spBuff->FUN_14096d810()->m_dotDamage.m_eElement,
+    unsigned short nLevel = spBuff->GetLevelData()->GetLevel();
+    unsigned nEffectId = spBuff->GetLevelData()->GetID();
+    AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 1, spBuff->GetLevelData()->m_dotDamage.m_eElement,
         (unsigned)spRecord->m_nEffectLevel, nEffectId, nLevel, nGrade, nDamage, fRate);
     } while (0);
 }
@@ -1170,9 +1170,9 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
-    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    if (spRecord->m_nCasterId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId() && nAttackerId != ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         break;
-    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->FUN_14123c580())
+    else if (spRecord->m_nCasterId == ((class GameObject*)(class PCBase*)(pMe))->GetObjectId())
         bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
@@ -1435,7 +1435,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L"\n");
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)*((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
-            strCsv.AppendFormat(L"%s, ", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->GetSubJob()));
             strCsv.AppendFormat(L"%d, ", (unsigned short)pMe->vfunc_78());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
@@ -1609,13 +1609,13 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         if (pMe == 0)
             break;
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
-        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->GetSubJob()));
         s_str.AppendFormat(L"레벨 : %d\r\n", (unsigned short)pMe->vfunc_78());
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
         {
             ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-            reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->CollectShownItemsInLayer(equips, 0);
+            reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->CollectShownItemsInLayer(equips, 0);
             for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos))
             {
                 MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
@@ -1630,7 +1630,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
         ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
-        reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->CollectShownItemsInLayer(skins, 1);
+        reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->CollectShownItemsInLayer(skins, 1);
         for (POSITION pos = skins.GetHeadPosition(); pos != NULL; skins.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = skins.GetAt(pos);
@@ -1655,8 +1655,8 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
         return 0;
     __int64 nMin = 0;
     __int64 nMax = 0;
-    MS2Ptr<CEquipItem> spRight = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(4);
-    MS2Ptr<CEquipItem> spLeft = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(5);
+    MS2Ptr<CEquipItem> spRight = static_cast<Unk_DpsPC*>(pMe)->GetEquipItemLayer0(4);
+    MS2Ptr<CEquipItem> spLeft = static_cast<Unk_DpsPC*>(pMe)->GetEquipItemLayer0(5);
     if (spRight && spLeft)
     {
         if (spLeft->GetItem().IsNull())
@@ -1713,8 +1713,8 @@ CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
     if (pMe == 0)
         return str;
     float fBase = 0.0f;
-    float fBonus = bPercent != 0 ? FUN_14028d380(reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->GetAbilityRate((SAType)(nStat)))
-                                 : (float)reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->GetAbilityTotal((SAType)(nStat));
+    float fBonus = bPercent != 0 ? FUN_14028d380(reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->GetAbilityRate((SAType)(nStat)))
+                                 : (float)reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->GetAbilityTotal((SAType)(nStat));
     float fValue = fBase + fBonus;
     if (bPercent != 0)
         str = FormatStringId<CStringW>(0x98e, StringFormat(L"{0:0.1f}", fValue));

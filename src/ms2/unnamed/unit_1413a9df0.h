@@ -124,7 +124,7 @@ public:
     int FUN_1410b9950(int nIconType);
 };
 class Unk_AkoHouseSvc { public: static Unk_AkoHouseSvc* GetInstance(); };
-class Unk_SingletonObj* FUN_140939a00();                // the ugc market
+class Unk_SingletonObj* GetMeratMarketMan();                // the ugc market
 class Unk_NametagTrophy* FUN_1406c7600();               // the trophy manager
 class Unk_G9ItemRec { public: void* m_p[0x38]; int m_n1c0; int m_nValue; };                          // +0x1c4
 MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
@@ -141,7 +141,7 @@ extern ATL::CAtlArray<unsigned int> DAT_143ab3268;         // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 
 MS2Ptr<CGuideCondition> FUN_1413a52c0(TiXmlElement* pElem); // builds the condition of a <condition> element
-int FUN_1413a5570(CGuideCondition* pCond);              // runs a nested condition's test
+int EvaluateCondition(CGuideCondition* pCond);              // runs a nested condition's test
 
 int FUN_1413b1d00(TiXmlElement* pElem, const char* pszName, Unk_GcOptInt& oOut);
 int FUN_1413b1e70(TiXmlElement* pElem, const char* pszName, Unk_GcOptVec3& oOut);

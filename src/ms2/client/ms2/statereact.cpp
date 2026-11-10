@@ -152,7 +152,7 @@ void StateReact::vfunc_4(StateData* pData)
                 MyPC* pRider = FUN_1417b84b0();
                 if (pRider == 0)
                     return;
-                if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+                if (((void*)(reinterpret_cast<PC*>(pRider)->GetHeldItem())) != 0)
                     reinterpret_cast<PC*>(pRider)->SendRequestCube();
                 Unk_CastInfo kInfo;
                 efd::SmartPointer<Unk_WsB_Spawn> kSpawn = WorldService::GetInstance()->FindSpawnByName(m_spData->m_strTarget);

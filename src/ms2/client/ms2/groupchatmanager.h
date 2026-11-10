@@ -65,7 +65,7 @@ class CGroupChatMember : public CPtred {
 public:
     CGroupChatMember();
     virtual ~CGroupChatMember();
-    int FUN_14137b0c0(CInPacket* packet);   // reads the state byte, then the proxy for state 1 and 2
+    int ReadFromPacket(CInPacket* packet);   // reads the state byte, then the proxy for state 1 and 2
     int FUN_14137b160() const;             // joined (state 1)
 
     Unk_UserProxy m_proxy;                  // +0x18
@@ -88,7 +88,7 @@ public:
     void ClearMembers();                            // removes all
     Unk_ChatMemberPtr FindMemberById(__int64 characterId);
     Unk_ChatMemberPtr FindMemberByName(CStringW name);
-    int FUN_14137bad0();                             // member count
+    int GetMemberCount();                             // member count
     int FUN_14137bb00();                             // joined member count
     void GetMemberIds(ATL::CAtlList<__int64>& ids);
     void GetMembers(ATL::CAtlList<Unk_ChatMemberPtr>& out);
@@ -110,7 +110,7 @@ public:
     virtual ~CGroupChatManager();
     void FUN_14137e160();
     void FUN_14137e190();
-    void FUN_14137e1c0();                            // debug dump
+    void DumpChats();                            // debug dump
     CStringW GetLocalPlayerName();
     void AddChat(Unk_ChatPtrChat chat);
     void RemoveChat(unsigned oid);
@@ -123,18 +123,18 @@ public:
     void SendGroupChatMode10(unsigned oid, CStringW text);
     void OnGroupChat(CInPacket* packet);           // packet dispatcher
     void OnPacketAddChat(CInPacket* packet);
-    void FUN_14137f590(CInPacket* packet);
+    void OnPacketChatCreated(CInPacket* packet);
     void FUN_14137f640(CInPacket* packet);
     void FUN_14137f790(CInPacket* packet);
     void OnPacketRemoveChat(CInPacket* packet);
-    void FUN_14137f9d0(CInPacket* packet);
-    void FUN_14137fc20(CInPacket* packet);
-    void FUN_14137fe40(CInPacket* packet);
-    void FUN_14137ffc0(CInPacket* packet);
-    void FUN_141380140(CInPacket* packet);
+    void OnPacketAddMember(CInPacket* packet);
+    void OnPacketRemoveMember(CInPacket* packet);
+    void OnPacketMemberOnline(CInPacket* packet);
+    void OnPacketMemberOffline(CInPacket* packet);
+    void OnPacketChatMessage(CInPacket* packet);
     void FUN_141380320(CInPacket* packet);
-    void FUN_141380560(CInPacket* packet);
-    void FUN_141380900(CInPacket* packet);
+    void OnPacketMemberPicture(CInPacket* packet);
+    void OnPacketResult(CInPacket* packet);
 
     CLockCriticalSection m_lock;                     // +0x08
     ATL::CRBMap<unsigned, Unk_ChatPtrChat> m_chats;  // +0x38, keyed by oid

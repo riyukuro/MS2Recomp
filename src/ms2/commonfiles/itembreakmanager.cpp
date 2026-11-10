@@ -121,7 +121,7 @@ inline Unk_BreakRecipes* FUN_140535300() { return reinterpret_cast<Unk_BreakReci
 inline Unk_BreakRules* FUN_140535310() { return reinterpret_cast<Unk_BreakRules*>(TSingleton<CItemLockManager>::s_instance); }
 inline Unk_BreakSelected* FUN_140535320() { return reinterpret_cast<Unk_BreakSelected*>(TSingleton<CPetManager>::s_instance); }
 bool FUN_140633bf0(Unk_BreakItemPtr);
-class Unk_Inventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64); };   // C3: minimal view (was Unk_BreakInventory)
+class Unk_Inventory { public: MS2Ptr<CItem> FindItemByUid(__int64); };   // C3: minimal view (was Unk_BreakInventory)
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 class UIInventoryDialog : public UIDialog { public: void FUN_14199a3f0(__int64); };
 class UIItemBreakBase : public UIDialog { public: void FUN_1419a1430(); void FUN_1419a1d20(int); };   // C3: member view
@@ -327,14 +327,14 @@ MS2_REPLACE_METHOD(0x140531CC0, CItemBreakManager, ResetBreakMode, 26, 0x3DB3E08
 CItemBreakManager::ItemPtr CItemBreakManager::GetSlotItemClone(int index) {
     if(index<0 || index>=(int)items.GetCount()) return ItemPtr(0);
     ItemBreakCommon::Ptr p=items[index]; if(p==0) return ItemPtr(0);
-    unsigned __int64 id=p->id; ItemPtr item=g_143ab2a90.FUN_140a5d680(id); if(item==0) return ItemPtr(0);
+    unsigned __int64 id=p->id; ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item==0) return ItemPtr(0);
     int count=p->count; ItemPtr clone=item->Clone(); clone->SetCountClamped(count); return clone;
 }
 MS2_REPLACE_METHOD(0x140531CE0, CItemBreakManager, GetSlotItemClone, 482, 0xE8C92A3B);
 // @0x140531ed0
 void CItemBreakManager::RemoveMissingItems() {
     for(size_t i=0;i<items.GetCount();++i) { ItemBreakCommon::Ptr p=items[i]; if(p==0 || p->FUN_140530750()) continue;
-        unsigned __int64 id=p->id; ItemPtr item=g_143ab2a90.FUN_140a5d680(id); if(item==0) { if(Unk_BreakFind(pending,id)==-1) {
+        unsigned __int64 id=p->id; ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item==0) { if(Unk_BreakFind(pending,id)==-1) {
             COutPacket packet(static_cast<int>(SendOp::ItemDismantle),0); packet.Encode1(2); packet.FUN_14020ae50(id); FUN_140710590(packet); pending.Add(id);
         } }
     }
@@ -376,7 +376,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
     if(mode==1) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=(&packet.input)->vfunc_2(); int count=(&packet.input)->vfunc_3();
         if(index<0 || index>=100) return;
-        ItemPtr item=g_143ab2a90.FUN_140a5d680(id); if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,count); UpdateActiveDialogSlot(index); FUN_141276180(s_breakSound,""); }
+        ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,count); UpdateActiveDialogSlot(index); FUN_141276180(s_breakSound,""); }
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->FUN_14199a3f0(id);
     } else if(mode==2) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=ItemBreakCommon::FUN_140530a10(items,id);
@@ -399,7 +399,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
     } else if(mode==6) {
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); unsigned count=(&packet.input)->vfunc_3();
         for(unsigned i=0;i<count;++i) { int index=(&packet.input)->vfunc_2(); unsigned __int64 id=(&packet.input)->vfunc_4(); int amount=(&packet.input)->vfunc_3();
-            if(index<0 || index>=100) return; ItemPtr item=g_143ab2a90.FUN_140a5d680(id);
+            if(index<0 || index>=100) return; ItemPtr item=g_143ab2a90.FindItemByUid(id);
             if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,amount); UpdateActiveDialogSlot(index); } if(p) p->FUN_14199a3f0(id);
         }
         if(count!=0) FUN_141276180(s_breakSound,"");
@@ -421,7 +421,7 @@ MS2_REPLACE_METHOD(0x140532B60, CItemBreakManager, HasBreakItems, 192, 0xFD11FFE
 // @0x140532c30
 int CItemBreakManager::GetMaxItemRarity() {
     int grade=0; for(size_t i=0;i<items.GetCount();++i) { ItemBreakCommon::Ptr p=items[i]; if(p==0 || p->FUN_140530750()) continue;
-        ItemPtr item=g_143ab2a90.FUN_140a5d680(p->id); if(!item) continue; if(item->GetRarity()>grade) grade=item->GetRarity();
+        ItemPtr item=g_143ab2a90.FindItemByUid(p->id); if(!item) continue; if(item->GetRarity()>grade) grade=item->GetRarity();
     } return grade;
 }
 MS2_REPLACE_METHOD(0x140532C30, CItemBreakManager, GetMaxItemRarity, 329, 0x048AC1F8);

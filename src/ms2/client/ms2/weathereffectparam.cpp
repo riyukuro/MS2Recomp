@@ -54,7 +54,7 @@ MS2_REPLACE_METHOD(0x141b773d0, WeatherEffect, vfunc_3, 83, 0xC8C62722);
 void WeatherEffect::vfunc_4()
 {
     CEffect::vfunc_4();
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a7960(m_nFallType);
+    TSingleton<CEffectService>::GetInstance()->SetSkyObject(m_nFallType);
 }
 MS2_REPLACE_METHOD(0x141b77430, WeatherEffect, vfunc_4, 45, 0x474AF68F);
 
@@ -62,7 +62,7 @@ MS2_REPLACE_METHOD(0x141b77430, WeatherEffect, vfunc_4, 45, 0x474AF68F);
 void WeatherEffect::vfunc_7()
 {
     CEffect::vfunc_7();
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a7960(0);
+    TSingleton<CEffectService>::GetInstance()->SetSkyObject(0);
 }
 MS2_REPLACE_METHOD(0x141b77470, WeatherEffect, vfunc_7, 39, 0x3046C663);
 

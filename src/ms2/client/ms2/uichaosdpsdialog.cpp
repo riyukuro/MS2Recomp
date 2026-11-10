@@ -40,7 +40,7 @@ static UICommon::CMyPCKeyInputController s_keys;
 
 // The game option block (the second member of the settings singleton): two flags.
 struct Unk_InterfaceState;
-bool FUN_14125bbe0(const struct Unk_InterfaceState* p);   // C3: was a Unk_ChaosOpt member (gameoptionstruct.cpp; byte +4 and byte +0x15 are set)
+bool IsChaosDamageMeterOn(const struct Unk_InterfaceState* p);   // C3: was a Unk_ChaosOpt member (gameoptionstruct.cpp; byte +4 and byte +0x15 are set)
 struct Unk_ChaosOpt
 {
     char m_pad_00[4];
@@ -115,11 +115,11 @@ int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned 
     if (pMember == 0)
         return 0;
     Unk_UserProxy& user = pMember->user;
-    obj.FUN_1409c0d20("rank", nRank);
+    obj.SetMemberUInt("rank", nRank);
     obj.FUN_1409c48f0("level", user.m_34);
     ((ASObj*)(ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
     ((class AScript&)(obj)).FUN_1407cbb20("name", user.FUN_1408f19e0());
-    double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
+    double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, pMember->FUN_141637bb0(), m_nMode);
@@ -164,7 +164,7 @@ void UIChaosDPSDialog::FUN_140e05950()
     MS2Ptr<CPartyMember> spLast = m_members[m_members.size() - 1];
     if (spLast.get() != 0)
     {
-        double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
+        double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
         static_cast<ASArray*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
@@ -197,7 +197,7 @@ void UIChaosDPSDialog::FUN_140e05f80()
 {
     if (m_30.IsNull())
         return;
-    int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162af00();
+    int nCount = TSingleton<CPartyManager>::GetInstance()->GetMemberCount();
     if (nCount < 10)
         m_30->Invoke("RemoveMember");
 }
@@ -277,7 +277,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_14125bbe0(reinterpret_cast<const struct Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
+    if (IsChaosDamageMeterOn(reinterpret_cast<const struct Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
         || ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbe) == 0)
         vfunc_67();
     else {
@@ -294,8 +294,8 @@ void UIChaosDPSDialog::vfunc_72()
 // @0x140e066f0
 bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 {
-    double dA = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(2, spA->FUN_141637bb0(), s_nSortMode));
-    double dB = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(2, spB->FUN_141637bb0(), s_nSortMode));
+    double dA = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spA->FUN_141637bb0(), s_nSortMode));
+    double dB = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(2, spB->FUN_141637bb0(), s_nSortMode));
     if (s_nSortMode == 6)
         return dB > dA;
     else

@@ -81,11 +81,11 @@ void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-UIRewardNotify* FUN_140938cd0(int uiType);                      // GetDialog<UIRewardNotify>
+UIRewardNotify* FindRewardNotify(int uiType);                      // GetDialog<UIRewardNotify>
 CStringW FUN_1409404f0(__int64 nMeso);                          // the meso price text
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a1, int a2, int a3);   // preview the item
-void FUN_141415600(const CString& strKey);                      // drop the preview
+void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int a1, int a2, int a3);   // preview the item
+void DestroyItemInfoSlot(const CString& strKey);                      // drop the preview
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_141275260(int nId, int a, int b);                      // system message
    // has this many of the item
@@ -122,7 +122,7 @@ int UISmartRecommendBillingDialog::vfunc_65()
 // @0x14134caf0
 void UISmartRecommendBillingDialog::vfunc_67()
 {
-    FUN_141415600(m_strBagKey);
+    DestroyItemInfoSlot(m_strBagKey);
     UIDialog::vfunc_67();
 }
 
@@ -151,7 +151,7 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
         unsigned nAccepted = SRB_PKT->ReadUInt8();
         if (nAccepted == 1)
         {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141abf6e0(m_item->m_nItemId, m_item->m_nItemRank);
             if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
@@ -232,7 +232,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
             {
                 spItem->SetCountClamped(m_item->m_nItemCount);
                 m_strBagKey = GetTypeName();
-                FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
+                CreateItemInfoSlot(m_strBagKey, spItem, 0, 0x415, 0);
                 int nMode = m_item->m_nRequireMoney != 0 ? 1 : 2;
                 CStringW strText;
                 if (nMode == 1)
@@ -288,7 +288,7 @@ int UISmartRecommendNotifyDialog::vfunc_65()
 // @0x14134d8b0
 void UISmartRecommendNotifyDialog::vfunc_67()
 {
-    FUN_141415600(m_strBagKey);
+    DestroyItemInfoSlot(m_strBagKey);
     m_nCloseTick = 0;
     UIDialog::vfunc_67();
 }
@@ -363,7 +363,7 @@ void UISmartRecommendNotifyDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (m_nCloseTick != 0)
     {
-        if (((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() > m_nCloseTick)
+        if (((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->GetServerTick() > m_nCloseTick)
         {
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)
@@ -393,10 +393,10 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
             {
                 spItem->SetCountClamped(m_item->m_nItemCount);
                 m_strBagKey = GetTypeName();
-                FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
+                CreateItemInfoSlot(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strItemDescription, m_item->m_strBuyButtonText, m_item->m_nNpcImageType);
                 FUN_141276180(s_strOpenSound, "");
-                m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_SrConstTable*)GetClientConstants())->m_closeDelay)->Get();
+                m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->GetServerTick() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_SrConstTable*)GetClientConstants())->m_closeDelay)->Get();
                 if (m_item.get() != 0)
                 {
                     CString strValue = Unk_SocketFormat<unsigned int>("{0}", m_item->m_nCode);

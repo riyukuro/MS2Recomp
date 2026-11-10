@@ -242,9 +242,9 @@ void Unk_PvpTimer::FUN_141018010()
     PC* pPC = (PC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (pPC->FUN_140967420()->m_nMode == 2)
+    if (pPC->GetPvPInfo()->m_nMode == 2)
         std::sort(m_items.begin(), m_items.end(), FUN_141018720);
-    else if (pPC->FUN_140967420()->m_nMode == 5)
+    else if (pPC->GetPvPInfo()->m_nMode == 5)
         std::sort(m_items.begin(), m_items.end(), FUN_141018870);
     m_ranks.RemoveAll();
     for (size_t i = 0; i < m_items.size(); ++i)

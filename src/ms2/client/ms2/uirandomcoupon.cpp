@@ -169,7 +169,7 @@ void UIRandomCoupon::vfunc_2()
     UIHeadUpDisplay::vfunc_2();
     FUN_140bfec40();
     FUN_141901470(0, 0x4f99);
-    FUN_140b632f0()->AddToLayer(this, 4);
+    GetUISwfEntityManager()->AddToLayer(this, 4);
 }
 
 // @0x140bfea90
@@ -178,7 +178,7 @@ void UIRandomCoupon::vfunc_3()
     UIHeadUpDisplay::vfunc_3();
     FUN_140bfeae0();
     FUN_141901470(1, 0x4f99);
-    FUN_140b632f0()->RemoveFromLayer(this, 4);
+    GetUISwfEntityManager()->RemoveFromLayer(this, 4);
 }
 
 // @0x140bfeae0

@@ -40,12 +40,12 @@ public:
     int UnregisterModel(CKfmModel* pModel);                           // 0x14141a000 forget it
     // 0x14141a060 create the equip item. nCache is a std::map<std::string, std::list<NiAVObjectPtr> >* of already
     // loaded NIF roots (by path) to take from, or 0 (equipment.cpp passes 0 or its own cache).
-    MS2Ptr<CEquipItem> FUN_14141a060(CItem* pItem, PC* pPC, __int64 nCache);
-    void FUN_14141ac60(const efd::AssetLoadResponse* pMsg, efd::Category cat);           // 0x14141ac60
+    MS2Ptr<CEquipItem> CreateEquipItem(CItem* pItem, PC* pPC, __int64 nCache);
+    void OnAssetLoadResponse(const efd::AssetLoadResponse* pMsg, efd::Category cat);           // 0x14141ac60
     void OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category cat);       // 0x14141acc0
-    void FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, efd::Category cat);  // 0x14141ae10
+    void OnActorAdded(const egmAnimation::ActorAddedMessage* pMsg, efd::Category cat);  // 0x14141ae10
     int FUN_14141b000(CItem* pItem, PC* pPC);                       // 0x14141b000 every worn part is a KFM part
-    void FUN_14141b250(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList);   // 0x14141b250 items it replaces
+    void CollectLinkedEquipItems(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList);   // 0x14141b250 items it replaces
 
     efd::Category m_catGlobal;                                      // +0x28 the message service's unique category
     efd::SmartPointer<efd::MessageService> m_spMessages;            // +0x30

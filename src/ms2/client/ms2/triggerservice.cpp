@@ -115,17 +115,17 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_140aed1c0();
-    void FUN_140aed580(struct Unk_CameraFlyBy const*, int, float);
+    void SetFlyBy(struct Unk_CameraFlyBy const*, int, float);
     void FUN_140aed720(struct Unk_CameraSetting const&);
-    void FUN_140aed750(int, int);
-    class CCameraMode* FUN_140af2520();
-    int FUN_140af7e30();
+    void SetMode(int, int);
+    class CCameraMode* GetMode();
+    int GetModeType();
     float FUN_140ad4b40();   // C3: was Unk_CameraManager::FUN_140ad4b40
     float FUN_140af7f00();
     float FUN_140af7ea0();
     efd::Point3 FUN_140a17e10();
     Vector3 FUN_140af8290();
-    class CCameraMode* FUN_140af24f0();
+    class CCameraMode* GetTargetMode();
 };
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);
 
@@ -151,7 +151,7 @@ class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
 template <class T> T* Unk_GaGetUI(int nId);
-class UICutSceneMovie* FUN_14138fd50(int);
+class UICutSceneMovie* FindCutSceneMovie(int);
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 
 // The pvp observer popup (id 0x4e96) takes one of two record blocks read from the packet.
@@ -458,14 +458,14 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         Vector3 ptCenter = pEvent->FUN_1407140d0();
         float fOuter = (float)(unsigned)pEvent->ReadInt32();
         float fInner = (float)(unsigned)pEvent->ReadInt32();
-        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() != 0x13)
+        if (TSingleton<CameraMgr>::GetInstance()->GetModeType() != 0x13)
         {
-            Unk_CameraSetting* pSetting = FUN_140947880(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+            Unk_CameraSetting* pSetting = FUN_140947880(TSingleton<CameraMgr>::GetInstance()->GetMode());
             TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(*(struct Unk_CameraSetting const*)(pSetting));
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(0x13, true);
+            TSingleton<CameraMgr>::GetInstance()->SetMode(0x13, true);
         }
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e0d0(ptCenter);
@@ -477,7 +477,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     {
         bool bCheck = pEvent->ReadBool();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e180(bCheck);
@@ -488,7 +488,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         bool bFixed = pEvent->ReadBool();
         float fAngle = pEvent->ReadFloat();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e110(fAngle);
@@ -809,7 +809,7 @@ void CTriggerService::QueueCameraStep(int nObject, int bStart)
     kStep.m_nObject = nObject;
     kStep.m_bStart = bStart;
     m_listCamera.AddTail(kStep);
-    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() != 3)
+    if (TSingleton<CameraMgr>::GetInstance()->GetModeType() != 3)
         FUN_141863260();
 }
 
@@ -837,7 +837,7 @@ void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEn
         return;
     if (aObjects.GetCount() == 1 && aObjects[0] == 0)
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, false);
+        TSingleton<CameraMgr>::GetInstance()->SetMode(2, false);
     }
     else
     {
@@ -869,15 +869,15 @@ void CTriggerService::FUN_141863460(float fFade)
         kData.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
         kData.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         kData.m_to = kData.m_from;
-        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140ad4b30();
-        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140af7ef0();
-        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140af7e90();
-        kData.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af8260();
-        TSingleton<CameraMgr>::GetInstance()->FUN_140aed580((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
+        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->GetTargetMode()))->FUN_140ad4b30();
+        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->GetTargetMode()))->FUN_140af7ef0();
+        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->GetTargetMode()))->FUN_140af7e90();
+        kData.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_140af8260();
+        TSingleton<CameraMgr>::GetInstance()->SetFlyBy((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
         bFade = 1;
     }
     TSingleton<CameraMgr>::GetInstance()->FUN_140aed1c0();
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, bFade);
+    TSingleton<CameraMgr>::GetInstance()->SetMode(2, bFade);
 }
 
 // Create or release the effect shown for a trigger object.
@@ -964,7 +964,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 {
     CStringA strPath = pEvent->ReadString();
     int nCutScene = pEvent->ReadInt32();
-    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
+    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FindCutSceneMovie(0x4e7e));
     if (pMovie != 0)
     {
         if (pMovie->FUN_1419102c0() != 0)
@@ -978,7 +978,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 void CTriggerService::FUN_141863c50(CInPacket* pEvent)
 {
     int nCutScene = pEvent->ReadInt32();
-    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
+    UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FindCutSceneMovie(0x4e7e));
     if (pMovie != 0)
         pMovie->StopIfCutScene(nCutScene);
 }

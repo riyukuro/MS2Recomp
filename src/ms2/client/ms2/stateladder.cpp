@@ -62,7 +62,7 @@ public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
     int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 #define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                                                          // the up axis
 
@@ -160,7 +160,7 @@ void StateLadder::vfunc_4(StateData* pData)
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
     {
-        if (((void*)(reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())) != 0)
+        if (((void*)(reinterpret_cast<PC*>(pMyPC)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
     }
     PCBase* pPC = FUN_1417b8370();
@@ -199,7 +199,7 @@ void StateLadder::vfunc_4(StateData* pData)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
-    m_pOwner->FUN_14123cb20(false);
+    m_pOwner->SetShadowVisible(false);
 }
 
 // @0x1417d82a0
@@ -208,7 +208,7 @@ void StateLadder::vfunc_5(int n)
     State::vfunc_5(n);
     m_pOwner->SetTargetYaw(m_pOwner->vfunc_20().z);
     ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240730();
-    m_pOwner->FUN_14123cb20(true);
+    m_pOwner->SetShadowVisible(true);
     m_n10 = 0x2a;
     if (m_pOwner->GetPhysicsBody() != 0)
         ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240f20())))->FUN_140cfaf30();
@@ -380,7 +380,7 @@ float StateLadder::FUN_1417d8c00()
         {
             NiPoint3 kPos = pPC->vfunc_18();
             float fGround = 0.0f;
-            if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fGround, 0.0f) != 0
+            if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fGround, 0.0f) != 0
                 && fGround != FLT_MAX)
                 m_n10 = 0x32;
         }
@@ -436,7 +436,7 @@ float StateLadder::FUN_1417d8c00()
                 NiPoint3 kPos = pPC->vfunc_18();
                 efd::Point3 kProp = efd::Point3::ZERO;
                 float fGround = 0.0f;
-                if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
+                if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
                 {
                     float fHit = kPos.z - fGround;
                     reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));
@@ -588,10 +588,10 @@ efd::Point3 StateLadder::FUN_1417d99e0()
     kInfo.m_dir = -DAT_143a08cf8;
     kInfo.m_maxDist = 0;
     kInfo.m_groups = 0x201;
-    kInfo.m_20 = m_pOwner->FUN_14123c410();
+    kInfo.m_20 = m_pOwner->GetEntity();
     kInfo.m_28 = 0;
     efd::Point3 kUnused;                                    // the exe constructs a Point3 it never uses
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
+    if (((class CPhysXHelper*)GetPhysXHelper())->CastRay(&kInfo, 0))
         return kInfo.m_hitPoint;
     return efd::Point3::ZERO;
 }

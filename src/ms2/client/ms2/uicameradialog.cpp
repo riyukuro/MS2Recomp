@@ -63,7 +63,7 @@ public:
     int FUN_140a18070();
     void FUN_140af9b40(float);
     void FUN_140aec8a0(bool bKeep);   // C3: was FUN_140aec8a0
-    CCameraMode* FUN_140af24f0();     // C3: was Unk_CameraManager::FUN_140af24f0
+    CCameraMode* GetTargetMode();     // C3: was Unk_CameraManager::GetTargetMode
     float FUN_140ad4b40();            // C3: was Unk_CameraManager::FUN_140ad4b40
     float FUN_140b67d10();            // C3: was Unk_CameraManager::FUN_140b67d10
 };
@@ -173,7 +173,7 @@ void UICameraDialog::vfunc_72()
                 FUN_141032560(strName, FUN_141032e60(TSingleton<CameraMgr>::GetInstance()));
             }
             float fOffset;
-            FUN_141032d40(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0(), &fOffset, &fOffset);
+            FUN_141032d40(TSingleton<CameraMgr>::GetInstance()->GetTargetMode(), &fOffset, &fOffset);
             {
                 CString strName("m_heightOffset");
                 FUN_141032560(strName, fOffset);
@@ -235,7 +235,7 @@ void UICameraDialog::FUN_141032780(ASData& data)
     FUN_140b6bd30((void*)(TSingleton<CameraMgr>::GetInstance()));
     FUN_141032bb0(static_cast<ASObj*>(spRoot.get()));
     float fZoom = WorldService::GetInstance()->FUN_141bcfc50();
-    static_cast<ASObj*>(spRoot.operator->())->FUN_1409c4a30("fov", fZoom);
+    static_cast<ASObj*>(spRoot.operator->())->SetMemberFloat("fov", fZoom);
 }
 
 // @0x1410328d0
@@ -305,11 +305,11 @@ int FUN_141032bb0(ASObj* pObj)
                 fFar = kFrustum.m_fFar;
             }
     }
-    pObj->FUN_1409c4a30("fov", fFov);
-    pObj->FUN_1409c4a30("maxDistance", fMax);
-    pObj->FUN_1409c4a30("minDistance", fMin);
-    pObj->FUN_1409c4a30("near", fNear);
-    pObj->FUN_1409c4a30("far", fFar);
+    pObj->SetMemberFloat("fov", fFov);
+    pObj->SetMemberFloat("maxDistance", fMax);
+    pObj->SetMemberFloat("minDistance", fMin);
+    pObj->SetMemberFloat("near", fNear);
+    pObj->SetMemberFloat("far", fFar);
     return 1;
 }
 

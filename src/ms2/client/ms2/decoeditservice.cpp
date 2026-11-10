@@ -72,20 +72,20 @@ class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
-    double FUN_141473280();
+    double GetGameTime();
 };
 class Unk_DecoAnimObj;
 struct Unk_DecoAnimHandle { char m_pad[0x40]; };
-struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
+struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (SetTargetAnimation)
 // The animation service (animationmanager.cpp); play by name is its member.
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);
-    bool FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // 0x1411766b0 (C3: MS2's 4-arg AnimationService::SetTargetAnimation by id, like FUN_1409a1fc0 by name)
+class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);
+    bool SetTargetAnimation(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // 0x1411766b0 (C3: MS2's 4-arg AnimationService::SetTargetAnimation by id, like PlayAnimation by name)
 class Unk_DecoAnimSvc : public Unk_AnimSvc {};   // C3: its FUN_1409991a0 was AnimationService::ContainsEntity (0x1409991a0), see below
 #include <egmAnimation/AnimationService.h>
 // The animation service's protected actor table, opened up like reactor.cpp's Unk_RxAnimAccess.
 struct Unk_DecoAnimAccess : egmAnimation::AnimationService
 { using AnimationService::ActorEntry; using AnimationService::ContainsEntity; };
-class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
+class Unk_AnimSvc* GetAnimationService();   // C3: was GetAnimationService
 struct Unk_DecoModelCache { char m_pad[0x10]; };
 
 // ---- entities ----
@@ -142,7 +142,7 @@ struct Unk_DecoCursor : public CWindowService { };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CPhysXHelper { public: int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask); };   // physxhelper.h (NxMath.h needs NOMINMAX)
 struct Unk_DecoCamera : public CameraMgr { };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // ---- static initializers (.text$di, in this order) ----
 // @0x1400e6d40
@@ -417,7 +417,7 @@ efd::AsyncResult DecoEditService::OnTick()
                 if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->ScreenToRay(*reinterpret_cast<const NiPoint2*>(&kCursor), kOrigin, kDir) != 0)
                 {
                     Vector3 kHit;
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(kOrigin)), kHit, Vector3(reinterpret_cast<const Vector3&>(kDir)), 10000.0f, 0x201) != 0)
+                    if (((CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(kOrigin)), kHit, Vector3(reinterpret_cast<const Vector3&>(kDir)), 10000.0f, 0x201) != 0)
                     {
                         spBrush->SetPtPos(kHit);
                         spBrush->vfunc_2();
@@ -486,7 +486,7 @@ bool DecoItem::SaveXml(TiXmlElement* pParent)
     NiAVObject* pObject;
     if (pParent == 0)
         return false;
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         ATL::CAtlArray<NiTransform> aXf;
@@ -514,21 +514,21 @@ MS2_REPLACE_METHOD(0x1411740B0, DecoItem, SaveXml, 458, 0x173BAD7A);
 // @0x141174280
 void DecoItem::Refresh()
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
-        pRoot->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        pRoot->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
-        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(NiNodePtr(pRoot), FUN_14123c460());
+        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(NiNodePtr(pRoot), GetEntityID());
     }
 }
 
 // @0x141174380
 void DecoItem::SetCulled(int bVisible)
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         Unk_NodeQueue kQueue(pRoot);
@@ -546,20 +546,20 @@ MS2_REPLACE_METHOD(0x141174380, DecoItem, SetCulled, 202, 0xE69FA90E);
 // @0x141174450
 void DecoItem::SetModel(const CString& strModel)
 {
-    FUN_14123bb80(strModel);
+    SetModelPath(strModel);
 }
 
 // @0x1411744a0
 CString DecoItem::GetModel()
 {
-    return FUN_14123bbd0();
+    return GetModelPath();
 }
 MS2_REPLACE_METHOD(0x1411744A0, DecoItem, GetModel, 58, 0x1334FF9C);
 
 // @0x1411744e0
 void DecoItem::ApplyInstancing()
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         EnableInstancing(pRoot, 1000, m_bKfm);
@@ -574,7 +574,7 @@ void DecoItem::vfunc_53(float f)
     GameObject::vfunc_53(f);
     if (m_aXf.IsEmpty())
         return;
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         for (unsigned i = 0; i < m_aXf.GetCount(); i++)
@@ -632,7 +632,7 @@ bool DecoItem::LoadKfm(CString strAsset)
         return true;
     m_bKfm = true;
     m_str88 = "DecoItemKFM";
-    FUN_14123bb80("urn:gamebryo-animation:" + FUN_141b6ed00(strAsset));
+    SetModelPath("urn:gamebryo-animation:" + FUN_141b6ed00(strAsset));
     if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
         return false;
     return false;
@@ -652,7 +652,7 @@ bool DecoItem::AddTransform(const NiTransform& xf)
 // @0x141174ab0
 void DecoItem::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         Unk_NodeQueue kQueue(pRoot);
@@ -672,7 +672,7 @@ void DecoItem::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWIn
 // @0x141174bb0
 void DecoItem::CollectTransforms(ATL::CAtlArray<NiTransform>& aOut)
 {
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         Unk_NodeQueue kQueue(pRoot);
@@ -690,17 +690,17 @@ MS2_REPLACE_METHOD(0x141174BB0, DecoItem, CollectTransforms, 186, 0xECD1BF5B);
 // @0x141174c70
 void DecoItem::PlayAnim(const efd::utf8string& strName, float fSpeed, bool bLoop)
 {
-    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)FUN_1410a68d0());
+    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)GetAnimationService());
     if (pAnim != 0)
-        pAnim->FUN_1409a1fc0(FUN_14123c460(), strName, fSpeed, bLoop);
+        pAnim->PlayAnimation(GetEntityID(), strName, fSpeed, bLoop);
 }
 
 // @0x141174ce0
 void DecoItem::PlayAnim(int nSeq, float fSpeed, bool bLoop)
 {
-    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)FUN_1410a68d0());
+    Unk_DecoAnimSvc* pAnim = ((class Unk_DecoAnimSvc*)GetAnimationService());
     if (pAnim != 0)
-        pAnim->FUN_1411766b0(FUN_14123c460(), nSeq, fSpeed, bLoop);
+        pAnim->SetTargetAnimation(GetEntityID(), nSeq, fSpeed, bLoop);
 }
 
 // @0x141174d50
@@ -716,7 +716,7 @@ int DecoItem::vfunc_10()
 {
     if (GameObject::vfunc_10() == 0)
         return 0;
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         const NiTPointerList<NiShadowGeneratorPtr>& kList = NiShadowManager::GetShadowGenerators();
@@ -742,7 +742,7 @@ int DecoItem::vfunc_11()
     if (m_bKfm)
     {
         PlayAnim("Idle_A", 1.0f, false);
-        FUN_140ae1e80(FUN_141b6efc0(FUN_14123c410()), 0.0f, 1.0f, 0.0f, 0.5f, egf::kENTITY_INVALID);
+        FUN_140ae1e80(FUN_141b6efc0(GetEntity()), 0.0f, 1.0f, 0.0f, 0.5f, egf::kENTITY_INVALID);
     }
     return 1;
 }
@@ -758,7 +758,7 @@ MS2_REPLACE_METHOD(0x141175030, DecoItem, vfunc_12, 24, 0xE77ABCEA);
 void DecoItem::vfunc_14()
 {
     GameObject::vfunc_14();
-    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
     if (pRoot != 0)
     {
         const NiTPointerList<NiShadowGeneratorPtr>& kList = NiShadowManager::GetShadowGenerators();
@@ -854,7 +854,7 @@ DecoLayer::~DecoLayer()
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        WorldService::GetInstance()->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
+        WorldService::GetInstance()->FUN_141bbbc60(m_aItems[i]->GetEntityID(), 0);
     }
     m_aItems.RemoveAll();
 }
@@ -882,7 +882,7 @@ bool DecoLayer::SaveXml(TiXmlElement* pParent)
 }
 
 // @0x1411766b0
-bool Unk_AnimSvc::FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop)
+bool Unk_AnimSvc::SetTargetAnimation(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop)
 {
     Unk_DecoAnimRec* pRec;
     if (!reinterpret_cast<Unk_DecoAnimAccess*>(this)->ContainsEntity(kId, reinterpret_cast<Unk_DecoAnimAccess::ActorEntry*&>(pRec)))
@@ -964,7 +964,7 @@ bool DecoLayer::ChangeAsset(CString strAsset)
         {
             ATL::CAtlArray<NiTransform> aXf;
             aOld[i]->CollectTransforms(aXf);
-            WorldService::GetInstance()->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
+            WorldService::GetInstance()->FUN_141bbbc60(aOld[i]->GetEntityID(), 0);
             DecoItem* pItem = AddItem(aXf);
             if (pItem != 0)
                 IsKfm(GetAsset()) ? pItem->LoadKfm(GetAsset()) : pItem->LoadNif(GetAsset());

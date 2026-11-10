@@ -63,7 +63,7 @@ class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(co
 class Unk_EobSlot : public ASUIComponent { public:
 };
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
-    int FUN_1409617d0(int, unsigned, const int&);
+    int GetValue(int, unsigned, const int&);
 };
 class GameEventUserValue; extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
 #define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
@@ -77,8 +77,8 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlags);         // notice message box
-void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
+void DestroyItemInfoSlot(const CString& strName);                                 // drop the item shown under a dialog name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 int FUN_14053feb0(int nItemId);                                             // the rank of the box item
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);                 // rate limited send
 
@@ -176,7 +176,7 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
     int nYm = nYmd + now.GetMonth() * 100;
     int nToday = nYm + now.GetDay();
     int nZero = 0;
-    int nLast = g_attendTable.FUN_1409617d0(0x578, spCtx->m_3c, nZero);
+    int nLast = g_attendTable.GetValue(0x578, spCtx->m_3c, nZero);
     if (nLast >= nToday)
         return;
     if (FUN_141924630() != 0)
@@ -239,7 +239,7 @@ CString UIItemEventOpenBoxDialog::FUN_140e48770(unsigned nItemId)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0) == 0)
         return "";
-    FUN_141415450(strKey, MS2Ptr<CItem>(spItem), 0, 0, 0);
+    CreateItemInfoSlot(strKey, MS2Ptr<CItem>(spItem), 0, 0, 0);
     m_1e8 = strKey;
     return strKey;
 }
@@ -248,6 +248,6 @@ MS2_REPLACE_METHOD(0x140E48770, UIItemEventOpenBoxDialog, FUN_140e48770, 537, 0x
 // @0x140e48990
 void UIItemEventOpenBoxDialog::FUN_140e48990()
 {
-    FUN_141415600(m_1e8);
+    DestroyItemInfoSlot(m_1e8);
 }
 MS2_REPLACE_METHOD(0x140E48990, UIItemEventOpenBoxDialog, FUN_140e48990, 33, 0xE84A5973);

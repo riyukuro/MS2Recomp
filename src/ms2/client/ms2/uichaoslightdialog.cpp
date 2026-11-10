@@ -179,12 +179,12 @@ void UIChaosLightDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj obj(2);
     const ChaosLightEffectParam* pParam = FUN_141041e90();
-    obj.FUN_1409c4a30("boost", pParam->m_fFresnelBoost);
-    obj.FUN_1409c4a30("exponent", pParam->m_fFresnelExponent);
-    obj.FUN_1409c4a30("dimmer", pParam->m_fDimmer);
-    obj.FUN_1409c4a30("r", pParam->m_fRed);
-    obj.FUN_1409c4a30("g", pParam->m_fGreen);
-    obj.FUN_1409c4a30("b", pParam->m_fBlue);
+    obj.SetMemberFloat("boost", pParam->m_fFresnelBoost);
+    obj.SetMemberFloat("exponent", pParam->m_fFresnelExponent);
+    obj.SetMemberFloat("dimmer", pParam->m_fDimmer);
+    obj.SetMemberFloat("r", pParam->m_fRed);
+    obj.SetMemberFloat("g", pParam->m_fGreen);
+    obj.SetMemberFloat("b", pParam->m_fBlue);
     obj.FUN_1407cbbe0("apply", FUN_1410420c0());
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
@@ -368,7 +368,7 @@ bool ChaosLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTa
     }
     if (s_bApply)
         pUse = &s_defaultParam;
-    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280() + pUse->m_fStartDelay;
+    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime() + pUse->m_fStartDelay;
     m_fDuration = pUse->m_fDuration;
     m_b2c = pUse->m_b30;
     m_param.FUN_141043a30(*pUse);
@@ -383,7 +383,7 @@ void ChaosLightEffect::vfunc_4()
     m_b2e = true;
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecObjects)
         FUN_1410423d0(spNode);
-    m_dStartTime2 = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    m_dStartTime2 = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
 }
 
 // @0x141041ae0
@@ -481,7 +481,7 @@ void ChaosLightEffect::FUN_1410420d0()
 {
     ChaosLightEffectParam kParam;
     kParam.FUN_141043a30(m_param);
-    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     float fDelta = (float)(dNow - m_dLastTick);
     m_dLastTick = dNow;
     if (m_param.m_nBlinkBoostStart > 0 && (double)m_param.m_nBlinkBoostStart < dNow - m_dStartTime2)

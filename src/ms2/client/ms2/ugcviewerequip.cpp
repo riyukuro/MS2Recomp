@@ -57,7 +57,7 @@ class Unk_VwWearer;
 // The world service: the player and the object / entity lookups.
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp)
 class Unk_SgNifLoader { public: NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf); };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 CString FUN_1410280d0(int nKind, CString strName);          // the local file of a ugc content kind
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                   // the scene root of an entity
 class Unk_VwWorld
@@ -72,8 +72,8 @@ class Unk_VwWearer : public PC
 };
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
-float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
+float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
+float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -94,7 +94,7 @@ public:
 // The upload manager; the CUgcManager singleton.
 
 // UI dialogs by id.
-class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
+class UIMyInfoDialog* FindMyInfoDialog(int);   // C3: was FindMyInfoDialog
 template <class T> T* Unk_UgcGetDialog(int nId);            // 0x4f8c the wedding profile dialog
 void* FUN_14136f480(int nId);                               // 0x4e4f the guild mark dialog
 class UIPCInfoDialog   // C3: member view for the former free stand-ins
@@ -552,7 +552,7 @@ void CUgcViewerBanner::vfunc_1()
     Vector3 kBanner = DAT_143b01a60;
     static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBanner));
     int bPlanar = 0;
-    float fDistance = bPlanar ? FUN_140966ea0(reinterpret_cast<const Vector3&>(kPlayer), kBanner) : FUN_140966f00(reinterpret_cast<const Vector3&>(kPlayer), kBanner);
+    float fDistance = bPlanar ? GetPlanarDistance(reinterpret_cast<const Vector3&>(kPlayer), kBanner) : GetDistance(reinterpret_cast<const Vector3&>(kPlayer), kBanner);
     float fLimit = GetClientConstants()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
         TSingleton<CUgcManager>::GetInstance()->FUN_14187f1f0();
@@ -606,7 +606,7 @@ void CUgcViewerBanner::vfunc_4()
         CString strFile = FUN_1410280d0(3, spRegist->m_strUrl);
         if (_access(strFile, 0) == 0)
         {
-            spTexture = ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_141553eb0(strFile, 0);
+            spTexture = ((class Unk_SgNifLoader*)GetNifLoadingService())->FUN_141553eb0(strFile, 0);
             if (spTexture == 0)
             {
                 TSingleton<CUgcManager>::GetInstance()->FUN_141884af0(spRegist);
@@ -734,7 +734,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    void* pDialog = ((void*)FUN_140938c30(0x2711));
+    void* pDialog = ((void*)FindMyInfoDialog(0x2711));
     if (pDialog == 0)
         return 0;
     reinterpret_cast<UIPCInfoDialog*>(pDialog)->ShowProfileImage(strThumb);
@@ -744,7 +744,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a1430
 void CUgcViewerProfile::vfunc_4()
 {
-    void* pDialog = ((void*)FUN_140938c30(0x2711));
+    void* pDialog = ((void*)FindMyInfoDialog(0x2711));
     if (pDialog == 0)
         return;
     ((class UIPCInfoDialog*)(void*)(pDialog))->RefreshProfileImage();

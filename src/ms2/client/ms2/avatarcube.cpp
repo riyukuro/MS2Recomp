@@ -32,7 +32,7 @@
 // ---- unit-local views of exe objects ----
 
 // The animation service (singleton behind FUN_141b6f910); same object as kfmmodel.cpp's view.
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
+class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
 class Unk_AcAnimSvc : public Unk_AnimSvc
 {
 public:
@@ -60,7 +60,7 @@ static CString s_strStun = "stun";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // @0x1409f2670
-AvatarCube* FUN_1409f2670(CItemData* pData)
+AvatarCube* CreateAvatarCube(CItemData* pData)
 {
     AvatarCube* pCube = new (efd::MemHint(efd::MemHint::NONE)) AvatarCube(pData);
     if (pCube)
@@ -69,7 +69,7 @@ AvatarCube* FUN_1409f2670(CItemData* pData)
         if (nId == 0)
             return 0;
         pCube->vfunc_57();
-        pCube->FUN_14123c5a0(nId);
+        pCube->SetObjectId(nId);
         pCube->vfunc_19(NiPoint3::ZERO);
         pCube->vfunc_21(NiPoint3(0.0f, 0.0f, 90.0f));
         return pCube;
@@ -89,9 +89,9 @@ void AvatarCube::vfunc_12()
     if (m_unk_80 != 0)
     {
         efd::utf8string kIdle((const char*)FUN_1409a2360("Idle_A", 0));
-        if (FUN_141b6f910()->GetAnimationIdFromName(FUN_14123c460(), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
+        if (FUN_141b6f910()->GetAnimationIdFromName(GetEntityID(), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
-            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(), kIdle, 1.0f, true);
+            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->PlayAnimation(GetEntityID(), kIdle, 1.0f, true);
         }
     }
 }
@@ -112,14 +112,14 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
             CString strFile = FUN_1410280d0(2, spItem->GetUgcInfo()->m_strName);
             if (_access(strFile, 0))
             {
-                ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, FUN_14123c460());
+                ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, GetEntityID());
             }
             else
             {
-                CUgcItemCube kCube(spItem.get(), FUN_14123c460());
+                CUgcItemCube kCube(spItem.get(), GetEntityID());
                 if (((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->ApplyImageToCube(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
                 {
-                    ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, FUN_14123c460());
+                    ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, GetEntityID());
                 }
             }
         }

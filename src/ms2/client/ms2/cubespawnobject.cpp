@@ -124,7 +124,7 @@ class COptimizer   // C3: member view (coptimizer.h)
 public:
     int FUN_1409f7ea0();
 };
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 
 
 class Unk_CsoSpawnMgr
@@ -133,7 +133,7 @@ public:
 };
 class CEmotionManager;
 // @0x140a50010
-inline Unk_CsoSpawnMgr* FUN_140a50010() { return reinterpret_cast<Unk_CsoSpawnMgr*>(TSingleton<CEmotionManager>::s_instance); }
+inline Unk_CsoSpawnMgr* GetEmotionManager() { return reinterpret_cast<Unk_CsoSpawnMgr*>(TSingleton<CEmotionManager>::s_instance); }
 
 CString FUN_1409a2360(const char* psz, int n);
 CStringW FUN_1401aa6a0(int nId);
@@ -179,7 +179,7 @@ CubeSpawnObject::~CubeSpawnObject()
     reinterpret_cast<egf::EntityPtr&>(m_entity) = (egf::Entity*)0;
     if (m_spFx.get())
     {
-        FUN_141993750(FUN_14123c580());
+        FUN_141993750(GetObjectId());
         m_spFx = 0;
     }
 }
@@ -196,9 +196,9 @@ int CubeSpawnObject::vfunc_124(int nNpcId, egf::EntityPtr ent, int nGaugeA, int 
     m_strOwner = strOwner;
     CString strPath;
     strPath.Format("urn:gamebryo-animation:%s", (const char*)m_spNpc->m_model.m_strKfm);
-    FUN_14123bb80(strPath);
+    SetModelPath(strPath);
     m_fScaleAC = m_spNpc->m_model.m_fScale;
-    FUN_14123c280(m_spNpc->m_model.m_fScale);
+    SetScale(m_spNpc->m_model.m_fScale);
     CStringW strName = FUN_1401aa6a0(m_spNpc->GetId());
     if (!strName.IsEmpty())
     {
@@ -229,14 +229,14 @@ MS2_REPLACE_METHOD(0x140a4eff0, CubeSpawnObject, vfunc_69, 128, 0xCE493C67);
 // @0x140a4f080
 Unk_PCBaseFxLib* CubeSpawnObject::vfunc_70()
 {
-    return reinterpret_cast<Unk_PCBaseFxLib*>(reinterpret_cast<CEmotionManager*>(FUN_140a50010())->GetNpcTable());
+    return reinterpret_cast<Unk_PCBaseFxLib*>(reinterpret_cast<CEmotionManager*>(GetEmotionManager())->GetNpcTable());
 }
 MS2_REPLACE_METHOD(0x140a4f080, CubeSpawnObject, vfunc_70, 27, 0xC7E44435);
 
 // @0x140a4f0b0
 MS2Ptr<Unk_PCBaseComp_aa8> CubeSpawnObject::vfunc_85()
 {
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() && !FUN_14123dbd0())
+    if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() && !FUN_14123dbd0())
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == NULL)
         m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
@@ -267,14 +267,14 @@ void CubeSpawnObject::FUN_140a4f230(int a, int b)
 MS2_REPLACE_METHOD(0x140a4f230, CubeSpawnObject, FUN_140a4f230, 110, 0xC1319B93);
 
 // @0x140a4f2b0
-void CubeSpawnObject::FUN_140a4f2b0(unsigned int nState)
+void CubeSpawnObject::SetAnimState(unsigned int nState)
 {
     CString strAnim("");
     if (m_mapAnim.Lookup(nState, strAnim))
         PlayAnimation(efd::utf8string(FUN_1409a2360(strAnim, 0)), 1.0f, false, false);
     m_nAnimState = nState;
 }
-MS2_REPLACE_METHOD(0x140a4f2b0, CubeSpawnObject, FUN_140a4f2b0, 301, 0x4DD60614);
+MS2_REPLACE_METHOD(0x140a4f2b0, CubeSpawnObject, SetAnimState, 301, 0x4DD60614);
 
 // @0x140a4f3f0
 void CubeSpawnObject::FUN_140a4f3f0(int n)
@@ -297,7 +297,7 @@ void CubeSpawnObject::FUN_140a4f3f0(int n)
                     if (strText.GetLength() > 0)
                         ShowChatBalloon(strText);
                     if (static_cast<const Unk_ScriptContentArray&>(spScript.operator->()->m_contents).GetAt(0).operator->()->m_voiceId.GetLength() > 0)
-                        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(
+                        TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(
                             spScript.operator->()->m_contents.GetAt(0).operator->()->m_voiceId,
                             vfunc_18());
                 }
@@ -332,7 +332,7 @@ void CubeSpawnObject::vfunc_9(void* p)
         vfunc_59(1, NULL, 0, 0);
         if (FUN_140a4f690())
         {
-            if ((m_spFx = reinterpret_cast<const MS2Ptr<Unk_HpBarFx>&>(static_cast<const MS2Ptr<UISlimeEventBar::Entity>&>(FUN_1419936d0(FUN_14123c580())))).get())
+            if ((m_spFx = reinterpret_cast<const MS2Ptr<Unk_HpBarFx>&>(static_cast<const MS2Ptr<UISlimeEventBar::Entity>&>(FUN_1419936d0(GetObjectId())))).get())
             {
                 reinterpret_cast<UISlimeEventBar::Entity*>(m_spFx.operator->())->FUN_1419933e0();
                 reinterpret_cast<UIHpBar::Entity*>(m_spFx.operator->())->FUN_141992140(FUN_140a4f690());

@@ -16,7 +16,7 @@
 
 // ---- unit-local placeholders ----
 
-float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
+float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 
 // PCBase seen with Vector3 points (as in statefloat.cpp): slots 19, 22 and 68 take the point by value, and the
@@ -92,12 +92,12 @@ void StateSkillMagicControl::vfunc_3(double fTime)
         return;
     efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     reinterpret_cast<Vector3&>(kWorld).Unitize();
-    efd::Point3 kSpeed = kWorld * (pTarget->FUN_1410a6790());
+    efd::Point3 kSpeed = kWorld * (pTarget->GetMoveSpeed());
     efd::Point3 kStep = reinterpret_cast<const efd::Point3&>(kSpeed) * ((float)fTime);
     Vector3 kOld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_18();
     reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(reinterpret_cast<Vector3&>(kStep), fTime, 0, 0, 1);
-    float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pTarget->GetOriginPosition())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
-    if (fDist >= pTarget->FUN_1410a67d0() || pTarget->GetOriginPosition().z != pTarget->vfunc_18().z)
+    float fDist = GetPlanarDistance(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pTarget->GetOriginPosition())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
+    if (fDist >= pTarget->GetMaxDistance() || pTarget->GetOriginPosition().z != pTarget->vfunc_18().z)
         reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_19(kOld);
 }
 

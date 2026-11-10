@@ -86,7 +86,7 @@ int CubeHolderManager::FUN_1410b50d0(MS2Ptr<CubeItemInfo>& out) {
 }
 // MS2-FUNCTIONAL: same calls and branches; /Od temp slots differ (exe frame 0x88 keeps the id-compare int temp above the cube handle).
 // @0x1410b5280
-void CubeHolderManager::FUN_1410b5280(MS2Ptr<CubeItemInfo> info) {
+void CubeHolderManager::SelectCube(MS2Ptr<CubeItemInfo> info) {
     selected=FindByInstanceId(info->instanceId);
     if(selected==0) {
         for(unsigned i=0;i<cubes.GetCount();++i) {
@@ -99,7 +99,7 @@ void CubeHolderManager::FUN_1410b5280(MS2Ptr<CubeItemInfo> info) {
         }
     }
 }
-MS2_REPLACE_METHOD(0x1410B5280, CubeHolderManager, FUN_1410b5280, 453, 0xEBE0474B);
+MS2_REPLACE_METHOD(0x1410B5280, CubeHolderManager, SelectCube, 453, 0xEBE0474B);
 // @0x1410b5460
 void CubeHolderManager::SelectByItemId(int itemId) { selected=FindByItemId(itemId); }
 // @0x1410b54d0
@@ -197,30 +197,30 @@ int CubeHolderManager::GetSelectedIndex() {
 MS2_REPLACE_METHOD(0x1410B5D70, CubeHolderManager, GetSelectedIndex, 69, 0xA29D55F1);
 // @0x1410b5dc0
 MS2Ptr<CItem> CubeHolderManager::FindItemByInstanceId(__int64 instanceId) {
-    MS2Ptr<CItem> item=g_143ab2a90.FUN_140a5d680(instanceId);
+    MS2Ptr<CItem> item=g_143ab2a90.FindItemByUid(instanceId);
     if(item.get()) return item;
     return DAT_143ab2e20.FUN_1408fbf90(instanceId);
 }
 MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FindItemByInstanceId, 170, 0xC00EE4A8);
 // @0x1410b5e70
-int CubeHolderManager::FUN_1410b5e70() {
+int CubeHolderManager::IsInCubeMode() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
     return ((PC*)pc)->IsInCubeMode();
 }
-MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5);
+MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, IsInCubeMode, 54, 0x2F3817D5);
 // @0x1410b5eb0
-int CubeHolderManager::FUN_1410b5eb0() {
+int CubeHolderManager::GetCubeCraftMode() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
     Unk_PCCubeCraft* craft=((class MyPC*)(class PCBase*)(pc))->GetActiveCubeCraft();
     if(craft==0) return 0;
     return craft->GetMode();
 }
-MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, FUN_1410b5eb0, 81, 0x1BD6028B);
+MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, GetCubeCraftMode, 81, 0x1BD6028B);
 // @0x1410b5f10
 int CubeHolderManager::IsItemAllowedInCurrentSpace(int itemId) {
-    if(FUN_1410b5eb0()==2) return 0;
+    if(GetCubeCraftMode()==2) return 0;
     MS2Ptr<CFieldDataCli> field=WorldService::GetInstance()->FUN_141bd30a0();
     if(field==0) return 0;
     MS2Ptr<CItemData> item=FUN_14053f870(itemId);

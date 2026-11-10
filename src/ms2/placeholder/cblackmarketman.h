@@ -34,17 +34,17 @@ public:
     void SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond); // send 0x5f/4: the search condition
     void SendBlackMarketMode5(unsigned __int64 qwId, int nCount);  // send 0x5f/5
     void SendBlackMarketMode8(int nA, int nB);                     // send 0x5f/8
-    int FUN_140a20cf0(MS2Ptr<CBlackMarketProduct> sp);     // add to the own list (true when it was new)
-    void FUN_140a20e00(unsigned __int64 qwId);              // remove from the own list
-    MS2Ptr<CBlackMarketProduct> FUN_140a20e70(unsigned __int64 qwId);   // product of the own list
-    void FUN_140a20f30(MS2Ptr<CBlackMarketProduct> sp);     // add to the search result
-    MS2Ptr<CBlackMarketProduct> FUN_140a20ff0(unsigned __int64 qwId);   // product of the search result
-    size_t FUN_140a210b0();                                 // size of the own list
-    void FUN_140a210e0(ProductList& out);                   // the own list as a list
-    void FUN_140a211a0(CInPacket& packet);                  // 1: the whole own list
-    void FUN_140a21340(CInPacket& packet);                  // 2: one new own product
-    void FUN_140a21460(CInPacket& packet);                  // 3: one own product left
-    void FUN_140a216b0(CInPacket& packet);                  // 4: a search result page
+    int AddOwnProduct(MS2Ptr<CBlackMarketProduct> sp);     // add to the own list (true when it was new)
+    void RemoveOwnProduct(unsigned __int64 qwId);              // remove from the own list
+    MS2Ptr<CBlackMarketProduct> FindOwnProduct(unsigned __int64 qwId);   // product of the own list
+    void AddSearchProduct(MS2Ptr<CBlackMarketProduct> sp);     // add to the search result
+    MS2Ptr<CBlackMarketProduct> FindSearchProduct(unsigned __int64 qwId);   // product of the search result
+    size_t GetOwnProductCount();                                 // size of the own list
+    void GetOwnProducts(ProductList& out);                   // the own list as a list
+    void OnOwnProductList(CInPacket& packet);                  // 1: the whole own list
+    void OnOwnProductAdded(CInPacket& packet);                  // 2: one new own product
+    void OnOwnProductRemoved(CInPacket& packet);                  // 3: one own product left
+    void OnSearchResult(CInPacket& packet);                  // 4: a search result page
     void FUN_140a21930(CInPacket& packet);                  // 5: a product was bought
     void FUN_140a21be0(CInPacket& packet);                  // 8
     void FUN_140a21ca0(CInPacket& packet);                  // 0: result code message

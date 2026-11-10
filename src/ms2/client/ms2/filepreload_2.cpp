@@ -7,11 +7,11 @@
 // MS2-PIN: ??0CFileSearcher@@QEAA@XZ 0x141218010 ; unique
 // MS2-PIN: ??1CFileSearcher@@UEAA@XZ 0x1412180f0 ; unique
 // MS2-PIN: ?vfunc_1@CFileSearcher@@UEAAIPEAXAEAVUnk_140659080@@@Z 0x1412181a0 ; unique
-// MS2-PIN: ?FUN_141218730@CFileSearcher@@QEAAXV?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@@Z 0x141218730 ; unique
-// MS2-PIN: ?FUN_1412187a0@CFileSearcher@@QEAAXV?$TFunctor@XVEmptyParam@@@@@Z 0x1412187a0 ; unique
-// MS2-PIN: ?FUN_141218810@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@3@H_N@Z 0x141218810 ; unique
-// MS2-PIN: ?FUN_141218900@CFileSearcher@@QEAAXXZ 0x141218900 ; unique
-// MS2-PIN: ?FUN_141218920@CFileSearcher@@QEAAXXZ 0x141218920 ; unique
+// MS2-PIN: ?SetProgressCallback@CFileSearcher@@QEAAXV?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@@Z 0x141218730 ; unique
+// MS2-PIN: ?SetCompleteCallback@CFileSearcher@@QEAAXV?$TFunctor@XVEmptyParam@@@@@Z 0x1412187a0 ; unique
+// MS2-PIN: ?StartSearch@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@3@H_N@Z 0x141218810 ; unique
+// MS2-PIN: ?Cancel@CFileSearcher@@QEAAXXZ 0x141218900 ; unique
+// MS2-PIN: ?ClearCallbacks@CFileSearcher@@QEAAXXZ 0x141218920 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141219980 ; unique
 // MS2-PIN: ??$?8V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x1412199b0 ; unique
 // MS2-PIN: ??$?9V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x141219a00 ; unique
@@ -151,7 +151,7 @@ unsigned CFileSearcher::vfunc_1(void*,Unk_140659080& startup) {
     } }
     if(!removeFound) {
         for(auto it=directories.rbegin();it!=directories.rend();++it)
-            if(!queries.empty()) FUN_141218990(MS2_SEARCH_CONCAT(*it,"\\"));
+            if(!queries.empty()) SearchDirectory(MS2_SEARCH_CONCAT(*it,"\\"));
     } else {
         ATL::CAtlArray<CString> files;
         for(auto it=directories.rbegin();it!=directories.rend();++it) {
@@ -175,15 +175,15 @@ unsigned CFileSearcher::vfunc_1(void*,Unk_140659080& startup) {
     return 0;
 }
 // @0x141218730
-void CFileSearcher::FUN_141218730(ProgressCallback callback) {
+void CFileSearcher::SetProgressCallback(ProgressCallback callback) {
     if(Unk_LockGuard lock=g_searchLock) {} else progress=callback;
 }
 // @0x1412187a0
-void CFileSearcher::FUN_1412187a0(CompletionCallback callback) {
+void CFileSearcher::SetCompleteCallback(CompletionCallback callback) {
     if(Unk_LockGuard lock=g_searchLock) {} else complete=callback;
 }
 // @0x141218810
-bool CFileSearcher::FUN_141218810(const EntryList& entries,const std::set<CString>& paths,int searchMode,bool remove) {
+bool CFileSearcher::StartSearch(const EntryList& entries,const std::set<CString>& paths,int searchMode,bool remove) {
     if(entries.empty() || paths.empty() || running)return false;
     {
         queries=entries;directories=paths;running=true;cancelled=false;mode=searchMode;removeFound=remove;
@@ -192,24 +192,24 @@ bool CFileSearcher::FUN_141218810(const EntryList& entries,const std::set<CStrin
         return true;
     }
 }
-MS2_REPLACE_METHOD(0x141218810,CFileSearcher,FUN_141218810,231,0xB1135DF2);
+MS2_REPLACE_METHOD(0x141218810,CFileSearcher,StartSearch,231,0xB1135DF2);
 // @0x141218900
-void CFileSearcher::FUN_141218900() { cancelled=true; }
-MS2_REPLACE_METHOD(0x141218900,CFileSearcher,FUN_141218900,15,0x1096902D);
+void CFileSearcher::Cancel() { cancelled=true; }
+MS2_REPLACE_METHOD(0x141218900,CFileSearcher,Cancel,15,0x1096902D);
 // @0x141218920
-void CFileSearcher::FUN_141218920() {
+void CFileSearcher::ClearCallbacks() {
     if(Unk_LockGuard lock=g_searchLock) {} else { progress.Clear();complete.Clear(); }
 }
 // MS2-FUNCTIONAL: typed recursive search; original OS flags, DWORD sizing and close order retained.
 // @0x141218990
-void CFileSearcher::FUN_141218990(CString directory) {
+void CFileSearcher::SearchDirectory(CString directory) {
     CFileFind find;
     BOOL more=find.FindFile(MS2_SEARCH_CONCAT(directory,"*.*"),0);
     while(more && !cancelled) {
         more=find.FindNextFile();
         CString name=find.GetFileName();FUN_1401d3700(name);
         if(find.IsDirectory()) {
-            if(name.GetAt(0)!='.') FUN_141218990(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
+            if(name.GetAt(0)!='.') SearchDirectory(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
         }
         else if(mode==0) {
             for(auto it=queries.begin();it!=queries.end();++it) {

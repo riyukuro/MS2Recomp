@@ -299,7 +299,7 @@ public:
     bool FUN_140d07960(__int64 nScoreUid);                                  // play the score
     bool FUN_140d07f00(__int64 nScoreUid);                                  // play the ensemble score
 };
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -489,13 +489,13 @@ void UIPlayInstrumentDialog::vfunc_67()
     if (pPlayer != 0)
         pPlayer->vfunc_59(1, 0, 0, 0);
     m_nAutoPlay = 0;
-    if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
+    if (!((class Unk_PiMgr*)GetInstrumentManager())->IsRemote())
     {
         if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
-        if ((unsigned)((class Unk_PiMgr*)FUN_140c8dac0())->GetVolume() > 0)
+        if ((unsigned)((class Unk_PiMgr*)GetInstrumentManager())->GetVolume() > 0)
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
-        ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
+        ((class Unk_PiMgr*)GetInstrumentManager())->SetVolume(0);
     }
 }
 
@@ -524,7 +524,7 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
         ASTooltip tip(((Unk_PiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             if (tip.FUN_1409e0d40(spItem.get()))
@@ -536,7 +536,7 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 // @0x14100b0f0
 int UIPlayInstrumentDialog::vfunc_71()
 {
-    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsPerforming())
+    if (((class Unk_PiMgr*)GetInstrumentManager())->IsPerforming())
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_ask_close_while_playing_score"), 1, static_cast<IMessageListener*>(this), L"askClose");
         return 1;
@@ -549,13 +549,13 @@ void UIPlayInstrumentDialog::vfunc_72()
 {
     if (m_nEndTick != 0 && m_nEndTick < GetTickCountMs2())
     {
-        ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
+        ((class Unk_PiMgr*)GetInstrumentManager())->StopPerform();
         m_nStartTick = 0;
         m_nEndTick = 0;
     }
     FUN_14100da10();
     TickAutoPlay();
-    if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsEnsemble())
+    if (!((class Unk_PiMgr*)GetInstrumentManager())->IsEnsemble())
         return;
     if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return;
@@ -565,7 +565,7 @@ void UIPlayInstrumentDialog::vfunc_72()
         {
             int nNote = m_nOctave * 12 + 12 + it->second.first;
             m_pressed[it->first] = nNote;
-            ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d073b0(nNote);
+            ((class Unk_PiMgr*)GetInstrumentManager())->FUN_140d073b0(nNote);
             MS2Ptr<ASButton> spButton(it->second.second);
             spButton->Invoke("onForcePress");
         }
@@ -591,7 +591,7 @@ void UIPlayInstrumentDialog::vfunc_72()
         if (FUN_140a58540()->WasKeyReleasedGated(itDown->first))
         {
             unsigned long& nNote = itDown->second;
-            ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
+            ((class Unk_PiMgr*)GetInstrumentManager())->NoteOff(nNote);
             KeyButtonMap::iterator itBtn = m_keyButtons.find(itDown->first);
             if (itBtn != m_keyButtons.end())
             {
@@ -613,8 +613,8 @@ void UIPlayInstrumentDialog::vfunc_72()
         if (m_nIdleTick + 5000 < GetTickCountMs2())
         {
             m_nIdleTick = 0;
-            ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(false);
-            ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(true);
+            ((class Unk_PiMgr*)GetInstrumentManager())->SetEnsemble(false);
+            ((class Unk_PiMgr*)GetInstrumentManager())->SetEnsemble(true);
         }
     }
 }
@@ -653,21 +653,21 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     {
         m_bStop = 1;
         if (m_nMode == 3)
-            ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
+            ((class Unk_PiMgr*)GetInstrumentManager())->StopPerform();
         else if (m_nMode == 2)
         {
             if (m_nKind == 0)
-                ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
+                ((class Unk_PiMgr*)GetInstrumentManager())->StopPerform();
             else if (m_nKind == 1)
-                ((class Unk_PiMgr*)FUN_140c8dac0())->StopEnsemble();
+                ((class Unk_PiMgr*)GetInstrumentManager())->StopEnsemble();
         }
-        if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
+        if (!((class Unk_PiMgr*)GetInstrumentManager())->IsRemote())
         {
             if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
-            if ((unsigned)((class Unk_PiMgr*)FUN_140c8dac0())->GetVolume() > 0)
+            if ((unsigned)((class Unk_PiMgr*)GetInstrumentManager())->GetVolume() > 0)
                 FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
-            ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
+            ((class Unk_PiMgr*)GetInstrumentManager())->SetVolume(0);
         }
         m_nAutoPlay = 0;
         return 1;
@@ -697,7 +697,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nKey = data.PopInt();
             int nNote = m_nOctave * 12 + 11 + nKey;
-            ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d073b0(nNote);
+            ((class Unk_PiMgr*)GetInstrumentManager())->FUN_140d073b0(nNote);
             return 1;
         }
     }
@@ -708,7 +708,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             int nKey = data.PopInt();
             int nNote = m_nOctave * 12 + 11 + nKey;
-            ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
+            ((class Unk_PiMgr*)GetInstrumentManager())->NoteOff(nNote);
             return 1;
         }
     }
@@ -737,7 +737,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             if (spSlot)
             {
                 __int64 nUid = spSlot->GetItemUid();
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
                 if (spItem.get())
                 {
                     FUN_14100ca90(nIndex - 1, MS2Ptr<CItem>(spItem));
@@ -777,13 +777,13 @@ void UIPlayInstrumentDialog::FUN_14100c200(int nPage)
 {
     if (nPage == 0)
     {
-        ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(true);
-        ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
+        ((class Unk_PiMgr*)GetInstrumentManager())->SetEnsemble(true);
+        ((class Unk_PiMgr*)GetInstrumentManager())->StopPerform();
         FUN_14100e9a0(0);
     }
     else if (nPage == 1)
     {
-        ((class Unk_PiMgr*)FUN_140c8dac0())->SetEnsemble(false);
+        ((class Unk_PiMgr*)GetInstrumentManager())->SetEnsemble(false);
         for (int i = 0; i < 3; i++)
             FUN_14100ca90(i, MS2Ptr<CItem>(0));
         FUN_14100e9a0(1);
@@ -1026,13 +1026,13 @@ void UIPlayInstrumentDialog::TickAutoPlay()
         return;
     if (m_nKind == 1)
         return;
-    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsPerforming())
+    if (((class Unk_PiMgr*)GetInstrumentManager())->IsPerforming())
         return;
-    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsEnsemble())
+    if (((class Unk_PiMgr*)GetInstrumentManager())->IsEnsemble())
         return;
-    if (((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
+    if (((class Unk_PiMgr*)GetInstrumentManager())->IsRemote())
         return;
-    if (((class Unk_PiMgr*)FUN_140c8dac0())->CanPlayEnsemble() == 0)
+    if (((class Unk_PiMgr*)GetInstrumentManager())->CanPlayEnsemble() == 0)
         return;
     m_nAutoPlay = OnPlayNote();
 }
@@ -1246,11 +1246,11 @@ unsigned char UIPlayInstrumentDialog::FUN_14100f2e0()
     unsigned char nResult = 0;
     if (m_nKind == 0)
     {
-        nResult = ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d07960(m_spScores[m_nCurrent]->GetItemUid());
+        nResult = ((class Unk_PiMgr*)GetInstrumentManager())->FUN_140d07960(m_spScores[m_nCurrent]->GetItemUid());
     }
     else
     {
-        nResult = ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d07f00(m_spScores[m_nCurrent]->GetItemUid());
+        nResult = ((class Unk_PiMgr*)GetInstrumentManager())->FUN_140d07f00(m_spScores[m_nCurrent]->GetItemUid());
     }
     if (nResult != 0)
         FUN_14100e9a0(2);

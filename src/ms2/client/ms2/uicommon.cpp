@@ -267,9 +267,9 @@ MS2_CHECK_OFFSET(Unk_UcPCInfo, m_nField1c, 0x1c);
 class PC   // C3: unit-local view (fittingdollpc.h)
 {
 public:
-    __int64 FUN_141656ad0();
+    __int64 GetAccountId();
     int FUN_141659690();
-    class CConstructionGuideObject* FUN_1416625b0();
+    class CConstructionGuideObject* GetConstructionGuide();
 };
 
 
@@ -517,7 +517,7 @@ public:
 MS2_CHECK_OFFSET(Unk_UcGuildSvc, m_info, 8);
 __int64 FUN_141637b90(CPartyMember* p);
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-UIClubDialog* FUN_140b19090(int nUiId);
+UIClubDialog* FindClubDialog(int nUiId);
 struct Unk_UcProxyRef;
 Unk_UcProxyRef* FUN_140ac58f0(Unk_UcProxyRef* dst, const void* src);
 void FUN_1406c70a0(Unk_UcProxyRef* p);
@@ -550,7 +550,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
     }
     else if (nType == 3)
     {
-        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FUN_1413b6200(nId);
+        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FindMemberByCharacterId(nId);
         if (guild.get() != 0)
         {
             pPC->SendRequestMoveFieldMode2(0, 0, 0, reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nGuildId, CStringW(L""));
@@ -575,7 +575,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
         }
         else if (nType == 0xe)
         {
-            UIClubDialog* pClubDlg = FUN_140b19090(0x4f25);
+            UIClubDialog* pClubDlg = FindClubDialog(0x4f25);
             if (pClubDlg != 0)
             {
                 __int64 nClubId = pClubDlg->FUN_141904a70();
@@ -670,7 +670,7 @@ bool FUN_1418fe060()
     {
         if (CFieldData::FUN_140374410(nMapId) && ((class MyPC*)(class MyPC*)(pPC))->HasNoHome() == 0)
         {
-            if (((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == ((PC*)pPC)->FUN_141656ad0())
+            if (((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() == ((PC*)pPC)->GetAccountId())
                 return true;
         }
         if (DAT_143ab0248 == 2 && nMapId == 0x1e8673)
@@ -691,7 +691,7 @@ bool FUN_1418fe120()
         return false;
     if (pPC->FUN_14152e950() == 0)
         return false;
-    Unk_BmPtr<UserUGCMapInfo> stat(((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50());   // the house info
+    Unk_BmPtr<UserUGCMapInfo> stat(((class MyPC*)(class MyPC*)(pPC))->GetUGCMapInfo());   // the house info
     if (stat == 0)
         return false;
     return true;
@@ -973,7 +973,7 @@ bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId)
     case 1:
         return DAT_143ab2898 >= nAmount;
     case 2:
-        return g_143ab2a90.FUN_140a5ece0(nItemId, (int)nAmount) == 1;
+        return g_143ab2a90.HasItemCount(nItemId, (int)nAmount) == 1;
     case 3:
         return FUN_140d86260()->vfunc_40(nAmount);
     case 4:
@@ -1186,7 +1186,7 @@ int FUN_1418ffba0(MS2Ptr<CItemData> item)
         return 0;
     if (reinterpret_cast<Unk_UcItemData*>(item.operator->())->m_strType != L"UGCMapPackage")
         return 0;
-    Unk_UcPCInfo* pInfo = ((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50());
+    Unk_UcPCInfo* pInfo = ((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->GetUGCMapInfo());
     if (pInfo == 0)
         return 0;
     Unk_UGCGroup sal;
@@ -1483,7 +1483,7 @@ class UIRegionListDialog* FUN_1418f6130(int);   // C3: was FUN_1418f6130
 
 // ---- the game and combat controllers touched by the key blocks ----
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
-int FUN_1410af7a0(class PC*);   // C3: was FUN_1410af7a0
+int HasLift(class PC*);   // C3: was HasLift
 
 // @0x141900750
 // Fill the server-info AS object: server name and icon, and the region name and icon.
@@ -1608,9 +1608,9 @@ void UICommon::CMyPCKeyInputController::FUN_141901070(int nRelease, int nLayer)
             ((class PCBase*)(class PCBase*)(pPC))->RemoveStateFlags(0x20);
         else
             ((class PCBase*)(class PCBase*)(pPC))->AddStateFlags(0x20);
-        if (FUN_1410af7a0((class PC*)(pPC)) != 0)
+        if (HasLift((class PC*)(pPC)) != 0)
         {
-            PCBase* pMount = (PCBase*)((PC*)pPC)->FUN_1416625b0();
+            PCBase* pMount = (PCBase*)((PC*)pPC)->GetConstructionGuide();
             if (pMount != 0)
             {
                 if (nBlock != 0)
@@ -2039,7 +2039,7 @@ int FUN_141902970(MS2Ptr<UIDialog> pDlg)
 }
 
 int FUN_141a8a760();
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 
 // @0x141902a50
 // A modal dialog or message box blocks the player.
@@ -2049,7 +2049,7 @@ int FUN_141902a50()
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
         return 1;
     return 0;
@@ -2082,7 +2082,7 @@ int FUN_141902ac0(__int64 nId, int nType)
     }
     else if (nType == 3)
     {
-        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FUN_1413b6200(nId);
+        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FindMemberByCharacterId(nId);
         if (guild.get() != 0)
         {
             if (nX != reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nPlotX)

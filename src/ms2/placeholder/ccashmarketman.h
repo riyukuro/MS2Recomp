@@ -25,7 +25,7 @@ public:
     CCashMarketMan();                                       // 0x140b05e40
     virtual ~CCashMarketMan();                              // 0x140b05f20
 
-    ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& FUN_140b05c00() { return m_aInv; }   // 0x140b05c00
+    ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& GetInventoryProducts() { return m_aInv; }   // 0x140b05c00
     ATL::CAtlArray<MS2Ptr<CCashSaleProduct> >& FUN_14103d2c0();   // 0x14103d2c0 m_aSale (defined in uicashshopdialog.cpp)
     bool GetFlag() const;                                   // 0x140b06000 m_bFlag
     void OnCash(CInPacket& packet);                  // packet 0x6a dispatcher by the sub code
@@ -39,16 +39,16 @@ public:
     void SendCashMode6(int a, int b);                       // send 0x6a/6
     int FUN_140b06600(int nId);                             // result code of the sale product nId
     int FUN_140b06680(MS2Ptr<CCashSaleProduct> spSale);     // result code of the sale product (by value)
-    MS2Ptr<CCashSaleProduct> FUN_140b06750(int nId);        // find a sale product
-    MS2Ptr<CCashInventoryProduct> FUN_140b067d0(int nIndex);        // the inventory product at nIndex (null if outside)
-    MS2Ptr<CCashInventoryProduct> FUN_140b06870(int a, int b);      // the inventory product with m_n1c == a && m_n18 == b
+    MS2Ptr<CCashSaleProduct> FindSaleProduct(int nId);        // find a sale product
+    MS2Ptr<CCashInventoryProduct> GetInventoryProduct(int nIndex);        // the inventory product at nIndex (null if outside)
+    MS2Ptr<CCashInventoryProduct> FindInventoryProduct(int a, int b);      // the inventory product with m_n1c == a && m_n18 == b
     void FUN_140b06980(int nByte, int nResult);             // show the message of a result code
     void FUN_140b06bd0(CInPacket& packet);                  // 0xc9: the whole buy limit list
-    void FUN_140b06d70(CInPacket& packet);                  // 0xca: one buy limit row
-    int FUN_140b06ed0(int nProductId);                      // bought count of the product (0 when unknown)
+    void OnBuyLimitHistoryUpdate(CInPacket& packet);                  // 0xca: one buy limit row
+    int GetBuyLimitCount(int nProductId);                      // bought count of the product (0 when unknown)
     bool FUN_140b06f90(MS2Ptr<Unk_CashLimitRowA> sp);       // limit reached
     bool FUN_140b07060(MS2Ptr<Unk_CashLimitRowB> sp);       // limit reached
-    void FUN_140b07120(CInPacket& packet);                  // 0: the sale product list
+    void OnSaleProductList(CInPacket& packet);                  // 0: the sale product list
     void FUN_140b072d0(CInPacket& packet);                  // 1
     void FUN_140b07490(CInPacket& packet);                  // 2
     void FUN_140b07cb0(CInPacket& packet);                  // 3

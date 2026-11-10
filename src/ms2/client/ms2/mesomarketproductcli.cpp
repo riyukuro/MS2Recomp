@@ -46,8 +46,8 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int
 class CUIService;
 
 // The penalty (block) record a result code asks for.
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void FUN_140a2ff20(const BlockPtr& spBlock, int nKind, unsigned __int64 n);   // the blocked-action notice
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
+void ShowBlockNotice(const BlockPtr& spBlock, int nKind, unsigned __int64 n);   // the blocked-action notice
 
 extern __int64 DAT_143ab2898;                           // the highest meso a listing may ask
 
@@ -57,12 +57,12 @@ typedef __int64 i64;
 #define MESO_NOTICE(key) \
     { FUN_140d74390(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); }
 
-CStringW FUN_140d6e230(int nCurrency);
+CStringW GetCurrencyIconHtml(int nCurrency);
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax);
 CStringW FUN_140d70320(CStringW strKey, const float& fRate, const i64& nLow, const i64& nHigh);
 CInputStream& FUN_140d70110(CInputStream& in, MS2Ptr<CMesoMarketProductCli>& sp);
-CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map);
-void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr);
+CInputStream& ReadProductMap(CInputStream& in, CMesoMarketMan::ProductMap& map);
+void ReadProductArray(CInputStream& in, CMesoMarketMan::ProductArray& arr);
 
 // @0x140d6d8c0
 CMesoMarketProductCli::CMesoMarketProductCli()
@@ -118,7 +118,7 @@ void CMesoMarketProductCli::FillCommonRow(ASObj& row)
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
     row.FUN_1407cbb20("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
-                                                FUN_140d6e230(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6140)->Get()))));
+                                                GetCurrencyIconHtml(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6140)->Get()))));
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
     {
         row.FUN_1407cbb20("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
@@ -170,7 +170,7 @@ float Unk_MesoLimits::FUN_140d6e210()
 }
 
 // @0x140d6e230
-CStringW FUN_140d6e230(int nCurrency)
+CStringW GetCurrencyIconHtml(int nCurrency)
 {
     int nVSpace = 0;
     CStringW strSrc = FUN_1418fe870(nCurrency, &nVSpace, 0);
@@ -365,7 +365,7 @@ void CMesoMarketMan::OnMesoMarketCounts(CInPacket& packet)
 void CMesoMarketMan::OnMesoMarketOwnList(CInPacket& packet)
 {
     m_mapOwn.RemoveAll();
-    FUN_140d701a0(packet, m_mapOwn);
+    ReadProductMap(packet, m_mapOwn);
 }
 
 // @0x140d6ecf0
@@ -392,7 +392,7 @@ void CMesoMarketMan::OnMesoMarketMarketList(CInPacket& packet)
 {
     m_arrMarket.RemoveAll();
     m_mapMarket.RemoveAll();
-    FUN_140d70240(packet, m_arrMarket);
+    ReadProductArray(packet, m_arrMarket);
     for (unsigned i = 0; i < m_arrMarket.GetCount(); ++i)
         m_mapMarket.SetAt(m_arrMarket[i]->GetValue18(), m_arrMarket[i]);
 }
@@ -483,9 +483,9 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
     case 0x13:
     {
         int nKind = (nCode == 0x13) ? 0x27 : 0x28;
-        BlockPtr block = ((CBlockManager*)FUN_140a6a830())->FindBlockedAction(nKind);
+        BlockPtr block = ((CBlockManager*)GetBlockManager())->FindBlockedAction(nKind);
         if (block.get() != 0)
-            FUN_140a2ff20(block, nKind, 0);
+            ShowBlockNotice(block, nKind, 0);
     }
         break;
         break;      // the exe has a second jmp to the switch end here
@@ -540,7 +540,7 @@ CInputStream& FUN_140d70110(CInputStream& in, MS2Ptr<CMesoMarketProductCli>& sp)
 }
 
 // @0x140d701a0
-CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
+CInputStream& ReadProductMap(CInputStream& in, CMesoMarketMan::ProductMap& map)
 {
     unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
@@ -554,7 +554,7 @@ CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
 }
 
 // @0x140d70240
-void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr)
+void ReadProductArray(CInputStream& in, CMesoMarketMan::ProductArray& arr)
 {
     unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)

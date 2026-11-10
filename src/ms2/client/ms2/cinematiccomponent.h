@@ -59,8 +59,8 @@ public:
     virtual void vfunc_4(MS2Ptr<CCinematicContent> spContent);  // 4  0x1410830c0
     virtual void vfunc_5(ASObj& obj);                           // 5  0x14107cf90
 
-    void FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards, ASObj& obj);   // reward icons of the quest page
-    unsigned FUN_14107d760(ASObj& obj);                         // the open-talk reward block; nonzero when one was shown
+    void FillRewardItems(const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards, ASObj& obj);   // reward icons of the quest page
+    unsigned FillTalkReward(ASObj& obj);                         // the open-talk reward block; nonzero when one was shown
     CStringW FUN_14107dfa0(int nStringId);                      // button text with the key names filled in
 
     UITalkCinematic* m_pOwner;                                  // +0x18

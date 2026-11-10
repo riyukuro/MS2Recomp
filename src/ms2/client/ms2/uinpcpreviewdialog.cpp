@@ -128,7 +128,7 @@ class CPhysXHelper   // physxhelper.h needs NOMINMAX, which this unit's headers 
 public:
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nMask);
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // the physics service getter (calls cast back)
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // the physics service getter (calls cast back)
 int FUN_1404ad1f0(void* pMap, unsigned nKey, CStringW* pValue);     // CAtlMap::SetAt of the filter result
 extern int DAT_143ab2914;                               // the ui level: below 0x32 the panel does not react
 
@@ -230,7 +230,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (pActor == 0)
         return;
     std::vector<CString> names;
-    pActor->GetAnimMgr()->FUN_14099e800(&names);
+    pActor->GetAnimMgr()->GetAnimationNames(&names);
     if (names.size() == 0)
         return;
     m_bPending = 0;
@@ -277,7 +277,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
             unsigned int nId = found.GetKeyAt(pos);
             CStringW strName = found.GetValueAt(pos);
             row.FUN_1407cbb20("label", strName);
-            row.FUN_1409c0d20("id", nId);
+            row.SetMemberUInt("id", nId);
             spList->AddItem(row);
         }
         spList->vfunc_24(1);
@@ -590,25 +590,25 @@ void UINpcPreviewDialog::FUN_141a713a0()
         return;
     }
     efd::SmartPointer<CNpc> spNpc = EE_NEW CNpc;
-    spNpc->FUN_14123c5a0(999999);
+    spNpc->SetObjectId(999999);
     spNpc->vfunc_19(kPos);
     spNpc->vfunc_21(kDir);
     if (spNpc->vfunc_124(m_nNpcId) == 0)
         return;
     kPos.z += 100.0f;
     efd::Point3 kHit;
-    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos), reinterpret_cast<Vector3&>(kHit), 0, 0.0f, 0, 0) == 0)
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos), reinterpret_cast<Vector3&>(kHit), 0, 0.0f, 0, 0) == 0)
         return;
     kHit.z += 1.0f;
     spNpc->vfunc_19(kHit);
     for (int i = 0; i < 0x23; i++) {
         spNpc->FUN_1416708a0(i, 100);
-        spNpc->FUN_141670700(i, 100);
+        spNpc->SetCurrentStat(i, 100);
     }
     spNpc->vfunc_59(1, 0, 0, 0);
     if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bbb1e0(spNpc, 0, 1) == 0)
         return;
-    m_nActorOid = spNpc->FUN_14123c580();
+    m_nActorOid = spNpc->GetObjectId();
 }
 
 // @0x141a717c0

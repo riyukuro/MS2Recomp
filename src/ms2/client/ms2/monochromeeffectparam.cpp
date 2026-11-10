@@ -25,7 +25,7 @@ public:
 };
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5350;                                             // saturation constant name
 
 // @0x1414876d0
@@ -83,7 +83,7 @@ void MonochromeEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fSaturation = (m_fSaturationMax - m_fSaturationMin) * fT + m_fSaturationMin;
-    FUN_1409a5770(*(class NiFixedString*)&(DAT_143ae5350), &fSaturation, 1);
+    UpdateGlobalShaderConstantFloats(*(class NiFixedString*)&(DAT_143ae5350), &fSaturation, 1);
 }
 MS2_REPLACE_METHOD(0x1414878c0, MonochromeEffect, vfunc_7, 138, 0xD83FE52B);
 

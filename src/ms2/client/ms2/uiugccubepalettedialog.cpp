@@ -384,9 +384,9 @@ class CItemDataTable;
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class UGCCubeCategoryTable;
 class CGameOption;
-class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
+class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 class CMouseController;
-class UISwfEntityManager* FUN_140b632f0();   // C3: was FUN_140b632f0
+class UISwfEntityManager* GetUISwfEntityManager();   // C3: was GetUISwfEntityManager
 class UISwfEntityManager   // C3: member view
 {
 public:
@@ -550,8 +550,8 @@ public:
     int IsInCubeMode();
     int IsCubeMode1();
     int FUN_141659690();
-    __int64 FUN_141656ad0();
-    class CConstructionGuideObject* FUN_1416625b0();
+    __int64 GetAccountId();
+    class CConstructionGuideObject* GetConstructionGuide();
 };
 class MyPC   // C3: member view for the former free stand-ins
 {
@@ -579,7 +579,7 @@ public:
 struct Unk_ItemEvtMgr
 {
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -741,7 +741,7 @@ UIUGCCubePaletteDialog::UIUGCCubePaletteDialog()
 // @0x140eea200
 UIUGCCubePaletteDialog::~UIUGCCubePaletteDialog()
 {
-    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x140eea300
@@ -802,7 +802,7 @@ int UIUGCCubePaletteDialog::vfunc_il1()
 void UIUGCCubePaletteDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_focus.FUN_140ee9d50();
     m_timer.FUN_140ee9f00();
     m_filter = Unk_CubePaletteFilter();
@@ -827,7 +827,7 @@ void UIUGCCubePaletteDialog::OnLoadComplete()
     FUN_140eeca50();
     FUN_140eefc50(1);
     ((class Unk_SndMgr*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
-    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x140eea720
@@ -898,9 +898,9 @@ int UIUGCCubePaletteDialog::vfunc_13()
         if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116d9c0(0x1c, 0, 0) != 0)
         {
             // Enter in the search box
-            if (((void*)FUN_140b632f0()) != 0)
+            if (((void*)GetUISwfEntityManager()) != 0)
             {
-                if (FUN_140b632f0()->FUN_1422d4e20(m_20) == 0)
+                if (GetUISwfEntityManager()->FUN_1422d4e20(m_20) == 0)
                     return 0;
             }
             ASDialog* pDlg = dynamic_cast<ASDialog*>(m_30.get());
@@ -930,9 +930,9 @@ int UIUGCCubePaletteDialog::vfunc_13()
         else if (((class CInputKeyHandler*)((class Unk_KeySvc*)FUN_14025e7c0()))->FUN_14116d9c0(0xe, 0, 0) != 0)
         {
             // Escape: leave the search box
-            if (((void*)FUN_140b632f0()) != 0)
+            if (((void*)GetUISwfEntityManager()) != 0)
             {
-                if (FUN_140b632f0()->FUN_1422d4e20(m_20) == 0)
+                if (GetUISwfEntityManager()->FUN_1422d4e20(m_20) == 0)
                     return 0;
             }
             ASDialog* pDlg = dynamic_cast<ASDialog*>(m_30.get());
@@ -1104,7 +1104,7 @@ void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
             if (tooltip.FUN_1409e0d40(spItem.get()) != 0)
             {
                 tooltip.SetTooltipAlign(7);
-                tooltip.FUN_1409db7b0(spItem);
+                tooltip.SetEnablePreview(spItem);
                 *pRetVal = tooltip.FUN_1422bb870();
             }
         }
@@ -1216,8 +1216,8 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
                 MS2Ptr<CUgcItemLook> spLook = spInfo->look;
                 if (spLook.get() != 0)   // C3: the exe folds the second get onto MS2Ptr<UGCKeyMode>'s
                     spItem->SetUgcLook(reinterpret_cast<CUgcItemLook*>(reinterpret_cast<MS2Ptr<UGCKeyMode>*>(&spLook)->get()));
-                if (((class ItemPreviewMgr*)(void*)(((void*)FUN_1409bb9e0())))->IsHudOn() != 0)
-                    ((class ItemPreviewMgr*)(void*)(((void*)FUN_1409bb9e0())))->OpenPreview(spItem, 0);
+                if (((class ItemPreviewMgr*)(void*)(((void*)GetItemPreviewMgr())))->IsHudOn() != 0)
+                    ((class ItemPreviewMgr*)(void*)(((void*)GetItemPreviewMgr())))->OpenPreview(spItem, 0);
             }
         }
     }
@@ -1411,7 +1411,7 @@ void UIUGCCubePaletteDialog::FUN_140eecfe0()
         {
             ASObj obj(2);
             obj.FUN_1407cbb20((const char*)s_label, CStringW(spType.operator->()->m_strName));
-            obj.FUN_1409c0d20("categoryID", spType.operator->()->m_nCategory);
+            obj.SetMemberUInt("categoryID", spType.operator->()->m_nCategory);
             obj.FUN_140ef0000("filter", spType.operator->()->m_nFilter);
             ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->AddItem(*(ASObj const*)&static_cast<ASObj&>(obj));
         }
@@ -1489,7 +1489,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
         if (spMeta == (ItemHousing*)0)
             continue;
         ASObj obj(2);
-        obj.FUN_1409c0d20((const char*)s_itemID, spCube->FUN_140def5a0());
+        obj.SetMemberUInt((const char*)s_itemID, spCube->FUN_140def5a0());
         obj.FUN_1407cbb20((const char*)s_iconPath, spCube->FUN_140def880());
         obj.FUN_1407cbbe0((const char*)s_itemLock, spCube->FUN_140def420());
         __int64 nCur = spCube->FUN_140def620();
@@ -1594,7 +1594,7 @@ void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCate
             {
                 ASObj obj(2);
                 obj.FUN_1407cbb20((const char*)s_label, CStringW(spSub.operator->()->m_strName));
-                obj.FUN_1409c0d20("categorylist", spSub.operator->()->m_nCategory);
+                obj.SetMemberUInt("categorylist", spSub.operator->()->m_nCategory);
                 ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->AddItemRow(obj);
                 if (spFirst == 0)
                     Unk_CubePtrAccess::FUN_140ef0500(&spFirst, &spSub);
@@ -1740,7 +1740,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
                 nMax = spCube->FUN_140defed0();
             }
             ASObj obj(2);
-            obj.FUN_1409c0d20((const char*)s_itemID, spCube->FUN_140def5a0());
+            obj.SetMemberUInt((const char*)s_itemID, spCube->FUN_140def5a0());
             obj.FUN_1407cbb20((const char*)s_itemName, spCube->FUN_140def710());
             obj.FUN_1407cbb20((const char*)s_iconPath, spCube->FUN_140def880());
             obj.FUN_1407cbbe0((const char*)s_itemLock, spCube->FUN_140def420());
@@ -1750,14 +1750,14 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
                 {
                     if (nCount > 0)
                     {
-                        obj.FUN_1409c0d20((const char*)s_itemCount, nMax);
-                        obj.FUN_1409c0d20((const char*)s_itemMaxCount, nCount);
+                        obj.SetMemberUInt((const char*)s_itemCount, nMax);
+                        obj.SetMemberUInt((const char*)s_itemMaxCount, nCount);
                     }
                 }
                 else
                 {
-                    obj.FUN_1409c0d20((const char*)s_itemCount, nMax);
-                    obj.FUN_1409c0d20((const char*)s_itemMaxCount, nCount);
+                    obj.SetMemberUInt((const char*)s_itemCount, nMax);
+                    obj.SetMemberUInt((const char*)s_itemMaxCount, nCount);
                 }
             }
             if (spMeta->FUN_140549470(spCube->FUN_140def5a0(), spCube->FUN_140def5f0(), spCube->FUN_140defba0()) != 0)
@@ -1971,7 +1971,7 @@ void UGCKeyMode1::vfunc_1()
         return;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0)
         return;
-    Unk_CubePlayer* pPlayer = ((class Unk_CubePlayer*)((class PC*)(void*)(pWorld))->FUN_1416625b0());
+    Unk_CubePlayer* pPlayer = ((class Unk_CubePlayer*)((class PC*)(void*)(pWorld))->GetConstructionGuide());
     if (pPlayer == 0)
         return;
     TSingleton<CUIService>::GetInstance()->FUN_141adbdc0(0);
@@ -2072,7 +2072,7 @@ void UGCKeyMode2::vfunc_1()
         return;
     if (((class PC*)(void*)(pWorld))->IsInCubeMode() == 0)
         return;
-    Unk_CubePlayer* pPlayer = ((class Unk_CubePlayer*)((class PC*)(void*)(pWorld))->FUN_1416625b0());
+    Unk_CubePlayer* pPlayer = ((class Unk_CubePlayer*)((class PC*)(void*)(pWorld))->GetConstructionGuide());
     if (pPlayer == 0)
         return;
     TSingleton<CUIService>::GetInstance()->FUN_141adbdc0(1);
@@ -2303,8 +2303,8 @@ void FUN_140ef37d0()
     pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
-    ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410aad50();
-    FUN_140df1e90(0x65, ((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad610());
+    ((class Unk_PCCubeCraft*)(void*)(pEditor))->ConfirmPlacement();
+    FUN_140df1e90(0x65, ((class Unk_PCCubeCraft*)(void*)(pEditor))->GetItemId());
 }
 
 // @0x140ef3840 (remove the cube under the editor cursor)
@@ -2332,7 +2332,7 @@ void FUN_140ef3840()
     {
         MS2Ptr<Cube> spCube(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->GetCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()));
         void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->GetOwnerId(spCube.get()->field50, spCube.get()->field54);
-        if ((void*)((class PC*)pWorld)->FUN_141656ad0() == pLayer)
+        if ((void*)((class PC*)pWorld)->GetAccountId() == pLayer)
         {
             if (FUN_1408b5570(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
             {
@@ -2451,7 +2451,7 @@ void FUN_140ef4070(int nIndex)
     {
         if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad640() != spSel->instanceId)
             ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
-        else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad610() != spSel->itemId)
+        else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetItemId() != spSel->itemId)
             ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
     }
     else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetMode() != 1)
@@ -2477,7 +2477,7 @@ void FUN_140ef41b0(int nIndex)
     {
         if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad640() != spSel->instanceId)
             ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
-        else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410ad610() != spSel->itemId)
+        else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetItemId() != spSel->itemId)
             ((class Unk_PCCubeCraft*)(void*)(pEditor))->RequestCube(spSel.get());
     }
     else if (((class Unk_PCCubeCraft*)(void*)(pEditor))->GetMode() != 1)

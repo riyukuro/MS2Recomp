@@ -333,6 +333,6 @@ void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
 {
     ((NiTimeController*)pCtrl)->SetAnimType(NiTimeController::APP_INIT);
-    ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
+    ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime());
     ((class NiTimeController*)(void*)(pCtrl))->SetPhase(pArg->m_fValue);
 }

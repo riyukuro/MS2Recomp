@@ -27,7 +27,7 @@ int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the c
 
 
 // @0x140b1db00
-CostumeSetTable* FUN_140b1db00()
+CostumeSetTable* GetCostumeSetTable()
 {
     return TSingleton<CostumeSetTable>::s_instance;
 }
@@ -45,7 +45,7 @@ CostumeManager::~CostumeManager()
 // @0x140b1d360
 void CostumeManager::FUN_140b1d360(int nCostumeId)
 {
-    MS2SvrPtr<CostumeSet> spRow = FUN_140b1db00()->GetSet(nCostumeId, ((class PC*)(m_pOwner))->FUN_141658e60());
+    MS2SvrPtr<CostumeSet> spRow = GetCostumeSetTable()->GetSet(nCostumeId, ((class PC*)(m_pOwner))->GetGender());
     if (spRow == 0)
         return;
     if (m_nCostumeId != 0)
@@ -61,7 +61,7 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->SetItemUid(FUN_14028d0e0());
-        spItem->SetObjectId(m_pOwner->FUN_14123c580());
+        spItem->SetObjectId(m_pOwner->GetObjectId());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
@@ -76,7 +76,7 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             return;
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        spItem->SetObjectId(m_pOwner->FUN_14123c580());
+        spItem->SetObjectId(m_pOwner->GetObjectId());
         spItem->SetItemUid(FUN_14028d0e0());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);

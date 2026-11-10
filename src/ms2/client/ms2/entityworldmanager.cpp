@@ -149,7 +149,7 @@ class MS2SceneService   // C3: member view for the former free stand-ins
 public:
     void CacheNamedScenes();
 };
-bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
+bool GetBlockInfo(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 egf::g_bapiContext
@@ -163,7 +163,7 @@ class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 public:
     template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
 };
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140de8bd0(egf::Entity*, egf::PropertyID, efd::AssetID*);
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
@@ -185,9 +185,9 @@ template<class T> void Unk_WorldLog(CLogString* log, int level, int category,
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(EntityWorldManager);
 #ifndef MS2_HOOK_DLL
 // @0x1400e7ed0
-EE_HANDLER_WRAP(EntityWorldManager, FUN_1411cfd40, egf::EntityChangeMessage, 8195);
+EE_HANDLER_WRAP(EntityWorldManager, OnEntityAdded, egf::EntityChangeMessage, 8195);
 // @0x1400e7f30
-EE_HANDLER_WRAP(EntityWorldManager, FUN_1411cffa0, egf::EntityChangeMessage, 8197);
+EE_HANDLER_WRAP(EntityWorldManager, OnEntityRemoved, egf::EntityChangeMessage, 8197);
 #endif
 // @0x1400e7f90
 static CString s_entitySkill("skill");
@@ -209,9 +209,9 @@ EntityWorldManager::EntityWorldManager() : currentMap(0), loaded(true), lastLoad
 // @0x1411ce320
 EntityWorldManager::~EntityWorldManager() {}
 // @0x1411ce4c0
-Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce4c0() { return worlds[currentMap].allEntities.begin(); }
+Unk_WorldEntityMap::iterator EntityWorldManager::BeginAllEntities() { return worlds[currentMap].allEntities.begin(); }
 // @0x1411ce510
-bool EntityWorldManager::FUN_1411ce510(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
+bool EntityWorldManager::NextAllEntity(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
     if (worlds[currentMap].allEntities.end() != it) {
         entity = it->second;
         ++it;
@@ -221,9 +221,9 @@ bool EntityWorldManager::FUN_1411ce510(Unk_WorldEntityMap::iterator& it, egf::En
     return false;
 }
 // @0x1411ce5a0
-Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce5a0() { return worlds[currentMap].loadedEntities.begin(); }
+Unk_WorldEntityMap::iterator EntityWorldManager::BeginLoadedEntities() { return worlds[currentMap].loadedEntities.begin(); }
 // @0x1411ce5f0
-bool EntityWorldManager::FUN_1411ce5f0(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
+bool EntityWorldManager::NextLoadedEntity(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
     if (worlds[currentMap].loadedEntities.end() != it) {
         entity = it->second;
         ++it;
@@ -233,9 +233,9 @@ bool EntityWorldManager::FUN_1411ce5f0(Unk_WorldEntityMap::iterator& it, egf::En
     return false;
 }
 // @0x1411ce680
-Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce680() { return worlds[currentMap].createdEntities.begin(); }
+Unk_WorldEntityMap::iterator EntityWorldManager::BeginCreatedEntities() { return worlds[currentMap].createdEntities.begin(); }
 // @0x1411ce6d0
-bool EntityWorldManager::FUN_1411ce6d0(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
+bool EntityWorldManager::NextCreatedEntity(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
     if (worlds[currentMap].createdEntities.end() != it) {
         entity = it->second;
         ++it;
@@ -246,7 +246,7 @@ bool EntityWorldManager::FUN_1411ce6d0(Unk_WorldEntityMap::iterator& it, egf::En
 }
 // @0x1411ce760
 egf::EntityID EntityWorldManager::FUN_1411ce760(const efd::utf8string& name, efd::AssetID& asset, bool addToWorld) {
-    return static_cast<MS2EntityManagerService*>(entities.data())->FUN_1414b4b00(name, asset, addToWorld);
+    return static_cast<MS2EntityManagerService*>(entities.data())->CreateEntity(name, asset, addToWorld);
 }
 // Not hooked: constructs an AssetID and may create a world record with DLL-local RTTI.
 // @0x1411ce7c0
@@ -261,9 +261,9 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
         ((egf::Entity*)entity)->SetPropertyValue<efd::Point3>(0x68c7c29d, rotation);
         static_cast<Unk_CachedEntity*>((egf::Entity*)entity)->SetPropertyValue<float>(0x2d7cad2d, scale);
         bool enable = enabled == 0 ? true : false;
-        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x2a7fd9f4, enable);
+        SetCachedBoolProperty((class Unk_CachedEntity*)((egf::Entity*)entity), 0x2a7fd9f4, enable);
         bool show = visible != 0 ? true : false;
-        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x7e5f4195, show);
+        SetCachedBoolProperty((class Unk_CachedEntity*)((egf::Entity*)entity), 0x7e5f4195, show);
         if (assetName.length() != 0) {
             efd::AssetID asset;
             {
@@ -305,7 +305,7 @@ egf::EntityPtr EntityWorldManager::FUN_1411cedd0(egf::FlatModelID modelID, egf::
     return models->FactoryEntity(modelID, id, master);
 }
 // @0x1411cef50
-egf::EntityID EntityWorldManager::FUN_1411cef50(const efd::utf8string& name, const efd::Category& category,
+egf::EntityID EntityWorldManager::CreateEntity(const efd::utf8string& name, const efd::Category& category,
     efd::ParameterList* creationArgs, efd::ParameterList* initialProps, egf::EntityID requested, bool master) {
     egf::EntityID id = entities->CreateEntity(name, category, creationArgs, initialProps, requested, master);
     egf::Entity* entity = entities->LookupEntity(id);
@@ -314,7 +314,7 @@ egf::EntityID EntityWorldManager::FUN_1411cef50(const efd::utf8string& name, con
     return id;
 }
 // @0x1411cf0b0
-bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& asset, bool& actor) {
+bool EntityWorldManager::GetModelAsset(efd::utf8string modelName, efd::AssetID& asset, bool& actor) {
     actor = false;
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     egf::EntityPtr entity = FactoryEntity(modelName, id, true);
@@ -333,17 +333,17 @@ bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& 
     return false;
 }
 // @0x1411cf2d0
-bool EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* args) {
+bool EntityWorldManager::AddEntity(egf::Entity* entity, efd::ParameterList* args) {
     worlds[currentMap].createdEntities[entity->GetEntityID()] = entity;
     worlds[currentMap].allEntities[entity->GetEntityID()] = entity;
     return entities->AddEntity(entity, args);
 }
 // @0x1411cf3d0
- egf::EntityPtr EntityWorldManager::FUN_1411cf3d0(const egf::EntityID& id) {
+ egf::EntityPtr EntityWorldManager::LookupEntity(const egf::EntityID& id) {
     return egf::EntityPtr(entities->LookupEntity(id));
 }
 // @0x1411cf440
- egf::Entity* EntityWorldManager::FUN_1411cf440(const egf::EntityID& id) {
+ egf::Entity* EntityWorldManager::FindEntity(const egf::EntityID& id) {
     egf::EntityID kInvalid(0ull);
     if (id != kInvalid) {
         auto it = worlds[currentMap].allEntities.find(id);
@@ -354,17 +354,17 @@ bool EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* 
     return nullptr;
 }
 // @0x1411cf540
-void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { CMainSystem::DestroyEntityById(id); }
+void EntityWorldManager::DestroyEntityById(egf::EntityID id) { CMainSystem::DestroyEntityById(id); }
 // @0x1411cf570
-void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { CMainSystem::DestroyEntity(entity); }
+void EntityWorldManager::DestroyEntity(egf::Entity* entity) { CMainSystem::DestroyEntity(entity); }
 // @0x1411cf5a0
-void EntityWorldManager::FUN_1411cf5a0(egf::EntityID id, egf::Entity* entity) {
+void EntityWorldManager::AddLoadedEntity(egf::EntityID id, egf::Entity* entity) {
     worlds[currentMap].loadedEntities[id] = entity;
     worlds[currentMap].allEntities[id] = entity;
 }
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf630
-bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& block) {
+bool EntityWorldManager::LoadMap(int map, const egf::BlockIdentification& block) {
     loaded = false;
     worlds[currentMap].unloaded = true;
     worlds[currentMap].loadedEntities.clear();
@@ -372,14 +372,14 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     worlds[currentMap].createdEntities.clear();
     currentMap = map;
     currentBlock = worlds[reinterpret_cast<const unsigned&>(map)].block = block;
-    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = false;
     worlds[reinterpret_cast<const unsigned&>(map)].loadedEntities.clear();
     worlds[reinterpret_cast<const unsigned&>(map)].allEntities.clear();
     worlds[reinterpret_cast<const unsigned&>(map)].createdEntities.clear();
     egfPhysX::SceneService* pScene = m_pServiceManager->GetSystemServiceAs<egfPhysX::SceneService>();
     ((class MS2SceneService*)(void*)(pScene))->CacheNamedScenes();
-    loader->FUN_1411d8980(true);
+    loader->SetLoading(true);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
         egf::EntityLoadRequest::elo_Load, block, s_entityWorldChannel, 0,
         egf::BlockLoadParameters::GetDefaultAutoEnterWorld()));
@@ -388,12 +388,12 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
 }
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf980
-void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& block) {
-    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+void EntityWorldManager::UnloadMap(int map, const egf::BlockIdentification& block) {
+    worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
     efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
-    if ((HardwareInstancingService*)instancing != nullptr) instancing.operator->()->FUN_1413d73a0(map);
-    loader->FUN_1411d8980(false);
+    if ((HardwareInstancingService*)instancing != nullptr) instancing.operator->()->ClearMap(map);
+    loader->SetLoading(false);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
         egf::EntityLoadRequest::elo_Unload, block, s_entityWorldChannel, 0,
         egf::BlockLoadParameters::GetDefaultAutoEnterWorld()));
@@ -401,10 +401,10 @@ void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& 
 }
 // @0x1411cfb80
 bool EntityWorldManager::FUN_1411cfb80(unsigned* a, int* b) {
-    return FUN_1414b3f50(loader, currentBlock, a, b);
+    return GetBlockInfo(loader, currentBlock, a, b);
 }
 // @0x1411cfbe0
-int EntityWorldManager::FUN_1411cfbe0() {
+int EntityWorldManager::GetLoadedMapCount() {
     int count = 0;
     for (auto it = worlds.begin(); it != worlds.end(); ++it) {
         count += it->second.unloaded ? 0 : 1;
@@ -421,12 +421,12 @@ bool FUN_1411cfc90(bool frozen, void*) { if (!frozen) s_entityFreeze = false; re
 bool FUN_1411cfcc0(void*) { s_entityFreeze = true; return true; }
 #endif
 // @0x1411cfce0
-void EntityWorldManager::FUN_1411cfce0() {
+void EntityWorldManager::WriteCrashLog() {
     ((class CCrashManager*)(class Unk_EntityDebugLog*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2b0("\n--- EntityWorldManager Log---");
-    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2f0("LoadedMapCount %d", FUN_1411cfbe0());
+    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2f0("LoadedMapCount %d", GetLoadedMapCount());
 }
 // @0x1411cfd40
-void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
+void EntityWorldManager::OnEntityAdded(const egf::EntityChangeMessage* message, efd::Category) {
     egf::EntityPtr entity(message->GetEntity());
     egf::EntityID id(entity->GetEntityID());
     efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
@@ -437,7 +437,7 @@ void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, 
     }
 }
 // @0x1411cffa0
-void EntityWorldManager::FUN_1411cffa0(const egf::EntityChangeMessage* message, efd::Category) {
+void EntityWorldManager::OnEntityRemoved(const egf::EntityChangeMessage* message, efd::Category) {
     egf::Entity* entity = message->GetEntity();
     if (entity != nullptr) {
         Unk_WorldEntityMap::iterator it;
@@ -457,7 +457,7 @@ void EntityWorldManager::FUN_1411cffa0(const egf::EntityChangeMessage* message, 
 }
 // @0x1411d02c0
 void EntityWorldManager::vfunc_1(int) {
-    lastLoadTime = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    lastLoadTime = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     loaded = true;
 }
 // @0x1411d0300
@@ -504,7 +504,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);
     }
-    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &EntityWorldManager::FUN_1411cfce0));
+    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &EntityWorldManager::WriteCrashLog));
     return efd::AsyncResult_Complete;
 }
 // @0x1411d08e0
@@ -522,13 +522,13 @@ const char* EntityWorldManager::GetDisplayName() const { return "EntityWorldMana
 // @0x1411d0a60
 void EntityWorldManager::FUN_1411d0a60(unsigned map, int group) { if (map != 0) mapGroups[map].insert(reinterpret_cast<const unsigned&>(group)); }
 // @0x1411d0ab0
-unsigned EntityWorldManager::FUN_1411d0ab0() { return worlds[currentMap].loadedEntities.size(); }
+unsigned EntityWorldManager::GetLoadedEntityCount() { return worlds[currentMap].loadedEntities.size(); }
 // @0x1411d0af0
-unsigned EntityWorldManager::FUN_1411d0af0() { return worlds[currentMap].createdEntities.size(); }
+unsigned EntityWorldManager::GetCreatedEntityCount() { return worlds[currentMap].createdEntities.size(); }
 // @0x1411d0b30
-efd::UInt32 EntityWorldManager::FUN_1411d0b30() { return entities->GetCount(); }
+efd::UInt32 EntityWorldManager::GetEntityCount() { return entities->GetCount(); }
 // @0x1411d0b60 (the exe spills an unused first argument)
-void FUN_1411d0b60(void* /*pUnused*/) {
+void RemoveUnusedAssets(void* /*pUnused*/) {
     auto it = TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.begin();
     while (it != TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.end()) {
         if (reinterpret_cast<MS2AnimationService*>(FUN_141b6f910())->RemoveUnusedAsset(it->GetURN())) {
@@ -540,7 +540,7 @@ void FUN_1411d0b60(void* /*pUnused*/) {
 }
 // @0x1411d6230
 Unk_EntityWorldRecord::Unk_EntityWorldRecord() {
-    time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     unloaded = true;
 }
 
@@ -549,17 +549,17 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // MS2-RANGE: 0x142cacf00-0x142cacfa0 .text$yd
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x1411ce510, EntityWorldManager, FUN_1411ce510, 137, 0x914735AB);
-MS2_REPLACE_METHOD(0x1411ce5f0, EntityWorldManager, FUN_1411ce5f0, 137, 0xA0DF957E);
-MS2_REPLACE_METHOD(0x1411ce6d0, EntityWorldManager, FUN_1411ce6d0, 137, 0x28F920FD);
-MS2_REPLACE_METHOD(0x1411cf2d0, EntityWorldManager, FUN_1411cf2d0, 235, 0x598D80F1);
-MS2_REPLACE_METHOD(0x1411cf440, EntityWorldManager, FUN_1411cf440, 238, 0x7E62F595);
-MS2_REPLACE_METHOD(0x1411cf540, EntityWorldManager, FUN_1411cf540, 29, 0xBFC13A2A);
-MS2_REPLACE_METHOD(0x1411cf570, EntityWorldManager, FUN_1411cf570, 29, 0x5373787F);
-MS2_REPLACE_METHOD(0x1411cf5a0, EntityWorldManager, FUN_1411cf5a0, 126, 0xDCCD1250);
+MS2_REPLACE_METHOD(0x1411ce510, EntityWorldManager, NextAllEntity, 137, 0x914735AB);
+MS2_REPLACE_METHOD(0x1411ce5f0, EntityWorldManager, NextLoadedEntity, 137, 0xA0DF957E);
+MS2_REPLACE_METHOD(0x1411ce6d0, EntityWorldManager, NextCreatedEntity, 137, 0x28F920FD);
+MS2_REPLACE_METHOD(0x1411cf2d0, EntityWorldManager, AddEntity, 235, 0x598D80F1);
+MS2_REPLACE_METHOD(0x1411cf440, EntityWorldManager, FindEntity, 238, 0x7E62F595);
+MS2_REPLACE_METHOD(0x1411cf540, EntityWorldManager, DestroyEntityById, 29, 0xBFC13A2A);
+MS2_REPLACE_METHOD(0x1411cf570, EntityWorldManager, DestroyEntity, 29, 0x5373787F);
+MS2_REPLACE_METHOD(0x1411cf5a0, EntityWorldManager, AddLoadedEntity, 126, 0xDCCD1250);
 MS2_REPLACE_METHOD(0x1411cfb80, EntityWorldManager, FUN_1411cfb80, 81, 0x0F002E8C);
-MS2_REPLACE_METHOD(0x1411cfbe0, EntityWorldManager, FUN_1411cfbe0, 156, 0x9E5EDDCF);
-MS2_REPLACE_METHOD(0x1411cfce0, EntityWorldManager, FUN_1411cfce0, 75, 0x12220267);
+MS2_REPLACE_METHOD(0x1411cfbe0, EntityWorldManager, GetLoadedMapCount, 156, 0x9E5EDDCF);
+MS2_REPLACE_METHOD(0x1411cfce0, EntityWorldManager, WriteCrashLog, 75, 0x12220267);
 MS2_REPLACE_METHOD_VIA(0x1411d02c0, EntityWorldManager, IWorldServiceCallback, vfunc_1, 50, 0xAF6B0458);
 MS2_REPLACE_METHOD_VIA(0x1411d0300, EntityWorldManager, IWorldServiceCallback, vfunc_3, 245, 0xBFAD7532);
 MS2_REPLACE_METHOD_VIA(0x1411d0400, EntityWorldManager, IWorldServiceCallback, vfunc_4, 10, 0x96F6F902);
@@ -568,8 +568,8 @@ MS2_REPLACE_METHOD(0x1411d08e0, EntityWorldManager, OnTick, 11, 0x30025ED0);
 MS2_REPLACE_METHOD(0x1411d0900, EntityWorldManager, OnShutdown, 309, 0x4615E54F);
 MS2_REPLACE_METHOD(0x1411d0a40, EntityWorldManager, GetDisplayName, 13, 0x9234EB31);
 MS2_REPLACE_METHOD(0x1411d0a60, EntityWorldManager, FUN_1411d0a60, 72, 0xB4FFA8F6);
-MS2_REPLACE_METHOD(0x1411d0ab0, EntityWorldManager, FUN_1411d0ab0, 52, 0x8539A88D);
-MS2_REPLACE_METHOD(0x1411d0af0, EntityWorldManager, FUN_1411d0af0, 52, 0x5489282E);
-MS2_REPLACE_METHOD(0x1411d0b30, EntityWorldManager, FUN_1411d0b30, 41, 0xA11CE50E);
-MS2_REPLACE(0x1411d0b60, FUN_1411d0b60, 250, 0x7104AF24);
+MS2_REPLACE_METHOD(0x1411d0ab0, EntityWorldManager, GetLoadedEntityCount, 52, 0x8539A88D);
+MS2_REPLACE_METHOD(0x1411d0af0, EntityWorldManager, GetCreatedEntityCount, 52, 0x5489282E);
+MS2_REPLACE_METHOD(0x1411d0b30, EntityWorldManager, GetEntityCount, 41, 0xA11CE50E);
+MS2_REPLACE(0x1411d0b60, RemoveUnusedAssets, 250, 0x7104AF24);
 

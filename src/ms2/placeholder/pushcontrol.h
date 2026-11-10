@@ -16,9 +16,9 @@ public:
     CPushControl();                                                 // 0x1413fca60
     virtual ~CPushControl();                                        // 0x1413fcad0
     virtual bool vfunc_1(GameObject* pActor, double dTime);         // 0x1413fcb30
-    float FUN_1413fce30(double dTime);                              // advance the push clock, returns this frame's distance
-    void FUN_1413fcf90();                                           // reset (stopped, no distance calculator)
-    void FUN_1413fd050(int nCurve);                                 // set the distance calculator (FUN_14028e960)
+    float Update(double dTime);                              // advance the push clock, returns this frame's distance
+    void Reset();                                           // reset (stopped, no distance calculator)
+    void SetCurve(int nCurve);                                 // set the distance calculator (FUN_14028e960)
 public:
     efd::Point3 m_kDir;                                             // +0x18 push direction (ZERO: not pushing)
     float m_fSpeed;                                                 // +0x24

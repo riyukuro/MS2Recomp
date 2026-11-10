@@ -23,43 +23,43 @@ public:
     AdditionalCli();                                        // 0x14096bae0
     virtual ~AdditionalCli();                               // 0x14096bbe0 (??_G 0x14096e8e0)
 
-    bool FUN_14096bc20(int nOwner, MS2Ptr<AdditionalCli> spSrc);    // copy spSrc onto this actor (clone)
-    void FUN_14096bd30(PCBase* pOwner, int nId, unsigned short nLevel, int n44);   // start a local record
+    bool CloneFrom(int nOwner, MS2Ptr<AdditionalCli> spSrc);    // copy spSrc onto this actor (clone)
+    void InitLocal(PCBase* pOwner, int nId, unsigned short nLevel, int n44);   // start a local record
     void FUN_14096be10(PCBase* pOwner, const Unk_AdditionalOwner& owner, CInPacket& packet);   // full decode
-    void FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_AdditionalOwner& owner, CInPacket& packet);   // DecodeModifyPacket
+    void DecodeModifyPacket(PCBase* pOwner, unsigned nFlags, const Unk_AdditionalOwner& owner, CInPacket& packet);   // DecodeModifyPacket
     void SetOwnerInfo(const Unk_AdditionalOwner& owner);  // key and caster
     void ApplyState(const Unk_AdditionalState& state);   // times, id, level, count, enabled
-    void FUN_14096c360(const Unk_AdditionalValue& value);   // shield value
-    void FUN_14096c390(const Unk_AdditionalValue& value);   // shield max
+    void SetShieldValue(const Unk_AdditionalValue& value);   // shield value
+    void SetShieldMax(const Unk_AdditionalValue& value);   // shield max
     void FUN_14096c3c0(CStringW str, int n);                // empty
     void FUN_14096c3f0();                                   // start the stance bar
     void FUN_14096c4c0();                                   // play the start effect unless active
-    void FUN_14096c520();                                   // per-frame update
-    void FUN_14096c650(int nCaster);                        // removed: stop effects, play the stop effect
+    void Update();                                   // per-frame update
+    void StopEffects(int nCaster);                        // removed: stop effects, play the stop effect
     int IsValid();                                    // has an owner and a row
-    void FUN_14096c740();                                   // (re)play the keep effect
+    void RestartKeepEffect();                                   // (re)play the keep effect
     void PlayKeepEffect();                                   // play the keep effect
-    void FUN_14096c8e0();                                   // overlap start effect of the current count
-    void FUN_14096ca50();                                   // overlap effects
+    void PlayOverlapStartEffect();                                   // overlap start effect of the current count
+    void PlayOverlapEffects();                                   // overlap effects
     void FUN_14096ca80();                                   // overlap keep effect of the current count
-    void FUN_14096ccc0(int nCount);                         // overlap end effect
+    void PlayOverlapEndEffect(int nCount);                         // overlap end effect
     void RemoveKeepEffect();                                   // stop the keep effect
     void PlayInvokeEffect();                                   // play the invoke effect
     int FUN_14096d050();                                    // shown (enabled or time left)
-    void FUN_14096d0c0();                                   // stance bar time
-    void FUN_14096d130();                                   // stance bar step
+    void UpdateStanceBarTime();                                   // stance bar time
+    void UpdateStanceBarLevel();                                   // stance bar step
     int GetKey();                                    // key
     PCBase* GetOwner();                                // owner
-    unsigned FUN_14096d2a0();                               // effect id
+    unsigned GetId();                               // effect id
     unsigned short GetLevel();                         // level
     unsigned GetRemainTicks();                               // remaining ms (0 when unlimited or over)
     unsigned FUN_14096d330();                               // total ms
-    int FUN_14096d350();                                    // sort key of the buff strip
-    void FUN_14096d430();                                   // tell the buff UIs
-    void FUN_14096d5c0();                                   // shield bar value
+    int GetSortOrder();                                    // sort key of the buff strip
+    void UpdateBuffUI();                                   // tell the buff UIs
+    void UpdateShieldBar();                                   // shield bar value
     bool FUN_14096d6b0();                                   // has a cooldown-less keep effect of the own caster
     bool IsActive();                                   // shows a timer sweep
-    AdditionalLevelData* FUN_14096d810();                   // the row
+    AdditionalLevelData* GetLevelData();                   // the row
     void PlayStartEffect();                                   // play the start effect
     void PlayStopEffect(int nCaster);                        // play the stop effect
     int IsPortraitOwner();                                    // the owner is a portrait (no effects)

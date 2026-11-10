@@ -58,7 +58,7 @@ public:
     efd::SmartPointer<NiTexture> FindTexture(CString strPath, const NiTexture::FormatPrefs* pPrefs);   // find a loaded texture
     efd::SmartPointer<NiTexture> CreateTexture(CString strPath, NiPointer<NiPixelData> spPixels, int nClass);   // register one from pixels
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 void* FUN_1422cf0f0();                                      // the UI renderer context
 void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
@@ -218,7 +218,7 @@ unsigned int CAsyncImageLoader::vfunc_1(void*, Unk_140659080& start)
         ParamList loaded;
         MS2_FOR_EACH(ParamPtr spParam, pending)
         {
-            if (!FUN_140a59090(ParamPtr(spParam)))
+            if (!LoadTexture(ParamPtr(spParam)))
                 continue;
             loaded.push_back(spParam);
         }
@@ -238,7 +238,7 @@ unsigned int CAsyncImageLoader::vfunc_1(void*, Unk_140659080& start)
 }
 
 // @0x140a59090
-bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
+bool CAsyncImageLoader::LoadTexture(ParamPtr spParam)
 {
     if (!spParam)
     {
@@ -246,7 +246,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         return false;
     }
     CString strFile = FUN_14016a5c0(spParam->m_18, 0);
-    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(CString(strFile), 0);
+    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)GetNifLoadingService())->FindTexture(CString(strFile), 0);
     if (spTexture.operator NiTexture*() != 0)
     {
         spParam->m_20 = spTexture;
@@ -265,7 +265,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         MS2_ASSERT_AT(0xd3, 0);
         return false;
     }
-    efd::SmartPointer<NiTexture> spCreated = ((class CNifLoadingService*)FUN_140a0afd0())->CreateTexture(CString(strFile), spPixels, 5);
+    efd::SmartPointer<NiTexture> spCreated = ((class CNifLoadingService*)GetNifLoadingService())->CreateTexture(CString(strFile), spPixels, 5);
     if (spCreated.operator NiTexture*() == 0)
     {
         MS2_ASSERT_AT(0xda, 0);
@@ -395,7 +395,7 @@ Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtoco
         return (Scaleform::Render::Image*)pImage;
     do
     {
-        efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(CString(strFile), 0);
+        efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)GetNifLoadingService())->FindTexture(CString(strFile), 0);
         if (spTexture.operator NiTexture*() == 0)
             break;
         NiTexture::RendererData* pRendererData = spTexture->GetRendererData();

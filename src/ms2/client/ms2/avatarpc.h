@@ -42,7 +42,7 @@ public:
     virtual void vfunc_59(MS2Ptr<CItem> spItem);            // 59  0x1409fa4f0 requests the UGC ridee model
 
     void FUN_1409f9ea0(MS2SvrPtr<CRideeData> spRow);        // 0x1409f9ea0 applies a ridee row (model path, scale)
-    void FUN_1409fa120(PCBase* pRider);                     // 0x1409fa120 sets the rider (+ its ride animation)
+    void SetRider(PCBase* pRider);                     // 0x1409fa120 sets the rider (+ its ride animation)
     MS2SvrPtr<CRideeData> GetRow();                  // 0x1409fa170 copy of m_spRow
     void FUN_1409fa7c0();                                   // 0x1409fa7c0 starts the rider's ride animation
     void FUN_1409fa940();                                   // 0x1409fa940 attaches the rider to the ridee
@@ -116,33 +116,33 @@ public:
     // state / appearance helpers
     void FUN_1409f41d0(const Unk_CharEquip& kEquip0, const Unk_CharEquip& kEquip1);   // 0x1409f41d0 sets the two equip colours
     void FUN_1409f42a0(MS2Ptr<CItemData> spData);           // 0x1409f42a0 glide state of a glider item
-    void FUN_1409f43d0(int nSkillId, short nLevel);         // 0x1409f43d0 plays a skill state
-    void FUN_1409f45a0(MS2Ptr<CItemData> spData);           // 0x1409f45a0 play-instrument state
-    void FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1409f4750 shows / updates the ridee
+    void PlaySkill(int nSkillId, short nLevel);         // 0x1409f43d0 plays a skill state
+    void PlayInstrument(MS2Ptr<CItemData> spData);           // 0x1409f45a0 play-instrument state
+    void ShowRidee(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1409f4750 shows / updates the ridee
     void FUN_1409f4ce0();                                   // 0x1409f4ce0 (empty)
     void FUN_1409f4cf0(unsigned a, unsigned b);             // 0x1409f4cf0 resets the state and calls 0x141663e20
-    void FUN_1409f4d80(MS2Ptr<CItem> spItem);               // 0x1409f4d80 equips an item, per item kind
+    void EquipItem(MS2Ptr<CItem> spItem);               // 0x1409f4d80 equips an item, per item kind
     bool FUN_1409f4f20();                                   // 0x1409f4f20 riding and the ridee model is loaded
     void SetListener(IAvatarObjectEventListener* p);      // 0x1409f5040 m_pListener = p
     IAvatarObjectEventListener* GetListener();            // 0x1409f5070
-    void FUN_1409f5560(NiNodePtr spNode);                   // 0x1409f5560 adds a node under "UI External Root"
-    void FUN_1409f5750(NiNodePtr spNode);                   // 0x1409f5750 removes it
+    void AddExternalNode(NiNodePtr spNode);                   // 0x1409f5560 adds a node under "UI External Root"
+    void RemoveExternalNode(NiNodePtr spNode);                   // 0x1409f5750 removes it
     void FUN_1409f5830();                                   // 0x1409f5830 culls the external root
-    void FUN_1409f5d20();                                   // 0x1409f5d20 hands the nodes of this avatar to the model view
+    void UpdateModelViewNodes();                                   // 0x1409f5d20 hands the nodes of this avatar to the model view
     void SetType(int n);                              // 0x1409f6280 m_nType = n
     int GetType();                                    // 0x1409f62a0
-    NiNode* FUN_1409f62c0();                                // 0x1409f62c0 the "UI Effect Root" (created on demand)
-    int FUN_1409f6450();                                    // 0x1409f6450 object id of the ridee, or 0
+    NiNode* GetEffectRoot();                                // 0x1409f62c0 the "UI Effect Root" (created on demand)
+    int GetRideeObjectId();                                    // 0x1409f6450 object id of the ridee, or 0
     void FUN_1409f64a0();                                   // 0x1409f64a0 m_bDirty = true
     void FUN_1409f64c0(MS2Ptr<CItem> spItem);               // 0x1409f64c0 marks dirty when the item has a model
     void SetEnabled(bool b);                             // 0x1409f6540 m_bEnabled = b
     bool IsEnabled();                                   // 0x1409f6560
     bool IsFishing();                                   // 0x1409f65a0
-    bool FUN_1409f67a0(NiNodePtr spNode);                   // 0x1409f67a0 attaches a UI node to the model root
+    bool AttachToModelRoot(NiNodePtr spNode);                   // 0x1409f67a0 attaches a UI node to the model root
     void FUN_1409f68e0(MS2Ptr<CItem> spItem);               // 0x1409f68e0 equip (kind 5)
     void FUN_1409f6950(MS2Ptr<CItem> spItem);               // 0x1409f6950 equip (kind 8: fishing rod)
     void FUN_1409f6db0(MS2Ptr<CItem> spItem);               // 0x1409f6db0 equip (kind 6)
-    void FUN_1409f6e30();                                   // 0x1409f6e30 stops the timer and the fishing guide
+    void StopFishing();                                   // 0x1409f6e30 stops the timer and the fishing guide
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -171,13 +171,13 @@ MS2_CHECK_OFFSET(AvatarPC, m_spFishing, 0x1390);
 
 // ---- free functions of the unit -------------------------------------------------------------------------------------
 
-AvatarPC* FUN_1409f3410(PC* pSource);                       // 0x1409f3410 avatar mirroring pSource
+AvatarPC* CreateAvatarFromPC(PC* pSource);                       // 0x1409f3410 avatar mirroring pSource
 AvatarPC* FUN_1409f3570(unsigned nType);                    // 0x1409f3570 empty avatar for a character type
-AvatarPC* FUN_1409f3650(int nGender, int nPreset);          // 0x1409f3650 preview avatar with the default outfit
-AvatarPC* FUN_1409f3fd0(MS2Ptr<Unk_PCArg125> spSrc);        // 0x1409f3fd0 avatar mirroring a pc record
+AvatarPC* CreatePreviewAvatar(int nGender, int nPreset);          // 0x1409f3650 preview avatar with the default outfit
+AvatarPC* CreateAvatarFromPCRecord(MS2Ptr<Unk_PCArg125> spSrc);        // 0x1409f3fd0 avatar mirroring a pc record
 unsigned int FUN_1409f6ee0();                               // 0x1409f6ee0 free avatar object id (0x3fb..0x40e)
-AvatarPet* FUN_1409f8510(CItemData* pData);                //  0x1409f8510 pet preview object
+AvatarPet* CreateAvatarPet(CItemData* pData);                //  0x1409f8510 pet preview object
 unsigned int FUN_1409f9060();                               // 0x1409f9060 free pet preview id (0x426..0x42f)
-AvatarRidee* FUN_1409f92d0(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1409f92d0 ridee preview (item)
-AvatarRidee* FUN_1409f9430(MS2SvrPtr<CRideeData> spRow);    // 0x1409f9430 ridee preview (table row)
+AvatarRidee* CreateAvatarRideeFromItem(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1409f92d0 ridee preview (item)
+AvatarRidee* CreateAvatarRideeFromRow(MS2SvrPtr<CRideeData> spRow);    // 0x1409f9430 ridee preview (table row)
 unsigned int FUN_1409faa70();                               // 0x1409faa70 free ridee preview id (0x41b..0x424)

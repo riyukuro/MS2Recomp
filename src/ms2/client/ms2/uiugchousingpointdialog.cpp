@@ -91,7 +91,7 @@ public:
 };
 
 class Unk_UhpItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -138,7 +138,7 @@ UIUGCHousingPointDialog::UIUGCHousingPointDialog()
 // @0x140fadb80
 UIUGCHousingPointDialog::~UIUGCHousingPointDialog()
 {
-    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
 }
 
 // @0x140fadc30
@@ -176,7 +176,7 @@ MS2_REPLACE_METHOD(0x140FADD00, UIUGCHousingPointDialog, vfunc_52, 313, 0xB52E1E
 void UIUGCHousingPointDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
 }
 MS2_REPLACE_METHOD(0x140FADE40, UIUGCHousingPointDialog, vfunc_67, 77, 0x26482748);
 
@@ -189,7 +189,7 @@ void UIUGCHousingPointDialog::OnLoadComplete()
     RefreshInfo();
     vfunc_84();
     RefreshList();
-    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)(class Unk_UhpItemEvents*)(((class Unk_UhpItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140FADEA0, UIUGCHousingPointDialog, OnLoadComplete, 177, 0x59E8950A);
 
@@ -265,7 +265,7 @@ void UIUGCHousingPointDialog::RefreshInfo()
     obj.FUN_1407cbbe0("receiveItem", bReceive);
     MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery(nNext);
     if (spNext.get() != 0)
-        obj.FUN_1409c0d20("interiorMaxExp", spNext->m_nValue);
+        obj.SetMemberUInt("interiorMaxExp", spNext->m_nValue);
     MS2Ptr<InteriorPointReward> spReward = FUN_140933200()->GetPointReward(nPoint);
     if (spReward.get() != 0) {
         obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
@@ -332,9 +332,9 @@ void UIUGCHousingPointDialog::vfunc_84()
         bShrink = false;
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
-    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 1, &nNpcCount, &nNpcLimit);
-    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 2, &nPortalCount, &nPortalLimit);
-    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->FUN_141656ad0(), 4, &nInstallCount, &nInstallLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->GetAccountId(), 1, &nNpcCount, &nNpcLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->GetAccountId(), 2, &nPortalCount, &nPortalLimit);
+    reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(reinterpret_cast<PC*>(pPc)->GetAccountId(), 4, &nInstallCount, &nInstallLimit);
     CStringW strPlace;
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x701, nNpcCount, nNpcLimit), L"\n"));
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x702, nPortalCount, nPortalLimit), L"\n"));

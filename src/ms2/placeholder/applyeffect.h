@@ -36,9 +36,9 @@ public:
     void SwapClickProcessor(NiRenderListProcessor* pProcessor);  // 0x1409a3d80
     void FUN_1409a3ee0(int nId, int nType);
     void FUN_1409a3f80(int nId, int nType);
-    bool FUN_1409a4020(int nId, CScreenEffectBase* pEffect);
-    void FUN_1409a4090();
-    void FUN_1409a4150();
+    bool AddEffect(int nId, CScreenEffectBase* pEffect);
+    void ClearEffects();
+    void UpdateEffects();
     void ResetScreenRatio();                                // 0x1409a4230
     void ApplyFieldFogRange(bool bEnabled);                 // 0x1409a43a0
     void SetFogRange(bool bEnabled, float fNear, float fFar, unsigned int uiColor);   // 0x1409a4450

@@ -62,7 +62,7 @@ class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
-    double FUN_141473280();
+    double GetGameTime();
 };
 float FUN_141b6fe90(NiControllerSequence* pSeq, const NiFixedString& kKey, float fDefault);   // text key time
 
@@ -107,11 +107,11 @@ CEffectObject::~CEffectObject()
 {
     PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
-        reinterpret_cast<PC*>(pOwner)->FUN_141663bb0(FUN_14123c580());
+        reinterpret_cast<PC*>(pOwner)->FUN_141663bb0(GetObjectId());
 }
 
 // @0x140a53830
-static unsigned int FUN_140a53830()
+static unsigned int FindFreeObjectId()
 {
     for (unsigned int nId = 0x4bf; nId < 0x8a7; nId++)
     {
@@ -122,24 +122,24 @@ static unsigned int FUN_140a53830()
 }
 
 // @0x140a53880
-int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
+int CEffectObject::Init(int nOwnerId, CString strModel, float fScale)
 {
     m_nOwnerId = nOwnerId;
     m_str88 = "GameObject";
     SetScaleAC(fScale);
-    FUN_14123bb80("urn:gamebryo-animation:" + FUN_141b6ed00(strModel));
-    FUN_14123c5a0(FUN_140a53830());
+    SetModelPath("urn:gamebryo-animation:" + FUN_141b6ed00(strModel));
+    SetObjectId(FindFreeObjectId());
     PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
-        reinterpret_cast<PC*>(pOwner)->FUN_141663b70(FUN_14123c580());
+        reinterpret_cast<PC*>(pOwner)->FUN_141663b70(GetObjectId());
     return 1;
 }
-MS2_REPLACE_METHOD(0x140a53880, CEffectObject, FUN_140a53880, 322, 0x61463D26);
+MS2_REPLACE_METHOD(0x140a53880, CEffectObject, Init, 322, 0x61463D26);
 
 // @0x140a539d0
 void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, const NiFixedString& kTextKey)
 {
-    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(GetEntityID());
     if (pMgr != NULL)
     {
         unsigned int uiSeqId = pMgr->FindSequenceID(kSeqName.operator const char*());
@@ -147,7 +147,7 @@ void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, c
             return;
         {
             ((class NiActorManager*)(class NiActorManager*)(pMgr))->SetTargetAnimation(uiSeqId, fSpeed, true);
-            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280());
+            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime());
             NiControllerSequence* pSeq = pMgr->GetActiveSequence(uiSeqId, true, true);
             if (pSeq != NULL)
             {
@@ -193,7 +193,7 @@ MS2_REPLACE_METHOD(0x140a53b70, CEffectObject, vfunc_21, 370, 0xD8112247);
 void CEffectObject::vfunc_12()
 {
     GameObject::vfunc_12();
-    FUN_14123c280(m_fScaleA4);
+    SetScale(m_fScaleA4);
 }
 MS2_REPLACE_METHOD(0x140a53cf0, CEffectObject, vfunc_12, 47, 0xE746E346);
 
@@ -213,7 +213,7 @@ void CEffectObject::vfunc_53(float f)
                 if (pState)
                     fScale = pState->GetSpeed();
             }
-            GetAnimMgr()->FUN_14099e050(pOwner->GetAnimMgr()->FUN_140a53f90(), fScale, 0);
+            GetAnimMgr()->PlayAnimation(pOwner->GetAnimMgr()->FUN_140a53f90(), fScale, 0);
         }
     }
 }

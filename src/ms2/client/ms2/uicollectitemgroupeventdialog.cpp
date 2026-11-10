@@ -73,7 +73,7 @@ static CString s_strSortTypeNamesLike2[] = {"None", "Buy", "Like", "PriceLow", "
 
 // The item event source the dialog listens to (a TSingleton; see uiitemeventlistener.h).
 class Unk_CigItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -155,7 +155,7 @@ void UICollectItemGroupEventDialog::OnLoadComplete()
     RefreshEvents();
     SelectEvent(0);
     ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
-    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140BE7130, UICollectItemGroupEventDialog, OnLoadComplete, 1413, 0xAF19A091);
 
@@ -170,7 +170,7 @@ void UICollectItemGroupEventDialog::vfunc_26()
     m_conditionItem = 0;
     m_rewardPanel = 0;
     m_recieveItemButton = 0;
-    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
     ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
 }
 MS2_REPLACE_METHOD(0x140BE76C0, UICollectItemGroupEventDialog, vfunc_26, 410, 0x0B19841C);
@@ -294,7 +294,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
     Unk_InventoryItemKey key;
     key.m_id = nItemId;
     key.m_rarity = nRarity;
-    int nHave = g_143ab2a90.FUN_140a5eda0(&key.m_id);
+    int nHave = g_143ab2a90.GetItemCountByFilter(&key.m_id);
     if (nHave < nCount)
     {
         bool bWorn = false;
@@ -303,7 +303,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
             PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
             if (pPlayer != 0)
             {
-                if (reinterpret_cast<CEquipment*>(static_cast<Unk_CigEquipSet*>(pPlayer->FUN_1416561a0()))->FUN_1411e0c30(nItemId) == 1 || pPlayer->FUN_14165f460()->HasItemId(nItemId) == true)
+                if (reinterpret_cast<CEquipment*>(static_cast<Unk_CigEquipSet*>(pPlayer->GetEquipment()))->FUN_1411e0c30(nItemId) == 1 || pPlayer->GetGemEquip()->HasItemId(nItemId) == true)
                     bWorn = true;
             }
         }

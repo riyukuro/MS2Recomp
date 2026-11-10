@@ -57,7 +57,7 @@ public:
     int FUN_140a18070();
     bool GetSavedSetting(struct Unk_CameraSetting&);
     void FUN_140aed720(struct Unk_CameraSetting const&);
-    void FUN_140aed750(int, int);
+    void SetMode(int, int);
 };
 #include "ms2/client/ms2/cameramode.h"   // Unk_CameraSetting (ctor 0x140ae7ce0; was the Unk_140ae7ce0 view)
 void FUN_14174c520(CSceneStateLogin*, CInPacket&);
@@ -147,7 +147,7 @@ void CSceneStateLogin::vfunc_1(int)
         if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetSavedSetting(tmp))
         {
             ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(tmp);
-            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(4, 1);
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->SetMode(4, 1);
         }
     }
 }

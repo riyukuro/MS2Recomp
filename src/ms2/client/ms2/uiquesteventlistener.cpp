@@ -138,7 +138,7 @@ bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
+CString SelectStringByQuestId(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 void FUN_141275260(int nId, int a2, int a3);                                // system message
@@ -782,7 +782,7 @@ void UIQuestGuideDialog::FUN_141aabe50(CQuest* pQuest)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
         ASObj obj(2);
-        obj.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
+        obj.SetMemberUInt("id", pQuest->FUN_140bfc580());
         obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
         obj.FUN_1407cb9c0("progress", 1);
         obj.FUN_1407cba60("icon", FUN_141aad550(pQuest));
@@ -1028,7 +1028,7 @@ MS2_REPLACE_METHOD(0x141aad4d0, UIQuestGuideDialog, FUN_141aad4d0, 121, 0xE571E0
 CString UIQuestGuideDialog::FUN_141aad550(CQuest* pQuest)
 {
     if (pQuest->IsComplete())
-        return FUN_141082090(pQuest->FUN_140bfc580(), "epic", "satisfied", "repeat", "event");
+        return SelectStringByQuestId(pQuest->FUN_140bfc580(), "epic", "satisfied", "repeat", "event");
     return "progress";
 }
 MS2_REPLACE_METHOD(0x141aad550, UIQuestGuideDialog, FUN_141aad550, 331, 0x02400718);
@@ -1038,7 +1038,7 @@ MS2_REPLACE_METHOD(0x141aad550, UIQuestGuideDialog, FUN_141aad550, 331, 0x024007
 int UIQuestGuideDialog::FUN_141aad6b0(CQuest* pQuest, ASObj& obj)
 {
     // The quest id is read again at each use.
-    obj.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
+    obj.SetMemberUInt("id", pQuest->FUN_140bfc580());
     obj.FUN_141aafcd0("type", pQuest->GetQuestType());
     obj.FUN_1407cb9c0("repeat", FUN_1407640c0(pQuest->GetData().operator->()) != 0);
     obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
@@ -1228,7 +1228,7 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
     PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (!pActor)
         return 0;
-    obj.FUN_1409c0d20("id", nQuestId);
+    obj.SetMemberUInt("id", nQuestId);
     obj.FUN_141aafcd0("type", 0);
     obj.FUN_1407cb9c0("repeat", FUN_1407640c0(spData.operator->()) != 0);
     obj.FUN_1407cb9c0("satisfied", 0);
@@ -1302,12 +1302,12 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     ASObj obj(2);
     if (FUN_140e7c990()->FUN_140c9a4c0(&result) != 1) {
         obj.FUN_1407cb9c0("tracing", 1);
-        obj.FUN_1409c4a30("rotation", result.m_2c.z + spMap->m_fCameraHAngle);
+        obj.SetMemberFloat("rotation", result.m_2c.z + spMap->m_fCameraHAngle);
         obj.FUN_1407cbb20("distance", result.m_38);
     }
     else {
         obj.FUN_1407cb9c0("tracing", 0);
-        obj.FUN_1409c4a30("rotation", 0);
+        obj.SetMemberFloat("rotation", 0);
         obj.FUN_1407cbb20("distance", GetStringCommonByKey(L"s_quest_navigation_none"));
     }
     *params.pRetVal = obj.FUN_1422bb870();

@@ -111,10 +111,10 @@ public:
 
     EffectDummyGroup();                                     // 0x140a51490
 
-    void FUN_140a514e0(TiXmlNode* pNode);                   // builds the dummy list from the <dummy> children
-    size_t FUN_140a515c0();                                 // list size (the callers use it as a count)
-    MS2SvrPtr<CEffectDummy> FUN_140a515f0(const CString& name);   // lookup by name
-    bool FUN_140a516e0(unsigned int idx, void* pOut);       // copies dummy [idx] into *pOut (a CEffectDummy)
+    void ParseDummies(TiXmlNode* pNode);                   // builds the dummy list from the <dummy> children
+    size_t GetDummyCount();                                 // list size (the callers use it as a count)
+    MS2SvrPtr<CEffectDummy> FindDummyByName(const CString& name);   // lookup by name
+    bool GetDummyAt(unsigned int idx, void* pOut);       // copies dummy [idx] into *pOut (a CEffectDummy)
 
     std::vector<DummyPtr> m_dummies;                        // +0x18
 };

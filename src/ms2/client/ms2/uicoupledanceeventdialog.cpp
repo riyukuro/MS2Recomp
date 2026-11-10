@@ -174,7 +174,7 @@ void FUN_1412752d0(const CStringW& str, int n);     // system notice
 void FUN_14151f200();
 
 // The game menu dialog found by UI type (0x140938b90).
-UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
 
@@ -409,7 +409,7 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
             }
         }
     }
-    UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f71, 0);
 }

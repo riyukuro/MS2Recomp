@@ -185,8 +185,8 @@ CString FUN_140188f50(const char* psz, int nCodePage);                 // multi-
 CString FUN_1409a2470(const char* pszUtf8, int nCodePage);          // UTF-8 to the client code page (0 = default)
 CSoundService* FUN_140c9cb10();                                     // the sound service                                   // normalises a sound path
 // The application object: the sound switch byte and the session.
-int FUN_141260470(Unk_SoundFlag* pFlag);
-void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
+int IsJobSoundDisabled(Unk_SoundFlag* pFlag);
+void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
 bool FUN_14028d470(float a, float b);                               // nearly equal
 // Effect manager (singleton 0x1403ed280): scene root.
 // Sound property / voice pitch table.
@@ -377,7 +377,7 @@ bool CSoundEventEffectParam::FUN_1417760d0() const
 // @0x141776120
 CString CSoundEventEffectParam::FUN_141776120(int nJob) const
 {
-    if (FUN_141260470(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
+    if (IsJobSoundDisabled(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
         return m_strEvent;
     if (!m_bByJob)
         return m_strEvent;
@@ -492,7 +492,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (spSound == (CSoundEvent*)0)
         return false;
 
-    m_dStartTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + (double)pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->FUN_140a53050());
+    m_dStartTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime() + (double)pSound->FUN_1417762a0(reinterpret_cast<NoticeMessage*>(pTarget)->FUN_140a53050());
     m_dStopTime = m_dStartTime + 10.0;
     m_spSound = spSound;
     m_b2c = false;
@@ -563,7 +563,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
         pParent->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), true);
         static_cast<NiAVObject*>(m_spRoot.operator->())->UpdateEffects();
         static_cast<NiAVObject*>(m_spRoot.operator->())->UpdateProperties();
-        static_cast<NiAVObject*>(m_spRoot.operator->())->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
+        static_cast<NiAVObject*>(m_spRoot.operator->())->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime(), true);
     }
     m_fVolume = pSound->m_fVolume;
     m_spSound->SetCallback(FUN_1417775b0, this);
@@ -577,10 +577,10 @@ bool CSoundEventEffect::vfunc_9()
 {
     if (!m_b2d)
     {
-        double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
-        if (!FUN_14119f3c0() && m_dStartTime <= dNow)
+        double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime();
+        if (!IsStarted() && m_dStartTime <= dNow)
             vfunc_4();
-        if (FUN_14119f3c0() && m_spSound.get() != 0)
+        if (IsStarted() && m_spSound.get() != 0)
             m_spSound->SetPosition(reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate()));
         if (m_bStopRequested && m_dStopTime <= dNow)
         {
@@ -615,7 +615,7 @@ void CSoundEventEffect::vfunc_5()
     if (m_bDoNotStop)
     {
         m_bStopRequested = true;
-        m_dStopTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280() + 10.0;
+        m_dStopTime = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime() + 10.0;
     }
     else
     {
@@ -655,7 +655,7 @@ FMOD_RESULT F_CALLBACK FUN_1417775b0(FMOD_EVENT* pEvent, FMOD_EVENT_CALLBACKTYPE
 void CSoundEventEffect::vfunc_7()
 {
     m_b2e = false;
-    FUN_140a0b2a0((NiAVObject*)m_spRoot.operator NiNode*());
+    DetachFromParent((NiAVObject*)m_spRoot.operator NiNode*());
 }
 
 // @0x1417776b0

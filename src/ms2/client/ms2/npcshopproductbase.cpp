@@ -103,7 +103,7 @@ int CNpcShopProductBase::FUN_140db5ee0()
 }
 
 // @0x140db5f00
-ATL::CAtlArray<CString>* CNpcShopProductBase::FUN_140db5f00()
+ATL::CAtlArray<CString>* CNpcShopProductBase::GetCategories()
 {
     return &m_20;
 }
@@ -304,7 +304,7 @@ int CNpcShopProductCli::IsSoldOut()
 }
 
 // @0x140db70a0
-bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
+bool CNpcShopProductCli::CheckBuyPeriod(CStringW& strError)
 {
     if (m_c8.get() != 0)
     {
@@ -421,7 +421,7 @@ __int64 CNpcShopProductCli::FUN_140db8180()
 }
 
 // @0x140db81a0
-__int64 CNpcShopProductCli::FUN_140db81a0()
+__int64 CNpcShopProductCli::GetOriginalPrice()
 {
     return m_a8;
 }
@@ -442,7 +442,7 @@ int CNpcShopProductCli::FUN_140db8210()
         if (spItem.get() != 0)
         {
             if ((spItem.get() ? true : false) && spItem->HasCubeTextureMesh() != 0 && spItem->GetSlotMax() == 1)
-                return g_143ab2a90.FUN_140a615d0(0);
+                return g_143ab2a90.GetEmptySlotCount(0);
             int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->FUN_14053c7c0();
             if (bStackable)
             {
@@ -462,7 +462,7 @@ int CNpcShopProductCli::FUN_140db8210()
 }
 
 // @0x140db8400
-int CNpcShopProductCli::FUN_140db8400()
+int CNpcShopProductCli::GetMaxAffordableCount()
 {
     int nResult = 1;
     __int64 nPrice = FUN_140db8180();
@@ -593,7 +593,7 @@ template MS2SvrPtr<CPtred>& MS2SvrPtr<CPtred>::operator=(CPtred*);
 MS2_REPLACE_METHOD(0x140db5e20, CNpcShopProductBase, GetItemId, 65, 0xDB438C71);
 MS2_REPLACE_METHOD(0x140db5e70, CNpcShopProductBase, FUN_140db5e70, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140db5ee0, CNpcShopProductBase, FUN_140db5ee0, 14, 0x8AEE455B);
-MS2_REPLACE_METHOD(0x140db5f00, CNpcShopProductBase, FUN_140db5f00, 15, 0x5731F599);
+MS2_REPLACE_METHOD(0x140db5f00, CNpcShopProductBase, GetCategories, 15, 0x5731F599);
 MS2_REPLACE_METHOD(0x140db5f20, CNpcShopProductBase, vfunc_1, 11, 0x30025ED0);
 MS2_REPLACE_METHOD(0x140db5f40, CNpcShopProductBase, vfunc_2, 8, 0x7F371472);
 MS2_REPLACE_METHOD(0x140db6db0, CNpcShopProductCli, FUN_140db6db0, 69, 0x70CF012D);
@@ -609,12 +609,12 @@ MS2_REPLACE_METHOD(0x140db6fb0, CNpcShopProductCli, FUN_140db6fb0, 14, 0xA1BBC3F
 MS2_REPLACE_METHOD(0x140db6fd0, CNpcShopProductCli, FUN_140db6fd0, 17, 0xA49D819F);
 MS2_REPLACE_METHOD(0x140db7040, CNpcShopProductBase, FUN_140db7040, 15, 0x5731F599);
 MS2_REPLACE_METHOD(0x140db7060, CNpcShopProductCli, IsSoldOut, 55, 0xA98A5A5B);
-MS2_REPLACE_METHOD(0x140db70a0, CNpcShopProductCli, FUN_140db70a0, 4312, 0x60A5BCEC);
+MS2_REPLACE_METHOD(0x140db70a0, CNpcShopProductCli, CheckBuyPeriod, 4312, 0x60A5BCEC);
 MS2_REPLACE_METHOD(0x140db8180, CNpcShopProductCli, FUN_140db8180, 18, 0x590460F1);
-MS2_REPLACE_METHOD(0x140db81a0, CNpcShopProductCli, FUN_140db81a0, 18, 0x23C88FD9);
+MS2_REPLACE_METHOD(0x140db81a0, CNpcShopProductCli, GetOriginalPrice, 18, 0x23C88FD9);
 MS2_REPLACE_METHOD(0x140db81c0, CNpcShopProductCli, UpdateRemainingCount, 69, 0xCD1EF701);
 MS2_REPLACE_METHOD(0x140db8210, CNpcShopProductCli, FUN_140db8210, 484, 0x72A073E5);
-MS2_REPLACE_METHOD(0x140db8400, CNpcShopProductCli, FUN_140db8400, 371, 0x3F8AEA03);
+MS2_REPLACE_METHOD(0x140db8400, CNpcShopProductCli, GetMaxAffordableCount, 371, 0x3F8AEA03);
 MS2_REPLACE_METHOD(0x140db8580, CNpcShopProductCli, FUN_140db8580, 122, 0x6C68DD87);
 MS2_REPLACE_METHOD(0x140db8600, CNpcShopProductCli, CheckStarPointEvent, 190, 0x38C72280);
 MS2_REPLACE_METHOD(0x140db8a00, CNpcShopMeratItemCli, vfunc_2, 186, 0xBEA2FAF8);

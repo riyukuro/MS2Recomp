@@ -54,7 +54,7 @@ public:
 
 // The item event hub the Customize registers with (uiitemenchantdialog.h).
 class Unk_CustomizeItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -145,12 +145,12 @@ inline int FUN_140cd3e30() { return 2; }
 inline int FUN_140cd3e40() { return 2; }
 
 // @0x140cd3e50 takes the preview (not owned) items off
-inline void FUN_140cd3e50(PC* pPc)
+inline void UnequipPreviewItems(PC* pPc)
 {
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -169,7 +169,7 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -179,9 +179,9 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
             continue;
         if (FUN_141421690(spItem.get()) == 0) {
             if (bRemove != 0) {
-                spEquip->FUN_1411dcf10(s_strUndo);
+                spEquip->RemoveTag(s_strUndo);
             } else {
-                spEquip->FUN_1411dce60(s_strUndo);
+                spEquip->AddTag(s_strUndo);
                 spEquip->FUN_1411dd280();
             }
         }
@@ -189,12 +189,12 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
 }
 
 // @0x140cd4190 takes every preview item off
-inline void FUN_140cd4190(PC* pPc)
+inline void UnequipAllPreviewItems(PC* pPc)
 {
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->GetEquipment());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -208,7 +208,7 @@ inline void FUN_140cd4190(PC* pPc)
 }
 
 // @0x140cd46e0 marks a preview item
-inline bool FUN_140cd46e0(MS2Ptr<CItem> spItem, bool bPreview)
+inline bool MarkPreviewItem(MS2Ptr<CItem> spItem, bool bPreview)
 {
     if (spItem == 0)
         return false;
@@ -221,7 +221,7 @@ inline bool FUN_140cd46e0(MS2Ptr<CItem> spItem, bool bPreview)
 }
 
 // @0x140cd47b0 the camera dialog
-inline UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass)
+inline UICameraEditDialog* FindCameraEditDialog(eUIClassID nClass)
 {
     if (TSingleton<CUIService>::GetInstance()) {
         MS2Ptr<UIObject> spObject = TSingleton<CUIService>::GetInstance()->FindObject(nClass);
@@ -328,7 +328,7 @@ void Customize::EditItems::Update()
         return;
     if (m_spController) {
         int bDragging = 0;
-        UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
+        UICameraEditDialog* pCamera = FindCameraEditDialog(eUI_4ef2);
         if (pCamera)
             bDragging = pCamera->IsDragging();
         if (bDragging == 0) {
@@ -525,7 +525,7 @@ void Customize::CloneItems::Restore(ATL::CAtlList<Unk_InventoryEquipSlot>& slots
     if (pPc == 0)
         return;
     FUN_140cd3fe0(pPc, 0);
-    FUN_140cd4190(pPc);
+    UnequipAllPreviewItems(pPc);
     for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
         if (spItem == 0)
@@ -536,7 +536,7 @@ void Customize::CloneItems::Restore(ATL::CAtlList<Unk_InventoryEquipSlot>& slots
             if (slots.Find(eSlot)) {
                 MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
                 if (spEquip.get()) {
-                    spEquip->FUN_1411dce60(s_strCustomize);
+                    spEquip->AddTag(s_strCustomize);
                     spEquip->FUN_1411dd280();
                 }
             }
@@ -682,7 +682,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
                 if (m_mapSlots.Lookup(eOther, spOther)) {
                     bEquip = spOther->GetItemUid() == spEquip->GetItem()->GetItemUid();
                 } else {
-                    CItemData* pData = static_cast<CItemData*>(spEquip->FUN_1411dc7f0());
+                    CItemData* pData = static_cast<CItemData*>(spEquip->GetItemData());
                     if (pData)
                         bEquip = pData->FUN_14053d460() || pData->FUN_14053d2b0();
                 }
@@ -842,7 +842,7 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
     if (pPc == 0)
         return 0;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->GetEquipment());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -1009,9 +1009,9 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
     }
     if (spItem.get()) {
         spItem->SetItemUid(FUN_14028d0e0());
-        spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
+        spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPc))->GetObjectId());
         if (m_pOwner)
-            FUN_140cd46e0(spItem, m_pOwner->IsPreview());
+            MarkPreviewItem(spItem, m_pOwner->IsPreview());
     }
     return spItem;
 }
@@ -1090,7 +1090,7 @@ int Customize::CloneItems::Init()
     m_mapSlots.RemoveAll();
     SaveColors();
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->GetEquipment());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -1159,7 +1159,7 @@ void Customize::Equipment::CommitAll()
     ItemMap modified;
     ItemMap removed;
     m_spClone->Collect(added, modified, removed);
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     if (bColor)
         SendColors();
@@ -1175,7 +1175,7 @@ void Customize::Equipment::RestoreAll(ATL::CAtlList<Unk_InventoryEquipSlot>& slo
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     m_spClone.AssignRaw(new CloneItems(nObjectId, m_pOwner));
 }
@@ -1193,7 +1193,7 @@ void Customize::Equipment::CommitUid(__int64 nUid)
     ItemMap modified;
     ItemMap removed;
     m_spClone->CollectUid(nUid, added, modified, removed);
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     if (bColor)
         SendColors();
@@ -1210,7 +1210,7 @@ void Customize::Equipment::RestoreUid(__int64 nUid)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     m_spClone->RestoreUid(nUid);
 }
@@ -1228,7 +1228,7 @@ void Customize::Equipment::CommitSlot(Unk_InventoryEquipSlot eSlot)
     ItemMap modified;
     ItemMap removed;
     m_spClone->CollectSlot(eSlot, added, modified, removed);
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     if (bColor)
         SendColors();
@@ -1244,7 +1244,7 @@ void Customize::Equipment::RestoreSlot(Unk_InventoryEquipSlot eSlot)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     m_spClone->RestoreSlot(eSlot);
 }
@@ -1261,7 +1261,7 @@ bool Customize::Equipment::GetModified(__int64 nUid, MS2Ptr<CItem>& spOut)
     ItemMap modified;
     ItemMap removed;
     m_spClone->CollectUid(nUid, added, modified, removed);
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     if (modified.IsEmpty())
         return false;
@@ -1278,7 +1278,7 @@ void Customize::Equipment::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot eS
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     m_spClone->Apply(spItem, eSlot);
 }
@@ -1295,7 +1295,7 @@ void Customize::Equipment::Equip(CItem* pItem)
     if (pPc == 0)
         return;
     if (m_pOwner)
-        FUN_140cd46e0(MS2Ptr<CItem>(pItem), m_pOwner->IsPreview());
+        MarkPreviewItem(MS2Ptr<CItem>(pItem), m_pOwner->IsPreview());
     pPc->vfunc_127(pItem, 1);
 }
 MS2_REPLACE_METHOD(0x140CD03D0, Customize::Equipment, Equip, 277, 0xAE0BCC66);
@@ -1317,7 +1317,7 @@ void Customize::Equipment::ClearPreview()
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    FUN_140cd3e50(pPc);
+    UnequipPreviewItems(pPc);
     m_spClone->ClearSlots();
 }
 MS2_REPLACE_METHOD(0x140CD05A0, Customize::Equipment, ClearPreview, 74, 0x7B355A4F);
@@ -1378,9 +1378,9 @@ void Customize::Equipment::ShowSlot(Unk_InventoryEquipSlot eSlot)
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
     if (spEquip == 0)
         return;
-    spEquip->FUN_1411dcf10(s_strCustomize);
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e75f0();
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e5c10();
+    spEquip->RemoveTag(s_strCustomize);
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e75f0();
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e5c10();
 }
 
 // @0x140cd0980
@@ -1392,10 +1392,10 @@ void Customize::Equipment::HideSlot(Unk_InventoryEquipSlot eSlot)
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
     if (spEquip == 0)
         return;
-    spEquip->FUN_1411dce60(s_strCustomize);
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e75f0();
+    spEquip->AddTag(s_strCustomize);
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e75f0();
     if (eSlot == 6)
-        reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e6ab0();
+        reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e6ab0();
 }
 
 // @0x140cd0a40
@@ -1404,7 +1404,7 @@ void Customize::Equipment::ResetEdit()
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
 }
 
@@ -1549,10 +1549,10 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    MS2Ptr<CEquipItem> spCap = reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e1860(6, 6, 0);
+    MS2Ptr<CEquipItem> spCap = reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e1860(6, 6, 0);
     if (spCap == 0)
         return;
-    CItemData* pData = static_cast<CItemData*>(spCap->FUN_1411dc7f0());
+    CItemData* pData = static_cast<CItemData*>(spCap->GetItemData());
     if (pData == 0)
         return;
     if (!pData->FUN_14053ec70()->FUN_1405471b0())
@@ -1573,7 +1573,7 @@ Customize::Customize(int nObjectId, IItemCustomizeEventListener* pListener, bool
 {
     m_nObjectId = nObjectId;
     m_spEquipment.AssignRaw(new Equipment(nObjectId, this));
-    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)FUN_140a6a840())))->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
 }
 
 // @0x140cd16e0
@@ -1582,11 +1582,11 @@ Customize::~Customize()
     m_nObjectId = 0;
     m_spEquipment = 0;
     m_pListener = 0;
-    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)(class Unk_CustomizeItemEvents*)(((class Unk_CustomizeItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
 }
 
 // @0x140cd17e0
-int Customize::FUN_140cd17e0()
+int Customize::GetEditItemId()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -1595,10 +1595,10 @@ int Customize::FUN_140cd17e0()
         return 0;
     return spEdit->GetItemId();
 }
-MS2_REPLACE_METHOD(0x140CD17E0, Customize, FUN_140cd17e0, 163, 0x20A6083D);
+MS2_REPLACE_METHOD(0x140CD17E0, Customize, GetEditItemId, 163, 0x20A6083D);
 
 // @0x140cd1890
-MS2Ptr<CItem> Customize::FUN_140cd1890()
+MS2Ptr<CItem> Customize::GetEditItem()
 {
     if (m_spEquipment == 0)
         return MS2Ptr<CItem>(0);
@@ -1607,10 +1607,10 @@ MS2Ptr<CItem> Customize::FUN_140cd1890()
         return MS2Ptr<CItem>(0);
     return spEdit->GetItem();
 }
-MS2_REPLACE_METHOD(0x140CD1890, Customize, FUN_140cd1890, 234, 0x518BBC9E);
+MS2_REPLACE_METHOD(0x140CD1890, Customize, GetEditItem, 234, 0x518BBC9E);
 
 // @0x140cd1980
-__int64 Customize::FUN_140cd1980()
+__int64 Customize::GetEditItemUid()
 {
     if (m_spEquipment == 0)
         return 0;
@@ -1619,7 +1619,7 @@ __int64 Customize::FUN_140cd1980()
         return 0;
     return spEdit->GetItemUid();
 }
-MS2_REPLACE_METHOD(0x140CD1980, Customize, FUN_140cd1980, 167, 0x316B7350);
+MS2_REPLACE_METHOD(0x140CD1980, Customize, GetEditItemUid, 167, 0x316B7350);
 
 // @0x140cd1a30
 NiPointer<CItemCustomizeController> Customize::FUN_140cd1a30()
@@ -1652,7 +1652,7 @@ IItemCustomizeEventListener* Customize::GetListener()
 MS2_REPLACE_METHOD(0x140CD1BD0, Customize, GetListener, 15, 0x7BFFD3E9);
 
 // @0x140cd1bf0
-void Customize::FUN_140cd1bf0()
+void Customize::UpdateEditItems()
 {
     if (m_spEquipment == 0)
         return;
@@ -1661,7 +1661,7 @@ void Customize::FUN_140cd1bf0()
         return;
     spEdit->Update();
 }
-MS2_REPLACE_METHOD(0x140CD1BF0, Customize, FUN_140cd1bf0, 142, 0x8CAD08D5);
+MS2_REPLACE_METHOD(0x140CD1BF0, Customize, UpdateEditItems, 142, 0x8CAD08D5);
 
 // @0x140cd1c90
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
@@ -1671,7 +1671,7 @@ bool Customize::EquipItem(CItem* pItem)
         return false;
     PC* pPc = GetPlayer();
     if (pPc) {
-        if (!pItem->FUN_140527840()->IsGenderAllowed(pPc->FUN_141658e60()))
+        if (!pItem->FUN_140527840()->IsGenderAllowed(pPc->GetGender()))
             return false;
     }
     m_spEquipment->Equip(pItem);
@@ -1692,7 +1692,7 @@ bool Customize::EquipItemId(int nItemId)
             return false;
         if (spData->IsAvatarColorItem())
             return false;
-        if (!spData->IsGenderAllowed(pPc->FUN_141658e60()))
+        if (!spData->IsGenderAllowed(pPc->GetGender()))
             return false;
     }
     m_spEquipment->EquipId(nItemId);
@@ -2152,8 +2152,8 @@ void Customize::RebuildEquipment()
     PC* pPc = GetPlayer();
     if (pPc == 0)
         return;
-    int nItemId = FUN_140cd17e0();
-    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580();
+    int nItemId = GetEditItemId();
+    int nObjectId = ((class GameObject*)(class PCBase*)(pPc))->GetObjectId();
     m_spEquipment.AssignRaw(new Equipment(nObjectId, this));
     SelectId(nItemId);
 }

@@ -1,17 +1,34 @@
 // Full-exe shim runtime (tools/fullexe): what the hook-DLL runtime provides to the unit objs, for a standalone link.
-//   ms2::g_imageDelta = 0 and a no-op ms2::hook::Register (the MS2_REPLACE registration statics call it at static init)
-//   ms2_fullexe_trap: target of the generated stubs (shim.py) for every symbol no obj defines. It logs the symbol, its
-//     exe VA and the caller to fullexe-trap.log next to the exe, plus a short backtrace, then terminates the process.
+// Needed to link and run (always built):
+//   ms2::g_imageDelta = 0 and a no-op ms2::hook::Register: the unit objs reference them (the MS2_REPLACE registration
+//     statics call Register at static init); without them the link fails.
+//   ms2_fullexe_trap: target of the generated stubs (shim.py, plainglue.py) for every symbol no obj defines. It logs the
+//     symbol, its exe VA and the caller to fullexe-trap.log next to the exe, plus a short backtrace, then terminates
+//     the process: a call into a missing function must stop loudly, not run on into zero fill.
+//   ms2_fullexe_entry: the link's /entry; it calls the CRT's WinMainCRTStartup.
+// Diagnostics (MS2_SHIM_DIAGNOSTICS, see below; the test lanes' smoke reports read them, the game does not need them):
 //   a vectored exception logger: the first few fatal exceptions (access violation, int3, illegal instruction, stack
 //     overflow...) with their address and backtrace, to the same log. It only logs; handling is left to the program.
+//     A stack-overflow reporter thread and a /GS-failure hook (__report_gsfailure patched to log first) go with it.
 //   an "UNHANDLED" line when an exception reaches the exe's top-level filter (its crash dialog), see unhandled_logger.
-//   boot milestones: ms2_fullexe_mark(name) appends a line (called from the init_seg(compiler) static and the TLS-free
-//     CRT phases the shim can see).
-// Built by shim.py with the toolchain cl (/O2 /MD); no SDK or game headers beyond <windows.h>.
+//   a hang sampler thread: from 20 s on, the main thread's rip and stack every 10 s.
+//   boot milestones: ms2_fullexe_mark(name) appends a line (the /entry, the init_seg(compiler) static, and the first
+//     calls of a few imports through this image's IAT: AfxWinMain, CreateWindowEx, ShowWindow, the message loop,
+//     LoadLibrary).
+// Built by shim.py and cmake/fullexe-plain with the toolchain cl (/O2 /MD); no SDK or game headers beyond <windows.h>.
 #include <windows.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <intrin.h>
+
+// MS2_SHIM_DIAGNOSTICS (default 1): the crash and boot diagnostics below. The default (no-exe) build compiles this file
+// with /DMS2_SHIM_DIAGNOSTICS=0 unless its CMake option MS2_SHIM_DIAGNOSTICS is on; tools/fullexe/shim.py (the
+// exe-reading build the test lanes run) passes nothing, so it keeps them. With 0 only what the link and a run need is
+// left: g_imageDelta and hook::Register (the unit objs reference them), ms2_fullexe_trap (the stub objs call it; it
+// still logs the missing symbol, so such a call fails loudly) and the /entry point.
+#ifndef MS2_SHIM_DIAGNOSTICS
+#define MS2_SHIM_DIAGNOSTICS 1
+#endif
 
 namespace ms2 {
 uintptr_t g_imageDelta = 0;
@@ -22,7 +39,9 @@ bool Register(Replacement*) { return false; }
 }  // namespace ms2
 
 static HANDLE g_log = INVALID_HANDLE_VALUE;
+#if MS2_SHIM_DIAGNOSTICS
 static volatile LONG g_fatal = 0;
+#endif
 
 static void open_log() {
     if (g_log != INVALID_HANDLE_VALUE) return;
@@ -66,9 +85,11 @@ static void backtrace(const char* tag) {
     }
 }
 
+#if MS2_SHIM_DIAGNOSTICS
 extern "C" void ms2_fullexe_mark(const char* what) {
     out("MARK %s tid=%lu tick=%lu\n", what, GetCurrentThreadId(), GetTickCount());
 }
+#endif
 
 extern "C" __declspec(noreturn) void ms2_fullexe_trap(const char* name, uint64_t va, void* ret) {
     out("TRAP %s exe_va=0x%llx caller=%p tid=%lu\n", name, (unsigned long long)va, ret, GetCurrentThreadId());
@@ -78,6 +99,7 @@ extern "C" __declspec(noreturn) void ms2_fullexe_trap(const char* name, uint64_t
     for (;;) {}
 }
 
+#if MS2_SHIM_DIAGNOSTICS
 static void log_image_words(const uintptr_t* sp, const uintptr_t* top, int max) {
     uintptr_t base = (uintptr_t)GetModuleHandleA(nullptr);
     auto* nt = (IMAGE_NT_HEADERS*)(base + ((IMAGE_DOS_HEADER*)base)->e_lfanew);
@@ -378,14 +400,18 @@ template <class F> static void wrap(F& real, const char* dll, const char* name, 
 }
 
 __declspec(dllimport) int AfxWinMain(HINSTANCE, HINSTANCE, LPSTR, int);
+#endif  // MS2_SHIM_DIAGNOSTICS
 
 extern "C" int WinMainCRTStartup();
 // linked as /entry: marks the loader hand-off, then the real CRT entry
 extern "C" int ms2_fullexe_entry() {
+#if MS2_SHIM_DIAGNOSTICS
     ms2_fullexe_mark("entry (loader done, before CRT init)");
+#endif
     return WinMainCRTStartup();
 }
 
+#if MS2_SHIM_DIAGNOSTICS
 // runs before the units' dynamic initializers (.CRT$XCC < .CRT$XCU)
 #pragma warning(disable : 4073)
 #pragma init_seg(compiler)
@@ -414,3 +440,4 @@ static struct ShimInit {
     }
     ~ShimInit() { ms2_fullexe_mark("crt-exit (static destructors)"); }
 } g_shimInit;
+#endif  // MS2_SHIM_DIAGNOSTICS

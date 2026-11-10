@@ -230,11 +230,11 @@ void UIFishingBookDialog::FUN_140f41a10()
     if (nGrade == reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->MaxGrade(1))
         strGrade += L" " + GetStringCommonByKey(L"s_fishing_mastery_gauge_level_max");
     ASObj obj(2);
-    obj.FUN_1409c0d20("fisherTitleID", nTitle);
+    obj.SetMemberUInt("fisherTitleID", nTitle);
     obj.FUN_1407cbb20("fisherTitle", CStringW(strTitle));
     obj.FUN_1407cbb20("fisherGradeName", CStringW(strGrade));
-    obj.FUN_1409c0d20("curMastery", nExp - nBase);
-    obj.FUN_1409c0d20("maxMastery", nNextBase - nBase);
+    obj.SetMemberUInt("curMastery", nExp - nBase);
+    obj.SetMemberUInt("maxMastery", nNextBase - nBase);
     if (m_30.get() != 0)
         m_30->FUN_140acd1f0("setFisher", AScript(obj));
 }
@@ -338,7 +338,7 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
             }
             if (fish.get() != 0)
             {
-                obj.FUN_1409c0d20("id", fish->m_nId);
+                obj.SetMemberUInt("id", fish->m_nId);
                 obj.FUN_1407cbb20("iconPath", fish->FUN_1403b1600());
                 obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish->m_nId));
                 obj.FUN_1409adc90("grade", fish->m_nRank);
@@ -457,9 +457,9 @@ int UIFishingBookDialog::FUN_140f43540(int nFishId)
     MS2Ptr<CFishData> fish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
     if (fish.IsNull() != 0)
         return 0;
-    int nA = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc280(nFishId);
+    int nA = TSingleton<CFishingManager>::GetInstance()->GetFishSizeGrade(nFishId);
     CFishData* pRec = fish.operator->();
-    int nB = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc280(pRec->m_nCompanion);
+    int nB = TSingleton<CFishingManager>::GetInstance()->GetFishSizeGrade(pRec->m_nCompanion);
     return (std::max)(nA, nB);
 }
 

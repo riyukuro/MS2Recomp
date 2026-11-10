@@ -190,20 +190,20 @@ public:
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The item event listener registry (FUN_140a6a840) and the UI manager (FUN_1403ed2b0).
+// The item event listener registry (GetItemEventDispatcher) and the UI manager (FUN_1403ed2b0).
 class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);     // register
     void FUN_1419caeb0(UIItemEventListener* pListener);     // unregister
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class CUIService;
-class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
+class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 bool FUN_14028d470(float f, float fEps);                    // nearly zero
 
 // The world (FUN_1403ed2d0) and its local player; the dialog tooltips are built against it.
-class Unk_MergeSelf { public: int FUN_141654700(); };
+class Unk_MergeSelf { public: int GetJobGroupId(); };
 class Unk_MergeWorld { public: Unk_MergeSelf* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -226,15 +226,15 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);         // an inventory or equipped item by uid
 
-// The equipment of the local player (FUN_1416561a0 / FUN_1411e1ce0) and its slot list.
+// The equipment of the local player (GetEquipment / FUN_1411e1ce0) and its slot list.
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 
-// The bag registry of the item slot bags (FUN_14123a080 / FUN_14123a190).
-void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items);
+// The bag registry of the item slot bags (CreateSlotBag / FUN_14123a190).
+void CreateSlotBag(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items);
 void FUN_14123a190(const CString& strName);
 template <class T> int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value);   // the index of an uid in a bag
 
@@ -264,8 +264,8 @@ bool FUN_14081dcd0(int nSpecial);                           // the special abili
 int FUN_14081d9e0(int nSpecial);                            // the special ability is a skill level up tier
 CStringW GetStatCommonText(unsigned nStat);                          // the stat name
 CStringW FUN_140630e10(int nSpecial);                       // the special ability name
-CStringW FUN_1409e0900(int n);                              // an integer as text
-CStringW FUN_1409e0a90(float f);                            // a rate as text
+CStringW FormatInt(int n);                              // an integer as text
+CStringW FormatRatePercent(float f);                            // a rate as text
 CStringW FUN_1409e0970(int nStat, int nValue);              // a stat value as an integer text
 CStringW FUN_1409e0bf0(int nStat, int nValue);              // a stat value as a rate text
 CStringW FUN_140631600(int nStat, BaseOption* pOption);     // the option line of a stat
@@ -403,7 +403,7 @@ void UIItemMergeOptionDialog::vfunc_4(void* pSlot, int n)
 void UIItemMergeOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(this);
     SetPhase(0);
     ResetMergeItems();
     ShowMergePrice(MS2Ptr<CItem>(0));
@@ -423,7 +423,7 @@ void UIItemMergeOptionDialog::vfunc_67()
     m_nMaterialUid = 0;
     m_bSpecial = false;
     SetPhase(0);
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(this);
 }
 
 // @0x1419ce8f0
@@ -475,7 +475,7 @@ void UIItemMergeOptionDialog::vfunc_43()
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
     {
-        if (UITalkCinematic* pNpc = FUN_140a7b2b0(0x4e40))
+        if (UITalkCinematic* pNpc = FindTalkCinematic(0x4e40))
         {
             int nY = pNpc->GetLowerCutGlobalY() + 12;
             int nX = pNpc->GetIllustGlobalX() - 80;
@@ -598,7 +598,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
 {
     ATL::CAtlArray<void*> guids;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    g_143ab2a90.FUN_140a60880(0, items);
+    g_143ab2a90.GetItemsInCategory(0, items);
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem(items[i]);
@@ -609,7 +609,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     if (pSelf != 0)
     {
         ATL::CAtlList<MS2Ptr<CEquipItem> > equipment(10);
-        ((class CEquipment*)((class PC*)(class Unk_MergeSelf*)(pSelf))->FUN_1416561a0())->CollectShownItemsInLayer(equipment, 0);
+        ((class CEquipment*)((class PC*)(class Unk_MergeSelf*)(pSelf))->GetEquipment())->CollectShownItemsInLayer(equipment, 0);
         for (POSITION pos = equipment.GetHeadPosition(); pos != 0; equipment.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip(equipment.GetAt(pos));
@@ -627,7 +627,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     qsort(guids.GetData(), guids.GetCount(), 8, FUN_1419d2fa0);
     CString strBag = GetTypeName() + "_MergeSlotBag";
     FUN_14123a190(strBag);
-    FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(guids));
+    CreateSlotBag(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(guids));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_itemBag"))
     {
         if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
@@ -639,7 +639,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
 // @0x1419cfa10
 void UIItemMergeOptionDialog::RefreshSelectedIngredient()
 {
-    MS2Ptr<CItem> spMaterial = g_143ab2a90.FUN_140a5d680(m_nMaterialUid);
+    MS2Ptr<CItem> spMaterial = g_143ab2a90.FindItemByUid(m_nMaterialUid);
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
     if ((((MS2Ptr<CItem>*)(void*)(&spMaterial))->get() ? true : false) && (((MS2Ptr<CItem>*)(void*)(&spItem))->get() ? true : false))
     {
@@ -671,7 +671,7 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
             continue;
         unsigned nHave = 0;
         if (ref->m_b != 0)
-            nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+            nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
         else
             nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
         CStringW strKey(L"s_item_merge_option_material_count_enable");
@@ -684,7 +684,7 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
         entry.FUN_1407cba60("iconPath", spData->GetIconPath());
         entry.FUN_1409adc90("itemGrade", FUN_14053feb0(ref->FUN_14026b500()));
         entry.FUN_1407cbb20("itemCount", FUN_14028dfa0(strKey, nHave, reinterpret_cast<const unsigned&>(ref->m_c)));
-        entry.FUN_1409c0d20("itemID", ref->FUN_14026b500());
+        entry.SetMemberUInt("itemID", ref->FUN_14026b500());
         list.FUN_1409eb270(StringFormat("ingredient{0}", i + 1), entry);
     }
     list.FUN_1407cb9c0("ready", nReady);
@@ -721,14 +721,14 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                 CStringW strText;
                 if (IsStatKindOne(nNormal))
                 {
-                    CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
-                    CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
+                    CStringW strMin = FormatInt(pRange->FUN_1405beac0());
+                    CStringW strMax = FormatInt(pRange->FUN_1405beae0());
                     strText = StringFormat(L"{0} {1}~{2}", GetStatCommonText(nNormal), strMin, strMax);
                 }
                 else
                 {
-                    CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
-                    CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
+                    CStringW strMin = FormatRatePercent(pRange->FUN_1405beb00());
+                    CStringW strMax = FormatRatePercent(pRange->FUN_1405beb20());
                     strText = StringFormat(L"{0} {1}~{2}", GetStatCommonText(nNormal), strMin, strMax);
                 }
                 if (strText.GetLength() != 0)
@@ -749,14 +749,14 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                     CStringW strText;
                     if (FUN_14081dc50(nSpecial))
                     {
-                        CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
-                        CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
+                        CStringW strMin = FormatInt(pRange->FUN_1405beac0());
+                        CStringW strMax = FormatInt(pRange->FUN_1405beae0());
                         strText = StringFormat(L"{0} {1}~{2}", FUN_140630e10(nSpecial), strMin, strMax);
                     }
                     else
                     {
-                        CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
-                        CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
+                        CStringW strMin = FormatRatePercent(pRange->FUN_1405beb00());
+                        CStringW strMax = FormatRatePercent(pRange->FUN_1405beb20());
                         strText = StringFormat(L"{0} {1}~{2}", FUN_140630e10(nSpecial), strMin, strMax);
                     }
                     if (strText.GetLength() != 0)
@@ -780,7 +780,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
 {
     CString strBag = GetTypeName() + "_MaterialSlotBag";
     FUN_14123a190(strBag);
-    FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190));
+    CreateSlotBag(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_ingredientBag"))
     {
         if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
@@ -1050,7 +1050,7 @@ void UIItemMergeOptionDialog::RequestResultTalk()
 int UIItemMergeOptionDialog::CheckMerge()
 {
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-    MS2Ptr<CItem> spMaterial = g_143ab2a90.FUN_140a5d680(m_nMaterialUid);
+    MS2Ptr<CItem> spMaterial = g_143ab2a90.FindItemByUid(m_nMaterialUid);
     if (!spItem)
         return 3;
     if (!spMaterial)
@@ -1062,7 +1062,7 @@ int UIItemMergeOptionDialog::CheckMerge()
         Unk_IngRef ref = m_spProxy->m_ingredients.FUN_14026bdc0(i);
         if (ref->m_b != 0)
         {
-            if (g_143ab2a90.FUN_140a5f780(ref->m_b, 0) < ref->m_c)
+            if (g_143ab2a90.GetItemCountByTag(ref->m_b, 0) < ref->m_c)
                 return 1;
         }
         else
@@ -1137,7 +1137,7 @@ static int FUN_1419d2df0(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return 0;
-    return g_143ab2a90.FUN_140a5d680(spItem->GetItemUid()).get() != 0;
+    return g_143ab2a90.FindItemByUid(spItem->GetItemUid()).get() != 0;
 }
 
 // The sort rank: equipped items (bit 4), merged items (bit 3), then the item rank.

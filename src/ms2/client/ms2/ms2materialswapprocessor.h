@@ -22,9 +22,9 @@ public:
     MaterialSwapper(MaterialSwapPredicate pfnPredicate, NiMaterial* pMaterial);     // 0x1414cf9b0
     // virtual ~MaterialSwapper();                          // 0x1414d14e0, ??_G 0x1414d1780 implicit: the exe dtor stores no vptr
 
-    bool FUN_1414cf940() const { return m_bEnabled; }       // enabled
+    bool IsEnabled() const { return m_bEnabled; }       // enabled
     MaterialSwapPredicate FUN_1414cf960() const { return m_pfnPredicate; }
-    NiMaterial* FUN_1414cf980() { return m_spMaterial; }
+    NiMaterial* GetMaterial() { return m_spMaterial; }
 
 public:
     MaterialSwapPredicate m_pfnPredicate;                   // +0x10
@@ -52,7 +52,7 @@ public:
     void SetUseMS2List(int bUseMS2List);                    // set the use-MS2-list flag
     std::vector<NiPointer<MaterialSwapper> >& GetSwappers();   // the swapper list
     void FUN_1414cfce0(const NiVisibleArray* pkInput, NiVisibleArray& kList, MaterialSwapSavedMap& kSaved);   // apply
-    void FUN_1414cfe70(MaterialSwapSavedMap& kSaved);                                                         // restore
+    void RestoreMaterials(MaterialSwapSavedMap& kSaved);                                                         // restore
 
 public:
     std::vector<NiPointer<MaterialSwapper> > m_swappers;    // +0xe8

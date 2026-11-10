@@ -68,9 +68,9 @@ inline Unk_LdLockMgr* FUN_140535310() { return reinterpret_cast<Unk_LdLockMgr*>(
 
 // The sound event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 
-// The item event registry (FUN_140a6a840).
+// The item event registry (GetItemEventDispatcher).
 class Unk_LdItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -89,8 +89,8 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast bac
 
 void FUN_140d42100(const CString& strName);
 void FUN_140d42050(const CString& strName);
-void FUN_141415600(const CString& strName);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int b, int c);
+void DestroyItemInfoSlot(const CString& strName);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int b, int c);
 
 void FUN_140f57f40(Unk_LdLockMgr* pMgr, int nTab);
 
@@ -161,7 +161,7 @@ void UIItemLockDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140f56c80();
-    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f57f40(FUN_140535310(), 0);
     reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode0();
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
@@ -190,7 +190,7 @@ void UIItemLockDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     FUN_140f57e30();
-    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
     CString strArg("item_lock");
     CString strEvent("dialog_close");
@@ -347,7 +347,7 @@ CString UIItemLockDialog::FUN_140f57c60(unsigned nItemId, int nRarity)
     {
         CString strName;
         strName.Format("%s_%d", (const char*)GetTypeName(), nItemId);
-        FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+        CreateItemInfoSlot(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
         m_lstSlots.AddTail(strName);
         return strName;
     }
@@ -360,7 +360,7 @@ void UIItemLockDialog::FUN_140f57e30()
     for (POSITION pos = m_lstSlots.GetHeadPosition(); pos != 0; m_lstSlots.GetNext(pos))
     {
         CString strName = m_lstSlots.GetAt(pos);
-        FUN_141415600(strName);
+        DestroyItemInfoSlot(strName);
     }
     m_lstSlots.RemoveAll();
 }

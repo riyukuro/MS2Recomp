@@ -112,7 +112,7 @@ MS2_REPLACE_METHOD(0x1413A7DD0, CGuideConditionQuestSatisfied, GetTypeName, 61, 
 // @0x1413a7e20
 int CGuideConditionQuestSatisfied::vfunc_3()
 {
-    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_n20));
+    return ApplyNot(((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7E20, CGuideConditionQuestSatisfied, vfunc_3, 51, 0x97F87638);
 
@@ -142,7 +142,7 @@ MS2_REPLACE_METHOD(0x1413A7F10, CGuideConditionQuestComplete, vfunc_2, 46, 0xBB5
 // @0x1413a7f50
 int CGuideConditionQuestComplete::vfunc_3()
 {
-    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->FUN_140745590(m_n20));
+    return ApplyNot(((class CQuestManager*)FUN_140764020())->FUN_140745590(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7F50, CGuideConditionQuestComplete, vfunc_3, 51, 0x8AC757D6);
 
@@ -181,7 +181,7 @@ MS2_REPLACE_METHOD(0x1413A8070, CGuideConditionQuestProgress, vfunc_2, 46, 0xA95
 // @0x1413a80b0
 int CGuideConditionQuestProgress::vfunc_3()
 {
-    return FUN_1413a55a0(((class CQuestManager*)FUN_140764020())->IsQuestActive(m_n20));
+    return ApplyNot(((class CQuestManager*)FUN_140764020())->IsQuestActive(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A80B0, CGuideConditionQuestProgress, vfunc_3, 51, 0x6667D788);
 
@@ -223,7 +223,7 @@ int CGuideConditionDead::vfunc_3()
     Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(pPC->IsDead());
+    return ApplyNot(pPC->IsDead());
 }
 MS2_REPLACE_METHOD(0x1413A8210, CGuideConditionDead, vfunc_3, 66, 0x63E40D3D);
 
@@ -255,6 +255,6 @@ int CGuideConditionConstructMode::vfunc_3()
     Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(pPC->IsCubeMode1());
+    return ApplyNot(pPC->IsCubeMode1());
 }
 MS2_REPLACE_METHOD(0x1413A8320, CGuideConditionConstructMode, vfunc_3, 66, 0x5E415770);

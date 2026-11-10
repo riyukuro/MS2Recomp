@@ -82,7 +82,7 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramod
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    class Ridee* FUN_1416764a0();
+    class Ridee* GetRidee();
     void* FUN_141676a10();
 public:
     void AddHideReason(unsigned int);   // C3: was free AddHideReason
@@ -114,7 +114,7 @@ unsigned FUN_140b27eb0();
 
 // ---- the factory ----
 // @0x140b26ff0
-MS2Ptr<FieldProperty> FUN_140b26ff0(int nType)
+MS2Ptr<FieldProperty> CreateFieldProperty(int nType)
 {
     switch (nType)
     {
@@ -151,7 +151,7 @@ void FieldPropertyHideMyPCCli::vfunc_4()
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->AddHideReason(1);
-    void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
+    void* q = ((void*)((class PCBase*)(void*)(p))->GetRidee());
     if (q)
         ((class PCBase*)(void*)(q))->AddHideReason(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
@@ -165,7 +165,7 @@ void FieldPropertyHideMyPCCli::vfunc_5()
     if (!p)
         return;
     ((class PCBase*)(void*)(p))->RemoveHideReason(1);
-    void* q = ((void*)((class PCBase*)(void*)(p))->FUN_1416764a0());
+    void* q = ((void*)((class PCBase*)(void*)(p))->GetRidee());
     if (q)
         ((class PCBase*)(void*)(q))->RemoveHideReason(1);
     void* r = ((class PCBase*)(void*)(p))->FUN_141676a10();
@@ -216,7 +216,7 @@ void FieldPropertyAmbientLightCli::vfunc_4()
 }
 
 // @0x140b27a80
-Unk_Vec3f FieldPropertyAmbientLightCli::FUN_140b27a80() const { return m_color.ToColor(); }
+Unk_Vec3f FieldPropertyAmbientLightCli::GetColor() const { return m_color.ToColor(); }
 
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
@@ -237,7 +237,7 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
 }
 
 // @0x140b27c60
-Unk_Vec3f FieldPropertyDirectionalLightCli::FUN_140b27c60() const { return m_color1.ToColor(); }
+Unk_Vec3f FieldPropertyDirectionalLightCli::GetColor() const { return m_color1.ToColor(); }
 
 // @0x140b27ca0
 void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)TSingleton<CameraMgr>::GetInstance())->FUN_140aeb900(m_b); }
@@ -335,8 +335,8 @@ MS2_REPLACE_METHOD(0x140b27860, FieldPropertyLockMyPCCli, vfunc_5, 57, 0xCD9CD6D
 MS2_REPLACE_METHOD(0x140b278a0, FieldPropertyUserTagSymbolCli, vfunc_4, 27, 0x622133FB);
 MS2_REPLACE_METHOD(0x140b278d0, FieldPropertyWeatherCli, vfunc_4, 35, 0x43231132);
 MS2_REPLACE_METHOD(0x140b27900, FieldPropertyWeatherCli, vfunc_5, 29, 0x45C5C1E0);
-MS2_REPLACE_METHOD(0x140b27a80, FieldPropertyAmbientLightCli, FUN_140b27a80, 46, 0xFF3862E1);
-MS2_REPLACE_METHOD(0x140b27c60, FieldPropertyDirectionalLightCli, FUN_140b27c60, 46, 0x77829EFF);
+MS2_REPLACE_METHOD(0x140b27a80, FieldPropertyAmbientLightCli, GetColor, 46, 0xFF3862E1);
+MS2_REPLACE_METHOD(0x140b27c60, FieldPropertyDirectionalLightCli, GetColor, 46, 0x77829EFF);
 MS2_REPLACE_METHOD(0x140b27ca0, FieldPropertyEnableLocalCameraCli, vfunc_4, 36, 0x3EC2A4E7);
 MS2_REPLACE_METHOD(0x140b27cd0, FieldPropertyEnableLocalCameraCli, vfunc_5, 29, 0x41CD19A7);
 MS2_REPLACE_METHOD(0x140b27d00, FieldPropertyPhotoStudioCli, vfunc_4, 32, 0x9E7FC2AE);

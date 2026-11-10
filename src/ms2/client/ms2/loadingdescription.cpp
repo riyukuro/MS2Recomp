@@ -65,7 +65,7 @@ public:
 };
 
 // @0x14144fa40
-static CMsTime FUN_14144fa40(ATL::CAtlArray<int>& aTime)
+static CMsTime MakeMsTimeFromArray(ATL::CAtlArray<int>& aTime)
 {
     int nYear = aTime[0];
     int nMonth = aTime[1];
@@ -142,8 +142,8 @@ CStringW CLoadingDescriptionTable::GetRandomTip()
             XmlSplit(spDesc->m_strEnd, reinterpret_cast<ATL::CAtlArray<unsigned>&>(aEnd), "-");   // C3: was FUN_140177e10 (xmlattr.h, CAtlArray<unsigned>)
             if (aStart.GetCount() != 6 || aEnd.GetCount() != 6)
                 continue;
-            CMsTime tStart = FUN_14144fa40(aStart);
-            CMsTime tEnd = FUN_14144fa40(aEnd);
+            CMsTime tStart = MakeMsTimeFromArray(aStart);
+            CMsTime tEnd = MakeMsTimeFromArray(aEnd);
             if (tStart.Get() != 0 && now < tStart)
                 continue;
             if (tEnd.Get() != 0 && now > tEnd)

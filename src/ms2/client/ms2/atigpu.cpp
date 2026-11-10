@@ -14,7 +14,7 @@ typedef int (__cdecl* Unk_ADLQueryAdapter)(int nAdapterIndex, void* pInfo);
 
 // The ADL memory callbacks (ADL_Main_Memory_Alloc / ADL_Main_Memory_Free of the SDK sample).
 // @0x1409f0ec0
-void* FUN_1409f0ec0(int nSize)
+void* Alloc(int nSize)
 {
     void* p = malloc(nSize);
     return p;
@@ -84,7 +84,7 @@ int ATiGPU::vfunc_1()
         m_pfnAdapterActiveGet = GetProcAddress(m_hModule, "ADL_Adapter_Active_Get");
         if (m_pfnMainControlCreate != 0)
         {
-            if (((Unk_ADLMainControlCreate)m_pfnMainControlCreate)(FUN_1409f0ec0, 1) != 0)
+            if (((Unk_ADLMainControlCreate)m_pfnMainControlCreate)(Alloc, 1) != 0)
                 return 0;
         }
         else

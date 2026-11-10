@@ -197,7 +197,7 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
             if (spBox.get() != 0)
             {
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
-                spBox->FUN_140b76940(CStringW(strMessage));
+                spBox->AddStringArg(CStringW(strMessage));
                 FUN_140d73c60(spBox);
             }
         }
@@ -255,7 +255,7 @@ bool UIWeddingPageSkill::vfunc_1()
                 if (spSkill == 0)
                     continue;
                 obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nAdditionalEffectId, nSkillLevel, CString("name")));
-                obj.FUN_1409c4a30("status", spPerk->GetValue(nGrade));
+                obj.SetMemberFloat("status", spPerk->GetValue(nGrade));
                 obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
@@ -458,7 +458,7 @@ void UIWeddingPageMission::FUN_140fe8fb0()
             MS2Ptr<CQuestData> spData = spQuest->GetData();
             CStringW strDesc = FUN_1416e5350(spQuest->FUN_140bfc580(), 0);
             ASObj row(2);
-            row.FUN_1409c0d20("id", spQuest->FUN_140bfc580());
+            row.SetMemberUInt("id", spQuest->FUN_140bfc580());
             row.FUN_1407cbb20("desc", CStringW(strDesc));
             row.FUN_1407cb9c0("satisfied", spQuest->IsComplete());
             row.FUN_1407cb9c0("completed", spQuest->IsRewarded());

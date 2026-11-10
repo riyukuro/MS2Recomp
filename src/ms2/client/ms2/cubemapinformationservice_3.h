@@ -125,7 +125,7 @@ public:
     bool HasCubeAtPoint(Vector3 pt);
     bool HasCubeAtKey(int nKey);
     bool HasCubeAtCell(Unk_Int3 cell);
-    Unk_CMISTree<287>* FUN_1410b7fe0(int nKey);
+    Unk_CMISTree<287>* GetColumn(int nKey);
     Cube* FUN_1410b80d0(MS2Ptr<Cube> spCube, int nZ);
     bool FUN_1410b82c0(MS2Ptr<Cube> spCube);
     bool FUN_1410b8420(MS2Ptr<Cube> spCube, int nZ);
@@ -149,7 +149,7 @@ public:
     int CountCubes();
     int CountCubesByItemId(int nItemId);
     int FUN_1410b9d80(__int64 nId);
-    Unk_CubeHeightIndex* FUN_1410b9e70();
+    Unk_CubeHeightIndex* GetHeightIndex();
     int CountCubesByItemIdAndOwner(int nItemId, __int64 nOwnerId);
     float DirectionToAngle(int nDir);
     int VectorToDirection(Vector3 ptDir);
@@ -192,7 +192,7 @@ public:
     void FUN_1410d5ab0();
     void FUN_1410d5ae0(int v);
     int FUN_1410d5b00();
-    CStringW FUN_1410d5d80(int nMessage);   // the message's string-table text (cubemapinformationservice_head.cpp)
+    CStringW GetMessageText(int nMessage);   // the message's string-table text (cubemapinformationservice_head.cpp)
     void SetTimerEnabled(bool b);
     bool HasTimerExpired(int n);
     int FUN_1410d2ee0();
@@ -235,7 +235,7 @@ public:
     int FUN_1410ca900(int nGroup);
     int FUN_1410c88b0(PCBase* pActor);
     int FUN_1410c81c0(int nGroup, int* pnWidth, int* pnHeight, int* pnDepth);
-    void FUN_1410c7a50(int nA, int nB, int nState, __int64 nValue);
+    void SetSaleState(int nA, int nB, int nState, __int64 nValue);
     int FUN_1410c6980(class Cube* pCube, int nKind, MS2Ptr<CItemData> spItem, __int64 nOwner, int nMode);
     int FUN_1410cba80(int nDir, int nField50, Unk_Int3* pCell, Unk_CMISPt3* pPos);
     void AddOwner(Unk_CubeOwnerPtr spOwner);
@@ -332,7 +332,7 @@ public:
     bool FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float fRot, int nField50, int nField54, int nUnused, int nFieldD8);
     void FUN_1410bec60(MS2Ptr<Cube> spCube);
     void FUN_1410d4cb0(int nItemId, bool bFlag);
-    bool FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float fRot, class CubeItemInfo* pInfo, const efd::utf8string& strName,
+    bool CreateCube(__int64 nOwner, Unk_Int3 pt, float fRot, class CubeItemInfo* pInfo, const efd::utf8string& strName,
         int nField50, int nField54, unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
     egf::EntityPtr FUN_1410bc3d0(MS2Ptr<FittingDollData> rec);
     egf::EntityPtr FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId);

@@ -34,7 +34,7 @@ public:
     virtual int vfunc_15();                                 // 15 0x1417cd740
     virtual int vfunc_16();                                 // 16 0x1417ce630
     virtual void vfunc_21(int n);                           // 21 0x1417ce5b0 (-> bore wait)
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417ce680
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417ce680
     virtual void vfunc_29(MS2Ptr<Unk_StateArg29> p);        // 29 0x1417cf4f0
 
     void FUN_1417ce6f0(unsigned nSeq);                      // stand animation (key 0 / 1 in the water)

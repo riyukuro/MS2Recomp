@@ -86,7 +86,7 @@ void FUN_141275260(int nStringId, int nA, int nB);          // system message
 
 // Block checks (blockmanager.cpp).
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 
 // The event log: "upload_exception" reports.
 template <class A, class B> CString Unk_SocketFormat(const char* szFormat, const A& a, const B& b);   // C3: was FUN_140741200
@@ -287,14 +287,14 @@ class Unk_UgcTextureCache
 public:
     NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf);
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 // A player in the field (Unk_UgcWorld::FUN_141bd1290 finds it by object id).
 class Unk_UgcWearer : public PC
 {
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the table data of an item id
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // the scene node of an entity
-NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName);
+NiAVObjectPtr FindMeshByName(NiAVObjectPtr spRoot, const CString& strName);
 int FUN_1414232f0(NiAVObjectPtr spMesh, NiTexturePtr spTexture);
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // the scene node of an entity
@@ -306,7 +306,7 @@ class Unk_PCBaseComp_b18 : public RideeItemInfo
 CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wide
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
 // Hidden (reported) content.
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
 
 unsigned __int64 FUN_14088dbf0(int nDate, int nHour);       // the reservation key of an hour
 // The platform services: vfunc_54 sets a character's profile image (1 = changed).
@@ -643,7 +643,7 @@ bool CUgcManager::BeginUpload()
 {
     {
         int nAction = 3;
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(nAction);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(nAction);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, nAction, 0);
@@ -698,7 +698,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
         return;
     }
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(5);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(5);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, 5, 0);
@@ -739,7 +739,7 @@ void CUgcManager::FUN_14187fb30()
         return;
     }
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(3);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(3);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, 3, 0);
@@ -773,7 +773,7 @@ void CUgcManager::FUN_14187fd80()
         return;
     }
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(3);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(3);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, 3, 0);
@@ -807,7 +807,7 @@ void CUgcManager::FUN_14187ffe0()
         return;
     }
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(8);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(8);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, 8, 0);
@@ -1176,7 +1176,7 @@ int CUgcManager::FUN_141882020()
     if (bDirect != 0)
     {
         {
-            BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(3);
+            BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(3);
             if (blocked.get() != 0)
                 return 0x7a;
         }
@@ -1190,7 +1190,7 @@ int CUgcManager::FUN_141882020()
             spCtrl->m_upload.m_uid = 0;
             spCtrl->m_upload.m_strName = "";
             spCtrl->m_upload.m_nType = 1;
-            BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(3);
+            BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(3);
             if (blocked.get() != 0)
             {
                 nResult = 0x7a;
@@ -1331,7 +1331,7 @@ void CUgcManager::FUN_1418826a0(int nResult)
     }
     if (nResult == 0x7a)
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(3);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(3);
         if (blocked.get() != 0)
         {
             CStringW strTitle = GetStringCommon(0x446);
@@ -2099,7 +2099,7 @@ int CUgcManager::ApplyImageToPlayerItem(CUgcItemPC* pItem, CString strPath)
 {
     if (pItem == 0)
         return 0;
-    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (spTexture == 0)
         return 0;
     return FUN_141886a90(pItem, spTexture);
@@ -2139,7 +2139,7 @@ int CUgcManager::ApplyImageToCube(CUgcItemCube* pItem, CString strPath, unsigned
 {
     if (pItem == 0)
         return 0;
-    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (spTexture == 0)
         return 0;
     return FUN_141886de0(pItem, spTexture);
@@ -2162,7 +2162,7 @@ int CUgcManager::FUN_141886de0(CUgcItemCube* pItem, NiTexture* pTexture)
     NiAVObjectPtr spRoot = FUN_141b6ef70(pItem->m_entityId);
     if (spRoot == 0)
         return 0;
-    NiAVObjectPtr spMesh = FUN_141423480(spRoot, strMesh);
+    NiAVObjectPtr spMesh = FindMeshByName(spRoot, strMesh);
     if (spMesh)
         FUN_1414232f0(spMesh, pTexture);
     return 1;
@@ -2175,7 +2175,7 @@ int CUgcManager::ApplyImageToRidee(CUgcItemRidee* pItem, CString strPath, unsign
 {
     if (pItem == 0)
         return 0;
-    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (spTexture == 0)
         return 0;
     return FUN_141887160(pItem, spTexture);
@@ -2198,7 +2198,7 @@ int CUgcManager::FUN_141887160(CUgcItemRidee* pItem, NiTexture* pTexture)
     NiAVObjectPtr spRoot = FUN_141b6ef70(pItem->m_entityId);
     if (spRoot == 0)
         return 0;
-    NiAVObjectPtr spMesh = FUN_141423480(spRoot, strMesh);
+    NiAVObjectPtr spMesh = FindMeshByName(spRoot, strMesh);
     if (spMesh)
         FUN_1414232f0(spMesh, pTexture);
     return 1;
@@ -2220,7 +2220,7 @@ int CUgcManager::FUN_1418873c0(Cube* pCube)
     if (pLook == 0)
         return 0;
     CString strPath = FUN_1410280d0(2, pLook->m_strUrl);
-    NiTexture* pTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexture* pTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (pTexture == 0)
     {
         FUN_1418845a0(pCube->item, pCube->entity->GetEntityID());
@@ -2232,7 +2232,7 @@ int CUgcManager::FUN_1418873c0(Cube* pCube)
     NiAVObjectPtr spRoot = FUN_141b6efc0(pCube->entity);
     if (spRoot == 0)
         return 0;
-    NiAVObjectPtr spMesh = FUN_141423480(spRoot, strMesh);
+    NiAVObjectPtr spMesh = FindMeshByName(spRoot, strMesh);
     if (spMesh)
         FUN_1414232f0(spMesh, pTexture);
     return 1;
@@ -2254,20 +2254,20 @@ int CUgcManager::FUN_141887810(Ridee* pRidee)
     if (spData == 0)
         return 0;
     CString strPath = FUN_1410280d0(7, spInfo->m_look.m_strUrl);
-    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (spTexture == 0)
     {
-        if (pRidee->FUN_14123c410() != 0)
-            FUN_141884830(spInfo, pRidee->FUN_14123c410()->GetEntityID());
+        if (pRidee->GetEntity() != 0)
+            FUN_141884830(spInfo, pRidee->GetEntity()->GetEntityID());
         return 0;
     }
     CString strMesh = spData->cubeTextureName.mesh;
     if (strMesh.GetLength() == 0)
         return 0;
-    NiAVObjectPtr spRoot = FUN_141b6efc0(pRidee->FUN_14123c410());
+    NiAVObjectPtr spRoot = FUN_141b6efc0(pRidee->GetEntity());
     if (spRoot == 0)
         return 0;
-    NiAVObjectPtr spMesh = FUN_141423480(spRoot, strMesh);
+    NiAVObjectPtr spMesh = FindMeshByName(spRoot, strMesh);
     if (spMesh)
         FUN_1414232f0(spMesh, spTexture);
     return 1;
@@ -2316,7 +2316,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
                 FUN_141888770(spEntity, spTexture);
         }
     }
-    else if (reinterpret_cast<BlindManager*>(FUN_1409c1730())->IsBlockedId(2, spBanner->m_upload.m_uid))
+    else if (reinterpret_cast<BlindManager*>(GetBlindManager())->IsBlockedId(2, spBanner->m_upload.m_uid))
     {
         FUN_1418885b0(nBannerId);
     }
@@ -2355,7 +2355,7 @@ int CUgcManager::FUN_1418881e0(int nBannerId, CString strPath, MS2Ptr<CUgcRegist
     efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
     if (spEntity == 0)
         return 0;
-    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
+    NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)GetNifLoadingService())->FUN_141553eb0(strPath, 0);
     if (spTexture == 0)
     {
         FUN_141884af0(spBanner);
@@ -3655,7 +3655,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
     if (nType == 0xe)
         spItem = DAT_143ab2e20.FUN_1408fbf90(itemUid);
     else
-        spItem = g_143ab2a90.FUN_140a5d680(itemUid);
+        spItem = g_143ab2a90.FindItemByUid(itemUid);
     if (spItem == 0)
         return;
     spItem->SetUgcLook(&look);
@@ -3684,7 +3684,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != pWearer)
         return;
-    CItem* pItem = g_143ab2a90.FUN_140a5d680(itemUid).get();
+    CItem* pItem = g_143ab2a90.FindItemByUid(itemUid).get();
     if (pItem == 0)
         return;
     pItem->SetUgcLook(&look);
@@ -3936,7 +3936,7 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
         if (bOk == 0)
             throw Exception(1);
         __int64 itemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(itemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(itemUid);
         if (spItem == 0)
             throw Exception(2);
         if (m_spUpload == 0)

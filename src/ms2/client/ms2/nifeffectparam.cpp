@@ -14,17 +14,17 @@
 // MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VTiXmlDocument@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VTiXmlDocument@@@std@@@std@@@std@@@0@AEAV10@@Z 0x14154eba0 ; prop
 // MS2-PIN: ??0?$SmartPointer@VNiAlphaController@@@efd@@QEAA@PEAVNiAlphaController@@@Z 0x14154ed20 ; unique
 // MS2-PIN: ??0?$SmartPointer@VNiFloatInterpolator@@@efd@@QEAA@PEAVNiFloatInterpolator@@@Z 0x14154ed60 ; unique
-// MS2-PIN: ??0?$SmartPointer@VUnk_SeparateNode@@@efd@@QEAA@PEAVUnk_SeparateNode@@@Z 0x14154eda0 ; unique
+// MS2-PIN: ??0?$SmartPointer@VSeparateNode@@@efd@@QEAA@PEAVSeparateNode@@@Z 0x14154eda0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCBirdMovement@@@@QEAA@PEAVCBirdMovement@@@Z 0x14154ede0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCNifEffectParam@@@@QEAA@PEAVCNifEffectParam@@@Z 0x14154ee10 ; prop
 // MS2-PIN: ??1?$SmartPointer@VNiAlphaController@@@efd@@QEAA@XZ 0x14154f0b0 ; unique
 // MS2-PIN: ??1?$SmartPointer@VNiFloatInterpolator@@@efd@@QEAA@XZ 0x14154f0e0 ; unique
-// MS2-PIN: ??1?$SmartPointer@VUnk_SeparateNode@@@efd@@QEAA@XZ 0x14154f110 ; unique
+// MS2-PIN: ??1?$SmartPointer@VSeparateNode@@@efd@@QEAA@XZ 0x14154f110 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCNifEffectParam@@@@QEAAAEAV1@PEAVCNifEffectParam@@@Z 0x14154f2f0 ; unique
 // MS2-PIN: ??B?$SmartPointer@VNiFloatInterpolator@@@efd@@QEBAPEAVNiFloatInterpolator@@XZ 0x14154f480 ; unique
-// MS2-PIN: ??B?$SmartPointer@VUnk_SeparateNode@@@efd@@QEBAPEAVUnk_SeparateNode@@XZ 0x14154f490 ; unique
+// MS2-PIN: ??B?$SmartPointer@VSeparateNode@@@efd@@QEBAPEAVSeparateNode@@XZ 0x14154f490 ; unique
 // MS2-PIN: ??C?$SmartPointer@VNiAlphaController@@@efd@@QEBAPEAVNiAlphaController@@XZ 0x14154f500 ; unique
-// MS2-PIN: ??C?$SmartPointer@VUnk_SeparateNode@@@efd@@QEBAPEAVUnk_SeparateNode@@XZ 0x14154f510 ; unique
+// MS2-PIN: ??C?$SmartPointer@VSeparateNode@@@efd@@QEBAPEAVSeparateNode@@XZ 0x14154f510 ; unique
 // MS2-PIN: ?GetParent@NiAVObject@@QEAAPEAVNiNode@@XZ 0x14154f9e0 ; unique
 // MS2-PIN: ?AddRef@?$MS2Ptr@VCBirdMovement@@@@AEBAXXZ 0x141550080 ; prop
 // MS2-PIN: ?AddRef@?$MS2Ptr@VCNifEffectParam@@@@AEBAXXZ 0x1415500b0 ; prop
@@ -254,7 +254,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, efd::Point3&);   // C3: was FUN_140874670
 
 // The nif / texture cache service (CNifLoadingService::s_instance).
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
            // release by path
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
@@ -450,7 +450,7 @@ bool CNifEffectParam::vfunc_3()
 {
     if (m_strFilePath.IsEmpty())
         return true;
-    return ((class CNifLoadingService*)FUN_140a0afd0())->IsCached(FUN_140cc2ba0("Effect", m_strFilePath));
+    return ((class CNifLoadingService*)GetNifLoadingService())->IsCached(FUN_140cc2ba0("Effect", m_strFilePath));
 }
 MS2_REPLACE_METHOD(0x1415491F0, CNifEffectParam, vfunc_3, 162, 0xE876FA96);
 
@@ -468,9 +468,9 @@ bool CNifEffectParam::vfunc_5(int n)
 {
     if (m_strFilePath.IsEmpty())
         return true;
-    if (((class CNifLoadingService*)FUN_140a0afd0()) != 0)
+    if (((class CNifLoadingService*)GetNifLoadingService()) != 0)
     {
-        if (!((class CNifLoadingService*)FUN_140a0afd0())->Preload(FUN_140cc2ba0("Effect", m_strFilePath), false, n))
+        if (!((class CNifLoadingService*)GetNifLoadingService())->Preload(FUN_140cc2ba0("Effect", m_strFilePath), false, n))
             return false;
     }
     return true;
@@ -512,13 +512,13 @@ public:
     class GameObject* GetOwner();                                    // 0x140a533b0
     unsigned __int64 GetValue38();                                   // 0x140a53440: the target's attach object
 };
-void FUN_141207fb0(struct Unk_HoldTarget*, float);   // C3: was CBirdMovement::FUN_141207fb0 (equipmodel.cpp)
+void SetScale(struct Unk_HoldTarget*, float);   // C3: was CBirdMovement::SetScale (equipmodel.cpp)
 bool FUN_14028d470(float a, float b);                               // nearly equal
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was efd::ServiceManager*
 #define FUN_1413f9850() ((efd::ServiceManager*)FUN_1413f9850())
 
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
-void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
+void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
 // (0x140a0b330 is the private NiAVObject::SetBit, called by NiAVObject::MS2SetFlag0800)
 
 // Transforms (the exe's NiTransform helpers) and node transforms.
@@ -567,7 +567,7 @@ void NiStudioShaderContext::AddNifPath(NiAVObject* pkObject, const char* pszPath
 #endif
 // remember the nif path of the node
 // @0x141550050
-inline void FUN_141550050(void* pNode, const char* pszPath)
+inline void AddNifPath(void* pNode, const char* pszPath)
 {
     NiGetStudioShaderContext().AddNifPath(static_cast<NiAVObject*>(pNode), pszPath);
 }
@@ -584,7 +584,7 @@ inline void FUN_141550050(void* pNode, const char* pszPath)
 
 
 
-#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+#include "ms2/guess/separatenode.h"   // SeparateNode (was a local view)
 //
 //
 //
@@ -687,7 +687,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         m_spEffectObject = new (efd::MemHint(efd::MemHint::NONE)) CEffectObject;
 
 
-        m_spEffectObject->FUN_140a53880(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor(), m_spParam->m_strEffectObjectKfm, m_spParam->m_fScale);
+        m_spEffectObject->Init(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor(), m_spParam->m_strEffectObjectKfm, m_spParam->m_fScale);
 
         ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb1e0((CEffectObject*)m_spEffectObject, 0, 1);
     }
@@ -697,7 +697,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         MS2Ptr<CBirdMovement> spBird(new CBirdMovement);
         spBird->SetMaxLength(m_spParam->m_fMaxLength);
         spBird->SetMinLength(m_spParam->m_fMinLength);
-        FUN_141207fb0((struct Unk_HoldTarget*)spBird.operator->(), m_spParam->m_fStep);
+        SetScale((struct Unk_HoldTarget*)spBird.operator->(), m_spParam->m_fStep);
         spBird->SetVelocity(m_spParam->m_fVelocity);
         spRoot->SetMovement((class INodeMovement*)(spBird.get()));
     }
@@ -726,23 +726,23 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         FUN_14154c260(pTarget);
         break;
     case 3:
-        FUN_14154c440(pTarget, 4);
+        AttachToEquipSlot(pTarget, 4);
         break;
     case 4:
-        FUN_14154c440(pTarget, 5);
+        AttachToEquipSlot(pTarget, 5);
         break;
     }
     if (m_spTarget.operator==((NiNode*)0))
         return false;
 
-    FUN_141550050((EffectNode*)(spRoot), m_spParam->m_strFilePath);
+    AddNifPath((EffectNode*)(spRoot), m_spParam->m_strFilePath);
     if (FUN_14028d470(m_fDuration, 0.0f))
     {
         if (m_spParam->m_bBipedLoop)
             return false;
         m_fDuration = FUN_14154b470();
     }
-    float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
     static_cast<NiNode*>(m_spTarget.operator->())->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), true);
     NiAVObject* pTop = static_cast<NiAVObject*>(m_spTarget.operator NiNode*());
     while (pTop->GetParent() != 0)
@@ -752,7 +752,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         static_cast<NiAVObject*>(m_spTarget.operator->())->Update(fNow, false);
     else
         static_cast<NiAVObject*>(m_spRoot.operator->())->Update(fNow, false);
-    FUN_140a0b2a0((class NiAVObject*)(m_spRoot.operator NiNode*()));
+    DetachFromParent((class NiAVObject*)(m_spRoot.operator NiNode*()));
 
     Unk_SkipCheck kQuery;
 
@@ -830,7 +830,7 @@ bool CNifEffect::vfunc_9()
     }
     if (m_b2e && m_spParam->m_bBipedLoop && m_fStartTime != 0.0f)
     {
-        double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+        double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
         float fElapsed = (float)(dNow - m_fStartTime);
         if (fElapsed >= m_fDuration)
         {
@@ -868,7 +868,7 @@ void CNifEffect::vfunc_4()
 {
     if (m_spTarget.operator NiNode*() != 0)
     {
-        double dNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+        double dNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
         float fElapsed = (float)(dNow - ((class CEffect*)(class CEffect*)(this))->GetStartTime());
         if (m_bSplit && (m_spSplit.operator NiNode*() ? true : false))
             static_cast<NiNode*>(m_spSplit.operator->())->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), true);
@@ -922,8 +922,8 @@ MS2_REPLACE_METHOD(0x14154AF40, CNifEffect, vfunc_6, 311, 0xC6881624);
 void CNifEffect::vfunc_7()
 {
     FUN_141773cc0(((void*)((class ApplyEffect*)(void*)(((void*)TSingleton<ApplyEffect>::GetInstance())))->GetSoftParticles()), m_spRoot.operator NiNode*());
-    FUN_140a0b2a0((class NiAVObject*)(m_spRoot.operator NiNode*()));
-    FUN_140a0b2a0((class NiAVObject*)(m_spSplit.operator NiNode*()));
+    DetachFromParent((class NiAVObject*)(m_spRoot.operator NiNode*()));
+    DetachFromParent((class NiAVObject*)(m_spSplit.operator NiNode*()));
     if (m_spEffectObject != 0)
     {
         ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb7f0(m_spEffectObject.operator->(), 0);
@@ -951,14 +951,14 @@ int CNifEffect::vfunc_11()
         return 1;
     if (m_bSplit)
         return 1;
-    double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
     if (dNow < m_dStartTime + (double)m_fDuration)
     {
         m_bSplit = true;
         m_spSplit.operator=((NiNode*)(new (efd::MemHint(efd::MemHint::NONE)) NiNode(0)));
         ((NiAVObject*)(m_spSplit.operator->()))->SetLocalTransform(*(const NiTransform*)(((void*)&((class NiAVObject*)(void*)(m_spTarget.operator->()))->GetWorldTransform())));
         m_spTarget.operator=((NiNode*)(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()));
-        FUN_140a0b2a0((class NiAVObject*)(m_spRoot.operator NiNode*()));
+        DetachFromParent((class NiAVObject*)(m_spRoot.operator NiNode*()));
         static_cast<NiNode*>(m_spSplit.operator->())->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), false);
         static_cast<NiNode*>(m_spTarget.operator->())->AttachChild(static_cast<NiAVObject*>(m_spSplit.operator NiNode*()), true);
     }
@@ -1090,7 +1090,7 @@ void CNifEffect::AttachToModelNode(Unk_EffectTarget* pTarget)
             TPtr<PCBase> spPC(efd::DynamicCast<PC, GameObject>(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
             if (spPC.get() != 0)
             {
-                MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e2610((spFound).operator NiAVObject*(), 0, 6, true);
+                MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e2610((spFound).operator NiAVObject*(), 0, 6, true);
                 bool bHasItem = spEquip && spEquip->GetItem();
                 if (bHasItem)
                 {
@@ -1139,18 +1139,18 @@ void CNifEffect::FUN_14154c260(Unk_EffectTarget* pTarget)
 
 // @0x14154c440
 // Attach types 3 / 4: hang the effect on the model of the weapon in equip slot nSlot.
-void CNifEffect::FUN_14154c440(Unk_EffectTarget* pTarget, int nSlot)
+void CNifEffect::AttachToEquipSlot(Unk_EffectTarget* pTarget, int nSlot)
 {
     TPtr<PCBase> spPC(efd::DynamicCast<PC, GameObject>(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
     if (spPC == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e1860(nSlot, 6, 0);
+    MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e1860(nSlot, 6, 0);
     if (spEquip == 0)
         return;
     m_spTarget = spEquip.operator->()->FindPoint01Node();
     FUN_14154c580();
 }
-MS2_REPLACE_METHOD(0x14154C440, CNifEffect, FUN_14154c440, 307, 0x560D08B0);
+MS2_REPLACE_METHOD(0x14154C440, CNifEffect, AttachToEquipSlot, 307, 0x560D08B0);
 
 // @0x14154c580
 // Wraps the root in a SeparateNode when only some parts of the parent's transform are followed, and makes the root
@@ -1159,7 +1159,7 @@ void CNifEffect::FUN_14154c580()
 {
     if (!m_spParam->m_bitsUpdate.FUN_140afc5a0())
     {
-        NiPointer<Unk_SeparateNode> spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(m_spParam->m_bitsUpdate);
+        NiPointer<SeparateNode> spSep = new (efd::MemHint(efd::MemHint::NONE)) SeparateNode(m_spParam->m_bitsUpdate);
         spSep->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), false);
         m_spRoot.operator=((NiNode*)(spSep));
     }
@@ -1176,14 +1176,14 @@ MS2_REPLACE_METHOD(0x14154C580, CNifEffect, FUN_14154c580, 611, 0x338E1372);
 
 // @0x14154c7f0
 // Logs the "LOD level" line with a description of the target node / equipped item.
-void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
+void CNifEffect::LogLodLevel(Unk_EffectTarget* pTarget)
 {
     CString strWhere;
     TPtr<PCBase> spPC(efd::DynamicCast<PC, GameObject>(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
     if ((spPC.get() ? true : false) && (m_spTarget.operator NiNode*() ? true : false))
     {
         NiNodePtr kTarget(m_spTarget);
-        MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e2610(static_cast<NiAVObject*>(kTarget.operator NiNode*()), 0, 6, false);
+        MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e2610(static_cast<NiAVObject*>(kTarget.operator NiNode*()), 0, 6, false);
         if (spEquip.get())
         {
             unsigned nItemId = spEquip->FUN_1411dc820();
@@ -1194,7 +1194,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
             if ((m_spModel).operator NiAVObject*())
             {
                 NiAVObjectPtr spModel = m_spModel;
-                MS2Ptr<CEquipItem> spModelEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e2610((spModel).operator NiAVObject*(), 0, 6, false);
+                MS2Ptr<CEquipItem> spModelEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e2610((spModel).operator NiAVObject*(), 0, 6, false);
                 if (spModelEquip.get())
                 {
                     unsigned nItemId = spModelEquip->FUN_1411dc820();
@@ -1223,7 +1223,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
 
 
 
-MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, FUN_14154c7f0, 1827, 0x12B3C2BF);
+MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, LogLodLevel, 1827, 0x12B3C2BF);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x14154cf20
@@ -1263,7 +1263,7 @@ MS2_REPLACE_METHOD(0x14154CF20, CNifEffect, FUN_14154cf20, 425, 0xB022B7AF);
 NiNodePtr CNifEffect::FUN_14154d0d0(const CString& strPath, int nA, int nB)
 {
     NiNodePtr kWrapper(new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
-    if (NiNodePtr kNode = ((NiNode*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(strPath), false, 5, nA, nB)).operator NiAVObject*()))))
+    if (NiNodePtr kNode = ((NiNode*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((((class CNifLoadingService*)GetNifLoadingService())->Load(CString(strPath), false, 5, nA, nB)).operator NiAVObject*()))))
     {
         if (((void*)kNode.operator->()->GetExtraData(DAT_143ae5198)) == 0)
             kNode.operator->()->AddExtraData(DAT_143ae5198, new (efd::MemHint(efd::MemHint::NONE)) NiStringExtraData((const char*)strPath));
@@ -1288,7 +1288,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
     if ((unsigned __int64)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetValue38() > 0)
     {
         CString strName(pszName);
-        spFound = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e2a60((__int64)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetValue38(), strName, bFlag);
+        spFound = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e2a60((__int64)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetValue38(), strName, bFlag);
     }
     if ((spFound).operator==((NiAVObject*)0))
     {
@@ -1298,7 +1298,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
         {
             if ((pObj)->GetName() != pszName)
                 continue;
-            MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->FUN_1416561a0())->FUN_1411e2610(pObj, 1, nKind, bFlag);
+            MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)static_cast<PC*>(spPC.operator->())->GetEquipment())->FUN_1411e2610(pObj, 1, nKind, bFlag);
             bool bSkip = spEquip == 0 || spEquip->GetItem() == 0;
             if (bSkip)
                 continue;
@@ -1336,13 +1336,13 @@ template const NiObjectPtr& NiTLargeArray<NiObjectPtr, NiTNewInterface<NiObjectP
 template bool efd::SmartPointer<NiAVObject>::operator!=(NiAVObject*) const;                   // @0x14155be40 (CreateCachedNif)
 
 // @0x14155d9a0
-NiSearchPath* FUN_14155d9a0(NiStream* pStream)
+NiSearchPath* GetSearchPath(NiStream* pStream)
 {
     return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_pkSearchPath;
 }
 
 // @0x14155d950
-unsigned FUN_14155d950(NiStream* pStream)
+unsigned GetTopObjectCount(NiStream* pStream)
 {
     return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_kTopObjects.GetSize();
 }
@@ -1533,7 +1533,7 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
     unsigned __int64 nSize;
     if (GetFileSystem()->FUN_1403972f0(strPath, &pBuf, &nSize, &strDir))
     {
-        FUN_14155d9a0(pStream)->SetReferencePath(strDir.c_str());
+        GetSearchPath(pStream)->SetReferencePath(strDir.c_str());
         if (!pStream->Load(static_cast<char*>(pBuf), (int)nSize))
         {
             delete pStream;
@@ -1544,7 +1544,7 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
         NiFree(pBuf);
     }
     NiStream* pFound = 0;
-    if (pStream != 0 && FUN_14155d950(pStream) > 0)
+    if (pStream != 0 && GetTopObjectCount(pStream) > 0)
     {
         if (bKeep)
         {
@@ -1596,7 +1596,7 @@ extern CLockCriticalSection DAT_143ae1f58;
 
 #include "ms2/client/ms2/ms2.h"   // C3: MS2 (CLASS_ID 0x06100001), the service AddDependency<> is instantiated on
 struct Unk_NifDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
@@ -1605,7 +1605,7 @@ public:
 };
 void FUN_1414a26b0();
 typedef efd::SmartPointer<NiTexture> NiTexturePtr;
-void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData);    // SetRendererData (+0x40)
+void SetRendererData(NiSourceTexture* pTexture, NiTexture::RendererData* pData);    // SetRendererData (+0x40)
 void FUN_140399100(CString strPattern, CString strDirectory, ATL::CAtlArray<CString>& aOut, CString strExclude, bool bLocalOnly);
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
@@ -1746,12 +1746,12 @@ bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
         {
             DAT_143ae1f20 = 0;
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
         }
         else
         {
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *beforeReset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
         }
     }
     return true;
@@ -1762,7 +1762,7 @@ bool CNifLoadingService::OnDeviceLost(void* pRenderer)
 {
     DAT_143ae1f20 = 1;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Lost Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-        ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+        ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
     return true;
 }
 
@@ -1812,7 +1812,7 @@ efd::AsyncResult CNifLoadingService::OnShutdown()
     }
     m_bShutdown = 1;
     if (TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/ != 0)
-        ((class CFilePreload*)(void*)(TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/))->FUN_1412102e0();
+        ((class CFilePreload*)(void*)(TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/))->Stop();
     if (TSingleton<CNiStreamLoadThread>::GetInstance() != 0)
     {
         TSingleton<CNiStreamLoadThread>::GetInstance()->Stop();
@@ -1851,11 +1851,11 @@ void CNifLoadingService::RefreshTextures()
                         NiTexture::RendererData* pOld = ((class NiTexture*)(class NiSourceTexture*)(pTexture))->GetRendererData();
                         if (pOld != 0)
                         {
-                            FUN_141562500(pTexture, 0);
+                            SetRendererData(pTexture, 0);
                             delete pOld;
                         }
                         pTexture->DestroyAppPixelData();
-                        spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                        spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                     }
                 }
             }
@@ -1870,7 +1870,7 @@ void CNifLoadingService::Sweep()
 {
     if (DAT_143ae1f20 == 1)
         return;
-    float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
     if (m_kSweepTimer.Check(60000) == 0)
         return;
     m_kNifCount.nNotCache = 0;
@@ -2164,21 +2164,21 @@ void CNifLoadingService::DumpTextures()
 }
 MS2_REPLACE_METHOD(0x141554F60, CNifLoadingService, DumpTextures, 1653, 0x971C8348);
 
-struct Unk_VtmCaches { unsigned FUN_14151e770(); unsigned FUN_14151e790(); };   // C3: the cache counts
-#define FUN_14151e770() ((Unk_VtmCaches*)this)->FUN_14151e770()
-#define FUN_14151e790() ((Unk_VtmCaches*)this)->FUN_14151e790()
+struct Unk_VtmCaches { unsigned GetNifCacheCount(); unsigned GetTextureCacheCount(); };   // C3: the cache counts
+#define GetNifCacheCount() ((Unk_VtmCaches*)this)->GetNifCacheCount()
+#define GetTextureCacheCount() ((Unk_VtmCaches*)this)->GetTextureCacheCount()
 // @0x141556610
 void CNifLoadingService::LogCounts()
 {
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CNifLoadingService Log ---");
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("NIF cache count : %d", FUN_14151e770());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("NIF cache count : %d", GetNifCacheCount());
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif NotCacheCount %d", m_kNifCount.nNotCache);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif ForceKeepCount %d", m_kNifCount.nForceKeep);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif MySkillCount %d", m_kNifCount.nMySkill);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif OtherSkillCount %d", m_kNifCount.nOtherSkill);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif NPCCount %d", m_kNifCount.nNPC);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Nif DependTimeCount %d", m_kNifCount.nDependTime);
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture cache count : %d", FUN_14151e790());
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture cache count : %d", GetTextureCacheCount());
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture NotCacheCount %d", m_kTexCount.nNotCache);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture ForceKeepCount %d", m_kTexCount.nForceKeep);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Texture MySkillCount %d", m_kTexCount.nMySkill);
@@ -2192,7 +2192,7 @@ extern NiTexture::FormatPrefs DAT_1439fc800;                        // NiSourceT
 
 // A copy of the default format preferences.
 // @0x14155d6d0
-static NiTexture::FormatPrefs FUN_14155d6d0()
+static NiTexture::FormatPrefs GetDefaultFormatPrefs()
 {
     return DAT_1439fc800;
 }
@@ -2305,7 +2305,7 @@ CCachedNifPtr CNifLoadingService::FindCachedNif(CString strPath, int nClass, boo
         }
         else
         {
-            spFound->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+            spFound->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
             if (spFound->m_nClass > nClass)
                 spFound->m_nClass = nClass;
         }
@@ -2326,7 +2326,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     }
     CCachedNifPtr spEntry = EE_NEW CCachedNif;
     spEntry->m_kFile.FUN_1401d1160(CString(strPath));
-    spEntry->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    spEntry->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
     (spEntry->m_spData).operator=((NiAVObject*)(((void*)NiObject::DynamicCast(&NiAVObject::ms_RTTI, (class NiObject const*)(FUN_14155d900(pStream, 0))))));
     spEntry->m_nClass = nClass;
     if ((spEntry->m_spData).operator NiAVObject*() == 0)
@@ -2336,7 +2336,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
         return 0;
     }
     FUN_1415672e0((spEntry->m_spData).operator NiAVObject*(), bFlag);
-    for (unsigned i = 1; i < FUN_14155d950(pStream); ++i)
+    for (unsigned i = 1; i < GetTopObjectCount(pStream); ++i)
     {
         NiAVObjectPtr spExtra = static_cast<NiAVObject*>(((void*)NiObject::DynamicCast(&NiPhysXProp::ms_RTTI, (class NiObject const*)(FUN_14155d900(pStream, i)))));
         if (spExtra != 0)
@@ -2397,7 +2397,7 @@ NiAVObjectPtr CNifLoadingService::Load(CString strPath, bool bFlag, int nClass, 
                 NiAVObjectPtr spOld = 0;
                 if (rRing.Get(0, spOld))
                 {
-                    spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                    spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                     NiNode* pParent = static_cast<NiNode*>(((void*)((class NiAVObject*)(void*)((spOld).operator->()))->GetParent()));
                     if (pParent != 0)
                         pParent->DetachChild((spOld).operator NiAVObject*());
@@ -2459,12 +2459,12 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTexture(CString strPath, int
         int nNewClass = nClass;
         efd::SmartPointer<NiSourceTexture> spTexture = 0;
         CCachedTexturePtr spCached = 0;
-        Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
+        Unk_NifTexKey kKey(CString(strPath), GetDefaultFormatPrefs());
         if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
         {
             if (!FUN_1401d1320(&spCached->m_kFile))
             {
-                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                 if (spCached->m_nClass > nClass)
                     spCached->m_nClass = nClass;
                 return spCached->m_spData;
@@ -2484,7 +2484,7 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTexture(CString strPath, int
         {
             spCached = EE_NEW CCachedTexture;
             spCached->m_kFile.FUN_1401d1160(CString(strPath));
-            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
             spCached->m_spData = static_cast<NiSourceTexture*>(spTexture);
             spCached->m_nClass = nNewClass;
             m_mapTex.SetAt(kKey, spCached);
@@ -2509,12 +2509,12 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTextureFrom(CString strKey, 
         int nNewClass = nClass;
         efd::SmartPointer<NiSourceTexture> spTexture = 0;
         CCachedTexturePtr spCached = 0;
-        Unk_NifTexKey kKey(CString(strKey), FUN_14155d6d0());
+        Unk_NifTexKey kKey(CString(strKey), GetDefaultFormatPrefs());
         if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
         {
             if (!FUN_1401d1320(&spCached->m_kFile))
             {
-                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                 if (spCached->m_nClass > nClass)
                     spCached->m_nClass = nClass;
                 return spCached->m_spData;
@@ -2534,7 +2534,7 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTextureFrom(CString strKey, 
         {
             spCached = EE_NEW CCachedTexture;
             spCached->m_kFile.FUN_1401d1160(CString(strFile));
-            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
             spCached->m_spData = static_cast<NiSourceTexture*>(spTexture);
             spCached->m_nClass = nNewClass;
             m_mapTex.SetAt(kKey, spCached);
@@ -2557,10 +2557,10 @@ efd::SmartPointer<NiTexture> CNifLoadingService::CreateTexture(CString strPath, 
     else
     {
         CCachedTexturePtr spCached = 0;
-        Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
+        Unk_NifTexKey kKey(CString(strPath), GetDefaultFormatPrefs());
         if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
         {
-            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+            spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
             return spCached->m_spData;
         }
         else
@@ -2569,7 +2569,7 @@ efd::SmartPointer<NiTexture> CNifLoadingService::CreateTexture(CString strPath, 
             if (static_cast<NiSourceTexture*>(spTexture) != 0)
             {
                 spCached = EE_NEW CCachedTexture;
-                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                 spCached->m_spData = spTexture;
                 spCached->m_nClass = nClass;
                 m_mapTex.SetAt(kKey, spCached);
@@ -2593,7 +2593,7 @@ efd::SmartPointer<NiTexture> CNifLoadingService::FindTexture(CString strPath, co
     else
     {
         CCachedTexturePtr spCached = 0;
-        NiTexture::FormatPrefs kPrefs = FUN_14155d6d0();
+        NiTexture::FormatPrefs kPrefs = GetDefaultFormatPrefs();
         // every caller passes the NiTexture itself in pPrefs (Unk_*::FUN_141553eb0): the exe takes its prefs
         // through GetFormatPreferences, where a plain *pPrefs read the object's vptr bytes as the key's prefs
         if (pPrefs != 0)
@@ -2623,13 +2623,13 @@ void CNifLoadingService::AddTexture(CString strPath, NiSourceTexture* pTexture)
             if (m_mapTex.Lookup(kKey, spCached))
             {
                 spCached->m_spData = pTexture;
-                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
             }
             else
             {
                 spCached = EE_NEW CCachedTexture;
                 spCached->m_kFile.FUN_1401d1160(CString(strPath));
-                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+                spCached->m_dLastUse = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->GetGameTime();
                 spCached->m_spData = pTexture;
                 spCached->m_nClass = 5;
                 m_mapTex.SetAt(kKey, spCached);
@@ -2667,9 +2667,9 @@ template CCachedNifPtr& ATL::CRBTree<CString, CCachedNifPtr, ATL::CElementTraits
 template CCachedTexturePtr& ATL::CRBTree<Unk_NifTexKey, CCachedTexturePtr, ATL::CElementTraits<Unk_NifTexKey>, ATL::CElementTraits<CCachedTexturePtr> >::GetValueAt(POSITION);
 
 // NiTexture::SetRendererData inlined: the raw store at +0x40.
-// MS2-PIN: ?FUN_141562500@@YAXPEAVNiSourceTexture@@PEAVRendererData@NiTexture@@@Z 0x141562500
+// MS2-PIN: ?SetRendererData@@YAXPEAVNiSourceTexture@@PEAVRendererData@NiTexture@@@Z 0x141562500
 struct Unk_NifTexRdView { char m_pad[0x40]; NiTexture::RendererData* m_pRendererData; };
-void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData)
+void SetRendererData(NiSourceTexture* pTexture, NiTexture::RendererData* pData)
 {
     ((Unk_NifTexRdView*)pTexture)->m_pRendererData = pData;
 }

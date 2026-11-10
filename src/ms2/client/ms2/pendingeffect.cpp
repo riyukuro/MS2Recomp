@@ -11,7 +11,7 @@
 #include "ms2/client/ms2/effectservice.h"   // C3: CEffectData, the real effect set
 
 // Effect factory (effectservice): create the runtime effect of a param for a target.
-CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
+CEffectPtr CreateEffect(CEffectParam* pParam, Unk_EffectTarget* pTarget);
 
 // @0x140a8f1d0
 PendingEffect::PendingEffect(int nId)
@@ -52,7 +52,7 @@ MS2_REPLACE_METHOD(0x140A8F300, PendingEffect, Init, 302, 0x19DB2124);
 // @0x140a8f440
 bool PendingEffect::Poll()
 {
-    if (m_tick.Check(50) && reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f680())
+    if (m_tick.Check(50) && reinterpret_cast<CEffectData*>(m_spSet.operator->())->AreAllParamsReady())
         return true;
     return false;
 }
@@ -61,10 +61,10 @@ MS2_REPLACE_METHOD(0x140A8F440, PendingEffect, Poll, 80, 0x381B39C2);
 // @0x140a8f4a0
 void PendingEffect::CreateEffects(std::vector<CEffectPtr>& vOut)
 {
-    for (POSITION pos = reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetHeadPosition(); pos != 0; reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetNext(pos))
+    for (POSITION pos = reinterpret_cast<CEffectData*>(m_spSet.operator->())->GetParams().GetHeadPosition(); pos != 0; reinterpret_cast<CEffectData*>(m_spSet.operator->())->GetParams().GetNext(pos))
     {
-        CEffectParam* pParam = reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetAt(pos).get();
-        CEffectPtr spEffect = FUN_14119eae0(pParam, reinterpret_cast<Unk_EffectTarget*>(&m_target));
+        CEffectParam* pParam = reinterpret_cast<CEffectData*>(m_spSet.operator->())->GetParams().GetAt(pos).get();
+        CEffectPtr spEffect = CreateEffect(pParam, reinterpret_cast<Unk_EffectTarget*>(&m_target));
         if (spEffect)
             vOut.push_back(spEffect);
     }

@@ -68,7 +68,7 @@ public:
 // C3: FUN_140cfd260 is CGameOption's (&m_connect)
 #include "ms2/placeholder/cgameoption.h"
 struct Unk_GsConnect;
-void FUN_141260e00(Unk_GsConnect* pConnect, bool bLocaledName);
+void SetLoginByLocaleName(Unk_GsConnect* pConnect, bool bLocaledName);
 
 // The login request packet body (encoded by 0x1401f9020).
 class Unk_MachineId
@@ -211,7 +211,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         MS2Ptr<ASCheckBox> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<ASCheckBox>("m_chkLocaledName");
         if (spLocale)
         {
-            FUN_141260e00(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
+            SetLoginByLocaleName(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
         }
     }
     int nLoginType = 0;

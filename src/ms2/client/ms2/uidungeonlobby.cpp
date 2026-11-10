@@ -38,7 +38,7 @@ Unk_140bccd50* FUN_140bccd50();
 
     // string table lookup
 CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> pRoom);                          // dungeon name of a room
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,7 +100,7 @@ void UIDungeonLobby::OnLoadComplete()
             CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
                                               TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->GetDungeonRoomID()));
             m_pTitle->SetTextW(strTitle);
-            FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
+            SetChildText(FUN_1422dbb40(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
             if (pRoom->m_groupType == 2 || pRoom->m_groupType == 3) {
                 const float fOffset = 10.0f;
                 float x = 0.0f;

@@ -68,9 +68,9 @@ public:
     virtual void vfunc_8(double fTime);                     // 8  0x1417c3e00
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x1417c4150
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417c3d30
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417c3d30
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417c5600
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x1417c4270
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417c4270
 
     int FUN_1417c4320();                                    // emotion id of the data (0 when none)
 
@@ -142,7 +142,7 @@ public:
     virtual void vfunc_9(double fTime);                     // 9  0x1417c6810
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x1417c6940
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417c6990
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417c6990
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417c6ca0
 
     int FUN_1417c6a30();                                    // emotion id of the data (0 when none)

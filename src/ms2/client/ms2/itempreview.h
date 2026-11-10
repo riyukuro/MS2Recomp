@@ -49,7 +49,7 @@ public:
     MS2Ptr<UIAvatarBase> CreateCubeAvatar(MS2Ptr<CItemData> spData, int nUnused);   // 0x140d3e7d0 cube avatar
     MS2Ptr<UIAvatarBase> CreateRideeAvatar(MS2Ptr<CItemData> spData, int nUnused);   // 0x140d3e8e0 ridee avatar
     MS2Ptr<UIAvatarBase> CreatePetAvatar(MS2Ptr<CItemData> spData, int nUnused);   // 0x140d3ea20 pet avatar
-    void FUN_140d3eb30(MS2Ptr<CItem> spItem);               // 0x140d3eb30 put an item on the avatar
+    void ApplyItemToAvatar(MS2Ptr<CItem> spItem);               // 0x140d3eb30 put an item on the avatar
     void ApplyToPCAvatar(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x140d3f160 put a package item on the avatar
     void ClearPackageData();                                   // 0x140d3f3b0 forget the package
     bool TryOnItem(MS2Ptr<CItem> spItem);               // 0x140d3f400 add an item to the preview

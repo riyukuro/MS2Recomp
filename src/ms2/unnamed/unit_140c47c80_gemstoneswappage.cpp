@@ -66,15 +66,15 @@ class Unk_GsInventory;
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 // The player's inventory (global 0x143ab2a90).
 class Unk_Inventory
 {
 public:
-    int FUN_140a5f780(int nTag, int nRarity);
-    MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
-    void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem>>& out);
+    int GetItemCountByTag(int nTag, int nRarity);
+    MS2Ptr<CItem> FindItemByUid(__int64 uid);
+    void GetItemsInCategory(int tab, CAtlArray<MS2Ptr<CItem>>& out);
 };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 extern __int64 DAT_143ab2898;                   // the meso the ingredient fee may cost
@@ -82,8 +82,8 @@ extern __int64 DAT_143ab2898;                   // the meso the ingredient fee m
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
 bool FUN_1414258e0(__int64 uid);
 void FUN_140cfd800(const CString& name);
-void FUN_140cfd6f0(const CString& name, MS2Ptr<CGemStoneItem> gem, int index, int iconType, int flags);
-void FUN_14141f970(const CString& name);
+void CreateGemStoneSlot(const CString& name, MS2Ptr<CGemStoneItem> gem, int index, int iconType, int flags);
+void DestroyItemSlotBag(const CString& name);
 int FUN_140222ce0(MS2Ptr<CItemData>);
 unsigned short FUN_140626f20(unsigned gemId);
 void FUN_1406284f0(unsigned short gemInfo, int recipe, int* tag, int* amount);
@@ -348,7 +348,7 @@ void ItemSocketSystemPageGemstoneSwap::SendItemSocketSystemMode8(CInPacket* pack
     Unk_SSGGemUnequip result;
     FUN_140628be0(result, *packet);
     if (result.m_nItemUid == m_sourceUid) {
-        MS2Ptr<CItem> gem = g_143ab2a90.FUN_140a5d680(result.m_nGemUid);
+        MS2Ptr<CItem> gem = g_143ab2a90.FindItemByUid(result.m_nGemUid);
         if (gem.get() != 0) {
             Unk_SockUidCountSlot request;
             request.m_nCount = result.m_nGemUid;
@@ -404,8 +404,8 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49000(ItemInfoSlot& slot, ASSlot&
 // @0x140c49110
 void ItemSocketSystemPageGemstoneSwap::FUN_140c49110()
 {
-    FUN_14141f970(m_slots0Name);
-    FUN_14141f970(m_slots1Name);
+    DestroyItemSlotBag(m_slots0Name);
+    DestroyItemSlotBag(m_slots1Name);
     m_binder.FUN_140d43990();
     m_sourceControl = 0;
     m_targetControl = 0;
@@ -489,7 +489,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
             gemItem = FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo>(info), 0, false);
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(gemItem), false);
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, i);
-        FUN_140cfd6f0(strName, MS2Ptr<CGemStoneItem>(gem), i, 0x415, 0x20);
+        CreateGemStoneSlot(strName, MS2Ptr<CGemStoneItem>(gem), i, 0x415, 0x20);
         pGems->PushString(strName);
     }
     unsigned locked = socket->GetLockedSlotCount();
@@ -500,7 +500,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(0), true);
         unsigned index = j + open;
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, index);
-        FUN_140cfd6f0(strName, MS2Ptr<CGemStoneItem>(gem), j, 0x415, 0x20);
+        CreateGemStoneSlot(strName, MS2Ptr<CGemStoneItem>(gem), j, 0x415, 0x20);
         pGems->PushString(strName);
     }
 }
@@ -599,13 +599,13 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Pt
 // @0x140c4a9a0
 void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& out)
 {
-    g_143ab2a90.FUN_140a60880(0, out);
-    g_143ab2a90.FUN_140a60880(1, out);
+    g_143ab2a90.GetItemsInCategory(0, out);
+    g_143ab2a90.GetItemsInCategory(1, out);
     Unk_GsPlayer* player = ((class Unk_GsPlayer*)((class WorldService*)(class Unk_GsWorld*)(reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (player == 0)
         return;
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
-    Unk_GsInventory* inventory = ((class Unk_GsInventory*)((class PC*)(class Unk_GsPlayer*)(player))->FUN_1416561a0());
+    Unk_GsInventory* inventory = ((class Unk_GsInventory*)((class PC*)(class Unk_GsPlayer*)(player))->GetEquipment());
     reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 0);
     reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
@@ -646,7 +646,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     for (; it != last; ++it) {
         int itemId = reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()))->GetTagItemId((ItemTagKey)it->first);
         int grade = FUN_14053feb0(itemId);
-        int have = g_143ab2a90.FUN_140a5f780(it->first, grade);
+        int have = g_143ab2a90.GetItemCountByTag(it->first, grade);
         if (have < it->second) {
             if (it->first != Unk_GsCostTag_Meso) {
                 int lack = it->second - have;

@@ -135,12 +135,12 @@ class CEffectService
 public:
     class NiNode* GetLeastLoadedRoot();
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 struct Unk_NiAVObjectSortView : NiAVObject { using NiAVObject::SetSortObject; };   // C3: exposes the protected SetSortObject (0x141611330; its SetBit is 0x140a0b330)
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
-    double FUN_141473280();
+    double GetGameTime();
 };
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
@@ -151,7 +151,7 @@ public:
     void GetModels(CAtlArray<MS2Ptr<CEquipModel> >& arr);   // C3: was free FUN_1411dcc80
 };
 void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // @0x14160fb10
@@ -224,7 +224,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         float scale = fade;
         xf.m_fScale = scale;
         self->m_node->SetLocalFromWorldTransform(xf);
-        self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
         NiMaterialProperty* prop = (NiMaterialProperty*)NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, self->GetMesh()->GetProperty(3));
         if (prop != 0) {
             float alpha = DAT_1439f8204 * scale;
@@ -236,7 +236,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         self->m_node->SetAppCulled(true);
     }
     if (force || self->m_bDirty != 0) {
-        void* h = FUN_141b6efc0(reinterpret_cast<GameObject*>(self->m_pOwner)->FUN_14123c410());
+        void* h = FUN_141b6efc0(reinterpret_cast<GameObject*>(self->m_pOwner)->GetEntity());
         if (h != 0) {
             FUN_141567540((class NiAVObject*)(h), self->m_bShown);
             self->m_bDirty = false;
@@ -245,7 +245,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         if (o != 0) {
             POSITION pos2;
             ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
-            reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(o)->FUN_1416561a0())->CollectShownItems(list);
+            reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(o)->GetEquipment())->CollectShownItems(list);
             for (pos2 = list.GetHeadPosition(); pos2 != 0; list.GetNext(pos2)) {
                 MS2Ptr<CEquipItem>& elem = list.GetAt(pos2);
                 if (elem->FUN_1411dc0d0() != 0) {
@@ -323,7 +323,7 @@ void FUN_1416105c0(CObjectShadow* self)
             if (self->m_bEnabled != 0 && self->m_bFlag32 == 0 && self->m_bFlag31 != 0)
                 visible = true;
             if (self->m_pOwner != 0 && self->m_pOwner->vfunc_25() != 0) {
-                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
+                if (reinterpret_cast<COptimizer*>(GetOptimizer())->FUN_140ddcc90() == 0)
                     visible = false;
             }
         }
@@ -369,7 +369,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
         self->GetMesh()->SetName(name);
     }
 
-    efd::SmartPointer<NiTexture> tex = ((CNifLoadingService*)FUN_140a0afd0())->GetTexture(*(CString*)((char*)((void*)FUN_1401d31f0()) + 0xf0), 1);
+    efd::SmartPointer<NiTexture> tex = ((CNifLoadingService*)GetNifLoadingService())->GetTexture(*(CString*)((char*)((void*)FUN_1401d31f0()) + 0xf0), 1);
     NiTexturingProperty* texProp = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
     texProp->SetBaseTexture(tex);
     self->GetMesh()->AttachProperty(texProp);
@@ -413,7 +413,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     scene->AttachChild(self->m_node, true);
     self->m_node->UpdateEffects();
     self->m_node->UpdateProperties();
-    self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+    self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
     FUN_141611370(((void*)self->GetMesh()), 0);
 }
 

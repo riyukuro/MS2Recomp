@@ -20,11 +20,11 @@
 // Scoped lock (ctor 0x1401b4ec0, dtor 0x1401b5120).
 //
 
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 int FUN_14151fad0(MS2Ptr<CMsgBoxData> spData);
 MS2Ptr<CMsgBoxData> FUN_14151f820();
-void FUN_14151fb60(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
-UIMessageBox* FUN_14151fcb0(int nId);
+void ReplaceQueuedByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData);
+UIMessageBox* FindMessageBox(int nId);
 
 static CLockCriticalSection s_lock;                                         // @0x1400f9ac0
 static ATL::CAtlList<MS2Ptr<CMsgBoxData> > s_queue(10);                     // @0x1400f9af0
@@ -49,7 +49,7 @@ void FUN_14151f200()
     Unk_CriticalSectionLock lock(s_lock, 1);
     if (s_queue.IsEmpty())
     {
-        UIMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = GetMessageBoxLayer();
         if (pBox != 0)
             pBox->FUN_1419f8120();
         return;
@@ -70,7 +70,7 @@ void FUN_14151f200()
     }
     if (spData.IsNull())
     {
-        UIMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = GetMessageBoxLayer();
         if (pBox != 0)
             pBox->FUN_1419f8120();
     }
@@ -82,7 +82,7 @@ void FUN_14151f460(int nResult)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     s_queue.RemoveAll();
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
     {
         if (pBox->FUN_1419f8270() == 0)
@@ -92,15 +92,15 @@ void FUN_14151f460(int nResult)
 
 // Show spData when the layer is idle, or replace the queued box with the same tag.
 // @0x14151f4e0
-void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
+void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 {
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox == 0)
         return;
     MS2Ptr<CMsgBoxData> spCur = pBox->FUN_1419f8470();
     if (spCur == 0 || spCur->FUN_141a02b90() != strTag)
     {
-        FUN_14151fb60(strTag, spData);
+        ReplaceQueuedByTag(strTag, spData);
         return;
     }
     pBox->ShowIfIdle(spData);
@@ -110,7 +110,7 @@ void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 // @0x14151f6e0
 int FUN_14151f6e0()
 {
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
         return pBox->FUN_1419f8270();
     return 1;
@@ -119,7 +119,7 @@ MS2_REPLACE(0x14151F6E0, FUN_14151f6e0, 44, 0xD5CDF260);
 
 // Remove spData from the queue.
 // @0x14151f720
-void FUN_14151f720(MS2Ptr<CMsgBoxData> spData)
+void RemoveFromQueue(MS2Ptr<CMsgBoxData> spData)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
@@ -137,7 +137,7 @@ void FUN_14151f720(MS2Ptr<CMsgBoxData> spData)
 // @0x14151f820
 MS2Ptr<CMsgBoxData> FUN_14151f820()
 {
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
         return pBox->FUN_1419f8470();
     return MS2Ptr<CMsgBoxData>(0);
@@ -146,11 +146,11 @@ MS2_REPLACE(0x14151F820, FUN_14151f820, 101, 0x20BC56CE);
 
 // The message box layer.
 // @0x14151f890
-UIMessageBox* FUN_14151f890()
+UIMessageBox* GetMessageBoxLayer()
 {
-    return FUN_14151fcb0(0x4e48);
+    return FindMessageBox(0x4e48);
 }
-MS2_REPLACE(0x14151F890, FUN_14151f890, 19, 0x2C2012DD);
+MS2_REPLACE(0x14151F890, GetMessageBoxLayer, 19, 0x2C2012DD);
 
 // Every queued box passes FUN_141a03050.
 // @0x14151f8b0
@@ -196,7 +196,7 @@ int FUN_14151f9c0()
 // @0x14151fad0
 int FUN_14151fad0(MS2Ptr<CMsgBoxData> spData)
 {
-    UIMessageBox* pBox = FUN_14151f890();
+    UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
         return pBox->ShowMessage(spData);
     return 0;
@@ -205,7 +205,7 @@ MS2_REPLACE(0x14151FAD0, FUN_14151fad0, 128, 0x35EF421F);
 
 // Replace the queued box tagged strTag with spData.
 // @0x14151fb60
-void FUN_14151fb60(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
+void ReplaceQueuedByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
@@ -224,7 +224,7 @@ void FUN_14151fb60(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 
 // A dialog by UI id, as a message box layer.
 // @0x14151fcb0
-UIMessageBox* FUN_14151fcb0(int nId)
+UIMessageBox* FindMessageBox(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -234,6 +234,6 @@ UIMessageBox* FUN_14151fcb0(int nId)
     }
     return 0;
 }
-MS2_REPLACE(0x14151FCB0, FUN_14151fcb0, 147, 0xF40E6F7E);
+MS2_REPLACE(0x14151FCB0, FindMessageBox, 147, 0xF40E6F7E);
 
 MS2_EMIT_CRT_MEMMOVE_S();

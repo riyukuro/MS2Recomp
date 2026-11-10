@@ -339,12 +339,12 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
     bool bMySummon = false;
     CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
     if (pSummon != 0)
-        bMySummon = pSummon->GetOwnerId() == pPlayer->FUN_14123c580();
+        bMySummon = pSummon->GetOwnerId() == pPlayer->GetObjectId();
     efd::Point3 kScreen;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
-        bool bCasterMe = nCasterId == pPlayer->FUN_14123c580();
-        bool bTargetMe = pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
+        bool bCasterMe = nCasterId == pPlayer->GetObjectId();
+        bool bTargetMe = pTarget->GetObjectId() == pPlayer->GetObjectId();
         bool bMyDamage = bTargetMe || bCasterMe;
         unsigned int nFlags = m_pBattleOption->m_n10;
         int nTargetKind = GetTargetKind(pTarget);
@@ -371,7 +371,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
                     bUser = true;
             }
         }
-        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        unsigned __int64 nOwnerId = pTarget->GetEntityIDValue();
         ASObj obj(m_28);
         {
             CString strValue = FUN_141914660(nValue, nGrade);
@@ -381,19 +381,19 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
             obj.FUN_1407cba60("grade", strGrade);
             obj.FUN_1407cba60("caster", strCaster);
             obj.FUN_1407cbbe0("myDamage", bMyDamage);
-            obj.FUN_1409c4a30("scale", (float)m_pInterfaceOption->m_n10 / 100.0f);
+            obj.SetMemberFloat("scale", (float)m_pInterfaceOption->m_n10 / 100.0f);
             obj.FUN_1407cbbe0("pcBang", false);
             if (!m_bObserver)
             {
                 if (!bMyDamage && (nFlags & 1) != 0 && !bMySummon)
                 {
                     float fScale = GetClientConstants()->DamageOtherScale.Read();
-                    obj.FUN_1409c4a30("diffScale", fScale);
+                    obj.SetMemberFloat("diffScale", fScale);
                 }
                 if (!bMyDamage && (nFlags & 2) != 0 && !bMySummon)
                 {
                     float fAlpha = GetClientConstants()->DamageOtherAlpha.Read();
-                    obj.FUN_1409c4a30("diffAlpha", fAlpha);
+                    obj.SetMemberFloat("diffAlpha", fAlpha);
                 }
             }
             if (bGem)
@@ -401,7 +401,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
                 PC* pPC = dynamic_cast<PC*>(pCaster);
                 if (pPC != 0)
                 {
-                    MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(2);
+                    MS2Ptr<CGemBase> spGem = pPC->GetGemEquip()->FUN_141270740(2);
                     if (spGem.get() != 0)
                         obj.FUN_1407cbb20("gem", FUN_140719630(spGem->GetGemId()));
                 }
@@ -426,7 +426,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
 // @0x1419129d0
 void UIDamageText::FUN_1419129d0(GameObject* pTarget, int nValue, int nType)
 {
-    MS2Ptr<DamageQueueParam> spParam(new DamageQueueParam(pTarget->FUN_14123c580(), nValue, nType));
+    MS2Ptr<DamageQueueParam> spParam(new DamageQueueParam(pTarget->GetObjectId(), nValue, nType));
     m_queue.AddTail(spParam);
 }
 
@@ -457,7 +457,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
         bool bPcBang = FUN_141914490(pTarget) ? true : false;
-        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        unsigned __int64 nOwnerId = pTarget->GetEntityIDValue();
         ASObj obj(m_28);
         {
             CString strValue = FUN_141914890(nValue, nType);
@@ -470,7 +470,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
         Scaleform::GFx::Value clip = m_30->Invoke("damageText", obj.FUN_1422bb870());
         MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->FUN_14123c580() == pPlayer->FUN_14123c580() : false;
+        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->GetObjectId() == pPlayer->GetObjectId() : false;
         FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
 }
@@ -487,12 +487,12 @@ void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString&
     efd::Point3 kScreen;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
-        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        unsigned __int64 nOwnerId = pTarget->GetEntityIDValue();
         Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
                                                   GetTargetKindName(GetTargetKind(pTarget), true), FUN_1419149d0(2), strIcon);
         MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->FUN_14123c580() == pPlayer->FUN_14123c580() : false;
+        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->GetObjectId() == pPlayer->GetObjectId() : false;
         FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
 }
@@ -618,8 +618,8 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     bool bShow = false;
     unsigned int nCasterMask = 0;
     unsigned int nTargetMask = 0;
-    int nTargetId = pTarget->FUN_14123c580();
-    int nPlayerId = pPlayer->FUN_14123c580();
+    int nTargetId = pTarget->GetObjectId();
+    int nPlayerId = pPlayer->GetObjectId();
     CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
     if (pSummon != 0)
         nCasterId = pSummon->GetOwnerId();
@@ -700,7 +700,7 @@ int UIDamageText::GetCounterIndex(GameObject* pTarget, int& nIndex, CounterMap& 
 {
     if (pTarget == 0)
         return 0;
-    unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+    unsigned __int64 nOwnerId = pTarget->GetEntityIDValue();
     MS2Ptr<CounterInfo> spCounter(0);
     if (map.Lookup(nOwnerId, spCounter))
     {
@@ -963,9 +963,9 @@ float UIDamageText::FUN_141914c40(GameObject* pTarget)
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1.0f;
-    if (pPlayer->FUN_14123c460() == pTarget->FUN_14123c460())
+    if (pPlayer->GetEntityID() == pTarget->GetEntityID())
         return 1.0f;
-    NiNode* pRoot = FUN_1413fa070(pTarget->FUN_14123c460());
+    NiNode* pRoot = FUN_1413fa070(pTarget->GetEntityID());
     if (pRoot != 0)
         return FUN_141914a90(*((class NiPoint3 const*)&((class NiAVObject*)(class NiAVObject*)((NiAVObject*)pRoot))->GetWorldTranslate()));
     return 1.0f;

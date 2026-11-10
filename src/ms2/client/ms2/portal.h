@@ -25,7 +25,7 @@ struct Unk_PortalBox
     Unk_PortalBox();                                                    // 0x14169afb0
     ~Unk_PortalBox();                                                   // 0x14169b020
     int FUN_14169b080(egf::Entity* pEntity);                           // read size / position / rotation from the entity
-    int FUN_14169b2e0(const Vector3* pPoint);                  // is the point inside the box
+    int ContainsPoint(const Vector3* pPoint);                  // is the point inside the box
 
     NxBounds3 m_bounds;                                                 // +0x00 local box
     NxBox m_obb;                                                        // +0x18 the box in world space
@@ -46,24 +46,24 @@ public:
     // @0x14169b650 read the "model" / "theme" strings and the position from the entity (the entity is passed by value)
     int FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity);
     int FUN_14169b890();                                                // create the tooltip above the portal
-    int FUN_14169ba90();                                               // load the theme image onto Theme_Image_Plane
+    int ApplyMinimapTexture();                                               // load the theme image onto Theme_Image_Plane
     void FUN_14169bd40();                                               // per-frame: countdown text and event timer
     void FUN_14169c280();                                               // refresh the tooltip and the image by type
     int FUN_14169c330();                                                // both content switches enabled
-    CStringW FUN_14169c3b0();                                           // action string of the portal type
+    CStringW GetActionText();                                           // action string of the portal type
     CString FUN_14169c5f0();                                            // portal kind name ("portal", "dungeon", ...)
-    CStringW FUN_14169cae0();                                           // display name
-    int FUN_14169cc40();                                                // quest-npc table lookup for this portal
+    CStringW GetName();                                           // display name
+    int CheckQuestMask();                                                // quest-npc table lookup for this portal
     void FUN_14169cc70(const Vector3& pos, const Vector3& rot);   // move the entity, reload the box
-    void FUN_14169cd50(int bShown, int bGlow);                          // show / glow flags on the entity
+    void SetShownAndGlow(int bShown, int bGlow);                          // show / glow flags on the entity
     void FUN_14169ce50(int bShown, int bGlow, int bExtra);              // same with a third flag
-    void FUN_14169cf90(int bShown);
-    void FUN_14169d050(int bGlow);
+    void SetShown(int bShown);
+    void SetGlow(int bGlow);
     void FUN_14169d0e0();                                               // initial flags
-    bool FUN_14169d160();                                               // entity "shown" flag
+    bool IsShown();                                               // entity "shown" flag
     bool FUN_14169d1d0();                                               // shown flag and the extra flag
     int FUN_14169d280();                                                // entity int property 0xa162d321
-    Vector3 FUN_14169d2f0();                                    // entity position (zero point when the entity is gone)
+    Vector3 GetPosition();                                    // entity position (zero point when the entity is gone)
     void FUN_14169d3a0();                                               // scale the entity of type 0x10 by 1.5
 
     egf::EntityID m_idEntity;                                           // +0x18

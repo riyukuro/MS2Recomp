@@ -90,15 +90,15 @@ class Unk_HpxEquipSet : public CEquipment { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 void FUN_141901390(int bRelease, int nLayer);                   // the player key input layer
 class Unk_PonyPlayer;
-void FUN_141695f10(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond);   // the two pony parts
+void GetPartModels(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond);   // the two pony parts
 void* FUN_141200ab0(CEquipModel* pModel);                       // m_unk_20
-void FUN_141202240(CEquipModel* pModel, void* pXform);          // set the model transform
-void FUN_1412021a0(CEquipModel* pModel, NiTransform* pXform);   // the model transform
-UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+void SetLocalTransform(CEquipModel* pModel, void* pXform);          // set the model transform
+void GetLocalTransform(CEquipModel* pModel, NiTransform* pXform);   // the model transform
+UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 Unk_ServiceManager* FUN_1413f9850();                            // the framework's service manager
 ecrPhysX::PropService* FUN_1412938c0(struct Unk_DvCell* pFramework);
 efd::utf8string FUN_1414d7990(const efd::utf8string& strName);  // the scene name of a PhysX scene key
@@ -107,9 +107,9 @@ class CPhysXHelper
 public:
     void FUN_14168a540(int n);                                  // lock the scene
     class Unk_PhysXSceneHandle* GetScene(int nScene);      // the scene
-    void FUN_14168a570();                                       // unlock
+    void Unlock();                                       // unlock
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);       // narrow a wide string
 CStringW FUN_14016a730(const char* psz, int nCodePage);         // widen a narrow string
 
@@ -152,7 +152,7 @@ void UIHairPhysxDialog::FUN_141981060()
     if (pModel)
     {
         NiTransform kXform;
-        FUN_1412021a0(pModel, &kXform);
+        GetLocalTransform(pModel, &kXform);
         FUN_141985210(pModel, kXform);
         NiPoint3 kValue(0.0f, 0.0f, 0.0f);
         if (nMode == 1)
@@ -197,20 +197,20 @@ void UIHairPhysxDialog::OnLoadComplete()
     pPc->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));
     pPc->vfunc_59(0xe, 0, 0, 0);
     FUN_141901390(0, 0x3eb);
-    m_2c0.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_2c0.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_2c0->HideSlot(6);
     m_2c0->SelectSlot(1);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef2)));
-    m_2d0 = FUN_140cd47b0((eUIClassID)0x4ef2);
+    m_2d0 = FindCameraEditDialog((eUIClassID)0x4ef2);
     m_190.MakeIdentity();
     m_1c4.MakeIdentity();
     Unk_HpxModel* pLeft = 0;
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(0, &pLeft, &pRight);
     if (pLeft)
-        FUN_1412021a0(pLeft, &m_190);
+        GetLocalTransform(pLeft, &m_190);
     if (pRight)
-        FUN_1412021a0(pRight, &m_1c4);
+        GetLocalTransform(pRight, &m_1c4);
     FUN_141983010();
     FUN_141983f50();
     FUN_141983730();
@@ -254,7 +254,7 @@ void UIHairPhysxDialog::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_2c0 == 0)
         return;
-    m_2c0->FUN_140cd1bf0();
+    m_2c0->UpdateEditItems();
     if (m_2d0)
         m_2d0->SetEnableFlagIfHidden(m_2c0->IsDragging() == 0);
 }
@@ -359,15 +359,15 @@ void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
         efd::utf8string strScene("PhysXItemSceneName");
         strScene = FUN_1414d7990(strScene);
         pService->SetDebugRender(strScene, bActive);
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(1);
-        void* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(1);
+        ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(1);
+        void* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetScene(1);
         if (pScene != 0)
         {
             NxPhysicsSDK* pSDK = efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK;
             if (pSDK != 0)
                 pSDK->setParameter(NX_VISUALIZATION_SCALE, bActive ? 0.3f : 0.0f);
         }
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+        ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
     }
 }
 MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, FUN_1419821d0, 377, 0x16028B66);
@@ -379,9 +379,9 @@ void UIHairPhysxDialog::FUN_141982350(int nOnly)
     if (!pPc)
         return;
     if (nOnly)
-        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e9190(1);
+        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->FUN_1411e9190(1);
     else
-        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e9190(0);
+        ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->FUN_1411e9190(0);
 }
 MS2_REPLACE_METHOD(0x141982350, UIHairPhysxDialog, FUN_141982350, 98, 0xDC50BC62);
 
@@ -580,11 +580,11 @@ void UIHairPhysxDialog::FUN_141983010()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     CEquipModel* pPart = 0;
-    FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
-    NiPhysXProp* pProp = pService->GetPropAt(pKfm->FUN_14143ff70(), 0);
+    NiPhysXProp* pProp = pService->GetPropAt(pKfm->GetEntityID(), 0);
     Unk_WindPropDesc* pDesc;
     if (pProp == 0)
         return;
@@ -667,11 +667,11 @@ void UIHairPhysxDialog::FUN_141983730()
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     CEquipModel* pPart = 0;
-    FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
+    GetPartModels(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
         return;
-    NiPhysXProp* pProp = pService->GetPropAt(pKfm->FUN_14143ff70(), 0);
+    NiPhysXProp* pProp = pService->GetPropAt(pKfm->GetEntityID(), 0);
     Unk_WindPropDesc* pDesc;
     if (pProp == 0)
         return;
@@ -763,7 +763,7 @@ void UIHairPhysxDialog::FUN_141983f50()
     if (pModel)
     {
         NiTransform kXform;
-        FUN_1412021a0(pModel, &kXform);
+        GetLocalTransform(pModel, &kXform);
         if (nMode == 1)
             kValue = kXform.m_Translate;
         else if (nMode == 2)
@@ -803,7 +803,7 @@ void UIHairPhysxDialog::FUN_141984360()
     FUN_141984a10(FUN_1419833e0(), &pModel);
     if (pModel == 0)
         return;
-    NiPhysXProp* pProp = pService->GetPropAt(pModel->FUN_14143ff70(), 0);
+    NiPhysXProp* pProp = pService->GetPropAt(pModel->GetEntityID(), 0);
     Unk_WindPropDesc* pDesc;
     if (pProp == 0)
         return;
@@ -858,7 +858,7 @@ int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
         return 0;
     CEquipModel* pFirst = 0;
     CEquipModel* pSecond = 0;
-    FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
+    GetPartModels((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {
     case 0:
@@ -887,7 +887,7 @@ int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxMo
         return 0;
     CEquipModel* pFirst = 0;
     CEquipModel* pSecond = 0;
-    FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
+    GetPartModels((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {
     case 1:
@@ -971,10 +971,10 @@ void UIHairPhysxDialog::FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos)
     {
         int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
         NiTransform kXform;
-        FUN_1412021a0(pModel, &kXform);
+        GetLocalTransform(pModel, &kXform);
         pData->m_akPos[nIndex] = kPos;
         kXform.m_Translate = kPos;
-        FUN_141202240(pModel, (void*)&kXform);
+        SetLocalTransform(pModel, (void*)&kXform);
         Unk_HpxModelConfig* pConfig = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel));
         if (pConfig)
             const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown18 = kPos;
@@ -992,10 +992,10 @@ void UIHairPhysxDialog::FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg)
     {
         int nIndex = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel))->m_nIndex;
         NiTransform kXform;
-        FUN_1412021a0(pModel, &kXform);
+        GetLocalTransform(pModel, &kXform);
         pData->m_akRot[nIndex] = kDeg;
         kXform.m_Rotate.FromEulerAnglesXYZ(kDeg.x * 3.1415927f / 180.0f, kDeg.y * 3.1415927f / 180.0f, kDeg.z * 3.1415927f / 180.0f);
-        FUN_141202240(pModel, (void*)&kXform);
+        SetLocalTransform(pModel, (void*)&kXform);
         Unk_HpxModelConfig* pConfig = ((Unk_HpxModelConfig*)FUN_141200ab0(pModel));
         if (pConfig)
             const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown24 = kDeg;
@@ -1016,7 +1016,7 @@ void UIHairPhysxDialog::FUN_141985210(Unk_HpxModel* pModel, const NiTransform& k
         FUN_141984da0(kXform.m_Rotate, kDeg);
         pData->m_akRot[nIndex] = kDeg;
         pData->m_akPos[nIndex] = kXform.m_Translate;
-        FUN_141202240(pModel, (void*)&kXform);
+        SetLocalTransform(pModel, (void*)&kXform);
     }
 }
 MS2_REPLACE_METHOD(0x141985210, UIHairPhysxDialog, FUN_141985210, 333, 0xCBB33673);

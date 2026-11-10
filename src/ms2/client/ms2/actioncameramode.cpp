@@ -50,7 +50,7 @@ MS2_REPLACE_METHOD(0x140945030, CActionCameraMode, vfunc_7, 42, 0x1C606877);
 // distance; at the end of the animation the camera flies back to the previous mode's setting (or keeps this one).
 void CActionCameraMode::vfunc_8(double fTime)
 {
-    Unk_CameraEffectState* pEffect = CameraMgr::GetInstance()->FUN_1409478a0();
+    Unk_CameraEffectState* pEffect = CameraMgr::GetInstance()->GetCameraEffectState();
     m_fTime += (float)fTime;
     double fNow = m_fTime;
     if (pEffect->m_fMaxTime <= fNow)
@@ -77,7 +77,7 @@ void CActionCameraMode::vfunc_8(double fTime)
         if (pEffect->m_24 != 0)
         {
             CameraMgr::GetInstance()->FUN_140aed720(m_setting);
-            CameraMgr::GetInstance()->FUN_140947980(4);
+            CameraMgr::GetInstance()->SetPendingMode(4);
         }
         else
         {
@@ -87,10 +87,10 @@ void CActionCameraMode::vfunc_8(double fTime)
                 kFlyBy.m_nKind = 0;
                 kFlyBy.m_fDuration = pEffect->m_20;
                 kFlyBy.m_from = m_setting;
-                kFlyBy.m_to = *FUN_140947880(CameraMgr::GetInstance()->FUN_140af24f0());
-                CameraMgr::GetInstance()->FUN_140aed580(&kFlyBy, 1, 1.0f);
+                kFlyBy.m_to = *FUN_140947880(CameraMgr::GetInstance()->GetTargetMode());
+                CameraMgr::GetInstance()->SetFlyBy(&kFlyBy, 1, 1.0f);
             }
-            CameraMgr::GetInstance()->FUN_140947980(2);
+            CameraMgr::GetInstance()->SetPendingMode(2);
         }
         CameraMgr::GetInstance()->FUN_140af1a90();
     }
@@ -113,7 +113,7 @@ MS2_REPLACE_METHOD(0x140945460, CActionCameraMode, vfunc_28, 8, 0x7F371472);
 // @0x140945470
 efd::Point3 CActionCameraMode::vfunc_26()
 {
-    NiNode* pNode = CameraMgr::GetInstance()->FUN_1409478a0()->m_spCameraNode;
+    NiNode* pNode = CameraMgr::GetInstance()->GetCameraEffectState()->m_spCameraNode;
     return pNode ? *(const efd::Point3*)&static_cast<const NiPoint3&>(NiPoint3(pNode->GetWorldTranslate()))
                  : efd::Point3(0, 0, 0);
 }

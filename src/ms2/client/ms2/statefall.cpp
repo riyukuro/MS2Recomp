@@ -114,13 +114,13 @@ void StateFall::vfunc_4(StateData* pData)
         if (pPC != 0)
         {
             CString strRec;
-            bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName().IsEmpty();
+            bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->GetSetName().IsEmpty();
             if (bHasRec)
-                strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName();
+                strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->GetSetName();
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)(strRec + m_strAnim.c_str()));
-                if (FUN_141b6f910()->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kAnim) !=
+                if (FUN_141b6f910()->GetAnimationIdFromName(m_pOwner->GetEntityID(), kAnim) !=
                     NiActorManager::INVALID_SEQUENCE_ID)
                     m_strAnim = kAnim;
             }
@@ -177,7 +177,7 @@ void StateFall::vfunc_8(double fTime)
             reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9d70())
             m_pOwner->vfunc_102(spRec);
     }
-    else if (pPC->FUN_1416764a0() != 0)
+    else if (pPC->GetRidee() != 0)
     {
         if (m_pOwner->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
             pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
@@ -204,7 +204,7 @@ void StateFall::vfunc_9(double fTime)
             egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(nSide);
             if (pEntity != 0)
             {
-                if (pPC->FUN_1416764a0() != 0)
+                if (pPC->GetRidee() != 0)
                 {
                     MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                     spAction->m_n28 = nSide;
@@ -213,7 +213,7 @@ void StateFall::vfunc_9(double fTime)
                         pPC->vfunc_59(1, 0, 0, 0);
                     return;
                 }
-                else if (pPC->FUN_1415248d0(nSide, 0xbadf0a13) != 0)
+                else if (pPC->TryUseChairOrBed(nSide, 0xbadf0a13) != 0)
                     return;
             }
         }

@@ -97,7 +97,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);                    // the learned skill tooltip
@@ -156,7 +156,7 @@ void UISkillCompactControlDialog::vfunc_67()
     UIDialog::vfunc_67();
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        pPlayer->FUN_141523bc0()->FUN_141767df0(0);
+        pPlayer->GetSkillSystem()->FUN_141767df0(0);
     FUN_140fa1400();
     SendSkillMacroMode1();
     m_bLoaded = 0;
@@ -184,7 +184,7 @@ int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         m_cur.Clear();
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
-            pPlayer->FUN_141523bc0()->FUN_141767df0(0);
+            pPlayer->GetSkillSystem()->FUN_141767df0(0);
     }
     return 1;
 }
@@ -319,7 +319,7 @@ int UISkillCompactControlDialog::vfunc_13()
                         }
                         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                         if (pPlayer != 0)
-                            pPlayer->FUN_141523bc0()->FUN_141767df0(0);
+                            pPlayer->GetSkillSystem()->FUN_141767df0(0);
                     }
                 }
             }
@@ -376,7 +376,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
-            int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strName)), 0);
+            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(FUN_140fa2520(CStringW(strName)), 0);
             FUN_140fa23f0(nKey, 0);
             FUN_140fa29f0(CStringW(strName));
         }
@@ -387,14 +387,14 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         m_cur.Clear();
         m_cur.m_strTab = m_strTab;
         int nSet = FUN_1409331f0()->FUN_1414319f0();
-        int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), nSet);
+        int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(FUN_140fa2520(CStringW(m_strTab)), nSet);
         m_prev.Clear();
         m_prev.m_nKey = nKey;
         m_prev.m_strTab = m_strTab;
         FUN_140fa23f0(nKey, 0);
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer != 0)
-            pPlayer->FUN_141523bc0()->FUN_141767df0(1);
+            pPlayer->GetSkillSystem()->FUN_141767df0(1);
     }
     else if (_stricmp(szMethod, "onHotKeyFocusOut") == 0)
     {
@@ -403,7 +403,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
             m_cur.Clear();
             MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer != 0)
-                pPlayer->FUN_141523bc0()->FUN_141767df0(0);
+                pPlayer->GetSkillSystem()->FUN_141767df0(0);
         }
     }
     else if (_stricmp(szMethod, "onRenameTab") == 0)
@@ -446,7 +446,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
         }
         m_cur.Clear();
         m_cur.m_strTab = m_strTab;
-        int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(m_strTab)), 0);
+        int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(FUN_140fa2520(CStringW(m_strTab)), 0);
         FUN_140fa23f0(nKey, 0);
         FUN_140fa2180(CStringW(m_strTab));
         FUN_140fa1400();
@@ -601,7 +601,7 @@ bool UISkillCompactControlDialog::FUN_140fa0a20(CStringW strName)
     MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(strName));
     if (spConfig.get() != 0)
     {
-        UIMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = GetMessageBoxLayer();
         if (pBox != 0)
             pBox->FUN_1419f82b0(GetStringCommon(0xc38));
         return 0;
@@ -647,7 +647,7 @@ bool UISkillCompactControlDialog::FUN_140fa0fa0(CStringW strName)
         MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(strName));
         if (spConfig.get() != 0)
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox != 0)
                 pBox->FUN_1419f82b0(GetStringCommon(0xc38));
             return 0;
@@ -686,7 +686,7 @@ void UISkillCompactControlDialog::FUN_140fa1400()
 {
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        pPlayer->FUN_141523bc0()->SetCompactConfigs(&m_lstConfig);
+        pPlayer->GetSkillSystem()->SetCompactConfigs(&m_lstConfig);
 }
 
 // The exe's out-of-line IsNull COMDAT of the list pointer (0x140fa3060, shared by ICF).
@@ -702,7 +702,7 @@ void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
+    Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->GetJobGroupId());
     if (Unk_CcSkillListIsNull(spSkills))
         return;
     std::set<unsigned> setLearned;
@@ -710,7 +710,7 @@ void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
     for (POSITION pos = spSkills->GetHeadPosition(); pos != 0; spSkills->GetNext(pos))
     {
         Unk_CcSkillPtr spSkill = spSkills->GetAt(pos);
-        int bLearned = pPlayer->FUN_1416546d0()->vfunc_2(spSkill->m_nSkillId);
+        int bLearned = pPlayer->GetJobSystem()->vfunc_2(spSkill->m_nSkillId);
         if (bLearned)
             setLearned.insert(spSkill->m_nSkillId);
         else
@@ -737,23 +737,23 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
-        Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
+        Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->GetJobGroupId());
         // The exe's null test is the out-of-line MS2Ptr<ASButtonBar>::IsNull (0x140fa3060), ICF-folded with the job skills' own.
         if (reinterpret_cast<const MS2Ptr<ASButtonBar>&>(spSkills).IsNull())
             return;
         ASArray arrSkills(2);
         std::set<unsigned> setLearned;
         std::set<unsigned> setOther;
-        int nJobLevel = TSingleton<JobTable>::GetInstance()->GetJobRank(pPlayer->FUN_141654730());
+        int nJobLevel = TSingleton<JobTable>::GetInstance()->GetJobRank(pPlayer->GetSubJob());
         for (POSITION pos = spSkills->GetHeadPosition(); pos != 0; spSkills->GetNext(pos))
         {
             Unk_CcSkillPtr spSkill = spSkills->GetAt(pos);
-            MS2Ptr<JobSkill> spLearned = pPlayer->FUN_1416546d0()->FindSkill(spSkill->m_nSkillId);
+            MS2Ptr<JobSkill> spLearned = pPlayer->GetJobSystem()->FindSkill(spSkill->m_nSkillId);
             if (spLearned == 0)
                 continue;
             if (spLearned->GetJobLevel() > nJobLevel)
                 continue;
-            int bLearned = pPlayer->FUN_1416546d0()->vfunc_2(spSkill->m_nSkillId);
+            int bLearned = pPlayer->GetJobSystem()->vfunc_2(spSkill->m_nSkillId);
             if (bLearned != 0)
                 setLearned.insert(spSkill->m_nSkillId);
             else
@@ -768,7 +768,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
             int bSelected = spConfig->m_skills.find(nSkillId) != spConfig->m_skills.end();
             ASObj obj(2);
             obj.FUN_1407cb9c0("disable", 0);
-            obj.FUN_1409c0d20("skillID", nSkillId);
+            obj.SetMemberUInt("skillID", nSkillId);
             obj.FUN_1407cba60("iconPath", CString(pRow->m_strIcon));
             obj.FUN_1407cb9c0("selected", bSelected);
             arrSkills.PushObj(obj);
@@ -782,7 +782,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
             int bSelected = spConfig->m_skills.find(nSkillId) != spConfig->m_skills.end();
             ASObj obj(2);
             obj.FUN_1407cb9c0("disable", 1);
-            obj.FUN_1409c0d20("skillID", nSkillId);
+            obj.SetMemberUInt("skillID", nSkillId);
             obj.FUN_1407cba60("iconPath", CString(pRow->m_strIcon));
             obj.FUN_1407cb9c0("selected", bSelected);
             arrSkills.PushObj(obj);
@@ -814,7 +814,7 @@ void UISkillCompactControlDialog::FUN_140fa1ff0()
 // @0x140fa2180
 void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 {
-    int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
+    int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
     MS2Ptr<ASButton> spHotKey = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<ASButton>("m_hotKey");
     if (spHotKey)
     {

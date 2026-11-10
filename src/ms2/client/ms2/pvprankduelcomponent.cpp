@@ -207,7 +207,7 @@ CString DAT_143ac4880("guildBattle_MatchingSuccess");
 
 // The rank table (global 0x143ab0e50).
 class Unk_RankTable;
-Unk_RankTable* FUN_140dc19b0();
+Unk_RankTable* GetRankingArenaDataTable();
 class CRankingArenaDataTable;
 
 // @0x140dc1390; the destructor 0x140dc1500 only runs ~CPtred
@@ -464,7 +464,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
 }
 
 // @0x140dc19b0
-Unk_RankTable* FUN_140dc19b0()
+Unk_RankTable* GetRankingArenaDataTable()
 {
     return reinterpret_cast<Unk_RankTable*>(TSingleton<CRankingArenaDataTable>::s_instance);
 }
@@ -472,7 +472,7 @@ Unk_RankTable* FUN_140dc19b0()
 // @0x140dbf260
 int CPvpRankDuelComponent::CurrentRating()
 {
-    Unk_RankEntry* pEntry = ((struct Unk_RankEntry*)((class CRankingArenaDataTable*)(class Unk_RankTable*)(FUN_140dc19b0()))->GetGradeOfRating(m_value20));
+    Unk_RankEntry* pEntry = ((struct Unk_RankEntry*)((class CRankingArenaDataTable*)(class Unk_RankTable*)(GetRankingArenaDataTable()))->GetGradeOfRating(m_value20));
     return pEntry->m_rating;
 }
 

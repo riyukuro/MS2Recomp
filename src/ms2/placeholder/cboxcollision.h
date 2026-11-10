@@ -24,7 +24,7 @@ public:
     virtual void vfunc_4();                                         // 0x140adab30 the local bounds from the size
     virtual void vfunc_5();                                         // 0x140adae20 the 16-point wire mesh
     virtual float vfunc_6();                                        // 0x140adae00 the height (m_ptBox.z)
-    int FUN_140adac70(const NxVec3& pt) const;                      // the point is inside the box
+    int ContainsPoint(const NxVec3& pt) const;                      // the point is inside the box
     int FUN_140adacb0(const Vector3& pt) const;             // the same for a game point
     float FUN_140adad00() const;                                    // top: the largest corner z
     float FUN_140adad80() const;                                    // bottom: the smallest corner z

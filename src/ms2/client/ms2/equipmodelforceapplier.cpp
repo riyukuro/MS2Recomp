@@ -104,7 +104,7 @@ template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<
 //
 
 // @0x141209640
-IEquipModelForceApplierPtr FUN_141209640(CEquipModel* pModel)
+IEquipModelForceApplierPtr CreateForceApplier(CEquipModel* pModel)
 {
     if (!(pModel && FUN_141200a90(pModel) && ((class ModelGroup*)(void*)(FUN_141200a90(pModel)))->FUN_1405451a0() == 7)) {
         return IEquipModelForceApplierPtr(EE_NEW EquipModelNullApplier());
@@ -195,9 +195,9 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
 
     ATL::CAtlMap<NxActor*, NxActor*> mapActors;
     ecrPhysX::PropService* pService = GetService<ecrPhysX::PropService>();
-    unsigned nProps = pService->GetNumProps(static_cast<CKfmModel*>(pModel)->FUN_14143ff70());
+    unsigned nProps = pService->GetNumProps(static_cast<CKfmModel*>(pModel)->GetEntityID());
     for (unsigned i = 0; i < nProps; i++) {
-        NiPhysXProp* pProp = pService->GetPropAt(static_cast<CKfmModel*>(pModel)->FUN_14143ff70(), i);
+        NiPhysXProp* pProp = pService->GetPropAt(static_cast<CKfmModel*>(pModel)->GetEntityID(), i);
         for (unsigned j = 0; j < pProp->GetSourcesCount(); j++) {
             NiPhysXPropDesc* pDesc = pProp->GetSnapshot();
             for (unsigned k = 0; k < pDesc->GetJointCount(); k++) {

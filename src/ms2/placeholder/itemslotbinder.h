@@ -22,8 +22,8 @@ public:
     void FUN_140d43990();                       // unbinds all slots
     CString BindItem(void* pItem);         // binds an already built item (MS2Ptr<CItem>-compatible) under a new slot name
     void FUN_140d438f0(CString strSlot);        // unbinds one slot by name
-    friend void FUN_140d432d0(ItemSlotBinder* pBinder, int n);     // sets m_24
-    friend void FUN_140d432f0(ItemSlotBinder* pBinder, int n);     // sets m_28
+    friend void SetIconType(ItemSlotBinder* pBinder, int n);     // sets m_24
+    friend void SetFlags(ItemSlotBinder* pBinder, int n);     // sets m_28
 
 private:
     MS2_LAYOUT_FRIEND;

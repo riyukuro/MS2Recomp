@@ -118,9 +118,9 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);     // 12 0x140b81a30
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140b81670
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140b81da0
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140b81da0
     virtual void vfunc_24();                                // 24 0x140b811d0
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x140b81f70
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x140b81f70
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140b86100
 
     int GetEmotionId();                                     // 0x140b81fe0 the payload's emotion (0 without one)

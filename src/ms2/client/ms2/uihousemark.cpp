@@ -125,7 +125,7 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00), the distance
+float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00), the distance
 float FUN_14029d220(float f);                                       // fabs
 
 class CBuddyManager;
@@ -287,7 +287,7 @@ void UIHouseMarkEntity::FUN_14198b340()
     }
     if (bShow)
     {
-        float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(m_pos), reinterpret_cast<const Vector3&>(ptPc));
+        float fDistance = GetDistance(reinterpret_cast<const Vector3&>(m_pos), reinterpret_cast<const Vector3&>(ptPc));
         if (fDistance > (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_1240)->Get())
             bShow = false;
     }
@@ -402,7 +402,7 @@ void UIHouseMarkEntity::FUN_14198b970()
         if (spOwner.get() != NULL)
         {
             strOwner = spOwner->ownerName;
-            if (spOwner->ownerID == reinterpret_cast<PC*>(pPc)->FUN_141656ad0())
+            if (spOwner->ownerID == reinterpret_cast<PC*>(pPc)->GetAccountId())
                 nState = 1;
             else if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae52d0(nMapId, nGroup) != 0)
                 nState = 2;

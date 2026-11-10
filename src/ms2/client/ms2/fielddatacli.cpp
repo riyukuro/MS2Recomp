@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CFieldDataCli: client-side CFieldData (fieldData.xml + MapXblock xml: bgm, hdr, fog, camera, shadow, minimap).
 // MS2-UNIT: ?\fielddatacli.cpp
-// MS2-FUNCTIONAL: FUN_140a55df0 (stack slot layout: the exe keeps the two return temps apart, 0x50 and 0x60, around cam) differs in layout only; behaviour identical
+// MS2-FUNCTIONAL: LoadMinimap (stack slot layout: the exe keeps the two return temps apart, 0x50 and 0x60, around cam) differs in layout only; behaviour identical
 // MS2-RANGE: 0x1400c4040-0x1400c4100 .text$di
 // MS2-RANGE: 0x140a54160-0x140a571b0 .text$mn
 // MS2-PIN: ?get@?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ 0x140a56f90
@@ -57,7 +57,7 @@ class Unk_140166420 : public CFileSystem { };
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p);
-int FUN_140a55df0(TiXmlElement* node, MS2Ptr<CFieldDataCli> sp);
+int LoadMinimap(TiXmlElement* node, MS2Ptr<CFieldDataCli> sp);
 int FUN_140a56ad0(TiXmlElement* node, const char* name, int& out);
 
 // ---- static string table (the first static of header_statics_a.h), 0x1400c4040; atexit thunk 0x142c9f4f0 ----
@@ -309,7 +309,7 @@ int FUN_140a55d20(CFieldDataCli* self, CStringW* out)
 }
 
 // @0x140a55df0   loads <minimap> into a new CMinimap owned by the record (the pointer is consumed)
-int FUN_140a55df0(TiXmlElement* node, MS2Ptr<CFieldDataCli> sp)
+int LoadMinimap(TiXmlElement* node, MS2Ptr<CFieldDataCli> sp)
 {
     if (node) {
         FUN_140a56e70(&sp->m_spMinimap, new CMinimap());
@@ -428,7 +428,7 @@ bool CFieldDataCli::LoadXBlock()
     if (cp) {
         XmlGetAttr((class TiXmlElement*)(cp), "bgDay", m_strBgDay);
     }
-    FUN_140a55df0(((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("minimap")), MS2Ptr<CFieldDataCli>(this));
+    LoadMinimap(((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("minimap")), MS2Ptr<CFieldDataCli>(this));
     return true;
 }
 

@@ -27,7 +27,7 @@ public:
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400c3480 ; B22: statemanager_statics.h s_pointer init
 // Registry of named bags/slots (GFx bind data).
 
-BookSlotBag* FUN_140a37100(NotifyContext::BindData* p);
+BookSlotBag* CastToBookSlotBag(NotifyContext::BindData* p);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(BookSlot);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(BookSlotBag);
@@ -108,7 +108,7 @@ void FUN_140a36c30(const CString& strName, std::vector<MS2Ptr<JobSkill> >& skill
 // @0x140a36d00
 void FUN_140a36d00(const CString& strName)
 {
-    BookSlotBag* pBag = FUN_140a37100(Unk_NotifyContext::FUN_1422c8e90(strName));
+    BookSlotBag* pBag = CastToBookSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -152,7 +152,7 @@ MS2Ptr<JobSkill> BookSlotBag::FUN_140a37060(int nIndex)
 }
 
 // @0x140a37100
-BookSlotBag* FUN_140a37100(NotifyContext::BindData* p)
+BookSlotBag* CastToBookSlotBag(NotifyContext::BindData* p)
 {
     BookSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200052, (void**)&pBag))

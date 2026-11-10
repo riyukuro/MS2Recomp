@@ -37,8 +37,8 @@ public:
     int IsDead();
 };
 bool FUN_14028d470(float a, float b);                       // nearly equal
-void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool bFlag);  // apply an alpha to the node tree
+void DetachFromParent(class NiAVObject*);   // C3: was DetachFromParent
+void SetNodeAlpha(NiAVObject* pNode, float fAlpha, bool bFlag);  // apply an alpha to the node tree
 void FUN_140a01250(efd::Point3 kAngles, efd::Point3* pForward, efd::Point3* pRight);   // euler angles -> axes
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // look-at angles; C3: the definer's signature (beameffect)
 
@@ -159,13 +159,13 @@ void CTailEffectObject::FUN_140acee90()
         return;
 
     const CString& strPath = m_spData->m_strEffectPath;
-    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c260();
+    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->GetScale();
     float fSpacing = m_spData->m_fDistance * fScale;
 
     NiNodePtr spNode(NiNew NiNode(0));
     if (m_pOwner->GetClassID() == 0x6200044)
     {
-        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410())))))));
+        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->GetEntity())))))));
         pRoot->AttachChild(static_cast<NiAVObject*>(spNode), false);
     }
     else
@@ -177,7 +177,7 @@ void CTailEffectObject::FUN_140acee90()
     NoticeMessage kRequest;   // C3: was Unk_TeRequest
     ((Unk_TeRequest&)(kRequest)).m_strName = strPath;
     ((Unk_TeRequest&)(kRequest)).m_nOwnerId = 0;
-    ((class NoticeMessage*)(struct Unk_TeRequest*)(&((Unk_TeRequest&)(kRequest))))->SetActor(m_pOwner->FUN_14123c580());
+    ((class NoticeMessage*)(struct Unk_TeRequest*)(&((Unk_TeRequest&)(kRequest))))->SetActor(m_pOwner->GetObjectId());
     reinterpret_cast<NiAVObjectPtr&>(((Unk_TeRequest&)(kRequest)).m_spNode) = (NiNode*)spNode;
     int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
     reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0((unsigned int)(nHandle), m_bVisible);
@@ -187,7 +187,7 @@ void CTailEffectObject::FUN_140acee90()
     spInfo->m_spNode = spNode;
     spInfo->m_nEffectId = nHandle;
 
-    NiNodePtr spBase(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
+    NiNodePtr spBase(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->GetEntityID())))));
     if (!spBase)
         return;
 
@@ -221,7 +221,7 @@ void CTailEffectObject::FUN_140acee90()
     spNode->SetWorldTranslate(kBase.m_Translate);
     spNode->SetWorldRotate(kBase.m_Rotate);
     spNode->SetLocalFromWorldTransform(kBase);
-    FUN_14098b3e0(static_cast<NiAVObject*>(spNode), m_fAlpha, (bool)0);
+    SetNodeAlpha(static_cast<NiAVObject*>(spNode), m_fAlpha, (bool)0);
     m_listInfo.push_back(spInfo);
 }
 
@@ -252,9 +252,9 @@ void CTailEffectObject::FUN_140acf570()
         ((Unk_TeRequest&)(kRequest)).m_strName = m_spData->m_strEndEffectPath;
         ((Unk_TeRequest&)(kRequest)).m_pTransform = &kXform;
         ((Unk_TeRequest&)(kRequest)).m_nOwnerId = 0;
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
     } while (0);
-    FUN_140a0b2a0((class NiAVObject*)((NiNode*)spInfo->m_spNode));
+    DetachFromParent((class NiAVObject*)((NiNode*)spInfo->m_spNode));
     m_listInfo.pop_back();
 }
 
@@ -296,10 +296,10 @@ void CTailEffectObject::FUN_140acf8f0()
         return;
 
     float fSpeed = m_spData->m_fSpeed;
-    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c260();
+    float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->GetScale();
     float fDist = m_spData->m_fDistance * fScale;
 
-    NiNodePtr spPrev(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
+    NiNodePtr spPrev(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->GetEntityID())))));
     std::list<MS2Ptr<TailEffectInfo> >& rList = m_listInfo;
     for (std::list<MS2Ptr<TailEffectInfo> >::const_iterator itEnd = rList.end(), it = rList.begin(); it != itEnd; ++it)
     {
@@ -380,7 +380,7 @@ void CTailEffectObject::FUN_140acffc0(float fAlpha)
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        FUN_14098b3e0(static_cast<NiAVObject*>(spInfo->m_spNode), fAlpha, (bool)0);
+        SetNodeAlpha(static_cast<NiAVObject*>(spInfo->m_spNode), fAlpha, (bool)0);
     }
 }
 

@@ -44,7 +44,7 @@ class Unk_Mgr1409670f0 { };
 class EntityWorldManager   // C3: member view for the former free stand-ins
 {
 public:
-    class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
+    class egf::Entity* FindEntity(class egf::EntityID const&);
 };
 template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;
 template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(int);
@@ -140,7 +140,7 @@ int CProxyGameObject::FUN_1416c1ff0()
 MS2_REPLACE_METHOD(0x1416C1FF0, CProxyGameObject, FUN_1416c1ff0, 63, 0x2E42A744);
 
 // @0x1416c2040
-int CProxyGameObject::FUN_1416c2040()
+int CProxyGameObject::IsOtherPlayer()
 {
     int r;
     if (m_40 != 0 && m_40 != DAT_143ab2828) {
@@ -150,7 +150,7 @@ int CProxyGameObject::FUN_1416c2040()
     }
     return r;
 }
-MS2_REPLACE_METHOD(0x1416C2040, CProxyGameObject, FUN_1416c2040, 63, 0x117FEF14);
+MS2_REPLACE_METHOD(0x1416C2040, CProxyGameObject, IsOtherPlayer, 63, 0x117FEF14);
 
 // @0x1416c2090
 int CProxyGameObject::FUN_1416c2090()
@@ -184,7 +184,7 @@ int CProxyGameObject::FUN_1416c2110()
     if (FUN_1416c20d0() == 0) {
         return 0;
     }
-    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(m_18.operator->())->m_key)));
+    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FindEntity(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(m_18.operator->())->m_key)));
     if (ent != 0) {
         if (((class egf::FlatModel*)((egf::Entity*)(class Unk_Entity1411cf440*)(ent))->GetModel())->ContainsModel(0x7b35ceec)) {
             return 1;
@@ -211,21 +211,21 @@ int CProxyGameObject::FUN_1416c21c0()
 MS2_REPLACE_METHOD(0x1416C21C0, CProxyGameObject, FUN_1416c21c0, 47, 0x5A0ED176);
 
 // @0x1416c2200
-Unk_ProxyValue88* CProxyGameObject::FUN_1416c2200()
+Unk_ProxyValue88* CProxyGameObject::GetQuestState()
 {
     return &m_88;
 }
-MS2_REPLACE_METHOD(0x1416C2200, CProxyGameObject, FUN_1416c2200, 17, 0xEADCA25B);
+MS2_REPLACE_METHOD(0x1416C2200, CProxyGameObject, GetQuestState, 17, 0xEADCA25B);
 
 // @0x1416c2220
-MS2Ptr<NpcDataCli> CProxyGameObject::FUN_1416c2220()
+MS2Ptr<NpcDataCli> CProxyGameObject::GetNpcData()
 {
     return MS2Ptr<NpcDataCli>(m_28);
 }
-MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, FUN_1416c2220, 65, 0xD6E756B3);
+MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, GetNpcData, 65, 0xD6E756B3);
 
 // @0x1416c2270
-Vector3 CProxyGameObject::FUN_1416c2270()
+Vector3 CProxyGameObject::GetPosition()
 {
     Unk_PosObject* obj = ((class Unk_PosObject*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FindObjectById(m_proxyId));
     if (obj != 0) {
@@ -234,7 +234,7 @@ Vector3 CProxyGameObject::FUN_1416c2270()
         return m_6c;
     }
 }
-MS2_REPLACE_METHOD(0x1416C2270, CProxyGameObject, FUN_1416c2270, 114, 0x6DB7BE40);
+MS2_REPLACE_METHOD(0x1416C2270, CProxyGameObject, GetPosition, 114, 0x6DB7BE40);
 
 // @0x1416c22f0
 void* CProxyGameObject::FUN_1416c22f0()
@@ -279,12 +279,12 @@ int CProxyGameObject::FUN_1416c2390()
 MS2_REPLACE_METHOD(0x1416C2390, CProxyGameObject, FUN_1416c2390, 17, 0x1F8D7963);
 
 // @0x1416c23b0
-CStringW CProxyGameObject::FUN_1416c23b0()
+CStringW CProxyGameObject::GetName()
 {
     if (FUN_1416c2090() != 0) {
         {
             CStringW name = FUN_1401aa6a0(m_78);
-            bool found = (!name.IsEmpty() && ((const MS2Ptr<NpcDataCli>&)FUN_1416c2220())->GetNametag() != 0);
+            bool found = (!name.IsEmpty() && ((const MS2Ptr<NpcDataCli>&)GetNpcData())->GetNametag() != 0);
             if (found) {
                 return name;
             }
@@ -294,7 +294,7 @@ CStringW CProxyGameObject::FUN_1416c23b0()
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x1416C23B0, CProxyGameObject, FUN_1416c23b0, 352, 0xD3390841);
+MS2_REPLACE_METHOD(0x1416C23B0, CProxyGameObject, GetName, 352, 0xD3390841);
 
 // @0x1416c2520
 CString CProxyGameObject::FUN_1416c2520()
@@ -307,7 +307,7 @@ MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, FUN_1416c2520, 66, 0x998DDC8A)
 CStringW CProxyGameObject::FUN_1416c2570()
 {
     if (FUN_1416c1ff0() != 0) {
-        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0())->FUN_141656d90();
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetName();
     }
     return m_60;
 }
@@ -367,7 +367,7 @@ int CProxyGameObject::FUN_1416c2990(int nTemplateId)
     m_28 = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
     m_dc = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nTemplateId);
     m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
-    FUN_1416c2a80();
+    UpdateQuestState();
     int r;
     if (m_28.get()) {
         r = 1;
@@ -379,13 +379,13 @@ int CProxyGameObject::FUN_1416c2990(int nTemplateId)
 MS2_REPLACE_METHOD(0x1416C2990, CProxyGameObject, FUN_1416c2990, 224, 0xA8CBDA0F);
 
 // @0x1416c2a80
-void CProxyGameObject::FUN_1416c2a80()
+void CProxyGameObject::UpdateQuestState()
 {
     if (FUN_1416c2090() == 0) {
         return;
     }
     if (m_dc != 0) {
-        ((class CQuestManager*)(class Unk_Svc764020*)(((class Unk_Svc764020*)FUN_140764020())))->FUN_1416d12d0(m_78, &m_88, 0);
+        ((class CQuestManager*)(class Unk_Svc764020*)(((class Unk_Svc764020*)FUN_140764020())))->GetNpcQuestState(m_78, &m_88, 0);
     }
     if (m_e0 != 0) {
         m_e4 = TSingleton<CQuestMaskTable>::GetInstance()->CheckNpcHere(m_78);
@@ -393,7 +393,7 @@ void CProxyGameObject::FUN_1416c2a80()
         m_e4 = 1;
     }
 }
-MS2_REPLACE_METHOD(0x1416C2A80, CProxyGameObject, FUN_1416c2a80, 157, 0x48E7C890);
+MS2_REPLACE_METHOD(0x1416C2A80, CProxyGameObject, UpdateQuestState, 157, 0x48E7C890);
 
 // @0x1416c2b30
 bool CProxyGameObject::FUN_1416c2b30()

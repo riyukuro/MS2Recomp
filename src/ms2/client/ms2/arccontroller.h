@@ -36,7 +36,7 @@ public:
     virtual const NiRTTI* GetRTTI() const;                      // slot 2, 0x1409ab690
 
     bool FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float gravityScale);  // start; false if from/to coincide
-    float FUN_1409ab300() const;                                // flight time
+    float GetFlightTime() const;                                // flight time
     bool IsRising() const;                                 // still rising
     Vector3 GetPosition() const;                      // current world position
     bool FUN_1409ab370() const;                                 // finished

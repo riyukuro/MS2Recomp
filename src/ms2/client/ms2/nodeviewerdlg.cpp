@@ -19,7 +19,7 @@ public:
 class CameraMgr;
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 namespace egf { class Entity; }
-class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
+class GameObject { public: egf::Entity* GetEntity(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                 // scene root of an entity
 
 typedef TFunctor<void, ParamList<CString, EmptyParam> > Unk_NvSelectFunctor;
@@ -61,7 +61,7 @@ void CNodeViewerDlg::FUN_140c7f0f0()
     void* pEntity = ((void*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
+        pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->GetEntity()))));
         if (pRoot != 0)
         {
             NiFixedString kName((const char*)m_strNode);
@@ -183,7 +183,7 @@ void CNodeViewerDlg::FUN_140c7f770()
     void* pEntity = ((void*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
+        pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->GetEntity()))));
         if (pNode != 0)
         {
             m_pTree->FUN_141858b50((class Unk_TreeNode*)pNode);

@@ -186,7 +186,7 @@ void StateIdle::vfunc_4(StateData* pData)
         AsPC(pPC)->FUN_141659000(0);
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
-        static_cast<CPushControl*>(pMyPC->FUN_141675eb0())->FUN_1413fcf90();
+        static_cast<CPushControl*>(pMyPC->GetPushControl())->Reset();
     m_pOwner->FUN_14166f8f0(0, 1);
 }
 
@@ -246,7 +246,7 @@ void StateIdle::vfunc_8(double fTime)
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
         {
-            if (pPC->FUN_1416764a0() != 0)
+            if (pPC->GetRidee() != 0)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = 1;
@@ -262,13 +262,13 @@ void StateIdle::vfunc_8(double fTime)
             }
             else
             {
-                pPC->FUN_1415248d0(1, 0);
+                pPC->TryUseChairOrBed(1, 0);
             }
         }
     }
     else if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
     {
-        pPC->FUN_1415248d0(2, 0);
+        pPC->TryUseChairOrBed(2, 0);
     }
     else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
     {
@@ -294,7 +294,7 @@ void StateIdle::vfunc_8(double fTime)
 void StateIdle::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->GetEntityID());
     const efd::ClassInfo* pDesc;
     if (m_pOwner != 0)
         pDesc = m_pOwner->GetClassDesc();
@@ -385,14 +385,14 @@ void StateIdle::vfunc_9(double fTime)
         break;
     case 0xa:
         if (m_pOwner->vfunc_65() != 0)
-            m_pOwner->FUN_14166ce70(0);
+            m_pOwner->SetEmotion(0);
         if (m_pOwner->PlayAnimationById(0x3d))
             m_pOwner->FUN_14166f8f0(0, 1);
         break;
     case 0xb:
     {
         if (m_pOwner->vfunc_65() != 0)
-            m_pOwner->FUN_14166ce70(0);
+            m_pOwner->SetEmotion(0);
         bool bPlayed;
         {
             efd::utf8string kName("FittingDoll_Idle_A");
@@ -405,7 +405,7 @@ void StateIdle::vfunc_9(double fTime)
     case 0x16:
     {
         if (m_pOwner->vfunc_65() != 0)
-            m_pOwner->FUN_14166ce70(0);
+            m_pOwner->SetEmotion(0);
         bool bPlayed;
         {
             efd::utf8string kName("Emotion_MusicStart_A");
@@ -507,7 +507,7 @@ int StateIdle::vfunc_16()
 }
 
 // @0x1417ce680
-int StateIdle::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateIdle::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p->m_nSub != m_n10)
         return 1;
@@ -584,7 +584,7 @@ void StateIdle::FUN_1417ceab0(unsigned nSeq)
     {
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
-            AsPC(pPC)->FUN_14165e2a0(kName, nKey);
+            AsPC(pPC)->GetSwimAnimName(kName, nKey);
     }
     if (kName.empty() && !m_pOwner->FUN_14166de90(nKey, nSeq))
         kName = m_pOwner->vfunc_123(nKey);
@@ -640,7 +640,7 @@ void StateIdle::FUN_1417cef60()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    if (pPC->FUN_1416764a0() != 0)
+    if (pPC->GetRidee() != 0)
         return;
     if (m_pOwner->vfunc_65() != 0)
         m_timerBore.FUN_1408687f0();
@@ -688,9 +688,9 @@ void StateIdle::FUN_1417cf260()
     if (pPC != 0)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-        ((Unk_EffectTarget&)(kTarget)).m_strName = AsPC(pPC)->FUN_14165e010(0x30);
+        ((Unk_EffectTarget&)(kTarget)).m_strName = AsPC(pPC)->GetSwimEffectName(0x30);
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
-        kTarget.SetActor(m_pOwner->FUN_14123c580());
+        kTarget.SetActor(m_pOwner->GetObjectId());
         m_nSoundIdle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
 }
@@ -703,11 +703,11 @@ void StateIdle::FUN_1417cf360()
     if (pPC != 0)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-        if (AsPC(pPC)->FUN_141654700() == 0x32)
+        if (AsPC(pPC)->GetJobGroupId() == 0x32)
         {
             ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)GetClientConstants())->m_strSoundJob50)->Get();
         }
-        else if (AsPC(pPC)->FUN_141654700() == 0x6e)
+        else if (AsPC(pPC)->GetJobGroupId() == 0x6e)
         {
             ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)GetClientConstants())->m_strSoundJob110)->Get();
         }
@@ -716,7 +716,7 @@ void StateIdle::FUN_1417cf360()
             return;
         }
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
-        kTarget.SetActor(m_pOwner->FUN_14123c580());
+        kTarget.SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
         m_nSoundEmotion = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
@@ -763,7 +763,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n10 = 1;
-    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr != 0)
     {
         unsigned nSeq = static_cast<NiActorManager*>(pMgr)->GetTargetAnimation();
@@ -844,7 +844,7 @@ void StateIdlePet::vfunc_9(double fTime)
     }
     else
     {
-        unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
+        unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->GetEntityID());
         switch (m_n10)
         {
         case 1:

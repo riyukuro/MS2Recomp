@@ -60,7 +60,7 @@ class Unk_TrInventory;
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 // The player's inventory (global 0x143ab2a90).
 extern Unk_Inventory g_143ab2a90;
@@ -69,10 +69,10 @@ extern int DAT_143ab2914;
 MS2Ptr<CItem> FUN_141425750(__int64 uid, bool* pbEquipped);
 void FUN_1412752d0(const CStringW& key, int type);
 int FUN_141276180(const CString& sound, const CString& arg);
-void FUN_141415600(const CString& name);
-void FUN_14141f970(const CString& name);
-void FUN_141415450(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
-void FUN_14141ff80(ItemSlotBag* bag, int count);
+void DestroyItemInfoSlot(const CString& name);
+void DestroyItemSlotBag(const CString& name);
+void CreateItemInfoSlot(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
+void ResizeItemSlotBag(ItemSlotBag* bag, int count);
 class ASItemBag   // C3: member view for the former free stand-ins
 {
 public:
@@ -269,7 +269,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
         }
     }
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
-    Unk_TrInventory* inventory = ((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0());
+    Unk_TrInventory* inventory = ((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->GetEquipment());
     reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
@@ -312,7 +312,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
     }
     ItemSlotBag* bag = FUN_140c54590(m_slots1Name);
     if (bag != 0) {
-        FUN_14141ff80(bag, (int)m_targetItems.GetCount());
+        ResizeItemSlotBag(bag, (int)m_targetItems.GetCount());
         if (m_targetControl.get() != 0)
             ((class ASItemBag*)(class Unk_SocketPageBag*)(m_targetControl.operator->()))->FUN_1422cf860();
     }
@@ -408,7 +408,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         return;
     }
     targetUid = m_target->GetItemUid();
-    if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
+    if (g_143ab2a90.FindItemByUid(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
@@ -479,11 +479,11 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c527d0()
 // @0x140c52930
 void ItemSocketSystemPageSocketTransfer::FUN_140c52930()
 {
-    FUN_14141f970(m_slots0Name);
-    FUN_14141f970(m_slots1Name);
-    FUN_14141f970(m_ingredientName);
-    FUN_141415600(m_sourceName);
-    FUN_141415600(m_targetName);
+    DestroyItemSlotBag(m_slots0Name);
+    DestroyItemSlotBag(m_slots1Name);
+    DestroyItemSlotBag(m_ingredientName);
+    DestroyItemInfoSlot(m_sourceName);
+    DestroyItemInfoSlot(m_targetName);
     m_source = 0;
     m_target = 0;
     m_ingredients.RemoveAll();
@@ -508,8 +508,8 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52a80()
 // @0x140c52ac0
 void ItemSocketSystemPageSocketTransfer::FUN_140c52ac0()
 {
-    FUN_141415600(m_targetName);
-    FUN_14141f970(m_ingredientName);
+    DestroyItemInfoSlot(m_targetName);
+    DestroyItemSlotBag(m_ingredientName);
     m_target = 0;
     m_ingredients.RemoveAll();
 }
@@ -536,7 +536,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     FUN_140f6dc70(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_source), &fee, MS2Ptr<SaleParam>(0));
     int slotFlags = 0x405;
     int slotSize = 0x20;
-    FUN_141415450(m_targetName, MS2Ptr<CItem>(m_target), 0, slotFlags, slotSize);
+    CreateItemInfoSlot(m_targetName, MS2Ptr<CItem>(m_target), 0, slotFlags, slotSize);
     data.FUN_1407cba60("ingredientEquipSlotId", m_targetName);
     if (fee != 0)
         data.FUN_1407cbb20("transferFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
@@ -664,7 +664,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         return;
     }
     targetUid = m_target->GetItemUid();
-    if (g_143ab2a90.FUN_140a5d680(targetUid) == 0) {
+    if (g_143ab2a90.FindItemByUid(targetUid) == 0) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
@@ -704,7 +704,7 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scalef
 // @0x140c53f90
 void ItemSocketSystemPageSocketTransfer::FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>& out)
 {
-    g_143ab2a90.FUN_140a60880(1, out);
+    g_143ab2a90.GetItemsInCategory(1, out);
 }
 
 // @0x140c53fc0

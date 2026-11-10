@@ -151,7 +151,7 @@ int Unk_AssetEvent::GetState()
 
 // Filter given to the player manager: accepts the objects that are players.
 // @0x1414a9c80
-static int FUN_1414a9c80(void* pObj)
+static int IsPlayerObject(void* pObj)
 {
     void* pPlayer = efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj));
     return pPlayer != 0 ? 1 : 0;
@@ -179,7 +179,7 @@ MS2AnimationService::~MS2AnimationService()
 
 // Stores the asset filter in the callback slot.
 // @0x1414ad580
-static void FUN_1414ad580(bool (*pFilter)(Unk_AssetEvent*))
+static void SetAssetFilter(bool (*pFilter)(Unk_AssetEvent*))
 {
     g_pfnMS2SceneGraphCacheFilter = (bool (*)(const ecr::SceneGraphCacheResponse*))pFilter;
 }
@@ -187,7 +187,7 @@ static void FUN_1414ad580(bool (*pFilter)(Unk_AssetEvent*))
 // @0x1414a8850
 efd::AsyncResult MS2AnimationService::OnInit()
 {
-    FUN_1414ad580(&MS2AnimationService::FUN_1414a9810);
+    SetAssetFilter(&MS2AnimationService::HasOutstandingNifs);
     return egmAnimation::AnimationService::OnInit();
 }
 
@@ -235,16 +235,16 @@ void MS2AnimationService::ReloadFemaleKF()
 {
     s_nReloading = 1;
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
-    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
+    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 1)
+    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->GetGender() == 1)
     {
-        NiFilename kFilename(pPlayer->FUN_14123bbd0());
+        NiFilename kFilename(pPlayer->GetModelPath());
         CString kName(kFilename.GetFilename());
         FUN_1401d3700(kName);
         if (kName.Find(":female", 0) != -1)
         {
-            egf::EntityID kID = ((GameObject*)pPlayer)->FUN_14123c460();
+            egf::EntityID kID = ((GameObject*)pPlayer)->GetEntityID();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -278,16 +278,16 @@ void MS2AnimationService::ReloadMaleKF()
 {
     s_nReloading = 1;
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
-    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
+    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(IsPlayerObject));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 0)
+    if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->GetGender() == 0)
     {
-        NiFilename kFilename(pPlayer->FUN_14123bbd0());
+        NiFilename kFilename(pPlayer->GetModelPath());
         CString kName(kFilename.GetFilename());
         FUN_1401d3700(kName);
         if (kName.Find(":male", 0) != -1)
         {
-            egf::EntityID kID = ((GameObject*)pPlayer)->FUN_14123c460();
+            egf::EntityID kID = ((GameObject*)pPlayer)->GetEntityID();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -424,7 +424,7 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries)
 // Asset filter (OnInit stores it in the callback slot): true when the asset is cached and its cache request still
 // has NIFs outstanding.
 // @0x1414a9810
-bool MS2AnimationService::FUN_1414a9810(Unk_AssetEvent* pEvent)
+bool MS2AnimationService::HasOutstandingNifs(Unk_AssetEvent* pEvent)
 {
     if (pEvent != 0)
     {
@@ -487,7 +487,7 @@ MS2_REPLACE_METHOD(0x1414A99A0, MS2AnimationService, GetKFMCacheCount, 51, 0x7CD
 
 // Drops the shared XML/preload caches.
 // @0x1414a99e0
-void FUN_1414a99e0()
+void ClearCaches()
 {
     s_mapXml.clear();
     s_mapCache.RemoveAll();
@@ -497,7 +497,7 @@ void FUN_1414a99e0()
 // must build the exe's MS2KFMCache (fx6).
 #ifndef MS2_HOOK_DLL
 // @0x1414a9a10
-efd::IBase* FUN_1414a9a10()
+efd::IBase* CreateKFMCache()
 {
     return EE_NEW MS2KFMCache();
 }

@@ -8,19 +8,19 @@ class CPartyMember : public CPtred {
 public:
     explicit CPartyMember(int);
     virtual ~CPartyMember();
-    void FUN_141637a60(short);
-    void FUN_141637a80(int, int);
+    void SetLevel(short);
+    void SetHp(int, int);
     void FUN_141637ad0(int);
     void SetRole(int);
     void SetReadyState(int);
     void SetCounters(const Unk_LockedIntMap*);
     __int64 FUN_141637bb0();
-    bool FUN_141637c20();
-    int FUN_141637c90();
-    void FUN_141637cd0(int);
+    bool IsOffline();
+    int GetReadyState();
+    void SetIndex(int);
     void SetOffline(bool);
     void SetLeader(int);
-    CStringW FUN_141637bd0();
+    CStringW GetName();
     int index;
     int role;
     int leader;

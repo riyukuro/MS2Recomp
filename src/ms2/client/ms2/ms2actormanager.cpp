@@ -86,11 +86,11 @@ struct Unk_ActorAccess : public MS2ActorManager
     using NiActorManager::Initialize;
 };
 
-NiActorManager* FUN_140d815d0(NiKFMTool* pkKFMTool, const char* pcKFMFilePath, bool bCumulativeAnimations,
+NiActorManager* CreateActorManager(NiKFMTool* pkKFMTool, const char* pcKFMFilePath, bool bCumulativeAnimations,
                               bool bLoadFilesFromDisk, NiStream* pkStream, NiPoseBinding* pkPoseBinding);
 
 // @0x140d85cf0 m_spManager = pkManager
-void FUN_140d85cf0(Unk_ActorAccess* pkActorManager, NiControllerManager* pkManager)
+void SetControllerManager(Unk_ActorAccess* pkActorManager, NiControllerManager* pkManager)
 {
     pkActorManager->m_spManager = pkManager;
 }
@@ -119,13 +119,13 @@ NiActorManager* FUN_140d81450(const char* pcKFMFilename, bool bCumulativeAnimati
         return NULL;
     }
 
-    return FUN_140d815d0(spKFMTool, pcKFMFilename, bCumulativeAnimations, bLoadFilesFromDisk, pkStream,
+    return CreateActorManager(spKFMTool, pcKFMFilename, bCumulativeAnimations, bLoadFilesFromDisk, pkStream,
                          pkPoseBinding);
 }
 
 // NiActorManager::Create(NiKFMTool*, ...) building an MS2ActorManager
 // @0x140d815d0
-NiActorManager* FUN_140d815d0(NiKFMTool* pkKFMTool, const char* pcKFMFilePath, bool bCumulativeAnimations,
+NiActorManager* CreateActorManager(NiKFMTool* pkKFMTool, const char* pcKFMFilePath, bool bCumulativeAnimations,
                               bool bLoadFilesFromDisk, NiStream* pkStream, NiPoseBinding* pkPoseBinding)
 {
     NiFilename kFilename(pcKFMFilePath);
@@ -157,7 +157,7 @@ NiActorManager* FUN_140d815d0(NiKFMTool* pkKFMTool, const char* pcKFMFilePath, b
     }
     else
     {
-        FUN_140d85cf0(pkActorManager, EE_NEW NiControllerManager(NULL));
+        SetControllerManager(pkActorManager, EE_NEW NiControllerManager(NULL));
     }
 
     return pkActorManager;
@@ -268,9 +268,9 @@ NiActorManager* MS2ActorManager::CloneOnlyAnimation(NiAVObject* pkAVObject, bool
 }
 
 // @0x140d821f0 moves the pending sequence data into the controller manager; returns 0 while there is none.
-// (kfmmodel.cpp declares it `void* FUN_140d821f0(void*)`; the exe returns a bool in al)
+// (kfmmodel.cpp declares it `void* FlushPendingSequenceData(void*)`; the exe returns a bool in al)
 #define MS2_AM ((Unk_ActorAccess*)pActorManager)
-bool FUN_140d821f0(void* pActorManager)
+bool FlushPendingSequenceData(void* pActorManager)
 {
     if (MS2_AM->m_spManager)
     {

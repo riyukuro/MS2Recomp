@@ -179,14 +179,14 @@ void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const cha
         windowInfo.SetAsWindowless(NULL);
         settings.background_color = 0xffffffff;
         browser = new COffscreenWebBrowser();
-        browser->FUN_1416124e0(pszUnk, nUnk);
+        browser->SetLoginInfo(pszUnk, nUnk);
         // the client goes through operator COffscreenWebBrowser*() (0x141b81550) and CefRefPtr<CefClient>(T*)
         CefBrowserHost::CreateBrowser(windowInfo, (COffscreenWebBrowser*)browser, (const char*)strUrl, settings, NULL);
         CefRefPtr<CefBrowser> cefBrowser = NULL;
         browser->AttachBrowser(cefBrowser);
         m_aBrowsers[nIndex] = browser;
     } else {
-        browser->FUN_1416124e0(pszUnk, nUnk);
+        browser->SetLoginInfo(pszUnk, nUnk);
         browser->LoadUrl(strUrl);
     }
     browser->SetFocus(true);
@@ -218,7 +218,7 @@ void CWebBrowserService::QueueBrowserMessage(CefRefPtr<CefV8Context> context, Ce
 // @0x141b78650
 BOOL CWebBrowserService::FUN_141b78650()
 {
-    return s_app->FUN_140cc0130() ? TRUE : FALSE;
+    return s_app->GetImeRequest() ? TRUE : FALSE;
 }
 
 // @0x141b786a0
@@ -228,7 +228,7 @@ void* CWebBrowserService::FUN_141b786a0(int nIndex)
     if (pBrowser == NULL) {
         return NULL;
     }
-    return pBrowser->FUN_141612b20();
+    return pBrowser->GetTexture();
 }
 MS2_REPLACE_METHOD(0x141B786A0, CWebBrowserService, FUN_141b786a0, 59, 0xDFAC4E8D);
 
@@ -292,10 +292,10 @@ bool CWebBrowserService::FUN_141b78910(int nIndex, unsigned nMsg, WPARAM wParam,
         return false;
     }
     if (nMsg >= WM_MOUSEFIRST && nMsg <= WM_XBUTTONDBLCLK) {  // WM_MOUSELAST before Vista
-        pBrowser->FUN_141611ea0(x, y, nMsg, wParam, lParam);
+        pBrowser->OnMouseEvent(x, y, nMsg, wParam, lParam);
         return false;
     } else if (nMsg >= WM_KEYFIRST && nMsg <= WM_KEYLAST) {
-        pBrowser->FUN_141612210(nMsg, wParam, lParam);
+        pBrowser->OnKeyEvent(nMsg, wParam, lParam);
         return false;
     }
     return false;
@@ -309,7 +309,7 @@ void CWebBrowserService::FUN_141b789d0(int nIndex)
     if (pBrowser == NULL) {
         return;
     }
-    pBrowser->FUN_1416126f0();
+    pBrowser->UpdateTexture();
 }
 MS2_REPLACE_METHOD(0x141B789D0, CWebBrowserService, FUN_141b789d0, 57, 0x8949FDB8);
 
@@ -331,7 +331,7 @@ bool CWebBrowserService::FUN_141b78a50(int nIndex)
     if (pBrowser == NULL) {
         return true;
     }
-    return pBrowser->FUN_1416129e0();
+    return pBrowser->Open();
 }
 MS2_REPLACE_METHOD(0x141B78A50, CWebBrowserService, FUN_141b78a50, 59, 0x317860A6);
 
@@ -528,7 +528,7 @@ int CWebBrowserService::FindBrowserIndex(CefRefPtr<CefV8Context> context)
         if (m_aBrowsers[i].get() == NULL) {
             continue;
         }
-        if (m_aBrowsers[i]->FUN_141612aa0().get() == browser.get()) {
+        if (m_aBrowsers[i]->GetBrowser().get() == browser.get()) {
             return i;
         }
     }

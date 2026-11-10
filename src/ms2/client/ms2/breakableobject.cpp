@@ -55,13 +55,13 @@ extern int DAT_1439f8208;                   // shadow quality (graphic option)
 extern int DAT_143ae2960;                   // shadow quality (forced)
 
 // ---- exe functions outside this unit ----
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 Unk_ServiceManager * FUN_1413f9850(void);  // C3: the definition's signature
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 class MS2SceneGraphService { public: void MarkEntityDynamic(egf::Entity*); void RemoveEntityFromUpdate(egf::Entity*); };    // attach the entity's scene graph
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene root
-void FUN_14098b3e0(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
+void SetNodeAlpha(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
 void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
 CString FUN_140188f50(const char* pszText, int nCodePage); // UTF-8 -> CString
@@ -69,10 +69,10 @@ void FUN_1401d3700(CString& str);                                   // normalise
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 __int64 FUN_14028d260(float);  // C3: the definition's signature
 float FUN_14028d280(unsigned int nTicks);                           // milliseconds -> seconds
-void FUN_14098ab60(NiAVObject* pRoot, ATL::CAtlArray<NiPoint2>& aKeys, egf::EntityID idOwner);   // alpha animation
+void StartAlphaAnimation(NiAVObject* pRoot, ATL::CAtlArray<NiPoint2>& aKeys, egf::EntityID idOwner);   // alpha animation
 
 // AnimationService (egmAnimation) as the MS2 code calls it: play a sequence by name.
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(class egf::EntityID const &, class efd::utf8string const &, float, bool); }; class Unk_BoAnimService : public Unk_AnimSvc {
+class Unk_AnimSvc { public: bool PlayAnimation(class egf::EntityID const &, class efd::utf8string const &, float, bool); }; class Unk_BoAnimService : public Unk_AnimSvc {
 public:
 
 };
@@ -82,7 +82,7 @@ bool Unk_IsFinite(const efd::Point3& pt);                           // all three
 // ---- inline helpers (COMDATs this obj instantiated first) ----
 // The entity manager service.
 // @0x140ae11e0
-inline egf::EntityManager* FUN_140ae11e0()
+inline egf::EntityManager* GetEntityManager()
 {
     return FUN_1413f9850()->GetSystemServiceAs<egf::EntityManager>();
 }
@@ -103,7 +103,7 @@ inline void FUN_140ae1e80(NiAVObject* pRoot, float fFrom, float fTo, float fDela
     ATL::CAtlArray<NiPoint2> aKeys;
     aKeys.Add(NiPoint2(fDelay, fFrom));
     aKeys.Add(NiPoint2(fDuration, fTo));
-    FUN_14098ab60(pRoot, aKeys, idOwner);
+    StartAlphaAnimation(pRoot, aKeys, idOwner);
 }
 
 // @0x140add560
@@ -156,7 +156,7 @@ CBreakableObject::~CBreakableObject()
             {
                 if (DAT_143ae2b30 != 0)
                 {
-                    AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, 0);
+                    AnimationCallbackManager::GetInstance()->SetCallbackObject(pMgr, 0);
                 }
                 else
                 {
@@ -167,9 +167,9 @@ CBreakableObject::~CBreakableObject()
         }
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot)
-            FUN_14098b3e0(pRoot, 1.0f, false);
+            SetNodeAlpha(pRoot, 1.0f, false);
     }
-    FUN_140ae0720();
+    ReleasePhysicsActor();
     if (IsTombStone() != 0)
     {
         if (m_spEntity)
@@ -222,7 +222,7 @@ public:
 };
 
 // @0x140addf10
-MS2Ptr<CBoxCollision> CBreakableObject::FUN_140addf10()
+MS2Ptr<CBoxCollision> CBreakableObject::GetBox()
 {
     if (((MS2Ptr<CBoxCollision>*)&(m_spBox))->get())
         reinterpret_cast<Unk_BoBoxSlots*>(m_spBox.operator->())->vfunc_3(m_ptPos, m_ptRot, 1.0f);
@@ -236,7 +236,7 @@ void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
         ? &static_cast<Client::Constants*>(GetClientConstants())->VolumeMyPcToBreakableObject
         : &static_cast<Client::Constants*>(GetClientConstants())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nHitter, m_nHitSound, nKind, reinterpret_cast<NiPoint3&>(m_ptPos), fVolume);
+    TSingleton<CEffectService>::GetInstance()->PlayHitSound(nHitter, m_nHitSound, nKind, reinterpret_cast<NiPoint3&>(m_ptPos), fVolume);
     m_kHitTimer.FUN_140868750(1000);
 }
 
@@ -261,13 +261,13 @@ int CBreakableObject::vfunc_1(egf::Entity* pEntity, int nState)
         m_strName = FUN_140188f50(strId.c_str(), 0);
         FUN_1401d3700(m_strName);
     }
-    FUN_140ade420(nState, 0);
+    SetState(nState, 0);
     return 1;
 }
 
 // Plays a random animation of the list on the entity.
 // @0x140ade420
-void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
+void CBreakableObject::SetState(int nState, unsigned int nDelay)
 {
     m_nState = nState;
     m_kStateTimer.FUN_1408687f0();
@@ -279,8 +279,8 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
     {
         if (m_fSpeed == 0.0f && m_strIdleEffect.IsEmpty())
         {
-            FUN_140ae0e40();
-            FUN_140ae0ec0(5000);
+            MarkDynamic();
+            UnmarkDynamic(5000);
         }
         FUN_140ae07d0(1);
         FUN_140ae0a90(m_strRegenEffect);
@@ -288,55 +288,55 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aRegenAnims.GetCount();
             efd::utf8string strAnim(m_aRegenAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->PlayAnimation(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
     }
     else if (m_nState == 2)
     {
         if (m_fSpeed == 0.0f && m_strIdleEffect.IsEmpty())
         {
-            FUN_140ae0e40();
-            FUN_140ae0ec0(5000);
+            MarkDynamic();
+            UnmarkDynamic(5000);
         }
         MakeNxBoxController();
         if (m_bHasAnim != 0)
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->PlayAnimation(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
         FUN_140ae07d0(1);
     }
     if (m_nState == 6)
     {
-        FUN_140ae0e40();
+        MarkDynamic();
         MakeNxBoxController();
         FUN_140ae0a90(m_strDamageEffect);
         if (m_bHasAnim != 0 && !m_aDamageAnims.IsEmpty())
         {
             int nIndex = rand() % m_aDamageAnims.GetCount();
             efd::utf8string strAnim(m_aDamageAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->PlayAnimation(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
         FUN_140ae07d0(1);
     }
     else if (m_nState == 3)
     {
-        FUN_140ae0e40();
-        FUN_140ae0720();
+        MarkDynamic();
+        ReleasePhysicsActor();
         FUN_140ae0a90(m_strDeadEffect);
         if (m_bHasAnim != 0 && !m_aReviveAnims.IsEmpty())
         {
             int nIndex = rand() % m_aReviveAnims.GetCount();
             efd::utf8string strAnim(m_aReviveAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->PlayAnimation(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
         }
         FUN_140ae07d0(1);
     }
     else if (m_nState == 4)
     {
-        FUN_140ae0e40();
-        FUN_140ae0720();
+        MarkDynamic();
+        ReleasePhysicsActor();
         FUN_140ae07d0(0);
     }
 }
-MS2_REPLACE_METHOD(0x140ade420, CBreakableObject, FUN_140ade420, 0, 0);
+MS2_REPLACE_METHOD(0x140ade420, CBreakableObject, SetState, 0, 0);
 
 // @0x140adea80
 int CBreakableObject::GetState()
@@ -357,15 +357,15 @@ MS2_REPLACE_METHOD(0x140adeaa0, CBreakableObject, FUN_140adeaa0, 0, 0);
 // The moving object runs a cycle: wait, go (m_fMoveTime), wait, come back; the position is the base plus the move
 // direction times the speed times the time on the way. A synced object derives its cycle time from the server tick.
 // @0x140adeaf0
-void CBreakableObject::FUN_140adeaf0(int nNow)
+void CBreakableObject::Update(int nNow)
 {
     m_ptVelocity = efd::Point3::ZERO;
-    if (static_cast<MS2EntityManagerService*>(FUN_140ae11e0())->FUN_1414b54f0(m_spEntity))
+    if (static_cast<MS2EntityManagerService*>(GetEntityManager())->IsEntityDirty(m_spEntity))
         FUN_140adf9d0(m_spEntity);
     if (m_kDetachTimer.FUN_140868c00())
     {
         m_kDetachTimer.FUN_1408687f0();
-        FUN_140ae0ec0(0);
+        UnmarkDynamic(0);
     }
     if (m_kStateTimer.FUN_140868c00())
     {
@@ -393,36 +393,36 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
         if (nPos <= nWait0)
         {
             nPos = 0;
-            FUN_140adf830(m_ptRotBase);
+            SetRotation(m_ptRotBase);
             if (m_nPhase != 1)
-                FUN_140ae06a0(1, nNow);
+                SetPhase(1, nNow);
         }
         else if (nPos > nWait0 && nPos <= nGo)
         {
             nPos = nPos - nWait0;
-            FUN_140adf830(m_ptRotBase);
+            SetRotation(m_ptRotBase);
             if (m_nPhase != 2)
-                FUN_140ae06a0(2, nNow);
+                SetPhase(2, nNow);
         }
         else if (nPos > nGo && nPos <= nWait1)
         {
             nPos = (int)FUN_14028d260(m_fMoveTime);
             if (m_nMoveMode == 2)
-                FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
+                SetRotation(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
             if (m_nPhase != 3)
-                FUN_140ae06a0(3, nNow);
+                SetPhase(3, nNow);
         }
         else
         {
             nPos = nCycle - nPos;
             if (m_nMoveMode == 2)
-                FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
+                SetRotation(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
             if (m_nPhase != 3)
-                FUN_140ae06a0(4, nNow);
+                SetPhase(4, nNow);
         }
         efd::Point3 ptOld = GetPtPos();
         efd::Point3 ptOffset = m_ptMoveDir * m_fSpeed * FUN_14028d280(nPos);
-        FUN_140adf770(m_ptPosBase + ptOffset);
+        SetPosition(m_ptPosBase + ptOffset);
         m_ptVelocity = GetPtPos() - ptOld;
         m_ptVelocity.Unitize();
     }
@@ -437,9 +437,9 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
         NxVec3 kPos(m_ptPos.x, m_ptPos.y, m_ptPos.z);
         kPos = kPos * 0.01f;
         kPos.z = kPos.z + m_ptSize.z * 0.01f * 0.5f;
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+        ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
         m_pActor->setGlobalPosition(kPos);
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+        ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
         m_bActorDirty = 0;
     }
 }
@@ -521,10 +521,10 @@ void CBreakableObject::FUN_140adf6e0()
         switch (m_nState)
         {
         case 6:
-            FUN_140ade420(2, 0);
+            SetState(2, 0);
             break;
         case 5:
-            FUN_140ade420(2, 0);
+            SetState(2, 0);
             break;
         case 3:
             m_n184 = 1;
@@ -535,7 +535,7 @@ void CBreakableObject::FUN_140adf6e0()
 MS2_REPLACE_METHOD(0x140adf6e0, CBreakableObject, FUN_140adf6e0, 0, 0);
 
 // @0x140adf770
-void CBreakableObject::FUN_140adf770(efd::Point3 ptPos)
+void CBreakableObject::SetPosition(efd::Point3 ptPos)
 {
     if ((egf::Entity*)m_spEntity != 0 && m_ptPos != ptPos)
     {
@@ -548,7 +548,7 @@ void CBreakableObject::FUN_140adf770(efd::Point3 ptPos)
 }
 
 // @0x140adf830
-void CBreakableObject::FUN_140adf830(efd::Point3 ptRot)
+void CBreakableObject::SetRotation(efd::Point3 ptRot)
 {
     if ((egf::Entity*)m_spEntity != 0 && m_ptRot != ptRot)
     {
@@ -642,15 +642,15 @@ efd::Point3 CBreakableObject::GetPtVelocity()
 MS2_REPLACE_METHOD(0x140ae0150, CBreakableObject, GetPtVelocity, 0, 0);
 
 // @0x140ae0190
-void CBreakableObject::FUN_140ae0190()
+void CBreakableObject::UpdateTimeScale()
 {
-    if ((double)m_fTimeScale == TSingleton<CMainSystem>::GetInstance()->FUN_141473280())
+    if ((double)m_fTimeScale == TSingleton<CMainSystem>::GetInstance()->GetGameTime())
         return;
-    m_fTimeScale = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
-    FUN_140ae0720();
+    m_fTimeScale = (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
+    ReleasePhysicsActor();
     MakeNxBoxController();
 }
-MS2_REPLACE_METHOD(0x140ae0190, CBreakableObject, FUN_140ae0190, 0, 0);
+MS2_REPLACE_METHOD(0x140ae0190, CBreakableObject, UpdateTimeScale, 0, 0);
 
 // @0x140ae0210
 void CBreakableObject::MakeNxBoxController()
@@ -659,7 +659,7 @@ void CBreakableObject::MakeNxBoxController()
         return;
     if (m_pActor != 0)
         return;
-    NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+    NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == 0)
         return;
     {
@@ -688,7 +688,7 @@ void CBreakableObject::MakeNxBoxController()
             kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
             kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z;
             kActorDesc.globalPose.M.rotZ(m_ptRot.z * 3.1415927f / 180.0f);
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+            ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
             m_pActor = pScene->createActor(kActorDesc);
             if (m_pActor != 0)
             {
@@ -702,7 +702,7 @@ void CBreakableObject::MakeNxBoxController()
                 }
                 m_pActor->userData = m_spActorData;
             }
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+            ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
         }
     }
 }
@@ -715,13 +715,13 @@ efd::Point3 CBreakableObject::GetPtSize()
 MS2_REPLACE_METHOD(0x140ae0660, CBreakableObject, GetPtSize, 0, 0);
 
 // @0x140ae06a0
-void CBreakableObject::FUN_140ae06a0(int nPhase, int nNow)
+void CBreakableObject::SetPhase(int nPhase, int nNow)
 {
     m_nPhaseTime = TSingleton<CMainSystem>::GetInstance()->GetServerTickAt(nNow);
     m_nPhaseStart = nNow;
     m_nPhase = nPhase;
 }
-MS2_REPLACE_METHOD(0x140ae06a0, CBreakableObject, FUN_140ae06a0, 0, 0);
+MS2_REPLACE_METHOD(0x140ae06a0, CBreakableObject, SetPhase, 0, 0);
 
 // @0x140ae0700
 bool CBreakableObject::FUN_140ae0700()
@@ -733,19 +733,19 @@ bool CBreakableObject::FUN_140ae0700()
 MS2_REPLACE_METHOD(0x140ae0700, CBreakableObject, FUN_140ae0700, 0, 0);
 
 // @0x140ae0720
-void CBreakableObject::FUN_140ae0720()
+void CBreakableObject::ReleasePhysicsActor()
 {
     if (!m_bPhysics)
         return;
     if (m_pActor != 0)
     {
-        NxScene* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a1c0();
+        NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
         if (pScene != 0)
         {
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
+            ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
             pScene->releaseActor(*m_pActor);
             WorldService::GetInstance()->FUN_141bc8e00();
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
+            ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
             m_pActor = 0;
         }
     }
@@ -762,7 +762,7 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
         TSingleton<CEffectService>::GetInstance()->RemoveTracked(m_spEntity->GetEntityID());
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
-            FUN_14098b3e0(pRoot, 1.0f, false);
+            SetNodeAlpha(pRoot, 1.0f, false);
     }
     else
     {
@@ -771,11 +771,11 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
             FUN_140ae1e80(pRoot, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), m_spEntity->GetEntityID());
         m_kFadeTimer.FUN_140868750(500);
     }
-    FUN_140ae0990(bShow);
+    UpdateShadow(bShow);
 }
 
 // @0x140ae0990
-void CBreakableObject::FUN_140ae0990(int bShow)
+void CBreakableObject::UpdateShadow(int bShow)
 {
     if (bShow != 0)
     {
@@ -841,7 +841,7 @@ void CBreakableObject::FUN_140ae0c20(egf::Entity* pEntity)
 }
 
 // @0x140ae0e40
-void CBreakableObject::FUN_140ae0e40()
+void CBreakableObject::MarkDynamic()
 {
     if (m_bDetached)
         return;
@@ -852,7 +852,7 @@ void CBreakableObject::FUN_140ae0e40()
 }
 
 // @0x140ae0ec0
-void CBreakableObject::FUN_140ae0ec0(int nDelay)
+void CBreakableObject::UnmarkDynamic(int nDelay)
 {
     if (!m_bDetached)
         return;

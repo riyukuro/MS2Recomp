@@ -35,7 +35,7 @@ class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local
 class Unk_LpConstants;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CString FUN_141900b70();
-class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
+class UICutSceneMovie* FindCutSceneMovie(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
@@ -126,7 +126,7 @@ int UILoadingProgress::FUN_1419dfe70()
 {
     if (TSingleton<CLoadingImageTable>::GetInstance()->HasImage(FUN_1419e04f0()) == 0)
         return 0;
-    UICutSceneMovie* pCut = ((class UICutSceneMovie*)FUN_14138fd50(0x4e7e));
+    UICutSceneMovie* pCut = ((class UICutSceneMovie*)FindCutSceneMovie(0x4e7e));
     if (pCut != 0 && ((class UICutSceneMovie*)(class UICutSceneMovie*)(pCut))->HasSceneVideo(FUN_1419e04b0()) != 0)
         return 0;
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)

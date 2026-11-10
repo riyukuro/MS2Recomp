@@ -200,7 +200,7 @@ Image* GFxImageLoader::LoadProtocolImage(const ImageCreateInfo& info, const Stri
     }
     else if (kProtocol.m_nType == 0 || kProtocol.m_nType == 2 || kProtocol.m_nType == 3)
     {
-        MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(kProtocol.m_strHost);
+        MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(kProtocol.m_strHost);
         if (spEntity.get() != NULL)
         {
             unsigned nUse = Scaleform::Render::ImageUse_Update | Scaleform::Render::ImageUse_Wrap;

@@ -51,8 +51,8 @@ CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
 
 // Item slot bindings (the bound slot key -> the item).
-void FUN_141415600(const CString& strKey);                         // unbind
-void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind
+void DestroyItemInfoSlot(const CString& strKey);                         // unbind
+void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind
 
 class Unk_CRSceneMgr;
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -136,7 +136,7 @@ int UICardReverseGameDialog::vfunc_65()
 void UICardReverseGameDialog::vfunc_67()
 {
     for (unsigned i = 0; i < m_180.GetCount(); ++i)
-        FUN_141415600(m_180[i]);
+        DestroyItemInfoSlot(m_180[i]);
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
     FUN_141901470(1, 0x4f02);
     UIDialog::vfunc_67();
@@ -182,7 +182,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
         {
             m_1a8.RemoveAll();
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
-                FUN_141415600(m_180[i]);
+                DestroyItemInfoSlot(m_180[i]);
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
             m_1e8 = static_cast<CInPacket*>(p)->ReadInt32();
             m_1ec = static_cast<CInPacket*>(p)->ReadInt32();
@@ -204,14 +204,14 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                         spItem->SetCountClamped(spCard->m_nCount);
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
-                        FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
+                        CreateItemInfoSlot(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                     }
                     spCard->m_strBindId = strBind;
-                    obj.FUN_1409c0d20("index", nCard);
+                    obj.SetMemberUInt("index", nCard);
                     obj.FUN_1407cba60("bindID", CString(strBind));
-                    obj.FUN_1409c0d20("itemID", spCard->m_nItemId);
-                    obj.FUN_1409c0d20("itemRank", spCard->m_nRank);
+                    obj.SetMemberUInt("itemID", spCard->m_nItemId);
+                    obj.SetMemberUInt("itemRank", spCard->m_nRank);
                     obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
                     obj.FUN_1407cbb20("itemName", spItem->FUN_140527b10());
                     static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
@@ -227,7 +227,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("onShuffle");
             m_1c8.Copy(m_1a8);
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
-                FUN_141415600(m_180[i]);
+                DestroyItemInfoSlot(m_180[i]);
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
             FUN_140f28b30(m_1c8);
         }
@@ -310,7 +310,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 ASObj obj(2);
                 if (bOpened && m_1f8.get() != 0)
                 {
-                    obj.FUN_1409c0d20("index", nIndex);
+                    obj.SetMemberUInt("index", nIndex);
                     CString strBind;
                     MS2Ptr<CItem> spItem(new CItem);
                     if (spItem->FUN_140523c40(m_1f8->m_nItemId, m_1f8->m_nRank, 0))
@@ -318,13 +318,13 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         spItem->SetCountClamped(m_1f8->m_nCount);
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
-                        FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
+                        CreateItemInfoSlot(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                         m_1f8->m_strBindId = strBind;
                     }
                     obj.FUN_1407cba60("bindID", CString(m_1f8->m_strBindId));
-                    obj.FUN_1409c0d20("itemID", m_1f8->m_nItemId);
-                    obj.FUN_1409c0d20("itemRank", m_1f8->m_nRank);
+                    obj.SetMemberUInt("itemID", m_1f8->m_nItemId);
+                    obj.SetMemberUInt("itemRank", m_1f8->m_nRank);
                     obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
                     obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
                     static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
@@ -336,7 +336,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 {
                     if (!m_1c8.IsEmpty())
                     {
-                        obj.FUN_1409c0d20("index", nIndex);
+                        obj.SetMemberUInt("index", nIndex);
                         MS2Ptr<CardReward> spCard(m_1c8[m_1c8.GetCount() - 1]);
                         m_1c8.RemoveAt(m_1c8.GetCount() - 1, 1);
                         CString strBind;
@@ -346,12 +346,12 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                             spItem->SetCountClamped(spCard->m_nCount);
                             int nSeq = m_1a0++;
                             strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
-                            FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
+                            CreateItemInfoSlot(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
                             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                             spCard->m_strBindId = strBind;
                         }
                         obj.FUN_1407cba60("bindID", CString(spCard->m_strBindId));
-                        obj.FUN_1409c0d20("itemID", spCard->m_nItemId);
+                        obj.SetMemberUInt("itemID", spCard->m_nItemId);
                         obj.FUN_1409adc90("itemRank", spCard->m_nRank);
                         obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
                         obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCard->m_nItemId));

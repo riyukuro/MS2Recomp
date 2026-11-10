@@ -61,7 +61,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW GetStringCommon(int nId);
 CStringW BlockFormat(int nId);
 void FUN_1412751b0(const CStringW& strText, int nColor);                    // add a chat message
-UIRewardNotify* FUN_140938cd0(int nId);
+UIRewardNotify* FindRewardNotify(int nId);
 bool FUN_1406a5720();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
@@ -197,7 +197,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     if (nRest != 0)
         strA += FUN_140298ea0(L"s_msg_take_rest_exp");
     UIRewardNotify* pNotify;
-    if (bNotify != 0 && (pNotify = FUN_140938cd0(0x4e5d)) != 0)
+    if (bNotify != 0 && (pNotify = FindRewardNotify(0x4e5d)) != 0)
         pNotify->FUN_141abf230(nAmount, 0);
     FUN_1412751b0(strA, 8);
     FUN_1412751b0(strB, 0x14);

@@ -49,12 +49,12 @@ struct Unk_MdNames
     Unk_MdNames();                                                          // 0x141482990
     CStringW m_strCurrent;                                                  // +0x00
     ATL::CAtlList<CStringW> m_names;                                        // +0x08
-    CStringW FUN_1414829e0();                                               // 0x1414829e0 the current name (picks one when none)
-    CStringW FUN_141482a50();                                               // 0x141482a50 the first valid name of the list
-    void FUN_141482b70();                                                   // 0x141482b70 forget everything
-    void FUN_141482bb0();                                                   // 0x141482bb0 take the next name
+    CStringW GetCurrentName();                                               // 0x1414829e0 the current name (picks one when none)
+    CStringW GetValidName();                                               // 0x141482a50 the first valid name of the list
+    void Clear();                                                   // 0x141482b70 forget everything
+    void SelectNextName();                                                   // 0x141482bb0 take the next name
     void FUN_141482c80(CStringW strName);                                   // 0x141482c80 make a name current
-    void FUN_141482d30(CStringW strName);                                   // 0x141482d30 drop a name
+    void RemoveName(CStringW strName);                                   // 0x141482d30 drop a name
 };
 struct Unk_MdState
 {
@@ -214,7 +214,7 @@ struct Unk_MdEntry
     Unk_MdEntry(Unk_MdSrcC& src);                                           // 0x141483830
     Unk_MdEntry(Unk_MdSrcD& src);                                           // 0x141483af0
     unsigned GetKind();                                               // 0x141483d80 the kind
-    __int64 FUN_141483da0();                                                // 0x141483da0 the sender id
+    __int64 GetId();                                                // 0x141483da0 the sender id
     CStringW GetImage();                                               // 0x141483dc0 the image
     CStringW GetName();                                               // 0x141483e10 the name
     CStringW GetInfo();                                               // 0x141483e60 the info line
@@ -229,7 +229,7 @@ MS2_CHECK_SIZE(Unk_MdEntry, 0x28);
 // The group chat registry: a room by kind, a member by name (counted handles 0x141381160 / 0x14137c280).
 class Unk_MdMember { public: unsigned char m_pad[0x18]; Unk_MdName m_name; __int64 m_nOwner; };
 class Unk_MdRooms;
-Unk_MdRooms* FUN_141484720();
+Unk_MdRooms* GetGroupChatManager();
 
 // @0x141480c70
 MessengerData::NoticeSetting::NoticeSetting()
@@ -751,46 +751,46 @@ Unk_MdNames::Unk_MdNames()
 }
 
 // @0x1414829e0
-CStringW Unk_MdNames::FUN_1414829e0()
+CStringW Unk_MdNames::GetCurrentName()
 {
     if (m_strCurrent.IsEmpty())
-        FUN_141482bb0();
+        SelectNextName();
     return m_strCurrent;
 }
 
-Unk_MdState* FUN_141482e80();
+Unk_MdState* GetState();
 
 // @0x141482a50
-CStringW Unk_MdNames::FUN_141482a50()
+CStringW Unk_MdNames::GetValidName()
 {
-    if (FUN_141482e80()->m_pChat != 0)
+    if (GetState()->m_pChat != 0)
     {
         POSITION pos = m_names.GetHeadPosition();
         while (pos != 0)
         {
             CStringW strName = m_names.GetNext(pos);
-            if (FUN_141482e80()->m_pChat->FUN_141a23d70(strName) != 0)
+            if (GetState()->m_pChat->FUN_141a23d70(strName) != 0)
                 return strName;
         }
-        return FUN_141482e80()->m_pChat->FUN_141a258a0();
+        return GetState()->m_pChat->FUN_141a258a0();
     }
-    return FUN_1414829e0();
+    return GetCurrentName();
 }
 
 // @0x141482b70
-void Unk_MdNames::FUN_141482b70()
+void Unk_MdNames::Clear()
 {
     m_strCurrent = "";
     m_names.RemoveAll();
 }
 
 // @0x141482bb0
-void Unk_MdNames::FUN_141482bb0()
+void Unk_MdNames::SelectNextName()
 {
     if (m_names.IsEmpty())
     {
-        if (FUN_141482e80()->m_pChat != 0)
-            m_strCurrent = FUN_141482e80()->m_pChat->FUN_141a258a0();
+        if (GetState()->m_pChat != 0)
+            m_strCurrent = GetState()->m_pChat->FUN_141a258a0();
     }
     else
     {
@@ -803,13 +803,13 @@ void Unk_MdNames::FUN_141482c80(CStringW strName)
 {
     if (strName.IsEmpty())
         return;
-    FUN_141482d30(CStringW(strName));
+    RemoveName(CStringW(strName));
     m_names.AddTail(strName);
     m_strCurrent = strName;
 }
 
 // @0x141482d30
-void Unk_MdNames::FUN_141482d30(CStringW strName)
+void Unk_MdNames::RemoveName(CStringW strName)
 {
     POSITION pos = m_names.Find(strName, 0);
     while (pos != 0) {
@@ -838,7 +838,7 @@ void Unk_MdState::FUN_141482e50()
 
 #ifndef MS2_HOOK_DLL
 // @0x141482e80
-Unk_MdState* FUN_141482e80()
+Unk_MdState* GetState()
 {
     static Unk_MdState s_state;
     return &s_state;
@@ -888,7 +888,7 @@ Unk_MdEntry::Unk_MdEntry(__int64 nId)
     m_strImage = (const char*)FUN_141028be0(reinterpret_cast<PC*>(pPlayer)->FUN_141656a80(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0(), 1, "");
     m_strName = pPlayer->vfunc_77();
     unsigned short nLevel = pPlayer->vfunc_78();
-    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->FUN_141654730()));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->GetSubJob()));
 }
 
 // @0x141483300
@@ -905,7 +905,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
 // @0x141483580
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 {
-    m_nKind = (reinterpret_cast<CPartyMember&>(src).FUN_141637c20() == 0);
+    m_nKind = (reinterpret_cast<CPartyMember&>(src).IsOffline() == 0);
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
@@ -939,7 +939,7 @@ unsigned Unk_MdEntry::GetKind()
 }
 
 // @0x141483da0
-__int64 Unk_MdEntry::FUN_141483da0()
+__int64 Unk_MdEntry::GetId()
 {
     return m_nId;
 }
@@ -994,7 +994,7 @@ CString FUN_1414842b0(int nKind, CStringW strName);
 // @0x1414840d0
 __int64 FUN_1414840d0(GroupMessengerData::TalkLog* pLog)
 {
-    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(FUN_141484720())->FindChat(pLog->m_nKind);
+    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(GetGroupChatManager())->FindChat(pLog->m_nKind);
     if (room == 0)
         return 0;
     Unk_ChatMemberPtr member = room->FindMemberByName(CStringW(pLog->m_strMsg));
@@ -1028,7 +1028,7 @@ int FUN_141484290(GroupMessengerData::TalkLog* pLog)
 // @0x1414842b0
 CString FUN_1414842b0(int nKind, CStringW strName)
 {
-    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(FUN_141484720())->FindChat(nKind);
+    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(GetGroupChatManager())->FindChat(nKind);
     if (room == 0 != 0)
         return CString("");
     Unk_ChatMemberPtr member = room->FindMemberByName(CStringW(strName));
@@ -1038,7 +1038,7 @@ CString FUN_1414842b0(int nKind, CStringW strName)
 }
 
 // @0x141484720
-Unk_MdRooms* FUN_141484720()
+Unk_MdRooms* GetGroupChatManager()
 {
     return reinterpret_cast<Unk_MdRooms*>(TSingleton<CGroupChatManager>::s_instance);   // 0x143ad8ba8
 }

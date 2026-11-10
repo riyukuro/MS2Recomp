@@ -16,7 +16,7 @@ public:
     CNifAnimationController();                                        // 0x141544660
     virtual ~CNifAnimationController();                               // 0x141544750 (deleting 0x1415452e0)
     virtual const NiRTTI* GetRTTI() const;                            // 0x141545340
-    bool FUN_141544850(int mode, CStringA name, const efd::Point3& kEuler);      // load nif + hook up controllers
+    bool Load(int mode, CStringA name, const efd::Point3& kEuler);      // load nif + hook up controllers
     void Update(float time);                                   // update (mode 1): sample camera transform
     efd::Point3 FUN_141545020();                                      // copy of +0x38
     efd::Point3 FUN_141545050();                                      // copy of +0x44
@@ -37,7 +37,7 @@ public:
 };
 MS2_CHECK_SIZE(CNifAnimationController, 0x60);
 
-void FUN_141545080(int value, void* node);   // recursive: set a value on every controller of a node subtree
-void FUN_1415451d0(int value, void* entityId);
+void SetAnimTypeRecursive(int value, void* node);   // recursive: set a value on every controller of a node subtree
+void SetEntityAnimType(int value, void* entityId);
 namespace egf { class EntityID; }
 void FUN_141545250(egf::EntityID kId, int mode);

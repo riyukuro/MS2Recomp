@@ -63,7 +63,7 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 UIPetExtractionScrollDialog::SlotBag* FUN_140e72d40(NotifyContext::BindData* p);
 
 template<class T> T* GetItemUseDialog(int nUiId);           // the open dialog with this UI id
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);     // the item slot behind a drag source
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);     // the item slot behind a drag source
 class InvenSlot { public: __int64 GetItemUid(); };          // its item uid
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an item id
@@ -112,7 +112,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_18(void* p)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    MS2DragSlot* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    MS2DragSlot* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         UIPetExtractionScrollDialog* pDlg = GetItemUseDialog<UIPetExtractionScrollDialog>(0x4f4a);
@@ -235,10 +235,10 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
     {
         __int64 nUidPet = static_cast<CInPacket*>(pPacket)->ReadInt64();
         __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
-        MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(nUidPet);
+        MS2Ptr<CItem> spPet = g_143ab2a90.FindItemByUid(nUidPet);
         if (spPet.IsNull())
             break;
-        MS2Ptr<CItem> spResult = g_143ab2a90.FUN_140a5d680(nUidResult);
+        MS2Ptr<CItem> spResult = g_143ab2a90.FindItemByUid(nUidResult);
         if (spResult.IsNull())
             break;
         CItemGem* pGem = spResult->GetGem();
@@ -274,7 +274,7 @@ bool UIPetExtractionScrollDialog::FUN_140e71880(int nResult, const CMsgBoxData& 
 {
     if (nResult != 0)
         return true;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll.IsNull())
         return true;
     g_143ab2a90.FUN_140a63880(spScroll.get(), StringFormat(L"{0}", reinterpret_cast<const unsigned __int64&>(m_nTargetUid)));
@@ -326,7 +326,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CItem> spPet = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spPet = g_143ab2a90.FindItemByUid(nItemUid);
     if (spPet == 0)
         return;
     if (spPet->IsPetItem() == 0)                    // not a pet
@@ -389,7 +389,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 // @0x140e72860
 void UIPetExtractionScrollDialog::FUN_140e72860(__int64 nScrollUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nScrollUid);
     if (spItem == 0)
         return;
     m_nScrollUid = nScrollUid;
@@ -409,7 +409,7 @@ void UIPetExtractionScrollDialog::FUN_140e728e0()
 // @0x140e72920
 void UIPetExtractionScrollDialog::OnOk()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nTargetUid);
     if (spItem == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(

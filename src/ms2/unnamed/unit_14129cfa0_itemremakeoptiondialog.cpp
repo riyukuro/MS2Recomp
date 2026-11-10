@@ -77,18 +77,18 @@ using ATL::CAtlArray;
 class Unk_Inventory
 {
 public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
-    int FUN_140a5f780(int itemId, int a);
-    void FUN_140a5d530(CItem* item);
+    MS2Ptr<CItem> FindItemByUid(__int64 uid);
+    int GetItemCountByTag(int itemId, int a);
+    void ReplaceItem(CItem* item);
     int FUN_140a5f7b0(int itemId, int a);
-    void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem> >& out);
+    void GetItemsInCategory(int tab, CAtlArray<MS2Ptr<CItem> >& out);
 };
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 // Backup (equipped) item record.
 class CEquipItem : public CPtred { public: class MS2Ptr<class CItem> GetItem(void); void FUN_1411dd280(void); void SetItem(class CItem *); };
-class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, pc.cpp, the equip holder)
+class PC { public: struct Unk_PCEquipSet* GetEquipment(); };   // C3: the real member (0x1416561a0, pc.cpp, the equip holder)
 
 class Unk_CinWorld
 {
@@ -115,8 +115,8 @@ public:
     void FUN_141416740(int nHave, int nCount);
 };
 class ItemInfoSlot* FUN_140f6e830(const CString& name);   // itemsocketsystempagesbase defines it
-void FUN_141415600(const CString& key);
-void FUN_141415450(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
+void DestroyItemInfoSlot(const CString& key);
+void CreateItemInfoSlot(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_141414e50(const CString& name);
 void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids);
 
@@ -137,7 +137,7 @@ class UIPetSystemDialog;
 template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0 (<UIPetSystemDialog>)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The item event hub as the game's FUN_140a6a840 singleton accessor sees it (the same object as UIItemEventDispatcher).
+// The item event hub as the game's GetItemEventDispatcher singleton accessor sees it (the same object as UIItemEventDispatcher).
 class Unk_ItemEventSystem
 {
 public:
@@ -146,7 +146,7 @@ public:
     void* m_vfptr;
     ATL::CAtlArray<UIItemEventListener*> m_listeners;       // +0x08
 };
-Unk_InventoryListener* FUN_140a6a840();
+Unk_InventoryListener* GetItemEventDispatcher();
 
 // The remake stat of an item (the 0x20 byte record the stat text is built from).
 class Unk_RemakeStat
@@ -240,7 +240,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     UIItemModifyDialogBase::OnLoadComplete();
     SetState(0);
     FUN_14129dd50();
-    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
     Unk_PetDialog* pane = reinterpret_cast<Unk_PetDialog*>(Unk_PetGetDialog<UIPetSystemDialog>(0x4f38));
@@ -313,7 +313,7 @@ void UIItemRemakeOptionDialog::vfunc_67()
     m_optionCount = 0;
     m_cur = 0;
     m_new = 0;
-    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
 }
@@ -370,7 +370,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
         return;
     CAtlArray<unsigned __int64> uids;
     CAtlArray<MS2Ptr<CItem> > items;
-    g_143ab2a90.FUN_140a60880(0, items);
+    g_143ab2a90.GetItemsInCategory(0, items);
     for (size_t i = 0; i < items.GetCount(); ++i) {
         MS2Ptr<CItem> item = items[i];
         if (item == 0)
@@ -383,7 +383,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->FUN_1416561a0())->CollectShownItemsInLayer(equips, 0);
+        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->CollectShownItemsInLayer(equips, 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos)) {
             MS2Ptr<CEquipItem> equip = equips.GetAt(pos);
             if (!equip)
@@ -661,7 +661,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         m_optionCount = optionCount;
         CString guid = FUN_140719530(uid);
         obj.FUN_1407cbb20("option", CStringW(option));
-        obj.FUN_1409c0d20("optionCount", optionCount);
+        obj.SetMemberUInt("optionCount", optionCount);
         obj.FUN_1407cba60("guid", CString(guid));
         obj.FUN_1407cbbe0("enableLock", bEnableLock);
         m_enchantAni->Invoke("playEnchant", obj.FUN_1422bb870());
@@ -742,9 +742,9 @@ bool UIItemRemakeOptionDialog::FUN_1412a0650(int nResult, const CMsgBoxData& box
 // @0x1412a0720
 CString UIItemRemakeOptionDialog::FUN_1412a0720(CItem* item, CString key, CAtlArray<CString>& names)
 {
-    FUN_141415600(key);
+    DestroyItemInfoSlot(key);
     int nFlags = 0x2020;
-    FUN_141415450(key, MS2Ptr<CItem>(item), 0, 0x405, nFlags);
+    CreateItemInfoSlot(key, MS2Ptr<CItem>(item), 0, 0x405, nFlags);
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(names))->Add(key);
     return CString(key);
 }
@@ -754,11 +754,11 @@ void UIItemRemakeOptionDialog::FUN_1412a0800()
 {
     size_t count = m_names198.GetCount();
     for (size_t i = 0; i < count; ++i)
-        FUN_141415600(m_names198[i]);
+        DestroyItemInfoSlot(m_names198[i]);
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_names198))->RemoveAll();
     count = m_names1b8.GetCount();
     for (size_t i = 0; i < count; ++i)
-        FUN_141415600(m_names1b8[i]);
+        DestroyItemInfoSlot(m_names1b8[i]);
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_names1b8))->RemoveAll();
 }
 
@@ -780,7 +780,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
     unsigned rate = 0;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
-        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa9) * 10000.0f);
+        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->GetAbilityRate((SAType)0xa9) * 10000.0f);
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(item->FUN_140527840())), &discount, rate);
     __int64 fee = 0;
     size_t count = m_names1b8.GetCount();
@@ -829,7 +829,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
     unsigned rate = 0;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0)
-        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa9) * 10000.0f);
+        rate = (unsigned)(__int64)(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->GetAbilityRate((SAType)0xa9) * 10000.0f);
     __int64 fee = 0;
     int bSale = FUN_140616b60(MS2Ptr<CItemData>(equipData), &discount, rate);
     ASArray list(2);
@@ -878,15 +878,15 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
 {
     if (item.get() != 0) {
         if (FUN_1419beef0(item->GetItemUid()) != 0) {
-            g_143ab2a90.FUN_140a5d530(item.get());
+            g_143ab2a90.ReplaceItem(item.get());
         } else {
             MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
-                MS2Ptr<CEquipItem> equip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->FUN_1416561a0())->FUN_1411e1580(item->GetItemUid());
+                MS2Ptr<CEquipItem> equip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->FindItemByUid(item->GetItemUid());
                 if (equip.get() != 0) {
                     equip->SetItem(item.get());
                     equip->FUN_1411dd280();
-                    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->FUN_1416561a0())->FUN_1411e7660();
+                    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pc)->GetEquipment())->FUN_1411e7660();
                 }
             }
         }

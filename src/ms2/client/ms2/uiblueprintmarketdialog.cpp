@@ -288,7 +288,7 @@ int UIBlueprintMarketDialog::vfunc_13()
         return 1;
     if (vfunc_55() != 0 || m_30 == 0)
         return 0;
-    if (FUN_140b632f0()->GetTopEntity(m_e0) == this) {
+    if (GetUISwfEntityManager()->GetTopEntity(m_e0) == this) {
         if (((class Unk_MeratKeyState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) && (bool)m_inputSearch.get() && m_inputSearch->GetFocused() == 1) {
             Scaleform::GFx::FunctionHandler::Params params;
             OnSearch(params);
@@ -317,7 +317,7 @@ void UIBlueprintMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* p
     UIObject::vfunc_49(pRetVal, pArgs);
     Unk_MeratProductKey key;
     CStringA strName = pArgs->FUN_1422b8d30();
-    key.FUN_1409c1640(FUN_14016a730(strName, 0));
+    key.ParseOid(FUN_14016a730(strName, 0));
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140ec2300(key, 4, 0);
     if (spProduct == 0)
         return;
@@ -374,7 +374,7 @@ void UIBlueprintMarketDialog::vfunc_ugc_3(void* pCallBack, void* pstrPath)
         return;
     ASObj data(2);
     Unk_MeratProductKey key(0, static_cast<const UgcItemIcon::CallBackData*>(pCallBack)->m_30);
-    data.FUN_1407cbb20("productOID", key.FUN_1409b0470());
+    data.FUN_1407cbb20("productOID", key.GetKeyString());
     data.FUN_1407cba60("iconPath", CStringA(*static_cast<const CStringA*>(pstrPath)));
     m_30->Invoke("updateProductIcon", Scaleform::GFx::Value(data.FUN_1422bb870()));
 }
@@ -726,7 +726,7 @@ void UIBlueprintMarketDialog::OnClickCalculate(const Scaleform::GFx::FunctionHan
     Unk_MeratProductKey key;
     CStringW strOid;
     row.TryGetWString("productOID", strOid);
-    key.FUN_1409c1640(CStringW(strOid));
+    key.ParseOid(CStringW(strOid));
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140ec2300(key, 4, 0);
     FUN_140ec0b50(spProduct);
 }
@@ -744,7 +744,7 @@ void UIBlueprintMarketDialog::OnClickModelHouse(const Scaleform::GFx::FunctionHa
     if (row.IsUndefinedOrNull())
         return;
     row.TryGetWString("productOID", strOid);
-    key.FUN_1409c1640(CStringW(strOid));
+    key.ParseOid(CStringW(strOid));
     Preview(key);
 }
 MS2_REPLACE_METHOD(0x140bbd860, UIBlueprintMarketDialog, OnClickModelHouse, 0, 0);

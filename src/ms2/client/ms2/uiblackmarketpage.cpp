@@ -125,8 +125,8 @@ int FUN_1401bce20(unsigned int, unsigned int, int);             // option key of
 int FUN_1401bceb0(unsigned int, unsigned int, int);             // option key of a special stat
 int FUN_1401bcd30();                                                // default currency
 class Unk_InventoryStateManager;
-Unk_InventoryStateManager*FUN_140a6a830();                                     // the block manager
-void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);    // notice of a blocked action
+Unk_InventoryStateManager*GetBlockManager();                                     // the block manager
+void ShowBlockNotice(const BlockPtr& spBlock, int nAction, unsigned __int64 n);    // notice of a blocked action
 #include "ms2/placeholder/formatstringid.h"   // FormatStringId<...> over FUN_14028dee0 (commonutil.cpp)
 //
 
@@ -144,7 +144,7 @@ class InvenSlot : public MS2DragSlot
 {
 public:
     __int64 GetItemUid();                                        // the item uid
-    int FUN_141409150(CItem* pItem);                                 // may the item be registered on the black market
+    int CanRegisterToBlackMarket(CItem* pItem);                                 // may the item be registered on the black market
 };
 
 CStringW FUN_141275860(__int64 n);                                  // the meso amount text of the total price
@@ -498,10 +498,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         if (ItemPreviewMgr::GetInstance()->IsHudOn() != 0)
             return 1;
         {
-            BlockPtr spBlock = reinterpret_cast<CBlockManager *>(FUN_140a6a830())->FindBlockedAction(0x26);
+            BlockPtr spBlock = reinterpret_cast<CBlockManager *>(GetBlockManager())->FindBlockedAction(0x26);
             if (spBlock.get())
             {
-                FUN_140a2ff20(spBlock, 0x26, 0);
+                ShowBlockNotice(spBlock, 0x26, 0);
                 return 1;
             }
         }
@@ -520,7 +520,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
 // @0x140f0d500
 MS2Ptr<CBlackMarketProduct> BlackMarketPageItemSearch::vfunc_6(unsigned __int64 nId)
 {
-    return CBlackMarketMan::GetInstance()->FUN_140a20ff0(nId);
+    return CBlackMarketMan::GetInstance()->FindSearchProduct(nId);
 }
 MS2_REPLACE_METHOD(0x140F0D500, BlackMarketPageItemSearch, vfunc_6, 71, 0x1464A8AA);
 
@@ -568,7 +568,7 @@ void BlackMarketPageItemSearch::FUN_140f0d630(int nMsg, void* p2, void* p3)
             {
                 ASObj entry(2);
                 entry.FUN_1407cbb20("label", strName);
-                entry.FUN_1409c0d20("id", nId);
+                entry.SetMemberUInt("id", nId);
                 candidates.PushObj(entry);
             }
         }
@@ -619,7 +619,7 @@ void BlackMarketPageItemSearch::FUN_140f0de60(int nA, int nB, void* p)
     {
         if (nB == 0x17)
         {
-            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20ff0((unsigned __int64)p);
+            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindSearchProduct((unsigned __int64)p);
             if (spEntry.get())
             {
                 spEntry->m_nStateA = 1;
@@ -628,7 +628,7 @@ void BlackMarketPageItemSearch::FUN_140f0de60(int nA, int nB, void* p)
         }
         else if (nB == 0x1b)
         {
-            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20ff0((unsigned __int64)p);
+            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindSearchProduct((unsigned __int64)p);
             if (spEntry.get())
                 FUN_140f0db00(spEntry, 3);
         }
@@ -761,14 +761,14 @@ void BlackMarketPageItemSearch::FUN_140f0e940(ASObj& out, int nTabId)
                             stat.FUN_1407cb9c0("idx", spStat->m_nId);
                             stat.FUN_140f17290("group", spStat->m_nKind);
                             stat.FUN_1407cb9c0("percent", spStat->m_nPercent);
-                            stat.FUN_1409c4a30("defaultValue", spStat->m_fDefault);
+                            stat.SetMemberFloat("defaultValue", spStat->m_fDefault);
                             list.PushValue(stat.FUN_1422bb870());
                         }
                         m_nOptionId = nOptionId;
                         CString strList = Unk_SocketFormat("option{0}", i);
                         out.FUN_1409adbe0(strList, list.FUN_1422bb870());
                         CString strId = Unk_SocketFormat("option{0}_id", i);
-                        out.FUN_1409c0d20(strId, nTableId);
+                        out.SetMemberUInt(strId, nTableId);
                     }
                 }
             }
@@ -962,7 +962,7 @@ int BlackMarketPageItemSearch::FUN_140f0f310(ASData* pArgs, int n)
 // @0x140f103c0
 void BlackMarketPageItemSearch::FUN_140f103c0(unsigned __int64 nId, const CString& strState)
 {
-    MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20ff0(nId);
+    MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindSearchProduct(nId);
     if (spEntry == 0 || spEntry->m_item == 0)
         return;
     const CString& strCur = strState;
@@ -1006,7 +1006,7 @@ MS2_REPLACE_METHOD(0x140F10720, BlackMarketPageItemSearch, AddLabeledEntry, 116,
 // @0x140f107a0
 void BlackMarketPageItemSearch::BuyProduct(unsigned __int64 nId, int nCount)
 {
-    MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20ff0(nId);
+    MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindSearchProduct(nId);
     if (spEntry == 0 || spEntry->m_item == 0)
         return;
     __int64 nPrice = spEntry->PriceFor(nCount);
@@ -1108,7 +1108,7 @@ bool BlackMarketPageItemSearch::FUN_140f113e0(int nResult, const CMsgBoxData& bo
             return true;
         __int64 nId = box.FUN_141a02f10(0, 0);
         int nCount = FUN_1407181a0(parts[1]);
-        MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20ff0(nId);
+        MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindSearchProduct(nId);
         if (spEntry == 0 || spEntry->m_item == 0)
             return true;
         FUN_140f10d90(spEntry, nCount);
@@ -1283,10 +1283,10 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
             if (spSlot)
             {
                 __int64 nItemUid = spSlot->GetItemUid();
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
                 if (spItem.get())
                 {
-                    if (spSlot->FUN_141409150(&*spItem))
+                    if (spSlot->CanRegisterToBlackMarket(&*spItem))
                     {
                         MS2Ptr<AScript> spResult = FUN_1409e7dc0(m_50, vResult);
                         if (spResult.get())
@@ -1321,7 +1321,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
-            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20e70(nId);
+            MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FindOwnProduct(nId);
             if (spEntry.get())
             {
                 m_request.SetProduct(3, nId, spEntry->GetRemain());
@@ -1355,7 +1355,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
 // @0x140f12c10
 MS2Ptr<CBlackMarketProduct> BlackMarketPageItemRegister::vfunc_6(unsigned __int64 nId)
 {
-    return CBlackMarketMan::GetInstance()->FUN_140a20e70(nId);
+    return CBlackMarketMan::GetInstance()->FindOwnProduct(nId);
 }
 MS2_REPLACE_METHOD(0x140F12C10, BlackMarketPageItemRegister, vfunc_6, 71, 0x93A8B238);
 
@@ -1366,7 +1366,7 @@ void BlackMarketPageItemRegister::vfunc_5()
     {
         if (m_spCounter)
         {
-            int nCount = (int)CBlackMarketMan::GetInstance()->FUN_140a210b0();
+            int nCount = (int)CBlackMarketMan::GetInstance()->GetOwnProductCount();
             int nMax = 0x1c;
             CStringW strText = FUN_14028dfa0(CStringW(L"s_blackmarket_register_counter"), nCount, nMax);
             m_spCounter->SetTextHTMLW(strText);
@@ -1557,7 +1557,7 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
 {
     if (nUid == 0)
         return;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (!spItem)
     {
         FUN_140d73bc0(0x935, 0, 0, L"");
@@ -1569,10 +1569,10 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
         return;
     }
     {
-        BlockPtr spBlock = reinterpret_cast<CBlockManager *>(FUN_140a6a830())->FindBlockedAction(0x25);
+        BlockPtr spBlock = reinterpret_cast<CBlockManager *>(GetBlockManager())->FindBlockedAction(0x25);
         if (spBlock.get())
         {
-            FUN_140a2ff20(spBlock, 0x25, 0);
+            ShowBlockNotice(spBlock, 0x25, 0);
             return;
         }
     }
@@ -1590,7 +1590,7 @@ void BlackMarketPageItemRegister::FUN_140f13e70(unsigned __int64 nUid, __int64 n
         FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_register_lack_deposit"), 0, 0, L"");
         return;
     }
-    if ((int)CBlackMarketMan::GetInstance()->FUN_140a210b0() < 0x1c)
+    if ((int)CBlackMarketMan::GetInstance()->GetOwnProductCount() < 0x1c)
     {
         CStringW strKeyword = StringFormat(L"{0},{1},{2}", nUid, nPrice, nCount);
         m_request.SetKeyword(2, strKeyword);

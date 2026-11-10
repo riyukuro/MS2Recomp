@@ -96,7 +96,7 @@ public:
     void FUN_1411e0c10();                                   // RefreshModelIfLoaded
     int FUN_1411e0c30(int nItemId);                         // HasItem
     int FUN_1411e0d40(int nItemId);                         // HasItem (valid items only)
-    PC* FUN_1411e0ee0();                                    // the owner
+    PC* GetPC();                                    // the owner
     float FUN_1411e0f00(float f);                           // scale by special ability 3
     float FUN_1411e0f50(float f);                           // add special ability 4
     float FUN_1411e0f90(float f);                           // reduce by special ability 0x27
@@ -105,22 +105,22 @@ public:
     int GetAbilityTotal(SAType eType);                        // the special ability total
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate
     float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count
-    MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid);         // FindByUid
-    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nLayer);    // FindItem
+    MS2Ptr<CEquipItem> FindItemByUid(__int64 nUid);         // FindByUid
+    MS2Ptr<CEquipItem> GetItemAt(int nSlot, int nLayer);    // FindItem
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nSkip, int bCheck);  // FindUsableItem
     MS2Ptr<CEquipItem> GetTopLayerItem(int nSlot, int bCheck);    // FindEquippableItem
     void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;          // CollectItems
     void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsAt
     void CollectShownItemsExceptLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nSkip);     // CollectItemsExcept
     void FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip);         // CollectItemsExcept
-    void FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer);        // CollectItemsAt
+    void CollectShownItemsInLayerList(std::list<MS2Ptr<CEquipItem> >& items, int nLayer);        // CollectItemsAt
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsUpTo
-    int FUN_1411e2440(int nLayer);                          // CountItemsAt
+    int CountItemsInLayer(int nLayer);                          // CountItemsAt
     MS2Ptr<CEquipItem> FUN_1411e2610(NiAVObject* pObj, bool bActive, int nLayer, bool bDeep);   // the worn item owning a node
     efd::SmartPointer<NiAVObject> FUN_1411e2a60(__int64 nUid, const CString& strName, bool bDeep);   // an item's node by name
     void FUN_1411e2e40(ATL::CAtlList<MS2Ptr<CEquipItem> >& items);                // CollectFirstActive
     void FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nMaxLayer, int bCheck, bool bForce);   // the shown items
-    void FUN_1411e3600(MS2Ptr<CItem> spItem);               // Equip
+    void EquipItem(MS2Ptr<CItem> spItem);               // Equip
     void FUN_1411e36e0(MS2Ptr<CEquipItem> spItem);          // Equip
     void FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 nValue);   // Equip
     void RequestItemLoad(MS2Ptr<CItem> spItem);               // RequestLoad
@@ -134,7 +134,7 @@ public:
     void FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer);   // move an item to another slot
     void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped
-    void FUN_1411e5100(MS2Ptr<CEquipItem> spItem);          // the layer expired tag
+    void UpdateLayerExpiredTag(MS2Ptr<CEquipItem> spItem);          // the layer expired tag
     int FUN_1411e5280(int nLayer);                          // no shown upper / lower item above the layer
     void AddExpiredTag(MS2Ptr<CEquipItem> spItem);          // SetExpired
     void AddInvalidTag(MS2Ptr<CEquipItem> spItem);          // SetInvalid
@@ -147,10 +147,10 @@ public:
     void FUN_1411e5940(MS2Ptr<CEquipItem> spItem);          // OnTagChanged
     void FUN_1411e5c10();
     void FUN_1411e6ab0();
-    void FUN_1411e6b50();                                   // apply the skin decal colours
+    void ApplySkinDecal();                                   // apply the skin decal colours
     void FUN_1411e6e70();                                   // re-tag the shown items and refresh the cutting
     void FUN_1411e7320();                                   // ApplyEquipMaps
-    void FUN_1411e7380();
+    void ApplyMantleScale();
     void FUN_1411e75f0();                                   // m_48 = 1
     void FUN_1411e7610();                                   // m_4c = 1
     void FUN_1411e7640();                                   // m_50 = 1
@@ -164,8 +164,8 @@ public:
     void FUN_1411e9020(const CString& strTag);              // untag them
     void FUN_1411e9190(int bShow);                          // show / hide the swapped parts (customize)
     void FUN_1411e8d20(const CString& strName);             // hide the model part (CPriortyCutting)
-    int FUN_1411e9530(int nSlot, const CString& strName);    // re-attach the slot's swapped meshes
-    int FUN_1411e9760(int nSlot, const CString& strName);    // detach them
+    int AttachReplacedMeshes(int nSlot, const CString& strName);    // re-attach the slot's swapped meshes
+    int DetachReplacedMeshes(int nSlot, const CString& strName);    // detach them
     void SetMeshOptimize(bool bEnable);                       // SetOptimize
     void FUN_1411ea430(MS2Ptr<CEquipItem> spItem);          // ModelReady
     void FUN_1411ea500(MS2Ptr<CEquipItem> spItem);          // ModelChanged
@@ -191,10 +191,10 @@ public:
     void FUN_1411ed270();                                   // hide the hair parts the cap collides with
     void FUN_1411edbb0();                                   // the top / bottom miss match tags
     int FUN_1411e99a0(int nSlot, const CString& strName, int nType, int bByName);   // detach (replace) the slot's body meshes
-    void FUN_1411eef60();                                   // merge the meshes (MeshOptimizer)
+    void MergeMeshes();                                   // merge the meshes (MeshOptimizer)
     void FUN_1411ee930();                                   // OnSetItemChanged
     void FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB);   // the miss match tag
-    void FUN_1411eebc0();                                   // log the worn items
+    void LogEquippedItems();                                   // log the worn items
     void FUN_1411eeda0();                                   // ResetMeshOptimizer
     void ClearAbilities();                                   // Reset
     int FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer);      // CanEquip
@@ -203,7 +203,7 @@ public:
     void FUN_1411efa00(int nIndex);                         // RemoveSetEffect
     MS2Ptr<Equipment::SetEffectInfo> FindSetEffect(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
     int FindSetEffectIndex(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects);
-    void FUN_1411efcb0(unsigned nId, CString strName, bool bInserted);   // the set effect callback
+    void OnSetEffectNotice(unsigned nId, CString strName, bool bInserted);   // the set effect callback
 
 public:
     MS2_LAYOUT_FRIEND;

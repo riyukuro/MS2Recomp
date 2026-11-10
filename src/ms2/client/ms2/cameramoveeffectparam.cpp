@@ -135,7 +135,7 @@ MS2_REPLACE_METHOD(0x140afec50, CCameraMoveEffect, vfunc_3, 137, 0xF230EF3A);
 // @0x140afece0
 bool CCameraMoveEffect::vfunc_9()
 {
-    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     return dNow < m_dStartTime + m_fDuration;
 }
 MS2_REPLACE_METHOD(0x140afece0, CCameraMoveEffect, vfunc_9, 95, 0x14569701);

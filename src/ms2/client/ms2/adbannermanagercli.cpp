@@ -38,9 +38,9 @@ Unk_AdbPtr CAdBannerManagerCli::FUN_14096b3e0(int nType)
 {
     ATL::CAtlArray<Unk_AdbPtr> own;
     ATL::CAtlArray<Unk_AdbPtr> any;
-    if (FUN_14096b810((EAdBannerType)nType, own, FUN_1406516a0()) == 1)
+    if (CollectActiveBanners((EAdBannerType)nType, own, FUN_1406516a0()) == 1)
         return own[0];
-    if (FUN_14096b810((EAdBannerType)nType, any, -1) == 1)
+    if (CollectActiveBanners((EAdBannerType)nType, any, -1) == 1)
         return any[0];
     return Unk_AdbPtr(0);
 }
@@ -48,20 +48,20 @@ Unk_AdbPtr CAdBannerManagerCli::FUN_14096b3e0(int nType)
 // @0x14096b540
 int CAdBannerManagerCli::FUN_14096b540(int nType, ATL::CAtlArray<Unk_AdbPtr>& out)
 {
-    FUN_14096b810((EAdBannerType)nType, out, FUN_1406516a0());
-    FUN_14096b810((EAdBannerType)nType, out, -1);
+    CollectActiveBanners((EAdBannerType)nType, out, FUN_1406516a0());
+    CollectActiveBanners((EAdBannerType)nType, out, -1);
     if (out.IsEmpty())
         return 0;
     return 1;
 }
 
 // @0x14096b5b0
-Unk_AdbPtr CAdBannerManagerCli::FUN_14096b5b0(int nType, const CStringW& strName)
+Unk_AdbPtr CAdBannerManagerCli::FindBannerByName(int nType, const CStringW& strName)
 {
     ATL::CAtlArray<Unk_AdbPtr> own;
     ATL::CAtlArray<Unk_AdbPtr> any;
-    FUN_14096b810((EAdBannerType)nType, own, FUN_1406516a0());
-    FUN_14096b810((EAdBannerType)nType, any, -1);
+    CollectActiveBanners((EAdBannerType)nType, own, FUN_1406516a0());
+    CollectActiveBanners((EAdBannerType)nType, any, -1);
     for (unsigned i = 0; i < own.GetCount(); i++)
     {
         if (own[i]->m_strTypeName.Compare(strName) == 0)
@@ -76,7 +76,7 @@ Unk_AdbPtr CAdBannerManagerCli::FUN_14096b5b0(int nType, const CStringW& strName
 }
 
 // @0x14096b810
-int CAdBannerManagerCli::FUN_14096b810(EAdBannerType nType, ATL::CAtlArray<Unk_AdbPtr>& out, int nSlot)
+int CAdBannerManagerCli::CollectActiveBanners(EAdBannerType nType, ATL::CAtlArray<Unk_AdbPtr>& out, int nSlot)
 {
     CStringW& strTypeName = m_typeNames[nType];
     __int64 now = GetServerTime();

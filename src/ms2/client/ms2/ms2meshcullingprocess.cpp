@@ -9,7 +9,7 @@
 
 // Unrecovered callees (real types unknown).
 struct Unk_MCPPtr { Unk_MCPPtr(MS2MeshCullingProcess* p); ~Unk_MCPPtr(); MS2MeshCullingProcess* m_p; };
-void* FUN_140d96650(void* list);
+void* Begin(void* list);
 void** FUN_140d96660(void* list, void** it);
 unsigned int FUN_140d96630(NiAVObject* obj);
 
@@ -45,7 +45,7 @@ MS2MeshCullingProcess::~MS2MeshCullingProcess()
 }
 
 // @0x140d96190
-NiSPWorkflowManager* FUN_140d96190(MS2MeshCullingProcess* p)
+NiSPWorkflowManager* GetWorkflowManager(MS2MeshCullingProcess* p)
 {
     return p->m_pkWorkflowManager;
 }
@@ -96,7 +96,7 @@ void MS2MeshCullingProcess::Process(const NiCamera* pkCamera, NiTPointerList<NiA
         m_pkVisibleSet = pkVisibleSet;
     }
     if (m_pkVisibleSet != 0) {
-        void* it = FUN_140d96650(pkSceneList);
+        void* it = Begin(pkSceneList);
         while (it != 0) {
             NiAVObject* obj = *(NiAVObject**)FUN_140d96660(pkSceneList, &it);
             if (obj != 0 && (FUN_140d96630(obj) & 2) == 0)
@@ -135,7 +135,7 @@ unsigned int FUN_140d96630(NiAVObject* obj)
 }
 
 // @0x140d96650
-void* FUN_140d96650(void* list)
+void* Begin(void* list)
 {
     return *(void**)((char*)list + 8);
 }

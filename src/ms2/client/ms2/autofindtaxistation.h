@@ -14,17 +14,17 @@ public:
     CAutoFindTaxiStation();                     // 0x1409f11a0
     virtual ~CAutoFindTaxiStation();            // 0x1409f1210
 
-    void FUN_1409f1240();                       // request / schedule the search (called from FUN_1409f1cb0)
+    void StartAutoFind();                       // request / schedule the search (called from FUN_1409f1cb0)
     void FUN_1409f1450();                       // search timer callback: start the camera flight
     void SendRequestTaxiMode5();                       // send the 0x48/5 packet and arm the 5 s timeout
     void FUN_1409f1970();                       // arm the 1500 ms step
     void FUN_1409f1a00();                       // timeout: mark done and reset
-    void FUN_1409f1a70();                       // cancel / reset the state
+    void Reset();                       // cancel / reset the state
     void FUN_1409f1af0();                       // second camera step
     int FUN_1409f1cb0();                       // per-frame update; true if it consumed the request
     void FUN_1409f1de0();                       // clear all four flags
-    void FUN_1409f1e20();                       // m_nPaused = 1
-    void FUN_1409f1e40();                       // m_nPaused = 0
+    void Pause();                       // m_nPaused = 1
+    void Resume();                       // m_nPaused = 0
     int FUN_141278a40() const { return m_nActive; }   // inline getter (COMDAT 0x141278a40, unit_141274d10)
 
     int m_nActive;                              // +0x08

@@ -123,7 +123,7 @@ MS2_REPLACE_METHOD(0x1422E0CF0, ASTextInput, GetDisplayAsPassword, 91, 0xC3CC33E
 // @0x1422e0d60
 void ASTextInput::SetMaxChars(int nMaxChars)
 {
-    FUN_1409c4a30("maxChars", (float)nMaxChars);
+    SetMemberFloat("maxChars", (float)nMaxChars);
 }
 MS2_REPLACE_METHOD(0x1422E0D60, ASTextInput, SetMaxChars, 44, 0x42EED258);
 

@@ -26,7 +26,7 @@
 #include "ms2/placeholder/gfxservice.h"
 
 // ---- file statics (.text$di) ----
-// The ids of the loaded fonts, saved by FUN_140b622b0 (vfunc_11) and reloaded by FUN_140b621a0 (mutable: the functions
+// The ids of the loaded fonts, saved by SaveLoadedFontIds (vfunc_11) and reloaded by FUN_140b621a0 (mutable: the functions
 // that read it are not hooked).
 static ATL::CAtlArray<unsigned> s_arrSavedFontIds;                                  // 0x143abb070 @0x1400c81c0
 const NiRTTI GFxMovieDamage::ms_RTTI("GFxMovieDamage", &GFxMovieEventHandler::ms_RTTI);   // 0x143abb060 @0x1400c81f0
@@ -73,13 +73,13 @@ public:
 
 // ---- COMDAT helpers of this unit ----
 // @0x140b632f0 the UISwfEntityManager instance (inline getter)
-UISwfEntityManager* FUN_140b632f0()
+UISwfEntityManager* GetUISwfEntityManager()
 {
     return SingletonClass<UISwfEntityManager>::ms_pSingleton;
 }
 
 // @0x140b62550 the text of a font id
-CString FUN_140b62550(unsigned nId)
+CString GetFontName(unsigned nId)
 {
     return FUN_140719210(nId);
 }
@@ -97,14 +97,14 @@ template <class T> T* Unk_DmgFindUI(int nId)
 }
 
 // @0x140b62400
-MS2Ptr<ASStage> FUN_140b62400(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASStage> CreateStage(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASStage> sp(new ASStage(v, nMovieId));
     return sp;
 }
 
 // @0x140b62350
-MS2Ptr<ASMovieClipLoader> FUN_140b62350(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASMovieClipLoader> CreateMovieClipLoader(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASMovieClipLoader> sp(new ASMovieClipLoader(v, nMovieId));
     return sp;
@@ -126,7 +126,7 @@ GFxMovieDamage::~GFxMovieDamage()
 // @0x140b61190
 void GFxMovieDamage::vfunc_11()
 {
-    FUN_140b622b0();
+    SaveLoadedFontIds();
     m_90.RemoveAll();
     m_d8.RemoveAll();
     m_128 = 0;
@@ -146,8 +146,8 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
             Scaleform::GFx::Value vStage(pArgs[0]);
             Scaleform::GFx::Value vLoader(pArgs[1]);
             Scaleform::GFx::Value vThird(pArgs[2]);
-            FUN_1422be510(FUN_140b62400(m_18, vStage));
-            FUN_1422be5b0(FUN_140b62350(m_18, vLoader));
+            FUN_1422be510(CreateStage(m_18, vStage));
+            FUN_1422be5b0(CreateMovieClipLoader(m_18, vLoader));
             reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0790(m_18);
         }
         m_128.AssignRaw(Unk_DmgFindUI<UIDamageText>(0x4e32));
@@ -160,19 +160,19 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(vRoot))->IsObject())
-                ((Unk_DmgSwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
+                ((Unk_DmgSwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(vRoot))->IsObject())
-                ((Unk_DmgSwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
+                ((Unk_DmgSwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_9(szEvent, vRoot, 0.0f);
             if (m_128.get())
             {
                 MS2Ptr<AScript> spRoot = m_128->FUN_1422dba00();
                 if (spRoot.get() && szEvent != m_120)
                 {
-                    MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(FUN_140b632f0()->GetUISwfEntity(szEvent).get()));
+                    MS2Ptr<UIDamageFont> spFont(dynamic_cast<UIDamageFont*>(GetUISwfEntityManager()->GetUISwfEntity(szEvent).get()));
                     if (spFont.get())
                         m_128->LoadFont(spFont->m_strName);
                     else
@@ -207,7 +207,7 @@ void GFxMovieDamage::vfunc_8(float fTime)
 }
 
 // @0x140b61900
-bool GFxMovieDamage::FUN_140b61900(const CString& strFont)
+bool GFxMovieDamage::LoadDamageFont(const CString& strFont)
 {
     if (m_128 == 0 || !m_128->FUN_1422dc430())
         return false;
@@ -246,7 +246,7 @@ bool GFxMovieDamage::FUN_140b61b80(const CString& strFont)
 }
 
 // @0x140b61ce0
-void GFxMovieDamage::FUN_140b61ce0()
+void GFxMovieDamage::UnloadExpiredFonts()
 {
     if (FUN_1422bd0f0())
     {
@@ -319,7 +319,7 @@ bool GFxMovieDamage::FUN_140b621a0()
         for (size_t i = 0; i < nCount; ++i)
         {
             unsigned nId = s_arrSavedFontIds.GetAt(i);
-            FUN_140b61900(FUN_140b62550(nId));
+            LoadDamageFont(GetFontName(nId));
         }
         s_arrSavedFontIds.RemoveAll();
     }
@@ -334,7 +334,7 @@ void GFxMovieDamage::FUN_140b62270()
 }
 
 // @0x140b622b0
-void GFxMovieDamage::FUN_140b622b0()
+void GFxMovieDamage::SaveLoadedFontIds()
 {
     if (!m_90.IsEmpty())
     {
@@ -370,11 +370,11 @@ static __inline errno_t ms2_memcpy_s_copy(void* const dst, rsize_t const dstSize
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
 #pragma intrinsic(memcpy, memset)   // the template instances (InitHashTable, Rehash) are compiled at the end of the TU
 
-// Not hooked: the ctor/dtor, vfunc_11 / FUN_140b622b0 / FUN_140b621a0 (they use the unit's static s_arrSavedFontIds) and
+// Not hooked: the ctor/dtor, vfunc_11 / SaveLoadedFontIds / FUN_140b621a0 (they use the unit's static s_arrSavedFontIds) and
 // vfunc_4 (it calls FUN_140b621a0), the COMDAT helpers, and the 23-byte vfunc_14.
-MS2_REPLACE_METHOD(0x140B61900, GFxMovieDamage, FUN_140b61900, 627, 0xD3375340);
+MS2_REPLACE_METHOD(0x140B61900, GFxMovieDamage, LoadDamageFont, 627, 0xD3375340);
 MS2_REPLACE_METHOD(0x140B61B80, GFxMovieDamage, FUN_140b61b80, 336, 0x94B9CE48);
 MS2_REPLACE_METHOD(0x140B62010, GFxMovieDamage, FUN_140b62010, 380, 0xD66059DA);
-MS2_REPLACE_METHOD(0x140B61CE0, GFxMovieDamage, FUN_140b61ce0, 797, 0xA95A7281);
+MS2_REPLACE_METHOD(0x140B61CE0, GFxMovieDamage, UnloadExpiredFonts, 797, 0xA95A7281);
 MS2_REPLACE_METHOD(0x140B617F0, GFxMovieDamage, vfunc_8, 251, 0x28A50C75);
 MS2_REPLACE_METHOD(0x140B62270, GFxMovieDamage, FUN_140b62270, 52, 0x60F444E0);

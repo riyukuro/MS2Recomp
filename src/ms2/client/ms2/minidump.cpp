@@ -35,7 +35,7 @@ void FUN_141484c70(const char* pszGraphicInfo, const char* pszAdditionalInfo, wc
 bool FUN_141484ac0(LPCSTR pszPath, LPEXCEPTION_POINTERS pExceptionPointers);
 LONG WINAPI FUN_1414854b0(LPEXCEPTION_POINTERS pExceptionInfo);
 void FUN_1414855a0(char* pszPath, const void* pExceptionAddress);
-char* FUN_1414856b0(char* pszText, int ch);                                              // strrchr (out of line in the exe)
+char* FindLastChar(char* pszText, int ch);                                              // strrchr (out of line in the exe)
 
 // ---- unit-local state ----
 
@@ -267,7 +267,7 @@ void FUN_1414855a0(char* pszPath, const void* pExceptionAddress)
 {
     char szModulePath[MAX_PATH];
     GetModuleFileNameA(NULL, szModulePath, MAX_PATH);
-    const char* pszFileName = FUN_1414856b0(szModulePath, '\\');
+    const char* pszFileName = FindLastChar(szModulePath, '\\');
     DWORD cchComputer = MAX_PATH;
     char szComputer[MAX_PATH];
     GetComputerNameA(szComputer, &cchComputer);
@@ -278,7 +278,7 @@ void FUN_1414855a0(char* pszPath, const void* pExceptionAddress)
 }
 
 // @0x1414856b0
-char* FUN_1414856b0(char* pszText, int ch)
+char* FindLastChar(char* pszText, int ch)
 {
     return strrchr(pszText, ch);
 }

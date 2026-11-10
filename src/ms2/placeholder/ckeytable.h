@@ -76,8 +76,8 @@ public:
     void FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId);   // the keys of a skill
     int GetPairKey(int nKey, int& nPair);                // the twin modifier key
     MS2Ptr<stKeyData> FindKeyData(int nKey);              // the binding of a key
-    int FUN_14142c940(__int64 nAction, int nPriority);      // the key bound to the action, 0 = none
-    int FUN_14142ca40(int nId, int nPriority);
+    int FindKeyByActionAndPriority(__int64 nAction, int nPriority);      // the key bound to the action, 0 = none
+    int FindKeyBySlotAndPriority(int nId, int nPriority);
     int FindKeyByQuickSlot(unsigned nIndex, int nPriority);      // the key of a quick slot action
     size_t GetQuickSlotActionCount();                                 // the quick slot action count
     __int64 GetQuickSlotAction(unsigned nIndex);                 // a quick slot action
@@ -94,7 +94,7 @@ public:
     CStringW GetActionKeyName(int nAction, int nPriority);     // the key name of a binding
     CStringW GetKeyActionLabel(const int& nKey);
     int GetKeySkillId(stKeyData* pKey);
-    int FUN_14142dad0(unsigned nSlot);                      // the skill id of the quick slot
+    int GetSkillIdByKey(unsigned nSlot);                      // the skill id of the quick slot
     int GetQuickSlotSkillId(unsigned nSlot);                      // the skill id of a slot of the current page
     int FindQuickSlotIndexByKey(int nKey, int& nIndex);               // the quick slot action index of a key
     __int64 GetQuickSlotItemUidByKey(unsigned nSlot);                  // the item uid of the quick slot
@@ -131,7 +131,7 @@ public:
     void FUN_1414307a0();                                   // build the setting categories
     int FUN_141430b10(__int64 nAction);
     int FUN_141430b90(int nKey);
-    int FUN_141430c30(int nKey);
+    int IsGamepadShoulderKey(int nKey);
     int FUN_141430cb0(int nKey);
     void FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOldKey);
     unsigned* MakeCombineKey(unsigned* pOut, int nFirst, int nSecond, int nMode);
@@ -142,16 +142,16 @@ public:
     __int64 FUN_1414317b0(__int64 nAction);
     CStringW FUN_141431820(int nKey);                       // the key's label (gamepad: L1/L2/R1/R2)
     int FUN_1414319f0();                                    // the input layout (2 = gamepad keys >= 0x91)
-    int FUN_141431a30(int nKey);
-    int FUN_141431a60(int nKey);
+    int IsKeyboardKey(int nKey);
+    int IsMouseButtonKey(int nKey);
     int IsGamepadKey(int nKey);                            // the key is reserved
-    void FUN_141431ae0(int nPage, bool bSend);               // switch the quick slot page
-    QuickSlotPage* FUN_141431c20(int nPage);                // a quick slot page
+    void SetQuickSlotPage(int nPage, bool bSend);               // switch the quick slot page
+    QuickSlotPage* GetQuickSlotPage(int nPage);                // a quick slot page
     int FUN_141431c80(int nKey, int nType, __int64 nCode, int nSlot, int nPriority, int bSave);   // set a binding
     void FUN_141431f20(int nKey);                           // notify the key (and its twin) changed
     int FUN_141431fc0();
     int FUN_141432010(int nAction);
-    void FUN_1414321f0();                                   // rebuild the action index
+    void RebuildActionKeyMaps();                                   // rebuild the action index
     void FUN_141432360(int nAction);
     void FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItemId, __int64 nItemUid);   // set a quick slot
     TiXmlDocument FUN_141432480(const CString& strPath);    // write an empty key config (ms2/KeyConfig) to the file

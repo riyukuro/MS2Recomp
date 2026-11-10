@@ -179,7 +179,7 @@ bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);   // the two e
 void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pkOut1, efd::Point3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
-class Unk_ResourceMgr;   // the loading service as FUN_140a0afd0 returns it
+class Unk_ResourceMgr;   // the loading service as GetNifLoadingService returns it
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
@@ -194,7 +194,7 @@ public:
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
 #define DAT_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern const Vector3 DAT_143a08cf8
-Unk_ResourceMgr* FUN_140a0afd0() { return reinterpret_cast<Unk_ResourceMgr*>(TSingleton<CNifLoadingService>::s_instance); }                                                                // @0x140a0afd0
+Unk_ResourceMgr* GetNifLoadingService() { return reinterpret_cast<Unk_ResourceMgr*>(TSingleton<CNifLoadingService>::s_instance); }                                                                // @0x140a0afd0
 
 // @0x140a0adf0
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT)
@@ -229,7 +229,7 @@ void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kEuler)   // C3: was (con
 }
 
 // @0x140a0b2a0 detach a node from its parent
-void FUN_140a0b2a0(NiAVObject* pObj)
+void DetachFromParent(NiAVObject* pObj)
 {
     if (pObj != 0)
     {
@@ -375,7 +375,7 @@ void CBeamEffect::vfunc_4()
         static_cast<NiNode*>(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spRoot), true);
         m_spRoot->UpdateEffects();
         m_spRoot->UpdateProperties();
-        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
         m_b2e = true;
     }
 }
@@ -383,7 +383,7 @@ void CBeamEffect::vfunc_4()
 // @0x140a08090
 void CBeamEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>((NiNode*)m_spRoot));
+    DetachFromParent(static_cast<NiAVObject*>((NiNode*)m_spRoot));
 }
 MS2_REPLACE_METHOD(0x140A08090, CBeamEffect, vfunc_7, 39, 0xA0FEF435);
 
@@ -429,7 +429,7 @@ void CBeamEffect::UpdateMesh()
     int nTextures = (int)m_spParam->m_arrTexturePath.GetCount();
     int nPick = rand() % nTextures;
     CString strName = m_spParam->m_arrTexturePath[(size_t)nPick];
-    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp.operator->()))->SetBaseTexture((class NiTexture*)(reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5)));
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp.operator->()))->SetBaseTexture((class NiTexture*)(reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5)));
     m_spMesh->GetMesh()->UpdateProperties();
 
     Vector3 kCamera = reinterpret_cast<const Unk_BmNiPoint3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));

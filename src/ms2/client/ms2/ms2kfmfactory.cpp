@@ -285,7 +285,7 @@
 // ClassInfo constructors only fill local metadata; they do not register globally.
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(MS2KFMFactory);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(MS2KFMFactory::ResponseData);
-NiActorManager* FUN_140d815d0(NiKFMTool*,const char*,bool,bool,NiStream*,NiPoseBinding*);
+NiActorManager* CreateActorManager(NiKFMTool*,const char*,bool,bool,NiStream*,NiPoseBinding*);
 
 // @0x140d8f690
 void MS2KFMCache::Init(efd::MessageService* messages,efd::AssetLocatorService* locator,efd::AssetFactoryManager* factories) {
@@ -339,7 +339,7 @@ MS2KFMFactory::ResponseData::~ResponseData() {}
 // @0x140d900c0
 void MS2KFMFactory::ResponseData::LoadKFMTool(NiKFMTool* tool,const egmAnimation::KFMFactoryRequest* request) {
     bool accumulation=request->GetAccumulation();
-    NiActorManagerPtr actor=FUN_140d815d0(tool,tool->GetBaseKFMPath(),accumulation,false,0,0);
+    NiActorManagerPtr actor=CreateActorManager(tool,tool->GetBaseKFMPath(),accumulation,false,0,0);
     if(!actor)return;
     m_spResponse->SetActor(actor);
     efd::UInt32* ids;

@@ -28,7 +28,7 @@ ASSlider::~ASSlider()
 // @0x1422ce5f0
 void ASSlider::FUN_1422ce5f0(float f)
 {
-    FUN_1409c4a30("value", f);
+    SetMemberFloat("value", f);
 }
 MS2_REPLACE_METHOD(0x1422CE5F0, ASSlider, FUN_1422ce5f0, 43, 0xB02E9BC5);
 
@@ -42,7 +42,7 @@ MS2_REPLACE_METHOD(0x1422CE630, ASSlider, FUN_1422ce630, 96, 0xF625FCB4);
 // @0x1422ce6a0
 void ASSlider::FUN_1422ce6a0(float f)
 {
-    FUN_1409c4a30("maximum", f);
+    SetMemberFloat("maximum", f);
 }
 MS2_REPLACE_METHOD(0x1422CE6A0, ASSlider, FUN_1422ce6a0, 43, 0xE93331B9);
 
@@ -56,7 +56,7 @@ MS2_REPLACE_METHOD(0x1422CE6E0, ASSlider, FUN_1422ce6e0, 96, 0x130F2EF2);
 // @0x1422ce750
 void ASSlider::FUN_1422ce750(float f)
 {
-    FUN_1409c4a30("minimum", f);
+    SetMemberFloat("minimum", f);
 }
 MS2_REPLACE_METHOD(0x1422CE750, ASSlider, FUN_1422ce750, 43, 0x7FB2EF9D);
 
@@ -70,7 +70,7 @@ MS2_REPLACE_METHOD(0x1422CE790, ASSlider, FUN_1422ce790, 96, 0x1E1CD5F1);
 // @0x1422ce800
 void ASSlider::FUN_1422ce800(float f)
 {
-    FUN_1409c4a30("position", f);
+    SetMemberFloat("position", f);
 }
 MS2_REPLACE_METHOD(0x1422CE800, ASSlider, FUN_1422ce800, 43, 0xF3A5660D);
 
@@ -84,7 +84,7 @@ MS2_REPLACE_METHOD(0x1422CE840, ASSlider, FUN_1422ce840, 96, 0xE0F51450);
 // @0x1422ce8b0
 void ASSlider::FUN_1422ce8b0(float f)
 {
-    FUN_1409c4a30("snapInterval", f);
+    SetMemberFloat("snapInterval", f);
 }
 MS2_REPLACE_METHOD(0x1422CE8B0, ASSlider, FUN_1422ce8b0, 43, 0x4CE96E19);
 

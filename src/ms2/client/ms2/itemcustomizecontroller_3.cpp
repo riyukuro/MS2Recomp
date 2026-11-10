@@ -43,7 +43,7 @@ struct Unk_MorphItem { CItemData* FUN_14053ec70(); };
 class CEquipItem : public CPtred
 {
 public:
-    struct Unk_EquipItemData* FUN_1411dc7f0();                         // the item's data
+    struct Unk_EquipItemData* GetItemData();                         // the item's data
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
 };
@@ -56,13 +56,13 @@ struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; };   // the app framework
 namespace efd { class ServiceManager; }
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera); the service manager
 
-void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
+void SetItemScale(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
 
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h).
 class CEquipModel;
-std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pPart);   // C3: the definition's signature (equipmodel.cpp)
+std::set<NiAVObjectPtr>* GetRoots(CEquipModel* pPart);   // C3: the definition's signature (equipmodel.cpp)
 
 // Listener at +0xa0: slot 2 is called when a value changed (the base class only knows slot 0).
 class Unk_MorphListener
@@ -142,13 +142,13 @@ float CItemMorphController::vfunc_20()
 // @0x141416f70
 const Unk_CustomizeRange* CItemMorphController::vfunc_23()
 {
-    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(m_nCurIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(m_nCurIndex);
 }
 
 // @0x141416fd0
 const Unk_CustomizeRange* CItemMorphController::vfunc_24(int nIndex)
 {
-    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(nIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(nIndex);
 }
 
 // @0x141417030
@@ -190,7 +190,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 // @0x1414171e0
 int CItemMorphController::vfunc_27()
 {
-    return (int)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140545090();
+    return (int)reinterpret_cast<CItemData*>(m_spEquipItem->GetItemData())->GetModelOrEmpty()->GetGroup(0)->FUN_140545090();
 }
 
 // @0x141417230
@@ -260,7 +260,7 @@ float CItemMorphController::vfunc_40()
 // @0x1414175e0
 int CItemMorphController::vfunc_41()
 {
-    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
+    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->GetServiceManager();
     ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
     NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
     int nWheel = 0;
@@ -281,7 +281,7 @@ void CItemMorphController::vfunc_42(int nIndex, float fValue, NiInterpController
         float fNow = vfunc_22(nIndex);
         for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
             pCtrl->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), fNow, us);
-        FUN_141422660(m_spEquipItem, nIndex, fNow);
+        SetItemScale(m_spEquipItem, nIndex, fNow);
         if (m_pListener != 0)
             reinterpret_cast<Unk_MorphListener*>(m_pListener)->vfunc_2(this, fNow, nIndex);
     }
@@ -311,7 +311,7 @@ void CItemMorphController::ResetMeshHighlight()
     if (aParts.GetCount() > 0)
     {
         MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
-        std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+        std::set<NiAVObjectPtr>* pSet = GetRoots(spPart.operator->());
         const std::set<NiAVObjectPtr>& kSet = *pSet;
         std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
@@ -388,7 +388,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
         if (aParts.GetCount() > 0)
         {
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
-            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>* pSet = GetRoots(spPart.operator->());
             const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
@@ -436,7 +436,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
         if (aParts.GetCount() > 0)
         {
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
-            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>* pSet = GetRoots(spPart.operator->());
             const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
@@ -495,7 +495,7 @@ efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
         {
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             NiAVObject* pFound = 0;
-            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>* pSet = GetRoots(spPart.operator->());
             const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)

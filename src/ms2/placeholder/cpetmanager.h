@@ -39,7 +39,7 @@ public:
     ItemPtr FindUsableItemById(int nItemId);                     // a usable item of an item id
     size_t CollectItemsById(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
     ItemPtr GetItemByUid(unsigned __int64 nUid);           // by uid
-    ItemPtr FUN_140c87300(int nItemId, int bAnyUsability);  // by item data id
+    ItemPtr FindItemByDataId(int nItemId, int bAnyUsability);  // by item data id
     int GetUsedSlotCount();                                    // occupied slots
     int GetSlotCount();                                    // slot count
     int HasEmptySlot();                                    // any free slot (scanned from both ends)
@@ -101,7 +101,7 @@ public:
     void FUN_140c8a7a0(CInPacket& in);                      // mode 0x11: pet item data
     void OnPetLevelUp(CInPacket& in);                      // mode 0xb: level up
     void FUN_140c8ab80(CInPacket& in);                      // mode 0xc: pet exp
-    void FUN_140c8ac50(CInPacket& in);                      // mode 0x10: new pet item
+    void OnOtherPetInfo(CInPacket& in);                      // mode 0x10: new pet item
     void OnPetError(CInPacket& in);                      // mode 0x13: error
     void FUN_140c8afa0(CInPacket& in);                      // mode 0x15: apply the pet to a player
     void OnPetAutoChanged(CInPacket& in);                      // mode 0xf: auto flag

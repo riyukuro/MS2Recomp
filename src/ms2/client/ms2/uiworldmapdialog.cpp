@@ -160,7 +160,7 @@ class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_140764020();   // C3: was FUN_140764020
-void FUN_141415600(const CString& strBindID);                               // release the items bound to the name
+void DestroyItemInfoSlot(const CString& strBindID);                               // release the items bound to the name
 Scaleform::GFx::Value* FUN_1412dd680(Scaleform::GFx::Value* pOut, const wchar_t* sz);   // a string value
 bool WorldMapTooltipLess(const UIWorldMap::TooltipEntry& a, const UIWorldMap::TooltipEntry& b);   // the tooltip line order (worldmapmanager.cpp)
 void FUN_14151f200();                                                       // show the next queued message box
@@ -177,7 +177,7 @@ template <class A> CStringW BlockFormat(int nStrId, const A& a);           // Bl
 template <class A, class B, class C> CStringW BlockFormat(int nStrId, const A& a, const B& b, const C& c);
 CStringW FUN_14028dee0(int nStrId, const fmt::ArgList& args);               // a string table text by id, formatted
 int FUN_14092f640();                                                        // the current channel
-float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
+float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                             // the quest's data record
 int FUN_14074b050(CQuestData* pData);                                       // the quest's state
 bool FUN_1407640c0(CQuestData* pData);
@@ -217,7 +217,7 @@ static MS2Ptr<CMsgBoxData> FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)>
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 int FUN_141276f80(Unk_CommandChat* pRecord);                       // send a chat line
-void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the name
+void CreateItemInfoSlot(const CString& strBindID, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the name
 void FUN_141415560(const CString& strBindID, ItemInfoSlot::CreateParam* pParam);   // bind a slot of the parameters under the name
 // The client resources record (icon paths): +0x1d0 the stat point icon; 0x140cca050 the skill point icon of a kind.
 class CommonResource { public: CString GetPath(int nKind); };   // C3: member view (commonresource.cpp)
@@ -302,7 +302,7 @@ void UIWorldMapDialog::vfunc_67()
         for (size_t i = 0; i < 2; i++)
             m_islandIndex[i] = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->FUN_140c1c8c0("getCachedIslandIndex", i)))->GetInt();
     }
-    FUN_141415600(GetTypeName());
+    DestroyItemInfoSlot(GetTypeName());
     UIDialog::vfunc_67();
     m_tiles.clear();
     m_194 = 0;
@@ -336,9 +336,9 @@ int UIWorldMapDialog::vfunc_13()
     {
         if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, false, 0))
         {
-            if (FUN_140b632f0() != 0)
+            if (GetUISwfEntityManager() != 0)
             {
-                if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+                if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) == 0)
                     return 0;
             }
             {
@@ -377,7 +377,7 @@ void UIWorldMapDialog::OnLoadComplete()
         ASFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldMapDialog::FUN_141b56c30), 0, 2));
     ASObj island(2);
     island.FUN_1407cbbe0("karkarIsland", ((class CFeatureManager*)(class CFeatureManager*)(((class CFeatureManager*)FUN_140166410())))->FUN_14036d570(3));
-    m_30->FUN_141b62c20("initializeIsland", ((class PC*)(void*)(pPlayer))->FUN_141654700(), island);
+    m_30->FUN_141b62c20("initializeIsland", ((class PC*)(void*)(pPlayer))->GetJobGroupId(), island);
     for (size_t i = 0; i < 2; i++)
         m_30->FUN_141b62ce0("setCachedIslandIndexByWorld", i, m_islandIndex[i]);
     m_nField = FUN_141b57410();
@@ -768,7 +768,7 @@ int UIWorldMapDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             else if (operator==(strTag, L"onCashTaxi"))
                 FUN_141b5aa70(m_190);
             else if (operator==(strTag, L"onTopMostLayer"))
-                FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
+                GetUISwfEntityManager()->FUN_1422d4dd0(CString(m_20));
             return 1;
         }
     }
@@ -976,7 +976,7 @@ void UIWorldMapDialog::FUN_141b57870()
             MS2Ptr<UIWorldMap::MapTile> spTile = tiles[i];
             efd::Point3 kTile((float)spTile->m_24, (float)spTile->m_28, (float)spTile->m_2c);
             efd::Point3 kCur((float)FUN_141b5d120()->m_24, (float)FUN_141b5d120()->m_28, (float)FUN_141b5d120()->m_2c);
-            float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(kTile), reinterpret_cast<const Vector3&>(kCur));
+            float fDistance = GetDistance(reinterpret_cast<const Vector3&>(kTile), reinterpret_cast<const Vector3&>(kCur));
             spTile->m_50 = (unsigned)fDistance;
             sorted.push_back(spTile);
             if (spTile->m_24 > nMaxX)
@@ -1035,7 +1035,7 @@ void UIWorldMapDialog::FUN_141b58350(MS2Ptr<UIWorldMap::MapTile> spTile)
         return;
     ASObj obj(2);
     obj.FUN_1407cb9c0("index", spTile->m_1c);
-    obj.FUN_1409c0d20("fieldSN", spTile->m_34);
+    obj.SetMemberUInt("fieldSN", spTile->m_34);
     switch (m_nMode)
     {
     case 1:
@@ -1053,7 +1053,7 @@ void UIWorldMapDialog::FUN_141b58350(MS2Ptr<UIWorldMap::MapTile> spTile)
         break;
     }
     if (m_1c4 == spTile->m_34)
-        obj.FUN_1409c0d20("fieldSearchID", m_1c4);
+        obj.SetMemberUInt("fieldSearchID", m_1c4);
     m_30->Invoke("updateAdditional", obj);
 }
 
@@ -1254,7 +1254,7 @@ void UIWorldMapDialog::FUN_141b59840()
     for (size_t i = 0; i < nCount; i++)
     {
         MS2Ptr<CPartyMember> spMember = members[i];
-        if (spMember->FUN_141637c20())
+        if (spMember->IsOffline())
             continue;
         if (spMember->user.m_38 == 0)
             continue;
@@ -1398,7 +1398,7 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
         return;
     }
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e42);
-    if (pPlayer->FUN_1416764d0() != 0)
+    if (pPlayer->IsRiding() != 0)
     {
         MS2Ptr<RideOffActionTaxi> spAction(new RideOffActionTaxi(0));
         spAction->m_n28 = nFieldId;
@@ -1578,7 +1578,7 @@ CStringW UIWorldMapDialog::FUN_141b5b380(MS2Ptr<UIWorldMap::MapTile> spTile)
         strText = FormatStringId<CStringW, CStringW>(0x717, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spTile->m_34), strLevel);
     else
         strText = FormatStringId<CStringW, CStringW>(0x716, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spTile->m_34), strLevel);
-    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(spTile->m_34);
+    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->GetSpotDescription(spTile->m_34);
     if (strFishing.GetLength() > 0)
     {
         strText += L"\n";
@@ -1715,8 +1715,8 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
             if (spItem->FUN_140523c40(spReward->m_item.m_itemId, spReward->m_item.vfunc_o18_1(), 0))
             {
                 spItem->SetCountClamped(spReward->m_item.m_count);
-                FUN_141415600(GetTypeName());
-                FUN_141415450(GetTypeName(), MS2Ptr<CItem>(spItem), 0, 0, 0);
+                DestroyItemInfoSlot(GetTypeName());
+                CreateItemInfoSlot(GetTypeName(), MS2Ptr<CItem>(spItem), 0, 0, 0);
                 pObj->FUN_1407cba60("binding", GetTypeName());
                 pObj->FUN_1407cbb20("reward", GetStringCommonByKey(L"s_fieldmission_reward"));
             }
@@ -1729,7 +1729,7 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
             param.m_nFlags = 1;
             param.m_nTipArg = 4;
             param.m_strCount = Unk_SocketFormat("{0}", spReward->m_nValue);
-            FUN_141415600(GetTypeName());
+            DestroyItemInfoSlot(GetTypeName());
             FUN_141415560(GetTypeName(), &param);
             pObj->FUN_1407cba60("binding", GetTypeName());
             pObj->FUN_1407cbb20("reward", GetStringCommonByKey(L"s_fieldmission_point_reward"));
@@ -1742,7 +1742,7 @@ void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
             param.m_nFlags = 1;
             param.m_nTipArg = 4;
             param.m_strCount = Unk_SocketFormat("{0}", spReward->m_nValue);
-            FUN_141415600(GetTypeName());
+            DestroyItemInfoSlot(GetTypeName());
             FUN_141415560(GetTypeName(), &param);
             pObj->FUN_1407cba60("binding", GetTypeName());
             pObj->FUN_1407cbb20("reward", GetStringCommonByKey(L"s_fieldmission_point_reward"));
@@ -1930,7 +1930,7 @@ void UIWorldMapDialog::FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     }
     pObj->FUN_1407cbbe0("showFieldName", bShowName);
     pObj->FUN_1407cbb20("fieldTooltip", FUN_141b5b380(spTile));
-    pObj->FUN_1409c0d20("fieldSN", spTile->m_34);
+    pObj->SetMemberUInt("fieldSN", spTile->m_34);
     pObj->FUN_1407cb9c0("continent", spTile->m_38);
     pObj->FUN_1407cb9c0("gridX", spTile->m_24);
     pObj->FUN_1407cb9c0("gridY", spTile->m_28);
@@ -1987,7 +1987,7 @@ void UIWorldMapDialog::FUN_141b5e160(MS2Ptr<UIWorldMap::IconInfo> spIcon, ASObj*
         else
             strFrame = L"boss";
     }
-    pObj->FUN_1409c0d20("npcID", spIcon->m_20.m_0);
+    pObj->SetMemberUInt("npcID", spIcon->m_20.m_0);
     pObj->FUN_1407cbb20("bossFrameName", strFrame);
     pObj->FUN_1407cbbe0("bossIcon", true);
 }
@@ -2444,7 +2444,7 @@ void UIWorldMapDialog::FUN_141b60e90(int nFieldId, MyPC* pPlayer)
 // @0x141b614c0
 void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
 {
-    if (pPlayer->FUN_141662de0() != 0 && ((class CFeatureManager*)(class CFeatureManager*)(((class CFeatureManager*)FUN_140166410())))->FUN_14036d570(0x57))
+    if (pPlayer->IsVip() != 0 && ((class CFeatureManager*)(class CFeatureManager*)(((class CFeatureManager*)FUN_140166410())))->FUN_14036d570(0x57))
     {
         CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_taxi_transfer_vip_user"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_190));
         FUN_140d73aa0(CStringW(strText), 1, static_cast<IMessageListener*>(this), CStringW(L"onCashTaxi"));
@@ -2466,7 +2466,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
                 ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
                 __int64 nPrice = *TSingleton<Client::Constants>::GetInstance()->MeratAirTaxiPrice.Get();
                 if (nPrice != 0)
-                    nPrice = FUN_140632990(nPrice, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0xaa));
+                    nPrice = FUN_140632990(nPrice, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->GetEquipment())->GetAbilityRate((SAType)0xaa));
                 FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::OnTaxiMeratConfirm),
                     FUN_14028dfa0<__int64>(CStringW(L"s_err_cash_taxi_need_advanced_ticket_merat"), nPrice));
             }
@@ -2495,7 +2495,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
         {
             __int64 nFare = TSingleton<CTaxiManager>::GetInstance()->FUN_14085fc80((short)pPlayer->vfunc_78());
             if (nFare != 0)
-                nFare = FUN_140632990(nFare, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0xaa));
+                nFare = FUN_140632990(nFare, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->GetEquipment())->GetAbilityRate((SAType)0xaa));
             CStringW strText = FUN_14028dfa0<CStringW, __int64>(CStringW(L"s_cash_taxi_transfer_meso"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_190), nFare);
             FUN_141b62e40(CStringW(strText), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::OnTaxiMesoConfirm), nFare);
         }

@@ -14,7 +14,7 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@std@@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@2@XZ 0x141442a90 ; unique
 // MS2-PINS-END tplpin
 // AssetID(const char*, ...): the game's one COMDAT, 0x141441ec0, strips a trailing ':' (AssetID.inl, on for /D_AFXDLL)
-// MS2-PIN: ?FUN_1414424f0@@YAPEAXPEAX0M@Z 0x1414424f0
+// MS2-PIN: ?ScalePoint3@@YAPEAXPEAX0M@Z 0x1414424f0
 // MS2-PIN: ??_7CKfmModel@@6BCallbackObject@NiActorManager@@@ 0x142f135d0
 // MS2-FUNCTIONAL: extern-heavy; engine/game helpers are opaque FUN_ externs (see nifmodel.cpp, the same model shape
 // for a single .nif). Loops over the node list at +0xf8 use the exe's iterator helpers (begin 0x141209190, end
@@ -78,24 +78,24 @@ extern efd::AssetID DAT_143a0acf8;   // the invalid asset id
 
 // ---- unit-local views of exe objects ----
 // The animation service (singleton behind FUN_141b6f910).
-class Unk_AnimSvc : public egmAnimation::AnimationService { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);   // play (animationmanager.cpp)
-    bool FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // play by sequence id (decoeditservice.cpp)
+class Unk_AnimSvc : public egmAnimation::AnimationService { public: bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);   // play (animationmanager.cpp)
+    bool SetTargetAnimation(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // play by sequence id (decoeditservice.cpp)
 class Unk_KfmAnimSvc : public Unk_AnimSvc
 {
 public:
-    // C3: FUN_1411766b0 is Unk_AnimSvc's (the AnimationService view)
+    // C3: SetTargetAnimation is Unk_AnimSvc's (the AnimationService view)
 };
 egmAnimation::AnimationService* FUN_141b6f910();
 
 // Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0). Layout as in entityvibrator.cpp.
 void* FUN_1403ed2d0();
 class CEffectService;
-int FUN_14123c580(void* p);
-void* FUN_141200850(CEquipModel* p);
+int GetObjectId(void* p);
+void* GetOwnerObject(CEquipModel* p);
 
 // ---- out-of-unit callees ----
 void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);
-int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);class CItemData   // C3: member view for the former free stand-ins
+int FUN_140527a20(void* p);   void* GetItemData(void* owner);class CItemData   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14053cfd0();
@@ -103,15 +103,15 @@ public:
 };
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
 void FUN_141200ca0(class CEquipModel*);   // C3: was FUN_141200ca0
-void* FUN_141200820(class CEquipModel*);   // C3: was FUN_141200820
+void* GetOwnerPC(class CEquipModel*);   // C3: was GetOwnerPC
 void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
-void* FUN_1412009d0(class CEquipModel*);   // C3: was FUN_1412009d0
-void FUN_141202ea0(CEquipModel* self, CString* s);
+void* GetItemData(class CEquipModel*);   // C3: was GetItemData
+void CreateAttachNode(CEquipModel* self, CString* s);
 void FUN_141202280(class CEquipModel*, class NiTransform*);   // C3: was FUN_141202280
 bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409475f0(void* sp);   void* FUN_1409475d0(void* sp);
 void* FUN_1409478e0(void* p);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);
-float FUN_141422340(class CEquipModel*, int);   // C3: was FUN_141422340
+float GetPartScale(class CEquipModel*, int);   // C3: was GetPartScale
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
 unsigned FUN_1405258b0(void* p);
 class CItemExtraData   // C3: member view for the former free stand-ins
@@ -120,11 +120,11 @@ public:
     int GetCurrentRgbComponent(unsigned int);
 };
 void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f000
-void* FUN_141b6dea0(void* out, unsigned v);   void* FUN_1414424f0(void* in, void* out, float f);   void FUN_140a0a3a0(void* out, void* in);
+void* FUN_141b6dea0(void* out, unsigned v);   void* ScalePoint3(void* in, void* out, float f);   void FUN_140a0a3a0(void* out, void* in);
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
 };
 void* FUN_1409f7cb0(void* p);   void* FUN_14098d8d0(void* tbl, void* key);
 int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
@@ -145,7 +145,7 @@ void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, co
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* v);
 void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
 egf::Entity* FUN_1408a9090(const void* sp);   egf::Entity* FUN_1408a9280(const void* sp);
@@ -154,18 +154,18 @@ bool FUN_1408b70b0(const void* sp, int n);   bool FUN_140965490(const void* sp, 
 void FUN_1408b6ec0(void* sp, void* v);   void FUN_140964eb0(void* sp, const egf::EntityPtr& v);
 void FUN_1414737d0(egf::Entity* e);
 class EntityWorldManager;
-egf::Entity* FUN_1411cf440(egf::EntityManager* m, const egf::EntityID& id);
+egf::Entity* FindEntity(egf::EntityManager* m, const egf::EntityID& id);
 void* FUN_1411f91c0();   void FUN_141419f50(void* reg, void* model);   void FUN_14141a000(void* reg, void* model);
 bool FUN_1413e9750(const efd::AssetID& a, const efd::AssetID& b);
 class CPhysXHelper;
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class NxGroupsMask;
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14168a540(int);
-    void FUN_14168a570();
-    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
+    void Unlock();
+    void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
     bool FUN_141689a10(egf::Entity* pEntity);
 };
 class CPonyTailPhysXHelper   // C3: member view for the former free stand-ins
@@ -188,7 +188,7 @@ void FUN_14120a440(void* p, void* v);
 void FUN_141205320(void* s);   void FUN_141205530(void* s);
 void* FUN_141c43700(void* a, int b, unsigned c, int d);
 void FUN_141c435b0(void* a, int b, unsigned c, void* pName);   // RegisterCallback(type, seq, const NiFixedString&)
-bool FUN_140d821f0(void* p);
+bool FlushPendingSequenceData(void* p);
 
 // Unit-local runtime-type helpers (the exe emits them as out-of-line functions next to the model code).
 class Unk_KfmTyped
@@ -199,7 +199,7 @@ public:
     virtual void* GetClassInfoPtr();                // slot 2
 };
 
-bool FUN_1414428a0(void* p, void* pClass)           // p's class derives from pClass
+bool IsKindOf(void* p, void* pClass)           // p's class derives from pClass
 {
     void* pCur = ((Unk_KfmTyped*)p)->GetClassInfoPtr();
     while (pCur != 0) {
@@ -212,7 +212,7 @@ bool FUN_1414428a0(void* p, void* pClass)           // p's class derives from pC
 
 void* FUN_141442810(void* p, void* pClass)
 {
-    return FUN_1414428a0(p, pClass) ? p : 0;
+    return IsKindOf(p, pClass) ? p : 0;
 }
 
 void* FUN_141442860(void* pClass, void* p)
@@ -224,7 +224,7 @@ void* FUN_141442860(void* pClass, void* p)
 
 struct Unk_KfmVec3 { float x, y, z; };
 
-void* FUN_1414424f0(void* pIn, void* pOut, float fScale)   // pOut = *pIn * fScale
+void* ScalePoint3(void* pIn, void* pOut, float fScale)   // pOut = *pIn * fScale
 {
     NiPoint3 v = *(NiPoint3*)pIn;
     v.x *= fScale;
@@ -261,16 +261,16 @@ template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);
 void FUN_1401bf970(void* out, void* p);   bool FUN_1401b5240(void* sp, int n);   void FUN_1401b50d0(void* sp);
 void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd::utf8string* pVal);
 class NiActorManager* FUN_1413f9b70(const egf::EntityID& id);   void* FUN_1409995d0(void* p);   void* FUN_1409995c0();
-void FUN_14099a7c0(void* a, void* b);   void FUN_140999170(void* a);   void FUN_14099bb80(void* a, void* b, void* c);
-void* FUN_140999740(void* a, unsigned b);   void* FUN_140999900(void* a);   void* FUN_1409995f0(void* a, unsigned* n);
+void FUN_14099a7c0(void* a, void* b);   void FUN_140999170(void* a);   void SetCallbackObject(void* a, void* b, void* c);
+void* GetSequenceData(void* a, unsigned b);   void* FUN_140999900(void* a);   void* FUN_1409995f0(void* a, unsigned* n);
 void* FUN_1409998f0(void* a);   bool FUN_140998dc0(void* a, const char* s);
 void FUN_141203e60(CEquipModel* p);
 void* FUN_141d17b40(void* node, void* name);
 float FUN_141d57ca0(void* ed, int i);
 namespace efd { class ServiceManager; }
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera); the service manager
 class CMainSystem;
-void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
+void* GetFirstRoot(class CEquipModel*);   // C3: was GetFirstRoot
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
 #define V0(R, o, off) (((R(*)(void*))VSLOT(o, off))(o))
@@ -334,11 +334,11 @@ int CKfmModel::vfunc_4(CString strPath)
     m_spNode.operator=((NiNode*)0);
     FUN_140de8bd0(m_spEntity.operator->(), 0x12383cea, &kNew);
     bool bFlag = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bFlag);
-    if (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()) != 0)
+    SetCachedBoolProperty((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bFlag);
+    if (TSingleton<EntityWorldManager>::GetInstance()->FindEntity(GetEntityID()) != 0)
         return 1;
     ApplyAnimNames();
-    if (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(m_spEntity.operator egf::Entity*(), 0) != 0)
+    if (TSingleton<EntityWorldManager>::GetInstance()->AddEntity(m_spEntity.operator egf::Entity*(), 0) != 0)
         (reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->AddModel(this);
     return 1;
 }
@@ -356,15 +356,15 @@ void CKfmModel::vfunc_5()
 int CKfmModel::vfunc_6()
 {
     m_nState = 1;
-    if (!m_str38.IsEmpty() && efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)FUN_141200820((class CEquipModel*)(this))) != 0) {
+    if (!m_str38.IsEmpty() && efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)GetOwnerPC((class CEquipModel*)(this))) != 0) {
         efd::AssetID kId((const char*)m_str38, 0, efd::AssetID::NEVER_CACHE);
         efd::vector<egmAnimation::KFMCache::KFMCacheHandle> kHandles;
         if (FUN_141b6f910()->Cache(kId, (egmAnimation::KFMCache::IKFMCacheRequestData*)0, g_catKfm, kHandles) == 0)
             FUN_141b6f910()->UnCacheHandles(kHandles);
     }
-    void* pComp = FUN_141442860((void*)&MS2ActorManager::ms_RTTI, FUN_1414400d0());
+    void* pComp = FUN_141442860((void*)&MS2ActorManager::ms_RTTI, GetActorManager());
     if (pComp != 0)
-        FUN_140d821f0(pComp);
+        FlushPendingSequenceData(pComp);
     if (m_spEntity.operator egf::Entity*() != 0) {
         FUN_141203e60(this);
         if (DAT_143ae2b30 != 0)
@@ -372,7 +372,7 @@ int CKfmModel::vfunc_6()
         void* pActorMgr = FUN_1413f9b70(((egf::Entity*)(void const*)(m_spEntity.operator->()))->GetEntityID());
         if (pActorMgr != 0) {
             if (DAT_143ae2b30 != 0) {
-                AnimationCallbackManager::GetInstance()->FUN_14099bb80((NiActorManager*)pActorMgr, static_cast<NiActorManager::CallbackObject*>(this));
+                AnimationCallbackManager::GetInstance()->SetCallbackObject((NiActorManager*)pActorMgr, static_cast<NiActorManager::CallbackObject*>(this));
             } else {
                 ((NiActorManager*)pActorMgr)->SetCallbackObject(0);
                 ((NiActorManager*)pActorMgr)->ClearAllRegisteredCallbacks();
@@ -411,7 +411,7 @@ int CKfmModel::vfunc_6()
         efd::utf8string kIdle("Idle_A");
         CString strA("");
         CString strB("");
-        FUN_141440380(strB, strA, kIdle, 1.0f, false);
+        PlayAnimationWithFallback(strB, strA, kIdle, 1.0f, false);
     }
     return 1;
 }
@@ -428,7 +428,7 @@ int CKfmModel::vfunc_7()
 int CKfmModel::vfunc_33()
 {
     m_bPhysicsLoaded = 1;
-    m_pPhysics = FUN_141209640(this);
+    m_pPhysics = CreateForceApplier(this);
     vfunc_31();
     return 1;
 }
@@ -445,7 +445,7 @@ int CKfmModel::vfunc_8() { return 1; }
 // @0x14143e1b0
 int CKfmModel::vfunc_9()
 {
-    if (!((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(m_spEntity.operator egf::Entity*()))
+    if (!((class CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_spEntity.operator egf::Entity*()))
         return m_nState;
     return m_nState != 0 && m_bPhysicsLoaded != 0;
 }
@@ -456,25 +456,25 @@ void CKfmModel::vfunc_10()
     m_nUpdateHR = (vfunc_9() == 0);
     if (m_nUpdateHR != 0)
         return;
-    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->FUN_1411dc7f0()))->FUN_14053cfd0()) {
+    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItemData()))->FUN_14053cfd0()) {
         {
             CString s("HR:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR0:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR1:1");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 1));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, GetPartScale((class CEquipModel*)(this), 1));
         }
     }
 }
 
 class CItem;
    // CEquipItem::GetItem
-// (Unk_KfmColor was a view of NiColor; its FUN_1414424f0 is efd::Color::operator*(float) const 0x1414424f0)
+// (Unk_KfmColor was a view of NiColor; its ScalePoint3 is efd::Color::operator*(float) const 0x1414424f0)
 //
 //
 //
@@ -507,7 +507,7 @@ void CKfmModel::vfunc_11()
                 FUN_141b6f000((class NiAVObject*)(sp.operator NiAVObject*()), i, *(struct Unk_Colc const*)(&kColor));
         }
     }
-    Unk_ModelActor* p = (Unk_ModelActor*)FUN_141200820((class CEquipModel*)(this));
+    Unk_ModelActor* p = (Unk_ModelActor*)GetOwnerPC((class CEquipModel*)(this));
     if (p != 0)
         p->vfunc_139();
 }
@@ -517,13 +517,13 @@ class CItemData;
    // the part name (by value)
 void CKfmModel::vfunc_12()
 {
-    MS2Ptr<CItemData> spItem((CItemData*)FUN_1412009d0((class CEquipModel*)(this)));
+    MS2Ptr<CItemData> spItem((CItemData*)GetItemData((class CEquipModel*)(this)));
     if (spItem == 0)
         return;
-    const CString& strName = ((CEquipModel*)this)->FUN_1412029d0();
+    const CString& strName = ((CEquipModel*)this)->GetPartName();
     if (strName.IsEmpty())
         return;
-    FUN_141202ea0(this, (CString*)&strName);
+    CreateAttachNode(this, (CString*)&strName);
     if (m_spNode.operator==((NiNode*)0) != 0)
         return;
     std::set<NiAVObjectPtr> kSet;
@@ -554,14 +554,14 @@ void CKfmModel::vfunc_13()
     NiTransform kXf;
     kXf.MakeIdentity();
     FUN_141202280((class CEquipModel*)(this), &kXf);
-    Unk_ModelActor* pActor = (Unk_ModelActor*)FUN_141200820((class CEquipModel*)(this));
+    Unk_ModelActor* pActor = (Unk_ModelActor*)GetOwnerPC((class CEquipModel*)(this));
     if (pActor == 0)
         return;
     MS2Ptr<CItem> spItem = (reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem();
     if (spItem.operator!() != 0)
         return;
-    int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->FUN_1416561a0())->FUN_1411e99a0(spItem->FUN_140527a20(),
-                                ((CEquipModel*)this)->FUN_1412029d0(), spItem->HasSkin(),
+    int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->GetEquipment())->FUN_1411e99a0(spItem->FUN_140527a20(),
+                                ((CEquipModel*)this)->GetPartName(), spItem->HasSkin(),
                                 ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     if (nResult != 0) {
         NiNode* pTarget;
@@ -588,7 +588,7 @@ void CKfmModel::vfunc_13()
 // @0x14143ee10
 void* CKfmModel::vfunc_14()
 {
-    NiActorManager* pMgr = FUN_1414400d0();
+    NiActorManager* pMgr = GetActorManager();
     if (pMgr != 0)
         m_unk_f0.operator=(pMgr->GetNIFRoot());
     return m_unk_f0.operator NiAVObject*();
@@ -647,7 +647,7 @@ void CKfmModel::vfunc_17()
         if (pMesh != 0)
             ((NiAVObject*)pMesh)->SetAppCulled(bHide);
     }
-    FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bVisible);
+    SetCachedBoolProperty((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bVisible);
 }
 
 // @0x14143f110
@@ -661,9 +661,9 @@ void CKfmModel::vfunc_19(double fTime)
 {
     FUN_1411ffee0((class CEquipModel*)(this), fTime);
     if ((IEquipModelForceApplier*)m_pPhysics != 0) {
-        ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
+        ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(1);
         m_pPhysics->OnTick(fTime);
-        ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+        ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
     }
     if (m_nUpdateHR != 0)
         vfunc_10();
@@ -671,8 +671,8 @@ void CKfmModel::vfunc_19(double fTime)
         vfunc_11();
     if (m_b111 != 0) {
         if (vfunc_20() != 0) {
-            if (FUN_141200820((class CEquipModel*)(this)) != 0)
-                vfunc_32(((Unk_ModelActor*)FUN_141200820((class CEquipModel*)(this)))->vfunc_65());
+            if (GetOwnerPC((class CEquipModel*)(this)) != 0)
+                vfunc_32(((Unk_ModelActor*)GetOwnerPC((class CEquipModel*)(this)))->vfunc_65());
             m_b111 = false;
         }
     }
@@ -683,12 +683,12 @@ void CKfmModel::vfunc_19(double fTime)
 void CKfmModel::vfunc_32(int n)
 {
     CEquipModel::vfunc_32(n);
-    egf::EntityID kId = FUN_14143ff70();
+    egf::EntityID kId = GetEntityID();
     efd::utf8string kAnim(n != 0 ? "Attack_Idle_A" : "Idle_A");
     efd::utf8string kCur = FUN_141b6f910()->GetCurrentAnimation(kId);
     if (FUN_141b6f910()->GetAnimationIdFromName(kId, kAnim) != NiActorManager::INVALID_SEQUENCE_ID) {
         bool bSame = (kAnim == kCur);
-        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kAnim, 1.0f, bSame);
+        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->PlayAnimation(kId, kAnim, 1.0f, bSame);
     }
 }
 
@@ -698,7 +698,7 @@ void CKfmModel::vfunc_22(float f)
     m_fScale44 = f;
     if (m_spEntity.operator egf::Entity*() != 0)
         reinterpret_cast<Unk_CachedEntity*>(m_spEntity.operator->())->SetPropertyValue<float>(0x2d7cad2d, m_fScale44);
-    FUN_14143f3d0();
+    ScalePhysXJointAnchors();
 }
 
 // @0x14143f9f0
@@ -778,11 +778,11 @@ void CKfmModel::vfunc_31()
 {
     if (vfunc_9() == 0)
         return;
-    if (((class CItemData*)(void*)(FUN_1412009d0((class CEquipModel*)(this))))->FUN_14053cfd0() == 0)
+    if (((class CItemData*)(void*)(GetItemData((class CEquipModel*)(this))))->FUN_14053cfd0() == 0)
         return;
     NxGroupsMask kMask;
     kMask.bits0 = 0; kMask.bits1 = 0; kMask.bits2 = 0; kMask.bits3 = 0;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()), 0, &kMask, 0);
+    ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(GetEntityID()), 0, &kMask, 0);
     if (CFG->m_bPhysics != 0)
         CPonyTailPhysXHelper::UpdateModelPhysXValues((class CEquipModel*)(this), (void const*)((char*)m_unk_20 + 0xb8));
 }
@@ -794,7 +794,7 @@ egf::EntityPtr CKfmModel::GetEntity()
 }
 
 // @0x14143ff70
-egf::EntityID CKfmModel::FUN_14143ff70()
+egf::EntityID CKfmModel::GetEntityID()
 {
     if (m_spEntity.operator egf::Entity*() != 0)
         return m_spEntity.operator->()->GetEntityID();
@@ -811,9 +811,9 @@ efd::AssetID CKfmModel::GetAssetId()
 }
 
 // @0x1414400d0
-NiActorManager* CKfmModel::FUN_1414400d0()
+NiActorManager* CKfmModel::GetActorManager()
 {
-    return FUN_141b6f910()->GetActorManager(FUN_14143ff70());
+    return FUN_141b6f910()->GetActorManager(GetEntityID());
 }
 
 // @0x141440110
@@ -844,28 +844,28 @@ void CKfmModel::SetPonyTailOffset(const CString& strBone, float x, float y, floa
 // @0x141440270
 void CKfmModel::PlaySequence(unsigned int nSeq)
 {
-    bool bEmpty = FUN_140de8ea0(FUN_141b6f910()->GetAnimationNameFromId(FUN_14143ff70(), nSeq), efd::utf8string::NullString());
+    bool bEmpty = FUN_140de8ea0(FUN_141b6f910()->GetAnimationNameFromId(GetEntityID(), nSeq), efd::utf8string::NullString());
     if (bEmpty)
-        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1411766b0(FUN_14143ff70(), nSeq, 1.0f, false);
+        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->SetTargetAnimation(GetEntityID(), nSeq, 1.0f, false);
 }
 
 // @0x141440380
-void CKfmModel::FUN_141440380(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
+void CKfmModel::PlayAnimationWithFallback(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend,
     bool b)
 {
-    const egf::EntityID& kId = FUN_14143ff70();
+    const egf::EntityID& kId = GetEntityID();
     efd::utf8string kA((const char*)FUN_1409a2360((const char*)strA, 0));
     if (FUN_141b6f910()->GetAnimationIdFromName(kId, kA) != NiActorManager::INVALID_SEQUENCE_ID) {
-        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kA, fBlend, b);
+        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->PlayAnimation(kId, kA, fBlend, b);
         return;
     }
     efd::utf8string kB = (const char*)FUN_1409a2360((const char*)strB, 0) + kDefault;
     if (FUN_141b6f910()->GetAnimationIdFromName(kId, kB) != NiActorManager::INVALID_SEQUENCE_ID) {
-        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kB, fBlend, b);
+        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->PlayAnimation(kId, kB, fBlend, b);
         return;
     }
     if (FUN_141b6f910()->GetAnimationIdFromName(kId, kDefault) != NiActorManager::INVALID_SEQUENCE_ID) {
-        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kDefault, fBlend, b);
+        static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->PlayAnimation(kId, kDefault, fBlend, b);
         return;
     } else {
         bool bFound;
@@ -875,7 +875,7 @@ void CKfmModel::FUN_141440380(const CString& strA, const CString& strB, const ef
         }
         if (bFound) {
             efd::utf8string kIdle2("Idle_A");
-            static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kIdle2, fBlend, b);
+            static_cast<Unk_KfmAnimSvc*>(FUN_141b6f910())->PlayAnimation(kId, kIdle2, fBlend, b);
         }
     }
 }
@@ -895,14 +895,14 @@ void CKfmModel::TextKeyEvent(NiActorManager*, NiActorManager::SequenceID, const 
 {
     CString strKey(kTextKey.operator const char*());
     if (strKey.Find("effect_", 0) == 0) {
-        void* pActor = efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(FUN_141200850(this)));
+        void* pActor = efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(GetOwnerObject(this)));
         NoticeMessage kReq;
         kReq.m_strName = strKey.Right(strKey.GetLength() - 7);
         kReq.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pActor));
         kReq.m_spNode.operator=((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (NiObject*)vfunc_14()));
         if (pActor != 0)
-            kReq.SetActor(((GameObject*)pActor)->FUN_14123c580());
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*(class Unk_EffectTarget*)(&kReq));
+            kReq.SetActor(((GameObject*)pActor)->GetObjectId());
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(*(class Unk_EffectTarget*)(&kReq));
     }
 }
 
@@ -943,7 +943,7 @@ void CKfmModel::ApplyAnimNames()
 void CKfmModel::FUN_141440bc0()
 {
     if (CFG->m_bPhysics == 0) return;
-    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->FUN_1411dc7f0()))->FUN_14053cfd0()) {
+    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItemData()))->FUN_14053cfd0()) {
         void* pData = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->FUN_140527870());
         if (pData != 0) {
             float fScale = ((float*)((char*)pData + 0x58))[0];
@@ -1000,17 +1000,17 @@ typedef NiPhysXPropDesc Unk_WindPropDesc;   // its joint accessors, GetJointCoun
 // };
 
 // @0x14143f3d0
-void CKfmModel::FUN_14143f3d0()
+void CKfmModel::ScalePhysXJointAnchors()
 {
     if (CFG->m_bPhysics != 0 || CFG->m_bHead != 0 || FUN_14028d470(CFG->m_fScale, 1.0f) == 0) {
-        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>((char*)TSingleton<CMainSystem>::GetInstance() + 8)->FUN_140af8310();
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>((char*)TSingleton<CMainSystem>::GetInstance() + 8)->GetServiceManager();
         ecrPhysX::PropService* pService = pServiceManager->GetSystemServiceAs<ecrPhysX::PropService>();
-        unsigned nProps = pService->GetNumProps(FUN_14143ff70());
-        NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0((class CEquipModel*)(this));
+        unsigned nProps = pService->GetNumProps(GetEntityID());
+        NiObjectNET* pNode = (NiObjectNET*)GetFirstRoot((class CEquipModel*)(this));
         if (pNode == 0)
             return;
         for (unsigned i = 0; i < nProps; ++i) {
-            NiPhysXProp* pProp = pService->GetPropAt(FUN_14143ff70(), i);
+            NiPhysXProp* pProp = pService->GetPropAt(GetEntityID(), i);
             if (pProp == 0)
                 continue;
             Unk_WindPropDesc* pDesc = (Unk_WindPropDesc*)pProp->GetSnapshot();
@@ -1049,9 +1049,9 @@ void CKfmModel::FUN_14143f3d0()
                             kDesc.localAnchor[k] = kDesc.localAnchor[k] * m_fScale44;
                         }
                     }
-                    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
+                    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(1);
                     pJoint->loadFromDesc(kDesc);
-                    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+                    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
                 }
             }
         }

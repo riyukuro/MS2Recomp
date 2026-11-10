@@ -128,11 +128,11 @@ public:
     GPUManager();                                       // 0x141375250
     virtual ~GPUManager();                              // 0x141375320
     int FUN_141375390(CStringW adapterName);
-    void FUN_1413758b0();
+    void Update();
     void FUN_1413759f0();
-    void FUN_141375a80();
-    unsigned __int64 FUN_141375c80();
-    unsigned __int64 FUN_141375c90();
+    void LogGpuMemory();
+    unsigned __int64 GetUsedMemory();
+    unsigned __int64 GetTotalMemory();
     int FUN_141375ca0();
 
     int m_type;                                         // +0x08 1 nvidia, 2 amd/ati, 3 intel

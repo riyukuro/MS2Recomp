@@ -44,7 +44,7 @@ MS2_REPLACE_METHOD(0x1413A9A50, CGuideConditionCountInDoorInstallItem, vfunc_5, 
 int CGuideConditionCountInDoorInstallItem::FUN_1413a9ac0()
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    g_143ab2a90.FUN_140a60880(4, items);
+    g_143ab2a90.GetItemsInCategory(4, items);
     int nCount = 0;
     int nInstallMask = 6;
     for (unsigned i = 0; i < items.GetCount(); i++)
@@ -98,8 +98,8 @@ int CGuideConditionFieldId::vfunc_3()
             bIn = true;
         else
             bIn = false;
-        return FUN_1413a5600(bIn);
+        return ApplyNotBool(bIn);
     }
-    return FUN_1413a5600(m_n20 == nFieldId ? true : false);
+    return ApplyNotBool(m_n20 == nFieldId ? true : false);
 }
 MS2_REPLACE_METHOD(0x1413A9D40, CGuideConditionFieldId, vfunc_3, 168, 0x1B17AC86);

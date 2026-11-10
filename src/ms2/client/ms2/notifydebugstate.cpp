@@ -72,7 +72,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();   // C3: the NotifySystem (calls cast back)
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 __int64 GetServerTime();                        // server time
-int FUN_141472bc0();                            // tick count
+int GetServerTick();                            // tick count
 
 // @0x140da1ec0
 NotifyDebugState::NotifyDebugState()
@@ -174,7 +174,7 @@ void CMyCharacter::SetExpireAndUpdateTimer(__int64 nExpire)
         {
             ATL::CTimeSpan span = CMsTime(m_nExpire) - CMsTime(nNow);
             int nMs = (int)(span.GetTotalSeconds() * 1000);
-            int nEnd = FUN_141472bc0() + nMs;
+            int nEnd = GetServerTick() + nMs;
             pInfo->FUN_1419f1200(0x5f5e117, nEnd);
         }
         else

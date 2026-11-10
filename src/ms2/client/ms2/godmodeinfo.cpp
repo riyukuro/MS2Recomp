@@ -64,7 +64,7 @@ void CGodModeInfo::FUN_141374b80(Vector3 kPos)
 }
 
 // @0x141374d10
-void CGodModeInfo::FUN_141374d10(int n)
+void CGodModeInfo::SetIndex(int n)
 {
     m_n18 = n;
     SendRequestCube();
@@ -80,7 +80,7 @@ void CGodModeInfo::FUN_141374d10(int n)
 
 // Moves the tooltip 150 units above `kPos`.
 // @0x141374d40
-void CGodModeInfo::FUN_141374d40(Vector3 kPos)
+void CGodModeInfo::SetTooltipPosition(Vector3 kPos)
 {
     if (m_spTooltip.get() != 0)
         m_spTooltip->FUN_14191aae0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 150.0f))))));

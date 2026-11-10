@@ -75,7 +75,7 @@ bool FUN_141568c20(NiRenderObject* pObject);
 bool FUN_141568c90(NiRenderObject* pObject);
 bool FUN_141567260(class NiAVObject*);   // C3: was FUN_141567260
 float FUN_14059d930(float f);                               // fabsf
-float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);       // horizontal distance
+float GetDistance2D(NiPoint3 kA, NiPoint3 kB);       // horizontal distance
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
 
 void FUN_14150cc30(MS2ShimmerSortProcessor* pProcessor, NiAVObject* pkObject);
@@ -111,7 +111,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
             float fDz = FUN_14059d930(kPlayerPos.z - kPos.z);
             if (fDz < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0xce28))->Get() * DAT_1439f8010)
             {
-                float fDist = FUN_141403f20(kPlayerPos, kPos);
+                float fDist = GetDistance2D(kPlayerPos, kPos);
                 if (fDist < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0xcdd0))->Get() * DAT_1439f8010)
                     bNear = 1;
             }

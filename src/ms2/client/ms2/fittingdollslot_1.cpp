@@ -61,13 +61,13 @@ public:
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);   // the item record of an id (install.objCode is the doll object)
 
-// The graphics options (singleton FUN_1409f7c90).
+// The graphics options (singleton GetOptimizer).
 class COptimizer   // C3: member view (coptimizer.h)
 {
 public:
     int FUN_14109a9d0();                                    // 0: the colour keys are looked up by name
 };
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 
 // The texture swap table of the fitting doll (global config, FUN_1401d31f0): the file names of the textures to swap.
 class Unk_FdTexConfig
@@ -82,8 +82,8 @@ public:
 MS2_CHECK_OFFSET(Unk_FdTexConfig, m_strGlossTo, 0x120);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-// The texture loader (FUN_140a0afd0).
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+// The texture loader (GetNifLoadingService).
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_NodeQueue
@@ -157,7 +157,7 @@ FittingDollPC::~FittingDollPC()
 
 // @0x14121b590
 // The doll of a type (0 body, 1 head, 2 other): the registered one, else a new one dressed from the item.
-FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
+FittingDollPC* GetOrCreateDoll(int nType, int nSourceId, int nItemId)
 {
     PCBase* pObject = 0;
     int nObjectId = 0;
@@ -185,8 +185,8 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
         if (!spData)
             return 0;
         pObject = new (efd::MemHint(efd::MemHint::NONE)) FittingDollPC();
-        ((FittingDollPC*)pObject)->FUN_14123c5a0(nObjectId);
-        if (((FittingDollPC*)pObject)->FUN_14121bab0(nItemId) == 0)
+        ((FittingDollPC*)pObject)->SetObjectId(nObjectId);
+        if (((FittingDollPC*)pObject)->InitFromItem(nItemId) == 0)
             return 0;
         ((FittingDollPC*)pObject)->type = nType;
         ((FittingDollPC*)pObject)->index = nSourceId;
@@ -255,7 +255,7 @@ void FUN_14121b840(int nResult)
 
 // @0x14121bab0
 // Dress the doll from the doll item: the doll's gender, model and default equipment.
-int FittingDollPC::FUN_14121bab0(int nItemId)
+int FittingDollPC::InitFromItem(int nItemId)
 {
     type = 2;
     index = 0;
@@ -270,10 +270,10 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
     if (!spData)
         return 0;
-    FUN_141658e40(spData->m_cube.m_fittingDoll.m_nGender);
+    SetGender(spData->m_cube.m_fittingDoll.m_nGender);
     CString strAnim("urn:gamebryo-animation:");
     strAnim += spData->m_cube.m_fittingDoll.m_strAsset;
-    FUN_14123bb80(strAnim);
+    SetModelPath(strAnim);
     m_colorD98[0] = FUN_141b6dea0(spData->m_cube.m_fittingDoll.m_anSkinColor[0]);
     m_colorD98[1] = FUN_141b6dea0(spData->m_cube.m_fittingDoll.m_anSkinColor[2]);
     ATL::CAtlArray<unsigned>& kItems = spData->m_cube.m_fittingDoll.m_defaultItems;
@@ -282,8 +282,8 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
         MS2Ptr<CItem> spNew(new CItem());
         if (spNew->FUN_140523c40(kItems[i], 1, 0))
         {
-            spNew->SetObjectId(FUN_14123c580());
-            FUN_141653d10(spNew);
+            spNew->SetObjectId(GetObjectId());
+            AddItemAndPreloadModels(spNew);
         }
     }
     return 1;
@@ -326,7 +326,7 @@ void FittingDollPC::vfunc_53(float f)
         PCBase* pSource = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(index));
         if (pSource != 0)
         {
-            NiAVObject* pRoot = FUN_141b6efc0(pSource->FUN_14123c410());
+            NiAVObject* pRoot = FUN_141b6efc0(pSource->GetEntity());
             NiAVObject* pNode = pRoot->GetObjectByName(parentName);
             if (pNode != 0)
             {
@@ -369,7 +369,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
     if (pRoot == 0)
         return;
     const char* pszKey = 0;
-    if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() == 0)
+    if (((class COptimizer*)GetOptimizer())->FUN_14109a9d0() == 0)
     {
         if (nSlot == 0)
             pszKey = (const char*)DAT_143ae50c8;
@@ -396,7 +396,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
                         if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseFrom)
                         {
-                            pBase->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseTo), 1));
+                            pBase->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseTo), 1));
                         }
                     }
                     NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
@@ -405,10 +405,10 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
                         if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossFrom)
                         {
-                            pGloss->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
+                            pGloss->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
                         }
                     }
-                    if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() != 0)
+                    if (((class COptimizer*)GetOptimizer())->FUN_14109a9d0() != 0)
                     {
                         switch (nSlot)
                         {
@@ -478,7 +478,7 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
         return 0xb;
     if (pPlayer->IsDead() != 0)
         return 0xb;
-    if (g_143ab2a90.FUN_140a65770(pItem) != 0)
+    if (g_143ab2a90.GetItemUseError(pItem) != 0)
         return 6;
     if (g_143ab2a90.FUN_140a63900(pItem, 0) == 0)
         return 5;
@@ -493,8 +493,8 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
         return 0xc;
     if (pItem->HasSkin() != FUN_14121c710())
         return FUN_14121c710() ? 4 : 3;
-    if (pItem->FUN_1405267d0(FUN_141658e60()) == 0)
-        return FUN_141658e60() == 0 ? 7 : 8;
+    if (pItem->FUN_1405267d0(GetGender()) == 0)
+        return GetGender() == 0 ? 7 : 8;
     return 0;
 }
 

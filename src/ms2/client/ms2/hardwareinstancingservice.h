@@ -51,7 +51,7 @@ struct Unk_HwiPending
 };
 MS2_CHECK_SIZE(Unk_HwiPending, 0x18);
 
-// An instanced entity and the EntityInstancing it was put in (FUN_1413d5710's work list).
+// An instanced entity and the EntityInstancing it was put in (BuildInstancings's work list).
 struct Unk_HwiCreated
 {
     Unk_HwiCreated(egf::Entity* pEntity, EntityInstancing* pInstancing)    // 0x1413e8a70
@@ -133,44 +133,44 @@ public:
     egf::EntityID FUN_1413d49f0(const efd::utf8string& strName, efd::AssetID& rAsset, bool bInstanced,
         NiTransform* pTransform, int nArg10, int nArg14);           // create an entity drawn by a DynamicInstancing
     MeshInstancing* FUN_1413d4b40(egf::Entity* pEntity, int nCellZ, unsigned nCapacity);
-    int FUN_1413d4fe0(EntityInstancing* pInstancing, egf::Entity* pEntity);
+    int AddEntityToInstancing(EntityInstancing* pInstancing, egf::Entity* pEntity);
     void FUN_1413d5220(egf::EntityID id);                           // drop the instancing of an entity
     void FUN_1413d5660();
-    void FUN_1413d5710();                                           // build the instancings of the current map
+    void BuildInstancings();                                           // build the instancings of the current map
     void SetEnabled(bool bEnabled);
     int HasInstancings();
-    MeshInstancing* FUN_1413d66b0(egf::Entity* pEntity);
+    MeshInstancing* FindInstancingByEntity(egf::Entity* pEntity);
     MeshInstancing* FindInstancingByConfig(const Unk_MeshInstancingConfig& rConfig);
     NiNode* GetInstancedNode(egf::Entity* pEntity);
     int FUN_1413d6890(egf::Entity* pEntity);                       // is the entity excluded
     int FUN_1413d68d0(egf::Entity* pEntity);
     bool AllExcludedVisited();
-    void FUN_1413d69b0(const egf::EntityID& id);
+    void MarkExcludedVisited(const egf::EntityID& id);
     void FUN_1413d6ab0(bool bShow);
     static bool FUN_1413d6b60(egf::Entity* pEntity);                       // can the entity be instanced
-    static bool FUN_1413d6c70(egf::Entity* pEntity);                       // has a mesh with a hardware skin modifier
+    static bool HasHardwareSkinnedMesh(egf::Entity* pEntity);                       // has a mesh with a hardware skin modifier
     void FUN_1413d6db0();
     int FUN_1413d6e60(egf::Entity* pEntity, bool bFlag);
     int FUN_1413d6f40(egf::Entity* pEntity);
     int FUN_1413d6fc0(egf::Entity* pEntity);
-    void FUN_1413d7040(bool bVisible);
+    void SetInstancingsVisible(bool bVisible);
     Unk_InstanceIdList FUN_1413d7160(egf::Entity* pEntity);         // the nearby entities the entity's bound reaches
     bool FUN_1413d7360();
-    void FUN_1413d73a0(unsigned nMap);                              // unload a map
-    void FUN_1413d7570(const ecr::SceneGraphAddedMessage* pMsg, efd::Category targetChannel);
+    void ClearMap(unsigned nMap);                              // unload a map
+    void OnSceneGraphAdded(const ecr::SceneGraphAddedMessage* pMsg, efd::Category targetChannel);
     void FUN_1413d7710(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
     void FUN_1413d7800(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8196 updated
     void FUN_1413d78e0(egf::Entity* pEntity);
     void FUN_1413d7d10(const egf::EntityID& id);                    // exclude an entity
     int FUN_1413d7d90(const egf::EntityID& id);
-    int FUN_1413d7e30();
-    void FUN_1413d7e70(int nCellSize);
-    unsigned FUN_1413d7eb0();
+    int GetCellSize();
+    void SetCellSize(int nCellSize);
+    unsigned GetInstancingCount();
     MeshInstancing* FUN_1413d7ef0(int nIndex, bool bOnly);
     MeshInstancing* FUN_1413d80f0(egf::Entity* pEntity);
     void FUN_1413d83f0(egf::Entity* pEntity);
     bool IsEnabled();
-    bool FUN_1413d84e0(egf::Entity* pEntity, NiTransform* pTransform, int nArg10, int nArg14);
+    bool CreateDynamicInstancing(egf::Entity* pEntity, NiTransform* pTransform, int nArg10, int nArg14);
 
     bool m_bEnabled;                                                // +0x34
     bool m_bReady;                                                  // +0x35

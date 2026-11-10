@@ -13,10 +13,10 @@ DynamicInstancing::DynamicInstancing(const Unk_MeshInstancingConfig& config) : M
 // @0x1411942e0
 DynamicInstancing::~DynamicInstancing() { vfunc_1(); }
 // @0x141194330
-bool DynamicInstancing::FUN_141194330(egf::Entity* entity, unsigned count, unsigned flags, NiTransform* transform) {
+bool DynamicInstancing::AddEntity(egf::Entity* entity, unsigned count, unsigned flags, NiTransform* transform) {
     NiAVObject* original = FUN_141b6efc0(entity);
     if (original != NULL) {
-        FUN_14147c010(entity, count, flags, transform, false);
+        Init(entity, count, flags, transform, false);
         entries[entity->GetEntityID()].entity = entity;
         entries[entity->GetEntityID()].clone = NULL;
         entries[entity->GetEntityID()].original = NiDynamicCast(NiNode, original);
@@ -24,4 +24,4 @@ bool DynamicInstancing::FUN_141194330(egf::Entity* entity, unsigned count, unsig
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141194330, DynamicInstancing, FUN_141194330, 256, 0x845091AC);
+MS2_REPLACE_METHOD(0x141194330, DynamicInstancing, AddEntity, 256, 0x845091AC);

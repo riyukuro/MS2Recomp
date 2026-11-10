@@ -69,8 +69,8 @@ public:
     int m_n64;
 };
 
-// MS2Ptr<Unk_StateArg22> argument of slots 22/28 (a state request): +0x1c state sub id, +0x64 emotion id.
-class Unk_StateArg22 : public CPtred
+// MS2Ptr<StateSyncObject> argument of slots 22/28 (a state request): +0x1c state sub id, +0x64 emotion id.
+class StateSyncObject : public CPtred
 {
 public:
     char m_pad_18[4];
@@ -78,7 +78,7 @@ public:
     char m_pad_20[0x44];
     int m_n64;
 };
-MS2_CHECK_OFFSET(Unk_StateArg22, m_n64, 0x64);
+MS2_CHECK_OFFSET(StateSyncObject, m_n64, 0x64);
 
 MS2_CHECK_OFFSET(SkillData, m_nOffsetNameTag, 0x30);   // C3: the emotion skill row read below (was the row view Unk_EmoRow)
 
@@ -211,7 +211,7 @@ void StateEmotion::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (reinterpret_cast<PC*>(pPC)->FUN_14165f100())
+        if (reinterpret_cast<PC*>(pPC)->GetHeldItem())
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
     }
     m_spData2.AssignRaw(dynamic_cast<StateEmotionData*>(pData));
@@ -232,7 +232,7 @@ void StateEmotion::vfunc_4(StateData* pData)
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ef10(m_strAnim, 1, 0, false);
         FUN_1417b92a0();
         m_strLoop.Empty();
-        if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strLoop, 0))
+        if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, m_strLoop, 0))
         {
             efd::utf8string kName(m_strLoop);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
@@ -252,7 +252,7 @@ void StateEmotion::vfunc_5(int n)
 }
 
 // @0x1417c3d30
-int StateEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateEmotion::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0 || m_spData2 == 0)
         return 0;
@@ -276,11 +276,11 @@ void StateEmotion::vfunc_8(double fTime)
     }
     else if (pBuff->FUN_141683100(0x30d41))
     {
-        pPC->FUN_1415248d0(1, 0);
+        pPC->TryUseChairOrBed(1, 0);
     }
     else if (pBuff->FUN_141683100(0x30d42))
     {
-        pPC->FUN_1415248d0(2, 0);
+        pPC->TryUseChairOrBed(2, 0);
     }
     else if (reinterpret_cast<PCBase*>(pPC)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
     {
@@ -305,7 +305,7 @@ void StateEmotion::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523bc0())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -325,7 +325,7 @@ void StateEmotion::vfunc_3(double fTime)
 void StateEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strLoop, 1))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, m_strLoop, 1))
     {
         m_pOwner->vfunc_59(0xf, new StateEmotionIdleData(m_spData2->m_nEmotion), 0, 0);
     }
@@ -336,7 +336,7 @@ void StateEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
 }
 
 // @0x1417c4270
-bool StateEmotion::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateEmotion::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     if (m_spData2 == 0)
         return true;
@@ -387,7 +387,7 @@ void StateTriggerEmotion::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (reinterpret_cast<PC*>(pPC)->FUN_14165f100())
+        if (reinterpret_cast<PC*>(pPC)->GetHeldItem())
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
     }
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->RemoveAll();
@@ -501,7 +501,7 @@ void StateTriggerFollowNpc::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC)
     {
-        if (reinterpret_cast<PC*>(pPC)->FUN_14165f100())
+        if (reinterpret_cast<PC*>(pPC)->GetHeldItem())
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
     }
     m_spData2.AssignRaw(dynamic_cast<StateDataTriggerFollowNpc*>(pData));
@@ -547,7 +547,7 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
             }
             else
             {
-                NiPointer<NiActorManager> spMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_FNAnimSvc*>(FUN_141b6f910()))->GetActorManager(pActor->FUN_14123c460());
+                NiPointer<NiActorManager> spMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_FNAnimSvc*>(FUN_141b6f910()))->GetActorManager(pActor->GetEntityID());
                 if (spMgr)
                 {
                     NiSequenceData* pSeq = spMgr->GetSequenceData(m_nAnim);
@@ -678,7 +678,7 @@ void StateEmotionIdle::vfunc_4(StateData* pData)
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)spRow.operator->()->m_nOffsetNameTag);
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)spRow.operator->()->m_nOffsetNameTag);
         m_strNext.Empty();
-        if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strNext, 1))
+        if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, m_strNext, 1))
         {
             efd::utf8string kName(m_strNext);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
@@ -696,7 +696,7 @@ void StateEmotionIdle::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523bc0())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -732,7 +732,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
         {
-            if (((void*)(reinterpret_cast<PCBase*>(pPC)->FUN_1416764a0())) != 0)
+            if (((void*)(reinterpret_cast<PCBase*>(pPC)->GetRidee())) != 0)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = 1;
@@ -748,13 +748,13 @@ void StateEmotionIdle::vfunc_8(double fTime)
             }
             else
             {
-                pPC->FUN_1415248d0(1, 0);
+                pPC->TryUseChairOrBed(1, 0);
             }
         }
     }
     else if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
     {
-        pPC->FUN_1415248d0(2, 0);
+        pPC->TryUseChairOrBed(2, 0);
     }
     else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
     {
@@ -782,11 +782,11 @@ void StateEmotionIdle::vfunc_8(double fTime)
         {
             unsigned nCount = 0;
             CString strTmp;
-            if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, strTmp, 2))
+            if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, strTmp, 2))
                 nCount++;
-            if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, strTmp, 3))
+            if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, strTmp, 3))
                 nCount++;
-            if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, strTmp, 4))
+            if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, strTmp, 4))
                 nCount++;
             if (nCount != 0)
             {
@@ -821,7 +821,7 @@ void StateEmotionIdle::vfunc_9(double fTime)
         nKind = 4;
         break;
     }
-    if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strNext, nKind))
+    if (reinterpret_cast<PCBase*>(m_pOwner)->GetEmotionAnimation((void*)&m_strAnim, m_strNext, nKind))
     {
         efd::utf8string kName(m_strNext);
         static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, false, false);
@@ -840,7 +840,7 @@ void StateEmotionIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSe
 }
 
 // @0x1417c6990
-int StateEmotionIdle::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateEmotionIdle::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
         return 0;

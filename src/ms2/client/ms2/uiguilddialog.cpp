@@ -175,7 +175,7 @@ void FUN_140d011c0(MS2Ptr<ASLoader> spLoader, CStringW strUrl, bool bFlag);     
 CStringW FUN_140298ea0(CStringW strKey);                        // a string table text
 CStringW FUN_140763e10(int nValue);                             // a money amount
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // a string table text
-class Unk_GuildGameEventMgr { public: int FUN_1413cdf60(); };   // the bonus rate scale (10000)
+class Unk_GuildGameEventMgr { public: int GetBonusRateScale(); };   // the bonus rate scale (10000)
 extern __int64 DAT_143ab2898;                                   // the money
 unsigned __int64 FUN_140718350(const CString& str);                // _atoi64-style id parse
 unsigned __int64 FUN_140718370(const CStringW& str);               // _wtoi64-style id parse
@@ -202,7 +202,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // split
 bool FUN_14028d780(unsigned char c);                                   // c != 0
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);      // set a Boolean value
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);       // set an Int value
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);     // set a Number value
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);   // set a String value
@@ -211,7 +211,7 @@ void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);   // set 
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
 void FUN_14151f200();                                           // close the message box on top
 void FUN_140710590(COutPacket& packet);                         // send
-void FUN_14141f970(const CString& strName);                     // drop the item slots registered under a name
+void DestroyItemSlotBag(const CString& strName);                     // drop the item slots registered under a name
 CString FUN_141029590(unsigned __int64 nGuildId, const CString& strMark, const CString& a3, CString a4);   // the mark image path
 CString FUN_140719530(unsigned __int64 n);                      // "%I64u"
 CStringW BlockFormat(int nStringId);                            // a system text
@@ -229,12 +229,12 @@ template <class T> T* Unk_GetUI(int nUiType);
 struct Unk_GdConfig { char m_pad[8]; CContentShutdown m_flags; };
 struct Unk_BanConfig* FUN_14025e7b0();                          // global client config
 MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);   // wrap an AS object
-void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked-action notice
+void ShowBlockNotice(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked-action notice
 // The guild storage items (CGuildStorage::f18, opaque in guilddef_1.h): std::map<(item id, rank), ItemEntity> (see
 // CGuildStorage::FUN_1404cc210, which builds the key from vfunc_o18_0 / vfunc_o18_1).
 typedef std::map<std::pair<int, int>, ItemEntity> Unk_GdStorageItems;
 void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<ItemSlotBag::CreateParam> spParam);   // register an item slot bag (C3: the definer's void* items)
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);          // ItemSlotBag: the item at an index of a CAtlArray<MS2Ptr<CItem>>
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);          // ItemSlotBag: the item at an index of a CAtlArray<MS2Ptr<CItem>>
 // The guild storage history (CGuildStorage::f38, opaque in guilddef_1.h; guildmanager.cpp clears it as this deque).
 typedef std::deque<MS2Ptr<CGuildStorage::CGuildStroageHistory> > Unk_GdStorageHistory;
 __int64 DaysToSeconds64(int nDays);                             // days -> seconds
@@ -302,7 +302,7 @@ void UIGuildDialog::vfunc_67()
         m_storagePage->Invoke("ClosePopup");
     UIDialog::vfunc_67();
     m_bMarksPending = false;
-    CGuildManager::GetInstance()->FUN_1413c7ed0();
+    CGuildManager::GetInstance()->ClearSearchResults();
     UIStatusEventDispatcher::GetInstance()->FUN_141b0cd90(this);
 }
 
@@ -341,7 +341,7 @@ void UIGuildDialog::vfunc_72()
 void UIGuildDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_14141f970(m_strStorageName);
+    DestroyItemSlotBag(m_strStorageName);
     PacketHandlerManager::GetInstance()->UnregisterHandler(0x8a, Delegate<void(CInPacket&)>(this, &UIGuildDialog::FUN_141968140));
     m_1b0.clear();
     m_1c0.clear();
@@ -374,7 +374,7 @@ void UIGuildDialog::OnLoadComplete()
     if (m_30.get())
     {
         FUN_141974ce0();
-        if (CGuildManager::GetInstance()->FUN_1413b6160())
+        if (CGuildManager::GetInstance()->IsInGuild())
         {
             if (MS2Ptr<ASButtonBar> spCategory = GetChild<ASButtonBar>("m_category"))
             {
@@ -392,7 +392,7 @@ void UIGuildDialog::OnLoadComplete()
         {
             if (MS2Ptr<ASMovieClip> spIcon = m_30->FUN_1409b4560("m_championshipIcon"))
             {
-                if (CGameRule::GetInstance()->IsGuildChampionshipOpen() && CGuildManager::GetInstance()->FUN_1413b6160())
+                if (CGameRule::GetInstance()->IsGuildChampionshipOpen() && CGuildManager::GetInstance()->IsInGuild())
                     spIcon->vfunc_3(1);
                 else
                     spIcon->vfunc_3(0);
@@ -512,7 +512,7 @@ void UIGuildDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
             int nNeed = nNextExp - nPrevExp;
             int nHave = nExp - nPrevExp;
             CStringW strText;
-            float fBonus = 1.0f + (float)(unsigned)reinterpret_cast<CGameEventValueGuildExp*>(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp())->GetRate() / (float)reinterpret_cast<Unk_GuildGameEventMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1413cdf60();
+            float fBonus = 1.0f + (float)(unsigned)reinterpret_cast<CGameEventValueGuildExp*>(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp())->GetRate() / (float)reinterpret_cast<Unk_GuildGameEventMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->GetBonusRateScale();
             if (fBonus > 1.0f)
             {
                 CStringW strBonus;
@@ -737,7 +737,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             BlockPtr spBlock = CBlockManager::GetInstance()->FindBlockedAction(nAction);
             if (spBlock.get() != 0)
             {
-                FUN_140a2ff20(spBlock, nAction, 0);
+                ShowBlockNotice(spBlock, nAction, 0);
                 return 0;
             }
         }
@@ -1321,7 +1321,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
             if (pMenu != 0)
             {
-                MS2Ptr<CSearchGuildJoin> spGuild = CGuildManager::GetInstance()->FUN_1413c7dc0(strName);
+                MS2Ptr<CSearchGuildJoin> spGuild = CGuildManager::GetInstance()->FindSearchResultByName(strName);
                 __int64 nMasterId = 0;
                 __int64 nMasterAccount = 0;
                 __int64 nGuildId = 0;
@@ -1390,7 +1390,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             {
                 Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 0, CString(""), 0);
                 __int64 nAccount = 0;
-                MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1413b6200(nCharId);
+                MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FindMemberByCharacterId(nCharId);
                 if (spMember.get() != 0)
                     nAccount = spMember->data.f00;
                 pMenu->CopyOwnGuild();
@@ -1721,7 +1721,7 @@ void UIGuildDialog::SetupCategory()
     bool bHasGuild = false;
     if (CGameRule::GetInstance()->IsGuildChampionshipOpen())
     {
-        if (CGuildManager::GetInstance()->FUN_1413b6160() != 0)
+        if (CGuildManager::GetInstance()->IsInGuild() != 0)
             bHasGuild = true;
     }
     m_30->Invoke("setupCategory", bHasGuild);
@@ -1732,7 +1732,7 @@ void UIGuildDialog::ShowGuildDialog()
 {
     if (m_30.IsNull())
         return;
-    if (CGuildManager::GetInstance()->FUN_1413b6160() != 0)
+    if (CGuildManager::GetInstance()->IsInGuild() != 0)
         m_30->Invoke("showGuildDialog", 1);
     else
         m_30->Invoke("showGuildDialog", 0);
@@ -1772,10 +1772,10 @@ void UIGuildDialog::FUN_14196b620()
         int nTrophy = CGuildManager::GetInstance()->FUN_1404d0c00();
         int nItemLevel = CGuildManager::GetInstance()->FUN_1404d0df0();
         int nCharLevel = CGuildManager::GetInstance()->FUN_1404d0d00();
-        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildNameText", strName);
-        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_createdDayText", strCreated);
-        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildMemberCountText", strCount);
-        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildNotifyText", strNotify);
+        SetChildText((*m_infoPage).FUN_1422bb890(), "m_guildNameText", strName);
+        SetChildText((*m_infoPage).FUN_1422bb890(), "m_createdDayText", strCreated);
+        SetChildText((*m_infoPage).FUN_1422bb890(), "m_guildMemberCountText", strCount);
+        SetChildText((*m_infoPage).FUN_1422bb890(), "m_guildNotifyText", strNotify);
         {
             MS2Ptr<ASMovieClip> spTrophy = m_infoPage->FUN_1409b4560("m_totalTrophy");
             MS2Ptr<ASMovieClip> spItemLevel = m_infoPage->FUN_1409b4560("m_totalItemLevel");
@@ -1786,7 +1786,7 @@ void UIGuildDialog::FUN_14196b620()
                 MS2Ptr<ASMovieClip> spIcon = spTrophy->FUN_1409b4560("m_totalIcon");
                 if (spIcon.get() != 0)
                     spIcon->vfunc_15("trophy");
-                FUN_140cfee80((*spTrophy).FUN_1422bb890(), "m_totalText", strTotal);
+                SetChildText((*spTrophy).FUN_1422bb890(), "m_totalText", strTotal);
             }
             if (spItemLevel.get() != 0)
             {
@@ -1794,7 +1794,7 @@ void UIGuildDialog::FUN_14196b620()
                 MS2Ptr<ASMovieClip> spIcon = spItemLevel->FUN_1409b4560("m_totalIcon");
                 if (spIcon.get() != 0)
                     spIcon->vfunc_15("itemLevel");
-                FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "m_totalText", strTotal);
+                SetChildText((*spItemLevel).FUN_1422bb890(), "m_totalText", strTotal);
             }
             if (spCharLevel.get() != 0)
             {
@@ -1802,7 +1802,7 @@ void UIGuildDialog::FUN_14196b620()
                 MS2Ptr<ASMovieClip> spIcon = spCharLevel->FUN_1409b4560("m_totalIcon");
                 if (spIcon.get() != 0)
                     spIcon->vfunc_15("charLevel");
-                FUN_140cfee80((*spCharLevel).FUN_1422bb890(), "m_totalText", strTotal);
+                SetChildText((*spCharLevel).FUN_1422bb890(), "m_totalText", strTotal);
             }
         }
         SetGuildExpEvent(IsGuildExpEventRunning());
@@ -1842,7 +1842,7 @@ void UIGuildDialog::FUN_14196c1d0()
     int nLose = CGuildManager::GetInstance()->GetLoseCount();
     int nTotal = nWin + nLose;
     CStringW strResult = FUN_14028dee0<int, int, int>(0x3ee, nTotal, nWin, nLose);
-    FUN_140cfee80((*m_championshipPage).FUN_1422bb890(), "m_seasonResult", strResult);
+    SetChildText((*m_championshipPage).FUN_1422bb890(), "m_seasonResult", strResult);
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
@@ -1931,7 +1931,7 @@ void UIGuildDialog::FUN_14196d0c0(int nPage)
         m_nSearchPage = nPage;
     ASArray arrGuilds(2);
     ATL::CAtlArray<MS2Ptr<CSearchGuildJoin>> arrResults;
-    CGuildManager::GetInstance()->FUN_1413c7d40(arrResults);
+    CGuildManager::GetInstance()->GetSearchResults(arrResults);
     size_t nStart = (m_nSearchPage - 1) * 9;
     if (arrResults.GetCount() <= nStart)
     {
@@ -2090,8 +2090,8 @@ void UIGuildDialog::FUN_14196e2c0()
         m_infoPage->Invoke("setGuildFund", strFund);
     if (m_skillPage.get() != 0)
     {
-        FUN_140cfee80((*m_skillPage).FUN_1422bb890(), "m_guildFund", FUN_140763e10(nFund));
-        FUN_140cfee80((*m_skillPage).FUN_1422bb890(), "m_guildEventFund", FUN_140763e10(nEventFund));
+        SetChildText((*m_skillPage).FUN_1422bb890(), "m_guildFund", FUN_140763e10(nFund));
+        SetChildText((*m_skillPage).FUN_1422bb890(), "m_guildEventFund", FUN_140763e10(nEventFund));
         m_skillPage->Invoke("onChangedFund", nFund);
     }
 }
@@ -2165,7 +2165,7 @@ void UIGuildDialog::UpdateAttendBackground()
     MS2Ptr<ASMovieClip> spAttend = GetChild<ASMovieClip>("m_attendBG");
     if (spAttend == NULL)
         return;
-    bool bAttend = CGuildManager::GetInstance()->FUN_1413b8460();
+    bool bAttend = CGuildManager::GetInstance()->CanAttend();
     spAttend->vfunc_4(bAttend);
 }
 
@@ -2177,8 +2177,8 @@ void UIGuildDialog::FUN_14196e590()
     m_1b0.clear();
     int nFund = CGuildManager::GetInstance()->GetFund();
     int nEventFund = CGuildManager::GetInstance()->GetEventFund();
-    FUN_140cfee80((*m_skillPage).FUN_1422bb890(), "m_guildFund", FUN_140763e10(nFund));
-    FUN_140cfee80((*m_skillPage).FUN_1422bb890(), "m_guildEventFund", FUN_140763e10(nEventFund));
+    SetChildText((*m_skillPage).FUN_1422bb890(), "m_guildFund", FUN_140763e10(nFund));
+    SetChildText((*m_skillPage).FUN_1422bb890(), "m_guildEventFund", FUN_140763e10(nEventFund));
     bool bMaster = FUN_14028d780(CGuildManager::GetInstance()->IsMaster(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30()));
     ASArray arrSkill(2);
     ASArray arrActive(2);
@@ -2257,7 +2257,7 @@ void UIGuildDialog::FUN_14196e590()
             fRate = (float)nElapsed / (float)nDuration;
         objSkill.FUN_1407cb9c0("remainCoolSec", nRemainCool);
         objSkill.FUN_1407cb9c0("remainDurationSec", nRemainDuration);
-        objSkill.FUN_1409c4a30("rate", fRate);
+        objSkill.SetMemberFloat("rate", fRate);
         arrSkill.PushValue(objSkill.FUN_1422bb870());
         if (nRemainCool > 0 || nRemainDuration > 0)
             m_1b0.insert(spSkill->f18);
@@ -2285,7 +2285,7 @@ void UIGuildDialog::FUN_14196f830()
         return;
     m_1c0.clear();
     __int64 nMoney = DAT_143ab2898;
-    FUN_140cfee80((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0(nMoney));
+    SetChildText((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0(nMoney));
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
@@ -2362,7 +2362,7 @@ void UIGuildDialog::FUN_14196f830()
             fRate = (float)nElapsed / (float)nDuration;
         objSkill.FUN_1407cb9c0("remainCoolSec", nRemainCool);
         objSkill.FUN_1407cb9c0("remainDurationSec", nRemainDuration);
-        objSkill.FUN_1409c4a30("rate", fRate);
+        objSkill.SetMemberFloat("rate", fRate);
         arrSkill.PushValue(objSkill.FUN_1422bb870());
         if (nRemainDuration > 0)
             m_1c0.insert(nId);
@@ -2430,8 +2430,8 @@ void UIGuildDialog::FUN_141970f00()
 {
     if (m_eventVsGame == NULL)
         return;
-    FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_eventName", FUN_140298ea0(L"s_guild_ui_vsGame_title"));
-    FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_maxUserCount", FUN_140298ea0(L"s_guild_ui_vsGame_userCount"));
+    SetChildText((*m_eventVsGame).FUN_1422bb890(), "m_eventName", FUN_140298ea0(L"s_guild_ui_vsGame_title"));
+    SetChildText((*m_eventVsGame).FUN_1422bb890(), "m_maxUserCount", FUN_140298ea0(L"s_guild_ui_vsGame_userCount"));
     MS2Ptr<ASTextField> spName = m_eventVsGame->FUN_1409b4620("m_eventName");
     if (spName.get() != 0)
     {
@@ -2442,9 +2442,9 @@ void UIGuildDialog::FUN_141970f00()
             spInfo->SetXUInt(nRight);
     }
     if (CFeatureManager::GetInstance()->FUN_14036d570(0x78))
-        FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_eventDesc", FUN_140298ea0(L"s_guild_ui_vsGame_description"));
+        SetChildText((*m_eventVsGame).FUN_1422bb890(), "m_eventDesc", FUN_140298ea0(L"s_guild_ui_vsGame_description"));
     else
-        FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_eventDesc", FUN_140298ea0(L"s_guild_ui_vsGame_description_close"));
+        SetChildText((*m_eventVsGame).FUN_1422bb890(), "m_eventDesc", FUN_140298ea0(L"s_guild_ui_vsGame_description_close"));
     FUN_140d011c0(m_eventLoader, L"./Data/Resource/Image/Map/GuildEvent/00000001.png", true);
     FUN_1419761f0();
 }
@@ -2583,7 +2583,7 @@ void UIGuildDialog::FUN_1419758a0()
         objSkill.FUN_1407cb9c0("id", *it);
         objSkill.FUN_1407cb9c0("remainCoolSec", nRemainCool);
         objSkill.FUN_1407cb9c0("remainDurationSec", nRemainDuration);
-        objSkill.FUN_1409c4a30("rate", fRate);
+        objSkill.SetMemberFloat("rate", fRate);
         arrSkill.PushValue(objSkill.FUN_1422bb870());
         if (nRemainCool == 0 && nRemainDuration == 0)
         {
@@ -2627,7 +2627,7 @@ void UIGuildDialog::FUN_141975c80()
         objSkill.FUN_1407cb9c0("id", *it);
         objSkill.FUN_1407cb9c0("remainCoolSec", nRemainCool);
         objSkill.FUN_1407cb9c0("remainDurationSec", nRemainDuration);
-        objSkill.FUN_1409c4a30("rate", fRate);
+        objSkill.SetMemberFloat("rate", fRate);
         arrSkill.PushValue(objSkill.FUN_1422bb870());
         if (nRemainDuration == 0)
         {
@@ -2658,9 +2658,9 @@ void UIGuildDialog::FUN_141972520()
             arrItems.Add(spItem);
         }
     }
-    FUN_14141f970(m_strStorageName);
+    DestroyItemSlotBag(m_strStorageName);
     MS2Ptr<ItemSlotBag::CreateParam> spParam(new ItemSlotBag::CreateParam());
-    spParam->m_pfnGetItem = FUN_141420330;
+    spParam->m_pfnGetItem = GetItemFromArray;
     spParam->m_nIconType = 0xc15;
     spParam->m_nFlags = 0x800;
     // The slot callback is a Delegate<void(ItemInfoSlot&, ASSlot&)> handle at +0x28 (iteminfoslot.h types it as a
@@ -2728,7 +2728,7 @@ void UIGuildDialog::FUN_141972fc0()
     if (spInfo == NULL)
         return;
     CStringW strScore = FUN_14028dfa0<int, int>(L"s_guild_raid_info_score", nScore, nTotal);
-    FUN_140cfee80((*spInfo).FUN_1422bb890(), "m_scoreText", strScore);
+    SetChildText((*spInfo).FUN_1422bb890(), "m_scoreText", strScore);
 }
 
 // @0x141973b20
@@ -3055,7 +3055,7 @@ bool UIGuildDialog::FUN_1419751e0()
         if (MS2Ptr<ASTextArea> spContent = spMail->FUN_140accef0<ASTextArea>("m_content"))
             strContent = spContent->GetText();
     }
-    if (CGuildManager::GetInstance()->FUN_1413bbc10(strTitle, strContent))
+    if (CGuildManager::GetInstance()->SendGuildMail(strTitle, strContent))
         m_30->Invoke("closeSendMailPopup");
     return true;
 }
@@ -3228,7 +3228,7 @@ void UIGuildDialog::vfunc_oa0_11(void* a1)
         return;
     if (m_skillPage2 == NULL)
         return;
-    FUN_140cfee80((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0((__int64)a1));
+    SetChildText((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0((__int64)a1));
 }
 
 // @0x141976b60 (thread: fetch the pvp history guilds' marks)
@@ -3523,8 +3523,8 @@ int FUN_1419771b0(ASObj& obj, const MS2Ptr<CGuildMember>& spMember)
     obj.FUN_1409c48f0("level", pData->f1c);
     obj.FUN_1407cb9c0("jobCode", pData->f18);
     obj.FUN_1407cb9c0("contribution", spMember->fe8);
-    obj.FUN_1409c0d20("totalContribution", spMember->fec);
-    obj.FUN_1409c0d20("itemLevel", spMember->FUN_1404cb370());
+    obj.SetMemberUInt("totalContribution", spMember->fec);
+    obj.SetMemberUInt("itemLevel", spMember->FUN_1404cb370());
     obj.FUN_1407cbb20("memo", spMember->fb8);
     obj.FUN_1407cba60("imgpath", FUN_141028be0(pData->f08, pData->FUN_1404ca980(), 1, CString("")));
     obj.FUN_1407cbbe0("master", bMaster);

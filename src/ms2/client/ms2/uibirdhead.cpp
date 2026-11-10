@@ -64,7 +64,7 @@ MS2_REPLACE_METHOD(0x1418CE800, UIBirdHead, FUN_1418ce800, 30, 0x3D58469B);
 // @0x1418ce830
 void UIBirdHead::FUN_1418ce830()
 {
-    FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
 }
 MS2_REPLACE_METHOD(0x1418CE830, UIBirdHead, FUN_1418ce830, 82, 0x099CC8F3);
 

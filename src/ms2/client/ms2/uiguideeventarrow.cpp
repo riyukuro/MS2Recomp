@@ -62,7 +62,7 @@ static CString s_stun("stun");
 #include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static egf::EntityID s_pointer(0);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
-class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Vector3&); };
+class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void PlayVoiceAt(CString,const Vector3&); };
 int FUN_1412755a0();
 int FUN_141276180(const CString&,const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -200,7 +200,7 @@ class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 struct Unk_GuideLog { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -208,7 +208,7 @@ public:
     int FUN_1422b9ea0();
     int GetSubSceneId();
 };
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 
 // A display object seen through its accessors (the exe's inline/COMDAT members, bound by their FUN_ names).
 class Unk_GuideDO : public AScript {
@@ -235,11 +235,11 @@ class Unk_GuideWorld : public WorldService { };
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 class Unk_CMISHouseMark* FUN_1410dc020();   // C3: was FUN_1410dc020
 void* FUN_1413b1c60(const CString&);
-class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
+class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerBrowser
 class UIUGCCubePaletteDialog* FUN_140ef4a50(int);   // C3: was FUN_140ef4a50
 class Unk_GuideSceneMgr { public: virtual void vfunc_0(); virtual CString vfunc_1(); };
 class UIGameMenuDialog : public UIObject {};
@@ -249,7 +249,7 @@ void UIGuideEvent::PlayVoice(unsigned int stringId)
 {
     CString voice = GetGuideVoice(stringId);
     if (voice.GetLength() != 0)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(voice), (const NiPoint3&)DAT_143b01a60);
+        TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(voice), (const NiPoint3&)DAT_143b01a60);
 }
 
 // @0x14195c010
@@ -369,11 +369,11 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
     if (arrow->vfunc_2(&pos) == 0)
         hide = 1;
     ASObj info(2);
-    info.FUN_1409c0d20("id", arrow->m_id);
-    info.FUN_1409c0d20("align", arrow->m_align);
-    info.FUN_1409c0d20("direction", arrow->m_direction);
-    info.FUN_1409c4a30("x", pos.x);
-    info.FUN_1409c4a30("y", pos.y);
+    info.SetMemberUInt("id", arrow->m_id);
+    info.SetMemberUInt("align", arrow->m_align);
+    info.SetMemberUInt("direction", arrow->m_direction);
+    info.SetMemberFloat("x", pos.x);
+    info.SetMemberFloat("y", pos.y);
     info.FUN_1407cb9c0("hide", hide);
     {
         CStringW text = GetGuideText(arrow->m_textId);
@@ -480,7 +480,7 @@ void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, in
             } else if (name == L"icon") {
                 ((AScript*)GuideAS(m_summary))->Invoke("addIcon", value);
             } else if (name == L"keyAction") {
-                if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
+                if (*((unsigned char*)GetGamepadState((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
                     int action = FUN_141389500(value, 0);
                     CStringW key = FUN_1409331f0()->GetActionKeyName(action, 2);
                     ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
@@ -491,7 +491,7 @@ void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, in
                     ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
                 }
             } else if (name == L"keyActionSub") {
-                if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
+                if (*((unsigned char*)GetGamepadState((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
                     int action = FUN_141389500(value, 0);
                     CStringW key = FUN_1409331f0()->GetActionKeyName(action, 2);
                     ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
@@ -526,9 +526,9 @@ void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
         return;
     }
     ASObj info(2);
-    info.FUN_1409c0d20("id", m_id);
-    info.FUN_1409c4a30("x", pos.x);
-    info.FUN_1409c4a30("y", pos.y);
+    info.SetMemberUInt("id", m_id);
+    info.SetMemberFloat("x", pos.x);
+    info.SetMemberFloat("y", pos.y);
     movie->Invoke("updateArrow", info);
 }
 // @0x14195dee0
@@ -568,7 +568,7 @@ int UIGuideEventArrowDialog::vfunc_2(void* out)
 {
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200041)
         return 0;
-    UIMessageBox* box = FUN_14151f890();
+    UIMessageBox* box = GetMessageBoxLayer();
     if (box != 0 && box->FUN_1419f8270() == 0)
         return 0;
     if (FUN_141960510() == 0)
@@ -727,7 +727,7 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
     *(Vector3*)out = Vector3(root.operator->()->FUN_1422c10a0(),
         root.operator->()->FUN_1422c1110(), root.operator->()->GetZ());
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    g_143ab2a90.FUN_140a60880(((UIInventoryDialog*)inv)->FUN_141999de0(), items);
+    g_143ab2a90.GetItemsInCategory(((UIInventoryDialog*)inv)->FUN_141999de0(), items);
     for (size_t i = 0; i < items.GetCount(); i++) {
         if (!reinterpret_cast<Unk_GuideItem*>(items[i].operator->())->FUN_140528980())
             continue;
@@ -783,7 +783,7 @@ unsigned UIGuideEventArrowDialog::FUN_14195f7b0(int kind)
     if (kind == 7) {
         void* actor = reinterpret_cast<Unk_GuideWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0cc0();
         if (actor != 0)
-            return ((class GameObject*)(void*)(actor))->FUN_14123c580();
+            return ((class GameObject*)(void*)(actor))->GetObjectId();
     } else if (kind == 8) {
         MS2Ptr<CPortal> portal = WorldService::GetInstance()->FUN_141bc2800(m_param);
         if (portal.get() != 0)
@@ -850,7 +850,7 @@ int UIGuideEventArrowDialog::GetPartyDialogPosition(void* out)
 // @0x14195f530  messenger
 int UIGuideEventArrowDialog::GetMessengerTargetPosition(void* out)
 {
-    UIMessengerBrowser* messenger = FUN_140a3ab70(0x4e61);
+    UIMessengerBrowser* messenger = FindMessengerBrowser(0x4e61);
     if (messenger == 0)
         return 0;
     UISwfEntity* sub = reinterpret_cast<UISwfEntity*>(messenger->FUN_141a25970());
@@ -948,7 +948,7 @@ int UIGuideEventArrowDialog::FUN_141960510()
 {
     if (m_scenes.IsEmpty())
         return 1;
-    Unk_GuideSceneMgr* scene = reinterpret_cast<Unk_GuideSceneMgr*>(FUN_140b632f0()->GetTopEntity(4));
+    Unk_GuideSceneMgr* scene = reinterpret_cast<Unk_GuideSceneMgr*>(GetUISwfEntityManager()->GetTopEntity(4));
     if (scene == 0)
         return 0;
     for (unsigned i = 0; i < m_scenes.GetCount(); i++) {

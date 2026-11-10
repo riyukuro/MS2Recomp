@@ -78,7 +78,7 @@ class CGuideManager   // C3: member view for the former free stand-ins
 public:
     int IsRestricted(int);
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -313,7 +313,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
     int bHold = 1;
     if (((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->IsRestricted(2) != 0)
         bTalk = 0;
-    if (((class UITalkManager*)(void*)(FUN_140967100()))->IsTalkIntervalElapsed() == 0)
+    if (((class UITalkManager*)(void*)(GetUITalkManager()))->IsTalkIntervalElapsed() == 0)
         bTalk = 0;
     if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->GetCurStateId() == 0x20)
         bHold = 0;
@@ -354,9 +354,9 @@ int CMouseInteractPortal::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<CPortal> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_14169d2f0());
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->GetPosition());
     if (hit->FUN_14169d280() == 0)
-        pRay->strCursor = hit->FUN_14169c3b0();
+        pRay->strCursor = hit->GetActionText();
     else
         pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_portal"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, hit->FUN_14169d280()));
     return true;
@@ -367,7 +367,7 @@ int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<CPortal> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_14169d2f0());
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->GetPosition());
     m_nPortalId = hit->FUN_14169d280();
     return true;
 }
@@ -399,7 +399,7 @@ MS2Ptr<CPortal> CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const 
         MS2Ptr<CPortal> hit = WorldService::GetInstance()->FUN_141bc2800((int)nId);
         if (hit == (CPortal*)0)
             continue;
-        efd::SmartPointer<egf::Entity> comp(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(hit->m_idEntity));
+        efd::SmartPointer<egf::Entity> comp(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(hit->m_idEntity));
         if (comp.data() == 0)
             continue;
         bool bFlag = false;
@@ -410,7 +410,7 @@ MS2Ptr<CPortal> CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const 
         comp->GetPropertyValue<int>(0x1b8b1161, nState);
         if (nState == 1)
             continue;
-        Unk_NiPoint3 vCenter(hit->FUN_14169d2f0());
+        Unk_NiPoint3 vCenter(hit->GetPosition());
         vCenter.z += hit->m_pos44.z * 0.5;
         float fRadius = hit->m_pos44.z * 0.5;
         if (FUN_14147ad10(*(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pOrigin)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<const Vector3&>(*pEnd)), *(Vector3 const*)&static_cast<struct Unk_NiPoint3 const&>(vCenter), fRadius))
@@ -580,7 +580,7 @@ int CMouseInteractUgcBanner::vfunc_6()
 // ---- talk cancel ----
 class Unk_MiUiMgr { public: };
 // @0x140a7b2b0
-UITalkCinematic* FUN_140a7b2b0(int nId)
+UITalkCinematic* FindTalkCinematic(int nId)
 {
     if (reinterpret_cast<Unk_MiUiMgr*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -608,7 +608,7 @@ int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
 {
     if (((class GFxSceneService*)(struct Unk_TalkUi*)(((Unk_TalkUi*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x6200031)
         return false;
-    UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
     if (pUi == 0)
         return false;
     if (((class UITalkCinematic*)(class UITalkCinematic*)(pUi))->GetLoaded() == 0)
@@ -627,7 +627,7 @@ int CMouseInteractTalkCancel::vfunc_3()
 // @0x140a7ad50
 int CMouseInteractTalkCancel::vfunc_4()
 {
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     return true;
 }
 

@@ -93,7 +93,7 @@ void FUN_1412752d0(const CStringW& strKey, int nType);
 void FUN_140710590(COutPacket& packet);                             // send
 CStringW FUN_140b887d0(__int64 nActorId, int nWhy);                 // statemicrogame.cpp
 CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy);
-UIRewardNotify* FUN_140938cd0(int nUiType);
+UIRewardNotify* FindRewardNotify(int nUiType);
 
 bool FUN_140bac700(int nButton, const CMsgBoxData& data);           // the rps waiting box result
 bool FUN_140bacda0(int nButton, const CMsgBoxData& data);           // the couple dance waiting box result
@@ -115,11 +115,11 @@ CMicroGameManagerCli::~CMicroGameManagerCli()
 bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet);
 bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet);
 static bool FUN_140b768a0(const CStringW& strTag);
-UICoupleDanceEventDialog* FUN_140b769d0(int nId);
+UICoupleDanceEventDialog* FindCoupleDanceEventDialog(int nId);
 
 // Opcode 0x114: one of the two switches handles the sub type.
 // @0x140b73cc0
-void FUN_140b73cc0(void* pThis, CInPacket& packet)
+void OnMicrogamePacket(void* pThis, CInPacket& packet)
 {
     unsigned int nType = (unsigned short)packet.ReadInt16();
     if (FUN_140b73d60(pThis, nType, packet))
@@ -225,7 +225,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0xba, 0);
                 break;
             }
-            spBox->FUN_140b76940(CStringW(strName));
+            spBox->AddStringArg(CStringW(strName));
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_boxSeconds)), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
@@ -238,7 +238,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
-            pMyPC->vfunc_59(0x3c, new StateMicroGameRpsData(pTarget->FUN_14123c580()), 0x99, 0);
+            pMyPC->vfunc_59(0x3c, new StateMicroGameRpsData(pTarget->GetObjectId()), 0x99, 0);
             CStringW strText = BlockFormat(0xd0d);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 0);
             if (spBox == 0)
@@ -272,7 +272,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             }
             if (pMyPC->FUN_14166cc80() != 0x99)
                 break;
-            if (pState->FUN_140b872c0() != pTarget->FUN_14123c580())
+            if (pState->FUN_140b872c0() != pTarget->GetObjectId())
                 break;
             FUN_141275260(0xd10, 1, 1);
         }
@@ -293,7 +293,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x111, 0);
                 break;
             }
-            if (pState->FUN_140b872c0() != pTarget->FUN_14123c580())
+            if (pState->FUN_140b872c0() != pTarget->GetObjectId())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
             CStringW strText = FormatStringId<CStringW>(0xd0f, pTarget->vfunc_77());
@@ -374,7 +374,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 10:
         {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify == 0)
                 break;
             int nCount = packet.ReadInt32();
@@ -508,7 +508,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
-            pMyPC->vfunc_59(0x45, new StateMicroGameCoupleDanceData(pTarget->FUN_14123c580()), 0xa9, 0);
+            pMyPC->vfunc_59(0x45, new StateMicroGameCoupleDanceData(pTarget->GetObjectId()), 0xa9, 0);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_waiting"), 0);
             if (spBox == 0)
             {
@@ -541,7 +541,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             if (pMyPC->FUN_14166cc80() != 0xa9)
                 break;
-            if (pState->FUN_140b894c0() != pTarget->FUN_14123c580())
+            if (pState->FUN_140b894c0() != pTarget->GetObjectId())
                 break;
             FUN_1412752d0(L"s_microgame_couple_dance_response_accept", 1);
         }
@@ -562,7 +562,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(600, 0);
                 break;
             }
-            if (pState->FUN_140b894c0() != pTarget->FUN_14123c580())
+            if (pState->FUN_140b894c0() != pTarget->GetObjectId())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
             FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
@@ -577,7 +577,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (spBox->GetExtra() != s_strCoupleDanceRequest)
                 break;
             int nFirst = 0;
-            if (!spBox->FUN_140961900(0, nFirst))
+            if (!spBox->GetIntArg(0, nFirst))
                 break;
             if (nValue != nFirst)
                 break;
@@ -594,7 +594,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         {
             if (pMyPC->GetCurStateId() != 0x45)
                 break;
-            UICoupleDanceEventDialog* pPane = (UICoupleDanceEventDialog*)FUN_140b769d0(0x4f71);
+            UICoupleDanceEventDialog* pPane = (UICoupleDanceEventDialog*)FindCoupleDanceEventDialog(0x4f71);
             if (pPane != 0 && pPane->FUN_141924630() != 0)
                 pPane->vfunc_67();
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
@@ -682,14 +682,14 @@ static bool FUN_140b768a0(const CStringW& strTag)
 CStringW FUN_140719900(CStringW str);          // string-argument filter (by value)
 CStringW FUN_140718600(const CStringW& str);   // its inverse on read
 // @0x140b76940
-void CMsgBoxData::FUN_140b76940(CStringW str)
+void CMsgBoxData::AddStringArg(CStringW str)
 {
     m_args.Add(FUN_140719900(str));
 }
 
 // The couple dance event dialog (UI type 0x4f71) if it is open.
 // @0x140b769d0
-UICoupleDanceEventDialog* FUN_140b769d0(int nId)
+UICoupleDanceEventDialog* FindCoupleDanceEventDialog(int nId)
 {
     if (reinterpret_cast<Unk_McUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {

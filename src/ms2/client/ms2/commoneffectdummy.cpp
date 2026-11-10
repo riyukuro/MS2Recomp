@@ -40,20 +40,20 @@ bool CommonEffectDummy::Load()
 CEffectDummy* CommonEffectDummy::Find(const CString& name)
 {
     CheckInit();
-    return m_pGroup->FUN_140a515f0(name);
+    return m_pGroup->FindDummyByName(name);
 }
 
 // @0x140a40200
 size_t CommonEffectDummy::Clear()
 {
-    return m_pGroup->FUN_140a515c0();
+    return m_pGroup->GetDummyCount();
 }
 
 // @0x140a40230
 bool CommonEffectDummy::Get(unsigned int idx, void* pOut)
 {
     CheckInit();
-    return m_pGroup->FUN_140a516e0(idx, pOut);
+    return m_pGroup->GetDummyAt(idx, pOut);
 }
 
 // @0x140a40280
@@ -69,7 +69,7 @@ bool CommonEffectDummy::LoadFile(const char* path)
         return false;
     }
     m_pGroup = new EffectDummyGroup;
-    m_pGroup->FUN_140a514e0(reinterpret_cast<TiXmlNode*>(pRoot));
+    m_pGroup->ParseDummies(reinterpret_cast<TiXmlNode*>(pRoot));
     return true;
 }
 

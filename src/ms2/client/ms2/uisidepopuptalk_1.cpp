@@ -137,7 +137,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 PCBase* pPlayer = static_cast<PCBase*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
-                    unsigned nId = TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(strVoice, pPlayer->vfunc_18());
+                    unsigned nId = TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(strVoice, pPlayer->vfunc_18());
                     m_voices.SetAt(eKey, nId);
                 }
             }
@@ -334,7 +334,7 @@ void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
     }
     Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound != 0)
-        obj.FUN_1409c4a30("volume", pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());
+        obj.SetMemberFloat("volume", pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
     m_30->Invoke("addPopup", obj);
     if (spParam->m_nKind == 1)
         FUN_140e886f0(0);

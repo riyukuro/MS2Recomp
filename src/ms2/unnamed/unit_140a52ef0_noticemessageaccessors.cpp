@@ -30,7 +30,7 @@ int NoticeMessage::FUN_140a53010()
 {
     PC* pPC = efd::DynamicCast<PC>(m_pOwner);
     if (pPC)
-        return ((class PC*)(class PC*)(pPC))->FUN_141658e60();
+        return ((class PC*)(class PC*)(pPC))->GetGender();
     return 2;
 }
 MS2_REPLACE_METHOD(0x140A53010, NoticeMessage, FUN_140a53010, 58, 0xA2303F78);
@@ -40,7 +40,7 @@ int NoticeMessage::FUN_140a53050()
 {
     PC* pPC = efd::DynamicCast<PC>(m_pOwner);
     if (pPC)
-        return pPC->FUN_141654700();
+        return pPC->GetJobGroupId();
     return 2;
 }
 MS2_REPLACE_METHOD(0x140A53050, NoticeMessage, FUN_140a53050, 58, 0xA668C7D0);
@@ -49,7 +49,7 @@ MS2_REPLACE_METHOD(0x140A53050, NoticeMessage, FUN_140a53050, 58, 0xA668C7D0);
 int NoticeMessage::GetObjectCode()
 {
     if (m_pOwner)
-        return ((class PCBase*)(class GameObject*)(m_pOwner))->FUN_140976780();
+        return ((class PCBase*)(class GameObject*)(m_pOwner))->GetSoundPitch();
     return m_nObjectCode;
 }
 MS2_REPLACE_METHOD(0x140A53090, NoticeMessage, GetObjectCode, 50, 0x7ED2125A);
@@ -154,7 +154,7 @@ NiNode* NoticeMessage::GetRoot()
 {
     AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(m_pOwner);
     if (pAvatar)
-        return pAvatar->FUN_1409f62c0();
+        return pAvatar->GetEffectRoot();
     return CEffectService::GetInstance()->GetLeastLoadedRoot();
 }
 MS2_REPLACE_METHOD(0x140A533D0, NoticeMessage, GetRoot, 66, 0x2B7E420C);
@@ -193,14 +193,14 @@ void NoticeMessage::Bind()
     if (m_pOwner == 0 && m_nActor != 0)
         m_pOwner = ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FindObjectById(m_nActor));
     if (m_spNode == 0 && m_pOwner != 0)
-        m_spNode = FUN_141b6ef70(m_pOwner->FUN_14123c460());
+        m_spNode = FUN_141b6ef70(m_pOwner->GetEntityID());
 }
 MS2_REPLACE_METHOD(0x140A534A0, NoticeMessage, Bind, 159, 0x9C92423F);
 
 // @0x140a53550
 void NoticeMessage::Stamp()
 {
-    m_dTimestamp = ((class CMainSystem*)(class CMainSystem*)(CMainSystem::GetInstance()))->FUN_141473280();
+    m_dTimestamp = ((class CMainSystem*)(class CMainSystem*)(CMainSystem::GetInstance()))->GetGameTime();
 }
 MS2_REPLACE_METHOD(0x140A53550, NoticeMessage, Stamp, 37, 0x77A3EC3C);
 

@@ -91,7 +91,7 @@ public:
     void LookAtPosition(const efd::Point3& kPos, int nStart, int nEnd, int nDuration);    // look at a point
     void LookAtEntity(const egf::EntityID& kId, CString strBone, int nStart, int nEnd, int nDuration);    // look at an entity
     void StopLooking();                                       // stop looking, return to the animation
-    void FUN_140a35060();                                       // per-frame: switch the interpolator at the end of a look
+    void UpdateLookAt();                                       // per-frame: switch the interpolator at the end of a look
     void FUN_140a35500(double dTime);                           // per-frame: pick/advance actions
     int IsLooking();                                        // a look is running
     Unk_BrMode GetCurrent();                                 // current action mode

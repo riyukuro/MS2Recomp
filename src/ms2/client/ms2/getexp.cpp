@@ -90,8 +90,8 @@ public:
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_14123c260();
-    int FUN_14123c580();
+    float GetScale();
+    int GetObjectId();
     unsigned __int64 GenerateSerialId();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -146,7 +146,7 @@ public:
 efd::Point3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
 bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
                    float fRadius, NiPoint3* pHit);                                   // ray / sphere hit
-void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
+void DetachFromParent(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
 
 // ---- CExpEffectInfo ----
@@ -164,7 +164,7 @@ CExpEffectInfo::CExpEffectInfo()
 CExpEffectInfo::~CExpEffectInfo()
 {
     StopEffect();
-    FUN_140a0b2a0((NiAVObject*)m_spNode.operator NiNode*());
+    DetachFromParent((NiAVObject*)m_spNode.operator NiNode*());
 }
 
 // @0x1412727d0
@@ -217,7 +217,7 @@ void CExpEffectInfo::UpdateOrientation()
     reinterpret_cast<efd::Matrix3&>(kMat).SetCol(2, reinterpret_cast<const efd::Point3&>(vSide));
     m_rot = kMat;
     ((class NiAVObject*)(void*)(m_spNode.operator->()))->SetRotate(*(class NiMatrix3 const*)(&kMat));
-    ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
+    ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), false);
 }
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
@@ -334,7 +334,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)m_spNode.operator NiNode*();
     ((Unk_ExpTarget&)(kRequest)).m_strName = TSingleton<CommonResource>::GetInstance()->m_strEffectGetExp;
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
-    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
+    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pObj))->GetObjectId());
     m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     return 1;
 }
@@ -351,7 +351,7 @@ void CExpEffectInfo::SetPosition(const Vector3& pt)
     if (m_spNode.operator NiNode*() != 0)
     {
         ((class NiAVObject*)(void*)(m_spNode.operator->()))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(pt));
-        ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
+        ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), false);
     }
 }
 
@@ -367,7 +367,7 @@ void CExpEffectInfo::Finish()
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)reinterpret_cast<Unk_AttendAvatarMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c260();
+    float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->GetScale();
     Vector3 ptCur = *(const Vector3*)&((NiAVObject*)m_spNode.operator->())->GetTranslate();
     NiPoint3 ptHit;
     if (!FUN_14147aa60(reinterpret_cast<const efd::Point3&>(ptCur),
@@ -380,8 +380,8 @@ void CExpEffectInfo::Finish()
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kRequest)).m_strName = TSingleton<CommonResource>::GetInstance()->m_strEffectGetExpEnd;
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = 1;
-    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
+    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->GetObjectId());
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     m_nState = 1;
 }
 

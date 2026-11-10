@@ -58,8 +58,8 @@ CStringW FUN_140ebd870(CMeratMarketPremiumProduct* pProduct);   // the option te
 CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);            // the star point text
 
 // defined below
-void FUN_1409ad9c0(ASObj& obj, const CStringW& strPoint, __int64 nPoint);   // "strStarPoint" / "starPoint"
-int FUN_1409ada50(const Scaleform::GFx::Value& vData);          // the "marketSN" of a row object
+void SetStarPoint(ASObj& obj, const CStringW& strPoint, __int64 nPoint);   // "strStarPoint" / "starPoint"
+int GetMarketSN(const Scaleform::GFx::Value& vData);          // the "marketSN" of a row object
 
 extern __int64 DAT_143ab2820;                                   // the own account id
 extern unsigned DAT_143ab2830;                                  // the own character type
@@ -195,11 +195,11 @@ void ASBillData::SetEnableGift(bool b)
 MS2_REPLACE_METHOD(0x1409ABC90, ASBillData, SetEnableGift, 54, 0xB0F6926C);
 
 // @0x1409abcd0
-void ASBillData::FUN_1409abcd0(int nPayType)
+void ASBillData::SetPayType(int nPayType)
 {
     m_n44 = nPayType;
 }
-MS2_REPLACE_METHOD(0x1409ABCD0, ASBillData, FUN_1409abcd0, 22, 0x1DE9BE0F);
+MS2_REPLACE_METHOD(0x1409ABCD0, ASBillData, SetPayType, 22, 0x1DE9BE0F);
 
 // @0x1409abcf0
 void ASBillData::SetUseDropDown(bool b)
@@ -366,12 +366,12 @@ MS2_REPLACE_METHOD(0x1409AC2C0, ASBillData, GetSalePriceFromData, 141, 0x06C8075
 // ======== ASMeratMarketBuyBillData ========
 
 // @0x1409ac360
-void ASMeratMarketBuyBillData::FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency)
+void ASMeratMarketBuyBillData::SetProductInfo(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency)
 {
     SetProduct(spProduct);
     if (spProduct == 0)
         return;
-    FUN_1407cbb20("productOID", spProduct->m_key.FUN_1409b0470());
+    FUN_1407cbb20("productOID", spProduct->m_key.GetKeyString());
     if (spProduct->IsPremium())
     {
         FUN_1409ac6f0(&spProduct->m_premium, nOption, nCurrency);
@@ -390,21 +390,21 @@ void ASMeratMarketBuyBillData::FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProdu
         // ugcdef.h types the owner as the 0x18-byte Unk_CommonOwner
         bool bGift = spProduct->m_ugc.FUN_1408963f0(reinterpret_cast<Unk_CommonOwner&>(owner));
         SetEnableGift(bGift);
-        FUN_1409abcd0(nCurrency);
+        SetPayType(nCurrency);
     }
 }
-MS2_REPLACE_METHOD(0x1409AC360, ASMeratMarketBuyBillData, FUN_1409ac360, 630, 0x118941BF);
+MS2_REPLACE_METHOD(0x1409AC360, ASMeratMarketBuyBillData, SetProductInfo, 630, 0x118941BF);
 
 // @0x1409ac5e0
-void ASMeratMarketBuyBillData::FUN_1409ac5e0(MS2Ptr<CMeratMarketBasket> spBasket)
+void ASMeratMarketBuyBillData::SetBasketInfo(MS2Ptr<CMeratMarketBasket> spBasket)
 {
     if (spBasket == 0 || spBasket->m_spProduct == 0)
         return;
     int nCurrency = FUN_14069c3e0(spBasket->m_spProduct->GetPayCurrency());
-    FUN_1409ac360(spBasket->m_spProduct, spBasket->m_n30, nCurrency);
+    SetProductInfo(spBasket->m_spProduct, spBasket->m_n30, nCurrency);
     FUN_1409b03d0(spBasket->m_n28);
 }
-MS2_REPLACE_METHOD(0x1409AC5E0, ASMeratMarketBuyBillData, FUN_1409ac5e0, 255, 0xCADAF70F);
+MS2_REPLACE_METHOD(0x1409AC5E0, ASMeratMarketBuyBillData, SetBasketInfo, 255, 0xCADAF70F);
 
 // @0x1409ac6f0
 void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency)
@@ -419,7 +419,7 @@ void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduc
         CStringW strRandom = FUN_1418fec00(nCurrency, nRandom, false);
         SetRandomPaybackPrice(strRandom, nRandom);
     }
-    if (FUN_1409acfe0(pProduct, nOption, nCurrency))
+    if (SetOptionDropDown(pProduct, nOption, nCurrency))
         SetUseDropDown(true);
     bool bGift = pProduct->FUN_1406a1c70(0);
     SetEnableGift(bGift);
@@ -429,7 +429,7 @@ void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduc
         CStringW strOption = FUN_140ebd520(pProduct, nOption);
         FUN_1407cbb20("selectedOption", strOption);
     }
-    FUN_1409abcd0(nCurrency);
+    SetPayType(nCurrency);
     FUN_1409b0430(nOption);
     bool bPoint = FUN_1406a5930() && pProduct->HasPointPrice();
     if (bPoint)
@@ -438,13 +438,13 @@ void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduc
         FUN_1409abd40(0xf);
         __int64 nPoint = pProduct->GetPointOf(nOption);
         CStringW strPoint = FUN_140ec05f0(pProduct);
-        FUN_1409ad9c0(*this, strPoint, nPoint);
+        SetStarPoint(*this, strPoint, nPoint);
     }
 }
 MS2_REPLACE_METHOD(0x1409AC6F0, ASMeratMarketBuyBillData, FUN_1409ac6f0, 769, 0x871ECC57);
 
 // @0x1409aca00
-void ASMeratMarketBuyBillData::FUN_1409aca00(CMeratMarketPremiumProduct* pOption, MS2Ptr<CMeratMarketProduct> spProduct)
+void ASMeratMarketBuyBillData::SetPremiumOption(CMeratMarketPremiumProduct* pOption, MS2Ptr<CMeratMarketProduct> spProduct)
 {
     SetProduct(spProduct);
     SetItemName(pOption->GetName());
@@ -456,20 +456,20 @@ void ASMeratMarketBuyBillData::FUN_1409aca00(CMeratMarketPremiumProduct* pOption
     }
     FUN_1409b0430(pOption->m_nId);
 }
-MS2_REPLACE_METHOD(0x1409ACA00, ASMeratMarketBuyBillData, FUN_1409aca00, 330, 0x02AA3BC7);
+MS2_REPLACE_METHOD(0x1409ACA00, ASMeratMarketBuyBillData, SetPremiumOption, 330, 0x02AA3BC7);
 
 // @0x1409acb50
-int ASMeratMarketBuyBillData::FUN_1409acb50()
+int ASMeratMarketBuyBillData::GetSelectedOption()
 {
     Scaleform::GFx::Value vData = GetSelectCurData();
     if (vData.IsUndefined() || vData.IsNull())
         return m_n78;
-    return FUN_1409ada50(vData);
+    return GetMarketSN(vData);
 }
-MS2_REPLACE_METHOD(0x1409ACB50, ASMeratMarketBuyBillData, FUN_1409acb50, 129, 0x83D2A031);
+MS2_REPLACE_METHOD(0x1409ACB50, ASMeratMarketBuyBillData, GetSelectedOption, 129, 0x83D2A031);
 
 // @0x1409acbe0
-int ASMeratMarketBuyBillData::FUN_1409acbe0(int nCurrency)
+int ASMeratMarketBuyBillData::GetPayType(int nCurrency)
 {
     int nPayType = 0x11;
     if (nCurrency == 3)
@@ -478,7 +478,7 @@ int ASMeratMarketBuyBillData::FUN_1409acbe0(int nCurrency)
         nPayType = FUN_14069c3e0(nCurrency);
     return nPayType;
 }
-MS2_REPLACE_METHOD(0x1409ACBE0, ASMeratMarketBuyBillData, FUN_1409acbe0, 64, 0xD4BFF5FE);
+MS2_REPLACE_METHOD(0x1409ACBE0, ASMeratMarketBuyBillData, GetPayType, 64, 0xD4BFF5FE);
 
 // @0x1409acc30
 int ASMeratMarketBuyBillData::vfunc_1()
@@ -532,7 +532,7 @@ MS2_REPLACE_METHOD(0x1409ACED0, ASMeratMarketBuyBillData, vfunc_9, 251, 0x997163
 
 // The option drop down of a premium product: the product itself, then its sub products in their option order.
 // @0x1409acfe0
-bool ASBillData::FUN_1409acfe0(CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency)
+bool ASBillData::SetOptionDropDown(CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency)
 {
     CStringW strUnused;
     CRBMap<int, MS2Ptr<CDBPremiumProduct> >& mapSub = pProduct->m_mapSub;
@@ -542,7 +542,7 @@ bool ASBillData::FUN_1409acfe0(CMeratMarketPremiumProduct* pProduct, int nOption
     bool bDay = pProduct->FUN_14069fe40() == 2;
     CDBPremiumProduct* pBase = pProduct;
     int nSelected = 0;
-    FUN_1409ad420(arrOptions, nCurrency, pProduct, bDay, pBase);
+    AddOptionRow(arrOptions, nCurrency, pProduct, bDay, pBase);
     int nIndex = 1;
     std::vector<MS2Ptr<CDBPremiumProduct> > vecSub;
     for (POSITION pos = mapSub.GetHeadPosition(); pos != NULL; mapSub.GetNext(pos))
@@ -561,32 +561,32 @@ bool ASBillData::FUN_1409acfe0(CMeratMarketPremiumProduct* pProduct, int nOption
         int nId = spSub->m_nId;
         if (nId == nOption)
             nSelected = nIndex;
-        FUN_1409ad420(arrOptions, nCurrency, spSub.get(), bDay, pBase);
+        AddOptionRow(arrOptions, nCurrency, spSub.get(), bDay, pBase);
     }
     FUN_1407cb9c0("selectedOptionIndex", nSelected);
     SetOptionArray(arrOptions.FUN_1422bb870());
     return true;
 }
-MS2_REPLACE_METHOD(0x1409ACFE0, ASBillData, FUN_1409acfe0, 876, 0x736BBBD2);
+MS2_REPLACE_METHOD(0x1409ACFE0, ASBillData, SetOptionDropDown, 876, 0x736BBBD2);
 
 // @0x1409ad360
 bool ASMeratMarketBuyBillData::FUN_1409ad360(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency)
 {
     if ((bool)spProduct.get() && spProduct->IsPremium())
-        return FUN_1409acfe0(&spProduct->m_premium, nOption, nCurrency);
+        return SetOptionDropDown(&spProduct->m_premium, nOption, nCurrency);
     return false;
 }
 MS2_REPLACE_METHOD(0x1409AD360, ASMeratMarketBuyBillData, FUN_1409ad360, 174, 0x47C46A7A);
 
-static void FUN_1409ad7b0(ASObj& obj, const CStringW& strSale);
-static void FUN_1409ad800(ASObj& obj, const CStringW& strLabel);
+static void SetSaleText(ASObj& obj, const CStringW& strSale);
+static void SetLabel(ASObj& obj, const CStringW& strLabel);
 static void FUN_1409ad850(ASObj& obj, const CStringW& strPrice, __int64 nPrice);
 static void FUN_1409ad8e0(ASObj& obj, const CStringW& strPrice, __int64 nPrice);
-static void FUN_1409ad970(ASObj& obj, const unsigned& nMarketSN);
+static void SetMarketSN(ASObj& obj, const unsigned& nMarketSN);
 
 // One row of the option drop down.
 // @0x1409ad420
-void ASBillData::FUN_1409ad420(ASArray& arr, int nCurrency, CDBPremiumProduct* pSub, bool bDay, CDBPremiumProduct* pBase)
+void ASBillData::AddOptionRow(ASArray& arr, int nCurrency, CDBPremiumProduct* pSub, bool bDay, CDBPremiumProduct* pBase)
 {
     int nBaseId = pBase != NULL ? pBase->m_nId : pSub->m_nId;
     CStringW strLabel = FUN_140ebd020(bDay, pSub);
@@ -608,27 +608,27 @@ void ASBillData::FUN_1409ad420(ASArray& arr, int nCurrency, CDBPremiumProduct* p
     __int64 nPoint = pSub->GetPoint();
     CStringW strPoint = FUN_140ec05f0(static_cast<CMeratMarketPremiumProduct*>(pSub));
     ASObj row(2);
-    FUN_1409ad800(row, strLabel);
-    FUN_1409ad7b0(row, strSale);
+    SetLabel(row, strLabel);
+    SetSaleText(row, strSale);
     FUN_1409ad850(row, strSalePrice, nSalePrice);
     FUN_1409ad8e0(row, strPrice, nPrice);
-    FUN_1409ad9c0(row, strPoint, nPoint);
+    SetStarPoint(row, strPoint, nPoint);
     unsigned nMarketSN = 0;
     if (nBaseId != pSub->m_nId)
         nMarketSN = pSub->m_nId;
-    FUN_1409ad970(row, nMarketSN);
+    SetMarketSN(row, nMarketSN);
     arr.PushValue(row.FUN_1422bb870());
 }
-MS2_REPLACE_METHOD(0x1409AD420, ASBillData, FUN_1409ad420, 903, 0xADC38BEA);
+MS2_REPLACE_METHOD(0x1409AD420, ASBillData, AddOptionRow, 903, 0xADC38BEA);
 
 // @0x1409ad7b0
-static void FUN_1409ad7b0(ASObj& obj, const CStringW& strSale)
+static void SetSaleText(ASObj& obj, const CStringW& strSale)
 {
     ((class AScript&)(obj)).FUN_1407cbb20("saleText", strSale);
 }
 
 // @0x1409ad800
-static void FUN_1409ad800(ASObj& obj, const CStringW& strLabel)
+static void SetLabel(ASObj& obj, const CStringW& strLabel)
 {
     ((class AScript&)(obj)).FUN_1407cbb20("label", strLabel);
 }
@@ -648,22 +648,22 @@ static void FUN_1409ad8e0(ASObj& obj, const CStringW& strPrice, __int64 nPrice)
 }
 
 // @0x1409ad970
-static void FUN_1409ad970(ASObj& obj, const unsigned& nMarketSN)
+static void SetMarketSN(ASObj& obj, const unsigned& nMarketSN)
 {
     obj.FUN_1407cba60("marketSN", FUN_140719190(nMarketSN));
 }
 
 // @0x1409ad9c0
-void FUN_1409ad9c0(ASObj& obj, const CStringW& strPoint, __int64 nPoint)
+void SetStarPoint(ASObj& obj, const CStringW& strPoint, __int64 nPoint)
 {
     ((class AScript&)(obj)).FUN_1407cbb20("strStarPoint", strPoint);
     obj.FUN_1407cba60("starPoint", FUN_1407194b0(nPoint));
 }
-MS2_REPLACE(0x1409AD9C0, FUN_1409ad9c0, 129, 0xE44F0A15);
+MS2_REPLACE(0x1409AD9C0, SetStarPoint, 129, 0xE44F0A15);
 
 // The "marketSN" of a row object (0 without one).
 // @0x1409ada50
-int FUN_1409ada50(const Scaleform::GFx::Value& vData)
+int GetMarketSN(const Scaleform::GFx::Value& vData)
 {
     if (vData.IsUndefined())
         return 0;
@@ -672,7 +672,7 @@ int FUN_1409ada50(const Scaleform::GFx::Value& vData)
     data.TryGetString("marketSN", strValue);
     return FUN_140718170(strValue);
 }
-MS2_REPLACE(0x1409ADA50, FUN_1409ada50, 152, 0xDC2CABB0);
+MS2_REPLACE(0x1409ADA50, GetMarketSN, 152, 0xDC2CABB0);
 
 // @0x1409adb70
 __int64 ASMeratMarketBuyBillData::FUN_1409adb70(const CString& strName, ASObj* pData)
@@ -724,7 +724,7 @@ void ASMeratMarketBuyBillData::FUN_1409b0450(bool b)
 
 // The key as text: "P_<premium id>", "U_<ugc id>" or "0_0".
 // @0x1409b0470
-CStringW Unk_MeratProductKey::FUN_1409b0470() const
+CStringW Unk_MeratProductKey::GetKeyString() const
 {
     CStringW strKey(L"");
     if (m_nPremiumId > 0)

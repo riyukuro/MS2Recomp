@@ -429,14 +429,14 @@ MS2_REPLACE_METHOD(0x1422C0E20, ASDisplayObject, SetWidthInt, 40, 0xF43A4683);
 // @0x1422c0e50
 void ASDisplayObject::SetWidthUInt(unsigned int nWidth)
 {
-    FUN_1409c0d20("width", nWidth);
+    SetMemberUInt("width", nWidth);
 }
 MS2_REPLACE_METHOD(0x1422C0E50, ASDisplayObject, SetWidthUInt, 40, 0x6CA4A137);
 
 // @0x1422c0e80
 void ASDisplayObject::SetWidthFloat(float fWidth)
 {
-    FUN_1409c4a30("width", fWidth);
+    SetMemberFloat("width", fWidth);
 }
 MS2_REPLACE_METHOD(0x1422C0E80, ASDisplayObject, SetWidthFloat, 43, 0xBDE70F30);
 
@@ -450,14 +450,14 @@ MS2_REPLACE_METHOD(0x1422C0EC0, ASDisplayObject, SetHeightInt, 40, 0x7CDC41CA);
 // @0x1422c0ef0
 void ASDisplayObject::SetHeightUInt(unsigned int nHeight)
 {
-    FUN_1409c0d20("height", nHeight);
+    SetMemberUInt("height", nHeight);
 }
 MS2_REPLACE_METHOD(0x1422C0EF0, ASDisplayObject, SetHeightUInt, 40, 0x8BA3A8EF);
 
 // @0x1422c0f20
 void ASDisplayObject::SetHeightFloat(float fHeight)
 {
-    FUN_1409c4a30("height", fHeight);
+    SetMemberFloat("height", fHeight);
 }
 MS2_REPLACE_METHOD(0x1422C0F20, ASDisplayObject, SetHeightFloat, 43, 0x01256289);
 

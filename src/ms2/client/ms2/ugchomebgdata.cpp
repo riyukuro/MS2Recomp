@@ -168,7 +168,7 @@ void UgcHomeOptionData::ApplyCamera(unsigned char nType)
 {
     *reinterpret_cast<NiPoint3*>((char*)CameraMgr::GetInstance() + 200) = GetCameraOffset(nType);
     *reinterpret_cast<NiPoint3*>((char*)CameraMgr::GetInstance() + 0xd4) = GetCameraUp(nType);
-    CameraMgr::GetInstance()->FUN_140aed750(0x11, 1);
+    CameraMgr::GetInstance()->SetMode(0x11, 1);
     FUN_140b6bd30(CameraMgr::GetInstance());
 }
 

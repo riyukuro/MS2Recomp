@@ -204,7 +204,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
-        Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->GetUGCMapInfo());
         if (spHouse.get() != 0)
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
@@ -236,7 +236,7 @@ void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPass
         strPassword = L"";
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
-        pPC->FUN_141530720((Unk_MyPCHouseSetting)nOpenType, CStringW(strPassword), 1);
+        pPC->SendHouseSetting((Unk_MyPCHouseSetting)nOpenType, CStringW(strPassword), 1);
 }
 MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, FUN_140fa99b0, 149, 0x7577FED5);
 

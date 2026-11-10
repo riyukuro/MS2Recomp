@@ -112,18 +112,18 @@
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 
 // @0x1414d9cb0
-inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
+inline unsigned GetCurrentMap(EntityWorldManager* world) { return world->currentMap; }
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 //
 class CubeMapInformationService { public: void* FindPhysXActor(egf::EntityID key); };   // C3: was NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID); 0x1410c5420 (cubemapinformationservice_3.h)
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14168a540(int);
-    void FUN_14168a570();
+    void Unlock();
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -194,7 +194,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                         efd::SmartPointer<efd::ISystemService> service(reinterpret_cast<efd::ISystemService*>(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
                         NxActor* actor = (NxActor*)reinterpret_cast<CubeMapInformationService*>(service.operator->())->FindPhysXActor(entity->GetEntityID());
                         if (actor != NULL) {
-                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);
+                            ((class CPhysXHelper*)(void*)(((void*)GetPhysXHelper())))->FUN_14168a540(0);
                             unsigned shapeCount = actor->getNbShapes();
                             NxShape* const* shapes = actor->getShapes();
                             int skip = 0;
@@ -203,7 +203,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                 if (shape->getGroup() == 5) { skip = 1; break; }
                             }
                             if (skip == 0) actor->setGlobalPose(pose);
-                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a570();
+                            ((class CPhysXHelper*)(void*)(((void*)GetPhysXHelper())))->Unlock();
                         }
                     } else {
                         unsigned propCount = GetNumProps(entity->GetEntityID());
@@ -217,7 +217,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                             unsigned actorCount = snapshot->GetActorCount();
                             if (actorCount == 0)
                                 continue;
-                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);
+                            ((class CPhysXHelper*)(void*)(((void*)GetPhysXHelper())))->FUN_14168a540(0);
                             for (unsigned a = 0; a < actorCount; ++a) {
                                 NiPhysXActorDesc* desc = snapshot->GetActorAt(a);
                                 if (desc == NULL)
@@ -241,7 +241,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                     if (skip == 0) actor->setGlobalPose(pose);
                                 }
                             }
-                            ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a570();
+                            ((class CPhysXHelper*)(void*)(((void*)GetPhysXHelper())))->Unlock();
                         }
                     }
                 }
@@ -252,7 +252,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
 MS2_REPLACE_METHOD_VIA(0x1414d70f0, MS2PropService, egf::IPropertyCallback, OnPropertyUpdate, 2189, 0x26D58610);
 // @0x1414d7990
 efd::utf8string FUN_1414d7990(const efd::utf8string& name) {
-    efd::utf8string result(efd::Formatted, "%08d_", FUN_1414d9cb0(TSingleton<EntityWorldManager>::GetInstance()));
+    efd::utf8string result(efd::Formatted, "%08d_", GetCurrentMap(TSingleton<EntityWorldManager>::GetInstance()));
     result += name;
     return result;
 }

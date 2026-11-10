@@ -1,15 +1,15 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CSmartRecommendShopTable (smartRecommendShop.xml) with its
-// CRecommendItem rows and the CRecommendTableCache (Unk_SmartRecommendShops) holding the code -> row map
+// CRecommendItem rows and the CRecommendTableCache holding the code -> row map
 // (ATL::CAtlMap<unsigned, MS2Ptr<CRecommendItem>>); see ms2/placeholder/csmartrecommendshoptable.h.
 // MS2-UNIT: unit_140815690
 // MS2-RANGE: 0x140815690-0x1408179d0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
-// MS2-PIN: ??_7Unk_SmartRecommendShops@@6B@ 0x142d95648
+// MS2-PIN: ??_7CRecommendTableCache@@6B@ 0x142d95648
 // MS2-PIN: ??1CRecommendItem@@UEAA@XZ 0x1408165d0
 // MS2-PIN: ??_GCRecommendItem@@UEAAPEAXI@Z 0x140816770
-// MS2-PIN: ??1Unk_SmartRecommendShops@@UEAA@XZ 0x140816620
-// MS2-PIN: ??_GUnk_SmartRecommendShops@@UEAAPEAXI@Z 0x1408167b0
+// MS2-PIN: ??1CRecommendTableCache@@UEAA@XZ 0x140816620
+// MS2-PIN: ??_GCRecommendTableCache@@UEAAPEAXI@Z 0x1408167b0
 //
 // File name assumed (the unit has no assert path).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\smartrecommendshoptable.cpp"    // assumed
@@ -62,7 +62,7 @@ bool CSmartRecommendShopTable::s_bInit;
 // @0x140815690
 int CSmartRecommendShopTable::FUN_140815690()
 {
-    m_spData.AssignRaw(new Unk_SmartRecommendShops);
+    m_spData.AssignRaw(new CRecommendTableCache);
     CString strPath = FUN_14071a5b0("Table", "smartRecommendShop.xml");
     m_bLoaded = 0;
     if (FUN_140815ac0(CString(strPath)) != 0)
@@ -184,7 +184,7 @@ CRecommendItem::CRecommendItem()
 }
 
 // @0x140816470
-Unk_SmartRecommendShops::Unk_SmartRecommendShops()
+CRecommendTableCache::CRecommendTableCache()
     : m_items(17, 0.75f, 0.25f, 2.25f, 10)
 {
 }

@@ -39,7 +39,7 @@ class MyPC;
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141658e60();
+    int GetGender();
 };
 
 // IEquipmentCutting (0x10, vftable 0x142ec0578) and CPriortyCutting (0x18, vftable 0x142ec0598) are declared in cpriortycutting.h.
@@ -81,14 +81,14 @@ void CPriortyCutting::vfunc_2()
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > equipped(10);
     ((class CEquipment*)(m_pTarget))->FUN_1411e2e40(equipped);
-    unsigned nGender = ((class PC*)(class MyPC*)(((class MyPC *)((class CEquipment*)(m_pTarget))->FUN_1411e0ee0())))->FUN_141658e60();
+    unsigned nGender = ((class PC*)(class MyPC*)(((class MyPC *)((class CEquipment*)(m_pTarget))->GetPC())))->GetGender();
     POSITION pos = equipped.GetHeadPosition();
     while (pos != 0) {
         MS2Ptr<CEquipItem> equip(equipped.GetNext(pos));
         if (!equip) {
             continue;
         }
-        ItemModelData* pModel = reinterpret_cast<CItemData*>(equip.get()->FUN_1411dc7f0())->GetModelOrEmpty();
+        ItemModelData* pModel = reinterpret_cast<CItemData*>(equip.get()->GetItemData())->GetModelOrEmpty();
         std::vector<CString>* pNames = pModel->FUN_14054b2c0(nGender);
         std::vector<CString>& names = *pNames;
         std::vector<CString>::iterator itEnd = names.end();

@@ -66,7 +66,7 @@ struct Unk_JcSkillRow { char m_pad_00[0x48]; CString m_strIcon; };
 class Unk_JcSkillTable;
 class SkillDataTableCli;
 
-UITalkCinematic* FUN_140a7b2b0(int nId);
+UITalkCinematic* FindTalkCinematic(int nId);
 
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
@@ -184,7 +184,7 @@ void UIJobChangeDialog::vfunc_43()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     UITalkCinematic* pUI;
     int n;
-    if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->GetLowerCutGlobalY()) != -1)
+    if (pDlg != 0 && (pUI = FindTalkCinematic(0x4e40)) != 0 && (n = pUI->GetLowerCutGlobalY()) != -1)
     {
         n = (int)((double)(n - pDlg->GetHeightCeil()) * 0.5);
         pDlg->vfunc_2(1, 0, n);

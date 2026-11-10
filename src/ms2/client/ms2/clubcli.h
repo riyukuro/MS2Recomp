@@ -113,7 +113,7 @@ public:
     void OnPacketClubRename(CInPacket& packet);                          // 0x1a
     void OnPacketMemberRename(CInPacket& packet);                          // 0x1b
     void FUN_140b18140(CInPacket& packet);                          // 0x1c
-    void FUN_140b181e0(CInPacket& packet);                          // 0x1d
+    void OnClubError(CInPacket& packet);                          // 0x1d
     void FUN_140b18260(CInPacket& packet);                          // 0x1e
 
     bool FUN_140b18390(int nResult, const CMsgBoxData& data);       // "join this club?" box result

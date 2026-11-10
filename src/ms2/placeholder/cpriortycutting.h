@@ -14,7 +14,7 @@ class MyPC;
 struct Unk_CuttingTarget
 {
     void FUN_1411e2e40(ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);     // 0x1411e2e40 the worn items
-    MyPC* FUN_1411e0ee0();                                          // 0x1411e0ee0 the owning PC
+    MyPC* GetPC();                                          // 0x1411e0ee0 the owning PC
     void FUN_1411e8d20(const CString& strName);                     // 0x1411e8d20 hide the model part
 };
 

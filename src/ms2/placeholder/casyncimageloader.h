@@ -4,7 +4,7 @@
 // client\ms2\asyncimageloader.cpp. The members are named from use.
 //
 // Flow: a caller queues a request (QueueImage: an ImageLoaderParam with the file name and the Scaleform image) in
-// m_68; the thread moves the queue to a local list, reads every file (FUN_140a59090: texture cache or NiImageConverter) and
+// m_68; the thread moves the queue to a local list, reads every file (LoadTexture: texture cache or NiImageConverter) and
 // appends the loaded ones to m_78; the main thread (FUN_140a58b90, from the frame update) moves m_78 to m_88 and binds the
 // textures to their Scaleform images (FUN_140a59540), dropping each request it could apply.
 #pragma once
@@ -175,7 +175,7 @@ public:
     void QueueImage(const CString& strFile, Unk_GfxRef spImage);   // queue a request
     void FUN_140a58b90();                                   // bind the loaded textures (main thread)
     void Shutdown();                                   // stops it
-    bool FUN_140a59090(ParamPtr spParam);                   // read the file of a request (loader thread)
+    bool LoadTexture(ParamPtr spParam);                   // read the file of a request (loader thread)
     bool FUN_140a59540(ParamPtr spParam);                   // bind the texture of a request to its image
     void ClearQueues();                                   // drop all requests
 private:

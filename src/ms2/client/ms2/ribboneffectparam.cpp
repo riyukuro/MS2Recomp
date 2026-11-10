@@ -70,7 +70,7 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 bool FUN_14028d470(float a, float b);                               // nearly equal
 // The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its Vector3 local.
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
-void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
+void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
 public:
@@ -100,7 +100,7 @@ class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
 };
-Unk_ResourceMgr* FUN_140a0afd0();
+Unk_ResourceMgr* GetNifLoadingService();
 
 // The effect node (400 bytes) carries the effect-space point.
 
@@ -145,7 +145,7 @@ void CRibbonEffectParam::vfunc_1(TiXmlElement* pNode)
 bool CRibbonEffectParam::vfunc_5(int n)
 {
     if (!m_strNifPath.IsEmpty())
-        FUN_140a0afd0()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), false, n);
+        GetNifLoadingService()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), false, n);
     return true;
 }
 
@@ -197,7 +197,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     if ((const char*)pRibbon->m_strNifPath != 0)
     {
-        NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
+        NiAVObjectPtr spModel = GetNifLoadingService()->Load(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         Unk_SceneWalker kWalker((NiAVObject*)spModel);
         NiAVObject* pObj;
@@ -266,7 +266,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         spTexture->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
         spTexture->SetApplyMode((NiTexturingProperty::ApplyMode)1);
         spTexture->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
-        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5)));
+        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(GetNifLoadingService()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5)));
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
 
         NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -337,14 +337,14 @@ void CRibbonEffect::vfunc_4()
         m_spOwner->AttachChild(static_cast<NiAVObject*>(m_spRoot), true);
     m_spRoot->UpdateEffects();
     m_spRoot->UpdateProperties();
-    ((class NiAVObject*)(void*)(m_spRoot.operator->()))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+    ((class NiAVObject*)(void*)(m_spRoot.operator->()))->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
     m_b2e = true;
 }
 
 // @0x141702bd0
 void CRibbonEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spRoot));
+    DetachFromParent(static_cast<NiAVObject*>(m_spRoot));
 }
 
 // @0x141702c00

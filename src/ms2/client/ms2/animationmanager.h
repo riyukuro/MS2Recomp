@@ -22,17 +22,17 @@ public:
     CAnimationManager(GameObject* pOwner);                  // 0x14099dbe0
     virtual ~CAnimationManager();                           // 0x14099dc80, ??_G 0x1409a15e0
     // True when the named sequence of the owner's actor is currently active (state 1).
-    bool FUN_14099dcd0(const efd::utf8string& kName);       // 0x14099dcd0
+    bool IsAnimationPlaying(const efd::utf8string& kName);       // 0x14099dcd0
     // Name of the animation as the owner's model knows it (model-path prefix, else the plain name).
-    CString FUN_14099ddb0(const efd::utf8string& kName);    // 0x14099ddb0
+    CString ResolveAnimationName(const efd::utf8string& kName);    // 0x14099ddb0
     // Plays kSrc on the owner at speed fScale (bForce restarts it); false when the model has no such sequence.
-    bool FUN_14099e050(Unk_AnimRef& kSrc, float fScale, bool bForce);   // 0x14099e050
-    void FUN_14099e640();                                   // 0x14099e640 replay the current animation
-    void FUN_14099e680();                                   // 0x14099e680 stop
-    void FUN_14099e710(float fOffset);                      // 0x14099e710 offset of the current sequence
+    bool PlayAnimation(Unk_AnimRef& kSrc, float fScale, bool bForce);   // 0x14099e050
+    void ReplayAnimation();                                   // 0x14099e640 replay the current animation
+    void StopAnimation();                                   // 0x14099e680 stop
+    void SetAnimationOffset(float fOffset);                      // 0x14099e710 offset of the current sequence
     void FUN_14099e7a0(void* p);                            // 0x14099e7a0 forwards to the table
     void FUN_14099e7d0(void* p);                            // 0x14099e7d0 forwards to the table
-    void FUN_14099e800(void* pList);                        // 0x14099e800 append all sequence names to a CString list
+    void GetAnimationNames(void* pList);                        // 0x14099e800 append all sequence names to a CString list
     // @0x140a53f90
     Unk_AnimRef& FUN_140a53f90() { return m_78; }           // accessor COMDAT (effectobject.cpp)
 

@@ -24,7 +24,7 @@ MS2_FPCLI5(FieldPropertyPhotoStudio) };
 class FieldPropertyAmbientLightCli : public FieldPropertyAmbientLight {
 public:
     virtual void vfunc_4();
-    Unk_Vec3f FUN_140b27a80() const;                    // m_color.ToColor() (the target colour of the fade)
+    Unk_Vec3f GetColor() const;                    // m_color.ToColor() (the target colour of the fade)
     Unk_Vec3f m_vecOld = Unk_Vec3f(0, 0, 0);            // +0x20
     bool m_bCached;                                     // +0x2c
     float m_fCached;                                    // +0x30
@@ -34,11 +34,11 @@ MS2_CHECK_SIZE(FieldPropertyAmbientLightCli, 0x38);
 class FieldPropertyDirectionalLightCli : public FieldPropertyDirectionalLight {
 public:
     virtual void vfunc_4();
-    Unk_Vec3f FUN_140b27c60() const;                    // m_color1.ToColor()
+    Unk_Vec3f GetColor() const;                    // m_color1.ToColor()
     Unk_Vec3f m_vecOld = Unk_Vec3f(0, 0, 0);            // +0x28
     bool m_bCached;                                     // +0x34
     float m_fCached;                                    // +0x38
 };
 MS2_CHECK_SIZE(FieldPropertyDirectionalLightCli, 0x40);
 
-MS2Ptr<FieldProperty> FUN_140b26ff0(int nType);          // factory: 1..11 = Gravity .. PhotoStudio
+MS2Ptr<FieldProperty> CreateFieldProperty(int nType);          // factory: 1..11 = Gravity .. PhotoStudio

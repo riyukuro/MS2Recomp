@@ -98,7 +98,7 @@ private:
 };
 MS2_CHECK_SIZE(ASDialog, 0x88);
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
-Unk_SingletonObj* FUN_140939a00();
+Unk_SingletonObj* GetMeratMarketMan();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 int FUN_1422db730();
 class Unk_AdPlayerMgr;
@@ -233,7 +233,7 @@ int UIAdPushDialog::vfunc_65()
     if (!UIDialog::vfunc_65())
         return 0;
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
-    reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->SendMeretMarketMode103(1);
+    reinterpret_cast<CMeratMarketMan*>(GetMeratMarketMan())->SendMeretMarketMode103(1);
     return 1;
 }
 
@@ -442,7 +442,7 @@ bool UIAdPushDialog::AddBundle(MS2Ptr<CMeratMarketProduct> item, int n4c, int n5
         return false;
     if (m_sns.find(item->m_premium.m_nId) != m_sns.end())
         return false;
-    if (!reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->IsPushableProduct(reinterpret_cast<const MS2Ptr<CMeratMarketProduct>&>(item)))
+    if (!reinterpret_cast<CMeratMarketMan*>(GetMeratMarketMan())->IsPushableProduct(reinterpret_cast<const MS2Ptr<CMeratMarketProduct>&>(item)))
         return false;
     int nId = CPtred::InterlockedInc(&DAT_1439f60ac);
     MS2Ptr<AdPushEntityLimitedBundle> bundle(new AdPushEntityLimitedBundle(nId));
@@ -985,7 +985,7 @@ bool AdPushEntityLimitedBundle::vfunc_1()
         {
             if (m_item.get())
             {
-                MS2Ptr<CMeratMarketProduct> fresh = reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d578d0(m_item->m_key);
+                MS2Ptr<CMeratMarketProduct> fresh = reinterpret_cast<CMeratMarketMan*>(GetMeratMarketMan())->FindAdProduct(m_item->m_key);
                 if (fresh.get())
                     SetMarketItem(fresh);
             }
@@ -1047,7 +1047,7 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
             ((class TiXmlNode*)(class Unk_AdXmlNode*)(pRoot))->RemoveChild((class TiXmlNode*)(pNode));
         return;
     }
-    XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_key.FUN_1409b0470());
+    XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_key.GetKeyString());
     XmlSetAttr((class TiXmlElement*)(pNode), "minimize", m_bMinimized);
     XmlSetAttr((class TiXmlElement*)(pNode), "endTime", *(__int64 const*)&static_cast<__int64&>(m_endTime));
     __int64 nSaleEnd = m_item->m_premium.GetEndDate(0).Get();

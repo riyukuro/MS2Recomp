@@ -119,7 +119,7 @@ bool CNPSMan::IsShown()
 }
 
 // @0x140db9170
-void CNPSMan::FUN_140db9170()
+void CNPSMan::AddPlatformSurveyParameter()
 {
     __imp_AddSurveyParameterA("platform", DAT_142e36cfc);
 }
@@ -139,7 +139,7 @@ TSingleton<CNPSMan>::~TSingleton()
 // @0x140db9270
 // The exe evaluates the stack args (&kColor.r + 2, + 1) into pointer temps before the CStringA conversion: the
 // components are addressed off r with pointer arithmetic (`&kColor.g` is a simple arg that cl evaluates after the call).
-NiColor FUN_140db9270(CStringA& strText)
+NiColor ParseColor(CStringA& strText)
 {
     static NiColor kDefault(1.0f, 0.0f, 1.0f);
     if (strText.IsEmpty())
@@ -152,8 +152,8 @@ NiColor FUN_140db9270(CStringA& strText)
 }
 
 // @0x140db93e0
-// The components are addressed off r with pointer arithmetic, as in FUN_140db9270.
-NiColorA FUN_140db93e0(const CStringA& strText)
+// The components are addressed off r with pointer arithmetic, as in ParseColor.
+NiColorA ParseColorA(const CStringA& strText)
 {
     static NiColorA kDefault(1.0f, 0.0f, 1.0f, 1.0f);
     if (strText.IsEmpty())

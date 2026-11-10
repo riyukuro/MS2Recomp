@@ -40,12 +40,12 @@ public:
     CMeratMarketBasket();                                   // 0x140d61300
     virtual ~CMeratMarketBasket();                          // 0x140d61380
 
-    Unk_MeratProductKey FUN_140d613e0();                    // the product's key (a default key without a product)
-    void FUN_140d61450(MS2Ptr<ASMeratMarketBuyBillData> spBill);    // take the product and the counts of a bill
+    Unk_MeratProductKey GetProductKey();                    // the product's key (a default key without a product)
+    void SetFromBill(MS2Ptr<ASMeratMarketBuyBillData> spBill);    // take the product and the counts of a bill
     // @0x140d6a9d0
-    void FUN_140d6a9d0(bool bBought) { m_b34 = bBought; }
+    void SetBought(bool bBought) { m_b34 = bBought; }
     // @0x140d676f0
-    bool FUN_140d676f0() { return m_b34; }
+    bool IsBought() { return m_b34; }
     // @0x1413159c0
     int FUN_1413159c0() { return m_n30; }
 
@@ -123,15 +123,15 @@ public:
     void ReadBookMarkProducts(__int64 nId, CInPacket& packet);
     void AddProductToMapAndList(MS2Ptr<CMeratMarketProduct> spProduct, Unk_MeratProductMap& map, Unk_MeratProductArray& list);
     MS2Ptr<CMeratMarketProduct> FUN_140d57150(Unk_MeratProductKey key, __int64 nBookMarkId);
-    MS2Ptr<CMeratMarketProduct> FUN_140d575e0(Unk_MeratProductKey key);
-    MS2Ptr<CMeratMarketProduct> FUN_140d576a0(Unk_MeratProductKey key);
+    MS2Ptr<CMeratMarketProduct> FindSearchResultProduct(Unk_MeratProductKey key);
+    MS2Ptr<CMeratMarketProduct> FindBlueprintProduct(Unk_MeratProductKey key);
     MS2Ptr<CMeratMarketProduct> GetAdProduct(int nIndex);
-    MS2Ptr<CMeratMarketProduct> FUN_140d578d0(Unk_MeratProductKey key);
+    MS2Ptr<CMeratMarketProduct> FindAdProduct(Unk_MeratProductKey key);
     bool GetVisiblePremiumProducts(unsigned int nCategory, int nTab, Unk_MeratProductArray& out);
     MS2Ptr<CMeratMarketProduct> FUN_140d57d80(Unk_MeratProductKey key);
     void ClearLists();
     MS2Ptr<CMeratMarketBasket> GetBasketLine(unsigned int nIndex);
-    MS2Ptr<CMeratMarketProduct> FUN_140d57f70(Unk_MeratProductKey key);
+    MS2Ptr<CMeratMarketProduct> FindBasketProduct(Unk_MeratProductKey key);
     int AddBasketLine(MS2Ptr<CMeratMarketBasket> spLine);
     int AddProductToBasket(MS2Ptr<CMeratMarketProduct> spProduct, __int64 nBookMarkId);
     void MarkBasketLineBought(unsigned int nIndex);
@@ -141,7 +141,7 @@ public:
     void RefreshAfterBuyFailure(CMeratMarketPacket::BuyPacket& buy, int nError);
     void FinishPendingPurchases(int bCancel);
     void ClearPendingPurchases();
-    int FUN_140d59e20(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType);
+    int FillBasketInfo(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType);
     void QueuePurchase(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType);
     void GetShopDialogIfShopBuy();
     __int64 GetEarliestSaleEnd();
@@ -152,11 +152,11 @@ public:
     void OnMyLevelChanged(NotifyObject* pObject);
     void SendMeretMarketMode30(MS2Ptr<CMeratMarketBuy> spBuy);
     __int64 FUN_140d5a1b0();
-    __int64 FUN_140d5a1d0();
+    __int64 GetSellerLimit();
     void OnDialogClosed(const int& nUIClassID);
     Unk_MeratProductArray& GetBlueprintList() { return m_150; }     // 0x140bc09d0 (inline COMDAT; uiblueprintmarketdialog.cpp)
     void CloseMarketAndClearAds();
-    int FUN_140d5a2e0();
+    int IsSellerLimitReached();
     CStringW GetPurchaseErrorText(int nError, MS2Ptr<CPendingBuyBase> spBuy);
     int GetRegisteredDesignCount();
     bool CanBuyProduct(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);

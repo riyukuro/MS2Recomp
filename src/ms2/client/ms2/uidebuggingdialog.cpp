@@ -92,7 +92,7 @@ void* FUN_140876480(void* pOut, int nCat);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCat);
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow text -> CStringW
 // The animation service view that returns the npc model name.
-struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };   // C3: as equipmodel.cpp defines it
+struct Unk_EmModelLoader { efd::utf8string GetCurrentSequenceName(const egf::EntityID& kId); };   // C3: as equipmodel.cpp defines it
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 float FUN_14028d3a0(float fValue);                                       // table value of a speed
@@ -225,7 +225,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                     if (!spData)
                         continue;
                     ecr::SceneGraphService* pSceneSvc = FUN_1413f98b0();
-                    NiAVObject* pRoot = pSceneSvc->GetSceneGraphFromEntity(pNpc->FUN_14123c410());
+                    NiAVObject* pRoot = pSceneSvc->GetSceneGraphFromEntity(pNpc->GetEntity());
                     Unk_SceneWalker walker((NiAVObject*)(pRoot));
                     while (void* pNode = walker.Next(true))
                     {
@@ -245,11 +245,11 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                                 m_bPicking = 0;
                                 if (m_nTargetId != 0 || m_nMarkerId != 0)
                                     FUN_1412860c0();
-                                m_nTargetId = pNpc->FUN_14123c580();
+                                m_nTargetId = pNpc->GetObjectId();
                                 NoticeMessage kMarker;   // C3: was Unk_DbgMarker
                                 reinterpret_cast<CString&>(((Unk_DbgMarker&)(kMarker)).m_pName) = ((struct Unk_DbgConfig*)FUN_1401d31f0())->m_strMarkerEffect;
                                 ((Unk_DbgMarker&)(kMarker)).m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
-                                ((class NoticeMessage*)(struct Unk_DbgMarker*)(&((Unk_DbgMarker&)(kMarker))))->SetActor(pNpc->FUN_14123c580());
+                                ((class NoticeMessage*)(struct Unk_DbgMarker*)(&((Unk_DbgMarker&)(kMarker))))->SetActor(pNpc->GetObjectId());
                                 m_nMarkerId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_DbgMarker&)(kMarker))));
                                 bFound = true;
                                 break;
@@ -282,7 +282,7 @@ void UIDebuggingDialog::vfunc_72()
         Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nTargetId));
         if (pNpc != 0)
         {
-            efd::utf8string kModel = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(pNpc->FUN_14123c460());
+            efd::utf8string kModel = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->GetCurrentSequenceName(pNpc->GetEntityID());
             CStringW strNpcName = pNpc->vfunc_77().GetLength() == 0 ? L"Noname" : (LPCWSTR)pNpc->vfunc_77();
             FUN_141286050("m_npcName", strNpcName);
             FUN_141286050("m_aniName", FUN_14016a730(kModel.c_str(), 0));

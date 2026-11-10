@@ -141,7 +141,7 @@ void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_14151f200();
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 int FUN_140d74e80(CStringW& str);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 void FUN_140710590(COutPacket& packet);
@@ -277,7 +277,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onRenew", szMethod) == 0)
     {
         __int64 nNotice = *GetClientConstants()->UgcHomeExtensionNoticeDate.Get() * 60 * 60 * 24;
-        Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> target(pPC->GetUGCMapInfo());
         if ((target.get() ? true : false) && target->m_n30 - GetServerTime() > nNotice)
         {
             __int64 nExpire = target->m_n30 - nNotice;
@@ -335,7 +335,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
         {
             if (pPC->HasNoHome() == 0)
                 FUN_141ab3760(pPC->GetHomeName());
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox != 0)
                 ((class UIMessageBox*)(class UIMessageBox*)(pBox))->FUN_1419f82b0(strError);
             return 0;
@@ -355,11 +355,11 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
     if (pPC != 0 && pPC->HasNoHome() == 0)
     {
         FUN_141ab3760(pPC->GetHomeName());
-        if (bRefresh != 0 && pPC->FUN_141523c50() != 0)
+        if (bRefresh != 0 && pPC->GetUGCMapInfo() != 0)
         {
             if (pPC->FUN_141527ed0() != 0)
             {
-                FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
+                FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
                 m_30->Invoke("setContractEffect", bRefresh);
             }
             else
@@ -395,7 +395,7 @@ void UIRealEstateDialog::FUN_141ab3820()
         return;
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->HasNoHome() == 0)
-        FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
+        FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
     if (m_30.get() != 0)
         m_30->Invoke("setContractEffect", 1);
 }
@@ -457,7 +457,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         if (DAT_143ab2898 < nPrice)
                         {
                             efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-                            FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                            FUN_140d73aa0(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
                     }
@@ -472,7 +472,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     else if (g_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
                         efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-                        FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                        FUN_140d73aa0(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -556,7 +556,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     __int64 nTime;
     if (pPC->HasNoHome() == 0)
     {
-        Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> target(pPC->GetUGCMapInfo());
         if (m_nMapId == target->m_n20 && m_nGroup == target->m_n24)
             bOwn = 1;
     }
@@ -565,7 +565,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     if (bOwn != 0)
     {
         reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", 0);
-        FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
+        FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
         m_30->Invoke("setContractEffect", 0);
         FUN_141ab3760(pPC->GetHomeName());
     }
@@ -631,7 +631,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     else
     {
         obj.FUN_1407cb9c0("priceType", 2);
-        obj.FUN_1409c0d20("item", nItem);
+        obj.SetMemberUInt("item", nItem);
         MS2Ptr<CItemData> spData = FUN_14053f870(nItem);
         if (spData.get() != 0)
         {

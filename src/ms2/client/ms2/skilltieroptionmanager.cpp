@@ -119,7 +119,7 @@ int CSkillTierOptionManager::Update()
             continue;
         bChanged = 1;
         ATL::CAtlArray<unsigned int> aSkills;
-        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)reinterpret_cast<PC*>(m_pOwner)->FUN_141654700(), &aSkills);
+        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)reinterpret_cast<PC*>(m_pOwner)->GetJobGroupId(), &aSkills);
         for (unsigned j = 0; j < aSkills.GetCount(); j++)
         {
             if (Unk_LockGuard guard = m_lock) { __assume(0); } else

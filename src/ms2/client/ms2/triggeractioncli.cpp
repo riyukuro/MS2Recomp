@@ -472,7 +472,7 @@ MS2Ptr<TriggerObject> TriggerObject::Create(egf::Entity* pEntity)
 }
 
 // ---- entity / world service views ----
-void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
+void SetCachedBoolProperty(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
 void* FUN_1408b6b20(void* pDst, const void* pSrc);                        // copy an entity id
 bool FUN_140de8e30(const efd::utf8string& str, const char* psz);          // == psz
@@ -507,7 +507,7 @@ public:
 };
 
 // world / animation services
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
+class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
@@ -681,7 +681,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     if (pRoot != 0)
     {
         FUN_141851f90(pRoot, 0.0f);
-        pRoot->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        pRoot->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
     FUN_141545250(TRIG_ENT()->GetEntityID(), bFlag);
     if (bOk && !bSkipFx)
@@ -697,7 +697,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
             kReq.m_spNode = ((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID()))));
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         void* pUi = FUN_140c9b540(0x4e29);
         if (pUi != 0)
@@ -720,7 +720,7 @@ void TriggerObjectActor::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     FUN_140b60e10(TRIG_ENT_RAW(), bOn);
     {
         efd::utf8string kAnim((const char*)strAnim);
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(((egf::Entity*)(void const*)(TRIG_ENT()))->GetEntityID(), kAnim, 1.0f, false);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->PlayAnimation(((egf::Entity*)(void const*)(TRIG_ENT()))->GetEntityID(), kAnim, 1.0f, false);
     }
     void* pUi = FUN_140c9b540(0x4e29);
     if (pUi != 0)
@@ -742,7 +742,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     int nFade = (&pEvent->m_arg)->vfunc_3();
     float fFade = (float)nFade * 0.1f;
     bool bOk = WorldService::GetInstance()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
-    FUN_14098c6e0((Unk_CachedEntity *)(TRIG_ENT()), 0x4df0c0de, bFlag);
+    SetCachedBoolProperty((Unk_CachedEntity *)(TRIG_ENT()), 0x4df0c0de, bFlag);
     FUN_140b60e40(TRIG_ENT_RAW(), bShow);
     if (bOk && !bSkipFx)
     {
@@ -757,7 +757,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
             kReq.m_spNode = ((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID()))));
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
     }
 }
@@ -825,8 +825,8 @@ void TriggerObjectCube::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
 
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 bool FUN_14028d470(float a, float b);
-void* FUN_140967100();
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+void* GetUITalkManager();
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // Depth-first walker over a scene graph (a queue of pending nodes; unrecovered class).
 class Unk_NodeQueue {
@@ -893,7 +893,7 @@ void TriggerObjectCamera::vfunc_3()
     {
         Unk_CameraFlyBy fb = CameraMgr::GetInstance()->MakeFlyBy(fSpeed, set);
         fb.m_nKind = nType;
-        CameraMgr::GetInstance()->FUN_140aed580(&fb, nType, 1.0f);
+        CameraMgr::GetInstance()->SetFlyBy(&fb, nType, 1.0f);
     }
     else
     {
@@ -909,7 +909,7 @@ void TriggerObjectCamera::vfunc_3()
     {
         CString strFile("./Data/Resource/Model/Camera/");
         strFile += spPath->GetInfo()->m_strPath;
-        NiAVObjectPtr spNode = ((class CNifLoadingService*)FUN_140a0afd0())->Load(strFile, false, 5, 0, 0);
+        NiAVObjectPtr spNode = ((class CNifLoadingService*)GetNifLoadingService())->Load(strFile, false, 5, 0, 0);
         if (spNode)
         {
             spNode->Update(0.0f, true);
@@ -933,7 +933,7 @@ void TriggerObjectCamera::vfunc_3()
             }
         }
     }
-    CameraMgr::GetInstance()->FUN_1409478a0()->m_20 = fDur;
+    CameraMgr::GetInstance()->GetCameraEffectState()->m_20 = fDur;
     if (nMode == 5)
     {
         CActionCameraData::DataPtr spData = CActionCameraData::Get(((efd::utf8string*)&static_cast<class efd::utf8string const&>(kPath))->c_str());
@@ -945,8 +945,8 @@ void TriggerObjectCamera::vfunc_3()
         }
     }
     if (nMode == 4)
-        ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
-    CameraMgr::GetInstance()->FUN_140aed750(nMode, 0);
+        ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
+    CameraMgr::GetInstance()->SetMode(nMode, 0);
     if (nMode == 4 && FUN_14028d470(fSpeed, 0.0f))
         ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->FUN_141863260();
 }
@@ -956,7 +956,7 @@ void TriggerObjectCamera::vfunc_4()
 {
     CameraMgr::GetInstance()->FUN_140af7be0(1);
     CameraMgr::GetInstance()->FUN_140aed1c0();
-    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->GetModeType() != 2)
     {
         efd::utf8string kPath;
         float fDur = 0.0f;
@@ -981,16 +981,16 @@ void TriggerObjectCamera::vfunc_4()
             fb.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
             fb.m_from.m_18 = CameraMgr::GetInstance()->FUN_140af8290();
             fb.m_to = fb.m_from;
-            fb.m_to.m_0 = CameraMgr::GetInstance()->FUN_140af24f0()->FUN_140ad4b30();
-            fb.m_to.m_4 = CameraMgr::GetInstance()->FUN_140af24f0()->FUN_140af7ef0();
-            fb.m_to.m_8 = CameraMgr::GetInstance()->FUN_140af24f0()->FUN_140af7e90();
-            fb.m_to.m_18 = CameraMgr::GetInstance()->FUN_140af24f0()->FUN_140af8260();
-            CameraMgr::GetInstance()->FUN_140aed580(&fb, nType, 1.0f);
-            CameraMgr::GetInstance()->FUN_140aed750(2, 1);
+            fb.m_to.m_0 = CameraMgr::GetInstance()->GetTargetMode()->FUN_140ad4b30();
+            fb.m_to.m_4 = CameraMgr::GetInstance()->GetTargetMode()->FUN_140af7ef0();
+            fb.m_to.m_8 = CameraMgr::GetInstance()->GetTargetMode()->FUN_140af7e90();
+            fb.m_to.m_18 = CameraMgr::GetInstance()->GetTargetMode()->FUN_140af8260();
+            CameraMgr::GetInstance()->SetFlyBy(&fb, nType, 1.0f);
+            CameraMgr::GetInstance()->SetMode(2, 1);
         }
         else
         {
-            CameraMgr::GetInstance()->FUN_140aed750(2, 0);
+            CameraMgr::GetInstance()->SetMode(2, 0);
         }
         CameraMgr::GetInstance()->FUN_140af0b70(0, CameraMgr::GetInstance()->FUN_140af7f00(),
             CameraMgr::GetInstance()->FUN_140af7ea0());

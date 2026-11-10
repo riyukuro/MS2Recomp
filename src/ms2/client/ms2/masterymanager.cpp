@@ -115,7 +115,7 @@ int CMasteryManager::HasRewards(int nType, int nLevel)
         return 0;
     int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
     Unk_MmItemArray rewards;
-    ((class Unk_MmTable*)FUN_1409670c0())->Rewards(nStep, pPlayer->FUN_141654700(), rewards);
+    ((class Unk_MmTable*)FUN_1409670c0())->Rewards(nStep, pPlayer->GetJobGroupId(), rewards);
     return rewards.GetCount() != 0 ? 1 : 0;
 }
 
@@ -159,7 +159,7 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
             Unk_IngRef spCost = spRow->m_ingredients.FUN_14026bdc0(i);
             if (spCost->m_b != 0)
             {
-                if (g_143ab2a90.FUN_140a5f780(spCost->m_b, 0) < spCost->m_c)
+                if (g_143ab2a90.GetItemCountByTag(spCost->m_b, 0) < spCost->m_c)
                     return (Unk_MasteryResult)4;
             }
             else

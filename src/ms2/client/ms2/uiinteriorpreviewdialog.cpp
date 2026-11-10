@@ -39,8 +39,8 @@ class Unk_IpUIMgr { public: void FUN_141adc530(int nClass); };
 
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow copy
 CStringW GetStringCommon(int nStringId);
-void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
-void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
+void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
+void DestroyItemInfoSlot(const CString& strBindID);                       // release the item bound to the name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // ---- header statics ----
@@ -188,7 +188,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                     ASObj objItem(m_28);
                     ((class AScript&)(objItem)).FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
                     objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
-                    FUN_141415450(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
+                    CreateItemInfoSlot(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
                     arrItems.PushValue(objItem.FUN_1422bb870());
                     m_188.Add(strKey);
                     seen.AddTail(nCubeItemId);
@@ -214,7 +214,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
 void UIInteriorPreviewDialog::FUN_140f4dac0()
 {
     for (size_t i = 0; i < m_188.GetCount(); ++i)
-        FUN_141415600(m_188[i]);
+        DestroyItemInfoSlot(m_188[i]);
     m_188.RemoveAll();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

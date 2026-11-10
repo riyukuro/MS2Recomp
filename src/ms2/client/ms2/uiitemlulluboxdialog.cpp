@@ -99,11 +99,11 @@ extern __int64 DAT_143ab2898;                  // the meso
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 int FUN_141276180(const CString&, const CString&);
-void FUN_14141f970(const CString&);
-void FUN_141415600(const CString&);
+void DestroyItemSlotBag(const CString&);
+void DestroyItemInfoSlot(const CString&);
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
-MS2Ptr<CItem> FUN_141420330(void*, int);
-void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
+MS2Ptr<CItem> GetItemFromArray(void*, int);
+void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140763e10(int);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
@@ -112,7 +112,7 @@ void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_1412751f0(const CStringW&, int, int);
 int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
-void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
+void SetChildText(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140d00c80(const Scaleform::GFx::Value&, CString, int);
 int FUN_140bd09c0(void*);
 
@@ -155,7 +155,7 @@ void UIItemLulluBoxDialog::vfunc_67()
     m_resultItem = 0;
     m_skipEffect = 0;
     m_autoPay = 0;
-    FUN_14141f970(m_bagId);
+    DestroyItemSlotBag(m_bagId);
     ReleaseSlotBinds();
 }
 
@@ -300,7 +300,7 @@ int UIItemLulluBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIItemLulluBoxDialog::ReleaseSlotBinds()
 {
     for (size_t i = 0; i < m_slotBinds.size(); ++i)
-        FUN_141415600(m_slotBinds[i]);
+        DestroyItemInfoSlot(m_slotBinds[i]);
     m_slotBinds.clear();
 }
 
@@ -405,11 +405,11 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
     FUN_140cff840(FUN_1422dbb40(), "m_previewBagScroll", true);
     if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowTitle")) {
         CStringW title = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowTitle", L"");
-        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowTitle", GetStringCommonByKey(title));
+        SetChildText(FUN_1422dbb40(), "m_showWindowTitle", GetStringCommonByKey(title));
     }
     if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowDesc")) {
         CStringW desc = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowDesc", L"");
-        FUN_140cfee80(FUN_1422dbb40(), "m_showWindowDesc", GetStringCommonByKey(desc));
+        SetChildText(FUN_1422dbb40(), "m_showWindowDesc", GetStringCommonByKey(desc));
     }
     FUN_140e9d2b0();
 }
@@ -485,9 +485,9 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
         MS2Ptr<CItemData> idata = FUN_14053f870(d.vfunc_o18_0());
         if (idata == 0)
             continue;
-        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
+        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->GetJobGroupId()))
             continue;
-        if (!static_cast<Unk_LulluBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()))
+        if (!static_cast<Unk_LulluBoxData*>(idata.operator->())->IsGenderAllowed(self->GetGender()))
             continue;
         filtered.push_back(d);
     }
@@ -503,9 +503,9 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
         if (data->function.name != L"OpenItemBoxLulluSimple")
             m_special1.insert(ItemEntity(d.vfunc_o18_0(), d.vfunc_o18_1(), d.vfunc_o18_2(), false, false, false, false));
     }
-    FUN_14141f970(m_bagId);
+    DestroyItemSlotBag(m_bagId);
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
-    param->m_pfnGetItem = FUN_141420330;
+    param->m_pfnGetItem = GetItemFromArray;
     param->m_nIconType = 0x415;
     param->m_nFlags = 0x800;
     param->m_bEnabled = true;
@@ -551,7 +551,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
         unsigned count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
-        FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
+        CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         slot->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
         m_slotBinds.push_back(bagKey);
@@ -575,7 +575,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
                     continue;
                 item->SetCountClamped(e.vfunc_o18_2());
                 bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
-                FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
+                CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 m_slotBinds.push_back(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
                 if (unc.get()) {
@@ -713,7 +713,7 @@ void UIItemLulluBoxDialog::FUN_140e9f540()
         return;
     CString keyTag = LULLUBOX_ATTR(data)->GetString(L"keyItemTag", "");
     int keyId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(keyTag);
-    MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(keyId);
+    MS2Ptr<CItem> inv = g_143ab2a90.FindItemByTag(keyId);
     if (inv == 0)
         return;
     if (g_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)

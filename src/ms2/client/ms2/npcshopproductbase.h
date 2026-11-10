@@ -35,7 +35,7 @@ public:
     int FUN_140db5e70();                                            // the product serial id
     MS2Ptr<CItem> GetItem();                                  // a copy of the item handle
     int FUN_140db5ee0();                                            // the product type
-    ATL::CAtlArray<CString>* FUN_140db5f00();                         // the category list
+    ATL::CAtlArray<CString>* GetCategories();                         // the category list
     ATL::CAtlArray<CString>* FUN_140db7040();
 
     int m_18;                                                       // +0x18 serial id
@@ -67,12 +67,12 @@ public:
     int FUN_140db6fd0();
     CString FUN_140db6ff0();                                        // the price tag text
     int IsSoldOut();                                            // sold out
-    bool FUN_140db70a0(CStringW& strError);                         // can be bought now (fills the reason)
+    bool CheckBuyPeriod(CStringW& strError);                         // can be bought now (fills the reason)
     __int64 FUN_140db8180();                        // sale price
-    __int64 FUN_140db81a0();                        // original price
+    __int64 GetOriginalPrice();                        // original price
     void UpdateRemainingCount();                                           // m_54 = max(m_5c - m_58, 0)
     int FUN_140db8210();                                            // the most that can be bought at once
-    int FUN_140db8400();                                            // the most the player can afford
+    int GetMaxAffordableCount();                                            // the most the player can afford
     int FUN_140db8580(int nCount);                                  // pay nCount items; 1 when the payment can be made (exe: xor eax,eax / mov eax,1; callers test eax)
     bool CheckStarPointEvent();                                           // the star point event is running
     CString ToLogString();                                        // debug text

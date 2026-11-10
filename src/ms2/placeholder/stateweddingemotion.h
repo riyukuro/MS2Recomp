@@ -47,7 +47,7 @@ MS2_CHECK_OFFSET(Unk_SyncWeddingEmotion, m_bC4, 0xc4);
 // The argument of State slots 22/28 (a state request); the exe hands the same sync record through both paths.
 #ifndef MS2_UNK_STATEARG22_DEFINED   // also defined by another header (w539: both may be included)
 #define MS2_UNK_STATEARG22_DEFINED
-class Unk_StateArg22 : public Unk_StateDataArg
+class StateSyncObject : public Unk_StateDataArg
 {
 };
 #endif
@@ -101,7 +101,7 @@ public:
     virtual void vfunc_9(double fTime);                     // 9  0x140ac6ce0
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140ac6d10
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140ac7090
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140ac7090
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140ac7460
 
     MS2Ptr<StateWeddingEmotionData> m_spData;               // +0x40

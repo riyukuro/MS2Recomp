@@ -231,7 +231,7 @@ public:
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1590
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1620
 
-    bool FUN_1417c16b0(MS2Ptr<Unk_StateArg22> p);               // the request carries the same game state
+    bool FUN_1417c16b0(MS2Ptr<StateSyncObject> p);               // the request carries the same game state
 
     int m_n18;                                                  // +0x18
     int m_n1c;                                                  // +0x1c -1
@@ -249,7 +249,7 @@ public:
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1890
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1910
 
-    bool FUN_1417c1990(MS2Ptr<Unk_StateArg22> p);               // the request carries the same dance
+    bool FUN_1417c1990(MS2Ptr<StateSyncObject> p);               // the request carries the same dance
 
     int m_n18;                                                  // +0x18
     bool m_b1c;                                                 // +0x1c
@@ -324,7 +324,7 @@ public:
     virtual void TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID,
         const NiFixedString& kTextKey, const NiTextKeyMatch* pkMatchObject,
         NiControllerSequence* pkSeq, float fEventTime);        // 12 0x1417bf760
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);             // 22 0x1417bf7f0
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);             // 22 0x1417bf7f0
 
     bool m_bCrawling;                                           // +0x40 between "begin_crawling" and "end_crawling"
 };

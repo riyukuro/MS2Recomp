@@ -53,7 +53,7 @@ struct CRuntimeClass {
     CRuntimeClass* m_pNextClass;
     const void* m_pClassInit;
 };
-CRuntimeClass * FUN_140c7ee70(void);
+CRuntimeClass * GetThisClass(void);
 class CNodeViewerDlg { public: static const CRuntimeClass classCNodeViewerDlg; };
 struct Unk_ClEquipSlotEntry { int m_0; int m_eGroup; int m_8; };     // uiclosetdialog.cpp (m_eGroup is EquipSlotType)
 extern const Unk_ClEquipSlotEntry DAT_142d34e50[];
@@ -161,7 +161,7 @@ extern const unsigned int DAT_142e03694 = 0xc7f9dd65u;           // 0x142e03694
 extern const unsigned int DAT_142e0372c = 0xd3b04f05u;           // 0x142e0372c
 // 0x142e12280
 alignas(16) const CRuntimeClass CNodeViewerDlg::classCNodeViewerDlg = {
-    "CNodeViewerDlg", 0x150, 0xffff, nullptr, &FUN_140c7ee70, nullptr, nullptr,
+    "CNodeViewerDlg", 0x150, 0xffff, nullptr, &GetThisClass, nullptr, nullptr,
 };
 // 0x142e122b0
 alignas(16) Sd_142e122b0 DAT_142e122b0 = {

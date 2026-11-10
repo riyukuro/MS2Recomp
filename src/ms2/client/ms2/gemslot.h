@@ -63,7 +63,7 @@ public:
     virtual CString vfunc_15(int nIndex);               // 15 0x14126e750 "<name>.<index>"
     virtual DragSlot* vfunc_16(int nIndex);             // 16 0x14126e810 new GemSlot for the gem type of nIndex
 
-    int FUN_14126e930();                                // number of slots
+    int GetSlotCount();                                // number of slots
     int FUN_14126e960(int nIndex);                      // the gem type of a slot index
 
 public:

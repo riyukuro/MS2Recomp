@@ -79,7 +79,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
                 MS2Ptr<CItem> pOne = mapItems.GetValueAt(pos);
                 if (pOne == 0)
                     continue;
-                if (((CItem*)pOne)->FUN_1405276c0() == pOther->FUN_1409b95a0())
+                if (((CItem*)pOne)->FUN_1405276c0() == pOther->GetItemId())
                     bRemove = false;
             }
             if (bRemove)
@@ -154,7 +154,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a990(int nSlot, MS2Ptr<CItem>
     if (pIcon == 0)
         return MS2Ptr<ASEquipIcon>(0);
     pIcon->FUN_1409b9150(pSrc);
-    pIcon->FUN_1409b91f0(pItem);
+    pIcon->SetItem(pItem);
     m_28.SetAt(nSlot, pIcon);
     if (m_18.get() != 0)
     {
@@ -172,7 +172,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIco
     if (pIcon == 0)
         return MS2Ptr<ASEquipIcon>(0);
     pIcon->FUN_1409b9150(pSrc);
-    pIcon->FUN_1409b91f0(pItem);
+    pIcon->SetItem(pItem);
     if ((bool)m_18.get() && (bool)pIcon->FUN_1409b92e0().get())
     {
         m_18->Invoke("changeEquipItem", Scaleform::GFx::Value(pIcon->FUN_1409b92e0()->FUN_1422bb870()), FUN_140719210(nSlot), Scaleform::GFx::Value(pSrc->FUN_1422bb870()));

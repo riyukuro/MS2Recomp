@@ -47,8 +47,8 @@ MS2ActorUpdater::MS2ActorUpdater(egf::EntityID kId)
     float fRate = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateRate)->Read();
     if (fRate <= 0.0f)
         fRate = 60.0f;
-    ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pGate))->FUN_14108c240(1.0f / fRate);
-    m_pGate->FUN_14123ef30(reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateDuration)->Read());
+    ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pGate))->SetUpdateInterval(1.0f / fRate);
+    m_pGate->SetUpdateDuration(reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateDuration)->Read());
 }
 
 // @0x1414a8380
@@ -64,10 +64,10 @@ MS2ActorUpdater::~MS2ActorUpdater()
 }
 
 // @0x1414a8410
-float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
+float MS2ActorUpdater::UpdateDistB(const Vector3& kPos)
 {
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
-    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_kId));
     if ((egf::Entity*)spEntity != 0)
         reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
     m_fDistB = (kPos - kEntityPos).Length();
@@ -75,10 +75,10 @@ float MS2ActorUpdater::FUN_1414a8410(const Vector3& kPos)
 }
 
 // @0x1414a84f0
-float MS2ActorUpdater::FUN_1414a84f0(const Vector3& kPos)
+float MS2ActorUpdater::UpdateDistA(const Vector3& kPos)
 {
     Vector3 kEntityPos(0.0f, 0.0f, 0.0f);
-    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_kId));
     if ((egf::Entity*)spEntity != 0)
         reinterpret_cast<egf::Entity*>(((Unk_AuEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntityPos));
     m_fDistA = (kPos - kEntityPos).Length();
@@ -104,7 +104,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
     default:
         MS2_ASSERT_AT(0x31, FALSE);
     }
-    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_kId));
+    egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_kId));
     m_pGate->FUN_14176f500(spEntity, fInterval, fDuration);
 }
 

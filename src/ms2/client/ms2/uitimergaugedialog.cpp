@@ -17,7 +17,7 @@
 class Unk_CadScript : public AScript { public: template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&,MS2Ptr<T>&); };
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 class Unk_TimerPlayer {public:static void* Get(){return TSingleton<RoomTimerManager>::s_instance;}};
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 // The leaf was recovered first, before implementing this base.
 // @0x140edea60
 UITimerBase::UITimerBase():m_start(0),m_duration(0),m_offset(0){}
@@ -40,7 +40,7 @@ void UITimerBase::vfunc_87(unsigned long,unsigned int){}
 MS2_REPLACE_METHOD(0x140EDEB80, UITimerBase, vfunc_87, 15, 0xA92F4169);
 
 // @0x140edeba0
-unsigned int UITimerBase::FUN_140edeba0(){unsigned int now=FUN_141472bc0();if(m_offset>0)now+=m_offset*1000;return now;}
+unsigned int UITimerBase::FUN_140edeba0(){unsigned int now=GetServerTick();if(m_offset>0)now+=m_offset*1000;return now;}
 MS2_REPLACE_METHOD(0x140EDEBA0, UITimerBase, FUN_140edeba0, 68, 0x45EC88D5);
 
 // @0x140edec30

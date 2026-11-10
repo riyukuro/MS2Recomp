@@ -243,12 +243,12 @@ public:
     CClubCli();
     virtual ~CClubCli();
     MS2Ptr<CClubMember> FindMemberById(__int64 nCharacterId);    // member by character id
-    int FUN_140b129c0();                                        // number of members whose m_f0 is 0
+    int CountOnlineMembers();                                        // number of members whose m_f0 is 0
     void FUN_140b12ad0(CInPacket& packet);                      // opcode 0xf
     void FUN_140b12d70(CInPacket& packet);                      // opcode 0x11
     void FUN_140b13060(CInPacket& packet);                      // opcode 0x12
-    void FUN_140b13200(CInPacket& packet);                      // opcode 0x13
-    void FUN_140b133c0(CInPacket& packet);                      // opcode 0x14
+    void OnMemberLogin(CInPacket& packet);                      // opcode 0x13
+    void OnMemberLogout(CInPacket& packet);                      // opcode 0x14
     void FUN_140b135d0(CInPacket& packet);                      // opcode 0x15
     void OnPacketClubBuff(CInPacket& packet);                      // opcode 0x16
     void FUN_140b13b50(CInPacket& packet);                      // opcode 0x17

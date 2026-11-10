@@ -106,7 +106,7 @@ public:
 };
 // C3: FUN_140552770 is std::vector<float>::operator[] const
 class CGameOption;
-class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* GetGraphicOption(); };   // C3: unit-local view (def in applyeffect)
 unsigned char FUN_1401d1320(CCacheData*);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -161,9 +161,9 @@ int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_Skip
     check.m_nCaster = nCaster;
     check.m_pos = pEffect->m_pos;
     check.m_n14 = 0;
-    for (POSITION pos = spData->FUN_14119f540().GetHeadPosition(); pos != 0; spData->FUN_14119f540().GetNext(pos))
+    for (POSITION pos = spData->GetParams().GetHeadPosition(); pos != 0; spData->GetParams().GetNext(pos))
     {
-        Unk_SkipItem* pItem = reinterpret_cast<Unk_SkipItem*>(spData->FUN_14119f540().GetAt(pos).get());
+        Unk_SkipItem* pItem = reinterpret_cast<Unk_SkipItem*>(spData->GetParams().GetAt(pos).get());
         check.m_nRow = pItem->m_nKind;
         if (!pItem->m_bIgnore)
         {
@@ -180,7 +180,7 @@ int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_Skip
 // @0x1411b89e0
 bool EffectSkipMgr::LoadOption()
 {
-    int nOption = *(int*)((Unk_AeGameOption*)reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0();
+    int nOption = *(int*)((Unk_AeGameOption*)reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))->GetGraphicOption();
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)

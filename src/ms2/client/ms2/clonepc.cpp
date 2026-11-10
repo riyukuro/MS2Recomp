@@ -122,7 +122,7 @@ class CEquipItem : public CPtred
 {
 public:
     MS2Ptr<CItem> GetItem();                                  // 0x1411dc7a0 the item
-    struct Unk_EquipItemData* FUN_1411dc7f0();                       // 0x1411dc7f0 the item record
+    struct Unk_EquipItemData* GetItemData();                       // 0x1411dc7f0 the item record
     void GetKfmModels(ATL::CAtlArray<MS2Ptr<class CKfmModel> >* pOut);   // 0x1411dcbb0 the model parts
 };
 
@@ -130,7 +130,7 @@ public:
 
 extern char DAT_143acdb20;                                          // set while the avatar previews are disabled
 
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 class WorldService   // C3: member view for the former free stand-ins
@@ -154,7 +154,7 @@ void FUN_141ab6e80(NiAVObject* pObj);
 class CKfmModel   // C3: member view for the former free stand-ins
 {
 public:
-    class NiActorManager* FUN_1414400d0();
+    class NiActorManager* GetActorManager();
 };
 
 // ClonePC::ms_ClassInfo (0x143acdbc0) and its registration (0x1400e53e0 .text$di) are defined by
@@ -202,7 +202,7 @@ void ClonePC::vfunc_9(void* p)
 {
     PC::vfunc_9(p);
     char c = 0;
-    FUN_14098c6e0((class Unk_CachedEntity*)(p), 0xa0b6b179, *(bool const*)(&c));
+    SetCachedBoolProperty((class Unk_CachedEntity*)(p), 0xa0b6b179, *(bool const*)(&c));
 }
 MS2_REPLACE_METHOD(0x141086b70, ClonePC, vfunc_9, 59, 0x46BD94A4);
 
@@ -319,7 +319,7 @@ MS2_REPLACE_METHOD(0x141086ea0, ClonePC, vfunc_68, 24, 0x75150595);
 // @0x141086ec0
 void ClonePC::vfunc_149()
 {
-    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460()));
+    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(GetEntityID()));
     if (spActor == 0)
         return;
     {
@@ -328,7 +328,7 @@ void ClonePC::vfunc_149()
             m_kListD48.RemoveAll();
             reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3de0(1);
             ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
-            vfunc_152(&kEquips, reinterpret_cast<PC*>(m_pSourcePC)->FUN_1416561a0());
+            vfunc_152(&kEquips, reinterpret_cast<PC*>(m_pSourcePC)->GetEquipment());
             for (POSITION pos = kEquips.GetHeadPosition(); pos; kEquips.GetNext(pos))
             {
                 MS2Ptr<CEquipItem> spEquip(kEquips.GetAt(pos));
@@ -340,15 +340,15 @@ void ClonePC::vfunc_149()
                     MS2Ptr<CItem> spCopy = FUN_140ccac60(MS2Ptr<CItem>(spItem));
                     if (spCopy.get() != 0)
                     {
-                        spCopy.operator->()->SetObjectId(FUN_14123c580());
-                        PC::FUN_141653d10(MS2Ptr<CItem>(spCopy));
+                        spCopy.operator->()->SetObjectId(GetObjectId());
+                        PC::AddItemAndPreloadModels(MS2Ptr<CItem>(spCopy));
                     }
                 }
             }
             vfunc_143();
-            void* pSrc = (void*)m_pSourcePC->FUN_14165f460();
-            reinterpret_cast<PCGemEquip*>(PC::FUN_14165f460())->CopyFrom(*reinterpret_cast<PCGemEquip*>(pSrc));
-            reinterpret_cast<PCGemEquip*>(PC::FUN_14165f460())->FUN_141270610();
+            void* pSrc = (void*)m_pSourcePC->GetGemEquip();
+            reinterpret_cast<PCGemEquip*>(PC::GetGemEquip())->CopyFrom(*reinterpret_cast<PCGemEquip*>(pSrc));
+            reinterpret_cast<PCGemEquip*>(PC::GetGemEquip())->FUN_141270610();
         }
         else
         {
@@ -398,16 +398,16 @@ int ClonePC::vfunc_145()
 MS2_REPLACE_METHOD(0x1410872a0, ClonePC, vfunc_145, 8, 0x7F371472);
 
 // @0x1410872b0
-bool ClonePC::FUN_1410872b0(MS2Ptr<AdditionalCli> spCli)
+bool ClonePC::AddAdditionalCli(MS2Ptr<AdditionalCli> spCli)
 {
     if (spCli == 0)
         return false;
-    if (reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->FUN_14096f070(MS2Ptr<AdditionalCli>(spCli)) == 0)
+    if (reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->Add(MS2Ptr<AdditionalCli>(spCli)) == 0)
         return false;
     m_kClis.push_back(spCli);
     return true;
 }
-MS2_REPLACE_METHOD(0x1410872b0, ClonePC, FUN_1410872b0, 206, 0xCE285208);
+MS2_REPLACE_METHOD(0x1410872b0, ClonePC, AddAdditionalCli, 206, 0xCE285208);
 
 // @0x141087390
 void ClonePC::FUN_141087390()
@@ -449,9 +449,9 @@ ClonePC::ClonePC(PC* pSource)
     if (m_pSourcePC)
     {
         m_b9d0 = m_pSourcePC->FUN_14166ed10();
-        m_nSourceId = m_pSourcePC->FUN_14123c580();
+        m_nSourceId = m_pSourcePC->GetObjectId();
     }
-    m_pUnk130->FUN_14108c240(1.0f / 30.0f);
+    m_pUnk130->SetUpdateInterval(1.0f / 30.0f);
 }
 
 // @0x1410875f0
@@ -460,7 +460,7 @@ void ClonePC::vfunc_12()
     PC::vfunc_12();
     m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
     if (m_pSourcePC)
-        m_pSourcePC->FUN_1416630e0(FUN_14123c580());
+        m_pSourcePC->FUN_1416630e0(GetObjectId());
     if (m_spD88.get() != 0)
     {
         reinterpret_cast<CBoneRotateManager*>(m_spD88.operator->())->ClearActions();
@@ -475,7 +475,7 @@ void ClonePC::vfunc_14()
     PC::vfunc_14();
     m_pSourcePC = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1290(m_nSourceId));
     if (m_pSourcePC)
-        m_pSourcePC->FUN_141663120(FUN_14123c580());
+        m_pSourcePC->FUN_141663120(GetObjectId());
     m_pSourcePC = 0;
     m_nSourceId = 0;
     m_spModelView = 0;
@@ -525,10 +525,10 @@ void ClonePC::FUN_141087850()
 
 // Collects the actor managers of the clone (its own and those of the worn items' model parts).
 // @0x1410879c0
-void ClonePC::FUN_1410879c0(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& kOut)
+void ClonePC::CollectActorManagers(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& kOut)
 {
     kOut.RemoveAll();
-    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460()));
+    efd::SmartPointer<NiActorManager> spActor(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ActorRegistry*>(FUN_141b6f910()))->GetActorManager(GetEntityID()));
     if (spActor.operator NiActorManager*() != 0)
         kOut.Add(spActor);
     ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
@@ -549,13 +549,13 @@ void ClonePC::FUN_1410879c0(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& 
                 continue;
             if (spPart.get()->vfunc_20() == 0)
                 continue;
-            efd::SmartPointer<NiActorManager> spPartActor(((class CKfmModel*)(class Unk_ClonePart*)(spPart.get()))->FUN_1414400d0());
+            efd::SmartPointer<NiActorManager> spPartActor(((class CKfmModel*)(class Unk_ClonePart*)(spPart.get()))->GetActorManager());
             if (spPartActor.operator NiActorManager*() != 0)
                 kOut.Add(spPartActor);
         }
     }
 }
-MS2_REPLACE_METHOD(0x1410879c0, ClonePC, FUN_1410879c0, 706, 0xC83FA01B);
+MS2_REPLACE_METHOD(0x1410879c0, ClonePC, CollectActorManagers, 706, 0xC83FA01B);
 
 // @0x141087c90
 bool ClonePC::vfunc_56(float f)
@@ -589,7 +589,7 @@ void ClonePC::vfunc_151()
         MS2Ptr<AdditionalCli> spCli(*it);
         if (spCli == 0)
             continue;
-        reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->FUN_14096f070(MS2Ptr<AdditionalCli>(spCli));
+        reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->Add(MS2Ptr<AdditionalCli>(spCli));
     }
     if (m_nSourceId == 0)
         return;
@@ -606,7 +606,7 @@ void ClonePC::vfunc_151()
         MS2Ptr<CEquipItem> spEquip(kEquips.GetAt(pos));
         if (spEquip == (CEquipItem*)0)
             continue;
-        Unk_CloneItemRec* pRec = reinterpret_cast<Unk_CloneItemRec*>(spEquip.get()->FUN_1411dc7f0());
+        Unk_CloneItemRec* pRec = reinterpret_cast<Unk_CloneItemRec*>(spEquip.get()->GetItemData());
         if (pRec == 0)
             continue;
         if (!reinterpret_cast<CItemData*>(pRec)->HasAdditionalEffect())
@@ -638,14 +638,14 @@ void ClonePC::vfunc_151()
             continue;
         if (!spSrc.get()->FUN_14096d6b0())
             continue;
-        unsigned int nId = spSrc.get()->FUN_14096d2a0();
+        unsigned int nId = spSrc.get()->GetId();
         unsigned short nSub = spSrc.get()->GetLevel();
         if (kHave.find(std::pair<unsigned int, unsigned short>(nId, nSub)) == kHave.end())
             continue;
         MS2Ptr<AdditionalCli> spNew(new AdditionalCli());
-        if (!spNew.get()->FUN_14096bc20(m_unk_70, MS2Ptr<AdditionalCli>(spSrc)))
+        if (!spNew.get()->CloneFrom(m_unk_70, MS2Ptr<AdditionalCli>(spSrc)))
             continue;
-        reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->FUN_14096f070(MS2Ptr<AdditionalCli>(spNew));
+        reinterpret_cast<AdditionalCliList*>(PCBase::FUN_1416749a0())->Add(MS2Ptr<AdditionalCli>(spNew));
     }
 }
 
@@ -682,7 +682,7 @@ void ClonePC::FUN_1410885b0(bool b)
 MS2_REPLACE_METHOD(0x1410885b0, ClonePC, FUN_1410885b0, 26, 0x4E6470FA);
 
 // @0x1410885d0
-void ClonePC::FUN_1410885d0(Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> kFilter)
+void ClonePC::SetEquipFilter(Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> kFilter)
 {
     m_kEquipFilter = kFilter;
 }

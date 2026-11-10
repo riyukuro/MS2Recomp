@@ -20,7 +20,7 @@
 
 // Registry of named bags/slots (GFx bind data).
 
-FittingDollSlotBag* FUN_14121ef50(NotifyContext::BindData* p);
+FittingDollSlotBag* CastToSlotBag(NotifyContext::BindData* p);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(FittingDollSlotBag);
 
@@ -29,12 +29,12 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(FittingDollSlotBag);
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // @0x14121e670
-void FUN_14121e670(const CString& strName, int nPcId, unsigned __int64 nDollId, bool bCodi)
+void CreateSlotBag(const CString& strName, int nPcId, unsigned __int64 nDollId, bool bCodi)
 {
     FittingDollSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) FittingDollSlotBag(strName, nPcId, nDollId, bCodi);
     if (pBag)
     {
-        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_14121eee0());
+        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
         Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
@@ -42,7 +42,7 @@ void FUN_14121e670(const CString& strName, int nPcId, unsigned __int64 nDollId, 
 // @0x14121e760
 void FUN_14121e760(const CString& strName)
 {
-    FittingDollSlotBag* pBag = FUN_14121ef50(Unk_NotifyContext::FUN_1422c8e90(strName));
+    FittingDollSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -94,7 +94,7 @@ FittingDollSlotBag::~FittingDollSlotBag()
 // @0x14121ecb0
 CString FittingDollSlotBag::vfunc_15(int nIndex)
 {
-    Unk_InventoryEquipSlot nSlot = FUN_14121ef10(nIndex);
+    Unk_InventoryEquipSlot nSlot = GetEquipSlot(nIndex);
     CString str = StringFormat("{0}.{1}", FUN_1422c89f0(), nSlot);
     return str;
 }
@@ -104,28 +104,28 @@ MS2_REPLACE_METHOD(0x14121ecb0, FittingDollSlotBag, vfunc_15, 171, 0xE8D6C8AA);
 DragSlot* FittingDollSlotBag::vfunc_16(int nIndex)
 {
     MS2Ptr<CItem> spItem(0);    // unused in the exe too (built and destroyed around the new)
-    return new (efd::MemHint(efd::MemHint::NONE)) FittingDollSlot(vfunc_15(nIndex), nIndex, m_nPcId, m_nDollId, FUN_14121ef10(nIndex));
+    return new (efd::MemHint(efd::MemHint::NONE)) FittingDollSlot(vfunc_15(nIndex), nIndex, m_nPcId, m_nDollId, GetEquipSlot(nIndex));
 }
 
 // @0x14121eee0
-int FittingDollSlotBag::FUN_14121eee0()
+int FittingDollSlotBag::GetSlotCount()
 {
     return (int)m_mapSlot.GetCount();
 }
-MS2_REPLACE_METHOD(0x14121eee0, FittingDollSlotBag, FUN_14121eee0, 33, 0x1FC27DB9);
+MS2_REPLACE_METHOD(0x14121eee0, FittingDollSlotBag, GetSlotCount, 33, 0x1FC27DB9);
 
 // @0x14121ef10
-Unk_InventoryEquipSlot FittingDollSlotBag::FUN_14121ef10(int nIndex)
+Unk_InventoryEquipSlot FittingDollSlotBag::GetEquipSlot(int nIndex)
 {
     Unk_InventoryEquipSlot nSlot;
     if (m_mapSlot.Lookup(nIndex, nSlot))
         return nSlot;
     return (Unk_InventoryEquipSlot)0;
 }
-MS2_REPLACE_METHOD(0x14121ef10, FittingDollSlotBag, FUN_14121ef10, 61, 0x92C2A361);
+MS2_REPLACE_METHOD(0x14121ef10, FittingDollSlotBag, GetEquipSlot, 61, 0x92C2A361);
 
 // @0x14121ef50
-FittingDollSlotBag* FUN_14121ef50(NotifyContext::BindData* p)
+FittingDollSlotBag* CastToSlotBag(NotifyContext::BindData* p)
 {
     FittingDollSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200056, (void**)&pBag))

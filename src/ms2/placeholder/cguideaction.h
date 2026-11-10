@@ -32,7 +32,7 @@ public:
 MS2_CHECK_SIZE(CGuideAction, 0x18);
 
 // The action of an <action> element: the class "CGuideAction" + its "type" attribute, loaded from the element.
-MS2Ptr<CGuideAction> FUN_141382b90(TiXmlElement* pElem);  // 0x141382b90
+MS2Ptr<CGuideAction> CreateGuideAction(TiXmlElement* pElem);  // 0x141382b90
 
 // 0x20. Maximizes or restores the minimap.
 class CGuideActionMinimapMaximize : public CGuideAction
@@ -100,8 +100,8 @@ public:
 };
 MS2_CHECK_SIZE(CGuideActionLimit, 0x20);
 
-int FUN_141383760(int nLimit);                              // 0x141383760 the limit is held
-void FUN_1413837a0(int nLimit);                             // 0x1413837a0 hold
+int IsLimitActive(int nLimit);                              // 0x141383760 the limit is held
+void AddLimit(int nLimit);                             // 0x1413837a0 hold
 void FUN_1413837e0(int nLimit);                             // 0x1413837e0 release
 
 // 0x20. Holds a dialog-name limit while running.
@@ -118,8 +118,8 @@ public:
 };
 MS2_CHECK_SIZE(CGuideActionLimitDialog, 0x20);
 
-int FUN_141383a70(CStringA strName);                        // 0x141383a70 the dialog is limited
-void FUN_141383b00(CStringA strName);                       // 0x141383b00 hold
+int IsDialogLimited(CStringA strName);                        // 0x141383a70 the dialog is limited
+void AddDialogLimit(CStringA strName);                       // 0x141383b00 hold
 void FUN_141383b90(CStringA strName);                       // 0x141383b90 release
 
 // 0x48. Shows the <text> tutorial balloons of a guide entity one after the other.
@@ -301,7 +301,7 @@ public:
     virtual void vfunc_3();                                 // 3 0x141385770
     virtual void vfunc_4();                                 // 4 0x141385a40
     virtual int vfunc_5();                                  // 5 0x141385b50
-    void FUN_141385ba0(NotifyObject* pNotify);              // 0x141385ba0 "NotifyCutSceneCinematicSkip"
+    void OnSkip(NotifyObject* pNotify);              // 0x141385ba0 "NotifyCutSceneCinematicSkip"
 
     int m_isUseCinematicCutScene;                           // +0x18
     ATL::CAtlArray<int> m_triggerCameraId;                  // +0x20

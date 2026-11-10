@@ -70,12 +70,12 @@ CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
-void FUN_141415600(const CString& strName);
+void DestroyItemInfoSlot(const CString& strName);
 int FUN_14151f9c0();                                                // the modaless setting
 class Unk_MsgPopup : public UISwfEntity { };
-class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
+class UIMessageBox* FindMessageBox(int);   // C3: was FindMessageBox
 
 class Unk_140166410* FUN_140166410();
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
@@ -83,10 +83,10 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e
 typedef Common::Constants::Value<int> Unk_MsgOption;
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-class MS2InputService { public: int FUN_140d8ee40() const; };   // C3: member view
+class MS2InputService { public: int GetPadKind() const; };   // C3: member view
 MS2InputService* FUN_140a58540();
 
-CClubDataTable* FUN_140b1a4e0();
+CClubDataTable* GetClubDataTable();
 
 
 // The AS array push helpers (an AS array is built from objects and strings).
@@ -120,10 +120,10 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     if (IsModaless() && g_messageBoxState.m_bSaved != 0)
     {
         ASObj posData(2);
-        posData.FUN_1409c4a30("posX", g_messageBoxState.m_pos.x);
-        posData.FUN_1409c4a30("posY", g_messageBoxState.m_pos.y);
-        posData.FUN_1409c4a30("stageWidth", g_messageBoxState.m_stage.x);
-        posData.FUN_1409c4a30("stageHeight", g_messageBoxState.m_stage.y);
+        posData.SetMemberFloat("posX", g_messageBoxState.m_pos.x);
+        posData.SetMemberFloat("posY", g_messageBoxState.m_pos.y);
+        posData.SetMemberFloat("stageWidth", g_messageBoxState.m_stage.x);
+        posData.SetMemberFloat("stageHeight", g_messageBoxState.m_stage.y);
         obj.FUN_1409adbe0("modalessPosData", posData.FUN_1422bb870());
     }
     if (m_strExtra.GetLength() > 0)
@@ -157,8 +157,8 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     {
         CString strBagId("MsgBoxData");
         strBagId.Format("MsgBoxData_%d", m_nId);
-        FUN_141415600(strBagId);
-        FUN_141415450(strBagId, m_spItem->m_spItem, 0, m_spItem->m_48, 0);
+        DestroyItemInfoSlot(strBagId);
+        CreateItemInfoSlot(strBagId, m_spItem->m_spItem, 0, m_spItem->m_48, 0);
         m_spItem->m_strBindId = strBagId;
         obj.FUN_1407cba60("bagId", m_spItem->m_strBindId);
         obj.FUN_1407cbb20("itemName", m_spItem->m_strName);
@@ -179,8 +179,8 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     {
         CString strBagId("MsgBoxData2");
         strBagId.Format("MsgBoxData2_%d", m_nId);
-        FUN_141415600(strBagId);
-        FUN_141415450(strBagId, m_spItem2->m_spItem, 0, m_spItem2->m_48, 0);
+        DestroyItemInfoSlot(strBagId);
+        CreateItemInfoSlot(strBagId, m_spItem2->m_spItem, 0, m_spItem2->m_48, 0);
         m_spItem2->m_strBindId = strBagId;
         obj.FUN_1407cba60("bagId2", m_spItem2->m_strBindId);
         obj.FUN_1407cbb20("itemName2", m_spItem2->m_strName);
@@ -350,7 +350,7 @@ void CMsgBoxData::FUN_141a04f80(MS2Ptr<ASDialog> spDialog)
 // @0x141a05070
 int FUN_141a05070(CMsgBoxData* pBox)
 {
-    Unk_MsgPopup* pPopup = ((class Unk_MsgPopup*)FUN_14151fcb0(0x4e48));
+    Unk_MsgPopup* pPopup = ((class Unk_MsgPopup*)FindMessageBox(0x4e48));
     if (pPopup != 0)
         return pPopup->FUN_1422db730();
     return 2;
@@ -541,11 +541,11 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
             ItemInfoSlot::CreateParam param;
             param.m_spItem = spItem;
             param.m_strCount = Unk_SocketFormat<unsigned>("{0}", items[i].m_count);
-            FUN_141415600(strBind);
+            DestroyItemInfoSlot(strBind);
             FUN_141415560(strBind, &param);
             ASObj entry(2);
             entry.FUN_1407cba60("binding", strBind);
-            entry.FUN_1409c0d20("itemCount", m_reqItems.m_items[i].m_count);
+            entry.SetMemberUInt("itemCount", m_reqItems.m_items[i].m_count);
             ((Unk_MsgASArray&)list).PushObj(entry);
             m_reqItems.m_binds.Add(strBind);
         }
@@ -557,7 +557,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
 void CMsgBoxData::FUN_141a05f30(ASObj& obj)
 {
     ATL::CAtlArray<CClubDataTable::BuffPtr> buffs;
-    FUN_140b1a4e0()->FUN_140211990(buffs);
+    GetClubDataTable()->FUN_140211990(buffs);
     ASArray list(2);
     for (size_t i = 0; i < buffs.GetCount(); i++)
     {
@@ -568,7 +568,7 @@ void CMsgBoxData::FUN_141a05f30(ASObj& obj)
         MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
         if (spAttr.get() != 0)
         {
-            row.FUN_1409c0d20("effectID", nBuffId);
+            row.SetMemberUInt("effectID", nBuffId);
             row.FUN_1409c48f0("level", nLevel);
             row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
             row.FUN_1407cbb20(DAT_143af3e28, strName);
@@ -587,7 +587,7 @@ void CMsgBoxData::FillInputSelectList(ASObj& obj)
     ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_keyboard");
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
-        int nPad = FUN_140a58540()->FUN_140d8ee40();
+        int nPad = FUN_140a58540()->GetPadKind();
         if (nPad == 1)
             ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_xbox");
         else if (nPad == 2)
@@ -617,7 +617,7 @@ CMsgBoxDataItem::CMsgBoxDataItem()
 CMsgBoxDataItem::~CMsgBoxDataItem()
 {
     if (!m_strBindId.IsEmpty())
-        FUN_141415600(m_strBindId);
+        DestroyItemInfoSlot(m_strBindId);
 }
 
 // @0x141a06630
@@ -854,7 +854,7 @@ inline __declspec(noinline) CMsgBoxData::~CMsgBoxData()
     m_spItem = NULL;
     m_spItem2 = NULL;
     for (size_t i = 0; i < m_reqItems.m_binds.GetCount(); i++)
-        FUN_141415600(m_reqItems.m_binds[i]);
+        DestroyItemInfoSlot(m_reqItems.m_binds[i]);
 }
 void Unk_MsgBoxDataDtorAnchor(CMsgBoxData* p) { p->CMsgBoxData::~CMsgBoxData(); }
 #endif

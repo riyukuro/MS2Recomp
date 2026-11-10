@@ -22,7 +22,7 @@ public:
 
 IDistanceCalculator* FUN_14028e960(int nType);                      // commonutil: calculator for a curve kind
 bool FUN_14028d470(float a, float b);                               // approx equal
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x1413fc9d0
 CHitControl::CHitControl()
@@ -45,7 +45,7 @@ MS2_REPLACE_METHOD(0x1413FCA40, CHitControl, vfunc_1, 19, 0x1FFCE454);
 CPushControl::CPushControl()
 {
     m_pCalc = 0;
-    FUN_1413fcf90();
+    Reset();
 }
 
 // @0x1413fcad0
@@ -60,11 +60,11 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
 {
     if (m_kDir == efd::Point3::ZERO)
         return false;
-    float fDist = FUN_1413fce30(dTime);
+    float fDist = Update(dTime);
     if (FUN_14028d470(fDist, 0)) {
         if (m_b38)
             static_cast<PCBase*>(pActor)->vfunc_59(1, 0, 0, 0);
-        FUN_1413fcf90();
+        Reset();
         return false;
     }
     float fUp = 0.0f;
@@ -72,7 +72,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
         NiPoint3 kPos = pActor->vfunc_18();
         efd::Point3 kHit = efd::Point3::ZERO;
         // CPhysXHelper takes the same 12-byte point as its placeholder Vector3
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos),
+        if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos),
                                            reinterpret_cast<Vector3&>(kHit), 0, 0, 0, 0) != 0) {
             kHit.z = kHit.z + 1.0f;
             if (kPos.z > kHit.z)
@@ -92,14 +92,14 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
     } else {
         if (m_b38)
             static_cast<PCBase*>(pActor)->vfunc_59(1, 0, 0, 0);
-        FUN_1413fcf90();
+        Reset();
     }
     return true;
 }
 MS2_REPLACE_METHOD(0x1413FCB30, CPushControl, vfunc_1, 750, 0x21EB2633);
 
 // @0x1413fce30
-float CPushControl::FUN_1413fce30(double dTime)
+float CPushControl::Update(double dTime)
 {
     if (m_pCalc == 0)
         return 0.0f;
@@ -117,10 +117,10 @@ float CPushControl::FUN_1413fce30(double dTime)
     }
     return fResult;
 }
-MS2_REPLACE_METHOD(0x1413FCE30, CPushControl, FUN_1413fce30, 334, 0x7C4BB9BE);
+MS2_REPLACE_METHOD(0x1413FCE30, CPushControl, Update, 334, 0x7C4BB9BE);
 
 // @0x1413fcf90
-void CPushControl::FUN_1413fcf90()
+void CPushControl::Reset()
 {
     m_kDir = efd::Point3::ZERO;
     m_fSpeed = 0;
@@ -134,16 +134,16 @@ void CPushControl::FUN_1413fcf90()
         delete m_pCalc;
     m_pCalc = 0;
 }
-MS2_REPLACE_METHOD(0x1413FCF90, CPushControl, FUN_1413fcf90, 176, 0xD7B94FB0);
+MS2_REPLACE_METHOD(0x1413FCF90, CPushControl, Reset, 176, 0xD7B94FB0);
 
 // @0x1413fd050
-void CPushControl::FUN_1413fd050(int nCurve)
+void CPushControl::SetCurve(int nCurve)
 {
     if (m_pCalc != 0)
         delete m_pCalc;
     m_pCalc = FUN_14028e960(nCurve);
 }
-MS2_REPLACE_METHOD(0x1413FD050, CPushControl, FUN_1413fd050, 77, 0x85826F75);
+MS2_REPLACE_METHOD(0x1413FD050, CPushControl, SetCurve, 77, 0x85826F75);
 
 // @0x1413fd120
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

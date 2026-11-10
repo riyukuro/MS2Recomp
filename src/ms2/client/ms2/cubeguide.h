@@ -57,7 +57,7 @@ public:
     CNifCubeGuide();
     virtual ~CNifCubeGuide();
     void vfunc_1() override;
-    int FUN_1410afc10(CString assetName);   // BOOL: the exe returns a dword 1/0
+    int LoadAsset(CString assetName);   // BOOL: the exe returns a dword 1/0
     void vfunc_2(const NiPoint3&) override;
     NiPoint3 vfunc_3() override;
     void vfunc_4(const NiMatrix3&) override;
@@ -86,7 +86,7 @@ class CFittingDollCubeGuide : public CCubeGuideWrapper {
 public:
     CFittingDollCubeGuide();
     virtual ~CFittingDollCubeGuide();
-    int FUN_1410b0ba0(int type, int index, int itemId);
+    int CreateDoll(int type, int index, int itemId);
     void vfunc_2(const NiPoint3&) override;
     NiPoint3 vfunc_3() override;
     void vfunc_4(const NiMatrix3&) override;
@@ -106,7 +106,7 @@ class CKfmCubeGuide : public CCubeGuideWrapper {
 public:
     CKfmCubeGuide();
     virtual ~CKfmCubeGuide();
-    int FUN_1410b1120(CString assetName);
+    int LoadAsset(CString assetName);
     void vfunc_1() override;
     void vfunc_2(const NiPoint3&) override;
     NiPoint3 vfunc_3() override;

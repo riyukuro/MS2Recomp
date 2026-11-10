@@ -27,15 +27,15 @@
 
 void FUN_14160f720(void* p1, void** pOut, void* p3);
 void FUN_14160f840(void* p1, void* p2, void* p3);
-int  FUN_14160eb40(void*);
+int  GetGameCode(void*);
 int  FUN_14160ecd0(void*);
 fmt::ULongLong FUN_14160f890(const int* p);
 fmt::ULongLong FUN_14160f870(const int* p);
 enum Unk_NxErrorCode {};   // the formatted error code's enum type (only is_enum matters)
 
-int  FUN_1415c3430(int nGameCode, const char* psz0, const char* psz1, const char* psz2, int nMode, int n6, int n7,
+int  NMCO_ExecuteNGMPatcher(int nGameCode, const char* psz0, const char* psz1, const char* psz2, int nMode, int n6, int n7,
                    const char* pszLogContext, int n9, const char* psz10, int n11); // NMCO_ExecuteNGMPatcher
-int  FUN_1415c3780(void);
+int  NMCO_IsNGMInstalled(void);
 int  FUN_1415c4540(void* p, int a, int b, int c, void* d);
 int  FUN_1415c4810(void* p, int a);
 void FUN_1415c4930(void* p, int a);
@@ -246,7 +246,7 @@ int CNXMan::FUN_14160e260()
         return 3;
     if (m_88 == 0x19f3e)
         return 1;
-    if (FUN_1415c3780() == 0)
+    if (NMCO_IsNGMInstalled() == 0)
         return 3;
     else
     {
@@ -254,13 +254,13 @@ int CNXMan::FUN_14160e260()
         pPlatform->vfunc_22(0x271, "Current Patch Version = %d", 0x19f3e);
         char kLogContext[32];
         FUN_1415ca240(kLogContext);
-        int nResult = FUN_1415c3430(m_nGameCode, (LPCSTR)m_38, (LPCSTR)m_40, (LPCSTR)m_48, 1, 0, 0, kLogContext, 0, 0, 0);
+        int nResult = NMCO_ExecuteNGMPatcher(m_nGameCode, (LPCSTR)m_38, (LPCSTR)m_40, (LPCSTR)m_48, 1, 0, 0, kLogContext, 0, 0, 0);
         return 2;
     }
 }
 
 // @0x14160e3e0
-void FUN_14160e3e0(void* pParam)
+void QuitApplication(void* pParam)
 {
     (void)pParam;
     FUN_1416a0e70();
@@ -307,7 +307,7 @@ CString CNXMan::FUN_14160e5a0()
 // @0x14160e5f0
 int CNXMan::FUN_14160e5f0()
 {
-    return FUN_14160eb40(this) == m_nGameCode;
+    return GetGameCode(this) == m_nGameCode;
 }
 
 // @0x14160e630
@@ -318,7 +318,7 @@ int CNXMan::LoadAnySetting()
     CString strUgcDefault = GetDefaultUgcUrl();
     GetPrivateProfileStringA("Stage", "ugc", (LPCSTR)strUgcDefault, szUgc, 0x104, ".\\anysetting.ini");
     m_60 = FUN_14016a730(szUgc, 0);
-    int nGameCodeDefault = FUN_14160eb40(this);
+    int nGameCodeDefault = GetGameCode(this);
     m_nGameCode = GetPrivateProfileIntA("Stage", "gc", nGameCodeDefault, ".\\anysetting.ini");
     m_str18.Format("http://gamelog.nexon.com/%d.html", m_nGameCode);
     if (g_bPortSet == 0)
@@ -376,7 +376,7 @@ CString CNXMan::ResolveHostIp(CString strHost)
 }
 
 // @0x14160eb40
-int FUN_14160eb40(void* p)
+int GetGameCode(void* p)
 {
     (void)p;
     int nGameCode = 0;

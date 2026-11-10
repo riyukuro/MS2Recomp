@@ -30,6 +30,6 @@ public:
 
     egmAnimation::KFMCache* GetKFMCache();                                // 0x1414ac8a0, the KFM cache service
 
-    static bool FUN_1414a9810(Unk_AssetEvent* pEvent);                      // 0x1414a9810, filter stored by OnInit
+    static bool HasOutstandingNifs(Unk_AssetEvent* pEvent);                      // 0x1414a9810, filter stored by OnInit
 };
 MS2_CHECK_SIZE(MS2AnimationService, 0x138);

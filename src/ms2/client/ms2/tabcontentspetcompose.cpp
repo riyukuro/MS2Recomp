@@ -388,7 +388,7 @@ void PetComposePetEnchant::vfunc_3()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
@@ -488,7 +488,7 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
@@ -518,7 +518,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     ATL::CAtlArray<IdCount> selected;
@@ -529,7 +529,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
         IdCount& entry = selected[i];
         unsigned __int64 id = entry.first;
         unsigned nCount = entry.second;
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+        ItemPtr item = g_143ab2a90.FindItemByUid(id);
         if (item == 0)
             continue;
         __int64 nCost = 0;
@@ -564,7 +564,7 @@ void PetComposePetEnchant::FUN_140cb3a30()
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
@@ -746,7 +746,7 @@ void TabContentsPetCompose::FUN_140cb4860(ATL::CAtlArray<IdCount>& out)
 // @0x140cb48a0
 void TabContentsPetCompose::FUN_140cb48a0(int bUsePoint)
 {
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     if (m_selected.IsEmpty())
@@ -807,7 +807,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
     Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(GetUidPet());
     if (pet == 0)
         return;
     *pBase = 0;
@@ -821,7 +821,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
         IdCount& entry = selected[i];
         unsigned __int64 id = entry.first;
         unsigned nCount = entry.second;
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+        ItemPtr item = g_143ab2a90.FindItemByUid(id);
         if (item == 0)
             continue;
         MS2Ptr<CItemData> data(item->FUN_140527840());
@@ -855,7 +855,7 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     Unk_PetPlayer* player = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player == 0)
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(GetUidPet());
+    ItemPtr pet = g_143ab2a90.FindItemByUid(GetUidPet());
     if (pet == 0)
         return;
     int bLevelUp = 0;
@@ -902,10 +902,10 @@ void TabContentsPetCompose::FUN_140cb5600()
     m_pool.RemoveAll();
     m_selected.RemoveAll();
     ATL::CAtlArray<unsigned __int64> pets;
-    g_143ab2a90.FUN_140a609a0(9, pets);
+    g_143ab2a90.GetItemUidsInCategory(9, pets);
     for (unsigned i = 0; i < pets.GetCount(); i++)
     {
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(pets[i]);
+        ItemPtr item = g_143ab2a90.FindItemByUid(pets[i]);
         if (item == 0)
             continue;
         MS2Ptr<CPetData> row = TSingleton<CPetDataTable>::GetInstance()->Find(((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
@@ -916,10 +916,10 @@ void TabContentsPetCompose::FUN_140cb5600()
         m_petCards.Add(item->GetItemUid());
     }
     ATL::CAtlArray<unsigned __int64> others;
-    g_143ab2a90.FUN_140a609a0(3, others);
+    g_143ab2a90.GetItemUidsInCategory(3, others);
     for (unsigned i = 0; i < others.GetCount(); i++)
     {
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(others[i]);
+        ItemPtr item = g_143ab2a90.FindItemByUid(others[i]);
         if (item == 0)
             continue;
         MS2Ptr<CItemData> data(item->FUN_140527840());
@@ -936,7 +936,7 @@ void TabContentsPetCompose::FUN_140cb5970()
 {
     m_pool.RemoveAll();
     m_selected.RemoveAll();
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     for (unsigned i = 0; i < m_petCards.GetCount(); i++)
@@ -955,7 +955,7 @@ void TabContentsPetCompose::FUN_140cb5970()
             continue;
         if (m_uidPet == id)
             continue;
-        ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+        ItemPtr item = g_143ab2a90.FindItemByUid(id);
         if (item == 0)
             continue;
         int nCount = FUN_140cb6450(id);
@@ -985,7 +985,7 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_pool.GetCount())
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
@@ -993,7 +993,7 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
     FUN_140cb5300(&nPetClass, &nExp);
     IdCount& entry = m_pool[nIndex];
     unsigned __int64 id = entry.first;
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item == 0)
         return;
     __int64 nPrice = ((class CItem*)(class CItem*)(item))->FUN_140528e00();
@@ -1031,7 +1031,7 @@ void TabContentsPetCompose::FUN_140cb5fd0(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_selected.GetCount())
         return;
-    ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
+    ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
         return;
     FUN_140cb6180(nIndex);
@@ -1070,7 +1070,7 @@ unsigned __int64 TabContentsPetCompose::FUN_140cb6100(ATL::CAtlArray<IdCount>& a
 int TabContentsPetCompose::FUN_140cb6180(int nIndex)
 {
     const unsigned __int64 id = FUN_140cb6100(m_selected, nIndex);
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item.get() != 0)
     {
         m_selected.RemoveAt(nIndex, 1);
@@ -1104,7 +1104,7 @@ int TabContentsPetCompose::FUN_140cb62e0(unsigned __int64 id)
     nCount--;
     if (nCount == 0)
         m_pool.RemoveAt(nPos, 1);
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item.get())
     {
         m_selected.Add(FUN_140cb65d0(id));
@@ -1116,7 +1116,7 @@ int TabContentsPetCompose::FUN_140cb62e0(unsigned __int64 id)
 // @0x140cb6450
 int TabContentsPetCompose::FUN_140cb6450(unsigned __int64 id)
 {
-    ItemPtr item = g_143ab2a90.FUN_140a5d680(id);
+    ItemPtr item = g_143ab2a90.FindItemByUid(id);
     if (item == 0)
         return 0;
     unsigned nHave = g_143ab2a90.FUN_140a5f060(item->GetItemUid());

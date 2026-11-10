@@ -83,12 +83,12 @@ int SamplePixelData(NiPixelData* pkPixels, NiPoint2 kUV, Unk_TexColor* pkOut, bo
 
 void* FUN_141166c80(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB);
 void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB);
-void FUN_141167050(Unk_CtiColor* pColor);
-void FUN_1411670f0(Unk_CtiColor* pColor, Unk_CtiPixel* pPix);
-void FUN_1411671b0(Unk_CtiPixel* pPix, unsigned* pOut);
-void FUN_1411671d0(Unk_CtiPixel* pPix, Unk_CtiColor* pOut);
+void ClampColor(Unk_CtiColor* pColor);
+void ColorToPixel(Unk_CtiColor* pColor, Unk_CtiPixel* pPix);
+void GetPixelPacked(Unk_CtiPixel* pPix, unsigned* pOut);
+void PixelToColor(Unk_CtiPixel* pPix, Unk_CtiColor* pOut);
 Unk_CtiPixel* FUN_141166d20(Unk_CtiPixel* pPix);
-Unk_CtiColor FUN_141166de0(float fScale, const Unk_CtiColor& kColor);
+Unk_CtiColor ScaleColor(float fScale, const Unk_CtiColor& kColor);
 void* FUN_141167270(void* pTex);
 
 // @0x141165f00
@@ -166,15 +166,15 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             FUN_141166d20(&kPix);
             NiColorA kBase;
             SamplePixelData(hBaseA, kUV, (Unk_TexColor*)&kPix, true);
-            FUN_1411671d0(&kPix, &CTI(kBase));
+            PixelToColor(&kPix, &CTI(kBase));
             if ((NiPixelData*)hDecalA != 0)
             {
                 NiColorA kMask;
                 SamplePixelData(hDecalA, kUV, (Unk_TexColor*)&kPix, true);
-                FUN_1411671d0(&kPix, &CTI(kMask));
-                NiColorA kTint(CTI_SRC(FUN_141166de0(kMask.r, CTI(pA->m_akColor[0])) + FUN_141166de0(kMask.g, CTI(pA->m_akColor[1]))
-                    + FUN_141166de0(1.0f - kMask.r, CTI(pA->m_akColor[2]))));
-                NiColorA kMix(CTI_SRC(CTI(kBase) + FUN_141166de0(kMask.a, CTI(kTint) - CTI(kBase))));
+                PixelToColor(&kPix, &CTI(kMask));
+                NiColorA kTint(CTI_SRC(ScaleColor(kMask.r, CTI(pA->m_akColor[0])) + ScaleColor(kMask.g, CTI(pA->m_akColor[1]))
+                    + ScaleColor(1.0f - kMask.r, CTI(pA->m_akColor[2]))));
+                NiColorA kMix(CTI_SRC(CTI(kBase) + ScaleColor(kMask.a, CTI(kTint) - CTI(kBase))));
                 kColor = kMix;
                 kColor.a = 1.0f;
             }
@@ -186,15 +186,15 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             {
                 NiColorA kBase2;
                 SamplePixelData(hBaseB, kUV, (Unk_TexColor*)&kPix, true);
-                FUN_1411671d0(&kPix, &CTI(kBase2));
+                PixelToColor(&kPix, &CTI(kBase2));
                 if ((NiPixelData*)hDecalB != 0)
                 {
                     NiColorA kMask2;
                     SamplePixelData(hDecalB, kUV, (Unk_TexColor*)&kPix, true);
-                    FUN_1411671d0(&kPix, &CTI(kMask2));
-                    NiColorA kTint2(CTI_SRC(FUN_141166de0(kMask2.r, CTI(pB->m_akColor[0])) + FUN_141166de0(kMask2.g, CTI(pB->m_akColor[1]))
-                        + FUN_141166de0(1.0f - kMask2.r, CTI(pB->m_akColor[2]))));
-                    NiColorA kMix2(CTI_SRC(CTI(kBase2) + FUN_141166de0(kMask2.a, CTI(kTint2) - CTI(kBase2))));
+                    PixelToColor(&kPix, &CTI(kMask2));
+                    NiColorA kTint2(CTI_SRC(ScaleColor(kMask2.r, CTI(pB->m_akColor[0])) + ScaleColor(kMask2.g, CTI(pB->m_akColor[1]))
+                        + ScaleColor(1.0f - kMask2.r, CTI(pB->m_akColor[2]))));
+                    NiColorA kMix2(CTI_SRC(CTI(kBase2) + ScaleColor(kMask2.a, CTI(kTint2) - CTI(kBase2))));
                     kColor = kMix2;
                     kColor.a = 1.0f;
                 }
@@ -206,10 +206,10 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             kColor.r = kColor.r * 0.5019608f;
             kColor.g = kColor.g * 0.5019608f;
             kColor.b = kColor.b * 0.5019608f;
-            FUN_141167050(&CTI(kColor));
-            FUN_1411670f0(&CTI(kColor), &kPix);
+            ClampColor(&CTI(kColor));
+            ColorToPixel(&CTI(kColor), &kPix);
             unsigned nPacked;
-            FUN_1411671b0(&kPix, &nPacked);
+            GetPixelPacked(&kPix, &nPacked);
             efd::Memcpy(pDst, &nPacked, 4);
             pDst = pDst + nStride;
         }
@@ -228,10 +228,10 @@ void* FUN_141166c80(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
 }
 
 // the exe's is a member (this unused, hidden return slot in rdx); a free function put the slot in rcx
-struct Unk_CtiCacheName { CString FUN_141166ca0(CCustomizedTexInfo* pA, CCustomizedTexInfo* pB); };   // both infos unused
+struct Unk_CtiCacheName { CString MakeCacheFileName(CCustomizedTexInfo* pA, CCustomizedTexInfo* pB); };   // both infos unused
 
 // @0x141166ca0
-CString Unk_CtiCacheName::FUN_141166ca0(CCustomizedTexInfo* pA, CCustomizedTexInfo* pB)
+CString Unk_CtiCacheName::MakeCacheFileName(CCustomizedTexInfo* pA, CCustomizedTexInfo* pB)
 {
     CString strName;
     strName.Format("CustomizingCache%d.dds", rand());
@@ -257,7 +257,7 @@ Unk_CtiColor Unk_CtiColor::operator*(float fScale) const
 }
 
 // @0x141166de0
-Unk_CtiColor FUN_141166de0(float fScale, const Unk_CtiColor& kColor)
+Unk_CtiColor ScaleColor(float fScale, const Unk_CtiColor& kColor)
 {
     return kColor * fScale;
 }
@@ -295,7 +295,7 @@ Unk_CtiColor& Unk_CtiColor::operator+=(const Unk_CtiColor& kRhs)
 }
 
 // @0x141167050
-void FUN_141167050(Unk_CtiColor* pColor)
+void ClampColor(Unk_CtiColor* pColor)
 {
     if (1.0f < pColor->r)
         pColor->r = 1.0f;
@@ -308,7 +308,7 @@ void FUN_141167050(Unk_CtiColor* pColor)
 }
 
 // @0x1411670f0
-void FUN_1411670f0(Unk_CtiColor* pColor, Unk_CtiPixel* pPix)
+void ColorToPixel(Unk_CtiColor* pColor, Unk_CtiPixel* pPix)
 {
     unsigned char r = (unsigned char)(pColor->r * 255.0f);
     reinterpret_cast<efd::ColorA_UInt8*>(pPix)->r() = r;
@@ -321,7 +321,7 @@ void FUN_1411670f0(Unk_CtiColor* pColor, Unk_CtiPixel* pPix)
 }
 
 // @0x1411671b0
-void FUN_1411671b0(Unk_CtiPixel* pPix, unsigned* pOut)
+void GetPixelPacked(Unk_CtiPixel* pPix, unsigned* pOut)
 {
     *pOut = *(unsigned*)pPix;
 }
@@ -336,7 +336,7 @@ unsigned char* FUN_1411672a0(Unk_CtiPixel* pPix) { return (unsigned char*)pPix +
 unsigned char* FUN_141167290(Unk_CtiPixel* pPix) { return (unsigned char*)pPix + 3; }
 
 // @0x1411671d0
-void FUN_1411671d0(Unk_CtiPixel* pPix, Unk_CtiColor* pOut)
+void PixelToColor(Unk_CtiPixel* pPix, Unk_CtiColor* pOut)
 {
     pOut->r = (float)*FUN_1411672c0(pPix) / 255.0f;
     pOut->g = (float)*FUN_1411672b0(pPix) / 255.0f;

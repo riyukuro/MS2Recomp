@@ -67,12 +67,12 @@ void CDrawDebugString::FUN_14118b820(int nValue, bool bForce, const char* pszSuf
         if (m_nValue == nValue && !bForce)
             return;
         m_nValue = nValue;
-        std::string strNum = FUN_14118c120(nValue);
+        std::string strNum = FormatWithThousandsSeparator(nValue);
         if (pszSuffix != 0)
             efd::Sprintf(m_acName, 0xff, "%s %s%s", (const char*)m_strLabel, strNum.c_str(), pszSuffix);
         else
             efd::Sprintf(m_acName, 0xff, "%s %s", (const char*)m_strLabel, strNum.c_str());
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -84,12 +84,12 @@ void CDrawDebugString::FUN_14118b9b0(unsigned nValue, bool bForce, const char* p
         if ((unsigned)m_nValue == nValue && !bForce)
             return;
         m_nValue = nValue;
-        std::string strNum = FUN_14118c120(nValue);
+        std::string strNum = FormatWithThousandsSeparator(nValue);
         if (pszSuffix != 0)
             efd::Sprintf(m_acName, 0xff, "%s %s%s", (const char*)m_strLabel, strNum.c_str(), pszSuffix);
         else
             efd::Sprintf(m_acName, 0xff, "%s %s", (const char*)m_strLabel, strNum.c_str());
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -105,7 +105,7 @@ void CDrawDebugString::FUN_14118bb40(float fValue, bool bForce, const char* pszS
             efd::Sprintf(m_acName, 0xff, "%s %.2f%s", (const char*)m_strLabel, (double)fValue, pszSuffix);
         else
             efd::Sprintf(m_acName, 0xff, "%s %.2f", (const char*)m_strLabel, (double)fValue);
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -135,7 +135,7 @@ void CDrawDebugString::FUN_14118bc70(bool bValue, bool bForce, const char* pszSu
                 pszValue = "False";
             efd::Sprintf(m_acName, 0xff, "%s %s", (const char*)m_strLabel, pszValue);
         }
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -148,7 +148,7 @@ void CDrawDebugString::FUN_14118bdc0(const NiPoint3& kValue, bool bForce)
             return;
         *reinterpret_cast<efd::Point3*>(&m_kPoint) = *reinterpret_cast<const efd::Point3*>(&kValue);
         efd::Sprintf(m_acName, 0xff, "%s %.2f %.2f %.2f", (const char*)m_strLabel, (double)kValue.x, (double)kValue.y, (double)kValue.z);
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -158,7 +158,7 @@ void CDrawDebugString::FUN_14118bee0(efd::utf8string strValue, bool bForce)
     if (m_bShow || bForce)
     {
         efd::Sprintf(m_acName, 0xff, "%s %s", (const char*)m_strLabel, strValue.c_str());
-        FUN_14118c0d0();
+        UpdateText();
     }
 }
 
@@ -171,30 +171,30 @@ void CDrawDebugString::FUN_14118bf80(const char* pszLabel, unsigned x, unsigned 
     m_pText->SetTextOrigin(x, y);
     m_pText->SetVisible(true);
     efd::Sprintf(m_acName, 0xff, "%s", (const char*)m_strLabel);
-    FUN_14118c0d0();
+    UpdateText();
 }
 
 // @0x14118c060
-void CDrawDebugString::FUN_14118c060()
+void CDrawDebugString::WriteToCrashLog()
 {
     reinterpret_cast<CCrashManager*>(reinterpret_cast<void*>(TSingleton<CrashManagerCli>::GetInstance()))->FUN_1401ce2f0("%s", m_acName);
 }
 
 // @0x14118c0a0
-void CDrawDebugString::FUN_14118c0a0(NiColorA* pColor)
+void CDrawDebugString::SetColor(NiColorA* pColor)
 {
     m_pText->SetColor(*pColor);
 }
 
 // @0x14118c0d0
-void CDrawDebugString::FUN_14118c0d0()
+void CDrawDebugString::UpdateText()
 {
     m_pShadow->SetString(m_acName);
     m_pText->SetString(m_acName);
 }
 
 // @0x14118c120
-std::string CDrawDebugString::FUN_14118c120(unsigned nValue)
+std::string CDrawDebugString::FormatWithThousandsSeparator(unsigned nValue)
 {
     CString strOut;
     CString strNum;

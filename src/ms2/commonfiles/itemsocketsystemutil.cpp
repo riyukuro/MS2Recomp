@@ -1571,8 +1571,8 @@ int FUN_14081d9e0(int nSaType);                         // the SA is a skill lev
 int FUN_14081da20(int nSaType);                         // the tier of it
 bool IsStatKindTwo(int nStat);                          // the stat value is a percent
 CStringW GetStatCommonText(unsigned nStat);             // the stat name
-CStringW FUN_1409e0900(int nValue);
-CStringW FUN_1409e0a90(float fValue);
+CStringW FormatInt(int nValue);
+CStringW FormatRatePercent(float fValue);
 CStringW FUN_1409e0970(int nStat, int nValue);
 CStringW FUN_1409e0bf0(int nStat, int nValue);
 int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned>* paSa);   // the SA types a tier grants a job
@@ -1588,7 +1588,7 @@ class Unk_Actor { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141654700();
+    int GetJobGroupId();
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
@@ -2153,7 +2153,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
         for (unsigned i = 0; i < aJobs.GetCount(); i++)
         {
             int nJob = aJobs[i];
-            int bMyJob = ((class PC*)(class Unk_Actor*)(pActor))->FUN_141654700() == nJob;
+            int bMyJob = ((class PC*)(class Unk_Actor*)(pActor))->GetJobGroupId() == nJob;
             if (pData != 0 && pData->IsJobAllowed(nJob) == 0)
                 continue;
             ATL::CAtlArray<unsigned> aSa;
@@ -2192,9 +2192,9 @@ CStringW FUN_1406313f0(int nStat, BaseOption* pBase)
 {
     CStringW str;
     if (IsStatKindTwo(nStat))
-        str = FormatStringId(0x48b, GetStatCommonText(nStat), FUN_1409e0a90(pBase->FUN_140266e10()));
+        str = FormatStringId(0x48b, GetStatCommonText(nStat), FormatRatePercent(pBase->FUN_140266e10()));
     else
-        str = FormatStringId(0x48b, GetStatCommonText(nStat), FUN_1409e0900(pBase->GetValue()));
+        str = FormatStringId(0x48b, GetStatCommonText(nStat), FormatInt(pBase->GetValue()));
     return str;
 }
 MS2_REPLACE(0x1406313F0, FUN_1406313f0, 515, 0x242D2E53);

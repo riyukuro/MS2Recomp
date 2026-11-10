@@ -114,7 +114,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
             ASObj row(2);
             row.FUN_1407cbb20("label", FUN_1416e5900(nQuest, (bool)0));
             row.FUN_1407cbb20("level", BlockFormat<unsigned short>(0x459, FUN_14074bd10(nQuest)));
-            row.FUN_1409c0d20("id", nQuest);
+            row.SetMemberUInt("id", nQuest);
             row.FUN_1407cba60("icon", FUN_140e7fb90(nQuest));
             list->AddItem(row);
         }

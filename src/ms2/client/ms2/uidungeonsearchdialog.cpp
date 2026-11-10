@@ -165,7 +165,7 @@ public:
     bool IsInParty();
     bool IsMatchSearching(int);
     bool CanEnterDungeonRoom(int);
-    unsigned int FUN_14162c1e0();
+    unsigned int GetMinMemberGearScore();
     unsigned short GetMinMemberLevel();
 };
 bool FUN_14162ab70(void*);
@@ -290,7 +290,7 @@ void FUN_140710590(COutPacket&);
 COutputStream& FUN_140c0dd90(COutputStream&, const std::set<unsigned>&);
 class COutputStream& FUN_14070f820(class COutputStream&, bool);   // C3: was FUN_14070f820
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);
 CStringW TranslateEnumDungeonGroup(unsigned nDungeonKind);
 CStringW FUN_140298ea0(CStringW);
@@ -362,7 +362,7 @@ void UIDungeonSearchPage::FUN_140e18f90()
             strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_random"), TranslateEnumDungeonGroup(m_nPage));
         else
             strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_dungeonSearch_title_custom"), TranslateEnumDungeonGroup(m_nPage));
-        FUN_140cff1b0((*m_movie).FUN_1422bb890(), "m_title", CStringW(strTitle));
+        SetChildHtmlText((*m_movie).FUN_1422bb890(), "m_title", CStringW(strTitle));
     }
     FUN_140e19770();
 }
@@ -488,7 +488,7 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
     int nLevelMax = 0;
     if (TSingleton<CPartyManager>::GetInstance()->IsInParty()) {
         nLevelMin = TSingleton<CPartyManager>::GetInstance()->GetMinMemberLevel();
-        nLevelMax = TSingleton<CPartyManager>::GetInstance()->FUN_14162c1e0();
+        nLevelMax = TSingleton<CPartyManager>::GetInstance()->GetMinMemberGearScore();
     } else {
         nLevelMin = pActor->vfunc_78();
         nLevelMax = ((class MyPC*)(void*)(pActor))->FUN_14152ea50();

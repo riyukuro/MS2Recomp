@@ -86,9 +86,9 @@ public: ASTooltip(void*, int, int); virtual ~ASTooltip(); int FUN_1409e0d40(CIte
 private: void* m_40; void* m_48; void* m_50; void* m_58;
 };
 MS2_CHECK_SIZE(ASTooltip, 0x60);
-void FUN_141415600(const CString&);
-void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
-CStringW FUN_141425950(unsigned);
+void DestroyItemInfoSlot(const CString&);
+void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
+CStringW GetItemDisplayName(unsigned);
 CStringW FUN_14183e9c0(CStringW, int);
 int FUN_1407181a0(const CStringW&);
 class CUserCommandCli { public: static void SendCommand(CStringW); };   // C3: member view
@@ -196,7 +196,7 @@ MS2_REPLACE_METHOD(0x140C3A140, UIItemDropInfoDialog, OnLoadComplete, 2316, 0xD9
 // @0x140c3aae0
 void UIItemDropInfoDialog::vfunc_26() {
     UIDialog::vfunc_26();
-    FUN_141415600(m_slot);
+    DestroyItemInfoSlot(m_slot);
     m_item.AssignRaw(0);
     m_list.AssignRaw(NULL);
     m_drop.AssignRaw(NULL);
@@ -222,12 +222,12 @@ MS2_REPLACE_METHOD(0x140C3ABB0, UIItemDropInfoDialog, vfunc_49, 355, 0xDBDBD9E1)
 // @0x140c3ad20
 void UIItemDropInfoDialog::FUN_140c3ad20() {
     if (m_item == NULL) return;
-    FUN_141415600(m_slot);
-    FUN_141415450(m_slot,m_item,0,0,0);
+    DestroyItemInfoSlot(m_slot);
+    CreateItemInfoSlot(m_slot,m_item,0,0,0);
     Unk_DropHandle<ASMDragTarget> slot = GetDropChild<ASMDragTarget>("m_itemSlot");
     if (slot.get()) slot->FUN_1422e4840(m_slot);
     if (m_name.get()) {
-        CStringW name = FUN_141425950(m_item->FUN_1405276c0());
+        CStringW name = GetItemDisplayName(m_item->FUN_1405276c0());
         CStringW label = FUN_14183e9c0(name, m_item->GetRarity());
         m_name->SetTextHTMLW(label);
     }

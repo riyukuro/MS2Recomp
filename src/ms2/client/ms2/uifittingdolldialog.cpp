@@ -61,7 +61,7 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_FdInventory* FUN_140
 
 // The item / dialog event registries.
 class Unk_FdItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -80,7 +80,7 @@ template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strN
 extern Unk_Inventory g_143ab2a90;
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -114,7 +114,7 @@ class Unk_AkoFittingDoll   // C3: member view for the former free stand-ins
 public:
     int FUN_140967160();
 };
-void FUN_14121e670(const CString& strDialog, int nHomeId, unsigned __int64 nDollId, bool bEquip);
+void CreateSlotBag(const CString& strDialog, int nHomeId, unsigned __int64 nDollId, bool bEquip);
 void FUN_14121e760(const CString& strDialog);
 void FUN_14121b840(int nError);                             // show the message of an error code
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
@@ -207,7 +207,7 @@ void UIFittingDollDialog::vfunc_67()
 {
     DAT_143af25f0 = 0;
     FUN_14121e760(GetTypeName());
-    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
     UIDialog::vfunc_67();
 }
@@ -221,10 +221,10 @@ void UIFittingDollDialog::vfunc_72()
 // @0x141933620
 void UIFittingDollDialog::vfunc_dl_3(void* pSlot)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<NotifyContext::BindData*>(pSlot));
+    void* pItemSlot = AsDragSlot(static_cast<NotifyContext::BindData*>(pSlot));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
         {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -271,7 +271,7 @@ void UIFittingDollDialog::vfunc_66()
 void UIFittingDollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_141933b00();
     FUN_141934070();
     if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e2d) != 0)
@@ -341,7 +341,7 @@ void UIFittingDollDialog::FUN_141933b00()
     if (MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character"))
     {
         CString strFrame;
-        strFrame.AppendFormat("%s_%d", pDoll->FUN_14121c710() != 0 ? "skin" : "game", (unsigned)((class PC*)(class PC*)(pDoll))->FUN_141658e60());
+        strFrame.AppendFormat("%s_%d", pDoll->FUN_14121c710() != 0 ? "skin" : "game", (unsigned)((class PC*)(class PC*)(pDoll))->GetGender());
         spCharacter->vfunc_13(strFrame);
     }
 
@@ -355,7 +355,7 @@ void UIFittingDollDialog::FUN_141933b00()
     if (MS2Ptr<ASMovieClip> spEmblem = GetChild<ASMovieClip>("m_emblem"))
     {
         CString strFrame;
-        strFrame.AppendFormat("_%d", (unsigned)((class PC*)(class PC*)(pDoll))->FUN_141658e60());
+        strFrame.AppendFormat("_%d", (unsigned)((class PC*)(class PC*)(pDoll))->GetGender());
         spEmblem->vfunc_13(strFrame);
     }
 }
@@ -371,11 +371,11 @@ void UIFittingDollDialog::FUN_141934070()
         return;
     int bOwner = 0;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
+    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->GetEntityID()));
     if (pPlot != 0)
-        bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
+        bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->GetAccountId();
     bool bEquip = pDoll->FUN_14121c710() == 1;
-    FUN_14121e670(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->FUN_14123c580(), DAT_143af25f0, bEquip);
+    CreateSlotBag(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->GetObjectId(), DAT_143af25f0, bEquip);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
@@ -417,14 +417,14 @@ int UIFittingDollDialog::FUN_141934430()
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
+    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->GetEntityID()));
     if (pPlot == 0)
         return 0xd;
-    if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())
+    if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->GetAccountId())
         return 2;
 
     Unk_FdEquipList list(10);
-    reinterpret_cast<CEquipment*>(pDoll->FUN_1416561a0())->CollectShownItems(list);
+    reinterpret_cast<CEquipment*>(pDoll->GetEquipment())->CollectShownItems(list);
     bool bBound = false;
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
@@ -442,7 +442,7 @@ int UIFittingDollDialog::FUN_141934430()
     }
     list.RemoveAll();
 
-    reinterpret_cast<CEquipment*>(pMe->FUN_1416561a0())->FUN_1411e22c0(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(list), 1);
+    reinterpret_cast<CEquipment*>(pMe->GetEquipment())->FUN_1411e22c0(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(list), 1);
     int nType = pDoll->FUN_14121c710();
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {

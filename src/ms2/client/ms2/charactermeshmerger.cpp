@@ -666,7 +666,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
-bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB);   // property states are equal
+bool ArePropertyStatesEqual(const NiPropertyState* pA, const NiPropertyState* pB);   // property states are equal
 
 class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };
 struct Unk_MaterialEntry;
@@ -796,8 +796,8 @@ struct Unk_TransformLess
     bool operator()(const NiTransform& kA, const NiTransform& kB) const;
 };
 
-void FUN_141050880(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned int uiHeight, unsigned int uiLeft, unsigned int uiTop, NiPoint2* pOffset, NiPoint2* pScale);
-void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* pShader);
+void CalcAtlasUVRect(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned int uiHeight, unsigned int uiLeft, unsigned int uiTop, NiPoint2* pOffset, NiPoint2* pScale);
+void FinalizeAtlas(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* pShader);
 bool FUN_141052ff0(NiAVObject* pA, NiAVObject* pB);
 CString FUN_1410521a0(NiAVObject* pMesh);
 void FUN_1401d3700(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
@@ -817,7 +817,7 @@ inline CString Unk_Lower(const CString& str)
 }
 efd::SmartPointer<NiTexture> FUN_141051560(NiAVObject* pMesh);
 void FUN_141051f90(NiAVObject* pMesh, NiPixelData* pShaderMap, const NiRect<unsigned int>& kRect);
-NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader);
+NiTexturingProperty* CreateAtlasTexturingProperty(NiPixelData* pAlbedo, NiPixelData* pShader);
 
 // Skinning merge state of one group (ctor 0x141067020, dtor 0x1410682d0; 0x50 bytes).
 struct MergeInfo
@@ -833,7 +833,7 @@ struct MergeInfo
 
 MeshGroups* FUN_141066d90(MeshGroups* pGroups);
 void FUN_14104a1c0(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInfo);
-NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot);
+NiMesh* BuildMergedMesh(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot);
 void FUN_14104e800(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInfo);
 NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot);
 void FUN_141049d50(NiAVObject* pRoot, MeshGroups& kGroups);
@@ -875,7 +875,7 @@ void FUN_141049240(NiAVObject* pRoot, MeshArray& kSource, MeshArray& kMerged)
         MeshGroups kBuckets;
         MergeInfo kInfo;
         FUN_14104a1c0(kGroups[i], kBuckets, kInfo);
-        efd::SmartPointer<NiMesh> spMerged(FUN_14104ae20(kBuckets, kInfo, pRoot));
+        efd::SmartPointer<NiMesh> spMerged(BuildMergedMesh(kBuckets, kInfo, pRoot));
         kMerged.Add(spMerged);
         NiStream kStream;
         kStream.InsertObject(spMerged);
@@ -1014,7 +1014,7 @@ int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups)
         NiMesh* pFirst = kGroups[i][0];
         if (((class NiAVObject*)(pFirst))->GetParent() != ((class NiAVObject*)(pMesh))->GetParent())
             continue;
-        if (!FUN_141052aa0(pFirst->GetPropertyState(), pMesh->GetPropertyState()))
+        if (!ArePropertyStatesEqual(pFirst->GetPropertyState(), pMesh->GetPropertyState()))
             continue;
         return (int)i;
     }
@@ -1023,7 +1023,7 @@ int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups)
 
 // Total vertex and index counts of all meshes in the groups (0x14104a080).
 // @0x14104a080
-void FUN_14104a080(const MeshGroups& kGroups, int* pVertices, int* pIndices)
+void CountVerticesAndIndices(const MeshGroups& kGroups, int* pVertices, int* pIndices)
 {
     CMM_FOR_EACH(const MeshList& kList, kGroups)
     {
@@ -1266,12 +1266,12 @@ int FUN_141051ee0(efd::set<NiAVObject*>& kBones, NiAVObject** ppBones, unsigned 
 
 // Builds the merged mesh of one group: concatenated indices and vertices, one submesh per bone bucket (0x14104ae20).
 // @0x14104ae20
-NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot)
+NiMesh* BuildMergedMesh(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot)
 {
     unsigned int uiBucketCount = (unsigned int)kBuckets.size();
     int iVertices = 0;
     int iIndices = 0;
-    FUN_14104a080(kBuckets, &iVertices, &iIndices);
+    CountVerticesAndIndices(kBuckets, &iVertices, &iIndices);
     if (iVertices == 0)
         return 0;
 
@@ -1457,7 +1457,7 @@ int FUN_14104c870(std::vector<Unk_StreamElementDesc>& kLayout, const efd::vector
 
 // Index of the first vertex-usage stream of the mesh, or none (0x14104cc20).
 // @0x14104cc20
-NiDataStreamRef* FUN_14104cc20(NiMesh* pMesh)
+NiDataStreamRef* FindVertexStreamRef(NiMesh* pMesh)
 {
     unsigned int uiCount = pMesh->GetStreamRefCount();
     for (unsigned int i = 0; i < uiCount; i++)
@@ -1519,7 +1519,7 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
         CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
             iVertexTotal += pMesh->GetVertexCount();
-            NiDataStreamRef* pSource = FUN_14104cc20(pMesh);
+            NiDataStreamRef* pSource = FindVertexStreamRef(pMesh);
             if (pSource == 0)
             {
                 pMesh->GetVertexCount();
@@ -1559,7 +1559,7 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
             kParentWorld.Invert(kInverseParent);
             NiTransform kXform = pMesh->GetLocalTransform() * kRootTransform * kInverseParent;
 
-            NiDataStreamRef* pSourceRef = FUN_14104cc20(pMesh);
+            NiDataStreamRef* pSourceRef = FindVertexStreamRef(pMesh);
             unsigned char* pSrc = (unsigned char*)pSourceRef->GetDataStream()->Lock(5);
             int iDstOffset = 0;
             int iSrcStride = pSourceRef->GetStride();
@@ -1688,7 +1688,7 @@ CCharacterMeshMerger::TexNode* CCharacterMeshMerger::TexNode::Insert(NiTexture* 
 // is not compared (the renderer-specific property, slot 4, is compared by identity); texturing is compared separately by
 // the callers.
 // @0x141052aa0
-bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB)
+bool ArePropertyStatesEqual(const NiPropertyState* pA, const NiPropertyState* pB)
 {
     if (pA->GetAlpha())
     {
@@ -1815,7 +1815,7 @@ bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB)
 
 // Distributes the meshes into groups of equal property state (0x1410528f0).
 // @0x1410528f0
-void FUN_1410528f0(const MeshList& kMeshes, MeshGroups& kGroups)
+void GroupMeshesByPropertyState(const MeshList& kMeshes, MeshGroups& kGroups)
 {
     kGroups.clear();
     CMM_FOR_EACH(NiMesh* pMesh, kMeshes)
@@ -1824,7 +1824,7 @@ void FUN_1410528f0(const MeshList& kMeshes, MeshGroups& kGroups)
         for (uiGroup = 0; uiGroup < kGroups.size(); uiGroup++)
         {
             NiMesh* pFirst = kGroups[uiGroup][0];
-            if (FUN_141052aa0(pMesh->GetPropertyState(), pFirst->GetPropertyState()) == true)
+            if (ArePropertyStatesEqual(pMesh->GetPropertyState(), pFirst->GetPropertyState()) == true)
                 break;
         }
         if (uiGroup == kGroups.size())
@@ -1926,7 +1926,7 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
     {
         const efd::map<NiTransform, MeshList, Unk_TransformLess>::value_type& kEntry = *it;
         MeshGroups kSplit;
-        FUN_1410528f0(kEntry.second, kSplit);
+        GroupMeshesByPropertyState(kEntry.second, kSplit);
         MeshGroups& rSplit = kSplit;
         MeshGroups::const_iterator itListEnd = rSplit.end();
         for (MeshGroups::const_iterator itList = rSplit.begin(); itList != itListEnd; ++itList)
@@ -1970,7 +1970,7 @@ void FUN_14104ddc0(efd::vector<NiAVObject*>& kMeshes, MeshGroupVector& kOutGroup
             pNode = spRoot->Insert(spTexture);
             if (pNode == 0)
             {
-                FUN_141050920(&kResult, spAlbedo, spShader);
+                FinalizeAtlas(&kResult, spAlbedo, spShader);
                 kOutGroups.push_back(kGroup);
                 kOutResults.push_back(kResult);
                 kGroup.clear();
@@ -1993,12 +1993,12 @@ void FUN_14104ddc0(efd::vector<NiAVObject*>& kMeshes, MeshGroupVector& kOutGroup
             uiMinCell = pNode->m_kRect.GetHeight();
         kGroup.push_back(pMesh);
         Unk_UVRect kPlacement;
-        FUN_141050880(uiAtlasSize, spTexture->GetWidth(), spTexture->GetHeight(), pNode->m_kRect.m_left, pNode->m_kRect.m_top,
+        CalcAtlasUVRect(uiAtlasSize, spTexture->GetWidth(), spTexture->GetHeight(), pNode->m_kRect.m_left, pNode->m_kRect.m_top,
                       &kPlacement.m_kOffset, &kPlacement.m_kScale);
         kResult.m_kPlacement.insert(std::make_pair(pMesh, kPlacement));
         FUN_141051f90(pMesh, spShader, pNode->m_kRect);
     }
-    FUN_141050920(&kResult, spAlbedo, spShader);
+    FinalizeAtlas(&kResult, spAlbedo, spShader);
     kOutGroups.push_back(kGroup);
     kOutResults.push_back(kResult);
 }
@@ -2006,7 +2006,7 @@ void FUN_14104ddc0(efd::vector<NiAVObject*>& kMeshes, MeshGroupVector& kOutGroup
 
 // UV offset and scale of a rectangle inside the atlas (0x141050880).
 // @0x141050880
-void FUN_141050880(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned int uiHeight, unsigned int uiLeft, unsigned int uiTop, NiPoint2* pOffset, NiPoint2* pScale)
+void CalcAtlasUVRect(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned int uiHeight, unsigned int uiLeft, unsigned int uiTop, NiPoint2* pOffset, NiPoint2* pScale)
 {
     pOffset->x = (float)uiLeft / (float)uiAtlasSize;
     pOffset->y = (float)uiTop / (float)uiAtlasSize;
@@ -2016,7 +2016,7 @@ void FUN_141050880(unsigned int uiAtlasSize, unsigned int uiWidth, unsigned int 
 
 // Shrinks a finished atlas to the used area, rescales the placements and builds the group's texturing property (0x141050920).
 // @0x141050920
-void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* pShader)
+void FinalizeAtlas(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* pShader)
 {
     unsigned int uiWidth = pAlbedo->GetWidth(0, 0);
     unsigned int uiHeight = pAlbedo->GetHeight(0, 0);
@@ -2072,13 +2072,13 @@ void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* 
     efd::SmartPointer<NiPixelData> spShaderAtlas = NiNew NiPixelData(spShader->GetWidth(0, 0) / uiShrinkU, spShader->GetHeight(0, 0) / uiShrinkV, DAT_1439fb040, 1, 1);
     NiRect<unsigned int> kShaderRect(0, spShaderAtlas->GetWidth(0, 0), 0, spShaderAtlas->GetHeight(0, 0));
     CopyPixelRect(spShader, kShaderRect, spShaderAtlas, kShaderRect);
-    pResult->m_spTexturing = FUN_141050fd0(spAtlas, spShaderAtlas);
+    pResult->m_spTexturing = CreateAtlasTexturingProperty(spAtlas, spShaderAtlas);
 }
 
 // Creates the texturing property of the atlas (base texture plus shader map) and dumps both textures to disk (0x141050fd0).
 #ifndef MS2_HOOK_DLL
 // @0x141050fd0
-NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader)
+NiTexturingProperty* CreateAtlasTexturingProperty(NiPixelData* pAlbedo, NiPixelData* pShader)
 {
     NiTexturingProperty* pTexturing = NiNew NiTexturingProperty(pAlbedo);
     pTexturing->SetBaseFilterMode(NiTexturingProperty::FILTER_BILERP_MIPNEAREST);
@@ -2099,7 +2099,7 @@ NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader)
 
 // Same layout as the stream ref but with its own stream of uiCount elements (0x141051210).
 // @0x141051210
-NiDataStreamRef* FUN_141051210(NiDataStreamRef* pRef, unsigned int uiCount)
+NiDataStreamRef* CloneStreamRefWithCount(NiDataStreamRef* pRef, unsigned int uiCount)
 {
     NiDataStreamElementSet kElements;
     for (unsigned int i = 0; i < pRef->GetDataStream()->GetElementDescCount(); i++)
@@ -2435,7 +2435,7 @@ NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
         NiDataStreamRef* pFirstRef = pFirst->GetStreamRefAt(uiStream);
         if (pFirstRef->GetUsage() != NiDataStream::USAGE_VERTEX)
             continue;
-        NiDataStreamRef* pMergedRef = FUN_141051210(pFirstRef, iVertices);
+        NiDataStreamRef* pMergedRef = CloneStreamRefWithCount(pFirstRef, iVertices);
         unsigned char* pDst = (unsigned char*)pMergedRef->GetDataStream()->Lock(10);
         unsigned char* pSrc = (unsigned char*)pFirstRef->GetDataStream()->Lock(5);
         unsigned int uiWritten = 0;

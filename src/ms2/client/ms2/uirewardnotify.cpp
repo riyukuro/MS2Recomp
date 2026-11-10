@@ -348,7 +348,7 @@ void UIRewardNotify::FUN_141abf6e0(int nItemId, int nGrade)
         RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(info.operator->()->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
         RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", info.operator->()->IsPieceItem() == 1);
-        RN_OBJ(pObj)->FUN_1409c0d20("key", nItemId);
+        RN_OBJ(pObj)->SetMemberUInt("key", nItemId);
         AppendReward(pObj);
     }
 }
@@ -369,7 +369,7 @@ void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
         RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(item->FUN_140528590(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
         RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<CItemData*>(item->FUN_140527840())->IsPieceItem() == 1);
-        RN_OBJ(pObj)->FUN_1409c0d20("key", item->FUN_1405276c0());
+        RN_OBJ(pObj)->SetMemberUInt("key", item->FUN_1405276c0());
         AppendReward(pObj);
     }
 }
@@ -410,14 +410,14 @@ MS2_REPLACE_METHOD(0x141abffa0, UIRewardNotify, FUN_141abffa0, 610, 0x51241394);
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    class JobSystemCli* FUN_1416546d0();
+    class JobSystemCli* GetJobSystem();
 };
 
 // @0x141ac0210
 void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
 {
     std::vector<JobSkillPtr> list;
-    ((class PC*)(class PC*)(pPlayer))->FUN_1416546d0()->GetSkills(list, 1, true);
+    ((class PC*)(class PC*)(pPlayer))->GetJobSystem()->GetSkills(list, 1, true);
     int bAny = 0;
     std::vector<JobSkillPtr>& rList = list;
     for (JobSkillPtr* it = rList._Unchecked_begin(), *itEnd = rList._Unchecked_end(); it != itEnd; it++) {
@@ -517,7 +517,7 @@ void UIRewardNotify::FUN_141ac0e50(int nFishId, unsigned nLength)
     RN_OBJ(pObj)->FUN_1407cb9c0("success", 1);
     RN_OBJ(pObj)->FUN_1407cbbe0("bigFish", nSize == 3);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
-    RN_OBJ(pObj)->FUN_1409c0d20("key", nFishId);
+    RN_OBJ(pObj)->SetMemberUInt("key", nFishId);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac0e50, UIRewardNotify, FUN_141ac0e50, 848, 0xE41F7F22);
@@ -536,7 +536,7 @@ void UIRewardNotify::FUN_141ac11b0(int nFishId, unsigned nLength)
     RN_OBJ(pObj)->FUN_1407cbb20("size", StringFormat(L"{0}cm", nLength));
     RN_OBJ(pObj)->FUN_1407cb9c0("success", 0);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
-    RN_OBJ(pObj)->FUN_1409c0d20("key", nFishId);
+    RN_OBJ(pObj)->SetMemberUInt("key", nFishId);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac11b0, UIRewardNotify, FUN_141ac11b0, 760, 0xE99C7EF6);
@@ -832,13 +832,13 @@ public:
 
 class Unk_RLPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
-UIRewardNotify* FUN_140938cd0(int nId);
+class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
+UIRewardNotify* FindRewardNotify(int nId);
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 void* FUN_14025e7c0();
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
-void FUN_141415600(const CString& strBindID);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
+void DestroyItemInfoSlot(const CString& strBindID);
 void FUN_140710590(COutPacket&);
 
 // @0x141ac65b0
@@ -883,7 +883,7 @@ int UIRouletteDialog::vfunc_65()
 void UIRouletteDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_binds.GetCount(); i++)
-        FUN_141415600(m_binds[i]);
+        DestroyItemInfoSlot(m_binds[i]);
     m_binds.RemoveAll();
     if (m_30.get())
         m_30->Invoke("hide");
@@ -906,7 +906,7 @@ void UIRouletteDialog::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pUI = FindTalkCinematic(0x4e40);
         if (pUI != 0) {
             int n = pUI->GetLowerCutGlobalY();
             if (n != -1) {
@@ -942,11 +942,11 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (m_spinIndex >= (int)m_spins.GetCount())
             return 1;
         if (m_spins.GetCount() == 1) {
-            UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pReward = FindRewardNotify(0x4e5d);
             if (pReward != 0)
                 pReward->FUN_141abf6e0(m_spins[0].m_itemId, m_spins[0].m_rarity);
         } else {
-            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinMultiStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->PlaySystemSound(s_strSpinMultiStart, "");
         }
         ATL::CAtlArray<MS2Ptr<CItem> > items;
         MS2Ptr<CItem> item(new CItem);
@@ -963,7 +963,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
-            UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
+            UITalkCinematic* pUI = FindTalkCinematic(0x4e40);
             if (pUI != 0) {
                 if (items.GetCount() > 0)
                     pUI->FUN_141b1ac40(reinterpret_cast<Unk_TalkItemList&>(items), strTitle, 0, 0, 0);
@@ -1047,7 +1047,7 @@ void UIRouletteDialog::FUN_141ac5a30()
                 item->SetCountClamped(nCount);
                 CString strBind;
                 strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
-                FUN_141415450(strBind, item, i, 0x415, 0);
+                CreateItemInfoSlot(strBind, item, i, 0x415, 0);
                 pDlg->FUN_141ac65b0("bind", strBind, i + 1, item->FUN_140528590(), nCount);
                 m_binds.Add(strBind);
             }
@@ -1101,9 +1101,9 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
         if (pDlg != 0)
             { bool bDebug = static_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode(); pDlg->Invoke("spin", m_spins[m_spinIndex].m_slot + 1, bDebug); }
         if (m_spins.GetCount() == 1)
-            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->PlaySystemSound(s_strSpinStart, "");
         else
-            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinMultiStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->PlaySystemSound(s_strSpinMultiStart, "");
     }
 }
 #endif

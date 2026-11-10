@@ -459,15 +459,15 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
             row.FUN_1407cb9c0("count", rec->m_count);
             row.FUN_1407cba60("frame", FUN_140c6d470());
             row.FUN_1407cb9c0("state", GetDayState(rec->m_count));
-            row.FUN_1409c0d20("slotID01", rec->m_item01.m_itemId);
-            row.FUN_1409c0d20("slotID02", rec->m_item02.m_itemId);
+            row.SetMemberUInt("slotID01", rec->m_item01.m_itemId);
+            row.SetMemberUInt("slotID02", rec->m_item02.m_itemId);
             row.FUN_1409adc90("slotRank01", rec->m_item01.vfunc_o18_1());
             row.FUN_1409adc90("slotRank02", rec->m_item02.vfunc_o18_1());
-            row.FUN_1409c0d20("slotID02", rec->m_item02.m_itemId);
+            row.SetMemberUInt("slotID02", rec->m_item02.m_itemId);
             row.FUN_1407cba60("slotIcon01", GetItemIconPath(rec->m_item01.m_itemId));
             row.FUN_1407cba60("slotIcon02", GetItemIconPath(rec->m_item02.m_itemId));
-            row.FUN_1409c0d20("slotItemCount01", rec->m_item01.m_count);
-            row.FUN_1409c0d20("slotItemCount02", rec->m_item02.m_count);
+            row.SetMemberUInt("slotItemCount01", rec->m_item01.m_count);
+            row.SetMemberUInt("slotItemCount02", rec->m_item02.m_count);
             list->AddItem(row);
         }
         list->vfunc_24(true);

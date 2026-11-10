@@ -134,30 +134,30 @@ public:
     virtual bool vfunc_56(float f);                         // 56 0x14123e3f0
 
     // non-virtual
-    void FUN_14123bb80(CString str);                        // 0x14123bb80 m_str90 = str (model path, by value)
-    void FUN_14123c280(float f);                            // 0x14123c280 m_fScaleA4 = f (+ entity scale prop)
-    int FUN_14123c580();                                    // 0x14123c580 return m_unk_70 (object id)
+    void SetModelPath(CString str);                        // 0x14123bb80 m_str90 = str (model path, by value)
+    void SetScale(float f);                            // 0x14123c280 m_fScaleA4 = f (+ entity scale prop)
+    int GetObjectId();                                    // 0x14123c580 return m_unk_70 (object id)
     int FUN_14123dbd0();                                    // 0x14123dbd0 return m_unk_c8
     void SetScaleAC(float f);                            // scale B (+0xa8)
     int FUN_14123c660();                                    // visibility (+0xb0)
-    void FUN_14123c5a0(int nId);                            // 0x14123c5a0 m_unk_70 = nId (w17)
-    egf::EntityID FUN_14123c460();                          // 0x14123c460
+    void SetObjectId(int nId);                            // 0x14123c5a0 m_unk_70 = nId (w17)
+    egf::EntityID GetEntityID();                          // 0x14123c460
     MS2Ptr<CAnimationManager> GetAnimMgr();              // 0x14123c6f0 copy of m_spAnimMgr (w17)
-    CString FUN_14123bbd0();                                // 0x14123bbd0 copy of m_str90 (model path; sb4)
-    void FUN_14123bc20(CString str);                        // 0x14123bc20 reload the model from str (by value; sb4)
+    CString GetModelPath();                                // 0x14123bbd0 copy of m_str90 (model path; sb4)
+    void ChangeModel(CString str);                        // 0x14123bc20 reload the model from str (by value; sb4)
     int FUN_14123bea0();                                    // 0x14123bea0 return m_unk_b4 (model loaded; sb4)
-    egf::Entity* FUN_14123c410();                           // 0x14123c410 return m_unk_80 (the entity; sb4)
+    egf::Entity* GetEntity();                           // 0x14123c410 return m_unk_80 (the entity; sb4)
     void FUN_14123bb30(float f);                            // 0x14123bb30 if loaded: vfunc_53(f)
     CString FUN_14123be50();                                // 0x14123be50 copy of m_str88
-    float FUN_14123c260();                                  // 0x14123c260 m_fScaleA4
+    float GetScale();                                  // 0x14123c260 m_fScaleA4
     float GetScaleAC();                                  // 0x14123c2e0 m_fScaleAC
     void FUN_14123c330(float f);                            // 0x14123c330 m_fScaleA8 = f
     efd::Point3 FUN_14123c360();                            // 0x14123c360 m_pos98 (trivial copy)
     void SetKEntityID(egf::EntityID kId);                  // 0x14123c3e0 m_kEntityID = kId
-    void FUN_14123c430(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
-    unsigned __int64 FUN_14123c500();                       // 0x14123c500 entity id value
+    void SetEntity(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
+    unsigned __int64 GetEntityIDValue();                       // 0x14123c500 entity id value
     void SetKeepVisibleForBGTransparency(bool b);                             // 0x14123c680 join/leave the update list
-    void FUN_14123cb20(bool b);                             // 0x14123cb20 shadow
+    void SetShadowVisible(bool b);                             // 0x14123cb20 shadow
     efd::Point3 GetForwardDirection();                             // 0x14123cc20 facing direction of vfunc_20()
     static efd::Point3 RotationToDirection(NiPoint3 kRot);         // 0x14123cc80 rotation (degrees) -> direction
     static float DirectionToYawDegrees(efd::Point3 kDir);           // 0x14123cd50 direction -> z angle (degrees)

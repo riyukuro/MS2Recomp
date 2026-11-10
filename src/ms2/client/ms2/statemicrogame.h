@@ -15,7 +15,7 @@
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
 
 class PCBase;
-class Unk_StateArg22;
+class StateSyncObject;
 class StateMicroGameRpsData;
 class StateMicroGameCoupleDanceData;
 class Unk_StateArg29;
@@ -35,12 +35,12 @@ public:
     virtual void vfunc_9(double fTime);                     // 9  0x140b86ea0
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140b86ad0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140b869c0
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140b869c0
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140b8bd90: a new StateMicroGameRpsData
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x140b87100
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x140b87100
 
     int FUN_140b871c0();                                    // the played card (-1: none)
-    bool FUN_140b87210(MS2Ptr<Unk_StateArg22> p);           // the request carries the same game
+    bool FUN_140b87210(MS2Ptr<StateSyncObject> p);           // the request carries the same game
     int FUN_140b872c0();                                    // the partner's actor id
     void FUN_140b87310(int nMode, int nCard, int nPick);    // play a card (UI selection)
     void ResetRound();                                   // start the game: reset the payload
@@ -72,11 +72,11 @@ public:
     virtual void vfunc_9(double fTime);                     // 9  0x140b89160
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140b88f30
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140b88e20
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140b88e20
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140b8bd10: a new StateMicroGameCoupleDanceData
-    virtual bool vfunc_28(MS2Ptr<Unk_StateArg22> p);        // 28 0x140b89350
+    virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x140b89350
 
-    bool FUN_140b89410(MS2Ptr<Unk_StateArg22> p);           // the request carries the same dance
+    bool FUN_140b89410(MS2Ptr<StateSyncObject> p);           // the request carries the same dance
     int FUN_140b894c0();                                    // the partner's actor id
     void FUN_140b89510(const std::vector<int>& aStages);    // start the dance with the event's stage list
     void FUN_140b89880(int nTime, bool bFlag, int nA, int nB);   // answer a dance request

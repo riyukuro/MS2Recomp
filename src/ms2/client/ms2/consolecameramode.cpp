@@ -100,7 +100,7 @@ public:
     efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
         NiAVObject* pRoot);                                         // pick the scene under a window point
     void FUN_140aec8a0(bool);
-    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
+    void SetTarget(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
     class Unk_CameraTargetEntity* FUN_140a38d60();   // C3: bosstargetcamera.cpp
 };
 
@@ -172,7 +172,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (!pTarget)
             break;
-        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->GetEntity());
         if (pNode)
         {
             Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
@@ -324,7 +324,7 @@ void CConsoleCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
-        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->GetEntity());
         Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
         m_78 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_118) * reinterpret_cast<const efd::Matrix3&>(kRot)))))));
         if (n == 0)
@@ -371,7 +371,7 @@ void CConsoleCameraMode::vfunc_30()
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(pActor, 1);
+            TSingleton<CameraMgr>::GetInstance()->SetTarget(pActor, 1);
             break;
         }
     }

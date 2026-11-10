@@ -73,7 +73,7 @@ struct Unk_1407a9690
 void FUN_1407a9710(Unk_1407a9690& v, CInPacket& in);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
+class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
 CStringW FUN_140298ea0(CStringW strKey);                            // string table text
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
 void FUN_141275260(int nStringId, int nA, int nB);                  // notice by string id
@@ -82,8 +82,8 @@ __int64 GetNextMonthStart(__int64 nTime);                               // midni
 int GetDaysInMonth(int year, int month);                             // days of the month
  // child member by name
 
-bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs);
-UIPaybackDialog* FUN_140a8c5f0(int nId);
+bool CompareByStartDate(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs);
+UIPaybackDialog* FindPaybackDialog(int nId);
 
 // @0x140a8af50
 PaybackManagerClient::PaybackManagerClient()
@@ -108,12 +108,12 @@ void PaybackManagerClient::OnPaybackPacket(CInPacket& packet)
             FUN_1407a9710(status, packet);
             m_nLevel = status.m_00;
             m_nMerat = (unsigned)status.m_08;
-            if (!((class PaybackManagerClient*)FUN_1409c1740())->IsAvailable(0))
+            if (!((class PaybackManagerClient*)GetPaybackManager())->IsAvailable(0))
             {
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f93);
                 break;
             }
-            UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
+            UIPaybackDialog* pDialog = FindPaybackDialog(0x4f93);
             if (pDialog == 0)
                 break;
             pDialog->FUN_140e6f820(nOldLevel, nOldMerat);
@@ -128,7 +128,7 @@ void PaybackManagerClient::OnPaybackPacket(CInPacket& packet)
                 MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
                 m_products.push_back(static_cast<MS2Ptr<CMeratMarketProduct>&&>(spProduct));
             }
-            std::sort(m_products.begin(), m_products.end(), FUN_140a8c0c0);
+            std::sort(m_products.begin(), m_products.end(), CompareByStartDate);
             break;
         }
         }
@@ -162,7 +162,7 @@ unsigned PaybackManagerClient::GetMerat() const
 }
 
 // @0x140a8b360
-MS2Ptr<CMeratMarketProduct> PaybackManagerClient::FUN_140a8b360() const
+MS2Ptr<CMeratMarketProduct> PaybackManagerClient::GetFirstSellingProduct() const
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
         return MS2Ptr<CMeratMarketProduct>(0);
@@ -182,7 +182,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         return;
     if (m_products.empty())
         return;
-    MS2Ptr<CMeratMarketProduct> spFirst = FUN_140a8b360();
+    MS2Ptr<CMeratMarketProduct> spFirst = GetFirstSellingProduct();
     if (spFirst == 0)
         return;
     if (spParam == 0)
@@ -210,9 +210,9 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
                 }
             }
         }
-        if (spBuy->FUN_140a8e4e0() == 0)
+        if (spBuy->GetProduct() == 0)
             continue;
-        MS2Ptr<CMeratMarketProduct> spProduct = spBuy->FUN_140a8e4e0();
+        MS2Ptr<CMeratMarketProduct> spProduct = spBuy->GetProduct();
         if (spProduct->m_premium.m_nId == spFirst->m_premium.m_nId)
         {
             if (spBuy->vfunc_4() == 3)
@@ -225,7 +225,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
 }
 
 // @0x140a8ba00
-CStringW PaybackManagerClient::FUN_140a8ba00()
+CStringW PaybackManagerClient::GetPeriodText()
 {
     CMsTime now(GetServerTime());
     int nYear = now.GetYear();
@@ -314,13 +314,13 @@ bool PaybackManagerClient::FUN_140a8bf50(MS2Ptr<CMeratMarketProduct> spProduct) 
 }
 
 // @0x140a8c0c0 the products by their start date
-bool FUN_140a8c0c0(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs)
+bool CompareByStartDate(const MS2Ptr<CMeratMarketProduct>& lhs, const MS2Ptr<CMeratMarketProduct>& rhs)
 {
     return lhs->m_premium.m_startDate < rhs->m_premium.m_startDate;
 }
 
 // @0x140a8c5f0 the payback dialog, if it is open
-UIPaybackDialog* FUN_140a8c5f0(int nId)
+UIPaybackDialog* FindPaybackDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -336,13 +336,13 @@ MS2_REPLACE_METHOD(0x140A8B490, PaybackManagerClient, FUN_140a8b490, 1382, 0xA27
 MS2_REPLACE_METHOD(0x140A8B240, PaybackManagerClient, GetMenuButton, 71, 0x9AE2BB34);
 MS2_REPLACE_METHOD(0x140A8B290, PaybackManagerClient, TogglePaybackDialog, 129, 0x0F49EC32);
 MS2_REPLACE_METHOD(0x140A8B340, PaybackManagerClient, GetMerat, 14, 0xAAC7684B);
-MS2_REPLACE_METHOD(0x140A8B360, PaybackManagerClient, FUN_140a8b360, 279, 0x2D2911F8);
-MS2_REPLACE_METHOD(0x140A8BA00, PaybackManagerClient, FUN_140a8ba00, 689, 0x75A28861);
+MS2_REPLACE_METHOD(0x140A8B360, PaybackManagerClient, GetFirstSellingProduct, 279, 0x2D2911F8);
+MS2_REPLACE_METHOD(0x140A8BA00, PaybackManagerClient, GetPeriodText, 689, 0x75A28861);
 MS2_REPLACE_METHOD(0x140A8BCC0, PaybackManagerClient, NotifyResetWindow, 335, 0x0FAD4756);
 MS2_REPLACE_METHOD(0x140A8BE20, PaybackManagerClient, IsAvailable, 88, 0x4E7C3E13);
 MS2_REPLACE_METHOD(0x140A8BE80, PaybackManagerClient, IsEnabled, 194, 0x56B32531);
 MS2_REPLACE_METHOD(0x140A8BF50, PaybackManagerClient, FUN_140a8bf50, 355, 0x5EDCF4BB);
-MS2_REPLACE(0x140A8C0C0, FUN_140a8c0c0, 72, 0x310D5C05);
-MS2_REPLACE(0x140A8C5F0, FUN_140a8c5f0, 147, 0xB8E36C24);
+MS2_REPLACE(0x140A8C0C0, CompareByStartDate, 72, 0x310D5C05);
+MS2_REPLACE(0x140A8C5F0, FindPaybackDialog, 147, 0xB8E36C24);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9f980-0x142c9fa00 .text$yd

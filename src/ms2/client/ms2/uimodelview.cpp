@@ -38,7 +38,7 @@ class Unk_UmvClock;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
-    double FUN_141473280();
+    double GetGameTime();
     double GetDeltaTime();
 };
 void FUN_14107b010();                                           // refreshes the sun direction constants
@@ -56,7 +56,7 @@ public:
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1416aac60(class NiAVObject*);
+    void RemoveMirroredScene(class NiAVObject*);
 };
 #define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)          // C3: was extern efd::Point3 DAT_143b01a60
 float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
@@ -141,9 +141,9 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
     NiPoint3 kPos(kRotate * (m_kBackupTranslate - m_kBackupCenter) + m_kBackupCenter);
     NiPoint3 kUp(kRotate * m_kBackupUp);
     m_spCamera->SetTranslate(kPos);
-    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     m_spCamera->LookAtWorldPoint(m_kCamera.m_kTarget, kUp);
-    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
 }
 
 // @0x140e66fa0
@@ -159,7 +159,7 @@ void UIModelView::vfunc_8(float fDist)
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
         NiPoint3 kNew = rPosition + kDir * fDist;
         m_spCamera->SetTranslate(kNew);
-        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
 }
 
@@ -176,7 +176,7 @@ void UIModelView::vfunc_9(float fDist)
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
         NiPoint3 kNew = rPosition + kDir * fDist;
         m_spCamera->SetTranslate(kNew);
-        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
 }
 
@@ -222,7 +222,7 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
             pNode->AttachEffect(m_spAmbientLight);
             pNode->UpdateEffects();
             m_spClick->vfunc_12(pNode);
-            ((class PostProcessingService*)(class Unk_UmvEffectMgr*)(((class Unk_UmvEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aac60((class NiAVObject*)(pNode));
+            ((class PostProcessingService*)(class Unk_UmvEffectMgr*)(((class Unk_UmvEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->RemoveMirroredScene((class NiAVObject*)(pNode));
         }
     }
 }
@@ -236,9 +236,9 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
     const NiPoint3& kTarget = m_kCamera.m_kTarget;
     const NiPoint3& kPos = m_kCamera.m_kPosition;
     m_spCamera->SetTranslate(kPos);
-    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
-    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+    m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     float fDist = (kTarget - kPos).Length();
     float fMin = m_kCamera.m_fMinDistance;
     float fMax = m_kCamera.m_fMaxDistance;
@@ -260,7 +260,7 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
         float fOffset = m_kCamera.m_fStep * (float)nDone;
         kNewPos += kDir * fOffset;
         m_spCamera->SetTranslate(kNewPos);
-        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
     return 1;
 }
@@ -307,7 +307,7 @@ int UIModelView::vfunc_14()
     kRotY.MakeYRotation((fAngleY * 3.1415927f) / 180.0f);
     kRotZ.MakeZRotation((fAngleZ * 3.1415927f) / 180.0f);
     m_spDirLight->SetRotate(kRotX * kRotY * kRotZ);
-    m_spDirLight->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+    m_spDirLight->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     m_spAmbientLight = EE_NEW NiAmbientLight();
     m_spAmbientLight->SetDimmer(m_fLightDimmer);
     m_spAmbientLight->SetAmbientColor(NiColor(1.0f, 1.0f, 1.0f));
@@ -383,7 +383,7 @@ void UIModelView::FUN_140e685d0()
                 if (m_nZoomState != 0 && (m_kZoomStart - kPos).Length() >= m_kCamera.m_fStep)
                     m_nZoomState = 0;
                 m_spCamera->SetTranslate(kPos);
-                m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+                m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
             }
         }
     }

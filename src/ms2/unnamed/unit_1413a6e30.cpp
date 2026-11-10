@@ -69,7 +69,7 @@ public:
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    class CConstructionGuideObject* FUN_1416625b0();
+    class CConstructionGuideObject* GetConstructionGuide();
 };
 class Unk_GcCore : public Unk_PCCubeCraft { };   // the cube-craft core: its position
 class MyPC   // C3: member view for the former free stand-ins
@@ -182,15 +182,15 @@ int CGuideConditionPosition::vfunc_3()
     if (pPC == 0)
         return 0;
     Vector3 pos = pPC->vfunc_18();
-    if (((void*)((class PC*)(class Unk_GcPC*)(pPC))->FUN_1416625b0()) != 0 && ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft()) != 0)
+    if (((void*)((class PC*)(class Unk_GcPC*)(pPC))->GetConstructionGuide()) != 0 && ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft()) != 0)
         pos = ((class Unk_GcCore*)((class MyPC*)(class Unk_GcPC*)(pPC))->GetActiveCubeCraft())->GetPtCell();
     for (size_t i = 0; i < m_arrCube.GetCount(); i++)
     {
         float fDist = (pos - m_arrCube.GetAt(i).vPos).Length();
         if (fDist < m_arrCube.GetAt(i).fRange)
-            return FUN_1413a55a0(1);
+            return ApplyNot(1);
     }
-    return FUN_1413a55a0(0);
+    return ApplyNot(0);
 }
 MS2_REPLACE_METHOD(0x1413A70E0, CGuideConditionPosition, vfunc_3, 307, 0xD9D4F299);
 
@@ -230,7 +230,7 @@ int CGuideConditionState::vfunc_3()
     Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(((class PCBase*)(class Unk_GcPC*)(pPC))->GetCurStateId() == m_n20);
+    return ApplyNot(((class PCBase*)(class Unk_GcPC*)(pPC))->GetCurStateId() == m_n20);
 }
 MS2_REPLACE_METHOD(0x1413A7450, CGuideConditionState, vfunc_3, 96, 0xB70C5F8D);
 
@@ -259,15 +259,15 @@ int CGuideConditionInteractable::vfunc_3()
     if (pObject == 0)
         return 0;
     if (pObject->vfunc_7() == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (pObject->FUN_1413fdfc0() == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (pObject->CheckItemRequirement() == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (pObject->HasAnyRequiredItem() == 0)
-        return FUN_1413a55a0(0);
+        return ApplyNot(0);
     if (pObject->HasRequiredMastery() == 0)
-        return FUN_1413a55a0(0);
-    return FUN_1413a55a0(1);
+        return ApplyNot(0);
+    return ApplyNot(1);
 }
 MS2_REPLACE_METHOD(0x1413A7570, CGuideConditionInteractable, vfunc_3, 374, 0x026F4DDB);

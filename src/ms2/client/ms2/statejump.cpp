@@ -163,7 +163,7 @@ void StateJump::vfunc_6()
 {
     State::vfunc_6();
     m_n10 = 0x26;
-    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     if (!m_pOwner->FUN_14166de90(0x35, nSeq))
     {
         efd::utf8string strAnim(m_pOwner->vfunc_123(0x35));
@@ -229,7 +229,7 @@ void StateJump::vfunc_8(double fTime)
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
         {
-            if (pPC->FUN_1416764a0())
+            if (pPC->GetRidee())
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = 1;
@@ -241,7 +241,7 @@ void StateJump::vfunc_8(double fTime)
             }
             else
             {
-                pPC->FUN_1415248d0(1, 0);
+                pPC->TryUseChairOrBed(1, 0);
             }
         }
         else
@@ -254,7 +254,7 @@ void StateJump::vfunc_8(double fTime)
     {
         if (!FUN_1417b9460() && pPC != 0 && FUN_1417d65d0() && FUN_1417d6620() == 0)
         {
-            if (pPC->FUN_1416764a0())
+            if (pPC->GetRidee())
             {
                 if (m_pOwner->FUN_141678820() != 0 && reinterpret_cast<PC*>(pPC)->FUN_14165b500(1) != 0)
                     pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
@@ -274,7 +274,7 @@ void StateJump::vfunc_9(double fTime)
 {
     static int s_nDelay = (int)FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     State::vfunc_9(fTime);
-    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     unsigned nLimit = s_nDelay;
     nLimit += (int)FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
     if (m_pOwner->FUN_141671a30() != 0)
@@ -291,7 +291,7 @@ void StateJump::vfunc_9(double fTime)
     {
         int nAnim;
         PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
+        if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->HasGuide2())
         {
             if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
                 nAnim = 0x3a;
@@ -343,7 +343,7 @@ void StateJump::vfunc_9(double fTime)
 }
 
 // @0x1417d64c0
-int StateJump::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateJump::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
         return 0;
@@ -353,7 +353,7 @@ int StateJump::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x1417d6560
-bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateJump::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     return FUN_1417b7e40() != p->m_nSub;
 }

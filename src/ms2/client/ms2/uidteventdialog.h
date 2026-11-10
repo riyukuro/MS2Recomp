@@ -47,7 +47,7 @@ private:
     T* m_p;
 };
 
-void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
+void DestroyItemInfoSlot(const CString& strBindID);                       // release the item bound to the name
 
 class UIDTEventDialog : public UIDialog
 {
@@ -58,7 +58,7 @@ public:
     public:
         // Both inline (COMDATs of this unit): ctor 0x140f38f20, dtor 0x140f39090 (??_G 0x140f392f0).
         RewardItem() : m_start(GetServerTime()), m_elapsed(0), m_step(0) {}
-        virtual ~RewardItem() { FUN_141415600(m_bindID); }
+        virtual ~RewardItem() { DestroyItemInfoSlot(m_bindID); }
 
         MS2Ptr<CommonUserEvent::DTRewardEventContext> m_ctx;                                        // +0x18
         __time64_t m_start;                                                                         // +0x28

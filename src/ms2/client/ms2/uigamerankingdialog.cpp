@@ -202,9 +202,9 @@ int FUN_140b3f460(int nType);
 
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class PCBase;
-class PC { public: CStringW& FUN_141656be0(); };
+class PC { public: CStringW& GetGuildName(); };
 class Unk_RankPlayerMgr { public: PCBase* FUN_141bd0cc0(); };
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 
 
 CArcadeDataTable* FUN_140e37aa0();
@@ -381,9 +381,9 @@ int UIGameRankingDialog::vfunc_13()
     {
         if (((class Unk_RankInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         {
-            if (FUN_140b632f0() != 0)
+            if (GetUISwfEntityManager() != 0)
             {
-                if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+                if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) == 0)
                     return 0;
             }
             if (MS2Ptr<ASTextInput> spInput = FUN_140e35bd0("m_searchInput"))
@@ -1152,7 +1152,7 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
             PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPc != 0)
             {
-                CStringW strGuild(reinterpret_cast<PC*>(pPc)->FUN_141656be0());
+                CStringW strGuild(reinterpret_cast<PC*>(pPc)->GetGuildName());
                 if (strGuild.IsEmpty())
                     obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
                 else

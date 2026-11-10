@@ -973,7 +973,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         {
             ASObj item(2);
             item.FUN_1407cbb20("text", spInfo->m_20);
-            item.FUN_1409c0d20("id", spInfo->m_28);
+            item.SetMemberUInt("id", spInfo->m_28);
             indoors.PushObj(item);
             bFound = TRUE;
         }
@@ -981,8 +981,8 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         {
             ASObj item(2);
             item.FUN_1407cbb20("text", spInfo->m_20);
-            item.FUN_1409c0d20("id", spInfo->m_18);
-            item.FUN_1409c0d20("iconData", spInfo->m_18);
+            item.SetMemberUInt("id", spInfo->m_18);
+            item.SetMemberUInt("iconData", spInfo->m_18);
             MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spInfo->m_18);
             if (spField)
             {
@@ -1014,9 +1014,9 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     CStringW strName = FUN_140e14b70(spRoom);
                     ASObj item(2);
                     item.FUN_1407cbb20("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
-                    item.FUN_1409c0d20("id", nField);
+                    item.SetMemberUInt("id", nField);
                     item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
-                    item.FUN_1409c0d20("iconData", spRoom->m_dungeonRoomID);
+                    item.SetMemberUInt("iconData", spRoom->m_dungeonRoomID);
                     dungeons.PushObj(item);
                     bFound = TRUE;
                 }
@@ -1066,7 +1066,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("text", strLabel);
-                item.FUN_1409c0d20("id", nField);
+                item.SetMemberUInt("id", nField);
                 gates.PushObj(item);
                 bFound = TRUE;
             }
@@ -1079,7 +1079,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 continue;
             ASObj item(2);
             item.FUN_1407cbb20("text", strName);
-            item.FUN_1409c0d20("id", nField);
+            item.SetMemberUInt("id", nField);
             npcs.PushObj(item);
             bFound = TRUE;
         }
@@ -1106,7 +1106,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             }
             ASObj item(2);
             item.FUN_1407cbb20("text", strName);
-            item.FUN_1409c0d20("id", nField);
+            item.SetMemberUInt("id", nField);
             switch (spNpc->m_nClass)
             {
             case 4: case 6: bosses.PushObj(item); break;
@@ -1210,7 +1210,7 @@ void WorldMapManager::SetEventScript(unsigned id, ASObj* script)
         script->FUN_1407cbb20("eventStr", GetStringCommonByKey(spInfo->m_strEventStr));
         ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetX", spInfo->m_nOffsetX);
         ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetY", spInfo->m_nOffsetY);
-        script->FUN_1409c4a30("eventTagScale", spInfo->m_fScale);
+        script->SetMemberFloat("eventTagScale", spInfo->m_fScale);
     }
 }
 
@@ -1280,9 +1280,9 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
             CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
             ASObj item(2);
             item.FUN_1407cbb20("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
-            item.FUN_1409c0d20("id", field);
+            item.SetMemberUInt("id", field);
             item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
-            item.FUN_1409c0d20("iconData", spRoom->m_dungeonRoomID);
+            item.SetMemberUInt("iconData", spRoom->m_dungeonRoomID);
             dungeons.PushObj(item);
         }
     }
@@ -1383,8 +1383,8 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         indoors.PushObj(item);
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
-    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
-    script->FUN_1409c0d20("fieldSN", field);
+    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->GetSpotDescription(field);
+    script->SetMemberUInt("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);
     script->FUN_1407cbb20("fishingSpot", strFishing);
     script->FUN_1407cbb20("mapDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4b, field));
@@ -1421,8 +1421,8 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
         }
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
-    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
-    script->FUN_1409c0d20("fieldSN", field);
+    CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->GetSpotDescription(field);
+    script->SetMemberUInt("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);
     script->FUN_1407cbb20("fishingSpot", strFishing);
     script->FUN_1409eb1d0("mission", missions);

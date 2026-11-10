@@ -209,7 +209,7 @@ int UISceneGame::vfunc_48(int n)
 int UISceneGame::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    TSingleton<CPartyManager>::GetInstance()->FUN_14162a480();
+    TSingleton<CPartyManager>::GetInstance()->ClearPartyAndRecruitment();
     TSingleton<CGuildManager>::GetInstance()->FUN_1413b5f90();
     TSingleton<CGroupChatManager>::GetInstance()->FUN_14137e190();
     TSingleton<CGameRankingCli>::GetInstance()->ClearPersonal();
@@ -379,7 +379,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 void FUN_141901390(int nRelease, int nUiType);
 void FUN_14151f200();
 void FUN_141ac9310(Vector3 kRot, Vector3* pDir, Vector3* pOut);
@@ -426,7 +426,7 @@ int UISceneGameBeautyShop::vfunc_48(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbe00(1.0f, 0);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) {
-        if (reinterpret_cast<PCBase*>(pPlayer)->FUN_1416764d0() != 0) {
+        if (reinterpret_cast<PCBase*>(pPlayer)->IsRiding() != 0) {
             reinterpret_cast<MyPC*>(pPlayer)->SendRequestRideMode1(new RideOffActionBeautyShop(0));
         } else {
             FUN_141ac8e90();
@@ -573,8 +573,8 @@ void UISceneGameBeautyShop::FUN_141ac87b0()
     param.m_to.m_4 = param.m_from.m_4;
     param.m_to.m_8 = param.m_from.m_8;
     FUN_141ac8b00(&param.m_to.m_c, &param.m_to.m_18, &param.m_return.m_c);
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 0);
+    TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&param, 1, 1.0f);
+    TSingleton<CameraMgr>::GetInstance()->SetMode(4, 0);
 }
 MS2_REPLACE_METHOD(0x141ac87b0, UISceneGameBeautyShop, FUN_141ac87b0, 319, 0x5E0960A6);
 
@@ -592,16 +592,16 @@ void UISceneGameBeautyShop::FUN_141ac8900()
         param.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0) {
             param.m_to = TSingleton<CameraMgr>::GetInstance()->m_homeSetting;
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(0x11, 0);
+            TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&param, 1, 1.0f);
+            TSingleton<CameraMgr>::GetInstance()->SetMode(0x11, 0);
         } else {
             param.m_to = param.m_from;
-            param.m_to.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140ad4b30();
-            param.m_to.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af7ef0();
-            param.m_to.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af7e90();
-            param.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af8260();
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
-            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, 1);
+            param.m_to.m_0 = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_140ad4b30();
+            param.m_to.m_4 = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_140af7ef0();
+            param.m_to.m_8 = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_140af7e90();
+            param.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_140af8260();
+            TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&param, 1, 1.0f);
+            TSingleton<CameraMgr>::GetInstance()->SetMode(2, 1);
         }
     }
 }
@@ -656,7 +656,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
         MS2Ptr<CPortal> ref = WorldService::GetInstance()->FUN_141bc2800(m_b0);
         if (((void*)ref.get()) != 0) {
             Vector3 kHit;
-            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ref->FUN_14169d2f0(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
+            if (((CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(ref->GetPosition(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
                 bMoved = 1;
@@ -671,7 +671,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
             kDir.Unitize();
             kDir.z = 0.0f;
             Vector3 kFrom = (pNpc->vfunc_18() - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kDir) * 100.0f)));
-            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kFrom, kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
+            if (((CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(kFrom, kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
             }
@@ -733,13 +733,13 @@ public:
     virtual void vfunc_6();                             // 0x30
 };
 namespace ChromaSDK { class IChromaManager; IChromaManager* GetChromaManager(); }
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 class UIMessengerBrowser   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_141a251f0(int);
 };
-class UISwfEntityManager* FUN_140b632f0();   // C3: was FUN_140b632f0
+class UISwfEntityManager* GetUISwfEntityManager();   // C3: was GetUISwfEntityManager
 float FUN_141ac9b00();
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern unsigned DAT_143af62d4;
@@ -854,11 +854,11 @@ int UISceneGameCinematicTalk::vfunc_48(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141add1b0(4, true);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) {
-        if (((class Unk_GsTalkTarget*)FUN_141482e80())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)FUN_141482e80())->m_48))->FUN_141a251f0(0);
+        if (((class Unk_GsTalkTarget*)GetState())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)GetState())->m_48))->FUN_141a251f0(0);
     }
     m_b0 = FUN_14025e7a0()->FUN_1422afec0(m_28);
     float fScale = FUN_141ac9b00();
-    if (FUN_14025e7a0()->FUN_1422aff10(fScale) != 0) ((class Unk_GsTutMgr*)FUN_140b632f0())->vfunc_6();
+    if (FUN_14025e7a0()->FUN_1422aff10(fScale) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
     return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac98a0, UISceneGameCinematicTalk, vfunc_48, 253, 0xDD0D19F1);
@@ -871,8 +871,8 @@ int UISceneGameCinematicTalk::vfunc_49(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141add1b0(4, false);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
-    if (((class Unk_GsTalkTarget*)FUN_141482e80())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)FUN_141482e80())->m_48))->FUN_141a251f0(1);
-    if (FUN_14025e7a0()->FUN_1422aff10(m_b0) != 0) ((class Unk_GsTutMgr*)FUN_140b632f0())->vfunc_6();
+    if (((class Unk_GsTalkTarget*)GetState())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)GetState())->m_48))->FUN_141a251f0(1);
+    if (FUN_14025e7a0()->FUN_1422aff10(m_b0) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
     return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac99b0, UISceneGameCinematicTalk, vfunc_49, 210, 0xAF714157);
@@ -944,7 +944,7 @@ void FUN_141acc5a0(float fValue);
 int FUN_141acc5f0(int nSceneId);
 int FUN_141acc6c0(int nSceneId);
 class Unk_GsCommon;
-class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
+class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 class CGameOption;
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
 {
@@ -958,8 +958,8 @@ public:
     int LoadCharacterOption();
     struct Unk_InterfaceFlag* FUN_140c58ac0();
 };
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
-void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was (char*, char, int)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
+void SetGamepadEnabled(struct Unk_GpState*, bool, bool);   // C3: was (char*, char, int)
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was (char*, char)
 UIMassiveEvent* FUN_140e01890(int nId);
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -969,7 +969,7 @@ int FUN_141276180(const CString& a, const CString& b);
 extern CString DAT_143af6008;
 int FUN_1418fcb70();
 CMyCharacter* FUN_140931510();
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class UIDPSDialog;
 template <class T> T* PCBaseDialog(int nId);
 void* FUN_141371b20();   // C3: was FUN_141371b20
@@ -1001,7 +1001,7 @@ public:
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 UIMinimapDialog* FUN_140c9b540(int nId);
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 class Unk_140166410* FUN_140166410();
 int FUN_140ae1c10();
 void FUN_141610410(int n);
@@ -1047,7 +1047,7 @@ int UISceneGamePlay::vfunc_48(int n)
     if (((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0()) != 0) {
         if (FUN_141acc6c0(n) != 0) {
             if (m_6c == 0x620001d) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(1);
-            if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)FUN_140b632f0())))->FUN_1410af770() != 0) FUN_14025e7a0()->FUN_1422aed30(true);
+            if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770() != 0) FUN_14025e7a0()->FUN_1422aed30(true);
         } else {
             ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
             ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
@@ -1069,7 +1069,7 @@ int UISceneGamePlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     if (FUN_141acc6c0(n) != 0) {
-        if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)FUN_140b632f0())))->FUN_1410af770()) FUN_14025e7a0()->FUN_1422aed30(false);
+        if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770()) FUN_14025e7a0()->FUN_1422aed30(false);
         if (m_6c == 0x620001d) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(0);
     } else {
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
@@ -1088,7 +1088,7 @@ void UISceneGamePlay::vfunc_11()
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     FUN_141b70290();
     ((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->LoadCharacterOption();
-    FUN_14125f670(FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())), *((bool*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), false);
+    SetGamepadEnabled(GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())), *((bool*)GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), false);
     FUN_14125bd20(((struct Unk_InterfaceFlag*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), *((bool*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
 }
 MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
@@ -1123,8 +1123,8 @@ MS2_REPLACE_METHOD(0x141aca2b0, UISceneGamePlay, vfunc_14, 237, 0x5EDB9347);
 void UISceneGamePlay::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, false, 0) != 0) ((class ItemPreviewMgr*)FUN_1409bb9e0())->SetHudMode(1);
-    else ((class ItemPreviewMgr*)FUN_1409bb9e0())->SetHudMode(0);
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, false, 0) != 0) ((class ItemPreviewMgr*)GetItemPreviewMgr())->SetHudMode(1);
+    else ((class ItemPreviewMgr*)GetItemPreviewMgr())->SetHudMode(0);
     if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x2a, 0, 0) != 0 || ((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x36, 0, 0) != 0) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(1);
     else ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(0);
     (&g_143ab2ee0)->FUN_1408e48f0();
@@ -1251,9 +1251,9 @@ int UISceneGamePlay::FUN_141aca870()
             return 1;
         }
         else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x11, 1, 0) != 0) {
-            int nReload = ((class Unk_GsTexReload*)FUN_140a0afd0())->FUN_141acccb0();
+            int nReload = ((class Unk_GsTexReload*)GetNifLoadingService())->FUN_141acccb0();
             nReload ^= 1;
-            ((class Unk_GsTexReload*)FUN_140a0afd0())->FUN_141accee0(nReload);
+            ((class Unk_GsTexReload*)GetNifLoadingService())->FUN_141accee0(nReload);
             CStringW strMsg;
             strMsg.Format(L"텍스쳐 리로드 : %s", nReload != 0 ? DAT_142fde9f4 : DAT_142fdea00);
             FUN_1412751b0(strMsg, 0x14);
@@ -1312,7 +1312,7 @@ int UISceneGamePlay::FUN_141aca870()
         }
         else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x10, 1, 0) != 0) {
             Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
-            if (pPlayer != 0 && reinterpret_cast<MyPC*>(pPlayer)->FUN_141527280() != 0) {
+            if (pPlayer != 0 && reinterpret_cast<MyPC*>(pPlayer)->IsInParty() != 0) {
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e8c));
                 return 1;
             }
@@ -1469,22 +1469,22 @@ int UISceneGamePlay::FUN_141aca870()
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x49403, 0, 0)) {
-        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pDlg != 0) pDlg->FUN_14193b750();
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x4940a, 0, 0)) {
-        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pDlg != 0) pDlg->FUN_14193bf70();
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x4940b, 0, 0)) {
-        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pDlg != 0) pDlg->FUN_14193bfd0();
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x4940c, 0, 0)) {
-        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pDlg = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pDlg != 0) pDlg->FUN_14193bfa0();
         return 1;
     }
@@ -1617,7 +1617,7 @@ MS2_REPLACE_METHOD(0x141acc510, UISceneGamePlay, FUN_141acc510, 125, 0x4F19D812)
 // @0x141acc5a0
 void FUN_141acc5a0(float fValue)
 {
-    if (((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbe00(fValue, 0) != 0) ((class Unk_GsTutMgr*)FUN_140b632f0())->vfunc_6();
+    if (((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbe00(fValue, 0) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
 }
 
 // @0x141acc5f0
@@ -1658,7 +1658,7 @@ class Unk_GsEntMgr;
 class Unk_HwService : public HardwareInstancingService { };     // the framework's hardware instancing service
 #include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor (the app's clear colour)
 class EntityWorldManager;
-void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);
+void SetCachedBoolProperty(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 //
 void FUN_1413f9c40(bool bFlag);
@@ -1690,16 +1690,16 @@ int UISceneGameScreenShot::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     m_a8.RemoveAll();
-    Unk_WorldEntityMap::iterator kIter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce4c0();
+    Unk_WorldEntityMap::iterator kIter = TSingleton<EntityWorldManager>::GetInstance()->BeginAllEntities();
     egf::Entity* pEntity;
-    while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce510(kIter, pEntity)) {
+    while (TSingleton<EntityWorldManager>::GetInstance()->NextAllEntity(kIter, pEntity)) {
         bool bSkip = false;
         bool bChar = pEntity->GetModel()->ContainsModel(DAT_142fdef20) || pEntity->GetModel()->ContainsModel("Actor");
         if (bChar) {
             efd::SmartPointer<Unk_HwService> spSvc(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
             if ((Unk_HwService*)spSvc != 0) {
                 if (spSvc->FUN_1413d6890(pEntity) != 0) bSkip = true;
-                else bSkip = ((void*)((HardwareInstancingService*)(spSvc.operator->()))->FUN_1413d66b0(pEntity)) ? true : false;
+                else bSkip = ((void*)((HardwareInstancingService*)(spSvc.operator->()))->FindInstancingByEntity(pEntity)) ? true : false;
             }
             if (!bSkip) {
                 bool bValue = true;
@@ -1709,10 +1709,10 @@ int UISceneGameScreenShot::vfunc_48(int n)
     }
     for (POSITION pos = m_a8.GetHeadPosition(); pos != 0; m_a8.GetNext(pos)) {
         egf::EntityID id = m_a8.GetAt(pos);
-        egf::Entity* pHidden = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+        egf::Entity* pHidden = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
         if (pHidden != 0) {
             bool bShown = false;
-            FUN_14098c6e0((class Unk_CachedEntity*)pHidden, 0xa0b6b179, bShown);
+            SetCachedBoolProperty((class Unk_CachedEntity*)pHidden, 0xa0b6b179, bShown);
         }
     }
     FUN_1413f9c40(false);
@@ -1729,10 +1729,10 @@ int UISceneGameScreenShot::vfunc_49(int n)
     UISceneEntity::vfunc_49(n);
     for (POSITION pos = m_a8.GetHeadPosition(); pos != 0; m_a8.GetNext(pos)) {
         egf::EntityID id = m_a8.GetAt(pos);
-        egf::Entity* pHidden = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+        egf::Entity* pHidden = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
         if (pHidden != 0) {
             bool bShown = true;
-            FUN_14098c6e0((class Unk_CachedEntity*)pHidden, 0xa0b6b179, bShown);
+            SetCachedBoolProperty((class Unk_CachedEntity*)pHidden, 0xa0b6b179, bShown);
         }
     }
     FUN_1413f9c40(true);

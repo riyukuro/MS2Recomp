@@ -33,7 +33,7 @@ class CNifLoadingService   // C3: member view (nifeffectparam.h)
 public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
-Unk_ResourceMgr* FUN_140a0afd0();
+Unk_ResourceMgr* GetNifLoadingService();
 CString FUN_14016a5c0(const char* psz, int n);          // path normalise
 
 // Post-processing service (singleton 0x1409a8b20): find step by id, enable step by id.
@@ -54,10 +54,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 
 // Global shader constant setters (validate, then NiShaderFactory::UpdateGlobalShaderConstant). The float one lives in
 // another unit; the NiPoint2 one is emitted here.
-bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n);
-bool FUN_140c900e0(const NiFixedString& kName, const efd::Point2* pk, int n);
+bool UpdateGlobalShaderConstantFloats(NiFixedString& kName, const float* pf, int n);
+bool UpdateGlobalShaderConstantPoint2(const NiFixedString& kName, const efd::Point2* pk, int n);
 int FUN_140c902f0(const efd::Point2& k);               // both components finite
-void FUN_140c8f490(efd::SmartPointer<NiTexture> spTexture);             // swap the shimmer texture of the live step
+void SetShimmerTexture(efd::SmartPointer<NiTexture> spTexture);             // swap the shimmer texture of the live step
 
 
 extern NiFixedString DAT_143ae5438;                     // shimmer blend constant name
@@ -104,7 +104,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
-    s_shimmerTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
+    s_shimmerTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
         FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", (NiTexture*)s_shimmerTexture, 0, 0));
     if (pkClick == 0)
@@ -123,7 +123,7 @@ MS2_REPLACE_METHOD(0x140c8f090, PostShimmerRenderStep, vfunc_15, 1014, 0xBACEC7B
 
 #ifndef MS2_HOOK_DLL
 // @0x140c8f490
-void FUN_140c8f490(efd::SmartPointer<NiTexture> spTexture)
+void SetShimmerTexture(efd::SmartPointer<NiTexture> spTexture)
 {
     if (s_pkShimmerProp != 0)
     {
@@ -265,10 +265,10 @@ void PostShimmerEffect::vfunc_1()
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-    FUN_140c8f490(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
-    FUN_1409a5770(DAT_143ae5438, &fBlend, 1);
+    SetShimmerTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)strPath), 5));
+    UpdateGlobalShaderConstantFloats(DAT_143ae5438, &fBlend, 1);
     efd::Point2 kMove(0.0f, 0.0f);
-    FUN_140c900e0(DAT_143ae5448, &kMove, 1);
+    UpdateGlobalShaderConstantPoint2(DAT_143ae5448, &kMove, 1);
 }
 MS2_REPLACE_METHOD(0x140c8fc40, PostShimmerEffect, vfunc_1, 425, 0xB2DD6343);
 
@@ -278,9 +278,9 @@ bool PostShimmerEffect::vfunc_2()
     bool bRet = CScreenEffectBase::vfunc_2();
     if (bRet && m_bStarted)
     {
-        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->FUN_141473280() - m_dStart);
+        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->GetGameTime() - m_dStart);
         efd::Point2 kMove = fElapsed * m_kMove;
-        FUN_140c900e0(DAT_143ae5448, &kMove, 1);
+        UpdateGlobalShaderConstantPoint2(DAT_143ae5448, &kMove, 1);
     }
     return bRet;
 }
@@ -301,7 +301,7 @@ bool PostShimmerEffect::vfunc_6(bool b)
     {
         CString strPath;
         strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-        FUN_140c8f490(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
+        SetShimmerTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)strPath), 5));
         vfunc_7(m_nState, m_fAlpha);
     }
     return true;
@@ -323,12 +323,12 @@ void PostShimmerEffect::vfunc_7(int nState, float fAlpha)
     }
     fBlend = (m_fBlendMax - m_fBlendMin) * fT + m_fBlendMin;
     fBlend *= 0.01f;
-    FUN_1409a5770(DAT_143ae5438, &fBlend, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5438, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140c90040, PostShimmerEffect, vfunc_7, 158, 0xAC33291B);
 
 // @0x140c900e0
-bool FUN_140c900e0(const NiFixedString& kName, const efd::Point2* pk, int n)
+bool UpdateGlobalShaderConstantPoint2(const NiFixedString& kName, const efd::Point2* pk, int n)
 {
     for (int i = 0; i < n; i++)
     {

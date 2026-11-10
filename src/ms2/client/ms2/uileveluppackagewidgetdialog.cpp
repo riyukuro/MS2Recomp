@@ -367,7 +367,7 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
     CQuestData::QuestRewardItem* pReward = 0;
     for (size_t i = 0; i < spData->m_complete.m_choiceRewards.GetCount(); i++) {
         CQuestData::QuestRewardItem& item = spData->m_complete.m_choiceRewards[i];
-        if (item.m_itemId != 0 && FUN_140748050(&item, static_cast<Unk_EwSelf*>(pSelf)->FUN_141654700()) != 0)
+        if (item.m_itemId != 0 && FUN_140748050(&item, static_cast<Unk_EwSelf*>(pSelf)->GetJobGroupId()) != 0)
             pReward = &spData->m_complete.m_choiceRewards[i];
     }
     rObj.FUN_1409c0dc0("title", "$s_levelup_package_widget");

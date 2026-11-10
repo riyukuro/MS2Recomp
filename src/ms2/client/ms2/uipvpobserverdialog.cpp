@@ -282,7 +282,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
         else {
             strStatusA = (m_178.m_nWins > 0) ? BlockFormat<int>(0x89a, m_178.m_nWins) : GetStringCommon(0x89b);
         }
-        strJobA.Format(L"_%d", pA->FUN_141654730());
+        strJobA.Format(L"_%d", pA->GetSubJob());
         strProfileA = FUN_14016a730(FUN_141028be0(pA->FUN_141656a80(), pA->FUN_1416612e0(), 1, CString("")), 0);
         bObservableA = pMe->vfunc_122(pA) ? true : false;
     }
@@ -297,7 +297,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
         else {
             strStatusB = (m_1a0.m_nWins > 0) ? BlockFormat<int>(0x89a, m_1a0.m_nWins) : GetStringCommon(0x89b);
         }
-        strJobB.Format(L"_%d", pB->FUN_141654730());
+        strJobB.Format(L"_%d", pB->GetSubJob());
         strProfileB = FUN_14016a730(FUN_141028be0(pB->FUN_141656a80(), pB->FUN_1416612e0(), 1, CString("")), 0);
         bObservableB = pMe->vfunc_122(pB) ? true : false;
         nCharIdB = pB->FUN_141656a80();

@@ -56,7 +56,7 @@ private:
 };
 
 // The inventory (global 0x143ab2a90); its count queries take an Unk_InventoryItemKey (id, +8 kind 1 = by item id).
-class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); int FUN_140a5f780(int nTypeId, int n); int FUN_140a5eda0(const int* filter); };   // C3: FUN_140a5eda0 = inventory.h's signature
+class Unk_Inventory { public: class MS2Ptr<class CItem> FindItemByUid(__int64); int GetItemCountByTag(int nTypeId, int n); int GetItemCountByFilter(const int* filter); };   // C3: GetItemCountByFilter = inventory.h's signature
 class Unk_IesInventory : public Unk_Inventory {};
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_IesInventory
@@ -95,8 +95,8 @@ struct Unk_IesParams                                                      // Sca
 };
 
 // Helpers of other units.
-void FUN_140cff1b0(const Scaleform::GFx::Value& v, CString strName, CStringW strText);   // set the text of a child field
-void FUN_141415600(const CString& strKey);                          // release the item bound to the key
+void SetChildHtmlText(const Scaleform::GFx::Value& v, CString strName, CStringW strText);   // set the text of a child field
+void DestroyItemInfoSlot(const CString& strKey);                          // release the item bound to the key
 void FUN_141415560(const CString& strKey, ItemInfoSlot::CreateParam* pParam);      // bind an item slot
 void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem);  // create the drag slot
 void FUN_140b6c890(const CString& strName);                         // drop the drag slot
@@ -155,7 +155,7 @@ void UIItemExchangeScrollDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     for (unsigned i = 0; i < m_infoKeys.GetCount(); i++)
-        FUN_141415600(m_infoKeys[i]);
+        DestroyItemInfoSlot(m_infoKeys[i]);
     m_infoKeys.RemoveAll();
     for (unsigned i = 0; i < m_dragKeys.GetCount(); i++)
         FUN_140b6c890(m_dragKeys[i]);
@@ -263,7 +263,7 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
         Unk_InventoryItemKey key;
         key.m_id = pRef->m_nId;
         key.m_extra = 1;
-        int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
+        int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
         int nBase = pRef->m_nCount;
         int nNeed = nMul * nBase;
         CStringW strCount;
@@ -334,13 +334,13 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
     {
         int nHave = 0;
         if (pIng->m_b != 0)
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5f780(pIng->m_b, 0);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByTag(pIng->m_b, 0);
         else
         {
             Unk_InventoryItemKey key;
             key.m_id = pIng->FUN_14026b500();
             key.m_extra = 1;
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
         }
         int nBase = pIng->m_c;
         int nNeed = nMul * nBase;
@@ -397,7 +397,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
     key.m_id = pRecipe->m_nId;
     key.m_extra = 1;
     int nNeed = pRecipe->m_nCount * nCount;
-    if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id) < nNeed)
+    if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id) < nNeed)
         return 1;
     for (unsigned __int64 i = 0; i < pRequire->FUN_14026bf10(); i++)
     {
@@ -407,7 +407,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
         int nNeedIng = ref->m_c * nCount;
         if (ref->m_b != 0)
         {
-            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5f780(ref->m_b, 0) < nNeedIng)
+            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByTag(ref->m_b, 0) < nNeedIng)
                 return 4;
         }
         else
@@ -415,7 +415,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
             Unk_InventoryItemKey ingKey;
             ingKey.m_id = ref->FUN_14026b500();
             ingKey.m_extra = 1;
-            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey.m_id) < nNeedIng)
+            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&ingKey.m_id) < nNeedIng)
                 return 4;
         }
     }
@@ -425,7 +425,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
 // @0x140f52810
 CItem* UIItemExchangeScrollDialog::FUN_140f52810()
 {
-    return reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5d680(m_uidScroll).get();
+    return reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FindItemByUid(m_uidScroll).get();
 }
 
 // @0x140f52880
@@ -489,10 +489,10 @@ void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
         return;
     CIngredientContainer* pContainer = m_spIngredients.operator CIngredientContainer*();
     ((class CIngredientContainer*)(class CIngredientContainer*)(pContainer))->Read(*(class CInPacket*)(pPacket));
-    MS2Ptr<CItem> spScroll = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5d680(uidScroll);
+    MS2Ptr<CItem> spScroll = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FindItemByUid(uidScroll);
     if (!spScroll)
         return;
-    MS2Ptr<CItem> spTarget = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5d680(uidTarget);
+    MS2Ptr<CItem> spTarget = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FindItemByUid(uidTarget);
     if (!spTarget)
         return;
     if (m_spExchange == 0)
@@ -544,13 +544,13 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
             continue;
         int nHave = 0;
         if (pIng->m_b != 0)
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5f780(pIng->m_b, 0);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByTag(pIng->m_b, 0);
         else
         {
             Unk_InventoryItemKey key;
             key.m_id = pIng->FUN_14026b500();
             key.m_extra = 1;
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
         }
         int nBase = pIng->m_c;
         int nNeed = nMake * nBase;
@@ -559,7 +559,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
-        FUN_140cff1b0(spReq->FUN_1422bb870(), CString("m_name"), CStringW(strCount));
+        SetChildHtmlText(spReq->FUN_1422bb870(), CString("m_name"), CStringW(strCount));
         ASObj data(spReq->GetMember("data"), 2);
         if (!data.IsUndefinedOrNull())
         {
@@ -727,7 +727,7 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
             bEnough = false;
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         }
-        FUN_140cff1b0(item.FUN_1422bb870(), CString("m_name"), CStringW(strCount));
+        SetChildHtmlText(item.FUN_1422bb870(), CString("m_name"), CStringW(strCount));
     }
     MS2Ptr<ASMovieClip> spSlot = argSlot.FUN_1409b4560("slot");
     if (spSlot.get() != 0)
@@ -765,7 +765,7 @@ int UIItemExchangeScrollDialog::FUN_140f55220()
     Unk_InventoryItemKey key;
     key.m_id = pRecipe->m_nId;
     key.m_extra = 1;
-    int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
+    int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
     int nNeed = pRecipe->m_nCount;
     int nCraft = nNeed > 0 ? nHave / nNeed : 0;
     nMax = nCraft;
@@ -780,13 +780,13 @@ int UIItemExchangeScrollDialog::FUN_140f55220()
                 continue;
             int nHaveIng = 0;
             if (ref->m_b != 0)
-                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5f780(ref->m_b, 0);
+                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByTag(ref->m_b, 0);
             else
             {
                 Unk_InventoryItemKey ingKey;
                 ingKey.m_id = ref->FUN_14026b500();
                 ingKey.m_extra = 1;
-                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey.m_id);
+                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&ingKey.m_id);
             }
             int nNeedIng = ref->m_c;
             nMin = nNeedIng > 0 ? nHaveIng / nNeedIng : 0;

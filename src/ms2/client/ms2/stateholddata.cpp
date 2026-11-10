@@ -118,9 +118,9 @@ void StateHoldData::vfunc_1(Unk_StateDataArg* p)
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nTargetId));
     if (pTarget != 0)
     {
-        if (pTarget->FUN_1416764a0() != 0)
+        if (pTarget->GetRidee() != 0)
         {
-            Ridee* pRidee = pTarget->FUN_1416764a0();
+            Ridee* pRidee = pTarget->GetRidee();
             p->m_f28 = pRidee->vfunc_18().z;
         }
     }
@@ -174,7 +174,7 @@ void StateHold::vfunc_4(StateData* pData)
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
         {
-            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+            if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())) != 0)
                 reinterpret_cast<PC*>(pPC)->SendRequestCube();
         }
         m_kPos = m_pOwner->vfunc_18();
@@ -213,13 +213,13 @@ void StateHold::vfunc_3(double fTime)
     {
         if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
         {
-            Ridee* pRidee = FUN_1417cd1c0(pTarget->FUN_1416764a0());
+            Ridee* pRidee = FUN_1417cd1c0(pTarget->GetRidee());
             if (pRidee == 0)
                 return;
             MS2SvrPtr<CRideeData> spData = pRidee->GetData();
             if (spData == 0)
                 return;
-            int nSeat = pTarget->FUN_141676790(m_pOwner->FUN_14123c580());
+            int nSeat = pTarget->FUN_141676790(m_pOwner->GetObjectId());
             Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
             if (spModel == 0)
                 return;
@@ -304,14 +304,14 @@ void StateHold::vfunc_9(double fTime)
     else if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
     {
         PCBase* pPlayer = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pTarget));
-        Ridee* pRidee = pPlayer->FUN_1416764a0();
+        Ridee* pRidee = pPlayer->GetRidee();
         if (pRidee == 0)
             return;
         MS2SvrPtr<CRideeData> spData = pRidee->GetData();
         if (spData == 0)
             return;
         {
-            int nSeat = pPlayer->FUN_141676790(m_pOwner->FUN_14123c580());
+            int nSeat = pPlayer->FUN_141676790(m_pOwner->GetObjectId());
             Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
             if (spModel == 0)
                 return;
@@ -403,12 +403,12 @@ void StateHold::FUN_1417ccd50()
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(pData->m_nTargetId));
     if (pTarget != 0)
     {
-        if (pTarget->FUN_1416764a0() != 0)
+        if (pTarget->GetRidee() != 0)
         {
             m_bRiding = true;
             MyPC* pPC = FUN_1417b84b0();
             if (pPC != 0)
-                reinterpret_cast<CameraMgr*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(static_cast<Ridee*>(pTarget->FUN_1416764a0())), 1);
+                reinterpret_cast<CameraMgr*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->SetTarget(reinterpret_cast<Unk_CameraTargetEntity*>(static_cast<Ridee*>(pTarget->GetRidee())), 1);
         }
     }
 }
@@ -424,7 +424,7 @@ void StateHold::FUN_1417cce10()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    if (reinterpret_cast<PC*>(pPC)->FUN_141654700() != 0x46)
+    if (reinterpret_cast<PC*>(pPC)->GetJobGroupId() != 0x46)
         return;
     StateHoldData* pData = m_spHold.get();
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTargetId));
@@ -437,7 +437,7 @@ void StateHold::FUN_1417cce10()
     if (pTarget->GetClassID() != 0x6200028)
         return;
     Unk_InventorySkillRequest kReq(((class Unk_HoldConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nHoldSkill, 1);
-    MS2Ptr<CSkillRecord> spRecord = pPC->FUN_141523bc0()->FUN_141765570(kReq);
+    MS2Ptr<CSkillRecord> spRecord = pPC->GetSkillSystem()->FUN_141765570(kReq);
     if (spRecord == 0)
         return;
     spRecord->m_nTargetId = m_spHold.get()->m_nTargetId;
@@ -449,7 +449,7 @@ void StateHold::FUN_1417cce10()
 bool StateHold::FUN_1417cd060()
 {
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_spHold.get()->m_nTargetId));
-    if (pTarget != 0 && pTarget->FUN_1416764a0() != 0)
+    if (pTarget != 0 && pTarget->GetRidee() != 0)
         return true;
     return false;
 }

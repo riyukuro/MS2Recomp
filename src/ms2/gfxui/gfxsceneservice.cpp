@@ -67,7 +67,7 @@ MS2_REPLACE_METHOD(0x1422B9E00, GFxSceneService, GetSubSceneId, 14, 0x6A78E4AB);
 // @0x1422b9e20
 UISceneEntity* GFxSceneService::FUN_1422b9e20(int nSceneId)
 {
-    return static_cast<UISceneEntity*>(FUN_140b632f0()->FindSceneById(nSceneId));
+    return static_cast<UISceneEntity*>(GetUISwfEntityManager()->FindSceneById(nSceneId));
 }
 MS2_REPLACE_METHOD(0x1422B9E20, GFxSceneService, FUN_1422b9e20, 35, 0xAE615F19);
 

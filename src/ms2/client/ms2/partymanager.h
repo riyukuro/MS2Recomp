@@ -19,10 +19,10 @@ class CPartyManager : public TSingleton<CPartyManager> {
 public:
     CPartyManager();
     virtual ~CPartyManager();
-    void FUN_14162a310();
+    void ClearMembers();
     void FUN_14162a340();
     void ClearParty();
-    void FUN_14162a480();
+    void ClearPartyAndRecruitment();
     void OnParty(CInPacket&);
     void UpdateMemberJob(TPtr<PCBase>);
     void UpdateMemberHp(TPtr<PCBase>);
@@ -41,11 +41,11 @@ public:
     bool IsMatchSearching(int);
     bool IsAnySearching();
     bool CanEnterDungeonRoom(int);
-    bool FUN_14162ad30();
+    bool IsSurvivalSquadRegistered();
     int IsMemberByName(CStringW);                // exe returns a full int (callers test eax)
     int IsMemberByCharId(__int64);                 // exe returns a full int (callers test eax)
     int IsMemberByAccountId(__int64);                 // exe returns a full int (callers test eax)
-    int FUN_14162af00();
+    int GetMemberCount();
     int GetMemberIndex(__int64);
     MS2Ptr<CPartyMember> FindMemberByCharId(__int64);
     MS2Ptr<CPartyMember> FindMemberByName(CStringW);
@@ -67,7 +67,7 @@ public:
     int GetOnlineMemberCount();
     int GetDungeonId();
     unsigned short GetMinMemberLevel();
-    unsigned FUN_14162c1e0();
+    unsigned GetMinMemberGearScore();
     void FUN_14162c3a0();
     void SetAllMembersState(int);
     void SetMemberReadyState(__int64, int);
@@ -77,18 +77,18 @@ public:
     void OnPartyMemberJoin(CInPacket&);
     void OnPartyMemberLeave(CInPacket&);
     void OnPartyMemberKick(CInPacket&);
-    void FUN_14162d220(CInPacket& packet);
+    void OnPartyDisband(CInPacket& packet);
     void OnPartyLeaderChange(CInPacket&);
     void OnPartyInfo(CInPacket&);
     void OnPartyMemberOnline(CInPacket&);
     void OnPartyMemberOffline(CInPacket&);
     void FUN_14162dfc0(CInPacket&);
-    void FUN_14162e100(CInPacket&);
+    void OnPartyMemberInfoUpdate(CInPacket&);
     void OnPartyMemberCounters(CInPacket&);
-    void FUN_14162e310(CInPacket&);
+    void OnPartyMemberGearScore(CInPacket&);
     void FUN_14162e3d0(CInPacket&);
     void OnPartyNotice(CInPacket&);
-    void FUN_14162e730(CInPacket&);
+    void OnPartyNoticeWithSound(CInPacket&);
     void OnPartyMatchDungeonChange(CInPacket&);
     void OnPartyRecruitUpdate(CInPacket&);
     void OnPartyDungeonMatchRegister(CInPacket&);
@@ -122,10 +122,10 @@ public:
     void OnMatchPartyError(CInPacket&);
     int IsRecruitPending();
     int FUN_141631dd0();
-    CMatchPartyRecruit& FUN_141631ce0();
+    CMatchPartyRecruit& GetRecruitment();
     ATL::CAtlMap<__int64, MS2Ptr<CMatchPartyRecruit>>& GetRecruitMap();
     ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& FUN_141631d20();
-    MS2Ptr<CMatchPartyRecruit> FUN_141631d40(__int64);
+    MS2Ptr<CMatchPartyRecruit> FindRecruit(__int64);
     int partyId;
     __int64 leaderId;
     CStringW leaderName;

@@ -106,16 +106,16 @@ void CBoxCollision::vfunc_4()
 MS2_REPLACE_METHOD(0x140ADAB30, CBoxCollision, vfunc_4, 313, 0x78BA12DE);
 
 // @0x140adac70
-int CBoxCollision::FUN_140adac70(const NxVec3& pt) const
+int CBoxCollision::ContainsPoint(const NxVec3& pt) const
 {
     return NxBoxContainsPoint(m_kBox, pt);
 }
-MS2_REPLACE_METHOD(0x140ADAC70, CBoxCollision, FUN_140adac70, 46, 0xEB1EFC06);
+MS2_REPLACE_METHOD(0x140ADAC70, CBoxCollision, ContainsPoint, 46, 0xEB1EFC06);
 
 // @0x140adacb0
 int CBoxCollision::FUN_140adacb0(const Vector3& pt) const
 {
-    return FUN_140adac70(NxVec3(pt.x, pt.y, pt.z));
+    return ContainsPoint(NxVec3(pt.x, pt.y, pt.z));
 }
 MS2_REPLACE_METHOD(0x140ADACB0, CBoxCollision, FUN_140adacb0, 71, 0x2694CF4D);
 

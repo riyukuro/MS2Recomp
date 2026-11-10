@@ -86,9 +86,9 @@ public:
 };
 
 // The world (the own character) and the chat window.
-struct Unk_MdNames { CStringW FUN_1414829e0(); };   // messengerdata.cpp
+struct Unk_MdNames { CStringW GetCurrentName(); };   // messengerdata.cpp
 class Unk_EdChat : public Unk_MdNames { };
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 
 // The notify manager.
 class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
@@ -365,9 +365,9 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(spInfo->m_nEmoticonId);
         if (!spEmo)
             continue;
-        bool bEnable = !spCli->FUN_140a3a140(spEmo->m_nGroupId) ? true : false;
+        bool bEnable = !spCli->IsGroupExpired(spEmo->m_nGroupId) ? true : false;
         ASObj item(2);
-        item.FUN_1409c0d20("id", spEmo->m_nId);
+        item.SetMemberUInt("id", spEmo->m_nId);
         item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
         item.FUN_1407cbbe0("enable", bEnable);
         item.FUN_1407cbbe0("newIcon", spInfo->m_bNew);
@@ -501,7 +501,7 @@ MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, SelectTab, 187, 0x7E8060C4
 // @0x140bd28b0
 void UIChatEmoticonDialog::PostEmoticonSelected(int nEmoticonId)
 {
-    const CStringW& strTarget = ((class Unk_EdChat*)FUN_141482e80())->FUN_1414829e0();
+    const CStringW& strTarget = ((class Unk_EdChat*)GetState())->GetCurrentName();
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
 }
 MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, PostEmoticonSelected, 205, 0x4516C159);

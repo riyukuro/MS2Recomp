@@ -45,7 +45,7 @@ struct Unk_MeshInstancingConfig {
     Unk_MeshInstancingConfig& operator=(const Unk_MeshInstancingConfig& other);   // 0x1413d3290
     bool operator==(const Unk_MeshInstancingConfig& other) const;               // 0x1413d3370
     bool Equals(const Unk_MeshInstancingConfig& other) const;            // the fields after the asset
-    void FUN_1413eb720();                                       // ++activeCount
+    void IncrementActiveCount();                                       // ++activeCount
     efd::AssetID asset;
     bool flags30, flags31, flags32;
     unsigned unknown34;
@@ -72,7 +72,7 @@ public:
     MeshInstancing(const Unk_MeshInstancingConfig&, int);
     virtual ~MeshInstancing();
     virtual void vfunc_1();
-    void FUN_14147c010(egf::Entity*, unsigned, unsigned, NiTransform*, bool);
+    void Init(egf::Entity*, unsigned, unsigned, NiTransform*, bool);
     void UpdateIfVisible(double);
     void RefreshRootAndSource();
     void UpdateNodes(double);
@@ -92,15 +92,15 @@ public:
     void FUN_14147d290();
     // Accessors emitted in ?\hardwareinstancingservice.cpp's COMDAT run (0x1413eb740-0x1413ed300).
     int FUN_140ad4bb0() const;                  // mode
-    void FUN_1413eb740();                       // ++config.activeCount
+    void IncrementActiveCount();                       // ++config.activeCount
     egf::EntityID GetEntityId() const;        // id18
-    unsigned FUN_1413ebb30() const;             // config.activeCount
-    NiNode* FUN_1413ebb70() const;              // root
-    unsigned FUN_1413ebb90() const;             // capacity
+    unsigned GetActiveCount() const;             // config.activeCount
+    NiNode* GetRoot() const;              // root
+    unsigned GetCapacity() const;             // capacity
     bool HasIds() const;                 // !config.ids.empty()
     bool FUN_1413ec890() const;                 // flag28
-    void FUN_1413ed2f0();                       // dirty = true
-    void FUN_1413ed300(int nCount);             // config.activeCount = nCount
+    void MarkDirty();                       // dirty = true
+    void SetActiveCount(int nCount);             // config.activeCount = nCount
     efd::utf8string GetSourceName();            // the source entity's model name
     efd::SmartPointer<egf::Entity> source;
     egf::EntityID id10, id18;

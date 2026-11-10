@@ -37,36 +37,36 @@ public:
     void SetName(CString strName);                            // set the name key
     CString GetName();                                        // the name key
     int FUN_140addea0();                                            // can be hit now
-    MS2Ptr<CBoxCollision> FUN_140addf10();                          // pose the box collision, return it
+    MS2Ptr<CBoxCollision> GetBox();                          // pose the box collision, return it
     void FUN_140ade030(int nHitter, int nKind);                     // play the hit sound
-    void FUN_140ade420(int nState, unsigned int nDelay);                  // set the state (animations, effects, actor)
+    void SetState(int nState, unsigned int nDelay);                  // set the state (animations, effects, actor)
     int GetState();                                            // the state
     void FUN_140adeaa0(int nSyncA, int nSyncB, int nSyncC);         // the moving-object sync values
-    void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
+    void Update(int nNow);                                   // per-frame update (timers, movement)
     int FUN_140adf310();                                            // m_bC1 (int: the caller tests eax)
     int IsTombStone();                                            // tomb stone
     int FUN_140adf350();                                            // m_n184
     void FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone
     void FUN_140adf6e0();                                           // the state animation ended
-    void FUN_140adf770(efd::Point3 ptPos);                          // move: position property
-    void FUN_140adf830(efd::Point3 ptRot);                          // turn: rotation property
+    void SetPosition(efd::Point3 ptPos);                          // move: position property
+    void SetRotation(efd::Point3 ptRot);                          // turn: rotation property
     efd::Point3 GetPtPos();                                    // the position
     egf::EntityPtr GetEntity();                                 // the entity
     void FUN_140adf9d0(egf::Entity* pEntity);                       // read the entity's properties, build the box
     efd::Point3 GetPtVelocity();                                    // the velocity
-    void FUN_140ae0190();                                           // resync the actor when the time changed
+    void UpdateTimeScale();                                           // resync the actor when the time changed
     void MakeNxBoxController();                                     // 0x140ae0210 the kinematic PhysX box actor
     efd::Point3 GetPtSize();                                    // the box size
-    void FUN_140ae06a0(int nPhase, int nNow);                       // enter a movement phase
+    void SetPhase(int nPhase, int nNow);                       // enter a movement phase
     bool FUN_140ae0700();                                           // synced (m_nSyncA != 0)
-    void FUN_140ae0720();                                           // release the PhysX actor
+    void ReleasePhysicsActor();                                           // release the PhysX actor
     void FUN_140ae07d0(int bShow);                                  // fade the model in / out
-    void FUN_140ae0990(int bShow);                                  // the shadow on / off
+    void UpdateShadow(int bShow);                                  // the shadow on / off
     void FUN_140ae0a90(const CString& strEffect);                   // play an effect on the model
     void FUN_140ae0b90();                                           // drop the tomb stone effects
     void FUN_140ae0c20(egf::Entity* pEntity);                       // the animations of a plain object
-    void FUN_140ae0e40();                                           // attach to the scene graph
-    void FUN_140ae0ec0(int nDelay);                                 // detach from the scene graph (now or later)
+    void MarkDynamic();                                           // attach to the scene graph
+    void UnmarkDynamic(int nDelay);                                 // detach from the scene graph (now or later)
 
 public:
     MS2_LAYOUT_FRIEND;

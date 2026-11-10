@@ -578,7 +578,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             else if (m_190 == 4)
             {
-                HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47490(nTarget);
+                HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FindById(nTarget);
                 if (spHome.get() != 0)
                 {
                     UIPopUpMenu* pMenu = ((class UIPopUpMenu*)FUN_140c30140(0x4e39));
@@ -853,7 +853,7 @@ void UICommunityDialog::vfunc_buddy_12(__int64 nId)
 {
     if (m_190 != 4)
         return;
-    HomeBlockManager::BuddyPtr spBuddy = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a477f0(nId);
+    HomeBlockManager::BuddyPtr spBuddy = TSingleton<HomeBlockManager>::GetInstance()->FindBuddyById(nId);
     if (spBuddy == NULL)
         return;
     FUN_1418d6430(4);
@@ -864,7 +864,7 @@ void UICommunityDialog::vfunc_buddy_13(__int64 nId)
 {
     if (m_190 != 4)
         return;
-    HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47490(nId);
+    HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FindById(nId);
     if (spHome == NULL)
         return;
     CString strId = FUN_140719530(spHome->m_18);
@@ -883,7 +883,7 @@ void UICommunityDialog::vfunc_buddy_14()
 void UICommunityDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 {
     if (spActor.IsNull() || vfunc_55() != 0
-        || spActor->FUN_1416c2040() == 0)
+        || spActor->IsOtherPlayer() == 0)
     {
         return;
     }
@@ -904,7 +904,7 @@ void UICommunityDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 void UICommunityDialog::vfunc_4(MS2Ptr<CProxyGameObject> spActor)
 {
     if (spActor.IsNull() || vfunc_55() != 0
-        || spActor->FUN_1416c2040() == 0)
+        || spActor->IsOtherPlayer() == 0)
     {
         return;
     }
@@ -1077,7 +1077,7 @@ void UICommunityDialog::FUN_1418d6a90()
         for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
         {
             MS2Ptr<CProxyGameObject> ref(((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)));
-            if (ref.get() != 0 && (ref->FUN_1416c2040() != 0 || ref->FUN_1416c1ff0() != 0))
+            if (ref.get() != 0 && (ref->IsOtherPlayer() != 0 || ref->FUN_1416c1ff0() != 0))
             {
                 ASObj row(2);
                 if (FUN_1418d8540(&row, ref, 0) != 0)
@@ -1330,7 +1330,7 @@ int FUN_1418d8540(ASObj* pRow, MS2Ptr<CProxyGameObject> ref, int bNew)
         return 0;
     {
         pRow->FUN_1407cbbe0("isPlayerInfo", true);
-        pRow->FUN_1407cbb20("charname", ref->FUN_1416c23b0());
+        pRow->FUN_1407cbb20("charname", ref->GetName());
         __int64 nId = (__int64)ref->FUN_1416c22f0();
         CString strId = FUN_140719530(nId);
         pRow->FUN_1407cba60("buddysn", CString(strId));
@@ -1784,7 +1784,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             }
             else if (operator==(strTag, L"delHomeBlock"))
             {
-                TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47060(m_190);
+                TSingleton<HomeBlockManager>::GetInstance()->RequestRemove(m_190);
             }
         }
         else if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
@@ -1849,7 +1849,7 @@ void UICommunityQueryDialog::FUN_1418db750()
     }
     else if (m_180 == 5 && m_190 > 0)
     {
-        HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47490(m_190);
+        HomeBlockManager::HomePtr spHome = TSingleton<HomeBlockManager>::GetInstance()->FindById(m_190);
         if (spHome.get() != 0)
             strName = spHome->m_50;
     }

@@ -33,14 +33,14 @@ public:
     char m_pad2[0x230 - 0x1b0];
     char m_defaults;                // +0x230 the default block
 };
-Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
+Unk_GpState* GetGamepadState(Unk_GpSettings* p);
 
 // The state block's methods (0x14125f290...).
 struct Unk_GpState* FUN_14125f290(struct Unk_GpState*);   // C3: was FUN_14125f290
 void FUN_14125f2c0(Unk_GpState* p);
 int LoadGameOptionGamepad(struct Unk_GpState*, class TiXmlDocument*);   // C3: was FUN_14125f330
 void FUN_14125f640(Unk_GpState* pDst, const Unk_GpState* pSrc);
-void FUN_14125f670(Unk_GpState* p, bool bUse, bool bNotify);
+void SetGamepadEnabled(Unk_GpState* p, bool bUse, bool bNotify);
 
 
 // View of the option dialog: the option id at +0x28 and the AS root at +0x30.
@@ -50,15 +50,15 @@ struct Unk_GpDialog
     int m_nId;
     int m_pad2;
     MS2Ptr<AScript> m_root;
-    MS2Ptr<class ASCheckBox> FUN_140a57f50(CString name, int nIndex);
-    MS2Ptr<class ASSlider> FUN_140a58110(CString name, int nIndex);
+    MS2Ptr<class ASCheckBox> GetTabCheckBox(CString name, int nIndex);
+    MS2Ptr<class ASSlider> GetTabSlider(CString name, int nIndex);
 };
 struct Unk_GpInputView { char m_pad[0x124]; int m_nCursorMode; };
 int FUN_140a58520(void* pInput);                                // MS2InputService::m_nCursorMode
 MS2InputService* FUN_140a58540();                               // TSingleton<MS2InputService>::GetInstance
 
-MS2Ptr<ASCheckBox> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v);
-MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASCheckBox> CreateCheckBox(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASSlider> CreateSlider(int nId, const Scaleform::GFx::Value& v);
 
 // ---- CGameOptionGamePad ----
 // @0x140a571b0
@@ -77,7 +77,7 @@ CGameOptionGamePad::~CGameOptionGamePad()
 void CGameOptionGamePad::vfunc_3(int n)
 {
     if (n == 0)
-        FUN_14125f640(&m_state, FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())));
+        FUN_14125f640(&m_state, GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())));
     CBaseOption::vfunc_3(n);
 }
 MS2_REPLACE_METHOD(0x140A57240, CGameOptionGamePad, vfunc_3, 69, 0xABC5CF6E);
@@ -100,32 +100,32 @@ MS2_REPLACE_METHOD(0x140A572C0, CGameOptionGamePad, vfunc_5, 23, 0x192A1B0B);
 void CGameOptionGamePad::vfunc_6()
 {
     {
-        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
+        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bGamePadUse"), -1);
         if (static_cast<ASCheckBox*>(spUse) != 0)
             reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce090(m_state.m_bUse);
     }
     {
-        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
+        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bShowSkillName"), -1);
         if (static_cast<ASCheckBox*>(spSkill) != 0)
             reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce090(m_state.m_bShowSkillName);
     }
     {
-        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
+        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<ASSlider*>(spStick) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce5f0((float)m_state.m_nLStickSensitivity);
     }
     {
-        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
+        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bVibration"), -1);
         if (static_cast<ASCheckBox*>(spVibration) != 0)
             reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce090(m_state.m_bVibration);
     }
     {
-        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
+        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityH"), -1);
         if (static_cast<ASSlider*>(spH) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce5f0(m_state.m_fSensitivityH * 100.0f);
     }
     {
-        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
+        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityV"), -1);
         if (static_cast<ASSlider*>(spV) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce5f0(m_state.m_fSensitivityV * 100.0f);
     }
@@ -136,17 +136,17 @@ MS2_REPLACE_METHOD(0x140A572E0, CGameOptionGamePad, vfunc_6, 1098, 0x80A5AEFD);
 void CGameOptionGamePad::vfunc_7()
 {
     {
-        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
+        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bGamePadUse"), -1);
         if (static_cast<ASCheckBox*>(spUse) != 0)
             m_state.m_bUse = reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
+        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bShowSkillName"), -1);
         if (static_cast<ASCheckBox*>(spSkill) != 0)
             m_state.m_bShowSkillName = reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
+        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<ASSlider*>(spStick) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xd6))
@@ -156,7 +156,7 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
+        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bVibration"), -1);
         if (static_cast<ASCheckBox*>(spVibration) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xc3))
@@ -166,7 +166,7 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
+        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityH"), -1);
         if (static_cast<ASSlider*>(spH) != 0)
         {
             float fMin = 0.01f;
@@ -175,7 +175,7 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
+        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityV"), -1);
         if (static_cast<ASSlider*>(spV) != 0)
         {
             float fMin = 0.01f;
@@ -190,8 +190,8 @@ MS2_REPLACE_METHOD(0x140A57730, CGameOptionGamePad, vfunc_7, 1247, 0xF0F4D26E);
 void CGameOptionGamePad::vfunc_10()
 {
     CBaseOption::vfunc_10();
-    FUN_14125f640(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), &m_state);
-    FUN_14125f670(&m_state, m_state.m_bUse, true);
+    FUN_14125f640(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), &m_state);
+    SetGamepadEnabled(&m_state, m_state.m_bUse, true);
     if (FUN_140a58520(FUN_140a58540()) != 0)
     {
         MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
@@ -225,32 +225,32 @@ MS2_REPLACE_METHOD(0x140A57D60, CGameOptionGamePad, GetTypeName, 61, 0xECB38628)
 // @0x140a57db0
 int CGameOptionGamePad::vfunc_14()
 {
-    return memcmp(&m_state, FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), 0x10);
+    return memcmp(&m_state, GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), 0x10);
 }
 
 // @0x140a57df0
-MS2Ptr<ASCheckBox> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASCheckBox> CreateCheckBox(int nId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASCheckBox> tmp(new ASCheckBox(v, nId));
     return tmp;
 }
 
 // @0x140a57ea0
-MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASSlider> CreateSlider(int nId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASSlider> tmp(new ASSlider(v, nId));
     return tmp;
 }
 
 // @0x140a57f50
-MS2Ptr<ASCheckBox> Unk_GpDialog::FUN_140a57f50(CString name, int nIndex)
+MS2Ptr<ASCheckBox> Unk_GpDialog::GetTabCheckBox(CString name, int nIndex)
 {
     if (m_root.IsNull())
         return MS2Ptr<ASCheckBox>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
-        MS2Ptr<ASCheckBox> check = FUN_140a57df0(m_nId, child);
+        MS2Ptr<ASCheckBox> check = CreateCheckBox(m_nId, child);
         if (static_cast<ASCheckBox*>(check) != 0)
             return check;
     }
@@ -258,14 +258,14 @@ MS2Ptr<ASCheckBox> Unk_GpDialog::FUN_140a57f50(CString name, int nIndex)
 }
 
 // @0x140a58110
-MS2Ptr<ASSlider> Unk_GpDialog::FUN_140a58110(CString name, int nIndex)
+MS2Ptr<ASSlider> Unk_GpDialog::GetTabSlider(CString name, int nIndex)
 {
     if (m_root.IsNull())
         return MS2Ptr<ASSlider>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
-        MS2Ptr<ASSlider> slider = FUN_140a57ea0(m_nId, child);
+        MS2Ptr<ASSlider> slider = CreateSlider(m_nId, child);
         if (static_cast<ASSlider*>(slider) != 0)
             return slider;
     }
@@ -273,7 +273,7 @@ MS2Ptr<ASSlider> Unk_GpDialog::FUN_140a58110(CString name, int nIndex)
 }
 
 // @0x140a58500
-Unk_GpState* FUN_140a58500(Unk_GpSettings* p)
+Unk_GpState* GetGamepadState(Unk_GpSettings* p)
 {
     return &p->m_gamepad;
 }

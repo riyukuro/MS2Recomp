@@ -62,7 +62,7 @@ MS2_REPLACE_METHOD(0x1422E1D60, ASListItemRenderer, FUN_1422e1d60, 88, 0x5AF9C5E
 // @0x1422e1dc0
 void ASListItemRenderer::FUN_1422e1dc0(unsigned int nIndex)
 {
-    FUN_1409c0d20("index", nIndex);
+    SetMemberUInt("index", nIndex);
 }
 MS2_REPLACE_METHOD(0x1422E1DC0, ASListItemRenderer, FUN_1422e1dc0, 40, 0x1A3E3B01);
 

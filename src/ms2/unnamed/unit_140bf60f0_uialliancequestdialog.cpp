@@ -127,7 +127,7 @@ CStringW FUN_1401aa6a0(int nId);                                        // npc n
 // out-of-unit callees (names describe uses)
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 class Unk_AqInventory { public: char m_pad; };
-class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
+class Unk_Inventory { public: int GetItemCountByTag(int nTag, int nRarity); };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_AqInventory
 extern int DAT_143abdc30;                                               // the alliance npc shown
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
@@ -144,7 +144,7 @@ class UITalkManager   // C3: member view for the former free stand-ins
 public:
     void SendNpcTalkMode0();
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
@@ -261,7 +261,7 @@ void UIAllianceQuestDialog::vfunc_67()
 {
     m_180.FUN_140d43990();
     UIDialog::vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     FUN_140bfc4b0()->FUN_141aa8850(this);
 }
 
@@ -448,7 +448,7 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
         {
             void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
             if (pActor != 0)
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(spScript->m_contents.GetAt(0).operator->()->m_voiceId, static_cast<Unk_AqActorView*>(pActor)->GetPos());
+                TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(spScript->m_contents.GetAt(0).operator->()->m_voiceId, static_cast<Unk_AqActorView*>(pActor)->GetPos());
         }
     }
     ASObj data(2);
@@ -535,7 +535,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             if (FUN_14074b1c0(spData.get(), 0) != 0)
                 strGrade = "Special";
             ASObj row(2);
-            row.FUN_1409c0d20("id", nQuest);
+            row.SetMemberUInt("id", nQuest);
             row.FUN_1407cbb20("group", FUN_1416e4df0(nQuest));
             row.FUN_1407cbb20("desc", FUN_1416e5500(nQuest));
             row.FUN_1407cba60("grade", strGrade);
@@ -661,7 +661,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     int nCost = ((CLua*)FUN_1401c0db0())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
     if (nCost == 0)
         return;
-    int nCount = g_143ab2a90.FUN_140a5f780(0xd1, 0);
+    int nCount = g_143ab2a90.GetItemCountByTag(0xd1, 0);
     unsigned nItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)0xd1);
     if (nCount < nCost)
     {

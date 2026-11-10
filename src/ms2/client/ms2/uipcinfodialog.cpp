@@ -102,8 +102,8 @@ namespace efd { template <> AvatarPC* DynamicCast<AvatarPC, GameObject>(GameObje
 class Unk_PciComp : public ASButton
 {
 };
-void FUN_140cfee80(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's text
-void FUN_140cff1b0(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's html text
+void SetChildText(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's text
+void SetChildHtmlText(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's html text
 void FUN_140cff740(const Scaleform::GFx::Value& obj, CString strMember, unsigned int nColor); // set a child's colour
 
 class ASDialog : public ASDisplayObjectContainer
@@ -207,8 +207,8 @@ int GetDayNumberDifference(__int64 nThen, __int64 nNow);
 CStringW FUN_140b8e850(const CMsTime& kTime);
 void AddDays(CMsTime& kTime, long nDays);
 void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids);
-void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
-void FUN_14120d8e0(const CString& strName);
+void CreateEquipSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
+void DestroyEquipSlotBag(const CString& strName);
 void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC);
 void FUN_14126e3f0(const CString& strName);
 void FUN_1418bee30(ASObj* pObj, int n);
@@ -441,7 +441,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         if (pAvatarPC != 0)
         {
             MS2Ptr<CItem> spCopy = spItem->Clone();
-            ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->FUN_14165f460())->EquipItem(spCopy);
+            ((class PCGemEquip*)((class PC*)(class PC*)(pAvatarPC))->GetGemEquip())->EquipItem(spCopy);
         }
     }
     if (spInfo->m_508)
@@ -483,7 +483,7 @@ MS2_REPLACE_METHOD(0x14132D500, UIPCInfoDialog, vfunc_65, 37, 0x1E0CAD2E);
 void UIPCInfoDialog::vfunc_67()
 {
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
-    FUN_14120d8e0(m_strEquipBag);
+    DestroyEquipSlotBag(m_strEquipBag);
     FUN_14126e3f0(m_strGemBag);
     m_spInfo = 0;
     m_spMyNews = 0;
@@ -903,8 +903,8 @@ void UIPCInfoDialog::vfunc_86()
         unsigned int nBase = m_spInfo->m_3cc - m_spInfo->m_3d0;
         CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, reinterpret_cast<const unsigned int&>(m_spInfo->m_3d0));
         CStringW strValue = StringFormat(L"{0}", reinterpret_cast<const unsigned int&>(m_spInfo->m_3cc));
-        FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
+        SetChildText((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
+        SetChildText((*spItemLevel).FUN_1422bb890(), "value", strValue);
         spItemLevel->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
     if (MS2Ptr<ASLabel> spAttack = GetChild<ASLabel>("m_attackInfo"))
@@ -912,11 +912,11 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strDetail(L"");
         __int64 nScore = FUN_141334890();
         CStringW strValue = StringFormat(L"{0}", nScore);
-        FUN_140cfee80((*spAttack).FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80((*spAttack).FUN_1422bb890(), "value", strValue);
+        SetChildText((*spAttack).FUN_1422bb890(), "detail", strDetail);
+        SetChildText((*spAttack).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_attackScore"));
+            SetChildHtmlText((*spAttack).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_attackScore");
@@ -931,11 +931,11 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strDetail(L"");
         __int64 nScore = FUN_141335290();
         CStringW strValue = StringFormat(L"{0}", nScore);
-        FUN_140cfee80((*spDefense).FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80((*spDefense).FUN_1422bb890(), "value", strValue);
+        SetChildText((*spDefense).FUN_1422bb890(), "detail", strDetail);
+        SetChildText((*spDefense).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_defenseScore"));
+            SetChildHtmlText((*spDefense).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_defenseScore");
@@ -1037,14 +1037,14 @@ void UIPCInfoDialog::vfunc_87()
         if (MS2Ptr<ASMovieClip> spRow = GetChild<ASMovieClip>(strName))
         {
             int nStat = aStats[i];
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_Label", GetStatCommonText(nStat));
+            SetChildText((*spRow).FUN_1422bb890(), "m_Label", GetStatCommonText(nStat));
             __int64 nValue = 0;
             if (nStat == 4)
                 nValue = m_spInfo->m_aStats0[nStat];
             else
                 nValue = m_spInfo->m_aStats2[nStat];
             CStringW strValue = StringFormat(L"{0}", nValue);
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_point", strValue);
+            SetChildText((*spRow).FUN_1422bb890(), "m_point", strValue);
             if (m_spInfo->m_3c0 != 0)
             {
                 unsigned int nColor = 0xffffff;
@@ -1116,7 +1116,7 @@ void UIPCInfoDialog::vfunc_88(int nTab)
         strBag = m_strEquipBag;
         int nKind = GetEquipBagKindForTab(nTab);
         if (nKind != 6)
-            FUN_14120d7c0(strBag, m_spInfo, nKind, 0);
+            CreateEquipSlotBag(strBag, m_spInfo, nKind, 0);
     }
     static_cast<ASObj*>(m_30.operator->())->FUN_1407cba60("equipBagID", strBag);
 }
@@ -1125,7 +1125,7 @@ MS2_REPLACE_METHOD(0x141332E00, UIPCInfoDialog, vfunc_88, 433, 0xEC13BD1B);
 // @0x141332fc0
 void UIPCInfoDialog::vfunc_89()
 {
-    FUN_14120d8e0(m_strEquipBag);
+    DestroyEquipSlotBag(m_strEquipBag);
     FUN_14126e3f0(m_strGemBag);
 }
 MS2_REPLACE_METHOD(0x141332FC0, UIPCInfoDialog, vfunc_89, 52, 0xEED58DDD);
@@ -1220,7 +1220,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("label", strLabel);
-                item.FUN_1409c0d20("id", aSorted[i]);
+                item.SetMemberUInt("id", aSorted[i]);
                 spTitle->AddItemRow(item);
                 if (aSorted[i] == (unsigned int)nTitle)
                     nSelected = (int)(i + 1);
@@ -1672,8 +1672,8 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, i
     {
         strDetail.Format(L"-");
     }
-    row.FUN_1409c0d20("containerIndex", nContainer);
-    row.FUN_1409c0d20("labelIndex", nLabel);
+    row.SetMemberUInt("containerIndex", nContainer);
+    row.SetMemberUInt("labelIndex", nLabel);
     row.FUN_1407cbb20("name", GetStatCommonText(nStat));
     row.FUN_1407cbb20("value", strValue);
     row.FUN_1407cbb20("detail", strDetail);
@@ -1728,8 +1728,8 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, i
         else
             strDetail = StringFormat(L"({0}{1})", (__int64)fBase, (__int64)fBonus);
     }
-    row.FUN_1409c0d20("containerIndex", nContainer);
-    row.FUN_1409c0d20("labelIndex", nLabel);
+    row.SetMemberUInt("containerIndex", nContainer);
+    row.SetMemberUInt("labelIndex", nLabel);
     row.FUN_1407cbb20("name", FUN_140630e10(nStat));
     row.FUN_1407cbb20("value", strValue);
     row.FUN_1407cbb20("detail", strDetail);
@@ -1752,8 +1752,8 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     strDetail.Format(L"-");
     CStringW strValue;
     strValue = StringFormat(L"{0}", nShield);
-    row.FUN_1409c0d20("containerIndex", nContainer);
-    row.FUN_1409c0d20("labelIndex", nLabel);
+    row.SetMemberUInt("containerIndex", nContainer);
+    row.SetMemberUInt("labelIndex", nLabel);
     row.FUN_1407cbb20("name", strName);
     row.FUN_1407cbb20("value", strValue);
     row.FUN_1407cbb20("detail", strDetail);
@@ -1896,8 +1896,8 @@ Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel,
     CStringW strDetail;
     strDetail.Format(L"(%d+%d)", 0, 0);
     ASObj row(2);
-    row.FUN_1409c0d20("containerIndex", nContainer);
-    row.FUN_1409c0d20("labelIndex", nLabel);
+    row.SetMemberUInt("containerIndex", nContainer);
+    row.SetMemberUInt("labelIndex", nLabel);
     row.FUN_1407cbb20("name", FUN_14016a730(strName, 0));
     row.FUN_1407cbb20("value", strValue);
     row.FUN_1407cbb20("detail", strDetail);

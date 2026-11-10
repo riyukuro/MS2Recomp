@@ -86,7 +86,7 @@ public:
 };
 class Unk_GalleryQuestGlobal { public: void* m_0; void* m_8; Unk_GalleryQuestState state; };
 void* FUN_140764020();
-class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
+class Unk_AttendTable { public: int GetValue(int nKind, unsigned nId, const int& nDefault); };
 extern GameEventUserValue DAT_143ab2fc0;
 MS2Ptr<CItemData> FUN_14053f870(int);
 CStringW FUN_1416e5660(int);
@@ -95,7 +95,7 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
-void FUN_140d432d0(ItemSlotBinder*, int);
+void SetIconType(ItemSlotBinder*, int);
 MS2Ptr<CQuestData> FUN_14074bc40(int);
 class Unk_GalleryQuestView { public: virtual MS2Ptr<CQuestData> vfunc_0(); };
 class Unk_GalleryQuest
@@ -115,16 +115,16 @@ public:
     virtual int vfunc_3();
 };
 class Unk_GalleryPacket { public: void* m_0; void* stream; };
-UIRewardNotify* FUN_140938cd0(int);
+UIRewardNotify* FindRewardNotify(int);
 MS2Ptr<CItem> FUN_140ebc360(int, int);
-class Unk_ItemPreview* FUN_1409bb9e0();
+class Unk_ItemPreview* GetItemPreviewMgr();
 void* FUN_14025e7c0();
 
 // @0x140c165e0
 UIGalleryEventDialog::UIGalleryEventDialog() : m_binder("UIGalleryEvent_QuestReward")
 {
     FUN_141924170(1);
-    FUN_140d432d0(&m_binder, 17);
+    SetIconType(&m_binder, 17);
 }
 // @0x140c166c0
 UIGalleryEventDialog::~UIGalleryEventDialog() {}
@@ -204,7 +204,7 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
         auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
         if ((GalleryContext*)context) {
             int dummy = 0;
-            int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1600, context->m_eventId, dummy);
+            int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(1600, context->m_eventId, dummy);
             if (opened >= context->m_60) {
                 FUN_140d73aa0(BlockFormat(3323), 0, 0, CStringW(L""));
                 return 1;
@@ -275,7 +275,7 @@ void UIGalleryEventDialog::FUN_140c17200(unsigned int type, Unk_GalleryPacket* p
     case 9: {
         auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
         if (context == 0) return;
-        UIRewardNotify* dialog = FUN_140938cd0(20061);
+        UIRewardNotify* dialog = FindRewardNotify(20061);
         if (!dialog) return;
         int count = reinterpret_cast<Unk_GalleryInput*>(&packet->stream)->vfunc_3();
         for (int i = 0; i < count; ++i) {
@@ -312,7 +312,7 @@ void UIGalleryEventDialog::FUN_140c176f0(MS2Ptr<GalleryContext> context)
     if (m_30.IsNull()) return;
     m_30->Invoke("loadIllust", context->m_strTitle);
     int dummy = 0;
-    int received = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1601, context->m_eventId, dummy);
+    int received = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(1601, context->m_eventId, dummy);
     if (FUN_140c187e0() == 1 || received == 1) { m_30->Invoke("completed"); return; }
     for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
         auto card = context->m_cards[i];
@@ -327,11 +327,11 @@ void UIGalleryEventDialog::FUN_140c176f0(MS2Ptr<GalleryContext> context)
         AScript cardInfo(2);
         cardInfo.FUN_1407cb9c0("state", FUN_140c18ab0((int)i));
         AScript questInfo(2);
-        reinterpret_cast<ASObj*>(&questInfo)->FUN_1409c0d20("id", card->m_id);
+        reinterpret_cast<ASObj*>(&questInfo)->SetMemberUInt("id", card->m_id);
         questInfo.FUN_1407cb9c0("state", FUN_140c18c60((int)i));
         questInfo.FUN_1407cba60("binding", m_binder.BindNewItem(item.m_itemId, item.m_count, item.m_job));
         questInfo.FUN_1407cbb20("desc", FUN_1416e4df0(card->m_id));
-        reinterpret_cast<ASObj*>(&questInfo)->FUN_1409c0d20("itemID", item.m_itemId);
+        reinterpret_cast<ASObj*>(&questInfo)->SetMemberUInt("itemID", item.m_itemId);
         reinterpret_cast<ASObj*>(&questInfo)->FUN_1409adc90("itemRank", item.m_count);
         questInfo.FUN_1407cb9c0("itemCount", item.m_job);
         questInfo.FUN_1407cba60("iconPath", FUN_140c189d0(item.m_itemId));
@@ -351,19 +351,19 @@ void UIGalleryEventDialog::FUN_140c17d20(MS2Ptr<GalleryContext> context)
     auto& first = context->m_items[0];
     auto& second = context->m_items[1];
     AScript firstInfo(2);
-    reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409c0d20("id", first.m_itemId);
+    reinterpret_cast<ASObj*>(&firstInfo)->SetMemberUInt("id", first.m_itemId);
     reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409adc90("rank", static_cast<ItemAble&>(first).vfunc_o18_1());
     firstInfo.FUN_1407cb9c0("active", active);
     firstInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.m_itemId));
     firstInfo.FUN_1407cba60("icon", FUN_140c189d0(first.m_itemId));
-    reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409c0d20("itemCount", first.m_count);
+    reinterpret_cast<ASObj*>(&firstInfo)->SetMemberUInt("itemCount", first.m_count);
     AScript secondInfo(2);
-    reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409c0d20("id", second.m_itemId);
+    reinterpret_cast<ASObj*>(&secondInfo)->SetMemberUInt("id", second.m_itemId);
     reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409adc90("rank", static_cast<ItemAble&>(second).vfunc_o18_1());
     secondInfo.FUN_1407cb9c0("active", active);
     secondInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.m_itemId));
     secondInfo.FUN_1407cba60("icon", FUN_140c189d0(second.m_itemId));
-    reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409c0d20("itemCount", second.m_count);
+    reinterpret_cast<ASObj*>(&secondInfo)->SetMemberUInt("itemCount", second.m_count);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>("setRewardItem", reinterpret_cast<const Unk_GalleryAS&>(firstInfo), reinterpret_cast<const Unk_GalleryAS&>(secondInfo));
     UpdateBoardRewardButton();
 }
@@ -390,7 +390,7 @@ void UIGalleryEventDialog::UpdateOpenCount()
     auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
     int dummy = 0;
-    int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1600, context->m_eventId, dummy);
+    int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(1600, context->m_eventId, dummy);
     reinterpret_cast<AScript*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->m_60);
 }
 MS2_REPLACE_METHOD(0x140C18330, UIGalleryEventDialog, UpdateOpenCount, 298, 0x6A2711D5);
@@ -449,7 +449,7 @@ int UIGalleryEventDialog::FUN_140c187e0()
     auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return 0;
     int dummy = 0;
-    if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1601, context->m_eventId, dummy)) return 0;
+    if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(1601, context->m_eventId, dummy)) return 0;
     for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
         auto card = context->m_cards[i];
         if (!card) { MS2_ASSERT_AT(449, "pCard" && 0); return 0; }
@@ -502,7 +502,7 @@ void UIGalleryEventDialog::FUN_140c18e10(int id, int rank)
     if (!((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(300038, 0, 0)) return;
     auto item = FUN_140ebc360(id, rank);
     if (!item) return;
-    if (((ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn()) ((ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(item, 0);
+    if (((ItemPreviewMgr*)GetItemPreviewMgr())->IsHudOn()) ((ItemPreviewMgr*)GetItemPreviewMgr())->OpenPreview(item, 0);
 }
 MS2_REPLACE_METHOD(0x140C18E10, UIGalleryEventDialog, FUN_140c18e10, 239, 0x33B18A12);
 

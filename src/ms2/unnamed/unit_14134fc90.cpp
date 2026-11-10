@@ -235,7 +235,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                 {
                     int nCount = 0;
                     int nLimit = 0;
-                    ((class CubeMapInformationService*)(((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit);
+                    ((class CubeMapInformationService*)(((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->GetAccountId(), 0, &nCount, &nLimit);
                     MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textField");
                     if (spText.get() != 0)
                     {

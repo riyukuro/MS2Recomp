@@ -45,16 +45,16 @@ struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class UserUGCMapInfo* FUN_141523c50();
+    class UserUGCMapInfo* GetUGCMapInfo();
     static class PCBase* FUN_141530930();
     MS2Ptr<CStatPointManager> FUN_140c25130();          // the stat point manager
 };
-class PC { public: int FUN_141654700(); int FUN_141654730(); };   // C3: member views
+class PC { public: int GetJobGroupId(); int GetSubJob(); };   // C3: member views
 class UIGameMenuDialog { public: int IsMenuExpanded(CStringA strMenu); };   // C3: was FUN_141938a00
 class UIItemEnchantDialog { public: unsigned __int64 GetSelectedUid(); };
 __int64 GetServerTime();
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 template<class T> T* GetUIDialog(int nId);                    // the mastery dialog
 class UIMasteryDialog   // C3: member view for the former free stand-ins
 {
@@ -230,23 +230,23 @@ int CGuideConditionHasMoney::vfunc_3()
 {
     switch (m_nMoneyType) {
     case 0:
-        return FUN_1413a5600(DAT_143ab2898 > m_n20);
+        return ApplyNotBool(DAT_143ab2898 > m_n20);
     case 1:
-        return FUN_1413a5600(FUN_140930240() > m_n20);
+        return ApplyNotBool(FUN_140930240() > m_n20);
     case 2:
-        return FUN_1413a5600(DAT_143ab28b8 > m_n20);
+        return ApplyNotBool(DAT_143ab28b8 > m_n20);
     case 3:
-        return FUN_1413a5600(DAT_143ab28b0 > m_n20);
+        return ApplyNotBool(DAT_143ab28b0 > m_n20);
     case 4:
-        return FUN_1413a5600(DAT_143ab28c0 > m_n20);
+        return ApplyNotBool(DAT_143ab28c0 > m_n20);
     case 5:
-        return FUN_1413a5600(DAT_143ab28c8 > m_n20);
+        return ApplyNotBool(DAT_143ab28c8 > m_n20);
     case 6:
-        return FUN_1413a5600(DAT_143ab28d0 > m_n20);
+        return ApplyNotBool(DAT_143ab28d0 > m_n20);
     case 7:
-        return FUN_1413a5600(DAT_143ab28d8 > m_n20);
+        return ApplyNotBool(DAT_143ab28d8 > m_n20);
     case 8:
-        return FUN_1413a5600(DAT_143ab28e0 > m_n20);
+        return ApplyNotBool(DAT_143ab28e0 > m_n20);
     default:
         return 0;
     }
@@ -294,7 +294,7 @@ CStringW CGuideConditionGuildPvpPeriod::GetTypeName()
 // @0x1413ad460
 int CGuideConditionGuildPvpPeriod::vfunc_3()
 {
-    return FUN_1413a55a0(((class Unk_GuildSeason*)(void*)(((void*)((class CGuildInfo*)(void*)(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8))->FUN_1404d3180())))->FUN_1404c6160() ? 1 : 0);
+    return ApplyNot(((class Unk_GuildSeason*)(void*)(((void*)((class CGuildInfo*)(void*)(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8))->FUN_1404d3180())))->FUN_1404c6160() ? 1 : 0);
 }
 
 // @0x1413ad4c0
@@ -315,7 +315,7 @@ int CGuideConditionRealEstateExpireDays::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
+    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->GetUGCMapInfo());
     if (!pRec)
         return 0;
     CMsTime now(GetServerTime());
@@ -324,7 +324,7 @@ int CGuideConditionRealEstateExpireDays::vfunc_3()
         return 0;
     ATL::CTimeSpan span = expire - now;
     __int64 nDays = span.GetDays();
-    return FUN_1413a5600(nDays < m_n20);
+    return ApplyNotBool(nDays < m_n20);
 }
 
 // @0x1413ad660
@@ -342,9 +342,9 @@ CStringW CGuideConditionUgcProductExpireDays::GetTypeName()
 // @0x1413ad710
 int CGuideConditionUgcProductExpireDays::vfunc_3()
 {
-    if (!FUN_140939a00())
+    if (!GetMeratMarketMan())
         return 0;
-    __int64 nExpire = ((class CMeratMarketMan*)(void*)(FUN_140939a00()))->GetEarliestSaleEnd();
+    __int64 nExpire = ((class CMeratMarketMan*)(void*)(GetMeratMarketMan()))->GetEarliestSaleEnd();
     if (!nExpire)
         return 0;
     CMsTime now(GetServerTime());
@@ -353,7 +353,7 @@ int CGuideConditionUgcProductExpireDays::vfunc_3()
         return 0;
     ATL::CTimeSpan span = expire - now;
     __int64 nDays = span.GetDays();
-    return FUN_1413a5600(nDays < m_n20);
+    return ApplyNotBool(nDays < m_n20);
 }
 
 // @0x1413ad7e0
@@ -381,7 +381,7 @@ int CGuideConditionJobCode::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    return FUN_1413a5600(reinterpret_cast<PC*>(pPlayer)->FUN_141654700() == m_n20);
+    return ApplyNotBool(reinterpret_cast<PC*>(pPlayer)->GetJobGroupId() == m_n20);
 }
 
 // @0x1413ad940
@@ -417,10 +417,10 @@ int CGuideConditionSubJobCode::vfunc_3()
         return 0;
     for (size_t i = 0; i < m_subJobCodes.GetCount(); ++i) {
         int nCode = m_subJobCodes[i];
-        if (reinterpret_cast<PC*>(pPlayer)->FUN_141654730() == nCode)
-            return FUN_1413a55a0(1);
+        if (reinterpret_cast<PC*>(pPlayer)->GetSubJob() == nCode)
+            return ApplyNot(1);
     }
-    return FUN_1413a55a0(0);
+    return ApplyNot(0);
 }
 
 // @0x1413adb00
@@ -448,7 +448,7 @@ int CGuideConditionBattleState::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    return FUN_1413a55a0(pPlayer->vfunc_65());
+    return ApplyNot(pPlayer->vfunc_65());
 }
 
 // @0x1413adc50
@@ -475,7 +475,7 @@ int CGuideConditionSummonPet::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    return FUN_1413a5600(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416769f0() != 0);
+    return ApplyNotBool(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416769f0() != 0);
 }
 
 // @0x1413add70
@@ -493,7 +493,7 @@ CStringW CGuideConditionJoinGuild::GetTypeName()
 // @0x1413ade20
 int CGuideConditionJoinGuild::vfunc_3()
 {
-    return FUN_1413a55a0(((class CGuildManager*)(struct Unk_G9Holder*)(reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6160());
+    return ApplyNot(((class CGuildManager*)(struct Unk_G9Holder*)(reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())))->IsInGuild());
 }
 
 // @0x1413ade50
@@ -518,11 +518,11 @@ void CGuideConditionMenuExpand::vfunc_2(TiXmlElement* pElem)
 // @0x1413adf50
 int CGuideConditionMenuExpand::vfunc_3()
 {
-    void* pMenu = ((void*)FUN_140938b90(0x4e28));
+    void* pMenu = ((void*)FindGameMenuDialog(0x4e28));
     if (pMenu != 0)
     {
         int nExpanded = reinterpret_cast<UIGameMenuDialog*>(pMenu)->IsMenuExpanded(m_strMenuName);
-        return FUN_1413a55a0(nExpanded);
+        return ApplyNot(nExpanded);
     }
     return 0;
 }
@@ -552,7 +552,7 @@ int CGuideConditionSelectItemEnchant::vfunc_3()
 {
     void* pDlg = FUN_1413b1bc0(0x4e92);
     if (pDlg)
-        return FUN_1413a5600(reinterpret_cast<UIItemEnchantDialog*>(pDlg)->GetSelectedUid() != 0);
+        return ApplyNotBool(reinterpret_cast<UIItemEnchantDialog*>(pDlg)->GetSelectedUid() != 0);
     return 0;
 }
 
@@ -573,7 +573,7 @@ int CGuideConditionMasteryMainTabIndex::vfunc_3()
 {
     void* pDlg = GetUIDialog<UIMasteryDialog>(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetMainTabIndex() == m_n20);
+        return ApplyNotBool(((class UIMasteryDialog*)(void*)(pDlg))->GetMainTabIndex() == m_n20);
     return 0;
 }
 
@@ -594,7 +594,7 @@ int CGuideConditionMasterySubTabIndex::vfunc_3()
 {
     void* pDlg = GetUIDialog<UIMasteryDialog>(0x4f1e);
     if (pDlg)
-        return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetSubTabIndex() == m_n20);
+        return ApplyNotBool(((class UIMasteryDialog*)(void*)(pDlg))->GetSubTabIndex() == m_n20);
     return 0;
 }
 
@@ -615,7 +615,7 @@ int CGuideConditionPlayInstrumentTabIndex::vfunc_3()
 {
     void* pDlg = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->GetSelectedTabIndex() == m_n20);
+        return ApplyNotBool(((class UIPlayInstrumentDialog*)(void*)(pDlg))->GetSelectedTabIndex() == m_n20);
     return 0;
 }
 
@@ -636,7 +636,7 @@ int CGuideConditionPlayInstrumentHasSelectItem::vfunc_3()
 {
     void* pDlg = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDlg)
-        return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->HasAnyScore());
+        return ApplyNotBool(((class UIPlayInstrumentDialog*)(void*)(pDlg))->HasAnyScore());
     return 0;
 }
 
@@ -659,8 +659,8 @@ int CGuideConditionPlayingInstrument::vfunc_3()
     if (!pPlayer)
         return 0;
     if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->GetCurStateId() != 0x2f)
-        return FUN_1413a55a0(0);
-    return FUN_1413a5600(((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166cc80() == 0x7f);
+        return ApplyNot(0);
+    return ApplyNotBool(((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166cc80() == 0x7f);
 }
 
 // @0x1413ae730
@@ -680,7 +680,7 @@ int CGuideConditionCubeHolderSelectItem::vfunc_3()
 {
     if (!((void*)GetUGCCubePalette()))
         return 0;
-    return FUN_1413a5600(((class CubeHolderManager*)(void*)(((void*)GetUGCCubePalette())))->GetSelectedItemId() == m_n20);
+    return ApplyNotBool(((class CubeHolderManager*)(void*)(((void*)GetUGCCubePalette())))->GetSelectedItemId() == m_n20);
 }
 
 // @0x1413ae840
@@ -701,7 +701,7 @@ int CGuideConditionHasStatPoint::vfunc_3()
     void* pStat = MyPC::FUN_141530930();
     if (!pStat)
         return 0;
-    return FUN_1413a5600(static_cast<unsigned>(static_cast<MyPC*>(pStat)->FUN_140c25130()->GetRemaining()) > 0);
+    return ApplyNotBool(static_cast<unsigned>(static_cast<MyPC*>(pStat)->FUN_140c25130()->GetRemaining()) > 0);
 }
 
 // @0x1413ae990
@@ -848,7 +848,7 @@ int CGuideConditionContract::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->FUN_141523c50());
+    Unk_G9Rec* pRec = ((struct Unk_G9Rec*)((class MyPC*)(class Unk_G9Player*)(pPlayer))->GetUGCMapInfo());
     if (!pRec)
         return 0;
     void* pDlg = 0;
@@ -908,7 +908,7 @@ CGuideConditionHomeMode::CGuideConditionHomeMode()
 // @0x1413af830
 int CGuideConditionHomeMode::vfunc_3()
 {
-    return FUN_1413a5600(((class CubeMapInformationService*)(class Unk_G9Home*)(Unk_AkoHouseSvc::GetInstance()))->FUN_1410c3650() == m_nMode);
+    return ApplyNotBool(((class CubeMapInformationService*)(class Unk_G9Home*)(Unk_AkoHouseSvc::GetInstance()))->FUN_1410c3650() == m_nMode);
 }
 
 // @0x1413af880
@@ -954,7 +954,7 @@ void CGuideConditionEnterDungeon::vfunc_2(TiXmlElement* pElem)
 int CGuideConditionEnterDungeon::vfunc_3()
 {
     int nState = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetDungeonEnterState(m_n20);
-    return FUN_1413a5600(nState == 0 || nState == 1);
+    return ApplyNotBool(nState == 0 || nState == 1);
 }
 
 // @0x1413afb10
@@ -992,7 +992,7 @@ int CGuideConditionChatEmoticon::vfunc_3()
 {
     void* pDlg = FUN_1413b1b20(0x4f80);
     if (pDlg)
-        return FUN_1413a5600(Unk_GcNoPoint((char*)(pDlg)));
+        return ApplyNotBool(Unk_GcNoPoint((char*)(pDlg)));
     return 0;
 }
 

@@ -142,11 +142,11 @@ void StateSwimDash::vfunc_8(double fTime)
         reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kDir));
         if (pBuff->FUN_141683100(0x30d41))
         {
-            pPC->FUN_1415248d0(1, 0);
+            pPC->TryUseChairOrBed(1, 0);
         }
         else if (pBuff->FUN_141683100(0x30d42))
         {
-            pPC->FUN_1415248d0(2, 0);
+            pPC->TryUseChairOrBed(2, 0);
         }
         else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
         {
@@ -167,11 +167,11 @@ void StateSwimDash::vfunc_8(double fTime)
 void StateSwimDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nSeq = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
+    int nSeq = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->GetEntityID());
     efd::utf8string strAnim;
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
-        reinterpret_cast<PC*>(pPC)->FUN_14165e2a0(strAnim, 0x32);
+        reinterpret_cast<PC*>(pPC)->GetSwimAnimName(strAnim, 0x32);
     if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(strAnim))->empty())
     {
         if (!m_pOwner->FUN_14166de90(0x32, nSeq))
@@ -225,9 +225,9 @@ void StateSwimDash::FUN_1417fbec0()
     if (pPC != 0)
     {
         Unk_EffectQuery query;
-        query.m_strName = static_cast<PC*>(pPC)->FUN_14165e010(0x32);
+        query.m_strName = static_cast<PC*>(pPC)->GetSwimEffectName(0x32);
         query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
-        query.SetActor(pPC->FUN_14123c580());
+        query.SetActor(pPC->GetObjectId());
         m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }
 }

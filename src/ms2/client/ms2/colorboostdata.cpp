@@ -26,7 +26,7 @@ CColorBoostData::CColorBoostData(float fColorScale, float fDuration, float fAccu
     m_f14 = fDuration;
     m_f18 = fAccumRatio;
     m_f1c = 0.0f;
-    m_f0c = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    m_f0c = (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
 }
 
 // @0x14109bfa0
@@ -48,7 +48,7 @@ CColorBoostData::~CColorBoostData()
 // @0x14109b770
 bool CColorBoostData::FUN_14109b770(float* pfScale, int nIndex)
 {
-    float fNow = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    float fNow = (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     float fElapsed = fNow - m_f0c;
     if (fElapsed > m_f14)
     {
@@ -83,14 +83,14 @@ CColorBoostManager::~CColorBoostManager()
 }
 
 // @0x14109be00
-void CColorBoostManager::FUN_14109be00(const CColorBoostData& kData)
+void CColorBoostManager::AddBoost(const CColorBoostData& kData)
 {
     m_boosts.AddTail(kData);
 }
-MS2_REPLACE_METHOD(0x14109be00, CColorBoostManager, FUN_14109be00, 41, 0x46E65FB3);
+MS2_REPLACE_METHOD(0x14109be00, CColorBoostManager, AddBoost, 41, 0x46E65FB3);
 
 // @0x14109be30
-void CColorBoostManager::FUN_14109be30(const egf::EntityID& kId)
+void CColorBoostManager::UpdateBoosts(const egf::EntityID& kId)
 {
     float fScale = 1.0f;
     POSITION pos = m_boosts.GetHeadPosition();
@@ -111,7 +111,7 @@ void CColorBoostManager::FUN_14109be30(const egf::EntityID& kId)
         m_fScale = fScale;
     }
 }
-MS2_REPLACE_METHOD(0x14109be30, CColorBoostManager, FUN_14109be30, 264, 0x52222E06);
+MS2_REPLACE_METHOD(0x14109be30, CColorBoostManager, UpdateBoosts, 264, 0x52222E06);
 
 // @0x14109b900
 UIColorBoostDialog::UIColorBoostDialog()
@@ -136,11 +136,11 @@ void UIColorBoostDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    obj.FUN_1409c4a30("npcColorScale", g_1439f7024);
-    obj.FUN_1409c4a30("npcDuration", g_1439f7028);
-    obj.FUN_1409c4a30("pcColorScale", g_1439f702c);
-    obj.FUN_1409c4a30("pcDuration", g_1439f7030);
-    obj.FUN_1409c4a30("accumRatio", g_1439f7034);
+    obj.SetMemberFloat("npcColorScale", g_1439f7024);
+    obj.SetMemberFloat("npcDuration", g_1439f7028);
+    obj.SetMemberFloat("pcColorScale", g_1439f702c);
+    obj.SetMemberFloat("pcDuration", g_1439f7030);
+    obj.SetMemberFloat("accumRatio", g_1439f7034);
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x14109b9e0, UIColorBoostDialog, OnLoadComplete, 307, 0x638D874A);

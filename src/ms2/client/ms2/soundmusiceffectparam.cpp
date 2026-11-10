@@ -59,7 +59,7 @@ public:
 };
 template <> class TSingleton<CSoundEventMgr> { public: static CSoundEventMgr* GetInstance(); };   // 0x140d13c40, as in soundeventmgr.h (C3: was FUN_140d13c40)
 struct Unk_SoundState;
-float FUN_141260110(Unk_SoundState*, int);                   // the volume of a channel
+float GetCategoryVolume(Unk_SoundState*, int);                   // the volume of a channel
 // The game clock (?\unit_14086d260.cpp).
 class CMainSystem;
 
@@ -124,7 +124,7 @@ CSoundMusicEffect::CSoundMusicEffect() : m_f30(1.0f), m_f38(0.0f)
 // @0x141790060
 CSoundMusicEffect::~CSoundMusicEffect()
 {
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ca30(FUN_141260110(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2));
+    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ca30(GetCategoryVolume(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2));
 }
 
 // Starts the music: the cue, the parameter, the reverb string, then the volume fade plan (the music volume is read
@@ -147,7 +147,7 @@ bool CSoundMusicEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (pMusic->m_fVolume <= 0.0f || pMusic->m_fDuration == 0.0f)
         return false;
     float fOld = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c9e0();
-    float fNew = FUN_141260110(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2) * pMusic->m_fVolume;
+    float fNew = GetCategoryVolume(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2) * pMusic->m_fVolume;
     fDelta = fNew - fOld;
     m_f38 = fDelta;
     m_f30 = fNew;
@@ -162,7 +162,7 @@ bool CSoundMusicEffect::vfunc_9()
 {
     if (!m_b2d)
     {
-        double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+        double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
         if (dNow <= m_dStartTime + m_fDuration)
         {
             float fT = (float)(dNow - m_dStartTime) / m_fDuration;

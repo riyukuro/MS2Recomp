@@ -21,13 +21,13 @@ class CGameOption;
 class Unk_AeGameOption   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_AeGraphicOption* FUN_1409a8ac0();
+    class Unk_AeGraphicOption* GetGraphicOption();
 };
 // NiViewRenderClick::GetProcessor: the SDK header-inline (NiViewRenderClick.inl, via postprocesseffect.h).
 #include "ms2/client/ms2/ms2materialswapprocessor.h"   // C3: MS2MaterialSwapProcessor::GetSwappers
 class Unk_LsPassFlag { public: void FUN_1414cf920(bool bOn); };   // the pass flag setter (ms2lightservice)
-bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
-bool FUN_140c900e0(const NiFixedString& name, const efd::Point2* data, int n);
+bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
+bool UpdateGlobalShaderConstantPoint2(const NiFixedString& name, const efd::Point2* data, int n);
 void* FUN_140c8f690(const efd::SmartPointer<class NiViewRenderClick>&);   // C3: was FUN_140c8f690
 unsigned char FUN_1411782b0(void* p);
 void* FUN_1411782c0(void* p, int n);
@@ -36,7 +36,7 @@ void* FUN_141178310(void* p);
 void* FUN_141178320(void* p);
 void FUN_1411781e0(void* name, void* data, int n);
 void** FUN_141178210(void* a, __int64 idx);
-void* FUN_141178240(void** p);
+void* Dereference(void** p);
 extern NiFixedString DAT_143ae53a8;
 extern NiFixedString DAT_143ae53b0;
 extern NiFixedString DAT_143ae53b8;
@@ -53,12 +53,12 @@ CDepthOfFieldManager::~CDepthOfFieldManager()
 }
 
 // @0x141177fa0
-void CDepthOfFieldManager::FUN_141177fa0()
+void CDepthOfFieldManager::Initialize()
 {
     m_10 = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(4));
-    FUN_141178020(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0())));
+    SetEnabled(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance())))->GetGraphicOption())));
 }
-MS2_REPLACE_METHOD(0x141177FA0, CDepthOfFieldManager, FUN_141177fa0, 75, 0xEEBEED69);
+MS2_REPLACE_METHOD(0x141177FA0, CDepthOfFieldManager, Initialize, 75, 0xEEBEED69);
 
 // @0x141178000
 void FUN_141178000(void* a, double b)
@@ -66,7 +66,7 @@ void FUN_141178000(void* a, double b)
 }
 
 // @0x141178020
-void CDepthOfFieldManager::FUN_141178020(unsigned char on)
+void CDepthOfFieldManager::SetEnabled(unsigned char on)
 {
     if (m_10 == 0)
         return;
@@ -74,12 +74,12 @@ void CDepthOfFieldManager::FUN_141178020(unsigned char on)
     reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(4, reinterpret_cast<bool&>(on));
     reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa6a0((Unk_PPTexture)1, reinterpret_cast<bool&>(on));
     efd::Point2 v(1.5f, 1.5f);
-    FUN_140c900e0(DAT_143ae53a8, &v, 1);
+    UpdateGlobalShaderConstantPoint2(DAT_143ae53a8, &v, 1);
 }
-MS2_REPLACE_METHOD(0x141178020, CDepthOfFieldManager, FUN_141178020, 142, 0x215C81C8);
+MS2_REPLACE_METHOD(0x141178020, CDepthOfFieldManager, SetEnabled, 142, 0x215C81C8);
 
 // @0x1411780c0
-unsigned char CDepthOfFieldManager::FUN_1411780c0()
+unsigned char CDepthOfFieldManager::IsEnabled()
 {
     return m_50;
 }
@@ -89,7 +89,7 @@ void FUN_1411780e0(void* a, float x, float y)
 {
     NiPoint2 v(x, y);
     FUN_1411781e0(&DAT_143ae53b0, &v, 1);
-    FUN_1409a5770(DAT_143ae53b8, (float const*)(&x), 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae53b8, (float const*)(&x), 1);
 }
 MS2_REPLACE(0x1411780E0, FUN_1411780e0, 94, 0xC811E5B5);
 
@@ -99,15 +99,15 @@ void FUN_141178150(bool on)
     void* a = FUN_1411782c0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1);
     void* b = ((void*)((class NiViewRenderClick*)(void*)(a))->GetProcessor());
     void* p = (void*)&((MS2MaterialSwapProcessor*)b)->GetSwappers();
-    reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 1)))->FUN_1414cf920(on);
-    reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 2)))->FUN_1414cf920(on);
+    reinterpret_cast<Unk_LsPassFlag*>(Dereference(FUN_141178210(p, 1)))->FUN_1414cf920(on);
+    reinterpret_cast<Unk_LsPassFlag*>(Dereference(FUN_141178210(p, 2)))->FUN_1414cf920(on);
 }
 MS2_REPLACE(0x141178150, FUN_141178150, 138, 0x939E3141);
 
 // @0x1411781e0
 void FUN_1411781e0(void* name, void* data, int n)
 {
-    FUN_140c900e0(*(const NiFixedString*)name, (const efd::Point2*)data, n);
+    UpdateGlobalShaderConstantPoint2(*(const NiFixedString*)name, (const efd::Point2*)data, n);
 }
 
 // @0x141178210
@@ -117,7 +117,7 @@ void** FUN_141178210(void* a, __int64 idx)
 }
 
 // @0x141178240
-void* FUN_141178240(void** p)
+void* Dereference(void** p)
 {
     return *p;
 }
@@ -156,10 +156,10 @@ void* FUN_141178320(void* p)
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE(0x141178000, FUN_141178000, 12, 0x49415BA5);
-MS2_REPLACE_METHOD(0x1411780c0, CDepthOfFieldManager, FUN_1411780c0, 15, 0x637A06FD);
+MS2_REPLACE_METHOD(0x1411780c0, CDepthOfFieldManager, IsEnabled, 15, 0x637A06FD);
 MS2_REPLACE(0x1411781e0, FUN_1411781e0, 44, 0x583FFD4D);
 MS2_REPLACE(0x141178210, FUN_141178210, 41, 0x02953BDC);
-MS2_REPLACE(0x141178240, FUN_141178240, 14, 0x82C92E11);
+MS2_REPLACE(0x141178240, Dereference, 14, 0x82C92E11);
 MS2_REPLACE(0x1411782c0, FUN_1411782c0, 44, 0x1FAF8A83);
 MS2_REPLACE_METHOD(0x1411782f0, Unk_DOFW, FUN_1411782f0, 27, 0x3558844D);
 MS2_REPLACE(0x141178310, FUN_141178310, 11, 0x3BE09B6E);

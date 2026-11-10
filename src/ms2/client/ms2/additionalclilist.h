@@ -40,10 +40,10 @@ public:
     AdditionalCliList(PCBase* pOwner);                      // 0x14096ef20
     ~AdditionalCliList();                                   // 0x14096f000
 
-    int FUN_14096f070(MS2Ptr<AdditionalCli> sp);            // add a record (0: invalid or the key is taken)
-    void FUN_14096f500(int nKey, int nCaster);              // remove a record
-    MS2Ptr<AdditionalCli> FUN_14096f820(const Unk_AdditionalOwner& owner, CInPacket& packet);   // modify packet
-    void FUN_14096fb20(int nEvent);                         // drop the records of an invoke event
+    int Add(MS2Ptr<AdditionalCli> sp);            // add a record (0: invalid or the key is taken)
+    void Remove(int nKey, int nCaster);              // remove a record
+    MS2Ptr<AdditionalCli> DecodeModifyPacket(const Unk_AdditionalOwner& owner, CInPacket& packet);   // modify packet
+    void PlayInvokeEffectsByEvent(int nEvent);                         // drop the records of an invoke event
     void FUN_14096fc00(int nKey);                           // drop a record
     MS2Ptr<AdditionalCli> FUN_14096fc80(int nKey);          // a record by key
     MS2Ptr<AdditionalCli> FindEnabledByEventBuffType(int nType);         // the first active record of an event buff type
@@ -53,15 +53,15 @@ public:
     int HasEnabledWithEventBuffType(int nType);                           // an active record of an event buff type
     int HasEnabledInGroup(int nGroup);                          // an active record of a group
     bool IsItemSlotDisabled(int nSlot);                          // the item slot is disabled
-    void FUN_140970420(double dTime);                       // per-frame update
+    void Update(double dTime);                       // per-frame update
     void ClearAll();                                   // clear
     float GetScaleMultiplier();                                  // scale
     float GetAlpha();                                  // the applied alpha
     float ComputeAlphaBlending();                                  // the alpha the records ask for
     __int64 GetTotalShieldValue();                                // shield total
-    int FUN_140970990();                                    // hide
+    int IsHidden();                                    // hide
     unsigned FUN_1409709b0();                               // stun kind
-    int FUN_1409709d0();                                    // stunned
+    int IsStunned();                                    // stunned
     int FUN_140970a00();                                    // no fly
     bool IsPvpOnOff();                                   // pvp on
     int FUN_140970a40();                                    // confusion move
@@ -69,16 +69,16 @@ public:
     bool IsDisableRevivalHere();                                   // revival disabled here
     int GetInvincible();                                    // invincible
     int GetForceApplyTarget();                                    // force apply target
-    unsigned FUN_140970b30();                               // super armor (the skill's when higher)
+    unsigned GetSuperArmor();                               // super armor (the skill's when higher)
     unsigned FUN_140970bf0();                               // skill use disable mask
     int FUN_140970c10(SkillAttackData* pAttack, int nPush); // the super armor resists the attack
     bool IsInfinitySP();                                   // infinity sp
     unsigned GetOverlapCount(unsigned nId, unsigned short nLevel);   // overlap count of a record
     int TryGetFixedZRotation(float& fOut);                         // fixed z rotation
-    __int64 FUN_140970f00(int nType, __int64 nValue);       // consume value scaled by the rates
-    float FUN_140970fb0();                                  // sp consume -> hp rate
-    float FUN_140970fd0();                                  // sp rate
-    void FUN_140970ff0(CInPacket& packet);                  // the full list (field enter)
+    __int64 ApplyConsumeRate(int nType, __int64 nValue);       // consume value scaled by the rates
+    float GetSpConsumeChangeHpRate();                                  // sp consume -> hp rate
+    float GetSpRate();                                  // sp rate
+    void DecodeListPacket(CInPacket& packet);                  // the full list (field enter)
     void ApplyAlphaBlending();                                   // re-apply the alpha
     unsigned GetIgnoreCollisionGroups();                               // ignored collision groups
     int HasEnabledWithId(int nId);                             // an active record of an id
@@ -86,28 +86,28 @@ public:
     void FUN_1409713b0();                                   // stun state
     CString GetStunAnimation();                                // stun animation
     int GetSpecialAbility(SAType eType);                        // special ability value
-    void FUN_140971720(StatMap& skills, StatMap& effects);  // invoke effect options per skill / effect
+    void CollectInvokeEffectStats(StatMap& skills, StatMap& effects);  // invoke effect options per skill / effect
     void FUN_140972380(CSpecialEffectCtx* pCtx);            // run the special effects of a kind
-    void FUN_1409725d0();                                   // dirty
+    void SetDirty();                                   // dirty
     void FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& list);   // all records
     MS2Ptr<AdditionalCli> GetShield();                  // the shield record
     static int FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField);
     void FUN_140972770();                                   // alpha
-    void FUN_1409728b0();                                   // update the records, drop the finished ones
+    void UpdateEffects();                                   // update the records, drop the finished ones
     void FUN_140972a00();                                   // sum the active records
-    void FUN_1409733f0();                                   // sound pitch
-    void FUN_140973450();                                   // skill use disable changed
-    void FUN_1409734b0();                                   // infinity sp on the main player info
-    void FUN_140973520();                                   // reset the sums
-    bool FUN_1409735c0();                                   // the owner is the local player
-    bool FUN_140973600();                                   // the owner is a PC
-    bool FUN_140973640();                                   // the owner is a portrait
+    void UpdateSoundPitch();                                   // sound pitch
+    void UpdateSkillUseDisable();                                   // skill use disable changed
+    void UpdateInfinitySP();                                   // infinity sp on the main player info
+    void ResetSums();                                   // reset the sums
+    bool IsOwnerMyPC();                                   // the owner is the local player
+    bool IsOwnerPC();                                   // the owner is a PC
+    bool IsOwnerPortraitPC();                                   // the owner is a portrait
     bool FUN_140973680(MS2Ptr<AdditionalCli> sp);           // shown on the upper hp bar / duel dialog
-    MyPC* FUN_140973920();                                  // the owner as the local player
-    void FUN_140973950(MS2Ptr<AdditionalCli> sp);           // added: buff UIs, balloon, shield bar
-    void FUN_140973cc0(MS2Ptr<AdditionalCli> sp);           // removed: buff UIs, balloon, shield bar
-    void FUN_140973f40(MS2Ptr<AdditionalCli> sp);           // added: PC bang flags
-    void FUN_140974090(MS2Ptr<AdditionalCli> sp);           // removed: PC bang flags
+    MyPC* GetOwnerMyPC();                                  // the owner as the local player
+    void AddBuffUI(MS2Ptr<AdditionalCli> sp);           // added: buff UIs, balloon, shield bar
+    void RemoveBuffUI(MS2Ptr<AdditionalCli> sp);           // removed: buff UIs, balloon, shield bar
+    void OnPCBangEffectAdded(MS2Ptr<AdditionalCli> sp);           // added: PC bang flags
+    void OnPCBangEffectRemoved(MS2Ptr<AdditionalCli> sp);           // removed: PC bang flags
     void FUN_140974130(MS2Ptr<AdditionalCli> sp);           // removed: get off the ridee
 
     Map m_map;                                              // +0x00 key -> record (block size 10)

@@ -33,11 +33,11 @@ class COutputStream;
 // Fields proven from CStateManager::FUN_1417db550 (applies one request to the actor) and the packet coders.
 #ifndef MS2_UNK_STATEARG22_DEFINED   // also defined by another header (w539: both may be included)
 #define MS2_UNK_STATEARG22_DEFINED
-class Unk_StateArg22 : public CPtred
+class StateSyncObject : public CPtred
 {
 public:
-    explicit Unk_StateArg22(int nState);        // 0x140835210
-    virtual ~Unk_StateArg22();                  // 0x1408353e0
+    explicit StateSyncObject(int nState);        // 0x140835210
+    virtual ~StateSyncObject();                  // 0x1408353e0
     virtual void vfunc_1(COutputStream& kOut);  // write
     virtual void vfunc_2(CInPacket& kIn);       // read
     void FUN_1408356c0(COutPacket& packet);     // write the request
@@ -73,18 +73,18 @@ public:
     int m_nAC;                          // +0xac server tick (Ridee::FUN_141706650)
     void* m_pB0;                        // +0xb0
 };
-MS2_CHECK_SIZE(Unk_StateArg22, 0xb8);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_optional, 0x60);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_str70, 0x70);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_str98, 0x98);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_nState, 0x18);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_pos20, 0x20);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_vel3c, 0x3c);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_fTime, 0x5c);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_pos78, 0x78);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_str88, 0x88);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_nA8, 0xa8);
-MS2_CHECK_OFFSET(Unk_StateArg22, m_fA4, 0xa4);
+MS2_CHECK_SIZE(StateSyncObject, 0xb8);
+MS2_CHECK_OFFSET(StateSyncObject, m_optional, 0x60);
+MS2_CHECK_OFFSET(StateSyncObject, m_str70, 0x70);
+MS2_CHECK_OFFSET(StateSyncObject, m_str98, 0x98);
+MS2_CHECK_OFFSET(StateSyncObject, m_nState, 0x18);
+MS2_CHECK_OFFSET(StateSyncObject, m_pos20, 0x20);
+MS2_CHECK_OFFSET(StateSyncObject, m_vel3c, 0x3c);
+MS2_CHECK_OFFSET(StateSyncObject, m_fTime, 0x5c);
+MS2_CHECK_OFFSET(StateSyncObject, m_pos78, 0x78);
+MS2_CHECK_OFFSET(StateSyncObject, m_str88, 0x88);
+MS2_CHECK_OFFSET(StateSyncObject, m_nA8, 0xa8);
+MS2_CHECK_OFFSET(StateSyncObject, m_fA4, 0xa4);
 #endif
 
 // The owner state whose slots 36/37 CStateManager::FUN_1417daaa0 drives (state id 2).
@@ -127,9 +127,9 @@ public:
     int GetCur();                                            // current state id
     int FUN_1417db290();                                            // current state's m_n10
     int GetPrev();                                            // previous state id
-    void FUN_1417db2e0(Unk_StateArg22* pReq);                       // queue a request
-    void FUN_1417db550(Unk_StateArg22* pReq);                       // apply a request to the actor
-    void FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq);       // snap the actor to the request position
+    void FUN_1417db2e0(StateSyncObject* pReq);                       // queue a request
+    void FUN_1417db550(StateSyncObject* pReq);                       // apply a request to the actor
+    void FUN_1417dbd00(PCBase* pActor, StateSyncObject* pReq);       // snap the actor to the request position
     void OnAnimActivated(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
         float fEventTime);                                          // forward to the current state, slot 11
     void OnTextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
@@ -139,8 +139,8 @@ public:
     void FUN_1417dc020(int n);                                      // slot 31
     int FUN_1417dc070(int nState);                                  // the state allows a position correction
     void FUN_1417dc110();                                           // flush the request queue
-    MS2Ptr<Unk_StateArg22> FUN_1417dc230(float* pDelta);            // next due request
-    void FUN_1417dc4c0(Unk_StateArg22* pReq);                       // apply a request's non-state parts
+    MS2Ptr<StateSyncObject> FUN_1417dc230(float* pDelta);            // next due request
+    void FUN_1417dc4c0(StateSyncObject* pReq);                       // apply a request's non-state parts
     MS2Ptr<StateData> FUN_1417dc9a0(int nState);                    // the state's pending data
 
     int m_nPrev;                                                    // +0x18 previous state id
@@ -148,7 +148,7 @@ public:
     State* m_pState;                                                // +0x20 current state
     PCBase* m_pOwner;                                               // +0x28
     ATL::CAtlMap<int, State*, Unk_SMKeyTraits> m_states;                             // +0x30 id -> state
-    std::list<MS2Ptr<Unk_StateArg22> > m_requests;                  // +0x78 queued requests
+    std::list<MS2Ptr<StateSyncObject> > m_requests;                  // +0x78 queued requests
     efd::Point3 m_pos;                                              // +0x88 last synced position
     int m_pad_94;
 };

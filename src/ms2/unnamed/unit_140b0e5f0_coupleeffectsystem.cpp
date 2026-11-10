@@ -70,7 +70,7 @@ unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
 // World service / players.
 class Unk_AkoMyPC;
 template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
-float FUN_140966f00(Vector3 a, Vector3 b);  // distance
+float GetDistance(Vector3 a, Vector3 b);  // distance
 
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
@@ -108,14 +108,14 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
             return;
         if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80() != reinterpret_cast<PC*>(pPartner)->FUN_141663990())
             return;
-        float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())));
+        float fDistance = GetDistance(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())));
         if (!(fDistance > *((Common::Constants::Value<float>*)(struct Unk_CeConstFloat*)(&((struct Unk_CeConstTable*)GetClientConstants())->m_maxDistance))->Get()))
         {
             if (m_bInRange != 0)
             {
                 if (m_timer.FUN_140868c00() != 0)
                 {
-                    float fMove = FUN_140966f00(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_140b0f160()))));
+                    float fMove = GetDistance(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_140b0f160()))));
                     if (fMove > 50.0f && m_nEffectId != 0)
                         FUN_140b0f3a0(1);
                 }
@@ -157,7 +157,7 @@ void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
 void CoupleEffectSystem::FUN_140b0eba0(int nObjectId)
 {
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
-    if (pPartner == 0 || ((class GameObject*)(class PCBase*)(pPartner))->FUN_14123c580() == nObjectId)
+    if (pPartner == 0 || ((class GameObject*)(class PCBase*)(pPartner))->GetObjectId() == nObjectId)
     {
         FUN_140b0f3a0(1);
         m_bActive = 0;
@@ -250,7 +250,7 @@ CString CoupleEffectSystem::FUN_140b0efb0()
     MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nGemId).get()));
     if (spEffect == 0)
         return "";
-    return spEffect->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60());
+    return spEffect->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->GetGender(), reinterpret_cast<PC*>(pPartner)->GetGender());
 }
 
 // @0x140b0f160

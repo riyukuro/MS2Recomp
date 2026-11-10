@@ -68,13 +68,13 @@ public:
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 class PC   // C3: member view for the Unk_NametagActor condition getters
 {
 public:
     int FUN_141661e40(int* pA, int* pB);
-    unsigned int FUN_141662de0();
+    unsigned int IsVip();
     int FUN_141663080();
     int FUN_1416630c0();
     int FUN_14165ffe0();
@@ -257,7 +257,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
             return reinterpret_cast<PC*>(pActor)->FUN_141661e40(&nA, &nB);
         }
         case NAMETAG_CONDITION_VIP:
-            return reinterpret_cast<PC*>(pActor)->FUN_141662de0();
+            return reinterpret_cast<PC*>(pActor)->IsVip();
         case NAMETAG_CONDITION_TENCENTVIP:
             return reinterpret_cast<PC*>(pActor)->FUN_141663080() != 0;
         case NAMETAG_CONDITION_TGP:
@@ -312,7 +312,7 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     case NAMETAG_CONDITION_TROPHY_POINT:
     {
         CStringW strIcon(spData->m_strIcon);
-        MS2Ptr<class CProxyGameObject> spChar = WorldService::GetInstance()->FindProxyObject(((class GameObject*)(class Unk_NametagActor*)(pActor))->FUN_14123c580());
+        MS2Ptr<class CProxyGameObject> spChar = WorldService::GetInstance()->FindProxyObject(((class GameObject*)(class Unk_NametagActor*)(pActor))->GetObjectId());
         if (reinterpret_cast<MS2Ptr<Unk_NametagChar>&>(spChar).get() != 0)
         {
             if (reinterpret_cast<MS2Ptr<Unk_NametagChar>&>(spChar)->m_score.Sum() < 2000)

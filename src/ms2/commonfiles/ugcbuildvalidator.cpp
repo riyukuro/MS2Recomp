@@ -624,21 +624,21 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
     if (FUN_14053f9c0(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 0, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->GetAccountId(), 0, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5820(m_pItem->itemId) != 0)
     {
         *pErr = 0x4b;
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 2, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->GetAccountId(), 2, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5f70(m_pItem->itemId) != 0)
     {
         *pErr = 99;
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 4, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->GetAccountId(), 4, &nA, &nB) == 0)
             return 0;
     }
     if (m_pCubeService->FUN_1410c3600(1))
@@ -679,7 +679,7 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
         else if (m_pItem->FUN_1408b3860() != 0 && m_pCubeService->FUN_1410c3600(3))
         {
             CUgcItemLook* pLook = m_pItem->look.get();
-            if (pLook != 0 && pLook->m_n34 != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+            if (pLook != 0 && pLook->m_n34 != reinterpret_cast<PC*>(pPC)->GetAccountId())
             {
                 *pErr = 0x6f;
                 return 0;
@@ -706,7 +706,7 @@ int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->GetOwnerId(spCube->field50, spCube->field54);
-    if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (nOwner != reinterpret_cast<PC*>(pPC)->GetAccountId())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
             return 1;
@@ -734,7 +734,7 @@ int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->GetOwnerId(spCube->field50, spCube->field54);
-    if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (nOwner != reinterpret_cast<PC*>(pPC)->GetAccountId())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
             return 1;
@@ -758,7 +758,7 @@ int CUGCBuildValidatorCli::vfunc_12(unsigned* pErr)
         return 0;
     if (DAT_143ae0fb4 != 0)
         return 1;
-    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->GetAccountId())
         return 0;
     return 1;
 }
@@ -800,7 +800,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
                 *pErr = 0x1e;
                 return 0;
             }
-            std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)spCube->position)));
+            std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->GetColumn(FUN_1408a03c0((Unk_Int3&)spCube->position)));
             for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
             {
                 MS2Ptr<Cube> spOther = it->second;
@@ -889,7 +889,7 @@ int CUGCBuildValidatorCli::vfunc_16(unsigned* pErr)
     *pErr = 0x13;
     if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
-    std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)m_point)));
+    std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->GetColumn(FUN_1408a03c0((Unk_Int3&)m_point)));
     if (pColumn->find(m_nDirection) != pColumn->end())
         return 0;
     return 1;
@@ -937,7 +937,7 @@ int CUGCBuildValidatorCli::vfunc_19(unsigned* pErr)
         return 0;
     if (pCube->field68 != 0)
     {
-        std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)m_point)));
+        std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->GetColumn(FUN_1408a03c0((Unk_Int3&)m_point)));
         for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
         {
             Cube* pOther = it->second.get();
@@ -1029,7 +1029,7 @@ int CUGCBuildValidatorCli::vfunc_23(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->GetAccountId())
     {
         *pErr = 8;
         return 0;
@@ -1051,7 +1051,7 @@ int CUGCBuildValidatorCli::vfunc_24(unsigned* pErr)
     if (pMyPC == 0)
         return 0;
     ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > items(10);
-    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pMyPC)->FUN_1416561a0())->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&items));
+    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pMyPC)->GetEquipment())->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&items));
     for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
     {
         MS2Ptr<Unk_BackUpItem> spItem = items.GetAt(pos);
@@ -1086,7 +1086,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
     if (FUN_1408b5620(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 1, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->GetAccountId(), 1, &nA, &nB) == 0)
             return 0;
         if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, (Unk_Int3&)m_point) == 0)
         {
@@ -1133,7 +1133,7 @@ int CUGCBuildValidatorCli::vfunc_26(unsigned* pErr)
     if (FUN_1408b5620(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 1, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->GetAccountId(), 1, &nA, &nB) == 0)
             return 0;
     }
     if (m_pCubeService->FUN_1410d2da0(pCube->field50, (Unk_Int3&)m_point) == 0)

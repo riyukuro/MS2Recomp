@@ -117,20 +117,20 @@ public:
 void FUN_1411a6060(unsigned int); // C3: was free FUN_1411a6060
 };
 namespace egmAnimation { class AnimationService; }
-egmAnimation::AnimationService* FUN_141b6f910();   void* FUN_14123c460(void* ent, void* out);
-struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
+egmAnimation::AnimationService* FUN_141b6f910();   void* GetEntityID(void* ent, void* out);
+struct Unk_EmModelLoader { efd::utf8string GetCurrentSequenceName(const egf::EntityID& kId); };
 class GameObject   // C3: unit-local view (gameobject.h)
 {
 public:
-int FUN_14123c580();
-egf::EntityID FUN_14123c460();
+int GetObjectId();
+egf::EntityID GetEntityID();
 };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-struct Unk_PCEquipSet* FUN_1416561a0();
-int FUN_141658e60();
-MS2Ptr<CEquipItem> FUN_141655c90(int);
+struct Unk_PCEquipSet* GetEquipment();
+int GetGender();
+MS2Ptr<CEquipItem> GetEquipItemLayer0(int);
 };
 class AvatarPC;
 class MyPC;
@@ -139,7 +139,7 @@ template <> PC* DynamicCast<PC, GameObject>(GameObject* p);
 template <> AvatarPC* DynamicCast<AvatarPC, GameObject>(GameObject* p);
 template <> MyPC* DynamicCast<MyPC, GameObject>(GameObject* p);
 }
-class CMainSystem { public: double FUN_141473280(); };   // C3: member view
+class CMainSystem { public: double GetGameTime(); };   // C3: member view
 class CStateService { public: int FUN_1417e2610(); };    // C3: member view
 template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 
@@ -172,7 +172,7 @@ bool AdvanceCycle();
 };
 
 class CGameOption;
-void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* FUN_140c77560(void* p);
+void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* GetGraphicState(void* p);
 class ModelGroup   // C3: member view for the former free stand-ins
 {
 public:
@@ -233,7 +233,7 @@ struct Unk_EmSlots32 : Unk_EmSlots24 { virtual void vfunc_24(); virtual void vfu
 struct Unk_EmSlots40 : Unk_EmSlots32 { virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); };
 struct Unk_EmSlots48 : Unk_EmSlots40 { virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); };
 struct Unk_EmSlots56 : Unk_EmSlots48 { virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); };
-// The owner's entity (FUN_141200820's result).
+// The owner's entity (GetOwnerPC's result).
 struct Unk_EmEntity : Unk_EmSlots56
 {
     virtual void vfunc_56(); virtual void vfunc_57();
@@ -313,7 +313,7 @@ struct Unk_AttachDummy
     char m_pad_80[0xb8];
     void* m_pFollow;                // +0x138 the node it follows
     Unk_HoldHandle m_hold;          // +0x140
-    Unk_HoldHandle FUN_141205e30(); // 0x141205e30 return m_hold
+    Unk_HoldHandle GetHold(); // 0x141205e30 return m_hold
     int m_nMode;                    // +0x150
     int m_nFlag;                    // +0x154
     NiPoint3 m_kBasePos;            // +0x158
@@ -365,13 +365,13 @@ static CString s_strStun2("stun");
 static Unk_1402a9d70 s_map2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- forward declarations of this unit's helpers ----
-void FUN_141207fb0(Unk_HoldTarget* p, float f);
+void SetScale(Unk_HoldTarget* p, float f);
 void FUN_1411ffee0(CEquipModel* self, double fTime);
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot);
-void* FUN_141200820(CEquipModel* self);
-void* FUN_141200850(CEquipModel* self);
+void* GetOwnerPC(CEquipModel* self);
+void* GetOwnerObject(CEquipModel* self);
 void* FUN_1412008e0(CEquipModel* self);
-void* FUN_1412009d0(CEquipModel* self);
+void* GetItemData(CEquipModel* self);
 void* FUN_141200a90(CEquipModel* self);
 void* FUN_141200ab0(CEquipModel* self);
 bool FUN_141200ad0(CEquipModel* self);
@@ -379,7 +379,7 @@ void FUN_141200b30(CEquipModel* self);
 void FUN_141200ca0(CEquipModel* self);
 void FUN_141200e30(CEquipModel* self, int n);
 void FUN_141200390(CEquipModel* self, const CString& kName);
-void* FUN_1412018c0(CEquipModel* self);
+void* GetFirstRoot(CEquipModel* self);
 void FUN_141202bd0(CEquipModel* self);
 void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, unsigned char bKeep, unsigned char bWorld);
 void FUN_141202dc0(CEquipModel* self, int nSlot);
@@ -404,8 +404,8 @@ CEquipModel::CEquipModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20)
     m_pos6c = *(NiPoint3*)&DAT_143b01a60;
     (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&m_unk_f0) = (NiAVObject*)(void*)(0));
     if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&m_spOwner)->operator CEquipItem*()) ? true : false) {
-        if (((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0()) != 0)
-            m_b110 = ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0())))->FUN_14053e370();
+        if (((void*)((class CEquipItem*)(void*)(OWNER(this)))->GetItemData()) != 0)
+            m_b110 = ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(this)))->GetItemData())))->FUN_14053e370();
     }
 }
 
@@ -425,7 +425,7 @@ void CEquipModel::vfunc_5()
     FUN_1412034e0(this);
     FUN_141203db0(this);
     MS2Ptr<CEquipModel> spKeep(this);    // keeps the model alive while the owner drops it
-    ((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411ddf10((class CEquipModel*)(this));
+    ((class CEquipItem*)(void*)(OWNER(this)))->RemoveModel((class CEquipModel*)(this));
     (*reinterpret_cast<MS2Ptr<CPtred>*>(&m_spOwner) = 0);
     (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&m_unk_f0) = (NiAVObject*)(void*)(0));
 }
@@ -501,19 +501,19 @@ NiPoint3 CEquipModel::GetPos6c()
 }
 
 // @0x141200100
-void FUN_141200100(CEquipModel* self, NiPoint3 p)
+void SetRotation(CEquipModel* self, NiPoint3 p)
 {
     self->m_pos6c = p;
 }
 
 // @0x141200130
-NiPoint3 CEquipModel::FUN_141200130()
+NiPoint3 CEquipModel::GetPosition()
 {
     return m_pos60;
 }
 
 // @0x141200160
-void FUN_141200160(CEquipModel* self, NiPoint3 p)
+void SetPosition(CEquipModel* self, NiPoint3 p)
 {
     self->m_pos60 = p;
 }
@@ -521,7 +521,7 @@ void FUN_141200160(CEquipModel* self, NiPoint3 p)
 // @0x141200190
 void CEquipModel::vfunc_27(const char* psz)
 {
-    void* p = FUN_1412018c0(this);
+    void* p = GetFirstRoot(this);
     if (p != 0)
         ((class NiAVObject*)(void*)(p))->SetLocalFromWorldTransform(*(class NiTransform const*)(psz));
 }
@@ -545,10 +545,10 @@ void CEquipModel::vfunc_30(void* a, void* b, float f)
 // @0x141200230
 void FUN_141200230(CEquipModel* self)
 {
-    MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+    MS2Ptr<CItemData> spData((CItemData*)GetItemData(self));
     if (spData == NULL)
         return;
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
     CString kPoint("Point01");
@@ -562,7 +562,7 @@ void FUN_141200230(CEquipModel* self)
 // @0x141200390
 void FUN_141200390(CEquipModel* self, const CString& kName)
 {
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
     if ((*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) == (NiNode*)0) || ((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent()) == 0)
@@ -576,7 +576,7 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
     reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetUseMovement(0);
     reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetMode(0);
     Unk_PartInfo* pInfo = (Unk_PartInfo*)FUN_141200ab0(self);
-    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[(unsigned)((class PC*)(void*)(pEnt))->FUN_141658e60()];
+    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[(unsigned)((class PC*)(void*)(pEnt))->GetGender()];
     std::vector<Unk_PartAttach>::iterator itCur;
     for (itCur = kList.begin(); itCur != kList.end(); ++itCur) {
         Unk_PartAttach* e = itCur.operator->();
@@ -597,20 +597,20 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetFollowNode((NiAVObject*)pRoot);
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetMode(e->m_bFollow);
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetUseMovement(e->m_bFlag);
-            FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().operator->(), e->m_fScale);
+            SetScale((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->GetHold().operator->(), e->m_fScale);
         }
-        pDummy->Update((float)((class CMainSystem*)(void*)TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
+        pDummy->Update((float)((class CMainSystem*)(void*)TSingleton<CMainSystem>::GetInstance())->GetGameTime(), true);
     }
 }
 
 // @0x141200820
-void* FUN_141200820(CEquipModel* self)
+void* GetOwnerPC(CEquipModel* self)
 {
-    return efd::DynamicCast<PC, GameObject>((GameObject*)(FUN_141200850(self)));
+    return efd::DynamicCast<PC, GameObject>((GameObject*)(GetOwnerObject(self)));
 }
 
 // @0x141200850
-void* FUN_141200850(CEquipModel* self)
+void* GetOwnerObject(CEquipModel* self)
 {
     return ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
 }
@@ -618,14 +618,14 @@ void* FUN_141200850(CEquipModel* self)
 // @0x1412008e0
 void* FUN_1412008e0(CEquipModel* self)
 {
-    void* pEnt = FUN_141200850(self);
+    void* pEnt = GetOwnerObject(self);
     if (pEnt == 0)
         return 0;
-    return reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
+    return reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->GetEntityID());
 }
 
 // @0x141200940
-MS2Ptr<CItem> CEquipModel::FUN_141200940()
+MS2Ptr<CItem> CEquipModel::GetItem()
 {
     if ((!*reinterpret_cast<MS2Ptr<CEquipItem>*>(&m_spOwner)))
         return MS2Ptr<CItem>(0);
@@ -633,9 +633,9 @@ MS2Ptr<CItem> CEquipModel::FUN_141200940()
 }
 
 // @0x1412009d0
-void* FUN_1412009d0(CEquipModel* self)
+void* GetItemData(CEquipModel* self)
 {
-    CItem* p = self->FUN_141200940().get();
+    CItem* p = self->GetItem().get();
     if (p == 0)
         return 0;
     return ((void*)((class CItem*)(void*)(p))->FUN_140527840());
@@ -719,14 +719,14 @@ void FUN_141200ca0(CEquipModel* self)
     else
         self->vfunc_12();
     if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner)->operator CEquipItem*()) ? true : false) {
-        if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()) != 0) {
-            if (((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0())))->FUN_14053ec70()->FUN_1405471b0()) {
-                ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dce60(s_strWillUpdatePos);
+        if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData()) != 0) {
+            if (((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData())))->FUN_14053ec70()->FUN_1405471b0()) {
+                ((class CEquipItem*)(void*)(OWNER(self)))->AddTag(s_strWillUpdatePos);
                 ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dd280();
             }
-            void* pEnt = FUN_141200820(self);
+            void* pEnt = GetOwnerPC(self);
             if (pEnt != 0) {
-                ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411ea430(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
+                ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411ea430(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
                 FUN_141202bd0(self);
             }
         }
@@ -751,13 +751,13 @@ void FUN_141200e30(CEquipModel* self, int bClear)
             pRoot->AttachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*()), true);
         }
     }
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
-            ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+            ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->GetPartName(),
                           ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
-        ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411ea500(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
+        ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411ea500(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
     }
     if (bClear != 0)
         self->m_unk_f8.clear();
@@ -817,7 +817,7 @@ void FUN_1412014f0(CEquipModel* self, void* pPt)
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
     if (pInfo == 0)
         return;
-    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
+    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->GetItemData())))->FUN_14053cfd0() != 0) {
         Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
             *reinterpret_cast<efd::Point3*>(p->m_aPos + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
@@ -834,7 +834,7 @@ void FUN_141201620(CEquipModel* self, void* pPt)
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
     if (pInfo == 0)
         return;
-    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
+    if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->GetItemData())))->FUN_14053cfd0() != 0) {
         Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
             *reinterpret_cast<efd::Point3*>(p->m_aPos78 + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
@@ -851,7 +851,7 @@ void CEquipModel::vfunc_32(int n)
 // @0x141201780
 efd::utf8string CEquipModel::FUN_141201780()
 {
-    void* pEnt = FUN_141200850(this);
+    void* pEnt = GetOwnerObject(this);
     if (pEnt != 0) {
         if (efd::DynamicCast<MyPC, GameObject>((GameObject*)(pEnt)) != 0) {
             return efd::utf8string("MS2EquipItem");
@@ -863,7 +863,7 @@ efd::utf8string CEquipModel::FUN_141201780()
             return efd::utf8string("MS2MannequinEquipItem");
         }
         if (efd::DynamicCast<PC, GameObject>((GameObject*)(pEnt)) != 0) {
-            if (*((bool*)FUN_140c77560(TSingleton<CGameOption>::GetInstance()) + 0x11)) {
+            if (*((bool*)GetGraphicState(TSingleton<CGameOption>::GetInstance()) + 0x11)) {
                 return efd::utf8string("MS2EquipItem");
             }
         }
@@ -873,7 +873,7 @@ efd::utf8string CEquipModel::FUN_141201780()
 
 // First attached scene object (the model's root), or NULL.
 // @0x1412018c0
-void* FUN_1412018c0(CEquipModel* self)
+void* GetFirstRoot(CEquipModel* self)
 {
     if (self->m_unk_f8.size() == 0)
         return 0;
@@ -903,7 +903,7 @@ NiNodePtr CEquipModel::FUN_141201bd0(const CString& kName)
 }
 
 // @0x141201c90
-std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* self)
+std::set<NiAVObjectPtr>* GetRoots(CEquipModel* self)
 {
     return &self->m_unk_f8;
 }
@@ -930,16 +930,16 @@ class CItemData;
 // @0x141201d50
 void FUN_141201d50(CEquipModel* self, CString kName)
 {
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
-    MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+    MS2Ptr<CItemData> spData((CItemData*)GetItemData(self));
     if (spData == 0)
         return;
     if (self->m_spNode == (NiNode*)0)
         return;
     if (kName == &DAT_142ec05ba)
-        kName = self->FUN_1412029d0();
+        kName = self->GetPartName();
     CString kCur;
     if (((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent()) != 0)
         kCur = reinterpret_cast<efd::FixedString*>(((void*)&((class NiObjectNET*)(void*)(((void*)((class NiAVObject*)(void*)(((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator->())))->GetParent())))->GetName()))->operator const char*();
@@ -955,7 +955,7 @@ void FUN_141201d50(CEquipModel* self, CString kName)
     if (pTarget == 0)
         return;
     pTarget->AttachChild(self->m_spNode, true);
-    CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((GameObject*)pEnt)->FUN_14123c460()).c_str());
+    CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->GetCurrentSequenceName(((GameObject*)pEnt)->GetEntityID()).c_str());
     FUN_141200390(self, kModel);
     NiAVObject* pAV = (NiAVObject*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pAV != 0) {
@@ -965,9 +965,9 @@ void FUN_141201d50(CEquipModel* self, CString kName)
 }
 
 // @0x1412021a0
-void FUN_1412021a0(CEquipModel* self, NiTransform* pOut)
+void GetLocalTransform(CEquipModel* self, NiTransform* pOut)
 {
-    void* p = FUN_1412018c0(self);
+    void* p = GetFirstRoot(self);
     if (p != 0)
         (*reinterpret_cast<NiTransform*>(pOut) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(p))->GetLocalTransform())));
 }
@@ -975,15 +975,15 @@ void FUN_1412021a0(CEquipModel* self, NiTransform* pOut)
 // @0x1412021f0
 void FUN_1412021f0(CEquipModel* self, NiTransform* pOut)
 {
-    void* p = FUN_1412018c0(self);
+    void* p = GetFirstRoot(self);
     if (p != 0)
         (*reinterpret_cast<NiTransform*>(pOut) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(p))->GetWorldTransform())));
 }
 
 // @0x141202240
-void FUN_141202240(CEquipModel* self, void* pXf)
+void SetLocalTransform(CEquipModel* self, void* pXf)
 {
-    void* p = FUN_1412018c0(self);
+    void* p = GetFirstRoot(self);
     if (p != 0)
         ((class NiAVObject*)(void*)(p))->SetLocalTransform(*reinterpret_cast<const NiTransform*>(pXf));
 }
@@ -998,7 +998,7 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
     NiNode* pNode = (NiNode*)((void*)((class NiActorManager*)(void*)(pRoot))->GetNIFRoot());
     if (pNode == 0)
         return;
-    const CString& kPart = self->FUN_1412029d0();
+    const CString& kPart = self->GetPartName();
     void* pos = ((void*)((ATL::CAtlList<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&s_meshSuffixes))->GetHeadPosition());
     while (pos != 0) {
         CString kFull;
@@ -1027,18 +1027,18 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float
     void* pEnt = ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
     if (pEnt == 0)
         return;
-    void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
+    void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->GetEntityID());
     if (pActor == 0)
         return;
     if (((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()) == 0)
         return;
-    void* pObj = ((NiAVObject*)((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()))->GetObjectByName((LPCSTR)self->FUN_1412029d0());
+    void* pObj = ((NiAVObject*)((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()))->GetObjectByName((LPCSTR)self->GetPartName());
     if (pObj == 0)
         return;
     void* pAttach = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pObj)));
     if (pAttach == 0)
         return;
-    void* pRoot = FUN_1412018c0(self);
+    void* pRoot = GetFirstRoot(self);
     if (pRoot == 0)
         return;
     NiTransform kXf;
@@ -1062,7 +1062,7 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float
 }
 
 // @0x1412028f0
-CString CEquipModel::FUN_1412028f0()
+CString CEquipModel::GetModelPath()
 {
     return m_str38;
 }
@@ -1070,7 +1070,7 @@ CString CEquipModel::FUN_1412028f0()
 // @0x141202940
 int FUN_141202940(CEquipModel* self)
 {
-    CItem* p = self->FUN_141200940().get();
+    CItem* p = self->GetItem().get();
     if (p != 0) {
         if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
             return ((class CItem*)(void*)(p))->FUN_140526c30();
@@ -1081,9 +1081,9 @@ int FUN_141202940(CEquipModel* self)
 
 // The part's name; the left/right counterpart is swapped in for the second hand's weapon.
 // @0x1412029d0
-CString CEquipModel::FUN_1412029d0()
+CString CEquipModel::GetPartName()
 {
-    CItem* p = FUN_141200940().get();
+    CItem* p = GetItem().get();
     if (p != 0) {
         if (((class CItemData*)(void*)(((void*)((class CItem*)(void*)(p))->FUN_140527840())))->FUN_14053d510() != 0) {
             CString kName(((Unk_PartInfo*)m_unk_20)->m_strName);
@@ -1104,7 +1104,7 @@ CString CEquipModel::FUN_1412029d0()
 // @0x141202b70
 unsigned FUN_141202b70(CEquipModel* self)
 {
-    const CString& kName = self->FUN_1412029d0();
+    const CString& kName = self->GetPartName();
     return FUN_1405451c0(const_cast<CString&>(kName));
 }
 
@@ -1114,10 +1114,10 @@ void FUN_141202bd0(CEquipModel* self)
 {
     if (self->vfunc_9() == 0)
         return;
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
-    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0());
+    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->GetItemData());
     if (pTpl == 0)
         return;
     if (((Unk_EmEntity*)pEnt)->vfunc_65() != 0) {
@@ -1162,7 +1162,7 @@ bool FUN_141202e30(CEquipModel* self, int nSlot)
 
 // Creates the "Equip_Attach_Transform" / "Weapon_Attach_Transform{L,R}H" node under the loaded model for the part.
 // @0x141202ea0
-void FUN_141202ea0(CEquipModel* self, CString* pName)
+void CreateAttachNode(CEquipModel* self, CString* pName)
 {
     if (((void*)reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self))->operator NiNode*()) != 0)
         return;
@@ -1205,9 +1205,9 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         }
         pHost->AttachChild((NiAVObject*)pNew, false);
         (*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) = (NiNode*)(void*)(pNew));
-        void* pEnt = FUN_141200820(self);
+        void* pEnt = GetOwnerPC(self);
         if (pEnt != 0) {
-            CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->FUN_141206030(((GameObject*)pEnt)->FUN_14123c460()).c_str());
+            CString kModel(((Unk_EmModelLoader*)reinterpret_cast<void*>(FUN_141b6f910()))->GetCurrentSequenceName(((GameObject*)pEnt)->GetEntityID()).c_str());
             FUN_141200390(self, kModel);
         }
     }
@@ -1224,7 +1224,7 @@ int FUN_1412033e0(CEquipModel* self)
     void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pLocal == 0)
         return 0;
-    return EQUIP(self->m_spOwner)->GetItem()->FUN_140526ad0() == (unsigned)((GameObject*)pLocal)->FUN_14123c580();
+    return EQUIP(self->m_spOwner)->GetItem()->FUN_140526ad0() == (unsigned)((GameObject*)pLocal)->GetObjectId();
 }
 
 // Releases every effect bound to a slot and empties the map.
@@ -1241,7 +1241,7 @@ void FUN_1412034e0(CEquipModel* self)
 // @0x141203570
 void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bWorld)
 {
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
     if (FUN_141203cf0(self, pEnt) == 0)
@@ -1256,7 +1256,7 @@ void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bW
 // @0x141203660
 void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
 {
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt == 0)
         return;
     if (FUN_141203cf0(self, pEnt) == 0)
@@ -1272,7 +1272,7 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
     kReq.m_strName = kName;
     (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&kReq.m_spNode) = (NiAVObject*)(void*)(pNode));
     kReq.m_nObject = ((Unk_EmEntity*)pEnt)->vfunc_58();
-    kReq.SetActor(((GameObject*)pEnt)->FUN_14123c580());
+    kReq.SetActor(((GameObject*)pEnt)->GetObjectId());
     unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*(class Unk_EffectTarget*)(&kReq));
     if (nHandle > 0)
         self->m_map78.SetAt((Unk_EquipEffectSlot&)nSlot, nHandle);
@@ -1288,20 +1288,20 @@ CString CEquipModel::FUN_141203830()
     MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(this)))->GetItem();
     if (kId == (CItem*)0)
         return CString("");
-    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0());
+    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(this)))->GetItemData());
     if (pTpl == 0)
         return CString("");
     if (!((class CItemData*)(void*)(pTpl))->FUN_14053d2f0())
         return CString("");
     if (((class CItemData*)(void*)(pTpl))->HasSkinType()) {
-        void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc8c0());
+        void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(this)))->GetPC());
         if (pParent != 0) {
-            MS2Ptr<CEquipItem> spPart = ((class PC*)pParent)->FUN_141655c90(((class CItem*)(void*)(kId.operator->()))->FUN_140527a20());
+            MS2Ptr<CEquipItem> spPart = ((class PC*)pParent)->GetEquipItemLayer0(((class CItem*)(void*)(kId.operator->()))->FUN_140527a20());
             if (spPart.operator CEquipItem*() != 0) {
                 MS2Ptr<CItem> kId2 = spPart->GetItem();
                 if (kId2 == (CItem*)0)
                     return CString("");
-                char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(spPart.operator->()))->FUN_1411dc7f0());
+                char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(spPart.operator->()))->GetItemData());
                 if (pTpl2 == 0)
                     return CString("");
                 if (!((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
@@ -1326,7 +1326,7 @@ bool FUN_141203cf0(CEquipModel* self, void* pEnt)
     void* p = FUN_141204220(pEnt);
     if (p != 0) {
         {
-            MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+            MS2Ptr<CItemData> spData((CItemData*)GetItemData(self));
             if (spData.get() != 0)
                 return ((class CItemData*)(void*)(spData.operator->()))->FUN_14053ce80() ? true : false;
         }
@@ -1360,11 +1360,11 @@ void FUN_141203e60(CEquipModel* self)
             pParent->DetachChild((NiAVObject*)((void*)reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&sp)->operator NiAVObject*()));
     }
     self->m_unk_f8.clear();
-    void* pEnt = FUN_141200820(self);
+    void* pEnt = GetOwnerPC(self);
     if (pEnt != 0) {
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
-            ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
+            ((CEquipment*)((class PC*)(void*)(pEnt))->GetEquipment())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->GetPartName(),
                           ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     }
 }
@@ -1409,14 +1409,14 @@ void WeaponAttachTransformNode::SetMode(int nMode)
 }
 
 // @0x141205e30
-Unk_HoldHandle Unk_AttachDummy::FUN_141205e30()
+Unk_HoldHandle Unk_AttachDummy::GetHold()
 {
     return m_hold;
 }
 
 // Animation service: the display name of the sequence the entity model key maps to (the default name when none).
 // @0x141206030
-efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
+efd::utf8string Unk_EmModelLoader::GetCurrentSequenceName(const egf::EntityID& kId)
 {
     void* pEntry;
     if (!((Unk_EmAnimAccess*)(void*)this)->ContainsEntity(kId, reinterpret_cast<Unk_EmAnimAccess::ActorEntry*&>(pEntry)))
@@ -1448,7 +1448,7 @@ void WeaponAttachTransformNode::SetBaseRotate(const NiMatrix3& kRotate)
 }
 
 // @0x141207fb0
-void FUN_141207fb0(Unk_HoldTarget* p, float f)
+void SetScale(Unk_HoldTarget* p, float f)
 {
     p->m_fScale = f;
 }
@@ -1505,22 +1505,22 @@ MS2_REPLACE_METHOD(0x141200190, CEquipModel, vfunc_27, 57, 0xB1DE4D66);
 MS2_REPLACE_METHOD(0x1412001D0, CEquipModel, vfunc_29, 22, 0x59F0B112);
 MS2_REPLACE_METHOD(0x1412001F0, CEquipModel, vfunc_28, 22, 0x59F0B112);
 MS2_REPLACE_METHOD(0x141200210, CEquipModel, vfunc_30, 22, 0x59F0B112);
-MS2_REPLACE(0x141200820, FUN_141200820, 32, 0x724B57F1);
+MS2_REPLACE(0x141200820, GetOwnerPC, 32, 0x724B57F1);
 MS2_REPLACE(0x141200A90, FUN_141200a90, 15, 0xBBB219C9);
 MS2_REPLACE(0x141200AB0, FUN_141200ab0, 15, 0xCBEE5D21);
 MS2_REPLACE(0x141200AD0, FUN_141200ad0, 65, 0x078D148C);
 MS2_REPLACE_METHOD(0x141200B20, CEquipModel, vfunc_31, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x141201750, CEquipModel, vfunc_32, 28, 0x2CD3DB6E);
-MS2_REPLACE(0x1412018C0, FUN_1412018c0, 82, 0x44D6E731);
-MS2_REPLACE(0x141201C90, FUN_141201c90, 17, 0x55511E8B);
-MS2_REPLACE(0x1412021A0, FUN_1412021a0, 65, 0xCE106764);
+MS2_REPLACE(0x1412018C0, GetFirstRoot, 82, 0x44D6E731);
+MS2_REPLACE(0x141201C90, GetRoots, 17, 0x55511E8B);
+MS2_REPLACE(0x1412021A0, GetLocalTransform, 65, 0xCE106764);
 MS2_REPLACE(0x1412021F0, FUN_1412021f0, 65, 0x6C2D7A03);
-MS2_REPLACE(0x141202240, FUN_141202240, 57, 0x5F7954AD);
+MS2_REPLACE(0x141202240, SetLocalTransform, 57, 0x5F7954AD);
 MS2_REPLACE_METHOD(0x141205A40, WeaponAttachTransformNode, SetUseMovement, 25, 0xED11FA2A);
 MS2_REPLACE_METHOD(0x141205A60, WeaponAttachTransformNode, SetMode, 25, 0x87AE4FB6);
 MS2_REPLACE_METHOD(0x141207F40, WeaponAttachTransformNode, SetFollowNode, 40, 0xF6CFED15);
 MS2_REPLACE_METHOD(0x141207F70, WeaponAttachTransformNode, SetBaseRotate, 64, 0x6C076CC3);
-MS2_REPLACE(0x141207FB0, FUN_141207fb0, 28, 0x2F87969E);
+MS2_REPLACE(0x141207FB0, SetScale, 28, 0x2F87969E);
 MS2_REPLACE_METHOD(0x141207FD0, WeaponAttachTransformNode, SetBasePosition, 60, 0x5B49E748);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cad5b0-0x142cad6f0 .text$yd

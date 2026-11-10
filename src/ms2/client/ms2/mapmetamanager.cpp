@@ -47,7 +47,7 @@ CMapMetaManager::~CMapMetaManager()
 egf::EntityID CMapMetaManager::FUN_141478180(efd::utf8string key)
 {
     if (m_values.GetCount() <= 0) {
-        egf::Entity* entity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_entityID);
+        egf::Entity* entity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_entityID);
         if (entity != NULL) {
             efd::UInt32 count = 0;
             entity->GetPropertyCount(0x25000038, count);
@@ -71,16 +71,16 @@ egf::EntityID CMapMetaManager::FUN_141478180(efd::utf8string key)
 const NiRTTI* CMapMetaManager::GetRTTI() const { return &ms_RTTI; }
 
 // ---- ballistic arc solver (not part of CMapMetaManager; sits in this unit's range) ----
-float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
+float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 bool FUN_14028d470(float a, float b);                                        // nearly equal
-Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // direction from -> to (dropitem.cpp)
+Vector3 GetHorizontalDirection(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // direction from -> to (dropitem.cpp)
 
 // The launch solution (Unk_ArcFlight, arccontroller.h) for a projectile of the given speed under gravity: the low-angle
 // arc from origin to target.
 // @0x141479ed0
 void Unk_ArcFlight::FUN_141479ed0(Vector3 origin, Vector3 target, float speed, float gravity)
 {
-    float distance = FUN_140966ea0(target, origin);
+    float distance = GetPlanarDistance(target, origin);
     if (FUN_14028d470(distance, 0.0f)) {
         m_speed = speed;
         return;
@@ -100,10 +100,10 @@ void Unk_ArcFlight::FUN_141479ed0(Vector3 origin, Vector3 target, float speed, f
         float angle = __imp_atanf(tangent);
         m_speed = speed;
 #ifdef __clang__
-        const Vector3& kDir = FUN_141192780(origin, target, true);
+        const Vector3& kDir = GetHorizontalDirection(origin, target, true);
         m_direction = kDir;
 #else
-        m_direction = FUN_141192780(origin, target, true);
+        m_direction = GetHorizontalDirection(origin, target, true);
 #endif
         m_target = target;
         m_origin = origin;

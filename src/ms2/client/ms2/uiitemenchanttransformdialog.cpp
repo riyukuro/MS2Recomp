@@ -64,7 +64,7 @@ template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CSt
 class Unk_TfInventory : public Unk_Inventory { };
 extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 
-class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
+class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 
 // The ASDialog the movie root is cast to.
 class ASDialog : public AScript
@@ -82,11 +82,11 @@ void FUN_140710590(COutPacket& pkt);                                // send
 extern __int64 DAT_143ab2898;                                       // the player's mesos
 
 typedef MS2Ptr<CItem> (*Unk_TfGetItemFn)(void* pItems, int nIndex);
-void FUN_14141f970(const CString& strBag);                          // unbind a bag
-void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
-void FUN_141415600(const CString& strSlot);                         // unbind a slot
-void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
+void DestroyItemSlotBag(const CString& strBag);                          // unbind a bag
+void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
+void DestroyItemInfoSlot(const CString& strSlot);                         // unbind a slot
+void CreateItemInfoSlot(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, bool* pHighSa);   // the item's option text
@@ -128,7 +128,7 @@ void UIItemEnchantTransformDialog::vfunc_43()
 {
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (dialog != 0) {
-        UITalkCinematic* inv = ((class UITalkCinematic*)FUN_140a7b2b0(0x4e40));
+        UITalkCinematic* inv = ((class UITalkCinematic*)FindTalkCinematic(0x4e40));
         if (inv != 0) {
             int x = inv->GetLowerCutGlobalY();
             int y = inv->GetIllustGlobalX() - 0x50;
@@ -154,10 +154,10 @@ void UIItemEnchantTransformDialog::OnLoadComplete()
 // @0x140c3d190
 void UIItemEnchantTransformDialog::vfunc_67()
 {
-    FUN_14141f970(m_strTargetBag);
-    FUN_141415600(m_strSelectBag);
+    DestroyItemSlotBag(m_strTargetBag);
+    DestroyItemInfoSlot(m_strSelectBag);
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)
-        FUN_141415600(m_outputNames[i]);
+        DestroyItemInfoSlot(m_outputNames[i]);
     m_selected = 0;
     m_outputs.RemoveAll();
     m_targets.RemoveAll();
@@ -219,18 +219,18 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
 {
     m_targets.RemoveAll();
     ATL::CAtlArray<unsigned __int64> uids;
-    ((Unk_TfInventory*)&g_143ab2a90)->FUN_140a609a0(0, uids);
+    ((Unk_TfInventory*)&g_143ab2a90)->GetItemUidsInCategory(0, uids);
     for (unsigned i = 0; i < uids.GetCount(); ++i) {
-        MS2Ptr<CItem> item = ((Unk_TfInventory*)&g_143ab2a90)->FUN_140a5d680(uids[i]);
+        MS2Ptr<CItem> item = ((Unk_TfInventory*)&g_143ab2a90)->FindItemByUid(uids[i]);
         if (item == 0)
             continue;
         if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
             continue;
         m_targets.Add(item);
     }
-    FUN_14141f970(m_strTargetBag);
-    Unk_TfGetItemFn pfnGetItem = FUN_141420330;
-    FUN_14141f770(m_strTargetBag, (unsigned)m_targets.GetCount(), (void*)&m_targets, pfnGetItem, 0x415, 8);
+    DestroyItemSlotBag(m_strTargetBag);
+    Unk_TfGetItemFn pfnGetItem = GetItemFromArray;
+    CreateItemSlotBag(m_strTargetBag, (unsigned)m_targets.GetCount(), (void*)&m_targets, pfnGetItem, 0x415, 8);
     MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_targetItems");
     if (board == 0)
         return;
@@ -295,8 +295,8 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         return;
     m_selected = item;
     m_state = 1;
-    FUN_141415600(m_strSelectBag);
-    FUN_141415450(m_strSelectBag, m_selected, 0, 0x415, 8);
+    DestroyItemInfoSlot(m_strSelectBag);
+    CreateItemInfoSlot(m_strSelectBag, m_selected, 0, 0x415, 8);
     ASObj obj(2);
     obj.FUN_1407cbb20(s_strItemName, m_selected->FUN_140528160());
     obj.FUN_1407cba60("binding", m_strSelectBag);
@@ -304,7 +304,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     obj.FUN_1407cbb20("transformFee", strFee);
     m_outputs.RemoveAll();
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)
-        FUN_141415600(m_outputNames[i]);
+        DestroyItemInfoSlot(m_outputNames[i]);
     m_outputNames.RemoveAll();
     ASArray outputs(2);
     for (unsigned i = 0; i < row->m_arrOutputId.GetCount(); ++i) {
@@ -317,8 +317,8 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
             m_outputs.Add(out);
         }
         CString strName = Unk_SocketFormat("{0}.{1}", m_strOutputBag, i);
-        FUN_141415600(strName);
-        FUN_141415450(strName, out, 0, 0x415, 0x800);
+        DestroyItemInfoSlot(strName);
+        CreateItemInfoSlot(strName, out, 0, 0x415, 0x800);
         m_outputNames.Add(strName);
         ASObj entry(2);
         entry.FUN_1407cba60("binding", strName);

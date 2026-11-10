@@ -41,11 +41,18 @@ CStringW FUN_14062ad80(MS2Ptr<CItem> spItem);               // the gemstone desc
 // Registry of named bags/slots (GFx bind data).
 
 
+// The child clip lookup is uicashattenddialog's Unk_CadNode::FUN_140bc7400<Unk_CadCheck> (0x140bc7450): the exe folds the
+// movie clip instantiations into that one body. Its result is MS2Ptr<Unk_CadCheck>; this view of it is MS2Ptr<ASMovieClip>
+// for every member, and its dtor is the same body (0x1409b4a90, folded with MS2Ptr<ASMovieClip>'s).
+class Unk_CadCheck;
+template<> class MS2Ptr<Unk_CadCheck> : public MS2Ptr<ASMovieClip> { public: ~MS2Ptr(); };
+class Unk_CadNode : public ASDisplayObjectContainer { public:
+    template<class T> MS2Ptr<T> FUN_140bc7400(const CString& strName);
+};
 // The child lookups of the AS container wrappers (defined in unit_140cff310_gfxutilwrappers).
 class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
-    MS2Ptr<ASMovieClip> FUN_140bc7450(const CString& strName);                      // child clip by name
     MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
     MS2Ptr<ASDisplayObjectContainer> FUN_140d01d80(const CString& strName);         // child container
 };
@@ -66,21 +73,21 @@ static CString s_strSkill2("skill");
 // ---- GemStoneSlot ----
 
 // @0x140cfd6f0
-void FUN_140cfd6f0(const CString& strName, MS2Ptr<CGemStoneItem> spGem, int nIndex, int nIconType, int nFlags)
+void CreateGemStoneSlot(const CString& strName, MS2Ptr<CGemStoneItem> spGem, int nIndex, int nIconType, int nFlags)
 {
     GemStoneSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) GemStoneSlot(strName, spGem, nIndex, nIconType, nFlags);
     if (pSlot)
         Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 
-GemStoneSlot* FUN_140cfe620(NotifyContext::BindData* p);
-GemStoneSlotBag* FUN_140cfe670(NotifyContext::BindData* p);
-ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p);
+GemStoneSlot* CastToGemStoneSlot(NotifyContext::BindData* p);
+GemStoneSlotBag* CastToGemStoneSlotBag(NotifyContext::BindData* p);
+ItemInfoSlot* CastToItemInfoSlot(NotifyContext::BindData* p);
 
 // @0x140cfd800
 void FUN_140cfd800(const CString& strName)
 {
-    GemStoneSlot* pSlot = FUN_140cfe620(Unk_NotifyContext::FUN_1422c8e90(strName));
+    GemStoneSlot* pSlot = CastToGemStoneSlot(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
         Unk_NotifyContext::FUN_1422c8f70(strName);
 }
@@ -112,13 +119,13 @@ int GemStoneSlot::vfunc_8(void* p)
     bool bLocked = m_spGem->GetLocked();
     if (spItem == 0)
     {
-        FUN_140cfdc70(&slot, bLocked);
+        SetSlotLock(&slot, bLocked);
     }
     else if (!slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
     {
         return 0;
     }
-    FUN_140cfdcb0(&slot, spItem, bLocked);
+    SetSlotText(&slot, spItem, bLocked);
     *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
     return 1;
 }
@@ -128,20 +135,20 @@ int GemStoneSlot::vfunc_18(void* pv)
 {
     if (pv == 0)
         return 1;
-    ItemInfoSlot* pSrc = FUN_140cfe6c0(static_cast<DragSlot*>(pv));
+    ItemInfoSlot* pSrc = CastToItemInfoSlot(static_cast<DragSlot*>(pv));
     if (pSrc != 0)
         FUN_140cfddf0(pSrc->vfunc_25());
     return static_cast<DragSlot*>(pv)->vfunc_10();
 }
 
 // @0x140cfdc70
-void GemStoneSlot::FUN_140cfdc70(ASSlot* pSlot, bool bLocked)
+void GemStoneSlot::SetSlotLock(ASSlot* pSlot, bool bLocked)
 {
     pSlot->FUN_1407cbbe0("lock", bLocked);
 }
 
 // @0x140cfdcb0
-void GemStoneSlot::FUN_140cfdcb0(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked)
+void GemStoneSlot::SetSlotText(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked)
 {
     CStringW strText;
     if (spItem.get() != 0)
@@ -179,7 +186,7 @@ bool GemStoneSlot::FUN_140cfdfe0(int nButton, const CMsgBoxData& box)
 // ---- GemStoneSlotBag ----
 
 // @0x140cfe0c0
-void FUN_140cfe0c0(const CString& strName, int nCount, void* pSockets, GemStoneSlotBag::GetGemFn pfnGetGem, int nIconType, int nFlags)
+void CreateGemStoneSlotBag(const CString& strName, int nCount, void* pSockets, GemStoneSlotBag::GetGemFn pfnGetGem, int nIconType, int nFlags)
 {
     GemStoneSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) GemStoneSlotBag(strName, pSockets, pfnGetGem, nIconType, nFlags);
     if (pBag)
@@ -192,7 +199,7 @@ void FUN_140cfe0c0(const CString& strName, int nCount, void* pSockets, GemStoneS
 // @0x140cfe1b0
 void FUN_140cfe1b0(const CString& strName)
 {
-    GemStoneSlotBag* pBag = FUN_140cfe670(Unk_NotifyContext::FUN_1422c8e90(strName));
+    GemStoneSlotBag* pBag = CastToGemStoneSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -220,7 +227,7 @@ DragSlot* GemStoneSlotBag::vfunc_16(int nIndex)
 
 // The socket record at nIndex of the array the bag was created over (a null record when out of range).
 // @0x140cfe450
-MS2Ptr<CGemStoneItem> FUN_140cfe450(void* pSockets, int nIndex)
+MS2Ptr<CGemStoneItem> GetGemAt(void* pSockets, int nIndex)
 {
     typedef ATL::CAtlArray<MS2Ptr<CGemStoneItem> > GemArray;
     if (!static_cast<GemArray*>(pSockets)->IsEmpty() && nIndex < (int)static_cast<GemArray*>(pSockets)->GetCount())
@@ -231,7 +238,7 @@ MS2Ptr<CGemStoneItem> FUN_140cfe450(void* pSockets, int nIndex)
 // ---- BindData casts ----
 
 // @0x140cfe620
-GemStoneSlot* FUN_140cfe620(NotifyContext::BindData* p)
+GemStoneSlot* CastToGemStoneSlot(NotifyContext::BindData* p)
 {
     GemStoneSlot* pSlot = 0;
     if (p != 0 && p->TypeCast(0x6200030, (void**)&pSlot))
@@ -241,7 +248,7 @@ GemStoneSlot* FUN_140cfe620(NotifyContext::BindData* p)
 }
 
 // @0x140cfe670
-GemStoneSlotBag* FUN_140cfe670(NotifyContext::BindData* p)
+GemStoneSlotBag* CastToGemStoneSlotBag(NotifyContext::BindData* p)
 {
     GemStoneSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200030, (void**)&pBag))
@@ -251,7 +258,7 @@ GemStoneSlotBag* FUN_140cfe670(NotifyContext::BindData* p)
 }
 
 // @0x140cfe6c0
-ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p)
+ItemInfoSlot* CastToItemInfoSlot(NotifyContext::BindData* p)
 {
     ItemInfoSlot* pSlot = 0;
     if (p != 0 && p->TypeCast(0x620002f, (void**)&pSlot))
@@ -263,19 +270,19 @@ ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p)
 // ---- gfxutil.h: set the text of a named child of a movie ----
 
 // @0x140cfee80
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASMovieClip> spText = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
+    MS2Ptr<Unk_CadCheck> spText = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spText == 0)
         return;
     static_cast<ASObj*>(static_cast<AScript*>(spText.get()))->FUN_1407cbb20("text", strText);
 }
 
 // @0x140cfefe0
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString strName, CStringW strText)
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strClip, CString strName, CStringW strText)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -289,7 +296,7 @@ void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString s
 }
 
 // @0x140cff1b0
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;

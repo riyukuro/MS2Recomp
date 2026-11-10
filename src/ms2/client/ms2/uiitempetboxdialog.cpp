@@ -133,10 +133,10 @@ private:
 };
 MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
 int FUN_141276180(const CString&, const CString&);
-void FUN_14141f970(const CString&);
-void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
-void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
+void DestroyItemSlotBag(const CString&);
+void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
+void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW GetStringCommonByKey(const CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -155,7 +155,7 @@ UIItemPetBoxDialog::UIItemPetBoxDialog()
 // @0x140e4e150
 UIItemPetBoxDialog::~UIItemPetBoxDialog()
 {
-    FUN_14141f970(m_bagId);
+    DestroyItemSlotBag(m_bagId);
 }
 
 // @0x140e4e2f0
@@ -371,7 +371,7 @@ void UIItemPetBoxDialog::ClearCards()
 void UIItemPetBoxDialog::ReleaseSlotBinds()
 {
     for (size_t i = 0; i < PETBOX_BINDS.size(); ++i)
-        FUN_14141f970(m_slotBinds[i]);
+        DestroyItemSlotBag(m_slotBinds[i]);
     PETBOX_BINDS.clear();
 }
 
@@ -449,9 +449,9 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_o18_0());
         if (idata == 0)
             continue;
-        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
+        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->GetJobGroupId()))
             continue;
-        if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()) == 0)
+        if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->GetGender()) == 0)
             continue;
         filtered.push_back(*d);
     }
@@ -466,9 +466,9 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         }
         m_special1.insert(ItemEntity(d->vfunc_o18_0(), d->vfunc_o18_1(), d->vfunc_o18_2(), false, false, false, false));
     }
-    FUN_14141f970(m_bagId);
-    MS2Ptr<CItem> (*getter)(void*, int) = FUN_141420330;
-    FUN_14141f770(m_bagId, (unsigned)items.GetCount(), (void*)&items, getter, 0x415, 0x800);
+    DestroyItemSlotBag(m_bagId);
+    MS2Ptr<CItem> (*getter)(void*, int) = GetItemFromArray;
+    CreateItemSlotBag(m_bagId, (unsigned)items.GetCount(), (void*)&items, getter, 0x415, 0x800);
     ASObj obj(2);
     obj.FUN_1407cba60("bagId", m_bagId);
     m_30->Invoke("initItemData", obj.FUN_1422bb870());
@@ -509,7 +509,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
         unsigned count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
-        FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
+        CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
         PETBOX_BINDS.push_back(bagKey);
@@ -536,7 +536,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
                     continue;
                 item->SetCountClamped(e.vfunc_o18_2());
                 bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
-                FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
+                CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 PETBOX_BINDS.push_back(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
                 if (unc.get()) {
@@ -698,7 +698,7 @@ void UIItemPetBoxDialog::FUN_140e52110()
         return;
     CString tag = PETBOX_ATTR(data)->GetString(L"itemTag", "");
     int tagId = (int)TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tag);
-    MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(tagId);
+    MS2Ptr<CItem> inv = g_143ab2a90.FindItemByTag(tagId);
     if (inv == 0)
         return;
     if (g_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)

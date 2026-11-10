@@ -18,7 +18,7 @@ public:
     void OnBannerList(CInPacket& packet);                 // reads the banner list from the packet
     Unk_AdbPtr FUN_14096b3e0(int nType);                 // the running banner of the type (own slot, else any slot)
     int FUN_14096b540(int nType, ATL::CAtlArray<Unk_AdbPtr>& out);    // all running banners of the type; true if any
-    Unk_AdbPtr FUN_14096b5b0(int nType, const CStringW& strName);   // the running banner of the type with the name
-    int FUN_14096b810(EAdBannerType nType, ATL::CAtlArray<Unk_AdbPtr>& out, int nSlot);    // collects the banners of the slot; true if any
+    Unk_AdbPtr FindBannerByName(int nType, const CStringW& strName);   // the running banner of the type with the name
+    int CollectActiveBanners(EAdBannerType nType, ATL::CAtlArray<Unk_AdbPtr>& out, int nSlot);    // collects the banners of the slot; true if any
 };
 MS2_CHECK_SIZE(CAdBannerManagerCli, 0x70);

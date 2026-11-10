@@ -101,11 +101,11 @@ void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);  
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 
-void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
-void FUN_141415600(const CString& strBindId);                                              // release the bind
+void CreateItemInfoSlot(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
+void DestroyItemInfoSlot(const CString& strBindId);                                              // release the bind
 
 class Unk_VgUiMgr { public: void FUN_141adc530(int uiId); };
-UIMarketBillDialog* FUN_140b09580(int uiId);                    // the open dialog of a UI id
+UIMarketBillDialog* FindMarketBillDialog(int uiId);                    // the open dialog of a UI id
 bool FUN_140ebc590(const TMarketBillDataParam::PaymentMap& mapPay);    // the payment map is the VIP price
 
 // The goods rows are shown by the sale display order (a stateless functor; 0x140fbf980).
@@ -151,7 +151,7 @@ int UIVIPGoodsShopDialog::vfunc_65()
 void UIVIPGoodsShopDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_bindIds.GetCount(); i++)
-        FUN_141415600(m_bindIds[i]);
+        DestroyItemInfoSlot(m_bindIds[i]);
     m_bindIds.RemoveAll();
     m_bReady = 0;
     UIDialog::vfunc_67();
@@ -337,7 +337,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
         if (spGoods->HasBuyLimit() != 0)
             m_mapBought.Lookup(spGoods->m_nId, nLimit);
         ASObj row(2);
-        row.FUN_1409c0d20("id", spGoods->m_nId);
+        row.SetMemberUInt("id", spGoods->m_nId);
         row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, spGoods->m_nId));
         row.FUN_1407cb9c0("disableType", nDisableType);
         row.FUN_1409c1180("originalPrice", spGoods->m_nSalePrice == spGoods->m_nPrice ? 0 : spGoods->m_nPrice);
@@ -371,7 +371,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[j], spGoods->m_bonusItemRanks[j], 0) != 0) {
                 spItem->SetCountClamped(spGoods->m_bonusItemCounts[j]);
                 strBindId.Format("%s_%d", (LPCSTR)GetTypeName(), m_bindIds.GetCount() + 1);
-                FUN_141415450(strBindId, spItem, 0, 0x415, 0);
+                CreateItemInfoSlot(strBindId, spItem, 0, 0x415, 0);
                 m_bindIds.Add(strBindId);
                 CString strKey = Unk_SocketFormat("bonusItemBindID{0}", j + 1);
                 row.FUN_1407cba60(strKey, strBindId);
@@ -418,7 +418,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbae0(int nGoodsId)
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() != 0) {
+    if (((class PC*)(class PCBase*)(pPlayer))->IsVip() != 0) {
         unsigned nDays = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)GetClientConstants()) + 0x6f40))->Get();
         __int64 nWindow = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)GetClientConstants()) + 0x6f40))->Get() * 60 * 60 * 24;
         if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() - GetServerTime() > nWindow) {
@@ -475,14 +475,14 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         if (effect == 0)
             return;
         MS2Ptr<ASSlot> spSlot(new ASSlot(2));
-        if (spSlot.get()->FUN_1409c4860((Unk_SlotIconSource*)effect.get()) == 0)
+        if (spSlot.get()->SetIconFromSource((Unk_SlotIconSource*)effect.get()) == 0)
             return;
         MS2Ptr<ASBillData> spBill(new ASBillData(2));
         spBill->SetIconData(spSlot->FUN_1422bb870());
         spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, spGoods->m_nId));
         spBill->SetSalePrice(FUN_1418fec00(nPayType, spGoods->m_nSalePrice, false), spGoods->m_nSalePrice);
         spBill->SetEnableGift(0);
-        spBill->FUN_1409abcd0(nPayType);
+        spBill->SetPayType(nPayType);
         bills.Add(spBill);
     }
     for (unsigned i = 0; i < spGoods->m_bonusItemIds.GetCount(); i++) {
@@ -499,7 +499,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         spItemBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405276c0()));
         spItemBill->SetEnableGift(0);
         spItemBill->SetSalePrice(CStringW(), 0);
-        spItemBill->FUN_1409abcd0(nPayType);
+        spItemBill->SetPayType(nPayType);
         spItemBill->FUN_1409abd20(1);
         CStringW strExtra;
         if (spGoods->m_bonusItemPeriods[i] > 0) {
@@ -511,7 +511,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         spItemBill->SetSelectedOption(strExtra);
         bills.Add(spItemBill);
     }
-    UIMarketBillDialog* pBillDialog = FUN_140b09580(0x4f17);
+    UIMarketBillDialog* pBillDialog = FindMarketBillDialog(0x4f17);
     if (pBillDialog == 0)
         return;
     MS2Ptr<TMarketBillDataParam> spBase(spParam);

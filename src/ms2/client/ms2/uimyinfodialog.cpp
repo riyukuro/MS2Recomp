@@ -103,7 +103,7 @@ public:
     void FUN_1419cae20(UIItemEventListener* p);                 // register
     void FUN_1419caeb0(UIItemEventListener* p);                 // unregister
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_UpperEvents
 {
 public:
@@ -127,7 +127,7 @@ class Unk_MiScript : public AScript
 
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 template <class A, class B, class C, class D> CString StringFormat(const char* szFormat, const A& a, const B& b, const C& c, const D& d);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW BlockFormat(int nId);                                  // string table text by id
@@ -158,7 +158,7 @@ void FUN_141a5d0a0(int n)
 
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& ids);   // the stat keys shown
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned nColor);
 enum Unk_StatType { };
 typedef ATL::CAtlArray<Unk_StatType, ATL::CDefaultElementTraits<Unk_StatType> > Unk_MiStatArray;   // C3: was FUN_1409eecc0 / FUN_1409eec00
@@ -246,7 +246,7 @@ int UIMyInfoDialog::vfunc_65()
 // @0x141a58630
 void UIMyInfoDialog::vfunc_67()
 {
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
     ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
@@ -302,7 +302,7 @@ void UIMyInfoDialog::OnLoadInit()
 void UIMyInfoDialog::OnLoadComplete()
 {
     UIPCInfoDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_141928050(static_cast<UIDialogEventListener*>(this));
     ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
@@ -566,7 +566,7 @@ void UIMyInfoDialog::vfunc_30(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->EquipItem(MS2Ptr<CItem>(static_cast<CItem*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->GetGemEquip())->EquipItem(MS2Ptr<CItem>(static_cast<CItem*>(p)));
 }
 
 // @0x141a5a090
@@ -576,7 +576,7 @@ void UIMyInfoDialog::vfunc_31(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->FUN_14165f460())->RemoveItemOfSameGemType(MS2Ptr<CItem>(static_cast<CItem*>(p)));
+        reinterpret_cast<PCGemEquip*>(pAvatar->FUN_1418bd1d0()->GetGemEquip())->RemoveItemOfSameGemType(MS2Ptr<CItem>(static_cast<CItem*>(p)));
 }
 
 // @0x141a5a190
@@ -613,10 +613,10 @@ void UIMyInfoDialog::vfunc_33(int nClass, int n)
 // @0x141a5a320
 void UIMyInfoDialog::vfunc_dl_3(void* p)
 {
-    void* pSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(p));
+    void* pSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(p));
     if (pSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(static_cast<InvenSlot*>(pSlot)->GetItemUid());
         if (spItem.get() != 0)
         {
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -696,7 +696,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
     if (spBox.get() != 0)
     {
-        spBox->SetInput(0, static_cast<PC*>(static_cast<Unk_MiPc*>(pPc))->FUN_141656d90(), 0x14, 0, 0);
+        spBox->SetInput(0, static_cast<PC*>(static_cast<Unk_MiPc*>(pPc))->GetName(), 0x14, 0, 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -915,11 +915,11 @@ void UIMyInfoDialog::FUN_141a5b6c0()
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    Unk_PCEquipSet* pEquip = pPc->FUN_1416561a0();
+    Unk_PCEquipSet* pEquip = pPc->GetEquipment();
     MS2Ptr<CEquipmentSlotLayerInfo> kTitle = pEquip->GetTitle();
     if (kTitle == 0)
         return;
-    int nState = kTitle->FUN_1411df830();
+    int nState = kTitle->GetPeriodState();
     CStringW strPeriod;
     m_268.Init();
     m_274 = 0;
@@ -990,7 +990,7 @@ void UIMyInfoDialog::FUN_141a5bed0()
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    Unk_PCEquipSet* pEquip = pPc->FUN_1416561a0();
+    Unk_PCEquipSet* pEquip = pPc->GetEquipment();
     MS2Ptr<CEquipmentSlotLayerInfo> kTitle = pEquip->GetTitle();
     if (kTitle == 0)
         return;
@@ -1020,7 +1020,7 @@ void UIMyInfoDialog::FUN_141a5c080()
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
     {
-        MS2Ptr<CEquipmentSlotLayerInfo> kTitle = pPc->FUN_1416561a0()->GetTitle();
+        MS2Ptr<CEquipmentSlotLayerInfo> kTitle = pPc->GetEquipment()->GetTitle();
         if (kTitle.get() != 0)
             m_278 = kTitle->IsActive();
     }
@@ -1071,11 +1071,11 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    Unk_PCEquipSet* pEquip = pPc->FUN_1416561a0();
+    Unk_PCEquipSet* pEquip = pPc->GetEquipment();
     MS2Ptr<CEquipmentSlotLayerInfo> kTitle = pEquip->GetTitle();
     if (kTitle == 0)
         return;
-    int nState = kTitle->FUN_1411df830();
+    int nState = kTitle->GetPeriodState();
     if (nState == 0 || nState == 4)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_char_info_changetab_not_active_codi_tab"), 0);
@@ -1141,7 +1141,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
                 nValue = m_spInfo->m_aStats2[nKey];
             nValue += FUN_140837770(nKey, m_250);
             CStringW strValue = StringFormat(L"{0}", nValue);
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_point", strValue);
+            SetChildText((*spRow).FUN_1422bb890(), "m_point", strValue);
             unsigned nColor = 0xffffff;
             unsigned nSpent = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey));
             if (nSpent > 0 || (unsigned)m_250 > 0)

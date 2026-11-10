@@ -54,7 +54,7 @@ public:
 };
 class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3: was Unk_MentorScheduleHolder::FUN_14041d160 (gameeventreturnuser.cpp)
 
-UIRewardNotify* FUN_140938cd0(int uiType);
+UIRewardNotify* FindRewardNotify(int uiType);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1416e4df0(int);
 void FUN_1412751b0(const CStringW&, int);
@@ -149,7 +149,7 @@ void CFieldMission::Complete(CInPacket& packet)
     int nGroup = ((class CQuestManager*)FUN_140764020())->CountCompletedQuests80();
     CFieldMissionTable::RewardPtr row = TSingleton<CFieldMissionTable>::GetInstance()->GetReward(nGroup);
     UIRewardNotify* notify;
-    if (row.get() != 0 && (notify = FUN_140938cd0(0x4e5d)) != 0 && row.get() != 0) {
+    if (row.get() != 0 && (notify = FindRewardNotify(0x4e5d)) != 0 && row.get() != 0) {
         switch (row->m_nType) {
         case 3: {
             notify->FUN_141ac1950(row->m_nValue, row->m_nSubJob);
@@ -191,7 +191,7 @@ void CEventMission::Complete(CInPacket& packet)
         if (ref.IsNull()) return;
         int n = ref->GetStampFlag(FUN_140bfc580());
         if (n == -1) return;
-        UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
+        UIRewardNotify* notify = FindRewardNotify(0x4e5d);
         if (notify != 0) {
             CStringW text = FUN_14028dfa0<CStringW>(L"s_stampevent_quest_complete", FUN_1416e4df0(FUN_140bfc580()));
             notify->FUN_141ac1730(text, n != 0, static_cast<Unk_QmGameEvent*>(ref.operator->())->m_tag);
@@ -250,7 +250,7 @@ void CWeddingMission::ShowRewards(int reward)
     MS2Ptr<CQuestData> data = GetData();
     if (data == 0) return;
     if (data->m_complete.m_weddingExp == 0) return;
-    UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* notify = FindRewardNotify(0x4e5d);
     if (notify != 0) {
         CStringW msg = FUN_14028dfa0<__int64>(CStringW(L"s_system_quest_reward_wedding_exp"), data->m_complete.m_weddingExp);
         CStringW image = L"./Data/Resource/Image/ETC/wedding.png";

@@ -21,19 +21,19 @@ void* FUN_14214a770(void* sched, int behaviorType);
 void FUN_140159b70(long hr);
 
 // ---- in-unit helper prototypes ----
-void* FUN_140d86bb0(void* sm);   void* FUN_140d86bf0(void* sm);   void* FUN_140d86b10(void* p);
+void* GetAssetFactoryManager(void* sm);   void* GetScheduler(void* sm);   void* FUN_140d86b10(void* p);
 void* FUN_140d87890(void* tree);
-void* FUN_140d877a0(void* tree, void* out) noexcept;   void* FUN_140d87810(void* tree, void* out) noexcept;
+void* Begin(void* tree, void* out) noexcept;   void* FUN_140d87810(void* tree, void* out) noexcept;
 bool FUN_140d86e40(void* a, void* b);   bool FUN_140d86e00(long long* a, long long* b);
 void* FUN_140d86ea0(void* it);   void* FUN_140d86e80(void* p);   unsigned FUN_140d86e90(unsigned* p);
-void* FUN_140d86f20(void* it);   void* FUN_140d86f00(void* it);   long long* FUN_140d86f40(long long* it);
+void* IncrementIterator(void* it);   void* FUN_140d86f00(void* it);   long long* FUN_140d86f40(long long* it);
 void* FUN_140d87770(void* p);
 unsigned FUN_140d873f0(void* model);
 void* FUN_140d876c0(void* t);   void* FUN_140d876f0(void* t);
 void* FUN_140d87720(void* p);   void* FUN_140d87730(void* p);   void* FUN_140d87740(void* p);   void* FUN_140d87750(void* p);
 void* FUN_140d86c30(void* p);   void* FUN_140d86c40(void* p);   u64 FUN_140d87760(u64* p);
 void* FUN_140d86cf0(void* a, void* b, void* c);   void* FUN_140d86cb0(void* a, void* b, void* c);   void* FUN_140d86d30(void* a, void* b, void* c);
-void* FUN_140d86ec0(long long* p);   void* FUN_140d86ee0(void* p);   void* FUN_140d87870(void* p);
+void* GetNodeValue(long long* p);   void* FUN_140d86ee0(void* p);   void* FUN_140d87870(void* p);
 
 typedef CAtlList<const egf::FlatModel*> FlatModelList;
 
@@ -53,9 +53,9 @@ MS2FlatModelManager::~MS2FlatModelManager()
 // @0x140d865d0
 efd::AsyncResult MS2FlatModelManager::OnInit()
 {
-    egf::Scheduler* sched = (egf::Scheduler*)FUN_140d86bf0(m_pServiceManager);
+    egf::Scheduler* sched = (egf::Scheduler*)GetScheduler(m_pServiceManager);
     if (!m_asset_lookup_in_progress) {
-        efd::AssetFactoryManager* afm = (efd::AssetFactoryManager*)FUN_140d86bb0(m_pServiceManager);
+        efd::AssetFactoryManager* afm = (efd::AssetFactoryManager*)GetAssetFactoryManager(m_pServiceManager);
         if (afm) {
             egf::IScriptFactory* scriptFactory = 0;
             if (sched) {
@@ -64,7 +64,7 @@ efd::AsyncResult MS2FlatModelManager::OnInit()
                     scriptFactory = (egf::IScriptFactory*)FUN_140d86b10(afm->GetAssetFactory(rt->GetAssetLoadCategory()));
             }
             m_pFlatModelFactory = EE_NEW egf::FlatModelFactory(
-                (efd::AssetFactoryManager*)FUN_140d86bb0(m_pServiceManager), this, scriptFactory);
+                (efd::AssetFactoryManager*)GetAssetFactoryManager(m_pServiceManager), this, scriptFactory);
             afm->RegisterAssetFactory(m_callback, (efd::IAssetFactory*)m_pFlatModelFactory);
         }
     }
@@ -99,13 +99,13 @@ unsigned FUN_140d868f0(char* p)
 
 // remove every non-built-in model whose refcount < 3
 // @0x140d86950
-void FUN_140d86950(egf::FlatModelManager* mgr)
+void RemoveUnusedModels(egf::FlatModelManager* mgr)
 {
     FlatModelList list(10);
     ((efd::CriticalSection*)(void*)((char*)mgr + 0x108))->Lock();
     void* it;
     void* endIt;
-    for (FUN_140d877a0((char*)mgr + 0x48, &it); FUN_140d86e40(&it, FUN_140d87810((char*)mgr + 0x48, &endIt)); FUN_140d86f20(&it)) {
+    for (Begin((char*)mgr + 0x48, &it); FUN_140d86e40(&it, FUN_140d87810((char*)mgr + 0x48, &endIt)); IncrementIterator(&it)) {
         const egf::FlatModel* model = (const egf::FlatModel*)FUN_140d86e80((char*)FUN_140d86ea0(&it) + 8);
         if (FUN_140d873f0((void*)model) <= 2 && !*((const bool*)model + 200))
             list.AddTail(model);
@@ -162,14 +162,14 @@ void* FUN_140d86b60(void** p)
         return 0;
 }
 // @0x140d86bb0
-void* FUN_140d86bb0(void* sm)
+void* GetAssetFactoryManager(void* sm)
 {
     Unk_FmBase* pService = ((Unk_FmServiceManager*)sm)->GetSystemService(0x7000022);
     void* pResult = FUN_140d86ac0((void**)pService);
     return pResult;
 }
 // @0x140d86bf0
-void* FUN_140d86bf0(void* sm)
+void* GetScheduler(void* sm)
 {
     Unk_FmBase* pService = ((Unk_FmServiceManager*)sm)->GetSystemService(0x7001002);
     void* pResult = FUN_140d86b60((void**)pService);
@@ -193,7 +193,7 @@ bool FUN_140d86e00(long long* a, long long* b) { return *a == *b; }
 // @0x140d86e40
 bool FUN_140d86e40(void* a, void* b) { return !FUN_140d86e00((long long*)a, (long long*)b); }
 // @0x140d86da0
-void* FUN_140d86da0(void* a, void* b) { ((efd::UniversalID*)a)->efd::UniversalID::UniversalID((efd::UInt64)b); return a; }
+void* ConstructUniversalID(void* a, void* b) { ((efd::UniversalID*)a)->efd::UniversalID::UniversalID((efd::UInt64)b); return a; }
 // @0x140d86df0
 void FUN_140d86df0(void* p) {}
 // @0x140d873f0
@@ -205,13 +205,13 @@ unsigned FUN_140d86e90(unsigned* p) { return *p; }
 // @0x140d86ea0
 void* FUN_140d86ea0(void* it) { return FUN_140d87870(FUN_140d86ee0(it)); }
 // @0x140d86ec0
-void* FUN_140d86ec0(long long* p) { return (char*)*p + 0x20; }
+void* GetNodeValue(long long* p) { return (char*)*p + 0x20; }
 // @0x140d86ee0
-void* FUN_140d86ee0(void* it) { return FUN_140d86ec0((long long*)it); }
+void* FUN_140d86ee0(void* it) { return GetNodeValue((long long*)it); }
 // @0x140d86f00
 void* FUN_140d86f00(void* it) { FUN_140d86f40((long long*)it); return it; }
 // @0x140d86f20
-void* FUN_140d86f20(void* it) { FUN_140d86f00(it); return it; }
+void* IncrementIterator(void* it) { FUN_140d86f00(it); return it; }
 
 // std::_Tree node layout (left, parent, right, color, isnil)
 struct Unk_FmNode { Unk_FmNode* m_pLeft; Unk_FmNode* m_pParent; Unk_FmNode* m_pRight; char m_Color; char m_Isnil; };
@@ -266,7 +266,7 @@ void* FUN_140d87770(void* p)
 }
 
 // @0x140d877a0  begin()
-void* FUN_140d877a0(void* tree, void* out) noexcept
+void* Begin(void* tree, void* out) noexcept
 {
     void* h = FUN_140d876c0(tree);
     FUN_140d86cf0(out, (void*)*(u64*)FUN_140d87760((u64*)h), FUN_140d86c40(h));

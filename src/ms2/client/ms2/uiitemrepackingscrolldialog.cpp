@@ -113,7 +113,7 @@ void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -209,7 +209,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     }
     CStringW strUnused1;
     CStringW strUnused2;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
     if (spScroll == 0)
         return;
     if (static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
@@ -265,13 +265,13 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nTarget = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(nTarget);
+            MS2Ptr<CItem> spTarget = g_143ab2a90.FindItemByUid(nTarget);
             if (spTarget == 0)
             {
                 FUN_140f62710(1);
                 return 1;
             }
-            MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
+            MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
             if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             {
                 FUN_140f62710(7);
@@ -343,7 +343,7 @@ void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
         if (FUN_141924630() != 0)
             return;
         __int64 nUid = packet.ReadInt64();
-        if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
+        if (g_143ab2a90.FindItemByUid(nUid) == 0)
             return;
         m_nOwner = nUid;
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(vfunc_48())));
@@ -370,7 +370,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     if (nResult != 0)
         return;
     __int64 nUid = packet.ReadInt64();
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (!spItem)
         return;
     static_cast<CItem*>(spItem)->FUN_140524eb0(static_cast<CInputStream&>(packet));
@@ -440,7 +440,7 @@ void UIItemRePackingScrollDialog::FUN_140f62710(int nError)
 void UIItemRePackingScrollDialog::FUN_140f628d0(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() != 0)
-        g_143ab2a90.FUN_140a5d530(spItem.get());
+        g_143ab2a90.ReplaceItem(spItem.get());
 }
 
 // @0x140f62930
@@ -490,12 +490,12 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         return;
     if (m_nOwner == 0)
         return;
-    if (MS2DragSlot* pSrc = FUN_140a50b50(pDrag))
+    if (MS2DragSlot* pSrc = AsDragSlot(pDrag))
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spItem == 0)
             return;
-        MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
+        MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
         if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             return;
         MS2Ptr<CItemRePackingScrollData> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));

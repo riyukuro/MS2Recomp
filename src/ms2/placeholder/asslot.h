@@ -72,22 +72,22 @@ public:
     void SetCooldownStrings();                                                // the cooldown unit strings
     void SetItemEnchant(CItemEnchantInfo* pEnchant);                      // enchant / enchantBroken
     void SetItemUnlimitedEnchant(Unk_ItemPlusInfo* pPlus);                         // unlimited
-    void FUN_1409c3040(MS2Ptr<CItemData> spData);                        // enchant of a fixed-enchant item
-    void FUN_1409c30f0(MS2Ptr<CItemData> spData);                        // enchant of a lapenshard
-    void FUN_1409c31b0(MS2Ptr<CItem> spItem);                            // itemSeason of an item
+    void SetGemstoneLevel(MS2Ptr<CItemData> spData);                        // enchant of a fixed-enchant item
+    void SetLapenshardLevel(MS2Ptr<CItemData> spData);                        // enchant of a lapenshard
+    void SetItemSeasonFromItem(MS2Ptr<CItem> spItem);                            // itemSeason of an item
     void SetItemSeason(MS2Ptr<CItemData> spData);                        // itemSeason
-    void FUN_1409c33d0();                                                // enchant = 0
-    void FUN_1409c3400();                                                // gradeBG = 0
+    void ClearEnchant();                                                // enchant = 0
+    void ClearGradeBG();                                                // gradeBG = 0
     void SetItemQuestMark(CItem* pItem);                                    // questBeginAble / questProgress
     void FUN_1409c34e0(CItem* pItem);                                    // itemSeal for the inventory break/lock modes
     void SetUseRightClick(bool b);                                          // useRightClick
     int GetItemID();                                                 // itemID
     int GetItemGrade();                                                 // itemGrade
     int FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags);          // fill the slot from an item
-    int FUN_1409c41f0(CItem* pItem, void* pPc, int nSlot, int nFlags);   // fill from an item + itemBothEquip
+    int SetEquipItem(CItem* pItem, void* pPc, int nSlot, int nFlags);   // fill from an item + itemBothEquip
     int FUN_1409c4360(Unk_SlotSkillInfo* pSkill, unsigned nFlags);       // fill the slot from a skill
-    int FUN_1409c4510(int nItemId, int nRarity, int nCount);             // fill the slot from an item id
-    int FUN_1409c4860(Unk_SlotIconSource* pSource);                     // icon of an icon source
+    int SetItemById(int nItemId, int nRarity, int nCount);             // fill the slot from an item id
+    int SetIconFromSource(Unk_SlotIconSource* pSource);                     // icon of an icon source
     int FUN_1409c48b0(const CString& strText);                           // set the slot's icon path (ItemInfoSlot)
 };
 MS2_CHECK_SIZE(ASSlot, 0x40);

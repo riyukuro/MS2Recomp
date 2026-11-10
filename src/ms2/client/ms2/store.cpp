@@ -31,7 +31,7 @@ struct Unk_StoreUIMgr : public CUIService
 {
     void FUN_141adc530(int nId);
 };
-struct Unk_StoreEvents                                           // the item event hub (FUN_140a6a840), slots 8..12
+struct Unk_StoreEvents                                           // the item event hub (GetItemEventDispatcher), slots 8..12
 {
     virtual void vfunc_0() = 0; virtual void vfunc_1() = 0; virtual void vfunc_2() = 0; virtual void vfunc_3() = 0;
     virtual void vfunc_4() = 0; virtual void vfunc_5() = 0; virtual void vfunc_6() = 0; virtual void vfunc_7() = 0;
@@ -41,7 +41,7 @@ struct Unk_StoreEvents                                           // the item eve
     virtual void vfunc_11() = 0;                                 // list loaded
     virtual void vfunc_12() = 0;                                 // store ready
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 struct Unk_GuildConstInt { char m_b[0x58]; };
 struct Unk_AuConfig                                              // the account config; only four int constants are read
 {
@@ -58,7 +58,7 @@ void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
 void FUN_1401fbaf0(unsigned char* pReq, COutputStream& rStream);
 void FUN_1401fba60(unsigned char* pReq, COutputStream& rStream);
 struct Unk_KhCamera;
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 __int64 FUN_140c8dab0(struct Unk_PmFixedItem*);   // C3: was FUN_140c8dab0
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 CStringW GetStringCommonByKey(const CStringW& rKey);
@@ -587,12 +587,12 @@ void CStore::RequestSort()
 // @0x140de2dc0
 void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> pSound)
 {
-    MS2Ptr<CItem> pItem = Unk_Inventory()->FUN_140a5d680(nId);
+    MS2Ptr<CItem> pItem = Unk_Inventory()->FindItemByUid(nId);
     if (!pItem) {
         return;
     }
     if (((CItemData*)(static_cast<CItem*>(pItem)->FUN_140527840()))->FUN_14053cd10()) {
-        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)FUN_140c8dac0()))) == ((CItem*)pItem)->GetItemUid()) {
+        if (FUN_140c8dab0((struct Unk_PmFixedItem*)(((struct Unk_KhCamera*)GetInstrumentManager()))) == ((CItem*)pItem)->GetItemUid()) {
             FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;
         }
@@ -701,7 +701,7 @@ void CStore::OnBegin(CInPacket* pPacket)
     SetReceived(nCount);
     if (nCount == 0) {
         SetReady(1);
-        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_12();
+        ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_12();
     }
 }
 
@@ -720,7 +720,7 @@ void CStore::OnItems(CInPacket* pPacket)
     if (Count() == Received()) {
         SetReady(1);
         SetReceived(0);
-        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_12();
+        ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_12();
     }
 }
 
@@ -750,7 +750,7 @@ void CStore::OnRemove(CInPacket* pPacket)
         return;
     }
     Remove(nItemId);
-    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_9(pItem.get());
+    ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_9(pItem.get());
 }
 
 // @0x140de3a50
@@ -768,7 +768,7 @@ void CStore::OnCount(CInPacket* pPacket)
         return;
     }
     ((CItem*)pItem)->SetCountClamped(nCount);
-    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_10(pItem.get());
+    ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_10(pItem.get());
 }
 
 // @0x140de3bc0
@@ -834,7 +834,7 @@ void CStore::OnSwap(CInPacket* pPacket)
     }
     for (unsigned i = 0; i < 2; i++) {
         if (items[i].get() != 0) {
-            ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_10(items[i].get());
+            ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_10(items[i].get());
         }
     }
 }
@@ -862,7 +862,7 @@ void CStore::OnList(CInPacket* pPacket)
             Add(pItem.get());
         }
     }
-    ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_11();
+    ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_11();
 }
 
 // @0x140de4320
@@ -936,7 +936,7 @@ void CStore::ReadItem(CInPacket* pPacket)
         ((CItem*)pItem)->FUN_140526b70((int)nSlot);
         ((CItem*)pItem)->FUN_140524eb0(*pPacket);
         Add(pItem.get());
-        ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_8(pItem.get());
+        ((struct Unk_StoreEvents*)GetItemEventDispatcher())->vfunc_8(pItem.get());
     }
 }
 

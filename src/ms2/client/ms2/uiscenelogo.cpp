@@ -92,7 +92,7 @@ void UISceneLogo::OnLoadComplete()
     CItemDefaultData::Load();
     ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)TSingleton<CNiStreamLoadThread>::GetInstance())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
     if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)FUN_1406aeee0())))->IsPreloadNoThread())
-        TSingleton<CFilePreload>::GetInstance()->FUN_141210cc0(false);
+        TSingleton<CFilePreload>::GetInstance()->SetAsynchronous(false);
     ((class CFilePreload*)(class Unk_SlF*)(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance())))->FUN_14120fcc0();
 }
 MS2_REPLACE_METHOD(0x141AD0510, UISceneLogo, OnLoadComplete, 247, 0x8935B023);

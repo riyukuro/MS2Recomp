@@ -304,7 +304,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
                 spBox->Append<int>(nSlot);
-                spBox->FUN_140b76940(CStringW(strName));
+                spBox->AddStringArg(CStringW(strName));
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
                 FUN_140d73c60(spBox);
                 return true;
@@ -387,7 +387,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
                 spBox->Append<int>(nSlot);
-                spBox->FUN_140b76940(CStringW(strName));
+                spBox->AddStringArg(CStringW(strName));
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
                 FUN_140d73c60(spBox);
                 return true;

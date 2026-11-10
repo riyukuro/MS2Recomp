@@ -221,7 +221,7 @@ public:
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId);         // the dialog getter of another unit (same template body)
 UIWebBrowser* FUN_140c43790(int nId);                       // the dialog getter of another unit (same template body)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked action notice
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);                // wide to multibyte
 void FUN_1418fe1c0(const CStringA& strUrl);                 // open the url in the external browser
@@ -250,7 +250,7 @@ CStringW FUN_141b708a0(unsigned nSeconds, bool b);           // a duration text
 
 // OpenInstrument.
 class CInstrumentManager { public: bool HasOtherFlags(unsigned nFlags); };   // C3: unit-local view (its header pulls PhysX)
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class COutputStream;
 void FUN_1401fbc40(unsigned char* payload, COutputStream& stream);   // C3: the use-item packet writer
 struct Unk_InventoryUsePacket                               // inventory.cpp's use-item packet (0x19)
@@ -432,7 +432,7 @@ bool CanUseItem(MS2Ptr<CItem> spItem)
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
-    if (pPlayer->FUN_141523bc0()->FUN_141765fe0(spItem->FUN_140527840()->FUN_14053dc20(), 0) != 0.0f)
+    if (pPlayer->GetSkillSystem()->FUN_141765fe0(spItem->FUN_140527840()->FUN_14053dc20(), 0) != 0.0f)
     {
         FUN_140d73bc0(0x55, 0, 0, L"");
         return false;
@@ -450,7 +450,7 @@ bool CanUseItem(MS2Ptr<CItem> spItem)
         FUN_140d73bc0(0xe2, 0, 0, L"");
         return false;
     }
-    if (spItem->FUN_140525db0() != 0 && pPlayer->FUN_141662de0() == 0)
+    if (spItem->FUN_140525db0() != 0 && pPlayer->IsVip() == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
         return false;
@@ -465,12 +465,12 @@ bool CanUseItem(MS2Ptr<CItem> spItem)
         FUN_1412751f0(GetStringCommonByKey(L"s_err_not_enough_level"), 1, 1);
         return false;
     }
-    if (!spItem->IsJobAllowed(pPlayer->FUN_141654700()))
+    if (!spItem->IsJobAllowed(pPlayer->GetJobGroupId()))
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
         return false;
     }
-    if (!spItem->FUN_1405267d0(pPlayer->FUN_141658e60()))
+    if (!spItem->FUN_1405267d0(pPlayer->GetGender()))
     {
         FUN_140d73bc0(0x2d, 0, 0, L"");
         return false;
@@ -558,8 +558,8 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
-        context.m_gender = pPlayer->FUN_141658e60();
-        context.m_job = pPlayer->FUN_141654700();
+        context.m_gender = pPlayer->GetGender();
+        context.m_job = pPlayer->GetJobGroupId();
     }
     Unk_ItemEquipData* pRecord = pItem->FUN_140527840();
     if (((ItemFunctionArgs&)(pRecord->function.parameter)).FUN_1408d2380() != 0)
@@ -607,7 +607,7 @@ bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
     if (nButton != 0)
         return true;
     __int64 nItemUid = box.FUN_141a02f10(0, 0);
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (spItem.IsNull())
         return true;
     std::vector<int> quests = spItem->FUN_140527840()->function.xml.GetIntArray(L"questID", std::vector<int>());
@@ -719,7 +719,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
             spBox->SetItem(spEntry);
             spBox->SetTitle(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_ok"), GetStringCommonByKey(L"s_word_cancel"), L"");
-            spBox->FUN_140b76940(strArgs);
+            spBox->AddStringArg(strArgs);
             spBox->SetCallback(Unk_IuBoxCallback(OnOpenItemBoxMulti));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01600(pItem->GetItemUid());
@@ -742,7 +742,7 @@ bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
         ((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n10Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(box.FUN_141a02c20());
     if (spItem.get() != 0)
         OpenItemBoxSingle(spItem.get());
     return true;
@@ -758,7 +758,7 @@ bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
         ((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n18Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(box.FUN_141a02c20());
     if (spItem.get() != 0)
         OpenItemBoxContents(spItem.get(), L"");
     return true;
@@ -775,7 +775,7 @@ bool OnOpenItemBoxMulti(int nButton, const CMsgBoxData& box)
     ATL::CAtlArray<CStringW> arrFields;
     if (FUN_14028cb70(box.FUN_141a02d50(), arrFields, L",", 2) == 0)
         return true;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (spItem.IsNull())
         return true;
     int nCount = FUN_1407181a0(arrFields[1]);
@@ -809,10 +809,10 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (spItem == 0 || spItem->FUN_140527840() == 0 || pPlayer == 0)
         return 0;
     int nDays = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
-    MS2Ptr<CEquipmentSlotLayerInfo> spTitle = pPlayer->FUN_1416561a0()->GetTitle();
+    MS2Ptr<CEquipmentSlotLayerInfo> spTitle = pPlayer->GetEquipment()->GetTitle();
     if (spTitle == 0)
         return 0;
-    unsigned nState = spTitle->FUN_1411df830();
+    unsigned nState = spTitle->GetPeriodState();
     if (nState == 0)
         return 0;
     CStringW strMsg;
@@ -836,7 +836,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
             CMsTime start(spTitle->m_start);
             ATL::CTimeSpan span(newEnd.Get() - start.Get());
             unsigned nSpan = (unsigned)span.GetDays();
-            int nMax = spTitle->FUN_1411df8e0();
+            int nMax = spTitle->GetCodiTabMaxDay();
             if (nSpan > nMax || (nSpan == nMax && span.GetSeconds() > 0))
             {
                 FUN_140d73aa0(FUN_14028dfa0<unsigned>(L"s_msg_item_active_codi_tab_max", (unsigned&)nMax), 0, 0, L"");
@@ -877,7 +877,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
     int nParam = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     if (nParam == 0)
         return 0;
-    if (pPlayer->FUN_14123c260() <= 0.9f || pPlayer->FUN_14123c260() >= 1.1f)
+    if (pPlayer->GetScale() <= 0.9f || pPlayer->GetScale() >= 1.1f)
     {
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
@@ -1350,7 +1350,7 @@ int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73bc0(0x2f7, 0, 0, L"");
         return 0;
     }
-    if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
+    if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
     {
         FUN_140d73bc0(0xb5a, 0, 0, L"");
         return 0;
@@ -1483,7 +1483,7 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
 int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     {
-        BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(10);
+        BlockPtr spBlock = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(10);
         if (spBlock.get() != 0)
         {
             FUN_140a30ad0(spBlock, 10, 0);
@@ -1636,7 +1636,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(FUN_14028dfa0(L"s_msg_item_open_item_box_with_key_no_key_count", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId), nHave, nNeed), 0, 0, L"");
         return 1;
     }
-    if (spItem->FUN_1405267d0(pPlayer->FUN_141658e60()) != 0)
+    if (spItem->FUN_1405267d0(pPlayer->GetGender()) != 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_item_open_item_box_with_key", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
@@ -1661,7 +1661,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d259d0
 int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (spItem->FUN_1405267d0(pPlayer->FUN_141658e60()) == 0)
+    if (spItem->FUN_1405267d0(pPlayer->GetGender()) == 0)
     {
         FUN_141276180(s_warningGender, "");
         FUN_140d73bc0(0x2d, 0, 0, L"");
@@ -1735,13 +1735,13 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_level"), 0, 0, L"");
         return 0;
     }
-    if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->m_list)->FUN_140745820(nQuestId, 0) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager())->m_list)->FUN_140745820(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_invalid"), 0, 0, L"");
         return 0;
     }
-    MS2Ptr<Unk_IuQuest> spQuest = (&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->m_list)->vfunc_3(nQuestId);
-    if (spQuest.get() != 0 && reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->vfunc_1(nQuestId, 0) == 0)
+    MS2Ptr<Unk_IuQuest> spQuest = (&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager())->m_list)->vfunc_3(nQuestId);
+    if (spQuest.get() != 0 && reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager())->vfunc_1(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_completed"), 0, 0, L"");
         return 0;
@@ -1901,7 +1901,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
-    if (((void*)((class PC*)(class PC*)(pPlayer))->FUN_14165f100()) != 0)
+    if (((void*)((class PC*)(class PC*)(pPlayer))->GetHeldItem()) != 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
@@ -1917,7 +1917,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         }
     }
     {
-        BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xf);
+        BlockPtr spBlock = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(0xf);
         if (spBlock.get() != 0)
         {
             FUN_140a30ad0(spBlock, 0xf, 0);
@@ -1937,7 +1937,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_write_music"), 1, 1);
         return 0;
     }
-    if (((CInstrumentManager*)FUN_140c8dac0())->HasOtherFlags(0))
+    if (((CInstrumentManager*)GetInstrumentManager())->HasOtherFlags(0))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_pre_listening"), 1, 1);
         return 0;

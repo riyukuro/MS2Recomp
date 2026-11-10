@@ -106,10 +106,10 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_140651350();
 CString FUN_1411c0aa0(const char* pszPath);
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool b); };
-UIMessengerBrowser* FUN_140a3ab70(int);
+UIMessengerBrowser* FindMessengerBrowser(int);
 void FUN_1412751b0(const CStringW& str, int n);
 void FUN_140710590(COutPacket& p);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 // ---- the XML records ----
 
@@ -412,7 +412,7 @@ void UIDebugGuideDialog::ShowExplain()
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
     CStringW strText = rCommand.m_strDesc.IsEmpty() ? rCommand.m_strName : rCommand.m_strDesc;
     strText.Replace(L"\\n", L"\n");
-    FUN_140cfee80(FUN_1422dbc00(), "explainText", strText);
+    SetChildText(FUN_1422dbc00(), "explainText", strText);
 }
 
 // @0x141288770
@@ -427,7 +427,7 @@ bool UIDebugGuideDialog::PrintCommand(int nIndex)
     if (nCommand >= (int)m_groups[nGroup].m_commands.size())
         return false;
     Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
-    void* pChat = ((void*)FUN_140a3ab70(0x4e61));
+    void* pChat = ((void*)FindMessengerBrowser(0x4e61));
     if (pChat != 0)
     {
         for (int i = 0; i < (int)rCommand.m_args.size(); i++)
@@ -474,7 +474,7 @@ bool UIDebugGuideDialog::SendCommand(int nIndex)
 // @0x141288d00
 void UIDebugGuideDialog::PrintLine(CStringW strName, CStringW strArg)
 {
-    void* pChat = ((void*)FUN_140a3ab70(0x4e61));
+    void* pChat = ((void*)FindMessengerBrowser(0x4e61));
     if (pChat != 0)
     {
         if (strArg.IsEmpty())

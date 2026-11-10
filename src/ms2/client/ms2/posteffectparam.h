@@ -77,7 +77,7 @@ public:
     virtual void vfunc_7(int nState, float fAlpha) = 0;  // 7 pure (apply)
 
     // @0x1409a8c30 (compiled into ?\applyeffect.cpp)
-    int FUN_1409a8c30() const { return m_nType; }
+    int GetType() const { return m_nType; }
     void SetState(int nState, float fAlpha);        // 0x140dbdb00
 
 public:

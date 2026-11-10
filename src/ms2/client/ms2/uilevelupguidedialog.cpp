@@ -79,8 +79,8 @@ struct Unk_LgActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
 UIQuestEventDispatcher* FUN_140bfc4b0();
 
 // items bound to the slots of the rewards
-void FUN_141415600(const CString& strBindID);
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
+void DestroyItemInfoSlot(const CString& strBindID);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // quests
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -178,7 +178,7 @@ void UILevelUpGuideDialog::vfunc_67()
     FUN_140bfc4b0()->FUN_141aa8850(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
-        FUN_141415600(m_1a8.GetAt(i));
+        DestroyItemInfoSlot(m_1a8.GetAt(i));
     if (MS2Ptr<ASCheckBox> spEtc = GetChild<ASCheckBox>("m_contentsEtc"))
         m_1cc[0] = spEtc->FUN_1422ce0e0();
     if (MS2Ptr<ASCheckBox> spBoss = GetChild<ASCheckBox>("m_contentsBoss"))
@@ -390,7 +390,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pSelf == 0)
         return;
-    if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
+    if (spData->m_338.m_value == 1 && pSelf->GetJobGroupId() == 1) {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
             spBox->Append<unsigned>(nQuest);
             spBox->SetCallback(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
@@ -580,7 +580,7 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
         strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_max_level"), nLevel);
     else
         strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), nLevel);
-    rObj.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
+    rObj.SetMemberUInt("id", FUN_14074b030(spData.operator->()));
     rObj.FUN_1407cba60("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);
     rObj.FUN_1407cbb20("levelStr", strLevel);
@@ -603,7 +603,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     case 2:
         for (size_t i = 0; i < spData->m_complete.m_choiceRewards.GetCount(); i++) {
             CQuestData::QuestRewardItem& item = spData->m_complete.m_choiceRewards[i];
-            if (item.m_itemId != 0 && FUN_140748050(&item, pSelf->FUN_141654700()) != 0)
+            if (item.m_itemId != 0 && FUN_140748050(&item, pSelf->GetJobGroupId()) != 0)
                 pItem = &spData->m_complete.m_choiceRewards[i];
         }
         break;
@@ -617,7 +617,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     int nSlot = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_1a8.GetCount() + 1);
-    FUN_141415450(strBindID, spItem, 0, nSlot, 0x800);
+    CreateItemInfoSlot(strBindID, spItem, 0, nSlot, 0x800);
     rObj.FUN_1407cba60("binding", strBindID);
     if (bName != 0)
         rObj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pItem->m_itemId));

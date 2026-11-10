@@ -25,7 +25,7 @@ class UserUGCMapInfo;       // userugcmapinfo.h; MS2Ptr at +0x1618 (null ctor 0x
 
 // The member at +0x12e8: a StateLocalController (the records live on the base).
 // View over MyPC::m_kStateCtl (a StateLocalController, ctor 0x1417b73c0, implicit dtor 0x1410a6dc0).
-class Unk_StateArg22;
+class StateSyncObject;
 class Unk_MyPCStateCtl : public StateLocalController
 {
 public:
@@ -33,8 +33,8 @@ public:
     void FUN_1417b7450();                                   // drop the current and queued records
     void FUN_1417b76b0(float fTime);                        // advance with the game time
     int FUN_1417b7490();                                    // a record is due
-    MS2Ptr<Unk_StateArg22> FUN_1417b7620();                 // copy of the current record
-    void FUN_1417b7670(Unk_StateArg22* pRec);               // set the current record
+    MS2Ptr<StateSyncObject> FUN_1417b7620();                 // copy of the current record
+    void FUN_1417b7670(StateSyncObject* pRec);               // set the current record
 };
 
 // The member at +0x1338: the action key table (ctor 0x140951c70 in ?\actionkeyobject.cpp, dtor 0x140952e70).
@@ -95,7 +95,7 @@ public:
 // The key of the lapenshard slot maps at +0x16b0 / +0x17c0 (an enum: CAtlMap passes it by reference).
 enum Unk_MyPCLapenSlot { MYPC_LAPEN_SLOT_NONE = 0 };
 
-// The house setting sent by FUN_141530720 (compared as a byte: a scoped enum over unsigned char).
+// The house setting sent by SendHouseSetting (compared as a byte: a scoped enum over unsigned char).
 enum class Unk_MyPCHouseSetting : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
 
 class CQuestManager;                                        // questmanager_2.h
@@ -158,20 +158,20 @@ public:
     void FUN_14152a700(PCBase* pTarget);                     // fly the camera to the construction guide pTarget
     void FUN_14152a640(int nTeam);                          // observe a guild team
     void FUN_14152a2f0(int n);
-    CSkillSystem* FUN_141523bc0();                          // the skill system
-    CQuestManager* FUN_141523ba0();                         // the quest manager (FUN_140764020)
-    StatePcGuideObjectController* FUN_141523be0();          // the state controller (C3: was Unk_MyPCStateCtl*)
+    CSkillSystem* GetSkillSystem();                          // the skill system
+    CQuestManager* GetQuestManager();                         // the quest manager (FUN_140764020)
+    StatePcGuideObjectController* GetStateController();          // the state controller (C3: was Unk_MyPCStateCtl*)
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141523c00();
-    UserUGCMapInfo* FUN_141523c50();
+    UserUGCMapInfo* GetUGCMapInfo();
     void FUN_141523c80();                                   // pick the housing cube under the player
     int FUN_141527120();
     int FUN_141527160(int nNext);
-    bool FUN_141527280();
+    bool IsInParty();
     int FUN_141527650(int nKind);                           // the skill condition nKind holds (else a notice)
     int FUN_1415278d0(void* p);
-    int FUN_141527920(void* p);
+    int IsPartyMemberByAccountId(void* p);
     int FUN_141527960();
-    int FUN_141527c50(int nItemId);                         // the item is worn or in the item list
+    int HasItemId(int nItemId);                         // the item is worn or in the item list
     int HasNoHome();                                    // no house
     int FUN_141527e60();
     int FUN_141527eb0();
@@ -180,7 +180,7 @@ public:
     int GetHomeMapId(int* pMapId);
     int GetHomePosition(efd::Point3& kPos);
     int FUN_141528140();
-    int FUN_141528160();
+    int GetMesoRevivalRemainingCount();
     CStringW GetHomeAddress();
     CStringW GetHomeName();
     int FUN_141528970();                                    // open the item remake option talk
@@ -201,16 +201,16 @@ public:
     int FUN_14152e950();
     bool FUN_1415275b0(short nKind);                         // the burning event is active for nKind
     int FUN_1415279d0(PCBase* pOther);                       // can ride along with pOther (buddy, party or guild)
-    egf::Entity* FUN_141529750();                            // the telescope in reach (with a view list)
+    egf::Entity* FindTelescopeEntity();                            // the telescope in reach (with a view list)
     egf::Entity* FUN_141529900();                            // the telescope in reach, its views opened
     void SendRequestPet(__int64 nItemUid);                    // request 0x78/1 for an inventory item
     void FUN_14152b8d0(__int64 nItemUid);                    // summon with an inventory item
     void FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed); // summon the pet of an item
-    void FUN_14152ba80(MS2Ptr<CItem> spItem);               // use a mount item
+    void UseRideeItem(MS2Ptr<CItem> spItem);               // use a mount item
     bool FUN_141526730(int bAuto, unsigned* pSlot);         // pick the quick slot to cast
-    int FUN_141527b50(PCBase* pOther);                       // nothing blocks the flat line to pOther
+    int HasLineOfSightTo(PCBase* pOther);                       // nothing blocks the flat line to pOther
     unsigned short GetSkillLevel(int nSkillId);             // the learned level of nSkillId (1 when not learned)
-    int FUN_14152e970(int nId);                             // the free skill points of nId
+    int GetRemainingSkillPoints(int nId);                             // the free skill points of nId
     bool FUN_14152e7f0();                                   // a worn item still counts (not expired)
     unsigned FUN_14152eb20();   // m_list1650 count, read 32-bit by the function cube
     unsigned FUN_14152eb50();
@@ -250,11 +250,11 @@ public:
     void SendRequestRideMode4();                                   // packet 0x40 4 (camera reset first)
     void SendRequestRideMode6(unsigned char n);                    // packet 0x40 6
     // @0x140967010
-    MS2Ptr<CHomePrivilege> FUN_140967010() { return m_spHomePrivilege; }   // COMDAT in actionkeyobject.cpp's range
+    MS2Ptr<CHomePrivilege> GetHomePrivilege() { return m_spHomePrivilege; }   // COMDAT in actionkeyobject.cpp's range
     static void FUN_1415308d0();                            // reset the debug switches
     static void FUN_141530910(int n);
     static PCBase* FUN_141530930();                         // the local player
-    void FUN_141530d70(double dTime);
+    void UpdateAutoLoot(double dTime);
     void FUN_141530db0();
     bool FUN_1415272b0();                                   // the worn weapon fits the job
     void FUN_1415310e0(std::list<class Unk_MyPCDropItem*>& lstDrops);   // pick up the drop items (packet 0x1d)
@@ -265,15 +265,15 @@ public:
     void FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera);   // warp (and the ridee)
     int FUN_14152f860(unsigned int nKey);
     void FUN_141530700(int n);
-    void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
+    void SendHouseSetting(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
     void ClearLapenshards();                                   // begin bulk update
     void EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
     void UnequipLapenshard(Unk_MyPCLapenSlot nSlot);            // unequip nSlot
     unsigned GetLapenshardItemId(Unk_MyPCLapenSlot nSlot);        // the item in nSlot
     Unk_MyPCLapenSlot FindLapenshardSlot(unsigned nItemId);      // the slot of nItemId
-    int FUN_14152f8b0(unsigned nItemId);                    // an item of the same group is equipped
+    int HasEquippedLapenshardOfSameGroup(unsigned nItemId);                    // an item of the same group is equipped
     void FUN_14152f960(ATL::CAtlArray<unsigned int>& aOut); // the equipped item ids
-    void FUN_14152fa20();                                   // end bulk update
+    void UpdateLapenshardGrades();                                   // end bulk update
     void SendNametag();                                   // poll the channel once a second
     unsigned short GetLapenshardSkillLevel(unsigned nGroup);          // the highest grade equipped in nGroup
     Unk_MyPCLapenSlot FindLapenSlotForItem(unsigned nItemId);      // the slot to equip nItemId into
@@ -281,8 +281,8 @@ public:
     void SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd);   // portal move
     int FUN_1415271e0(PCBase* pActor, struct Unk_MyPCSkillUse* pSkill);   // can the skill be used on pActor
     void SendRequestMoveFieldMode6();                                   // request the field leave (packet 0x6c 6)
-    void FUN_141524880(MS2Ptr<UserUGCMapInfo> sp);        // set m_sp1618
-    int FUN_1415248d0(int nSide, int nType);                // sit (0xbadf0a13) or lie (0xc13e30c8) on a nearby object
+    void SetUGCMapInfo(MS2Ptr<UserUGCMapInfo> sp);        // set m_sp1618
+    int TryUseChairOrBed(int nSide, int nType);                // sit (0xbadf0a13) or lie (0xc13e30c8) on a nearby object
 
     StateLocalController m_kStateCtl;                       // +0x12e8
     Unk_ActionKeyManager m_kActionKeys;                       // +0x1338

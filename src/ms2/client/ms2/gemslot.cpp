@@ -63,7 +63,7 @@
 class Unk_GmActor
 {
 public:
-    PCGemEquip* FUN_14165f460();                        // the gem equipment
+    PCGemEquip* GetGemEquip();                        // the gem equipment
 };
 class Unk_GmWorld
 {
@@ -79,14 +79,14 @@ bool FUN_140222e10(int nGemType);                       // the gem type is valid
 CString Name_140219b10(int nGemType);                   // the name of a gem type
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
     __int64 GetItemUid();
 };
-bool FUN_141271f90(MS2Ptr<CItem> spItem);               // take the gem item off (packet 0x47)
-bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
+bool UnequipGem(MS2Ptr<CItem> spItem);               // take the gem item off (packet 0x47)
+bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
 
 // Registry of named bags/slots (GFx bind data).
 
@@ -95,7 +95,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlot);
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
-class PC { public: class Unk_MyPCEquip * FUN_14165f460(void); };
+class PC { public: class Unk_MyPCEquip * GetGemEquip(void); };
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlotBag);
 
 GemSlotBag* FUN_14126e9a0(NotifyContext::BindData* p);
@@ -123,20 +123,20 @@ int GemSlot::vfunc_18(void* p)
             Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0)
                 return 0;
-            void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
+            void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
             if (pItemSlot != 0)
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
                 if (FUN_14126d880(spItem.get()) != 0)
                 {
                     int nType = spItem->GetGem()->vfunc_1();
                     if (nType == m_nGemType)
                     {
                         int nSlot = -1;
-                        MS2Ptr<CItem> spWorn = (((class PCGemEquip *)((class PC*)((class PCGemEquip *)((class PC*)(pActor))))->FUN_14165f460()))->GetItemByGemType(nType);
+                        MS2Ptr<CItem> spWorn = (((class PCGemEquip *)((class PC*)((class PCGemEquip *)((class PC*)(pActor))))->GetGemEquip()))->GetItemByGemType(nType);
                         if (spWorn.get() != 0)
                             nSlot = spWorn->FUN_140526b50();
-                        FUN_141271960(spItem, nSlot, 0);
+                        EquipGem(spItem, nSlot, 0);
                     }
                 }
             }
@@ -154,7 +154,7 @@ int GemSlot::vfunc_14()
         {
             MS2Ptr<CItem> spItem = vfunc_25();
             if (spItem.get() != 0)
-                FUN_141271f90(spItem);
+                UnequipGem(spItem);
         }
     }
     return 1;
@@ -313,7 +313,7 @@ void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC)
     GemSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) GemSlotBag(strName, spPC);
     if (pBag)
     {
-        int nCount = pBag->FUN_14126e930();
+        int nCount = pBag->GetSlotCount();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
         Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
@@ -369,7 +369,7 @@ DragSlot* GemSlotBag::vfunc_16(int nIndex)
 }
 
 // @0x14126e930
-int GemSlotBag::FUN_14126e930()
+int GemSlotBag::GetSlotCount()
 {
     return (int)m_mapSlot.GetCount();
 }

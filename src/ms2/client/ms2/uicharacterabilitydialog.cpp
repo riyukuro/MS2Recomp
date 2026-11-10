@@ -101,7 +101,7 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-UIGameMenuDialog* FUN_140938b90(int nId);
+UIGameMenuDialog* FindGameMenuDialog(int nId);
 
 class Unk_SingletonObj* FUN_140939a10();   // C3: the notify-system getter, the definer's return type
 
@@ -234,7 +234,7 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
     m_nPoints = packet.ReadInt32();
     if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
         pDlg->FUN_140f2b0f0();
-    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+    if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938850();
 }
 
@@ -248,7 +248,7 @@ void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
     m_abilities.AddTail(nId);
     if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
         pDlg->FUN_140f2b110(ref);
-    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+    if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938850();
 }
 
@@ -389,7 +389,7 @@ void UICharacterAbilityDialog::OnLoadComplete()
         return;
     if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
         return;
-    UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f0c, 0);
     FUN_140f2b1e0();
@@ -573,7 +573,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
             if (skill == 0)
                 continue;
             ASObj item(2);
-            item.FUN_1409c0d20("id", a->m_nId);
+            item.SetMemberUInt("id", a->m_nId);
             item.FUN_1407cba60("iconPath", CString(skill->m_ui.m_strIcon));
             item.FUN_1409c48f0("requireLevel", a->m_nRequireLevel);
             item.FUN_1407cb9c0("disableAbility", FUN_140f2d240()->FUN_140f2a100(a->m_nId));
@@ -669,7 +669,7 @@ void UICharacterAbilityDialog::FUN_140f2bee0(unsigned short nLevel)
             break;
         }
     }
-    UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f0c, bNew ? 1 : 0);
 }

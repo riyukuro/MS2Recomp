@@ -80,7 +80,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 
 // Unrecovered helpers.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringW FUN_141425950(unsigned int nItemId);                                        // item name
+CStringW GetItemDisplayName(unsigned int nItemId);                                        // item name
 CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
@@ -842,7 +842,7 @@ CStringW CDBPremiumProduct::GetName()
 {
     if (m_nType == 3)
         return m_strName;
-    return FUN_141425950(m_nItemId);
+    return GetItemDisplayName(m_nItemId);
 }
 MS2_REPLACE_METHOD(0x1406A00E0, CDBPremiumProduct, GetName, 116, 0x15484927);
 
@@ -2187,7 +2187,7 @@ CStringW CMeratMarketProduct::GetName()
             return m_ugc.m_music.m_str30;
         return FUN_141277a90(&m_ugc.m_look, strName);
     }
-    return FUN_141425950(nItemId);
+    return GetItemDisplayName(nItemId);
 }
 MS2_REPLACE_METHOD(0x1406A4770, CMeratMarketProduct, GetName, 331, 0x34470B07);
 

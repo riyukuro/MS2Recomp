@@ -103,7 +103,7 @@ bool TransitionEffect::vfunc_9()
 {
     if (!CEffect::vfunc_9())
         return false;
-    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     unsigned int nIndex = 0;
     float fT = 0.0f;
     if (FUN_14185f6f0(dNow, &nIndex, &fT))

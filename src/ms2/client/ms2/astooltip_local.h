@@ -16,10 +16,10 @@ template <> inline double floor<int, void>(int n) { return __imp_floor((double)n
 #include "ms2/commonfiles/itemenchantinfo.h"     // MS2Ptr<BaseOption>
 #include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable (the recovered form; NOT placeholder/citemoptiontable.h)
 class Unk_140166430* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
-CStringW FUN_1409e6010(int nKind, CItem* pItem);  // part 5: the option kind title (pet kinds use their own text)
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
+CStringW GetOptionKindLabel(int nKind, CItem* pItem);  // part 5: the option kind title (pet kinds use their own text)
+bool FormatRandomOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
 #include "ms2/commonfiles/itemdroptable.h"       // ItemDropResult (ASObj::FUN_1409c5bd0)
-CStringW FUN_141425950(unsigned nItemId);              // the item name (itemugcmesh.cpp)
+CStringW GetItemDisplayName(unsigned nItemId);              // the item name (itemugcmesh.cpp)
 CStringW FUN_1409eb450(int n);                    // part 6: CStringW(int)
 bool FUN_1403ba4c0(const int& nItemId);           // the item id is a currency (gameentitycommon.cpp)
 #include "ms2/commonfiles/maid.h"
@@ -39,7 +39,7 @@ struct Unk_TooltipConfigPaths
     CString m_strUgcMovie;                        // +0xc8
 };
 class Unk_SingletonObj* FUN_1401d31f0();
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
+bool FormatRandomSpecialOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
 #include "ms2/commonfiles/featuremanager.h"
 class Unk_140166410* FUN_140166410();                 // TSingleton<CFeatureManager>::GetInstance (exe copy; also part 2)
 CStringW FUN_1409e5320(const int& nSeason);       // part 5: the season text (also part 3)
@@ -64,8 +64,8 @@ CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set s
 extern const int DAT_142dbac18[4];                // the item model classes that make a set piece gender-bound (1, 2, 3, 18)
 #include "ms2/placeholder/citemmergeoptiontable.h"
 // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
-CStringW FUN_1409e0900(int n);                    // part 5: an int option value text
-CStringW FUN_1409e0a90(float fRate);              // part 5: a rate option value text
+CStringW FormatInt(int n);                    // part 5: an int option value text
+CStringW FormatRatePercent(float fRate);              // part 5: a rate option value text
 bool IsStatKindOne(int nStat);                    // the stat is shown as an integer (stat.cpp)
 bool FUN_14081dc50(int nSpecial);                 // the special stat is shown as an integer (specialability.cpp)
 CStringW GetStatCommonText(unsigned nStat);                // GetStatCommonText (stat.cpp)
@@ -141,8 +141,8 @@ bool FUN_14081dcd0(int nSpecial);                                     // the spe
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // part 5: the item limit text
 // identical redeclarations of other parts' prototypes (solo builds)
 
-CStringW FUN_1409e0900(int n);                                        // part 5
-CStringW FUN_1409e0b40(int nTenths);                                  // part 5
+CStringW FormatInt(int n);                                        // part 5
+CStringW FormatTenthsPercent(int nTenths);                                  // part 5
 int FUN_1409e6c80(CItem* pItem);                                      // part 5
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/client/ms2/achievemanager.h"
@@ -153,7 +153,7 @@ int FUN_1409e6c80(CItem* pItem);                                      // part 5
 
 class Unk_NametagTrophy* FUN_1406c7600();                                     // TSingleton<CAchieveManager>::GetInstance (exe copy)
 
-CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+CStringW GetRequireAchieveText(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
 unsigned char FUN_140930c50();                                                 // the housing state is local (unit_14092f420.cpp)
 int FUN_141901d20(int nItemId, __int64 nUid, __int64 nUgcUid);   // uicommon.cpp
 int FUN_141901f70(int nItemId, __int64 nUid, __int64 nUgcUid);   // uicommon.cpp
@@ -236,7 +236,7 @@ struct Unk_TooltipBreakTable
 };
 class Unk_BreakRecipes* FUN_140535300();                  // 0x140535300 the break ingredient table
 #include "ms2/commonfiles/itembreakmanager.h"
-class Unk_SlotBreakManager* FUN_1409c4b20();                // 0x1409c4b20 the break manager
+class Unk_SlotBreakManager* GetItemBreakManager();                // 0x1409c4b20 the break manager
 // The callers here test CItemData::IsMeratMarketRegisterable (0x14053d740, enableRegisterMeratMarket) as an int (no movzx):
 // it returns BOOL (int).
 struct Unk_ItemDataMeratView;   // its FUN_14053d740 was CItemData::IsMeratMarketRegisterable
@@ -258,13 +258,13 @@ bool IsStatKindTwo(int nStat);                              // the stat is shown
 bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)
 CStringW GetStatCommonText(unsigned nStat);                          // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
-CStringW FUN_1409e0900(int n);                              // part 5: an int option value text
-CStringW FUN_1409e0a90(float fRate);                        // part 5: a rate option value text
+CStringW FormatInt(int n);                              // part 5: an int option value text
+CStringW FormatRatePercent(float fRate);                        // part 5: a rate option value text
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/client/ms2/achievemanager.h"
 class Unk_NametagTrophy* FUN_1406c7600();                                     // TSingleton<CAchieveManager>::GetInstance (exe copy)
 
-CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+CStringW GetRequireAchieveText(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
 int FUN_1407077c0(int nId);                                           // objectdata.cpp: state change permission
 int FUN_140707710(int nId);                                           // objectdata.cpp: trigger control enabled
 
@@ -381,11 +381,11 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
 #include "ms2/ms2format.h"
 
 CStringW GetStatValueText(unsigned nId);                              // 0x14082f090 the format of a stat value (stat.cpp)
-CStringW FUN_1409e0900(int n);
+CStringW FormatInt(int n);
 CStringW FUN_1409e0970(int nStat, int n);
 CStringW FUN_1409e0a10(const CStringW& strFormat, int n);
-CStringW FUN_1409e0a90(float fRate);
-CStringW FUN_1409e0b40(int nTenths);
+CStringW FormatRatePercent(float fRate);
+CStringW FormatTenthsPercent(int nTenths);
 CStringW FUN_1409e0bf0(int nStat, int nTenths);
 CStringW FUN_1409e0cb0(const CStringW& strFormat, float fRate);
 #include "ms2/client/ms2/uiservice.h"
@@ -420,7 +420,7 @@ class Unk_NametagTrophy* FUN_1406c7600();                                     //
 CStringW FUN_14093b970(int nId);                                      // achievement title (achievemanager.cpp)
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);                // achievement description
 CStringW FUN_14093ce70(int nId, int nGrade);                          // achievement reward text
-CStringW FUN_14093e330(CAchieve* pAchieve, int nKey);                 // achievement completion date
+CStringW GetRecordedDateText(CAchieve* pAchieve, int nKey);                 // achievement completion date
 CString GetAchieveName(CAchieveData* pData);                           // achievement icon path (achievecondition.cpp, static there)
 float FUN_14028d280(unsigned nTicks);                                 // milliseconds -> seconds (commonutil.cpp)
 #include "ms2/commonfiles/itemgift.h"                                 // ItemAble
@@ -435,8 +435,8 @@ void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut); 
 #include "ms2/placeholder/blockformat.h"
 inline CStringW BlockFormat(int nStringId) { return FUN_14028dee0(nStringId, fmt::ArgList()); }
 
-CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
-const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
+CStringW GetRequireAchieveText(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+const int& GetAtOrDefault(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
 bool FUN_1409e7080(const ATL::CAtlArray<unsigned long>& ids, const ATL::CAtlArray<int>& grades, CStringW& strOut);   // the unmet trophy requirements
 class Unk_140166410* FUN_140166410();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 #include "ms2/commonfiles/commonstruct_wa.h"                 // Unk_IngVec (FUN_1409e7460)
@@ -450,8 +450,8 @@ bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/commonfiles/item.h"               // CItemStatus
 class Unk_140166430* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FormatRandomOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FormatRandomSpecialOptionValue(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
 CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
 int FindStatByName(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
@@ -466,7 +466,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest);   // th
 int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
 __int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
-CStringW FUN_1409e6010(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
+CStringW GetOptionKindLabel(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
 CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem);     // the option text of an item (as tabcontentspetinfo.cpp; the callee destroys spItem)
 // MS2-FUNCTIONAL 0x1409e34e0: /Od temporaries differ (written after part 1's FUN_1409c9170 loop); same behaviour
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
@@ -483,6 +483,6 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/cxmldata.h"
-const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // arr[nIndex], nDefault when out of range
+const int& GetAtOrDefault(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // arr[nIndex], nDefault when out of range
 // ---- end part 6 ----
 

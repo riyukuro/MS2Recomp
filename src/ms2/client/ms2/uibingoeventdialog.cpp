@@ -135,7 +135,7 @@ public:
     MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString&);
 };
 class UIMessageBox { public: void FUN_1419f8120(); };
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData>);
 class ASDialog : public ASDisplayObject {};
@@ -505,7 +505,7 @@ void UIBingoEventDialog::vfunc_72()
         {
             if (m_msgOpen == true)
             {
-                FUN_14151f890()->FUN_1419f8120();
+                GetMessageBoxLayer()->FUN_1419f8120();
                 m_msgOpen = false;
             }
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb1460));
@@ -614,7 +614,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         Unk_InventoryItemKey key;
         key.m_id = nItemId;
         key.m_rarity = FUN_14053feb0(nItemId);
-        int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
+        int nCount = g_143ab2a90.GetItemCountByFilter(&key.m_id);
         if (nCount <= 0)
             return;
         CStringW strTag = StringFormat<int>(L"{0}", nIndex);
@@ -633,7 +633,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         Unk_InventoryItemKey key;
         key.m_id = nItemId;
         key.m_rarity = FUN_14053feb0(nItemId);
-        int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
+        int nCount = g_143ab2a90.GetItemCountByFilter(&key.m_id);
         if (nCount <= 0)
             return;
         CStringW strTag = StringFormat<int>(L"{0}", nIndex);
@@ -809,8 +809,8 @@ void UIBingoEventDialog::FUN_140bb1d60()
     Unk_InventoryItemKey cashKey;
     cashKey.m_id = nCashId;
     cashKey.m_rarity = FUN_14053feb0(nCashId);
-    int nFree = g_143ab2a90.FUN_140a5eda0(&freeKey.m_id);
-    int nCash = g_143ab2a90.FUN_140a5eda0(&cashKey.m_id);
+    int nFree = g_143ab2a90.GetItemCountByFilter(&freeKey.m_id);
+    int nCash = g_143ab2a90.GetItemCountByFilter(&cashKey.m_id);
     if (m_free.m_text.get() != 0)
         BINGO_TEXT(m_free.m_text)->SetTextA(StringFormat<int>("X {0}", nFree));
     if (m_cash.m_text.get() != 0)

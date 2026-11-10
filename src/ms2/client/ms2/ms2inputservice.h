@@ -68,7 +68,7 @@ public:
     float FUN_140d8bde0();                              // cursor speed x
     float FUN_140d8be10();                         // cursor speed y
     void DetectGamePad();                               // find a gamepad
-    int FUN_140d8c0a0(__int64 nSetting);   // gamepad button for a key setting
+    int GetGamePadButtonForSetting(__int64 nSetting);   // gamepad button for a key setting
     int RemapPadButtonForDualShock(int nKey);                        // remap a gamepad key id for the dual layout
     void UpdateRumble();                               // rumble timer update
     Vector3 GetLeftStickMoveDir();                           // gamepad left stick as a direction
@@ -85,7 +85,7 @@ public:
     bool WasKeyReleased(int nKey);                       // key was released
     bool InjectSingleKeyPress(int nKey);                       // inject a key press
     bool InjectSingleKeyRelease(int nKey);                       // inject a key release
-    int FUN_140d8ee40() const { return m_nPadKind; }    // 0x140d8ee40
+    int GetPadKind() const { return m_nPadKind; }    // 0x140d8ee40
 
 private:
     NiPointer<NiInputKeyboard> m_spKeyboard;            // +0xf0

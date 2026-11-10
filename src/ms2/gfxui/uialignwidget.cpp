@@ -74,7 +74,7 @@ int UIAlignWidget::FUN_1422e65a0(const CString& strName, int bAny)
     POSITION pos = m_listEntities.Find(strName);
     if (pos == NULL)
         return 0;
-    UISwfEntity* pEntity = FUN_140b632f0()->FUN_1422d4380(strName);
+    UISwfEntity* pEntity = GetUISwfEntityManager()->FUN_1422d4380(strName);
     if (pEntity == NULL)
         return 0;
     if (bAny != 0)
@@ -104,7 +104,7 @@ void UIAlignWidget::FUN_1422e66a0(int bAny)
     while (pos != NULL)
     {
         const CString& strName = m_listEntities.GetNext(pos);
-        UISwfEntity* pEntity = FUN_140b632f0()->FUN_1422d4380(strName);
+        UISwfEntity* pEntity = GetUISwfEntityManager()->FUN_1422d4380(strName);
         if (pEntity == NULL || pEntity->FUN_1422dc430() == 0 || pEntity->vfunc_9() == 0)
             continue;
         int nWidth = 0;

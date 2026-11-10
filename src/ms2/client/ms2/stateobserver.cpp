@@ -13,7 +13,7 @@
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400c5ba0 ; probe
 // MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x1400c5bd0 ; probe
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCProxyGameObject@@@@QEBA_NXZ 0x140ac5aa0 ; unique
-// MS2-PIN: ?IsNull@?$MS2Ptr@VUnk_StateArg22@@@@QEBA_NXZ 0x140ac5b00 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VStateSyncObject@@@@QEBA_NXZ 0x140ac5b00 ; unique
 // MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140ac5d00 ; unique
 // MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEBAIXZ 0x140ac5dc0 ; unique
 // MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140ac5dd0 ; unique
@@ -66,14 +66,14 @@ static Unk_1402a9d70 s_condition0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The state-sync record (StateSyncObject, Unk_StateArg22 in statemanager.h): +0x70 holds the observed id as text.
-class Unk_StateArg22 : public CPtred
+// The state-sync record (StateSyncObject in statemanager.h): +0x70 holds the observed id as text.
+class StateSyncObject : public CPtred
 {
 public:
     char m_pad_18[0x70 - sizeof(CPtred)];
     CStringA m_str70;                                       // +0x70
 };
-MS2_CHECK_OFFSET(Unk_StateArg22, m_str70, 0x70);
+MS2_CHECK_OFFSET(StateSyncObject, m_str70, 0x70);
 class Unk_StateDataArg
 {
 public:
@@ -156,7 +156,7 @@ static void FUN_140ac4fe0(std::vector<__int64>& ids)
         MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
         if (spProxy.IsNull())
             continue;
-        if (spProxy->FUN_1416c2040() == 0)
+        if (spProxy->IsOtherPlayer() == 0)
             continue;
         if (spProxy->kind != 0)
             continue;
@@ -188,7 +188,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
         MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
         if (spProxy.IsNull())
             continue;
-        if (spProxy->FUN_1416c2040() == 0)
+        if (spProxy->IsOtherPlayer() == 0)
             continue;
         if (spProxy->kind != 0)
             continue;
@@ -198,7 +198,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
         bool bExcluded = excluded.find(nId) != excluded.end();
         if (bExcluded)
             continue;
-        float fDist = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())) - spProxy->FUN_1416c2270()).Length();
+        float fDist = (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())) - spProxy->GetPosition()).Length();
         if (fDist < fBest)
         {
             fBest = fDist;
@@ -323,7 +323,7 @@ void StateObserver::vfunc_8(double fTime)
 }
 
 // @0x140ac4040
-int StateObserver::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateObserver::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p.IsNull())
         return 0;
@@ -334,7 +334,7 @@ int StateObserver::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x140ac40f0
-bool StateObserver::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateObserver::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     unsigned __int64 nTargetId = FUN_140718350(p->m_str70);
     return FUN_140ac5ea0() != (__int64)nTargetId;
@@ -349,7 +349,7 @@ CStringW StateObserver::GetTargetName()
     MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9c60((void*)m_spObserve->m_nTarget);
     if (spProxy.IsNull())
         return CStringW(L"");
-    return spProxy->FUN_1416c23b0();
+    return spProxy->GetName();
 }
 
 // @0x140ac4270
@@ -449,7 +449,7 @@ void StateObserver::FUN_140ac48e0()
         ObserveOther();
         return;
     }
-    if (spProxy->FUN_1416c2040() == 0)
+    if (spProxy->IsOtherPlayer() == 0)
     {
         ObserveOther();
         return;
@@ -459,7 +459,7 @@ void StateObserver::FUN_140ac48e0()
         ObserveOther();
         return;
     }
-    vTarget = spProxy->FUN_1416c2270();
+    vTarget = spProxy->GetPosition();
     do
     {
         PCBase* pTarget = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd1530(m_spObserve->m_nTarget));
@@ -491,7 +491,7 @@ void StateObserver::FUN_140ac4c00()
     if (pObject == 0)
         return;
     const int nCameraId = 100;
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aecbb0(nCameraId, pObject->FUN_14123c580(), true);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aecbb0(nCameraId, pObject->GetObjectId(), true);
     m_nPending = 0;
 }
 

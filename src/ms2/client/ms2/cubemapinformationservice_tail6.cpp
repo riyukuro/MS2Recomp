@@ -227,7 +227,7 @@ struct Unk_CMISHouseRef { Unk_CMISHouseRef(void* p); Unk_CMISHouseRef(void** pSl
                           void* m_0; void* m_p; };
 
 // @0x14111e9a0
-void* FUN_14111e9a0(void* pThis, int nUnused)
+void* InitNull(void* pThis, int nUnused)
 {
     *(void**)((char*)pThis + 8) = 0;
     return pThis;

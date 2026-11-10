@@ -63,7 +63,7 @@ efd::AsyncResult MS2CameraService::OnTick()
         ecr::CameraDataPtr spCamera = NULL;
         if (m_entityCameraMap.find(id, spCamera))
         {
-            egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+            egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
             if (pEntity)
                 UpdateCamera(spCamera, pEntity);
         }

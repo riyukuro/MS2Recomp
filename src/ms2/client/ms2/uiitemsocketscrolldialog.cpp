@@ -149,7 +149,7 @@ void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 void FUN_140d42630(const CString& strName);
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -221,7 +221,7 @@ void UIItemSocketScrollDialog::OnLoadComplete()
     }
     CStringW strNotice;
     CStringW strDesc;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)
     {
         if (spScroll->FUN_140527840() != 0)
@@ -271,16 +271,16 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
         return;
     }
-    MS2DragSlot* pSrc = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag));
+    MS2DragSlot* pSrc = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag));
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
+        MS2Ptr<CItem> spTarget = g_143ab2a90.FindItemByUid(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spTarget == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_item"), 0, 0, CStringW(L""));
             return;
         }
-        MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+        MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
         if (spScroll == 0 || spScroll->FUN_140527840() == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
@@ -458,14 +458,14 @@ void UIItemSocketScrollDialog::OnClickAction()
     ItemScrollSlot* pSlot = FUN_140f65ab0(CString(m_strSlot));
     if (pSlot == 0 || pSlot->vfunc_25() == 0)
         return;
-    __int64 nTargetUid = pSlot->FUN_140d428f0();
-    MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(pSlot->FUN_140d428f0());
+    __int64 nTargetUid = pSlot->GetItemUid();
+    MS2Ptr<CItem> spTarget = g_143ab2a90.FindItemByUid(pSlot->GetItemUid());
     if (spTarget == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_item"), 0, 0, CStringW(L""));
         return;
     }
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll == 0 || spScroll->FUN_140527840() == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
@@ -535,7 +535,7 @@ void UIItemSocketScrollDialog::FUN_140f67170(CInPacket& packet)
     Unk_SsdUidIntByte data;
     FUN_140629fa0(*(struct Unk_SockUidIntByte*)&static_cast<struct Unk_SsdUidIntByte&>(data), packet);
     __int64 nUid = data.m_nUid;
-    if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
+    if (g_143ab2a90.FindItemByUid(nUid) == 0)
         return;
     m_nScrollUid = nUid;
     m_nCount = data.m_nByte;
@@ -550,7 +550,7 @@ void UIItemSocketScrollDialog::FUN_140f672a0(CInPacket& packet)
     one.m_spItem = m_spItem;
     FUN_14062a230(*(struct Unk_SockItemOne*)&static_cast<struct Unk_SsdItemOne&>(one), packet);
     __int64 nUid = one.m_nUid;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
         return;
     CStringW strMessage = FUN_14028dfa0<unsigned int>(L"s_itemsocket_scroll_complete_use", one.m_nByte);

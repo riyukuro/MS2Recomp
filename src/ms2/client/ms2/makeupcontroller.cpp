@@ -48,7 +48,7 @@ struct Unk_EquipItemData : public CItemData {};
 class CEquipItem : public CPtred
 {
 public:
-    Unk_EquipItemData* FUN_1411dc7f0();                          // the item
+    Unk_EquipItemData* GetItemData();                          // the item
     MS2Ptr<CItem> GetItem();                              // the item object holding the proxy data
 };
 
@@ -107,7 +107,7 @@ public:
 // This unit's free functions.
 void FUN_141477cb0(NiFloatsExtraData* pExtra, Unk_MakeupProxyData* pData);       // proxy data -> face mesh values
 void FUN_141477d40(Unk_MakeupProxyData* pData, NiFloatsExtraData* pExtra);       // face mesh values -> proxy data
-int FUN_141477dd0(MS2Ptr<CEquipItem> spItem);                                   // number of presets of the item
+int GetPresetCount(MS2Ptr<CEquipItem> spItem);                                   // number of presets of the item
 
 // The NiFloatsExtraData of the face mesh. Written out in every use in the exe.
 #define MAKEUP_FACE_EXTRA() \
@@ -152,9 +152,9 @@ CMakeupController::~CMakeupController()
 // @0x141476430
 int CMakeupController::vfunc_3()
 {
-    m_bUseButton1 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547170();
-    m_bUseButton2 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547150();
-    m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
+    m_bUseButton1 = m_spEquipItem->GetItemData()->FUN_14053ec70()->FUN_140547170();
+    m_bUseButton2 = m_spEquipItem->GetItemData()->FUN_14053ec70()->FUN_140547150();
+    m_bEnabled = m_spEquipItem->GetItemData()->FUN_14053ec70()->FUN_140547130();
     m_spScale = new (efd::MemHint(efd::MemHint::NONE)) CScaleModifier;
     m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)GetClientConstants())->m_2de8)->Read();
     m_fDragScale = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)GetClientConstants())->m_2e40)->Read();
@@ -201,7 +201,7 @@ float CMakeupController::vfunc_18()
 // @0x141476740
 const Unk_CustomizeRange* CMakeupController::vfunc_23()
 {
-    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->FUN_1411dc7f0()->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(0));
+    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->GetItemData()->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(0));
 }
 
 // @0x141476790
@@ -245,7 +245,7 @@ void CMakeupController::vfunc_16()
 {
     if (m_spEquipItem.get() != 0)
     {
-        Unk_EquipItemData* pItem = m_spEquipItem->FUN_1411dc7f0();
+        Unk_EquipItemData* pItem = m_spEquipItem->GetItemData();
         if (pItem != 0)
         {
             NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
@@ -272,7 +272,7 @@ void CMakeupController::vfunc_16()
                     fX = fX - 0.5f;
                     fY = (1.0f - fY) - 0.5f;
                     vfunc_44(fX, fY, pExtra);
-                    m_nPresetIndex = FUN_141477dd0(m_spEquipItem);
+                    m_nPresetIndex = GetPresetCount(m_spEquipItem);
                 }
             }
         }
@@ -298,7 +298,7 @@ void CMakeupController::vfunc_9(int nIndex)
 {
     if (nIndex >= 0)
     {
-        CharacterDecalData* pOwner = m_spEquipItem->FUN_1411dc7f0()->GetModelOrEmpty()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = m_spEquipItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
             std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->FUN_1401e41c0();
@@ -337,7 +337,7 @@ float CMakeupController::vfunc_40()
 void CMakeupController::vfunc_30(const NiPoint3& kPos)
 {
     CItemCustomizeController::vfunc_30(kPos);
-    m_nPresetIndex = FUN_141477dd0(m_spEquipItem);
+    m_nPresetIndex = GetPresetCount(m_spEquipItem);
     if (m_pListener != 0)
         reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_1(this);
 }
@@ -470,7 +470,7 @@ void CMakeupController::SetPreviewApply(bool bOn)
 {
     Unk_MakeupPlayer* pPlayer = ((Unk_MakeupPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())))->SetMeshOptimize(bOn);
+        ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())))->SetMeshOptimize(bOn);
 }
 
 // @0x141477780
@@ -531,7 +531,7 @@ void CMakeupController::FindFaceMesh()
     if (pPlayer != 0)
     {
         SetPreviewApply(false);
-        NiAVObject* pRoot = FUN_141b6efc0(pPlayer->FUN_14123c410());
+        NiAVObject* pRoot = FUN_141b6efc0(pPlayer->GetEntity());
         if (pRoot != 0)
         {
             NiFixedString kName("FA_Skin");
@@ -565,11 +565,11 @@ void FUN_141477d40(Unk_MakeupProxyData* pData, NiFloatsExtraData* pExtra)
 }
 
 // @0x141477dd0
-int FUN_141477dd0(MS2Ptr<CEquipItem> spItem)
+int GetPresetCount(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem.get() != 0)
     {
-        CharacterDecalData* pOwner = spItem->FUN_1411dc7f0()->GetModelOrEmpty()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = spItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
             return (int)pOwner->FUN_1401e41c0()->size();

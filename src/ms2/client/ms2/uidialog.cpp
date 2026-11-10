@@ -124,7 +124,7 @@ class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_140166440 { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-int FUN_141383a70(CString strName);
+int IsDialogLimited(CString strName);
 void FUN_140d73cd0();
 void FUN_141275260(int nId, int a1, int a2);                        // system message by id
 void FUN_141a8a730();
@@ -375,7 +375,7 @@ void UIDialog::FUN_141924190()
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     FUN_141926890();
     vfunc_77();
-    FUN_140b632f0()->RemoveFromLayer(this, m_e0);
+    GetUISwfEntityManager()->RemoveFromLayer(this, m_e0);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_2(vfunc_48());
     if (((class Unk_1409331e0*)FUN_1409331e0()))
         ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
@@ -579,8 +579,8 @@ int UIDialog::vfunc_65()
     } else {
         FUN_1422dbf00(m_2c, 0, 0);
     }
-    FUN_140b632f0()->AddToLayer(this, m_e0);
-    FUN_140b632f0()->FUN_1422d4dd0(m_20);
+    GetUISwfEntityManager()->AddToLayer(this, m_e0);
+    GetUISwfEntityManager()->FUN_1422d4dd0(m_20);
     reinterpret_cast<Unk_14140ea40*>(TSingleton<UIDialogEventDispatcher>::GetInstance())->vfunc_1(vfunc_48());
     if (((class Unk_1409331e0*)FUN_1409331e0()))
         ((CGuideManager*)((class Unk_1409331e0*)FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)3, 0);
@@ -665,7 +665,7 @@ MS2_REPLACE_METHOD(0x141925030, UIDialog, vfunc_72, 6, 0xA9AF6E37);
 // @0x141925040
 int UIDialog::vfunc_73()
 {
-    if (FUN_141383a70(GetTypeName()) || (WorldService::GetInstance()->HasTutorial() && !FUN_141926960())) {
+    if (IsDialogLimited(GetTypeName()) || (WorldService::GetInstance()->HasTutorial() && !FUN_141926960())) {
         FUN_141275260(0x88b, 1, 1);
         return 0;
     }
@@ -808,7 +808,7 @@ MS2_REPLACE_METHOD(0x141925690, UIDialog, vfunc_77, 137, 0xF21573C6);
 // @0x141925720
 void UIDialog::vfunc_78()
 {
-    FUN_140b632f0()->BringToFront(this, m_e0);
+    GetUISwfEntityManager()->BringToFront(this, m_e0);
     if (m_164) {
         POSITION pos = s_openDialogs.Find((Unk_UIType)vfunc_48());
         if (pos)

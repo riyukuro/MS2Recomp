@@ -68,7 +68,7 @@ class Unk_ActionKeyManager
 public:
     Unk_ActionKeyManager();                             // 0x140951c70
     ~Unk_ActionKeyManager();                            // 0x140952e70
-    void FUN_140952ef0();                               // per-frame update: pick the current action
+    void Update();                               // per-frame update: pick the current action
     void ActivateCurrentAction();                               // run the current action
     bool TryActivateCurrentAction();                               // run the current action if it may be run by the key
     int GetCur();                                // the current action type
@@ -130,11 +130,11 @@ public:
     void OpenDungeonRoomDialog(int nPortalId);                  // the dungeon room dialog (type 8)
     void SendRoomDungeon();                               // request the home move (type 9)
     void FUN_140956370(unsigned nTarget, unsigned nPortalId);     // move to another field (confirmation box when asked)
-    void FUN_1409569a0(int nPortalId, int nMode);       // the dungeon room dialog in a mode (types 0xc, 0xe)
+    void OpenDungeonRoomDialogWithMode(int nPortalId, int nMode);       // the dungeon room dialog in a mode (types 0xc, 0xe)
     void FUN_140956a20(int nPortalId, int nArg);        // the dungeon room dialog (type 0x11)
     void RequestMoveFromCube(Cube* pCell, int nTarget, int nPortalId);   // move inside a house
     bool FUN_140956be0(int nButton, const CMsgBoxData& data);   // the move confirmation box answer
-    CStringW FUN_140956e40();                           // the portal's name
+    CStringW GetPortalName();                           // the portal's name
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -154,7 +154,7 @@ public:
     void vfunc_3() override;
     int vfunc_5() override;
     CStringW vfunc_6() override;
-    void FUN_1409571a0(egf::EntityID id, int bSelect);  // highlight the cube entity
+    void HighlightCubeEntity(egf::EntityID id, int bSelect);  // highlight the cube entity
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -208,7 +208,7 @@ public:
     CStringW vfunc_7() override;
     Unk_AkoTarget vfunc_12() override;
     virtual int vfunc_13(CInteractObject* pObject);     // 13: the object kind is handled by this action
-    CInteractObject* FUN_140958e70();                   // the usable interact object in front of the player
+    CInteractObject* FindUsableInteractObject();                   // the usable interact object in front of the player
 
     CString m_strObjectId;                              // +0x18
     int m_n20;                                          // +0x20
@@ -228,7 +228,7 @@ public:
     void vfunc_9() override;
     bool vfunc_11() override;
     Unk_AkoTarget vfunc_12() override;
-    Unk_WsC_GameObj* FUN_140959330();                   // the npc to talk to in front of the player
+    Unk_WsC_GameObj* FindInteractNpc();                   // the npc to talk to in front of the player
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -261,7 +261,7 @@ public:
     void vfunc_3() override;
     int vfunc_5() override;
     CStringW vfunc_6() override;
-    void FUN_140959d70(egf::Entity* pEntity, int bSelect);  // highlight the ugc entity
+    void HighlightUgcEntity(egf::Entity* pEntity, int bSelect);  // highlight the ugc entity
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -397,7 +397,7 @@ public:
     int vfunc_5() override;
     CStringW vfunc_6() override;
     int vfunc_13(CInteractObject* pObject) override;
-    CInteractGatheringObject* FUN_14095d840();          // the selected gathering object
+    CInteractGatheringObject* FindGatheringObject();          // the selected gathering object
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -427,7 +427,7 @@ public:
     CStringW vfunc_6() override;
     CStringW vfunc_8() override;
     int vfunc_10() override;
-    int FUN_14095e440(MS2Ptr<CHomemadeCubeObject> spCube);   // the cube may be used
+    int IsCubeUsable(MS2Ptr<CHomemadeCubeObject> spCube);   // the cube may be used
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -462,7 +462,7 @@ public:
     void vfunc_2() override;
     int vfunc_5() override;
     CStringW vfunc_6() override;
-    PCBase* FUN_14095edf0();                            // the nearest dancer in micro-game range
+    PCBase* FindNearestMicroGamePC();                            // the nearest dancer in micro-game range
 
 private:
     MS2_LAYOUT_FRIEND;

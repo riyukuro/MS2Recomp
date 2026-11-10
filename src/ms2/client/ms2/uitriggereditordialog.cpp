@@ -162,7 +162,7 @@ CStringW XmlWide(const char* pszUtf8);                                  // utf-8
 CString FUN_140390ea0(const wchar_t* psz, int nUnk);                    // wide -> narrow
 CStringW FUN_140719960(const wchar_t* psz);                             // a message box argument as text
 void FUN_140710590(COutPacket& packet);                                 // send the packet
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field
 int FUN_1408a03c0(Unk_Int3 pos);                                        // the cube key of a position
 int FUN_140768010(int nRange, int nMin);                                // random position
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                     // the GFx movie of a movie id
@@ -287,7 +287,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
-        FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
+        SetChildText(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
     reinterpret_cast<Unk_EpEntity*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
@@ -414,8 +414,8 @@ void UITriggerEditorDialog::FUN_141b2b600()
         m_30->Invoke("FoldDialog");
         m_bFolded = 1;
         FUN_1422dc260(0x1a);
-        FUN_140b632f0()->RemoveFromLayer(this, m_e0);
-        FUN_140b632f0()->AddToLayer(this, 3);
+        GetUISwfEntityManager()->RemoveFromLayer(this, m_e0);
+        GetUISwfEntityManager()->AddToLayer(this, 3);
     }
 }
 MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FUN_141b2b600, 203, 0xC7D7F041);
@@ -430,8 +430,8 @@ void UITriggerEditorDialog::FUN_141b2b6e0()
         m_30->Invoke("UnfoldDialog");
         m_bFolded = 0;
         FUN_1422dc260(m_2c);
-        FUN_140b632f0()->RemoveFromLayer(this, 3);
-        FUN_140b632f0()->AddToLayer(this, m_e0);
+        GetUISwfEntityManager()->RemoveFromLayer(this, 3);
+        GetUISwfEntityManager()->AddToLayer(this, m_e0);
     }
 }
 MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, FUN_141b2b6e0, 242, 0x11538C2C);
@@ -737,7 +737,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
         return;
     std::vector<Cube*> cubes;
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
-    spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->FUN_141656ad0(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
+    spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->GetAccountId(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
     if (!cubes.empty())
         std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
     MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_installScrollingList");
@@ -817,7 +817,7 @@ void UITriggerEditorDialog::FUN_141b2dd80()
         obj.FUN_1409adbe0("EnterActionName", enterNames);
         obj.FUN_1409adbe0("EnterActionArg1", enterArgs1);
         obj.FUN_1409adbe0("EnterActionArg2", enterArgs2);
-        obj.FUN_1409c0d20("ConditionCount", states[i]->GetTransitionCount());
+        obj.SetMemberUInt("ConditionCount", states[i]->GetTransitionCount());
         for (size_t j = 0; j < states[i]->GetTransitionCount(); j++)
         {
             Scaleform::GFx::Value cond;

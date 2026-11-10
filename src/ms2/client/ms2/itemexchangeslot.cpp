@@ -29,7 +29,7 @@ class Unk_InvenSlot : public InvenSlot
 };
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 // The inventory's bag of items by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -86,10 +86,10 @@ int ItemExchangeSlot::vfunc_17()
 // @0x140b6c9e0
 int ItemExchangeSlot::vfunc_18(void* p)
 {
-    Unk_InvenSlot* pInven = reinterpret_cast<Unk_InvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))));
+    Unk_InvenSlot* pInven = reinterpret_cast<Unk_InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))));
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = ((class Unk_Inventory&)(g_143ab2a90)).FUN_140a5d680(pInven->GetItemUid());
+        MS2Ptr<CItem> spItem = ((class Unk_Inventory&)(g_143ab2a90)).FindItemByUid(pInven->GetItemUid());
         if (spItem.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);

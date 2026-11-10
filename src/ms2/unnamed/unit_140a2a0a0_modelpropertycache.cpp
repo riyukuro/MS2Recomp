@@ -64,9 +64,9 @@ CStringA FUN_140188f50(const char* psz, int nCodePage);
 #ifdef MS2_HOOK_DLL
 CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, size_t i);
 #else
-#pragma warning(disable : 4483)   // __identifier("<mangled name>")
-extern "C" CStringA& __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")(Unk_ValueList* pArr, size_t i);
-#define FUN_1401c0cc0 __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")
+// Real body (the atlcoll.h operator[] source, byte-identical at /Od): /opt:icf folds it onto CAtlArray<CStringA>::operator[].
+struct Unk_Arr1c0cc0 { CStringA* m_pData; size_t m_nSize; };
+inline CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, unsigned __int64 i) { ATLASSERT(i < ((Unk_Arr1c0cc0*)pArr)->m_nSize); if (i >= ((Unk_Arr1c0cc0*)pArr)->m_nSize) AtlThrow(E_INVALIDARG); return ((Unk_Arr1c0cc0*)pArr)->m_pData[i]; }
 #endif
 
 class Unk_ModelMgr

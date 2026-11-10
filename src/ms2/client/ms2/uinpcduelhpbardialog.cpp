@@ -35,8 +35,8 @@ enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
 bool FUN_140930110(int nBuffId);
 CStringW FUN_1401aa6a0(int nId);
 CString FUN_141028be0(__int64 nAccountId, const CString& strPath, int nSize, CString strDefault);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strIcon);
 
@@ -130,8 +130,8 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         return;
     PC* pPc = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != 0) {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
-        Unk_NdJobCode nJob = (Unk_NdJobCode)pPc->FUN_141654730();
+        SetChildText(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
+        Unk_NdJobCode nJob = (Unk_NdJobCode)pPc->GetSubJob();
         CString strJobIcon = Unk_SocketFormat("_{0}", nJob);
         FUN_140cffca0(FUN_1422dbc00(), "m_leftJobIcon", strJobIcon);
         CString strProfile = FUN_141028be0(pPc->FUN_141656a80(), pPc->FUN_1416612e0(), 1, "");
@@ -142,8 +142,8 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
     if (pNpc != 0) {
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetNpcData()->GetRace()));
-        FUN_140cff1b0(FUN_1422dbc00(), "m_rightName", strName);
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightLevel", StringFormat(L"{0}", pNpc->vfunc_78()));
+        SetChildHtmlText(FUN_1422dbc00(), "m_rightName", strName);
+        SetChildText(FUN_1422dbc00(), "m_rightLevel", StringFormat(L"{0}", pNpc->vfunc_78()));
         CString strProfile(pNpc->GetNpcData()->m_strPortrait);
         m_30->Invoke("setRightProfile", strProfile);
         FUN_140e6c9c0();
@@ -155,7 +155,7 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
             if (buff == 0)
                 continue;
             bool bFlag = FUN_140930110(buff->m_nCasterId);
-            if (!buff->FUN_14096d810()->m_ui.FUN_1401927c0(bFlag))
+            if (!buff->GetLevelData()->m_ui.FUN_1401927c0(bFlag))
                 continue;
             FUN_140e6c440(buff);
         }
@@ -169,7 +169,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<AdditionalCli> buff)
         return;
     if (m_effects == 0)
         return;
-    if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
+    if (buff->GetOwner()->GetObjectId() != m_nObjectId)
         return;
     m_effects->AddEffect(buff);
 }
@@ -181,7 +181,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<AdditionalCli> buff)
         return;
     if (m_effects == 0)
         return;
-    if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
+    if (buff->GetOwner()->GetObjectId() != m_nObjectId)
         return;
     m_effects->UpdateEffect(buff);
 }
@@ -275,7 +275,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
     } else {
         CStringW strCount = FUN_14028dfa0(L"s_npc_duelhpbar_dialog_barCount", nShown);
         FUN_140cff840(FUN_1422dbc00(), "m_rightBarCount", 1);
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightBarCount", strCount);
+        SetChildText(FUN_1422dbc00(), "m_rightBarCount", strCount);
     }
 }
 

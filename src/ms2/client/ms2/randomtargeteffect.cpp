@@ -42,8 +42,8 @@ unsigned long GetTickCountMs2(void);
 bool FUN_14028d470(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
-void FUN_140a0b2a0(NiAVObject* pNode);                            // detach the node from its parent
-void FUN_14098b3e0(NiAVObject* pNode, float fScale, bool bFlag);  // apply a uniform scale to the node
+void DetachFromParent(NiAVObject* pNode);                            // detach the node from its parent
+void SetNodeAlpha(NiAVObject* pNode, float fScale, bool bFlag);  // apply a uniform scale to the node
 void* FUN_140a0b000(void* pNode);                           // parent
 
 // The effect manager singleton (0x1403ed280).
@@ -168,11 +168,11 @@ void CRandomTargetEffect::Create(CString strName)
     NoticeMessage kRequest;
     kRequest.m_strName = strName;
     kRequest.m_nObject = 0;
-    kRequest.SetActor(((class GameObject*)(void*)(m_pOwner))->FUN_14123c580());
+    kRequest.SetActor(((class GameObject*)(void*)(m_pOwner))->GetObjectId());
     kRequest.m_spNode = static_cast<NiAVObject*>(spNode);
     m_nEffectId = ((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(NoticeMessage*)(&kRequest));
     m_spNode = spNode;
-    FUN_14098b3e0(static_cast<NiAVObject*>(spNode), m_fScale, (bool)0);
+    SetNodeAlpha(static_cast<NiAVObject*>(spNode), m_fScale, (bool)0);
     UpdatePosition();
     SetVisible(false);
 }
@@ -182,7 +182,7 @@ void CRandomTargetEffect::Destroy()
 {
     Hide();
     ((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6060(m_nEffectId);
-    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spNode));
+    DetachFromParent(static_cast<NiAVObject*>(m_spNode));
     m_nEffectId = 0;
     m_spNode = (NiNode*)0;
 }
@@ -195,7 +195,7 @@ void CRandomTargetEffect::UpdatePosition()
     if (m_spNode == 0)
         return;
 
-    NiNodePtr spTarget(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())))));
+    NiNodePtr spTarget(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->GetEntityID())))));
     if (spTarget == 0)
         return;
 

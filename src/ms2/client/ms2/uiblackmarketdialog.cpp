@@ -56,7 +56,7 @@ class UITalkManager   // C3: member view for the former free stand-ins
 public:
     void SendNpcTalkMode0();
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 class Unk_BanFlags { public: int FUN_1402c4c90(int n); };
 class Unk_14025e7b0 { public: char m_pad[8]; Unk_BanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -75,11 +75,11 @@ class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x61
 void FUN_1418fe1c0(const CString& str);
 class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 __int64 FUN_141b71960(const char* sz);
 unsigned __int64 FUN_140718350(const CString& str);
 class Unk_Hotbar { public: int FUN_140d40670(); };
-class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
+class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem);
 void FUN_1413490b0(MS2Ptr<CItem>, Scaleform::GFx::Value*, bool, int, int);
@@ -144,7 +144,7 @@ void UIBlackMarketDialog::vfunc_67()
     }
     if (m_spDetailButton.get())
         m_spDetailButton = 0;
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     vfunc_47(1);
 }
 
@@ -275,7 +275,7 @@ int UIBlackMarketDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (vfunc_55() == 0 && (m_30.get() ? true : false) && FUN_140b632f0()->GetTopEntity(m_e0) == this)
+    if (vfunc_55() == 0 && (m_30.get() ? true : false) && GetUISwfEntityManager()->GetTopEntity(m_e0) == this)
     {
         CString strKey = "";
         if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
@@ -300,12 +300,12 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
         ASTooltip tip(((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
             if (tip.FUN_1409e0d40(spItem.get()))
             {
-                tip.FUN_1409db7b0(spItem);
+                tip.SetEnablePreview(spItem);
                 *pRetVal = tip.FUN_1422bb870();
             }
         }
@@ -320,27 +320,27 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             FUN_1413490b0(spItem, pRetVal, FUN_1418d0da0(m_spItemSearch.get()), 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
             if (!tip.IsUndefinedOrNull())
-                tip.FUN_1409db930(MS2Ptr<CItem>(0), spItem);
+                tip.SetEnablePreviewBoth(MS2Ptr<CItem>(0), spItem);
         }
     }
     else if (strMethod.CompareNoCase("OnRightClick") == 0)
     {
-        if (reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->IsHudOn() != 0)
+        if (reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)GetItemPreviewMgr()))->IsHudOn() != 0)
         {
             MS2Ptr<CItem> spItem(0);
             CString strArg = pArgs->FUN_1422b8d30();
             if ((strArg == "ItemGUID"))
             {
                 __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
-                reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->OpenPreview(spItem, 0);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
+                reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)GetItemPreviewMgr()))->OpenPreview(spItem, 0);
             }
             else if ((strArg == "MarketSN"))
             {
                 unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
                 MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
                 if (spEntry.get())
-                    reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->OpenPreview(spEntry->m_item, 0);
+                    reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)GetItemPreviewMgr()))->OpenPreview(spEntry->m_item, 0);
             }
         }
         else
@@ -355,7 +355,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         if ((strArg == "ItemGUID"))
         {
             __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
             if (spItem.get())
                 FUN_140d2cfc0(spItem);
         }

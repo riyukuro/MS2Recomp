@@ -109,7 +109,7 @@ public:
     CString GetName() const;                        // 0x14119f330
     float GetDuration() const;                      // 0x14119f380
     double GetStartTime() const;                    // 0x14119f3a0
-    bool FUN_14119f3c0() const;                     // 0x14119f3c0 started (vfunc_4 ran)
+    bool IsStarted() const;                     // 0x14119f3c0 started (vfunc_4 ran)
     bool IsLoop() const;                            // 0x14119f3e0
     bool FUN_14119f400() const;                     // 0x14119f400
 

@@ -22,8 +22,8 @@ public:
 };
 
 // Binds the item under the slot name in the flash binding table (items are looked up by name from the swf).
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nA, int nB, int nC);
-void FUN_141415600(const CString& strName);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nA, int nB, int nC);
+void DestroyItemInfoSlot(const CString& strName);
 
 // @0x140d431c0
 ItemSlotBinder::ItemSlotBinder(CString strOwner) : m_18(strOwner), m_20(0), m_24(0x11), m_28(0x800)
@@ -37,13 +37,13 @@ ItemSlotBinder::~ItemSlotBinder()
 }
 
 // @0x140d432d0
-void FUN_140d432d0(ItemSlotBinder* pBinder, int n)
+void SetIconType(ItemSlotBinder* pBinder, int n)
 {
     pBinder->m_24 = n;
 }
 
 // @0x140d432f0
-void FUN_140d432f0(ItemSlotBinder* pBinder, int n)
+void SetFlags(ItemSlotBinder* pBinder, int n)
 {
     pBinder->m_28 = n;
 }
@@ -57,7 +57,7 @@ CString ItemSlotBinder::BindNewItem(int nItemId, int nRarity, int nAmount)
         item->SetCountClamped(nAmount);
         m_20++;
         CString strName = StringFormat("{0}_{1}", m_18, m_20);
-        FUN_141415450(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);
+        CreateItemInfoSlot(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);
         m_slots.insert(strName);
         return strName;
     }
@@ -75,7 +75,7 @@ CString ItemSlotBinder::FUN_140d43510(const void* pItem)
             item->SetTransferCount(0);
         m_20++;
         CString strName = StringFormat("{0}_{1}", m_18, m_20);
-        FUN_141415450(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);
+        CreateItemInfoSlot(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);
         m_slots.insert(strName);
         return strName;
     }
@@ -89,7 +89,7 @@ CString ItemSlotBinder::BindItem(void* pItem)
         return "";
     m_20++;
     CString strName = StringFormat("{0}_{1}", m_18, m_20);
-    FUN_141415450(strName, MS2Ptr<CItem>((CItem*)pItem), 0, m_24, m_28);
+    CreateItemInfoSlot(strName, MS2Ptr<CItem>((CItem*)pItem), 0, m_24, m_28);
     m_slots.insert(strName);
     return strName;
 }
@@ -99,7 +99,7 @@ void ItemSlotBinder::FUN_140d438f0(CString strSlot)
 {
     if (m_slots.find(strSlot) != m_slots.end())
     {
-        FUN_141415600(strSlot);
+        DestroyItemInfoSlot(strSlot);
         m_slots.erase(strSlot);
     }
 }
@@ -108,7 +108,7 @@ void ItemSlotBinder::FUN_140d438f0(CString strSlot)
 void ItemSlotBinder::FUN_140d43990()
 {
     for (std::set<CString>::iterator it = m_slots.begin(); it != m_slots.end(); it++)
-        FUN_141415600(*it);
+        DestroyItemInfoSlot(*it);
     m_slots.clear();
 }
 

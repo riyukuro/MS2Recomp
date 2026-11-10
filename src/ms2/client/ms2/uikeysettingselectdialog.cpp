@@ -48,7 +48,7 @@ public:
 //
 //
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was FUN_14125bd20
-class UIGameOptionDialog* FUN_140a02e60(int);   // C3: was FUN_140a02e60
+class UIGameOptionDialog* FindGameOptionDialog(int);   // C3: was FindGameOptionDialog
 class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
 
 // @0x140c581a0
@@ -112,7 +112,7 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
         FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), false);
     }
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
-    void* pDlg = ((void*)FUN_140a02e60(0x4ef3));
+    void* pDlg = ((void*)FindGameOptionDialog(0x4ef3));
     if (pDlg != 0)
         ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();
     void* pInfo = ((void*)FUN_140931900(0x4e5f));

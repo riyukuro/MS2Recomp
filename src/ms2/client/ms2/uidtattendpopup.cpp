@@ -97,7 +97,7 @@ MS2_REPLACE_METHOD(0x140C043B0, UIDTAttendPopup, SetTime, 179, 0xFC1A1CC5);
 void UIDTAttendPopup::Request(){if(!reinterpret_cast<Unk_IntervalTimer&>(m_requestTick).Check(5000))return;if(m_entries.size()==0)return;MS2Ptr<GameEventAttendGiftCli> e=GetCurrent();if(e->IsCheckedInToday())return;COutPacket packet(static_cast<int>(SendOp::Attendance),0);packet.Encode1(0);FUN_140710590(packet);}
 MS2_REPLACE_METHOD(0x140C04470, UIDTAttendPopup, Request, 207, 0xFE00C17A);
 // @0x140c04550
-bool UIDTAttendPopup::CanShow(){MS2Ptr<GameEventAttendGiftCli> e=GetCurrent();if(e==0)return false;if(e->GetAttendedDays()>=e->FUN_140ce3660())return false;return !e->IsCheckedInToday();}
+bool UIDTAttendPopup::CanShow(){MS2Ptr<GameEventAttendGiftCli> e=GetCurrent();if(e==0)return false;if(e->GetAttendedDays()>=e->GetGiftCount())return false;return !e->IsCheckedInToday();}
 MS2_REPLACE_METHOD(0x140C04550, UIDTAttendPopup, CanShow, 220, 0x2442908C);
 // @0x140c04640
 void UIDTAttendPopup::OnPacket(CInPacket& p){int code=(&reinterpret_cast<Unk_DTInputPrefix*>(&p)->stream)->vfunc_1();if(code==3)RefreshVisibility();}

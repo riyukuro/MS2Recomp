@@ -161,7 +161,7 @@ int UITamingBar::Entity::vfunc_8(int n)
         Unk_TamingPlayer* pPlayer = ((class Unk_TamingPlayer*)((class WorldService*)(class Unk_TamingWorld*)(((class Unk_TamingWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            if (pPlayer->FUN_14123c580() != pTamed->GetKind())
+            if (pPlayer->GetObjectId() != pTamed->GetKind())
                 return 1;
         }
     }

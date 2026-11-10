@@ -10,7 +10,7 @@
 
 class NotifyObject;
 class CProxyGameObject;
-class Unk_StateArg22;
+class StateSyncObject;
 
 // 0x20. +0x18 id of the observed player (written into the sync record's string at +0x70). vftable: dtor 0x140ac5a00,
 // ??_G 0x140ac5c40, vfunc_1 0x140ac3b90, vfunc_2 0x140ac3c10.
@@ -37,9 +37,9 @@ public:
     void vfunc_4(StateData* pData);                         // 0x140ac3d60
     void vfunc_5(int n);                                    // 0x140ac3ed0
     void vfunc_8(double fTime);                             // 0x140ac3ff0
-    int vfunc_22(MS2Ptr<Unk_StateArg22> p);                 // 0x140ac4040
+    int vfunc_22(MS2Ptr<StateSyncObject> p);                 // 0x140ac4040
     MS2Ptr<StateData> vfunc_27();                           // 0x140ac5c80
-    bool vfunc_28(MS2Ptr<Unk_StateArg22> p);                // 0x140ac40f0
+    bool vfunc_28(MS2Ptr<StateSyncObject> p);                // 0x140ac40f0
 
     CStringW GetTargetName();                               // the observed player's name
     void ObservePrevious();                                   // observe the previous candidate

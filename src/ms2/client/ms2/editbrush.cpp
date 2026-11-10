@@ -25,7 +25,7 @@
 #include "ms2/client/ms2/postprocessing/outlinerenderstep.h"
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 int FUN_14109a9e0();                                                // rand()
 
 float FUN_14028aed0(float f);                                       // floorf
@@ -130,8 +130,8 @@ PaintBrush::~PaintBrush()
 // @0x1411975c0
 void PaintBrush::vfunc_1()
 {
-    extern NiMesh* FUN_141197f80(float fRadius, NiColorA kColor);
-    m_spMesh = FUN_141197f80(1.0f, m_kColor);
+    extern NiMesh* CreateCircleMesh(float fRadius, NiColorA kColor);
+    m_spMesh = CreateCircleMesh(1.0f, m_kColor);
 }
 
 // @0x141197620
@@ -224,8 +224,8 @@ NoiseBrush::~NoiseBrush()
 // @0x141197b40
 void NoiseBrush::vfunc_1()
 {
-    extern NiMesh* FUN_141197f80(float fRadius, NiColorA kColor);
-    m_spMesh = FUN_141197f80(1.0f, m_kColor);
+    extern NiMesh* CreateCircleMesh(float fRadius, NiColorA kColor);
+    m_spMesh = CreateCircleMesh(1.0f, m_kColor);
 }
 
 // @0x141197ba0
@@ -317,7 +317,7 @@ void NoiseBrush::vfunc_9(efd::Point2 v)
 
 // @0x141197f80
 // Builds the Gamebryo circle mesh.
-NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
+NiMesh* CreateCircleMesh(float fRadius, NiColorA kColor)
 {
     const int kNumPoints = 360;
     Vector3 aPoints[kNumPoints];
@@ -361,6 +361,6 @@ NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius)
                   __imp_sinf((float)nAngle * 3.1415927f / 180.0f) * (float)nDist, 100.0f);
     Unk_RayCastInfo info;
     Vector3 ptHit(0.0f, 0.0f, 0.0f);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptCenter))) + reinterpret_cast<const efd::Point3&>(ptOff))), ptHit, &info, 200.0f, 0, 0x201);
+    ((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptCenter))) + reinterpret_cast<const efd::Point3&>(ptOff))), ptHit, &info, 200.0f, 0, 0x201);
     return reinterpret_cast<const efd::Point3&>(ptHit);
 }

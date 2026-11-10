@@ -107,8 +107,8 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         {
             Scaleform::GFx::Value vStage(pArgs[1]);
             Scaleform::GFx::Value vLoader(pArgs[3]);
-            FUN_1422be510(FUN_140b62400(m_18, vStage));
-            FUN_1422be5b0(FUN_140b62350(m_18, vLoader));
+            FUN_1422be510(CreateStage(m_18, vStage));
+            FUN_1422be5b0(CreateMovieClipLoader(m_18, vLoader));
             FUN_14025e7a0()->FUN_1422b0790(m_18);
             FUN_1422be140();
             FUN_1422be2a0();
@@ -153,14 +153,14 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
             CString strC(pArgs[3].GetString());
             CString strB(pArgs[2].GetString());
             CString strA(pArgs[1].GetString());
-            ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_12(strA, strB, strC);
+            ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_12(strA, strB, strC);
         }
         else if (_stricmp("onMovieCuePoint", szName) == 0)
         {
             CString strName(pArgs[1].GetString());
             float fTime = (float)pArgs[2].GetNumber();
             CAtlList<CString> params;
-            ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_13(strName, fTime, params);
+            ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_13(strName, fTime, params);
         }
     }
     else
@@ -170,17 +170,17 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (vRoot.IsObject())
-                ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_7(szEvent, vRoot);
+                ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_7(szEvent, vRoot);
         }
         else if (_stricmp("loadComplete", szName) == 0)
         {
             Scaleform::GFx::Value vRoot(pArgs[1]);
             if (vRoot.IsObject())
-                ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_9(szEvent, vRoot, 0.0f);
+                ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_9(szEvent, vRoot, 0.0f);
         }
         else if (_stricmp("playSound", szName) == 0)
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(szEvent);
             if ((spEntity.get() ? true : false) && spEntity->FUN_1422dc390() != 0)
             {
                 CString strSound(pArgs[1].GetString());
@@ -189,11 +189,11 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         }
         else
         {
-            MS2Ptr<UISwfEntity> spEntity = FUN_140b632f0()->GetUISwfEntity(szEvent);
+            MS2Ptr<UISwfEntity> spEntity = GetUISwfEntityManager()->GetUISwfEntity(szEvent);
             if (spEntity.get())
             {
                 if (_stricmp("OnTopMostLayer", szName) == 0)
-                    FUN_140b632f0()->FUN_1422d4dd0(szEvent);
+                    GetUISwfEntityManager()->FUN_1422d4dd0(szEvent);
                 if (spEntity->FUN_1422dc390() != 0)
                     spEntity->vfunc_28(szName, &pArgs[1], nArgs - 1);
                 else
@@ -232,7 +232,7 @@ MS2_REPLACE_METHOD(0x1422F0070, GFxMovieMain, vfunc_17, 49, 0x216A8A57);
 void GFxMovieMain::vfunc_26(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_26(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_20(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_20(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F00B0, GFxMovieMain, vfunc_26, 104, 0x76C80C75);
 
@@ -240,7 +240,7 @@ MS2_REPLACE_METHOD(0x1422F00B0, GFxMovieMain, vfunc_26, 104, 0x76C80C75);
 void GFxMovieMain::vfunc_30(void* hwnd, float x, float y, float fDelta)
 {
     GFxMovieEventHandler::vfunc_30(hwnd, x, y, fDelta);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_21(hwnd, x, y, fDelta);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_21(hwnd, x, y, fDelta);
 }
 MS2_REPLACE_METHOD(0x1422F0120, GFxMovieMain, vfunc_30, 128, 0x607092EF);
 
@@ -248,7 +248,7 @@ MS2_REPLACE_METHOD(0x1422F0120, GFxMovieMain, vfunc_30, 128, 0x607092EF);
 void GFxMovieMain::vfunc_31(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_31(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_14(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_14(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F01B0, GFxMovieMain, vfunc_31, 101, 0xD5F75476);
 
@@ -256,7 +256,7 @@ MS2_REPLACE_METHOD(0x1422F01B0, GFxMovieMain, vfunc_31, 101, 0xD5F75476);
 void GFxMovieMain::vfunc_32(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_32(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_15(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_15(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F0220, GFxMovieMain, vfunc_32, 101, 0x17D5C04F);
 
@@ -264,7 +264,7 @@ MS2_REPLACE_METHOD(0x1422F0220, GFxMovieMain, vfunc_32, 101, 0x17D5C04F);
 void GFxMovieMain::vfunc_33(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_33(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_16(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_16(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F0290, GFxMovieMain, vfunc_33, 104, 0x196A7CC9);
 
@@ -272,7 +272,7 @@ MS2_REPLACE_METHOD(0x1422F0290, GFxMovieMain, vfunc_33, 104, 0x196A7CC9);
 void GFxMovieMain::vfunc_34(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_34(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_17(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_17(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F0300, GFxMovieMain, vfunc_34, 104, 0xFEE35719);
 
@@ -280,7 +280,7 @@ MS2_REPLACE_METHOD(0x1422F0300, GFxMovieMain, vfunc_34, 104, 0xFEE35719);
 void GFxMovieMain::vfunc_35(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_35(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_18(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_18(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F0370, GFxMovieMain, vfunc_35, 104, 0x7E004A01);
 
@@ -288,7 +288,7 @@ MS2_REPLACE_METHOD(0x1422F0370, GFxMovieMain, vfunc_35, 104, 0x7E004A01);
 void GFxMovieMain::vfunc_36(void* hwnd, float x, float y)
 {
     GFxMovieEventHandler::vfunc_36(hwnd, x, y);
-    ((Unk_SwfEntityManagerSlots*)FUN_140b632f0())->vfunc_19(hwnd, x, y);
+    ((Unk_SwfEntityManagerSlots*)GetUISwfEntityManager())->vfunc_19(hwnd, x, y);
 }
 MS2_REPLACE_METHOD(0x1422F03E0, GFxMovieMain, vfunc_36, 104, 0xBCD85BCE);
 

@@ -41,12 +41,12 @@ public:
     virtual void vfunc_o178_2(void* p) override;        // 0x140dbbf80
     virtual void vfunc_o178_5(void* p) override;        // 0x140dbbfe0
 
-    float FUN_140dbaeb0();                              // cooldown left of the item's skill (0: no player)
+    float GetCooldown();                              // cooldown left of the item's skill (0: no player)
     int FUN_140dbaf10();                                // item type of the pet item (0: gone)
     int GetPetItemId();                                // item id of the pet item (0: gone)
     unsigned __int64 GetPetItemUid();                   // return m_nPetItemUid
     void SetPetItemUid(unsigned __int64 nUid);          // m_nPetItemUid = nUid
-    void FUN_140dbc010();                               // re-check the item (the listener slots)
+    void RefreshIfUsedByQuest();                               // re-check the item (the listener slots)
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -72,7 +72,7 @@ public:
     virtual void vfunc_il7(void* p) override;           // 0x140dbc6b0
     virtual void vfunc_il8(void* p) override;           // 0x140dbc730
 
-    unsigned __int64 FUN_140dbc8b0(int nIndex);         // uid of the pet item in slot nIndex (0: none)
+    unsigned __int64 GetItemUidByIndex(int nIndex);         // uid of the pet item in slot nIndex (0: none)
 
 public:
     MS2_LAYOUT_FRIEND;

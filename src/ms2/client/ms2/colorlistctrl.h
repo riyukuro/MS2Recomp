@@ -25,19 +25,19 @@ public:
     CColorListCtrl();                                           // 0x14109c630
     virtual ~CColorListCtrl();                                  // 0x14109c770 (??_G 0x14109e0f0)
 
-    int FUN_14109cf70(int nId, int nKind, int nSub);            // the index of a registered colour (kind 0 row, 1 column, 2 cell), -1 if none
+    int FindEntryIndex(int nId, int nKind, int nSub);            // the index of a registered colour (kind 0 row, 1 column, 2 cell), -1 if none
     COLORREF FUN_14109d0f0(COLORREF clr);                       // a contrast colour of clr
-    void FUN_14109d1a0(COLORREF clr, int nRow, int bRedraw);    // 0x14109d1a0 colour a row
-    void FUN_14109d230(COLORREF clr, int nColumn, int bRedraw); // 0x14109d230 colour a column
-    void FUN_14109d2c0(COLORREF clr, int nRow, int nColumn, int bRedraw);   // 0x14109d2c0 colour one cell
-    void FUN_14109d350(int nRow);                               // 0x14109d350 drop a row colour
-    void FUN_14109d400(int nColumn);                            // 0x14109d400 drop a column colour
-    void FUN_14109d4b0(int nRow, int nColumn);                  // 0x14109d4b0 drop a cell colour
+    void AddRowColor(COLORREF clr, int nRow, int bRedraw);    // 0x14109d1a0 colour a row
+    void AddColumnColor(COLORREF clr, int nColumn, int bRedraw); // 0x14109d230 colour a column
+    void AddCellColor(COLORREF clr, int nRow, int nColumn, int bRedraw);   // 0x14109d2c0 colour one cell
+    void RemoveRowColor(int nRow);                               // 0x14109d350 drop a row colour
+    void RemoveColumnColor(int nColumn);                            // 0x14109d400 drop a column colour
+    void RemoveCellColor(int nRow, int nColumn);                  // 0x14109d4b0 drop a cell colour
     void FUN_14109d560(bool bEnable, COLORREF clrB, COLORREF clrA);   // 0x14109d560 checkerboard stripes
-    void FUN_14109d5d0(bool bEnable);                           // 0x14109d5d0 contrast text colour
-    void FUN_14109d610(bool bEnable, COLORREF clrOdd, COLORREF clrEven);   // 0x14109d610 row stripes
+    void SetContrastText(bool bEnable);                           // 0x14109d5d0 contrast text colour
+    void SetRowShade(bool bEnable, COLORREF clrOdd, COLORREF clrEven);   // 0x14109d610 row stripes
     void FUN_14109d680();                                       // 0x14109d680 drop every registered colour
-    void FUN_14109d710();                                       // 0x14109d710 redraw
+    void Redraw();                                       // 0x14109d710 redraw
 
     afx_msg void OnLvnDeleteitem(NMHDR* pNMHDR, LRESULT* pResult);        // 0x14109c7e0
     afx_msg void OnLvnDeleteallitems(NMHDR* pNMHDR, LRESULT* pResult);    // 0x14109ca80

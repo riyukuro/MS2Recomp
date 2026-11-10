@@ -50,7 +50,7 @@ void* FUN_1411660b0(class CCustomizedTextureManager*, class CCustomizedTexInfo*,
 
 // ---- exe callees and data -------------------------------------------------------------------------------------------------
 
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 void FUN_1410479a0(NiObjectNET* pObject, const NiFixedString& kKey, const NiColor& kColor);   // set colour extra data
 extern NiFixedString DAT_143ae50c8;                   // customised texture extra data keys
 extern NiFixedString DAT_143ae50d0;
@@ -77,13 +77,13 @@ bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bT
     pMesh->AttachProperty(pTexturing);
     float afParams[4] = { fA, fB, fC, fD };
     FUN_14116f480(pMesh, DAT_143ae50f8, 4, afParams);
-    NiTexturePtr spDecal = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strTexture, 5);
+    NiTexturePtr spDecal = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strTexture, 5);
     NiTexturingProperty::ShaderMap* pMap = NiNew NiTexturingProperty::ShaderMap(spDecal, 0,
         NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_TRILERP, 1);
     pTexturing->SetShaderMap(1, pMap);
     if (bTint)
     {
-        NiTexturePtr spTint = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strTexture, 5);
+        NiTexturePtr spTint = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strTexture, 5);
         pMap = NiNew NiTexturingProperty::ShaderMap(spTint, 0,
             NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_TRILERP, 2);
         pTexturing->SetShaderMap(2, pMap);

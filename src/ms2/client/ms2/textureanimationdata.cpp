@@ -47,7 +47,7 @@ class CNifLoadingService   // C3: member view (nifeffectparam.h)
 public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90 load (cached) with the given flags
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
@@ -98,20 +98,20 @@ MS2_REPLACE_METHOD(0x141847560, Unk_TextureFrame, Load, 102, 0x6C83B0D1);
 // @0x1418475d0
 void Unk_TextureFrame::FUN_1418475d0(const CString& strDir, int nFlags)
 {
-    ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_141847960(strDir), nFlags);
+    ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(FUN_141847960(strDir), nFlags);
     if (!m_strControl.IsEmpty())
-        ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_141847a60(strDir), nFlags);
+        ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(FUN_141847a60(strDir), nFlags);
 }
 MS2_REPLACE_METHOD(0x1418475D0, Unk_TextureFrame, FUN_1418475d0, 253, 0xED2DC14D);
 
 // @0x1418476e0
 bool Unk_TextureFrame::FUN_1418476e0(const CString& strDir)
 {
-    if ((NiTexture*)((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847960(strDir), 0) == 0)
+    if ((NiTexture*)((class Unk_TexAnimResMgr*)GetNifLoadingService())->FUN_141553eb0(FUN_141847960(strDir), 0) == 0)
         return false;
     if (!m_strControl.IsEmpty())
     {
-        if ((NiTexture*)((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847a60(strDir), 0) == 0)
+        if ((NiTexture*)((class Unk_TexAnimResMgr*)GetNifLoadingService())->FUN_141553eb0(FUN_141847a60(strDir), 0) == 0)
             return false;
     }
     return true;
@@ -238,7 +238,7 @@ MS2_REPLACE_METHOD(0x141847E30, CTextureAnimationData, FUN_141847e30, 424, 0x3BB
 // @0x141847fe0
 int CTextureAnimationData::FUN_141847fe0(const CString& strDir)
 {
-    if (((class Unk_TexAnimResMgr*)FUN_140a0afd0()) == 0)
+    if (((class Unk_TexAnimResMgr*)GetNifLoadingService()) == 0)
         return 1;
     for (unsigned int i = 0; i < m_arrFrames.GetCount(); i++)
     {
@@ -252,7 +252,7 @@ MS2_REPLACE_METHOD(0x141847FE0, CTextureAnimationData, FUN_141847fe0, 140, 0x530
 // @0x141848080
 void CTextureAnimationData::FUN_141848080(const CString& strDir, int nFlags)
 {
-    if (((class Unk_TexAnimResMgr*)FUN_140a0afd0()) == 0)
+    if (((class Unk_TexAnimResMgr*)GetNifLoadingService()) == 0)
         return;
     for (unsigned int i = 0; i < m_arrFrames.GetCount(); i++)
         m_arrFrames[i].FUN_1418475d0(strDir, nFlags);
@@ -264,7 +264,7 @@ efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848110(unsigned int n
 {
     if (nFrame >= m_arrFrames.GetCount())
         return efd::SmartPointer<NiTexture>(0);
-    return ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(m_arrFrames[nFrame].FUN_141847960(strDir), 5);
+    return ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(m_arrFrames[nFrame].FUN_141847960(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848110, CTextureAnimationData, FUN_141848110, 227, 0x8EEC6057);
 
@@ -273,7 +273,7 @@ efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848200(unsigned int n
 {
     if (nFrame >= m_arrFrames.GetCount())
         return efd::SmartPointer<NiTexture>(0);
-    return ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(m_arrFrames[nFrame].FUN_141847a60(strDir), 5);
+    return ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(m_arrFrames[nFrame].FUN_141847a60(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848200, CTextureAnimationData, FUN_141848200, 227, 0xF1FD1EE7);
 
@@ -441,7 +441,7 @@ NiAVObject* CTextureAnimation::FUN_141849060(const CString& strName)
 {
     if (m_pOwner == 0)
         return 0;
-    NiActorManager* pActorMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_TexAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pActorMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_TexAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->GetEntityID());
     if (pActorMgr == 0)
         return 0;
     NiObject* pRoot = pActorMgr->GetNIFRoot();
@@ -536,7 +536,7 @@ int UITextureDensityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             bool bEnable = data.PopBool();
             m_bEnable = bEnable;
-            ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a4570(bEnable);
+            ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetDensityProcessorActive(bEnable);
         }
         return 1;
     }

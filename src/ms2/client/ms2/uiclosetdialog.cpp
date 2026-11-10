@@ -142,7 +142,7 @@ class Unk_ItemEquipData : public CItemData {};                              // C
 
 // The item event source the dialog listens to.
 class Unk_LdItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -196,7 +196,7 @@ class CGameOptionInputDefault   // C3: member view for the former free stand-ins
 {
 public:
     static bool FUN_1412530e0(int*);
-    static bool FUN_1412532b0(int);
+    static bool IsKeyUnassigned(int);
 };
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
@@ -460,7 +460,7 @@ int UIClosetDialog::vfunc_65()
 void UIClosetDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     m_pendingKey.AssignRaw(new UICloset::PendingKeyInput);
 
     do { m_30->FUN_140bbe640("m_save", m_save); if (m_save == 0) throw CL_SWF_ERROR(95); } while (0);
@@ -498,7 +498,7 @@ void UIClosetDialog::OnLoadComplete()
         ASDataProvider dpEquip(2);
         BuildEquipProvider(dpEquip);
         obj.FUN_1409adbe0("dpEquipLayer", dpEquip.FUN_1422bb870());
-        obj.FUN_1409c0d20("maxTabCount", Client::Constants::GetInstance()->MaxClosetMaxCount);
+        obj.SetMemberUInt("maxTabCount", Client::Constants::GetInstance()->MaxClosetMaxCount);
     }
     m_30->Invoke("initData", obj.FUN_1422bb870());
     if (m_tab.get() != 0)
@@ -509,7 +509,7 @@ void UIClosetDialog::OnLoadComplete()
 void UIClosetDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_save = 0;
     m_clear = 0;
     m_putOn = 0;
@@ -546,7 +546,7 @@ int UIClosetDialog::vfunc_13()
             {
                 if (FUN_1409331f0()->IsKeyRebindable(nKey))
                 {
-                    if (CGameOptionInputDefault::FUN_1412532b0(nKey))
+                    if (CGameOptionInputDefault::IsKeyUnassigned(nKey))
                     {
                         if (AssignKey(reinterpret_cast<const unsigned&>(nKey), TabIdentifier(nIndex)))
                         {
@@ -713,7 +713,7 @@ void UIClosetDialog::SelectTab(int nIndex)
         ASObj list(2);
         BuildSlots(list);
         obj.FUN_1409adbe0("dataSlot", list.FUN_1422bb870());
-        obj.FUN_1409c0d20("selectedEquipLayerTabIndex", spInfo->m_1c);
+        obj.SetMemberUInt("selectedEquipLayerTabIndex", spInfo->m_1c);
         bool bEmpty = spInfo->m_slots.IsEmpty();
         obj.FUN_1407cbbe0("enableEquipLayer", bEmpty == true);
         obj.FUN_1407cbbe0("enableClear", bEmpty == false);
@@ -824,7 +824,7 @@ void UIClosetDialog::UpdateTab(int nIndex)
     if (m_inputKey == 0)
         return;
     const __int64& nId = TabIdentifier(nIndex);
-    int nKey = FUN_1409331f0()->FUN_14142c940(nId, FUN_1409331f0()->FUN_1414319f0());
+    int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(nId, FUN_1409331f0()->FUN_1414319f0());
     CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
     m_inputKey->FUN_1422cdfb0(strKey);
     m_inputKey->SetFocused(0);
@@ -954,7 +954,7 @@ void UIClosetDialog::BuildTooltip(ASTooltip& tooltip, int nIndex)
         nFlags = 0x800;
         tooltip.FUN_1409c6ef0(GetStringCommonByKey(L"s_closet_tooltip_msg_for_remove"));
     }
-    tooltip.FUN_1409c6580(nFlags);
+    tooltip.SetFlags(nFlags);
     tooltip.FUN_1409e0d40(sp->GetItem());
 }
 
@@ -997,7 +997,7 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
     if (pPlayer != 0)
     {
         int nKind = FUN_140222f60(nLayer);
-        int nWorn = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e2440(nKind);
+        int nWorn = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->CountItemsInLayer(nKind);
         if (nWorn == 0)
         {
             FUN_140d73aa0(FUN_14028dfa0<CStringW>(L"s_closet_msg_empty_items_when_click_save", FUN_14132ba90(nKind)), 0, 0, CStringW(L""));
@@ -1091,7 +1091,7 @@ void UIClosetDialog::OnInputKey(const Scaleform::GFx::FunctionHandler::Params& p
     int nIndex = CurrentTabIndex();
     m_pendingKey->SetTab(GetTab(nIndex));
     int nLayout = FUN_1409331f0()->FUN_1414319f0();
-    int nKey = FUN_1409331f0()->FUN_14142c940(TabIdentifier(nIndex), nLayout);
+    int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(TabIdentifier(nIndex), nLayout);
     if (m_pendingSwap == 0)
         m_pendingSwap.AssignRaw(new UICloset::PendingKeyInput);
     if (m_pendingSwap.get() != 0)
@@ -1559,13 +1559,13 @@ bool UIClosetDialog::SendClear(MS2Ptr<UICloset::CTab> spTab)
 // @0x140be14c0
 MS2Ptr<CItem> UIClosetDialog::FindItem(const __int64& nUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
     {
         MyPC* pPlayer = Unk_ClPlayer();
         if (pPlayer == 0)
             return MS2Ptr<CItem>(0);
-        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1580(nUid);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->FindItemByUid(nUid);
         if (spEquip.get() != 0)
             return spEquip->GetItem();
     }

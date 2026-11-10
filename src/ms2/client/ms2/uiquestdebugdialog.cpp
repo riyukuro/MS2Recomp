@@ -327,7 +327,7 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
                     if (required.get()) {
                         ASObj data(2);
                         data.FUN_1407cbb20("name", FUN_1416e4df0(reqId));
-                        data.FUN_1409c0d20("id", reqId);
+                        data.SetMemberUInt("id", reqId);
                         data.FUN_1407cb9c0("locking", quest->m_30 != 0);
                         data.FUN_1407cb9c0("selectable", 0);
                         array.PushObj(data);
@@ -339,7 +339,7 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
                     if (required.get()) {
                         ASObj data(2);
                         data.FUN_1407cbb20("name", FUN_1416e4df0(reqId));
-                        data.FUN_1409c0d20("id", reqId);
+                        data.SetMemberUInt("id", reqId);
                         data.FUN_1407cb9c0("locking", quest->m_30 != 0);
                         data.FUN_1407cb9c0("selectable", 1);
                         array.PushObj(data);
@@ -489,7 +489,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             unsigned int id = FUN_14074b030(quest.operator->());
             CStringW name = FUN_1416e5900(id, false);
             ASObj data(2);
-            data.FUN_1409c0d20("id", id);
+            data.SetMemberUInt("id", id);
             data.FUN_1407cb9c0("standardLv", quest->m_level);
             data.FUN_1409c48f0("acceptLv", quest->m_require.m_level);
             data.FUN_1409c1180("exp", FUN_140761ba0(id, 1));

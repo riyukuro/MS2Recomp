@@ -25,9 +25,9 @@ public:
     void TogglePaybackDialog();                                           // 0x140a8b290 click on that button: open / toggle the dialog
     int FUN_140a8b320() const { return m_nLevel; }                  // 0x140a8b320
     unsigned GetMerat() const;             // 0x140a8b340
-    MS2Ptr<CMeratMarketProduct> FUN_140a8b360() const;              // 0x140a8b360 the first product that is on sale
+    MS2Ptr<CMeratMarketProduct> GetFirstSellingProduct() const;              // 0x140a8b360 the first product that is on sale
     void FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam);       // 0x140a8b490 text of the bottom line of the bill
-    CStringW FUN_140a8ba00();                                       // 0x140a8ba00 "from y/m/d to y/m/d"
+    CStringW GetPeriodText();                                       // 0x140a8ba00 "from y/m/d to y/m/d"
     bool NotifyResetWindow(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140a8bcc0 a payback product is bought: tell the player
     bool IsAvailable(unsigned char bNotify);                      // 0x140a8be20 the payback is open
     bool IsEnabled(unsigned char bNotify);                               // 0x140a8be80 the payback event is on and not blocked

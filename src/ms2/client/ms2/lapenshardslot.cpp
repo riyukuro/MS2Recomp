@@ -44,14 +44,14 @@ public:
 };
 int FUN_140c62520();                                    // the window may be used (not in battle / disabled field)
 
-// The item table (FUN_1409c4b30).
+// The item table (GetLapenshardTable).
 class Unk_LsItemTable : public CItemLapenshardTable
 {
 public:
     int FUN_1405b5810(int nSlot);                       // the kind of a free slot
     int FUN_1405b5890(int nItemId);                     // the kind of an item
 };
-class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
+class Unk_SlotLapenTable* GetLapenshardTable();   // C3: was GetLapenshardTable
 
 // The quick slot manager (FUN_1409331f0; unit-local view of CKeyTable, ckeytable.h).
 class CKeyTable
@@ -73,7 +73,7 @@ struct Unk_LsEquipRequest
 };
 
 int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
-void FUN_141404930(__int64 nItemUid);
+void PlayItemSoundByUid(__int64 nItemUid);
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 CStringW GetStringCommon(int nStringId);                  // string table text by id
@@ -102,7 +102,7 @@ LapenshardSlot::LapenshardSlot(const CString& strName, int nIndex, MS2Ptr<CItem>
 }
 
 // @0x140a6e8e0
-void FUN_140a6e8e0(const CString& strName, MS2Ptr<CItem> spItem, int nKind)
+void CreateLapenshardSlot(const CString& strName, MS2Ptr<CItem> spItem, int nKind)
 {
     LapenshardSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, 0, spItem, 0, nKind);
     if (pSlot)
@@ -110,7 +110,7 @@ void FUN_140a6e8e0(const CString& strName, MS2Ptr<CItem> spItem, int nKind)
 }
 
 // @0x140a6e9e0
-void FUN_140a6e9e0(const CString& strName)
+void RemoveLapenshardSlot(const CString& strName)
 {
     LapenshardSlot* pSlot = FUN_140a6fea0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
@@ -148,10 +148,10 @@ int LapenshardSlot::vfunc_18(void* p)
         return static_cast<DragSlot*>(p)->vfunc_10();
     int nItemId = spItem->FUN_1405276c0();
     int nCurrent = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)GetSlot());
-    if (pPc->FUN_14152f8b0(nItemId) != 0)
+    if (pPc->HasEquippedLapenshardOfSameGroup(nItemId) != 0)
     {
-        int nCurrentGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nCurrent);
-        int nGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nItemId);
+        int nCurrentGroup = ((class Unk_LsItemTable*)GetLapenshardTable())->GetGroup(nCurrent);
+        int nGroup = ((class Unk_LsItemTable*)GetLapenshardTable())->GetGroup(nItemId);
         if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
@@ -159,7 +159,7 @@ int LapenshardSlot::vfunc_18(void* p)
         }
     }
     SendLapenshard(GetSlot(), spItem->GetItemUid());
-    FUN_141404930(spItem->GetItemUid());
+    PlayItemSoundByUid(spItem->GetItemUid());
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
@@ -180,10 +180,10 @@ int LapenshardSlot::vfunc_14()
             return 0;
         int nItemId = spItem->FUN_1405276c0();
         int nCurrent = pPc->GetLapenshardItemId((Unk_MyPCLapenSlot)nSlot);
-        if (pPc->FUN_14152f8b0(nItemId) != 0)
+        if (pPc->HasEquippedLapenshardOfSameGroup(nItemId) != 0)
         {
-            int nGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nItemId);
-            int nCurrentGroup = ((class Unk_LsItemTable*)FUN_1409c4b30())->GetGroup(nCurrent);
+            int nGroup = ((class Unk_LsItemTable*)GetLapenshardTable())->GetGroup(nItemId);
+            int nCurrentGroup = ((class Unk_LsItemTable*)GetLapenshardTable())->GetGroup(nCurrent);
             if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
             {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
@@ -204,7 +204,7 @@ int LapenshardSlot::vfunc_14()
         int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
         FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
     }
-    FUN_141404930(spItem->GetItemUid());
+    PlayItemSoundByUid(spItem->GetItemUid());
     return 1;
 }
 
@@ -295,8 +295,8 @@ int LapenshardSlot::FUN_140a6f880()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)FUN_1409c4b30())))->GetEquipMask(spItem->FUN_1405276c0()));
-    return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)FUN_1409c4b30())))->GetEquipPart((enum CItemLapenshardTable::Slot)(GetSlot())));
+        return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)GetLapenshardTable())))->GetEquipMask(spItem->FUN_1405276c0()));
+    return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)GetLapenshardTable())))->GetEquipPart((enum CItemLapenshardTable::Slot)(GetSlot())));
 }
 
 // @0x140a6f940
@@ -366,7 +366,7 @@ int LapenshardSlot::vfunc_8(void* p)
         {
             if (GetSlot() == 0)
             {
-                slot.FUN_1409c0d20(s_strItemCount, spItem->GetCount());
+                slot.SetMemberUInt(s_strItemCount, spItem->GetCount());
                 if (spItem->GetCount() == 0)
                     slot.SetDisable(1);
                 if (spItem->FUN_14052a290(2))

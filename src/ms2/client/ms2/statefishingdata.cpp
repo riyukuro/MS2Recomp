@@ -66,7 +66,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-CString FUN_140b62550(unsigned int n);                       // number -> text
+CString GetFontName(unsigned int n);                       // number -> text
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up vector
@@ -114,9 +114,9 @@ static inline Unk_FsFishMgr* FsFishMgr() { return static_cast<Unk_FsFishMgr*>(TS
 
 
 // The model loader (singleton): loads a nif by path.
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 
 
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
@@ -124,7 +124,7 @@ class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_PCBaseMoveTarget { public: };
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 UICastingBar* FUN_140ac2270(int nId);
 __int64 FUN_14028d0e0();                                     // the current time
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
@@ -167,7 +167,7 @@ StateFishingData::StateFishingData(int nRod) : m_nRod(nRod)
 void StateFishingData::vfunc_1(Unk_StateDataArg* p)
 {
     StateData::vfunc_1(p);
-    p->m_str70 = FUN_140b62550(m_nRod);
+    p->m_str70 = GetFontName(m_nRod);
 }
 
 // @0x140dda390
@@ -276,13 +276,13 @@ void StateFishing::vfunc_3(double fTime)
             m_nB0 = m_pOwner->vfunc_25();
             if (m_spEffect ? true : false)
             {
-                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
+                if (reinterpret_cast<COptimizer*>(GetOptimizer())->FUN_140ddcc90() == 0)
                     m_spEffect->SetAppCulled(m_nB0 ? true : false);
             }
         }
         if (m_nA8 == 0)
         {
-            CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pPC)->FUN_1416625e0();
+            CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pPC)->GetFishingGuide();
             if (pGuide != 0)
             {
                 Vector3 kRot = FUN_140a0b080(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pGuide->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())), DAT_143a08cf8);
@@ -312,7 +312,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
             if (eSequenceID == pkManager->GetTargetAnimation())
             {
                 m_n10 = 0x76;
-                CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pMy)->FUN_1416625e0();
+                CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pMy)->GetFishingGuide();
                 if (pGuide != 0)
                     pGuide->FUN_1410a4cb0();
                 FsFishMgr()->FUN_140cdac50();
@@ -323,10 +323,10 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
             if (eSequenceID == pkManager->GetTargetAnimation())
             {
                 m_n10 = 0x76;
-                PCBase* pGuide = reinterpret_cast<PC*>(pMy)->FUN_1416625e0();
+                PCBase* pGuide = reinterpret_cast<PC*>(pMy)->GetFishingGuide();
                 if (pGuide != 0)
                     pGuide->FUN_14166cc40(0x7a);
-                bool bLeave = FsFishMgr()->FUN_140ce0cb0() || reinterpret_cast<AdditionalCliList*>(pMy->FUN_1416749a0())->FindEnabledByEventBuffType(1);
+                bool bLeave = FsFishMgr()->IsAutoFishing() || reinterpret_cast<AdditionalCliList*>(pMy->FUN_1416749a0())->FindEnabledByEventBuffType(1);
                 if (bLeave)
                     FsFishMgr()->SendFishingMode9();
             }
@@ -347,7 +347,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
                 if (eSequenceID == pkManager->GetTargetAnimation())
                 {
                     m_n10 = 0x76;
-                    CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pClone)->FUN_1416625e0();
+                    CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pClone)->GetFishingGuide();
                     if (pGuide != 0)
                         pGuide->FUN_1410a4cb0();
                 }
@@ -415,7 +415,7 @@ void StateFishing::vfunc_9(double fTime)
 }
 
 // @0x140ddb4e0
-int StateFishing::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateFishing::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (p == 0)
         return 0;
@@ -445,7 +445,7 @@ int StateFishing::FUN_140ddb620()
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(reinterpret_cast<PC*>(pPC)->FUN_14165f460())->FUN_141270740(8);
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(reinterpret_cast<PC*>(pPC)->GetGemEquip())->FUN_141270740(8);
         if (spGem.get() != 0)
         {
             MS2Ptr<CGemFishing> spFishing(dynamic_cast<CGemFishing*>(spGem.operator->()));
@@ -480,7 +480,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         MS2Ptr<CItem> spNew(new CItem);
         if (spNew->FUN_140523c40(nRod, 1, 0))
         {
-            spNew->SetObjectId(m_pOwner->FUN_14123c580());
+            spNew->SetObjectId(m_pOwner->GetObjectId());
             spNew->SetItemUid(FUN_14028d0e0());
             if (efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200044))
                 spNew->FUN_14052a130(3);
@@ -501,13 +501,13 @@ void StateFishing::FUN_140ddb740(int nRod)
     }
     if (spRod->m_strChair.GetLength() > 0)
     {
-        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
+        m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, ((class CNifLoadingService*)GetNifLoadingService())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
             NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
             ClonePC* pClone = FUN_1405a7e30((class PC*)(pPC));
             if (pClone != 0)
-                static_cast<AvatarPC*>(pClone)->FUN_1409f5560(m_spEffect);
+                static_cast<AvatarPC*>(pClone)->AddExternalNode(m_spEffect);
             else
                 pRoot->AttachChild(m_spEffect, true);
             if (pRoot != 0 && pClone == 0)
@@ -521,7 +521,7 @@ void StateFishing::FUN_140ddb740(int nRod)
                 m_spEffect->UpdateProperties();
                 m_spEffect->Update(0.0f, true);
                 m_nB0 = m_pOwner->vfunc_25();
-                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_nB0 != 0)
+                if (reinterpret_cast<COptimizer*>(GetOptimizer())->FUN_140ddcc90() == 0 && m_nB0 != 0)
                     m_spEffect->SetAppCulled(true);
             }
         }
@@ -533,7 +533,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         Unk_EffectQuery kQuery;
         kQuery.m_strName = spRod->m_strChairEffect;
         kQuery.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
-        kQuery.SetActor(m_pOwner->FUN_14123c580());
+        kQuery.SetActor(m_pOwner->GetObjectId());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
     }
 }
@@ -639,7 +639,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
     CFishingGuideObject* pGuide = FUN_140ddc910(m_pOwner);
     if (pGuide == 0)
         return 0;
-    PCBase* pPC = pGuide->FUN_1410a1310();
+    PCBase* pPC = pGuide->GetOwner();
     if (!efd::ClassInfo::IsKindOf(pPC ? pPC->GetClassDesc() : 0, 0x6200004))
         return 1;
     NiPoint3 kStart = m_pOwner->vfunc_18();
@@ -652,7 +652,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
     kRay.m_groups = 0x301;
     efd::Point3 kFoot = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 5.0f);
     Unk_FsCell kCellA = FUN_140ddc3c0(kFoot);
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kRay, 0))
+    if (((class CPhysXHelper*)GetPhysXHelper())->CastRay(&kRay, 0))
     {
         if (kRay.m_hitEntity != 0)
         {

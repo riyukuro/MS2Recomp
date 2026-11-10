@@ -730,7 +730,7 @@ int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange
         if (range.IsValid() && !range.FUN_1407790e0(pRoom->m_nMinLevel))
             continue;
         ASObj obj(2);
-        obj.FUN_1409c0d20("id", pRoom->m_nId);
+        obj.SetMemberUInt("id", pRoom->m_nId);
         obj.FUN_1407cba60("banner", pRoom->m_strBanner);
         obj.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
@@ -756,7 +756,7 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
             continue;
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];
         ASObj item(2);
-        item.FUN_1409c0d20("id", pRoom->m_nId);
+        item.SetMemberUInt("id", pRoom->m_nId);
         item.FUN_1407cba60("banner", pRoom->m_strBanner);
         item.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                   TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
@@ -799,7 +799,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
     int nJob = 0;
     if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsInParty()) {
         nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
-        nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
+        nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberGearScore();
     } else {
         nLevel = pPlayer->vfunc_78();
         nJob = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152ea50();
@@ -838,7 +838,7 @@ void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
     int nJob = 0;
     if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsInParty()) {
         nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
-        nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
+        nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberGearScore();
     } else {
         nLevel = pPlayer->vfunc_78();
         nJob = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152ea50();

@@ -147,15 +147,15 @@ class CameraMgr   // C3: member view for the former free stand-ins
 public:
     Unk_CameraFlyBy MakeFlyBy(float fDuration, const Unk_CameraSetting& to);  // 0x140aeffd0 a fly-by from the current view
     int GetModeSetting(struct Unk_CameraSetting&);
-    CCameraMode* FUN_140af24f0();
+    CCameraMode* GetTargetMode();
     float FUN_140af0c70();
     float FUN_140af0d30();
 public:
-    void FUN_140947980(int);   // C3: was free FUN_140947980
+    void SetPendingMode(int);   // C3: was free SetPendingMode
 public:
-    void FUN_140aed580(struct Unk_CameraFlyBy const*, int, float);   // C3: was free FUN_140aed580
+    void SetFlyBy(struct Unk_CameraFlyBy const*, int, float);   // C3: was free FUN_140aed580
 public:
-    void FUN_140aed750(int, int);   // C3: was free FUN_140aed750
+    void SetMode(int, int);   // C3: was free SetMode
 };
 float FUN_14029cc60(float f);
 float FUN_14029dba0(float f);
@@ -167,9 +167,9 @@ float FUN_1409f2310(float f) { return FUN_14029cc60(f); }
 // @0x1409f25a0
 float FUN_1409f25a0(float f) { return FUN_14029dba0(f); }
 // @0x1409f24a0
-Unk_TaxiResTable* FUN_1409f24a0() { return reinterpret_cast<Unk_TaxiResTable*>(TSingleton<CTaxiManager>::s_instance); }
+Unk_TaxiResTable* GetTaxiManager() { return reinterpret_cast<Unk_TaxiResTable*>(TSingleton<CTaxiManager>::s_instance); }
 // @0x1409f24b0
-Unk_TaxiTimer* FUN_1409f24b0() { return reinterpret_cast<Unk_TaxiTimer*>(TSingleton<OnceCallbackTimer>::s_instance); }
+Unk_TaxiTimer* GetOnceCallbackTimer() { return reinterpret_cast<Unk_TaxiTimer*>(TSingleton<OnceCallbackTimer>::s_instance); }
 // @0x1409f2430
 // The current mode's distance (slot 19; FUN_140b67d10 is the same shape over slot 17).
 float FUN_1409f2430(CameraMgr* cam)
@@ -200,7 +200,7 @@ CAutoFindTaxiStation::~CAutoFindTaxiStation()
 }
 
 // @0x1409f1240
-void CAutoFindTaxiStation::FUN_1409f1240()
+void CAutoFindTaxiStation::StartAutoFind()
 {
     bool bNone = reinterpret_cast<Unk_TaxiInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nValue == 0;
     if (bNone)
@@ -220,7 +220,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0 && Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
     {
         m_nActive = 1;
-        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
+        reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add(1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
         Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (player != 0)
             ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
@@ -239,7 +239,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
         {
             if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
             {
-                if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
+                if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(GetTaxiManager()))->FUN_14085f730(DAT_143ab2870))
                 {
                     Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x85359406);
                     if (list.get() != 0)
@@ -264,9 +264,9 @@ void CAutoFindTaxiStation::FUN_1409f1450()
 
                                 Unk_CameraFlyBy mv = TSingleton<CameraMgr>::GetInstance()->MakeFlyBy(fTime / 1000.0f, setting);
                                 mv.m_nKind = 2;
-                                TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&mv, 1, 1.0f);
-                                TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 0);
-                                reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fTime,
+                                TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&mv, 1, 1.0f);
+                                TSingleton<CameraMgr>::GetInstance()->SetMode(4, 0);
+                                reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add((unsigned)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
                                     ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
@@ -300,14 +300,14 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
     packet.WriteUInt8(5);
     FUN_140710590(packet);
     int nDelay = 5000;
-    reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
+    reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add(nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
 }
 
 // @0x1409f1970
 void CAutoFindTaxiStation::FUN_1409f1970()
 {
     if (m_nActive != 0 && m_nDone == 0)
-        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
+        reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add(0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
 }
 
 // @0x1409f1a00
@@ -320,13 +320,13 @@ void CAutoFindTaxiStation::FUN_1409f1a00()
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
     {
         m_nDone = 1;
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
-        FUN_1409f1a70();
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(2);
+        Reset();
     }
 }
 
 // @0x1409f1a70
-void CAutoFindTaxiStation::FUN_1409f1a70()
+void CAutoFindTaxiStation::Reset()
 {
     if (m_nActive == 0)
         return;
@@ -345,20 +345,20 @@ void CAutoFindTaxiStation::FUN_1409f1af0()
     Unk_CameraSetting setting;
     if (TSingleton<CameraMgr>::GetInstance()->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
     {
-        Vector3 delta = (setting.m_c - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540())));
+        Vector3 delta = (setting.m_c - reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_1409f2540())));
         float fLen = delta.Length() * 0.5f;
-        setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540()));
+        setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->GetTargetMode()->FUN_1409f2540()));
         Unk_CameraFlyBy mv = TSingleton<CameraMgr>::GetInstance()->MakeFlyBy(fLen / 1000.0f, setting);
         mv.m_nKind = 2;
-        TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&mv, 1, 1.0f);
-        TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, 1);
-        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fLen,
-                      Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
+        TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&mv, 1, 1.0f);
+        TSingleton<CameraMgr>::GetInstance()->SetMode(2, 1);
+        reinterpret_cast<OnceCallbackTimer*>(GetOnceCallbackTimer())->Add((unsigned)fLen,
+                      Unk_TaxiCallback(this, &CAutoFindTaxiStation::Reset));
     }
     else
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
-        FUN_1409f1a70();
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(2);
+        Reset();
     }
 }
 
@@ -373,7 +373,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
             {
                 if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0 && Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
                 {
-                    if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
+                    if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(GetTaxiManager()))->FUN_14085f730(DAT_143ab2870))
                     {
                         ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&DAT_143ab3098))->Add(DAT_143ab2870);
                         COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
@@ -389,7 +389,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
         {
             if (m_nPending != 0 && m_nPaused == 0)
             {
-                FUN_1409f1240();
+                StartAutoFind();
                 m_nPending = 0;
                 return 0;
             }
@@ -408,7 +408,7 @@ void CAutoFindTaxiStation::FUN_1409f1de0()
 }
 
 // @0x1409f1e20
-void CAutoFindTaxiStation::FUN_1409f1e20() { m_nPaused = 1; }
+void CAutoFindTaxiStation::Pause() { m_nPaused = 1; }
 
 // @0x1409f1e40
-void CAutoFindTaxiStation::FUN_1409f1e40() { m_nPaused = 0; }
+void CAutoFindTaxiStation::Resume() { m_nPaused = 0; }

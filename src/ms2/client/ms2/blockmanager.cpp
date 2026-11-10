@@ -172,7 +172,7 @@ void FUN_140a30b80(char* dialog, int id)
 }
 
 // @0x140a2ff20  show the "you are blocked" notice for a record
-void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
+void ShowBlockNotice(const BlockPtr& rec, int action, u64 cb)
 {
     switch (rec->kind) {
     case 2:

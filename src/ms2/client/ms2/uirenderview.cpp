@@ -265,7 +265,7 @@ UIRenderView::UIRenderView(unsigned int uiWidth, unsigned int uiHeight, GameObje
     : m_spCamera(0), m_uiWidth(uiWidth), m_uiHeight(uiHeight), m_fLightDimmer(fLightDimmer), m_spAmbientLight(0),
       m_spDirLight(0), m_spClick(0), m_nDirty(0), m_spEffectRoot(0), m_uiSceneHandle(0)
 {
-    m_nObjectId = pObject->FUN_14123c580();
+    m_nObjectId = pObject->GetObjectId();
     FUN_1413fb7a0()->AddDelegate(this);
 }
 

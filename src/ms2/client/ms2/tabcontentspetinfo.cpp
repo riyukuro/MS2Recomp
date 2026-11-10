@@ -195,7 +195,7 @@ CStringW FUN_1409404f0(__int64 n);                                      // numbe
 CStringW FUN_1409e34e0(MS2Ptr<CItem> item);                             // the item's option text
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_140710590(COutPacket& packet);                                 // send
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 void FUN_14151f200();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -218,7 +218,7 @@ void FUN_140dbc420(const CString& strBag);                                    //
 void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -625,21 +625,21 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                         strText = FUN_14028dee0(0xc1a, ((class CGameRule*)FUN_1401c0d90())->FUN_140477330(), strName);
                     if (MS2Ptr<CMsgBoxData> confirm = FUN_140d73d20(1, strText, 0, L""))
                     {
-                        confirm->FUN_140b76940(strName);
+                        confirm->AddStringArg(strName);
                         confirm->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
                         FUN_140d73c60(confirm);
                     }
                 }
                 else
                 {
-                    UIMessageBox* pBox = FUN_14151f890();
+                    UIMessageBox* pBox = GetMessageBoxLayer();
                     if (pBox != 0)
                         pBox->FUN_1419f82b0(GetStringCommon(0xc1b));
                 }
             }
             else
             {
-                UIMessageBox* pBox = FUN_14151f890();
+                UIMessageBox* pBox = GetMessageBoxLayer();
                 if (pBox != 0)
                     pBox->FUN_1419f82b0(strErr);
             }
@@ -1161,7 +1161,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
 {
     if (m_nPet == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
+    void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
         Unk_PetPlayer* pPlayer = ((Unk_PetPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());

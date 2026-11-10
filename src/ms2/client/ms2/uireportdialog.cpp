@@ -61,7 +61,7 @@ class Unk_ReportBlindManager : public BlindManager
 {
 public:
 };
-class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
+class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
 
 // ---- the report form ---------------------------------------------------------------------------------------------------
 
@@ -434,17 +434,17 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     }
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
     {
-        ((class BlindManager*)FUN_1409c1730())->BlockId(2, m_nPosterId);
+        ((class BlindManager*)GetBlindManager())->BlockId(2, m_nPosterId);
         TSingleton<CUgcManager>::GetInstance()->FUN_1418885b0(m_nBannerId);
     }
     else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
     {
-        ((class BlindManager*)FUN_1409c1730())->BlockId(3, m_nItemId);
+        ((class BlindManager*)GetBlindManager())->BlockId(3, m_nItemId);
         ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
     }
     else if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)
     {
-        ((class Unk_ReportBlindManager*)FUN_1409c1730())->Block(4, m_strTarget);
+        ((class Unk_ReportBlindManager*)GetBlindManager())->Block(4, m_strTarget);
     }
 }
 

@@ -55,7 +55,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140ddfae0 (replay the idle animation)
     virtual int vfunc_19();                                 // 19 0x140de0c90: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x140ddfb10 (a request of another sub state replaces this)
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140ddfb10 (a request of another sub state replaces this)
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140de0c00: an empty StatePlayInstrumentData
 
     int FUN_140ddfbb0();                                    // the instrument id of the data (0 without data)

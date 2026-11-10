@@ -137,7 +137,7 @@ void ItemScrollSlot::SetItem(MS2Ptr<CItem> spItem)
 }
 
 // @0x140d428f0
-__int64 ItemScrollSlot::FUN_140d428f0()
+__int64 ItemScrollSlot::GetItemUid()
 {
     if (m_spItem.get() != 0)
         return ((CItem*)m_spItem)->GetItemUid();
@@ -212,7 +212,7 @@ MS2_REPLACE_METHOD(0x140D42740, ItemScrollSlot, vfunc_17, 122, 0x579E1D56);
 MS2_REPLACE_METHOD(0x140D427C0, ItemScrollSlot, vfunc_18, 90, 0xF3417CA2);
 MS2_REPLACE_METHOD(0x140D42820, ItemScrollSlot, vfunc_14, 38, 0xF4633F56);
 MS2_REPLACE_METHOD(0x140D42850, ItemScrollSlot, vfunc_25, 67, 0x32060F89);
-MS2_REPLACE_METHOD(0x140D428F0, ItemScrollSlot, FUN_140d428f0, 69, 0x5759F841);
+MS2_REPLACE_METHOD(0x140D428F0, ItemScrollSlot, GetItemUid, 69, 0x5759F841);
 MS2_REPLACE_METHOD(0x140D42A60, ItemScrollSlot, vfunc_8, 264, 0x6E642538);
 MS2_REPLACE_METHOD(0x140D42C10, ItemScrollSlot, SetFlags, 25, 0xD3EC7A67);
 MS2_REPLACE(0x140D42C30, FUN_140d42c30, 73, 0x7E105824);

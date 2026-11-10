@@ -48,8 +48,8 @@ template void MS2Ptr<GameRankingItem::UserPvp>::ReleaseImpl(void*);
 template void MS2Ptr<GameRankingItem::UserTrophy>::ReleaseImpl(void*);
 template void MS2Ptr<GameRankingItem::WorldChampion>::ReleaseImpl(void*);
 
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x140b60bf0
 CString FUN_140b60bf0(egf::Entity* pEntity)
@@ -102,13 +102,13 @@ bool FUN_140b60dd0(egf::Entity* pEntity)
 // @0x140b60e10
 void FUN_140b60e10(egf::Entity* pEntity, bool bValue)
 {
-    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, *(bool const*)(&bValue));
+    SetCachedBoolProperty((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, *(bool const*)(&bValue));
 }
 
 // @0x140b60e40
 void FUN_140b60e40(egf::Entity* pEntity, bool bDefault)
 {
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(pEntity) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(pEntity) == 0)
         return;
     unsigned short usKind = 0;
     pEntity->GetPropertyValue<unsigned short>(0xada5c5d2, usKind);
@@ -117,7 +117,7 @@ void FUN_140b60e40(egf::Entity* pEntity, bool bDefault)
         usGroup = usKind;
     else
         usGroup = 5;
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(pEntity, usGroup, 0, 1);
+    ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(pEntity, usGroup, 0, 1);
 }
 
 // @0x140b60ed0

@@ -3294,7 +3294,7 @@ MS2_REPLACE_METHOD(0x1403C7480, GameEventGuildExp, vfunc_2, 42, 0x65204B4F);
 void GameEventGuildExp::OnStart()
 {
     ((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->SetRate(m_d0);
-    TSingleton<CGuildManager>::GetInstance()->FUN_1413bd640(((unsigned)((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->GetRate()) > 0);
+    TSingleton<CGuildManager>::GetInstance()->SetGuildExpEvent(((unsigned)((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->GetRate()) > 0);
 }
 MS2_REPLACE_METHOD(0x1403C74B0, GameEventGuildExp, OnStart, 101, 0xE18D34FE);
 
@@ -3302,7 +3302,7 @@ MS2_REPLACE_METHOD(0x1403C74B0, GameEventGuildExp, OnStart, 101, 0xE18D34FE);
 void GameEventGuildExp::vfunc_6()
 {
     ((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->SetRate(0);
-    TSingleton<CGuildManager>::GetInstance()->FUN_1413bd640(((unsigned)((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->GetRate()) > 0);
+    TSingleton<CGuildManager>::GetInstance()->SetGuildExpEvent(((unsigned)((CGameEventValueGuildExp*)(TSingleton<CGameEventValueManager>::GetInstance()->GuildExp()))->GetRate()) > 0);
 }
 MS2_REPLACE_METHOD(0x1403C7520, GameEventGuildExp, vfunc_6, 92, 0x199CB83D);
 

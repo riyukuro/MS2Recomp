@@ -20,9 +20,9 @@ class Unk_TsWorld;
 class Unk_TsActor;                                              // the local player
    // Invoke(name)
 
-class PC { public: int FUN_141654700(); };   // C3: member view (0x141654700, the job)
+class PC { public: int GetJobGroupId(); };   // C3: member view (0x141654700, the job)
 CStringW GetStringCommonByKey(const CStringW& strKey);                        // localized
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 
@@ -54,8 +54,8 @@ void UITutorialSkipDialog::OnLoadComplete()
         return;
     FUN_141923680(1);
     reinterpret_cast<AScript*>(m_30.operator->())->Invoke("showOnDelay");
-    int nJob = ((PC*)pActor)->FUN_141654700();
-    FUN_140cfefe0(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(StringFormat(L"s_tutorial_skip_message_job{0}", nJob)));
+    int nJob = ((PC*)pActor)->GetJobGroupId();
+    SetNestedChildText(FUN_1422dbb40(), "m_contents", "textField", GetStringCommonByKey(StringFormat(L"s_tutorial_skip_message_job{0}", nJob)));
     FUN_140cff4e0(FUN_1422dbb40(), "m_tutorialSkipButton", GetStringCommonByKey(StringFormat(L"s_tutorial_skip_button_job{0}", nJob)));
 }
 
@@ -69,7 +69,7 @@ int UITutorialSkipDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp("onTutorialSkipButton", szMethod) == 0)
     {
-        int nJob = ((PC*)pActor)->FUN_141654700();
+        int nJob = ((PC*)pActor)->GetJobGroupId();
         CStringW strMsg = GetStringCommonByKey(StringFormat(L"s_tutorial_skip_job{0}", reinterpret_cast<const Unk_JobCode&>(nJob)));
         FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UITutorialSkipDialog::FUN_141b33ca0));
     }

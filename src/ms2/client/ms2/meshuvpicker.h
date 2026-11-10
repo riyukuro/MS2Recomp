@@ -62,11 +62,11 @@ public:
     void CreatePropertyState();                                       // create the property state
     void ReleaseResources();                                       // release everything
     bool OnRendererReset(bool bBeforeReset);                      // device reset notification
-    bool FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel);       // read one texel back
+    bool ReadTexel(int nTarget, Unk_ShaderVec4* pTexel);       // read one texel back
     NiMaterial* FUN_1414800a0(bool bSecond);                    // the (lazily created) UV material
 
     static bool OnRendererResetThunk(bool bBeforeReset, void* pPicker);
-    static void FUN_141480710(NiObjectNET* pObject, const NiFixedString& kKey, const NiColorA& kColor);   // set the colour extra data   // reset notification callback
+    static void SetColorExtraData(NiObjectNET* pObject, const NiFixedString& kKey, const NiColorA& kColor);   // set the colour extra data   // reset notification callback
 
     unsigned m_10;                              // +0x10 format of the read-back surface
     bool m_14;                                  // +0x14 initialised

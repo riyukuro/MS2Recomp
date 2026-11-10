@@ -161,7 +161,7 @@ CubeMapInformationService* TSingleton<CubeMapInformationService>::s_instance = 0
 // Unk_CMISTree<N>'s ctor/dtor stay declared only: symbols.tsv binds each family to the exe's wrapper pair
 // (0x141122xxx / 0x141125xxx), which allocates/frees the tree's head node. A local definition would win over that
 // binding in the hook DLL and leave head null (the hooked MS2::RegisterServices then AVs in the first f368 lookup).
-// Exceptions: 287's dtor (FUN_1410b7fe0's static, atexit thunk 0x142cac250) has no symbol row, and the 294/295 locals
+// Exceptions: 287's dtor (GetColumn's static, atexit thunk 0x142cac250) has no symbol row, and the 294/295 locals
 // of ExportUGCMap are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
 // void FUN_1411258b0(Unk_CMISTree<287>*);  C3: the efd::map<__int64, MS2Ptr<Cube> > dtor
 template <> Unk_CMISTree<287>::~Unk_CMISTree() { reinterpret_cast<efd::map<__int64, MS2Ptr<Cube> >*>(this)->~map(); }   // 0x1411258b0
@@ -221,13 +221,13 @@ class MyPC   // C3: member view (real class not in this TU)
 {
 public:
     int HasNoHome();
-    class UserUGCMapInfo* FUN_141523c50();                    // the party info
-    int FUN_141527920(void* p);
+    class UserUGCMapInfo* GetUGCMapInfo();                    // the party info
+    int IsPartyMemberByAccountId(void* p);
     void FUN_14152a2b0(int n);                                  // set the mark flag
     class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
-class PC { public: int IsInCubeMode(); int IsCubeMode1(); __int64 FUN_141656ad0(); void FUN_141656a50(__int64 nCharId); void FUN_141653d10(MS2Ptr<CItem> spItem); };   // C3: unit-local view
-class FittingDollPC : public efd::MemObject { public: FittingDollPC(); char m_pad[0x1300]; int FUN_14121bab0(int nItemId); void FUN_14121c6e0(void* p); };   // C3: unit-local view
+class PC { public: int IsInCubeMode(); int IsCubeMode1(); __int64 GetAccountId(); void FUN_141656a50(__int64 nCharId); void AddItemAndPreloadModels(MS2Ptr<CItem> spItem); };   // C3: unit-local view
+class FittingDollPC : public efd::MemObject { public: FittingDollPC(); char m_pad[0x1300]; int InitFromItem(int nItemId); void FUN_14121c6e0(void* p); };   // C3: unit-local view
 class Unk_CMISRoster { };
 class Unk_CMISWorld : public WorldService
 {
@@ -322,7 +322,7 @@ struct Unk_CMISPt3 { float x, y, z; };   // C3: its Vector3 ctor was NiPoint3(co
 struct Unk_RayCastInfo { Unk_RayCastInfo(); __int64 m_q0, m_q1, m_q2, m_q3, m_q4, m_q5; egf::Entity* m_pEntity; __int64 m_q7, m_q8, m_q9, m_q10, m_q11, m_q12; };   // physxhelper.h's (0x68; it is not included here)
 // C3: Unk_CMISRayHit was Unk_RayCastInfo (FUN_140ad4440 = its ctor)
 class CPhysXHelper;
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 struct Unk_RayCastInfo;   // C3: FUN_14168a310 = CPhysXHelper::RayCastFixedDirection (physxhelper.h)
 class Unk_CMISPhysScene
 {
@@ -334,13 +334,13 @@ public:
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
-    class NxScene* FUN_14168a1c0();
+    class NxScene* GetNxScene();
 public:
     void FUN_14168a540(int);   // C3: was free FUN_14168a540
 public:
-    void FUN_14168a570();   // C3: was free FUN_14168a570
+    void Unlock();   // C3: was free Unlock
     bool FUN_141689a10(egf::Entity* pEntity); int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen, Vector3* pDir, int nFlags);   // 0x14168a310
-    void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const class NxGroupsMask* pMask, int bRefresh);
+    void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const class NxGroupsMask* pMask, int bRefresh);
 };
 void FUN_1411554c0(Unk_CMISTree<257>*, const Unk_CMISEntityRef*);
 void FUN_1411556d0(Unk_CMISTree<258>*, const Unk_CMISEntityRef*);
@@ -492,7 +492,7 @@ bool CubeMapInformationService::HasCubeAtCell(Unk_Int3 cell)
 }
 
 // @0x1410b7fe0
-Unk_CMISTree<287>* CubeMapInformationService::FUN_1410b7fe0(int nKey)
+Unk_CMISTree<287>* CubeMapInformationService::GetColumn(int nKey)
 {
     static Unk_CMISTree<287> s_empty;
     if ((reinterpret_cast<CMISEMap_int_Map_int_MS2Ptr_Cube*>(&fc8)->find(nKey) == reinterpret_cast<CMISEMap_int_Map_int_MS2Ptr_Cube*>(&fc8)->end()))
@@ -704,7 +704,7 @@ Cube* CubeMapInformationService::GetCubeByRaycast(Vector3 ptFrom, Vector3* pHit,
         fRange = 150.0f;
     Unk_RayCastInfo hit;
     //
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)ptStart, *pHit, &hit, fRange, 0, 0) != 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection((const Vector3&)ptStart, *pHit, &hit, fRange, 0, 0) != 0)
         return GetCubeByEntity(hit.m_pEntity);
     return 0;
 }
@@ -718,7 +718,7 @@ Vector3 CubeMapInformationService::FUN_1410b9150(Vector3 ptIn)
     Unk_RayCastInfo hit;
     //
     Cube* pCube;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)ptStart, ptDir, &hit, 750.0f, 0, 0) != 0 && (pCube = GetCubeByEntity(hit.m_pEntity)) != 0 && pCube->field70 != 0) {
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection((const Vector3&)ptStart, ptDir, &hit, 750.0f, 0, 0) != 0 && (pCube = GetCubeByEntity(hit.m_pEntity)) != 0 && pCube->field70 != 0) {
         Vector3 ptRes;
         reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&pCube->entity))->operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptRes));
         ptRes.z = ptIn.z;
@@ -869,7 +869,7 @@ int CubeMapInformationService::FUN_1410b9d80(__int64 nId)
     return 0;
 }
 // @0x1410b9e70
-Unk_CubeHeightIndex* CubeMapInformationService::FUN_1410b9e70()
+Unk_CubeHeightIndex* CubeMapInformationService::GetHeightIndex()
 {
     return &f2a8;
 }
@@ -1355,12 +1355,12 @@ void CubeMapInformationService::RemovePhysXActor(Unk_CMISEntityRef ref)
 {
     void* pObj = FindPhysXActor(reinterpret_cast<const egf::EntityID&>(ref));
     if (pObj != 0) {
-        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0());
+        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene());
         if (pScene != 0) {
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
             pScene->RemoveActor(pObj);
             ((class WorldService*)(class Unk_CMISWorld*)(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())))->FUN_141bc8e00();
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
             reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->erase(*reinterpret_cast<const egf::EntityID*>(&ref));
             reinterpret_cast<CMISEMap_EntityID_PropPtr*>(&f58)->erase(*reinterpret_cast<const egf::EntityID*>(&ref));
         }
@@ -1370,12 +1370,12 @@ void CubeMapInformationService::RemovePhysXActor(Unk_CMISEntityRef ref)
 void CubeMapInformationService::DestroyFloorPhysX()
 {
     if (f40 != 0) {
-        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0());
+        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene());
         if (pScene != 0) {
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
             pScene->RemoveActor(f40);
             ((class WorldService*)(class Unk_CMISWorld*)(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())))->FUN_141bc8e00();
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
         }
         f40 = 0;
     }
@@ -1384,12 +1384,12 @@ void CubeMapInformationService::DestroyFloorPhysX()
 void CubeMapInformationService::RemovePhysActor(int nIdx)
 {
     if (f318[nIdx] != 0) {
-        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0());
+        Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene());
         if (pScene != 0) {
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
             pScene->RemoveActor(f318[nIdx]);
             ((class WorldService*)(class Unk_CMISWorld*)(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())))->FUN_141bc8e00();
-            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
         }
         f318[nIdx] = 0;
     }
@@ -1560,7 +1560,7 @@ void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 struct Unk_CMISEntId { Unk_CMISEntId(const Unk_CMISEntId&); __int64 m_id; };
 CCubeMotionManager* GetCubeMotionManager();
 class Unk_CMISMagicCube : public CFunctionCubeService { };
-class CFunctionCubeService* FUN_1409670b0();   // C3: was FUN_1409670b0
+class CFunctionCubeService* GetFunctionCubeService();   // C3: was GetFunctionCubeService
 CStringW Unk_ArcWide(const wchar_t* pSz, int n);
 // C3: the map key is std::pair<int, int>, built by std::make_pair<int&, int&> (0x14111d460)
 //
@@ -1575,12 +1575,12 @@ unsigned FUN_14112e110(char* p);                                                
 char* FUN_141127e90(void*, struct Unk_Key*);   // C3: was FUN_141127e90
 struct Unk_CMISHandle388 { void* m_a; void* m_p; void* m_c; };
 struct Unk_CMISHandle3a8 { void* m_a; void* m_p; void* m_c; };
-struct Unk_CMISHandle16* FUN_14112dfe0(struct Unk_CMISArr16*, unsigned __int64);   // C3: was FUN_14112dfe0
+struct Unk_CMISHandle16* GetAt(struct Unk_CMISArr16*, unsigned __int64);   // C3: was FUN_14112dfe0
 void FUN_14112d9b0(ATL::CAtlArray<Unk_CMISElem3a8*>*, const Unk_CMISHandle3a8*);                    // Add
 class UGCMapDesignInfo;   // C3: forward decl for a rewritten call
 struct Unk_CMISHandle16* FUN_14112e020(struct Unk_CMISArr16*, unsigned __int64);   // C3: was FUN_14112e020
 void FUN_14112da60(ATL::CAtlArray<Unk_CMISElem388*>*, const Unk_CMISHandle388*);                    // Add
-unsigned __int64 FUN_14112d900(struct Unk_CMISArr16*, void const*);   // C3: was FUN_14112d900
+unsigned __int64 Add(struct Unk_CMISArr16*, void const*);   // C3: was FUN_14112d900
 
 // @0x1410c2840
 bool CubeMapInformationService::FUN_1410c2840(Vector3 pt, float fDist)
@@ -1595,7 +1595,7 @@ bool CubeMapInformationService::FUN_1410c2840(Vector3 pt, float fDist)
     reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&spCube->entity))->operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kRot));
     reinterpret_cast<float&>(spCube->fieldD4) = fDist;
     ((CCubeMotionManager*)GetCubeMotionManager())->AddRotate(((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID(), kRot.z, fDist, 200);
-    ((class Unk_CMISMagicCube*)FUN_1409670b0())->FUN_141232330(nKey, fDist);
+    ((class Unk_CMISMagicCube*)GetFunctionCubeService())->FUN_141232330(nKey, fDist);
     return true;
 }
 // @0x1410c3330
@@ -1655,7 +1655,7 @@ void CubeMapInformationService::FUN_1410d59c0(ATL::CAtlArray<MS2Ptr<Cube>>* pOut
     for (unsigned __int64 i = 0; i < ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)(void*)(&a458))->GetCount(); i++) {
         int nKey = (*(ATL::CAtlArray<int>*)(&a458))[i];
         if ((reinterpret_cast<CMISEMap_int_MS2Ptr_Cube*>(&f98)->find(nKey) != reinterpret_cast<CMISEMap_int_MS2Ptr_Cube*>(&f98)->end()))
-            FUN_14112d900((struct Unk_CMISArr16*)(pOut), (void const*)(((MS2Ptr<Cube>*)FUN_141127cd0(&f98, &nKey))));
+            Add((struct Unk_CMISArr16*)(pOut), (void const*)(((MS2Ptr<Cube>*)FUN_141127cd0(&f98, &nKey))));
     }
 }
 
@@ -1746,11 +1746,11 @@ bool CubeMapInformationService::FUN_1410c2610(Unk_Int3 pt)
     }
     return true;
 }
-struct Unk_CMISKeySet;   // C3: the key set is efd::vector<int> (ctor 0x141122d00, dtor 0x141125cb0); FUN_14115a8a0 keeps the opaque name
+struct Unk_CMISKeySet;   // C3: the key set is efd::vector<int> (ctor 0x141122d00, dtor 0x141125cb0); PushBackInt keeps the opaque name
 Unk_CMISIter<264>* FUN_141151970(Unk_CMISTree<264>*, Unk_CMISIter<264>*);                   // end
 Unk_CMISIter<264>* FUN_141157200(Unk_CMISTree<264>*, Unk_CMISIter<264>*, const int*);       // find
 bool FUN_141126c90(Unk_CMISIter<264>*, Unk_CMISIter<264>*);                                 // operator!=
-void FUN_14115a8a0(Unk_CMISKeySet*, Unk_CMISCubeByKey*);                                    // insert
+void PushBackInt(Unk_CMISKeySet*, Unk_CMISCubeByKey*);                                    // insert
 // @0x1410c2a90
 void CubeMapInformationService::FUN_1410c2a90(int nGroup)
 {
@@ -1765,7 +1765,7 @@ void CubeMapInformationService::FUN_1410c2a90(int nGroup)
             continue;
         if (spCube->field50 != nGroup)
             continue;
-        FUN_14115a8a0(reinterpret_cast<Unk_CMISKeySet*>(&set), ((Unk_CMISCubeByKey*)FUN_1411285e0(reinterpret_cast<Unk_IterA<7>*>(&it))));
+        PushBackInt(reinterpret_cast<Unk_CMISKeySet*>(&set), ((Unk_CMISCubeByKey*)FUN_1411285e0(reinterpret_cast<Unk_IterA<7>*>(&it))));
     }
     efd::vector<int>* pSet = &set;
     efd::vector<int>::const_iterator itSetEnd = pSet->end();
@@ -1779,12 +1779,12 @@ struct Unk_CMISEntSet { __int64 m_a, m_b, m_c, m_d, m_e; };                     
 void FUN_141122da0(Unk_CMISEntSet*);
 void FUN_141125d50(Unk_CMISEntSet*);
 class Unk_ContB { public: Unk_ContB& operator=(const Unk_ContB&); };                         // 0x141126870 (unit_1411267c0)
-void FUN_14115a990(Unk_CMISEntSet*, const Unk_CMISEntityRef*);                              // insert
+void PushBackEntityID(Unk_CMISEntSet*, const Unk_CMISEntityRef*);                              // insert
 Unk_CMISIter<271>* FUN_141151cd0(Unk_CMISTree<271>*, Unk_CMISIter<271>*);                   // end
 Unk_CMISIter<271>* FUN_1411579e0(Unk_CMISTree<271>*, Unk_CMISIter<271>*, const int*);       // find
 unsigned char FUN_141126ed0(Unk_CMISIter<271>*, Unk_CMISIter<271>*);                        // operator!=
 char* FUN_141127e50(void*, void*);   // C3: was FUN_141127e50
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 // @0x1410c2ce0
 void CubeMapInformationService::FUN_1410c2ce0(egf::Entity* pEntity)
 {
@@ -1808,10 +1808,10 @@ void CubeMapInformationService::FUN_1410c2ce0(egf::Entity* pEntity)
                 reinterpret_cast<Unk_ContB*>(((struct Unk_CMISEntSet*)FUN_141127e50((void*)(&f1e8), (void*)(&nFound))))->operator=(*reinterpret_cast<Unk_ContB*>(reinterpret_cast<Unk_CMISEntSet*>(&setNew)));
             }
             Unk_CMISEntSet* pSet = ((struct Unk_CMISEntSet*)FUN_141127e50((void*)(&f1e8), (void*)(&nFound)));
-            FUN_14115a990(pSet, ((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(pEntity))->GetEntityID()));
+            PushBackEntityID(pSet, ((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(pEntity))->GetEntityID()));
             if (f1e0 != nFound) {
                 bool bFlag = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, *(bool const*)(&bFlag));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(pEntity), 0xa0b6b179, *(bool const*)(&bFlag));
             }
         }
         }
@@ -1837,7 +1837,7 @@ bool CubeMapInformationService::FUN_1410c3cd0(int nKey)
             Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pRoster == 0)
                 return true;
-            if (((MyPC*)pRoster)->FUN_141527920((void*)FUN_1410c3180()) != 0)
+            if (((MyPC*)pRoster)->IsPartyMemberByAccountId((void*)FUN_1410c3180()) != 0)
                 return false;
         }
     }
@@ -1894,7 +1894,7 @@ int CubeMapInformationService::FUN_1410c8580(int nGroup)
 {
     Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (((MyPC*)(Unk_CMISRoster*)(pRoster))->HasNoHome() == 0) {
-        Unk_BmPtr<UserUGCMapInfo> spParty(((MyPC*)pRoster)->FUN_141523c50());
+        Unk_BmPtr<UserUGCMapInfo> spParty(((MyPC*)pRoster)->GetUGCMapInfo());
         if (spParty.get() != 0) {
             if (spParty->m_n20 == WorldService::GetInstance()->FUN_141bd3060() && spParty->m_n24 == nGroup)
                 return 0x31;
@@ -2046,7 +2046,7 @@ void CubeMapInformationService::FUN_1410d4710(__int64 nId, int nIdx, CStringA st
     if (FUN_1410c3180() != nId)
         return;
     for (unsigned __int64 i = 0; i < ((ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo>, ATL::CElementTraits<MS2Ptr<UGCMapBlueprintInfo>>>*)(void*)(reinterpret_cast<ATL::CAtlArray<Unk_CMISHandle3a8>*>(&a3a8)))->GetCount(); i++) {
-        MS2Ptr<UGCMapBlueprintInfo> spInfo(*reinterpret_cast<const MS2Ptr<UGCMapBlueprintInfo>*>(FUN_14112dfe0((struct Unk_CMISArr16*)(reinterpret_cast<ATL::CAtlArray<Unk_CMISHandle3a8>*>(&a3a8)), i)));
+        MS2Ptr<UGCMapBlueprintInfo> spInfo(*reinterpret_cast<const MS2Ptr<UGCMapBlueprintInfo>*>(GetAt((struct Unk_CMISArr16*)(reinterpret_cast<ATL::CAtlArray<Unk_CMISHandle3a8>*>(&a3a8)), i)));
         if (spInfo.get() != 0 && spInfo->m_nId == nIdx) {
             spInfo->m_strName = strName;
             spInfo->m_nTime = nValue;
@@ -2063,7 +2063,7 @@ void CubeMapInformationService::FUN_1410d4710(__int64 nId, int nIdx, CStringA st
 void CubeMapInformationService::FUN_1410d4680(ATL::CAtlArray<Unk_CMISHandle3a8>* pSrc)
 {
     for (unsigned __int64 i = 0; i < ((ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo>, ATL::CElementTraits<MS2Ptr<UGCMapBlueprintInfo>>>*)(void*)(pSrc))->GetCount(); i++) {
-        MS2Ptr<UGCMapBlueprintInfo> h(*reinterpret_cast<const MS2Ptr<UGCMapBlueprintInfo>*>(FUN_14112dfe0((struct Unk_CMISArr16*)(pSrc), i)));
+        MS2Ptr<UGCMapBlueprintInfo> h(*reinterpret_cast<const MS2Ptr<UGCMapBlueprintInfo>*>(GetAt((struct Unk_CMISArr16*)(pSrc), i)));
         reinterpret_cast<ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >*>(&a3a8)->Add(h);
     }
 }
@@ -2252,7 +2252,7 @@ public:
     void* m_p;
 };
 // @0x1410c7a50
-void CubeMapInformationService::FUN_1410c7a50(int nA, int nB, int nState, __int64 nValue)
+void CubeMapInformationService::SetSaleState(int nA, int nB, int nState, __int64 nValue)
 {
     if ((reinterpret_cast<CMISEMap_std_pair_int_int_MS2Ptr_SaleStateData*>(&fe8)->find(std::make_pair(nA, nB)) == reinterpret_cast<CMISEMap_std_pair_int_int_MS2Ptr_SaleStateData*>(&fe8)->end()) != 0) {
         Unk_CMISHouseRef spNew(new SaleStateData());   // C3: the real SaleStateData ctor (was Unk_CMISSaleState, an alias of it)
@@ -2329,7 +2329,7 @@ int CubeMapInformationService::FUN_1410ca900(int nGroup)
     Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, f1b0);
     if (spOwner == 0)
         return 0;
-    if (spOwner->ownerID == ((PC*)pRoster)->FUN_141656ad0()) {
+    if (spOwner->ownerID == ((PC*)pRoster)->GetAccountId()) {
         Unk_CMISIntList* pList = ((Unk_CMISIntList*)FUN_141127e10((void*)(&fd8), (void*)(&nGroup)));
         if ((reinterpret_cast<CMISESet_int*>(pList)->begin() != reinterpret_cast<CMISESet_int*>(pList)->end()))
             return 1;
@@ -2425,7 +2425,7 @@ void CubeMapInformationService::FUN_1410ce020(MS2Ptr<Cube> spCube)
     if (spItem->FUN_14053d940() || FUN_1408b56c0(spItem) != 0 || FUN_1408b58c0(spItem) != 0) {
         Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pRoster != 0) {
-            if (((PC*)pRoster)->FUN_141656ad0() == GetOwnerId(spCube->field50, spCube->field54))
+            if (((PC*)pRoster)->GetAccountId() == GetOwnerId(spCube->field50, spCube->field54))
                 FUN_1410ce1e0(1, &nItemId);
         }
     }
@@ -2464,7 +2464,7 @@ int CubeMapInformationService::FUN_1410c8670(int nGroup, int* pnFlag)
         bOne = 1;
     Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, bOne);
     if (spOwner.get() != 0) {
-        if (spOwner->ownerID == ((PC*)pPC)->FUN_141656ad0()) {
+        if (spOwner->ownerID == ((PC*)pPC)->GetAccountId()) {
             nResult = 2;
         } else {
             if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae52d0(nMapId, nGroup) != 0)
@@ -2474,7 +2474,7 @@ int CubeMapInformationService::FUN_1410c8670(int nGroup, int* pnFlag)
         }
     } else {
         if (((MyPC*)(Unk_CMISRoster*)(pPC))->HasNoHome() == 0) {
-            Unk_BmPtr<UserUGCMapInfo> spParty(((MyPC*)pPC)->FUN_141523c50());
+            Unk_BmPtr<UserUGCMapInfo> spParty(((MyPC*)pPC)->GetUGCMapInfo());
             if (spParty->m_n24 == nGroup) {
                 if (spParty->m_n20 == WorldService::GetInstance()->FUN_141bd3060())
                     nResult = 2;
@@ -2546,7 +2546,7 @@ void CubeMapInformationService::FUN_1410c4240(int nGroup, int nBlock, const CStr
         request.m_strName = ((struct Unk_CMISConsts*)FUN_1401d31f0())->m_strSaleEffect;
         request.m_nObject = 7;
         *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<Unk_CMISEffReq&>(request).m_pSlot10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(((Unk_CMISEntityRef*)FUN_141127b90((void*)(&ff8), (void*)(&nGroup)))))->operator egf::Entity*()))));
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(request));
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(request));
     }
 }
 // @0x1410c44b0
@@ -2569,7 +2569,7 @@ void CubeMapInformationService::FUN_1410c44b0(int nGroup, int nBlock, int bFlag)
         FUN_1410c2a90(nGroup);
     Unk_CMISRoster* pRoster = ((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pRoster != 0) {
-        if (((PC*)pRoster)->FUN_141656ad0() == spOwner->ownerID)
+        if (((PC*)pRoster)->GetAccountId() == spOwner->ownerID)
             FUN_1410ccc00(nGroup, 0, 0);
     }
     FUN_1408a0eb0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, nBlock);
@@ -2580,7 +2580,7 @@ void CubeMapInformationService::FUN_1410c44b0(int nGroup, int nBlock, int bFlag)
         request.m_strName = ((struct Unk_CMISConsts*)FUN_1401d31f0())->m_strSaleEffect;
         request.m_nObject = 7;
         *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<Unk_CMISEffReq&>(request).m_pSlot10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(((Unk_CMISEntityRef*)FUN_141127b90((void*)(&ff8), (void*)(&nGroup)))))->operator egf::Entity*()))));
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(request));
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(request));
     }
 }
 // ---- w138 batch 5 ----
@@ -2596,7 +2596,7 @@ char* FUN_141128190(void*, void*);   // C3: the glue definer's spelling (unit_14
 unsigned int FUN_1408a0190(int);   // C3: was FUN_1408a0190
 void FUN_1408a0480(Cube*);
 // @0x1410bd080
-bool CubeMapInformationService::FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float fRot, CubeItemInfo* pInfo, const efd::utf8string& strName,
+bool CubeMapInformationService::CreateCube(__int64 nOwner, Unk_Int3 pt, float fRot, CubeItemInfo* pInfo, const efd::utf8string& strName,
     int nField50, int nField54, unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<NoticeCubeInfo> spNotice)
 {
     if (pInfo == 0)
@@ -2650,10 +2650,10 @@ bool CubeMapInformationService::FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float
             if (FUN_1410c35c0() != 0 && (nTreeKey != 0 || nAnim != 0))
                 bPlay = false;
             if (bPlay)
-                ((class CFunctionCubeService*)(class Unk_CMISMagicCube*)(((class Unk_CMISMagicCube*)FUN_1409670b0())))->AddPendingCube(nCell, nObjCode, ((Unk_CMISObjRec*)spData.operator->())->nKind);
+                ((class CFunctionCubeService*)(class Unk_CMISMagicCube*)(((class Unk_CMISMagicCube*)GetFunctionCubeService())))->AddPendingCube(nCell, nObjCode, ((Unk_CMISObjRec*)spData.operator->())->nKind);
             if (spEnt != 0 && ((Unk_CMISObjRec*)spData.operator->())->nKind == 0xb) {
                 bool bOff = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spEnt))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spEnt))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
             }
         }
     } else {
@@ -2668,12 +2668,12 @@ bool CubeMapInformationService::FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float
                 if (spEnt.data()->GetPropertyValue(0x23f9860e, bFlag) == 0) {
                     if (pItem->install.useInstancing == 0) {
                         bool bOff = false;
-                        FUN_14098c6e0((class Unk_CachedEntity*)(spEnt.data()), 0x23f9860e, *(bool const*)(&bOff));
+                        SetCachedBoolProperty((class Unk_CachedEntity*)(spEnt.data()), 0x23f9860e, *(bool const*)(&bOff));
                         bool bOff2 = false;
-                        FUN_14098c6e0((class Unk_CachedEntity*)(spEnt.data()), 0xd9f313f2, *(bool const*)(&bOff2));
+                        SetCachedBoolProperty((class Unk_CachedEntity*)(spEnt.data()), 0xd9f313f2, *(bool const*)(&bOff2));
                     } else if (bFlag) {
                         bool bOn = true;
-                        FUN_14098c6e0((class Unk_CachedEntity*)(spEnt.data()), 0xd9f313f2, *(bool const*)(&bOn));
+                        SetCachedBoolProperty((class Unk_CachedEntity*)(spEnt.data()), 0xd9f313f2, *(bool const*)(&bOn));
                     }
                 }
             }
@@ -2714,7 +2714,7 @@ void CubeMapInformationService::FUN_1410c4850(__int64 nOwner, Unk_Int3 pt, CubeI
         FUN_1410bca70(nOwner, pt, fRot, nField50, nField54, nUnused, nFieldD8);
     } else {
         if (FUN_1410b77e0(pInfo->itemId, reinterpret_cast<Unk_CMISStr*>(&strName)) != 0) {
-            FUN_1410bd080(nOwner, pt, fRot, pInfo, strName, nField50, nField54, bField4c, nUnused,
+            CreateCube(nOwner, pt, fRot, pInfo, strName, nField50, nField54, bField4c, nUnused,
                 nFieldD8, Unk_PayloadPtr<NoticeCubeInfo>(spNotice));
             FUN_1410d4cb0(pInfo->itemId, true);
             if (FUN_1410cb900()) {
@@ -2764,7 +2764,7 @@ void CubeMapInformationService::FUN_1410c4e20(__int64 nOwner, Unk_Int3 pt, CubeI
         FUN_1410c1910(FUN_1408a1430(reinterpret_cast<const NiPoint3&>(ptCell)), 1);
         efd::utf8string strName;
         if (FUN_1410b77e0(pInfo->itemId, reinterpret_cast<Unk_CMISStr*>(&strName)) != 0) {
-            FUN_1410bd080(nOwner, pt, fRot, pInfo, strName, spCube->field50, spCube->field54, bField4c, nUnused, nFieldD8, Unk_PayloadPtr<NoticeCubeInfo>(0));
+            CreateCube(nOwner, pt, fRot, pInfo, strName, spCube->field50, spCube->field54, bField4c, nUnused, nFieldD8, Unk_PayloadPtr<NoticeCubeInfo>(0));
             FUN_1410d4cb0(pInfo->itemId, true);
             if (FUN_1410c35c0() != 0 && FUN_1410cb900())
                 FUN_1410d54f0(true);
@@ -2854,7 +2854,7 @@ Unk_CMISListEnd* FUN_140368110(Unk_CMISCubeList*, Unk_CMISListEnd*);            
 //template <int N> class Unk_Link { public: void* Get() const; };                            // 0x141128400 for N == 1 (unit_141127a90)
 // (Unk_Wrap: declared above FUN_1410d50c0)
 egmAnimation::AnimationService* FUN_141b6f910();   // util.cpp
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
+class Unk_AnimSvc { public: bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
 struct Unk_CMISLimits { char pad[8]; };
 struct Unk_CMISLimitF { float m_f; };
 struct Unk_CMISRules { char pad[0xf80]; Unk_CMISLimitF m_fAtF80; char padF84[0xfd8 - 0xf84]; Unk_CMISLimitF m_fNear; char pad2[0x1138 - 0xfdc]; Unk_CMISLimits m_limits1138; char pad2b[0x1190 - 0x1138 - sizeof(Unk_CMISLimits)]; Unk_CMISLimits m_limits1190; char pad2c[0x1348 - 0x1190 - sizeof(Unk_CMISLimits)]; Unk_CMISLimits m_limits1348; char pad3[0x5078 - 0x1348 - sizeof(Unk_CMISLimits)]; Unk_CMISLimits m_limits5078; char pad4[0xa288 - 0x5078 - sizeof(Unk_CMISLimits)]; Unk_CMISLimits m_limits; };   // game-wide rules (limit tables at 0x1348/0x5078/0xa288)
@@ -2921,7 +2921,7 @@ void CubeMapInformationService::FUN_1410bf610(Unk_CMISCubeList* pPlaced, UGCMapS
         if (spCube == 0)
             continue;
         if (((egf::FlatModel*)(Unk_CMISFlatModel*)(((class Unk_CMISFlatModel*)((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetModel())))->ContainsModel(0x48ccc02d))
-            reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID(), bComplete ? (LPCSTR)sp->m_strAniWork : (LPCSTR)sp->m_strAniIdle, 1.0f, true);
+            reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->PlayAnimation(((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID(), bComplete ? (LPCSTR)sp->m_strAniWork : (LPCSTR)sp->m_strAniIdle, 1.0f, true);
         if (!sp->m_strEffect.IsEmpty()) {
             if (bComplete) {
                 int nUse = GetKeyCount(&sp->m_strEffect);
@@ -2946,7 +2946,7 @@ void CubeMapInformationService::FUN_1410bf610(Unk_CMISCubeList* pPlaced, UGCMapS
                         *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&request.m_p10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*()))));
                 }
                 bool bOff = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x2a7fd9f4, bOff);
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x2a7fd9f4, bOff);
                 int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(request));
                 if (nEffect != 0) {
                     if (reinterpret_cast<CMISEMap_int_MS2Ptr_SetItemEffectInfo*>(&f348)->find(nKey) != reinterpret_cast<CMISEMap_int_MS2Ptr_SetItemEffectInfo*>(&f348)->end()) {
@@ -3086,7 +3086,7 @@ void CubeMapInformationService::FUN_1410ce600(int nItemId, Unk_Int3 pt, int nZ)
     info.count = 0;
     info.look = 0;
     efd::utf8string strName;
-    FUN_1410bd080(FUN_1408a03c0(pt), pt, nZ, &info, strName, 0, 0, 0, 0, 0, Unk_PayloadPtr<NoticeCubeInfo>(0));
+    CreateCube(FUN_1408a03c0(pt), pt, nZ, &info, strName, 0, 0, 0, 0, 0, Unk_PayloadPtr<NoticeCubeInfo>(0));
 }
 class Unk_CMISPawn                                                                          // the local player (slot 18 gives the position)
 {
@@ -3145,14 +3145,14 @@ void CubeMapInformationService::FUN_1410caf20(Cube* pCube, int nTime)
                 reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d6e60(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), false);
         }
         bool bOff = false;
-        FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
+        SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
         Unk_CMISCubeTimer* pTimer = ((struct Unk_CMISCubeTimer*)FUN_141127f10((void*)(&f1f8), (void*)(&nCell)));
-        pTimer->m_timer.FUN_140868750(nTime - ((class CMainSystem*)(class Unk_CMISClock*)(reinterpret_cast<Unk_CMISClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390());
+        pTimer->m_timer.FUN_140868750(nTime - ((class CMainSystem*)(class Unk_CMISClock*)(reinterpret_cast<Unk_CMISClock*>(TSingleton<CMainSystem>::GetInstance())))->GetServerTick());
         ((const egf::EntityPtr*)(&pCube->entity))->operator->()->GetPropertyValue(0x2a7fd9f4, pTimer->m_bFlagA);
         ((const egf::EntityPtr*)(&pCube->entity))->operator->()->GetPropertyValue(0x9004569a, pTimer->m_bFlagB);
         if (pCube->field44 != 1) {
             unsigned short nShape = 5;
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), nShape, 0, 1);
+            ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), nShape, 0, 1);
         }
 }
 void FUN_140de8bd0(egf::Entity*, unsigned, efd::AssetID*);
@@ -3188,7 +3188,7 @@ class CAddressTable { public: static CStringW GetText(int nId); };   // C3: the 
 // @0x1410bbf20
 void CubeMapInformationService::FUN_1410bbf20(int nGroup, egf::EntityID id)
 {
-    egf::EntityPtr spEnt(static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(id));
+    egf::EntityPtr spEnt(static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(id));
     *(egf::EntityPtr*)(((Unk_CMISEntityRef*)FUN_141127b90((void*)(&ff8), (void*)(&nGroup)))) = spEnt;
     Vector3 pt = DAT_143b01a60;
     reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&spEnt))->operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
@@ -3231,16 +3231,16 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc7f0(Vector3 ptPos, Vector3 p
     efd::SmartPointer<Unk_CMISDoll> pc = (Unk_CMISDoll*)EE_NEW FittingDollPC;      // held to the end: the exe releases it on both exits
     ((PC*)(pc).operator->())->FUN_141656a50(0);
     ((FittingDollPC*)(pc).operator->())->FUN_14121c6e0(0);
-    ((GameObject*)(pc).operator->())->FUN_14123c5a0(nIdx);
+    ((GameObject*)(pc).operator->())->SetObjectId(nIdx);
     pc->vfunc_19(ptPos);
     pc->vfunc_21(ptRot);
-    if (((FittingDollPC*)(pc).operator->())->FUN_14121bab0(nItemId) == 0)
+    if (((FittingDollPC*)(pc).operator->())->InitFromItem(nItemId) == 0)
         return egf::EntityPtr(0);
     ((WorldService*)(Unk_CMISWorldBind*)(((Unk_CMISWorldBind*)reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance()))))->FUN_141bbb1e0((GameObject*)(Unk_CMISDoll*)(pc), 0, 1);
     //
     //
-    AddEntityRef(*(Unk_Int3*)&ptPos, ((GameObject*)(pc).operator->())->FUN_14123c460());
-    return egf::EntityPtr(((GameObject*)(pc).operator->())->FUN_14123c410());
+    AddEntityRef(*(Unk_Int3*)&ptPos, ((GameObject*)(pc).operator->())->GetEntityID());
+    return egf::EntityPtr(((GameObject*)(pc).operator->())->GetEntity());
 }
 
 // @0x1410bc3d0
@@ -3250,22 +3250,22 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(MS2Ptr<FittingDollData> 
     efd::SmartPointer<Unk_CMISDoll> pc = (Unk_CMISDoll*)EE_NEW FittingDollPC;      // held to the end: the exe releases it on both exits
     ((PC*)(pc).operator->())->FUN_141656a50(CMIS_DOLL(rec)->instanceId);
     ((FittingDollPC*)(pc).operator->())->FUN_14121c6e0((void*)CMIS_DOLL(rec)->instanceId);
-    ((GameObject*)(pc).operator->())->FUN_14123c5a0(CMIS_DOLL(rec)->kind);
+    ((GameObject*)(pc).operator->())->SetObjectId(CMIS_DOLL(rec)->kind);
     pc->vfunc_19(reinterpret_cast<const Vector3&>(CMIS_DOLL(rec)->position));
     pc->vfunc_21(reinterpret_cast<const Vector3&>(CMIS_DOLL(rec)->rotation));
-    if (((FittingDollPC*)(pc).operator->())->FUN_14121bab0(CMIS_DOLL(rec)->field28) == 0)
+    if (((FittingDollPC*)(pc).operator->())->InitFromItem(CMIS_DOLL(rec)->field28) == 0)
         return egf::EntityPtr(0);
     if (CMIS_DOLL(rec)->field44 != 0) {
         for (size_t i = 0; i < CMIS_DOLL(rec)->items.GetCount(); i++) {
             MS2Ptr<CItem> e = CMIS_DOLL(rec)->items[i];
-            ((PC*)(pc).operator->())->FUN_141653d10(e);
+            ((PC*)(pc).operator->())->AddItemAndPreloadModels(e);
         }
     }
     ((WorldService*)(Unk_CMISWorldBind*)(((Unk_CMISWorldBind*)reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance()))))->FUN_141bbb1e0((GameObject*)(Unk_CMISDoll*)(pc), 0, 1);
     //
     //
-    AddEntityRef(*(Unk_Int3*)&CMIS_DOLL(rec)->position, ((GameObject*)(pc).operator->())->FUN_14123c460());
-    return egf::EntityPtr(((GameObject*)(pc).operator->())->FUN_14123c410());
+    AddEntityRef(*(Unk_Int3*)&CMIS_DOLL(rec)->position, ((GameObject*)(pc).operator->())->GetEntityID());
+    return egf::EntityPtr(((GameObject*)(pc).operator->())->GetEntity());
 }
 
 // ---- w138 batch 13 ----
@@ -3277,8 +3277,8 @@ void* FUN_141129a80(struct Unk_TreeIter*);   // C3: was FUN_141129a80
 // C3: FUN_140965820 = Unk_PayloadPtr<CubeOwner>::get (call sites use .get())
 void FUN_1408a8790(Unk_CubeOwnerPtr*);                                                      // dtor
 void FUN_1408a8720(egf::EntityPtr*);                                                        // dtor
-float FUN_140966f00(Vector3 ptA, Vector3 ptB);                              // distance
-void FUN_14115a960(void*, void*);   // C3: was FUN_14115a960
+float GetDistance(Vector3 ptA, Vector3 ptB);                              // distance
+void PushBackEntityPtr(void*, void*);   // C3: was PushBackEntityPtr
 // The ordering the entity list is sorted with, as cubemapinformationservice_tail10.cpp declares it.
 class GameObject; struct Unk_DkNearer   // C3: was Unk_CMISByDistance (operator() 0x14112cbc0, unit_14112ab60)
 {
@@ -3313,9 +3313,9 @@ void CubeMapInformationService::FUN_1410bb610(unsigned nMask, PCBase* pPawn, flo
             Vector3 ptPawn = reinterpret_cast<Unk_CMISPawn*>(pPawn)->vfunc_18();
             Vector3 ptEnt = DAT_143b01a60;
             reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&spEnt))->operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptEnt));
-            float fD = FUN_140966f00(ptPawn, ptEnt);
+            float fD = GetDistance(ptPawn, ptEnt);
             if (fD < fDist)
-                FUN_14115a960((void*)(pOut), (void*)(&spEnt));
+                PushBackEntityPtr((void*)(pOut), (void*)(&spEnt));
         }
     }
     std::sort(pOut->begin(), pOut->end(), Unk_DkNearer(reinterpret_cast<GameObject*>(pPawn)));
@@ -3325,7 +3325,7 @@ void CubeMapInformationService::FUN_1410bb610(unsigned nMask, PCBase* pPawn, flo
 struct Unk_CMISObjRec30 { char m_pad[0x30]; int m_n30; char m_pad34[0xc]; void* m_pKind; };
 class Unk_CMISObj498 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual int vfunc_2(void* pCtx, void* pRec, int nCell, __int64 nOwner, void* pItem); };
 int FUN_141126a70(Unk_CMISObjHandle*);                                                                // IsNull
-class CFunctionCubeObject* FUN_141225470(int);   // C3: was FUN_141225470
+class CFunctionCubeObject* CreateCubeObject(int);   // C3: was CreateCubeObject
 
 // @0x1410d0000
 void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
@@ -3335,7 +3335,7 @@ void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
         return;
     {
         if (((Unk_CMISObjRec30*)spData.operator->())->m_n30 != 0) {
-            MS2Ptr<CFunctionCubeObject> slot((FUN_141225470(((Unk_CMISObjRec*)spData.operator->())->nKind)));
+            MS2Ptr<CFunctionCubeObject> slot((CreateCubeObject(((Unk_CMISObjRec*)spData.operator->())->nKind)));
             Vector3 ptCube = *(Vector3*)&spCube->position;
             Unk_CMISObj498* pObj = ((Unk_CMISObj498*)(void*)((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->());
             void* pItem = ((void*)((MS2Ptr<CubeItemInfo>*)(void*)(&spCube->item))->get());
@@ -3351,7 +3351,7 @@ void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
                 CString strKey;
                 strKey.Format("%d_%d", spCube->field44, MS2_FUN_1408a03c0_REF(Unk_Int3(*(Unk_Int3*)&spCube->position)));
                 ((class CFunctionCubeObject*)(class Unk_CMISObj498*)(((Unk_CMISObj498*)(void*)((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->())))->SetId(strKey);
-                ((class Unk_CMISMagicCube*)FUN_1409670b0())->AddCube(MS2Ptr<CFunctionCubeObject>(slot));
+                ((class Unk_CMISMagicCube*)GetFunctionCubeService())->AddCube(MS2Ptr<CFunctionCubeObject>(slot));
                 int nKind = ((Unk_CMISObjRec*)spData.operator->())->nKind;
             }
         }
@@ -3360,7 +3360,7 @@ void CubeMapInformationService::FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube)
 
 // ---- w138 batch 15 ----
 class AdditionalLevelData;   // C3: forward decl for a rewritten call
-float FUN_140966ea0(Vector3 ptA, Vector3 ptB);                              // distance
+float GetPlanarDistance(Vector3 ptA, Vector3 ptB);                              // distance
 
 // @0x1410c93c0
 void CubeMapInformationService::FUN_1410c93c0()
@@ -3388,7 +3388,7 @@ void CubeMapInformationService::FUN_1410c93c0()
         if (reinterpret_cast<egf::EntityPtr&>(f158).operator egf::Entity*() != 0) {
             Vector3 ptEnt = DAT_143b01a60;
             reinterpret_cast<egf::Entity*>(reinterpret_cast<egf::Entity*>(reinterpret_cast<egf::EntityPtr&>(f158).operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptEnt));
-            float fDist = FUN_140966ea0(ptEnt, pPawn->vfunc_18());
+            float fDist = GetPlanarDistance(ptEnt, pPawn->vfunc_18());
             if (fDist >= (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_CMISRules*)GetClientConstants())->m_limits1348)->Get()) {
                 int nVal = 0;
                 reinterpret_cast<egf::Entity*>(reinterpret_cast<egf::EntityPtr&>(f158).operator->())->GetPropertyValue<int>(0x85ef19e7, nVal);
@@ -3423,7 +3423,7 @@ int CubeMapInformationService::FUN_1410c7110(int* pCell)
         return 0;
     if (spCube->field58 == 1)
         return 0;
-    egf::EntityPtr spEnt(reinterpret_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(*reinterpret_cast<const egf::EntityID*>(((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID()))));
+    egf::EntityPtr spEnt(reinterpret_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(*reinterpret_cast<const egf::EntityID*>(((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID()))));
     if ((&spEnt)->operator==((egf::Entity*)(0)))
         return 0;
     Vector3 ptDir;
@@ -3462,7 +3462,7 @@ int CubeMapInformationService::FUN_1410c7500(CString* pOut)
             MS2Ptr<Unk_WsB_Lift> spNpc(*itCur);
             if (reinterpret_cast<CLiftableObject*>(spNpc.operator->())->CanLift() == 0)
                 continue;
-            Vector3 ptNpc = reinterpret_cast<CLiftableObject*>(spNpc.operator->())->FUN_141447c80();
+            Vector3 ptNpc = reinterpret_cast<CLiftableObject*>(spNpc.operator->())->GetPosition();
             Unk_Int3 cellNpc = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(ptNpc));
             Vector3 ptDelta = (ptNpc - pPawn->vfunc_18());
             ptDelta.z = 0.0f;
@@ -3493,7 +3493,7 @@ void CubeMapInformationService::FUN_1410c8a90()
     Unk_CMISPawn* pPawn = reinterpret_cast<Unk_CMISPawn*>(((Unk_CMISRoster*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPawn == 0)
         return;
-    MS2Ptr<CFunctionCubeObject> slot = ((class Unk_CMISMagicCube*)FUN_1409670b0())->FUN_141230f60(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<PCBase*>(pPawn)->FUN_1416767d0())), reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CMISRules*)GetClientConstants())->m_fAtF80)->Read(), ((PC*)pPawn)->FUN_141656ad0());
+    MS2Ptr<CFunctionCubeObject> slot = ((class Unk_CMISMagicCube*)GetFunctionCubeService())->FUN_141230f60(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<PCBase*>(pPawn)->FUN_1416767d0())), reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CMISRules*)GetClientConstants())->m_fAtF80)->Read(), ((PC*)pPawn)->GetAccountId());
     bool bShown = (((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->get() ? true : false) && ((Unk_CMISObjInfo*)(void*)((MS2Ptr<FunctionCubeData>*)(void*)(const_cast<MS2Ptr<FunctionCubeData>*>(&static_cast<const MS2Ptr<FunctionCubeData>&>(static_cast<CHomemadeCubeObject*>(((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->())->FUN_140ca6580()))))->operator->())->m_nShown != 0;
     if (bShown) {
         if ((((MS2Ptr<CFunctionCubeObject>*)(void*)(&f480))->get() ? true : false) && static_cast<const egf::EntityID&>(((MS2Ptr<CFunctionCubeObject>*)(void*)(&slot))->operator->()->GetEntityId()).operator==(static_cast<const egf::EntityID&>(((MS2Ptr<CFunctionCubeObject>*)(void*)(&f480))->operator->()->GetEntityId()))) {
@@ -3645,8 +3645,8 @@ void CubeMapInformationService::FUN_1410c9db0()
         if (pTimer->m_timer.FUN_140868c00() != 0) {
             reinterpret_cast<CMISESet_int*>(&setDone)->insert(nKey);
             Cube* pCube = ((MS2Ptr<Cube>*)FUN_141127cd0(&f98, &nKey))->get();
-            FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0x9004569a, *(bool const*)(&pTimer->m_bFlagB));
-            FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0x2a7fd9f4, *(bool const*)(&pTimer->m_bFlagA));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0x9004569a, *(bool const*)(&pTimer->m_bFlagB));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0x2a7fd9f4, *(bool const*)(&pTimer->m_bFlagA));
             bool bFlag = false;
             ((const egf::EntityPtr*)(&pCube->entity))->operator->()->GetPropertyValue(0x23f9860e, bFlag);
             if (pCube->field44 == 1) {
@@ -3654,7 +3654,7 @@ void CubeMapInformationService::FUN_1410c9db0()
                 request.m_strName = ((struct Unk_CMISConsts*)FUN_1401d31f0())->m_strCubeEffect;
                 request.m_nObject = 7;
                 *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<Unk_CMISEffReq&>(request).m_pSlot10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*()))));
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(request));
+                TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(request));
             }
             if (bFlag) {
                 efd::SmartPointer<Unk_HwService> spInst(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
@@ -3662,11 +3662,11 @@ void CubeMapInformationService::FUN_1410c9db0()
                     reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d6e60(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), true);
             }
             bool bOn = true;
-            FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
             if (pCube->field44 != 1) {
                 unsigned short nEffect = 9;
                 ((const egf::EntityPtr*)(&pCube->entity))->operator->()->GetPropertyValue<unsigned short>(0xada5c5d2, nEffect);
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), nEffect, 0, 1);
+                ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*(), nEffect, 0, 1);
             }
         }
     }
@@ -3698,7 +3698,7 @@ Cube* CubeMapInformationService::FUN_1410badf0(int nGroup, Unk_CMISPawn* pPawn)
             FUN_1408a15b0(cellBest, reinterpret_cast<efd::Point3&>(ptBest));
             Vector3 ptCube;
             FUN_1408a15b0(*(Unk_Int3*)&pCube->position, reinterpret_cast<efd::Point3&>(ptCube));
-            if (FUN_140966f00(pPawn->vfunc_18(), ptCube) < FUN_140966f00(pPawn->vfunc_18(), ptBest))
+            if (GetDistance(pPawn->vfunc_18(), ptCube) < GetDistance(pPawn->vfunc_18(), ptBest))
                 cellBest = *(Unk_Int3*)&pCube->position;
         } else {
             cellBest = *(Unk_Int3*)&pCube->position;
@@ -3720,7 +3720,7 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
     }
     if (spCube->field6c != 0) {
         bool bOn = true;
-        FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x38141815, *(bool const*)(&bOn));
+        SetCachedBoolProperty((class Unk_CachedEntity*)(pEntity), 0x38141815, *(bool const*)(&bOn));
         if (reinterpret_cast<const efd::Point3&>(*(Vector3*)&spCube->offset) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
             GeneratePhysX(egf::EntityPtr((egf::Entity*)pEntity), *(Vector3*)&spCube->offset);
         else
@@ -3731,9 +3731,9 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
         pEntity->SetPropertyValue<efd::utf8string>(0xde5dd580, strName);
     }
     if (spCube->fieldA8 == 8 || spCube->fieldA8 == 9) {
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(pEntity)) {
+        if (((class CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(pEntity)) {
             (pEntity)->SetPropertyValue<int>(0xada5c5d2, spCube->fieldA8);
-            ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(pEntity, (short)spCube->fieldA8, 0, 0);
+            ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(pEntity, (short)spCube->fieldA8, 0, 0);
         }
     }
     int nKey = FUN_1408a03c0(spCube->position);
@@ -3748,7 +3748,7 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
                         reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d6e60(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), false);
                 }
                 bool bOff = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
             }
         }
     }
@@ -3774,7 +3774,7 @@ void CubeMapInformationService::FUN_1410c8e40()
     // The near objects are 16-byte MS2Ptr<CFunctionCubeObject> handles: GetAt steps by 16 (0x141127a10) and the
     // array dtor (0x141123410) releases each one.
     ATL::CAtlArray<MS2Ptr<CFunctionCubeObject>> aNear;
-    ((class Unk_CMISMagicCube*)FUN_1409670b0())->FUN_1412314e0(reinterpret_cast<Vector3&>(ptPawn), reinterpret_cast<ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >&>(aNear));
+    ((class Unk_CMISMagicCube*)GetFunctionCubeService())->FUN_1412314e0(reinterpret_cast<Vector3&>(ptPawn), reinterpret_cast<ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >&>(aNear));
     CMISSet_MS2Ptr_CFunctionCubeObject found;
     for (unsigned __int64 i = 0; i < aNear.GetCount(); i++) {
         MS2Ptr<CFunctionCubeObject> slot(aNear.GetAt(i));
@@ -3841,7 +3841,7 @@ void CubeMapInformationService::FUN_1410bb170(Unk_CMISPawn* pPawn, int nDx, int 
                     FUN_1408a15b0(*((struct Unk_Int3*)FUN_141127ad0((void*)(pMap), (void*)(&pCube->field50))), reinterpret_cast<efd::Point3&>(ptNear));
                     Vector3 ptThis;
                     FUN_1408a15b0(*(Unk_Int3*)&pCube->position, reinterpret_cast<efd::Point3&>(ptThis));
-                    if (FUN_140966f00(pPawn->vfunc_18(), ptThis) < FUN_140966f00(pPawn->vfunc_18(), ptNear))
+                    if (GetDistance(pPawn->vfunc_18(), ptThis) < GetDistance(pPawn->vfunc_18(), ptNear))
                         *((struct Unk_Int3*)FUN_141127ad0((void*)(pMap), (void*)(&pCube->field50))) = pCube->position;
                 } else {
                     *((struct Unk_Int3*)FUN_141127ad0((void*)(pMap), (void*)(&pCube->field50))) = pCube->position;
@@ -3864,7 +3864,7 @@ bool CubeMapInformationService::FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float
     if ((reinterpret_cast<CMISEMap_int_EntityID*>(&f2e0)->find(nCell) == reinterpret_cast<CMISEMap_int_EntityID*>(&f2e0)->end()))
         return false;
     Unk_CMISEntityRef idOld(*((Unk_CMISEntityRef*)FUN_141127ed0((void*)(&f2e0), (void*)(&nCell))));
-    egf::EntityPtr spOld(static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(*reinterpret_cast<const egf::EntityID*>(&idOld)));
+    egf::EntityPtr spOld(static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(*reinterpret_cast<const egf::EntityID*>(&idOld)));
     if ((&spOld)->operator==((egf::Entity*)(0)))
         return false;
     NiPoint3 ptCell = reinterpret_cast<const NiPoint3&>(DAT_143b01a60);
@@ -3904,7 +3904,7 @@ bool CubeMapInformationService::FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float
 #include <NiTexturingProperty.h>
 #include <NiMesh.h>
 #include "ms2/client/ms2/nifeffectparam.h"   // C3: CNifLoadingService::GetTexture
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class Unk_NodeQueue                                                                         // scene walker (0x30 bytes; ctor 0x14098cb80, dtor 0x14098cf00)
 {
 public:
@@ -3925,7 +3925,7 @@ void CubeMapInformationService::FUN_1410cab10(Cube* pCube)
         if (spInst.operator Unk_HwService*() != 0) {
             if (reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d6f40(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*()) != 0) {
                 bool bOn = true;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&pCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
             }
         }
     }
@@ -3945,7 +3945,7 @@ void CubeMapInformationService::FUN_1410cab10(Cube* pCube)
         strTex += ((struct Unk_CMISConsts*)FUN_1401d31f0())->m_strCubeFlash4;
         break;
     }
-    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strTex, 1);
+    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strTex, 1);
     efd::SmartPointer<Unk_HwService> spInst2(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
     NiAVObject* pRoot = FUN_141b6efc0(((const egf::EntityPtr*)(&pCube->entity))->operator egf::Entity*());
     if (pRoot != 0) {
@@ -4229,7 +4229,7 @@ void CubeMapInformationService::FUN_1410be6e0(MS2Ptr<Cube> spCube)
 }
 
 struct Unk_CMISCubePtrSet { void* m_a; void* m_b; void* m_c; };                             // set of cube pointers
-void FUN_14115a900(Unk_CMISCubePtrSet* pSet, Cube** ppCube);                                // insert
+void PushBackCubePtr(Unk_CMISCubePtrSet* pSet, Cube** ppCube);                                // insert
 // C3: FUN_1408a8dd0 = Unk_PayloadPtr<CubeOwner>::operator==
 char* FUN_141128660(Unk_IterA<11>*);                                                       // operator*
 Unk_CMISListIter* FUN_141158620(Unk_CMISIntList*, Unk_CMISListIter*, const int*);           // find
@@ -4280,7 +4280,7 @@ int CubeMapInformationService::FUN_1410b9e90(__int64 nOwnerId, Unk_CMISCubePtrSe
                 Cube* pCube = GetCubeAtCell(cell);
                 if (pCube != 0 && FUN_1407071e0(pCube->fieldB4) != 0 && FUN_140707710(pCube->fieldB4) != 0
                     && FUN_140707660(pCube->fieldB4) == 0)
-                    FUN_14115a900(pOut, &pCube);
+                    PushBackCubePtr(pOut, &pCube);
             }
         }
         break;
@@ -4308,7 +4308,7 @@ void CubeMapInformationService::GeneratePhysX(egf::EntityPtr spEnt, Vector3 pt)
     if ((reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->find(*reinterpret_cast<const egf::EntityID*>(((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spEnt))->operator->()))->GetEntityID()))) != reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->end()) != 0)
         return;
     NxActor* pActor = 0;
-    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0()));
+    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene()));
     if (pScene == 0)
         return;
     efd::Point3 ptPos;
@@ -4331,7 +4331,7 @@ void CubeMapInformationService::GeneratePhysX(egf::EntityPtr spEnt, Vector3 pt)
     actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
     actorDesc.globalPose.t.z += box.dimensions.z;
     actorDesc.globalPose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
     pActor = pScene->createActor(actorDesc);
     if (pActor != 0) {
         pActor->setName("CubeMapInformationService::GeneratePhysX");
@@ -4346,14 +4346,14 @@ void CubeMapInformationService::GeneratePhysX(egf::EntityPtr spEnt, Vector3 pt)
         *reinterpret_cast<void**>(FUN_141128110(&f48, (void*)((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spEnt))->operator->()))->GetEntityID()))) = pActor;
         *((efd::SmartPointer<egfPhysX::EntityActorData>*)FUN_141128150((void*)(&f58), (void*)(((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spEnt))->operator->()))->GetEntityID())))) = sp;
     }
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
 }
 
 // @0x1410c5ba0
 void CubeMapInformationService::GenerateFloorPhysX()
 {
     DestroyFloorPhysX();
-    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0()));
+    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene()));
     if (pScene == 0)
         return;
     if (f218 == 0)
@@ -4382,7 +4382,7 @@ void CubeMapInformationService::GenerateFloorPhysX()
     actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
     actorDesc.globalPose.t.z += box.dimensions.z;
     actorDesc.globalPose.M.rotZ((rot.z * 3.1415927f) / 180.0f);
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
     f40 = pScene->createActor(actorDesc);
     if (f40 != 0) {
         ((NxActor*)f40)->setName("CubeMapInformationService::GenerateFloorPhysX");
@@ -4394,7 +4394,7 @@ void CubeMapInformationService::GenerateFloorPhysX()
         }
         ((NxActor*)f40)->userData = 0;
     }
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
 }
 
 // @0x1410c6100
@@ -4403,7 +4403,7 @@ void CubeMapInformationService::GenerateFloorPhysX()
 void CubeMapInformationService::GenerateAreaPhysX(int n)
 {
     RemovePhysActor(n);
-    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0()));
+    NxScene* pScene = reinterpret_cast<NxScene*>(((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene()));
     if (pScene == 0)
         return;
     efd::Point3 ptLo = reinterpret_cast<const efd::Point3&>(DAT_143b01a60), ptHi = reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
@@ -4453,7 +4453,7 @@ void CubeMapInformationService::GenerateAreaPhysX(int n)
     actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
     actorDesc.globalPose.t.z += box.dimensions.z;
     actorDesc.globalPose.M.rotZ((rot.z * 3.1415927f) / 180.0f);
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
     f318[n] = pScene->createActor(actorDesc);
     if (f318[n] != 0) {
         ((NxActor*)f318[n])->setName("CubeMapInformationService::GenerateAreaPhysX");
@@ -4465,7 +4465,7 @@ void CubeMapInformationService::GenerateAreaPhysX(int n)
         }
         ((NxActor*)f318[n])->userData = 0;
     }
-    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+    ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
 }
 
 // @0x1410c6b90
@@ -4493,9 +4493,9 @@ int CubeMapInformationService::FUN_1410c6b90(unsigned nMask, int* pOutGroup, int
                 continue;
             if (nMode == 2 && !bOwned)
                 continue;
-            if (nMode == 1 && spOwner->ownerID != ((PC*)pRoster)->FUN_141656ad0())
+            if (nMode == 1 && spOwner->ownerID != ((PC*)pRoster)->GetAccountId())
                 continue;
-            if (nMode == 2 && spOwner->ownerID == ((PC*)pRoster)->FUN_141656ad0())
+            if (nMode == 2 && spOwner->ownerID == ((PC*)pRoster)->GetAccountId())
                 continue;
             Unk_CMISHouseRef spHouse(FUN_1410c7c20(nGroup, f1b0));
             if (reinterpret_cast<MS2Ptr<SaleStateData>&>(spHouse).get() != 0 && (nMask & (unsigned)((Unk_CMISHouseRec*)reinterpret_cast<Unk_Link<11>*>(&spHouse)->Get())->m_state) == 0)
@@ -4669,7 +4669,7 @@ int CubeMapInformationService::FUN_1410d27c0(__int64 nOwner, int nMode, int* pCo
 
 // ---- w142 batch 5 ----
 struct Unk_CMISXformVec;                                                    // vector<NiTransform>
-void FUN_14115a9c0(Unk_CMISXformVec* pVec, const NiTransform* pXform);     // push_back
+void PushBackTransform(Unk_CMISXformVec* pVec, const NiTransform* pXform);     // push_back
 struct Unk_CMISMarkRec                                                      // Timer (0x38) + list of the mark entities (0x18); node value of f288
 {
     Unk_CMISMarkRec();      // 0x141122f30
@@ -4711,7 +4711,7 @@ void CubeMapInformationService::FUN_1410cbb40(Unk_CMISXformVec* pOut, int nMode,
             NiPoint3 ptT(reinterpret_cast<const efd::Point3&>(ptLevel));
             xform.m_Translate = reinterpret_cast<const NiPoint3&>(ptT);
             xform.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f, (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);
-            FUN_14115a9c0(pOut, &xform);
+            PushBackTransform(pOut, &xform);
         }
     } else if (nMode == 1) {
         egf::EntityPtr spMark = static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(efd::utf8string("MS2PhysXProp"),
@@ -4758,12 +4758,12 @@ void CubeMapInformationService::FUN_1410c3670()
             if (bDone) {
                 unsigned short nEffect = 9;
                 ((const egf::EntityPtr*)(&spCube->entity))->operator->()->GetPropertyValue<unsigned short>(0xada5c5d2, nEffect);
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), nEffect, 0, 0);
+                ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), nEffect, 0, 0);
                 bool bClear = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x7e5f4195, *(bool const*)(&bClear));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x7e5f4195, *(bool const*)(&bClear));
             }
             bool bOn = true;
-            FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOn));
         } else {
             if (bInstanced) {
                 efd::SmartPointer<Unk_HwService> spInst(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
@@ -4773,12 +4773,12 @@ void CubeMapInformationService::FUN_1410c3670()
             bool bDone = false;
             ((const egf::EntityPtr*)(&spCube->entity))->operator->()->GetPropertyValue(0x7e5f4195, bDone);
             if (!bDone) {
-                ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), 5, 0, 0);
+                ((class CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), 5, 0, 0);
                 bool bSet = true;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x7e5f4195, *(bool const*)(&bSet));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x7e5f4195, *(bool const*)(&bSet));
             }
             bool bOff = false;
-            FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
+            SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0xa0b6b179, *(bool const*)(&bOff));
         }
     }
     GenerateAreaPhysX(1);
@@ -4821,7 +4821,7 @@ public:
     virtual void vf32() = 0;
     virtual void Flush() = 0;                                               // MS2: slot 33
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 struct Unk_CMISObjRef;                                                      // map value: intrusive pointer to a world object
 class Unk_CMISObjMap;
 // (FUN_14112e2b0 / FUN_14112e170 were the const CRBTree<UINT, Unk_WsV118>::GetValueAt / GetNext stand-ins;
@@ -4852,7 +4852,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
     FUN_1410c9db0();
     for (CMISESet_EntityID::iterator itEnt = reinterpret_cast<CMISESet_EntityID*>(&f30)->begin(); (itEnt != reinterpret_cast<CMISESet_EntityID*>(&f30)->end()); ++itEnt) {
         Unk_CMISEntityRef id = *(Unk_CMISEntityRef*)FUN_140a16d80(&itEnt);
-        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf540(*reinterpret_cast<egf::EntityID*>(&id));
+        TSingleton<EntityWorldManager>::GetInstance()->DestroyEntityById(*reinterpret_cast<egf::EntityID*>(&id));
     }
     ((std::_Tree<std::_Tset_traits<egf::EntityID, std::less<egf::EntityID>, efd::CustomAllocator<egf::EntityID>, 0>>*)(void*)(&f30))->clear();
     if (((void*)f208.get()) != 0) {
@@ -4876,7 +4876,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
         }
     }
     if (t3e0.FUN_140868c00() != 0) {
-        ((class Unk_CMISSystem*)FUN_140a6a840())->Flush();
+        ((class Unk_CMISSystem*)GetItemEventDispatcher())->Flush();
         t3e0.FUN_1408687f0();
     }
     if (FUN_1410b7d50() && reinterpret_cast<CMISEMap_int_MS2Ptr_Cube*>(&f88)->size() > 0) {
@@ -4925,7 +4925,7 @@ void CubeMapInformationService::FUN_1410c9710()
         CMISVec_EntityID::const_iterator itEnd = rV.end();
         for (CMISVec_EntityID::const_iterator it = rV.begin(); it != itEnd; ++it) {
             egf::EntityID id = *it;
-            egf::Entity* pEnt = static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(id);
+            egf::Entity* pEnt = static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(id);
             if (pEnt != 0) {
             efd::utf8string strKind("None");
             pEnt->GetPropertyValue<efd::utf8string>(0x15014205, strKind);
@@ -4947,7 +4947,7 @@ void CubeMapInformationService::FUN_1410c9710()
         CMISVec_EntityID::const_iterator itEnd = rV.end();
         for (CMISVec_EntityID::const_iterator it = rV.begin(); it != itEnd; ++it) {
             egf::EntityID id = *it;
-            egf::Entity* pEnt = static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(id);
+            egf::Entity* pEnt = static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(id);
             if (pEnt != 0) {
             efd::utf8string strKind("None");
             pEnt->GetPropertyValue<efd::utf8string>(0x15014205, strKind);
@@ -5028,7 +5028,7 @@ void CubeMapInformationService::FUN_1410ca170()
         Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, f1b0);
         if (spOwner == 0)
             continue;
-        if (spOwner->ownerID == ((PC*)pRoster)->FUN_141656ad0())
+        if (spOwner->ownerID == ((PC*)pRoster)->GetAccountId())
             FUN_1410ccc00(nGroup, 1, 0);
     }
     for (CMISEMap_int_MarkRec::iterator itMark = reinterpret_cast<CMISEMap_int_MarkRec*>(&f288)->begin(); itMark != reinterpret_cast<CMISEMap_int_MarkRec*>(&f288)->end(); ++itMark) {
@@ -5036,7 +5036,7 @@ void CubeMapInformationService::FUN_1410ca170()
         Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, f1b0);
         if (spOwner == 0)
             continue;
-        if (spOwner->ownerID != ((PC*)pRoster)->FUN_141656ad0()) {
+        if (spOwner->ownerID != ((PC*)pRoster)->GetAccountId()) {
             Unk_CMISMarkRec* pRec = &((Unk_CMISMarkEntry*)FUN_141128500(reinterpret_cast<Unk_IterA<0>*>(&itMark)))->m_rec;
             if (reinterpret_cast<Timer*>(pRec->m_b)->FUN_140868c00() != 0)
                 FUN_1410ccc00(nGroup, 0, 0);
@@ -5075,7 +5075,7 @@ Unk_CMISTree<287>* FUN_1411228d0(Unk_CMISTree<287>*);                           
 void FUN_1411258b0(Unk_CMISTree<287>*);                                                     // dtor
 Unk_CMISIter<285>* FUN_141156da0(Unk_CMISTree<285>*, Unk_CMISIter<285>*, const int*);       // find
 //
-class Unk_AvModeSvc* FUN_1409f7c90();
+class Unk_AvModeSvc* GetOptimizer();
 struct Unk_CMISGlue { int Global(); };                                                      // 0x14112f0b0: the client is in a map that needs no instancing refresh
 // @0x1410c06b0
 bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
@@ -5122,7 +5122,7 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
                 *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<Unk_CMISEffReq&>(request).m_pSlot10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*()))));
                 request.m_bFlag32 = true;
                 bool bDrawn = false;
-                FUN_14098c6e0((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x2a7fd9f4, *(bool const*)(&bDrawn));
+                SetCachedBoolProperty((class Unk_CachedEntity*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()), 0x2a7fd9f4, *(bool const*)(&bDrawn));
                 int nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(request));
                 if (nEffect != 0) {
                     if ((reinterpret_cast<CMISEMap_int_u_int*>(&f338)->find(nKey) != reinterpret_cast<CMISEMap_int_u_int*>(&f338)->end()))
@@ -5134,7 +5134,7 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
                 }
             }
         }
-        if (((Unk_CMISGlue*)FUN_1409f7c90())->Global() != 0) {
+        if (((Unk_CMISGlue*)GetOptimizer())->Global() != 0) {
             if (spCube->field48 != 0 && CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060())) {
                 int nHasModel = 0;
                 if (((void*)((MS2Ptr<CubeItemInfo>*)(void*)(&spCube->item))->get()) != 0)
@@ -5150,7 +5150,7 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
                             if (pInst == 0)
                                 pInst = static_cast<EntityInstancing*>(reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d4b40(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), -spCube->field50, 10));
                             if (pInst != 0)
-                                reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d4fe0(pInst, ((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
+                                reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->AddEntityToInstancing(pInst, ((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
                         }
                     }
                 }
@@ -5169,7 +5169,7 @@ bool CubeMapInformationService::FUN_1410c06b0(MS2Ptr<Cube> spCube)
                             pInst = static_cast<EntityInstancing*>(reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d4b40(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*(), -spCube->field50, nW * nH * nD));
                     }
                     if (pInst != 0)
-                        reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d4fe0(pInst, ((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
+                        reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->AddEntityToInstancing(pInst, ((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
                 }
             }
         }
@@ -5227,7 +5227,7 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
     request.m_strName = ((struct Unk_CMISConsts*)FUN_1401d31f0())->m_strRemoveEffect;
     request.m_nObject = 7;
     *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<Unk_CMISEffReq&>(request).m_pSlot10) = (NiAVObject*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*()))));
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(request));
+    TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(request));
     ((std::_Tree<std::_Tmap_traits<int, MS2Ptr<Cube>, std::less<int>, efd::CustomAllocator<std::pair<int const, MS2Ptr<Cube>>>, 0>>*)(void*)(&f98))->erase(*(int const*)(&nKey));
     ((std::_Tree<std::_Tmap_traits<int, MS2Ptr<Cube>, std::less<int>, efd::CustomAllocator<std::pair<int const, MS2Ptr<Cube>>>, 0>>*)(void*)(&fb8))->erase(*(int const*)(&nKey));
     CMISEMap_EntityID_MS2Ptr_Cube::iterator itById = reinterpret_cast<CMISEMap_EntityID_MS2Ptr_Cube*>(&fa8)->find(*reinterpret_cast<const egf::EntityID*>(((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID())));
@@ -5237,7 +5237,7 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
     if (FUN_1407071e0(spCube->fieldB4) != 0) {
         CString strKey;
         strKey.Format("%d_%d", spCube->field44, FUN_1408a03c0(spCube->position));
-        ((class Unk_CMISMagicCube*)FUN_1409670b0())->RemoveCube(strKey);
+        ((class Unk_CMISMagicCube*)GetFunctionCubeService())->RemoveCube(strKey);
         if (FUN_1407072e0(spCube->fieldB4) != 0) {
             if ((reinterpret_cast<CMISEMap_int_EntityID*>(&f108)->find(nKey) != reinterpret_cast<CMISEMap_int_EntityID*>(&f108)->end())) {
                 // held across the remove and the erase, as the exe's SmartPointer<GameObject> (0x140a000f0 / 0x140964870)
@@ -5252,10 +5252,10 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
         *(egf::EntityID*)(((Unk_CMISEntityRef*)FUN_141127ed0((void*)(&f2c8), (void*)(&nKey)))) = *(const egf::EntityID*)&(*((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID()));
     else
         RemovePhysXActor(Unk_CMISEntityRef(*((Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID())));
-    static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf570(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
+    static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->DestroyEntity(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*());
     f2a8.FUN_1410b25a0(pt.x, pt.y, pt.z);
     FUN_1410ce020(spCube);
-    if (((Unk_CMISGlue*)FUN_1409f7c90())->Global() != 0) {
+    if (((Unk_CMISGlue*)GetOptimizer())->Global() != 0) {
         if (spCube->field48 != 0) {
             efd::SmartPointer<Unk_HwService> spInst(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
             if ((spInst.operator Unk_HwService*() != 0 ? true : false) && reinterpret_cast<HardwareInstancingService*>(spInst.operator->())->FUN_1413d6890(((const egf::EntityPtr*)(&spCube->entity))->operator egf::Entity*()) == 0)
@@ -5416,7 +5416,7 @@ public:
 // pointer-array RemoveAll, which freed the buffer without releasing the designs and blueprints.
 struct Unk_CMISArr16;
 void FUN_14112f280(Unk_CMISArr16*);                                                         // RemoveAll
-void FUN_14112f260(Unk_CMISArr16*);                                                         // RemoveAll
+void RemoveAll(Unk_CMISArr16*);                                                         // RemoveAll
 struct Unk_CMISActorEntry { Unk_CMISEntityRef m_key; void* m_pActor; };                     // node value of f48
 Unk_CMISIter<257>* FUN_14114e320(Unk_CMISTree<257>*, Unk_CMISIter<257>*);                   // begin
 char* FUN_141128740(Unk_IterA<18>*);                                                        // operator*
@@ -5436,7 +5436,7 @@ void CubeMapInformationService::FUN_1410d0310()
         CMISVec_EntityPtr::const_iterator itEntEnd = rMarks.end();
         for (CMISVec_EntityPtr::const_iterator itEnt = rMarks.begin(); (*reinterpret_cast<Unk_StdCharIter<0>*>(&itEnt) != *reinterpret_cast<Unk_StdCharIter<0>*>(&itEntEnd)); FUN_14112ab20(reinterpret_cast<Unk_ListNode**>(&itEnt))) {
             egf::EntityPtr spEnt = *(const egf::EntityPtr*)(reinterpret_cast<Unk_Head<1>*>(&itEnt)->Get());
-            static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf570(((const egf::EntityPtr*)(&spEnt))->operator egf::Entity*());
+            static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->DestroyEntity(((const egf::EntityPtr*)(&spEnt))->operator egf::Entity*());
         }
     }
     ((std::_Tree<std::_Tmap_traits<int, Unk_CMISMarkRec, std::less<int>, efd::CustomAllocator<std::pair<int const, Unk_CMISMarkRec>>, 0>>*)(void*)(&f288))->clear();
@@ -5475,7 +5475,7 @@ void CubeMapInformationService::FUN_1410d0310()
         *((int*)FUN_141128250((void*)(&f378), (struct Unk_Key*)(&k))) = 0;
     }
     FUN_14112f280(reinterpret_cast<Unk_CMISArr16*>(&a388));
-    FUN_14112f260(reinterpret_cast<Unk_CMISArr16*>(&a3a8));
+    RemoveAll(reinterpret_cast<Unk_CMISArr16*>(&a3a8));
     reinterpret_cast<CMISEMap_KindA_int*>(&f3c8)->clear();
     f1e8.clear();   // efd::map<int, efd::vector<egf::EntityID> >: the exe's 0x14114f400 ends in ~pair<const int, vector<EntityID>> (0x141125a70)
     reinterpret_cast<CMISEMap_int_KindA*>(&f298)->clear();
@@ -5487,12 +5487,12 @@ void CubeMapInformationService::FUN_1410d0310()
     for (CMISEMap_EntityID_int64::iterator itActor = reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->begin(); itActor != reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->end(); ++itActor) {
         void* pActor = ((Unk_CMISActorEntry*)FUN_141128740(reinterpret_cast<Unk_IterA<18>*>(&itActor)))->m_pActor;
         if (pActor != 0) {
-            Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a1c0());
+            Unk_CMISPhysScene* pScene = ((class Unk_CMISPhysScene*)((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->GetNxScene());
             if (pScene != 0) {
-                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(0);
+                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->FUN_14168a540(0);
                 pScene->RemoveActor(pActor);
                 ((class WorldService*)(class Unk_CMISWorld*)(reinterpret_cast<Unk_CMISWorld*>(WorldService::GetInstance())))->FUN_141bc8e00();
-                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)GetPhysXHelper())))->Unlock();
             }
         }
     }
@@ -5546,7 +5546,7 @@ void CubeMapInformationService::FUN_1410d0310()
 
 // ---- w142 batch 13 ----
 // C3: Unk_CMISXformVec is efd::vector<NiTransform> (ctor 0x141122df0, dtor 0x141125da0, size 0x14115af10).
-// FUN_14115a9c0 / FUN_1410cbb40 keep the opaque Unk_CMISXformVec* (definers in tail9 / here).
+// PushBackTransform / FUN_1410cbb40 keep the opaque Unk_CMISXformVec* (definers in tail9 / here).
 class Unk_Array52; struct Unk_Elem52;
 Unk_Elem52* FUN_141128390(Unk_Array52* pArray, unsigned long long uIndex);           // operator[] (unit_141127a90)
 //
@@ -5573,7 +5573,7 @@ void CubeMapInformationService::FUN_1410cc160(int nKind)
                 continue;
             if (nFlag != 0)
                 continue;
-            if (spOwner->ownerID != ((PC*)pRoster)->FUN_141656ad0() && !FUN_140930c90(spOwner->ownerID) && !FUN_140930d20(spOwner->ownerID))
+            if (spOwner->ownerID != ((PC*)pRoster)->GetAccountId() && !FUN_140930c90(spOwner->ownerID) && !FUN_140930d20(spOwner->ownerID))
                 continue;
             FUN_1410ccc00(nGroup, 0, 0);
             Unk_CMISIntList setSeen;
@@ -5613,7 +5613,7 @@ void CubeMapInformationService::FUN_1410cc160(int nKind)
                 xform.MakeIdentity();
                 xform.m_Translate = ptGuide;
                 xform.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f, (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);
-                FUN_14115a9c0(reinterpret_cast<Unk_CMISXformVec*>(&vecXform), &xform);
+                PushBackTransform(reinterpret_cast<Unk_CMISXformVec*>(&vecXform), &xform);
             }
         }
         efd::AssetID asset;
@@ -5657,7 +5657,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
         int nKey = FUN_1408a03c0(spCube->position);
         if (reinterpret_cast<CMISEMap_int_EntityID*>(&f2e0)->find(nKey) != reinterpret_cast<CMISEMap_int_EntityID*>(&f2e0)->end()) {
             egf::EntityID idCur = *reinterpret_cast<const egf::EntityID*>(((Unk_CMISEntityRef*)FUN_141127ed0((void*)(&f2e0), (void*)(&nKey))));
-            egf::EntityPtr spCur(reinterpret_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf440(idCur));
+            egf::EntityPtr spCur(reinterpret_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FindEntity(idCur));
             if (((const egf::EntityPtr*)(&spCur))->operator egf::Entity*() != 0) {
                 reinterpret_cast<CMISESet_EntityID*>(&f30)->insert(((egf::Entity*)(void*)(pEntity))->GetEntityID());
                 *(egf::EntityPtr*)(reinterpret_cast<Unk_CMISEntityRef*>(&spCube->entity)) = spCur;
@@ -5680,7 +5680,7 @@ void CubeMapInformationService::FUN_1410cf5c0(egf::Entity* pEntity)
         if (spCube->fieldB0 != 0) {
             if (((egf::FlatModel*)(Unk_CMISFlatModel*)(((class Unk_CMISFlatModel*)((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetModel())))->ContainsModel(0x48ccc02d)) {
                 efd::utf8string strOn("On");
-                reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID(), strOn, 1.0f, false);
+                reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->PlayAnimation(((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spCube->entity))->operator->()))->GetEntityID(), strOn, 1.0f, false);
             } else {
                 NiAVObject* pRoot = FUN_141b6efc0(((const egf::EntityPtr*)(reinterpret_cast<Unk_CMISEntityRef*>(&spCube->entity)))->operator egf::Entity*());
                 if (pRoot != 0)
@@ -5738,7 +5738,7 @@ void CubeMapInformationService::FUN_1410cd440()
             continue;
         if (nFlag != 0)
             continue;
-        if (spOwner->ownerID != ((PC*)pRoster)->FUN_141656ad0() && !FUN_140930c90(spOwner->ownerID) && !FUN_140930d20(spOwner->ownerID))
+        if (spOwner->ownerID != ((PC*)pRoster)->GetAccountId() && !FUN_140930c90(spOwner->ownerID) && !FUN_140930d20(spOwner->ownerID))
             continue;
         Unk_CMISIntList* pList = ((Unk_CMISIntList*)FUN_141127e10((void*)(&fd8), (void*)(&nGroup)));
         for (CMISESet_int::iterator it = reinterpret_cast<CMISESet_int*>(pList)->begin(); (it != reinterpret_cast<CMISESet_int*>(pList)->end()); ++it) {
@@ -6029,7 +6029,7 @@ void CubeMapInformationService::FUN_1410ccc00(int nGroup, int nA, int nB)
             CMISVec_EntityPtr::const_iterator itEntEnd = rMarks.end();
             for (CMISVec_EntityPtr::const_iterator itEnt = rMarks.begin(); (*reinterpret_cast<Unk_StdCharIter<0>*>(&itEnt) != *reinterpret_cast<Unk_StdCharIter<0>*>(&itEntEnd)); FUN_14112ab20(reinterpret_cast<Unk_ListNode**>(&itEnt))) {
                 egf::EntityPtr spEnt = *(const egf::EntityPtr*)(reinterpret_cast<Unk_Head<1>*>(&itEnt)->Get());
-                static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf570(((const egf::EntityPtr*)(&spEnt))->operator egf::Entity*());
+                static_cast<Unk_CMISWorldMgr*>(TSingleton<EntityWorldManager>::GetInstance())->DestroyEntity(((const egf::EntityPtr*)(&spEnt))->operator egf::Entity*());
             }
             ((std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>*)(pRec->m_b + 0x38))->clear();
             ((std::_Tree<std::_Tmap_traits<int, Unk_CMISMarkRec, std::less<int>, efd::CustomAllocator<std::pair<int const, Unk_CMISMarkRec>>, 0>>*)(void*)(&f288))->erase(*(int const*)(&nGroup));
@@ -6057,7 +6057,7 @@ MS2_REPLACE_METHOD(0x1410b9950, CubeMapInformationService, HasCubeWithIconCode, 
 MS2_REPLACE_METHOD(0x1410b9a50, CubeMapInformationService, CountCubes, 196, 0x95408E66);
 MS2_REPLACE_METHOD(0x1410b9b20, CubeMapInformationService, CountCubesByItemId, 239, 0x9BF4E278);
 MS2_REPLACE_METHOD(0x1410b9d80, CubeMapInformationService, FUN_1410b9d80, 230, 0x9186AEEE);
-MS2_REPLACE_METHOD(0x1410b9e70, CubeMapInformationService, FUN_1410b9e70, 17, 0xF99D8EA5);
+MS2_REPLACE_METHOD(0x1410b9e70, CubeMapInformationService, GetHeightIndex, 17, 0xF99D8EA5);
 MS2_REPLACE_METHOD(0x1410b9c20, CubeMapInformationService, CountCubesByItemIdAndOwner, 332, 0x3020E9D3);
 MS2_REPLACE_METHOD(0x1410ba440, CubeMapInformationService, DirectionToAngle, 89, 0x086CED8D);
 MS2_REPLACE_METHOD(0x1410bba60, CubeMapInformationService, FUN_1410bba60, 74, 0xA664D743);

@@ -64,7 +64,7 @@ public:
     void InitPetInfo(int, int, int);
 };
 class Unk_PmGameMenu { public:  };
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 class UIInventoryDialog   // C3: member view (real class not in this TU)
 {
 public:
@@ -97,7 +97,7 @@ class Unk_PmSkills : public CSkillSystem { };
 class MyPC   // C3: member view (real class not in this TU)
 {
 public:
-    CSkillSystem* FUN_141523bc0();
+    CSkillSystem* GetSkillSystem();
 };
 class Unk_PmPlayer : public PC
 {
@@ -143,7 +143,7 @@ __int64 FUN_140c8dab0(Unk_PmFixedItem* pRec)
     return pRec->m_nUid;
 }
 // @0x140c8dac0
-Unk_PmFixedItem* FUN_140c8dac0()
+Unk_PmFixedItem* GetInstrumentManager()
 {
     return reinterpret_cast<Unk_PmFixedItem*>(TSingleton<CInstrumentManager>::s_instance);
 }
@@ -249,7 +249,7 @@ CPetInventory::ItemPtr CPetInventory::FindUsableItemById(int nItemId)
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
-        if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+        if (pPlayer->CanUseItem(spItem.get()) == 0)
             continue;
         if (spItem->FUN_1405276c0() == nItemId)
             return spItem;
@@ -309,7 +309,7 @@ CPetInventory::ItemPtr CPetInventory::GetItemByUid(unsigned __int64 nUid)
     return spItem;
 }
 // @0x140c87300
-CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsability)
+CPetInventory::ItemPtr CPetInventory::FindItemByDataId(int nItemId, int bAnyUsability)
 {
     if (nItemId == 0)
         return ItemPtr(0);
@@ -322,7 +322,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
         ItemPtr spItem = m_items.GetValueAt(pos);
         if (!spItem)
             continue;
-        if (bAnyUsability == 0 && pPlayer->FUN_141662eb0(spItem.get()) == 0)
+        if (bAnyUsability == 0 && pPlayer->CanUseItem(spItem.get()) == 0)
             continue;
         if (((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053dc20() == nItemId)
             return spItem;
@@ -393,7 +393,7 @@ int CPetInventory::GetItemCount(int nItemId, int nRarity)
         ItemPtr spItem = m_slots[i];
         if (spItem == 0)
             continue;
-        if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+        if (pPlayer->CanUseItem(spItem.get()) == 0)
             continue;
         if (spItem->FUN_1405276c0() != nItemId)
             continue;
@@ -472,7 +472,7 @@ bool CPetInventory::UseItemById(int nItemId)
 // @0x140c88050
 bool CPetInventory::FUN_140c88050(int nItemId)
 {
-    ItemPtr spItem = FUN_140c87300(nItemId, 0);
+    ItemPtr spItem = FindItemByDataId(nItemId, 0);
     if (spItem == 0)
         return false;
     return UseItemSkill(spItem);
@@ -502,7 +502,7 @@ void CPetInventory::SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nC
         return;
     if (((class CPetManager*)FUN_140535320())->GetSummonUid() == nUid)
         return;
-    ItemPtr spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    ItemPtr spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
         return;
     if (spItem->IsPetItem() != 0)
@@ -512,7 +512,7 @@ void CPetInventory::SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nC
     }
     if (((class CItemData*)(class CItemData*)(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))->FUN_14053cd10())
     {
-        if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->GetItemUid())
+        if (FUN_140c8dab0(GetInstrumentManager()) == spItem->GetItemUid())
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
             return;
@@ -527,7 +527,7 @@ void CPetInventory::SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nC
             return;
         }
     }
-    ItemPtr spPet = g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
+    ItemPtr spPet = g_143ab2a90.FindItemByUid(((class CPetManager*)FUN_140535320())->GetSummonUid());
     if (spPet == 0)
         return;
     if (spPet->IsExpired())
@@ -588,7 +588,7 @@ void CPetInventory::MoveItemToPetInventory(ItemPtr spItem, int nSlot)
     }
     if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
         return;
-    ItemPtr spPet = g_143ab2a90.FUN_140a5d680(pPlayer->FUN_1416769f0());
+    ItemPtr spPet = g_143ab2a90.FindItemByUid(pPlayer->FUN_1416769f0());
     if ((spPet.get() ? true : false) && spPet->IsExpired())
     {
         FUN_140d73bc0(0xc15, 0, 0, CStringW(L""));
@@ -660,7 +660,7 @@ bool CPetInventory::UseItemSkill(ItemPtr spItem)
     request.remap = spLevel->FUN_140804450();
     request.itemUse = true;
     request.item = spItem->GetItemUid();
-    MS2Ptr<CSkillRecord> spRecord = ((Unk_PmSkills*)((MyPC*)(Unk_PmPlayer*)(pPlayer))->FUN_141523bc0())->FUN_141765570(request);
+    MS2Ptr<CSkillRecord> spRecord = ((Unk_PmSkills*)((MyPC*)(Unk_PmPlayer*)(pPlayer))->GetSkillSystem())->FUN_141765570(request);
     if (spRecord == 0)
         return false;
     return pPlayer->vfunc_102(spRecord);
@@ -699,7 +699,7 @@ MS2Ptr<CItem> CPetManager::FindItemByUid(unsigned __int64 nUid)
     MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(nUid);
     if (spItem.get() != 0)
         return spItem;
-    return g_143ab2a90.FUN_140a5d680(nUid);
+    return g_143ab2a90.FindItemByUid(nUid);
 }
 // @0x140c89440
 int CPetManager::CountItems(int nItemId, int nRarity)
@@ -738,7 +738,7 @@ void CPetManager::OnResponsePet(CInPacket& in)
     case 0x11: FUN_140c8a7a0(in); break;
     case 0xb: OnPetLevelUp(in); break;
     case 0xc: FUN_140c8ab80(in); break;
-    case 0x10: FUN_140c8ac50(in); break;
+    case 0x10: OnOtherPetInfo(in); break;
     case 0x13: OnPetError(in); break;
     case 0x15: FUN_140c8afa0(in); break;
     case 0xf: OnPetAutoChanged(in); break;
@@ -777,7 +777,7 @@ void CPetManager::OnPetInfo(CInPacket& in)
         m_info.FUN_1401ffd00(&in);
         if (m_info.identity.name.IsEmpty())
         {
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetSummonUid());
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(GetSummonUid());
             if (spItem == 0)
                 return;
             m_info.identity.name = spItem->FUN_140527b10();
@@ -795,16 +795,16 @@ void CPetManager::OnPetSummoned(CInPacket& in)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
     if (pPlayer == 0)
         return;
-    pPlayer->FUN_141663150(in);
+    pPlayer->ReadPetItem(in);
     pPlayer->FUN_141676a50(pPlayer->FUN_1416769f0(), nValue);
-    ((class CEquipment*)(struct Unk_PCEquipSet*)(pPlayer->FUN_1416561a0()))->FUN_1411e7660();
+    ((class CEquipment*)(struct Unk_PCEquipSet*)(pPlayer->GetEquipment()))->FUN_1411e7660();
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
         ((class CPetManager*)FUN_140535320())->SetSummonUid(pPlayer->FUN_1416769f0());
         Unk_PmInventoryDialog* pInventory = reinterpret_cast<Unk_PmInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
         if (pInventory != 0)
             ((UIInventoryDialog*)(Unk_PmInventoryDialog*)(pInventory))->FUN_14199a3f0(pPlayer->FUN_1416769f0());
-        Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
+        Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FindGameMenuDialog(0x4e28));
         if (pMenu != 0)
         {
             MS2Ptr<CPetData> spRow = ((class CPetManager*)FUN_140535320())->GetSummonedPetRow();
@@ -822,15 +822,15 @@ void CPetManager::OnPetUnsummoned(CInPacket& in)
     if (pPlayer == 0)
         return;
     pPlayer->FUN_141676ab0(nUid);
-    pPlayer->FUN_141663400(MS2Ptr<CItem>(0));
-    ((class CEquipment*)(struct Unk_PCEquipSet*)(pPlayer->FUN_1416561a0()))->FUN_1411e7660();
+    pPlayer->SetPetItem(MS2Ptr<CItem>(0));
+    ((class CEquipment*)(struct Unk_PCEquipSet*)(pPlayer->GetEquipment()))->FUN_1411e7660();
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
         ((class CPetManager*)FUN_140535320())->SetSummonUid(0);
         Unk_PmInventoryDialog* pInventory = reinterpret_cast<Unk_PmInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
         if (pInventory != 0)
             ((UIInventoryDialog*)(Unk_PmInventoryDialog*)(pInventory))->FUN_14199a3f0(nUid);
-        Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
+        Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FindGameMenuDialog(0x4e28));
         if (pMenu != 0)
             ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(0, 0, 0);
         UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
@@ -877,9 +877,9 @@ void CPetManager::OnPetRenamed(CInPacket& in)
         if (spHud.get() != 0)
             ((UIHudEntity::Entity*)(void*)spHud.operator->())->FUN_140f48d80();
     }
-    if (((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()) != 0 && ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0())->FUN_14123c580() == nObjectId)
+    if (((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()) != 0 && ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0())->GetObjectId() == nObjectId)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class CPetManager*)FUN_140535320())->GetSummonUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class CPetManager*)FUN_140535320())->GetSummonUid());
         if (spItem == 0)
             return;
         m_info.identity.FUN_1401ff0f0(identity);
@@ -921,7 +921,7 @@ void CPetManager::FUN_140c8a4b0(CInPacket& in)
         return;
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return;
         spItem->FUN_140528b60(nValue);
@@ -943,7 +943,7 @@ void CPetManager::FUN_140c8a640(CInPacket& in)
         return;
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return;
         spItem->FUN_140528bb0(nLevel);
@@ -961,7 +961,7 @@ void CPetManager::FUN_140c8a7a0(CInPacket& in)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd1290(nObjectId));
     if (pPlayer == 0)
         return;
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
         return;
     spItem->FUN_140526bf0(nFlag);
@@ -991,13 +991,13 @@ void CPetManager::OnPetLevelUp(CInPacket& in)
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PmConfig*)FUN_1401d31f0())->m_strLevelUpEffect;
                 ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pPet));
-                ((NoticeMessage&)(kTarget)).SetActor(pPet->FUN_14123c580());
-                TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+                ((NoticeMessage&)(kTarget)).SetActor(pPet->GetObjectId());
+                TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
             }
         }
         if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
         {
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
             if (spItem == 0)
                 return;
             spItem->FUN_140528bf0(nLevel);
@@ -1023,7 +1023,7 @@ void CPetManager::FUN_140c8ab80(CInPacket& in)
     FUN_141276180(s_strGemUpgradeSound, "");
 }
 // @0x140c8ac50
-void CPetManager::FUN_140c8ac50(CInPacket& in)
+void CPetManager::OnOtherPetInfo(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     int nId = in.ReadInt32();
@@ -1062,9 +1062,9 @@ void CPetManager::FUN_140c8afa0(CInPacket& in)
         return;
     if (pPlayer->FUN_1416769d0() == 0)
         return;
-    if (pPlayer->FUN_141663450() == 0)
+    if (pPlayer->GetPetItem() == 0)
         return;
-    pPlayer->FUN_141663150(in);
+    pPlayer->ReadPetItem(in);
 }
 // @0x140c8b070
 void CPetManager::OnPetAutoChanged(CInPacket& in)
@@ -1142,7 +1142,7 @@ CCPetInfoPacket::Info* CPetManager::GetInfo()
 // @0x140c8b470
 MS2Ptr<CPetData> CPetManager::GetSummonedPetRow()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetSummonUid());
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(GetSummonUid());
     if (spItem == 0)
         return MS2Ptr<CPetData>(0);
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));

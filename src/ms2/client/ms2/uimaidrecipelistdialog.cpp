@@ -143,7 +143,7 @@ class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Consta
 template <typename T> CStringW FormatStringId(int nStringId, const T& arg);
 template <typename T> CStringW BlockFormat(int nStringId, const T& arg);
 CStringW GetStringCommon(int nStringId);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 // Item records and the item bag (the key is the AS name of a bag the movie draws the icons from).
 class Unk_MdItemData : public CPtred
@@ -152,8 +152,8 @@ public:
     CString FUN_14053fdd0();                                // the icon path
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
-void FUN_141415600(const CString& strKey);
+void CreateItemInfoSlot(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
+void DestroyItemInfoSlot(const CString& strKey);
 
 void FUN_14151f200();
 int FUN_1418fc760(const char* szEvent, void* pArgs, int nArgs, void* a4);
@@ -221,7 +221,7 @@ void UIMaidRecipeListDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_178 = 0;
     for (size_t i = 0; i < m_188.GetCount(); i++)
-        FUN_141415600(m_188[i]);
+        DestroyItemInfoSlot(m_188[i]);
 }
 
 // @0x1412dac40
@@ -237,7 +237,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
     TPtrValue<MaidDesc> spInfo = TSingleton<CMaidDescTable>::GetInstance()->Find(m_178);
     if (!spInfo)
         return;
-    FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FormatStringId<CStringW>(0x7c7, spInfo->specialty));
+    SetChildText(FUN_1422dbc00(), CString("m_txtTitle"), FormatStringId<CStringW>(0x7c7, spInfo->specialty));
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_scrollList"))
     {
         spList->FUN_1422dd1d0();
@@ -268,7 +268,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
                     int nSlotType = 0x415;
                     CString strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
-                    FUN_141415450(strKey, spItem, (int)i, nSlotType, 0x800);
+                    CreateItemInfoSlot(strKey, spItem, (int)i, nSlotType, 0x800);
                     m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
                     m_188.Add(strKey);
                 }
@@ -455,7 +455,7 @@ void UIManufactureStatus::vfunc_67()
     m_19c = 0;
     UIDialog::vfunc_67();
     for (size_t i = 0; i < m_178.GetCount(); i++)
-        FUN_141415600(m_178[i]);
+        DestroyItemInfoSlot(m_178[i]);
 }
 
 // @0x1412dbc70
@@ -584,7 +584,7 @@ void FUN_1412dc3c0(UIManufactureStatus* pDlg)
     if (pDlg->m_30.IsNull())
         return;
     for (size_t i = 0; i < pDlg->m_178.GetCount(); i++)
-        FUN_141415600(pDlg->m_178[i]);
+        DestroyItemInfoSlot(pDlg->m_178[i]);
     pDlg->m_30->Invoke("destoryAll");
     pDlg->FUN_1412dc480();
 }
@@ -646,7 +646,7 @@ void UIManufactureStatus::FUN_1412dc480()
                 {
                     spItemObj->SetCountClamped(nAmount);
                     strBind.Format("ManufactureStatusPanel_.%d", nIndex + 1);
-                    FUN_141415450(strBind, spItemObj, nIndex, 0x415, 0x800);
+                    CreateItemInfoSlot(strBind, spItemObj, nIndex, 0x415, 0x800);
                     m_178.Add(strBind);
                 }
                 CMsTime tReady(spItem->FUN_140694170());
@@ -699,7 +699,7 @@ void UIManufactureStatus::FUN_1412dc480()
         aRemain.PushBack(Scaleform::GFx::Value(strRemain));
         nIndex++;
     }
-    data.FUN_1409c0d20("count", nCount);
+    data.SetMemberUInt("count", nCount);
     data.FUN_1409adbe0("maidID", aMaidID);
     data.FUN_1409adbe0("maidName", aMaidName);
     data.FUN_1409adbe0("state", aState);
@@ -848,7 +848,7 @@ int FUN_1412dfe70(const CString& strMode, AScript* pTarget);
 int FUN_1412dfa90(AScript* pTarget);
 void FUN_1401d3700(CString& s);                             // lower-cases in place
 struct Unk_MdSingleton;
-CMeratMarketPremium* FUN_141215500();
+CMeratMarketPremium* GetMeratMarketPremium();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_141b6e500(const CString& strDir, const char* szExt, const CString& strDefault);   // pick a file
 int XmlQuery(class TiXmlElement*, char const*, unsigned int&);
@@ -1056,7 +1056,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
     CMeratMarketPremiumProduct* pProduct = spProduct.get();
     pRow->FUN_1407cba60("sn", FUN_1412df3f0(pProduct->m_nId));
     unsigned nItemId = pProduct->m_nItemId;
-    pRow->FUN_1409c0d20("itemID", pProduct->m_nItemId);
+    pRow->SetMemberUInt("itemID", pProduct->m_nItemId);
     pRow->FUN_1407cb9c0("itemGrade", pProduct->m_nGrade);
     {
         MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
@@ -1121,7 +1121,7 @@ int FUN_1412dfbd0()
     else
         TSingleton<CShopCategoryTable>::GetInstance()->Reload(false);
     if (TSingleton<CMeratMarketPremium>::GetInstance() == 0)
-        FUN_141215500();
+        GetMeratMarketPremium();
     TSingleton<CMeratMarketPremium>::GetInstance()->Init();
     return 1;
 }
@@ -1238,7 +1238,7 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
             row.FUN_1409adbe0("indexes", indexes.FUN_1422bb870());
             int nColor = 0xffffff;
             row.FUN_1409c4990("color", nColor);
-            row.FUN_1409c0d20("colorIndex", nColorIndex);
+            row.SetMemberUInt("colorIndex", nColorIndex);
             if (nStringId == -1)
                 nStringId = nCategory;
             row.FUN_1407cb9c0("stringId", nStringId);
@@ -1436,7 +1436,7 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
             ASObj row(2);
             row.FUN_1407cbb20("field", strLabel);
             row.FUN_1407cbb20("code", strCode);
-            row.FUN_1409c0d20("itemID", nItemId);
+            row.SetMemberUInt("itemID", nItemId);
             row.FUN_1409c1180("price", spProduct->GetPriceOf(0));
             row.FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
             row.FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);

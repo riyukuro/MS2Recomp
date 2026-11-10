@@ -24,7 +24,7 @@ class CNifLoadingService   // C3: member view (nifeffectparam.h)
 public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
-Unk_ResourceMgr* FUN_140a0afd0();
+Unk_ResourceMgr* GetNifLoadingService();
 
 // Post-processing service (singleton 0x1409a8b20): enable step by id.
 class PostProcessingService { public: bool SetStepActive(int, bool); };   // C3: the real member (was FUN_1416a3920)
@@ -36,8 +36,8 @@ public:
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n);         // validated global shader constant
-void FUN_1416ba640(efd::SmartPointer<NiTexture> spTexture);                                     // swap the live step's mask texture
+bool UpdateGlobalShaderConstantFloats(NiFixedString& kName, const float* pf, int n);         // validated global shader constant
+void SetScreenMaskTexture(efd::SmartPointer<NiTexture> spTexture);                                     // swap the live step's mask texture
 extern NiFixedString DAT_143ae5340;                                             // mask blend constant name
 
 // @0x140dca0b0
@@ -78,8 +78,8 @@ void ScreenMaskingEffect::vfunc_1()
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-    FUN_1416ba640(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
-    FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
+    SetScreenMaskTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)strPath), 5));
+    UpdateGlobalShaderConstantFloats(DAT_143ae5340, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140dca2a0, ScreenMaskingEffect, vfunc_1, 354, 0x89DB4D6F);
 
@@ -89,7 +89,7 @@ void ScreenMaskingEffect::vfunc_4()
     CScreenEffectBase::vfunc_4();
     float fBlend = 0.0f;
     ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(8, false);
-    FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5340, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140dca410, ScreenMaskingEffect, vfunc_4, 77, 0x6FFAF778);
 
@@ -100,7 +100,7 @@ bool ScreenMaskingEffect::vfunc_6(bool b)
     {
         CString strPath;
         strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-        FUN_1416ba640(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strPath, 5));
+        SetScreenMaskTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(strPath, 5));
         vfunc_7(m_nState, m_fAlpha);
     }
     return true;
@@ -120,7 +120,7 @@ void ScreenMaskingEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fBlend = (m_fBlendMax - m_fBlendMin) * fT + m_fBlendMin;
-    FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
+    UpdateGlobalShaderConstantFloats(DAT_143ae5340, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140dca5d0, ScreenMaskingEffect, vfunc_7, 138, 0x4D971D0B);
 

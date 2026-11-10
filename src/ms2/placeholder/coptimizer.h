@@ -22,7 +22,7 @@ public:
     };
     COptimizer();
     virtual ~COptimizer();
-    int FUN_141215630() const;
+    int GetPreloadMode() const;
     int FUN_1414a5910() const;                              // the frame time limit (m_nFrameDelay; 0 = unlimited)
     int FUN_1414a5a30();                                    // a static option (0x143ae2b48): MS2KFMCache on
     int FUN_1409f7ea0();                                    // item loader thread enabled (InitInstance)
@@ -53,7 +53,7 @@ public:
     void AddSuppressor(egf::EntityID kId);
     void RemoveSuppressor(egf::EntityID kId);
     int IsUpdateEnabled() const;
-    void FUN_14161d130(bool bForce);
+    void UpdateSelectedPlayers(bool bForce);
     void ApplyModeToAllPlayers(int nFlags);
     void ApplyFlagsToPlayer(PCBase* pPC, int nFlags);
     void SetModeAndLimit(int nFlags, int nLimit);

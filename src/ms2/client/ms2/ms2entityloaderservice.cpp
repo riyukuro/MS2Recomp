@@ -34,7 +34,7 @@ MS2_CHECK_OFFSET(Unk_ELSNode, m_isnil, 0x19);
 struct Unk_ELSIt { Unk_ELSNode* m_ptr; };
 
 // ---- in-unit helpers (forward) ----
-void* FUN_1414b4910(void* tree, void* out, void* key);
+void* Find(void* tree, void* out, void* key);
 void* FUN_1414b48b0(void* tree, void* out) noexcept;
 bool FUN_1414b43d0(void* a, void* b);
 bool FUN_1414b4620(char* p);
@@ -63,10 +63,10 @@ struct ELSAccess : egf::EntityLoaderService
 };
 
 // @0x1414b3f50
-bool FUN_1414b3f50(MS2EntityLoaderService* svc, const egf::BlockIdentification& key, unsigned* outA, int* outB)
+bool GetBlockInfo(MS2EntityLoaderService* svc, const egf::BlockIdentification& key, unsigned* outA, int* outB)
 {
     Unk_ELSIt it;
-    FUN_1414b4910((char*)svc + 0x80, &it, (void*)&key);
+    Find((char*)svc + 0x80, &it, (void*)&key);
     Unk_ELSIt e;
     if (FUN_1414b43d0(&it, FUN_1414b48b0((char*)svc + 0x80, &e))) {
         char* info = (char*)FUN_1414b4430((char*)FUN_1414b4410(&it) + 0x38);
@@ -88,7 +88,7 @@ bool ELSAccess::GetBlockEntities(egf::EntityLoaderService* svc, const egf::Block
 {
     egf::BlockIdentification req = static_cast<ELSAccess*>(svc)->GetRequestID(*blk);
     Unk_ELSIt it;
-    FUN_1414b4910((char*)svc + 0x80, &it, &req);
+    Find((char*)svc + 0x80, &it, &req);
     Unk_ELSIt e;
     if (FUN_1414b43d0(&it, FUN_1414b48b0((char*)svc + 0x80, &e))) {
         Unk_ELSBlockInfo* info = (Unk_ELSBlockInfo*)FUN_1414b4430((char*)FUN_1414b4410(&it) + 0x38);
@@ -116,8 +116,8 @@ efd::AsyncResult MS2EntityLoaderService::OnTick()
 void* FUN_1414b4200(void* p);
 void* FUN_1414b4790(void* t);
 void* FUN_1414b4760(void* t);
-void* FUN_1414b4860(void* t, void* n);
-bool FUN_1414b4720(void* t, void* a, void* b);
+void* GetNodeKey(void* t, void* n);
+bool KeyLess(void* t, void* a, void* b);
 void* FUN_1414b4840(void* t);
 void* FUN_1414b4820(void* t);
 void* FUN_1414b42c0(void* p);
@@ -126,7 +126,7 @@ void* FUN_1414b42d0(void* a, void* b, void* c);
 void* FUN_1414b4350(void* a, void* b, void* c);
 void* FUN_1414b4460(void* it);
 void* FUN_1414b4a50(void* p);
-void* FUN_1414b49f0(void* t, void* out, void* key);
+void* LowerBound(void* t, void* out, void* key);
 bool FUN_1414b44f0(void* self, void* a, void* b);
 
 // @0x1414b4200
@@ -138,7 +138,7 @@ Unk_ELSNode* FUN_1414b4210(void* tree, void* key)
     Unk_ELSNode* best = *(Unk_ELSNode**)FUN_1414b4790(tree);
     Unk_ELSNode* cur = best->m_parent;
     while (!cur->m_isnil) {
-        if (FUN_1414b4720(tree, FUN_1414b4860(tree, cur), key)) {
+        if (KeyLess(tree, GetNodeKey(tree, cur), key)) {
             cur = cur->m_right;
         } else {
             best = cur;
@@ -167,25 +167,25 @@ void* FUN_1414b4410(void* it) { return FUN_1414b4a50(FUN_1414b4460(it)); }
 // @0x1414b4430
 void* FUN_1414b4430(void* p) { return *(void**)p; }
 // @0x1414b4440
-char* FUN_1414b4440(long long* p) { return (char*)*p + 0x20; }
+char* GetNodeValue(long long* p) { return (char*)*p + 0x20; }
 // @0x1414b4460
-void* FUN_1414b4460(void* it) { return FUN_1414b4440((long long*)it); }
+void* FUN_1414b4460(void* it) { return GetNodeValue((long long*)it); }
 
 // @0x1414b4480  egf::BlockIdentification::operator< (BlockIdentification.inl), emitted as this map's key compare;
 // the view holds the fields itself, as a base-class view would add a this conversion the exe does not have
 struct Unk_ELSKey {
     efd::AssetID m_blockAsset;
     efd::UInt32 m_instance;
-    bool FUN_1414b4480(const egf::BlockIdentification& other) const;
+    bool IsLess(const egf::BlockIdentification& other) const;
 };
-bool Unk_ELSKey::FUN_1414b4480(const egf::BlockIdentification& other) const
+bool Unk_ELSKey::IsLess(const egf::BlockIdentification& other) const
 {
     if (m_blockAsset == other.m_blockAsset)
         return m_instance < other.m_instance;
     return m_blockAsset < other.m_blockAsset;
 }
 // @0x1414b44f0
-bool FUN_1414b44f0(void* self, void* a, void* b) { return ((Unk_ELSKey*)a)->FUN_1414b4480(*(egf::BlockIdentification*)b); }
+bool FUN_1414b44f0(void* self, void* a, void* b) { return ((Unk_ELSKey*)a)->IsLess(*(egf::BlockIdentification*)b); }
 
 // @0x1414b4520
 // (scalar deleting destructor of MS2EntityLoaderService is compiler-generated)
@@ -198,7 +198,7 @@ struct Unk_1414b4620 {
 // @0x1414b4620
 bool FUN_1414b4620(char* p) { return ((Unk_1414b4620*)p)->m_80; }
 // @0x1414b4720
-bool FUN_1414b4720(void* tree, void* a, void* b) { return FUN_1414b44f0(FUN_1414b4840(tree), a, b); }
+bool KeyLess(void* tree, void* a, void* b) { return FUN_1414b44f0(FUN_1414b4840(tree), a, b); }
 
 void* FUN_1414b47e0(void* p);  void* FUN_1414b4800(void* p);  void* FUN_1414b47f0(void* p);  void* FUN_1414b4810(void* p);
 void* FUN_1414b47c0(void* p);  void* FUN_1414b47d0(void* p);  void* FUN_1414b4890(void* t, void* p);
@@ -225,7 +225,7 @@ void* FUN_1414b4820(void* p) { return FUN_1414b47c0(&((Unk_ELSTree*)p)->m_0); }
 // @0x1414b4840
 void* FUN_1414b4840(void* p) { return FUN_1414b47d0(&((Unk_ELSTree*)p)->m_0); }
 // @0x1414b4860
-void* FUN_1414b4860(void* t, void* n) { return FUN_1414b4890(t, (char*)n + 0x20); }
+void* GetNodeKey(void* t, void* n) { return FUN_1414b4890(t, (char*)n + 0x20); }
 // @0x1414b4890
 void* FUN_1414b4890(void* t, void* p) { return FUN_1414b4200(p); }
 
@@ -238,13 +238,13 @@ void* FUN_1414b48b0(void* tree, void* out) noexcept
 }
 
 // @0x1414b4910
-void* FUN_1414b4910(void* tree, void* out, void* key)
+void* Find(void* tree, void* out, void* key)
 {
     Unk_ELSIt lb;
-    FUN_1414b49f0(tree, &lb, key);
+    LowerBound(tree, &lb, key);
     Unk_ELSIt e, e2, copy;
     Unk_ELSIt* r = (FUN_1414b4390((long long*)&lb, (long long*)FUN_1414b48b0(tree, &e))
-                    || FUN_1414b44f0(FUN_1414b4820(tree), key, FUN_1414b4860(tree, lb.m_ptr)))
+                    || FUN_1414b44f0(FUN_1414b4820(tree), key, GetNodeKey(tree, lb.m_ptr)))
                        ? (Unk_ELSIt*)FUN_1414b48b0(tree, &e2)
                        : &(copy = lb);
     *(Unk_ELSIt*)out = *r;
@@ -252,7 +252,7 @@ void* FUN_1414b4910(void* tree, void* out, void* key)
 }
 
 // @0x1414b49f0
-void* FUN_1414b49f0(void* tree, void* out, void* key)
+void* LowerBound(void* tree, void* out, void* key)
 {
     FUN_1414b4310(out, FUN_1414b4210(tree, key), FUN_1414b42c0(FUN_1414b4760(tree)));
     return out;

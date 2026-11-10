@@ -48,7 +48,7 @@ public:
     NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf);
     NiTexturePtr FUN_1415534d0(CString strKey, NiPixelDataPtr spPixelData, int nPriority);
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: the Unk_UgcTextureCache (calls cast back)
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: the Unk_UgcTextureCache (calls cast back)
 NiImageConverter* FUN_141851720();
 extern NiTexture::FormatPrefs DAT_1439fc800;                // NiSourceTexture's default format preferences
 // The world service and its local player (MyPC).
@@ -872,13 +872,13 @@ MS2_REPLACE(0x14186bd30, LoadUgcTexture, 810, 0x1C895533);
 NiTexturePtr LoadCachedTexture(const CStringW& strPath)
 {
     CString strKey = FUN_14016a600(strPath, 0);
-    NiTexturePtr spTexture = reinterpret_cast<Unk_UgcTextureCache*>(FUN_140a0afd0())->FUN_141553eb0(strKey, NULL);
+    NiTexturePtr spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_141553eb0(strKey, NULL);
     if (spTexture != NULL)
         return spTexture;
     efd::utf8string strFile(FUN_140390ea0(strPath, 0));
     NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile(strFile.c_str(), NULL);
-    NiTexturePtr spLoaded = reinterpret_cast<Unk_UgcTextureCache*>(FUN_140a0afd0())->FUN_1415534d0(strKey, spPixelData, 5);
+    NiTexturePtr spLoaded = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_1415534d0(strKey, spPixelData, 5);
     return spLoaded;
 }
 MS2_REPLACE(0x14186c060, LoadCachedTexture, 707, 0x0965241C);
@@ -1175,8 +1175,8 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                 NiPixelDataPtr spPixelData = kReader.ReadFile(*pFile, NULL);
                 if (spPixelData != NULL)
                 {
-                    if (FUN_140a0afd0())
-                        spTexture = reinterpret_cast<Unk_UgcTextureCache*>(FUN_140a0afd0())->FUN_1415534d0(FUN_14016a5c0(pData->m_strPath, 0), spPixelData, 5);
+                    if (GetNifLoadingService())
+                        spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_1415534d0(FUN_14016a5c0(pData->m_strPath, 0), spPixelData, 5);
                 }
                 else
                 {
@@ -1187,8 +1187,8 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                     if (nConvert == 0)
                     {
                         CStringW strDstFile = converter.GetDstFile();
-                        if (FUN_140a0afd0())
-                            spTexture = reinterpret_cast<Unk_UgcTextureCache*>(FUN_140a0afd0())->GetTextureFrom(FUN_14016a5c0(pData->m_strPath, 0),
+                        if (GetNifLoadingService())
+                            spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->GetTextureFrom(FUN_14016a5c0(pData->m_strPath, 0),
                                                                        FUN_14016a600(strDstFile, 0), 5);
                         if (_waccess(strDstFile, 0) == 0)
                             DeleteFileW(strDstFile);

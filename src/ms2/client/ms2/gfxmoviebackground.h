@@ -79,12 +79,12 @@ public:
     void SetBackgroundColor(unsigned long nColor);                               // 0x14127af40 setBackgroundColor
 
     int AppendScene();                                                   // AppendScene
-    int FUN_14127b290();                                                   // RemoveScene
+    int RemoveScene();                                                   // RemoveScene
     int CreateRenderView();                                                   // CreateRenderView
     int CreateRenderTarget();                                                   // CreateRenderTarget
     int CreateRenderTexture();                                                   // CreateRenderTexture
     int SetBaseTexture(NiRenderedTexture* pTexture);                        // SetBaseTexture
-    CString FUN_14127be10();                                                // the background name handed to "loadBG"
+    CString GetBackgroundName();                                                // the background name handed to "loadBG"
 
 public:
     unsigned m_nCameraFlag;                                                 // +0x90 push "setCameraDistance"

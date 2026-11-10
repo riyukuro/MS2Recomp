@@ -80,7 +80,7 @@ typedef efd::SmartPointer<Unk_WsC_GameObj> Unk_ObjectRef;   // 0x140a000f0 store
 template <> efd::SmartPointer<Unk_WsC_GameObj>::SmartPointer(Unk_WsC_GameObj* pObject);
 template <> efd::SmartPointer<Unk_WsC_GameObj>::~SmartPointer();
 unsigned FUN_141b71120(Unk_ObjectRef kRef);
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class COptimizer   // C3: member view for the former free stand-ins
 {
 public:
@@ -90,7 +90,7 @@ NiAVObject* FUN_141b6ef70(egf::EntityID id);
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
+    unsigned int InsertEffect(class Unk_EffectTarget&);
 };
 unsigned char FUN_1401d1320(void*);
 
@@ -275,16 +275,16 @@ MS2_REPLACE_METHOD(0x1413771F0, CGroundEffectDataManager, GetEffectFiles, 548, 0
 void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strAction)
 {
     PCBase* pPc;
-    if ((pPc = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject))) != 0 && reinterpret_cast<PC*>(pPc)->FUN_141654700() == 0x6e && pPc->vfunc_65() != 0
+    if ((pPc = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pObject))) != 0 && reinterpret_cast<PC*>(pPc)->GetJobGroupId() == 0x6e && pPc->vfunc_65() != 0
         && strAction.Find("run", 0) == 0)
         return;
     CString strGround = static_cast<Unk_GroundOwner*>(pObject)->FUN_141671480();
     if (strGround.IsEmpty())
         return;
-    Unk_ModelKey kModel = static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c460();
+    Unk_ModelKey kModel = static_cast<Unk_GroundOwner*>(pObject)->GetEntityID();
     if (static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c660() != 0)
         return;
-    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->IsUpdateEnabled() == 0)
+    if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->IsUpdateEnabled() == 0)
     {
         if (FUN_141b71120((Unk_WsC_GameObj*)pObject) == 0)
             return;
@@ -296,11 +296,11 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     {
         Unk_EffectQuery query;
         query.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
-        query.SetActor(((class GameObject*)(class GameObject*)(pObject))->FUN_14123c580());
+        query.SetActor(((class GameObject*)(class GameObject*)(pObject))->GetObjectId());
         for (unsigned int i = 0; i < files.GetCount(); i++)
         {
             query.m_strName = files[i];
-            ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&query));
+            ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->InsertEffect(*(class Unk_EffectTarget*)(&query));
         }
     }
 }

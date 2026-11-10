@@ -74,7 +74,7 @@ public:
 };
 
 UIMainPlayerInfo* FUN_140931900(int nUiId);
-UIGameOptionDialog* FUN_140a02e60(int nDialogId);
+UIGameOptionDialog* FindGameOptionDialog(int nDialogId);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
@@ -125,14 +125,14 @@ void CGameOptionInputDefault::vfunc_3(int n)
     if (n == 0)
     {
         CBaseOption::vfunc_3(n);
-        FUN_141252910();
+        BackupKeys();
         FUN_141252460();
         m_bChanged = 0;
         m_bConfirm = 0;
     }
     else
     {
-        FUN_141250cc0(m_nType);
+        RefreshKeyList(m_nType);
     }
 }
 MS2_REPLACE_METHOD(0x141250C10, CGameOptionInputDefault, vfunc_3, 103, 0x93C7A2C7);
@@ -147,7 +147,7 @@ void CGameOptionInputDefault::vfunc_4(int n)
 MS2_REPLACE_METHOD(0x141250C80, CGameOptionInputDefault, vfunc_4, 49, 0x11C004CC);
 
 // @0x141250cc0
-void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
+void CGameOptionInputDefault::RefreshKeyList(int nCategory)
 {
     MS2Ptr<ASScrollingList> spList = GetOptionDialog()->GetTabChild<ASScrollingList>("m_keyList", nCategory);
     if (spList == 0)
@@ -162,9 +162,9 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
         for (POSITION pos = spKeys->GetHeadPosition(); pos != 0; spKeys->GetNext(pos))
         {
             MS2Ptr<CKeySettingParam> spKey = spKeys->GetAt(pos);
-            int nPrimary = FUN_1409331f0()->FUN_14142c940(spKey->m_nAction, 0);
-            int nSecondary = FUN_1409331f0()->FUN_14142c940(spKey->m_nAction, 1);
-            int nThirdly = FUN_1409331f0()->FUN_14142c940(spKey->m_nAction, 2);
+            int nPrimary = FUN_1409331f0()->FindKeyByActionAndPriority(spKey->m_nAction, 0);
+            int nSecondary = FUN_1409331f0()->FindKeyByActionAndPriority(spKey->m_nAction, 1);
+            int nThirdly = FUN_1409331f0()->FindKeyByActionAndPriority(spKey->m_nAction, 2);
             ASObj row(2);
             if (spKey->m_nAction == 0x49409)
             {
@@ -175,7 +175,7 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             else
             {
                 ((class AScript&)(row)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)spKey->m_nAction));
-                row.FUN_1407cba60("keyGUID", FUN_141252540(spKey->m_nAction));
+                row.FUN_1407cba60("keyGUID", ActionToString(spKey->m_nAction));
                 ((class AScript&)(row)).FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(nSecondary));
             }
             ((class AScript&)(row)).FUN_1407cbb20("primaryKey", FUN_1409331f0()->GetKeyName(nPrimary));
@@ -189,7 +189,7 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
     }
     static_cast<ASObj*>(static_cast<AScript*>(spList.operator ASScrollingList*()))->FUN_140e06d60("scrollPosition", dScroll);
     spList.operator ASScrollingList*()->vfunc_24(true);
-    MS2Ptr<ASUIComponent> spTab = GetOptionDialog()->FUN_14124ff50(m_nType);
+    MS2Ptr<ASUIComponent> spTab = GetOptionDialog()->GetTabComponent(m_nType);
     if (static_cast<ASUIComponent*>(spTab) != 0)
         static_cast<AScript*>(spTab.operator->())->Invoke("refreshScrollBar");
 }
@@ -207,14 +207,14 @@ void CGameOptionInputDefault::vfunc_13()
 // @0x1412514e0
 void CGameOptionInputDefault::vfunc_6()
 {
-    FUN_141250cc0(m_nType);
+    RefreshKeyList(m_nType);
 }
 MS2_REPLACE_METHOD(0x1412514E0, CGameOptionInputDefault, vfunc_6, 32, 0xE4042622);
 
 // @0x141251510
 void CGameOptionInputDefault::vfunc_7()
 {
-    FUN_141250cc0(m_nType);
+    RefreshKeyList(m_nType);
 }
 MS2_REPLACE_METHOD(0x141251510, CGameOptionInputDefault, vfunc_7, 32, 0x73BAC012);
 
@@ -224,7 +224,7 @@ int CGameOptionInputDefault::vfunc_8()
 {
     if (m_spEdit == 0)
         return 0;
-    UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
+    UIGameOptionDialog* pDialog = FindGameOptionDialog(0x4ef3);
     if (pDialog == 0)
         return 0;
     if (m_bConfirm != 0)
@@ -325,25 +325,25 @@ int CGameOptionInputDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
     if (_stricmp("OnSelectCategory", pszName) == 0)
     {
         if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
-            FUN_141250cc0(data.PopUInt());
+            RefreshKeyList(data.PopUInt());
         return 1;
     }
     else if (_stricmp("onFocusInPrimary", pszName) == 0)
     {
         if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
-            FUN_1412525c0(data.FUN_1422b8d30(), 0);
+            BeginKeyEdit(data.FUN_1422b8d30(), 0);
         return 1;
     }
     else if (_stricmp("onFocusInSecondary", pszName) == 0)
     {
         if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
-            FUN_1412525c0(data.FUN_1422b8d30(), 1);
+            BeginKeyEdit(data.FUN_1422b8d30(), 1);
         return 1;
     }
     else if (_stricmp("onFocusInThirdly", pszName) == 0)
     {
         if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
-            FUN_1412525c0(data.FUN_1422b8d30(), 2);
+            BeginKeyEdit(data.FUN_1422b8d30(), 2);
         return 1;
     }
     else if (_stricmp("onFocusOutPrimary", pszName) == 0)
@@ -390,7 +390,7 @@ void CGameOptionInputDefault::vfunc_10()
 {
     CBaseOption::vfunc_10();
     FUN_1409331f0()->SendKeysToServer();
-    FUN_141252910();
+    BackupKeys();
     m_mapQuickSlots.RemoveAll();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
@@ -412,9 +412,9 @@ void CGameOptionInputDefault::vfunc_12()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(6, GetStringCommonByKey(L"s_gameoption_input_reset_message"), static_cast<IMessageListener*>(this), CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    int bPad = FUN_140a58540()->FUN_140d8ee40() != 0 ? 1 : 0;
+                    int bPad = FUN_140a58540()->GetPadKind() != 0 ? 1 : 0;
                     CStringW strPad = StringFormat<int>(L"{0}", bPad);
-                    spBox->FUN_140b76940(strPad);
+                    spBox->AddStringArg(strPad);
                     spBox->FUN_141a01800(2);
                     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CGameOptionInputDefault::FUN_1412523d0));
                     FUN_140d73c60(spBox);
@@ -423,12 +423,12 @@ void CGameOptionInputDefault::vfunc_12()
         }
         else
         {
-            FUN_141252200(0);
+            ResetKeysToDefault(0);
         }
     }
     else
     {
-        FUN_141252200(FUN_140a58540()->FUN_140d8ee40());
+        ResetKeysToDefault(FUN_140a58540()->GetPadKind());
     }
 }
 MS2_REPLACE_METHOD(0x141251E90, CGameOptionInputDefault, vfunc_12, 792, 0xC9B934FA);
@@ -441,7 +441,7 @@ CString CGameOptionInputDefault::GetTypeName()
 MS2_REPLACE_METHOD(0x1412521B0, CGameOptionInputDefault, GetTypeName, 61, 0x6290AFE9);
 
 // @0x141252200
-void CGameOptionInputDefault::FUN_141252200(int nPadKind)
+void CGameOptionInputDefault::ResetKeysToDefault(int nPadKind)
 {
     if (FUN_141252c10() != 0)
     {
@@ -478,11 +478,11 @@ void CGameOptionInputDefault::FUN_141252200(int nPadKind)
             pInfo->FUN_1419f19c0();
         FUN_1412532f0(MS2Ptr<CGameOptionInputDefault>(this));
     }
-    if (FUN_141252ca0() != 0)
-        FUN_141250cc0(m_nType);
+    if (IsCurrentTab() != 0)
+        RefreshKeyList(m_nType);
     m_spEdit = 0;
 }
-MS2_REPLACE_METHOD(0x141252200, CGameOptionInputDefault, FUN_141252200, 447, 0xA3356950);
+MS2_REPLACE_METHOD(0x141252200, CGameOptionInputDefault, ResetKeysToDefault, 447, 0xA3356950);
 
 // @0x1412523d0
 bool CGameOptionInputDefault::FUN_1412523d0(int nButton, const CMsgBoxData& data)
@@ -491,9 +491,9 @@ bool CGameOptionInputDefault::FUN_1412523d0(int nButton, const CMsgBoxData& data
     {
         int nPad = _wtoi(data.FUN_141a02d50());
         if (nPad == 0)
-            FUN_141252200(0);
+            ResetKeysToDefault(0);
         else
-            FUN_141252200(FUN_140a58540()->FUN_140d8ee40());
+            ResetKeysToDefault(FUN_140a58540()->GetPadKind());
     }
     return true;
 }
@@ -519,23 +519,23 @@ MS2_REPLACE_METHOD(0x141252460, CGameOptionInputDefault, FUN_141252460, 106, 0x6
 // @0x1412524d0
 void CGameOptionInputDefault::FUN_1412524d0(__int64 nAction, int nPriority)
 {
-    int nKey = FUN_1409331f0()->FUN_14142c940(nAction, nPriority);
+    int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(nAction, nPriority);
     if (nKey != 0)
         FUN_1409331f0()->FUN_14142b1c0(nKey, 0, 0, 0, nPriority, -1);
 }
 MS2_REPLACE_METHOD(0x1412524D0, CGameOptionInputDefault, FUN_1412524d0, 105, 0x3F233A27);
 
 // @0x141252540
-CString CGameOptionInputDefault::FUN_141252540(__int64 nAction)
+CString CGameOptionInputDefault::ActionToString(__int64 nAction)
 {
     CString str;
     str.Format("%I64u", nAction);
     return str;
 }
-MS2_REPLACE_METHOD(0x141252540, CGameOptionInputDefault, FUN_141252540, 119, 0xDEBE352D);
+MS2_REPLACE_METHOD(0x141252540, CGameOptionInputDefault, ActionToString, 119, 0xDEBE352D);
 
 // @0x1412525c0
-void CGameOptionInputDefault::FUN_1412525c0(CString strAction, int nPriority)
+void CGameOptionInputDefault::BeginKeyEdit(CString strAction, int nPriority)
 {
     m_bChanged = 1;
     __int64 nAction = atoi(strAction);
@@ -544,7 +544,7 @@ void CGameOptionInputDefault::FUN_1412525c0(CString strAction, int nPriority)
     MS2Ptr<CKeySettingParam> spKey = FUN_1409331f0()->FindSettingParam(nAction);
     if (spKey.get() != 0)
     {
-        m_nOldKey = FUN_1409331f0()->FUN_14142c940(nAction, nPriority);
+        m_nOldKey = FUN_1409331f0()->FindKeyByActionAndPriority(nAction, nPriority);
         m_spEdit = spKey;
         m_spEdit->m_nPriority = nPriority;
         FUN_1412524d0(nAction, nPriority);
@@ -553,7 +553,7 @@ void CGameOptionInputDefault::FUN_1412525c0(CString strAction, int nPriority)
     }
     FUN_140a02d90(1);
 }
-MS2_REPLACE_METHOD(0x1412525C0, CGameOptionInputDefault, FUN_1412525c0, 300, 0x3E06C36B);
+MS2_REPLACE_METHOD(0x1412525C0, CGameOptionInputDefault, BeginKeyEdit, 300, 0x3E06C36B);
 
 // @0x141252700
 void CGameOptionInputDefault::FUN_141252700(int nKey)
@@ -562,7 +562,7 @@ void CGameOptionInputDefault::FUN_141252700(int nKey)
         return;
     if (FUN_1409331f0()->FUN_14142b1c0(nKey, m_spEdit->m_nType, m_spEdit->m_nAction, 0, m_spEdit->m_nPriority, m_nOldKey) != 0)
     {
-        FUN_141250cc0(m_nType);
+        RefreshKeyList(m_nType);
         m_timer.FUN_140868750(300);
         FUN_1409331f0()->FUN_14142a8b0(m_spEdit->m_nAction);
         m_spEdit = 0;
@@ -581,12 +581,12 @@ void CGameOptionInputDefault::FUN_141252840(int nMsgId)
 MS2_REPLACE_METHOD(0x141252840, CGameOptionInputDefault, FUN_141252840, 201, 0xD16B40F0);
 
 // @0x141252910
-void CGameOptionInputDefault::FUN_141252910()
+void CGameOptionInputDefault::BackupKeys()
 {
     if (m_nId == 9)
         FUN_1409331f0()->BackupKeys();
 }
-MS2_REPLACE_METHOD(0x141252910, CGameOptionInputDefault, FUN_141252910, 38, 0x7A1FD070);
+MS2_REPLACE_METHOD(0x141252910, CGameOptionInputDefault, BackupKeys, 38, 0x7A1FD070);
 
 // @0x141252940
 void CGameOptionInputDefault::FUN_141252940()
@@ -606,7 +606,7 @@ void CGameOptionInputDefault::FUN_141252970()
         FUN_1409331f0()->GetBoundKeys(aSlots);
         for (unsigned int i = 0; i < aSlots.GetCount(); i++)
         {
-            int nSkillId = FUN_1409331f0()->FUN_14142dad0(aSlots[i]);
+            int nSkillId = FUN_1409331f0()->GetSkillIdByKey(aSlots[i]);
             __int64 nItemUid = FUN_1409331f0()->GetQuickSlotItemUidByKey(aSlots[i]);
             int nSlot = FUN_1409331f0()->FindQuickSlotBySkillAndItemUid(nSkillId, nItemUid);
             if (nSlot != -1)
@@ -650,11 +650,11 @@ int CGameOptionInputDefault::FUN_141252c10()
 MS2_REPLACE_METHOD(0x141252C10, CGameOptionInputDefault, FUN_141252c10, 129, 0xAF14C376);
 
 // @0x141252ca0
-int CGameOptionInputDefault::FUN_141252ca0()
+int CGameOptionInputDefault::IsCurrentTab()
 {
     return GetOptionDialog()->FUN_141254590() == m_nType;
 }
-MS2_REPLACE_METHOD(0x141252CA0, CGameOptionInputDefault, FUN_141252ca0, 64, 0xD437D43C);
+MS2_REPLACE_METHOD(0x141252CA0, CGameOptionInputDefault, IsCurrentTab, 64, 0xD437D43C);
 
 // @0x141252cf0
 void CGameOptionInputDefault::FUN_141252cf0(int bRelease)
@@ -669,12 +669,12 @@ MS2_REPLACE_METHOD(0x141252CF0, CGameOptionInputDefault, FUN_141252cf0, 64, 0xB7
 // @0x141252d40
 int CGameOptionInputDefault::FUN_141252d40(int nKey)
 {
-    if (FUN_1409331f0()->FUN_141430b10(m_spEdit->m_nAction) != 0 && FUN_1409331f0()->FUN_141430c30(nKey) == 0)
+    if (FUN_1409331f0()->FUN_141430b10(m_spEdit->m_nAction) != 0 && FUN_1409331f0()->IsGamepadShoulderKey(nKey) == 0)
     {
         FUN_141252840(0x853);
         return 0;
     }
-    if (FUN_1409331f0()->FUN_141430c30(nKey) != 0 &&
+    if (FUN_1409331f0()->IsGamepadShoulderKey(nKey) != 0 &&
         FUN_1409331f0()->FUN_141430b10(FUN_1409331f0()->GetKeyAction(nKey)) != 0 &&
         FUN_1409331f0()->FUN_141430b10(m_spEdit->m_nAction) == 0)
     {
@@ -833,18 +833,18 @@ bool CGameOptionInputDefault::FUN_1412530e0(int* pKey)
 }
 
 // @0x1412532b0
-bool CGameOptionInputDefault::FUN_1412532b0(int nKey)
+bool CGameOptionInputDefault::IsKeyUnassigned(int nKey)
 {
     return FUN_1409331f0()->GetKeyAction(nKey) == 0;
 }
-MS2_REPLACE(0x1412532B0, CGameOptionInputDefault::FUN_1412532b0, 58, 0x0E6A6F96);
+MS2_REPLACE(0x1412532B0, CGameOptionInputDefault::IsKeyUnassigned, 58, 0x0E6A6F96);
 
 // @0x1412532f0
 void CGameOptionInputDefault::FUN_1412532f0(MS2Ptr<CGameOptionInputDefault> sp)
 {
     if (sp == 0 || sp.get()->GetActive() == 0)
         return;
-    ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(sp.get()->FUN_140a02e50())));
+    ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(sp.get()->GetId())));
 }
 
 // @0x1412533f0

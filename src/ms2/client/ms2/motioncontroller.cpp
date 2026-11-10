@@ -115,7 +115,7 @@ bool CMotionController::vfunc_5(double fTime)
     {
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(m_pTarget);
         if (pPc != 0)
-            m_fSpeed = ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())))->FUN_1411e0f50(m_fSpeed);
+            m_fSpeed = ((class CEquipment*)(void*)(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPc)->GetEquipment())))->FUN_1411e0f50(m_fSpeed);
     }
     Vector3 kDir;
     float fTiltSpeed = 0;

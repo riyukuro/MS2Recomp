@@ -30,7 +30,7 @@ MS2_CHECK_SIZE(Unk_QuestItemLink, 0xc);
 enum Unk_QmQuestState { QmQuestState0 = 0, QmQuestState1 = 1, QmQuestState2 = 2, QmQuestState3 = 3, QmQuestState4 = 4,
                         QmQuestState5 = 5 };
 // Quest marker state of an npc (ctor 0x140964630 calls Reset 0x1409669c0; dtor 0x140964e40). Filled by
-// FUN_1416d12d0. cproxygameobject.h's Unk_ProxyValue88 (CProxyGameObject+0x88) is this record with +0x10..+0x1c opaque.
+// GetNpcQuestState. cproxygameobject.h's Unk_ProxyValue88 (CProxyGameObject+0x88) is this record with +0x10..+0x1c opaque.
 struct Unk_QmNpcQuestState
 {
     Unk_QmNpcQuestState();
@@ -46,7 +46,7 @@ struct Unk_QmNpcQuestState
 MS2_CHECK_SIZE(Unk_QmNpcQuestState, 0x20);
 MS2_CHECK_OFFSET(Unk_QmNpcQuestState, m_text, 0x10);
 MS2_CHECK_OFFSET(Unk_QmNpcQuestState, m_wantText, 0x1c);
-// One quest of an npc while FUN_1416d12d0 builds the tooltip list (12 bytes, ctor 0x1416dbba0).
+// One quest of an npc while GetNpcQuestState builds the tooltip list (12 bytes, ctor 0x1416dbba0).
 struct Unk_QmNpcQuestEntry
 {
     int m_score = 0;                    // FUN_1416d1100 flags
@@ -136,29 +136,29 @@ public:
     void FUN_1416cf980(int, int);
     int IsQuestPinned(int);
     void FUN_1416cfc60(int);
-    void FUN_1416cfc70(ATL::CAtlArray<MS2Ptr<CQuest>>&, int, int);
+    void GetQuestsByStateAndGrade(ATL::CAtlArray<MS2Ptr<CQuest>>&, int, int);
     int CountCompletedDailyMissionQuests();
     int CountCompletedLevelGuideQuests();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int CountAvailableLearningQuests();
     Vector3 GetTargetObjectPosition();
     void SendQuestMode15(int);
-    int FUN_1416d0f60(int);
+    int GetChapterBookIdByEpilogue(int);
     unsigned FUN_1416d1100(int, int, int*);
-    int FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all);
+    int GetNpcQuestState(int npcId, Unk_QmNpcQuestState* state, int all);
     void FUN_1416d16c0(int group, ATL::CAtlList<unsigned>& out);
     void FUN_1416d1800(int group, Unk_QmNpcQuestState* best);
-    void FUN_1416d1a30(unsigned questId);
+    void CollectQuestTargetUsers(unsigned questId);
     std::pair<unsigned, __int64> FUN_1416d1e90();   // nearest live user of a tracked quest (quest id, user id)
     const std::set<unsigned __int64>& GetQuestTargets(unsigned questId);   // users found for the quest (empty set if none)
     unsigned GetNextQuestId(int questId, int checkAccept);   // first available follow-up quest
-    int FUN_1416d26c0(int questId, std::list<unsigned>& out, int checkAccept);
+    int GetFollowingQuests(int questId, std::list<unsigned>& out, int checkAccept);
     int FUN_1416d2910(unsigned toQuestId, std::list<std::list<unsigned>>& paths, int verbose);
     void OnQuest(CInPacket& packet);                 // the quest packet
     int FUN_1416d2f30(int chapter, std::list<std::list<unsigned>>& paths, int verbose);
-    void FUN_1416d37c0();                                   // refresh the quest guide, close the quest/world map dialogs
-    void FUN_1416d38a0(int type, int state, int skipGrouped);   // drop the matching quests from the active map
-    int FUN_1416d40a0(int depth, unsigned fromQuestId, unsigned toQuestId, std::list<unsigned>& path,
+    void CloseQuestDialogs();                                   // refresh the quest guide, close the quest/world map dialogs
+    void RemoveQuestsByTypeAndState(int type, int state, int skipGrouped);   // drop the matching quests from the active map
+    int TraceQuestPath(int depth, unsigned fromQuestId, unsigned toQuestId, std::list<unsigned>& path,
         std::list<std::list<unsigned>>& reached, std::list<std::list<unsigned>>* notReached);
     int FUN_1416d3ed0(MS2Ptr<class CQuestData> data, int checkAccept, int job);   // job 200 = the player's
     int FUN_1416d00c0();

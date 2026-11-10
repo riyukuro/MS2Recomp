@@ -161,7 +161,7 @@ template<> Delegate<void(GameEventVariable*)>::~Delegate();
 CMyCharacter* FUN_140931510();
 class CMsgBoxData { public: bool IsCheckbox0Checked(); __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendTable { public:
-    int FUN_1409617d0(int nKind,unsigned nId,const int& nDefault);
+    int GetValue(int nKind,unsigned nId,const int& nDefault);
 };
 
 // The reward items of a day (AttendGiftDataGroup::m_gifts at +0x18; ItemAble at +0x18 of each), viewed as entities.
@@ -194,7 +194,7 @@ class Unk_CadNode : public ASDisplayObjectContainer { public:
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2);
-void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
+void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 void FUN_140d01780(const Scaleform::GFx::Value&,bool);
 int FUN_14053feb0(int);
@@ -288,7 +288,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     bool bPassed=nDay<spEvent->GetAttendedDays();
     ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
     m_disabled->vfunc_4(bPassed);
-    FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
+    SetChildText((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
         if(i>=spDay.operator->()->m_gifts.size()) {
             m_rewardItems[i]->vfunc_4(false);
@@ -306,7 +306,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
 void UICashAttendGifList::FUN_140bc2b10()
 {
     m_disabled->vfunc_4(false);
-    FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",L"");
+    SetChildText((*m_clip).FUN_1422bb890(),"m_title",L"");
     for(unsigned i=0;i<5;i++) {
         m_rewardItems[i]->vfunc_4(false);
         m_checks[i]->vfunc_4(false);
@@ -497,7 +497,7 @@ void UICashAttendDialog::FUN_140bc4980()
     CStringW strPeriod=FUN_14028dfa0<CStringW,CStringW>(L"s_attendGift_event_period",
         FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
         FUN_14083bdc0(m_selected->GetEndTime(),true,L"/",L":"));
-    FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
+    SetChildText(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
 }
 
 // @0x140bc4d40
@@ -507,7 +507,7 @@ void UICashAttendDialog::FUN_140bc4d40()
     m_usePointButton->vfunc_4(false);
     if(m_selected==NULL) return;
     int nDefault=0;
-    int nPoints=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69,m_selected->GetID(),nDefault);
+    int nPoints=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69,m_selected->GetID(),nDefault);
     m_usePointButton->vfunc_4(true);
     m_usePointButton->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",(unsigned&)nPoints));
     m_usePointButton->FUN_1422c1fe0((unsigned)nPoints>0);
@@ -670,11 +670,8 @@ template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc7400(const CString& strName)
 {
     return FUN_140bc74a0<T>(m_value,strName);
 }
-// The movie clip copy (0x140bc7450) is also the declared Unk_Finder / Unk_RewardClip::FUN_140bc7450 of other units.
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:?FUN_140bc7450@Unk_Finder@@QEAA?AV?$MS2Ptr@VASMovieClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=??$FUN_140bc7400@VUnk_CadCheck@@@Unk_CadNode@@QEAA?AV?$MS2Ptr@VUnk_CadCheck@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
-#pragma comment(linker, "/alternatename:?FUN_140bc7450@Unk_RewardClip@@QEAA?AV?$MS2Ptr@VASMovieClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=??$FUN_140bc7400@VUnk_CadCheck@@@Unk_CadNode@@QEAA?AV?$MS2Ptr@VUnk_CadCheck@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
-#endif
+// The movie clip copy (0x140bc7450) is also the child clip lookup of gemstoneslot, uidungeonrewarddialog and
+// unit_140cff310_gfxutilwrappers, which call it by this name through a view of MS2Ptr<Unk_CadCheck>.
 // @0x140bc74a0 (item slot; 0x140bc7770 movie clip): getChildByName, else a depth-first search of the children
 template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName)
 {

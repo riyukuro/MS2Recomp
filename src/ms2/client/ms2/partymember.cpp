@@ -33,21 +33,21 @@ void CPartyMember::SetOffline(bool bOffline)
 MS2_REPLACE_METHOD(0x141637A40, CPartyMember, SetOffline, 23, 0x5185E109);
 
 // @0x141637a60
-void CPartyMember::FUN_141637a60(short nValue)
+void CPartyMember::SetLevel(short nValue)
 {
     user.m_34 = nValue;
 }
-MS2_REPLACE_METHOD(0x141637A60, CPartyMember, FUN_141637a60, 25, 0xD3EFB748);
+MS2_REPLACE_METHOD(0x141637A60, CPartyMember, SetLevel, 25, 0xD3EFB748);
 
 // @0x141637a80
-void CPartyMember::FUN_141637a80(int a, int b)
+void CPartyMember::SetHp(int a, int b)
 {
     if (user.m_48 == a && user.m_44 == b)
         return;
     user.m_48 = a;
     user.m_44 = b;
 }
-MS2_REPLACE_METHOD(0x141637A80, CPartyMember, FUN_141637a80, 69, 0x7FFDD686);
+MS2_REPLACE_METHOD(0x141637A80, CPartyMember, SetHp, 69, 0x7FFDD686);
 
 // @0x141637ad0
 void CPartyMember::FUN_141637ad0(int nValue)
@@ -98,23 +98,23 @@ __int64 CPartyMember::FUN_141637bb0()
 MS2_REPLACE_METHOD(0x141637BB0, CPartyMember, FUN_141637bb0, 15, 0xAC153A31);
 
 // @0x141637bd0
-CStringW CPartyMember::FUN_141637bd0()
+CStringW CPartyMember::GetName()
 {
     return user.FUN_1408f19e0();
 }
-MS2_REPLACE_METHOD(0x141637BD0, CPartyMember, FUN_141637bd0, 65, 0x67BF551D);
+MS2_REPLACE_METHOD(0x141637BD0, CPartyMember, GetName, 65, 0x67BF551D);
 
 // @0x141637c20
-bool CPartyMember::FUN_141637c20()
+bool CPartyMember::IsOffline()
 {
     return offline;
 }
-MS2_REPLACE_METHOD(0x141637C20, CPartyMember, FUN_141637c20, 15, 0x6AAAA609);
+MS2_REPLACE_METHOD(0x141637C20, CPartyMember, IsOffline, 15, 0x6AAAA609);
 
 // @0x141637c40
 int FUN_141637c40(CPartyMember* pMember)
 {
-    if (pMember->FUN_141637c20())
+    if (pMember->IsOffline())
         return 0;
     if (pMember->user.m_184)
         return 2;
@@ -122,20 +122,20 @@ int FUN_141637c40(CPartyMember* pMember)
 }
 
 // @0x141637c90
-int CPartyMember::FUN_141637c90()
+int CPartyMember::GetReadyState()
 {
-    if (FUN_141637c20())
+    if (IsOffline())
         return 0;
     return readyState;
 }
-MS2_REPLACE_METHOD(0x141637C90, CPartyMember, FUN_141637c90, 46, 0x416E31BE);
+MS2_REPLACE_METHOD(0x141637C90, CPartyMember, GetReadyState, 46, 0x416E31BE);
 
 // @0x141637cd0
-void CPartyMember::FUN_141637cd0(int nValue)
+void CPartyMember::SetIndex(int nValue)
 {
     index = nValue;
 }
-MS2_REPLACE_METHOD(0x141637CD0, CPartyMember, FUN_141637cd0, 22, 0x068001AB);
+MS2_REPLACE_METHOD(0x141637CD0, CPartyMember, SetIndex, 22, 0x068001AB);
 
 // @0x141637cf0
 int FUN_141637cf0(CPartyMember* pMember)

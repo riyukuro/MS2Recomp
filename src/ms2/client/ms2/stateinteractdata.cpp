@@ -162,7 +162,7 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_SiEquip : public PCGemEquip { };
 
 // The pieces of the interact row this unit reads (offsets proven by the callers).
-class Unk_IaNames { public: CString FUN_14051c870(); };              // +0xc8: the reaction animation name
+class Unk_IaNames { public: CString GetRandomName(); };              // +0xc8: the reaction animation name
 #define SiRowOff(p, off) (reinterpret_cast<char*>(p) + (off))
 #define SiRowNames(p) reinterpret_cast<Unk_IaNames*>(SiRowOff(p, 0xc8))
 #define SiRowMask(p) reinterpret_cast<const QuestMask*>(SiRowOff(p, 0x1d0))
@@ -261,7 +261,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         MyPC* pPC = FUN_1417b84b0();
         if (pPC)
         {
-            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+            if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
                 reinterpret_cast<PC*>(pPC)->SendRequestCube();
             Unk_CastInfo kInfo;
             MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
@@ -525,7 +525,7 @@ void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
     }
     else if (spRow.get())
     {
-        CString strName = SiRowNames(spRow.operator->())->FUN_14051c870();
+        CString strName = SiRowNames(spRow.operator->())->GetRandomName();
         if (strName.GetLength() > 0)
         {
             m_spInteract->m_strAnim = strName;
@@ -546,7 +546,7 @@ int StateInteraction::FUN_1417d2880()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return 0;
-    MS2Ptr<CGemBase> spGem = ((Unk_SiEquip*)(reinterpret_cast<PC*>(pPC)->FUN_14165f460()))->FUN_141270740(9);
+    MS2Ptr<CGemBase> spGem = ((Unk_SiEquip*)(reinterpret_cast<PC*>(pPC)->GetGemEquip()))->FUN_141270740(9);
     if (spGem.IsNull())
         return 0;
     if (m_spInteract.IsNull())
@@ -601,7 +601,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+        if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
@@ -690,7 +690,7 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC)
     {
-        if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
+        if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
     }
     if (FUN_1417b8560() != 0)

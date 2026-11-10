@@ -123,7 +123,7 @@ class Unk_MfWordTable : public CReservedWordTable { public: void FUN_1416fb400(C
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 egf::g_bapiContext
-class Unk_Inventory { public: int FUN_140a5f180(int itemId, int rarity); int FUN_140a5f780(int nGroup, int nRarity); };   // C3: unit-local view (def in inventory); owned count of the item
+class Unk_Inventory { public: int FUN_140a5f180(int itemId, int rarity); int GetItemCountByTag(int nGroup, int nRarity); };   // C3: unit-local view (def in inventory); owned count of the item
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90) // the player's inventory
 extern __int64 DAT_143ab2820;                                   // own account id
 
@@ -312,8 +312,8 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 if (reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId() == 0)
                     nOwned = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
                 else
-                    nOwned = g_143ab2a90.FUN_140a5f780(reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId(), nRarity);
-                unsigned nNeed = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIng->m_nCount);
+                    nOwned = g_143ab2a90.GetItemCountByTag(reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId(), nRarity);
+                unsigned nNeed = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->GetAbilityRate((SAType)0x3f), spIng->m_nCount);
                 if (nNeed > nOwned)
                 {
                     *pnResult = 8;

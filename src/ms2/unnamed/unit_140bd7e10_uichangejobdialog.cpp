@@ -82,7 +82,7 @@ void UIChangeJobDialog::OnLoadComplete()
     PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    FUN_140bd8040(reinterpret_cast<PC*>(pPC)->FUN_141654730());
+    FUN_140bd8040(reinterpret_cast<PC*>(pPC)->GetSubJob());
 }
 
 // @0x140bd7fa0
@@ -125,7 +125,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         if (spSkill == 0)
             continue;
         ASObj skill(2);
-        skill.FUN_1409c0d20("id", spData->m_skills1[i]);
+        skill.SetMemberUInt("id", spData->m_skills1[i]);
         skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills1[i], 1, 1) != 0)
@@ -138,7 +138,7 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
         if (spSkill == 0)
             continue;
         ASObj skill(2);
-        skill.FUN_1409c0d20("id", spData->m_skills2[i]);
+        skill.SetMemberUInt("id", spData->m_skills2[i]);
         skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills2[i], 1, 1) != 0)
@@ -156,10 +156,10 @@ int UIChangeJobDialog::FUN_140bd88e0()
     PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (CChangeJobTable::GetInstance()->CanChange(reinterpret_cast<PC*>(pPC)->FUN_141654700(), (Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->FUN_141654730(), (unsigned short)pPC->vfunc_78()) == 0)
+    if (CChangeJobTable::GetInstance()->CanChange(reinterpret_cast<PC*>(pPC)->GetJobGroupId(), (Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->GetSubJob(), (unsigned short)pPC->vfunc_78()) == 0)
         return 0;
-    int nNext = CChangeJobTable::GetInstance()->GetStartQuestId((Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->FUN_141654730());
-    int nState = reinterpret_cast<MyPC*>(pPC)->FUN_141523ba0()->GetQuestState(nNext);
+    int nNext = CChangeJobTable::GetInstance()->GetStartQuestId((Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->GetSubJob());
+    int nState = reinterpret_cast<MyPC*>(pPC)->GetQuestManager()->GetQuestState(nNext);
     if (nState == 1 || nState == 2)
         return 0;
     return 1;

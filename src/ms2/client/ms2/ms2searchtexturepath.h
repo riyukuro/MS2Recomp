@@ -48,5 +48,5 @@ public:
 MS2_CHECK_SIZE(MS2SearchTexturePath, 0x338);
 
 void* FUN_141508060();
-void FUN_141508220(char* pcPath);
+void StandardizePath(char* pcPath);
 errno_t FUN_141508240(void* dst, rsize_t dstSize, const void* src, rsize_t srcSize);

@@ -214,6 +214,7 @@ template <uintptr_t VA, class T> struct Global {
 
 #else  // MS2_STANDALONE
 
+#define MS2_REPLACE_IMPL(va, fnptr, nameStr, glen, ghash) static_assert(true, "")
 #define MS2_REPLACE(va, function, glen, ghash) static_assert(true, "")
 #define MS2_REPLACE_METHOD(va, Class, Method, glen, ghash) static_assert(true, "")
 #define MS2_REPLACE_METHOD_VIA(va, Class, Base, Method, glen, ghash) static_assert(true, "")

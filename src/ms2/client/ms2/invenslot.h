@@ -50,14 +50,14 @@ public:
     virtual void vfunc_o178_5(void* p) override;        // 0x141405e80
 
     int FUN_1414058f0();                                // the skill of the item (0: none)
-    int FUN_141405980();                                // the item id
+    int GetItemId();                                // the item id
     __int64 GetItemUid();                            // return m_nItemUid
     void SetItemUid(__int64 nItemUid);               // m_nItemUid = nItemUid
     int FUN_141405a60(CItem* pItem, int nSlot);         // put the item on the fitting doll
     float FUN_141409060();                              // the cooldown left of the item's skill
     int FUN_1414090c0();                                // may the item be registered on the black market
-    int FUN_141409150(CItem* pItem);
-    int FUN_14140b6d0(MS2Ptr<CItem> spItem);            // put the item into the trade window
+    int CanRegisterToBlackMarket(CItem* pItem);
+    int TryAddToTrade(MS2Ptr<CItem> spItem);            // put the item into the trade window
     int MatchSearchName(CStringW strSearch);              // slot index when the item name contains strSearch (-1: no)
     int FUN_14140be60(CItem* pItem);                    // sell the item to the npc shop
     CItem* FUN_14140c030(MS2Ptr<CItem> spItem);         // the worn item the item would replace
@@ -108,5 +108,5 @@ MS2_CHECK_SIZE(InventorySlotBag, 0xa0);
 MS2_CHECK_OFFSET(InventorySlotBag, m_nTab, 0x98);
 MS2_CHECK_OFFSET(InventorySlotBag, m_nPendingSlot, 0x9c);
 
-InventorySlotBag* FUN_14140eca0(const CString& strName, int nTab, int nCount);   // create and register the bag of a tab
+InventorySlotBag* CreateSlotBag(const CString& strName, int nTab, int nCount);   // create and register the bag of a tab
 void FUN_14140ed60(const CString& strName);                                       // destroy the bag registered under the name

@@ -5,8 +5,8 @@
 // MS2-RANGE: 0x140a45d40-0x140a46ab0 .text$mn
 // MS2-PIN: ??_GCGameOptionPersonalInfoAgreement@@UEAAPEAXI@Z 0x140a46820
 // MS2-PIN: ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46640
-// MS2-PIN: ?FUN_140a463d0@@YA?AV?$MS2Ptr@VASRadioButton@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140a463d0
-// MS2-PIN: ?FUN_140a46480@Unk_PiDialog@@QEAA?AV?$MS2Ptr@VASRadioButton@@@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
+// MS2-PIN: ?CreateRadioButton@@YA?AV?$MS2Ptr@VASRadioButton@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140a463d0
+// MS2-PIN: ?GetTabRadioButton@Unk_PiDialog@@QEAA?AV?$MS2Ptr@VASRadioButton@@@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoptionpersonalinfoagreement.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameoptionpersonalinfoagreement.h"
@@ -29,9 +29,9 @@ class Unk_PiState : public Unk_PiAgreeState
 {
 public:
     Unk_PiState();                                              // 0x141261cf0
-    void FUN_141261d20();
+    void ClearAgreeVisitHome();
     void FUN_141261d40();
-    void FUN_141261da0(const void* p);
+    void CopyFrom(const void* p);
     void FUN_141261dd0(int n);
     bool FUN_141261f00(int n);
     void FUN_141261e40(int a, int b);
@@ -39,14 +39,14 @@ public:
 };
 // The game-option settings object (CGameOption; +0x1b4 is the agreement setting).
 class Unk_PiSettings;
-unsigned char* FUN_140a46860(Unk_PiSettings* p);
+unsigned char* GetPersonalInfoAgreement(Unk_PiSettings* p);
 class CPersonalInfoAgreement   // gameoptionstruct.cpp's class (the agreement state and the option's +0x1b4 setting)
 {
 public:
     CPersonalInfoAgreement();                                   // 0x141261cf0
-    void FUN_141261d20();
+    void ClearAgreeVisitHome();
     int FUN_141261d40();
-    void FUN_141261da0(const CPersonalInfoAgreement* pSrc);
+    void CopyFrom(const CPersonalInfoAgreement* pSrc);
     void SendAgreement(int nGroup);
     void FUN_141261e40(int nGroup, unsigned nFlags);
     bool HasGroupAgreement(int nGroup);
@@ -59,7 +59,7 @@ public:
 struct Unk_PiDialog
 {
     // The check box child of a tab by name (a member: this in rcx, the return slot in rdx).
-    MS2Ptr<ASRadioButton> FUN_140a46480(CString name, int nIndex);
+    MS2Ptr<ASRadioButton> GetTabRadioButton(CString name, int nIndex);
     char m_pad[0x28];
     int m_nDialogId;    // +0x28, handed to each check box
     char m_pad2c[4];
@@ -78,20 +78,20 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nI
     return FUN_1422bb8f0(szMethod, args);
 }
 
-MS2Ptr<ASRadioButton> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
+MS2Ptr<ASRadioButton> CreateRadioButton(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
 {
     MS2Ptr<ASRadioButton> sp(new ASRadioButton(v, nId));
     return sp;
 }
 
-MS2Ptr<ASRadioButton> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0x140a46480
+MS2Ptr<ASRadioButton> Unk_PiDialog::GetTabRadioButton(CString name, int nIndex)   // 0x140a46480
 {
     if (m_root.IsNull())
         return MS2Ptr<ASRadioButton>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (child.IsDisplayObject())
     {
-        MS2Ptr<ASRadioButton> check = FUN_140a463d0(m_nDialogId, child);
+        MS2Ptr<ASRadioButton> check = CreateRadioButton(m_nDialogId, child);
         if (check.get())
             return check;
     }
@@ -112,7 +112,7 @@ CGameOptionPersonalInfoAgreement::~CGameOptionPersonalInfoAgreement()   // @0x14
 void CGameOptionPersonalInfoAgreement::vfunc_3(int n)   // @0x140a45dd0
 {
     if (n == 0)
-        ((CPersonalInfoAgreement*)&m_state)->FUN_141261da0((const CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())));
+        ((CPersonalInfoAgreement*)&m_state)->CopyFrom((const CPersonalInfoAgreement*)GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())));
     CBaseOption::vfunc_3(n);
 }
 
@@ -131,11 +131,11 @@ int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, i
 void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 {
     {
-        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
             agree->FUN_1422ce090(m_state.m_bAgree);
     }
-    MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
+    MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
         deny->FUN_1422ce090(m_state.m_bAgree == 0);
 }
@@ -143,7 +143,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
 {
     {
-        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
         {
             if (agree->FUN_1422ce0e0())
@@ -151,7 +151,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         }
     }
     {
-        MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
+        MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogDeny"), -1);
         if (deny.get() != 0)
         {
             if (deny->FUN_1422ce0e0())
@@ -160,30 +160,30 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
     }
     int nMode = m_state.m_bAgree ? 2 : 4;
     ((CPersonalInfoAgreement*)&m_state)->FUN_141261e40(0, nMode);
-    ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
+    ((class CPersonalInfoAgreement*)(unsigned char*)(GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_10()   // @0x140a461f0
 {
     CBaseOption::vfunc_10();
     bool bChanged = false;
-    if (m_state.m_bAgree != *FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
+    if (m_state.m_bAgree != *GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
         bChanged = true;
-    if (!((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->HasGroupAgreement(0))
+    if (!((CPersonalInfoAgreement*)GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->HasGroupAgreement(0))
         bChanged = true;
     if (bChanged)
     {
         int nMode = m_state.m_bAgree ? 2 : 4;
-        ((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->FUN_141261da0((const CPersonalInfoAgreement*)&m_state);
-        ((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->SendAgreement(nMode);
-        ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
+        ((CPersonalInfoAgreement*)GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->CopyFrom((const CPersonalInfoAgreement*)&m_state);
+        ((CPersonalInfoAgreement*)GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->SendAgreement(nMode);
+        ((class CPersonalInfoAgreement*)(unsigned char*)(GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
     }
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_12()   // @0x140a462f0
 {
     CBaseOption::vfunc_12();
-    ((CPersonalInfoAgreement*)&m_state)->FUN_141261d20();
+    ((CPersonalInfoAgreement*)&m_state)->ClearAgreeVisitHome();
     ((CPersonalInfoAgreement*)&m_state)->FUN_141261d40();
     vfunc_6();
 }
@@ -195,14 +195,14 @@ CString CGameOptionPersonalInfoAgreement::GetTypeName()   // @0x140a46340
 
 int CGameOptionPersonalInfoAgreement::vfunc_14()   // @0x140a46390
 {
-    if (m_state.m_bAgree != *FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
+    if (m_state.m_bAgree != *GetPersonalInfoAgreement(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
         return 1;
     return 0;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
-unsigned char* FUN_140a46860(Unk_PiSettings* p)   // 0x140a46860
+unsigned char* GetPersonalInfoAgreement(Unk_PiSettings* p)   // 0x140a46860
 {
     return (unsigned char*)p + 0x1b4;
 }

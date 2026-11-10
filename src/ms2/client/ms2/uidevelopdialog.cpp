@@ -181,16 +181,16 @@ void UIDevelopDialog::OnLoadComplete()
     obj.FUN_1407cbbe0("enableEffect", TSingleton<CEffectService>::GetInstance()->IsEnabled());
     obj.FUN_1407cbbe0("showInstancing", m_bShowInstancing);
     obj.FUN_1407cbbe0("reloadMagicData", false);
-    obj.FUN_1409c4a30("gameSpeed", 1.0f);
+    obj.SetMemberFloat("gameSpeed", 1.0f);
     obj.FUN_1407cbbe0("oneInstancing", m_bOneInstancing);
-    obj.FUN_1409c4a30("dropItemHeight", m_fDropItemHeight);
-    obj.FUN_1409c4a30("dropItemPeriod", m_fDropItemPeriod);
+    obj.SetMemberFloat("dropItemHeight", m_fDropItemHeight);
+    obj.SetMemberFloat("dropItemPeriod", m_fDropItemPeriod);
     obj.FUN_1407cbbe0("propertyVisualizer", m_bPropertyVisualizer);
     unsigned nInstancing = 1;
     {
         efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if ((HardwareInstancingService*)spInstancing != 0)
-            nInstancing = spInstancing.operator->()->FUN_1413d7eb0();
+            nInstancing = spInstancing.operator->()->GetInstancingCount();
         obj.FUN_1407cb9c0("instancingMax", nInstancing);
         obj.FUN_1407cb9c0("instancing", nInstancing);
     }
@@ -354,7 +354,7 @@ void UIDevelopDialog::FUN_141292f50(ASData& data)
     if (!spRoot)
         return;
     float fSpeed = 1.0f;
-    reinterpret_cast<ASObj*>(spRoot.operator->())->FUN_1409c4a30("defaultSpeed", 1.0f);
+    reinterpret_cast<ASObj*>(spRoot.operator->())->SetMemberFloat("defaultSpeed", 1.0f);
 }
 
 // @0x141293010
@@ -416,7 +416,7 @@ void UIDevelopDialog::FUN_1412932a0(float fScale)
     {
         Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.GetAt(pos));
         if (pObj != 0)
-            ((class GameObject*)(void*)(pObj))->FUN_14123c280(fScale);
+            ((class GameObject*)(void*)(pObj))->SetScale(fScale);
     }
 }
 
@@ -433,7 +433,7 @@ void UIDevelopDialog::FUN_141293390(float fScale)
     if (pPlayer != 0)
     {
         ((class GameObject*)(void*)(pPlayer))->FUN_14123c330(fScale);
-        ((class GameObject*)(void*)(pPlayer))->FUN_14123c280(fScale);
+        ((class GameObject*)(void*)(pPlayer))->SetScale(fScale);
     }
 }
 

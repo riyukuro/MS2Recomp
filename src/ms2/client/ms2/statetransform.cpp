@@ -58,7 +58,7 @@ void StateTransform::vfunc_4(StateData* pData)
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
     query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
-    query.SetActor(m_pOwner->FUN_14123c580());
+    query.SetActor(m_pOwner->GetObjectId());
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->PlayAnimation("Equip_Change_Mantle_A", 1.0f, false, false);
 }
@@ -119,7 +119,7 @@ void StateTransformDoll::vfunc_4(StateData* pData)
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
     query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
-    query.SetActor(m_pOwner->FUN_14123c580());
+    query.SetActor(m_pOwner->GetObjectId());
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->PlayAnimation("Equip_Change_Mantle_A", 1.0f, false, false);
 }

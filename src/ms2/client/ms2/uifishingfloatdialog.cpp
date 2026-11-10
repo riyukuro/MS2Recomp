@@ -55,7 +55,7 @@ class Unk_PcComp { public: Scaleform::GFx::Value FUN_140caf230(const char* szMet
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 class Unk_GpSettings;
-Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
+Unk_GpState* GetGamepadState(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -81,7 +81,7 @@ MS2InputService* FUN_140a58540();
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14123c580();
+    int GetObjectId();
 };
 
 // C3: the fish info is CFishCube (fishcube.h; was the Unk_FishPacket view: +0x1c fish id, +0x20 rank key, +0x28 size).
@@ -123,7 +123,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get())
     {
-        int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
+        int nKeyType = GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
         m_30.operator->()->Invoke("setKeyText", TSingleton<CKeyTable>::GetInstance()->GetActionKeyName(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_PcComp*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
@@ -132,7 +132,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     FUN_141276180(s_143aca6e8, "");
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
-        if (FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
+        if (GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
             FUN_140a58540()->StartRumbleFor(1.7976931348623157e+308);
     }
 }
@@ -235,7 +235,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
     else if (nSound == 2)
         ((Unk_SoundParam&)(param)).m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
     ((Unk_SoundParam&)(param)).m_08 = 1;
-    ((NoticeMessage&)(param)).SetActor(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
+    ((NoticeMessage&)(param)).SetActor(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->GetObjectId());
     m_180[nSound] = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(((Unk_SoundParam&)(param))));
 }
 

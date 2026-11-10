@@ -42,16 +42,16 @@ float FUN_141b6fdb0(float f, int n);            // ease curve (n = exponent)
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
-    Unk_FlyByCameraData* FUN_1412201a0();   // C3: was Unk_CameraManager
+    Unk_FlyByCameraData* GetFlyByData();   // C3: was Unk_CameraManager
     void FUN_140947860(int);
-    void FUN_140947980(int);
+    void SetPendingMode(int);
     void FUN_140aed720(struct Unk_CameraSetting const&);
 };
 
 
 
 // @0x1412201a0
-Unk_FlyByCameraData* CameraMgr::FUN_1412201a0()   // C3: was Unk_CameraManager::FUN_1412201a0
+Unk_FlyByCameraData* CameraMgr::GetFlyByData()   // C3: was Unk_CameraManager::GetFlyByData
 {
     return reinterpret_cast<Unk_FlyByCameraData*>(reinterpret_cast<char*>(this) + 0x34);   // m_flyBy (camera.h)
 }
@@ -83,7 +83,7 @@ void CFlyByCameraMode::vfunc_8(double fTime)
     float fRatio = m_fElapsed / m_fDuration;
     if (1.0f < fRatio)
         fRatio = 1.0f;
-    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->FUN_1412201a0();
+    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->GetFlyByData();
     Vector3 ptRot = CCameraMode::FUN_140afdec0(fRatio, pFly->m_from.m_18, pFly->m_to.m_18);
     vfunc_11(data.m_0);
     ((CCameraMode*)this)->FUN_140af99d0(data.m_4);
@@ -110,7 +110,7 @@ void CFlyByCameraMode::vfunc_6(int n)
         m_pInterp = 0;
     }
     TSingleton<CameraMgr>::GetInstance()->FUN_140947860(0);
-    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->FUN_1412201a0();
+    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->GetFlyByData();
     switch (pFly->m_nKind)
     {
     case 1:
@@ -170,7 +170,7 @@ MS2_REPLACE_METHOD(0x14121F910, CFlyByCameraMode, FUN_14121f910, 210, 0x5B2C953F
 void CFlyByCameraMode::FUN_14121f9f0()
 {
     TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_setting));
-    TSingleton<CameraMgr>::GetInstance()->FUN_140947980(m_nMode);
+    TSingleton<CameraMgr>::GetInstance()->SetPendingMode(m_nMode);
 }
 MS2_REPLACE_METHOD(0x14121F9F0, CFlyByCameraMode, FUN_14121f9f0, 70, 0xD29377B0);
 

@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x1410315C0, UIBootyPopup, FUN_1410315c0, 30, 0x72EAC5DB);
 // @0x1410315f0
 void UIBootyPopup::FUN_1410315f0()
 {
-    FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
     m_78 = 0;
     m_74 = 0;
 }

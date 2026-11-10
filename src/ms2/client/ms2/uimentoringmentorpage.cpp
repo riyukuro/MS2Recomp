@@ -96,7 +96,7 @@ UIInviteMentoringDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
 class Unk_MentorScript : public AScript
 {
@@ -253,7 +253,7 @@ void UIMentoringPage::FUN_140c71ee0(CString strName, Unk_MentorPtr<CMentor> pEnt
     if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
         pSearchMovie->vfunc_4(TSingleton<CMentoringManager>::GetInstance()->GetMenteeCount() == 0);
-        FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentor_search_desc"));
+        SetChildText((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentor_search_desc"));
     }
     if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
         pSearch->vfunc_4(TSingleton<CMentoringManager>::GetInstance()->GetMenteeCount() < 3);
@@ -644,7 +644,7 @@ void UIMentoringMissionPage::FUN_140c74170(ASObj& obj, Unk_MentorInstance* pInst
     CString strIcon = reinterpret_cast<Unk_MentorQuest*>((&pInst->m_progress)->vfunc_0().operator->())->m_strIcon;
     CStringW strDesc = FUN_1416e5350(((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580(), 0);
     strDesc.Replace(L"#5c2b00", L"#000000");
-    obj.FUN_1409c0d20("id", ((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580());
+    obj.SetMemberUInt("id", ((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580());
     obj.FUN_1407cba60("icon", strIcon);
     obj.FUN_1407cbb20("desc", strDesc);
     obj.FUN_1407cb9c0("satisfied", (&pInst->m_progress)->vfunc_1());

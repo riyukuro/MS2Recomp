@@ -50,7 +50,7 @@
 using namespace egf;
 
 // ---- out-of-unit callees ----
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_140ae1c10();                                                    // the current graphics quality level
 class Unk_QualityTable;
 
@@ -62,10 +62,10 @@ class Unk_LightVideoOptions;
 class Unk_LightRenderStep;
 // C3: views of the targets' own stand-ins (0x1409a8ac0, 0x14125e0b0, 0x1409a8f00).
 class Unk_AeGraphicOption;
-class Unk_AeGameOption { public: Unk_AeGraphicOption* FUN_1409a8ac0(); };
+class Unk_AeGameOption { public: Unk_AeGraphicOption* GetGraphicOption(); };
 struct Unk_GraphicState;
-bool FUN_14125e0b0(const Unk_GraphicState* p);
-class Unk_AeFeatureState { public: bool FUN_1409a8f00() const; };
+bool IsHdrEnabled(const Unk_GraphicState* p);
+class Unk_AeFeatureState { public: bool IsActive() const; };
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -324,7 +324,7 @@ void MS2LightService::UpdateRelightingMode()
 
     for (efd::map<egf::EntityID, LightData*>::iterator it = m_entityLightMap.begin(); it != m_entityLightMap.end(); ++it)
     {
-        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(it->first);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(it->first);
         if (!pEntity)
             continue;
         const egf::FlatModel* pModel = pEntity->GetModel();
@@ -346,7 +346,7 @@ void MS2LightService::UpdateLightShadows()
 {
     for (efd::map<egf::EntityID, LightData*>::iterator it = m_entityLightMap.begin(); it != m_entityLightMap.end(); ++it)
     {
-        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(it->first);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(it->first);
         UpdateLightShadow(pEntity);
     }
 }
@@ -421,11 +421,11 @@ void MS2LightService::HandleEntityEnterWorld(const egf::EntityChangeMessage* pMe
     else
         fDimmer = it->second;
 
-    Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0());
-    bool bDimmed = FUN_14125e0b0(reinterpret_cast<const Unk_GraphicState*>(pVideo));
+    Unk_LightVideoOptions* pVideo = reinterpret_cast<Unk_LightVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption());
+    bool bDimmed = IsHdrEnabled(reinterpret_cast<const Unk_GraphicState*>(pVideo));
     Unk_LightRenderStep* pStep = reinterpret_cast<Unk_LightRenderStep*>(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(3));
     if (pStep)
-        bDimmed = bDimmed & reinterpret_cast<Unk_AeFeatureState*>(pStep)->FUN_1409a8f00();
+        bDimmed = bDimmed & reinterpret_cast<Unk_AeFeatureState*>(pStep)->IsActive();
     else
         bDimmed = false;
     if (!bDimmed)
@@ -453,7 +453,7 @@ MS2_REPLACE_METHOD(0x1414C0AF0, MS2LightService, HandleEntityExitWorld, 185, 0xB
 // @0x1414c0bb0
 void MS2LightService::RemoveRenderedEntity(egf::Entity* pEntity, NiAVObject* pAVObject)
 {
-    if (!((class COptimizer*)FUN_1409f7c90())->IsModelCullingOn())
+    if (!((class COptimizer*)GetOptimizer())->IsModelCullingOn())
         return;
     NiNode* pNode = NiDynamicCast(NiNode, pAVObject);
     if (!pNode || !pEntity)
@@ -491,7 +491,7 @@ bool MS2LightService::CreateQueuedLights()
 {
     for (std::list<egf::EntityID>::iterator itQueued = s_queuedLights.begin(); itQueued != s_queuedLights.end(); ++itQueued)
     {
-        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*itQueued);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(*itQueued);
         if (!pEntity)
             continue;
 
@@ -557,7 +557,7 @@ bool MS2LightService::CreateQueuedLights()
             m_spSceneGraphService->ForEachEntitySceneGraph(kFunctor);
         }
 
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a74a0(entityID, pEntity);
+        TSingleton<CEffectService>::GetInstance()->AttachEntityLight(entityID, pEntity);
         UpdateShadowCaster(pLight, pEntity);
     }
     s_queuedLights.clear();

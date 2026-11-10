@@ -73,7 +73,7 @@ class CEffectService;
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
+    unsigned int InsertEffect(class Unk_EffectTarget&);
 };
 class CDropItem   // C3: member view for the former free stand-ins
 {
@@ -207,7 +207,7 @@ void StateSummon::vfunc_4(StateData* pData)
     m_spData.AssignRaw(dynamic_cast<StateSummonData*>(pData));
     if (m_spData)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(
             reinterpret_cast<__int64>(m_spData.get()->m_pSummon));
         if (spItem.get() != 0)
         {
@@ -251,15 +251,15 @@ void StateSummon::vfunc_4(StateData* pData)
             NoticeMessage msg;
             msg.m_strName = "CH/Common/Eff_PetOn.xml";
             msg.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
-            msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
-            ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a4a00(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
+            msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->GetObjectId());
+            ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->InsertEffect(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
         }
     }
 
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+        if (((void*)(reinterpret_cast<PC*>(pRider)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar != 0)
@@ -305,7 +305,7 @@ void StateSummon::vfunc_8(double fTime)
     {
         if (m_spData)
         {
-            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
+            MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(
                 reinterpret_cast<__int64>(m_spData.get()->m_pSummon));
             if (spItem.get() != 0)
             {
@@ -420,7 +420,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+        if (((void*)(reinterpret_cast<PC*>(pRider)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
@@ -496,7 +496,7 @@ void StateRecall::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider != 0)
     {
-        if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
+        if (((void*)(reinterpret_cast<PC*>(pRider)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
@@ -551,7 +551,7 @@ void StateRecall::vfunc_8(double fTime)
             }
             else
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(
                     reinterpret_cast<__int64>(pSummon));
                 if (spItem.get() != 0)
                 {
@@ -642,7 +642,7 @@ void StateSummonIdle::vfunc_9(double fTime)
         return;
     }
 
-    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->GetEntityID());
     switch (m_n10)
     {
     case 1:
@@ -810,7 +810,7 @@ void StateSummonRevive::vfunc_3(double fTime)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.Encode1(3);
-            packet.Encode4(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
+            packet.Encode4(reinterpret_cast<GameObject*>(m_pOwner)->GetObjectId());
             FUN_140710590(packet);
         }
     }
@@ -840,7 +840,7 @@ void StateSummonRevive::vfunc_9(double fTime)
         return;
     }
 
-    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->GetEntityID());
     if (m_pOwner->FUN_14166de90(0, nActorId) == 0)
         m_pOwner->PlayAnimationById(0);
 }
@@ -905,8 +905,8 @@ void StateSummonItemPick::vfunc_3(double fTime)
         void* pDrop = ((class CDropItem*)(void*)(pField))->FUN_140b12380();
         if (pDrop == 0)
             return;
-        ((class CDropItem*)(void*)(pField))->FUN_141191330(reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
-        ((class CDropItem*)(void*)(pField))->FUN_141190900(reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());
+        ((class CDropItem*)(void*)(pField))->FUN_141191330(reinterpret_cast<GameObject*>(pPet)->GetObjectId());
+        ((class CDropItem*)(void*)(pField))->FUN_141190900(reinterpret_cast<GameObject*>(pPet)->GetObjectId());
     }
 }
 

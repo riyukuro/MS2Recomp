@@ -324,7 +324,7 @@ int UINameTag::Entity::vfunc_8(int n)
     }
     if (FUN_141a60920() == 0)
         return 1;
-    Ridee* pHolder = ((class Ridee*)((class PCBase*)(class PCBase*)(pActor))->FUN_1416764a0());
+    Ridee* pHolder = ((class Ridee*)((class PCBase*)(class PCBase*)(pActor))->GetRidee());
     if (pHolder != 0)
     {
         MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
@@ -449,8 +449,8 @@ void UINameTag::Entity::FUN_141a5f080()
         obj.FUN_1407cb9c0("visibleName", m_78);
         obj.FUN_1407cbb20("name", strInfo);
         obj.FUN_1407cbb20("guild", strStats);
-        obj.FUN_1409c0d20("fontSize", m_60);
-        obj.FUN_1409c0d20("fontColor", m_64);
+        obj.SetMemberUInt("fontSize", m_60);
+        obj.SetMemberUInt("fontColor", m_64);
         m_38->Invoke("setData", obj);
     }
 }
@@ -473,8 +473,8 @@ void UINameTag::Entity::FUN_141a5ff60()
         if (pPc != 0)
         {
             strGuild = L"";
-            if (pPc->FUN_141656be0().GetLength() > 0)
-                strGuild = StringFormat(L"<{0}>", pPc->FUN_141656be0());
+            if (pPc->GetGuildName().GetLength() > 0)
+                strGuild = StringFormat(L"<{0}>", pPc->GetGuildName());
             if (((class PC*)(class PC*)(pPc))->FUN_141661c50() != 0)
                 strName = StringFormat(L"{0} {1}", FUN_141b720b0(((class PC*)(class PC*)(pPc))->FUN_141661c50(), (__int64)pPc), strName);
             bool bSymbol = false;
@@ -492,11 +492,11 @@ void UINameTag::Entity::FUN_141a5ff60()
                     bSymbol = true;
                 }
             }
-            bool bTeam = !bSymbol && ((CPvPInfo*)pPc->FUN_140967420() ? true : false)
-                         && pPc->FUN_140967420()->FUN_140743610();
+            bool bTeam = !bSymbol && ((CPvPInfo*)pPc->GetPvPInfo() ? true : false)
+                         && pPc->GetPvPInfo()->FUN_140743610();
             if (bTeam)
             {
-                bool bRed = pPc->FUN_140967420()->GetPoint() == 0xc9;
+                bool bRed = pPc->GetPvPInfo()->GetPoint() == 0xc9;
                 if (bRed)
                 {
                     obj.FUN_1409c0dc0("symbol", "red_team");
@@ -504,7 +504,7 @@ void UINameTag::Entity::FUN_141a5ff60()
                 }
                 else
                 {
-                    bool bBlue = pPc->FUN_140967420()->GetPoint() == 0xca;
+                    bool bBlue = pPc->GetPvPInfo()->GetPoint() == 0xca;
                     if (bBlue)
                     {
                         obj.FUN_1409c0dc0("symbol", "blue_team");
@@ -532,7 +532,7 @@ void UINameTag::Entity::FUN_141a5ff60()
                     if (((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c5b00(nId, 1) != 0)
                         obj.FUN_1409c48f0("level", (short)pPc->vfunc_78());
                     else if (((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c5b00(nId, 0xb) != 0)
-                        obj.FUN_1409c0d20("level", pPc->vfunc_141());
+                        obj.SetMemberUInt("level", pPc->vfunc_141());
                 }
             }
         }
@@ -544,8 +544,8 @@ void UINameTag::Entity::FUN_141a5ff60()
         obj.FUN_1407cb9c0("visibleName", m_78);
         obj.FUN_1407cbb20("name", strName);
         obj.FUN_1407cbb20("guild", strGuild);
-        obj.FUN_1409c0d20("fontSize", m_60);
-        obj.FUN_1409c0d20("fontColor", m_64);
+        obj.SetMemberUInt("fontSize", m_60);
+        obj.SetMemberUInt("fontColor", m_64);
         obj.FUN_1407cba60("skin", m_70);
         m_38->Invoke("setData", obj);
     }

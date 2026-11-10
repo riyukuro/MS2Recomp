@@ -291,7 +291,7 @@ efd::File* FUN_141628150(const wchar_t* pcName, efd::File::OpenMode eMode, unsig
     bool bFlushOnWrite);
 efd::File* FUN_141627910(const wchar_t* pcName, efd::File::OpenMode eMode, unsigned int uiBufferSize,
     bool bFlushOnWrite);
-Scaleform::File* FUN_1416282e0(CString strPath);
+Scaleform::File* OpenGfxFile(CString strPath);
 CString FUN_141628470(CString strName, bool bDebug);
 bool FUN_141628610(TiXmlDocument& doc);
 bool LoadUsmSubtitleText(TiXmlDocument& doc);
@@ -320,7 +320,7 @@ void FUN_141627390()
     efd::File::SetFileAccessFunc((efd::File::FILEACCESSFUNCW)efd::File::DefaultFileAccessFunc);
     efd::File::SetCreateDirectoryFunc((efd::File::CREATEDIRFUNCW)efd::File::DefaultCreateDirectoryFunc);
     efd::File::SetDirectoryExistsFunc((efd::File::DIREXISTSFUNCW)efd::File::DefaultDirectoryExistsFunc);
-    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
+    NiGFxLocalizeManager::SetLocale(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
@@ -329,7 +329,7 @@ void FUN_141627390()
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
     FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::MarkCharacterModelLoaded)));
-    GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
+    GFxFileOpener::FUN_1422eb400(OpenGfxFile);
     NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
     UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
@@ -347,9 +347,9 @@ void FUN_1416275e0()
     efd::File::SetCreateDirectoryFunc((efd::File::CREATEDIRFUNCW)efd::File::DefaultCreateDirectoryFunc);
     efd::File::SetDirectoryExistsFunc(FUN_141628000);
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
-    GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
-    UISwfEntity::FUN_141629ed0(Delegate<CString(CString, bool)>(FUN_141628470));
-    NiGFxLocalizeManager::FUN_141629eb0(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
+    GFxFileOpener::FUN_1422eb400(OpenGfxFile);
+    UISwfEntity::SetSwfNameDelegate(Delegate<CString(CString, bool)>(FUN_141628470));
+    NiGFxLocalizeManager::SetLocale(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
@@ -360,7 +360,7 @@ void FUN_1416275e0()
 
 // The swf file of a movie name (debug builds of the movie under ..\GfxDebug).
 // @0x1416277e0
-CString FUN_1416277e0(CString strName, bool bDebug)
+CString GetSwfFileName(CString strName, bool bDebug)
 {
     int nPacked = GetFileSystem()->FUN_140398190();
     if (nPacked == 1)
@@ -518,7 +518,7 @@ efd::File* FUN_141628150(const wchar_t* pcName, efd::File::OpenMode eMode, unsig
 
 // The GFx file opener's callback: a ScaleformMemFile over the file system's buffer (NULL when missing).
 // @0x1416282e0
-Scaleform::File* FUN_1416282e0(CString strPath)
+Scaleform::File* OpenGfxFile(CString strPath)
 {
     Scaleform::File* pFile = 0;
     char szExt[MAX_PATH];
@@ -607,13 +607,13 @@ void NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)> loader)
 }
 
 // @0x141629eb0
-void NiGFxLocalizeManager::FUN_141629eb0(const CString& strLocale)
+void NiGFxLocalizeManager::SetLocale(const CString& strLocale)
 {
     ms_strLocale = strLocale;
 }
 
 // @0x141629ed0
-void UISwfEntity::FUN_141629ed0(Delegate<CString(CString, bool)> d)
+void UISwfEntity::SetSwfNameDelegate(Delegate<CString(CString, bool)> d)
 {
     s_swfNameDelegate = d;
 }

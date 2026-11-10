@@ -444,7 +444,7 @@ bool UISystemMenuDialog::FUN_141b14510(int nResult, const CMsgBoxData&)
 // @0x141b14560
 void UISystemMenuDialog::FUN_141b14560(int nPage)
 {
-    UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
+    UIGameOptionDialog* pDialog = FindGameOptionDialog(0x4ef3);
     pDialog->FUN_141b15670(nPage);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef3)));
     vfunc_67();

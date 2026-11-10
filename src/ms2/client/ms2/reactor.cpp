@@ -100,7 +100,7 @@ public:
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 void FUN_141b71e70(egf::EntityID id, bool bFlag, unsigned int b, bool c);
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* FUN_1408ac310(efd::utf8string* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_1408a8900(efd::utf8string* p);
@@ -124,7 +124,7 @@ bool FUN_140930b70();
 class Unk_Inventory { public: int FUN_140a5f180(int nItemId, int nRank); };
 extern Unk_Inventory g_143ab2a90;
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
-class Unk_AttendTable { public: int FUN_1409617d0(int a, unsigned b, const int& nDefault); };
+class Unk_AttendTable { public: int GetValue(int a, unsigned b, const int& nDefault); };
 class GameEventUserValue; extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
 #define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
 
@@ -153,7 +153,7 @@ public:
     char m_pad_18[0xc4 - 0x18];
     int m_nKind;                                                // +0xc4
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);   // C3: the definer's signature (0x1408a14c0), cell of a point
 int FUN_1408a03c0(Unk_Int3 pt);   // C3: the real signature (ugcmapdata_1)
@@ -316,7 +316,7 @@ void CReactor::FUN_140b791a0()
     if (m_listAnims.IsEmpty())
         return;
     const CString& strHead = m_listAnims.GetHead();
-    spAnim->FUN_14099e050(const_cast<efd::utf8string&>(static_cast<const efd::utf8string&>(efd::utf8string((const char*)FUN_1409a2360(strHead, 0)))), 1.0f, false);
+    spAnim->PlayAnimation(const_cast<efd::utf8string&>(static_cast<const efd::utf8string&>(efd::utf8string((const char*)FUN_1409a2360(strHead, 0)))), 1.0f, false);
 }
 
 // @0x140b79330
@@ -369,8 +369,8 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
     CString strAnim = "urn:gamebryo-animation:" + spState->m_strKfmName;
     m_str88 = "MS2Actor";
     m_strName = strName;
-    FUN_14123c5a0(nObjId);
-    FUN_14123bb80(CString(strAnim));
+    SetObjectId(nObjId);
+    SetModelPath(CString(strAnim));
     vfunc_19(*(const efd::Point3*)&pos);   // the exe's locals are efd::Point3: trivial by-value copies
     vfunc_21(*(const efd::Point3*)&rot);
     m_listAnims.RemoveAll();
@@ -383,7 +383,7 @@ void CReactor::SendStateReact()
 {
     COutPacket pkt(static_cast<int>(SendOp::StateReact), 0);
     pkt.WriteUInt8(2);
-    pkt.WriteInt32(FUN_14123c580());
+    pkt.WriteInt32(GetObjectId());
     FUN_140710590(pkt);
 }
 
@@ -509,7 +509,7 @@ void CReactor::vfunc_9(void* p)
 {
     GameObject::vfunc_9(p);
     bool bValue = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)p), 0x2a7fd9f4, bValue);
+    SetCachedBoolProperty((class Unk_CachedEntity*)((egf::Entity*)p), 0x2a7fd9f4, bValue);
 }
 
 // @0x140b7a1b0
@@ -575,7 +575,7 @@ int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
     if (!ContainsId(spRec->m_30, nField))
         return 5;
     int nDummy = 0;
-    int nCount = g_attendTable.FUN_1409617d0(0x76d, nEvent, nDummy);
+    int nCount = g_attendTable.GetValue(0x76d, nEvent, nDummy);
     if (nCount >= spRec->m_28)
         return 6;
     return 0;
@@ -688,7 +688,7 @@ int FUN_140b7a650(PCBase* pPc)
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         float fHit = 0.0f;
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(*pSample, &fHit, 50.0f) == 0)
+        if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(*pSample, &fHit, 50.0f) == 0)
             return 1;
     }
     }

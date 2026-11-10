@@ -101,7 +101,7 @@ void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
 void CameraMgrMoveTo(CameraMgr* pCamera, Vector3 ptPos);    // set the camera position
 
 // entity iteration, properties and the instancing service
-void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // write a bool property
+void SetCachedBoolProperty(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // write a bool property
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
@@ -182,7 +182,7 @@ int UIMinimapEditDialog::vfunc_65()
     FUN_141a540f0(1);
     TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesOption(true, 0);
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFogRange(false);
-    CameraMgr::GetInstance()->FUN_140aed750(6, 1);
+    CameraMgr::GetInstance()->SetMode(6, 1);
     FUN_141a551a0(CameraMgr::GetInstance(), true);
     WorldService::GetInstance()->FUN_141bd3cb0(true);
     m_strImageName.Empty();
@@ -200,7 +200,7 @@ void UIMinimapEditDialog::vfunc_67()
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFog();
     CameraMgr::GetInstance()->FUN_140aec8a0(false);
     FUN_141a551a0(CameraMgr::GetInstance(), false);
-    CameraMgr::GetInstance()->FUN_140aed750(2, 1);
+    CameraMgr::GetInstance()->SetMode(2, 1);
     FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
     WorldService::GetInstance()->FUN_141bd3cb0(false);
     m_strImageName.Empty();
@@ -451,12 +451,12 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
             if (spObject)
             {
                 if (spObject->FUN_14123c660() == 0)
-                    m_hidden.AddTail(spObject->FUN_14123c460());
+                    m_hidden.AddTail(spObject->GetEntityID());
             }
         }
         egf::Entity* pEntity = NULL;
-        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce4c0();
-        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce510(iter, pEntity))
+        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->BeginAllEntities();
+        while (TSingleton<EntityWorldManager>::GetInstance()->NextAllEntity(iter, pEntity))
         {
             bool bVisible = false;
             bool bInstanced = false;
@@ -477,7 +477,7 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
                     spInstancing->FUN_1413d6f40(pEntity);
                 }
                 bool bHide = false;
-                FUN_14098c6e0((Unk_CachedEntity*)(pEntity), 0xa0b6b179, bHide);
+                SetCachedBoolProperty((Unk_CachedEntity*)(pEntity), 0xa0b6b179, bHide);
                 m_hidden.AddTail(pEntity->GetEntityID());
             }
         }
@@ -495,11 +495,11 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
         GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(m_hidden.GetAt(pos)));
         if (pObject != NULL)
             pObject->vfunc_23(bShow);
-        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_hidden.GetAt(pos));
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_hidden.GetAt(pos));
         if (pEntity != NULL)
         {
             bool bVisible = bShow == 0 ? true : false;
-            FUN_14098c6e0((Unk_CachedEntity*)(pEntity), 0xa0b6b179, bVisible);
+            SetCachedBoolProperty((Unk_CachedEntity*)(pEntity), 0xa0b6b179, bVisible);
         }
     }
     if (bShow != 0)

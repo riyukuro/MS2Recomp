@@ -170,7 +170,7 @@ public:
     int IsActionKeyDown(int);
     int IsActionKeyPressed(int);
     int IsActionKeyReleased(int);
-    int FUN_14142c940(__int64 nAction, int nPriority);
+    int FindKeyByActionAndPriority(__int64 nAction, int nPriority);
     __int64 GetKeyAction(int nKey);                 // 0x14142d190
 };
 class WorldService   // C3: member view for the former free stand-ins
@@ -191,7 +191,7 @@ public:
     bool FUN_140d8c550();
     Vector3 GetLeftStickMoveDir();
 };
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 int FUN_140a58520(void* p);
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 class Ridee   // C3: member view for the former free stand-ins
@@ -207,7 +207,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class CInstrumentManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -359,7 +359,7 @@ Vector3 Unk_PCMove::FUN_141683290()
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb5)) {
-        if (*static_cast<bool*>(((void*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))) != 0) {
+        if (*static_cast<bool*>(((void*)GetGamepadState((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))) != 0) {
             if (!FUN_141683ef0()) {
                 return DAT_143b01a60;
             }
@@ -438,13 +438,13 @@ Vector3 Unk_PCMove::FUN_141683900()
 // @0x1416839b0
 bool Unk_PCMove::FUN_1416839b0()
 {
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d41, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d41, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d42, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d42, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d43, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d43, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d44, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d44, 2)))
         return true;
     return false;
 }
@@ -534,7 +534,7 @@ bool Unk_PCMove::FUN_1416840c0(int nKey)
     if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), nKey) != 0)
         return false;
     if (nKey == 0x493e8 || nKey == 0x493e9) {
-        if (((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->IsEnsemble())
+        if (((class CInstrumentManager*)(void*)(((void*)GetInstrumentManager())))->IsEnsemble())
             return false;
     }
     if (nKey == 0x493e1) {

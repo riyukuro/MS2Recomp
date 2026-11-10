@@ -97,7 +97,7 @@ const NiRTTI MS2ShadowVisitor::ms_RTTI("MS2ShadowVisitor", MS2_VIS_BASE);
 // ---- out-of-unit data and helpers ----
 extern NiFixedString DAT_143ae51a8;      // extra-data name that marks a shadow caster
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
 
 // "is this one of the shadow casters", written out inline at each use (a macro in the source: the exe has no call)
@@ -919,7 +919,7 @@ void MS2ShadowVisitor::AdditiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkOb
     if (pkNode && (pkNode->GetMS2Flags() & MS2_FLAG_SHADOW_EXCLUDED) == 0)
     {
         Unk_ShadowModelNode* pkModel;
-        if (((class COptimizer*)FUN_1409f7c90())->IsModelCullingOn() &&
+        if (((class COptimizer*)GetOptimizer())->IsModelCullingOn() &&
             (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast(&EffectNode::ms_RTTI, pkNode)) != 0 &&
             pkModel->FUN_1410444a0() == 1 && !pkModel->FUN_14144e250())
             return;

@@ -15,7 +15,7 @@ public:
     // ~CFishCube() is implicit (0x1403b0cb0): the exe dtor stores no vftable pointer
 
     void FUN_1403b0910(COutputStream* pStream);         // writes m_id, the constant 10000001, 25, m_b, 1 (short)
-    void FUN_1403b09a0(COutputStream* pStream);         // writes m_id, m_a, m_b, m_c, m_d (short)
+    void WriteFull(COutputStream* pStream);         // writes m_id, m_a, m_b, m_c, m_d (short)
     void FUN_1403b0a40(CByteBuffer* pStream);           // reads m_id, m_a, m_b, m_c, m_d (short)
     void FUN_1403b0b30();                               // zero m_a .. m_d
     void FUN_1403b0b70(COutputStream* pStream);         // writes m_id, m_a, m_b, m_c

@@ -25,7 +25,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The distance slider ("m_sliderDistance") is ASSlider; this unit owns its GetChild instance. The value is a float.
-MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASSlider> CreateSlider(int nId, const Scaleform::GFx::Value& v);
 extern template class MS2Ptr<ASSlider>;                              // instances owned by uiupperhuddialog.cpp
 
 void FUN_140710590(COutPacket& packet);
@@ -124,7 +124,7 @@ template <> MS2Ptr<ASSlider> AScript::FUN_140fafed0<ASSlider>(const CString& str
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return FUN_140a57ea0(m_nMovieId, v);
+        return CreateSlider(m_nMovieId, v);
     return MS2Ptr<ASSlider>(0);
 }
 

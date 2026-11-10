@@ -81,11 +81,11 @@ public:
 };
 class UIChatDialog;
 extern template class MS2Ptr<UIObject>;
-UIChatEmoticonDialog* FUN_140a3aa20();
-UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId);
-UIMessengerBrowser* FUN_140a3ab70(int nUiId);
+UIChatEmoticonDialog* FindChatEmoticonDialog();
+UIGroupMessengerBrowser* FindGroupMessengerBrowser(int nUiId);
+UIMessengerBrowser* FindMessengerBrowser(int nUiId);
 
-class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
+class UIRewardNotify* FindRewardNotify(int);   // C3: was FindRewardNotify
 
 // The emoticon table row and its handle.
 
@@ -105,22 +105,22 @@ void FUN_140710590(COutPacket& packet);
 
 // The ui id of the chat emoticon dialog.
 // @0x140a3dc60
-inline int FUN_140a3dc60() { return 0x4f80; }
+inline int GetChatEmoticonDialogClassId() { return 0x4f80; }
 
 // @0x140a3aa20
-UIChatEmoticonDialog* FUN_140a3aa20()
+UIChatEmoticonDialog* FindChatEmoticonDialog()
 {
     CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)FUN_140a3dc60());
+    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)GetChatEmoticonDialogClassId());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UIChatEmoticonDialog*>((UIObject*)spUI);
 }
 
 // @0x140a3aad0
-UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
+UIGroupMessengerBrowser* FindGroupMessengerBrowser(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -132,7 +132,7 @@ UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
 }
 
 // @0x140a3ab70
-UIMessengerBrowser* FUN_140a3ab70(int nUiId)
+UIMessengerBrowser* FindMessengerBrowser(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -147,7 +147,7 @@ UIMessengerBrowser* FUN_140a3ab70(int nUiId)
 
 // 0: the full state (owned ids, then the packs with expiry).
 // @0x140a38fa0
-void CChatEmoticonCli::FUN_140a38fa0(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonList(CInPacket& packet)
 {
     m_ids.clear();
     unsigned nIds = (unsigned short)packet.ReadInt16();
@@ -165,14 +165,14 @@ void CChatEmoticonCli::FUN_140a38fa0(CInPacket& packet)
         __int64 nExpire = packet.ReadInt64();
         AddGroup(nId, nExpire);
     }
-    UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
+    UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
     {
         pDlg->ClearEmoticonData();
         pDlg->FUN_140bd2620();
     }
 }
-MS2_REPLACE_METHOD(0x140A38FA0, CChatEmoticonCli, FUN_140a38fa0, 458, 0xDF3657B8);
+MS2_REPLACE_METHOD(0x140A38FA0, CChatEmoticonCli, OnEmoticonList, 458, 0xDF3657B8);
 
 // 1: expired packs removed.
 // @0x140a39170
@@ -190,7 +190,7 @@ void CChatEmoticonCli::FUN_140a39170(CInPacket& packet)
         unsigned nId = packet.ReadInt32();
         m_ids.remove(nId);
     }
-    UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
+    UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
     FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_expired"), 0, 0, L"");
@@ -211,7 +211,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
         AddGroup(nId, nExpire);
         setAdded.insert(nId);
     }
-    UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
+    UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
     {
         MS2_FOR_EACH(unsigned nId, setAdded)
@@ -224,7 +224,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
         MS2_ASSERT_AT(0x91, 0);
         return;
     }
-    UIChatDialog* pChat = ((class UIChatDialog*)FUN_140938cd0(0x4e5d));
+    UIChatDialog* pChat = ((class UIChatDialog*)FindRewardNotify(0x4e5d));
     if (pChat != 0)
     {
         CStringW strName = FUN_14016a730((const char*)reinterpret_cast<Unk_EmoItemData*>(item.operator->())->GetIconPath(), 0);
@@ -244,7 +244,7 @@ void CChatEmoticonCli::OnEmoticonMovedToEnd(CInPacket& packet)
     unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
     m_ids.push_back(nId);
-    UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
+    UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
 }
@@ -256,7 +256,7 @@ void CChatEmoticonCli::OnEmoticonRemoved(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     m_ids.remove(nId);
-    UIChatEmoticonDialog* pDlg = FUN_140a3aa20();
+    UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
 }
@@ -269,7 +269,7 @@ void CChatEmoticonCli::OnEmoticonTypedInMessenger(CInPacket& packet)
     unsigned nId = packet.ReadInt32();
     CStringW strName = packet.ReadUnicodeString();
     unsigned nFlag = packet.ReadUInt8();
-    UIMessengerBrowser* pBrowser = FUN_140a3ab70(0x4e61);
+    UIMessengerBrowser* pBrowser = FindMessengerBrowser(0x4e61);
     if (pBrowser == 0)
         return;
     UIMessenger* pChat = pBrowser->FUN_141a259c0(strName);
@@ -285,7 +285,7 @@ void CChatEmoticonCli::OnEmoticonSentInGroupMessenger(CInPacket& packet)
 {
     unsigned nId = packet.ReadInt32();
     CStringW strName = packet.ReadUnicodeString();
-    UIGroupMessengerBrowser* pBrowser = FUN_140a3aad0(0x4e93);
+    UIGroupMessengerBrowser* pBrowser = FindGroupMessengerBrowser(0x4e93);
     if (pBrowser == 0)
         return;
     UIGroupMessenger* pChat = pBrowser->FindWindowByName(strName);
@@ -297,7 +297,7 @@ MS2_REPLACE_METHOD(0x140A39940, CChatEmoticonCli, OnEmoticonSentInGroupMessenger
 
 // 7: result notice of a pack operation.
 // @0x140a39a20
-void CChatEmoticonCli::FUN_140a39a20(CInPacket& packet)
+void CChatEmoticonCli::OnEmoticonResult(CInPacket& packet)
 {
     int nResult = packet.ReadUInt8();
     switch (nResult)
@@ -319,10 +319,10 @@ void CChatEmoticonCli::FUN_140a39a20(CInPacket& packet)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140A39A20, CChatEmoticonCli, FUN_140a39a20, 938, 0x5E574199);
+MS2_REPLACE_METHOD(0x140A39A20, CChatEmoticonCli, OnEmoticonResult, 938, 0x5E574199);
 
 // @0x140a39dd0
-bool CChatEmoticonCli::FUN_140a39dd0(int nEmoticonId)
+bool CChatEmoticonCli::IsEmoticonUsable(int nEmoticonId)
 {
     ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!data)
@@ -342,7 +342,7 @@ bool CChatEmoticonCli::FUN_140a39dd0(int nEmoticonId)
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x140A39DD0, CChatEmoticonCli, FUN_140a39dd0, 454, 0xE5D9DB06);
+MS2_REPLACE_METHOD(0x140A39DD0, CChatEmoticonCli, IsEmoticonUsable, 454, 0xE5D9DB06);
 
 // @0x140a39fa0
 bool CChatEmoticonCli::IsEmoticonFavorite(int nEmoticonId)
@@ -365,12 +365,12 @@ bool CChatEmoticonCli::FUN_140a3a0b0(int nEmoticonId)
     ChatEmoticonDataPtr data = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!data)
         return false;
-    return FUN_140a3a140(data->m_nGroupId);
+    return IsGroupExpired(data->m_nGroupId);
 }
 MS2_REPLACE_METHOD(0x140A3A0B0, CChatEmoticonCli, FUN_140a3a0b0, 132, 0x16C12BAD);
 
 // @0x140a3a140
-bool CChatEmoticonCli::FUN_140a3a140(unsigned nGroupId)
+bool CChatEmoticonCli::IsGroupExpired(unsigned nGroupId)
 {
     std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> >::iterator it = m_groupById.find(nGroupId);
     if (it == m_groupById.end())
@@ -387,7 +387,7 @@ bool CChatEmoticonCli::FUN_140a3a140(unsigned nGroupId)
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x140A3A140, CChatEmoticonCli, FUN_140a3a140, 319, 0xCB912C57);
+MS2_REPLACE_METHOD(0x140A3A140, CChatEmoticonCli, IsGroupExpired, 319, 0xCB912C57);
 
 // @0x140a3a290
 void CChatEmoticonCli::AddGroup(unsigned nGroupId, __int64 nExpire)
@@ -450,14 +450,14 @@ void CChatEmoticonCli::DispatchPacket(CInPacket& packet)
     int nType = packet.ReadUInt8();
     switch (nType)
     {
-    case 0: FUN_140a38fa0(packet); break;
+    case 0: OnEmoticonList(packet); break;
     case 1: FUN_140a39170(packet); break;
     case 2: FUN_140a39360(packet); break;
     case 3: OnEmoticonTypedInMessenger(packet); break;
     case 4: OnEmoticonSentInGroupMessenger(packet); break;
     case 5: OnEmoticonMovedToEnd(packet); break;
     case 6: OnEmoticonRemoved(packet); break;
-    case 7: FUN_140a39a20(packet); break;
+    case 7: OnEmoticonResult(packet); break;
     }
 }
 MS2_REPLACE_METHOD(0x140A3A700, CChatEmoticonCli, DispatchPacket, 237, 0x18A57F3A);

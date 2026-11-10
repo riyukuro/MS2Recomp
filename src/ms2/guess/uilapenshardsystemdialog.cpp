@@ -201,7 +201,7 @@ typedef MS2Ptr<CItem> ItemPtr;
 typedef LapenshardItemArray ItemArray;
 
 // The item bag registry (a name -> item list map of the inventory dialogs).
-void FUN_140a704a0(const CString& strBag);                                   // unbind the bag name
+void RemoveLapenshardSlotBag(const CString& strBag);                                   // unbind the bag name
 void FUN_140a702f0(const CString& strBag, const ItemArray& items, int nFlag);     // bind the bag name to the items
 // The inventory: the bag lookup used by FUN_140c60920 below.
 void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid);   // 0x140c60920
@@ -209,7 +209,7 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
 // @0x140c610a0
 static void BindBag(CString* pstrBag, ItemArray* pItems, int nFlag)
 {
-    FUN_140a704a0(*pstrBag);
+    RemoveLapenshardSlotBag(*pstrBag);
     FUN_140a702f0(*pstrBag, *pItems, nFlag);
 }
 
@@ -382,7 +382,7 @@ void LapenshardItemSlotBagPanel::vfunc_4()
 {
     if (!m_strBag.IsEmpty())
     {
-        FUN_140a704a0(m_strBag);
+        RemoveLapenshardSlotBag(m_strBag);
         m_strBag.Empty();
     }
 }
@@ -423,7 +423,7 @@ void LapenshardEquipSlotPanel::vfunc_2()
 
 // The bag registry entry of a name (FUN_140c610e0): per-slot ids.
 LapenshardSlotBag* FUN_140a703d0(const CString& strBag);                          // the bag of a name
-class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
+class Unk_SlotLapenTable* GetLapenshardTable();   // C3: was GetLapenshardTable
 struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
 LapenshardSlotBag* FUN_140a70b70(NotifyContext::BindData* pEntry);
 ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* pEntry);                              // the bag component (class id 0x6200084) of a registry entry
@@ -434,7 +434,7 @@ int FUN_140c62520();                                                    // the w
 // @0x140c610e0
 static LapenshardSlotBag* BindBagReg(CString* pstrBag)
 {
-    FUN_140a704a0(*pstrBag);
+    RemoveLapenshardSlotBag(*pstrBag);
     return FUN_140a703d0(*pstrBag);
 }
 
@@ -463,7 +463,7 @@ void LapenshardEquipSlotPanel::vfunc_3()
         {
             ASObj obj(2);
             obj.FUN_1407cba60("bindID", pReg->vfunc_15(nIndex));
-            obj.FUN_1409c0d20("slotIndex", i);
+            obj.SetMemberUInt("slotIndex", i);
             int bEquip = pPlayer->GetLapenshardItemId((Unk_MyPCLapenSlot)i) ? 1 : 0;
             obj.FUN_1407cb9c0("isEquip", bEquip);
             slot->FUN_140acd1f0("setData", AScript(obj));
@@ -476,7 +476,7 @@ void LapenshardEquipSlotPanel::vfunc_4()
 {
     if (!m_strBag.IsEmpty())
     {
-        FUN_140a704a0(m_strBag);
+        RemoveLapenshardSlotBag(m_strBag);
         m_strBag.Empty();
     }
 }
@@ -513,7 +513,7 @@ void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
         return;
     for (unsigned i = 1; i < 7; ++i)
     {
-        int nSlotKind = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->GetEquipPart((CItemLapenshardTable::Slot)i);
+        int nSlotKind = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->GetEquipPart((CItemLapenshardTable::Slot)i);
         if (nKind != nSlotKind)
             continue;
         CString strName;
@@ -668,7 +668,7 @@ void UILapenshardEquipTab::vfunc_10(void* a1, bool b)
 // "m_buttonBar": the tab strip.
 
 class Unk_LsItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -703,7 +703,7 @@ CString UILapenshardSystemDialog::GetTypeName()
 // @0x140c616f0
 void UILapenshardSystemDialog::vfunc_67()
 {
-    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)FUN_140a6a840()))))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)GetItemEventDispatcher()))))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     OnLeaveTab();
     for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
     {
@@ -733,7 +733,7 @@ void UILapenshardSystemDialog::OnLoadComplete()
             if (spTab->m_spPage == 0)
                 continue;
             ASObj row(2);
-            row.FUN_1409c0d20("tabIndex", i);
+            row.SetMemberUInt("tabIndex", i);
             row.FUN_1407cbb20("label", spTab->m_strLabel);
             row.FUN_1407cba60("frame", spTab->m_strName);
             spBar->AddItem(row);
@@ -886,11 +886,11 @@ public:
     void FUN_1419308c0(class UIEntityEventListener*);
     void FUN_141930950(class UIEntityEventListener*);
 };
-UIRewardNotify* FUN_140938cd0(int nId);
+UIRewardNotify* FindRewardNotify(int nId);
 enum eUIClassID : int;
 class UIUpperHpBar;
 template <class T> T* Unk_AcFindUI(eUIClassID nId);                       // a shown UI by id
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 float FUN_14028d280(unsigned nMs);                                      // ms -> s
 
 // @0x140c607b0
@@ -970,7 +970,7 @@ void UILapenshardShieldBar::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
     m_spBuff = 0;
-    UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
+    UIRewardNotify* pReward = FindRewardNotify(0x4e5d);
     if (pReward != 0)
         pReward->RewardComplete();
 }
@@ -1001,7 +1001,7 @@ void UILapenshardShieldBar::vfunc_15()
         if (m_spBuff.operator->()->GetRemainTicks() <= 0)
             return;
         CStringW strLeft = FUN_140c5f9e0();
-        m_30->Invoke("setValue", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nValue, strLeft);
+        m_30->Invoke("setValue", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->GetLevelData())->m_nValue, strLeft);
     }
 }
 
@@ -1050,7 +1050,7 @@ CStringW UILapenshardShieldBar::FUN_140c5f9e0()
 {
     if (m_spBuff == 0)
         return L"";
-    ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEndTick)) - CMsTime((__int64)FUN_14028d280(FUN_141472bc0()));
+    ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEndTick)) - CMsTime((__int64)FUN_14028d280(GetServerTick()));
     int nSeconds = span.GetSeconds();
     int nMinutes = span.GetMinutes();
     return Unk_Fmt2(L"{0:02}:{1:02}", nMinutes, nSeconds);
@@ -1177,7 +1177,7 @@ void LapenshardSourceItemSlotBagPanel::vfunc_4()
 {
     if (!m_strBag.IsEmpty())
     {
-        FUN_140a704a0(m_strBag);
+        RemoveLapenshardSlotBag(m_strBag);
         m_strBag.Empty();
     }
     m_items.RemoveAll();
@@ -1257,7 +1257,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
-    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(spSource->FUN_1405276c0());
+    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(spSource->FUN_1405276c0());
     if (spRec == 0)
         return;
     if (spRec->m_nMinCount <= 0)
@@ -1293,7 +1293,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_4()
 {
     if (!m_strBag.IsEmpty())
     {
-        FUN_140a704a0(m_strBag);
+        RemoveLapenshardSlotBag(m_strBag);
         m_strBag.Empty();
     }
     m_items.RemoveAll();
@@ -1353,13 +1353,13 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
     MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
         return;
-    MS2Ptr<CItemLapenshardData> spSrcRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(spSource->FUN_1405276c0());
+    MS2Ptr<CItemLapenshardData> spSrcRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(spSource->FUN_1405276c0());
     if (spSrcRec == 0)
         return;
     MS2Ptr<CItem> spItem = m_items[nIndex];
     if (spItem == 0)
         return;
-    MS2Ptr<CItemLapenshardData> spItemRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(spItem->FUN_1405276c0());
+    MS2Ptr<CItemLapenshardData> spItemRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(spItem->FUN_1405276c0());
     if (spItemRec == 0)
         return;
     if (spItem->FUN_14052a290(2))
@@ -1434,7 +1434,7 @@ bool LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0(int nResult, const CMsg
         int nIndex = box.FUN_141a02e50(0, 0);
         unsigned nItemId = box.FUN_141a02e90(1, 0);
         unsigned nCount = box.FUN_141a02e90(2, 0);
-        MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(nItemId);
+        MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(nItemId);
         if (spRec == 0)
             return false;
         MS2Ptr<CItem> spItem = m_items[nIndex];
@@ -1482,9 +1482,9 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool IsDebugMode();
 };
-void FUN_141415600(const CString& strSlot);                                  // unbind a slot name
-void FUN_14141f970(const CString& strSlot);
-void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> spItem, int a, int b, int c);   // create the item slot of a name
+void DestroyItemInfoSlot(const CString& strSlot);                                  // unbind a slot name
+void DestroyItemSlotBag(const CString& strSlot);
+void CreateItemInfoSlot(const CString& strSlot, MS2Ptr<CItem> spItem, int a, int b, int c);   // create the item slot of a name
 int FUN_14053feb0(int nItemId);
 void* FUN_1401c0d90();
 class CGameRule   // C3: member view for the former free stand-ins
@@ -1553,12 +1553,12 @@ void LapenshardUpgradeSlotPanel::vfunc_4()
     {
         CString& strSlot = m_slotNames[i];
         if (!strSlot.IsEmpty())
-            FUN_141415600(strSlot);
+            DestroyItemInfoSlot(strSlot);
     }
     m_slotNames.RemoveAll();
     m_spSource = 0;
     if (!m_strBind.IsEmpty())
-        FUN_14141f970(m_strBind);
+        DestroyItemSlotBag(m_strBind);
 }
 
 // @0x140c651a0
@@ -1629,8 +1629,8 @@ void LapenshardUpgradeSlotPanel::FUN_140c65360(ItemInfoSlot& slot, ASTooltip& to
 // @0x140c654a0
 void LapenshardUpgradeSlotPanel::FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem)
 {
-    FUN_141415600(strSlot);
-    FUN_141415450(strSlot, spItem, 0, 0x40401, 0x2020);
+    DestroyItemInfoSlot(strSlot);
+    CreateItemInfoSlot(strSlot, spItem, 0, 0x40401, 0x2020);
     m_slotNames.Add(strSlot);
 }
 
@@ -1926,8 +1926,8 @@ void UILapenshardUpgradeTab::FUN_140c69620()
 // ---- the bag registry helpers and the rest of the upgrade slot panel ----
 
 CString FUN_1422cc860(const CString& strBase, int nIndex);
-void FUN_14141f770(const CString&, int, void*, MS2Ptr<CItem>(*)(void*, int), int, int);
-MS2Ptr<CItem> FUN_141420330(void*, int);
+void CreateItemSlotBag(const CString&, int, void*, MS2Ptr<CItem>(*)(void*, int), int, int);
+MS2Ptr<CItem> GetItemFromArray(void*, int);
 CStringW FUN_1419021b0(unsigned a, unsigned b);
 
 // @0x140c5fbb0 (the shield bar), 0x140c68e40 and 0x140c69650 (the upgrade page): plain getters
@@ -1951,16 +1951,16 @@ int UILapenshardUpgradeTab::FUN_140c69650()
 // @0x140c60ed0
 void FUN_140c60ed0(CString& strBag, const ItemArray& items, int nIconType, int nFlags)
 {
-    FUN_14141f970(strBag);
-    MS2Ptr<CItem> (*pfnGetItem)(void*, int) = FUN_141420330;
-    FUN_14141f770(strBag, (int)items.GetCount(), (void*)&items, pfnGetItem, nIconType, nFlags);
+    DestroyItemSlotBag(strBag);
+    MS2Ptr<CItem> (*pfnGetItem)(void*, int) = GetItemFromArray;
+    CreateItemSlotBag(strBag, (int)items.GetCount(), (void*)&items, pfnGetItem, nIconType, nFlags);
 }
 
 // @0x140c61010
 void FUN_140c61010(CString& strSlot, MS2Ptr<CItem> spItem, int nIconType, int nFlags)
 {
-    FUN_141415600(strSlot);
-    FUN_141415450(strSlot, spItem, 0, nIconType, nFlags);
+    DestroyItemInfoSlot(strSlot);
+    CreateItemInfoSlot(strSlot, spItem, 0, nIconType, nFlags);
 }
 
 // @0x140c65d60
@@ -1968,7 +1968,7 @@ MS2Ptr<CItemLapenshardData> LapenshardUpgradeSlotPanel::FUN_140c65d60()
 {
     if (m_spSource == 0)
         return MS2Ptr<CItemLapenshardData>(0);
-    return reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(m_spSource->FUN_1405276c0());
+    return reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(m_spSource->FUN_1405276c0());
 }
 
 // @0x140c65e00
@@ -1985,7 +1985,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65ef0()
 {
     if (m_spSource == 0)
         return;
-    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(m_spSource->FUN_1405276c0());
+    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(m_spSource->FUN_1405276c0());
     if (spRec == 0)
         return;
     if ((unsigned)spRec->m_nMinCount <= 0)
@@ -2051,7 +2051,7 @@ struct Unk_InventoryArraySetting {
     unsigned char unknown9[0x47];
     std::vector<int> values;
     void* unknown68; void* unknown70; void* unknown78;
-    const std::vector<int>& FUN_140a6aa40();
+    const std::vector<int>& GetValues();
 };
 MS2_CHECK_SIZE(Unk_InventoryArraySetting, 0x80);
 class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_InventoryArraySetting m_quests; };   // +0xa040 embedded, not a pointer
@@ -2073,7 +2073,7 @@ int UILapenshardSystemDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    std::vector<int> quests = reinterpret_cast<Unk_LsGameTables*>(((class Unk_LsGameTables*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))->m_quests.FUN_140a6aa40();
+    std::vector<int> quests = reinterpret_cast<Unk_LsGameTables*>(((class Unk_LsGameTables*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))->m_quests.GetValues();
     if (quests.size() != 2)
         return 0;
     int nNewbie = quests[0];
@@ -2087,7 +2087,7 @@ int UILapenshardSystemDialog::vfunc_73()
             return 1;
     }
     CStringW strName;
-    if (pPlayer->FUN_141654700() == 1)
+    if (pPlayer->GetJobGroupId() == 1)
     {
         strName = FUN_1416e4df0(nQuest);
         FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_lapenshard_open_newbie_quest_message"), strName), 1, 1);
@@ -2106,7 +2106,7 @@ int UILapenshardSystemDialog::vfunc_65()
         return 0;
     m_tabs.Add(new TabInfo("equip", GetStringCommonByKey(L"s_lapenshard_tabname_equip"), new UILapenshardEquipTab()));
     m_tabs.Add(new TabInfo("upgrade", GetStringCommonByKey(L"s_lapenshard_tabname_upgrade"), new UILapenshardUpgradeTab()));
-    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)FUN_140a6a840()))))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_LsItemEvents*)(reinterpret_cast<Unk_LsItemEvents*>(((class Unk_LsItemEvents*)GetItemEventDispatcher()))))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     return 0;
 }
 
@@ -2123,7 +2123,7 @@ int FUN_140c69670(unsigned nItemId, int nGrade, int* pnTag)
 {
     int nCount = g_143ab2a90.FUN_140a5f180(nItemId, nGrade);
     if (*pnTag != 0)
-        nCount = g_143ab2a90.FUN_140a5f780(*pnTag, 0);
+        nCount = g_143ab2a90.GetItemCountByTag(*pnTag, 0);
     return nCount;
 }
 
@@ -2144,7 +2144,7 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
         return 0;
     if (m_spSource == 0)
         return 0;
-    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(m_spSource->FUN_1405276c0());
+    MS2Ptr<CItemLapenshardData> spRec = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(m_spSource->FUN_1405276c0());
     if (spRec == 0)
         return 0;
     if (0 < spRec->m_nMeso && DAT_143ab2898 < spRec->m_nMeso)
@@ -2232,20 +2232,20 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
     if (!m_strBind.IsEmpty())
         Unk_NotifyContext::FUN_1422c8f70(m_strBind);
     m_strBind = "LapenshardShieldBarSkillBindID";
-    int nSkill = reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nSkillId;
+    int nSkill = reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->GetLevelData())->m_nSkillId;
     SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, nSkill, 0, 0);
     if (pSlot == 0)
         return;
     pSlot->SetFixed(1);
     Unk_NotifyContext::FUN_1422c8f10(m_strBind, pSlot);
     CStringW strLeft = FUN_140c5f9e0();
-    m_30->Invoke("open", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nValue, strLeft, m_strBind);
-    UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
+    m_30->Invoke("open", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->GetLevelData())->m_nValue, strLeft, m_strBind);
+    UIRewardNotify* pReward = FindRewardNotify(0x4e5d);
     if (pReward != 0)
     {
-        if (!reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_skills).empty())
+        if (!reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->GetLevelData())->m_skills).empty())
         {
-            unsigned nSkillId = *reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_skills).begin();
+            unsigned nSkillId = *reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->GetLevelData())->m_skills).begin();
             CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_lapenshard_skill_possible_msg"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
             pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
         }
@@ -2264,7 +2264,7 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
     if (pPlayer == 0)
         return;
     ItemArray items;
-    g_143ab2a90.FUN_140a60880(0xd, items);
+    g_143ab2a90.GetItemsInCategory(0xd, items);
     if (bWithEquipped != 0)
     {
         ATL::CAtlArray<unsigned int> equipped;
@@ -2272,7 +2272,7 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
         for (unsigned i = 0; i < equipped.GetCount(); ++i)
         {
             unsigned nItemId = equipped[i];
-            if (bTableOnly != 0 && reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->HasUpgrade(nItemId) == 0)
+            if (bTableOnly != 0 && reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->HasUpgrade(nItemId) == 0)
                 continue;
             MS2Ptr<CItem> spItem(new CItem());
             int nGrade = FUN_14053feb0(nItemId);
@@ -2296,9 +2296,9 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
                 continue;
             if (bCheckUse != 0)
             {
-                if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+                if (pPlayer->CanUseItem(spItem.get()) == 0)
                     continue;
-                if (spItem->IsJobAllowed(pPlayer->FUN_141654700()) == 0)
+                if (spItem->IsJobAllowed(pPlayer->GetJobGroupId()) == 0)
                     continue;
                 if (spItem->CanUseAtLevel(pPlayer->vfunc_78()) == 0)
                     continue;
@@ -2307,9 +2307,9 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
                 continue;
             if (bWithBound == 0 && spItem->FUN_140528e20())
                 continue;
-            if (bTableOnly != 0 && reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->HasUpgrade(spItem->FUN_1405276c0()) == 0)
+            if (bTableOnly != 0 && reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->HasUpgrade(spItem->FUN_1405276c0()) == 0)
                 continue;
-            if (nKind != 0 && reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->GetGroup(spItem->FUN_1405276c0()) != nKind)
+            if (nKind != 0 && reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->GetGroup(spItem->FUN_1405276c0()) != nKind)
                 continue;
             if (nExcludeUid != 0 && spItem->GetItemUid() == nExcludeUid)
                 continue;
@@ -2329,7 +2329,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<CItemLape
     int bNeed = spRec->m_nMinCount > 0;
     if (bNeed != 0)
     {
-        unsigned nItemId = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->GetFirstItem(spRec->m_nGroup);
+        unsigned nItemId = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->GetFirstItem(spRec->m_nGroup);
         int nGrade = FUN_14053feb0(nItemId);
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->InitWithCount(nItemId, nGrade, 0, spRec->m_nMinCount) != 0)
@@ -2371,7 +2371,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<CItemLape
     }
     int nStyle = 0x20403;
     int nFlags = 0x2020;
-    FUN_14141f770(strBag, (int)items.GetCount(), (void*)&items, FUN_141420330, nStyle, nFlags);
+    CreateItemSlotBag(strBag, (int)items.GetCount(), (void*)&items, GetItemFromArray, nStyle, nFlags);
     ASArray rows(2);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
@@ -2549,7 +2549,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
     int bLimit = 0;
     if (bSuccess != 0)
     {
-        MS2Ptr<CItemLapenshardData> spNext = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(spRec->m_nNext);
+        MS2Ptr<CItemLapenshardData> spNext = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(spRec->m_nNext);
         if (spNext && spNext->m_nNext == 0)
             bLimit = 1;
     }
@@ -2599,9 +2599,9 @@ void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>)
 // @0x140c60f40
 void FUN_140c60f40(CString& strBag, ItemArray& items, MS2Ptr<ItemSlotBag::CreateParam> param)
 {
-    FUN_14141f970(strBag);
+    DestroyItemSlotBag(strBag);
     if ((bool)(param.get() != 0) && param->m_pfnGetItem == 0)
-        param->m_pfnGetItem = FUN_141420330;
+        param->m_pfnGetItem = GetItemFromArray;
     FUN_14141f860(strBag, static_cast<int>(items.GetCount()), &items, param);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

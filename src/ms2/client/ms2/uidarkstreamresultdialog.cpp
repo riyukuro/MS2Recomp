@@ -29,9 +29,9 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 void FUN_140710590(COutPacket&);                                // send
-void FUN_14141f970(const CString&);                             // drop an item bag
+void DestroyItemSlotBag(const CString&);                             // drop an item bag
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);   // news an item bag
-MS2Ptr<CItem> FUN_141420330(void*, int);                        // ItemSlotBag::CreateParam::GetItemFn: array element
+MS2Ptr<CItem> GetItemFromArray(void*, int);                        // ItemSlotBag::CreateParam::GetItemFn: array element
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -108,7 +108,7 @@ void UIDarkStreamResultDialog::vfunc_67()
     packet.WriteUInt8(1);
     FUN_140710590(packet);
     UIDialog::vfunc_67();
-    FUN_14141f970(m_strBagId);
+    DestroyItemSlotBag(m_strBagId);
 }
 MS2_REPLACE_METHOD(0x140F348C0, UIDarkStreamResultDialog, vfunc_67, 104, 0xFA27909A);
 
@@ -203,9 +203,9 @@ void UIDarkStreamResultDialog::FUN_140f34d50()
             items.Add(item);
         }
     }
-    FUN_14141f970(m_strBagId);
+    DestroyItemSlotBag(m_strBagId);
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
-    param->m_pfnGetItem = FUN_141420330;
+    param->m_pfnGetItem = GetItemFromArray;
     param->m_nIconType = 0xc15;
     param->m_nFlags = 0x800;
     FUN_14141f860(m_strBagId, (int)items.GetCount(), &items, param);

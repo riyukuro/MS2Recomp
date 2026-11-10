@@ -200,7 +200,7 @@ void CGameSocket::vfunc_2(CSimpleSocket*,int error)
                     m_received+=received; m_receiveQueue.AddTail(buffer);
                 }
             }
-            FUN_141265ae0();
+            ProcessPacket();
         }
     } catch(Exception& e) { e.GetCode(); }
 }
@@ -210,7 +210,7 @@ void CGameSocket::vfunc_3(CSimpleSocket*,int error)
 {
     try {
         if(error) throw Exception(error);
-        FUN_141267070();
+        FlushSendQueue();
     } catch(Exception& e) {
         PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x466,error,0);
         FUN_141266500(error);
@@ -237,7 +237,7 @@ void CGameSocket::OnClose(CSimpleSocket*,int error)
 }
 MS2_REPLACE_METHOD(0x1412651a0, CGameSocket, OnClose, 626, 0x1E61A941);
 // @0x141265420
-int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
+int CGameSocket::Connect(CString host,int port,int showError,int special)
 {
     {
         Unk_LockGuard guard(m_lock);
@@ -245,7 +245,7 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
             if(m_state!=Unk_SocketState::Closed) return 0;
             m_disconnect=0; m_state=Unk_SocketState::Connecting;
             try {
-            m_socket.CreateSocket(SOCK_STREAM,AF_INET,0); m_socket.SetNonBlocking(1); m_socket.FUN_14126c5a0(this);
+            m_socket.CreateSocket(SOCK_STREAM,AF_INET,0); m_socket.SetNonBlocking(1); m_socket.SetCallBack(this);
             Unk_SocketOptions& opts=m_options;
             if(opts.noDelay!=INT_MAX) m_socket.SetNoDelay(opts.noDelay);
             if(opts.option5!=INT_MAX) m_socket.FUN_14126c5c0(opts.option5);
@@ -262,7 +262,7 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
     FUN_141266500(error); Close(); return 0;
 }
 // @0x1412657e0
-void CGameSocket::Reconnect() { FUN_141265420(m_retryHost,m_retryPort,m_showErrors,0); }
+void CGameSocket::Reconnect() { Connect(m_retryHost,m_retryPort,m_showErrors,0); }
 // @0x141265850
 void CGameSocket::Close()
 {
@@ -292,7 +292,7 @@ void CGameSocket::SendPacket(COutPacket& packet)
 MS2_REPLACE_METHOD(0x141265990, CGameSocket, SendPacket, 330, 0x4BA90009);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141265ae0
-void CGameSocket::FUN_141265ae0()
+void CGameSocket::ProcessPacket()
 {
     int stopped=0;
     ATL::CAtlList<Unk_InPtr> ready(10);
@@ -312,7 +312,7 @@ void CGameSocket::FUN_141265ae0()
                         m_packets.RemoveHeadNoReturn(); Unk_RandomStep((int*)(&m_receiveKey));
                         unsigned key=m_receiveKey;
                         packet->DecryptPayload(((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->GetConnectionState(),&key);
-                        ++m_sequence; packet->FUN_14126c7b0(m_sequence);
+                        ++m_sequence; packet->SetSequence(m_sequence);
                         int result=((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_35(*packet);
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
@@ -374,7 +374,7 @@ void CGameSocket::SetDisconnect(int value) { Unk_LockGuard guard(m_lock); if(gua
 MS2_REPLACE_METHOD(0x141267000, CGameSocket, SetDisconnect, 91, 0x454E3B49);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141267070
-void CGameSocket::FUN_141267070()
+void CGameSocket::FlushSendQueue()
 {
     try {
     Unk_LockGuard guard(m_lock);
@@ -396,10 +396,10 @@ void CGameSocket::FUN_141267070()
         Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
     }
 }
-MS2_REPLACE_METHOD(0x141267070, CGameSocket, FUN_141267070, 545, 0xD89E6EA3);
+MS2_REPLACE_METHOD(0x141267070, CGameSocket, FlushSendQueue, 545, 0xD89E6EA3);
 // @0x1412672a0
-void CGameSocket::FUN_1412672a0(const Unk_SocketOptions& options) { m_options=options; }
-MS2_REPLACE_METHOD(0x1412672a0, CGameSocket, FUN_1412672a0, 39, 0x0D8742A8);
+void CGameSocket::SetOptions(const Unk_SocketOptions& options) { m_options=options; }
+MS2_REPLACE_METHOD(0x1412672a0, CGameSocket, SetOptions, 39, 0x0D8742A8);
 // @0x1412672d0
 void CGameSocket::FUN_1412672d0()
 {
@@ -432,7 +432,7 @@ void CGameSocket::FUN_141267410(COutPacket& packet)
             FUN_140710870(&packet,&m_sendQueue,0x9dd,&m_sendKey,0); Unk_RandomStep((int*)(&m_sendKey));
         }
     }
-    m_logger->LogSend(op,*reinterpret_cast<Unk_LogOutPacket*>(&packet)); FUN_141267070();
+    m_logger->LogSend(op,*reinterpret_cast<Unk_LogOutPacket*>(&packet)); FlushSendQueue();
     } catch(Exception& e) {
         DWORD code=e.GetCode();
         CString text=Unk_SocketFormat("Socket Send Exception : {0}({1})",e.GetText(),code);
@@ -496,7 +496,7 @@ inline void CSimpleSocket::FUN_1412694d0(int events,CSocketThread* worker)
 {
     RemoveFromWorker();
     if(worker==0) m_worker=Unk_SocketNew(0); else m_worker=worker;
-    m_worker->FUN_1412696b0();
+    m_worker->EnsureThreadStarted();
     HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,events,done};
     { Unk_LockGuard guard(m_worker->m_lock); if(guard!=0) {} else m_worker->m_commands.AddTail(command); }
     WSASetEvent(m_worker->m_events[0]);
@@ -505,7 +505,7 @@ inline void CSimpleSocket::FUN_1412694d0(int events,CSocketThread* worker)
     WSACloseEvent(done); if(result!=0) throw Exception(WSAEINVAL);
 }
 // @0x1412696b0
-inline void CSocketThread::FUN_1412696b0()
+inline void CSocketThread::EnsureThreadStarted()
 {
     if(!GetThread()) {
         HANDLE event=WSACreateEvent(); m_events.Add(event);
@@ -538,7 +538,7 @@ inline int CSocketThread::FUN_141269b30(HANDLE event)
     try {
     WSANETWORKEVENTS events;
     if(WSAEnumNetworkEvents(*socket,event,&events)==SOCKET_ERROR) throw Exception(WSAGetLastError());
-    ISocketCallBack* callback=socket->FUN_14126a3c0();
+    ISocketCallBack* callback=socket->GetCallBack();
     if(callback) {
         if(events.lNetworkEvents&FD_ACCEPT) callback->vfunc_0(socket,events.iErrorCode[FD_ACCEPT_BIT]);
         if(events.lNetworkEvents&FD_CONNECT) callback->vfunc_1(socket,events.iErrorCode[FD_CONNECT_BIT]);
@@ -569,7 +569,7 @@ inline void CSocketThread::ProcessCommands()
 // @0x14126a000
 inline void CSocketThread::HandleSocketError(CSimpleSocket* socket,int error)
 {
-    ISocketCallBack* callback=socket->FUN_14126a3c0();
+    ISocketCallBack* callback=socket->GetCallBack();
     if(callback) { try { callback->OnClose(socket,error); } catch(Exception&) {} }
     RemoveSocket(socket); socket->CloseSocket();
 }
@@ -728,7 +728,7 @@ inline void Unk_SocketAddress::InitSockAddr(unsigned short port,unsigned long ad
 // MS2-PIN: ?FUN_141269940@CInPacket@@QEAAGI@Z 0x141269940
 // MS2-PIN: ?FindNextNode@?$CAtlMap@PEAXPEAVCSimpleSocket@@V?$CElementTraits@PEAX@ATL@@V?$CElementTraits@PEAVCSimpleSocket@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141269f40
 // MS2-PIN: ?Base@?$Unk_SocketRef@VCInPacket@@@@SAPEAVCPtred@@PEAVCInPacket@@@Z 0x14126a310
-// MS2-PIN: ?FUN_14126a3c0@CSimpleSocket@@QEAAPEAVISocketCallBack@@XZ 0x14126a3c0
+// MS2-PIN: ?GetCallBack@CSimpleSocket@@QEAAPEAVISocketCallBack@@XZ 0x14126a3c0
 // MS2-PIN: ?GetCount@?$CAtlMap@PEAXPEAVCSimpleSocket@@V?$CElementTraits@PEAX@ATL@@V?$CElementTraits@PEAVCSimpleSocket@@@3@@ATL@@QEBA_KXZ 0x14126a3d0
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$Unk_SocketPtr@VCInPacket@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCInPacket@@@@@ATL@@@ATL@@AEAAXXZ 0x14126a4c0
 // MS2-PIN: ?GetHead@?$CAtlList@UUnk_SocketCommand@@V?$CElementTraits@UUnk_SocketCommand@@@ATL@@@ATL@@QEAAAEAUUnk_SocketCommand@@XZ 0x14126a5b0
@@ -751,7 +751,7 @@ inline void Unk_SocketAddress::InitSockAddr(unsigned short port,unsigned long ad
 // MS2-PIN: ?vfunc_3@ISocketCallBack@@UEAAXPEAVCSimpleSocket@@H@Z 0x14126b0c0
 // MS2-PIN: ?SetAt@?$CAtlList@V?$Unk_SocketPtr@VCPacketBuffer@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCPacketBuffer@@@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@AEBV?$Unk_SocketPtr@VCPacketBuffer@@@@@Z 0x14126c480
 // MS2-PIN: ?SetAt@?$CAtlMap@PEAXPEAVCSimpleSocket@@V?$CElementTraits@PEAX@ATL@@V?$CElementTraits@PEAVCSimpleSocket@@@3@@ATL@@QEAAPEAU__POSITION@@PEAXAEBQEAVCSimpleSocket@@@Z 0x14126c500
-// MS2-PIN: ?FUN_14126c7b0@CInPacket@@QEAAXH@Z 0x14126c7b0
+// MS2-PIN: ?SetSequence@CInPacket@@QEAAXH@Z 0x14126c7b0
 // MS2-PIN: ?AddRef@?$Unk_SocketPtr@VCInPacket@@@@AEBAXXZ 0x14126cb90
 // MS2-PIN: ?AddRef@?$Unk_SocketPtr@VCOutPacketBuffer@@@@AEBAXXZ 0x14126cbc0
 // MS2-PIN: ?AddRef@?$Unk_SocketPtr@VCPacketLogger@@@@AEBAXXZ 0x14126cbf0
@@ -773,7 +773,7 @@ inline void Unk_SocketAddress::InitSockAddr(unsigned short port,unsigned long ad
 // MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCPacketLogger@@@@AEAAXPEAX@Z 0x14126d0d0
 // MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCSocketThread@@@@AEAAXPEAX@Z 0x14126d120
 // MS2-PIN: ?FUN_141269890@CSimpleSocket@@QEAAHPEBUsockaddr@@@Z 0x141269890
-// MS2-PIN: ?FUN_14126c5a0@CSimpleSocket@@QEAAXPEAVISocketCallBack@@@Z 0x14126c5a0
+// MS2-PIN: ?SetCallBack@CSimpleSocket@@QEAAXPEAVISocketCallBack@@@Z 0x14126c5a0
 // MS2-PIN: ?GetAt@?$CAtlList@V?$Unk_SocketPtr@VCInPacket@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCInPacket@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_SocketPtr@VCInPacket@@@@PEAU__POSITION@@@Z 0x14126a350
 
 // No hooks for 141264dd0/141265ae0 (packet wrapper allocation), or
@@ -786,7 +786,7 @@ MS2_REPLACE(0x141269970, Unk_SocketDecrement, 24, 0xE8938165);
 MS2_REPLACE(0x14126cd90, Unk_SocketThreadAddRef, 21, 0x8D4F5A8B);
 MS2_REPLACE(0x14126ce60, Unk_SocketThreadRelease, 21, 0x6E9F9D2A);
 MS2_REPLACE_METHOD(0x1412657e0, CGameSocket, Reconnect, 101, 0xA4BA1795);
-MS2_REPLACE_METHOD(0x141265ae0, CGameSocket, FUN_141265ae0, 2450, 0x4E0FB171);
+MS2_REPLACE_METHOD(0x141265ae0, CGameSocket, ProcessPacket, 2450, 0x4E0FB171);
 MS2_REPLACE_METHOD(0x141269750, CSimpleSocket, Close, 41, 0xCA8FD322);
 MS2_REPLACE_METHOD(0x141269780, CSocketBase, CloseSocket, 51, 0xDDA3D594);
 MS2_REPLACE_METHOD(0x141269820, CSimpleSocket, Connect, 100, 0x6DEE46BF);

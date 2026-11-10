@@ -123,7 +123,7 @@ void CTPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     m_130 = pActor;
     if (m_130)
     {
-        NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<GameObject*>(m_130)->FUN_14123c410());
+        NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<GameObject*>(m_130)->GetEntity());
         if (pRoot)
         {
             NiFixedString kName("TPS_Dummy");

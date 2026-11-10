@@ -30,7 +30,7 @@ class CGuildManager;
 // The score table of the guild ranking seasons: the entry of a trophy count has a value at +0x18.
 struct Unk_FtSeasonEntry { char m_pad_00[0x18]; int m_nValue; };
 class Unk_FtSeasonTable;
-class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
+class Unk_RankTable* GetRankingArenaDataTable();   // C3: was GetRankingArenaDataTable
 class CRankingArenaDataTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -121,7 +121,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             return;
         CStringW strCaption = pImage->GetDisplayName();
         int nTrophy = pImage->GetDisplayScore();
-        int nRank = pImage->FUN_1414021c0();
+        int nRank = pImage->GetRank();
         int nImageType = 0;
         if (pImage->GetRow())
             nImageType = pImage->GetRow()->m_displayUrl.m_nType;
@@ -140,7 +140,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             }
             else if (nImageType == 5)
             {
-                Unk_FtSeasonEntry* pEntry = ((struct Unk_FtSeasonEntry*)((class CRankingArenaDataTable*)(class Unk_FtSeasonTable*)(((class Unk_FtSeasonTable*)FUN_140dc19b0())))->GetGradeOfRating(nTrophy));
+                Unk_FtSeasonEntry* pEntry = ((struct Unk_FtSeasonEntry*)((class CRankingArenaDataTable*)(class Unk_FtSeasonTable*)(((class Unk_FtSeasonTable*)GetRankingArenaDataTable())))->GetGradeOfRating(nTrophy));
                 static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, pEntry->m_nValue);
             }
             else

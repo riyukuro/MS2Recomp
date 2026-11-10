@@ -54,7 +54,7 @@ class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 // The main window of the application.
 class Unk_DcApp { public: void* m_pad; char m_svc; };
 class Unk_DcHost;
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: member view of the real holder
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: member view of the real holder
 void* FUN_140aadf80();
 
 // A service object queried by class id (slot 5 = query interface, slot 14 of the host = get service by id).
@@ -317,7 +317,7 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
 // @0x141295a70
 void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    auto pHost = reinterpret_cast<Unk_DcHost*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->FUN_140af8310());
+    auto pHost = reinterpret_cast<Unk_DcHost*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->GetServiceManager());
     Unk_DcService* pSvc = FUN_141296b50(pHost);
     if (pSvc != 0)
         pSvc->vfunc_16();
@@ -457,7 +457,7 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
     MS2Ptr<ASButton> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
-        reinterpret_cast<ASObj*>(spBtn.operator->())->FUN_1409c0d20("dialogID", nDialogId);
+        reinterpret_cast<ASObj*>(spBtn.operator->())->SetMemberUInt("dialogID", nDialogId);
         spBtn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::FUN_141295930), 0);
     }
 }

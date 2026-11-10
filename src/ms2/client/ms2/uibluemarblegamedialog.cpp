@@ -74,9 +74,9 @@ CStringW Name_140218290(int n);                                     // number te
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
-void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
-void FUN_141415450(const CString& strId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the id
-void FUN_141415600(const CString& strId);                           // release the item bound to the id
+void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
+void CreateItemInfoSlot(const CString& strId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the id
+void DestroyItemInfoSlot(const CString& strId);                           // release the item bound to the id
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 
 // ---- shared COMDATs first instantiated here ----
@@ -158,7 +158,7 @@ void UIBlueMarbleGameDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     for (size_t i = 0; i < m_boundIds.GetCount(); i++)
-        FUN_141415600(m_boundIds.GetAt(i));
+        DestroyItemInfoSlot(m_boundIds.GetAt(i));
     m_boundIds.RemoveAll();
     FUN_141901470(1, 0x4f15);
 }
@@ -197,7 +197,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             m_nFreeDice = BM_PKT->ReadInt32();
             m_nConsumeItemId = BM_PKT->ReadInt32();
             m_nConsumeItemCount = BM_PKT->ReadInt32();
-            FUN_140cfee80((*m_30).FUN_1422bb890(), "m_warning",
+            SetChildText((*m_30).FUN_1422bb890(), "m_warning",
                           FUN_140f24320("$s_bluemarble_warning", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_nConsumeItemId),
                                         m_nConsumeItemCount));
             FUN_140f227a0(*BM_PKT);
@@ -332,7 +332,7 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
         int nArg = packet.ReadInt32();
         int nCount = packet.ReadInt32();
         ASObj row(2);
-        row.FUN_1409c0d20("idx", i);
+        row.SetMemberUInt("idx", i);
         if (nKind == 10) {
             MS2Ptr<CItemData> spData = FUN_14053f870(nArg);
             if (spData.get()) {
@@ -518,7 +518,7 @@ CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCou
     if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
         return "";
     spItem->SetCountClamped(nCount);
-    FUN_141415450(strId, spItem, 0, 0, 0);
+    CreateItemInfoSlot(strId, spItem, 0, 0, 0);
     m_boundIds.Add(strId);
     return strId;
 }

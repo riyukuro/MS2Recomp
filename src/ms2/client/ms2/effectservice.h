@@ -3,7 +3,7 @@
 // Header name assumed; member names are invented from use.
 //
 // Effect files live in ./Data/Xml/Effect/<name>.xml: <ms2><effect type="nif" .../>...</ms2>. Each <effect> becomes one
-// CEffectParam subclass (FUN_1411a04e0 by the "type" attribute, FUN_1411a0f80); the params of one file form a CEffectData,
+// CEffectParam subclass (FUN_1411a04e0 by the "type" attribute, ParseEffectType); the params of one file form a CEffectData,
 // which EffectDataManager caches by lower-case path.
 #pragma once
 #include <afx.h>
@@ -44,11 +44,11 @@ enum
     kEffectAfterImage = 22,
 };
 
-int FUN_1411a0f80(const CString& strType);                  // 0x1411a0f80 type name -> kind (case-insensitive)
-CString FUN_1411a12f0(int nType);                           // 0x1411a12f0 kind -> display name ("NULL" if unknown)
+int ParseEffectType(const CString& strType);                  // 0x1411a0f80 type name -> kind (case-insensitive)
+CString GetEffectTypeName(int nType);                           // 0x1411a12f0 kind -> display name ("NULL" if unknown)
 int FUN_1411a16c0(TiXmlElement* pNode, const char* pszName, int& nType);   // 0x1411a16c0 read a type attribute
-MS2Ptr<CEffectParam> FUN_1411a04e0(const CString& strName, TiXmlElement* pNode);   // 0x1411a04e0 create + load one param
-CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);  // 0x14119eae0 create the runtime effect
+MS2Ptr<CEffectParam> CreateEffectParam(const CString& strName, TiXmlElement* pNode);   // 0x1411a04e0 create + load one param
+CEffectPtr CreateEffect(CEffectParam* pParam, Unk_EffectTarget* pTarget);  // 0x14119eae0 create the runtime effect
 
 typedef MS2Ptr<CEffectParam> CEffectParamPtr;
 
@@ -59,11 +59,11 @@ public:
     CEffectData();                                          // 0x14119f4b0
     virtual ~CEffectData();                                 // 0x14119f500
 
-    ATL::CAtlList<CEffectParamPtr>& FUN_14119f540();        // 0x14119f540 the param list
+    ATL::CAtlList<CEffectParamPtr>& GetParams();        // 0x14119f540 the param list
     void AddParam(CEffectParam* pParam);               // 0x14119f560 append
     bool FUN_14119f5c0();                                   // 0x14119f5c0 no params
     bool HasIgnoreOptimizeParam();                                   // 0x14119f5f0 some param has ignoreOptimize
-    bool FUN_14119f680();                                   // 0x14119f680 every param is ready (vfunc_3)
+    bool AreAllParamsReady();                                   // 0x14119f680 every param is ready (vfunc_3)
     void FUN_14119f710();                                   // 0x14119f710 vfunc_4 on each param that is not ready
 
 public:
@@ -81,9 +81,9 @@ public:
     EffectDataManager();                                    // 0x14119f7b0
     virtual ~EffectDataManager();                           // 0x14119f820
 
-    CEffectDataPtr FUN_14119f870(CString strPath);          // 0x14119f870 cached load
+    CEffectDataPtr GetEffectData(CString strPath);          // 0x14119f870 cached load
     void LoadEffectFiles();                                   // 0x14119fa60 load every file of ./Data/Xml/Effect
-    CEffectDataPtr FUN_14119fc50(const CString& strPath);   // 0x14119fc50 parse one file
+    CEffectDataPtr LoadEffectData(const CString& strPath);   // 0x14119fc50 parse one file
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -177,7 +177,7 @@ struct Unk_EsEffectGroup
 
     static int FUN_1411b1f50();                                 // m_sTotalEffectCount
     // @0x1411b1ed0
-    unsigned FUN_1411b1ed0() { return m_nId; }
+    unsigned GetId() { return m_nId; }
     static int m_sTotalEffectCount;                             // 0x143ad15a0 live effects of every group
 
     // @0x141044280
@@ -186,9 +186,9 @@ struct Unk_EsEffectGroup
     std::list<CEffectPtr>::iterator FUN_1410443f0() { return m_listEffects.end(); }
     std::list<CEffectPtr>::iterator RemoveEffect(std::list<CEffectPtr>::iterator it);   // erase one effect
     void SetName(const char* pszName);                    // m_strName = pszName
-    const std::string& FUN_1411b1e40();                         // m_strName
+    const std::string& GetName();                         // m_strName
     void AddEffect(CEffectPtr spEffect);                    // add an effect (counted)
-    bool FUN_1411b2720();                                       // no effects left
+    bool IsEmpty();                                       // no effects left
 
     unsigned m_nId;                                             // +0x00
     std::list<CEffectPtr> m_listEffects;                        // +0x08
@@ -246,23 +246,23 @@ public:
     virtual void vfunc_3(int nMap);                             // 0x1411a8210 map left: drop lights and effects
 
     unsigned FUN_1411a49c0(Unk_EffectTarget& kTarget);          // insert, not detached (+0x34 = 0)
-    unsigned FUN_1411a4a00(Unk_EffectTarget& kTarget);          // insert an effect: its id, 0 on failure
+    unsigned InsertEffect(Unk_EffectTarget& kTarget);          // insert an effect: its id, 0 on failure
     Unk_EsEffectGroup* FUN_1411aac40(unsigned nId);             // the group of an id (created when missing)
     CString FUN_1411aad50();                                    // the m_a190 history, "[name]" per line
     CString FUN_1411aaeb0();                                    // the m_a1b0 history, "[name]" per line
     void FUN_1411ab010(CString strName);                        // remember an inserted effect name (last 6)
     void FUN_1411ab090(CString strName);                        // remember a ... name (last 6)
-    unsigned FUN_1411a4f40(CString strName, const NiPoint3& kPos);          // play a voice sound at kPos
+    unsigned PlayVoiceAt(CString strName, const NiPoint3& kPos);          // play a voice sound at kPos
     unsigned FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, NiTransform* pXform,
         float fVolume, int nOwner);                             // play a sound event: its id, 0 when skipped
-    unsigned FUN_1411a5580(int nA, int nB, int nKind, NiPoint3 kPos, float fVolume);    // play a hit sound
-    unsigned FUN_1411a5770(int nId, GameObject* pActor);        // play an actor voice
-    unsigned FUN_1411a5a60(const CString& strName, const CString& strArg);  // play a field sound
-    unsigned FUN_1411a5d80(const CString& strName);             // play a local player voice
+    unsigned PlayHitSound(int nA, int nB, int nKind, NiPoint3 kPos, float fVolume);    // play a hit sound
+    unsigned PlayEventVoice(int nId, GameObject* pActor);        // play an actor voice
+    unsigned PlaySystemSound(const CString& strName, const CString& strArg);  // play a field sound
+    unsigned PlayTriggerVoice(const CString& strName);             // play a local player voice
     void FUN_1411a6160();                                       // stop the sound effects (vfunc_12 2/3)
     void FUN_1411a6060(unsigned nId);                           // stop (vfunc_5) the effects of an id
     void RemovePendingEffects(unsigned nId);                           // drop the pending requests of an id
-    void FUN_1411a67c0();                                       // drop every pending request
+    void ClearPendingEffects();                                       // drop every pending request
     void FUN_1411a67f0(unsigned nId, float f);                  // vfunc_6 on the effects of an id
     void FUN_1411a68f0(unsigned nId, bool b);                   // vfunc_10 on the effects of an id
     void FUN_1411a69e0(unsigned nId);                           // stop the id once every effect is done (vfunc_11)
@@ -273,28 +273,28 @@ public:
     void AddTracked(Unk_EsTracked* p);                       // keep p
     void RemoveTracked(egf::EntityID id);                       // drop the kept object of an entity (by value: callers copy)
     void FUN_1411a7000(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8253 added
-    void FUN_1411a7070(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
+    void OnEntityRemoved(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
     void FUN_1411a7330(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8196 updated
     void FUN_1411a7420(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);
-    void FUN_1411a74a0(egf::EntityID id, egf::Entity* pEntity);  // attach the light of a light entity
+    void AttachEntityLight(egf::EntityID id, egf::Entity* pEntity);  // attach the light of a light entity
     void UpdateRootEffects();                                       // UpdateEffects on the roots
     void GetGroupEffects(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOut); // the effects of an id
     bool IsEnabled();                                       // enabled
     void SetEnabled(bool bEnabled);
     void FUN_1411a7870(int nIndex);                             // re-show the sky object (0 = the first)
-    void FUN_1411a7960(unsigned nIndex);                        // show preloaded sky object nIndex on the root
+    void SetSkyObject(unsigned nIndex);                        // show preloaded sky object nIndex on the root
     void SetRainEnabled(bool bRain);                             // create / drop the rain
     void DestroyRain();
     void SetAreaEffectName(const CString& strName);                 // set the area effect (stops the playing one)
     void FUN_1411a7e80(int nType);                              // pick the area effect of a weather type
-    unsigned FUN_1411a85a0();                                   // the effect count
-    unsigned FUN_1411a85c0();
+    unsigned GetEffectCount();                                   // the effect count
+    unsigned GetLoopingEffectCount();
     int FUN_1411a88c0();
     void FUN_1411a8880(int n);                                  // m_unk_188 = clamp(n, 1, 3)
     void FUN_1411aa800();                                       // insert the loaded pending requests
     void FUN_1411aab90(NiAVObject* pObject);                    // put pObject in front of the camera
     void FUN_1411a8e90();                                       // stop the sounds of the sound event effects
-    void FUN_1411a8610();                                       // crash log: counters and the newest id's effects
+    void WriteCrashLog();                                       // crash log: counters and the newest id's effects
     int FUN_1411a88e0(int nKind, float fDistance);              // the effect LOD level of a caster kind and distance
     static CString FUN_1411a8ae0(int nCaster);                  // caster kind name ("eCaster_...")
     // @0x1411b1bd0

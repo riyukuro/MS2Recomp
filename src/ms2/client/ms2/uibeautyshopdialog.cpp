@@ -255,7 +255,7 @@ public:
     int FUN_140936900(int nAchieve, int nGrade);        // 0: not reached
 };
 Unk_BSAchieves* FUN_1406c7600();
-CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
+CStringW GetRequireAchieveText(int nAchieve, int nGrade, CStringW strDefault);
 
 // The shop's real classes (commonfiles/npcshopdata.h clashes with the CBeautyShopDataCli view).
 enum ePaymentType {};
@@ -294,12 +294,12 @@ class Unk_BSEquipSet : public CEquipment { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    struct Unk_PCEquipSet* GetEquipment();
     int FUN_141658f30();
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);
-    class Unk_MyPCEquip* FUN_14165f460();
+    class Unk_MyPCEquip* GetGemEquip();
 };
-int FUN_141658e60(PCBase* pPc);                 // gender
+int GetGender(PCBase* pPc);                 // gender
 void FUN_14166cc40(PCBase* pPc, int n);
 
 // The current field (the page refreshes its camera through it).
@@ -392,8 +392,8 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-class UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
+class UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class UICameraEditDialog { public: void SetEnableFlagIfHidden(int n); };
 class Unk_BSSound;
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -551,7 +551,7 @@ void UIBeautyShopDialog::vfunc_67()
     m_2e0 = 0;
     m_2e4 = -1;
     FUN_140f01430();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9780));
     ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
@@ -568,7 +568,7 @@ int UIBeautyShopDialog::vfunc_74(int a1, void* p2, void* p3)
 void UIBeautyShopDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    m_1c8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
+    m_1c8 = (Unk_BSCamera*)FindCameraEditDialog((eUIClassID)0x4ef2);
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9780));
 }
@@ -606,7 +606,7 @@ void UIBeautyShopDialog::vfunc_15()
         return;
     if (vfunc_55() != 0)
         return;
-    m_1b8->FUN_140cd1bf0();
+    m_1b8->UpdateEditItems();
     if (m_1c8)
         reinterpret_cast<UICameraEditDialog*>(m_1c8)->SetEnableFlagIfHidden(m_1b8->IsDragging() == 0);
     Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -886,7 +886,7 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
         ASTooltip tip(1, 2);
         int nItemId = 0;
         if (m_1b8.get() != 0)
-            nItemId = static_cast<Customize*>(m_1b8)->FUN_140cd17e0();
+            nItemId = static_cast<Customize*>(m_1b8)->GetEditItemId();
         if (FUN_140f01670(tip, nItemId, pArgs))
             *pRetVal = tip.FUN_1422bb870();
     }
@@ -953,7 +953,7 @@ int UIBeautyShopDialog::vfunc_1(void* p)
         bValid = false;
     if (bValid && p)
     {
-        if (m_1b8->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_1b8->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             FUN_1418c7400(0);
             m_30->Invoke("startChangeCustomPosition");
@@ -975,7 +975,7 @@ int UIBeautyShopDialog::vfunc_2(void* p, float fValue, int nIndex)
         bValid = false;
     if (bValid && p)
     {
-        if (m_1b8->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_1b8->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             FUN_1418c7400(0);
             const Unk_CustomizeRange* pRange = static_cast<CItemCustomizeController*>(p)->vfunc_24(nIndex);
@@ -1009,7 +1009,7 @@ int UIBeautyShopDialog::vfunc_3(void* p, float fValue)
         bValid = false;
     if (bValid && p)
     {
-        if (m_1b8->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_1b8->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             FUN_1418c7400(0);
             int nDegree = (int)fValue;
@@ -1125,7 +1125,7 @@ bool UIBeautyShopDialog::FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex
     *pnIndex = -1;
     if (m_1b8 == 0)
         return false;
-    *pnItemId = m_1b8->FUN_140cd17e0();
+    *pnItemId = m_1b8->GetEditItemId();
     MS2Ptr<Unk_BSPriceRow> spRow(0);
     for (size_t i = 0; i < m_198.GetCount(); i++)
     {
@@ -1138,7 +1138,7 @@ bool UIBeautyShopDialog::FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex
         }
     }
     if (spRow == 0)
-        spRow = CreatePriceRow(m_1b8->FUN_140cd17e0());
+        spRow = CreatePriceRow(m_1b8->GetEditItemId());
     Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (spRow.get() != 0)
     {
@@ -1165,7 +1165,7 @@ bool UIBeautyShopDialog::FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow,
     FUN_140f324f0(row, MS2Ptr<CItemData>(spData), false);
     row.FUN_1407cbbe0("my", bMy);
     unsigned nMerat = reinterpret_cast<CBeautyShopItem*>(spRow.operator->())->FUN_1406e3bc0();
-    row.FUN_1409c0d20("merat", nMerat < 0 ? 0 : nMerat);
+    row.SetMemberUInt("merat", nMerat < 0 ? 0 : nMerat);
     if (!bMy)
         row.FUN_1407cb9c0("saleTag", spRow->m_saleTag);
     unsigned short nLevel = pPc->vfunc_78();
@@ -1647,17 +1647,17 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
     init.FUN_1407cbbe0("useDetailColor", bDetailColor);
     FUN_1418cb750(init);
     m_30->Invoke("initData", Scaleform::GFx::Value(init.FUN_1422bb870()));
-    m_1b8.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_1b8.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     int nSlot = FUN_140f01070(nShopKind);
     if (nShopKind == 1)
         FUN_1418caec0();
     m_1b8->SelectSlot(nSlot);
-    m_1b8->SetPalette(FUN_1418cbdc0(m_1b8->FUN_140cd17e0()));
+    m_1b8->SetPalette(FUN_1418cbdc0(m_1b8->GetEditItemId()));
     m_1b8->FUN_140cd38f0(MS2Ptr<Customize::BeautyShopContext>(new Customize::BeautyShopContext(FUN_1418ccb40(), m_2a0)));
     FUN_1418c7ab0();
-    FUN_1418c7180(m_1b8->FUN_140cd17e0());
+    FUN_1418c7180(m_1b8->GetEditItemId());
     vfunc_84();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     bool bDebug = ((CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode();
     if (bDebug)
     {
@@ -1686,9 +1686,9 @@ bool UIBeautyShopDialog::FUN_1418c9610()
         Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc)
         {
-            MS2Ptr<CEquipItem> spEquip = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e1780(6, 2);
+            MS2Ptr<CEquipItem> spEquip = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->GetItemAt(6, 2);
             if (spEquip.get())
-                spEquip->FUN_1411dcf10(s_strCustomize);
+                spEquip->RemoveTag(s_strCustomize);
         }
         m_30->Invoke("setEnableCheckPreviewWithCap", FUN_1418cbc70());
         if (m_2ac != 0)
@@ -1941,7 +1941,7 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
     }
     else
     {
-        out.FUN_1407cbb20("category", FUN_140f010c0(m_1b8->FUN_140cd17e0()));
+        out.FUN_1407cbb20("category", FUN_140f010c0(m_1b8->GetEditItemId()));
         ASObj row(2);
         if (m_1b8->IsEditItemAdded() != 0)
         {
@@ -1997,10 +1997,10 @@ int UIBeautyShopDialog::FUN_1418caf20(int nItemId)
     Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    int nCurrent = m_1b8->FUN_140cd17e0();
+    int nCurrent = m_1b8->GetEditItemId();
     if (nCurrent == 0 || nCurrent != nItemId)
     {
-        if (((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e0c30(nItemId) == 0)
+        if (((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->FUN_1411e0c30(nItemId) == 0)
             m_1b8->EquipItemId(nItemId);
         if (m_290 != 4)
             m_1b8->SelectId(nItemId);
@@ -2154,7 +2154,7 @@ int UIBeautyShopDialog::FUN_1418cbbe0()
 bool UIBeautyShopDialog::FUN_1418cbc00(int n)
 {
     if (n != 0 && m_1d0.m_2c != 0)
-        return g_143ab2a90.FUN_140a60ec0(m_1d0.m_2c) == 1;
+        return g_143ab2a90.HasItemWithTag(m_1d0.m_2c) == 1;
     return false;
 }
 
@@ -2168,8 +2168,8 @@ bool UIBeautyShopDialog::FUN_1418cbc70()
     bool bResult = false;
     if (FUN_1418cbbe0() == 1)
     {
-        m_2b0 = ((class Unk_BSPlayerCap*)((class PC*)(class PCBase*)(pPc))->FUN_14165f460())->FUN_1412706f0(0);
-        MS2Ptr<CEquipItem> spCap = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->GetTopLayerItem(6, 0);
+        m_2b0 = ((class Unk_BSPlayerCap*)((class PC*)(class PCBase*)(pPc))->GetGemEquip())->IsSlotHidden(0);
+        MS2Ptr<CEquipItem> spCap = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->GetTopLayerItem(6, 0);
         if (spCap.get())
             bResult = true;
     }

@@ -38,7 +38,7 @@ bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiString
     if (GetFileSystem()->FUN_140398190()) {
         if (!m_bQueried) {
             m_bQueried = true;
-            FUN_141508220(pcPath);
+            StandardizePath(pcPath);
             return GetFileSystem()->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
         }
     } else {
@@ -50,7 +50,7 @@ bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiString
 MS2_REPLACE_METHOD(0x141508100, MS2SearchTexturePath, GetNextSearchPath, 183, 0x179EEA3A);
 
 // @0x141508220
-void FUN_141508220(char* pcPath) { efd::PathUtils::Standardize(pcPath); }
+void StandardizePath(char* pcPath) { efd::PathUtils::Standardize(pcPath); }
 
 #pragma function(memset, memcpy)
 #define MS2_VALIDATE_RETURN_ERRCODE(expr, errorcode)                                                           \
@@ -62,7 +62,7 @@ void FUN_141508220(char* pcPath) { efd::PathUtils::Standardize(pcPath); }
             return errorcode;                                                                                  \
         }                                                                                                      \
     }
-MS2_REPLACE(0x141508220, FUN_141508220, 24, 0xA3905266);
+MS2_REPLACE(0x141508220, StandardizePath, 24, 0xA3905266);
 
 // @0x141508240 (the UCRT header-inline memcpy_s from corecrt_memcpy_s.h, emitted here as an ordinary function)
 errno_t FUN_141508240(void* const dst, rsize_t const dstSize, void const* const src, rsize_t const srcSize)

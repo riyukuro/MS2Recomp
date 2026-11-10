@@ -9,7 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asobj.h"
-#include <vector>                       // part 3: std::vector<ItemDropResult> member parameter (FUN_1409e72a0)
+#include <vector>                       // part 3: std::vector<ItemDropResult> member parameter (SetItemPackageList)
 
 class CItem;
 class CItemData;
@@ -59,16 +59,16 @@ public:
     void SetItemDamage(CStringW str);                                    // itemDamage (by value: the callee destroys it)
     void SetItemPetSkin(bool b);
     void FUN_1409dbc30(const CStringW& str);                             // set m_50
-    void FUN_1409d74a0(int nItemId);
+    void SetGemstoneLevel(int nItemId);
     __int64 FUN_1409c6540();                                             // m_40
     void FUN_140be62e0(void* pOwner) { m_40 = reinterpret_cast<__int64>(pOwner); }   // 0x140be62e0 set m_40 (the player; uiclosetdialog.cpp)
-    unsigned FUN_1409c6560();                                            // m_48 (flags; 0x100 = no extra buttons)
-    void FUN_1409c6580(unsigned n);
+    unsigned GetFlags();                                            // m_48 (flags; 0x100 = no extra buttons)
+    void SetFlags(unsigned n);
     void SetEnableUseDbClickDefault();                                                // enableUseDbClick = string 0x762
     void SetEnablePutonDefault();                                                // enablePuton = string 0x751 (unless flag 0x100)
     void SetEnableCompareSwapDefault();                                                // enableCompareSwap = string 0x765 (unless flag 0x100)
     void SetEnableLClick(const CStringW& strText);                         // enableLClick (unless flag 0x100)
-    void FUN_1409c6c80();                                                // closeButton = true
+    void ShowCloseButton();                                                // closeButton = true
     void FUN_1409c6d10(const CString& str);                              // string member DAT_143ab45a8
     void SetOffDelay(int n);
     void SetMaxWidth(int n);
@@ -81,39 +81,39 @@ public:
     int ApplyTextTooltip(const CStringW& strText);
     int FUN_1409e1c50(unsigned nSkillId, unsigned short nLevel, int n);       // skill tooltip (skill window)
     int FUN_1409e1770(int a1, int a2);
-    int FUN_1409e21a0(unsigned nId, unsigned nGrade);                   // achievement tooltip (uiachievedialog.cpp)
+    int SetAchieveTooltip(unsigned nId, unsigned nGrade);                   // achievement tooltip (uiachievedialog.cpp)
     int FUN_1409e0d40(CItem* pItem);
     int FUN_1409e2750(void* pSkillAttr, int a1, unsigned a2);              // additional effect (buff) tooltip: an AdditionalLevelData, align, remaining ms (unsigned: jae/jb)
     void FUN_1409db870(Unk_GalleryPtr<Unk_GalleryItem> item);
     void SetEnablePuton(const CStringW& strTitle);                        // set the tooltip title line
     void SetEnableUseDbClick(const CStringW& strText);                         // set the tooltip text line
-    void FUN_1409c6640(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
+    void SetEnableUseDbClickBoth(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
     void FUN_1409c6ef0(const CStringW& strText);                        // append to textBgArr
     int FUN_1409e13a0(CItem* pCompare, CItem* pItem);                   // item tooltip with the default flags
     int FUN_1409e25e0(CItem* pItem, unsigned n);
     void FUN_1409cf010(CItem* pItem, unsigned n);
     int FUN_1409e13f0(CItem* pCompare, CItem* pItem, int a1, int a2);   // item tooltip with a comparison item (ItemInfoSlot)
     int FUN_1409e15a0(CItem* pEquipped, CItem* pItem, ASTooltip* pLhs, ASTooltip* pRhs);   // item tooltip compared with the equipped item (unit_141347b10)
-    void FUN_1409c6a20(const CStringW& strA, const CStringW& strB);     // set a tooltip text pair (ItemInfoSlot exchange scroll)
-    void FUN_1409c7060(const CStringW& strKey, const CStringW& strB);   // set a keyed tooltip text pair (ItemInfoSlot exchange scroll)
-    void FUN_1409db7b0(MS2Ptr<CItem> spItem);                            // compare against this item (by value: callee destroys)
-    void FUN_1409db930(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem);   // item tooltip with an optional comparison item (by value: callee destroys)
+    void SetEnablePutonBoth(const CStringW& strA, const CStringW& strB);     // set a tooltip text pair (ItemInfoSlot exchange scroll)
+    void SetItemEquipBoth(const CStringW& strKey, const CStringW& strB);   // set a keyed tooltip text pair (ItemInfoSlot exchange scroll)
+    void SetEnablePreview(MS2Ptr<CItem> spItem);                            // compare against this item (by value: callee destroys)
+    void SetEnablePreviewBoth(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem);   // item tooltip with an optional comparison item (by value: callee destroys)
 
     // ---- astooltip.cpp part 1 members (owner: part 1 agent; append here only) ----
-    void FUN_1409c72c0(CItem* pItem);                                    // maid item: description, name, manufacture state
+    void SetMaidInfo(CItem* pItem);                                    // maid item: description, name, manufacture state
     void FUN_1409c7cc0(CItem* pItem);                                    // itemMovie (unless flag 0x40)
     void FUN_1409c8020(CItem* pItem);                                    // itemStatusSet: the equipment sets of the item
     void FUN_1409c8df0(int nItemId);                                     // itemStatusSet of an UGC map set item (housing)
     void FUN_1409cb7b0(CItem* pItem);                                    // itemMerge: the merge option ranges of the item
     // ---- end part 1 ----
     // ---- astooltip.cpp part 2 members (owner: part 2 agent; append here only) ----
-    void FUN_1409cc800(CItem* pItem);                                    // itemSocket (the socket rows)
+    void SetItemSocket(CItem* pItem);                                    // itemSocket (the socket rows)
     void FUN_1409cd5b0(CItem* pItem);                                    // itemMerge
     void SetItemIconPath(CItem* pItem);                                    // iconPath
     void FUN_1409cd750(CItem* pItem);                                    // the double-click / equip hints
-    void FUN_1409cd9c0(CItem* pItem);                                    // itemSellPrice / notExchange
-    void FUN_1409ce5f0(CItem* pItem);                                    // itemCreateTime (+ designOrgItemName)
-    void FUN_1409ce950(CItem* pItem);                                    // itemUsePeriod (the expiry time)
+    void SetItemSellPrice(CItem* pItem);                                    // itemSellPrice / notExchange
+    void SetItemCreateTime(CItem* pItem);                                    // itemCreateTime (+ designOrgItemName)
+    void SetItemUsePeriod(CItem* pItem);                                    // itemUsePeriod (the expiry time)
     void FUN_1409cf4d0(MS2SvrPtr<CPtred> spLife);                       // itemUsePeriod from the shop item life (NpcShopItemLife; by value: callee destroys)
     void FUN_1409cfbf0(CItem* pItem);                                    // itemCompare (the stat change of equipping)
     void FUN_1409d0710(CItem* pItem);                                    // itemDescription
@@ -141,19 +141,19 @@ public:
     void FUN_1409d7560(int nItemId, int nRank);                          // itemPetRank
     void FUN_1409d7630(int nItemId);                                     // extraComment
     CStringW FUN_1409daa30(MS2Ptr<CItemData> spData);                    // part 4 (declared by part 3): chat emoticon comment (by value: the callee destroys it)
-    void FUN_1409d4490(CItem* pItem);                                    // petEvolution
+    void SetPetEvolution(CItem* pItem);                                    // petEvolution
     void FUN_1409d5920(int nItemId);                                     // the package rows of a box item
     void FUN_1409d8570(CItem* pItem);                                    // the break ingredients of an item
     void FUN_1409d8650(int nItemId, int nGrade, int nSockets);           // the break ingredients
-    void FUN_1409d8800(MS2Ptr<CItemData> spData);                        // ugcItemLimitRegister (by value: the callee destroys it)
+    void SetUgcItemLimitRegister(MS2Ptr<CItemData> spData);                        // ugcItemLimitRegister (by value: the callee destroys it)
     void FUN_1409d88e0(MS2Ptr<CItem> spItem);                            // ugcItemLimitRegister (by value: the callee destroys it)
     void SetItemEquipText(bool bEnable);                                    // itemEquip
-    void FUN_1409e72a0(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
+    void SetItemPackageList(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
     void FUN_1409e7460(std::vector<MS2Ptr<class CIngredientInfo> >* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
     void FUN_1409d3470(CItem* pItem);                                    // extraComment (gemstone upgrade / mastery / emoticon)
     CStringW FUN_1409d9c50(CItem* pItem);                                // the extra comment of an item
     void FUN_1409d3a40(CItem* pItem);                                    // itemQuestInfo
-    void FUN_1409d3f10(CItem* pItem);                                    // itemLockInfo / the lock icons
+    void SetItemLockInfo(CItem* pItem);                                    // itemLockInfo / the lock icons
     void FUN_1409d5b70(int nItemId);                                     // itemGuideDescription
     void FUN_1409d6120(int nItemId);                                     // the main description as a statDescription
     void FUN_1409d64a0(int nItemId, int nRank, int nLevel, int nAdditional);   // extraDescription
@@ -170,8 +170,8 @@ public:
     MS2Ptr<AScript> GetLhsTooltip();                                     // lhsTooltip
     void FUN_1409db870(MS2Ptr<CItemData> spData);                        // the exe's real parameter (copy 0x1403bb3b0 / dtor 0x1401b50d0)
     void FUN_1409dbbc0(CStringW str);                                    // itemName (by value)
-    void FUN_1409dbc60(int nSkillId, const CStringW& strSuffix);         // skillName
-    void FUN_1409dbd30(int nSkillId);                                    // skillElement
+    void SetSkillName(int nSkillId, const CStringW& strSuffix);         // skillName
+    void SetSkillElement(int nSkillId);                                    // skillElement
     void SetSkillIconPath(int nSkillId);                                    // iconPath of a skill
     void FUN_1409dbfa0(int nSkillId);                                    // skill key slot hint
     void SetSkillDescription(int nSkillId, unsigned short nLevel);             // skillDescription
@@ -184,11 +184,11 @@ public:
     void FUN_1409de140(ASArray* pRows, int nItemId, int nRank);          // the item name row
     void FUN_1409de630(ASArray* pRows, int nItemId);                     // the trade rows
     void FUN_1409dea00(ASArray* pRows, int nItemId);                     // the housing category row
-    void FUN_1409deb80(ASArray* pRows, int nItemId);                     // the job limit rows
-    void FUN_1409deea0(ASArray* pRows, int nItemId, int nRarity, int nLevel, int nAdditional);   // the item level row
-    void FUN_1409df180(ASArray* pRows, int nItemId);                     // the level limit row
-    void FUN_1409df400(ASArray* pRows, int nItemId);                     // the VIP limit row
-    void FUN_1409df5b0(ASArray* pRows, int nItemId);                     // the wedding limit row
+    void AddJobLimitRows(ASArray* pRows, int nItemId);                     // the job limit rows
+    void AddItemLevelRow(ASArray* pRows, int nItemId, int nRarity, int nLevel, int nAdditional);   // the item level row
+    void AddLevelLimitRow(ASArray* pRows, int nItemId);                     // the level limit row
+    void AddVipLimitRow(ASArray* pRows, int nItemId);                     // the VIP limit row
+    void AddWeddingLimitRow(ASArray* pRows, int nItemId);                     // the wedding limit row
     void FUN_1409df760(ASArray* pRows, MS2Ptr<CItemData> spData);        // the gemstone upgrade row
     CStringW FUN_1409df920(MS2Ptr<CItemData> spData);                    // the icon code suffix
     void FUN_1409dfa50(CItem* pItem, int& nTransferable, int& nReady, CStringW& strName);   // the socket transfer state

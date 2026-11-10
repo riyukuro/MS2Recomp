@@ -174,14 +174,14 @@ template <class T> T* Unk_MmGetDialog(int nId)
     return 0;
 }
 
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 
 // The shop dialog (UI type 0x4e3b) as FUN_140534780 returns it; only the call of this unit.
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid (the same declaration as unit_1406125d0.h).
 extern Unk_Inventory g_143ab2a90;
 
-// The item event hub (uiitemenchantdialog.h's UIItemEventDispatcher, FUN_140a6a840); the slots up to the one called.
+// The item event hub (uiitemenchantdialog.h's UIItemEventDispatcher, GetItemEventDispatcher); the slots up to the one called.
 class Unk_MmItemEvents
 {
 public:
@@ -190,13 +190,13 @@ public:
     virtual void vfunc_2(void* pItem, bool b);
     virtual void vfunc_3(void* pItem, int n);                   // an item changed
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // The blueprint market dialog (RTTI .?AVUIBlueprintMarketDialog@@, UI type 0x4f7f); only the calls of this unit.
 class UIBlueprintMarketDialog : public UIObject
 {
 public:
-    static int FUN_140d66e70() { return 0x4f7f; }               // the UI type id
+    static int GetUIClassId() { return 0x4f7f; }               // the UI type id
     void ShowSearchResult(int nPage, int nFirst, int nLast, int nTotal, bool bMore); // a page of blueprints
     void FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct);  // a blueprint changed
     void ClearSearchInput();                                    // a search was refused
@@ -208,7 +208,7 @@ template <class T> T* Unk_MmGetDialogOf()
     CUIService* pRoot = TSingleton<CUIService>::GetInstance();
     if (pRoot == 0)
         return 0;
-    MS2Ptr<UIObject> spObject = pRoot->FindObject((eUIClassID)T::FUN_140d66e70());
+    MS2Ptr<UIObject> spObject = pRoot->FindObject((eUIClassID)T::GetUIClassId());
     if (!spObject)
         return 0;
     return dynamic_cast<T*>(spObject.get());
@@ -291,7 +291,7 @@ template <class T> void FUN_140d61af0(int nStringId, int nA, int nB, const T& x)
 }
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);  // pop a system message
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag); // pop a message
-UIMessageBox* FUN_14151f890();                                  // the open message box
+UIMessageBox* GetMessageBoxLayer();                                  // the open message box
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1096,19 +1096,19 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d57150(Unk_MeratProductKey k
 {
     MS2Ptr<CMeratMarketProduct> spProduct(0);
     if (nBookMarkId == 0) {
-        spProduct = FUN_140d575e0(key);
+        spProduct = FindSearchResultProduct(key);
         if (spProduct.get() != 0)
             return spProduct;
-        spProduct = FUN_140d576a0(key);
+        spProduct = FindBlueprintProduct(key);
         if (spProduct.get() != 0)
             return spProduct;
         spProduct = FUN_140d57d80(key);
         if (spProduct.get() != 0)
             return spProduct;
-        spProduct = FUN_140d57f70(key);
+        spProduct = FindBasketProduct(key);
         if (spProduct.get() != 0)
             return spProduct;
-        spProduct = FUN_140d578d0(key);
+        spProduct = FindAdProduct(key);
         if (spProduct.get() != 0)
             return spProduct;
     } else {
@@ -1120,7 +1120,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d57150(Unk_MeratProductKey k
 }
 
 // @0x140d575e0
-MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d575e0(Unk_MeratProductKey key)
+MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FindSearchResultProduct(Unk_MeratProductKey key)
 {
     MS2Ptr<CMeratMarketProduct> spProduct(0);
     if (Unk_LockGuard lock = m_lock) {} else
@@ -1129,7 +1129,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d575e0(Unk_MeratProductKey k
 }
 
 // @0x140d576a0
-MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d576a0(Unk_MeratProductKey key)
+MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FindBlueprintProduct(Unk_MeratProductKey key)
 {
     MS2Ptr<CMeratMarketProduct> spProduct(0);
     if (Unk_LockGuard lock = m_lock) {} else
@@ -1154,7 +1154,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::GetAdProduct(int nIndex)
 
 // The ad product of a key.
 // @0x140d578d0
-MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d578d0(Unk_MeratProductKey key)
+MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FindAdProduct(Unk_MeratProductKey key)
 {
     if (Unk_LockGuard lock = m_lock) {} else {
         if (m_270.IsEmpty())
@@ -1230,7 +1230,7 @@ MS2Ptr<CMeratMarketBasket> CMeratMarketMan::GetBasketLine(unsigned int nIndex)
 
 // The basket product of a key.
 // @0x140d57f70
-MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d57f70(Unk_MeratProductKey key)
+MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FindBasketProduct(Unk_MeratProductKey key)
 {
     if (Unk_LockGuard lock = m_lock) {} else {
         for (unsigned int i = 0; i < m_basket.GetCount(); i++) {
@@ -1286,7 +1286,7 @@ void CMeratMarketMan::MarkBasketLineBought(unsigned int nIndex)
     MS2Ptr<CMeratMarketBasket> spLine = m_basket[nIndex];
     if (spLine.get() != 0) {
         key = spLine->m_spProduct->m_key;
-        spLine->FUN_140d6a9d0(true);
+        spLine->SetBought(true);
         m_b1f0 = true;
     }
 }
@@ -1460,10 +1460,10 @@ void CMeratMarketMan::ClearPendingPurchases()
         bool bRemoved = false;
         for (int i = m_basket.GetCount() - 1; i >= 0; i--) {
             MS2Ptr<CMeratMarketBasket> spLine = m_basket[i];
-            if (spLine == 0 || !spLine->FUN_140d676f0())
+            if (spLine == 0 || !spLine->IsBought())
                 continue;
             if (pDialog != 0)
-                pDialog->RemoveBasket(spLine->FUN_140d613e0(), i);
+                pDialog->RemoveBasket(spLine->GetProductKey(), i);
             if (Unk_LockGuard lock = m_lock) {} else
                 m_basket.RemoveAt(i, 1);
             bRemoved = true;
@@ -1592,7 +1592,7 @@ __int64 CMeratMarketMan::FUN_140d5a1b0()
 
 // The merat amount needed for a UGC seller (a game constant).
 // @0x140d5a1d0
-__int64 CMeratMarketMan::FUN_140d5a1d0()
+__int64 CMeratMarketMan::GetSellerLimit()
 {
     return *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_MmConfig*)GetClientConstants())->m_sellerLimit)->Get();
 }
@@ -1620,9 +1620,9 @@ void CMeratMarketMan::CloseMarketAndClearAds()
 }
 
 // @0x140d5a2e0
-int CMeratMarketMan::FUN_140d5a2e0()
+int CMeratMarketMan::IsSellerLimitReached()
 {
-    return FUN_140d5a1d0() <= FUN_140d5a1b0();
+    return GetSellerLimit() <= FUN_140d5a1b0();
 }
 
 // The text of a purchase error.
@@ -1903,7 +1903,7 @@ void CMeratMarketBuy::FUN_140d60ea0(const int& nValue)
 int CMeratMarketBuy::GetBasketIndex()
 {
     if (m_spBill.get() != 0)
-        return m_spBill->FUN_140d66b00();
+        return m_spBill->GetBasketIndex();
     return -1;
 }
 
@@ -1913,7 +1913,7 @@ CStringW CMeratMarketBuy::vfunc_1()
 {
     CMeratMarketPremiumProduct* pPremium = 0;
     if (m_nCount == 4 && (m_spBill.get() ? true : false)) {
-        pPremium = m_spBill->FUN_140d66da0().get();
+        pPremium = m_spBill->GetPremiumProduct().get();
     } else if ((m_spItem.get() ? true : false) && m_spItem->IsPremium()) {
         pPremium = &m_spItem->m_premium;
     }
@@ -1943,7 +1943,7 @@ int CMeratMarketBuy::vfunc_3()
     if (m_spItem.get() != 0)
         return CPendingBuyBase::vfunc_3();
     if ((m_spBill.get() ? true : false) && m_nCount == 4) {
-        MS2Ptr<CMeratMarketPremiumProduct> spPremium = m_spBill->FUN_140d66da0();
+        MS2Ptr<CMeratMarketPremiumProduct> spPremium = m_spBill->GetPremiumProduct();
         if (spPremium.get() != 0)
             return spPremium->FUN_1406a0230();
     }
@@ -1967,7 +1967,7 @@ CMeratMarketBasket::~CMeratMarketBasket()
 }
 
 // @0x140d613e0
-Unk_MeratProductKey CMeratMarketBasket::FUN_140d613e0()
+Unk_MeratProductKey CMeratMarketBasket::GetProductKey()
 {
     if (m_spProduct == 0)
         return Unk_MeratProductKey();
@@ -1976,13 +1976,13 @@ Unk_MeratProductKey CMeratMarketBasket::FUN_140d613e0()
 
 // Take the product and the counts of a bill.
 // @0x140d61450
-void CMeratMarketBasket::FUN_140d61450(MS2Ptr<ASMeratMarketBuyBillData> spBill)
+void CMeratMarketBasket::SetFromBill(MS2Ptr<ASMeratMarketBuyBillData> spBill)
 {
     if (spBill == 0)
         return;
-    m_spProduct = spBill->FUN_140a8e4e0();
+    m_spProduct = spBill->GetProduct();
     m_n28 = spBill->FUN_140d66b10();
-    int nCount = spBill->FUN_1409acb50();
+    int nCount = spBill->GetSelectedOption();
     m_n30 = nCount;
 }
 
@@ -2653,7 +2653,7 @@ void CMeratMarketMan::OnBuySucceeded(CInPacket& packet)
                         // The ad push dialog takes the same CMeratMarketProduct; the exe copies the pointer.
                         if (pAdDialog != 0)
                             pAdDialog->UpdateBundles(spProduct);
-                        UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+                        UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
                         if (pMenu != 0)
                             pMenu->FUN_14193dd50();
                     }
@@ -2681,10 +2681,10 @@ void CMeratMarketMan::OnBuyFailed(CInPacket& packet)
 void CMeratMarketMan::OnItemUpdatePacket(CInPacket& packet)
 {
     __int64 nUid = packet.ReadInt64();
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem.get() != 0) {
         spItem->FUN_140524eb0(packet);
-        ((class Unk_MmItemEvents*)FUN_140a6a840())->vfunc_3(spItem.get(), 0);
+        ((class Unk_MmItemEvents*)GetItemEventDispatcher())->vfunc_3(spItem.get(), 0);
     }
 }
 
@@ -2762,7 +2762,7 @@ void CMeratMarketMan::HandleErrorByRequestKind(CMeratMarketPacket::ErrorPacket& 
         ClearSearchResults(nUIType);
     }
     if (nKind == 0x17) {
-        UIMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = GetMessageBoxLayer();
         if (pBox != 0) {
             MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
             if (spBox.get() != 0 && spBox->GetExtra().Find(L"inputSeller", 0) != -1)
@@ -3010,7 +3010,7 @@ bool CMeratMarketMan::FUN_140d5ba70()
 
 // Fill a basket packet entry from a basket line.
 // @0x140d59e20
-int CMeratMarketMan::FUN_140d59e20(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType)
+int CMeratMarketMan::FillBasketInfo(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType)
 {
     if (spInfo == 0 || spLine == 0 || spLine->m_spProduct == 0)
         return 0;
@@ -3040,23 +3040,23 @@ void CMeratMarketBuy::FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int
         return;
     __int64 nPrice = spBill->vfunc_2();
     if (nBuyType == 4) {
-        MS2Ptr<CMeratMarketPremiumProduct> spPremium = spBill->FUN_140d66da0();
+        MS2Ptr<CMeratMarketPremiumProduct> spPremium = spBill->GetPremiumProduct();
         if (spPremium == 0)
             return;
         CMeratMarketPacket::BuyPacket* pPacket = m_spPacket.get();
         pPacket->m_nKind = nBuyType;
         pPacket->m_key = Unk_MeratProductKey(spPremium->m_nId, 0);
-        int n30 = spBill->FUN_1409acb50();
+        int n30 = spBill->GetSelectedOption();
         pPacket->m_n30 = n30;
         pPacket->m_n34 = nFlag;
         pPacket->m_n60 = nPrice;
         pPacket->m_b68 = spBill->FUN_140d66e60();
-        pPacket->m_n6c = spBill->FUN_1409acbe0(spPremium->GetCurrency());
+        pPacket->m_n6c = spBill->GetPayType(spPremium->GetCurrency());
         m_strName = spPremium->GetName();
         m_spItem = 0;
     }
     else {
-        MS2Ptr<CMeratMarketProduct> spProduct = spBill->FUN_140a8e4e0();
+        MS2Ptr<CMeratMarketProduct> spProduct = spBill->GetProduct();
         if (spProduct == 0 || m_spPacket == 0)
             return;
         CMeratMarketPacket::BuyPacket* pPacket = m_spPacket.get();
@@ -3065,7 +3065,7 @@ void CMeratMarketBuy::FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int
         pPacket->m_n60 = nPrice;
         pPacket->m_b68 = spBill->FUN_140d66e60();
         if ((spProduct.get() ? true : false) && spProduct->IsPremium()) {
-            int n30 = spBill->FUN_1409acb50();
+            int n30 = spBill->GetSelectedOption();
             pPacket->m_n30 = n30;
             pPacket->m_n34 = nFlag;
             if (spProduct->m_premium.m_nType == 6) {
@@ -3080,9 +3080,9 @@ void CMeratMarketBuy::FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int
             pPacket->m_n34 = nFlag;
             pPacket->m_n38 = spBill->FUN_140d66b10();
         }
-        pPacket->m_n6c = spBill->FUN_1409acbe0(spProduct->GetCurrency());
+        pPacket->m_n6c = spBill->GetPayType(spProduct->GetCurrency());
         m_strName = spProduct->GetName();
-        m_spItem = spBill->FUN_140a8e4e0();
+        m_spItem = spBill->GetProduct();
     }
     m_spBill = spBill;
     m_nCount = nBuyType;

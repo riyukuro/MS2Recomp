@@ -201,7 +201,7 @@ void UICoupleActionDialog::vfunc_67()
     UIDialog::vfunc_67();
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
-        ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->FUN_141769280();
+        ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->FUN_141769280();
     m_180.clear();
 }
 MS2_REPLACE_METHOD(0x140BEC140, UICoupleActionDialog, vfunc_67, 87, 0xDB363257);
@@ -256,8 +256,8 @@ int UICoupleActionDialog::vfunc_13()
         return 1;
     if (((class Unk_CoupleInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-        if (pDlg != 0 && FUN_140b632f0() != 0) {
-            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
+        if (pDlg != 0 && GetUISwfEntityManager() != 0) {
+            if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
                 if (((class ASUIComponent*)(class ASTextInput*)(m_190.operator->()))->GetFocused() != 0) {
                     SetSearchText(m_190->GetText());
                     ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->SetFocused(1);
@@ -374,9 +374,9 @@ void UICoupleActionDialog::FUN_140becef0()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    pPlayer->FUN_141523bc0()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
-    int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(0);
-    ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(nMode);
+    pPlayer->GetSkillSystem()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
+    int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->SetShowError(0);
+    ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
     for (size_t i = 0; i < list.GetCount(); i++) {
         unsigned int nId = list[i]->m_id;
@@ -480,7 +480,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
         if (nNew != 0)
             nFocus = nId;
         ASObj action(2);
-        action.FUN_1409c0d20("id", nId);
+        action.SetMemberUInt("id", nId);
         action.FUN_1407cb9c0("isNew", nNew);
         action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
         action.FUN_1407cbbe0("isFavorite", bFavorite);
@@ -543,7 +543,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
         if (nNew != 0)
             nFocus = nId;
         ASObj action(2);
-        action.FUN_1409c0d20("id", nId);
+        action.SetMemberUInt("id", nId);
         action.FUN_1407cb9c0("isNew", nNew);
         action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
         action.FUN_1407cbbe0("isFavorite", bFavorite);

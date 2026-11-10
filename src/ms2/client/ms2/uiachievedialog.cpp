@@ -154,8 +154,8 @@ CStringW FUN_14093b970(int nId);
 CStringW FUN_14093c320(CAchieve* pAchieve);
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);
 CStringW FUN_14093cdb0(int nId);
-CStringW FUN_14093e330(CAchieve* pAchieve, int nKey);
-CStringW FUN_14093bf10(CAchieve* pAchieve, int nGrade);
+CStringW GetRecordedDateText(CAchieve* pAchieve, int nKey);
+CStringW GetAchieveProgressText(CAchieve* pAchieve, int nGrade);
 static void AcCollectClears(std::vector<UIAchieveDialog::ClearRecord>& rRecords);
 #define FUN_1418adae0 AcCollectClears
 static void FUN_1418ae010(ASObj& rObj, const char* szName, int n);
@@ -537,7 +537,7 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         unsigned nId = pArgs->PopUInt();
         unsigned nGrade = pArgs->PopUInt();
         ASTooltip tip(pPlayer, 2, 2);
-        if (tip.FUN_1409e21a0(nId, nGrade) != 0) {
+        if (tip.SetAchieveTooltip(nId, nGrade) != 0) {
             tip.FUN_1407cbb20("comment", GetStringCommon(0x781));
             *pRetVal = tip.FUN_1422bb870();
         }
@@ -688,10 +688,10 @@ void UIAchieveDialog::FUN_1418a9c20()
                 continue;
             CStringW strDesc = FUN_1418aac30(spAchieve, it->m_grade);
             FUN_141842290(strDesc);
-            row.FUN_1409c0d20("id", spAchieve->GetId());
+            row.SetMemberUInt("id", spAchieve->GetId());
             row.FUN_1407cba60("icon", spAchieve->GetName(1));
             row.FUN_1407cb9c0("grade", it->m_grade);
-            row.FUN_1407cbb20("date", FUN_14093e330(spAchieve, it->m_grade));
+            row.FUN_1407cbb20("date", GetRecordedDateText(spAchieve, it->m_grade));
             row.FUN_1407cbb20("title", FUN_14093b970(spAchieve->GetId()));
             row.FUN_1407cbb20("desc", CStringW(strDesc));
             spSummary->FUN_1418adea0("setTrophy", nIndex, row);
@@ -889,7 +889,7 @@ void UIAchieveDialog::FUN_1418ab000(ASObj& rRow, CAchieve* pAchieve)
                         if (elem->m_n28 != pAchieve->GetStartGrade())
                             continue;
                         ASObj palette(2);
-                        palette.FUN_1409c0d20("paletteID", nPalette);
+                        palette.SetMemberUInt("paletteID", nPalette);
                         palette.FUN_1409c4990("realColor", (unsigned)elem->m_aValues[0]);
                         palette.FUN_1409c4990("visibleColor", (unsigned)elem->m_n38);
                         palette.FUN_1409c4990("ch2Color", (unsigned)elem->m_aValues[2]);
@@ -920,7 +920,7 @@ void UIAchieveDialog::FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve)
         nGrade = pAchieve->GetCurGrade() - 1;
     else
         nGrade = pAchieve->GetStartGrade();
-    rRow.FUN_1409c0d20("id", pAchieve->GetId());
+    rRow.SetMemberUInt("id", pAchieve->GetId());
     rRow.FUN_1407cbb20("desc", FUN_1418aac30(pAchieve, nGrade));
     rRow.FUN_1407cbb20("name", FUN_14093b970(pAchieve->GetId()));
     if (FUN_1418aca90(pAchieve) == 0) {
@@ -931,7 +931,7 @@ void UIAchieveDialog::FUN_1418ab520(ASObj& rRow, CAchieve* pAchieve)
         rRow.FUN_1409c1180("cur", nCur);
         rRow.FUN_1409c1180("max", nMax);
         rRow.FUN_1407cb9c0("grade", nGrade);
-        rRow.FUN_1407cbb20("progress", FUN_14093bf10(pAchieve, nGrade));
+        rRow.FUN_1407cbb20("progress", GetAchieveProgressText(pAchieve, nGrade));
         if (DAT_143ab2914 >= 50)
             rRow.FUN_1407cbbe0("debug", ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode());
     }
@@ -952,12 +952,12 @@ void UIAchieveDialog::FUN_1418ab7e0(ASObj& rRow, CAchieve* pAchieve)
         nItem = pReward->m_nCode;
     FUN_1418ab520(rRow, pAchieve);
     FUN_1418ab000(rRow, pAchieve);
-    rRow.FUN_1407cbb20("date", FUN_14093e330(pAchieve, pAchieve->GetCurGrade()));
+    rRow.FUN_1407cbb20("date", GetRecordedDateText(pAchieve, pAchieve->GetCurGrade()));
     rRow.FUN_1407cbb20("state", GetAchieveStateName(pAchieve));
     rRow.FUN_1407cb9c0("count", GetRewardCount(pAchieve));
     rRow.FUN_1407cba60("icon", pAchieve->GetName(0));
     rRow.FUN_1407cb9c0("bookmark", pAchieve->GetBookmark());
-    rRow.FUN_1409c0d20("tooltipItem", nItem);
+    rRow.SetMemberUInt("tooltipItem", nItem);
     rRow.FUN_1407cb9c0("expand", FUN_1418acca0(pAchieve->GetId()));
     rRow.FUN_1407cb9c0("expandAble", 1);
     rRow.FUN_1407cb9c0("disabled", FUN_1418acce0(pAchieve));
@@ -1012,7 +1012,7 @@ void UIAchieveDialog::FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve)
                 if (pOther != 0) {
                     int nReqGrade = nWantGrade == 0 ? pOther->m_nMaxGrade : nWantGrade;
                     ASObj item(2);
-                    item.FUN_1409c0d20("id", nId);
+                    item.SetMemberUInt("id", nId);
                     item.FUN_1407cbb20("trophy", FUN_14093b970(nId));
                     item.FUN_1407cb9c0("complete", ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(nId, nReqGrade));
                     item.FUN_1407cb9c0("grade", nReqGrade);
@@ -1041,7 +1041,7 @@ void UIAchieveDialog::FUN_1418abfa0(ASObj& rRow, CAchieve* pAchieve)
     for (int nGrade = nFirst; nGrade <= nLast; nGrade++) {
         int bComplete = pAchieve->GetValue(nGrade) != 0;
         ASObj item(2);
-        item.FUN_1409c0d20("id", pAchieve->GetId());
+        item.SetMemberUInt("id", pAchieve->GetId());
         item.FUN_1407cb9c0("grade", nGrade);
         item.FUN_1407cba60("icon", pAchieve->GetName(0));
         item.FUN_1407cb9c0("complete", bComplete);

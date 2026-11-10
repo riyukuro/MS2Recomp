@@ -69,7 +69,7 @@ void ASEquipIcon::FUN_1409b91a0(MS2Ptr<ASUIComponent> p)
 }
 
 // @0x1409b91f0
-void ASEquipIcon::FUN_1409b91f0(MS2Ptr<CItem> p)
+void ASEquipIcon::SetItem(MS2Ptr<CItem> p)
 {
     m_40 = p;
 }
@@ -94,7 +94,7 @@ MS2Ptr<AScript> ASEquipIcon::FUN_1409b9330()
 }
 
 // @0x1409b9380
-MS2Ptr<ASMovieClip> ASEquipIcon::FUN_1409b9380()
+MS2Ptr<ASMovieClip> ASEquipIcon::GetSlotClip()
 {
     if (m_50.get() != 0)
     {
@@ -109,13 +109,13 @@ MS2Ptr<ASMovieClip> ASEquipIcon::FUN_1409b9380()
 }
 
 // @0x1409b9550
-MS2Ptr<CItem> ASEquipIcon::FUN_1409b9550()
+MS2Ptr<CItem> ASEquipIcon::GetItem()
 {
     return m_40;
 }
 
 // @0x1409b95a0
-int ASEquipIcon::FUN_1409b95a0()
+int ASEquipIcon::GetItemId()
 {
     int n;
     if (m_40.get() != 0)

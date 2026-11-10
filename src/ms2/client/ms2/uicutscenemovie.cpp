@@ -41,13 +41,13 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 class Unk_1403ed2d0 : public WorldService { public: };
 void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
 void FUN_14125fe20(Unk_SoundState* p);   // reapply the sound volumes
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 void FUN_140d73bc0(int nId, int n, void* pListener, CStringW str);
 namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_140298f40 { public: };
@@ -55,7 +55,7 @@ class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_1419e04b0 : public UILoadingProgress { };
-class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
+class UIObject* FindUIObject(int);   // C3: was FindUIObject
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
 #include "ms2/ms2format.h"
 
@@ -85,7 +85,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     RemoveTween();
     SetSoundFade(true);
     FUN_14025e7a0()->FUN_1422ae920(1);
-    FUN_140b632f0()->AddToLayer(this, 2);
+    GetUISwfEntityManager()->AddToLayer(this, 2);
     ChromaSDK::GetChromaManager()->SetState(11);
     if (m_4c != 0) {
         if (((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
@@ -105,7 +105,7 @@ MS2_REPLACE_METHOD(0x14190EC00, UICutSceneMovie, vfunc_52, 317, 0x6D3CA15C);
 // @0x14190ed50
 int UICutSceneMovie::vfunc_53()
 {
-    FUN_140b632f0()->RemoveFromLayer(this, 2);
+    GetUISwfEntityManager()->RemoveFromLayer(this, 2);
     TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->FUN_141adb7b0(1);
     ChromaSDK::GetChromaManager()->SetState(0);
     if (m_30.get())
@@ -119,7 +119,7 @@ int UICutSceneMovie::vfunc_53()
             p->FUN_141529a50(0);
     }
     FUN_14025e7a0()->FUN_1422ae920(0);
-    TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e40();
+    TSingleton<CAutoFindTaxiStation>::GetInstance()->Resume();
     m_nCutSceneId = 0;
     return 1;
 }
@@ -365,7 +365,7 @@ void UICutSceneMovie::ShowSkipButton()
         if (m_30.get()) {
             CStringW strKey(L"$s_cutscene_skip_key");
             CStringW strText(L"$s_cutscene_skip");
-            if (*reinterpret_cast<const bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
+            if (*reinterpret_cast<const bool*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
                 strKey = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
             m_30->Invoke("setSkipKey", strKey, strText);
         }
@@ -394,7 +394,7 @@ bool UICutSceneMovie::PlayUsm()
     if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
         if (pSound)
-            pPlayer->FUN_1422e9490(pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());
+            pPlayer->FUN_1422e9490(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
         pPlayer->FUN_1422e95b0(m_strPath);
         pPlayer->FUN_1422e9690(m_68);
         return true;
@@ -410,7 +410,7 @@ bool UICutSceneMovie::PlaySwf()
         return false;
     Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound)
-        FUN_14025e7a0()->SetMasterVolume(pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());
+        FUN_14025e7a0()->SetMasterVolume(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
     m_30->Invoke("playSwfMovie", m_strPath);
     return true;
 }
@@ -443,12 +443,12 @@ void UICutSceneMovie::PlayDefaultScene()
 {
     int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
     int nScene = 0;
-    Unk_1419e04b0* p = ((class Unk_1419e04b0*)FUN_141540270(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
+    Unk_1419e04b0* p = ((class Unk_1419e04b0*)FindUIObject(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
     if (p)
         nScene = p->FUN_1419e04b0();
     CString strPath = TSingleton<CLoadingImageTable>::GetInstance()->GetMovieFile(nId, nScene);
     if (strPath.GetLength()) {
-        TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e20();
+        TSingleton<CAutoFindTaxiStation>::GetInstance()->Pause();
         vfunc_52(strPath, 0.0f);
     }
 }

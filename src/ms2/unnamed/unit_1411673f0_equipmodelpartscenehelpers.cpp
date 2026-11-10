@@ -26,7 +26,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/worldservice.h"
 
-std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pModel);    // C3: the part's node set (equipmodel.cpp)
+std::set<NiAVObjectPtr>* GetRoots(CEquipModel* pModel);    // C3: the part's node set (equipmodel.cpp)
 void* FUN_141200ab0(CEquipModel* pModel);                         // C3: the part's model facts (equipmodel.cpp; was the Unk_PickTarget member view)
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
@@ -37,7 +37,7 @@ struct Unk_EmPlayer : public PC
 struct Unk_EmWorld { Unk_EmPlayer* FUN_141bd0cc0(); };          // the local player
 
 // The app framework: +8 is the game context, whose +8 (CMainSystem+0x10) holds the service manager.
-class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
+class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera)
 struct Unk_EmApp
 {
     void* m_pad_00;
@@ -63,7 +63,7 @@ extern NiFixedString DAT_143ae50e8;     // substring of that tag that excludes t
 
 int FUN_1405451c0(CString& strName);   // equip slot of a part name (C3: the definition's signature)
 void FUN_1414d37a0(void*, int);   // C3: was FUN_1414d37a0
-void FUN_1414d3930(void*);   // C3: was FUN_1414d3930
+void RemoveOutline(void*);   // C3: was RemoveOutline
 
 // @0x1411673f0
 // The scene node of the part named pName: from the model root first, then from each loaded mesh of the part.
@@ -75,7 +75,7 @@ NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
         if (pRoot != 0) {
             pFound = pRoot->GetObjectByName((const char*)*pName);
             if (pFound == 0) {
-                std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
+                std::set<NiAVObjectPtr>* kPSet = ::GetRoots(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
                 std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
                 std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
                 for (; it != itEnd; ++it) {
@@ -89,7 +89,7 @@ NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
             }
         }
     } else {
-        std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
+        std::set<NiAVObjectPtr>* kPSet = ::GetRoots(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
         std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
         std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
         for (; it != itEnd; ++it) {
@@ -145,7 +145,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
         if (pInterp != 0) {
             int nCount = pInterp->GetInterpolatorCount();
             for (unsigned short us = 0; us < nCount; us++) {
-                float fTime = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+                float fTime = (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
                 pInterp->UpdateValue(fTime, fValue, us);
                 pInterp->Update(fTime);
             }
@@ -170,7 +170,7 @@ void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
         NiAVObject* pRoot = (NiAVObject*)this->vfunc_14();
         aRoots.Add(pRoot);
     }
-    std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
+    std::set<NiAVObjectPtr>* kPSet = ::GetRoots(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
     std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
     std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
     for (; it != itEnd; ++it) {
@@ -193,7 +193,7 @@ void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pCur);
             if (pRender != 0) {
                 if ((pNode != 0 && pNode != pRender) || fMode == 0.0f)
-                    FUN_1414d3930((void*)(pRender));
+                    RemoveOutline((void*)(pRender));
                 else
                     FUN_1414d37a0((void*)(pRender), 0);
             }
@@ -224,9 +224,9 @@ NiAVObject* FUN_141167cf0(const CString& strName)
                     return pMesh;
             }
         } else {
-            Unk_ServiceManager* pServices = reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->m_context.FUN_140af8310());
+            Unk_ServiceManager* pServices = reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_EmApp*>(TSingleton<CMainSystem>::GetInstance())->m_context.GetServiceManager());
             egmAnimation::AnimationService* pAnimation = pServices->GetSystemServiceAs<egmAnimation::AnimationService>();
-            NiActorManager* pActor = pAnimation->GetActorManager(pPlayer->FUN_14123c460());
+            NiActorManager* pActor = pAnimation->GetActorManager(pPlayer->GetEntityID());
             if (pActor == 0)
                 return 0;
             return NiDynamicCast(NiMesh, pActor->GetNIFRoot()->GetObjectByName((const char*)strName));

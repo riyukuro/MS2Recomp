@@ -611,7 +611,7 @@ void UIHomeMenuDialog::FUN_140c2a780()
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_freeCamera"))
     {
-        sp->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
+        sp->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintSave"))
     {
@@ -671,7 +671,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else

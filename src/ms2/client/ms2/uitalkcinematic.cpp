@@ -93,7 +93,7 @@ public:
 };
 
 UINpcPreviewDialog* FUN_141b1d4f0(unsigned nUiId);              // the open npc preview dialog
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nIcon, int nFlags);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int nIcon, int nFlags);
 
 
 class Unk_TcWorld
@@ -115,7 +115,7 @@ public:
     UISceneEntity* FUN_1422b9e20(int);
     int FUN_1422b9fd0(int nSubSceneId);
 };
-UISwfEntityManager* FUN_140b632f0();
+UISwfEntityManager* GetUISwfEntityManager();
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 
 
@@ -127,7 +127,7 @@ UISwfEntityManager* FUN_140b632f0();
 
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-UITalkCinematic* FUN_140a7b2b0(int nId);
+UITalkCinematic* FindTalkCinematic(int nId);
 
 class Unk_TcSettings { public: char m_pad[0xe0f8]; };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
@@ -145,9 +145,9 @@ class PC   // C3: member view (the real class is not in this TU)
 {
 public:
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);
-    int FUN_141654700();                                        // job code
-    int FUN_141658e60();                                        // gender
-    Unk_MyPCEquip* FUN_14165f460();
+    int GetJobGroupId();                                        // job code
+    int GetGender();                                        // gender
+    Unk_MyPCEquip* GetGemEquip();
 };
 template <class A, class B> CString Unk_SocketFormat(const char* szFmt, const A& a, const B& b);
 
@@ -160,7 +160,7 @@ unsigned FUN_141b70ea0(const CString& strPath);                 // the file exis
 #include "ms2/client/ms2/effectservice.h"
 CStringW Unk_ArcWide(const wchar_t* psz, int n);                    // a wide string as a CString
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_141415600(const CString& strImage);                        // release a reward image
+void DestroyItemInfoSlot(const CString& strImage);                        // release a reward image
 
 // The npc actor of the talk.
 class Unk_TcNpc : public CNpc {};
@@ -192,7 +192,7 @@ CString UITalkCinematic::GetTypeName() { return "TalkCinematic"; }
 void UITalkCinematic::vfunc_2()
 {
     FUN_1422dbf00(0x1c, 0, 0);
-    FUN_140b632f0()->AddToLayer(this, 4);
+    GetUISwfEntityManager()->AddToLayer(this, 4);
     ChromaSDK::GetChromaManager()->SetState(2);
 }
 
@@ -201,7 +201,7 @@ void UITalkCinematic::vfunc_3()
 {
     m_nLoaded = 0;
     FUN_1422dc080();
-    FUN_140b632f0()->RemoveFromLayer(this, 4);
+    GetUISwfEntityManager()->RemoveFromLayer(this, 4);
     ChromaSDK::GetChromaManager()->SetState(0);
 }
 
@@ -353,7 +353,7 @@ int UITalkCinematic::FUN_141b1a8e0(const CStringW& strScript, const CString& str
             {
                 Unk_TcNpc* pNpc = TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
                 if (pNpc != 0)
-                    TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(strSound), pNpc->vfunc_18());
+                    TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(strSound), pNpc->vfunc_18());
             }
             return 1;
         }
@@ -383,7 +383,7 @@ void UITalkCinematic::FUN_141b1ac40(Unk_TalkItemList& rItems, const CStringW& st
             MS2Ptr<CItem> spItem = rItems[i];
             CString strImage;
             strImage.Format("%s_%d", (const char*)GetTypeName(), i);
-            FUN_141415450(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
+            CreateItemInfoSlot(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
             CString strKey;
             strKey.Format("reward%d", i + 1);
             AddImage(strImage);
@@ -417,7 +417,7 @@ void UITalkCinematic::FUN_141b1b000(Unk_TalkItemList& rItems, const CStringW& st
             MS2Ptr<CItem> spItem = rItems[i];
             CString strImage;
             strImage.Format("%s_%d", (const char*)GetTypeName(), i);
-            FUN_141415450(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
+            CreateItemInfoSlot(strImage, MS2Ptr<CItem>(spItem), 0, 0x11, 0x800);
             CString strKey;
             strKey.Format("reward%d", i + 1);
             AddImage(strImage);
@@ -458,13 +458,13 @@ int UITalkCinematic::FUN_141b1b440(CCinematicContent* pContent, int bLast)
                     {
                         MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                         if (pPC != 0)
-                            TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(m_spContent->m_unk20), pPC->vfunc_18());
+                            TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(m_spContent->m_unk20), pPC->vfunc_18());
                     }
                     else
                     {
                         Unk_TcNpc* pNpc = TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
                         if (pNpc != 0)
-                            TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(m_spContent->m_unk20), pNpc->vfunc_18());
+                            TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(m_spContent->m_unk20), pNpc->vfunc_18());
                     }
                 }
                 return 1;
@@ -569,7 +569,7 @@ void UITalkCinematic::AddImage(CString strImage)
 void UITalkCinematic::ClearImages()
 {
     for (unsigned __int64 i = 0; i < m_images.GetCount(); i++)
-        FUN_141415600(m_images[i]);
+        DestroyItemInfoSlot(m_images[i]);
     m_images.RemoveAll();
 }
 
@@ -681,8 +681,8 @@ void UITalkCinematic::FUN_141b1c720(ASObj& rPage, int nNpcTalk)
     CString strIllust;
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x96) && ((class Unk_TcOpt*)reinterpret_cast<CGameOption*>((TSingleton<CGameOption>::GetInstance()))->FUN_140b123b0())->m_6 != 0)
     {
-        int nJob = ((PC*)pPC)->FUN_141654700();
-        CString strGender(((PC*)pPC)->FUN_141658e60() == 1 ? "f" : "m");
+        int nJob = ((PC*)pPC)->GetJobGroupId();
+        CString strGender(((PC*)pPC)->GetGender() == 1 ? "f" : "m");
         strIllust = GetIllustPath(Unk_SocketFormat<int, CString>("{0}_{1}", nJob, strGender));
     }
     if (nNpcTalk == 2)
@@ -783,7 +783,7 @@ struct Unk_TcInt
 void FUN_140710590(COutPacket& packet);
 
 // The dialogs the talk opens (opaque views; the members are bound by VA).
-class UIJobChangeDialog* FUN_141081ff0(int);   // C3: was FUN_141081ff0
+class UIJobChangeDialog* FindJobChangeDialog(int);   // C3: was FindJobChangeDialog
 class UIJobChangeDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -827,7 +827,7 @@ class Unk_ThHallRef   // C3: member view (real class not in this TU)
 public:
     void* FUN_141847330() const;
 };
-class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
+class UIRewardNotify* FindRewardNotify(int);   // C3: was FindRewardNotify
 class UIRewardNotify
 {
 public:
@@ -849,7 +849,7 @@ public:
 class CEquipItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
-    struct Unk_EquipItemData* FUN_1411dc7f0();
+    struct Unk_EquipItemData* GetItemData();
 };
 class CItemData   // C3: member view
 {
@@ -864,7 +864,7 @@ public:
 class PCGemEquip   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1412706f0(int);
+    int IsSlotHidden(int);
 };
 void FUN_141275260(int nMsg, int a, int b);
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);
@@ -878,7 +878,7 @@ class UIBeautyShopDialog   // C3: member view for the former free stand-ins
 public:
     void FUN_1418c9cb0(int);
 };
-class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
+class UICutSceneMovie* FindCutSceneMovie(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 class UICutSceneMovie { public: void PlayScene(int nSceneId, CString strPath); };
 CString FUN_14016a600(const wchar_t* pw, int n);
 void Unk_SplitA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);
@@ -1039,7 +1039,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
         CString strIllust = in.ReadUnicodeStringA();
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strScript);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strScript);
-        UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
         if (pUi != 0)
             pUi->FUN_141b1a8e0(strScript, strSound, strIllust);
     }
@@ -1125,7 +1125,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
         int nJob = atoi(strArg);
         if (((const MS2Ptr<JobData>&)TSingleton<JobTable>::GetInstance()->GetJobData(nJob)).IsNull())
             return;
-        void* pDlg = ((void*)FUN_141081ff0(0x4e7c));
+        void* pDlg = ((void*)FindJobChangeDialog(0x4e7c));
         if (pDlg != 0)
             ((class UIJobChangeDialog*)(void*)(pDlg))->FUN_1419dc510(nJob);
         FUN_141b21ae0(strDialog);
@@ -1161,7 +1161,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
             FUN_141b21ae0("MaidDialog");
             void* pDlg = ((void*)CUserMaidManager::GetMaidDialog(0x4e9d));
             if (pDlg != 0)
-                ((UIMaidDialog*)pDlg)->FUN_1412d9640(((class GameObject*)(class PCBase*)(pNpc))->FUN_14123c580(), pNpc->FUN_1410947c0());
+                ((UIMaidDialog*)pDlg)->FUN_1412d9640(((class GameObject*)(class PCBase*)(pNpc))->GetObjectId(), pNpc->FUN_1410947c0());
         }
     }
     else if (strDialog.CompareNoCase("CloseMaidDialog") == 0)
@@ -1176,7 +1176,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
             FUN_141b21ae0("ManufactureDialog");
             void* pDlg = ((void*)CManufactureManager::GetManufactureDialog(0x4ec0));
             if (pDlg != 0)
-                ((UIManufactureDialog*)pDlg)->FUN_1412e3480(((class GameObject*)(class PCBase*)(pNpc))->FUN_14123c580(), pNpc->FUN_1410947c0());
+                ((UIManufactureDialog*)pDlg)->FUN_1412e3480(((class GameObject*)(class PCBase*)(pNpc))->GetObjectId(), pNpc->FUN_1410947c0());
         }
     }
     else if (strDialog.CompareNoCase("CloseManufactureDialog") == 0)
@@ -1268,7 +1268,7 @@ void UITalkManager::FUN_141b1f350(CInPacket& in)
                 m_reward.m_items.Add(spItem);
             if (spItem->FUN_140525980() == 0)
             {
-                void* pHud = ((void*)FUN_140938cd0(0x4e5d));
+                void* pHud = ((void*)FindRewardNotify(0x4e5d));
                 if (pHud != 0)
                     reinterpret_cast<UIRewardNotify*>(pHud)->FUN_141abfa10(MS2Ptr<CItem>(spItem));
             }
@@ -1281,7 +1281,7 @@ void UITalkManager::FUN_141b1f620(CInPacket& in)
 {
     __int64 nValue = in.ReadInt64();
     m_reward.m_nMerat += nValue;
-    void* pHud = ((void*)FUN_140938cd0(0x4e5d));
+    void* pHud = ((void*)FindRewardNotify(0x4e5d));
     if (pHud != 0)
         ((UIRewardNotify*)pHud)->FUN_141abf230(nValue, 0);
 }
@@ -1291,7 +1291,7 @@ void UITalkManager::FUN_141b1f6b0(CInPacket& in)
 {
     __int64 nValue = in.ReadInt64();
     m_reward.m_nMeso += nValue;
-    void* pHud = ((void*)FUN_140938cd0(0x4e5d));
+    void* pHud = ((void*)FindRewardNotify(0x4e5d));
     if (pHud != 0)
         ((UIRewardNotify*)pHud)->FUN_141abf450(nValue, 0);
 }
@@ -1318,7 +1318,7 @@ void UITalkManager::FUN_141b1f840(CInPacket& in)
 {
     unsigned nValue = in.ReadInt32();
     CStringW strText = in.ReadUnicodeString();
-    void* pDlg = ((void*)FUN_14138fd50(0x4e7e));
+    void* pDlg = ((void*)FindCutSceneMovie(0x4e7e));
     if (pDlg != 0)
         ((UICutSceneMovie*)pDlg)->PlayScene(nValue, FUN_14016a600(strText, 0));
 }
@@ -1357,7 +1357,7 @@ bool UITalkManager::FUN_141b1fa60()
 // @0x141b1faa0
 void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
 {
-    MS2Ptr<UITalkCinematic> spUi(FUN_140a7b2b0(0x4e40));
+    MS2Ptr<UITalkCinematic> spUi(FindTalkCinematic(0x4e40));
     if (spUi == 0)
         return;
     unsigned nNpc = (unsigned)TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
@@ -1462,7 +1462,7 @@ void UITalkManager::FUN_141b1ff80(unsigned nNpcId)
         m_nTalking = 1;
         m_nNpcId = nNpcId;
         pPC->vfunc_94(nNpcId);
-        pNpc->vfunc_94(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
+        pNpc->vfunc_94(((class GameObject*)(class PCBase*)(pPC))->GetObjectId());
         reinterpret_cast<Unk_ScriptPtr<CTalkScript>&>(m_spScript) = FUN_141b21b90();
         if (m_spScript.get() != 0)
         {
@@ -1487,7 +1487,7 @@ void UITalkManager::FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript)
         m_nTalking = 1;
         m_nNpcId = nNpcId;
         pPC->vfunc_94(nNpcId);
-        pNpc->vfunc_94(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
+        pNpc->vfunc_94(((class GameObject*)(class PCBase*)(pPC))->GetObjectId());
         m_spScript.AssignRaw(pScript);
         if (m_spScript.get() != 0)
         {
@@ -1511,13 +1511,13 @@ void UITalkManager::FUN_141b20210()
     {
         if (pPC->vfunc_85().get())
             pPC->vfunc_85()->vfunc_3();
-        efd::SmartPointer<Ridee> kRide((Ridee*)(void*)((class PCBase*)(class PCBase*)(pPC))->FUN_1416764a0());
+        efd::SmartPointer<Ridee> kRide((Ridee*)(void*)((class PCBase*)(class PCBase*)(pPC))->GetRidee());
         if (((Ridee*)kRide ? true : false) && ((PCBase*)kRide.operator->())->GetCurStateId() == 0x16)
             pPC->vfunc_59(1, 0, 0, 0);
         else if (pPC->GetCurStateId() == 0x16)
             pPC->vfunc_59(1, 0, 0, 0);
         m_ids.Reset();
-        UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
         if (pUi != 0)
             pUi->FUN_141b1b8b0();
     }
@@ -1596,7 +1596,7 @@ void UITalkManager::FUN_141b20790(int nNpcId, int nFriendly)
     {
         pNpc->ShowChatBalloon(CStringW(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_name));
         if (TSingleton<UITalkManager>::GetInstance()->GetTalking() == 0 && reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_unk20.GetLength() != 0)
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_unk20), pNpc->vfunc_18());
+            TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_unk20), pNpc->vfunc_18());
     }
 }
 
@@ -1638,7 +1638,7 @@ int UITalkManager::FUN_141b20bb0()
     Unk_TcNpc* pNpc = GetTalkNpc();
     if (pNpc == 0)
         return 0;
-    UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
     if (pUi == 0)
         return 0;
     if (m_spScript.get() != 0)
@@ -1746,7 +1746,7 @@ int UITalkManager::FUN_141b21240(int nNpcId)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (nNpcId == (int)((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580())
+    if (nNpcId == (int)((class GameObject*)(class PCBase*)(pPC))->GetObjectId())
         return 1;
     if (nNpcId == m_nNpcId)
         return 1;
@@ -1819,7 +1819,7 @@ unsigned UITalkManager::FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSp
 // @0x141b215b0
 void UITalkManager::FUN_141b215b0(int bSamePage)
 {
-    UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
     if (pUi == 0)
         return;
     if (bSamePage == 0)
@@ -1891,10 +1891,10 @@ int UITalkManager::FUN_141b218b0(Unk_TcNpc* pNpc)
             MS2Ptr<CEquipItem> kEquip = ((PC*)pPC)->FUN_141655e10(6);
             if ((CEquipItem*)kEquip != 0)
             {
-                if (((void*)kEquip->FUN_1411dc7f0()) != 0
-                    && ((class CItemData*)(void*)(kEquip->FUN_1411dc7f0()))->FUN_14053ec70()->FUN_1405471d0() != 0)
+                if (((void*)kEquip->GetItemData()) != 0
+                    && ((class CItemData*)(void*)(kEquip->GetItemData()))->FUN_14053ec70()->FUN_1405471d0() != 0)
                     return 0;
-                else if (((class PCGemEquip*)(void*)(((PC*)pPC)->FUN_14165f460()))->FUN_1412706f0(0) != 0)
+                else if (((class PCGemEquip*)(void*)(((PC*)pPC)->GetGemEquip()))->IsSlotHidden(0) != 0)
                     nNotice = 0x83;
                 else
                     nNotice = 0x82;
@@ -1934,7 +1934,7 @@ void UITalkManager::FUN_141b21ae0(const CString& strDialog)
     UIDialog* pDlg = Unk_GaGetUIByName<UIDialog>(strDialog);
     if (pDlg == 0)
         return;
-    UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
     if (pUi != 0 && pUi->GetLoaded() != 0)
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(pDlg->vfunc_48())));
     else

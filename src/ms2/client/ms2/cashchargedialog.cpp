@@ -116,7 +116,7 @@ END_MESSAGE_MAP()
 void CCashChargeDialog::OnClose()
 {
     {
-        Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+        Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
             ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035920(0);
     }
@@ -146,7 +146,7 @@ void CCashChargeDialog::OnWindowClosing(BOOL bIsChildWindow, BOOL* pbCancel)
 }
 
 // @0x140b04f80
-UICashShopDialog* FUN_140b04f80(int nId)
+UICashShopDialog* FindCashShopDialog(int nId)
 {
     if (reinterpret_cast<Unk_CashShopUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -161,7 +161,7 @@ UICashShopDialog* FUN_140b04f80(int nId)
 Unk_CashShopRef::Unk_CashShopRef(UICashShopDialog* pDialog)
 {
     m_pDialog = pDialog;
-    FUN_140b054b0();
+    AddRef();
 }
 
 // @0x140b05080
@@ -183,7 +183,7 @@ UICashShopDialog* Unk_CashShopRef::FUN_140b051d0() const
 }
 
 // @0x140b054b0
-void Unk_CashShopRef::FUN_140b054b0()
+void Unk_CashShopRef::AddRef()
 {
     if (m_pDialog != 0)
         FUN_140b05500(0);

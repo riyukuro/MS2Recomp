@@ -11,7 +11,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); };
+class Unk_Inventory { public: class MS2Ptr<class CItem> FindItemByUid(__int64); };
 // @0x1406125d0
 CItemLockManager::CItemLockManager()
 {
@@ -52,7 +52,7 @@ MS2Ptr<CItem> CItemLockManager::FUN_1406127a0(int nSlot)
     if (nSlot < 0 || nSlot >= (int)m_locked.GetCount())
         return MS2Ptr<CItem>(0);
     __int64 nItemUid = m_locked.GetAt(nSlot);
-    return g_143ab2a90.FUN_140a5d680(nItemUid);
+    return g_143ab2a90.FindItemByUid(nItemUid);
 }
 MS2_REPLACE_METHOD(0x1406127A0, CItemLockManager, FUN_1406127a0, 160, 0xB62C07D5);
 
@@ -70,7 +70,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
             int nSlot = (unsigned short)packet.ReadInt16();
             if (nSlot < 0 || nSlot >= 0x12)
                 return;
-            MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(nItemUid);
+            MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(nItemUid);
             if (item.get() != 0)
             {
                 m_locked.GetAt(nSlot) = nItemUid;
@@ -95,7 +95,7 @@ void CItemLockManager::FUN_140612850(CInPacket& packet)
             for (int i = 0; i < (int)nCount; i = i + 1)
             {
                 __int64 nItemUid = packet.ReadInt64();
-                MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(nItemUid);
+                MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(nItemUid);
                 if (item.get() != 0)
                     item->FUN_140524eb0(packet);
                 FUN_140612c60(nItemUid);
@@ -255,7 +255,7 @@ void CItemLockManager::FUN_1406132f0()
         unsigned __int64 nItemUid = m_locked.GetAt(i);
         if (nItemUid == 0)
             continue;
-        MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(nItemUid);
         if (item.IsNull() && Unk_BreakFind(m_pending, nItemUid) == -1)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);

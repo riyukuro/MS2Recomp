@@ -134,7 +134,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -270,7 +270,7 @@ void UIItemRemakeScrollDialog::OnLoadComplete()
     CStringW strNotice;
     CStringW strDesc;
     m_nPet = 0;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll && spScroll->FUN_140527840() != 0)
     {
         MS2Ptr<CItemRemakeScrollData> spRow = FUN_140f5d380(RM_DATA(spScroll));
@@ -363,7 +363,7 @@ void UIItemRemakeScrollDialog::FUN_140f59230(CInPacket& packet)
         if (FUN_141924630() != 0)
             return;
         __int64 nUid = packet.ReadInt64();
-        if (g_143ab2a90.FUN_140a5d680(nUid) == 0)
+        if (g_143ab2a90.FindItemByUid(nUid) == 0)
             return;
         m_nScrollUid = nUid;
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(vfunc_48())));
@@ -385,13 +385,13 @@ void UIItemRemakeScrollDialog::FUN_140f59230(CInPacket& packet)
 // @0x140f59420
 void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nUnk)
 {
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll == 0)
     {
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
         return;
     }
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nOptionUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nOptionUid);
     if (spItem == 0)
     {
         FUN_1412752d0(L"s_itemremake_scroll_error_invalid_target", 1);
@@ -432,13 +432,13 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
 // @0x140f59ad0
 void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nUnk)
 {
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll == 0)
     {
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
         return;
     }
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nOptionUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nOptionUid);
     if (spItem == 0)
     {
         FUN_1412752d0(L"s_itemremake_scroll_error_invalid_target", 1);
@@ -527,7 +527,7 @@ void UIItemRemakeScrollDialog::FUN_140f5a7e0(CInPacket& packet)
     CCItemRemakeOptionPacket::ApplyOptionClient apply;
     apply.m_item = m_spOption;
     apply.vfunc_2(packet);
-    MS2Ptr<CItem> spFound = g_143ab2a90.FUN_140a5d680(apply.m_uid);
+    MS2Ptr<CItem> spFound = g_143ab2a90.FindItemByUid(apply.m_uid);
     if (spFound == 0)
     {
         CStringW strMessage = GetStringCommonByKey(L"s_itemremake_scroll_error_have_not_item");
@@ -622,7 +622,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
 {
     if (m_spTarget == 0 || GetState() != 2)
         return;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll == 0)
     {
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
@@ -675,7 +675,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
 {
     if (GetState() != 3 || m_spTarget == 0 || m_spOption == 0)
         return;
-    MS2Ptr<CItem> spCheck = g_143ab2a90.FUN_140a5d680(m_spTarget->GetItemUid());
+    MS2Ptr<CItem> spCheck = g_143ab2a90.FindItemByUid(m_spTarget->GetItemUid());
     if (spCheck == 0)
     {
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_item");
@@ -747,7 +747,7 @@ void UIItemRemakeScrollDialog::FUN_140f5bbb0(ASData& data)
         }
         else if (nNeed <= nHave)
         {
-            MS2Ptr<CItem> spIngredient = g_143ab2a90.FUN_140a5d680(m_nIngredientUid);
+            MS2Ptr<CItem> spIngredient = g_143ab2a90.FindItemByUid(m_nIngredientUid);
             if (spIngredient == 0)
                 return;
             MS2Ptr<CItemData> spData = RM_DATA(spIngredient);
@@ -849,7 +849,7 @@ void UIItemRemakeScrollDialog::FUN_140f5cba0(MS2Ptr<CItem> spItem)
     if (GetState() != 4)
         return;
     m_bFinal = false;
-    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
     if (spScroll.get() != 0)
         m_bFinal = true;
     CStringW strDesc = FUN_140f5e240(MS2Ptr<CItem>(spItem), 1);
@@ -860,7 +860,7 @@ void UIItemRemakeScrollDialog::FUN_140f5cba0(MS2Ptr<CItem> spItem)
         strText = FUN_14028dfa0<CStringW>(CStringW(L"s_itemremake_scroll_pet_final_option"), strDesc);
     RM_SCRIPT()->FUN_140f5ff80("complete", CStringW(strText), m_bFinal);
     FUN_140f5d140(MS2Ptr<CItem>(spItem));
-    MS2Ptr<CItem> spIngredient = g_143ab2a90.FUN_140a5d680(m_nIngredientUid);
+    MS2Ptr<CItem> spIngredient = g_143ab2a90.FindItemByUid(m_nIngredientUid);
     if (spIngredient == 0)
         FUN_140f5d220(MS2Ptr<CItem>(0));
     m_spTarget = 0;
@@ -873,7 +873,7 @@ void UIItemRemakeScrollDialog::FUN_140f5cba0(MS2Ptr<CItem> spItem)
 void UIItemRemakeScrollDialog::FUN_140f5d020(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() != 0)
-        g_143ab2a90.FUN_140a5d530(spItem.get());
+        g_143ab2a90.ReplaceItem(spItem.get());
 }
 
 // @0x140f5d080
@@ -1131,16 +1131,16 @@ void UIItemRemakeScrollDialog::FUN_140f5e5f0(ItemScrollSlot& slot, DragSlot* pDr
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
         return;
     }
-    MS2DragSlot* pSrc = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag));
+    MS2DragSlot* pSrc = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag));
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spItem == 0)
         {
             RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_item");
             return;
         }
-        MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+        MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nScrollUid);
         if (spScroll == 0 || spScroll->FUN_140527840() == 0)
         {
             RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_scroll");
@@ -1197,10 +1197,10 @@ void UIItemRemakeScrollDialog::FUN_140f5ede0(ItemScrollSlot& slot, DragSlot* pDr
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemremake_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
         return;
     }
-    MS2DragSlot* pSrc = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag));
+    MS2DragSlot* pSrc = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag));
     if (pSrc != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
         if (spItem == 0)
         {
             FUN_140d73aa0(GetStringCommonByKey(L"s_itemremake_scroll_error_have_not_item"), 0, 0, CStringW(L""));

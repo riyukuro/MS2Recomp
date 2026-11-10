@@ -19,7 +19,7 @@
 
 // The game option block (the second member of the settings singleton).
 struct Unk_InterfaceState;
-bool FUN_14125bb90(const Unk_InterfaceState* p);          // 0x14125bb90 the meter is enabled (gameoptionstruct.cpp)
+bool IsIndividualDamageMeterOn(const Unk_InterfaceState* p);          // 0x14125bb90 the meter is enabled (gameoptionstruct.cpp)
 struct Unk_IndOpt
 {
     char m_pad_00[3];
@@ -145,7 +145,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIIndividualDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_14125bb90(reinterpret_cast<const Unk_InterfaceState*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()))) == 0)
+    if (IsIndividualDamageMeterOn(reinterpret_cast<const Unk_InterfaceState*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()))) == 0)
         vfunc_67();
     else
     {

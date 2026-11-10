@@ -60,7 +60,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-int FUN_141472bc0();   // C3: was FUN_141472bc0
+int GetServerTick();   // C3: was GetServerTick
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 int FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
 void FUN_140710590(COutPacket& packet);                             // send
@@ -330,7 +330,7 @@ void UITypingGameDialog::FailGameProgress()
 // @0x140ee6190
 void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
 {
-    WorldService::GetInstance()->FUN_141bc6f60(FUN_141472bc0(), nLimitMs, 1);
+    WorldService::GetInstance()->FUN_141bc6f60(GetServerTick(), nLimitMs, 1);
     if (nLimitMs > 0)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4e95);

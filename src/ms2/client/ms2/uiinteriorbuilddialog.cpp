@@ -146,7 +146,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (operator==(strTag, L"indoorSizeDifferent") || operator==(strTag, L"indoorEmpty"))
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
                 if (spItem == 0)
                     return 0;
                 g_143ab2a90.FUN_140a63880(spItem.get(), L"true");
@@ -161,7 +161,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x140f4b7d0
 void UIInteriorBuildDialog::FUN_140f4b7d0()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
     if (spItem == 0)
         return;
     MS2SvrPtr<CItemData> spData(spItem->FUN_140527840());
@@ -187,7 +187,7 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
 // @0x140f4bc40
 void UIInteriorBuildDialog::OnUseItem()
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_178);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
     if (spItem == 0)
         return;
     if (!CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()))

@@ -129,9 +129,9 @@ public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 enum eUIClassID : int;
-UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
 class Unk_BSDevSound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -231,7 +231,7 @@ CString UIBeautyShopDevDialog::GetTypeName()
 void UIBeautyShopDevDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_141920770();
     FUN_14191f9d0();
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -242,7 +242,7 @@ void UIBeautyShopDevDialog::vfunc_67()
     m_1a4 = 0;
     m_288 = 0;
     m_298 = 0;
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                       Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
@@ -264,7 +264,7 @@ int UIBeautyShopDevDialog::vfunc_65()
         return 0;
     std::vector<MS2Ptr<CItemData> > aItems;
     TSingleton<CItemDataTable>::GetInstance()->GetAllItemData(aItems);
-    int nGender = pPc->FUN_141658e60();
+    int nGender = pPc->GetGender();
     for (std::vector<MS2Ptr<CItemData> >::iterator it = aItems.begin(); it != aItems.end(); ++it)
     {
         MS2Ptr<CItemData> spData = *it;
@@ -287,15 +287,15 @@ void UIBeautyShopDevDialog::OnLoadComplete()
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    m_288.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_288.AssignRaw(new Customize(pPc->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_288->SelectSlot(2);
-    m_298 = reinterpret_cast<Unk_BSCamera*>(FUN_140cd47b0((eUIClassID)0x4ef2));
+    m_298 = reinterpret_cast<Unk_BSCamera*>(FindCameraEditDialog((eUIClassID)0x4ef2));
     IItemCustomizeEventListener::FUN_141922e80(1);
     m_198 = 0;
     m_30->Invoke("initData");
     m_30->FUN_140bbe7c0<ASDropdownMenu>("m_colorIndexMenu", m_2b8);
     FUN_1419200c0(1);
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                     Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
@@ -346,7 +346,7 @@ void UIBeautyShopDevDialog::vfunc_15()
         return;
     if (m_288 == 0)
         return;
-    m_288->FUN_140cd1bf0();
+    m_288->UpdateEditItems();
     if (m_1a4 > 0u)
     {
         MS2Ptr<CEquipItem> spItem(0);
@@ -364,7 +364,7 @@ void UIBeautyShopDevDialog::vfunc_15()
                 spItem = pPc2->FUN_141655e10(nSlot);
             if ((spItem.get() ? true : false) && spItem->FUN_1411dc820() == m_1a4 && spItem->FUN_1411dc0d0())
             {
-                CString strText = FUN_1419215e0(spItem->FUN_1411dc7f0(), spItem);
+                CString strText = FUN_1419215e0(spItem->GetItemData(), spItem);
                 m_30->Invoke("setDebugText", CString(strText));
                 m_1a4 = 0;
             }
@@ -624,7 +624,7 @@ int UIBeautyShopDevDialog::vfunc_3(void* p, float fValue)
 {
     FUN_14191fc40(1);
     MS2Ptr<CEquipItem> spItem = static_cast<CItemCustomizeController*>(p)->GetEquipItem();
-    if ((spItem.get() ? true : false) && spItem->FUN_1411dc7f0() && spItem->FUN_1411dc7f0()->FUN_14053d070())
+    if ((spItem.get() ? true : false) && spItem->GetItemData() && spItem->GetItemData()->FUN_14053d070())
         m_1a4 = spItem->FUN_1411dc820();
     return 1;
 }
@@ -633,7 +633,7 @@ int UIBeautyShopDevDialog::vfunc_3(void* p, float fValue)
 int UIBeautyShopDevDialog::vfunc_4(void* p, void* q)
 {
     MS2Ptr<CEquipItem> spItem = static_cast<CItemCustomizeController*>(p)->GetEquipItem();
-    if ((spItem.get() ? true : false) && spItem->FUN_1411dc7f0() && spItem->FUN_1411dc7f0()->FUN_14053d070())
+    if ((spItem.get() ? true : false) && spItem->GetItemData() && spItem->GetItemData()->FUN_14053d070())
         m_1a4 = spItem->FUN_1411dc820();
     return 1;
 }
@@ -648,7 +648,7 @@ int UIBeautyShopDevDialog::vfunc_5(void* p, void* q)
         MS2Ptr<CEquipItem> spItem = pPc->FUN_141655e10(FUN_141921580(m_1a0));
         if (spItem.get())
         {
-            Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
+            Unk_EquipItemData* pData = spItem->GetItemData();
             if (pData && pData->FUN_14053cfd0() && spItem->FUN_1411dc0d0())
             {
                 CString strText = FUN_1419215e0(pData, spItem);
@@ -780,7 +780,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
             {
                 ASObj row(2);
                 int nMode = 6;
-                MS2Ptr<CItem> spItem = m_288->FUN_140cd1890();
+                MS2Ptr<CItem> spItem = m_288->GetEditItem();
                 if (spItem.get())
                 {
                     FUN_140f328a0(MS2Ptr<Customize>(m_288), row, nMode);
@@ -935,8 +935,8 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
     NoticeMessage target;
     target.m_strName = ((class CommonResource*)FUN_1401d31f0())->m_strCustomizingFinish;
     target.m_nObject = 1;
-    target.SetActor(pPc->FUN_14123c580());
-    CEffectService::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&target));
+    target.SetActor(pPc->GetObjectId());
+    CEffectService::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&target));
     FUN_14191fc40(0);
     FUN_14191ff70();
     m_19c = 0;
@@ -983,7 +983,7 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
         return;
     int bBuild = m_1a0 == 4 || bForce;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aItems(10);
-    FUN_140f014b0(&aItems, pPc->FUN_1416561a0());
+    FUN_140f014b0(&aItems, pPc->GetEquipment());
     ASArray aRows(2);
     for (POSITION pos = aItems.GetHeadPosition(); pos; aItems.GetNext(pos))
     {
@@ -993,7 +993,7 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
         MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (!spItem)
             continue;
-        Unk_EquipItemData* pData = spEquip->FUN_1411dc7f0();
+        Unk_EquipItemData* pData = spEquip->GetItemData();
         if (!pData)
             continue;
         if (!bBuild)
@@ -1093,12 +1093,12 @@ void UIBeautyShopDevDialog::FUN_141920aa0(int nItemId)
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    if (!reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->AreAllItemsLoaded())
+    if (!reinterpret_cast<CEquipment*>(pPc->GetEquipment())->AreAllItemsLoaded())
         return;
-    int nCurrent = m_288->FUN_140cd17e0();
+    int nCurrent = m_288->GetEditItemId();
     if (nCurrent == 0 || nCurrent != nItemId)
     {
-        if (!reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e0c30(nItemId))
+        if (!reinterpret_cast<CEquipment*>(pPc->GetEquipment())->FUN_1411e0c30(nItemId))
             m_288->EquipItemId(nItemId);
         m_288->SelectId(nItemId);
     }
@@ -1149,7 +1149,7 @@ void UIBeautyShopDevDialog::OnClickAdd()
             if (!spData.operator->()->FUN_14053ec70()->FUN_140547360())
                 spModelData->FUN_14054b670()->handle.AssignRaw(new MsTransform);
             spModelData->FUN_14054b670()->handle->position =
-                reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->FUN_141200130()));
+                reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->GetPosition()));
             spModelData->FUN_14054b670()->handle->rotation =
                 reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->GetPos6c()));
             TSingleton<CItemDataTable>::GetInstance()->FUN_140557910(ItemModelData::FUN_14054aec0(nModel));
@@ -1203,7 +1203,7 @@ void UIBeautyShopDevDialog::FUN_1419213f0(NotifyObject* pNotify)
 // @0x141921460
 bool UIBeautyShopDevDialog::FUN_141921460()
 {
-    MS2Ptr<CItemData> spData = FUN_14053f870(m_288->FUN_140cd17e0());
+    MS2Ptr<CItemData> spData = FUN_14053f870(m_288->GetEditItemId());
     if (spData == 0)
         return false;
     return spData->FUN_14053e370();

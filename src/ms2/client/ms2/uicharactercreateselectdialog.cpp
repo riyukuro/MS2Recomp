@@ -468,7 +468,7 @@ void UICharacterCreateSelectDialog::FUN_140f2ffb0(int nJobCode)
         m_nBgm = 1;
     }
     if (spJob.operator->()->m_characterVoice.GetLength() > 0)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spJob.operator->()->m_characterVoice), DAT_143b01a60);
+        TSingleton<CEffectService>::GetInstance()->PlayVoiceAt(CString(spJob.operator->()->m_characterVoice), DAT_143b01a60);
     ChromaSDK::GetChromaManager()->SetColorMode(nJobCode);
 }
 MS2_REPLACE_METHOD(0x140F2FFB0, UICharacterCreateSelectDialog, FUN_140f2ffb0, 340, 0x1693AEC9);

@@ -40,7 +40,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 int FUN_140695080(class CMatchPartyRecruit const*);   // C3: was FUN_140695080
 
 
@@ -130,7 +130,7 @@ void UIPartySearchRegisterDialog::vfunc_67()
 int UIPartySearchRegisterDialog::vfunc_73()
 {
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xe);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(0xe);
         if (blocked.get() != 0)
         {
             FUN_140a30ad0(blocked, 0xe, 0);
@@ -175,7 +175,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         {
             m_1b0->AddItemLabel(FUN_140719630(((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770[i]));
         }
-        CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
+        CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->GetRecruitment();
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
             m_1c0->SetTextW(m_190.m_text);
@@ -216,7 +216,7 @@ int UIPartySearchRegisterDialog::vfunc_13()
         return 1;
     if (vfunc_55() == 0 && (m_30.get() ? true : false))
     {
-        if (FUN_140b632f0()->GetTopEntity(m_e0) == this)
+        if (GetUISwfEntityManager()->GetTopEntity(m_e0) == this)
         {
             CString strKey("");
             if (((class Unk_PsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))

@@ -83,7 +83,7 @@ LapenshardSlotBag* FUN_140a703d0(const CString& strName)
 }
 
 // @0x140a704a0
-void FUN_140a704a0(const CString& strName)
+void RemoveLapenshardSlotBag(const CString& strName)
 {
     LapenshardSlotBag* pBag = FUN_140a70b70(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)

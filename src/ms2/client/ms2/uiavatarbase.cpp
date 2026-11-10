@@ -103,7 +103,7 @@ MS2_CHECK_SIZE(ItemPreviewCommon::CLimitCharRotate, 0x30);
 class Unk_UabClock;
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
-void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
+void SetTranslate(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
 float FUN_14059d930(float f);                                           // fabs
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class A, class B, class C>
@@ -220,7 +220,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (!pNode)
             return;
         float fY = (float)dx * m_fRotStep;
@@ -251,7 +251,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
         }
         ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<Vector3&>(kNewPos)));
         if (bUpdate)
-            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
 }
 
@@ -294,7 +294,7 @@ void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (pNode == 0)
             return;
         float fX = -((float)dx * m_fMoveStep);
@@ -317,7 +317,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (!pNode)
             return;
         FUN_1418bf270(&rx);
@@ -334,7 +334,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(fRadX, fRadY, fRadZ);
         FUN_1418c1dd0(pNode, &kRot, *pPivot, *pPos);
         if (bUpdate)
-            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+            pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
 }
 
@@ -346,7 +346,7 @@ void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (!pNode)
             return;
         const Vector3& kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
@@ -429,7 +429,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (!pObj)
         return;
-    NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+    NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
     if (!pNode)
         return;
     Unk_NiMatrix3 kRot;
@@ -440,7 +440,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(fRadX, fRadY, fRadZ);
     ((class NiAVObject*)(class NiAVObject*)(pNode))->SetRotate(*(class NiMatrix3 const*)(&kRot));
     if (bUpdate)
-        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
 }
 
 // @0x1418b9140
@@ -451,12 +451,12 @@ void UIAvatarBase::vfunc_9(float x, float y, float z, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj == 0)
         return;
-    NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+    NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
     if (pNode == 0)
         return;
-    FUN_1410a7800(pNode, x, y, z);
+    SetTranslate(pNode, x, y, z);
     if (bUpdate)
-        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
 }
 
 // @0x1418b9200
@@ -504,7 +504,7 @@ egf::EntityID UIAvatarBase::vfunc_26()
     GameObject* pObj = vfunc_24();
     if (pObj != 0)
     {
-        return pObj->FUN_14123c460();
+        return pObj->GetEntityID();
     }
     return egf::EntityID();
 }
@@ -594,7 +594,7 @@ MS2_REPLACE_METHOD(0x1418B9730, UIAvatarBase, vfunc_28, 321, 0x52FA4849);
 // @0x1418b9880 (secondary vftable: the listener slots)
 int UIAvatarBase::vfunc_0(GameObject* pObj)
 {
-    if (pObj && m_nObjectId == pObj->FUN_14123c580())
+    if (pObj && m_nObjectId == pObj->GetObjectId())
     {
         SetLoaded(1);
         vfunc_22();
@@ -609,7 +609,7 @@ int UIAvatarBase::vfunc_0(GameObject* pObj)
 // @0x1418b9970
 int UIAvatarBase::vfunc_2(GameObject* pObj)
 {
-    if (pObj && m_nObjectId == pObj->FUN_14123c580())
+    if (pObj && m_nObjectId == pObj->GetObjectId())
     {
         if (m_pListener)
             m_pListener->vfunc_o178_0(this);
@@ -621,7 +621,7 @@ int UIAvatarBase::vfunc_2(GameObject* pObj)
 // @0x1418b9a00
 int UIAvatarBase::vfunc_3(GameObject* pObj)
 {
-    if (pObj && m_nObjectId == pObj->FUN_14123c580())
+    if (pObj && m_nObjectId == pObj->GetObjectId())
     {
         SetLoaded(0);
         return 1;
@@ -632,7 +632,7 @@ int UIAvatarBase::vfunc_3(GameObject* pObj)
 // @0x1418b9a60
 int UIAvatarBase::vfunc_4(GameObject* pObj)
 {
-    if (pObj && m_nObjectId == pObj->FUN_14123c580())
+    if (pObj && m_nObjectId == pObj->GetObjectId())
     {
         SetLoaded(1);
         if (m_pListener)
@@ -691,7 +691,7 @@ void UIAvatarBase::FUN_1418b9c10()
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (!pNode)
             return;
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
@@ -730,7 +730,7 @@ void UIAvatarBase::FUN_1418b9e40()
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (!pNode)
             return;
         m_kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
@@ -847,7 +847,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        NiAVObject* pNode = FUN_141b6efc0(pObj->GetEntity());
         if (pNode == 0)
             return;
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
@@ -894,11 +894,11 @@ UIAvatarPC::UIAvatarPC(PC* pSource, bool bFlag)
     : m_spCustomize(0), m_bFlag(bFlag), m_nPose(0), m_nAction(1), m_nActionParam(10)
 {
     m_nKind = 1;
-    AvatarPC* pAvatar = FUN_1409f3410(pSource);
+    AvatarPC* pAvatar = CreateAvatarFromPC(pSource);
     if (pAvatar)
     {
         pAvatar->SetListener(this);
-        m_nObjectId = pAvatar->FUN_14123c580();
+        m_nObjectId = pAvatar->GetObjectId();
         FUN_1418bd780(pSource, pAvatar);
     }
 }
@@ -908,11 +908,11 @@ UIAvatarPC::UIAvatarPC(int nGender, bool bFlag)
     : m_spCustomize(0), m_bFlag(bFlag), m_nPose(0), m_nAction(1), m_nActionParam(10)
 {
     m_nKind = 1;
-    AvatarPC* pAvatar = FUN_1409f3650(nGender, 10000);
+    AvatarPC* pAvatar = CreatePreviewAvatar(nGender, 10000);
     if (pAvatar)
     {
         pAvatar->SetListener(this);
-        m_nObjectId = pAvatar->FUN_14123c580();
+        m_nObjectId = pAvatar->GetObjectId();
         FUN_1418bd780(0, pAvatar);
     }
 }
@@ -922,11 +922,11 @@ UIAvatarPC::UIAvatarPC(MS2Ptr<Unk_PCArg125> spSrc, bool bFlag)
     : m_spCustomize(0), m_bFlag(bFlag), m_nPose(0), m_nAction(1), m_nActionParam(10)
 {
     m_nKind = 1;
-    AvatarPC* pAvatar = FUN_1409f3fd0(spSrc);
+    AvatarPC* pAvatar = CreateAvatarFromPCRecord(spSrc);
     if (pAvatar)
     {
         pAvatar->SetListener(this);
-        m_nObjectId = pAvatar->FUN_14123c580();
+        m_nObjectId = pAvatar->GetObjectId();
         FUN_1418bd780(0, pAvatar);
     }
 }
@@ -975,7 +975,7 @@ GameObject* UIAvatarPC::vfunc_23()
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar && pAvatar->FUN_1409f4f20())
     {
-        unsigned nRideeId = pAvatar->FUN_1409f6450();
+        unsigned nRideeId = pAvatar->GetRideeObjectId();
         if (nRideeId > 0)
             return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectById(nRideeId));
     }
@@ -1202,12 +1202,12 @@ void UIAvatarPC::FUN_1418bbd30(int nSlot)
     PC* pPlayer = efd::DynamicCast<PC>(vfunc_24());
     if (!pPlayer)
         return;
-    MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655cf0(nSlot);
+    MS2Ptr<CEquipItem> spEquip = pPlayer->GetEquipItemLayer1(nSlot);
     if (spEquip.get())
-        FUN_1418bbc70((CItem*)spEquip->FUN_1411dc870());
-    MS2Ptr<CEquipItem> spEquip2 = pPlayer->FUN_141655c90(nSlot);
+        FUN_1418bbc70((CItem*)spEquip->GetItemUid());
+    MS2Ptr<CEquipItem> spEquip2 = pPlayer->GetEquipItemLayer0(nSlot);
     if (spEquip2.get())
-        FUN_1418bbc70((CItem*)spEquip2->FUN_1411dc870());
+        FUN_1418bbc70((CItem*)spEquip2->GetItemUid());
 }
 
 // @0x1418bbe40
@@ -1260,7 +1260,7 @@ void UIAvatarPC::FUN_1418bc110(MS2Ptr<CItem> spItem)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
-        pAvatar->FUN_1409f4d80(MS2Ptr<CItem>(spItem));
+        pAvatar->EquipItem(MS2Ptr<CItem>(spItem));
 }
 
 // @0x1418bc210
@@ -1346,7 +1346,7 @@ int UIAvatarPC::FUN_1418bc740()
 {
     PCBase* pPc = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1290(m_nObjectId));
     if (pPc != 0)
-        return ((class PC*)(class PCBase*)(pPc))->FUN_141658e60();
+        return ((class PC*)(class PCBase*)(pPc))->GetGender();
     return 3;
 }
 
@@ -1436,8 +1436,8 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
     }
     else if (nState == 0xe)
     {
-        ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166ce70(1);
-        ((class PC*)(class PCBase*)(pAvatar))->FUN_141653f00();
+        ((class PCBase*)(class PCBase*)(pAvatar))->SetEmotion(1);
+        ((class PC*)(class PCBase*)(pAvatar))->UpdateWeaponAction();
         efd::utf8string kName((const char*)FUN_1409a2360((const char*)pAvatar->vfunc_60(), 0));
         if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(kName))->empty())
         {
@@ -1534,7 +1534,7 @@ void UIAvatarPC::FUN_1418bcf60(int nSkillId, short nLevel)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
-        pAvatar->FUN_1409f43d0(nSkillId, nLevel);
+        pAvatar->PlaySkill(nSkillId, nLevel);
 }
 MS2_REPLACE_METHOD(0x1418BCF60, UIAvatarPC, FUN_1418bcf60, 83, 0xDC9E76BB);
 
@@ -1545,7 +1545,7 @@ void UIAvatarPC::FUN_1418bcfc0(MS2Ptr<CItemData> spData)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
-        pAvatar->FUN_1409f45a0(MS2Ptr<CItemData>(spData));
+        pAvatar->PlayInstrument(MS2Ptr<CItemData>(spData));
 }
 MS2_REPLACE_METHOD(0x1418BCFC0, UIAvatarPC, FUN_1418bcfc0, 133, 0xDDA4CAF5);
 
@@ -1556,7 +1556,7 @@ void UIAvatarPC::FUN_1418bd050(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         return;
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
-        pAvatar->FUN_1409f4750(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
+        pAvatar->ShowRidee(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
 }
 MS2_REPLACE_METHOD(0x1418BD050, UIAvatarPC, FUN_1418bd050, 238, 0x27EC8CD8);
 
@@ -1660,7 +1660,7 @@ void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
     __int64 nNow = GetServerTime();
     CMsTime kZero((__time64_t)0);
     CMsTime kNow(nNow);
-    ((class CEquipment*)(void*)(((void*)((class PC*)(class AvatarPC*)(pAvatar))->FUN_1416561a0())))->SetLayerPeriod(kNow, kZero);
+    ((class CEquipment*)(void*)(((void*)((class PC*)(class AvatarPC*)(pAvatar))->GetEquipment())))->SetLayerPeriod(kNow, kZero);
 }
 
 // @0x1418bd7f0
@@ -1710,12 +1710,12 @@ UIAvatarCube::~UIAvatarCube()
 void UIAvatarCube::vfunc_1(IUIAvatarEventListener* pListener)
 {
     UIAvatarBase::vfunc_1(pListener);
-    AvatarCube* pCube = FUN_1409f2670(m_pItemData);
+    AvatarCube* pCube = CreateAvatarCube(m_pItemData);
     if (pCube)
     {
         if (WorldService::GetInstance()->FUN_141bbb1e0(pCube, 0, 1))
         {
-            m_nObjectId = pCube->FUN_14123c580();
+            m_nObjectId = pCube->GetObjectId();
             pCube->SetListener(this);
         }
     }
@@ -1830,12 +1830,12 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
     UIAvatarBase::vfunc_1(pListener);
     if (m_pItemData != 0)
     {
-        AvatarRidee* pRidee = FUN_1409f92d0(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
+        AvatarRidee* pRidee = CreateAvatarRideeFromItem(MS2Ptr<CItemData>(m_pItemData), MS2Ptr<CItem>(0));
         if (pRidee)
         {
             if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
             {
-                m_nObjectId = pRidee->FUN_14123c580();
+                m_nObjectId = pRidee->GetObjectId();
                 pRidee->SetListener(this);
             }
         }
@@ -1844,12 +1844,12 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
     {
         if (m_spRow != 0)
         {
-            AvatarRidee* pRidee = FUN_1409f9430(m_spRow);
+            AvatarRidee* pRidee = CreateAvatarRideeFromRow(m_spRow);
             if (pRidee)
             {
                 if (WorldService::GetInstance()->FUN_141bbb1e0(pRidee, 0, 1))
                 {
-                    m_nObjectId = pRidee->FUN_14123c580();
+                    m_nObjectId = pRidee->GetObjectId();
                     pRidee->SetListener(this);
                 }
             }
@@ -1983,12 +1983,12 @@ UIAvatarPet::~UIAvatarPet()
 void UIAvatarPet::vfunc_1(IUIAvatarEventListener* pListener)
 {
     UIAvatarBase::vfunc_1(pListener);
-    AvatarPet* pPet = FUN_1409f8510(m_pItemData);
+    AvatarPet* pPet = CreateAvatarPet(m_pItemData);
     if (pPet)
     {
         if (WorldService::GetInstance()->FUN_141bbb1e0(pPet, 0, 1))
         {
-            m_nObjectId = pPet->FUN_14123c580();
+            m_nObjectId = pPet->GetObjectId();
             pPet->SetListener(this);
         }
     }

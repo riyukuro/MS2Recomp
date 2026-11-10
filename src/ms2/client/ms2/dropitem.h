@@ -36,18 +36,18 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);                     // 0x14118d700
 
-    int FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId);                 // build the item and its model
+    int InitDrop(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId);                 // build the item and its model
     int FUN_14118d1c0(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>& kOwners);   // set the owners, init
     int InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, __int64 nOwner);   // add one owner, init
-    void FUN_14118d720(NiAVObject* pRoot);                                      // the "Item_Icon:0" texture of the item
-    void FUN_14118d9a0(int nState);                                         // enter a state
+    void SetIconTexture(NiAVObject* pRoot);                                      // the "Item_Icon:0" texture of the item
+    void SetState(int nState);                                         // enter a state
     void FUN_14118fe60(int nValue);                                         // 0x14118fe60 m_n28c
     void FUN_14118fe80(int nValue);                                         // 0x14118fe80 m_n298
     int IsMeso();                                                    // +0x150 > 0 (a meso drop)
     int FUN_14118fee0();                                                   // 0x14118fee0
     int FUN_14118ff10();                                                    // the item is type 0x55d4a8a
     int FUN_14118ff60();                                                    // the item is type 0x55d4a83
-    int FUN_14118ffb0();                                                    // the item is a valid gem item
+    int IsPetItem();                                                    // the item is a valid gem item
     int IsOwnedByLocalPlayer();                                                    // the local player owns it
     int IsOwner(unsigned __int64 nUid);                               // nUid is an owner
     int FUN_1411900d0();                                                    // owner id and state both set
@@ -57,10 +57,10 @@ public:
     int FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB);    // can pick up within fRange
     int IsPickupAllowedForLocalPlayer();                                                    // the local player may pick it up
     int FUN_141190640(bool bForce);                                         // the pickup setting allows it
-    int FUN_1411906a0();                                                    // the inventory can take the item
+    int CanStackIntoInventory();                                                    // the inventory can take the item
     void SendRequestItemPickup(int nPickerId);                                      // send the pickup packet
     void FUN_141190900(int nPickerId);                                      // try to pick up
-    void FUN_141190b70(int nPickerId);                                      // picked up by an actor
+    void OnPickedUp(int nPickerId);                                      // picked up by an actor
     void FUN_141191030();                                                   // m_nTick = now
     bool HasPickupDelayElapsed();                                                   // 1000 ms since m_nTick
     int GetOwnerObjId();                                                    // m_nOwnerObjId

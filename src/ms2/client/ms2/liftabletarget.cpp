@@ -124,7 +124,7 @@ void CLiftableTarget::FUN_1414483e0()
                 continue;
             if (spData->m_conditions[j]->m_target.Matches((__int64)m_nId) == 0)
                 continue;
-            if (spData->m_conditions[j]->m_code.Matches((unsigned __int64)(unsigned)reinterpret_cast<MyPC*>(pActor)->GetActiveCubeCraft()->FUN_1410ad610()) == 0)
+            if (spData->m_conditions[j]->m_code.Matches((unsigned __int64)(unsigned)reinterpret_cast<MyPC*>(pActor)->GetActiveCubeCraft()->GetItemId()) == 0)
                 continue;
             CreateEffect();
             return;

@@ -79,7 +79,7 @@ CStringW XmlWide(const char* pszUtf8);                                  // utf8 
 class Unk_AnimSvc : public egmAnimation::AnimationService
 {
 public:
-    bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);   // 0x1409a1fc0
+    bool PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);   // 0x1409a1fc0
 };
 
 // The game-side actor (class id 0x6200003) a GameObject casts to; only slots 60 / 136 and FUN_141659790 are used here.
@@ -188,14 +188,14 @@ CAnimationManager::~CAnimationManager()
 {
 }
 
-bool CAnimationManager::FUN_14099dcd0(const efd::utf8string& kName)
+bool CAnimationManager::IsAnimationPlaying(const efd::utf8string& kName)
 {
     if (m_pModelCache == 0)
         return false;
-    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr == 0)
         return false;
-    NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kName);
+    NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kName);
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
         return false;
     NiControllerSequence* pSeq = pMgr->GetActiveSequence(nSeq, true, true);
@@ -206,10 +206,10 @@ bool CAnimationManager::FUN_14099dcd0(const efd::utf8string& kName)
     return false;
 }
 
-CString CAnimationManager::FUN_14099ddb0(const efd::utf8string& kName)
+CString CAnimationManager::ResolveAnimationName(const efd::utf8string& kName)
 {
     if (NiActorManager::INVALID_SEQUENCE_ID ==
-        m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kName))
+        m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kName))
     {
         return CString("");
     }
@@ -221,7 +221,7 @@ CString CAnimationManager::FUN_14099ddb0(const efd::utf8string& kName)
         if (!((efd::utf8string*)&(kPrefix))->empty())
         {
             kResolved = kPrefix + kName;
-            if (m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kResolved) ==
+            if (m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kResolved) ==
                 NiActorManager::INVALID_SEQUENCE_ID)
             {
                 kResolved = kName;
@@ -235,10 +235,10 @@ CString CAnimationManager::FUN_14099ddb0(const efd::utf8string& kName)
     return FUN_1409a2470(kResolved.c_str(), 0);
 }
 
-bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bForce)
+bool CAnimationManager::PlayAnimation(Unk_AnimRef& kName, float fScale, bool bForce)
 {
     if (NiActorManager::INVALID_SEQUENCE_ID ==
-        m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kName))
+        m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kName))
     {
         return false;
     }
@@ -252,7 +252,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
         if (!((efd::utf8string*)&(kPrefix))->empty())
         {
             kResolved = kPrefix + kName;
-            if (m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kResolved) ==
+            if (m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kResolved) ==
                 NiActorManager::INVALID_SEQUENCE_ID)
             {
                 kResolved = kName;
@@ -267,21 +267,21 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_140997070(m_pOwner, strAnim);
     float fHeight = ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->GetHeightFromGround(strAnim);
     m_pOwner->vfunc_43(fHeight);
-    NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kResolved);
+    NiActorManager::SequenceID nSeq = m_pModelCache->GetAnimationIdFromName(m_pOwner->GetEntityID(), kResolved);
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
         return false;
-    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr != 0 && !bForce && pMgr->GetTargetAnimation() == nSeq)
         return false;
-    bool bOk = m_pModelCache->FUN_1409a1fc0(m_pOwner->FUN_14123c460(), kResolved, fScale, bForce);
+    bool bOk = m_pModelCache->PlayAnimation(m_pOwner->GetEntityID(), kResolved, fScale, bForce);
     if (bForce)
     {
-        NiActorManager* pForced = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+        NiActorManager* pForced = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
         if (pForced != 0)
-            pForced->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280());
-        NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(m_pOwner))->FUN_14123c410());
+            pForced->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime());
+        NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(m_pOwner))->GetEntity());
         if (pRoot != 0)
-            pRoot->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+            pRoot->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
     }
     if (pActor != 0)
     {
@@ -292,14 +292,14 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     return bOk;
 }
 
-void CAnimationManager::FUN_14099e640()
+void CAnimationManager::ReplayAnimation()
 {
-    FUN_14099e050(m_78, m_fScale98, false);
+    PlayAnimation(m_78, m_fScale98, false);
 }
 
-void CAnimationManager::FUN_14099e680()
+void CAnimationManager::StopAnimation()
 {
-    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr == 0)
         return;
     pMgr->SetTargetAnimation(NiActorManager::INVALID_SEQUENCE_ID, 1.0f, false);
@@ -307,9 +307,9 @@ void CAnimationManager::FUN_14099e680()
         pMgr->Update(0.0f);
 }
 
-void CAnimationManager::FUN_14099e710(float fOffset)
+void CAnimationManager::SetAnimationOffset(float fOffset)
 {
-    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr != 0)
     {
         NiControllerSequence* pSeq = pMgr->GetActiveSequence(pMgr->GetCurAnimation(), true, true);
@@ -328,9 +328,9 @@ void CAnimationManager::FUN_14099e7d0(void* p)
     ((struct Unk_AnimTable*)(struct Unk_AnimTable*)(&m_table))->FUN_1409975a0((class GameObject*)(p));
 }
 
-void CAnimationManager::FUN_14099e800(void* pList)
+void CAnimationManager::GetAnimationNames(void* pList)
 {
-    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->FUN_14123c460());
+    NiActorManager* pMgr = m_pModelCache->GetActorManager(m_pOwner->GetEntityID());
     if (pMgr == 0)
         return;
     NiKFMTool* pKFM = pMgr->GetKFMTool();
@@ -341,7 +341,7 @@ void CAnimationManager::FUN_14099e800(void* pList)
     pKFM->GetSequenceIDs(pIDs, uiNum);
     for (size_t i = 0; i < uiNum; i++)
     {
-        efd::utf8string kName = m_pModelCache->GetAnimationNameFromId(m_pOwner->FUN_14123c460(), pIDs[i]);
+        efd::utf8string kName = m_pModelCache->GetAnimationNameFromId(m_pOwner->GetEntityID(), pIDs[i]);
         if (kName == efd::utf8string::NullString())
             continue;
         reinterpret_cast<std::vector<CString>*>(pList)->push_back(CString(kName.c_str()));
@@ -350,7 +350,7 @@ void CAnimationManager::FUN_14099e800(void* pList)
         NiFree(pIDs);
 }
 
-int FUN_14099e9c0(const egf::EntityID& kId, CString strName)
+int IsAnimationLooping(const egf::EntityID& kId, CString strName)
 {
     Unk_AnimSvc* pSvc = ((class Unk_AnimSvc*)FUN_1413f9b10());
     NiActorManager* pMgr = FUN_1413f9b70(kId);
@@ -365,7 +365,7 @@ int FUN_14099e9c0(const egf::EntityID& kId, CString strName)
     return pSeqData->GetCycleType() == NiTimeController::LOOP;
 }
 
-float FUN_14099eb30(const egf::EntityID& kId, CString strName)
+float GetAnimationDuration(const egf::EntityID& kId, CString strName)
 {
     Unk_AnimSvc* pSvc = ((class Unk_AnimSvc*)FUN_1413f9b10());
     NiActorManager::SequenceID nSeq = pSvc->GetAnimationIdFromName(kId, (const char*)strName);
@@ -386,7 +386,7 @@ Unk_AnimActor* FUN_14099eef0(GameObject* pObj)
 }
 
 // ---- MS2 AnimationService / NiActorManager modifications ----
-bool Unk_AnimSvc::FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend,
+bool Unk_AnimSvc::PlayAnimation(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend,
     bool bForce)
 {
     ActorEntry* pEntry;

@@ -16,7 +16,7 @@
 // MS2-PIN: ?TypeCast@CashInventorySlot@@UEBA_NIPEAPEBX@Z 0x140b0dbf0 ; hand
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?get@?$MS2Ptr@VCCashInventoryProduct@@@@QEBAPEAVCCashInventoryProduct@@XZ 0x140b05b50 ; unique
-// MS2-PIN: ?FUN_140b05c00@CCashMarketMan@@QEAAAEAV?$CAtlArray@V?$MS2Ptr@VCCashInventoryProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCCashInventoryProduct@@@@@ATL@@@ATL@@XZ 0x140b05c00 ; unique
+// MS2-PIN: ?GetInventoryProducts@CCashMarketMan@@QEAAAEAV?$CAtlArray@V?$MS2Ptr@VCCashInventoryProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCCashInventoryProduct@@@@@ATL@@@ATL@@XZ 0x140b05c00 ; unique
 // MS2-PIN: memmove_s 0x140b05d20 ; unique
 // MS2-PIN: ??$?0VCCashMarketMan@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBQEAVCCashMarketMan@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140b090d0 ; unique
 // MS2-PIN: ??$?0W4Unk_CashResult@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_CashResult@@@Z 0x140b09160 ; unique
@@ -146,8 +146,8 @@ void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // Registry of named bags/slots (GFx bind data).
 
-CashInventoryBag* FUN_140b05ac0(NotifyContext::BindData* p);
-UIMarketBillDialog* FUN_140b09580(int nClass);
+CashInventoryBag* CastToCashInventoryBag(NotifyContext::BindData* p);
+UIMarketBillDialog* FindMarketBillDialog(int nClass);
 
 // fmt message wrappers (same shape as itembreakmanager.cpp's Unk_BreakMessage).
 enum Unk_CashResult : int {};
@@ -209,7 +209,7 @@ static CString s_strStun3 = "stun";
 static Unk_1402a9d70 s_unk1402a9d70_3(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x140b055c0
-void FUN_140b055c0(const CString& strName, int nType)
+void CreateCashInventoryBag(const CString& strName, int nType)
 {
     CashInventoryBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) CashInventoryBag(strName, nType);
     if (pBag)
@@ -222,7 +222,7 @@ void FUN_140b055c0(const CString& strName, int nType)
 // @0x140b05680
 void FUN_140b05680(const CString& strName)
 {
-    CashInventoryBag* pBag = FUN_140b05ac0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    CashInventoryBag* pBag = CastToCashInventoryBag(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
@@ -251,12 +251,12 @@ CString CashInventoryBag::vfunc_15(int nIndex)
 DragSlot* CashInventoryBag::vfunc_16(int nIndex)
 {
     MS2Ptr<CItem> spUnused(0);
-    const ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& aInv = CCashMarketMan::GetInstance()->FUN_140b05c00();
+    const ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& aInv = CCashMarketMan::GetInstance()->GetInventoryProducts();
     if (aInv.GetCount() > (size_t)nIndex)
     {
         if (aInv[nIndex].get() != 0)
         {
-            Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+            Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
             {
                 int nProductId = aInv[nIndex]->m_n1c;
@@ -269,7 +269,7 @@ DragSlot* CashInventoryBag::vfunc_16(int nIndex)
 }
 
 // @0x140b05ac0
-CashInventoryBag* FUN_140b05ac0(NotifyContext::BindData* p)
+CashInventoryBag* CastToCashInventoryBag(NotifyContext::BindData* p)
 {
     CashInventoryBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x6200061, (void**)&pBag))
@@ -305,7 +305,7 @@ void CCashMarketMan::OnCash(CInPacket& packet)
 {
     int nSub = packet.ReadUInt8();
     if (nSub == 0)
-        FUN_140b07120(packet);
+        OnSaleProductList(packet);
     else if (nSub == 1)
         FUN_140b072d0(packet);
     else if (nSub == 2)
@@ -325,7 +325,7 @@ void CCashMarketMan::OnCash(CInPacket& packet)
     else if (nSub == 0xc9)
         FUN_140b06bd0(packet);
     else if (nSub == 0xca)
-        FUN_140b06d70(packet);
+        OnBuyLimitHistoryUpdate(packet);
 }
 
 // @0x140b06180
@@ -417,7 +417,7 @@ void CCashMarketMan::SendCashMode6(int a, int b)
 // @0x140b06600
 int CCashMarketMan::FUN_140b06600(int nId)
 {
-    MS2Ptr<CCashSaleProduct> spSale = FUN_140b06750(nId);
+    MS2Ptr<CCashSaleProduct> spSale = FindSaleProduct(nId);
     return FUN_140b06680(spSale);
 }
 
@@ -435,7 +435,7 @@ int CCashMarketMan::FUN_140b06680(MS2Ptr<CCashSaleProduct> spSale)
 }
 
 // @0x140b06750
-MS2Ptr<CCashSaleProduct> CCashMarketMan::FUN_140b06750(int nId)
+MS2Ptr<CCashSaleProduct> CCashMarketMan::FindSaleProduct(int nId)
 {
     MS2Ptr<CCashSaleProduct> spSale(0);
     m_mapSale.Lookup(nId, spSale);
@@ -443,7 +443,7 @@ MS2Ptr<CCashSaleProduct> CCashMarketMan::FUN_140b06750(int nId)
 }
 
 // @0x140b067d0
-MS2Ptr<CCashInventoryProduct> CCashMarketMan::FUN_140b067d0(int nIndex)
+MS2Ptr<CCashInventoryProduct> CCashMarketMan::GetInventoryProduct(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_aInv.GetCount())
         return MS2Ptr<CCashInventoryProduct>(0);
@@ -451,7 +451,7 @@ MS2Ptr<CCashInventoryProduct> CCashMarketMan::FUN_140b067d0(int nIndex)
 }
 
 // @0x140b06870
-MS2Ptr<CCashInventoryProduct> CCashMarketMan::FUN_140b06870(int a, int b)
+MS2Ptr<CCashInventoryProduct> CCashMarketMan::FindInventoryProduct(int a, int b)
 {
     for (size_t i = 0; i < m_aInv.GetCount(); ++i)
     {
@@ -545,7 +545,7 @@ void CCashMarketMan::FUN_140b06bd0(CInPacket& packet)
 }
 
 // @0x140b06d70
-void CCashMarketMan::FUN_140b06d70(CInPacket& packet)
+void CCashMarketMan::OnBuyLimitHistoryUpdate(CInPacket& packet)
 {
     CDBMarketBuyLimitHistory row;
     row.Read(packet);
@@ -567,7 +567,7 @@ void CCashMarketMan::FUN_140b06d70(CInPacket& packet)
 }
 
 // @0x140b06ed0
-int CCashMarketMan::FUN_140b06ed0(int nProductId)
+int CCashMarketMan::GetBuyLimitCount(int nProductId)
 {
     MS2Ptr<CMarketBuyLimitHistory> sp(0);
     int nCount = 0;
@@ -584,7 +584,7 @@ bool CCashMarketMan::FUN_140b06f90(MS2Ptr<Unk_CashLimitRowA> sp)
 {
     if (sp == 0 || reinterpret_cast<CMeratMarketProduct*>(sp.operator->())->HasLimit() == 0)
         return false;
-    return FUN_140b06ed0(reinterpret_cast<CMeratMarketProduct*>(sp.operator->())->GetItemId()) >= sp->m_nLimit;
+    return GetBuyLimitCount(reinterpret_cast<CMeratMarketProduct*>(sp.operator->())->GetItemId()) >= sp->m_nLimit;
 }
 
 // @0x140b07060
@@ -592,11 +592,11 @@ bool CCashMarketMan::FUN_140b07060(MS2Ptr<Unk_CashLimitRowB> sp)
 {
     if (sp == 0 || reinterpret_cast<CMeratMarketPremiumProduct*>(sp.operator->())->HasLimit() == 0)
         return false;
-    return FUN_140b06ed0(sp->m_nProductId) >= sp->m_nLimit;
+    return GetBuyLimitCount(sp->m_nProductId) >= sp->m_nLimit;
 }
 
 // @0x140b07120
-void CCashMarketMan::FUN_140b07120(CInPacket& packet)
+void CCashMarketMan::OnSaleProductList(CInPacket& packet)
 {
     m_mapSale.RemoveAll();
     m_aSale.RemoveAll();
@@ -610,7 +610,7 @@ void CCashMarketMan::FUN_140b07120(CInPacket& packet)
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
     {
-        Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+        Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
         if (ref.FUN_140b051c0() != 0)
             ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035050();
     }
@@ -625,7 +625,7 @@ void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
     {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
-            Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+            Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
                 ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141034e00(nArg);
         }
@@ -665,7 +665,7 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
             {
-                Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+                Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
                 if (ref.FUN_140b051c0() != 0)
                 {
                     if (((class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_1410356a0() == 0)
@@ -864,7 +864,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         {
-            Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+            Unk_CashShopRef ref(FindCashShopDialog(0x4ebc));
             if (ref.FUN_140b051c0() != 0)
                 ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->FUN_141035080(nPage);
         }
@@ -912,7 +912,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
                 FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
             FUN_141276180(s_strCashBuy, "");
         }
-        MS2Ptr<CCashInventoryProduct> spProd = GetInstance()->FUN_140b06870(nA, nB);
+        MS2Ptr<CCashInventoryProduct> spProd = GetInstance()->FindInventoryProduct(nA, nB);
         if (spProd.get() != 0)
         {
             int nItemId = spProd->m_data.m_n28;
@@ -963,7 +963,7 @@ void CCashMarketMan::FUN_140b08f50(CInPacket& packet)
 // @0x140b08fe0
 bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
 {
-    UIMarketBillDialog* pBill = FUN_140b09580(0x4f17);
+    UIMarketBillDialog* pBill = FindMarketBillDialog(0x4f17);
     if (pBill == 0)
         return true;
     MS2Ptr<TMarketBillDataParam> ref = pBill->GetParam();
@@ -975,7 +975,7 @@ bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
 }
 
 // @0x140b09580
-UIMarketBillDialog* FUN_140b09580(int nClass)
+UIMarketBillDialog* FindMarketBillDialog(int nClass)
 {
     if (reinterpret_cast<Unk_CashUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -1051,7 +1051,7 @@ int CashInventorySlot::vfunc_8(void* p)
 // @0x140b0d290
 MS2Ptr<CItem> CashInventorySlot::vfunc_25()
 {
-    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
+    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->GetInventoryProduct(GetIndex());
     if (!spProd)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spItem(new CItem);
@@ -1065,11 +1065,11 @@ void CashInventorySlot::FUN_140b0d440()
 {
     if (m_spItem.get() != 0)
     {
-        MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
+        MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->GetInventoryProduct(GetIndex());
         if (!spProd)
             return;
         int nMsg = spProd->m_data.m_n50 != 0 ? 0xa57 : 0xa56;
-        UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
+        UICashShopDialog* pShop = FindCashShopDialog(0x4ebc);
         CStringW strPickup = StringFormat(L"pickup:{0},{1}", spProd->m_n1c, reinterpret_cast<const unsigned&>(spProd->m_n18));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1d, nMsg, pShop != 0 ? (void*)((char*)pShop + 0x18) : 0, CStringW(strPickup));
         if (spBox.get() != 0)

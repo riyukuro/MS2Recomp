@@ -35,7 +35,7 @@ public:
     void FUN_140fdc030();
 };
 int FUN_140fe2d20(UIDialog* pDialog);
-void* FUN_140967100();
+void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -108,7 +108,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
     {
         TSingleton<WeddingManager>::GetInstance()->ShowError(n);
         m_pDialog->vfunc_67();
-        ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+        ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     }
     else
     {
@@ -120,7 +120,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
 void UIWeddingHallReservationPageChange::vfunc_6()
 {
     m_pDialog->vfunc_67();
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }
 
 // @0x140fe2b70

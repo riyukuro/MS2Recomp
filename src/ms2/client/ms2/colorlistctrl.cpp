@@ -166,9 +166,9 @@ void CColorListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
             else
                 pDraw->clrTextBk = m_clrEven;
         }
-        nRowIdx = FUN_14109cf70(nRow, 0, -1);
-        nColIdx = FUN_14109cf70(nColumn, 1, -1);
-        nCellIdx = FUN_14109cf70(nRow, 2, nColumn);
+        nRowIdx = FindEntryIndex(nRow, 0, -1);
+        nColIdx = FindEntryIndex(nColumn, 1, -1);
+        nCellIdx = FindEntryIndex(nRow, 2, nColumn);
         if (nRowIdx == -1 && nColIdx == -1 && nCellIdx == -1)
         {
             if (m_bStripes == 0 && m_bRowShade == 0)
@@ -197,7 +197,7 @@ void CColorListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 }
 
 // @0x14109cf70
-int CColorListCtrl::FUN_14109cf70(int nId, int nKind, int nSub)
+int CColorListCtrl::FindEntryIndex(int nId, int nKind, int nSub)
 {
     if (nKind == 0)
     {
@@ -233,7 +233,7 @@ COLORREF CColorListCtrl::FUN_14109d0f0(COLORREF clr)
 }
 
 // @0x14109d1a0
-void CColorListCtrl::FUN_14109d1a0(COLORREF clr, int nRow, int bRedraw)
+void CColorListCtrl::AddRowColor(COLORREF clr, int nRow, int bRedraw)
 {
     Unk_ClItem item;
     item.m_clr = clr;
@@ -244,7 +244,7 @@ void CColorListCtrl::FUN_14109d1a0(COLORREF clr, int nRow, int bRedraw)
 }
 
 // @0x14109d230
-void CColorListCtrl::FUN_14109d230(COLORREF clr, int nColumn, int bRedraw)
+void CColorListCtrl::AddColumnColor(COLORREF clr, int nColumn, int bRedraw)
 {
     Unk_ClItem item;
     item.m_clr = clr;
@@ -255,7 +255,7 @@ void CColorListCtrl::FUN_14109d230(COLORREF clr, int nColumn, int bRedraw)
 }
 
 // @0x14109d2c0
-void CColorListCtrl::FUN_14109d2c0(COLORREF clr, int nRow, int nColumn, int bRedraw)
+void CColorListCtrl::AddCellColor(COLORREF clr, int nRow, int nColumn, int bRedraw)
 {
     Unk_ClItem item;
     item.m_clr = clr;
@@ -267,27 +267,27 @@ void CColorListCtrl::FUN_14109d2c0(COLORREF clr, int nRow, int nColumn, int bRed
 }
 
 // @0x14109d350
-void CColorListCtrl::FUN_14109d350(int nRow)
+void CColorListCtrl::RemoveRowColor(int nRow)
 {
-    int nIdx = FUN_14109cf70(nRow, 0, -1);
+    int nIdx = FindEntryIndex(nRow, 0, -1);
     if (nIdx != -1)
         m_rows.erase(m_rows.begin() + nIdx);
     RedrawWindow(0, 0, 0x505);
 }
 
 // @0x14109d400
-void CColorListCtrl::FUN_14109d400(int nColumn)
+void CColorListCtrl::RemoveColumnColor(int nColumn)
 {
-    int nIdx = FUN_14109cf70(nColumn, 1, -1);
+    int nIdx = FindEntryIndex(nColumn, 1, -1);
     if (nIdx != -1)
         m_columns.erase(m_columns.begin() + nIdx);
     RedrawWindow(0, 0, 0x505);
 }
 
 // @0x14109d4b0
-void CColorListCtrl::FUN_14109d4b0(int nRow, int nColumn)
+void CColorListCtrl::RemoveCellColor(int nRow, int nColumn)
 {
-    int nIdx = FUN_14109cf70(nRow, 2, nColumn);
+    int nIdx = FindEntryIndex(nRow, 2, nColumn);
     if (nIdx != -1)
         m_cells.erase(m_cells.begin() + nIdx);
     RedrawWindow(0, 0, 0x505);
@@ -303,14 +303,14 @@ void CColorListCtrl::FUN_14109d560(bool bEnable, COLORREF clrB, COLORREF clrA)
 }
 
 // @0x14109d5d0
-void CColorListCtrl::FUN_14109d5d0(bool bEnable)
+void CColorListCtrl::SetContrastText(bool bEnable)
 {
     m_bContrastText = bEnable;
     RedrawWindow(0, 0, 0x505);
 }
 
 // @0x14109d610
-void CColorListCtrl::FUN_14109d610(bool bEnable, COLORREF clrOdd, COLORREF clrEven)
+void CColorListCtrl::SetRowShade(bool bEnable, COLORREF clrOdd, COLORREF clrEven)
 {
     m_clrOdd = clrOdd;
     m_clrEven = clrEven;
@@ -331,7 +331,7 @@ void CColorListCtrl::FUN_14109d680()
 }
 
 // @0x14109d710
-void CColorListCtrl::FUN_14109d710()
+void CColorListCtrl::Redraw()
 {
     RedrawWindow(0, 0, 0x505);
 }

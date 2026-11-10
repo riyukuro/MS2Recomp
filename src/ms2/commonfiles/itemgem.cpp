@@ -314,7 +314,7 @@ int CGemTransparency::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
         {
             spNew->SetItemUid(FUN_14028d0e0());
             spNew->FUN_140526c10(FUN_1405a46d0(nSlot));
-            ((class CItem*)(class CItem*)(spNew.operator->()))->SetObjectId(pPC->FUN_14123c580());
+            ((class CItem*)(class CItem*)(spNew.operator->()))->SetObjectId(pPC->GetObjectId());
             {
                 MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spNew.operator->()))->FUN_140527840()));
                 if (spData.get() != 0)
@@ -338,7 +338,7 @@ int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     for (POSITION pos = s_mapGemSlots.GetStartPosition(); pos != 0; s_mapGemSlots.GetNext(pos))
     {
         Unk_GemSlot nSlot = s_mapGemSlots.GetKeyAt(pos);
-        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PC*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PC*)(pPC))->GetEquipment())->GetItemAt(FUN_1405a46d0(nSlot), 3);
         if (spEquip != 0)
             pPC->vfunc_128(spEquip->GetItem().get(), 0);
     }
@@ -799,13 +799,13 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     if (spData == 0)
         return 0;
     Unk_EffectQuery query;
-    query.m_strName = spData->GetEffectByGender(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
+    query.m_strName = spData->GetEffectByGender(((class PC*)(class PCBase*)(pPC))->GetGender());
     query.m_nObject = 0;
-    query.SetActor(pPC->FUN_14123c580());
+    query.SetActor(pPC->GetObjectId());
     unsigned int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&query));
     if (nHandle > 0)
         m_listEffects.AddTail(nHandle);
-    ((class PC*)(class PC*)(pPC))->FUN_1416636e0(spItem, m_nDataId);
+    ((class PC*)(class PC*)(pPC))->CreateCoupleEffect(spItem, m_nDataId);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A5E20, CGemCharEffect, vfunc_6, 597, 0x32DB2D2F);
@@ -848,7 +848,7 @@ int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     MS2Ptr<CGemEffectData> spData = FUN_1405a68d0();
     if (spData == 0)
         return 0;
-    if (!((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->FUN_14165f460()))->FUN_141271090(spItem, spData->m_strEffect))
+    if (!((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->GetGemEquip()))->FUN_141271090(spItem, spData->m_strEffect))
         return 0;
     return 1;
 }
@@ -859,7 +859,7 @@ int CGemEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    ((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->FUN_14165f460()))->FUN_1412711e0(spItem);
+    ((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->GetGemEquip()))->FUN_1412711e0(spItem);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A67E0, CGemEffect, vfunc_7, 224, 0x711888E0);

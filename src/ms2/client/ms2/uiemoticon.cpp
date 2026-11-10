@@ -51,7 +51,7 @@ class Unk_EmoPlayer : public CNpc                                               
 };
 class CFameTable { public: int IsOfficerNpc(int nKind); CString GetSymbolByOfficerNpc(int nKind); };   // famegradedata.h's fame table
 class Unk_EmoNpcTable* FUN_140764010();
-CString FUN_141082090(int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
+CString SelectStringByQuestId(int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_EmoUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -145,7 +145,7 @@ CString FUN_14192ed20(unsigned int nQuestId, int nKind)
     }
     if (strName.GetLength() != 0)
     {
-        strName += FUN_141082090(nQuestId, "_epic", "", "_repeat", "_event");
+        strName += SelectStringByQuestId(nQuestId, "_epic", "", "_repeat", "_event");
         return strName;
     }
     return CString("");

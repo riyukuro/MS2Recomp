@@ -99,7 +99,7 @@ void UIPortalEmoticon::FUN_140f9bba0()
 // @0x140f9bbd0
 void UIPortalEmoticon::FUN_140f9bbd0()
 {
-    FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
     m_bPending = 0;
     m_bShown = 0;
 }

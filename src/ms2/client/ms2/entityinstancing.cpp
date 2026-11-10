@@ -197,7 +197,7 @@ namespace egf { class Entity; }
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 NiNode * FUN_1413fa030(egf::Entity *);  // C3: the definition's signature
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 ecr::RenderService* FUN_1413f9890();
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -217,7 +217,7 @@ void EntityInstancing::vfunc_1() { hidden.clear(); MeshInstancing::vfunc_1(); }
 MS2_REPLACE_METHOD(0x1411c5840, EntityInstancing, vfunc_1, 43, 0xF6260A95);
 // @0x1411c5880
 bool EntityInstancing::FUN_1411c5880(egf::Entity* entity, unsigned count) {
-    FUN_14147c010(entity, count, 0, NULL, true);
+    Init(entity, count, 0, NULL, true);
     return ready;
 }
 MS2_REPLACE_METHOD(0x1411c5880, EntityInstancing, FUN_1411c5880, 70, 0x555F54F8);
@@ -227,7 +227,7 @@ int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
     NiAVObject* original = FUN_141b6efc0(entity);
     if (original != NULL) {
         bool instanced = true;
-        FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0x2a7fd9f4, instanced);
+        SetCachedBoolProperty((class Unk_CachedEntity*)(entity), 0x2a7fd9f4, instanced);
         NiCloningProcess process;
         process.m_eCopyType = NiObjectNET::COPY_EXACT;
         process.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
@@ -270,13 +270,13 @@ int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
 }
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c5e30
-void EntityInstancing::FUN_1411c5e30(egf::Entity* entity, bool visible) {
+void EntityInstancing::SetEntityVisible(egf::Entity* entity, bool visible) {
     if (entity != NULL) {
         auto it = std::find(hidden.begin(), hidden.end(), entity->GetEntityID());
         if (visible) {
-            if (it != hidden.end()) FUN_1411c6390(entity, true);
+            if (it != hidden.end()) ShowEntity(entity, true);
         } else {
-            if (it == hidden.end()) FUN_1411c6030(entity);
+            if (it == hidden.end()) HideEntity(entity);
         }
     }
 }
@@ -296,7 +296,7 @@ void EntityInstancing::FUN_1411c5f40(egf::Entity* entity) {
 MS2_REPLACE_METHOD(0x1411c5f40, EntityInstancing, FUN_1411c5f40, 228, 0x75DF035D);
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c6030
-void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
+void EntityInstancing::HideEntity(egf::Entity* entity) {
     if (entity != NULL && !entries.empty()) {
         egf::EntityID id(entity->GetEntityID());
         auto it = entries.find(id);
@@ -328,7 +328,7 @@ void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
     }
 }
 // @0x1411c6390
-int EntityInstancing::FUN_1411c6390(egf::Entity* entity, bool eraseHidden) {
+int EntityInstancing::ShowEntity(egf::Entity* entity, bool eraseHidden) {
     if (entity != NULL) {
         egf::EntityID id(entity->GetEntityID());
         auto it = entries.find(id);
@@ -365,14 +365,14 @@ int EntityInstancing::FUN_1411c6390(egf::Entity* entity, bool eraseHidden) {
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1411c6390, EntityInstancing, FUN_1411c6390, 831, 0x7AAA780E);
+MS2_REPLACE_METHOD(0x1411c6390, EntityInstancing, ShowEntity, 831, 0x7AAA780E);
 // @0x1411c66e0
 void EntityInstancing::FUN_1411c66e0() {
     for (auto it = hidden.begin(); it != hidden.end(); ++it) {
         auto entry = entries.find(*it);
         if (entry != entries.end()) {
             Unk_MeshInstanceEntry& kEntry = entry->second;
-            if (kEntry.entity != NULL) FUN_1411c6390(kEntry.entity, false);
+            if (kEntry.entity != NULL) ShowEntity(kEntry.entity, false);
         }
     }
     hidden.clear();
@@ -401,18 +401,18 @@ void EntityInstancing::FUN_1411c68d0() {
             NiAVObject* original = FUN_1413fa030(entity);
             if (original != NULL) { entry.clone->SetLocalTransform(original->GetLocalTransform()); dirty = true; }
             bool hidden = false;
-            FUN_14098c6e0((class Unk_CachedEntity*)(entity), 0xa0b6b179, hidden);
+            SetCachedBoolProperty((class Unk_CachedEntity*)(entity), 0xa0b6b179, hidden);
             if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&(it->first))) renderer->RemoveRenderedEntity(entity, it->second.original);
         }
     }
 }
 MS2_REPLACE_METHOD(0x1411c68d0, EntityInstancing, FUN_1411c68d0, 376, 0xCD9A901E);
 // @0x1411c6a50
-bool EntityInstancing::FUN_1411c6a50(egf::EntityID id) {
+bool EntityInstancing::IsHidden(egf::EntityID id) {
     std::list<egf::EntityID>::iterator it = std::find(hidden.begin(), hidden.end(), id);
     return it != hidden.end();
 }
-MS2_REPLACE_METHOD(0x1411c6a50, EntityInstancing, FUN_1411c6a50, 133, 0x9E83D04C);
+MS2_REPLACE_METHOD(0x1411c6a50, EntityInstancing, IsHidden, 133, 0x9E83D04C);
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c6ae0
 void EntityInstancing::FUN_1411c6ae0(unsigned count) {

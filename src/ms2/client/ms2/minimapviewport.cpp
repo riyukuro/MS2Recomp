@@ -56,13 +56,13 @@ unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
             NiPoint3 kAxisZ(0.0f, 0.0f, 0.0f);
             NiPoint3 kAxisX(0.0f, 0.0f, 0.0f);
             Unk_MvRot3 kRot = reinterpret_cast<const Unk_MvRot3&>(spMinimap->m_vecCamRot);
-            FUN_141486a20(kRot, kAxisX, kAxisY, kAxisZ);
-            FUN_141485a50(spMinimap->m_vecCamPos, kAxisX, kAxisY, kAxisZ);
+            GetCameraAxes(kRot, kAxisX, kAxisY, kAxisZ);
+            BuildMatrix(spMinimap->m_vecCamPos, kAxisX, kAxisY, kAxisZ);
 
-            if (FUN_141486d90(spMinimap->m_rcImage) <= 0.0f)
+            if (GetRectWidth(spMinimap->m_rcImage) <= 0.0f)
                 return 0;
             if (nScale > 0)
-                m_fScale = (float)nScale / FUN_141486d90(spMinimap->m_rcImage);
+                m_fScale = (float)nScale / GetRectWidth(spMinimap->m_rcImage);
                 return 1;
         }
     }
@@ -70,7 +70,7 @@ unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
 }
 
 // @0x141485a50
-void MinimapViewport::FUN_141485a50(const NiPoint3& kCamPos, const NiPoint3& kAxisX, const NiPoint3& kAxisY,
+void MinimapViewport::BuildMatrix(const NiPoint3& kCamPos, const NiPoint3& kAxisX, const NiPoint3& kAxisY,
                                     const NiPoint3& kAxisZ)
 {
     float fDotX = -kAxisX.Dot(kCamPos);
@@ -142,7 +142,7 @@ void MinimapViewport::ResetScale()
 }
 
 // @0x141486410
-bool MinimapViewport::FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut)
+bool MinimapViewport::WorldToMinimap(const NiPoint3& kPos, NiPoint3& kOut)
 {
     return FUN_141486450(kPos, kOut, m_fScale);
 }
@@ -151,18 +151,18 @@ bool MinimapViewport::FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut)
 bool MinimapViewport::FUN_141486450(const NiPoint3& kPos, NiPoint3& kOut, float fScale)
 {
     NiPoint3 kPt;
-    if (FUN_141486550(kPos, kPt.x, *(&kPt.x + 1), *(&kPt.x + 2)))
+    if (ProjectPoint(kPos, kPt.x, *(&kPt.x + 1), *(&kPt.x + 2)))
     {
         kOut.z = kPt.z;
-        kOut.x = (kPt.x * FUN_141486d90(m_rcScreen) - m_rcImage.l) * fScale;
-        kOut.y = ((1.0f - kPt.y) * FUN_141486d30(m_rcScreen) - m_rcImage.t) * fScale;
+        kOut.x = (kPt.x * GetRectWidth(m_rcScreen) - m_rcImage.l) * fScale;
+        kOut.y = ((1.0f - kPt.y) * GetRectHeight(m_rcScreen) - m_rcImage.t) * fScale;
         return true;
     }
     return false;
 }
 
 // @0x141486550
-bool MinimapViewport::FUN_141486550(const NiPoint3& kPos, float& fX, float& fY, float& fZ)
+bool MinimapViewport::ProjectPoint(const NiPoint3& kPos, float& fX, float& fY, float& fZ)
 {
     float fEps = efd::Max<float>(1e-05f, 0.0f);
     Unk_Rect4 kRect(0.0f, 1.0f, 1.0f, 0.0f);
@@ -194,7 +194,7 @@ bool MinimapViewport::FUN_141486550(const NiPoint3& kPos, float& fX, float& fY, 
 }
 
 // @0x141486a20
-void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3& kAxisY, NiPoint3& kAxisZ)
+void MinimapViewport::GetCameraAxes(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3& kAxisY, NiPoint3& kAxisZ)
 {
     if (FUN_140a38cd0(kRot.z) < 1e-05f)
     {
@@ -223,13 +223,13 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3&
 }
 
 // @0x141486d30
-float FUN_141486d30(const Unk_Rect4& rc)
+float GetRectHeight(const Unk_Rect4& rc)
 {
     return rc.t > rc.b ? (rc.t - rc.b) : (rc.b - rc.t);
 }
 
 // @0x141486d90
-float FUN_141486d90(const Unk_Rect4& rc)
+float GetRectWidth(const Unk_Rect4& rc)
 {
     return rc.r > rc.l ? (rc.r - rc.l) : (rc.l - rc.r);
 }

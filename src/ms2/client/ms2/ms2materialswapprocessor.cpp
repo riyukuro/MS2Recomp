@@ -2,9 +2,9 @@
 // MS2-UNIT: ?\ms2materialswapprocessor.cpp
 // MS2-RANGE: 0x1414cf940-0x1414d2460 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?FUN_1414cf940@MaterialSwapper@@QEBA_NXZ 0x1414cf940 ; unique
+// MS2-PIN: ?IsEnabled@MaterialSwapper@@QEBA_NXZ 0x1414cf940 ; unique
 // MS2-PIN: ?FUN_1414cf960@MaterialSwapper@@QEBAP6AHPEAVNiRenderObject@@@ZXZ 0x1414cf960 ; unique
-// MS2-PIN: ?FUN_1414cf980@MaterialSwapper@@QEAAPEAVNiMaterial@@XZ 0x1414cf980 ; unique
+// MS2-PIN: ?GetMaterial@MaterialSwapper@@QEAAPEAVNiMaterial@@XZ 0x1414cf980 ; unique
 // MS2-PIN: ??0?$SmartPointer@VMaterialSwapper@@@efd@@QEAA@PEAVMaterialSwapper@@@Z 0x1414d11f0
 // MS2-PINS-END tplpin
 #include "ms2/placeholder/ms2stdafx.h"
@@ -86,7 +86,7 @@ void MS2MaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray* pkInpu
         MS2RenderListProcessor::PreRenderProcessList(&kList, kOutput, pvExtraData);
     else
         NiShaderSortProcessor::PreRenderProcessList(&kList, kOutput, pvExtraData);
-    FUN_1414cfe70(kSaved);
+    RestoreMaterials(kSaved);
 }
 
 MS2_REPLACE_METHOD(0x1414CFC00, MS2MaterialSwapProcessor, PreRenderProcessList, 218, 0x484FF650);
@@ -102,12 +102,12 @@ void MS2MaterialSwapProcessor::FUN_1414cfce0(const NiVisibleArray* pkInput, NiVi
             if (!FUN_141568c90(pObj)) {
                 for (unsigned j = 0; j < nSwappers; ++j) {
                     NiPointer<MaterialSwapper>& sp = m_swappers[j];
-                    if (!sp->FUN_1414cf940())
+                    if (!sp->IsEnabled())
                         continue;
                     if (sp->FUN_1414cf960() == 0 || sp->FUN_1414cf960()(pObj) != 0) {
                         const NiMaterial* pOriginal = pObj->GetActiveMaterial();
                         kSaved.SetAt(pObj, pOriginal);
-                        pObj->ApplyAndSetActiveMaterial(sp->FUN_1414cf980(), 0xffffffff);
+                        pObj->ApplyAndSetActiveMaterial(sp->GetMaterial(), 0xffffffff);
                         kList.Add(*pObj);
                         break;
                     }
@@ -118,7 +118,7 @@ void MS2MaterialSwapProcessor::FUN_1414cfce0(const NiVisibleArray* pkInput, NiVi
 }
 
 // @0x1414cfe70
-void MS2MaterialSwapProcessor::FUN_1414cfe70(MaterialSwapSavedMap& kSaved)
+void MS2MaterialSwapProcessor::RestoreMaterials(MaterialSwapSavedMap& kSaved)
 {
     if (m_swappers.size() > 0) {
         NiTMapIterator pos = kSaved.GetFirstPos();
@@ -192,7 +192,7 @@ int FUN_1414d00b0(NiRenderObject* pObj)
 }
 
 // @0x1414d0120
-int FUN_1414d0120(NiRenderObject* pObj)
+int HasICMEDExtraData(NiRenderObject* pObj)
 {
     NiExtraData* pData;
     {

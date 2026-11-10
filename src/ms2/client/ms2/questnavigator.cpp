@@ -86,11 +86,11 @@ class Unk_QnUIMgr { public:  };
 // engine helpers (non-inlined in the exe)
 Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
 void FUN_140b86230(const efd::Point3& kTarget, NiMatrix3& kRot);   // C3: the definer's signature (0x140b86230)
-float FUN_140966f00(Vector3 a, Vector3 b);
+float GetDistance(Vector3 a, Vector3 b);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)      // the zero point
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)    // the up axis
 
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // ---- dynamic initializers (.text$di) ----
 
@@ -266,7 +266,7 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
     if (m_10 == 0)
     {
         CString strPath("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif");
-        m_10 = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)((NiAVObject*)(((class CNifLoadingService*)FUN_140a0afd0())->Load(strPath, false, 5, 0, 0))));
+        m_10 = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)((NiAVObject*)(((class CNifLoadingService*)GetNifLoadingService())->Load(strPath, false, 5, 0, 0))));
         if ((NiNode*)m_10 != 0)
         {
             NiNode* pScene = ((class CEffectService*)(void*)(((void*)TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
@@ -367,13 +367,13 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
             for (size_t i = 0; i < aPortals.GetCount(); i++)
             {
                 MS2Ptr<CPortal> spPortal = aPortals[i];
-                if (!spPortal->FUN_14169d160())
+                if (!spPortal->IsShown())
                     continue;
                 unsigned nPortalMap = spPortal->FUN_14169d280();
                 if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(aPath), reinterpret_cast<const int&>(nPortalMap)) != -1)
                 {
                     pResult->m_1c = 4;
-                    reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->FUN_14169d2f0();
+                    reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->GetPosition();
                     nFailed = 0;
                     bFound = 1;
                     break;
@@ -387,10 +387,10 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                     MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FindPortalByDestMap(nNextMap);
                     if (spNext.get() ? true : false)
                     {
-                        if (spNext->FUN_14169d160() == 1)
+                        if (spNext->IsShown() == 1)
                         {
                             pResult->m_1c = 4;
-                            reinterpret_cast<Vector3&>(pResult->m_20) = spNext->FUN_14169d2f0();
+                            reinterpret_cast<Vector3&>(pResult->m_20) = spNext->GetPosition();
                             nFailed = 0;
                         }
                     }
@@ -471,9 +471,9 @@ bool CQuestNavigator::FUN_140c9af60()
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
-    if (pPC->FUN_1416764d0() != 0)
+    if (pPC->IsRiding() != 0)
     {
-        MS2SvrPtr<CRideeData> ride = FUN_1407844b0(pPC->FUN_141676410());
+        MS2SvrPtr<CRideeData> ride = FUN_1407844b0(pPC->GetRideeId());
         if (!ride)
             return false;
         return ride->FUN_140784970()->m_nUseRidingNavi != 0;
@@ -501,7 +501,7 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;
-    int nDist = (int)FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())), pos);
+    int nDist = (int)GetDistance(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())), pos);
     if (nDist > 100000)
     {
         int nKm = nDist / 100000;

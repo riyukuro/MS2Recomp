@@ -77,7 +77,7 @@ class MyPC   // C3: member view (the real header pulls in the PC tree)
 {
 public:
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
-    int FUN_14152e970(int nId);   MS2Ptr<CStatPointManager> FUN_140c25130();   // free skill points of nId; copy of the stat point manager handle
+    int GetRemainingSkillPoints(int nId);   MS2Ptr<CStatPointManager> FUN_140c25130();   // free skill points of nId; copy of the stat point manager handle
 };
 
 class CItem;
@@ -99,7 +99,7 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was NotifySystem*
 class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 
 class Unk_ItemEventSystem { public: void FUN_1419cae20(UIItemEventListener* pListener); void FUN_1419caeb0(UIItemEventListener* pListener); };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 class WorldService   // C3: member view
 {
@@ -237,10 +237,10 @@ class JobSystemCli;
 class PC   // C3: member view
 {
 public:
-    JobSystemCli* FUN_1416546d0();
-    int FUN_141654700();
-    int FUN_141654730();                                    // job code
-    struct Unk_PCEquipSet* FUN_1416561a0();
+    JobSystemCli* GetJobSystem();
+    int GetJobGroupId();
+    int GetSubJob();                                    // job code
+    struct Unk_PCEquipSet* GetEquipment();
 };
 class JobTable   // C3: member view
 {
@@ -439,7 +439,7 @@ void UIHighlightGameMenu::vfunc_67()
 void UIHighlightGameMenu::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140c22f50();
 }
 
@@ -461,7 +461,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp(szMethod, "enchantscroll") == 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nScrollItem);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nScrollItem);
         if (spItem.get() != 0)
         {
             UseItem(spItem, 0);
@@ -536,7 +536,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 void UIHighlightGameMenu::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x140c22d00
@@ -629,7 +629,7 @@ int UIHighlightGameMenu::FUN_140c231b0()
     if (pPc == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > bag;
-    g_143ab2a90.FUN_140a60880(0, bag);
+    g_143ab2a90.GetItemsInCategory(0, bag);
     CMsTime limit(GetServerTime());
     AddMinutes(limit, 0xfffffff6);
     for (unsigned __int64 i = 0; i < bag.GetCount(); ++i)
@@ -637,12 +637,12 @@ int UIHighlightGameMenu::FUN_140c231b0()
         MS2Ptr<CItem> item = bag[i];
         if (item->GetCreationTime() < limit.Get())
             continue;
-        if (g_143ab2a90.FUN_140a65770(item.get()) != 0)
+        if (g_143ab2a90.GetItemUseError(item.get()) != 0)
             continue;
         MS2Ptr<CItemData> rec((CItemData*)item->FUN_140527840());
         if (!rec)
             continue;
-        if (rec->limit.IsJobRecommended(((PC*)pPc)->FUN_141654700()) == 0)
+        if (rec->limit.IsJobRecommended(((PC*)pPc)->GetJobGroupId()) == 0)
             continue;
         MS2Ptr<CItem> worn = ((MyPC*)pPc)->FUN_14152e2f0(item);
         if (!worn)
@@ -659,15 +659,15 @@ int UIHighlightGameMenu::FUN_140c234d0()
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    int nMax = TSingleton<JobTable>::GetInstance()->GetJobRank(((PC*)pPc)->FUN_141654730());
+    int nMax = TSingleton<JobTable>::GetInstance()->GetJobRank(((PC*)pPc)->GetSubJob());
     for (int i = 1; i <= nMax; i++)
     {
-        if ((unsigned)((MyPC*)pPc)->FUN_14152e970(i) <= 0)
+        if ((unsigned)((MyPC*)pPc)->GetRemainingSkillPoints(i) <= 0)
             continue;
         if (i == 1)
         {
             unsigned nNeed = ((CLua*)FUN_1401c0db0())->CalcAvailableSkillPoint(pPc->vfunc_78());
-            unsigned nUsed = ((JobSystem*)((PC*)pPc)->FUN_1416546d0())->GetUsedPoint(i);
+            unsigned nUsed = ((JobSystem*)((PC*)pPc)->GetJobSystem())->GetUsedPoint(i);
             if (nUsed >= nNeed)
                 continue;
         }
@@ -741,9 +741,9 @@ int UIHighlightGameMenu::FUN_140c237a0()
     if (ench.IsNull())
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    g_143ab2a90.FUN_140a60880(0, items);
+    g_143ab2a90.GetItemsInCategory(0, items);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
-    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 0);
+    ((CEquipment*)((PC*)pPc)->GetEquipment())->CollectShownItemsInLayer(list, 0);
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
@@ -793,8 +793,8 @@ int UIHighlightGameMenu::FUN_140c23f10()
         return false;
     m_bitsGem.FUN_140c260a0(0, false);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
-    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 0);
-    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 1);
+    ((CEquipment*)((PC*)pPc)->GetEquipment())->CollectShownItemsInLayer(list, 0);
+    ((CEquipment*)((PC*)pPc)->GetEquipment())->CollectShownItemsInLayer(list, 1);
     if (FUN_140c25330(&list) == 0)
     {
         unsigned nMask = 0;
@@ -814,7 +814,7 @@ int UIHighlightGameMenu::FUN_140c23f10()
         if (nMask != 0)
         {
             ATL::CAtlArray<MS2Ptr<CItem> > gems;
-            g_143ab2a90.FUN_140a60880(6, gems);
+            g_143ab2a90.GetItemsInCategory(6, gems);
             for (unsigned __int64 k = 0; k < gems.GetCount(); ++k)
             {
                 MS2Ptr<CItem> g = gems[k];

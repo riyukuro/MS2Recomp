@@ -114,7 +114,7 @@ class CBirdMovement : public CPtred
 {
 public:
     CBirdMovement();                                            // out of unit
-    void FUN_141207fb0(float f);                                // out of unit (step)
+    void SetScale(float f);                                // out of unit (step)
     char m_pad_18[0x38];
     float m_fVelocity;                                          // +0x50 (setter 0x141550030)
     float m_fMaxLength;                                         // +0x54 (setter 0x14154ff50)
@@ -152,9 +152,9 @@ public:
     void AttachToOwnerNode(Unk_EffectTarget* pTarget);              // attach type 0
     void AttachToModelNode(Unk_EffectTarget* pTarget);              // attach type 1
     void FUN_14154c260(Unk_EffectTarget* pTarget);              // attach type 2
-    void FUN_14154c440(Unk_EffectTarget* pTarget, int nSlot);   // attach type 3/4
+    void AttachToEquipSlot(Unk_EffectTarget* pTarget, int nSlot);   // attach type 3/4
     void FUN_14154c580();                                       // wrap in a SeparateNode / make relative
-    void FUN_14154c7f0(Unk_EffectTarget* pTarget);              // log "LOD level"
+    void LogLodLevel(Unk_EffectTarget* pTarget);              // log "LOD level"
     void FUN_14154cf20(NiAVObject* pkRoot);                     // apply the "Eff_LOD" level
     NiNodePtr FUN_14154d0d0(const CString& strPath, int nA, int nB);       // load the nif
     NiAVObjectPtr FUN_14154d410(Unk_EffectTarget* pTarget, const char* pszName, bool b);
@@ -431,8 +431,8 @@ public:
     NiAVObject* CloneCached(CString strPath, CCachedNifPtr spCached);     // 0x141556320 (exe returns the raw pointer in rax; callers wrap it)
     void RefreshTextures();                         // 0x141556410
     void LogCounts();                               // 0x141556610
-    unsigned FUN_14151e770();                       // 0x14151e770 number of cached nifs (defined elsewhere)
-    unsigned FUN_14151e790();                       // 0x14151e790 number of cached textures (defined elsewhere)
+    unsigned GetNifCacheCount();                       // 0x14151e770 number of cached nifs (defined elsewhere)
+    unsigned GetTextureCacheCount();                       // 0x14151e790 number of cached textures (defined elsewhere)
 
     static bool OnDeviceReset(char bBefore, void* pRenderer);   // 0x141554df0
     static bool OnDeviceLost(void* pRenderer);                              // 0x141554ee0

@@ -99,11 +99,11 @@ template <> MS2Ptr<ASLabel> AScript::FUN_140c436d0<ASLabel>(const CString& strNa
 MS2_CHECK_SIZE(ASLabel, 0x88);
 extern Unk_Inventory g_143ab2a90;
 int FUN_141276180(const CString&, const CString&);
-void FUN_14141f970(const CString&);
-void FUN_141415600(const CString&);
+void DestroyItemSlotBag(const CString&);
+void DestroyItemInfoSlot(const CString&);
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
-MS2Ptr<CItem> FUN_141420330(void*, int);
-void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
+MS2Ptr<CItem> GetItemFromArray(void*, int);
+void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141b70f90(const CMsTime&, const CStringW&, CStringW&);
@@ -287,9 +287,9 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_o18_0());
         if (data == 0)
             continue;
-        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
+        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->IsJobRecommended(self->GetJobGroupId()))
             continue;
-        if (static_cast<Unk_GachaData*>(data.operator->())->IsGenderAllowed(self->FUN_141658e60()) == 0)
+        if (static_cast<Unk_GachaData*>(data.operator->())->IsGenderAllowed(self->GetGender()) == 0)
             continue;
         filtered.push_back(d);
     }
@@ -316,7 +316,7 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         bags[2].Add(items[i]);
     FUN_140c43090();
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
-    param->m_pfnGetItem = FUN_141420330;
+    param->m_pfnGetItem = GetItemFromArray;
     param->m_nIconType = 0x415;
     param->m_nFlags = 0x800;
     param->m_bEnabled = true;
@@ -470,7 +470,7 @@ void UIItemGachaBoxDialog::FUN_140c42ee0(CString state)
 {
     if (state.CompareNoCase("idle") == 0) {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_sndRolling);
-        m_sndRolling = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_sndRolling, "");
+        m_sndRolling = TSingleton<CEffectService>::GetInstance()->PlaySystemSound(s_sndRolling, "");
     } else if (state.CompareNoCase("open_sound") == 0) {
         FUN_141276180(s_sndClick, "");
     }
@@ -488,7 +488,7 @@ bool UIItemGachaBoxDialog::FUN_140c42fd0(int result, const CMsgBoxData&)
 void UIItemGachaBoxDialog::FUN_140c43010()
 {
     for (size_t i = 0; i < GACHA_BINDS.size(); ++i)
-        FUN_141415600(m_slotBinds[i]);
+        DestroyItemInfoSlot(m_slotBinds[i]);
     GACHA_BINDS.clear();
 }
 
@@ -496,7 +496,7 @@ void UIItemGachaBoxDialog::FUN_140c43010()
 void UIItemGachaBoxDialog::FUN_140c43090()
 {
     for (size_t i = 0; i < GACHA_BAGS.size(); ++i)
-        FUN_14141f970(m_bagIds[i]);
+        DestroyItemSlotBag(m_bagIds[i]);
     GACHA_BAGS.clear();
 }
 
@@ -587,7 +587,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
         bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), 1);
         unsigned int count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
-        FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
+        CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_GachaClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
         GACHA_BINDS.push_back(bagKey);
@@ -610,7 +610,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
                 item->SetCountClamped(e.vfunc_o18_2());
                 static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
                 bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), i + 1);
-                FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
+                CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 GACHA_BINDS.push_back(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
                 if (unc.get() != 0) {

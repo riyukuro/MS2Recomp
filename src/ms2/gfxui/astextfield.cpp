@@ -108,7 +108,7 @@ MS2_REPLACE_METHOD(0x1422C4FD0, ASTextField, GetTextHTMLW, 264, 0x1C267731);
 // @0x1422c50e0
 void ASTextField::SetTextColor(unsigned int nColor)
 {
-    FUN_1409c0d20("textColor", nColor);
+    SetMemberUInt("textColor", nColor);
 }
 MS2_REPLACE_METHOD(0x1422C50E0, ASTextField, SetTextColor, 40, 0x839BCDCD);
 

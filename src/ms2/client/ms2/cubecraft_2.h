@@ -31,13 +31,13 @@ public:
     int GetMode();                                                // the mode (0 build, 1 inventory edit, 2 move)
     int FUN_1410a8ab0();                                                // mode == 2
     void FUN_1410a8af0(bool bEnable);                                   // enter / leave the build mode
-    void FUN_1410a92c0();                                               // create the placement guide (NIF)
+    void CreateGuide();                                               // create the placement guide (NIF)
     void FUN_1410a9630();                                               // create the owned guide (NIF / KFM / doll)
-    void FUN_1410a9cc0();                                               // rebuild the guides for the current mode
-    void FUN_1410a9d60();                                               // drop the effect node and the guide
+    void RebuildGuides();                                               // rebuild the guides for the current mode
+    void ReleaseGuide();                                               // drop the effect node and the guide
     void ReleaseGuides();                                               // drop the second guide
     void UpdateGuidePositions();                                               // move the guides to the cell position
-    bool FUN_1410aa010();                                               // the second guide exists
+    bool HasGuide2();                                               // the second guide exists
     void AdjustLift(unsigned char bUp);                                       // lift +- 150
     void RequestCube(CubeItemInfo* pInfo);                            // select an item to place
     int FUN_1410aa1f0();                                                // mode != 2
@@ -51,17 +51,17 @@ public:
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
     void SetCurrentItem(CubeItemInfo* pInfo);                            // set the item (or clear it)
     void FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate);    // place the guide at a cell
-    void FUN_1410aad50();                                               // confirm: build / move / rotate
+    void ConfirmPlacement();                                               // confirm: build / move / rotate
     void FUN_1410ab5a0();                                               // remove (without the notice)
-    void FUN_1410ab5c0(bool bNotice);                            // remove the cube at the cell
+    void RemoveCube(bool bNotice);                            // remove the cube at the cell
     void FUN_1410abb40();                                               // pick the cube at the cell
     void FUN_1410ac1c0();                                               // lift the character up
     void FUN_1410ac380();                                               // lift the character down
     void FUN_1410ac540();                                               // request the cube's message
     void FUN_1410ac960();                                               // second guide vfunc_1
-    void FUN_1410ac9b0();                                               // per-frame update
+    void Update();                                               // per-frame update
     bool GetPending();                                               // m_bPending
-    int FUN_1410ad610();                                                // the item id
+    int GetItemId();                                                // the item id
     __int64 FUN_1410ad640();                                            // the item instance id
     CubeItemInfo* FUN_1410ad670();                                      // the item
     int FUN_1410ad6a0(int nItemId);                                     // the fitting-doll type of an item

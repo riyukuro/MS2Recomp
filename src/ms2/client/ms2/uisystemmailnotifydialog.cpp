@@ -162,7 +162,7 @@ class Unk_Finder : public ASDisplayObjectContainer { public: MS2Ptr<ASButton> FU
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strCmd, bool b); };   // the chat window: run a command
-class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
+class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerBrowser
 class Unk_SmPlayer : public PC { };                        // the job of the player
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // bind a child
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
@@ -176,14 +176,14 @@ public:
       // text of a string id
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
    // the item name text
-void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
+void SetNestedChildText(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
 CStringW FUN_14016a730(const char* psz, int n);                             // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 template <class T> CStringW FUN_14028dfa0(CStringW strKey, const T& nArg);  // string table text with one argument
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the page
 int FUN_141276180(const CString& strEvent, const CString& strArg);         // play a sound event
-void FUN_141415600(const CString& strName);                                 // drop the item shown under a dialog name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
+void DestroyItemInfoSlot(const CString& strName);                                 // drop the item shown under a dialog name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_SmEvent { public: };
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -367,7 +367,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         return;
     m_strUrl = ((class CGameRule*)FUN_1401c0d90())->GetUserConditionText(rec->m_nGameEventId);
     ATL::CAtlArray<Unk_SmReward> rewards;
-    reinterpret_cast<Unk_SmBody&>(rec->m_notify).FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
+    reinterpret_cast<Unk_SmBody&>(rec->m_notify).FUN_1412a7050(pPlayer->GetJobGroupId(), rewards);
     if (rewards.GetCount() > 0)
     {
         FUN_1412a5eb0(&rewards[0]);
@@ -375,14 +375,14 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         ASMDragTarget* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<ASMDragTarget>("m_slot", spSlot).get();
         if (pSlotClip != 0)
             spSlot->FUN_1422e4840(m_strSlot);
-        FUN_140cfefe0((&*m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
+        SetNestedChildText((&*m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
         if ((rec->m_notify.m_strDescArg == "attachment"))
             strAttach = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_notify.m_strDescArg;
         CStringW strDesc = StringFormat<CStringW>(GetStringCommonByKey(FUN_14016a730(rec->m_notify.m_strDescKey, 0)), strAttach);
-        FUN_140cfefe0((&*m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
+        SetNestedChildText((&*m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
     FUN_141276180(s_strPopUp, "");
     FUN_1412a60d0();
@@ -433,7 +433,7 @@ void UISystemMailNotifyDialog::FUN_1412a5db0(const Scaleform::GFx::FunctionHandl
 // @0x1412a5de0
 void UISystemMailNotifyDialog::FUN_1412a5de0(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    UIMessengerBrowser* pChat = FUN_140a3ab70(0x4e61);
+    UIMessengerBrowser* pChat = FindMessengerBrowser(0x4e61);
     if (pChat != 0)
         pChat->FUN_141a25770(L"/AddOntimeEvent", 0);
     vfunc_67();
@@ -456,14 +456,14 @@ void UISystemMailNotifyDialog::FUN_1412a5eb0(const Unk_SmReward* pReward)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_140523c40(pReward->m_nItemId, pReward->m_nCount, 0) == 0)
         return;
-    FUN_141415450(strName, MS2Ptr<CItem>(spItem), 0, 0x401, 0);
+    CreateItemInfoSlot(strName, MS2Ptr<CItem>(spItem), 0, 0x401, 0);
     m_strSlot = strName;
 }
 
 // @0x1412a6080
 void UISystemMailNotifyDialog::FUN_1412a6080()
 {
-    FUN_141415600(m_strSlot);
+    DestroyItemInfoSlot(m_strSlot);
     m_strSlot = "";
 }
 
@@ -520,7 +520,7 @@ void UISystemMailNotifyDialog::FUN_1412a6390()
     {
         unsigned nRemain = (unsigned)(m_nHideAt - GetTickCountMs2()) / 1000;
         CStringW strText = FUN_14028dfa0<int>(L"s_systemmail_notify_remain_text", reinterpret_cast<const int&>(nRemain));
-        FUN_140cfefe0(m_onTimeEvent->FUN_1422bb890(), "content", "m_remainTime", strText);
+        SetNestedChildText(m_onTimeEvent->FUN_1422bb890(), "content", "m_remainTime", strText);
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

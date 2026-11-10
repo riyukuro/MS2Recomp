@@ -137,7 +137,7 @@ struct Unk_OlpList;
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
-class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 class COptimizer   // C3: member view for the former free stand-ins
 {
 public:
@@ -175,7 +175,7 @@ struct Unk_UtilTransform
 };
 MS2_CHECK_SIZE(Unk_UtilTransform, 0x34);
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
-class EntityWorldManager { public: egf::Entity* FUN_1411cf440(const egf::EntityID& id); };
+class EntityWorldManager { public: egf::Entity* FindEntity(const egf::EntityID& id); };
 ecr::SceneGraphService* FUN_1413f98b0();
 
 // ---- 12-byte vector helpers ----
@@ -504,7 +504,7 @@ MS2_REPLACE(0x141b6eee0, FUN_141b6eee0, 138, 0x7091A733);
 // @0x141b6ef70
 NiAVObject* FUN_141b6ef70(egf::EntityID id)
 {
-    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id);
     if (pEntity == NULL)
         return NULL;
     ecr::SceneGraphService* pService = FUN_1413f98b0();
@@ -528,7 +528,7 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     if (pRoot == NULL)
         return;
     const char* pszKey = NULL;
-    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
+    if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = DAT_143ae50c8;
         else if (nSlot == 1)
@@ -546,7 +546,7 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
                     NiObject* pTexturing = NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pRender->GetProperty(NiProperty::TEXTURING)));
                     if (pTexturing == NULL)
                         continue;
-                    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
+                    if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() != 0) {
                         switch (nSlot) {
                         case 0: FUN_1410479a0(pRender, DAT_143ae50c8, reinterpret_cast<const NiColor&>(kValue)); break;
                         case 1: FUN_1410479a0(pRender, DAT_143ae50d0, reinterpret_cast<const NiColor&>(kValue)); break;
@@ -568,7 +568,7 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     if (pRoot == NULL)
         return;
     const char* pszKey = NULL;
-    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
+    if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = DAT_143ae50c8;
         else if (nSlot == 1)
@@ -585,7 +585,7 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
                 NiObject* pTexturing = NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pRender->GetProperty(NiProperty::TEXTURING)));
                 if (pTexturing == NULL)
                     continue;
-                if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
+                if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() != 0) {
                     switch (nSlot) {
                     case 0: FUN_1410479a0(pRender, DAT_143ae50c8, reinterpret_cast<const NiColor&>(kValue)); break;
                     case 1: FUN_1410479a0(pRender, DAT_143ae50d0, reinterpret_cast<const NiColor&>(kValue)); break;
@@ -606,7 +606,7 @@ int FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
     if (pRoot == NULL)
         return 0;
     const char* pszKey = NULL;
-    if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
+    if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
             pszKey = DAT_143ae50c8;
         else if (nSlot == 1)
@@ -622,7 +622,7 @@ int FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
         if (((class NiMaterial*)(class NiMaterial const*)(((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial())))->GetName() == DAT_143ae5200)
             continue;
         NiObject* pColor = NULL;
-        if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
+        if (((class COptimizer*)(void*)(((void*)GetOptimizer())))->FUN_14109a9d0() != 0) {
             switch (nSlot) {
             case 0: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50c8))))); break;
             case 1: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50d0))))); break;
@@ -1292,7 +1292,7 @@ NiObject* FUN_141b71b00()
     Unk_UtilPlayer* pPlayer = ((class Unk_UtilPlayer*)((class WorldService*)(class Unk_UtilWorld*)(reinterpret_cast<Unk_UtilWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return NULL;
-    NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(class Unk_UtilPlayer*)(pPlayer))->FUN_14123c410());
+    NiAVObject* pRoot = FUN_141b6efc0(((class GameObject*)(class Unk_UtilPlayer*)(pPlayer))->GetEntity());
     if (pRoot != NULL) {
         NiFixedString kName("FA_Skin");
         return NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot->GetObjectByName(kName)));
@@ -1368,8 +1368,8 @@ MS2_REPLACE(0x141b724f0, FUN_141b724f0, 19, 0x44AEFC71);
 // ---- scene walkers ----
 extern NiFixedString DAT_143ae51b8;                                          // tag extra-data key
 extern NiFixedString DAT_143ae50e8;                                          // tag text that excludes a branch
-void FUN_1414d3930(void *);  // C3: the definition's signature
-void FUN_1414d38b0(void* pObj, void* pColor);
+void RemoveOutline(void *);  // C3: the definition's signature
+void AddOutlineColor(void* pObj, void* pColor);
 void FUN_1414d37a0(void *, int);  // C3: the definition's signature
 
 // @0x141b71d10
@@ -1386,9 +1386,9 @@ void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
         NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pRender != NULL) {
             if (bEnable)
-                FUN_1414d38b0(pRender, (void*)&kColor);
+                AddOutlineColor(pRender, (void*)&kColor);
             else
-                FUN_1414d3930(pRender);
+                RemoveOutline(pRender);
         }
         NiNode* pNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pNode != NULL)
@@ -1412,7 +1412,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
             if (bEnable)
                 FUN_1414d37a0(pRender, uColor);
             else
-                FUN_1414d3930(pRender);
+                RemoveOutline(pRender);
         }
         NiNode* pNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pCurrent));
         if (pNode != NULL) {
@@ -1425,7 +1425,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
 // @0x141b71e70
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot)
 {
-    egf::EntityPtr kEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
+    egf::EntityPtr kEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
     if (kEntity.operator==((egf::Entity*)0))
         return;
     NiAVObject* pRoot = FUN_141b6efc0(kEntity.operator egf::Entity*());

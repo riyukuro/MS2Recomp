@@ -296,7 +296,7 @@ void UICameraEditDialog::vfunc_15()
             return;
         m_fSavedCamera = CameraMgr::GetInstance()->FUN_140ad4b40();
         GameObject* pTarget;
-        if (CameraMgr::GetInstance()->FUN_140af7e30() == 4 && (pTarget = GetTargetObject()) != 0)
+        if (CameraMgr::GetInstance()->GetModeType() == 4 && (pTarget = GetTargetObject()) != 0)
         {
             NiPoint3 kPos = pTarget->vfunc_18();
             kPos.z = kPos.z + 100.0f;
@@ -698,8 +698,8 @@ int UICartoonDialog::OpenBook(int nBookId, int n2c, int nLayer)
         m_nPage = 0;
         if (n2c != 0)
         {
-            FUN_140b632f0()->RemoveFromLayer(this, m_e0);
-            FUN_140b632f0()->AddToLayer(this, nLayer);
+            GetUISwfEntityManager()->RemoveFromLayer(this, m_e0);
+            GetUISwfEntityManager()->AddToLayer(this, nLayer);
             FUN_1422dc260(n2c);
         }
         FUN_1418dfd50();
@@ -1156,7 +1156,7 @@ int FUN_141276a30(const CStringW& strName, CStringW& strError);     // validate 
 int FUN_141b71a10(const char* sz);                                  // atoi
 
 // The message box helpers.
-UIMessageBox* FUN_14151f890();
+UIMessageBox* GetMessageBoxLayer();
 void FUN_14151f200();
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -1169,14 +1169,14 @@ UIDialog* FUN_140c300a0(int nClass);                                // the open 
 // The scene / app / popup.
 CSceneStateMulti* FUN_140f30370();
 void* FUN_140aadf80();
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1419cae20(class UIItemEventListener*);
     void FUN_1419caeb0(class UIItemEventListener*);
 };
-UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass);
+UICameraEditDialog* FindCameraEditDialog(eUIClassID nClass);
 template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 class UICharacterListDialog   // C3: member view for the former free stand-ins
 {
@@ -1270,16 +1270,16 @@ void UICharacterCreateDialog::OnLoadComplete()
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    ((class Unk_ItemEventSystem*)(void*)(((void*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(void*)(((void*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f0b710(0);
-    m_spCustomize.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    m_spCustomize.AssignRaw(new Customize(pPc->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     int nCount = 7;
     for (int i = 0; i < nCount; i++)
         m_aLoaded.Add(0);
     if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
-    m_pCamera = FUN_140cd47b0((eUIClassID)0x4ef2);
-    unsigned nGender = ((Unk_CcPlayer*)pPc)->FUN_141658e60();
+    m_pCamera = FindCameraEditDialog((eUIClassID)0x4ef2);
+    unsigned nGender = ((Unk_CcPlayer*)pPc)->GetGender();
     m_nChangedMask |= FUN_140222b30(nGender, 0);
     ASObj kInit(2);
     FUN_141900750(&kInit);
@@ -1290,7 +1290,7 @@ void UICharacterCreateDialog::OnLoadComplete()
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ea7);
         m_bGuideOpened = 1;
     }
-    m_dOpenTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    m_dOpenTime = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     m_nState = 1;
 }
 
@@ -1423,7 +1423,7 @@ void UICharacterCreateDialog::vfunc_15()
         return;
     if (m_spCustomize == 0)
         return;
-    m_spCustomize->FUN_140cd1bf0();
+    m_spCustomize->UpdateEditItems();
     if (m_pCamera != 0)
         m_pCamera->SetEnableFlagIfHidden(m_spCustomize->IsDragging() == 0);
     if (m_nCurItemId > 0)
@@ -1491,7 +1491,7 @@ void UICharacterCreateDialog::vfunc_12()
     void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->FUN_14123c580(),
+    m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->GetObjectId(),
                                           static_cast<IItemCustomizeEventListener*>(this), 0));
     vfunc_84();
 }
@@ -1524,7 +1524,7 @@ int UICharacterCreateDialog::vfunc_1(void* p)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_spCustomize->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
             m_30->Invoke("startChangeCutomPosition");
     }
     return 1;
@@ -1537,7 +1537,7 @@ int UICharacterCreateDialog::vfunc_2(void* p, float fValue, int nIndex)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_spCustomize->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             const Unk_CustomizeRange* pRange = ((CItemCustomizeController*)p)->vfunc_24(nIndex);
             if (pRange->m_n08)
@@ -1560,7 +1560,7 @@ int UICharacterCreateDialog::vfunc_3(void* p, float fValue)
         return 0;
     if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
+        if (m_spCustomize->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             int nDegree = (int)fValue;
             if (nDegree < 0)
@@ -1587,7 +1587,7 @@ void UICharacterCreateDialog::vfunc_67()
     m_spBackUp = 0;
     m_aLoaded.RemoveAll();
     m_items.RemoveAll();
-    ((class Unk_ItemEventSystem*)(void*)(((void*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(void*)(((void*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ea7);
     m_nChangedMask = 0;
 }
@@ -1674,7 +1674,7 @@ void UICharacterCreateDialog::FUN_1418e3980(CInPacket* pPacket)
         }
         else
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox != 0)
                 pBox->FUN_1419f82b0(strMsg);
         }
@@ -1692,13 +1692,13 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     if (pPc == 0)
         return 0;
     CCCharacterManagementPacket::Create kCreate;
-    kCreate.m_nGender = (char)pPc->FUN_141658e60();
-    kCreate.m_nJob = pPc->FUN_141654700();
+    kCreate.m_nGender = (char)pPc->GetGender();
+    kCreate.m_nJob = pPc->GetJobGroupId();
     kCreate.m_strName = strName;
     kCreate.m_anColor[0] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(0));
     kCreate.m_anColor[1] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(1));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->CollectShownItems(aEquips);
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->CollectShownItems(aEquips);
     int nCount = (int)aEquips.GetCount();
     kCreate.m_items.WriteUInt8((unsigned char)nCount);
     for (POSITION pos = aEquips.GetHeadPosition(); pos != 0; aEquips.GetNext(pos))
@@ -1823,7 +1823,7 @@ void UICharacterCreateDialog::FUN_1418e47e0(int nTab, int nCategory)
     Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != 0)
     {
-        int nGender = pPc->FUN_141658e60();
+        int nGender = pPc->GetGender();
         if (nTab == 0 && nCategory == 3)
         {
             MS2Ptr<DefaultItemData> spRow(new DefaultItemData(0x9a1d21, 0));
@@ -1832,7 +1832,7 @@ void UICharacterCreateDialog::FUN_1418e47e0(int nTab, int nCategory)
         else
         {
             ATL::CAtlArray<MS2Ptr<DefaultItemData> > aDefaults;
-            int nJob = pPc->FUN_141654700();
+            int nJob = pPc->GetJobGroupId();
             int nType = FUN_1418e46c0(nCategory);
             CItemDefaultData::GetSlotItems(nJob, nGender, (Unk_ItemDefaultKind)nType, aDefaults);
             for (size_t i = 0; i < aDefaults.GetCount(); i++)
@@ -1910,7 +1910,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
-    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->CollectShownItems(aEquips);
+    reinterpret_cast<CEquipment*>(pPc->GetEquipment())->CollectShownItems(aEquips);
     ASArray aItems(2);
     for (POSITION pos = aEquips.GetHeadPosition(); pos != 0; aEquips.GetNext(pos))
     {
@@ -1920,7 +1920,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (!spItem)
             continue;
-        CItemData* pData = (CItemData*)spEquip->FUN_1411dc7f0();
+        CItemData* pData = (CItemData*)spEquip->GetItemData();
         if (pData == 0)
             continue;
         int nTab;
@@ -1935,7 +1935,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         ASObj kRow(2);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
         kRow.FUN_1407cbb20("itemname", CStringW(strName));
-        kRow.FUN_1409c0d20("itemid", nItemId);
+        kRow.SetMemberUInt("itemid", nItemId);
         int& nOutColor = nColor;
         if ((unsigned)pData->FUN_14053e260() > 0)
         {
@@ -2055,9 +2055,9 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
                     ASObj kSize(2);
                     int nId = i;
                     kSize.FUN_1407cb9c0("id", nId);
-                    kSize.FUN_1409c4a30("cur", fCur);
-                    kSize.FUN_1409c4a30("min", fMin);
-                    kSize.FUN_1409c4a30("max", fMax);
+                    kSize.SetMemberFloat("cur", fCur);
+                    kSize.SetMemberFloat("min", fMin);
+                    kSize.SetMemberFloat("max", fMax);
                     aSizes.PushValue(Scaleform::GFx::Value(kSize.FUN_1422bb870()));
                 }
                 kData.FUN_1409adbe0("sizedata", Scaleform::GFx::Value(aSizes.FUN_1422bb870()));
@@ -2069,7 +2069,7 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
             float fDegree = pPart->vfunc_18();
             if (fDegree < 0.0f)
                 fDegree = 360.0f + fDegree;
-            kDegree.FUN_1409c4a30("cur", fDegree);
+            kDegree.SetMemberFloat("cur", fDegree);
             kData.FUN_1409adbe0("degreedata", Scaleform::GFx::Value(kDegree.FUN_1422bb870()));
         }
         if ((nFlags & 8) != 0)
@@ -2123,7 +2123,7 @@ void UICharacterCreateDialog::OnCreate()
     if (m_nState != 1)
         return;
     if (m_dElapsed < 1.1920928955078125e-07)
-        m_dElapsed = TSingleton<CMainSystem>::GetInstance()->FUN_141473280() - m_dOpenTime;
+        m_dElapsed = TSingleton<CMainSystem>::GetInstance()->GetGameTime() - m_dOpenTime;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
@@ -2143,7 +2143,7 @@ bool UICharacterCreateDialog::FUN_1418e6430(const CStringW& strName)
     CStringW strCopy(strName);
     if (strCopy.IsEmpty())
     {
-        UIMessageBox* pBox = FUN_14151f890();
+        UIMessageBox* pBox = GetMessageBoxLayer();
         if (pBox != 0)
             pBox->FUN_1419f82b0(GetStringCommon(0xd));
     }
@@ -2167,7 +2167,7 @@ bool UICharacterCreateDialog::FUN_1418e6430(const CStringW& strName)
         }
         else
         {
-            UIMessageBox* pBox = FUN_14151f890();
+            UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox != 0)
                 pBox->FUN_1419f82b0(strError);
         }
@@ -2221,7 +2221,7 @@ void UICharacterCreateDialog::FUN_1418e6730(int nGender)
         bool bFirst = (m_nChangedMask & nBit) == 0;
         pScene->FUN_14174ec40(nGender, bFirst);
     }
-    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
+    m_nCurItemId = m_spCustomize->GetEditItemId();
     m_spCustomize = 0;
     m_nChangedMask |= nBit;
 }
@@ -2235,7 +2235,7 @@ int UICharacterCreateDialog::FUN_1418e6950(int nItemId, int nTab, int nCategory)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (!spData)
         return 0;
-    if (*(int*)((char*)spData.get() + 0x13c) != pPc->FUN_141658e60() && *(int*)((char*)spData.get() + 0x13c) != 2)
+    if (*(int*)((char*)spData.get() + 0x13c) != pPc->GetGender() && *(int*)((char*)spData.get() + 0x13c) != 2)
         return 0;
     if (FUN_1418e4380(nTab, nCategory, MS2Ptr<CItemData>(spData)))
         return 1;
@@ -2316,7 +2316,7 @@ void UICharacterCreateDialog::FUN_1418e6d80(int nItemId)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return;
-    FUN_1418e7380(m_spCustomize->FUN_140cd17e0());
+    FUN_1418e7380(m_spCustomize->GetEditItemId());
     MS2Ptr<CItem> spItem;
     if (m_items.Lookup(nItemId, spItem))
         m_spCustomize->EquipItem(spItem.get());
@@ -2337,7 +2337,7 @@ void UICharacterCreateDialog::FUN_1418e6fc0(int nColor)
     if (m_spCustomize == 0)
         return;
     ((class Customize*)(class Customize*)(m_spCustomize))->ApplyColor(nColor, 0);
-    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
+    m_nCurItemId = m_spCustomize->GetEditItemId();
 }
 
 // OnChangePosition
@@ -2350,7 +2350,7 @@ void UICharacterCreateDialog::FUN_1418e7040(int nPos)
     if (pPart == 0)
         return;
     pPart->vfunc_9(nPos);
-    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
+    m_nCurItemId = m_spCustomize->GetEditItemId();
 }
 
 // OnChangeSize
@@ -2370,7 +2370,7 @@ void UICharacterCreateDialog::FUN_1418e7110(int nIndex, float fSize)
         fSize = fSize + pRange->m_fMin;
     }
     pPart->vfunc_8(nIndex, fSize);
-    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
+    m_nCurItemId = m_spCustomize->GetEditItemId();
 }
 
 // OnChangeDegree
@@ -2383,7 +2383,7 @@ void UICharacterCreateDialog::FUN_1418e7260(float fDegree)
     if (pPart == 0)
         return;
     pPart->vfunc_10(fDegree);
-    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
+    m_nCurItemId = m_spCustomize->GetEditItemId();
 }
 
 // @0x1418e7340
@@ -2438,7 +2438,7 @@ void UICharacterCreateDialog::FUN_1418e74c0(MS2Ptr<CItemData> spData)
                 nSlotKind = 8;
             }
             MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(nSlotKind);
-            if (spEquip == 0 || (spEquip->FUN_1411dc7f0() != 0 && ((CItemData*)spEquip->FUN_1411dc7f0())->FUN_14053d2b0()))
+            if (spEquip == 0 || (spEquip->GetItemData() != 0 && ((CItemData*)spEquip->GetItemData())->FUN_14053d2b0()))
             {
                 ASObj kData(2);
                 kData.FUN_1407cb9c0("category", nCategory);

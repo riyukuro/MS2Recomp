@@ -117,7 +117,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 class Unk_GmItemEvents;
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wide conversion
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
 {
@@ -128,9 +128,9 @@ public:
 class Unk_GmUgcEvents;
 class Unk_GmStatusEvents;
 
-unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue);   // bitset<8>(value)
+unsigned char* MakeBitset8(Unk_Bitset8* pBits, unsigned char nValue);   // bitset<8>(value)
 void FUN_1412751b0(const CStringW& text, int a);                    // the debug log
-int FUN_141383760(int nType);                                       // the active action restriction of a type
+int IsLimitActive(int nType);                                       // the active action restriction of a type
 CStringW FUN_1413892f0(int nTrigger);                               // trigger name
 void FUN_1413a3710(CGuideEntity* pEntity);                          // empty hook (guideentity_9.cpp)
 
@@ -141,12 +141,12 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
-UICutSceneMovie* FUN_14138fd50(int nUIId);                         // the cut scene movie dialog
+UICutSceneMovie* FindCutSceneMovie(int nUIId);                         // the cut scene movie dialog
 class Unk_GmPane : public UISwfEntity { };
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 class GFxSceneService { public: int GetSceneId(); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 struct Unk_GmApp { char m_pad[0x48]; void* m_pActiveWnd; };
-struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
+struct Unk_MdState* GetState();   // C3: was GetState
 struct Unk_GmPlayerFlags { unsigned char m_a; unsigned char m_b; unsigned char m_nMode; };
 class CGameOption;   // C3: FUN_1409a8b10 is TSingleton<CGameOption>::GetInstance
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
@@ -181,7 +181,7 @@ typedef std::map<int, GmEntVec> GmSubMap;
 CGuideManager::CGuideManager()
     : m_n20(0), m_n24(0), m_nDebug(0), m_entities(10), m_map60(10), m_map90(10), m_triggers(0x11, 0.75f, 0.25f, 2.25f, 10)
 {
-    ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     ((class UIStatusEventDispatcher*)(class Unk_GmStatusEvents*)(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
@@ -193,7 +193,7 @@ CGuideManager::CGuideManager()
 // @0x14138ab80
 CGuideManager::~CGuideManager()
 {
-    ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     ((class UIStatusEventDispatcher*)(class Unk_GmStatusEvents*)(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     NotifySystem::GetInstance()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
@@ -241,7 +241,7 @@ void CGuideManager::ReceiveStates(CInPacket& kPacket)
         m_map60.SetAt(nKey, nValue);
     }
     Unk_Bitset8 bits;
-    static_cast<Unk_Bitset8&>(m_bits) = *reinterpret_cast<Unk_Bitset8*>(FUN_141396750(&bits, kPacket.ReadUInt8()));
+    static_cast<Unk_Bitset8&>(m_bits) = *reinterpret_cast<Unk_Bitset8*>(MakeBitset8(&bits, kPacket.ReadUInt8()));
 }
 
 // @0x14138b3a0
@@ -354,11 +354,11 @@ void CGuideManager::UpdateEntities()
         return;
     if (pPane->FUN_1422dc2d0() == 0)
         return;
-    if (FUN_14138fd50(0x4e7e)->FUN_1419102c0() != 0)
+    if (FindCutSceneMovie(0x4e7e)->FUN_1419102c0() != 0)
         return;
     if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
         return;
-    if (!m_names.IsEmpty() && ((struct Unk_GmApp*)FUN_141482e80())->m_pActiveWnd != 0)
+    if (!m_names.IsEmpty() && ((struct Unk_GmApp*)GetState())->m_pActiveWnd != 0)
     {
         for (unsigned i = 0; i < m_names.GetCount(); i++)
             FUN_1412751b0(m_names[i], 0x14);
@@ -411,7 +411,7 @@ void CGuideManager::ProcessOccurrences()
 // @0x14138bf00
 void CGuideManager::AddTrigger(TriggerType eType, int nValue, int nSubValue)
 {
-    if (FUN_14138fd50(0x4e7e)->FUN_1419102c0() != 0)
+    if (FindCutSceneMovie(0x4e7e)->FUN_1419102c0() != 0)
         return;
     MS2Ptr<GuideTriggerEventGroup> spGroup;
     if (!m_triggers.Lookup(eType, spGroup))
@@ -540,7 +540,7 @@ void CGuideManager::ResetEntity(MS2Ptr<CGuideEntity> spEntity)
 // @0x14138c900
 int CGuideManager::IsRestricted(int nType)
 {
-    return FUN_141383760(nType);
+    return IsLimitActive(nType);
 }
 
 // @0x14138c930
@@ -1090,7 +1090,7 @@ void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 }
 
 // @0x14138fd50
-UICutSceneMovie* FUN_14138fd50(int nUIId)
+UICutSceneMovie* FindCutSceneMovie(int nUIId)
 {
     if (CUIService::GetInstance() != 0)
     {
@@ -1132,7 +1132,7 @@ GuideTriggerEventGroup::GuideTriggerEventGroup()
 }
 
 // @0x141396750
-unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
+unsigned char* MakeBitset8(Unk_Bitset8* pBits, unsigned char nValue)
 {
     pBits->Fill(false);
     for (unsigned nBit = 0; nValue != 0 && nBit < 8; nValue >>= 1, ++nBit)

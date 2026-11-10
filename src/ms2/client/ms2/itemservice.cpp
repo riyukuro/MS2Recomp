@@ -68,7 +68,7 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
 
-void* FUN_141200820(CEquipModel* self);                             // the owner PC (0 when none; equipmodel.cpp)
+void* GetOwnerPC(CEquipModel* self);                             // the owner PC (0 when none; equipmodel.cpp)
 #define IsModel(p) static_cast<CEquipModel*>(p)
 int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   // attach an already loaded root
 
@@ -76,7 +76,7 @@ typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
 
 // The registry of named bags (GFx bind data).
 ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
-ItemInfoSlot*FUN_140cfe6c0(NotifyContext::BindData*);                           // DragSlot -> ItemInfoSlot (TypeCast)
+ItemInfoSlot*CastToItemInfoSlot(NotifyContext::BindData*);                           // DragSlot -> ItemInfoSlot (TypeCast)
 class AvatarPC;
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);             // unit_141420a70.cpp
 unsigned FUN_141420a30(unsigned nType, CItem* pItem, AvatarPC* pAvatar);
@@ -86,11 +86,11 @@ unsigned FUN_141420a30(unsigned nType, CItem* pItem, AvatarPC* pAvatar);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CItemService);
 #ifndef MS2_HOOK_DLL
 // @0x1400f6680
-EE_HANDLER(CItemService, FUN_14141ac60, efd::AssetLoadResponse);
+EE_HANDLER(CItemService, OnAssetLoadResponse, efd::AssetLoadResponse);
 // @0x1400f66e0
 EE_HANDLER_WRAP(CItemService, OnPhysXPropCreated, ecrPhysX::PhysXPropMessage, 12299);
 // @0x1400f6740
-EE_HANDLER(CItemService, FUN_14141ae10, egmAnimation::ActorAddedMessage);
+EE_HANDLER(CItemService, OnActorAdded, egmAnimation::ActorAddedMessage);
 #endif
 // @0x1400f67a0
 static CString s_aSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -144,11 +144,11 @@ int CItemService::RegisterModel(CKfmModel* pModel)
 {
     if (pModel == 0)
         return 0;
-    if (m_mapModels.Lookup(pModel->FUN_14143ff70().GetValue()) != 0)
+    if (m_mapModels.Lookup(pModel->GetEntityID().GetValue()) != 0)
         return 0;
     {
         MS2Ptr<CKfmModel> spModel(pModel);
-        m_mapModels.SetAt(pModel->FUN_14143ff70().GetValue(), spModel);
+        m_mapModels.SetAt(pModel->GetEntityID().GetValue(), spModel);
     }
     return 1;
 }
@@ -158,12 +158,12 @@ int CItemService::UnregisterModel(CKfmModel* pModel)
 {
     if (pModel == 0)
         return 0;
-    m_mapModels.RemoveKey(pModel->FUN_14143ff70().GetValue());
+    m_mapModels.RemoveKey(pModel->GetEntityID().GetValue());
     return 1;
 }
 
 // @0x14141a060
-MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nCache)
+MS2Ptr<CEquipItem> CItemService::CreateEquipItem(CItem* pItem, PC* pPC, __int64 nCache)
 {
     if (pPC != 0 && pPC->GetClassID() == 0x6200016 && pItem != 0)
     {
@@ -178,19 +178,19 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
     MS2Ptr<CEquipItem> spEquip(new CEquipItem(pPC, pItem));
     if (FUN_14141b000(pItem, pPC))
     {
-        FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
-        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 1);
+        CollectLinkedEquipItems(pItem, pPC, &spEquip->m_linkedItems);
+        reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411e3d20(spEquip->m_linkedItems, 1);
     }
     else
     {
-        FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
-        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 0);
+        CollectLinkedEquipItems(pItem, pPC, &spEquip->m_linkedItems);
+        reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411e3d20(spEquip->m_linkedItems, 0);
         spEquip->m_linkedItems.RemoveAll();
     }
     bool bSecond = pItem->FUN_14052a170() == 2;
     int nWeapon = pPC->vfunc_133(pItem, bSecond);
     bool bHair = reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b400() == 0xe ? true : false;
-    int nGender = pPC->FUN_141658e60();
+    int nGender = pPC->GetGender();
     if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return spEquip;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
@@ -204,7 +204,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
                 continue;
             CString strPath(pPart->name0);
             if (bHair)
-                strPath = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411ea5d0(strPath);
+                strPath = reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411ea5d0(strPath);
             if (pPart->isNif == 0)
             {
                 MS2Ptr<CKfmModel> spModel(new CKfmModel(spEquip,
@@ -256,7 +256,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
 }
 
 // @0x14141ac60
-void CItemService::FUN_14141ac60(const efd::AssetLoadResponse* pMsg, efd::Category)
+void CItemService::OnAssetLoadResponse(const efd::AssetLoadResponse* pMsg, efd::Category)
 {
     efd::AssetLoadResponse::AssetLoadResult eResult = pMsg->GetResult();
     if (eResult != 9)
@@ -275,15 +275,15 @@ void CItemService::OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, ef
     {
         spModel->vfunc_33();
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
-        PC* pPC = (PC*)FUN_141200820(IsModel(spModel.get()));
+        PC* pPC = (PC*)GetOwnerPC(IsModel(spModel.get()));
         if (pPC != 0)
-            reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c00();
+            reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411e0c00();
     }
 }
 
 // The actor of a loading KFM model was added.
 // @0x14141ae10
-void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, efd::Category)
+void CItemService::OnActorAdded(const egmAnimation::ActorAddedMessage* pMsg, efd::Category)
 {
     egf::EntityID id = pMsg->m_pEntity->GetEntityID();
     MS2Ptr<CKfmModel> spModel(0);
@@ -292,9 +292,9 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->ReleaseLinkedItems();
         spModel->vfunc_34();
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
-        PC* pPC = (PC*)FUN_141200820(IsModel(spModel.get()));
+        PC* pPC = (PC*)GetOwnerPC(IsModel(spModel.get()));
         if (pPC != 0)
-            reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c10();
+            reinterpret_cast<CEquipment*>(pPC->GetEquipment())->FUN_1411e0c10();
         if (spModel->vfunc_9() != 0)
             UnregisterModel(spModel);
     }
@@ -308,7 +308,7 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
     int nCount = 0;
     bool bLayer2 = pItem->FUN_14052a170() == 2 ? 1 : 0;
     int nWeapon = pPC->vfunc_133(pItem, bLayer2);
-    int nGender = pPC->FUN_141658e60();
+    int nGender = pPC->GetGender();
     if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return 0;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
@@ -331,14 +331,14 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
 }
 
 // @0x14141b250
-void CItemService::FUN_14141b250(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList)
+void CItemService::CollectLinkedEquipItems(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList)
 {
     int nLayer = pItem->FUN_14052a170();
     for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b3d0(); i++)
     {
         int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), pItem,
             reinterpret_cast<AvatarPC*>(pPC));
-        MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e1780(nSlot, nLayer);
+        MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->GetEquipment())->GetItemAt(nSlot, nLayer);
         if (spItem.get() != 0)
             pList->AddTail(spItem);
     }
@@ -419,7 +419,7 @@ ItemSlotBag::CreateParam::CreateParam()
 }
 
 // @0x14141f770
-void FUN_14141f770(const CString& strName, int nSlots, void* pItems, ItemSlotBag::CreateParam::GetItemFn pfnGetItem,
+void CreateItemSlotBag(const CString& strName, int nSlots, void* pItems, ItemSlotBag::CreateParam::GetItemFn pfnGetItem,
                    int nIconType, int nFlags)
 {
     ItemSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) ItemSlotBag(strName, pItems, pfnGetItem, nIconType, nFlags);
@@ -442,7 +442,7 @@ void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<Item
 }
 
 // @0x14141f970
-void FUN_14141f970(const CString& strName)
+void DestroyItemSlotBag(const CString& strName)
 {
     ItemSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag != 0)
@@ -479,7 +479,7 @@ ItemSlotBag::~ItemSlotBag()
 // @0x14141fbc0
 void ItemSlotBag::vfunc_13(int nIndex)
 {
-    ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
+    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -487,7 +487,7 @@ void ItemSlotBag::vfunc_13(int nIndex)
 // @0x14141fc10
 void ItemSlotBag::vfunc_14(int nIndex)
 {
-    ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
+    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -517,7 +517,7 @@ DragSlot* ItemSlotBag::vfunc_16(int nIndex)
 
 // Resize the bag to nCount slots and refill the items.
 // @0x14141ff80
-void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
+void ResizeItemSlotBag(ItemSlotBag* pBag, int nCount)
 {
     if (nCount == 0)
     {
@@ -543,7 +543,7 @@ void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
         return;
     for (auto kv : pBag->m_slots)
     {
-        ItemInfoSlot* pSlot = FUN_140cfe6c0(reinterpret_cast<NotifyContext::BindData *>(pBag->FUN_1422cd0f0(kv.second)));
+        ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(pBag->FUN_1422cd0f0(kv.second)));
         if (pSlot == 0)
             continue;
         int nIndex = pSlot->GetIndex();
@@ -555,7 +555,7 @@ void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
 
 // The default GetItemFn: the nIndex-th item of a CAtlArray<MS2Ptr<CItem> >.
 // @0x141420330
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex)
+MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex)
 {
     typedef ATL::CAtlArray<MS2Ptr<CItem> > ItemArray;
     if (!static_cast<ItemArray*>(pItems)->IsEmpty() && nIndex < (int)static_cast<ItemArray*>(pItems)->GetCount())
@@ -621,24 +621,24 @@ MS2_EMIT_CRT_MEMMOVE_S();
 MS2_REPLACE_METHOD(0x141419F30, CItemService, GetDisplayName, 13, 0xFE406CA6);
 MS2_REPLACE_METHOD(0x141419F50, CItemService, RegisterModel, 166, 0x32862F2B);
 MS2_REPLACE_METHOD(0x14141A000, CItemService, UnregisterModel, 76, 0x1DFADF0C);
-MS2_REPLACE_METHOD(0x14141A060, CItemService, FUN_14141a060, 3052, 0x097F71D7);
-MS2_REPLACE_METHOD(0x14141AC60, CItemService, FUN_14141ac60, 76, 0xF9400BDF);
+MS2_REPLACE_METHOD(0x14141A060, CItemService, CreateEquipItem, 3052, 0x097F71D7);
+MS2_REPLACE_METHOD(0x14141AC60, CItemService, OnAssetLoadResponse, 76, 0xF9400BDF);
 MS2_REPLACE_METHOD(0x14141ACC0, CItemService, OnPhysXPropCreated, 322, 0x5E111DEB);
-MS2_REPLACE_METHOD(0x14141AE10, CItemService, FUN_14141ae10, 477, 0x3F4220C9);
+MS2_REPLACE_METHOD(0x14141AE10, CItemService, OnActorAdded, 477, 0x3F4220C9);
 MS2_REPLACE_METHOD(0x14141B000, CItemService, FUN_14141b000, 574, 0x26956EB2);
-MS2_REPLACE_METHOD(0x14141B250, CItemService, FUN_14141b250, 253, 0x9E0E8D7C);
+MS2_REPLACE_METHOD(0x14141B250, CItemService, CollectLinkedEquipItems, 253, 0x9E0E8D7C);
 MS2_REPLACE_METHOD(0x14141B360, CItemService, OnPreInit, 115, 0x1B8C8A6F);
 MS2_REPLACE_METHOD(0x14141B3E0, CItemService, OnInit, 621, 0x2187FFE3);
 MS2_REPLACE_METHOD(0x14141B660, CItemService, OnTick, 11, 0x30025ED0);
 MS2_REPLACE_METHOD(0x14141B680, CItemService, OnShutdown, 698, 0x8FB44546);
-MS2_REPLACE(0x14141F770, FUN_14141f770, 225, 0x511582BC);
+MS2_REPLACE(0x14141F770, CreateItemSlotBag, 225, 0x511582BC);
 MS2_REPLACE(0x14141F860, FUN_14141f860, 253, 0xEEFE7307);
-MS2_REPLACE(0x14141F970, FUN_14141f970, 65, 0x553D0D40);
+MS2_REPLACE(0x14141F970, DestroyItemSlotBag, 65, 0x553D0D40);
 MS2_REPLACE_METHOD(0x14141FBC0, ItemSlotBag, vfunc_13, 69, 0x040F174F);
 MS2_REPLACE_METHOD(0x14141FC10, ItemSlotBag, vfunc_14, 69, 0xEBA994A7);
 MS2_REPLACE_METHOD(0x14141FC60, ItemSlotBag, vfunc_16, 791, 0xEF0344BF);
-MS2_REPLACE(0x14141FF80, FUN_14141ff80, 928, 0xAEBFD3E5);
-MS2_REPLACE(0x141420330, FUN_141420330, 142, 0xD685F342);
+MS2_REPLACE(0x14141FF80, ResizeItemSlotBag, 928, 0xAEBFD3E5);
+MS2_REPLACE(0x141420330, GetItemFromArray, 142, 0xD685F342);
 MS2_REPLACE(0x141420990, FUN_141420990, 149, 0x82E4FA4C);
 MS2_REPLACE(0x141420A30, FUN_141420a30, 58, 0x30F01A85);
 // MS2-PIN: ??1CreateParam@ItemSlotBag@@UEAA@XZ 0x141420480

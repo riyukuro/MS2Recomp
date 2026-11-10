@@ -31,16 +31,16 @@ public:
     void LoadUrl(const CStringA& strUrl);     // load an url
     void Navigate(int nCommand);               // 1 forward, 2 back, 3 reload
     void SendRendererMessage(CefRefPtr<CefProcessMessage> message);  // send a process message to the renderer
-    void FUN_141611ea0(int x, int y, unsigned nMsg, WPARAM wParam, LPARAM lParam);    // mouse input
-    void FUN_141612210(unsigned nMsg, WPARAM wParam, LPARAM lParam);                  // keyboard input
+    void OnMouseEvent(int x, int y, unsigned nMsg, WPARAM wParam, LPARAM lParam);    // mouse input
+    void OnKeyEvent(unsigned nMsg, WPARAM wParam, LPARAM lParam);                  // keyboard input
     void SetViewSize(int nWidth, int nHeight);    // resize the view (clamped to the 2048x1024 texture)
-    void FUN_1416124e0(const char* pszToken, int nWindowType);  // the request headers: local player, guild, token
-    void FUN_1416126f0();                           // copy the page into the texture
+    void SetLoginInfo(const char* pszToken, int nWindowType);  // the request headers: local player, guild, token
+    void UpdateTexture();                           // copy the page into the texture
     void FUN_1416129c0();                           // stop painting
-    bool FUN_1416129e0();                           // resume painting
+    bool Open();                           // resume painting
     CefRefPtr<CefBrowserHost> GetBrowserHost();      // the browser host
-    CefRefPtr<CefBrowser> FUN_141612aa0();          // the CEF browser
-    void* FUN_141612b20();                          // the texture the page is rendered into (NiDynamicTexture*)
+    CefRefPtr<CefBrowser> GetBrowser();          // the CEF browser
+    void* GetTexture();                          // the texture the page is rendered into (NiDynamicTexture*)
     void SetOnNavigate(Delegate<void(const CStringA&)> onNavigate);
     void FUN_141612ba0();
     void SetOnUrlChanged(Delegate<void(const std::string&)> onUrlChanged);
@@ -107,7 +107,7 @@ private:
     bool m_bClosed;                                 // +0x98 OnPaint ignored
     CLockCriticalSection m_lock;                    // +0xa0 the pixel buffers
     bool m_bDirty;                                  // +0xd0 pixels changed since the last texture copy
-    unsigned __int64 m_nAccountId;                          // +0xd8 request headers (FUN_1416124e0)
+    unsigned __int64 m_nAccountId;                          // +0xd8 request headers (SetLoginInfo)
     unsigned __int64 m_nCharacterId;                        // +0xe0
     CStringW m_strCharacterName;                    // +0xe8
     Unk_JobCode m_eJob;                             // +0xf0

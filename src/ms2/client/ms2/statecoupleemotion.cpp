@@ -53,7 +53,7 @@ static CStringW s_strCoupleEmotion(L"coupleEmotion");                           
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // StateData slots 1 / 2 argument: the state-sync record.
-class Unk_StateDataArg : public Unk_StateArg22 { };
+class Unk_StateDataArg : public StateSyncObject { };
 
 // Node names of the two actors in the couple nif and the centre node ("B", "A", "Eff_center").
 extern const char* PTR_DAT_1439f4da0;
@@ -66,7 +66,7 @@ class CNifLoadingService
 public:
     NiAVObjectPtr Load(CString strPath, bool bFlag, int nClass, int nMyRefs, int nOtherRefs);   // 0x141551ea0 load a nif
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // Depth-first walk over a scene graph (0x30-byte iterator).
 class Unk_NodeQueue
@@ -95,11 +95,11 @@ class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);                            // closest hit distance
-    bool FUN_14168a770(const Vector3* pPoint);                                                    // the point is blocked
+    bool CheckCapsuleOverlap(const Vector3* pPoint);                                                    // the point is blocked
     int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);       // 0x14168a230 line is blocked
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);
 };
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // The actor's pet-buff position buffer (see statesummon.cpp).
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
@@ -123,7 +123,7 @@ class Unk_CeConsts { public: char m_pad0[0x37e0]; Unk_CeConstSlot m_maxDist; };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Opaque scene-graph and math helpers of the placement search (free-function form).
-void FUN_140a0b2a0(NiAVObject* pObject);                                   // 0x140a0b2a0 detach from the parent
+void DetachFromParent(NiAVObject* pObject);                                   // 0x140a0b2a0 detach from the parent
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
 int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
@@ -259,7 +259,7 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
     }
     CString strPath;
     strPath.Format("Data/Resource/Model/Path/%s", (const char*)m_nifPaths[nAni]);
-    m_spNifRoot = ((class CNifLoadingService*)FUN_140a0afd0())->Load(strPath, 0, 5, 0, 0);
+    m_spNifRoot = ((class CNifLoadingService*)GetNifLoadingService())->Load(strPath, 0, 5, 0, 0);
     if (!m_spNifRoot)
     {
         MS2_ASSERT_AT(0x72, "m_spNifRoot" && 0);
@@ -313,7 +313,7 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
                 break;
         }
     }
-    SetStartTime((float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
+    SetStartTime((float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->GetGameTime());
     UpdateNif();
     return true;
 }
@@ -322,7 +322,7 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
 // @0x140b80630
 void CoupleEmotionAnimInfo::UpdateNif()
 {
-    double dTime = reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280() - m_fStartTime;
+    double dTime = reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->GetGameTime() - m_fStartTime;
     ((NiAVObject*)m_spNifRoot)->Update((float)dTime, true);
 }
 
@@ -416,7 +416,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     MyPC* pMyPC = FUN_1417b84b0();
-    if (pMyPC != 0 && ((void*)(reinterpret_cast<PC*>((PCBase*)pMyPC)->FUN_14165f100())) != 0)
+    if (pMyPC != 0 && ((void*)(reinterpret_cast<PC*>((PCBase*)pMyPC)->GetHeldItem())) != 0)
         reinterpret_cast<PC*>((PCBase*)pMyPC)->SendRequestCube();
     m_spAnimInfo.AssignRaw(new CoupleEmotionAnimInfo);
     m_spCoupleData.AssignRaw(dynamic_cast<StateCoupleEmotionData*>(pData));
@@ -438,7 +438,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
         return;
     m_pOwner->FUN_141670330((float)spRow.operator->()->m_nOffsetNameTag);
     bool bRequester = IsRequester();
-    if (!m_spAnimInfo->Init(reinterpret_cast<SkillData*>(spRow.operator->())->GetParam1(), reinterpret_cast<PC*>(pOwnerPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60(), bRequester))
+    if (!m_spAnimInfo->Init(reinterpret_cast<SkillData*>(spRow.operator->())->GetParam1(), reinterpret_cast<PC*>(pOwnerPC)->GetGender(), reinterpret_cast<PC*>(pPartner)->GetGender(), bRequester))
         return;
     if (!m_spAnimInfo->Load(m_spCoupleData->m_nAni))
         return;
@@ -477,7 +477,7 @@ void StateCoupleEmotion::vfunc_5(int n)
             break;
         pOwnerPC->SetRotationAndTargetYaw(m_posSaved);
     } while (0);
-    FUN_140a0b2a0((NiAVObject*)(NiNode*)m_spLoopEffectNode);
+    DetachFromParent((NiAVObject*)(NiNode*)m_spLoopEffectNode);
     m_spLoopEffectNode = (NiNode*)0;
     m_pOwner->FUN_141670330(0.0f);
 }
@@ -536,7 +536,7 @@ void StateCoupleEmotion::vfunc_3(double fTime)
 void StateCoupleEmotion::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     switch (FUN_1417b7e40())
     {
     case 0x93:
@@ -569,7 +569,7 @@ void StateCoupleEmotion::vfunc_24()
     do
     {
         float fDist = 0.0f;
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 50.0f) != 0)
+        if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fDist, 50.0f) != 0)
         {
             kPos.z = kPos.z - (fDist - 1.0f);
             break;
@@ -613,7 +613,7 @@ void StateCoupleEmotion::vfunc_24()
         ((Unk_EffectTarget&)(kTarget)).m_strName = m_spAnimInfo->m_strTeleportEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
         ((Unk_EffectTarget&)(kTarget)).m_pXform = &kXf;
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
+        TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
     } while (0);
 }
 
@@ -730,7 +730,7 @@ void StateCoupleEmotion::TextKeyEvent(NiActorManager* pkManager, unsigned int eS
 
 // Is a state request for this state a repeat of what is running? 1 = no, the state should be re-entered.
 // @0x140b81da0
-int StateCoupleEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateCoupleEmotion::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     if (!p)
     {
@@ -739,7 +739,7 @@ int StateCoupleEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
     }
     if (m_n10 != p->m_nSub)
         return 1;
-    MS2Ptr<StateSyncObjectCoupleEmotion> spSync(dynamic_cast<StateSyncObjectCoupleEmotion*>((Unk_StateArg22*)p));
+    MS2Ptr<StateSyncObjectCoupleEmotion> spSync(dynamic_cast<StateSyncObjectCoupleEmotion*>((StateSyncObject*)p));
     if (spSync == 0)
         return 0;
     switch (m_n10)
@@ -753,7 +753,7 @@ int StateCoupleEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x140b81f70
-bool StateCoupleEmotion::vfunc_28(MS2Ptr<Unk_StateArg22> p)
+bool StateCoupleEmotion::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     return FUN_1417b7e40() != p->m_nSub;
 }
@@ -807,7 +807,7 @@ bool StateCoupleEmotion::IsRequester()
         MS2_ASSERT_AT(0x276, "pPC" && 0);
         return false;
     }
-    return reinterpret_cast<GameObject*>(pPC)->FUN_14123c580() == GetRequesterId();
+    return reinterpret_cast<GameObject*>(pPC)->GetObjectId() == GetRequesterId();
 }
 
 // ---- placement / partner / animation control ---------------------------------------------------------------------------
@@ -883,7 +883,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         efd::Point3 kHit;
         NiPoint3 kDir(ptPeer - ptOwner);
         float fLen = ((Vector3*)&static_cast<class NiPoint3 const&>(kDir))->Unitize();
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(ptOwner)), reinterpret_cast<Vector3&>(kHit), Vector3(reinterpret_cast<const Vector3&>(kDir)), fLen, 0) != 0)
+        if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(ptOwner)), reinterpret_cast<Vector3&>(kHit), Vector3(reinterpret_cast<const Vector3&>(kDir)), fLen, 0) != 0)
             continue;
         NiPoint3 kAngles;
         if (kParentXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
@@ -1094,12 +1094,12 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
         MS2_ASSERT_AT(0x37f, "pMyPC" && 0);
         return false;
     }
-    bool bMine = (reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() == reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580() || reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() == GetPartnerId()) ? true : false;
+    bool bMine = (reinterpret_cast<GameObject*>(pMyPC)->GetObjectId() == reinterpret_cast<GameObject*>(m_pOwner)->GetObjectId() || reinterpret_cast<GameObject*>(pMyPC)->GetObjectId() == GetPartnerId()) ? true : false;
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = strName;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
     ((Unk_EffectTarget&)(kTarget)).m_spObject = (NiAVObject*)(NiNode*)m_spLoopEffectNode;
-    kTarget.SetActor(bMine ? reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() : reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
+    kTarget.SetActor(bMine ? reinterpret_cast<GameObject*>(pMyPC)->GetObjectId() : reinterpret_cast<GameObject*>(m_pOwner)->GetObjectId());
     unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     m_effects.SetAt(strName, nHandle);
     return true;
@@ -1167,7 +1167,7 @@ bool StateCoupleEmotion::PlayAni(int nAni)
     m_spCoupleData->m_nAni = nAni;
     CStringA strName = m_spAnimInfo->GetAniName(nAni);
     m_spAnimInfo->Load(nAni);
-    m_spAnimInfo->SetStartTime((float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
+    m_spAnimInfo->SetStartTime((float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->GetGameTime());
     pOwnerPC->PlayAnimation((const char*)strName, 1.0f, true, false);
     return true;
 }
@@ -1284,13 +1284,13 @@ bool FUN_140b84dc0(const NiPoint3& kPoint)
     // the exe raises the caller's point itself (both callers go on using the raised point)
     const_cast<NiPoint3&>(kPoint).z += 5.0f;
     float fDist = 0.0f;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const Vector3*)&kPoint))
+    if (((class CPhysXHelper*)GetPhysXHelper())->CheckCapsuleOverlap((const Vector3*)&kPoint))
         return false;
     NiPoint3 kDown(efd::Point3::ZERO);
     Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
@@ -1376,8 +1376,8 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
     }
     MS2Ptr<StateCoupleEmotionData> spData(new StateCoupleEmotionData);
     spData->m_nEmotion = nEmotionId;
-    spData->m_nPartnerId = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
-    spData->m_nRequesterId = reinterpret_cast<GameObject*>(pTarget)->FUN_14123c580();
+    spData->m_nPartnerId = reinterpret_cast<GameObject*>(pTarget)->GetObjectId();
+    spData->m_nRequesterId = reinterpret_cast<GameObject*>(pTarget)->GetObjectId();
     spData->m_posStart = pMyPC->vfunc_18();
     spData->m_posEnd = pMyPC->vfunc_20();
     pMyPC->vfunc_59(0x3a, spData.get(), 0x94, 1);

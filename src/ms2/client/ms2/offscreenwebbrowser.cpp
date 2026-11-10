@@ -252,7 +252,7 @@ void COffscreenWebBrowser::SendRendererMessage(CefRefPtr<CefProcessMessage> mess
 }
 
 // @0x141611ea0
-void COffscreenWebBrowser::FUN_141611ea0(int x, int y, unsigned nMsg, WPARAM wParam, LPARAM lParam)
+void COffscreenWebBrowser::OnMouseEvent(int x, int y, unsigned nMsg, WPARAM wParam, LPARAM lParam)
 {
     if (m_browser.get() == NULL) {
         return;
@@ -289,10 +289,10 @@ void COffscreenWebBrowser::FUN_141611ea0(int x, int y, unsigned nMsg, WPARAM wPa
     }
     }
 }
-MS2_REPLACE_METHOD(0x141611EA0, COffscreenWebBrowser, FUN_141611ea0, 814, 0);
+MS2_REPLACE_METHOD(0x141611EA0, COffscreenWebBrowser, OnMouseEvent, 814, 0);
 
 // @0x141612210
-void COffscreenWebBrowser::FUN_141612210(unsigned nMsg, WPARAM wParam, LPARAM lParam)
+void COffscreenWebBrowser::OnKeyEvent(unsigned nMsg, WPARAM wParam, LPARAM lParam)
 {
     if (m_browser.get() == NULL) {
         return;
@@ -315,7 +315,7 @@ void COffscreenWebBrowser::FUN_141612210(unsigned nMsg, WPARAM wParam, LPARAM lP
     CefRefPtr<CefBrowserHost> host = m_browser->GetHost();
     host->SendKeyEvent(event);
 }
-MS2_REPLACE_METHOD(0x141612210, COffscreenWebBrowser, FUN_141612210, 435, 0);
+MS2_REPLACE_METHOD(0x141612210, COffscreenWebBrowser, OnKeyEvent, 435, 0);
 
 // @0x1416123d0
 void COffscreenWebBrowser::SetViewSize(int nWidth, int nHeight)
@@ -336,7 +336,7 @@ void COffscreenWebBrowser::SetViewSize(int nWidth, int nHeight)
 MS2_REPLACE_METHOD(0x1416123D0, COffscreenWebBrowser, SetViewSize, 252, 0);
 
 // @0x1416124e0
-void COffscreenWebBrowser::FUN_1416124e0(const char* pszToken, int nWindowType)
+void COffscreenWebBrowser::SetLoginInfo(const char* pszToken, int nWindowType)
 {
     m_nAccountId = DAT_143ab2820;
     m_nCharacterId = DAT_143ab2828;
@@ -345,11 +345,11 @@ void COffscreenWebBrowser::FUN_1416124e0(const char* pszToken, int nWindowType)
     PC* pPlayer = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != NULL) {
         m_strCharacterName = pPlayer->vfunc_77();
-        m_eJob = (Unk_JobCode)pPlayer->FUN_141654700();
+        m_eJob = (Unk_JobCode)pPlayer->GetJobGroupId();
         m_nLevel = (unsigned short)pPlayer->vfunc_78();
-        if (CGuildManager::GetInstance()->FUN_1413b6160() != 0) {
+        if (CGuildManager::GetInstance()->IsInGuild() != 0) {
             m_nGuildId = CGuildManager::GetInstance()->FUN_1404ccbd0();
-            m_strGuildName = pPlayer->FUN_141656be0();
+            m_strGuildName = pPlayer->GetGuildName();
         } else {
             m_nGuildId = 0;
             m_strGuildName = L"";
@@ -363,10 +363,10 @@ void COffscreenWebBrowser::FUN_1416124e0(const char* pszToken, int nWindowType)
     }
     m_strToken = pszToken;
 }
-MS2_REPLACE_METHOD(0x1416124E0, COffscreenWebBrowser, FUN_1416124e0, 520, 0);
+MS2_REPLACE_METHOD(0x1416124E0, COffscreenWebBrowser, SetLoginInfo, 520, 0);
 
 // @0x1416126f0
-void COffscreenWebBrowser::FUN_1416126f0()
+void COffscreenWebBrowser::UpdateTexture()
 {
     if (m_bClosed) {
         return;
@@ -395,7 +395,7 @@ void COffscreenWebBrowser::FUN_1416126f0()
         m_bDirty = false;
     }
 }
-MS2_REPLACE_METHOD(0x1416126F0, COffscreenWebBrowser, FUN_1416126f0, 711, 0);
+MS2_REPLACE_METHOD(0x1416126F0, COffscreenWebBrowser, UpdateTexture, 711, 0);
 
 // @0x1416129c0
 void COffscreenWebBrowser::FUN_1416129c0()
@@ -405,13 +405,13 @@ void COffscreenWebBrowser::FUN_1416129c0()
 MS2_REPLACE_METHOD(0x1416129C0, COffscreenWebBrowser, FUN_1416129c0, 18, 0);
 
 // @0x1416129e0
-bool COffscreenWebBrowser::FUN_1416129e0()
+bool COffscreenWebBrowser::Open()
 {
     m_bClosed = false;
     m_bDirty = true;
     return true;
 }
-MS2_REPLACE_METHOD(0x1416129E0, COffscreenWebBrowser, FUN_1416129e0, 32, 0);
+MS2_REPLACE_METHOD(0x1416129E0, COffscreenWebBrowser, Open, 32, 0);
 
 // @0x141612a10
 CefRefPtr<CefBrowserHost> COffscreenWebBrowser::GetBrowserHost()
@@ -423,7 +423,7 @@ CefRefPtr<CefBrowserHost> COffscreenWebBrowser::GetBrowserHost()
 }
 
 // @0x141612aa0
-CefRefPtr<CefBrowser> COffscreenWebBrowser::FUN_141612aa0()
+CefRefPtr<CefBrowser> COffscreenWebBrowser::GetBrowser()
 {
     if (m_browser.get() == NULL) {
         return NULL;
@@ -432,11 +432,11 @@ CefRefPtr<CefBrowser> COffscreenWebBrowser::FUN_141612aa0()
 }
 
 // @0x141612b20
-void* COffscreenWebBrowser::FUN_141612b20()
+void* COffscreenWebBrowser::GetTexture()
 {
     return m_spTexture;
 }
-MS2_REPLACE_METHOD(0x141612B20, COffscreenWebBrowser, FUN_141612b20, 31, 0);
+MS2_REPLACE_METHOD(0x141612B20, COffscreenWebBrowser, GetTexture, 31, 0);
 
 // @0x141612b50
 void COffscreenWebBrowser::SetOnNavigate(Delegate<void(const CStringA&)> onNavigate)

@@ -281,7 +281,7 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         if (spData.get() != 0) \
             strIcon = spData->GetIconPath(); \
         objPet.FUN_1407cba60("iconPath", strIcon); \
-        objPet.FUN_1409c0d20("petID", *pPet); \
+        objPet.SetMemberUInt("petID", *pPet); \
         objPet.FUN_1407cb9c0("grade", nGrade); \
         arrPets.PushValue(Scaleform::GFx::Value(objPet.FUN_1422bb870()));
 

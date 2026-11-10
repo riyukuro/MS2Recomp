@@ -322,8 +322,8 @@ public:
 
     // AS member setters used by ASDisplayObject's width/height (asdisplayobject.cpp; ASObj declares the same COMDATs).
     void FUN_1407cb9c0(const char* szName, int n);                       // set an int member
-    void FUN_1409c0d20(const char* szName, unsigned int n);              // set an unsigned member
-    void FUN_1409c4a30(const char* szName, float f);                     // set a float member
+    void SetMemberUInt(const char* szName, unsigned int n);              // set an unsigned member
+    void SetMemberFloat(const char* szName, float f);                     // set a float member
     Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);   // 0x141a46b60 (Invoke; inline COMDAT, first emitted in uiminimapentity.cpp; both by value: the callee destroys them; astextfieldex.cpp)
     Scaleform::GFx::Value FUN_1422c1870(const char* szMethod, float a1, float a2, bool a3);   // 0x1422c1870 (Invoke; inline COMDAT, defined in asdisplayobject.cpp: hitTestPoint)
     Scaleform::GFx::Value FUN_1422c6f70(const char* szMethod, Scaleform::GFx::Value a1, float a2);   // 0x1422c6f70 (Invoke; inline COMDAT, defined in asdisplayobjectcontainer.cpp; a1 by value: the callee destroys it)

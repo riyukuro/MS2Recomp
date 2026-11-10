@@ -32,28 +32,28 @@ public:
     void FUN_14152a2f0(int n);                              // scenestategame packet 0x35
     void FUN_141524a80(bool bForce);                        // stop moving for a cast (scenestategame)
     int FUN_141525480(int nSkillId, bool bRemap);           // the skill (switched by buffs) may be cast (as ms2/client/ms2/mypc.h)
-    void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
-    class CSkillSystem* FUN_141523bc0();                    // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
-    class StatePcGuideObjectController* FUN_141523be0();    // the guide object controller (scenestategame 0x1417127b0)
+    void SendHouseSetting(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
+    class CSkillSystem* GetSkillSystem();                    // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
+    class StatePcGuideObjectController* GetStateController();    // the guide object controller (scenestategame 0x1417127b0)
     MS2Ptr<class CStatPointManager> FUN_140c25130();        // the stat point manager (statpointmanager.cpp)
     void FUN_141661370(int a, int b, int c);                // PC member (scenestategame packet 0x83)
     void FUN_141528c30(CInPacket& packet);                  // scenestategame packet 0x135
     void FUN_141662850(__int64 nValue);                     // PC member (scenestategame packet 0xe0)
     void FUN_141662890(__int64 nValue);                     // PC member
-    Unk_PCEquipSet* FUN_1416561a0();                        // PC member: the equip holder (scenestategame 0x141712fb0)
+    Unk_PCEquipSet* GetEquipment();                        // PC member: the equip holder (scenestategame 0x141712fb0)
     void FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera);   // warp (mypc.cpp); scenestategame 0x141721a30
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // PC member: a worn item by uid (scenestategame 0x14173b420)
     void ClearLapenshards();                                   // begin bulk update (scenestategame 0x14173d2e0)
     void EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
-    void FUN_14152fa20();                                   // end bulk update
+    void UpdateLapenshardGrades();                                   // end bulk update
     void UnequipLapenshard(Unk_MyPCLapenSlot nSlot);        // unequip nSlot
     int FUN_1416595d0();                                    // PC member: the cube craft mode (actionkeyobject.cpp)
-    class Unk_MyPCEmotion* FUN_14165f100();                 // PC member: the playing emotion (stateemotionidle.cpp)
+    class Unk_MyPCEmotion* GetHeldItem();                 // PC member: the playing emotion (stateemotionidle.cpp)
     class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft (housing build) controller (scenestategame 0x69)
     bool FUN_1415302e0(int nItemId);                        // the cube item is locked (housing level, achievement)
     int FUN_141659690();                                    // PC member
-    class UserUGCMapInfo* FUN_141523c50();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
-    void FUN_141524880(MS2Ptr<UserUGCMapInfo> spInfo);   // set it (mypc.cpp)
+    class UserUGCMapInfo* GetUGCMapInfo();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
+    void SetUGCMapInfo(MS2Ptr<UserUGCMapInfo> spInfo);   // set it (mypc.cpp)
     int HasNoHome();
     int FUN_141527ed0();                                    // 0x141527ed0 (uirealestatedialog.cpp)
     CStringW GetHomeName();                                 // 0x141528330 the house name
@@ -63,13 +63,13 @@ public:
     void SendCraftModeOff();
     void FUN_141530700(int bFlag);
     void FUN_14152a2d0(int n);
-    void FUN_141699a20();                                   // scenestategame OnAddUser
+    void CreatePortraitPC();                                   // scenestategame OnAddUser
     void FUN_14152ed60(const struct Unk_MyPCGameBegin* pData);   // scenestategame OnAddUser (C3: was Unk_UserProxy*; mypc.cpp's game-begin view)
     void FUN_1416634a0(__int64 nCharId);                    // PC member (scenestategame OnAddUser)
     int FUN_141527eb0();                                    // (scenestategame storage update)
     int FUN_141529620();
     int FUN_14152e060();                                    // 0x14152e060 the id of the actor held (state 0x20), else 0 (scenestategame 0x79)
-    MS2Ptr<CHomePrivilege> FUN_140967010();                 // 0x140967010 the house privileges (+0x1628; scenestategame taxi)
+    MS2Ptr<CHomePrivilege> GetHomePrivilege();                 // 0x140967010 the house privileges (+0x1628; scenestategame taxi)
 private:
     char m_pad[0x1808 - 0xd40];                             // unrecovered members
 };

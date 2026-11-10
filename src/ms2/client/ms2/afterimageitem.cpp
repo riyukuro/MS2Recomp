@@ -115,7 +115,7 @@ public:
     int GetActor();
 };
 
-float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
+float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
 // The object table (singleton 0x1403ed2d0) and an actor's position (vtable slot 18).
 class Unk_AfterImageActor                                           // MS2: slot 18 is GetPosition
@@ -162,7 +162,7 @@ Unk_AfterImageRef::Unk_AfterImageRef()
 Unk_AfterImageRef::Unk_AfterImageRef(const Unk_AfterImageRef& kOther)
 {
     m_pParam = kOther.m_pParam;
-    FUN_140981190();
+    AddRef();
 }
 
 // @0x14097f560
@@ -174,7 +174,7 @@ Unk_AfterImageRef::~Unk_AfterImageRef()
 // @0x14097fa60
 Unk_AfterImageRef& Unk_AfterImageRef::operator=(const Unk_AfterImageRef& kOther)
 {
-    const_cast<Unk_AfterImageRef&>(kOther).FUN_140981190();
+    const_cast<Unk_AfterImageRef&>(kOther).AddRef();
     FUN_140981680();
     m_pParam = kOther.m_pParam;
     return *this;
@@ -187,7 +187,7 @@ CAfterImageEffectParam* Unk_AfterImageRef::operator->() const
 }
 
 // @0x140981190
-void Unk_AfterImageRef::FUN_140981190()
+void Unk_AfterImageRef::AddRef()
 {
     if (m_pParam)
         FUN_140981230(0);
@@ -210,13 +210,13 @@ void Unk_AfterImageRef::FUN_140981680()
 {
     if (m_pParam)
     {
-        FUN_140981730(0);
+        ReleaseAndDelete(0);
         m_pParam = 0;
     }
 }
 
 // @0x140981730
-void Unk_AfterImageRef::FUN_140981730(void*)
+void Unk_AfterImageRef::ReleaseAndDelete(void*)
 {
     if (CPtred::ReleasePtred(m_pParam) == 0)
     {
@@ -252,7 +252,7 @@ void AfterImageItem::Init(Unk_AfterImageRef kParam, NiDynamicTexturePtr spTextur
     m_spNode->SetTranslate(kPos);
     m_spNode->UpdateEffects();
     m_spNode->UpdateProperties();
-    m_spNode->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
+    m_spNode->Update((float)reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime(), true);
     m_fSize = fSize;
     m_nBirth = GetTickCountMs2();
     m_nLife = nLife;
@@ -396,8 +396,8 @@ bool CAfterImageEffect::IsTimeUp() const
 {
     if (m_b2d)
         return false;
-    double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
-    if (!((CEffect*)const_cast<CAfterImageEffect*>(this))->FUN_14119f3c0())
+    double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->GetGameTime();
+    if (!((CEffect*)const_cast<CAfterImageEffect*>(this))->IsStarted())
         return false;
     return dNow > m_dStartTime + (double)m_fDuration ? !m_b2c : false;
 }
@@ -418,7 +418,7 @@ bool CAfterImageEffect::ShouldCapture()
         return false;
     NiPoint3 kActor(pActor->vfunc_18());
     efd::Point3 kLast = m_kPos;
-    return FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(kActor + NiPoint3(0.0f, 0.0f, 75.0f))), reinterpret_cast<const Vector3&>(kLast)) > m_kParam->GetMoveInterval();
+    return GetDistance(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(kActor + NiPoint3(0.0f, 0.0f, 75.0f))), reinterpret_cast<const Vector3&>(kLast)) > m_kParam->GetMoveInterval();
 }
 
 // @0x14097db30

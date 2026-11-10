@@ -294,7 +294,7 @@ void FUN_14092f420()
 {
     FUN_140931510()->ClearDungeonState();
     DAT_143ab2d80.Clear();
-    g_143ab2a90.FUN_140a5c970();
+    g_143ab2a90.Clear();
     DAT_143ab2fc0.Clear();
     DAT_143ab3010.Clear();
     DAT_143ab2e20.RemoveAll();
@@ -318,10 +318,10 @@ unsigned FUN_14092f4e0(int nSkillId)
     Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc != 0)
     {
-        Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0());
+        Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->GetJobSystem());
         if (pBook->vfunc_2(nSkillId))
         {
-            MS2Ptr<SkillLevelData> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0())->vfunc_1(nSkillId);
+            MS2Ptr<SkillLevelData> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->GetJobSystem())->vfunc_1(nSkillId);
             if (spSkill.get() != 0)
             {
                 if (reinterpret_cast<Unk_SkillRec*>(spSkill.operator->()->GetSkill())->m_bBlocked)
@@ -389,7 +389,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
     else
     {
         MS2Ptr<CItemData> spData(0);
-        Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+        Unk_Inventory::ItemPtr spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.get() != 0)
             spData.AssignRaw((CItemData*)spItem->FUN_140527840());
         else
@@ -446,7 +446,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
     else
     {
         MS2Ptr<CItemData> spData(0);
-        Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+        Unk_Inventory::ItemPtr spItem = g_143ab2a90.FindItemByUid(nItemUid);
         if (spItem.get() != 0)
             spData.AssignRaw((CItemData*)spItem->FUN_140527840());
         else
@@ -867,7 +867,7 @@ bool FUN_140930d70()
     Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    bool bResult = reinterpret_cast<CSkillSystem*>(((class MyPC*)(class Unk_MyPc*)(pPc))->FUN_141523bc0())->GetSkillSet().get() != 0;
+    bool bResult = reinterpret_cast<CSkillSystem*>(((class MyPC*)(class Unk_MyPc*)(pPc))->GetSkillSystem())->GetSkillSet().get() != 0;
     return bResult;
 }
 
@@ -883,7 +883,7 @@ int FUN_140930e10()
     for (unsigned short nLevel = 1; nLevel <= DAT_143ab291c; nLevel++)
     {
         ATL::CAtlArray<MS2Ptr<ItemEntity> > quests;
-        FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), quests);
+        FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), quests);
         if (quests.GetCount() == 0)
             continue;
         if (FUN_140931890(&DAT_143ab32b8, &nLevel) != -1)

@@ -133,7 +133,7 @@ int FUN_140ad02f0(int nValue, int nLimit);                          // upper cla
 bool FUN_14028d470(float a, float b);                               // nearly equal
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 class CMainSystem;
-void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
+void DetachFromParent(NiAVObject* pObj);                               // detach from the parent
 void FUN_1415672e0(NiAVObject* pObj, bool bFlag);
 // Time controller helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
@@ -158,7 +158,7 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 class Unk_ResourceMgr : public CNifLoadingService   // C3: GetTexture / Preload are the real CNifLoadingService members
 {
 };
-Unk_ResourceMgr* FUN_140a0afd0();
+Unk_ResourceMgr* GetNifLoadingService();
            // release by path
 
 // The effect manager (singleton 0x1403ed280): quality level.
@@ -171,7 +171,7 @@ public:
 
 // Scene nodes of the effect system. EffectNode (400 bytes) carries the effect-space point; SeparateNode (0x138) follows
 // only the selected parts of its parent's transform.
-#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+#include "ms2/guess/separatenode.h"   // SeparateNode (was a local view)
 //
 //
 //
@@ -233,7 +233,7 @@ bool CSwooshEffectParam::vfunc_3()
 {
     if (m_strNifPath.IsEmpty())
         return true;
-    return FUN_140a0afd0()->IsCached(FUN_140cc2ba0("Effect", m_strNifPath));
+    return GetNifLoadingService()->IsCached(FUN_140cc2ba0("Effect", m_strNifPath));
 }
 
 // @0x14181d290
@@ -249,9 +249,9 @@ bool CSwooshEffectParam::vfunc_5(int n)
 {
     if (!m_strNifPath.IsEmpty())
     {
-        if (FUN_140a0afd0() != 0)
+        if (GetNifLoadingService() != 0)
         {
-            FUN_140a0afd0()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), (bool)0, n);
+            GetNifLoadingService()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), (bool)0, n);
         }
     }
     return true;
@@ -338,7 +338,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
     m_spRoot = spRoot;
-    NiPointer<Unk_SeparateNode> spSeparate = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(0, 0, 0);
+    NiPointer<SeparateNode> spSeparate = new (efd::MemHint(efd::MemHint::NONE)) SeparateNode(0, 0, 0);
     m_spTarget = pNode;
     m_strNode1 = pSwoosh->m_strNode1;
     m_strNode2 = pSwoosh->m_strNode2;
@@ -347,7 +347,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     if (pSwoosh->m_strNifPath.GetLength() > 0)
     {
-        NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
+        NiAVObjectPtr spModel = GetNifLoadingService()->Load(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         {
             Unk_SceneWalker kWalker((NiAVObject*)spModel);
@@ -419,7 +419,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)(0));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)(1));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)(0));
-        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>((NiTexture*)FUN_140a0afd0()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5))));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>((NiTexture*)GetNifLoadingService()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5))));
         static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spTexture);
 
         NiVertexColorProperty* spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -494,7 +494,7 @@ void CSwooshEffect::vfunc_4()
         m_spTarget->AttachChild(static_cast<NiAVObject*>(m_spRoot), true);
         m_spRoot->UpdateEffects();
         m_spRoot->UpdateProperties();
-        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
         {
             NiFixedString kName((const char*)m_strNode1);
             m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(m_spTarget->GetObjectByName(kName))))));
@@ -525,7 +525,7 @@ void CSwooshEffect::vfunc_4()
 // @0x14181f0c0
 void CSwooshEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spRoot));
+    DetachFromParent(static_cast<NiAVObject*>(m_spRoot));
 }
 
 // @0x14181f0f0
@@ -556,7 +556,7 @@ int CSwooshEffect::vfunc_8(void* p)
 // drops the oldest control point once enough are kept.
 void CSwooshEffect::UpdateTrail()
 {
-    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
     double dElapsed = dNow - m_dLastSample;
     if (dElapsed >= (double)m_fInterval)
     {

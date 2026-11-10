@@ -608,7 +608,7 @@ void WeddingManager::OnPropose(CInPacket& packet)
         box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box->FUN_141a024a0(0);
         box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeAnswer));
-        box->FUN_140b76940(FUN_141b71910(id));
+        box->AddStringArg(FUN_141b71910(id));
         FUN_140d73c60(box);
     }
 }
@@ -711,7 +711,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
             box->FUN_141a01800(4);
             box->FUN_141a024a0(0);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));
-            box->FUN_140b76940(FUN_141b71910(((PCBase*)user)->FUN_141656a80()));
+            box->AddStringArg(FUN_141b71910(((PCBase*)user)->FUN_141656a80()));
             FUN_140d73c60(box);
         }
     }
@@ -1042,7 +1042,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
     void* user = WorldService::GetInstance()->FUN_141bd0cc0();
     if (!user)
         return 0x12;
-    if (!FUN_1409005c0(((PC*)user)->FUN_141658e60(), ((PC*)target)->FUN_141658e60()))
+    if (!FUN_1409005c0(((PC*)user)->GetGender(), ((PC*)target)->GetGender()))
         return 0x15;
     if (g_143ab2a90.FUN_140a5f180(FUN_140900d40(), 0) == 0)
         return 0x1f;

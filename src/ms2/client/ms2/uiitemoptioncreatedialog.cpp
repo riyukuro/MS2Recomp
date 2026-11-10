@@ -400,7 +400,7 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
         }
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
-        row.FUN_1409c0d20("itemId", nId);
+        row.SetMemberUInt("itemId", nId);
         if (strSearch.IsEmpty()) {
             if (strGroup == "RHLH") {
                 if (item->FUN_14053d460())

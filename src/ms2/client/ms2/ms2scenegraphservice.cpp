@@ -71,14 +71,14 @@ using namespace ecr;
 
 extern int DAT_143ae2b30;                               // 1: threaded scene graph update (worker threads)
 
-// The NIF loading service's texture cache (CNifLoadingService, nifeffectparam.h; FUN_140a0afd0 returns it).
+// The NIF loading service's texture cache (CNifLoadingService, nifeffectparam.h; GetNifLoadingService returns it).
 class Unk_SgNifLoader
 {
 public:
     NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf);    // cached texture by path
     void FUN_1415540f0(CString strPath, NiTexture* pkTex);              // cache a texture under a path
 };
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 // The client options (FUN_1411b1db0 returns them): the scene graph worker thread count.
 
@@ -174,14 +174,14 @@ MS2DefaultTexturePalette::~MS2DefaultTexturePalette()
 // @0x1414f0c00
 NiTexture* MS2DefaultTexturePalette::GetTexture(const char* pcPath, NiTexture* pkSelf) const
 {
-    return ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_141553eb0(CString(pcPath), pkSelf);
+    return ((class Unk_SgNifLoader*)GetNifLoadingService())->FUN_141553eb0(CString(pcPath), pkSelf);
 }
 MS2_REPLACE_METHOD(0x1414F0C00, MS2DefaultTexturePalette, GetTexture, 154, 0xA8167CF8);
 
 // @0x1414f0ca0
 void MS2DefaultTexturePalette::SetTexture(const char* pcPath, NiTexture* pkTex)
 {
-    ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_1415540f0(CString(pcPath), pkTex);
+    ((class Unk_SgNifLoader*)GetNifLoadingService())->FUN_1415540f0(CString(pcPath), pkTex);
 }
 MS2_REPLACE_METHOD(0x1414F0CA0, MS2DefaultTexturePalette, SetTexture, 98, 0x7EC1F0B7);
 
@@ -227,7 +227,7 @@ efd::AsyncResult MS2SceneGraphService::OnInit()
     {
         m_uiThreadCount = ((class COSInfo*)TSingleton<COSInfo>::GetInstance())->GetProcessorCount();
         MultiSceneUpdater::GetInstance()->Create(m_uiThreadCount);
-        MultiSceneUpdater::s_pfnCallback = reinterpret_cast<SceneUpdateCallback>(FUN_1414f1d00);
+        MultiSceneUpdater::s_pfnCallback = reinterpret_cast<SceneUpdateCallback>(UpdateBucketRange);
         MultiSceneUpdater::s_pCallbackContext = this;
     }
     return result;
@@ -260,7 +260,7 @@ efd::AsyncResult MS2SceneGraphService::OnShutdown()
         pkRenderer->RemoveLostDeviceNotificationFunc(FUN_1414f36b0);
     }
     if (DAT_143ae2b30 != 0)
-        AnimationCallbackManager::GetInstance()->FUN_14099c030();
+        AnimationCallbackManager::GetInstance()->DeleteAllBridges();
     return SceneGraphService::OnShutdown();
 }
 MS2_REPLACE_METHOD(0x1414F10E0, MS2SceneGraphService, OnShutdown, 222, 0xFEF72BD6);
@@ -312,25 +312,25 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
         {
             AnimationCallbackManager::GetInstance()->SetQueueMode(1);
             MultiSceneUpdater::s_fTime = currTime;
-            FUN_1414f1f50(1);
-            FUN_1414f1f50(0);
-            FUN_1414f1f50(4);
-            FUN_1414f1f50(5);
+            UpdateBucket(1);
+            UpdateBucket(0);
+            UpdateBucket(4);
+            UpdateBucket(5);
             Unk_SgWorldObjects* pObjects = (Unk_SgWorldObjects*)WorldService::GetInstance()->FUN_141bd36b0();
             for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetNext(pos))
             {
                 Unk_SgRider* pRider = static_cast<Unk_SgRider*>(((TPtr<PCBase>*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos))->get());
                 if (pRider != NULL)
                 {
-                    Unk_SgRidee* pRidee = static_cast<Unk_SgRidee*>(pRider->FUN_1416764a0());
+                    Unk_SgRidee* pRidee = static_cast<Unk_SgRidee*>(pRider->GetRidee());
                     if (pRidee != NULL)
                         pRidee->FUN_1417074c0();
                 }
             }
-            FUN_1414f1f50(2);
+            UpdateBucket(2);
             AnimationCallbackManager::GetInstance()->SetQueueMode(0);
-            AnimationCallbackManager::GetInstance()->FUN_14099bd80();
-            FUN_1414f1f50(3);
+            AnimationCallbackManager::GetInstance()->DispatchQueuedEvents();
+            UpdateBucket(3);
             m_pBatchedUpdateProcess->Flush();
         }
         else
@@ -469,7 +469,7 @@ void MS2SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 MS2_REPLACE_METHOD(0x1414F1C10, MS2SceneGraphService, RemoveFromUpdate, 219, 0x7CDE8B0F);
 
 // @0x1414f1d00
-void MS2SceneGraphService::FUN_1414f1d00(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin,
+void MS2SceneGraphService::UpdateBucketRange(MS2SceneGraphService* pService, int iBucket, efd::UInt32 uiBegin,
     efd::UInt32 uiEnd, NiUpdateProcess* pkProcess)
 {
     if (pService)
@@ -493,7 +493,7 @@ void MS2SceneGraphService::FUN_1414f1d00(MS2SceneGraphService* pService, int iBu
         }
     }
 }
-MS2_REPLACE(0x1414F1D00, MS2SceneGraphService::FUN_1414f1d00, 297, 0xB30B4D87);
+MS2_REPLACE(0x1414F1D00, MS2SceneGraphService::UpdateBucketRange, 297, 0xB30B4D87);
 
 // @0x1414f1e30
 void MS2SceneGraphService::AddAlwaysUpdated(NiAVObject* pkSceneGraph)
@@ -510,11 +510,11 @@ void MS2SceneGraphService::SetBucketOverride(egf::EntityID entityID, int iBucket
 MS2_REPLACE_METHOD(0x1414F1E70, MS2SceneGraphService, SetBucketOverride, 60, 0x7F714462);
 
 // @0x1414f1ec0
-void MS2SceneGraphService::FUN_1414f1ec0()
+void MS2SceneGraphService::ClearBucketOverrides()
 {
     m_bucketOverrides.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1414F1EC0, MS2SceneGraphService, FUN_1414f1ec0, 33, 0xF5AD8023);
+MS2_REPLACE_METHOD(0x1414F1EC0, MS2SceneGraphService, ClearBucketOverrides, 33, 0xF5AD8023);
 
 // @0x1414f1ef0
 void MS2SceneGraphService::ClearBucketOverride(egf::EntityID entityID)
@@ -525,7 +525,7 @@ void MS2SceneGraphService::ClearBucketOverride(egf::EntityID entityID)
 MS2_REPLACE_METHOD(0x1414F1EF0, MS2SceneGraphService, ClearBucketOverride, 75, 0x3467E42F);
 
 // @0x1414f1f50
-void MS2SceneGraphService::FUN_1414f1f50(int iBucket)
+void MS2SceneGraphService::UpdateBucket(int iBucket)
 {
     efd::UInt32 uiThreads = m_uiThreadCount;
     efd::UInt32 uiTotal = static_cast<efd::UInt32>(m_buckets[iBucket].size());
@@ -567,7 +567,7 @@ void MS2SceneGraphService::FUN_1414f1f50(int iBucket)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1414F1F50, MS2SceneGraphService, FUN_1414f1f50, 757, 0x9B665AC9);
+MS2_REPLACE_METHOD(0x1414F1F50, MS2SceneGraphService, UpdateBucket, 757, 0x9B665AC9);
 
 // @0x1414f2250
 void MS2SceneGraphService::MS2_MarkPreloadsAsFound(AssetData* pAssetData)

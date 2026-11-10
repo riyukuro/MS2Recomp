@@ -33,7 +33,7 @@ bool CArcController::FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float 
     m_offset = DAT_143b01a60;
     m_position = DAT_143b01a60;
     m_elapsed = 0;
-    float fDistance = FUN_140966ea0(from, to);
+    float fDistance = GetPlanarDistance(from, to);
     if (FUN_14028d470(fDistance, 0.0f))
         return false;
     m_arc.FUN_141479ed0(from, to, speed, gravityScale * 100.0f);
@@ -42,11 +42,11 @@ bool CArcController::FUN_1409ab1b0(Vector3 from, Vector3 to, float speed, float 
 MS2_REPLACE_METHOD(0x1409ab1b0, CArcController, FUN_1409ab1b0, 324, 0xAA0CCC51);
 
 // @0x1409ab300
-float CArcController::FUN_1409ab300() const
+float CArcController::GetFlightTime() const
 {
     return m_arc.m_flightScale;
 }
-MS2_REPLACE_METHOD(0x1409ab300, CArcController, FUN_1409ab300, 16, 0xEC6BFF26);
+MS2_REPLACE_METHOD(0x1409ab300, CArcController, GetFlightTime, 16, 0xEC6BFF26);
 
 // @0x1409ab320
 bool CArcController::IsRising() const

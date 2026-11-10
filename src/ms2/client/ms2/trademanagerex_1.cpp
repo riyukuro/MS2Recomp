@@ -61,7 +61,7 @@ MS2_CHECK_OFFSET(Unk_TradeDialog, m_strPartner, 0x1a0);
 template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820 (the open UI with this id, 0 if none; invenslot.cpp)
 
 
-// Inventory event notifier (FUN_140a6a840): +0x88 an item was added to the trade table.
+// Inventory event notifier (GetItemEventDispatcher): +0x88 an item was added to the trade table.
 class Unk_TradeInventory
 {
 public:
@@ -73,7 +73,7 @@ public:
     virtual void vfunc_17(CItem* pItem);                // 0x88
     virtual void vfunc_18(CItem* pItem);                // 0x90
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 class Unk_TradeWorld
 {
@@ -81,7 +81,7 @@ public:
 };
 
    // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 CStringW FUN_1401ca400(const BlockPtr& record, int action);
 Unk_MessageBoxPtr FUN_14151f820();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
@@ -391,7 +391,7 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
         return;
     }
     {
-        BlockPtr blocked = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0x20);
+        BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(0x20);
         if (blocked.get() != 0)
         {
             TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
@@ -582,7 +582,7 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
     spItem->FUN_140526b70(nCount);
     if (bMine)
     {
-        ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_17(spItem);
+        ((class Unk_TradeInventory*)GetItemEventDispatcher())->vfunc_17(spItem);
         DAT_143ab2e80.FUN_14185b2a0(spItem);
     }
     reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27de0(bMine, nSlot, spItem);
@@ -602,7 +602,7 @@ void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
         MS2Ptr<CItem> spItem = DAT_143ab2e80.FUN_14185b4a0(uid);
         if (!spItem)
             return;
-        ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_18(spItem);
+        ((class Unk_TradeInventory*)GetItemEventDispatcher())->vfunc_18(spItem);
         DAT_143ab2e80.FUN_14185b3d0(uid);
     }
     reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27fa0(bMine, nSlot);

@@ -48,7 +48,7 @@ UISelectSuperWorldChatDialog::UISelectSuperWorldChatDialog()
     : m_binder("SelectSuperWorldChatDialog")
 {
     FUN_141924170(1);
-    FUN_140d432d0(&m_binder, 0x411);
+    SetIconType(&m_binder, 0x411);
 }
 
 // @0x140e8bde0
@@ -191,7 +191,7 @@ MS2_REPLACE_METHOD(0x140E8C8E0, UISelectSuperWorldChatDialog, FUN_140e8c8e0, 292
 void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    g_143ab2a90.FUN_140a60880(7, aItems);
+    g_143ab2a90.GetItemsInCategory(7, aItems);
     for (size_t i = 0; i < aItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = aItems[i];
@@ -211,7 +211,7 @@ MS2_REPLACE_METHOD(0x140E8CA10, UISelectSuperWorldChatDialog, FUN_140e8ca10, 362
 void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    g_143ab2a90.FUN_140a60880(7, aItems);
+    g_143ab2a90.GetItemsInCategory(7, aItems);
     for (size_t i = 0; i < aItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = aItems[i];

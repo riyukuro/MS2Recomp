@@ -1,15 +1,39 @@
 {
-  "version": 6,
-  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
   "configurePresets": [
     {
-      "name": "fullexe",
-      "displayName": "Full-exe build (bring your own SDKs)",
+      "name": "windows",
+      "displayName": "MapleStory2 client (Windows, MSVC v141 14.16, Ninja)",
+      "description": "The build: compile every obj from the sources and the committed glue (data/fullexe/plain) and link MapleStory2.exe. Reads no original exe. Resources: the stand-in, or set MS2_RESOURCES_RES to a .res taken from the exe.",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/fullexe"
+      "binaryDir": "${sourceDir}/build/windows",
+      "architecture": { "value": "x64", "strategy": "external" },
+      "toolset": { "value": "v141,host=x64", "strategy": "external" },
+      "cacheVariables": { "MS2_EXE_BUILD": "OFF", "MS2_PLAIN_COMPILE": "ON" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "linux",
+      "displayName": "MapleStory2 client (Linux, MSVC 14.16 under Wine, Ninja)",
+      "description": "The same build as the windows preset, with the msvc-wine toolchain in MS2_MSVC_ROOT/msvc. Reads no original exe.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux",
+      "cacheVariables": { "MS2_EXE_BUILD": "OFF", "MS2_PLAIN_COMPILE": "ON" },
+      "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "fullexe",
+      "displayName": "Maintainer: exe-reading build (needs the original exe)",
+      "description": "cmake/fullexe: builds from this checkout and checks the objs against the original exe (MS2_EXE). For maintainers; the test lanes run this one.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/fullexe",
+      "cacheVariables": { "MS2_EXE_BUILD": "ON" }
     }
   ],
   "buildPresets": [
+    { "name": "windows", "configurePreset": "windows" },
+    { "name": "linux", "configurePreset": "linux" },
     { "name": "fullexe", "configurePreset": "fullexe", "targets": ["fullexe"] }
   ]
 }

@@ -126,7 +126,7 @@ void UIPopupProfileImage::Entity::vfunc_7()
 {
     PCBase* pPc = efd::DynamicCast<PC, PCBase>((PCBase*)FUN_140f49330());
     if (pPc != 0)
-        TSingleton<CPopupProfileImageMan>::GetInstance()->FUN_1416979e0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
+        TSingleton<CPopupProfileImageMan>::GetInstance()->RemoveShown(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
     if (m_38.get())
         m_38->Invoke("close");
 }

@@ -194,14 +194,14 @@ void FUN_1401d3700(CString& str);                                       // lower
 #ifdef MS2_HOOK_DLL
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
 #else
-#pragma warning(disable : 4483)   // __identifier("<mangled name>")
-extern "C" CString& __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
-#define FUN_1401c0cc0 __identifier("??A?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@1@_K@Z")
+// Real body (the atlcoll.h operator[] source, byte-identical at /Od): /opt:icf folds it onto CAtlArray<CString>::operator[].
+struct Unk_Arr1c0cc0 { CString* m_pData; size_t m_nSize; };
+inline CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArr, unsigned __int64 i) { ATLASSERT(i < ((Unk_Arr1c0cc0*)pArr)->m_nSize); if (i >= ((Unk_Arr1c0cc0*)pArr)->m_nSize) AtlThrow(E_INVALIDARG); return ((Unk_Arr1c0cc0*)pArr)->m_pData[i]; }
 #endif
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
-int FUN_141260470(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
+int IsJobSoundDisabled(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
 
 int FUN_141793500(CString strEvent);
 
@@ -322,7 +322,7 @@ CString SystemSoundProperty::GetCategory(int nGender)
 CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
 {
     int bByJob = m_bByJob;
-    if (FUN_141260470(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
+    if (IsJobSoundDisabled(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
         bByJob = 0;
     if (m_bByGender && bByJob)
     {
@@ -664,8 +664,8 @@ int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventV
     CheckInit();
     if (nEventId != 0 && pActor != 0)
     {
-        int nGender = reinterpret_cast<PC*>(pActor)->FUN_141658e60();
-        int nJob = reinterpret_cast<PC*>(pActor)->FUN_141654700();
+        int nGender = reinterpret_cast<PC*>(pActor)->GetGender();
+        int nJob = reinterpret_cast<PC*>(pActor)->GetJobGroupId();
         int bCaster = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == pActor ? 1 : 0;
         *pOut = m_events[nEventId][nGender][nJob][bCaster];
         return 1;

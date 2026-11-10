@@ -30,8 +30,8 @@ public:
     virtual int vfunc_18(void* p);                      // 18 0x140cfdbe0 drop of another slot: take over its item
 
     void SetGem(MS2Ptr<CGemStoneItem> spGem);           // 0x140cfd950 keep the socket record and show its gemstone
-    void FUN_140cfdc70(ASSlot* pSlot, bool bLocked);    // the "lock" flag of the slot movie
-    void FUN_140cfdcb0(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked);   // the "text" of the slot movie
+    void SetSlotLock(ASSlot* pSlot, bool bLocked);    // the "lock" flag of the slot movie
+    void SetSlotText(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked);   // the "text" of the slot movie
     void FUN_140cfddf0(MS2Ptr<CItem> spGemItem);        // ask to socket the dropped gemstone into this socket
     bool FUN_140cfdfe0(int nButton, const CMsgBoxData& box);   // result of that confirm box
 

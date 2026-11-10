@@ -30,7 +30,7 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
+class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 class GameObjectControllerHitReport;
 class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f20(); };   // C3: unit-local view
@@ -84,7 +84,7 @@ void StateLand::vfunc_4(StateData* pData)
     efd::Point3 kFrom = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 30.0f);
     efd::Point3 kHit = efd::Point3::ZERO;
     efd::Point3 kNormal = efd::Point3::ZERO;
-    int nHit = reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, reinterpret_cast<Vector3*>(&kNormal), 0);
+    int nHit = reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, reinterpret_cast<Vector3*>(&kNormal), 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
         if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->GetPhysicsBody())->FUN_141240f20()->GetEntityID())
@@ -137,7 +137,7 @@ void StateLand::vfunc_9(double fTime)
         if (m_n10 == 0x86)
         {
             PCBase* pPC = FUN_1417b8370();
-            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_LandCube*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft()))->FUN_1410aa010())
+            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_LandCube*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft()))->HasGuide2())
             {
                 strAnim = pPC->vfunc_123(0x3c);
             }
@@ -152,7 +152,7 @@ void StateLand::vfunc_9(double fTime)
         }
     }
     unsigned int nSeq = NiActorManager::INVALID_SEQUENCE_ID;
-    nSeq = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), strAnim);
+    nSeq = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationIdFromName(m_pOwner->GetEntityID(), strAnim);
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);

@@ -97,8 +97,8 @@ public:
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
-void FUN_141415600(const CString& strName);
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
+void DestroyItemInfoSlot(const CString& strName);
 void FUN_140710590(COutPacket&);
 StringManager* GetStringManager();
 
@@ -410,7 +410,7 @@ CString UIIndividualPvPDialog::FUN_1412cbc20(unsigned int nItemId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return CString("");
-        FUN_141415450(strKey, spItem, 0, 0x401, 0);
+        CreateItemInfoSlot(strKey, spItem, 0, 0x401, 0);
         m_icons.insert(strKey);
     }
     return strKey;
@@ -422,7 +422,7 @@ void UIIndividualPvPDialog::FUN_1412cbe90()
     std::set<CString>::iterator it = m_icons.begin();
     std::set<CString>::iterator itEnd = m_icons.end();
     for (; it != itEnd; ++it)
-        FUN_141415600(*it);
+        DestroyItemInfoSlot(*it);
     m_icons.clear();
 }
 

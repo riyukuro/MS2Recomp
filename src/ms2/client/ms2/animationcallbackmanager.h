@@ -8,7 +8,7 @@
 // - AnimationCallbackManager: TSingleton<AnimationCallbackManager> (own vftable 0x142e..., s_instance 0x143ab3be0) at +0,
 //   CAtlMap<NiActorManager*, AniCallbackBridge*> at +8 (0x48 bytes), the "queue events" mode flag at +0x50 (0x58 bytes).
 //   With the flag clear, SetCallback installs the owner directly on the NiActorManager; with it set, an AniCallbackBridge
-//   is installed that queues the events (a CAtlList of Unk_BridgeEvent) and AnimationCallbackManager::FUN_14099bd80
+//   is installed that queues the events (a CAtlList of Unk_BridgeEvent) and AnimationCallbackManager::DispatchQueuedEvents
 //   replays them later.
 // - NiActorManager of the exe is the engine header with the MS2 edits (pending sequence data map at +0x100, m_kCallbacks at
 //   +0x120, see ms2actormanager.h).
@@ -70,7 +70,7 @@ class Unk_CbActorMgr : public NiActorManager
 public:
     // Sequence data of eSequenceID; on first use it is moved from the pending map into the controller manager and
     // m_kSeqDataMap. 0 if the id is unknown.
-    NiSequenceData* FUN_140999740(SequenceID eSequenceID);              // 0x140999740
+    NiSequenceData* GetSequenceData(SequenceID eSequenceID);              // 0x140999740
 };
 
 // ---- a queued NiActorManager::CallbackObject event (0x30) ----
@@ -117,7 +117,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);                 // 0x14099b8b0
 
-    void FUN_14099b330(NiActorManager::CallbackObject* pObj);           // 0x14099b330 retarget (drops the queue)
+    void SetTarget(NiActorManager::CallbackObject* pObj);           // 0x14099b330 retarget (drops the queue)
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -138,9 +138,9 @@ public:
     virtual ~AnimationCallbackManager();                                // 0x14099ba80, ??_G 0x14099c660
 
     // Installs pCb as the listener of pMgr (through a queueing bridge when m_nQueue is set); pCb == 0 removes it.
-    void FUN_14099bb80(NiActorManager* pMgr, NiActorManager::CallbackObject* pCb);   // 0x14099bb80
-    void FUN_14099bd80();                                               // 0x14099bd80 replay every queued event
-    void FUN_14099c030();                                               // 0x14099c030 delete all bridges
+    void SetCallbackObject(NiActorManager* pMgr, NiActorManager::CallbackObject* pCb);   // 0x14099bb80
+    void DispatchQueuedEvents();                                               // 0x14099bd80 replay every queued event
+    void DeleteAllBridges();                                               // 0x14099c030 delete all bridges
     // @0x14099d0d0
     int GetQueueMode() { return m_nQueue; }
     // @0x1414fe550 (COMDAT emitted in ms2scenegraphservice.cpp)
@@ -173,7 +173,7 @@ struct Unk_AnimTable
     // Height-from-ground of the sequence (0 if none).
     float GetHeightFromGround(CString strName);                               // 0x140997650
     bool EnsureItem(CString strName);                                // 0x140997710 make sure the item exists
-    bool FUN_1409977f0(CString strName, CString strText);              // 0x1409977f0 add a text to the item
+    bool AddTextToItem(CString strName, CString strText);              // 0x1409977f0 add a text to the item
     bool AddItemText(ItemPtr spItem, CString strText);                // 0x140997990
 
     ItemMap m_items;                                                    // +0x00
@@ -203,6 +203,6 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);                 // 0x140998180
 
     // Registers the entity's actor with this listener (callee releases pEntity).
-    void FUN_140997ec0(egf::EntityPtr pEntity);                         // 0x140997ec0
+    void RegisterEntityCallbacks(egf::EntityPtr pEntity);                         // 0x140997ec0
 };
 MS2_CHECK_SIZE(CGlobalKeyTextCallback, 0x08);

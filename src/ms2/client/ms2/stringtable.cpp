@@ -115,7 +115,7 @@ CStringW FUN_1416e7fb0(int);
 void FUN_1412751f0(const CStringW&, int, int);
 CStringW GetStringCommonByKey(const CStringW& str);
 void* FUN_140764020();   // C3: was FUN_140764020
-UIRewardNotify* FUN_140938cd0(int);
+UIRewardNotify* FindRewardNotify(int);
 UIFameContentsNotify* FUN_140e77d80(int);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -178,7 +178,7 @@ void CStoryQuest::DecodeStart(CInPacket& packet)
         int nChapter = TSingleton<CChapterBookTable>::GetInstance()->FindIdByPrologue(FUN_140bfc580());
         if (nChapter != 0)
         {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify)
                 pNotify->FUN_141abf1f0();
             UIChapterBook* pBook = FUN_1418105b0(0x4f37);
@@ -219,10 +219,10 @@ void CStoryQuest::Complete(CInPacket& packet)
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(100))
     {
-        int nChapter = ((class CQuestManager*)FUN_140764020())->FUN_1416d0f60(FUN_140bfc580());
+        int nChapter = ((class CQuestManager*)FUN_140764020())->GetChapterBookIdByEpilogue(FUN_140bfc580());
         if (nChapter != 0)
         {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify)
                 pNotify->FUN_141abf1f0();
             UIChapterBook* pBook = FUN_1418105b0(0x4f37);
@@ -807,7 +807,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->GetCompactConfigName((__int64)nId);
+            CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->GetSkillSystem())->GetCompactConfigName((__int64)nId);
             if (!strName.IsEmpty())
                 return StringFormat<CStringW>(FUN_141811980(5, nId), strName);
         }

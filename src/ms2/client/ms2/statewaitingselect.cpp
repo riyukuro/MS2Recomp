@@ -69,7 +69,7 @@ void StateWaitingSelect::vfunc_2(int n)
     {
     case 0x4d:
         m_n10 = n;
-        m_pOwner->FUN_14166ce70(0);
+        m_pOwner->SetEmotion(0);
         m_pOwner->PlayAnimation("Equip_Change_Idle_A", 1.0f, false, false);
         m_pOwner->FUN_14166f8f0(0, 1);
         break;
@@ -78,7 +78,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Cap_A");
             pPC->PlayAnimation("Equip_Change_Cap_A", 1.0f, bSame, false);
         }
@@ -88,7 +88,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Body_A");
             pPC->PlayAnimation("Equip_Change_Body_A", 1.0f, bSame, false);
         }
@@ -98,7 +98,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Head_A");
             pPC->PlayAnimation("Equip_Change_Head_A", 1.0f, bSame, false);
         }
@@ -108,8 +108,8 @@ void StateWaitingSelect::vfunc_2(int n)
         break;
     case 0x54:
         m_n10 = n;
-        pPC->FUN_14166ce70(1);
-        reinterpret_cast<PC*>(pPC)->FUN_141653f00();
+        pPC->SetEmotion(1);
+        reinterpret_cast<PC*>(pPC)->UpdateWeaponAction();
         {
             MS2Ptr<CWeaponAction> spEquip = reinterpret_cast<PC*>(pPC)->GetWeaponAction();
             if (spEquip.get() != 0)
@@ -125,8 +125,8 @@ void StateWaitingSelect::vfunc_2(int n)
         break;
     case 0x55:
         m_n10 = n;
-        pPC->FUN_14166ce70(1);
-        reinterpret_cast<PC*>(pPC)->FUN_141653f00();
+        pPC->SetEmotion(1);
+        reinterpret_cast<PC*>(pPC)->UpdateWeaponAction();
         pPC->PlayAnimationById(1);
         break;
     case 0x51:
@@ -134,7 +134,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Glove_A");
             pPC->PlayAnimation("Equip_Change_Glove_A", 1.0f, bSame, false);
         }
@@ -144,7 +144,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Mantle_A");
             pPC->PlayAnimation("Equip_Change_Mantle_A", 1.0f, bSame, false);
         }
@@ -154,7 +154,7 @@ void StateWaitingSelect::vfunc_2(int n)
         {
             CString strModel = m_pOwner->FUN_14166dc50();
             m_n10 = n;
-            pPC->FUN_14166ce70(0);
+            pPC->SetEmotion(0);
             bool bSame = (strModel == "Equip_Change_Shoes_A");
             pPC->PlayAnimation("Equip_Change_Shoes_A", 1.0f, bSame, false);
         }
@@ -217,7 +217,7 @@ void StateWaitingSelect::FUN_1417ff590(int* pnSub, const CString& strAnim)
             return;
         CString strModel = m_pOwner->FUN_14166dc50();
         m_n10 = *pnSub;
-        pPC->FUN_14166ce70(0);
+        pPC->SetEmotion(0);
         bool bSame = strModel == strAnim;
         pPC->PlayAnimation(strAnim.GetString(), 1.0f, bSame, false);
     }

@@ -5,7 +5,8 @@
     plainglue.py pack DIR
     plainglue.py compile DIR [--cache DIR] [--tree CHECKOUT]
     plainglue.py tables DIR --cache DIR
-    plainglue.py derive DIR [--base GLUE]
+    plainglue.py facts DIR [--link FILE] [--crtinit FILE] [--tree CHECKOUT]
+    plainglue.py derive DIR [--base GLUE] [--committed-tables]
   write   from a finished build (FULLEXE_DIR, its closed link link3.rsp; run at each merge, like symbols.tsv) -> DIR/:
             objs.txt   the link's objs in command-line order (plan order with the initorder --before moves applied), as
                        paths relative to the obj cache (--cache, default the first FULLEXE_OBJ_CACHES dir): obj/... gb/obj/...
@@ -17,9 +18,10 @@
           `stubs` can only extract plain data.
   stubs   one-shot extraction from the user's exe (like tools/extract_resources.py): the data stubs of STUBS_TSV as a
           COFF obj with the layout shim.py writes. It stops on a stub that holds a pointer slot (a base relocation),
-          which would need the shim's relocation pass. An obj of zero fill only (g_physXItem lies in the exe's .bss)
-          holds no exe bytes and is committed as data/fullexe/plain/stubs.obj, cmake/fullexe-plain's default; one that
-          holds exe bytes stays out of the repository.
+          which would need the shim's relocation pass. An obj of zero fill only (a stub in the exe's .bss) holds no
+          exe bytes and is committed as data/fullexe/plain/stubs.obj, cmake/fullexe-plain's default; one that holds exe
+          bytes stays out of the repository. An empty STUBS_TSV (no stub: every global has a definition) writes no obj
+          and removes a stale OBJ; cmake/fullexe-plain then links none.
   pack    DIR/order.txt -> DIR/order.tar.xz (about 1.7 MB; no timestamps or owners, so the same list packs to the same
           bytes): the committed form of order.txt, which cmake/fullexe-plain unpacks into its build dir at configure.
   compile the cl command of every obj of DIR/objs.txt, as the finished build ran it (tools/progress.py game units with
@@ -32,18 +34,40 @@
           Paths carry the prefixes ${TP} (MS2_THIRD_PARTY), ${ENGINE} (MS2_ENGINE_DIR), ${GEN} (<checkout>/build) and
           ${ROOT} (the checkout); the plain build substitutes its own. --tree: the checkout the build compiled (its
           tools/ are imported; default this one); run with that build's MS2_THIRD_PARTY / MS2_ENGINE_DIR.
-  tables  the exe facts of a finished build's link plan (FULLEXE_DIR) that derive reads -> DIR/:
+  tables  a finished build's link plan (FULLEXE_DIR) -> DIR/ (facts reads link.tsv; derive reads both only where it cannot
+          make them: no status.tsv, as on the published mirror, or --committed-tables):
             link.tsv    plan.py's order.tsv (va, kind, unit, obj relative to the cache --cache): the engine, library and
                         closure objs (gate results and COFF closure) and each game unit's VA, before the --before moves
             before.tsv  initorder.py's --before rules (initorder2.tsv: the exe's static-init order, from its XC table)
+  facts   the few link-plan facts derive cannot compute from the repository, from a finished build's link.tsv (--link,
+          default DIR/link.tsv; `tables` writes it) and its crtinit2.tsv (--crtinit, default FULLEXE_DIR's) -> DIR/linkfacts.tsv:
+            pick     the engine twins (two units-gb.json entries for one unit) linked from the entry that is not the
+                     first recipe:name (plan.py takes the one with the most gate pairs, from the gate results)
+            va       engine and library units with no progress/status.tsv row, at their gate pairs' lowest exe VA
+            closure  the objs with no exe VA that the link pulls in for a symbol nothing else defines (COFF closure over
+                     the built objs), in link order
+            noinit   units the exe's .CRT$XC table names whose objs register no static initializer (initorder.py's ranking
+                     leaves them out; that needs the linked map)
+          Then checks that derive's rules give the table's engine, library and closure rows back (exit 3 when not).
+          glue-refresh.sh runs it at each refresh; the other link-plan inputs are tracked files derive reads itself.
+          --tree: the checkout the build compiled (its tools/ and status.tsv are read; default this one).
   derive  the glue of this checkout from the repository alone (cmake/fullexe-plain MS2_PLAIN_DERIVE runs it at
-          configure; no exe, no obj cache) -> DIR/: objs.txt, compile.tsv, flags.tsv, tree.tsv, order.txt, alias.rsp,
-          stubs.tsv, stubs.obj. Game units are this checkout's tracked src/ms2 sources (MS2-UNIT; NO-EXE place, else
-          the lowest progress/status.tsv VA, else link.tsv's, else MS2-RANGE; plan.py's rules), engine and library
-          objs are link.tsv's (left out when units-gb.json no longer has them), sorted as plan.py does, closure last,
-          then before.tsv's moves. order.txt is order.py's list without the defsyms filter (a name no obj defines is
-          LNK4037: the build passes /ignore:4037); stubs.obj is stubs.tsv's stubs as zero fill (the exe's .bss).
-          --base: the dir with link.tsv, before.tsv, alias.rsp, stubs.tsv (default data/fullexe/plain)."""
+          configure; no exe, no obj cache, no earlier build) -> DIR/: link.tsv, before.tsv, objs.txt, compile.tsv,
+          flags.tsv, tree.tsv, order.txt, alias.rsp, stubs.tsv, stubs.obj. Game units are this checkout's tracked
+          src/ms2 sources (MS2-UNIT; NO-EXE place, else the lowest progress/status.tsv VA, else MS2-RANGE; plan.py's
+          rules), engine and library units are units-gb.json's (and units-lib-*.json's), sorted as plan.py does, the
+          closure objs last: that plan is link.tsv. before.tsv: initorder.py's moves, then applied to give objs.txt.
+          order.txt is order.py's list without the defsyms filter (a name no obj defines is LNK4037: the build passes
+          /ignore:4037); stubs.obj is stubs.tsv's stubs as zero fill (the exe's .bss), not written (a stale one is
+          removed) when stubs.tsv lists no stub.
+          --base: the dir with link.tsv, before.tsv, alias.rsp, stubs.tsv (default data/fullexe/plain).
+          Engine and library units: one entry per unit (the facts' pick, else the first recipe:name) at the unit's lowest
+          status.tsv VA, else its facts VA, else left out; the facts' closure objs last. before.tsv: initorder.py's ranking
+          of the exe's .CRT$XC entries (data/fullexe/crtinit-exe.tsv, attributed as crtinit.py does: status.tsv row at
+          the VA, else the data/map/units.tsv range) over the plan's units less the facts' noinit ones. Needs
+          --base's linkfacts.tsv and progress/status.tsv; without either (the published mirror ships no status.tsv), or
+          with --committed-tables, --base's link.tsv and before.tsv are read instead (engine units units-gb.json no
+          longer has are left out; game units with no status.tsv row take link.tsv's VA)."""
 import collections, os, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -175,13 +199,15 @@ def compile_tables(d, objs, cache=None):
     def tok(a):
         for pre, t in subs:
             i = a.find(pre + "/")
+            if i < 0 and os.sep != "/":         # Windows: os.path.join gives a backslash
+                i = a.find(pre + os.sep)
             if i < 0 and a.endswith(pre):
                 i = a.find(pre)
             if i >= 0:
                 return a[:i] + t + a[i + len(pre):]
         return a
     tree, _ = gbtree.assemble()
-    gb = {os.path.relpath(gbprogress.obj_path("/c", u), "/c"): u for u in gbtree.load_units(tree) if u["source"]}
+    gb = {os.path.relpath(gbprogress.obj_path("/c", u), "/c").replace(os.sep, "/"): u for u in gbtree.load_units(tree) if u["source"]}
     rows, bad = [], []
     for o in objs:
         meta = json.load(open(os.path.join(cache, o[:-4] + ".deps"))) if cache else None
@@ -267,6 +293,203 @@ def before(items, unit, rules):
     return items
 
 
+FACTS = "linkfacts.tsv"
+FACTS_HEAD = ("# the link-plan facts plainglue.py derive cannot compute from the repository (plainglue.py facts writes them from\n"
+              "# a finished cmake/fullexe build at each glue refresh; derive reads them):\n"
+              "#   pick     <unit>  <recipe:name>   an engine twin (two units-gb.json entries, one unit) linked from the entry\n"
+              "#                                    that is not the default (the first recipe:name): the gate's pair counts chose it\n"
+              "#   va       <unit>  <hex va>        an engine or library unit with no progress/status.tsv row, placed at its gate\n"
+              "#                                    pairs' lowest exe VA (shared COMDATs that status.tsv credits to another unit)\n"
+              "#   closure  <unit>  <kind>  <obj>   an obj with no exe VA that the link pulls in for a symbol nothing else defines\n"
+              "#                                    (COFF symbol closure over the built objs), in link order\n"
+              "#   noinit   <unit>                  a unit that the exe's .CRT$XC table names but whose objs register no static\n"
+              "#                                    initializer of their own (initorder.py leaves it out of the ranking)\n")
+
+
+def read_facts(path):
+    f = {"pick": {}, "va": {}, "closure": [], "noinit": set()}
+    for l in open(path, encoding="latin1"):
+        if not l.strip() or l[0] == "#":
+            continue
+        q = l.rstrip("\n").split("\t")
+        if q[0] == "pick":
+            f["pick"][q[1].lower()] = q[2]
+        elif q[0] == "va":
+            f["va"][q[1]] = int(q[2], 16)
+        elif q[0] == "closure":
+            f["closure"].append((q[2], q[1], q[3]))
+        elif q[0] == "noinit":
+            f["noinit"].add(q[1])
+        else:
+            sys.exit("%s: unknown row %r" % (path, l))
+    return f
+
+
+def status_rows(root):
+    """progress/status.tsv as unit -> [(va, state)] and va -> unit, or None (the published mirror does not ship it)"""
+    st = os.path.join(root, "progress", "status.tsv")
+    if not os.path.exists(st):
+        return None, None
+    rows, at = collections.defaultdict(list), {}
+    for l in open(st, encoding="latin1"):
+        if l[0] != "#":
+            q = l.rstrip("\n").split("\t")
+            if len(q) > 3:
+                rows[q[2]].append((int(q[0], 16), q[3]))
+                at[int(q[0], 16)] = q[2]
+    return rows, at
+
+
+def status_low(rows, u):
+    """plan.py's low(): the lowest non-stub status.tsv VA of the unit, else its lowest stub VA"""
+    v = [va for va, s in rows.get(u, ()) if s != "stub"] or [va for va, s in rows.get(u, ())]
+    return min(v) if v else None
+
+
+def gb_entries(units):
+    """units-gb.json entries with a source, grouped as plan.py groups the gate results: unit (lower case) ->
+    {recipe:name: (entry, obj relative to the cache)}"""
+    import gbprogress
+    grp = collections.defaultdict(dict)
+    for u in units:
+        if u["source"]:
+            grp[u["unit"].lower()][u["recipe"] + ":" + u["name"]] = (u, os.path.relpath(gbprogress.obj_path("/c", u), "/c").replace(os.sep, "/"))
+    return grp
+
+
+def engine_plan(grp, rows, facts):
+    """plan.py's engine and library rows from units-gb.json, status.tsv and the facts: one entry per unit (the facts'
+    pick, else the first recipe:name; plan.py takes the one with the most gate pairs), at the unit's lowest status.tsv
+    VA, else its facts VA; a unit with neither is left out unless the facts list it as a closure obj"""
+    units_lc = {u.lower(): u for u in rows if u.startswith("gb:")}
+    plan, placed = [], set()
+    for ul, c in sorted(grp.items()):
+        k = facts["pick"].get(ul)
+        e, o = c[k if k in c else min(c)]
+        u = units_lc.get(ul, e["unit"])
+        va = status_low(rows, u)
+        if va is None:
+            va = facts["va"].get(u)
+        if va is not None:
+            plan.append((va, "lib" if e["recipe"].startswith("lib-") else "engine", u, o))
+            placed.add(o)
+    objs = {o for c in grp.values() for _, o in c.values()}
+    closure = [(NOVA, kind, u, o) for kind, u, o in facts["closure"] if o in objs and o not in placed]
+    return plan, closure
+
+
+def init_rules(root, at, order, noinit):
+    """initorder.py's --before rules without a link: the exe's .CRT$XC entries (data/fullexe/crtinit-exe.tsv) by unit as
+    crtinit.py attributes them (status.tsv row at the VA, else the data/map/units.tsv range), ranked by each unit's first
+    entry; our side is every unit of the plan the exe table names, less the facts' noinit units"""
+    import bisect
+    from initorder import before_rules
+    xc = []
+    for l in open(os.path.join(root, "data", "fullexe", "crtinit-exe.tsv")):
+        if l.strip() and l[0] != "#":
+            t, i, va = l.split()[:3]
+            if t == "XC":
+                assert int(i) == len(xc), l
+                xc.append(int(va, 16))
+    ur = sorted((int(p[0], 16), int(p[1], 16), p[2]) for p in (l.split("\t") for l in open(os.path.join(root, "data", "map", "units.tsv")))
+                if p[0] and p[0][0] != "#" and len(p) > 2)
+    starts = [u[0] for u in ur]
+    first_e = {}
+    for i, va in enumerate(xc):
+        u = at.get(va)
+        if u is None:
+            j = bisect.bisect_right(starts, va) - 1
+            u = ur[j][2] if j >= 0 and va < ur[j][1] else "?"
+        if u != "?":
+            first_e.setdefault(u, i)
+    pos = {}
+    for i, u in enumerate(order):
+        pos.setdefault(u, i)
+    shared = sorted((u for u in first_e if u in pos and u not in noinit), key=lambda u: pos[u])
+    return before_rules(shared, first_e)[0]
+
+
+def write_tables(d, plan, rules):
+    """link.tsv and before.tsv as `tables` writes them from a build"""
+    with open(os.path.join(d, "link.tsv"), "w", encoding="latin1", newline="\n") as f:
+        f.write("#va\tkind\tunit\tobj (plan.py's order.tsv, before the --before moves; obj relative to the cache)\n"
+                + "".join("%x\t%s\t%s\t%s\n" % r for r in plan))
+    with open(os.path.join(d, "before.tsv"), "w", encoding="latin1", newline="\n") as f:
+        f.write("# initorder.py's --before rules of that link (unit A moves just before unit B; tools/fullexe/link.py)\n"
+                + "\n".join(rules) + "\n")
+
+
+def facts(argv):
+    """DIR/link.tsv (a build's plan, `tables`) + its crtinit tsv -> DIR/linkfacts.tsv: what derive cannot
+    compute; then checks that derive's rules give that build's engine, library and closure rows back"""
+    if "--tree" in argv:
+        sys.path.insert(0, os.path.join(os.path.abspath(argv[argv.index("--tree") + 1]), "tools"))
+    import progress
+    import gbtree
+    d = argv[0]
+    link = argv[argv.index("--link") + 1] if "--link" in argv else os.path.join(d, "link.tsv")
+    if "--crtinit" in argv:
+        crt = argv[argv.index("--crtinit") + 1]
+    else:
+        from common import OUT
+        crt = os.path.join(OUT, "crtinit2.tsv")
+    root = progress.ROOT
+    rows, at = status_rows(root)
+    if rows is None:
+        sys.exit("facts: no progress/status.tsv in " + root)
+    table = [l.rstrip("\n").split("\t") for l in open(link, encoding="latin1") if l.strip() and l[0] != "#"]
+    tree, _ = gbtree.assemble()
+    grp = gb_entries(gbtree.load_units(tree))
+    byobj = {o: (ul, k) for ul, c in grp.items() for k, (_, o) in c.items()}
+    out, bad = [], 0
+    for va, kind, u, o in table:
+        if kind in ("game", "scaleform"):
+            continue
+        if kind.endswith("-closure"):
+            out.append("closure\t%s\t%s\t%s" % (u, kind, o))
+            continue
+        if o not in byobj:
+            sys.exit("facts: %s (%s) is no units-gb.json entry with a source" % (o, u))
+        ul, k = byobj[o]
+        if k != min(grp[ul]):
+            out.append("pick\t%s\t%s" % (u, k))
+        lv = status_low(rows, u)
+        if lv is None:
+            out.append("va\t%s\t%s" % (u, va))
+        elif lv != int(va, 16):
+            bad += 1
+            print("facts: %s at %s, status.tsv's lowest VA %x" % (u, va, lv), file=sys.stderr)
+    # noinit: units of the plan in the exe's XC table with no XC entry of ours (crtinit.py's attribution of both sides)
+    exe_u, ours = set(), set()
+    for l in open(crt, encoding="latin1"):
+        p = l.rstrip("\n").split("\t")
+        if l[0] == "#" or p[1] != "XC" or p[4] == "?":
+            continue
+        if p[0] == "exe":
+            exe_u.add(p[4])
+        elif "ms2_registered_" not in p[5]:
+            ours.add(p[4])
+    inplan = {r[2] for r in table}
+    out += ["noinit\t%s" % u for u in sorted(exe_u & inplan - ours)]
+    order = {"pick": 0, "va": 1, "closure": 2, "noinit": 3}
+    out.sort(key=lambda r: (order[r.split("\t")[0]], r) if not r.startswith("closure") else (2, ""))
+    with open(os.path.join(d, FACTS), "w", encoding="latin1", newline="\n") as f:
+        f.write(FACTS_HEAD + "".join(r + "\n" for r in out))
+    # check: the engine, library and closure rows derive --tables makes from these facts
+    fx = read_facts(os.path.join(d, FACTS))
+    plan, closure = engine_plan(grp, rows, fx)
+    got = sorted(plan) + closure
+    want = [(int(va, 16), kind, u, o) for va, kind, u, o in table if kind not in ("game", "scaleform")]
+    want = sorted(r for r in want if not r[1].endswith("-closure")) + [r for r in want if r[1].endswith("-closure")]
+    diff = [r for r in got if r not in want] + [r for r in want if r not in got]
+    print("%s: %s; derived engine/library/closure rows %s the table's (%d rows)%s" % (
+        os.path.join(d, FACTS), ", ".join("%s %d" % kv for kv in sorted(collections.Counter(r.split("\t")[0] for r in out).items())),
+        "equal" if got == want else "DIFFER from", len(want), ", %d row(s) off status.tsv's VA" % bad if bad else ""))
+    for r in diff[:20]:
+        print("  %s %x %s %s %s" % ("derived" if r in got else "table  ", *r), file=sys.stderr)
+    return 0 if got == want and not bad else 3
+
+
 def derive(argv):
     """the glue of this checkout from the repository alone -> DIR (see the module doc)"""
     import re, subprocess
@@ -278,28 +501,36 @@ def derive(argv):
     d = argv[0]
     base = os.path.abspath(argv[argv.index("--base") + 1]) if "--base" in argv else os.path.join(progress.ROOT, "data", "fullexe", "plain")
     root = progress.ROOT
-    # the committed plan of the last refresh: engine and library objs (gate results) and the closure, game VAs as fallback
-    table = [l.rstrip("\n").split("\t") for l in open(os.path.join(base, "link.tsv"), encoding="latin1") if l.strip() and l[0] != "#"]
-    rules = [p for l in open(os.path.join(base, "before.tsv"), encoding="latin1")
-             if len(p := l.split("#")[0].rstrip().split("\t")) >= 2]
-    tvas = {u: int(va, 16) for va, kind, u, o in table if kind in ("game", "scaleform")}
-    rows = collections.defaultdict(list)
-    st = os.path.join(root, "progress", "status.tsv")
-    if os.path.exists(st):          # not on the published mirror: the table's VA, then MS2-RANGE
-        for l in open(st, encoding="latin1"):
-            if l[0] != "#":
-                q = l.rstrip("\n").split("\t")
-                rows[q[2]].append((int(q[0], 16), q[3]))
+    rows, at = status_rows(root)
+    # link.tsv and before.tsv made here from status.tsv, units-gb.json, crtinit-exe.tsv, data/map/units.tsv and the facts
+    # list; without status.tsv (the published mirror does not ship it) or the facts, the committed ones are read
+    made = "--committed-tables" not in argv and rows is not None and os.path.exists(os.path.join(base, FACTS))
+    if not made and "--committed-tables" not in argv:
+        print("derive: no %s: reading %s's link.tsv and before.tsv" % ("progress/status.tsv" if rows is None else FACTS, base),
+              file=sys.stderr)
+    if made:
+        fx = read_facts(os.path.join(base, FACTS))
+        table, rules, tvas = [], None, {}
+    else:
+        # the committed plan of the last refresh: engine and library objs (gate results) and the closure, game VAs as fallback
+        table = [l.rstrip("\n").split("\t") for l in open(os.path.join(base, "link.tsv"), encoding="latin1") if l.strip() and l[0] != "#"]
+        rules = [p for l in open(os.path.join(base, "before.tsv"), encoding="latin1")
+                 if len(p := l.split("#")[0].rstrip().split("\t")) >= 2]
+        tvas = {u: int(va, 16) for va, kind, u, o in table if kind in ("game", "scaleform")}
+    rows = rows or {}       # not on the published mirror: the table's VA, then MS2-RANGE
 
     def low(u):
-        v = [va for va, s in rows.get(u, ()) if s != "stub"] or [va for va, s in rows.get(u, ())]
-        return min(v) if v else tvas.get(u)
-    r = subprocess.run(["git", "-C", root, "ls-files", "-z", "--recurse-submodules", "--", "src/ms2"], capture_output=True, text=True)
-    if r.returncode == 0:
-        srcs = sorted(os.path.relpath(f, "src/ms2") for f in r.stdout.split("\0") if f.endswith(".cpp"))
+        v = status_low(rows, u)
+        return v if v is not None else tvas.get(u)
+    try:
+        r = subprocess.run(["git", "-C", root, "ls-files", "-z", "--recurse-submodules", "--", "src/ms2"], capture_output=True, text=True)
+    except OSError:     # no git on PATH (a source tarball on Windows): walk the tree below
+        r = None
+    if r is not None and r.returncode == 0:
+        srcs = sorted(os.path.relpath(f, "src/ms2").replace(os.sep, "/") for f in r.stdout.split("\0") if f.endswith(".cpp"))
     else:           # a source tarball: every .cpp
-        srcs = sorted(os.path.relpath(os.path.join(dp, f), progress.GAME) for dp, _, fs in os.walk(progress.GAME)
-                      for f in fs if f.endswith(".cpp"))
+        srcs = sorted(os.path.relpath(os.path.join(dp, f), progress.GAME).replace(os.sep, "/")
+                      for dp, _, fs in os.walk(progress.GAME) for f in fs if f.endswith(".cpp"))
     plan, skipped = [], collections.Counter()
     for rel in srcs:
         name, rng, place = None, [], None
@@ -328,8 +559,12 @@ def derive(argv):
             continue
         plan.append((va, "scaleform" if rel.startswith("scaleform/") else "game", name, "obj/" + rel[:-4] + ".obj"))
     tree, _ = gbtree.assemble()
-    gb = {os.path.relpath(gbprogress.obj_path("/c", u), "/c") for u in gbtree.load_units(tree) if u["source"]}
+    units = gbtree.load_units(tree)
+    gb = {os.path.relpath(gbprogress.obj_path("/c", u), "/c").replace(os.sep, "/") for u in units if u["source"]}
     closure = []
+    if made:
+        eng, closure = engine_plan(gb_entries(units), rows, fx)
+        plan += eng
     for va, kind, u, o in table:
         if kind in ("game", "scaleform"):
             continue
@@ -340,16 +575,20 @@ def derive(argv):
         (closure if kind.endswith("-closure") else plan).append((int(va, 16), kind, u, o))
     plan.sort()
     plan += closure
+    os.makedirs(d, exist_ok=True)
+    if made:
+        rules = init_rules(root, at, [u for _, _, u, _ in plan], fx["noinit"])
+        write_tables(d, plan, rules)
+        rules = [p for r in rules if len(p := r.split("#")[0].rstrip().split("\t")) >= 2]
     plan = before(plan, lambda x: x[2], rules)
     objs = [o for _, _, _, o in plan]
     if len(set(objs)) != len(objs):
         sys.exit("derive: an obj twice in the plan")
-    os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "objs.txt"), "w", newline="\n") as f:
         f.write("".join(o + "\n" for o in objs))
     shutil.copyfile(os.path.join(base, "alias.rsp"), os.path.join(d, "alias.rsp"))
     shutil.copyfile(os.path.join(base, "stubs.tsv"), os.path.join(d, "stubs.tsv"))
-    zero_stubs(os.path.join(base, "stubs.tsv"), os.path.join(d, "stubs.obj"))
+    zero_stubs(os.path.join(base, "stubs.tsv"), os.path.join(d, "stubs.obj"))   # none: no stubs.obj
     # order.txt: order.py without its defsyms filter (that needs the objs): a name no obj defines is LNK4037 only
     fva = set()
     for l in open(ms2paths.FUNCTIONS_TSV):
@@ -372,15 +611,31 @@ def derive(argv):
                     va[q[0]] = v
     with open(os.path.join(d, "order.txt"), "w", encoding="latin1", newline="\n") as f:
         f.write("".join(n + "\n" for n, _ in sorted(va.items(), key=lambda x: (x[1], x[0]))))
-    print("%s: objs.txt %d objs (%s), order.txt %d functions; %s" % (
+    print("%s: objs.txt %d objs (%s), order.txt %d functions%s; %s" % (
         d, len(objs), ", ".join("%s %d" % kv for kv in sorted(collections.Counter(k for _, k, _, _ in plan).items())),
-        len(va), dict(skipped)))
+        len(va), ", link.tsv and before.tsv (%d rules) made from %s" % (len(rules), FACTS) if made else "", dict(skipped)))
     return compile_tables(d, objs)
+
+
+def stub_rows(tsv):
+    """stubs.tsv's stub rows (symbol, kind, exe va, bytes, ...), comments and blank lines left out"""
+    return [l.rstrip("\n").split("\t") for l in open(tsv, encoding="latin1") if l.strip() and l[0] != "#"]
+
+
+def no_stub_obj(tsv, obj):
+    """True when stubs.tsv lists no stub: then there is no stub obj to write (a stale one is removed)"""
+    if stub_rows(tsv):
+        return False
+    if os.path.exists(obj):
+        os.remove(obj)
+    return True
 
 
 def zero_stubs(tsv, obj):
     """stubs.tsv -> the data-stub obj with the layout shim.py writes, zero fill (the stubs lie in the exe's .bss;
-    plainglue.py stubs checks that against the exe at each refresh)"""
+    plainglue.py stubs checks that against the exe at each refresh). No stub: no obj."""
+    if no_stub_obj(tsv, obj):
+        return
     from shim import Coff, DATA, RDATA, TEXT
     co = Coff()
     co.section(".text$mn", TEXT)
@@ -402,9 +657,12 @@ def zero_stubs(tsv, obj):
 
 
 def stubs(argv):
+    exe, tsv, obj = argv[:3]
+    if no_stub_obj(tsv, obj):
+        print("%s: no stub, no obj (cmake/fullexe-plain links none)" % tsv)
+        return 0
     import pefile
     from shim import BASE, Coff, DATA, RDATA, TEXT
-    exe, tsv, obj = argv[:3]
     pe = pefile.PE(exe, fast_load=True)
     pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_BASERELOC"]])
     relocs = sorted(BASE + e.rva for b in getattr(pe, "DIRECTORY_ENTRY_BASERELOC", []) for e in b.entries if e.type == 10)
@@ -441,6 +699,8 @@ def stubs(argv):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] not in ("write", "stubs", "pack", "compile", "derive", "tables") or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
+    cmds = {"write": write, "stubs": stubs, "pack": pack, "compile": compile_list, "derive": derive, "tables": tables_cmd,
+            "facts": facts}
+    if len(sys.argv) < 3 or sys.argv[1] not in cmds or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
         sys.exit(__doc__)
-    sys.exit({"write": write, "stubs": stubs, "pack": pack, "compile": compile_list, "derive": derive, "tables": tables_cmd}[sys.argv[1]](sys.argv[2:]))
+    sys.exit(cmds[sys.argv[1]](sys.argv[2:]))

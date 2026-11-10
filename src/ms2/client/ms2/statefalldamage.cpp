@@ -56,13 +56,13 @@ void StateFallDamage::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         CString strRec;
-        bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName().IsEmpty();
+        bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->GetSetName().IsEmpty();
         if (bHasRec)
-            strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName();
+            strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->GetEquipment())->GetSetName();
         if (!strRec.IsEmpty())
         {
             efd::utf8string kAnim((const char*)(strRec + m_strAnim.c_str()));
-            if (FUN_141b6f910()->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kAnim) != NiActorManager::INVALID_SEQUENCE_ID)
+            if (FUN_141b6f910()->GetAnimationIdFromName(m_pOwner->GetEntityID(), kAnim) != NiActorManager::INVALID_SEQUENCE_ID)
                 m_strAnim = kAnim;
         }
     }
@@ -73,7 +73,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
 // FUN_1409fad80 takes the id by value: the returned key is built in the arg temp, passed through a pointer temp.
 void StateFallDamage::vfunc_5(int n)
 {
-    FUN_141b6f910()->SetPaused(m_pOwner->FUN_14123c460(), false);
+    FUN_141b6f910()->SetPaused(m_pOwner->GetEntityID(), false);
     m_strAnim = "";
     State::vfunc_5(n);
 }

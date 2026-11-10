@@ -23,12 +23,12 @@ public:
     CFileSearcher();
     virtual ~CFileSearcher();
     virtual unsigned vfunc_1(void*,Unk_140659080&);
-    void FUN_141218730(ProgressCallback);
-    void FUN_1412187a0(CompletionCallback);
-    bool FUN_141218810(const EntryList&,const std::set<CString>&,int,bool);
-    void FUN_141218900();
-    void FUN_141218920();
-    void FUN_141218990(CString directory);
+    void SetProgressCallback(ProgressCallback);
+    void SetCompleteCallback(CompletionCallback);
+    bool StartSearch(const EntryList&,const std::set<CString>&,int,bool);
+    void Cancel();
+    void ClearCallbacks();
+    void SearchDirectory(CString directory);
     void FUN_141219020(CString directory);
     void FUN_1412195a0(ATL::CAtlArray<CString>&);
     EntryList queries;

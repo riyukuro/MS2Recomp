@@ -39,7 +39,7 @@ public:
     void SetSelectedOption(const CStringW& strExtra);                   // 0x1409abbf0 "selectedOption"
     void SetOptionArray(Scaleform::GFx::Value& vOptions);            // 0x1409abc40 "arrOption"
     void SetEnableGift(bool b);                                     // 0x1409abc90 "enableGift" (also kept in m_b40; callers pass a byte)
-    void FUN_1409abcd0(int nPayType);                               // 0x1409abcd0 the pay type
+    void SetPayType(int nPayType);                               // 0x1409abcd0 the pay type
     void SetUseDropDown(bool b);                                     // 0x1409abcf0 "useDropDown"
     void FUN_1409abd20(bool b);                                     // 0x1409abd20 m_b48 (callers: mov dl, 1)
     void FUN_1409abd40(int n);                                      // 0x1409abd40 the payback type (m_n4c)
@@ -47,8 +47,8 @@ public:
     Scaleform::GFx::Value GetSelectPrevData();                          // 0x1409ac190 "selectData"."prevData"
     Scaleform::GFx::Value GetSelectData();                          // 0x1409ac270 "selectData"
     __int64 GetSalePriceFromData(ASObj* pData);                            // 0x1409ac2c0 the "salePrice" of a row object
-    bool FUN_1409acfe0(class CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency);   // 0x1409acfe0 the option drop down
-    void FUN_1409ad420(class ASArray& arr, int nCurrency, class CDBPremiumProduct* pSub, bool bDay,
+    bool SetOptionDropDown(class CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency);   // 0x1409acfe0 the option drop down
+    void AddOptionRow(class ASArray& arr, int nCurrency, class CDBPremiumProduct* pSub, bool bDay,
                        class CDBPremiumProduct* pBase);             // 0x1409ad420 one option row
     bool FUN_140eacf60() const { return m_b40; }                    // 0x140eacf60 (inline COMDAT, uimarketbilldialog.cpp)
     bool FUN_140eacf20() const { return m_b48; }                    // 0x140eacf20 (same)

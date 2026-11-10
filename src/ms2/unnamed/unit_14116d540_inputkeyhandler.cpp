@@ -45,15 +45,15 @@ MS2_CHECK_SIZE(NotifyDebugMode, 0x20);
 
 class Unk_KhUI : public CUIService { };   // CUIService (C3: FUN_141adbd10 is CUIService's)
 class Unk_KhCamera : public CInstrumentManager { };
-struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 MS2InputService* FUN_140a58540();                           // TSingleton<MS2InputService>::GetInstance
 void FUN_1412751b0(const CStringW& text, int nType);        // chat/system line
 
-class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
+class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class NiMaterialInstance { public: void ClearCachedShader(void); }; class Unk_KhSkinView : public NiMaterialInstance {};
 class NiRenderObject   // C3: member view for the former free stand-ins
 {
@@ -131,7 +131,7 @@ bool CInputKeyHandler::FUN_14116d7a0(unsigned nMask)
 {
     if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0 && (nMask & 2) != 0)
         return true;
-    if (reinterpret_cast<Unk_KhCamera*>(((class Unk_KhCamera*)FUN_140c8dac0()))->IsEnsemble() != 0 && (nMask & 4) != 0)
+    if (reinterpret_cast<Unk_KhCamera*>(((class Unk_KhCamera*)GetInstrumentManager()))->IsEnsemble() != 0 && (nMask & 4) != 0)
         return true;
     if (m_bModifier1 != false && (nMask & 1) != 0)
         return true;
@@ -161,7 +161,7 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
         return true;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
-        if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
+        if (*reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
         {
             if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
                 return false;
@@ -361,7 +361,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pBaseDead = pBase = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalBaseTexturePath"));
     if (pBase != 0)
     {
-        NiTexturePtr spBase = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)pBase->GetValue()), 5);
+        NiTexturePtr spBase = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)pBase->GetValue()), 5);
         pTexturing->SetBaseTexture(spBase);
         pObject->RemoveExtraData("OriginalBaseTexturePath");
     }
@@ -369,7 +369,7 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiStringExtraData* pControlDead = pControl = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalControlTexturePath"));
     if (pControl != 0)
     {
-        NiTexturePtr spControl = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)pControl->GetValue()), 5);
+        NiTexturePtr spControl = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)pControl->GetValue()), 5);
         NiTexturingProperty::ShaderMap* pMap = new (efd::MemHint(efd::MemHint::NONE))
             NiTexturingProperty::ShaderMap(spControl, 0, (NiTexturingProperty::ClampMode)3, (NiTexturingProperty::FilterMode)2, 0);
         pTexturing->SetShaderMap(0, pMap);

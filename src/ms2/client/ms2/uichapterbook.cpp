@@ -38,7 +38,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_141901470(int n, int nType);                           // UIObject::vfunc_47's helper
-UIRewardNotify* FUN_140938cd0(int uiType);                      // GetDialog<UIRewardNotify>
+UIRewardNotify* FindRewardNotify(int uiType);                      // GetDialog<UIRewardNotify>
 
 // @0x140e0a8c0
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW strText, int nTime)
@@ -104,7 +104,7 @@ void UIChapterBook::OnLoadComplete()
                     ASObj objReward(2);
                     objReward.FUN_1407cba60("icon", spItem->GetIconPath());
                     ((class AScript&)(objReward)).FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reward.m_item.m_itemId));
-                    objReward.FUN_1409c0d20("count", reward.m_item.m_count);
+                    objReward.SetMemberUInt("count", reward.m_item.m_count);
                     obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
                 else if (reward.m_nType == 3)
@@ -145,7 +145,7 @@ int UIChapterBook::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         CChapterBookTable::DataPtr spBook = CChapterBookTable::GetInstance()->Get(m_nEpilogue);
         UIRewardNotify* pNotify;
-        if (spBook.get() != 0 && (pNotify = FUN_140938cd0(0x4e5d)) != 0)
+        if (spBook.get() != 0 && (pNotify = FindRewardNotify(0x4e5d)) != 0)
         {
             for (unsigned __int64 i = 0; i < spBook->m_rewards.GetCount(); i++)
             {
@@ -174,7 +174,7 @@ int UIChapterBook::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         m_nPrologue = 0;
         m_nEpilogue = 0;
         vfunc_3();
-        UIRewardNotify* pNotify2 = FUN_140938cd0(0x4e5d);
+        UIRewardNotify* pNotify2 = FindRewardNotify(0x4e5d);
         if (pNotify2 != 0)
             pNotify2->FUN_141abf210();
         return 1;

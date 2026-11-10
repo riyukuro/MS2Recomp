@@ -78,7 +78,7 @@ public:
     // non-virtual (out of line in the unrecovered clonepc unit; called by AvatarPC)
     void FUN_141087220(bool b);                             // 0x141087220 m_b12fa = b, then vfunc_47(b)
     bool FUN_141087260();                                   // 0x141087260 m_b12fa
-    bool FUN_1410872b0(MS2Ptr<AdditionalCli> spCli);        // 0x1410872b0 adds a buff record to the PC's list and m_kClis
+    bool AddAdditionalCli(MS2Ptr<AdditionalCli> spCli);        // 0x1410872b0 adds a buff record to the PC's list and m_kClis
     void FUN_141087390();                                   // 0x141087390 marks the model view dirty (m_b12f9 = 1)
     void FUN_1410873b0();                                   // 0x1410873b0 m_b12f8 = 1
     void FUN_1410873d0();                                   // 0x1410873d0 forgets the source PC
@@ -90,8 +90,8 @@ public:
     void FUN_141088640(bool b);                             // 0x141088640 m_b12fb = b
     bool FUN_141088590();                                   // 0x141088590 m_b1338
     void FUN_1410885b0(bool b);                             // 0x1410885b0 m_b1338 = b
-    void FUN_1410885d0(Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> kFilter);   // 0x1410885d0 m_kEquipFilter = kFilter (callee-destroyed)
-    void FUN_1410879c0(ATL::CAtlArray<efd::SmartPointer<NiActorManager>>& kOut);   // 0x1410879c0 collects the equip records
+    void SetEquipFilter(Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> kFilter);   // 0x1410885d0 m_kEquipFilter = kFilter (callee-destroyed)
+    void CollectActorManagers(ATL::CAtlArray<efd::SmartPointer<NiActorManager>>& kOut);   // 0x1410879c0 collects the equip records
 
 public:
     MS2_LAYOUT_FRIEND;

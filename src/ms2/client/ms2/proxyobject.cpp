@@ -50,7 +50,7 @@ public:
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567330(NiAVObject* pRoot, bool bShadow);
-void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* Unk_AssetUrnText(const efd::AssetID* pAsset);   // animationcallbackmanager.cpp
 extern int DAT_1439f825c;                                           // the running id of the proxies (counts down)
 
@@ -64,7 +64,7 @@ struct Unk_PxApp
 class Unk_GameContext   // C3: member view for the former free stand-ins
 {
 public:
-    class efd::ServiceManager* FUN_140af8310();
+    class efd::ServiceManager* GetServiceManager();
 };
 // C3: FUN_140998330 was Unk_ServiceManager::GetSystemServiceAs<efd::AssetLocatorService> (NULL when absent)
 
@@ -74,7 +74,7 @@ class Unk_ProxyMgr
 public:
     Unk_ProxyMgr();                                                 // 0x1416c3150
     ~Unk_ProxyMgr();                                                // 0x1416c3190
-    efd::SmartPointer<CProxyObject> FUN_1416c31c0(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius);   // create a proxy and add it to the world
+    efd::SmartPointer<CProxyObject> CreateProxy(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius);   // create a proxy and add it to the world
     void FUN_1416c33c0(int bEnable);                                // rebuild the proxies of the map's marker entities
     void FUN_1416c3670();                                           // remove every proxy from the world
     void FUN_1416c3730();                                           // draw the collision shape of every proxy
@@ -123,7 +123,7 @@ int CProxyObject::vfunc_11()
         FUN_141567330(pRoot, false);
     }
     bool bVisible = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(static_cast<egf::Entity*>(m_unk_80)), 0x90d6d437, bVisible);
+    SetCachedBoolProperty((class Unk_CachedEntity*)(static_cast<egf::Entity*>(m_unk_80)), 0x90d6d437, bVisible);
     return 1;
 }
 
@@ -155,9 +155,9 @@ int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point
     m_str88 = "DropItemNIF";
     vfunc_19(kPos);
     vfunc_21(kRot);
-    FUN_14123bb80(CString(Unk_AssetUrnText(&asset)));
+    SetModelPath(CString(Unk_AssetUrnText(&asset)));
     --DAT_1439f825c;
-    FUN_14123c5a0(DAT_1439f825c);
+    SetObjectId(DAT_1439f825c);
     if (fRadius != 0.0f)
     {
         if (m_pCollision != 0)
@@ -187,7 +187,7 @@ Unk_ProxyMgr::~Unk_ProxyMgr()
 
 // @0x1416c31c0
 // MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
-efd::SmartPointer<CProxyObject> Unk_ProxyMgr::FUN_1416c31c0(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius)
+efd::SmartPointer<CProxyObject> Unk_ProxyMgr::CreateProxy(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius)
 {
     efd::SmartPointer<CProxyObject> spProxy(EE_NEW CProxyObject());
     if (spProxy->FUN_1416c2e70(asset, kPos, kRot, fRadius) != 0
@@ -203,12 +203,12 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
     FUN_1416c3670();
     if (bEnable != 0)
     {
-        void* pService = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->FUN_140af8310())->GetSystemServiceAs<efd::AssetLocatorService>();
+        void* pService = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->GetServiceManager())->GetSystemServiceAs<efd::AssetLocatorService>();
         if (pService == 0)
             return;
-        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();
+        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->BeginLoadedEntities();
         egf::Entity* pEntity;
-        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5f0(iter, pEntity))
+        while (TSingleton<EntityWorldManager>::GetInstance()->NextLoadedEntity(iter, pEntity))
         {
             egf::FlatModel* pModel = ((class egf::FlatModel*)((egf::Entity*)(class egf::Entity*)(pEntity))->GetModel());
             if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
@@ -222,7 +222,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
                 efd::AssetID asset;
                 if (pEntity->GetPropertyValue<efd::AssetID>(0x74bd51ee, asset) == 0)
                 {
-                    efd::SmartPointer<CProxyObject> spProxy = FUN_1416c31c0(asset, kPos, kRot, fRadius);
+                    efd::SmartPointer<CProxyObject> spProxy = CreateProxy(asset, kPos, kRot, fRadius);
                     if (spProxy)
                         m_proxies.SetAt(*((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(pEntity))->GetEntityID()), spProxy);
                 }
@@ -259,9 +259,9 @@ efd::SmartPointer<egf::Entity> Unk_ProxyMgr::FUN_1416c37e0(efd::SmartPointer<egf
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {
         CProxyObject* pProxy = m_proxies.GetValueAt(pos);
-        if (pProxy->FUN_14123c460() == *((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(spEntity))->GetEntityID()))
+        if (pProxy->GetEntityID() == *((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(spEntity))->GetEntityID()))
         {
-            efd::SmartPointer<egf::Entity> spFound(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_proxies.GetKeyAt(pos)));
+            efd::SmartPointer<egf::Entity> spFound(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_proxies.GetKeyAt(pos)));
             return spFound;
         }
     }

@@ -176,7 +176,7 @@ public:
     virtual void vfunc_140();
     virtual unsigned int vfunc_141();                   // 0x468 the adventure level
     unsigned int FUN_141661e40(void* pA, void* pB);     // enchant condition (two out values)
-    unsigned int FUN_141662de0();                       // vip
+    unsigned int IsVip();                       // vip
     int FUN_141663080();                                // tencent vip
     unsigned int FUN_1416630c0();                       // tgp
     unsigned int FUN_14165ffe0();                       // return user state

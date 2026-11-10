@@ -89,16 +89,16 @@ public:
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_1418ffba0(MS2Ptr<CItemData> ref);                           // the item is locked
 
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
-void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
+void ShowBlockNotice(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
 class Unk_MbUiMgr { public: };
 class Unk_MbKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CBuddyManager;
-class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
+class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -366,10 +366,10 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         else
         {
             {
-                Unk_BlockPtr<Unk_BlockRecord> block = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(0x26);
+                Unk_BlockPtr<Unk_BlockRecord> block = reinterpret_cast<CBlockManager*>(GetBlockManager())->FindBlockedAction(0x26);
                 if (block.get())
                 {
-                    FUN_140a2ff20(block, 0x26, 0);
+                    ShowBlockNotice(block, 0x26, 0);
                     return 1;
                 }
             }
@@ -715,7 +715,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
         objData.FUN_1407cbb20("noticeKey", strNotice);
         objData.FUN_1407cbb20("noticeGiftKey", strNoticeGift);
         objData.FUN_1407cbbe0("gift", m_spParam->m_b2c);
-        ((class PaybackManagerClient*)FUN_1409c1740())->FUN_140a8b490(m_spParam);
+        ((class PaybackManagerClient*)GetPaybackManager())->FUN_140a8b490(m_spParam);
         if (!m_spParam->m_str70.IsEmpty())
             objData.FUN_1407cbb20("additionalInfoDescText", m_spParam->m_str70);
     }
@@ -1090,8 +1090,8 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);
         if (spBox.get())
         {
-            spBox->FUN_140b76940(strName);
-            spBox->FUN_140b76940(strMessage);
+            spBox->AddStringArg(strName);
+            spBox->AddStringArg(strMessage);
         }
         *pbClose = false;
         return true;

@@ -39,7 +39,7 @@ MS2_CHECK_SIZE(Vector3, 12);
 // efd::Point3 operator*(float, const Point3&) (friend, 0x1409ab5c0): efd/Point3.h declares it.
 //
 // Horizontal distance of two points (z cleared on the copies; 0x140966ea0).
-float FUN_140966ea0(Vector3 a, Vector3 b);
+float GetPlanarDistance(Vector3 a, Vector3 b);
 
 // NiPoint3 as a matrix-ctor argument: NiPoint3(const efd::Point3&) (0x14027dcf0) makes the conversion temporaries.
 // Defined inline here (the exe copy belongs to another obj).

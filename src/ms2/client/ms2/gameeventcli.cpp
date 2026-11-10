@@ -111,9 +111,9 @@ public:
 // Out-of-unit helpers.
 class Unk_SingletonObj;
 __int64 GetServerTime();                                        // the server time
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 // The event-key table at 0x143ab2fc0: (kind, id) -> value, read through the typed lookups below.
-class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); bool FUN_140482280(int nKind, const bool& bDefault); __int64 FUN_140c5af20(int nKind, unsigned nId, const __int64& nDefault); };
+class Unk_AttendTable { public: int GetValue(int nKind, unsigned nId, const int& nDefault); bool FUN_140482280(int nKind, const bool& bDefault); __int64 FUN_140c5af20(int nKind, unsigned nId, const __int64& nDefault); };
 class Unk_LtaTable { public: int FUN_140c6d8d0(int nKind, int nId, const int& nDefault); };
 class Unk_CliEvtKeys {
 public:
@@ -122,7 +122,7 @@ public:
 extern __int64 DAT_143ab2828;
 extern GameEventUserValue DAT_143ab2fc0;
 // @0x140ce8590
-int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return reinterpret_cast<Unk_AttendTable*>(this)->FUN_1409617d0(nKey, 0, *(const int*)pOut); }
+int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return reinterpret_cast<Unk_AttendTable*>(this)->GetValue(nKey, 0, *(const int*)pOut); }
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
@@ -149,7 +149,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
-UICoupleDanceEventDialog* FUN_140b769d0(int nUiId);
+UICoupleDanceEventDialog* FindCoupleDanceEventDialog(int nUiId);
 typedef void (UICoupleDanceEventDialog::*Unk_CliCoupleFn)(GameEventVariable*);
 // the attend popup's add / remove entries are UIDTAttendPopup::AddEntry / RemoveEntry (0x140c040c0 / 0x140c041a0)
 //
@@ -239,7 +239,7 @@ CStringW GameEventGameMenuPopupCli::GetTypeName() { return CStringW(L"GameEventG
 void GameEventGameMenuPopupCli::OnStart()
 {
     GameEventGameMenuPopup::OnStart();
-    UIGameMenuDialog* pDlg = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pDlg = FindGameMenuDialog(0x4e28);
     if (pDlg) {
         pDlg->SetMenuText(m_d0, m_d8);
         if (pDlg->FUN_141924630())
@@ -251,7 +251,7 @@ void GameEventGameMenuPopupCli::OnStart()
 void GameEventGameMenuPopupCli::vfunc_6()
 {
     GameEventGameMenuPopup::vfunc_6();
-    UIGameMenuDialog* pDlg = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pDlg = FindGameMenuDialog(0x4e28);
     if (pDlg) {
         {
             CStringW strEmpty(L"");
@@ -355,20 +355,20 @@ GameEvent* FUN_140ce3030() { return new GameEventSaleAutoFishingCli; }
 CStringW GameEventSaleAutoFishingCli::GetTypeName() { return CStringW(L"GameEventSaleAutoFishingCli"); }
 
 // @0x140cea070
-Unk_SingletonObj* FUN_140cea070() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSmartPushManager>::s_instance); }
+Unk_SingletonObj* GetSmartPushManager() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSmartPushManager>::s_instance); }
 
 // @0x140ce30e0
 void GameEventSaleAutoFishingCli::OnStart()
 {
     GameEventSaleAutoFishing::OnStart();
-    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd87d0();
 }
 
 // @0x140ce3110
 void GameEventSaleAutoFishingCli::vfunc_6()
 {
     GameEventSaleAutoFishing::vfunc_6();
-    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd87d0();
 }
 
 // @0x140ce3140
@@ -381,14 +381,14 @@ CStringW GameEventSaleAutoPlayInstrumentCli::GetTypeName() { return CStringW(L"G
 void GameEventSaleAutoPlayInstrumentCli::OnStart()
 {
     GameEventSaleAutoPlayInstrument::OnStart();
-    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd87d0();
 }
 
 // @0x140ce3220
 void GameEventSaleAutoPlayInstrumentCli::vfunc_6()
 {
     GameEventSaleAutoPlayInstrument::vfunc_6();
-    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd87d0();
+    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd87d0();
 }
 
 // ---- GameEventAttendGiftCli ------------------------------------------------------------------------------------------
@@ -465,26 +465,26 @@ bool GameEventAttendGiftCli::IsCheckedInToday()
 }
 
 // @0x140ce3660
-unsigned GameEventAttendGiftCli::FUN_140ce3660() { return (unsigned)m_gifts.GetCount(); }
+unsigned GameEventAttendGiftCli::GetGiftCount() { return (unsigned)m_gifts.GetCount(); }
 
 // @0x140ce3690
 unsigned GameEventAttendGiftCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, GetID(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x66, GetID(), nDefault);
 }
 
 // @0x140ce36d0
 int GameEventAttendGiftCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, GetID(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69, GetID(), nDefault);
 }
 
 // @0x140ce3710
 MS2Ptr<ItemGift> GameEventAttendGiftCli::GetGiftByDay(unsigned nDay)
 {
-    if (nDay >= FUN_140ce3660())
+    if (nDay >= GetGiftCount())
         return MS2Ptr<ItemGift>(0);
     return m_gifts.GetAt(nDay);
 }
@@ -502,16 +502,16 @@ CStringW GameEventAttendGiftCli::GetTitleWithPoints()
 CStringA GameEventAttendGiftCli::GetDesc() { return m_strDesc; }
 
 // @0x140ce38a0
-int GameEventAttendGiftCli::FUN_140ce38a0() { return m_i100; }
+int GameEventAttendGiftCli::GetPayType() { return m_i100; }
 
 // @0x140ce38c0
 unsigned GameEventAttendGiftCli::FUN_140ce38c0() { return m_i104; }
 
 // @0x140ce38e0
-__int64 GameEventAttendGiftCli::FUN_140ce38e0() { return m_i108; }
+__int64 GameEventAttendGiftCli::GetPayCost() { return m_i108; }
 
 // @0x140ce3900
-int GameEventAttendGiftCli::FUN_140ce3900() { return m_i110; }
+int GameEventAttendGiftCli::GetCouponItemId() { return m_i110; }
 
 // @0x140ce3920
 unsigned GameEventAttendGiftCli::FUN_140ce3920()
@@ -558,7 +558,7 @@ bool GameEventAttendGiftCli::FUN_140ce3a80() { return m_b125; }
 CMsTime GameEventAttendGiftCli::FUN_140ce3aa0() { return m_28; }
 
 // @0x140ce3ae0
-CMsTime GameEventAttendGiftCli::FUN_140ce3ae0()
+CMsTime GameEventAttendGiftCli::GetEndTime()
 {
     if (m_i114 == 2) {
         __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetTime(GetID());
@@ -629,14 +629,14 @@ unsigned GameEventCashAttendCli::GetGroupCount()
 unsigned GameEventCashAttendCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, GetID(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x66, GetID(), nDefault);
 }
 
 // @0x140ce3ed0
 int GameEventCashAttendCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, GetID(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69, GetID(), nDefault);
 }
 
 // @0x140ce3f10
@@ -825,7 +825,7 @@ void GameEventUpdateStringCli::OnStart()
             FUN_140ce4cf0(pSkillDesc);
         TiXmlElement* pMailContent = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("systemMailContent"));
         if (pMailContent != 0)
-            FUN_140ce4d20(pMailContent);
+            LoadSystemMailContent(pMailContent);
     }
 }
 
@@ -845,7 +845,7 @@ void GameEventUpdateStringCli::FUN_140ce4cc0(TiXmlElement* pElem) { ((CStringTab
 void GameEventUpdateStringCli::FUN_140ce4cf0(TiXmlElement* pElem) { ((CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_1418139f0(pElem); }
 
 // @0x140ce4d20
-void GameEventUpdateStringCli::FUN_140ce4d20(TiXmlElement* pElem) { FUN_140851c40(pElem); }
+void GameEventUpdateStringCli::LoadSystemMailContent(TiXmlElement* pElem) { FUN_140851c40(pElem); }
 
 // ---- GameEventWorldmapIconCli ----------------------------------------------------------------------------------------
 
@@ -1031,7 +1031,7 @@ CStringW GameEventCoupleDanceCli::GetTypeName() { return CStringW(L"GameEventCou
 void GameEventCoupleDanceCli::OnStart()
 {
     GameEventCoupleDance::OnStart();
-    UICoupleDanceEventDialog* pDlg = FUN_140b769d0(0x4f71);
+    UICoupleDanceEventDialog* pDlg = FindCoupleDanceEventDialog(0x4f71);
     if (pDlg != 0) {
         ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x834, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
         ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x835, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
@@ -1043,7 +1043,7 @@ void GameEventCoupleDanceCli::OnStart()
 void GameEventCoupleDanceCli::vfunc_6()
 {
     GameEventCoupleDance::vfunc_6();
-    UICoupleDanceEventDialog* pDlg = FUN_140b769d0(0x4f71);
+    UICoupleDanceEventDialog* pDlg = FindCoupleDanceEventDialog(0x4f71);
     if (pDlg != 0) {
         ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x834, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));
         ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x835, Delegate<void(GameEventVariable*)>(pDlg, reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0)));

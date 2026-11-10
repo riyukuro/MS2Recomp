@@ -81,7 +81,7 @@ void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
     Unk_CjPC* pPc = ((Unk_CjPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    int nJob = pPc->FUN_141654730();
+    int nJob = pPc->GetSubJob();
     CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_changejob_effect_text"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     ASObj obj(2);
     obj.FUN_140bd0d90("jobCode", nJob);

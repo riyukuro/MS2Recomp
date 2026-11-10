@@ -33,7 +33,7 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-class Unk_StateArg22 : public CPtred { public: char m_pad_18[0xb8 - 0x18]; };   // the sync record, a by-value MS2Ptr argument
+class StateSyncObject : public CPtred { public: char m_pad_18[0xb8 - 0x18]; };   // the sync record, a by-value MS2Ptr argument
 class GameObjectControllerHitReport { public: void FUN_140cfaf30(); };   // clear the entity and the hit flag
 class Unk_GtBody                                                         // the actor's physics body
 {
@@ -95,7 +95,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
         {
-            if (((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())) != 0)
+            if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())) != 0)
                 reinterpret_cast<PC*>(pPC)->SendRequestCube();
         }
         m_kPos = m_pOwner->vfunc_18();
@@ -155,7 +155,7 @@ MS2Ptr<StateData> StateGrabTarget::vfunc_27()
 }
 
 // @0x1410249f0
-int StateGrabTarget::vfunc_22(MS2Ptr<Unk_StateArg22> p)
+int StateGrabTarget::vfunc_22(MS2Ptr<StateSyncObject> p)
 {
     return 1;
 }

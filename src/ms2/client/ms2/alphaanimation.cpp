@@ -88,7 +88,7 @@ public:
 struct Unk_InstanceTracker
 {
     // @0x14098dfe0
-    bool FUN_14098dfe0() const { return m_visible; }
+    bool IsVisible() const { return m_visible; }
 
     char m_pad_00[0x2a];
     bool m_visible;
@@ -99,7 +99,7 @@ class MeshInstancing;
 class HardwareInstancingService : public efd::ISystemService   // C3: member view
 {
 public:
-    MeshInstancing* FUN_1413d66b0(egf::Entity* pEntity);
+    MeshInstancing* FindInstancingByEntity(egf::Entity* pEntity);
     int FUN_1413d6e60(egf::Entity* pEntity, bool bFlag);
 };
 
@@ -193,13 +193,13 @@ extern NiFixedString DAT_143ae50a8;             // extra data keys of the origin
 extern NiFixedString DAT_143ae50b8;
 extern NiFixedString DAT_143ae50c0;
 
-void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce);
-void FUN_14098c120(NiAVObject* pkObject);
-bool FUN_14098c620(NiAVObject* pkObject);
-bool FUN_14098c680(NiProperty* pkProperty);
+void SetNodeAlpha(NiAVObject* pkObject, float fAlpha, bool bForce);
+void EnsureAlphaProperties(NiAVObject* pkObject);
+bool HasAlphaController(NiAVObject* pkObject);
+bool HasAlphaControllerProperty(NiProperty* pkProperty);
 //
 //
-void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue);
+void SetCachedBoolProperty(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -212,7 +212,7 @@ bool AlphaTourController::InterpTargetIsCorrectType(NiObjectNET* pkTarget) const
 // @0x14098a9c0
 bool AlphaTourController::UpdateValue(float fTime, float fFloat, unsigned short usIndex)
 {
-    FUN_14098b3e0((NiAVObject*)m_pkTarget, fFloat, 0);
+    SetNodeAlpha((NiAVObject*)m_pkTarget, fFloat, 0);
     return true;
 }
 
@@ -229,7 +229,7 @@ void AlphaTourController::Update(float fTime)
     {
         float fValue;
         if (m_spInterpolator->Update(m_fScaledTime, m_pkTarget, fValue))
-            FUN_14098b3e0((NiAVObject*)m_pkTarget, fValue, 0);
+            SetNodeAlpha((NiAVObject*)m_pkTarget, fValue, 0);
     }
 }
 
@@ -246,11 +246,11 @@ void FUN_14098ea00(NiFloatKey* pKey, float fTime);
 
 // Starts an alpha animation of pkObject through the (time delta, alpha) keys; idOwner is notified when it ends.
 // @0x14098ab60
-void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<NiPoint2>& keys, egf::EntityID idOwner)
+void StartAlphaAnimation(NiAVObject* pkObject, ATL::CAtlArray<NiPoint2>& keys, egf::EntityID idOwner)
 {
     if (pkObject == NULL)
         return;
-    if (FUN_14098c620(pkObject))
+    if (HasAlphaController(pkObject))
         return;
 
     unsigned nKeys = (unsigned)keys.GetCount();
@@ -261,7 +261,7 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<NiPoint2>& keys, egf::En
         fTotal = fTotal + kKey.x;
     }
 
-    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     CAlphaAnimation* pAnim = EE_NEW CAlphaAnimation(pkObject, fNow + fTotal);
     if (idOwner != s_nullEntityId)
         pAnim->m_idOwner = idOwner;
@@ -298,7 +298,7 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<NiPoint2>& keys, egf::En
 // @0x14098b110
 bool CAlphaAnimation::vfunc_2()
 {
-    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     if (fNow > m_fEndTime)
     {
 
@@ -326,7 +326,7 @@ CAlphaAnimation::CAlphaAnimation(NiAVObject* pkTarget, float fEndTime)
 CAlphaAnimation::~CAlphaAnimation()
 {
     if (m_spTarget && reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance()))
-        m_spTarget->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
+        m_spTarget->Update((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime(), true);
 
     if (m_spController)
     {
@@ -396,7 +396,7 @@ bool FUN_14098dfc0(NiAVObject* pkObject)
 
 // Does a controller of the node already drive its alpha?
 // @0x14098c620
-bool FUN_14098c620(NiAVObject* pkObject)
+bool HasAlphaController(NiAVObject* pkObject)
 {
     NiTimeController* pkCtrl = pkObject->GetControllers();
     while (pkCtrl)
@@ -409,7 +409,7 @@ bool FUN_14098c620(NiAVObject* pkObject)
 }
 
 // @0x14098c680
-bool FUN_14098c680(NiProperty* pkProperty)
+bool HasAlphaControllerProperty(NiProperty* pkProperty)
 {
     NiTimeController* pkCtrl = pkProperty->GetControllers();
     while (pkCtrl)
@@ -423,7 +423,7 @@ bool FUN_14098c680(NiProperty* pkProperty)
 
 // Makes sure that the node has a material and an alpha property, each remembering the original state.
 // @0x14098c120
-void FUN_14098c120(NiAVObject* pkObject)
+void EnsureAlphaProperties(NiAVObject* pkObject)
 {
     if (pkObject->GetProperty(NiProperty::MATERIAL) == NULL)
     {
@@ -455,7 +455,7 @@ static void FUN_14098c360(Unk_CachedEntity* pEntity, unsigned nId, const bool& b
 }
 
 // @0x14098c6e0
-void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue)
+void SetCachedBoolProperty(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue)
 {
     FUN_14098c360(pEntity, nId, bValue);
     pEntity->SetPropertyValueUnsafe(nId, (void*)&bValue, efd::GetClassIDFromType<bool>());
@@ -475,12 +475,12 @@ template <> Unk_HwService* egf::ScriptContext::GetSystemServiceAs<Unk_HwService>
 
 // Applies fAlpha to the material/alpha properties of the object and its descendants (bForce also touches culled nodes).
 // @0x14098b3e0
-void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce)
+void SetNodeAlpha(NiAVObject* pkObject, float fAlpha, bool bForce)
 {
     if (pkObject == NULL)
         return;
 
-    FUN_14098c120(pkObject);
+    EnsureAlphaProperties(pkObject);
     Unk_NodeQueue kQueue(pkObject);
     bool bRestore = fAlpha >= 1.0f;
     NiAVObject* pkNode;
@@ -494,7 +494,7 @@ void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce)
         NiMaterialProperty* pkMaterial = (NiMaterialProperty*)pkNode->GetProperty(NiProperty::MATERIAL);
         if (pkMaterial)
         {
-            if (FUN_14098c680(pkMaterial))
+            if (HasAlphaControllerProperty(pkMaterial))
                 continue;
 
             NiFloatExtraData* pkOriginal = NiDynamicCast(NiFloatExtraData, pkMaterial->GetExtraData(DAT_143ae50b8));
@@ -569,17 +569,17 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
     : m_bWasShown(false), m_fAlpha(1.0f), m_pInterpolator(0)
     , m_fEndTime(0.0f), m_spNode(pkNode), m_idEntity(idEntity)
 {
-    efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(idEntity));
+    efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(idEntity));
     if (spEntity)
     {
         efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
         if (spService)
         {
-            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
+            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FindInstancingByEntity(spEntity));
             if (pTracker != 0)
             {
-                m_bWasShown = pTracker->FUN_14098dfe0();
-                FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, m_bWasShown);
+                m_bWasShown = pTracker->IsVisible();
+                SetCachedBoolProperty((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, m_bWasShown);
             }
             else
             {
@@ -590,7 +590,7 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
 
     if (pkNode != 0)
     {
-        float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+        float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
         m_fEndTime = fNow + fDuration;
         m_fAlpha = fFrom;
         m_pInterpolator = new TLinearInterpolator<float>(fDuration, fFrom, fTo);
@@ -603,15 +603,15 @@ CEntityShower::~CEntityShower()
 {
     if (!m_bWasShown)
     {
-        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
+        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity));
         efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
         if (spService && spEntity)
         {
-            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
+            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FindInstancingByEntity(spEntity));
             if (pTracker)
             {
                 bool bFalse = false;
-                FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, bFalse);
+                SetCachedBoolProperty((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, bFalse);
             }
         }
     }
@@ -626,23 +626,23 @@ CEntityShower::~CEntityShower()
 // @0x14098bc60
 bool CEntityShower::vfunc_2()
 {
-    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     if (fNow > m_fEndTime)
     {
-        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
+        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity));
         if (spEntity)
         {
             efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
             if (spService)
             {
                 m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
-                FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+                SetNodeAlpha(m_spNode, m_fAlpha, 0);
                 reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d6e60(spEntity, true);
-                Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
+                Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FindInstancingByEntity(spEntity));
                 if (pTracker)
                 {
                     bool bFalse = false;
-                    FUN_14098c6e0((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
+                    SetCachedBoolProperty((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
                 }
             }
         }
@@ -651,7 +651,7 @@ bool CEntityShower::vfunc_2()
     else if (m_pInterpolator)
     {
         m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
-        FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+        SetNodeAlpha(m_spNode, m_fAlpha, 0);
     }
     return true;
 }
@@ -673,23 +673,23 @@ CEntityHider::CEntityHider(egf::EntityID idEntity, NiAVObject* pkNode, float fFr
 // @0x14098bf90
 bool CEntityHider::vfunc_2()
 {
-    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
+    float fNow = (float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
     if (fNow > m_fEndTime)
     {
-        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
+        efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(m_idEntity));
         if (spEntity)
         {
             m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
-            FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+            SetNodeAlpha(m_spNode, m_fAlpha, 0);
             bool bFalse = false;
-            FUN_14098c6e0((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
+            SetCachedBoolProperty((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
         }
         return false;
     }
     else if (m_pInterpolator)
     {
         m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
-        FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+        SetNodeAlpha(m_spNode, m_fAlpha, 0);
     }
     return true;
 }

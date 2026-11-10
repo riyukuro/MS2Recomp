@@ -8,17 +8,17 @@
 // MS2-RANGE: 0x140103470-0x140103f20 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x140103590 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_StateArg22@@@@QEBAPEAVUnk_StateArg22@@XZ 0x1417dd2d0 ; unique
-// MS2-PIN: ?erase@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@2@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@2@0@Z 0x1417dedd0 ; unique
-// MS2-PIN: ?erase@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@2@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@2@@Z 0x1417deeb0 ; unique
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$MS2Ptr@VUnk_StateArg22@@@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_List_node@V?$MS2Ptr@VUnk_StateArg22@@@@PEAX@std@@@2@@Z 0x1417def20 ; unique
-// MS2-PIN: ?pop_front@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAAXXZ 0x1417def50 ; unique
-// MS2-PIN: ?push_back@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VUnk_StateArg22@@@@@Z 0x1417def90 ; unique
-// MS2-PIN: ?rbegin@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@std@@@2@XZ 0x1417defe0 ; prop
-// MS2-PIN: ?rend@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@@std@@@2@XZ 0x1417df020 ; unique
-// MS2-PIN: ?size@?$list@V?$MS2Ptr@VUnk_StateArg22@@@@V?$allocator@V?$MS2Ptr@VUnk_StateArg22@@@@@std@@@std@@QEBA_KXZ 0x1417df060 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VStateSyncObject@@@@QEBAPEAVStateSyncObject@@XZ 0x1417dd2d0 ; unique
+// MS2-PIN: ?erase@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@2@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@2@0@Z 0x1417dedd0 ; unique
+// MS2-PIN: ?erase@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@2@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@2@@Z 0x1417deeb0 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$MS2Ptr@VStateSyncObject@@@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_List_node@V?$MS2Ptr@VStateSyncObject@@@@PEAX@std@@@2@@Z 0x1417def20 ; unique
+// MS2-PIN: ?pop_front@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAAXXZ 0x1417def50 ; unique
+// MS2-PIN: ?push_back@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VStateSyncObject@@@@@Z 0x1417def90 ; unique
+// MS2-PIN: ?rbegin@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@std@@@2@XZ 0x1417defe0 ; prop
+// MS2-PIN: ?rend@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@@std@@@2@XZ 0x1417df020 ; unique
+// MS2-PIN: ?size@?$list@V?$MS2Ptr@VStateSyncObject@@@@V?$allocator@V?$MS2Ptr@VStateSyncObject@@@@@std@@@std@@QEBA_KXZ 0x1417df060 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VUnk_SMSkillData@@@@QEAA@XZ 0x1417df770 ; unique
-// MS2-PIN: ??4?$MS2Ptr@VUnk_StateArg22@@@@QEAAAEAV0@H@Z 0x1417df790 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VStateSyncObject@@@@QEAAAEAV0@H@Z 0x1417df790 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_SMSkillData@@@@QEAAAEAV1@PEAVUnk_SMSkillData@@@Z 0x1417df7c0 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VUnk_SMSkillData@@@@QEBA_NPEAVUnk_SMSkillData@@@Z 0x1417df830 ; unique
 // MS2-PIN: ??_GStateMoveSkill@@UEAAPEAXI@Z 0x1417df870 ; unique
@@ -225,7 +225,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
 {
     float fDelta = (float)fTime;
     {
-        MS2Ptr<Unk_StateArg22> spReq = FUN_1417dc230(&fDelta);
+        MS2Ptr<StateSyncObject> spReq = FUN_1417dc230(&fDelta);
         if (spReq.get() != 0)
             FUN_1417db550(spReq.get());
     }
@@ -253,7 +253,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
             {
                 int bFound = 0;
                 egf::EntityID kId = reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_141240f20()->GetEntityID();
-                egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(kId);
+                egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(kId);
                 if (pEntity != 0)
                 {
                     MS2Ptr<Unk_WsB_Marker> spMarker = WorldService::GetInstance()->FUN_141bc4f10(pEntity);
@@ -352,20 +352,20 @@ int CStateManager::GetPrev()
 }
 
 // @0x1417db2e0
-void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
+void CStateManager::FUN_1417db2e0(StateSyncObject* pReq)
 {
     if (m_pOwner->FUN_14123bea0() == 0)
         return;
     {
-        MS2Ptr<Unk_StateArg22> spNew(pReq);
-        m_requests.push_back(static_cast<MS2Ptr<Unk_StateArg22>&&>(spNew));
+        MS2Ptr<StateSyncObject> spNew(pReq);
+        m_requests.push_back(static_cast<MS2Ptr<StateSyncObject>&&>(spNew));
     }
     // MS2: the queue is walked newest first (reverse iterators); the oldest requests past 100 ms are dropped
     float fSum = pReq->m_fTime;
-    std::list<MS2Ptr<Unk_StateArg22> >::reverse_iterator it = m_requests.rbegin();
+    std::list<MS2Ptr<StateSyncObject> >::reverse_iterator it = m_requests.rbegin();
     for (; it != m_requests.rend(); it++)
     {
-        MS2Ptr<Unk_StateArg22> spReq = *it;
+        MS2Ptr<StateSyncObject> spReq = *it;
         if (spReq->m_fTime != 0.0f)
         {
             fSum = spReq->m_fTime;
@@ -375,7 +375,7 @@ void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
     }
     for (; it != m_requests.rend(); it++)
     {
-        MS2Ptr<Unk_StateArg22> spReq = *it;
+        MS2Ptr<StateSyncObject> spReq = *it;
         fSum = fSum + spReq->m_fTime;
         TSingleton<CTrafficOptimizer>::GetInstance();
         if (fSum > FUN_14028d280(100))
@@ -386,7 +386,7 @@ void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
 
 // @0x1417db550
 // each branch declares its own actor pointer (the exe gives each one its own frame slot)
-void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
+void CStateManager::FUN_1417db550(StateSyncObject* pReq)
 {
     if (pReq == 0)
         return;
@@ -441,7 +441,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
             int nForce = 0;
             if (GetCur() == pReq->m_nState)
             {
-                if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
+                if (m_pState->vfunc_28(MS2Ptr<StateSyncObject>(pReq)))
                     nForce = 1;
             }
             MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
@@ -470,7 +470,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
 }
 
 // @0x1417dbd00
-void CStateManager::FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq)
+void CStateManager::FUN_1417dbd00(PCBase* pActor, StateSyncObject* pReq)
 {
     bool bSnap = true;
     efd::Point3 kDelta = pActor->vfunc_18() - pReq->m_pos20;
@@ -541,9 +541,9 @@ int CStateManager::FUN_1417dc070(int nState)
 // @0x1417dc110
 void CStateManager::FUN_1417dc110()
 {
-    for (std::list<MS2Ptr<Unk_StateArg22> >::iterator it = m_requests.begin(); it != m_requests.end(); it++)
+    for (std::list<MS2Ptr<StateSyncObject> >::iterator it = m_requests.begin(); it != m_requests.end(); it++)
     {
-        MS2Ptr<Unk_StateArg22> spReq = *it;
+        MS2Ptr<StateSyncObject> spReq = *it;
         FUN_1417db550(spReq.get());
         m_pState->vfunc_3((double)spReq->m_fTime);
         m_pState->vfunc_9((double)spReq->m_fTime);
@@ -552,17 +552,17 @@ void CStateManager::FUN_1417dc110()
 }
 
 // @0x1417dc230
-MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
+MS2Ptr<StateSyncObject> CStateManager::FUN_1417dc230(float* pDelta)
 {
     if (m_requests.empty())
-        return MS2Ptr<Unk_StateArg22>(0);
-    MS2Ptr<Unk_StateArg22> spReq = *m_requests.begin();
+        return MS2Ptr<StateSyncObject>(0);
+    MS2Ptr<StateSyncObject> spReq = *m_requests.begin();
     if (spReq->m_fTime >= *pDelta)
     {
         spReq->m_fTime -= *pDelta;
         if (spReq->m_nA8 != 0)
         {
-            return MS2Ptr<Unk_StateArg22>(0);
+            return MS2Ptr<StateSyncObject>(0);
         }
         else
         {
@@ -577,7 +577,7 @@ MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
             spReq->m_fTime = 0.0f;
             if (spReq->m_nA8 != 0)
             {
-                return MS2Ptr<Unk_StateArg22>(0);
+                return MS2Ptr<StateSyncObject>(0);
             }
             else
             {
@@ -595,10 +595,10 @@ MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
 }
 
 // @0x1417dc4c0
-void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
+void CStateManager::FUN_1417dc4c0(StateSyncObject* pReq)
 {
     PCBase* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
-    bool bPushed = ((Unk_SMField690*)(reinterpret_cast<PCBase*>(pActor)->FUN_141675eb0()))->m_pos18 != efd::Point3::ZERO;
+    bool bPushed = ((Unk_SMField690*)(reinterpret_cast<PCBase*>(pActor)->GetPushControl()))->m_pos18 != efd::Point3::ZERO;
     if (!bPushed)
     {
         if (FUN_1417dc070(GetCur()) == 1)
@@ -628,7 +628,7 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
     int nForce = 0;
     if (GetCur() == pReq->m_nState)
     {
-        if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
+        if (m_pState->vfunc_28(MS2Ptr<StateSyncObject>(pReq)))
             nForce = 1;
     }
     MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
@@ -794,7 +794,7 @@ bool StateMoveSkill::FUN_1417df6a0()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
-        if (!pPC->FUN_141523bc0()->FUN_141765b80(FUN_1417df3e0()))
+        if (!pPC->GetSkillSystem()->FUN_141765b80(FUN_1417df3e0()))
         {
             FUN_1417df370();
             return false;
@@ -950,15 +950,15 @@ StateRegen::~StateRegen()
 void StateRegen::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_pOwner->FUN_14123cb20(false);
-    if (!FUN_141b6fa90(m_pOwner->FUN_14123c460(), "Regen_A"))
+    m_pOwner->SetShadowVisible(false);
+    if (!FUN_141b6fa90(m_pOwner->GetEntityID(), "Regen_A"))
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
     else
     {
         reinterpret_cast<PCBase*>(m_pOwner)->AddHideReason(9);
-        Unk_Random kRandom(m_pOwner->FUN_14123c580());
+        Unk_Random kRandom(m_pOwner->GetObjectId());
         int nDelay = kRandom.FUN_1407684c0() % 300 + 100;
         m_timer.FUN_140868750(nDelay);
     }
@@ -973,7 +973,7 @@ void StateRegen::vfunc_4(StateData* pData)
             {
                 if (DAT_143ab2820 == reinterpret_cast<Unk_SMNpcData*>(pNpc->FUN_141093800().operator->())->m_n28)
                     m_nSpecial = 1;
-                if (FUN_141b6fa90(m_pOwner->FUN_14123c460(), "Regen_B"))
+                if (FUN_141b6fa90(m_pOwner->GetEntityID(), "Regen_B"))
                     m_nVariantB = 1;
             }
         }
@@ -992,7 +992,7 @@ void StateRegen::vfunc_5(int n)
         if (nValue != 0)
         {
             m_pOwner->vfunc_23(nValue);
-            m_pOwner->FUN_14123cb20(nValue == 0);
+            m_pOwner->SetShadowVisible(nValue == 0);
         }
     }
 }
@@ -1022,7 +1022,7 @@ void StateRegen::vfunc_9(double fTime)
             ((Unk_VibEffectReq&)(req)).m_name = reinterpret_cast<Unk_SMNpcTpl*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_str550;
             ((Unk_VibEffectReq&)(req)).m_type = 0;
             ((Unk_VibEffectReq&)(req)).m_pXform = &kXform;
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(reinterpret_cast<Unk_EffectTarget&>(req));
+            TSingleton<CEffectService>::GetInstance()->InsertEffect(reinterpret_cast<Unk_EffectTarget&>(req));
             if (m_nSkip == 0)
             {
                 if (m_nVariantB != 0)
@@ -1093,7 +1093,7 @@ void StateRide::vfunc_4(StateData* pData)
     MyPC* pMy = FUN_1417b84b0();
     if (pMy != 0)
         reinterpret_cast<PC*>(pMy)->SendRequestCube();
-    m_pOwner->FUN_14123cb20(false);
+    m_pOwner->SetShadowVisible(false);
     reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f8f0(0, 0);
 }
 
@@ -1101,13 +1101,13 @@ void StateRide::vfunc_4(StateData* pData)
 void StateRide::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_pOwner->FUN_14123cb20(true);
+    m_pOwner->SetShadowVisible(true);
 }
 
 // @0x1417e0710
 void StateRide::vfunc_8(double fTime)
 {
-    Ridee* pRider = m_pOwner->FUN_1416764a0();
+    Ridee* pRider = m_pOwner->GetRidee();
     if (pRider == 0)
         return;
     if (m_pOwner->vfunc_63() == 0)
@@ -1119,7 +1119,7 @@ void StateRide::vfunc_8(double fTime)
 void StateRide::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    Ridee* pRider = m_pOwner->FUN_1416764a0();
+    Ridee* pRider = m_pOwner->GetRidee();
     if (pRider == 0)
         return;
     MS2SvrPtr<CRideeData> spRide = pRider->GetData();
@@ -1196,7 +1196,7 @@ int StateRide::vfunc_1()
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nKey); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
-class Unk_AvPhysicsSvc* FUN_1409f7ca0();
+class Unk_AvPhysicsSvc* GetPhysXHelper();
 class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen); };
 float FUN_1409f25a0(float f);
 float FUN_1409f2310(float f);
@@ -1235,7 +1235,7 @@ void StateRope::vfunc_4(StateData* pData)
     if (pPC != 0)
         m_pRope = reinterpret_cast<PC*>(pPC)->FUN_141659af0(3);
     MyPC* pMy = FUN_1417b84b0();
-    if (pMy != 0 && ((void*)(reinterpret_cast<PC*>(pMy)->FUN_14165f100())) != 0)
+    if (pMy != 0 && ((void*)(reinterpret_cast<PC*>(pMy)->GetHeldItem())) != 0)
         reinterpret_cast<PC*>(pMy)->SendRequestCube();
     if (m_pRope != 0)
     {
@@ -1259,17 +1259,17 @@ void StateRope::vfunc_4(StateData* pData)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
-    m_pOwner->FUN_14123cb20(false);
+    m_pOwner->SetShadowVisible(false);
 }
 
 // @0x1417e1330
 void StateRope::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_pOwner->FUN_14123cb20(true);
+    m_pOwner->SetShadowVisible(true);
     if (m_pRope != 0 && FUN_1417b8370() != 0)
     {
-        reinterpret_cast<PC*>(FUN_1417b8370())->FUN_141658fc0(m_pRope->GetEntityID());
+        reinterpret_cast<PC*>(FUN_1417b8370())->SetEntityId(m_pRope->GetEntityID());
     }
     reinterpret_cast<PCBase*>(m_pOwner)->SetTargetYaw(m_pOwner->vfunc_20().z);
 }
@@ -1441,7 +1441,7 @@ float StateRope::FUN_1417e1e60()
     if (!bOnRope)
     {
         float fGround = 0.0f;
-        if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a450(reinterpret_cast<const efd::Point3&>(kPos), &fGround, 0.0f) != 0 && fGround != FLT_MAX)
+        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(reinterpret_cast<const efd::Point3&>(kPos), &fGround, 0.0f) != 0 && fGround != FLT_MAX)
             m_n10 = 0x39;
     }
     else if (m_n10 == 0x34)

@@ -22,7 +22,7 @@ public:
     virtual void vfunc_10(float a, float b, float c, float d, int e);   // 10 0x1417fafb0 (owner slot 115 -> speed)
     virtual int vfunc_14();                                 // 14 0x1417fb570: 0
     virtual int vfunc_19();                                 // 19 0x1417fb590: 0
-    virtual int vfunc_22(MS2Ptr<Unk_StateArg22> p);         // 22 0x1417fb040 (a new request may replace this state)
+    virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417fb040 (a new request may replace this state)
     virtual void vfunc_29(MS2Ptr<Unk_StateArg29> p);        // 29 0x1417fb160 (a swim gem was put on)
     virtual void vfunc_34();                                // 34 0x1417fb5a0: m_n28 = 1
 

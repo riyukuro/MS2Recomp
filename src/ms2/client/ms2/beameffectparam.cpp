@@ -47,7 +47,7 @@ CBeamEffectParam::CBeamEffectParam()
 }
 
 // @0x140a0c890
-static int FUN_140a0c890(const CString& str)
+static int ParseCurveType(const CString& str)
 {
     if (str.IsEmpty())
         return 0;
@@ -79,7 +79,7 @@ static int FUN_140a0c900(TiXmlElement* pNode, const char* pszName, int& nOut)
     int r = XmlGetAttr((class TiXmlElement*)(pNode), pszName, str);
     if (r != 0)
         return r;
-    nOut = FUN_140a0c890(str);
+    nOut = ParseCurveType(str);
     return r;
 }
 

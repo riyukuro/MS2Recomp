@@ -91,16 +91,16 @@ public:
     GameEventAttendGiftCli();
     bool FUN_140ce3510();
     bool IsCheckedInToday();
-    unsigned FUN_140ce3660();
+    unsigned GetGiftCount();
     unsigned GetAttendedDays();
     MS2Ptr<ItemGift> GetGiftByDay(unsigned nDay);
     int GetUsablePoints();
     CStringW GetTitleWithPoints();
     CStringA GetDesc();
-    int FUN_140ce38a0();
+    int GetPayType();
     unsigned FUN_140ce38c0();
-    __int64 FUN_140ce38e0();
-    int FUN_140ce3900();
+    __int64 GetPayCost();
+    int GetCouponItemId();
     unsigned FUN_140ce3920();
     int FUN_140ce3960();
     int FUN_140ce3980();
@@ -109,7 +109,7 @@ public:
     int FUN_140ce3a20();
     bool FUN_140ce3a80();
     CMsTime FUN_140ce3aa0();
-    CMsTime FUN_140ce3ae0();
+    CMsTime GetEndTime();
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();
@@ -183,7 +183,7 @@ public:
     void FUN_140ce4c90(TiXmlElement* pElem);
     void FUN_140ce4cc0(TiXmlElement* pElem);
     void FUN_140ce4cf0(TiXmlElement* pElem);
-    void FUN_140ce4d20(TiXmlElement* pElem);
+    void LoadSystemMailContent(TiXmlElement* pElem);
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();

@@ -1,4 +1,4 @@
-// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Unk_SeparateNode: a NiNode whose UpdateWorldData drops the
+// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). SeparateNode: a NiNode whose UpdateWorldData drops the
 // parent's world transform and then re-applies only the components selected in its 1-byte bitset. See separatenode.h.
 // MS2-UNIT: ?\separatenode.cpp
 // MS2-RANGE: 0x140100860-0x140100890 .text$di
@@ -9,33 +9,33 @@
 #include "separatenode.h"
 
 // The class RTTI name ("SeparateNode") and the vftable are unit-local; pin the vftable to the exe address.
-// MS2-PIN: ??_7Unk_SeparateNode@@6B@ 0x142f60d20
+// MS2-PIN: ??_7SeparateNode@@6B@ 0x142f60d20
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // @0x140100860
-const NiRTTI Unk_SeparateNode::ms_RTTI("SeparateNode", &NiNode::ms_RTTI);
+const NiRTTI SeparateNode::ms_RTTI("SeparateNode", &NiNode::ms_RTTI);
 
 // @0x141751290
-NiObject* Unk_SeparateNode::CreateClone(NiCloningProcess& kCloning)
+NiObject* SeparateNode::CreateClone(NiCloningProcess& kCloning)
 {
-    Unk_SeparateNode* pkClone = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(m_kBits);
+    SeparateNode* pkClone = new (efd::MemHint(efd::MemHint::NONE)) SeparateNode(m_kBits);
     CopyMembers(pkClone, kCloning);
     return pkClone;
 }
-MS2_REPLACE_METHOD(0x141751290, Unk_SeparateNode, CreateClone, 158, 0x4F2D30E1);
+MS2_REPLACE_METHOD(0x141751290, SeparateNode, CreateClone, 158, 0x4F2D30E1);
 
 // @0x141751340
-void Unk_SeparateNode::CopyMembers(NiNode* pkDest, NiCloningProcess& kCloning)
+void SeparateNode::CopyMembers(NiNode* pkDest, NiCloningProcess& kCloning)
 {
     if (pkDest != 0) {
         NiNode::CopyMembers(pkDest, kCloning);
     }
 }
-MS2_REPLACE_METHOD(0x141751340, Unk_SeparateNode, CopyMembers, 52, 0x3A51085E);
+MS2_REPLACE_METHOD(0x141751340, SeparateNode, CopyMembers, 52, 0x3A51085E);
 
 // @0x141751380
-Unk_SeparateNode::Unk_SeparateNode(bool b0, bool b1, bool b2) : NiNode(0)
+SeparateNode::SeparateNode(bool b0, bool b1, bool b2) : NiNode(0)
 {
     m_kBits[0] = b0;
     m_kBits[1] = b1;
@@ -43,17 +43,17 @@ Unk_SeparateNode::Unk_SeparateNode(bool b0, bool b1, bool b2) : NiNode(0)
 }
 
 // @0x141751470
-Unk_SeparateNode::Unk_SeparateNode(Unk_LightUpdateBits kBits) : NiNode(0), m_kBits(kBits)
+SeparateNode::SeparateNode(Unk_LightUpdateBits kBits) : NiNode(0), m_kBits(kBits)
 {
 }
 
 // @0x1417514c0
-Unk_SeparateNode::~Unk_SeparateNode()
+SeparateNode::~SeparateNode()
 {
 }
 
 // @0x1417514f0
-void Unk_SeparateNode::UpdateWorldData()
+void SeparateNode::UpdateWorldData()
 {
     m_kWorld.MakeIdentity();
     if (m_pkParent != 0) {
@@ -69,10 +69,10 @@ void Unk_SeparateNode::UpdateWorldData()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1417514F0, Unk_SeparateNode, UpdateWorldData, 357, 0x59534F7E);
+MS2_REPLACE_METHOD(0x1417514F0, SeparateNode, UpdateWorldData, 357, 0x59534F7E);
 
 // @0x1417516c0
-const NiRTTI* Unk_SeparateNode::GetRTTI() const
+const NiRTTI* SeparateNode::GetRTTI() const
 {
     return &ms_RTTI;
 }

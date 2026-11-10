@@ -49,10 +49,10 @@ public:
 //
 //
 
-UITalkCinematic* FUN_140a7b2b0(int nId);
+UITalkCinematic* FindTalkCinematic(int nId);
 
-void FUN_141415600(const CString& strBindID);                    // release the item bound to the name
-void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
+void DestroyItemInfoSlot(const CString& strBindID);                    // release the item bound to the name
+void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 #include "ms2/ms2format.h"
 CStringW FUN_1418fec00(int, __int64, bool);          // money text by pay type
 int FUN_1403bafd0(int id);
@@ -86,7 +86,7 @@ int UIGambleDialog::vfunc_65()
 void UIGambleDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_binds.GetCount(); i++)
-        FUN_141415600(m_binds[i]);
+        DestroyItemInfoSlot(m_binds[i]);
     m_binds.RemoveAll();
     UIDialog::vfunc_67();
 }
@@ -97,7 +97,7 @@ void UIGambleDialog::vfunc_43()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
+        UITalkCinematic* pUI = FindTalkCinematic(0x4e40);
         if (pUI != 0)
         {
             int n = pUI->GetLowerCutGlobalY();
@@ -123,7 +123,7 @@ void UIGambleDialog::vfunc_79(void* pPacket)
     int cResult;
     if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x9c && (cResult = ((CInPacket*)pPacket)->ReadUInt8()) == 1) {
         for (size_t i = 0; i < m_binds.GetCount(); i++)
-            FUN_141415600(m_binds[i]);
+            DestroyItemInfoSlot(m_binds[i]);
         m_binds.RemoveAll();
         if (FUN_141935710() == 0)
             return;
@@ -169,7 +169,7 @@ int UIGambleDialog::FUN_141935710()
             strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
             unsigned nCount = spItem->GetCount();
             CStringW strName = StringFormat<CStringW, unsigned int>(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
-            FUN_141415450(strBind, spItem, i, 0x415, 0);
+            CreateItemInfoSlot(strBind, spItem, i, 0x415, 0);
             int nFlag = 1;
             int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
             if (nPayType != 0x11) {

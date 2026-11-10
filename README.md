@@ -8,20 +8,22 @@ original. Together with the patched Gamebryo engine and the statically linked li
 replacement `MapleStory2.exe` (the "full executable", see [`BUILDING.md`](BUILDING.md)) that boots, logs in and plays
 on a server.
 
-No function is left to write (see the table below), and `cmake/fullexe-plain` builds the full executable from this
-repository and your own SDKs without the original exe ([`BUILDING.md`](BUILDING.md#without-the-original-exe)). It is
-still not the same as the original. The gaps:
+No function is left to write (see the table below), and the repository's default build makes the full executable
+from this checkout and your own SDKs, without the original exe ([`BUILDING.md`](BUILDING.md)). It is still not the
+same as the original. The gaps:
 
 - The equivalent functions in the table behave the same but are not byte matches, and the exe as a whole is not
   byte-identical to the original.
 - The Nexon Messenger code is stubbed out.
-- The no-exe build uses stand-in resources: the exe's dev dialogs, menus, bitmaps and strings are absent, and its
-  dialogs look different.
-- The link still carries generated glue: the link aliases counted under the table, a zero-filled data stub and a small
-  runtime shim (entry point, crash log and a few startup patches).
-- Most of that glue is now derived from the checkout at configure time, but two link tables still come from a
-  maintainer's build that reads the exe, so a commit that adds an engine or library unit needs a refresh first. The
-  default `cmake/fullexe` build still reads the exe.
+- The build uses stand-in resources: the exe's dev dialogs, menus, bitmaps and strings are absent, and its dialogs
+  look different. If you own the original exe, you can extract its resources and link them instead
+  ([`BUILDING.md`](BUILDING.md#resources)).
+- The link still carries generated glue: the link aliases counted under the table and a small runtime shim (the entry
+  point and a trap that logs any function no object defines; crash and hang logging are an option). The exe holds
+  none of the hook registrations the maintainers' builds compile in. It is linked with `/opt:noref`, so it also
+  keeps functions that nothing calls yet.
+- Most of that glue is derived from the checkout at configure time, but one link table (`linkfacts.tsv`) still comes
+  from a maintainer's build that reads the exe, so a commit that adds an engine or library unit needs a refresh first.
 - Bugs the byte-match checks can't see still turn up (see [Recent fixes](#recent-fixes)), and not every gameplay flow
   has been tested on the full executable.
 - To play you still need the game's data files and a server.
@@ -52,14 +54,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 176,747 | 176,595 (99.9%) | 147 (0.1%) | 100.0% |
+| Game · ms2 | 176,747 | 176,600 (99.9%) | 142 (0.1%) | 100.0% |
 | Runtime & middleware | 24,765 | 24,009 (96.9%) | 639 (2.6%) | 99.5% |
 | Gamebryo engine | 16,881 | 16,841 (99.8%) | 27 (0.2%) | 99.9% |
-| Game framework · egf | 13,111 | 13,099 (99.9%) | 11 (0.1%) | 100.0% |
+| Game framework · egf | 13,110 | 13,098 (99.9%) | 11 (0.1%) | 100.0% |
 | Libraries | 6,731 | 6,372 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,067 | 13,063 (100.0%) | 4 (0.0%) | 100.0% |
+| Foundation | 13,068 | 13,064 (100.0%) | 4 (0.0%) | 100.0% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
-| **Total** | **252,084** | 250,759 (99.5%) | 851 (0.3%) | 99.8% |
+| **Total** | **252,084** | 250,764 (99.5%) | 846 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
 | Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 74 | | | |
@@ -72,25 +74,24 @@ Merged totals by area (functions in the original executable; regenerated on each
 
 Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 474 functions that are neither matched nor equivalent. Counting the 474 that are not missing, 100.0% is done.
 
-Link aliases: 9 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 9 `#pragma comment(linker, "/alternatename:...")` lines in 7 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. The no-exe build no longer needs an alias file; the rest are in the sources.
+Link aliases: 5 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 5 `#pragma comment(linker, "/alternatename:...")` lines in 5 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. The no-exe build no longer needs any alias lines in that file; the rest are in the sources.
 <!-- progress:end -->
 
 ### Recent fixes
 
 Since the last publish:
 
-- The link aliases are almost gone: the no-exe build needs no alias file any more, and 9 aliases remain in the
-  sources, down from 19,884 on 2026-10-31. The recovered code now names the real functions, vftables and data objects
-  directly.
-- The no-exe build (`cmake/fullexe-plain`) now makes most of its glue from the checkout at configure time: the list of
-  game objects, the compile commands and flags, the function order and the zero-filled data stub. A commit made after
-  the last glue refresh therefore builds without the exe as well (unless it adds an engine or library unit), and adding, renaming or removing a unit re-runs
-  configure. Two small tables, the engine and library object picks and the init-order rules (`link.tsv`,
-  `before.tsv`), still come from a maintainer's build that passed its smoke test, and are refreshed with each publish.
-  See [`BUILDING.md`](BUILDING.md#glue-derived-at-configure).
-- No new bugs that the byte-match checks can't see were fixed in this round; the merge was the alias removal.
+- Placeholder names: 1,422 game functions that were still called `FUN_<address>` now have descriptive names, and
+  three placeholder classes have real names. Two independent naming passes had to agree on each name, and a full
+  rebuild checked the result: no exact match was lost.
+- The default build needs no original executable, and this was checked end to end: a clean checkout, configured with
+  the stock `linux` preset and no options, built the whole client (3,734 steps, no unresolved symbol), and the result
+  ran into the game field. See [`BUILDING.md`](BUILDING.md).
+- Link aliases in the sources went from 9 to 5. The alias file of the no-exe build stays empty.
+- Five functions that the last publish counted as equivalent are byte matches again.
+- No new bugs that the byte-match checks can't see were fixed in this round.
 
-Fixed in the previous publish. The byte-match checks can't see any of these bugs. None was seen in the client; the
+Fixed in an earlier publish. The byte-match checks can't see any of these bugs. None was seen in the client; the
 effects come from reading the code.
 
 - The mastery dialog's craft and magic-scroll craft boxes had their Craft and Cancel labels swapped (the buttons still
@@ -128,8 +129,9 @@ effects come from reading the code.
 
 ## Requirements
 
-- Either **Linux** with CMake 3.20+, Ninja, Python 3 and Wine, or **native Windows 10/11** with CMake 3.20+, Ninja, Python 3.10+
-  and Git (no WSL, no Wine)
+- Either **Linux** with CMake 3.21+, Ninja, Python 3 and Wine, or **native Windows 10/11** with CMake 3.21+, Ninja, Python 3.10+
+  and Git (no WSL, no Wine). To build only the full executable on Windows, Visual Studio 2022 with the v141 toolset is
+  enough (see [`BUILDING.md`](BUILDING.md#windows))
 - MSVC 14.16 (VS2017 15.9, cl 19.16.27054) with MFC/ATL (MBCS) and the Windows 10 SDK 10.0.19041. Linux: installed with
   [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`. Windows: the Visual Studio 2017 Build Tools
   (v141 toolset); component IDs and setup in [`CONTRIBUTING.md`](CONTRIBUTING.md#windows-native-no-wsl-no-wine).
@@ -143,8 +145,8 @@ effects come from reading the code.
   and with `engine-patches-v2525/` into `engine/gamebryo-v2525/` (the full-executable configure does the second one;
   see [`BUILDING.md`](BUILDING.md))
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
-- The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`): the default full-executable build reads it,
-  and the DLL runs against it. The no-exe build (`cmake/fullexe-plain`) does not need it
+- For development only (the gates, the hook DLL and the maintainers' exe-reading build): the unpacked KMS2_DEV x64
+  `MapleStory2.exe` (TimeDateStamp `0x62568c46`). Building the full executable does not need it
 - For the full executable, the other SDKs and library sources listed in [`BUILDING.md`](BUILDING.md#your-sdks)
 
 ## Build
@@ -155,18 +157,15 @@ effects come from reading the code.
 
 ### Full executable
 
-[`BUILDING.md`](BUILDING.md) builds the replacement `MapleStory2.exe` from this checkout plus your own SDKs, with one
-CMake command:
+[`BUILDING.md`](BUILDING.md) builds the replacement `MapleStory2.exe` from this checkout plus your own SDKs. It does
+not read the original exe. In Visual Studio 2022, open the checkout's folder (File > Open > Folder) and build; or:
 
 ```sh
-cmake --preset fullexe && cmake --build build/fullexe
+cmake --preset linux && cmake --build --preset linux        # Windows: --preset windows
 ```
 
-The result is `build/fullexe/out/MapleStory2.exe` (a copy of `fullexe3.exe`, which stays next to it).
-
-That build reads the original exe. To build without it, use `cmake/fullexe-plain` with `-DMS2_PLAIN_COMPILE=ON` (the
-`windows-noexe` preset in Visual Studio; on Linux, pass the flag to CMake): see
-[Without the original exe](BUILDING.md#without-the-original-exe).
+The result is `build/<preset>/out/MapleStory2.exe`. The maintainers' build that reads the original exe and checks every
+object against it is the `fullexe` preset ([`BUILDING.md`](BUILDING.md#maintainer-builds-with-the-original-exe)).
 
 ### Hook DLL (development)
 
@@ -199,8 +198,9 @@ The per-unit gate does these builds for you (`python tools\unit_check.py`). Both
 ### Full executable
 
 In a copy of the game folder, replace `x64/MapleStory2.exe` with the built `MapleStory2.exe` and remove any `dinput8.dll`, then
-start the game as usual (under Wine: `wine x64/MapleStory2.exe`). The runtime shim logs fatal exceptions to
-`fullexe-trap.log` beside the exe.
+start the game as usual (under Wine: `wine x64/MapleStory2.exe`). If the exe calls a function no object defines, the
+runtime shim writes its name to `fullexe-trap.log` beside the exe and exits. A build with `-DMS2_SHIM_DIAGNOSTICS=ON`
+also logs crashes and hangs there.
 
 ### Hook DLL (development)
 

@@ -29,7 +29,7 @@
 
 // ---- out-of-unit callees ----
 
-class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
+class Unk_SlotBreakManager* GetItemBreakManager();   // C3: was GetItemBreakManager
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -38,7 +38,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for
 bool FUN_140633bf0(MS2Ptr<CItem> spItem);               // the item can be broken
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
-MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
+MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -81,12 +81,12 @@ ItemBreakSlot::ItemBreakSlot(const CString& strName, int nIndex)
 // @0x14140ff80
 int ItemBreakSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = AsDragSlot(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
-            reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->TryAddItem(spItem, GetIndex());
+            reinterpret_cast<CItemBreakManager*>(GetItemBreakManager())->TryAddItem(spItem, GetIndex());
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
@@ -97,7 +97,7 @@ int ItemBreakSlot::vfunc_14()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)
         return 0;
-    reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->RequestRemoveItem(spItem);
+    reinterpret_cast<CItemBreakManager*>(GetItemBreakManager())->RequestRemoveItem(spItem);
     return 1;
 }
 
@@ -113,7 +113,7 @@ int ItemBreakSlot::vfunc_15()
 // @0x1414101c0
 MS2Ptr<CItem> ItemBreakSlot::vfunc_25()
 {
-    return reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->GetSlotItemClone(m_nIndex);
+    return reinterpret_cast<CItemBreakManager*>(GetItemBreakManager())->GetSlotItemClone(m_nIndex);
 }
 
 // MS2-FUNCTIONAL: the exe puts the ASTooltip below the by-value MS2Ptr copy in the frame (slots swapped)
@@ -128,7 +128,7 @@ int ItemBreakSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
         if (IsEnabled() == true)
-            tip.FUN_1409db7b0(spItem);
+            tip.SetEnablePreview(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -154,7 +154,7 @@ int ItemBreakSlot::vfunc_8(void* p)
 // @0x141410480
 int ItemBreakSlot::FUN_141410480(__int64 nItemUid)
 {
-    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nItemUid);
     if (!spItem)
         return 0;
     if (FUN_140633bf0(spItem) == false)

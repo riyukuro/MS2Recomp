@@ -107,7 +107,7 @@ void UIPhotoStudioMenuDialog::OnFreeCamera()
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
     if (MS2Ptr<ASButton> spCheck = GetChild<ASButton>("m_freeCamera"))
-        spCheck->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
+        spCheck->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
 }
 
 // @0x140e76270
@@ -116,12 +116,12 @@ void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else
     {
-        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
+        TSingleton<CameraMgr>::GetInstance()->SetPendingMode(2);
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
 }

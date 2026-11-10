@@ -93,8 +93,8 @@ template <> template <> MS2Ptr<ASLabel>& MS2Ptr<ASLabel>::operator=<ASLabel>(con
 template <> MS2Ptr<ASLabel> AScript::FUN_140c436d0<ASLabel>(const CString& strName);
 
 // The purchase block notice (the state manager answers whether the action is blocked right now).
-class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& kRef, int nKind, unsigned __int64 n);
+class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
+void ShowBlockNotice(const Unk_BlockPtr<Unk_BlockRecord>& kRef, int nKind, unsigned __int64 n);
 
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);   // set an object value (as uiachievedialog)
 
@@ -613,10 +613,10 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
 int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 {
     {
-        Unk_BlockPtr<Unk_BlockRecord> block = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(5);
+        Unk_BlockPtr<Unk_BlockRecord> block = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(5);
         if (block.get() != 0)
         {
-            FUN_140a2ff20(block, 5, (unsigned __int64)static_cast<IMessageListener*>(this));
+            ShowBlockNotice(block, 5, (unsigned __int64)static_cast<IMessageListener*>(this));
             return 0;
         }
     }

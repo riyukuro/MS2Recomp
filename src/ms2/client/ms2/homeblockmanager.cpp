@@ -55,17 +55,17 @@ HomeBlockManager::HomeBlockManager() {}
 // @0x140a46b30
 HomeBlockManager::~HomeBlockManager() {}
 // @0x140a46b90
-void HomeBlockManager::FUN_140a46b90(CInPacket& in) {
+void HomeBlockManager::OnPacket(CInPacket& in) {
     int op=in.ReadUInt8();
     switch(op) {
     case 4: FUN_140a46c60(in); break;
-    case 2: FUN_140a46f90(in); break;
-    case 3: FUN_140a470d0(in); break;
+    case 2: OnAdd(in); break;
+    case 3: OnRemove(in); break;
     case 5: FUN_140a47130(in); break;
-    case 6: FUN_140a47360(in); break;
+    case 6: OnResult(in); break;
     }
 }
-MS2_REPLACE_METHOD(0x140a46b90, HomeBlockManager, FUN_140a46b90, 188, 0x123F62F9);
+MS2_REPLACE_METHOD(0x140a46b90, HomeBlockManager, OnPacket, 188, 0x123F62F9);
 // MS2-FUNCTIONAL: three pair/forward COMDATs differ only in the bound int64 forwarding helper.
 // Shared HomeBlockInfo field types retained pending coordinator review.
 // @0x140a46c60
@@ -99,27 +99,27 @@ void HomeBlockManager::FUN_140a46f00(__int64 id,CStringW text) {
 }
 MS2_REPLACE_METHOD(0x140a46f00, HomeBlockManager, FUN_140a46f00, 133, 0x708EE438);
 // @0x140a46f90
-void HomeBlockManager::FUN_140a46f90(CInPacket& in) {
+void HomeBlockManager::OnAdd(CInPacket& in) {
     HomePtr p(new HomeBlockInfo);
     p->FUN_1402706f0(in);
     FUN_140a479a0(p);
 }
-MS2_REPLACE_METHOD(0x140a46f90, HomeBlockManager, FUN_140a46f90, 188, 0x29D623F7);
+MS2_REPLACE_METHOD(0x140a46f90, HomeBlockManager, OnAdd, 188, 0x29D623F7);
 // @0x140a47060
-void HomeBlockManager::FUN_140a47060(__int64 id) {
+void HomeBlockManager::RequestRemove(__int64 id) {
     COutPacket out(static_cast<int>(SendOp::HomeBlock),0);
     out.WriteUInt8(3);
     out.WriteInt64(id);
     FUN_140710590(out);
 }
-MS2_REPLACE_METHOD(0x140a47060, HomeBlockManager, FUN_140a47060, 95, 0x30674299);
+MS2_REPLACE_METHOD(0x140a47060, HomeBlockManager, RequestRemove, 95, 0x30674299);
 // @0x140a470d0
-void HomeBlockManager::FUN_140a470d0(CInPacket& in) {
+void HomeBlockManager::OnRemove(CInPacket& in) {
     __int64 id=in.ReadInt64();
     if(id==0) return;
     FUN_140a47b30(id);
 }
-MS2_REPLACE_METHOD(0x140a470d0, HomeBlockManager, FUN_140a470d0, 83, 0x4BE55B80);
+MS2_REPLACE_METHOD(0x140a470d0, HomeBlockManager, OnRemove, 83, 0x4BE55B80);
 // @0x140a47130
 void HomeBlockManager::FUN_140a47130(CInPacket& in) {
     unsigned __int64 id=in.ReadInt64();
@@ -137,7 +137,7 @@ void HomeBlockManager::FUN_140a47130(CInPacket& in) {
 }
 MS2_REPLACE_METHOD(0x140a47130, HomeBlockManager, FUN_140a47130, 540, 0xF1BE058B);
 // @0x140a47360
-void HomeBlockManager::FUN_140a47360(CInPacket& in) {
+void HomeBlockManager::OnResult(CInPacket& in) {
     int result=in.ReadInt32();
     switch(result) {
     case 0: FUN_141275260(0xd5a,1,1); break;
@@ -149,50 +149,50 @@ void HomeBlockManager::FUN_140a47360(CInPacket& in) {
     case 6: FUN_141275260(0xd60,1,1); break;
     }
 }
-MS2_REPLACE_METHOD(0x140a47360, HomeBlockManager, FUN_140a47360, 262, 0x6FA9B62B);
+MS2_REPLACE_METHOD(0x140a47360, HomeBlockManager, OnResult, 262, 0x6FA9B62B);
 // @0x140a47490
-HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(unsigned __int64 id) {
+HomeBlockManager::HomePtr HomeBlockManager::FindById(unsigned __int64 id) {
     Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return HomePtr(0);
     return it->second;
 }
-MS2_REPLACE_METHOD(0x140a47490, HomeBlockManager, FUN_140a47490, 232, 0xE93ABFD9);
+MS2_REPLACE_METHOD(0x140a47490, HomeBlockManager, FindById, 232, 0xE93ABFD9);
 // @0x140a47580
-HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47580(unsigned __int64 id) {
+HomeBlockManager::HomePtr HomeBlockManager::FindByAccountId(unsigned __int64 id) {
     Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byAccount.find(id);
     if(it==m_byAccount.end()) return HomePtr(0);
     return it->second;
 }
-MS2_REPLACE_METHOD(0x140a47580, HomeBlockManager, FUN_140a47580, 232, 0xDBF71D71);
+MS2_REPLACE_METHOD(0x140a47580, HomeBlockManager, FindByAccountId, 232, 0xDBF71D71);
 // @0x140a47670
 void HomeBlockManager::FUN_140a47670(std::vector<BuddyPtr>& out) {
     Unk_CriticalSectionLock guard(m_lock,1);
     for(auto entry:m_byId) {
         if(entry.second==0) continue;
-        BuddyPtr buddy=FUN_140a47d10(entry.second);
+        BuddyPtr buddy=ToBuddy(entry.second);
         if(buddy==0) continue;
         out.push_back(buddy);
     }
 }
 MS2_REPLACE_METHOD(0x140a47670, HomeBlockManager, FUN_140a47670, 363, 0x7E8CC0CD);
 // @0x140a477f0
-HomeBlockManager::BuddyPtr HomeBlockManager::FUN_140a477f0(__int64 id) {
-    HomePtr p=FUN_140a47490(id);
+HomeBlockManager::BuddyPtr HomeBlockManager::FindBuddyById(__int64 id) {
+    HomePtr p=FindById(id);
     if(p==0) return BuddyPtr(0);
-    BuddyPtr buddy=FUN_140a47d10(p);
+    BuddyPtr buddy=ToBuddy(p);
     if(buddy==0) return BuddyPtr(0);
     return buddy;
 }
-MS2_REPLACE_METHOD(0x140a477f0, HomeBlockManager, FUN_140a477f0, 324, 0x745AB369);
+MS2_REPLACE_METHOD(0x140a477f0, HomeBlockManager, FindBuddyById, 324, 0x745AB369);
 // @0x140a47940
-void HomeBlockManager::FUN_140a47940() {
+void HomeBlockManager::Clear() {
     Unk_CriticalSectionLock guard(m_lock,1);
     m_byId.clear();
     m_byAccount.clear();
 }
-MS2_REPLACE_METHOD(0x140a47940, HomeBlockManager, FUN_140a47940, 86, 0x0AB0FDD5);
+MS2_REPLACE_METHOD(0x140a47940, HomeBlockManager, Clear, 86, 0x0AB0FDD5);
 // @0x140a479a0
 void HomeBlockManager::FUN_140a479a0(HomePtr p) {
     Unk_CriticalSectionLock guard(m_lock,1);
@@ -228,7 +228,7 @@ void HomeBlockManager::FUN_140a47c80(__int64 id,CStringW text) {
 }
 MS2_REPLACE_METHOD(0x140a47c80, HomeBlockManager, FUN_140a47c80, 133, 0x7835393B);
 // @0x140a47d10
-HomeBlockManager::BuddyPtr HomeBlockManager::FUN_140a47d10(HomePtr home) {
+HomeBlockManager::BuddyPtr HomeBlockManager::ToBuddy(HomePtr home) {
     if(home==0) return BuddyPtr(0);
     BuddyPtr buddy(new CBuddy);
     buddy->id=home->m_18;

@@ -69,8 +69,8 @@ public:
     int Connect(const sockaddr*,int);
     int FUN_141269890(const sockaddr* p) { return Connect(p,16); }
     int Send(const char*,int,int);
-    ISocketCallBack* FUN_14126a3c0() { return m_callback; }
-    void FUN_14126c5a0(ISocketCallBack* p) { m_callback=p; }
+    ISocketCallBack* GetCallBack() { return m_callback; }
+    void SetCallBack(ISocketCallBack* p) { m_callback=p; }
 private:
     Unk_SocketPtr<CSocketThread> m_worker;
     ISocketCallBack* m_callback;
@@ -82,7 +82,7 @@ class CSocketThread : public CPtred,public CThread {
 public:
     CSocketThread(); virtual ~CSocketThread();
     unsigned int vfunc_1(void*,Unk_140659080&) override;
-    void FUN_1412696b0(); int FUN_141269b30(HANDLE); void ProcessCommands();
+    void EnsureThreadStarted(); int FUN_141269b30(HANDLE); void ProcessCommands();
     void HandleSocketError(CSimpleSocket*,int);
     HANDLE AddSocket(CSimpleSocket*); int RemoveSocket(CSimpleSocket*);
     ATL::CAtlArray<HANDLE> m_events;
@@ -104,11 +104,11 @@ public:
     void vfunc_3(CSimpleSocket*,int) override;
     void vfunc_4(CSimpleSocket*,int) override {}
     void OnClose(CSimpleSocket*,int) override;
-    int FUN_141265420(CString,int,int,int);
+    int Connect(CString,int,int,int);
     void Reconnect(); void Close(); void FUN_141265960();
-    void SendPacket(COutPacket&); void FUN_141265ae0(); void SetKeys(unsigned,unsigned);
-    void FUN_141266500(int); void SetDisconnect(int); void FUN_141267070();
-    void FUN_1412672a0(const Unk_SocketOptions&); void FUN_1412672d0();void FUN_1412673c0();
+    void SendPacket(COutPacket&); void ProcessPacket(); void SetKeys(unsigned,unsigned);
+    void FUN_141266500(int); void SetDisconnect(int); void FlushSendQueue();
+    void SetOptions(const Unk_SocketOptions&); void FUN_1412672d0();void FUN_1412673c0();
     int GetSequence(); void FUN_141267410(COutPacket&); int GetDisconnect(); int IsConnected(); CString GetHost(); int GetPort();
 private:
     MS2_LAYOUT_FRIEND;

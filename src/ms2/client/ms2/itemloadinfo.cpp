@@ -40,7 +40,7 @@
 #include <utility>
 MS2_EMIT_CRT_MEMMOVE_S();
 
-class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
+class Unk_ResourceMgr* GetNifLoadingService();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 CString FUN_141421740(const CString& strPath, int* pnFlag);            // the variant letter of a model path
 CString FUN_1414218c0(const CString& strPath, const CString& strSuffix);   // model path with another variant letter
 CString FUN_141425220(const CString& strPath, int bDiffuse);
@@ -210,7 +210,7 @@ void CItemLoader::Complete(unsigned nId, MS2Ptr<CItemLoadInfo> info)
 
 // Loads one nif of the item model and keeps it under its path in the request.
 #define ITEMLOADER_LOAD_NIF(strNifPath) \
-    nif = reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->Load(CString(strNifPath), false, 5, 0, 0); \
+    nif = reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->Load(CString(strNifPath), false, 5, 0, 0); \
     if (nif) \
     { \
         std::string strKey((const char*)(strNifPath)); \
@@ -248,7 +248,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
     }
     if (nId == 0 || info == 0)
         return;
-    if (reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0()) != 0)
+    if (reinterpret_cast<CNifLoadingService*>(GetNifLoadingService()) != 0)
     {
         if (info->m_type == 1 || info->m_type == 2)
         {
@@ -261,7 +261,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
             {
                 CharacterDecalData* pDecal = data->GetModelOrEmpty()->FUN_14054b6b0();
                 if (pDecal != 0)
-                    reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->GetTexture(CString(pDecal->GetTexture()), 5);
+                    reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->GetTexture(CString(pDecal->GetTexture()), 5);
             }
             std::map<std::string, std::list<NiAVObjectPtr> >& nifs = info->m_nifs;
             NiAVObjectPtr nif(0);

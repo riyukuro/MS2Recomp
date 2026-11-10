@@ -161,7 +161,7 @@ int ItemPreview::InitWithItems(std::vector<MS2Ptr<CItem> > items)
         return 0;
     m_spAvatar = CreatePcAvatar();
     m_items.clear();
-    int nGender = ((class PC*)(class PC*)(m_pPC))->FUN_141658e60();
+    int nGender = ((class PC*)(class PC*)(m_pPC))->GetGender();
     for (size_t i = 0; i < items.size(); ++i)
     {
         if (!FUN_141b48950(items[i]))
@@ -319,7 +319,7 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
         MS2Ptr<CItemData> spData = FUN_14053f870(m_spPreview->FUN_1405276c0());
         if (spData == 0)
             return;
-        FUN_140d3eb30(m_spPreview);
+        ApplyItemToAvatar(m_spPreview);
     }
     else if (m_nMode == 1)
     {
@@ -344,7 +344,7 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
                             &m_spPackageData, &bDefault))
                         ClearPackageData();
                 }
-                FUN_140d3eb30(m_items[i]);
+                ApplyItemToAvatar(m_items[i]);
             }
         }
     }
@@ -530,13 +530,13 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nU
 {
     if (spData == 0)
         return 0;
-    int nGender = ((class PC*)(class PC*)(m_pPC))->FUN_141658e60();
+    int nGender = ((class PC*)(class PC*)(m_pPC))->GetGender();
     bool bShowEquip = true;
     if (spData->FUN_14053cc00() && spData->FUN_14053e900() == 5)
         bShowEquip = false;
     MS2Ptr<WeaponType> spFilter(new WeaponType(m_pPC));
     UIAvatarPC* pAvatar = 0;
-    if (static_cast<bool>(spFilter.get()) && spFilter->FUN_140ebb780(nGender, ((class PC*)(class PC*)(m_pPC))->FUN_141654700(), spData) && !bDefault)
+    if (static_cast<bool>(spFilter.get()) && spFilter->FUN_140ebb780(nGender, ((class PC*)(class PC*)(m_pPC))->GetJobGroupId(), spData) && !bDefault)
     {
         pAvatar = new UIAvatarPC(m_pPC, true);
     }
@@ -592,7 +592,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::CreatePetAvatar(MS2Ptr<CItemData> spData, int 
 MS2_REPLACE_METHOD(0x140D3EA20, ItemPreview, CreatePetAvatar, 256, 0x806EC0D7);
 
 // @0x140d3eb30
-void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
+void ItemPreview::ApplyItemToAvatar(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || m_spAvatar == 0)
         return;
@@ -650,7 +650,7 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
     }
     SetupCameraForItem(spItem);
 }
-MS2_REPLACE_METHOD(0x140D3EB30, ItemPreview, FUN_140d3eb30, 1569, 0x6E2231A6);
+MS2_REPLACE_METHOD(0x140D3EB30, ItemPreview, ApplyItemToAvatar, 1569, 0x6E2231A6);
 
 // @0x140d3f160
 void ItemPreview::ApplyToPCAvatar(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
@@ -710,7 +710,7 @@ bool ItemPreview::TryOnItem(MS2Ptr<CItem> spItem)
     {
         m_spPreview->SetItemUid(FUN_14028d0e0());
         m_spPreview->SetObjectId(GetAvatarObjectId());
-        FUN_140d3eb30(m_spPreview);
+        ApplyItemToAvatar(m_spPreview);
         AddWornItem(m_spPreview);
         spItem->SetItemUid(m_spPreview->GetItemUid());
         spItem->SetObjectId(GetAvatarObjectId());

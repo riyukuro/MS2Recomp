@@ -820,10 +820,10 @@ static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
             continue;
         if (aParts[0].CompareNoCase(L"male") == 0)
         {
-            if (((class PC*)(class PC*)(pPc))->FUN_141658e60() == 0)
+            if (((class PC*)(class PC*)(pPc))->GetGender() == 0)
                 strPick = aParts[1];
         }
-        else if (aParts[0].CompareNoCase(L"female") == 0 && ((class PC*)(class PC*)(pPc))->FUN_141658e60() == 1)
+        else if (aParts[0].CompareNoCase(L"female") == 0 && ((class PC*)(class PC*)(pPc))->GetGender() == 1)
             strPick = aParts[1];
     }
     strOut = strPick;
@@ -870,10 +870,10 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
             strToken = L"";
             return;
         }
-        nGender = ((class PC*)(class PC*)(pLocal))->FUN_141658e60();
+        nGender = ((class PC*)(class PC*)(pLocal))->GetGender();
     }
     else
-        nGender = ((class PC*)(class PC*)(pPc))->FUN_141658e60();
+        nGender = ((class PC*)(class PC*)(pPc))->GetGender();
     strToken.Replace(L"$", L"");
     CStrArray aItems;
     FUN_14025a680(strToken, aItems, L",");

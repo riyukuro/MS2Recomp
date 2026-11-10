@@ -28,6 +28,21 @@ def lis_keep(ranks):
     return set(out)
 
 
+def before_rules(shared, first_e):
+    """the --before rows for the units `shared` (in our link order) ranked by first_e (unit -> first exe XC index):
+    the LIS stays, every other unit moves just before the first LIS unit the exe runs after it (plainglue.py derive
+    shares this)"""
+    ranks = [first_e[u] for u in shared]
+    keep = lis_keep(ranks)
+    lis = sorted((ranks[i], shared[i]) for i in keep)
+    rows = []
+    for i in sorted(set(range(len(shared))) - keep, key=lambda i: ranks[i]):
+        j = bisect.bisect_right(lis, (ranks[i], "￿"))
+        if j < len(lis):
+            rows.append("%s\t%s\t# exe XC #%d runs before #%d" % (shared[i], lis[j][1], ranks[i], lis[j][0]))
+    return rows, keep
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--manual")
@@ -44,22 +59,15 @@ def main():
     order = [l.split("\t")[2] for l in open(os.path.join(OUT, "order.tsv")) if l[0] != "#"]
     pos = {u: i for i, u in reversed(list(enumerate(order)))}
     shared = sorted((u for u in ours if u in first_e and u in pos), key=lambda u: pos[u])    # our link order
-    ranks = [first_e[u] for u in shared]
-    keep = lis_keep(ranks)
-    lis = sorted((ranks[i], shared[i]) for i in keep)
     rows = []
     if a.manual:
         rows += [l.rstrip("\n") for l in open(a.manual) if l.strip() and l[0] != "#"]
-    moved = 0
-    for i in sorted(set(range(len(shared))) - keep, key=lambda i: ranks[i]):
-        j = bisect.bisect_right(lis, (ranks[i], "￿"))
-        if j < len(lis):
-            rows.append("%s\t%s\t# exe XC #%d runs before #%d" % (shared[i], lis[j][1], ranks[i], lis[j][0]))
-            moved += 1
+    moves, keep = before_rules(shared, first_e)
+    rows += moves
     path = tagged("initorder.tsv")
     open(path, "w").write("\n".join(rows) + "\n")
-    print("%s: %d shared units, LIS %d, %d moved (+%d manual)" % (path, len(shared), len(keep), moved,
-                                                                  len(rows) - moved))
+    print("%s: %d shared units, LIS %d, %d moved (+%d manual)" % (path, len(shared), len(keep), len(moves),
+                                                                  len(rows) - len(moves)))
 
 
 if __name__ == "__main__":

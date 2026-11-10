@@ -81,7 +81,7 @@ public:
     void FUN_1419cae20(UIItemEventListener* listener);                      // register (once)
     void FUN_1419caeb0(UIItemEventListener* listener);                      // unregister
 };
-class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
+class Unk_InventoryListener* GetItemEventDispatcher();   // C3: was GetItemEventDispatcher
 
 // The store model (global 0x143ab2d80): meso balances, slot counts, the item names.
 class Unk_StItemNames;
@@ -182,7 +182,7 @@ public:
     int GetTalking();
     void SendNpcTalkMode0();
 };
-void* FUN_140967100();
+void* GetUITalkManager();
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);   // dialog offsets
 
 // The candidate list (setCandidates) values.
@@ -284,8 +284,8 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     {
         ST_EACH_LISTENER(i4, pL)
         {
-            CStringW strJob = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->FUN_141654730());
-            pL->vfunc_oa0_7(reinterpret_cast<PC*>(pPlayer)->FUN_141654730(), strJob);
+            CStringW strJob = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->GetSubJob());
+            pL->vfunc_oa0_7(reinterpret_cast<PC*>(pPlayer)->GetSubJob(), strJob);
         }
         TSingleton<CPartyManager>::GetInstance()->UpdateMemberJob(TPtr<PCBase>(pPlayer));
     }
@@ -299,7 +299,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     }
     else if (nEvent == 6)
     {
-        ((class CEquipment*)(struct Unk_PCEquipSet*)(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0()))->FUN_1411e7660();
+        ((class CEquipment*)(struct Unk_PCEquipSet*)(reinterpret_cast<PC*>(pPlayer)->GetEquipment()))->FUN_1411e7660();
         ST_EACH_LISTENER(i6, pL)
             pL->vfunc_oa0_9((unsigned short)pPlayer->vfunc_78());
         TSingleton<CPartyManager>::GetInstance()->UpdateMemberLevel(TPtr<PCBase>(pPlayer));
@@ -308,7 +308,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     {
         ST_EACH_LISTENER(i7, pL)
         {
-            CStringW strGuild(reinterpret_cast<PC*>(pPlayer)->FUN_141656be0());
+            CStringW strGuild(reinterpret_cast<PC*>(pPlayer)->GetGuildName());
             pL->vfunc_oa0_10(strGuild);
         }
     }
@@ -537,9 +537,9 @@ MS2_REPLACE_METHOD(0x141B0EF40, UIStoreDialog, vfunc_66, 370, 0xA96F3C5E);
 void UIStoreDialog::vfunc_67()
 {
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_14180b230(m_188);
-    ((class UITalkManager*)(void*)(FUN_140967100()))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     DAT_143ab2d80.RequestSort();
     UIDialog::vfunc_67();
     m_80 = 1;
@@ -594,7 +594,7 @@ void UIStoreDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     vfunc_47(0);
     if (DAT_143ab2d80.Ready() == 0)
         DAT_143ab2d80.RequestLoad();
@@ -782,9 +782,9 @@ int UIStoreDialog::vfunc_13()
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
         {
-            if (FUN_140b632f0() != 0)
+            if (GetUISwfEntityManager() != 0)
             {
-                if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+                if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) == 0)
                     return 0;
             }
             if (m_1a8.get() != 0)
@@ -923,7 +923,7 @@ MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 // @0x141b10af0
 int UIStoreDialog::FUN_141b10af0()
 {
-    return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking() == 0 && vfunc_55() == 0;
+    return ((class UITalkManager*)(void*)(GetUITalkManager()))->GetTalking() == 0 && vfunc_55() == 0;
 }
 MS2_REPLACE_METHOD(0x141B10AF0, UIStoreDialog, FUN_141b10af0, 76, 0x899AED12);
 
@@ -1190,7 +1190,7 @@ bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0 && m_1a8.get() != 0)
     {
-        FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
+        GetUISwfEntityManager()->FUN_1422d4dd0(CString(m_20));
         ((class ASUIComponent*)m_1a8.operator->())->SetFocused(1);
     }
     return true;

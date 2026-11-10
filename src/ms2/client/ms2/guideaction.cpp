@@ -129,16 +129,16 @@ template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(
 class CameraMgr : public TSingleton<CameraMgr>
 {
 public:
-    int FUN_140af7e30();                                    // the kind of the active camera mode (2: trigger)
+    int GetModeType();                                    // the kind of the active camera mode (2: trigger)
 };
-struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
+struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
 class Unk_McEntityRules* FUN_140ad4b90();   // the trigger service (calls cast back)
 void* FUN_14136f3e0(int nId);                       // the guide event window
 void* FUN_14136f290(int nId);
 void* FUN_14136f5c0(int nId);
-UIGameMenuDialog* FUN_140938b90(int nId);
+UIGameMenuDialog* FindGameMenuDialog(int nId);
 CStringW GetStringCommon(int nId);                            // a system string
 void FUN_141a5d0a0(int bUse);                               // the tutorial weapon of the quick slots
 
@@ -149,7 +149,7 @@ int Parse_14021abf0(const CStringA& strName);   // the side popup ui type (commo
 unsigned FUN_141389420(const CStringA& strName, unsigned nDefault);      // the limit kind of a name
 int Parse_14021ade0(const CStringA& value);                         // commonenum.cpp: the guide controller type
 MS2Ptr<CGuideCondition> FUN_1413a52c0(TiXmlElement* pElem);              // the condition of a <condition> element
-int FUN_1413a5570(CGuideCondition* pCond);                               // the condition passes
+int EvaluateCondition(CGuideCondition* pCond);                               // the condition passes
 
 // The narrow formatter without arguments (FMT_VARIADIC's zero-argument form; its COMDAT is in this unit).
 // @0x141388650
@@ -258,7 +258,7 @@ static CString s_strStun = "stun";
 // ---- the action factory and CGuideAction --------------------------------------------------------------------------------
 
 // @0x141382b90
-MS2Ptr<CGuideAction> FUN_141382b90(TiXmlElement* pElem)
+MS2Ptr<CGuideAction> CreateGuideAction(TiXmlElement* pElem)
 {
     CStringA strType(reinterpret_cast<TiXmlElement*>(pElem)->Attribute("type"));
     CStringW strName = StringFormat(L"CGuideAction{0}", strType);
@@ -269,7 +269,7 @@ MS2Ptr<CGuideAction> FUN_141382b90(TiXmlElement* pElem)
         throw std::exception(StringFormat("Unknown Guide action Tag({0})", strType));
     return spAction;
 }
-MS2_REPLACE(0x141382B90, FUN_141382b90, 369, 0x6CC2AD9F);
+MS2_REPLACE(0x141382B90, CreateGuideAction, 369, 0x6CC2AD9F);
 
 // @0x141382d20
 CGuideAction::CGuideAction()
@@ -496,7 +496,7 @@ MS2_REPLACE_METHOD(0x141383600, CGuideActionLimit, vfunc_2, 224, 0x3CC196F1);
 // @0x141383700
 void CGuideActionLimit::vfunc_3()
 {
-    FUN_1413837a0(m_limit);
+    AddLimit(m_limit);
 }
 
 // @0x141383730
@@ -506,13 +506,13 @@ void CGuideActionLimit::vfunc_4()
 }
 
 // @0x141383760
-int FUN_141383760(int nLimit)
+int IsLimitActive(int nLimit)
 {
     return s_limitCounts[nLimit] > 0;
 }
 
 // @0x1413837a0
-void FUN_1413837a0(int nLimit)
+void AddLimit(int nLimit)
 {
     if (nLimit == 0)
         return;
@@ -560,7 +560,7 @@ MS2_REPLACE_METHOD(0x141383910, CGuideActionLimitDialog, vfunc_2, 170, 0xBEF7795
 // @0x1413839d0
 void CGuideActionLimitDialog::vfunc_3()
 {
-    FUN_141383b00(m_dialogName);
+    AddDialogLimit(m_dialogName);
 }
 
 // @0x141383a20
@@ -570,7 +570,7 @@ void CGuideActionLimitDialog::vfunc_4()
 }
 
 // @0x141383a70
-int FUN_141383a70(CStringA strName)
+int IsDialogLimited(CStringA strName)
 {
     int nCount = 0;
     if (s_dialogLimits.Lookup(strName, nCount))
@@ -579,7 +579,7 @@ int FUN_141383a70(CStringA strName)
 }
 
 // @0x141383b00
-void FUN_141383b00(CStringA strName)
+void AddDialogLimit(CStringA strName)
 {
     int nCount = 0;
     if (s_dialogLimits.Lookup(strName, nCount))
@@ -637,8 +637,8 @@ void CGuideActionUITutorial::vfunc_3()
         return;
     if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195a520(m_entityId, m_steps[m_index].m_textId, 1);
-    FUN_1413837a0(0x15);
-    FUN_1413837a0(0x13);
+    AddLimit(0x15);
+    AddLimit(0x13);
 }
 
 // @0x141383e40
@@ -717,9 +717,9 @@ bool CGuideActionUITextBase::FUN_141384200()
     switch (m_controllerType)
     {
     case GuideController_Keyboard:
-        return *reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 0;
+        return *reinterpret_cast<const unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 0;
     case GuideController_GamePad:
-        return *reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 1;
+        return *reinterpret_cast<const unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) == 1;
     }
     return true;
 }
@@ -1014,7 +1014,7 @@ void CGuideActionConditionAction::vfunc_2(TiXmlElement* pElem)
     {
         for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pActions))->FirstChild("action")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("action")))
         {
-            MS2Ptr<CGuideAction> spAction = FUN_141382b90(pActions);
+            MS2Ptr<CGuideAction> spAction = CreateGuideAction(pActions);
             m_actions.Add(spAction);
         }
     }
@@ -1027,7 +1027,7 @@ void CGuideActionConditionAction::vfunc_3()
     m_started = 0;
     for (unsigned i = 0; i < m_conditions.GetCount(); i++)
     {
-        if (FUN_1413a5570(m_conditions[i].operator->()) == 0)
+        if (EvaluateCondition(m_conditions[i].operator->()) == 0)
             return;
     }
     for (unsigned i = 0; i < m_actions.GetCount(); i++)
@@ -1154,7 +1154,7 @@ MS2_REPLACE_METHOD(0x1413856D0, CGuideActionSequenceCamera, vfunc_2, 146, 0xFDC7
 void CGuideActionSequenceCamera::vfunc_3()
 {
     m_skipped = 0;
-    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->GetModeType() != 2)
         ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(0);
     ((CTriggerService*)FUN_140ad4b90())->FUN_141863340(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
@@ -1164,28 +1164,28 @@ void CGuideActionSequenceCamera::vfunc_3()
         if (UICutSceneCinematic* pCinematic = (UICutSceneCinematic*)FUN_14136f290(0x4e52))
         {
             CStringW strKey = GetStringCommon(0x666);
-            if (*reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
+            if (*reinterpret_cast<const unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
                 strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x49409, 2);
             pCinematic->StartCinematic(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
-                Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
+                Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::OnSkip));
         }
     }
-    FUN_1413837a0(0x15);
-    FUN_1413837a0(0x13);
+    AddLimit(0x15);
+    AddLimit(0x13);
 }
 
 // @0x141385a40
 void CGuideActionSequenceCamera::vfunc_4()
 {
-    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->GetModeType() != 2)
         ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
         ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
         NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
-            Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));
+            Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::OnSkip));
     }
     FUN_1413837e0(0x15);
     FUN_1413837e0(0x13);
@@ -1196,18 +1196,18 @@ int CGuideActionSequenceCamera::vfunc_5()
 {
     if (m_skipped != 0)
         return 1;
-    if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
+    if (CameraMgr::GetInstance()->GetModeType() != 2)
         return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x141385B50, CGuideActionSequenceCamera, vfunc_5, 59, 0xD5163C2B);
 
 // @0x141385ba0
-void CGuideActionSequenceCamera::FUN_141385ba0(NotifyObject* pNotify)
+void CGuideActionSequenceCamera::OnSkip(NotifyObject* pNotify)
 {
     m_skipped = 1;
 }
-MS2_REPLACE_METHOD(0x141385BA0, CGuideActionSequenceCamera, FUN_141385ba0, 23, 0x3927F3CB);
+MS2_REPLACE_METHOD(0x141385BA0, CGuideActionSequenceCamera, OnSkip, 23, 0x3927F3CB);
 
 // ---- CGuideActionSmartRecommend -----------------------------------------------------------------------------------------
 
@@ -1307,7 +1307,7 @@ MS2_REPLACE_METHOD(0x141385F80, CGuideActionGameMenuLimit, vfunc_2, 104, 0xA1C6C
 // @0x141385ff0
 void CGuideActionGameMenuLimit::vfunc_3()
 {
-    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+    if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->SetMenuEnable(m_menuID, m_enabled);
     if (UIGamePadMenuDialog* pPadMenu = Unk_GaGetUI<UIGamePadMenuDialog>(0x4f63))
         pPadMenu->FUN_140c1ba90(m_menuID, m_enabled);
